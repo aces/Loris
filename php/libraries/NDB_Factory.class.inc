@@ -44,11 +44,19 @@ class NDB_Factory
     private static $_config = null;
 
     /**
+     * Settings object
+     * A proxy to NDB_Config
+     *
+     * @var Settings object
+     */
+    private static $_settings = null;
+
+    /**
      * Sets whether the factory should return real objects or testing objects
      *
      * @param boolean $val Whether testing should be enabled
      *
-     * @return none
+     * @return void
      */
     function setTesting($val)
     {
@@ -75,7 +83,7 @@ class NDB_Factory
      * Reset all of the private variables of the factory to the default
      * state. Used between testing runs.
      *
-     * @return none
+     * @return void
      */
     function reset()
     {
@@ -86,6 +94,8 @@ class NDB_Factory
         self::$_user    = null;
 
         self::$_config = null;
+
+        self::$_settings = null;
     }
 
     /**
@@ -110,6 +120,20 @@ class NDB_Factory
 
         self::$_config = $config;
         $config->load($configfile);
+        return $config;
+    }
+
+    /**
+     * Set config
+     * (Can used for injecting test doubles)
+     *
+     * @param NDB_Config $config config object
+     *
+     * @return NDB_Config config object which was passed in
+     */
+    public function setConfig(NDB_Config $config)
+    {
+        self::$_config = $config;
         return $config;
     }
 
@@ -140,7 +164,7 @@ class NDB_Factory
      *
      * @return User The same user that was passed in.
      */
-    function setUser($user)
+    public function setUser(User $user)
     {
         self::$_user = $user;
         return $user;
@@ -182,6 +206,20 @@ class NDB_Factory
     }
 
     /**
+     * Explicitly set the database singleton that is being used by the factory
+     * (Can be used for injecting test doubles)
+     *
+     * @param Database $db Database object
+     *
+     * @return Database same Database object which was passed in
+     */
+    public function setDatabase(Database $db)
+    {
+        self::$_db = $db;
+        return $db;
+    }
+
+    /**
      * Returns a reference to a Loris CouchDB database wrapper.
      *
      * @return CouchDB CouchDB singleton
@@ -208,6 +246,36 @@ class NDB_Factory
             self::$_couchdb = CouchDB::singleton(); //new CouchDB();
         }
         return self::$_couchdb;
+    }
+
+    /**
+     * Explicitly set the Couch DB singleton that is being used by the factory
+     * (Can be used for injecting test doubles)
+     *
+     * @param CouchDB $couchDB CouchDB database wrapper
+     *
+     * @return CouchDB
+     */
+    public function setCouchDB(CouchDB $couchDB)
+    {
+        self::$_couchdb = $couchDB;
+        return $couchDB;
+    }
+
+    /**
+     * Returns a singleton settings object
+     *
+     * @param string $configfile Location of XML file to parse config from
+     *
+     * @return Settings setting object
+     */
+    public function settings($configfile = "../project/config.xml")
+    {
+        if (self::$_settings !== null) {
+            return self::$_settings;
+        }
+        self::$_settings = new Settings($this->config($configfile));
+        return self::$_settings;
     }
 }
 ?>

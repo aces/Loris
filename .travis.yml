@@ -71,6 +71,7 @@ script:
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'LorisUnitTests for php/libraries'
 
+
     # Run integration tests to make sure everything didn't just
     # break
     - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Core Integration Tests'
@@ -79,13 +80,15 @@ script:
     - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Module Integration Tests'
 
 
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     # Run PHPCS on the entire libraries directory.
     - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs
 
     # Run PHPCS on some scripts
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/CouchDB_Import_MRI.php
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/data_dictionary_builder.php
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/generic_includes.php
 
     # Run PHPCS on specific modules
     - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
@@ -95,6 +98,8 @@ script:
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/dashboard
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/examiner
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/training
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/brainbrowser
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/configuration
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js

@@ -33,6 +33,7 @@ if (getenv('LORIS_DB_CONFIG')) {
     define('CONFIG_XML', getenv('LORIS_DB_CONFIG'));
 } else {
     define('CONFIG_XML', __DIR__ . "/config.xml");
+
 }
 define('TABLE_FIXTURES_PATH', __DIR__ . "/fixtures/tables/");
 
