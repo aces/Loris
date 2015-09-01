@@ -1,9 +1,9 @@
-<?php
+ <?php
 /**
- * General behavioural feedback panel class. 
+ * General behavioural feedback panel class.
  *
- * This class provides the behavioural feedback gui for the timepoint list, instrument 
- * list and individual instruments. 
+ * This class provides the behavioural feedback gui for the timepoint list, instrument
+ * list and individual instruments.
  *
  * @package Behavioural
  * @author Evan McIlroy <evanmcilroy@gmail.com>
@@ -35,8 +35,8 @@ class BVL_Feedback_Panel
             $Fields[$field_name['SourceField']] = $field_name['SourceField'];
         }
 
-        $this->tpl_data['FieldNames'] = $Fields; 
-        
+        $this->tpl_data['FieldNames'] = json_encode($Fields); 
+
         $summary = $this->_feedbackThread->getSummaryOfThreads();
         if (PEAR::isError($summary)) {
             $tpl_data['error_message'][] = $summary->getMessage();
@@ -66,6 +66,6 @@ class BVL_Feedback_Panel
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("bvl_feedback_panel.tpl");
         return $html;
-        
+
     }
 }

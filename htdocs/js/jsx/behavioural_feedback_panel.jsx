@@ -20,7 +20,6 @@ var FeedbackPanelContent = React.createClass({
   componentDidMount: function(){
 
     var that = this;
-
     request = $.ajax({
       type: "POST",
       url: "ajax/react_get_bvl_threads.php",
@@ -286,18 +285,62 @@ var FeedbackPanelRow = React.createClass({
 
   var NewThreadPanel = React.createClass({
     propTypes: {
-      feedback_values : React.PropTypes.array
+      select_options : React.PropTypes.array
+    },
+    handleSelectChange: function(event){
+      this.setState({select_value: event.target.value});
+    },
+    handleTextChange: function(event){
+      this.setState({text_value: event.target.value});
+    },
+    createNewThread: function(){
+      console.log("in create new thread");
+      var that = this;
+
+      request = $.ajax({
+        type: "POST",
+        url: "ajax/new_bvl_feedback.php",
+        data:{
+          "input_type": 1,
+          "fieldname" : this.state.select_value,
+          "comment" : this.state.text_value,
+          "candID": this.props.candID,
+          "sessionID" : this.props.sessionID,
+          "commentID" : this.props.commentID,
+          "user" : this.props.commentID
+        },
+        success:function(data){
+          that.setState({
+            text_value: "The new thread has been submitted"
+          });
+        },
+        error: function (xhr, desc, err){
+          console.log(xhr);
+          console.log("Details: " + desc + "\nError:" + err);
+        }
+      });
     },
     render: function(){
-      var options = this.props.select_options.map(function(option){
-        return <option value={option.Type}>{option.Name}</option>
-      });
+      var options = [];
+      for (var key in this.props.select_options) {
+        if (this.props.select_options.hasOwnProperty(key)) {
+          options.push(<option value={key}>{this.props.select_options[key]}</option>)
+        }
+      }
+      return <div className="panel-body">
+      <div id ="new_feedback">
+      <textarea className="form-control" rows="3" id="comment" onChange={this.handleTextChange}></textarea>
+      <select name = "input_type" onChange={this.handleSelectChange}>
+      {options}
+      </select>
+      <button id="save_data" onClick={this.createNewThread}>Save data</button>
+      </div>
+      </div>
     }
   });
 
   var FeedbackPanel = React.createClass({
     render: function(){
-
       return (
         <SliderPanel>
         <div className="panel-group" id="accordion">
@@ -305,21 +348,13 @@ var FeedbackPanelRow = React.createClass({
         <div className="panel-heading">
         <h4 className="panel-title">Feedback thread</h4>
         </div>
-        <FeedbackPanelContent feedback_values={this.props.thread_list} feedback_level={this.props.feedback_level} candID={this.props.candID} sessionID={this.props.sessionID} commentID={this.props.commentID}/>
+        <FeedbackPanelContent feedback_level={this.props.feedback_level} candID={this.props.candID} sessionID={this.props.sessionID} commentID={this.props.commentID}/>
         </div>
         </div>
         <AccordionPanel title="Who's there">
         <div id="collapseThree" className="panel-collapse collapse in">
-            <div className="panel-body">
-                <div id ="new_feedback">
-                    <textarea className="form-control" rows="3" id="comment"></textarea>
-                    <select name = "input_type">
-                      {options}
-                    </select>
-                    <button id="save_data">Save data</button>
-                </div>
+                      <NewThreadPanel select_options={this.props.select_options} feedback_level={this.props.feedback_level} candID={this.props.candID} sessionID={this.props.sessionID} commentID={this.props.commentID}></NewThreadPanel>
             </div>
-        </div>
         </AccordionPanel>
         </SliderPanel>
       );
