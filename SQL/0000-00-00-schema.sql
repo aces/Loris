@@ -2292,6 +2292,7 @@ CREATE TABLE subproject (
     title varchar(255) NOT NULL,
     useEDC boolean,
     WindowDifference enum('optimal', 'battery'),
+    RecruitmentTarget int(10) unsigned,
     PRIMARY KEY (SubprojectID)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
 INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (1, 'Control', false, 'optimal');
