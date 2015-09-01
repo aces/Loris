@@ -13,60 +13,60 @@ var FeedbackPanelContent = React.createClass({
   },
   getInitialState: function(){
     return {
-      threads: '',
+      // threads: '',
       currentEntryToggled: null
     }
   },
-  componentDidMount: function(){
-
-    var that = this;
-    request = $.ajax({
-      type: "POST",
-      url: "ajax/react_get_bvl_threads.php",
-      data:{
-        "candID": this.props.candID,
-        "sessionID" : this.props.sessionID,
-        "commentID" : this.props.commentID,
-        "user" : this.props.commentID
-      },
-      success: function (data){
-        state = data;
-        console.log(state);
-        that.setState({
-          threads: state
-        })
-      },
-      error: function (xhr, desc, err){
-        console.log(xhr);
-        console.log("Details: " + desc + "\nError:" + err);
-      }
-    });
-    },
-  markThreadClosed: function(index) {
-    var threads = this.state.threads;
-    var entry = this.state.threads[index];
-    console.log(entry);
-    threads.splice(index, 1);
-    entry.QC_status = 'closed';
-
-    threads.push(entry);
-
-    this.setState({
-      threads: threads
-    });
-  },
-  markThreadOpened: function(index) {
-    var threads = this.state.threads;
-    var entry = this.state.threads[index];
-    threads.splice(index, 1);
-    entry.QC_status = 'opened';
-
-    threads.unshift(entry);
-
-    this.setState({
-      threads: threads
-    });
-  },
+  // componentDidMount: function(){
+  //
+  //   var that = this;
+  //   request = $.ajax({
+  //     type: "POST",
+  //     url: "ajax/react_get_bvl_threads.php",
+  //     data:{
+  //       "candID": this.props.candID,
+  //       "sessionID" : this.props.sessionID,
+  //       "commentID" : this.props.commentID,
+  //       "user" : this.props.commentID
+  //     },
+  //     success: function (data){
+  //       state = data;
+  //       console.log(state);
+  //       that.setState({
+  //         threads: state
+  //       })
+  //     },
+  //     error: function (xhr, desc, err){
+  //       console.log(xhr);
+  //       console.log("Details: " + desc + "\nError:" + err);
+  //     }
+  //   });
+  //   },
+  // markThreadClosed: function(index) {
+  //   var threads = this.state.threads;
+  //   var entry = this.state.threads[index];
+  //   console.log(entry);
+  //   threads.splice(index, 1);
+  //   entry.QC_status = 'closed';
+  //
+  //   threads.push(entry);
+  //
+  //   this.setState({
+  //     threads: threads
+  //   });
+  // },
+  // markThreadOpened: function(index) {
+  //   var threads = this.state.threads;
+  //   var entry = this.state.threads[index];
+  //   threads.splice(index, 1);
+  //   entry.QC_status = 'opened';
+  //
+  //   threads.unshift(entry);
+  //
+  //   this.setState({
+  //     threads: threads
+  //   });
+  // },
   markCommentToggle: function(index) {
 
     if(index == this.state.currentEntryToggled){
@@ -81,9 +81,15 @@ var FeedbackPanelContent = React.createClass({
     });
   }
   },
+  openThread(index){
+    this.props.open_thread(index);
+  },
+  closeThread(index){
+    this.props.close_thread(index);
+  },
   render: function(){
 
-    if (this.state.threads){
+    if (this.props.threads){
       var currentEntryToggled = this.state.currentEntryToggled;
       return(
         <div className="panel-collapse collapse in">
@@ -96,7 +102,7 @@ var FeedbackPanelContent = React.createClass({
         </tr>
         </thead>
         <tbody>
-        {this.state.threads.map(function(row, index){
+        {this.props.threads.map(function(row, index){
           if (currentEntryToggled == index){
             var thisRowCommentToggled = true;
           }
@@ -104,7 +110,9 @@ var FeedbackPanelContent = React.createClass({
             var thisRowCommentToggled = false;
           }
           console.log("map feedbackid " + row.FeedbackID);
-          return <FeedbackPanelRow key={row.FeedbackID} commentToggled = {thisRowCommentToggled} feedbackID={row.FeedbackID} sessionID={this.props.sessionID} commentID={this.props.commentID} candID={this.props.candID} status={row.QC_status} date={row.date} commentToggle={this.markCommentToggle.bind(this, index)} onClickClose={this.markThreadClosed.bind(this, index)} onClickOpen={this.markThreadOpened.bind(this, index)}/>
+          return <FeedbackPanelRow key={row.FeedbackID} commentToggled = {thisRowCommentToggled} feedbackID={row.FeedbackID} sessionID={this.props.sessionID}
+          commentID={this.props.commentID} candID={this.props.candID} status={row.QC_status} date={row.date} commentToggle={this.markCommentToggle.bind(this, index)}
+          onClickClose={this.props.close_thread.bind(this,index)} onClickOpen={this.props.open_thread.bind(this,index)}/>
         }.bind(this))}
         </tbody>
         </table>
@@ -151,9 +159,7 @@ var FeedbackPanelRow = React.createClass({
     });
   },
   toggle_entries: function(){
-
     this.setState({thread_entries_toggled: !this.state.thread_entries_toggled});
-
   },
   toggle_thread_comment: function(){
 
@@ -287,6 +293,12 @@ var FeedbackPanelRow = React.createClass({
     propTypes: {
       select_options : React.PropTypes.array
     },
+    getInitialState: function(){
+      return{
+        text_value : '',
+        select_value : ''
+      }
+    },
     handleSelectChange: function(event){
       this.setState({select_value: event.target.value});
     },
@@ -311,8 +323,11 @@ var FeedbackPanelRow = React.createClass({
         },
         success:function(data){
           that.setState({
-            text_value: "The new thread has been submitted"
+            text_value: "The new thread has been submitted!"
           });
+          console.log("new thread data below");
+          console.log(data);
+          that.props.addThread(data);
         },
         error: function (xhr, desc, err){
           console.log(xhr);
@@ -329,7 +344,7 @@ var FeedbackPanelRow = React.createClass({
       }
       return <div className="panel-body">
       <div id ="new_feedback">
-      <textarea className="form-control" rows="3" id="comment" onChange={this.handleTextChange}></textarea>
+      <textarea className="form-control" rows="3" id="comment" value={this.state.text_value} onChange={this.handleTextChange}></textarea>
       <select name = "input_type" onChange={this.handleSelectChange}>
       {options}
       </select>
@@ -340,6 +355,83 @@ var FeedbackPanelRow = React.createClass({
   });
 
   var FeedbackPanel = React.createClass({
+    getInitialState: function(){
+      return {
+        threads: '',
+      }
+    },
+    componentDidMount: function(){
+      var that = this;
+      request = $.ajax({
+        type: "POST",
+        url: "ajax/react_get_bvl_threads.php",
+        data:{
+          "candID": this.props.candID,
+          "sessionID" : this.props.sessionID,
+          "commentID" : this.props.commentID,
+          "user" : this.props.commentID
+        },
+        success: function (data){
+          state = data;
+          console.log(state);
+          that.setState({
+            threads: state
+          })
+        },
+        error: function (xhr, desc, err){
+          console.log(xhr);
+          console.log("Details: " + desc + "\nError:" + err);
+        }
+      });
+      },
+      addThread: function(data){
+        var threads = this.state.threads;
+        threads.push(data)
+        console.log("in add threads");
+        console.log(data);
+        this.setState({
+          threads: threads
+        });
+      },
+      markThreadClosed: function(index) {
+        var threads = this.state.threads;
+        var entry = this.state.threads[index];
+        console.log(entry);
+        threads.splice(index, 1);
+        entry.QC_status = 'closed';
+
+        threads.push(entry);
+
+        this.setState({
+          threads: threads
+        });
+      },
+      markThreadOpened: function(index) {
+        var threads = this.state.threads;
+        var entry = this.state.threads[index];
+        threads.splice(index, 1);
+        entry.QC_status = 'opened';
+
+        threads.unshift(entry);
+
+        this.setState({
+          threads: threads
+        });
+      },
+      markCommentToggle: function(index) {
+
+        if(index == this.state.currentEntryToggled){
+          this.setState({
+            currentEntryToggled: null
+          });
+        }
+
+        else{
+          this.setState({
+          currentEntryToggled: index
+        });
+      }
+      },
     render: function(){
       return (
         <SliderPanel>
@@ -348,12 +440,12 @@ var FeedbackPanelRow = React.createClass({
         <div className="panel-heading">
         <h4 className="panel-title">Feedback thread</h4>
         </div>
-        <FeedbackPanelContent feedback_level={this.props.feedback_level} candID={this.props.candID} sessionID={this.props.sessionID} commentID={this.props.commentID}/>
+        <FeedbackPanelContent threads={this.state.threads} close_thread={this.markThreadClosed.bind(this)} open_thread={this.markThreadClosed.bind(this)} feedback_level={this.props.feedback_level} candID={this.props.candID} sessionID={this.props.sessionID} commentID={this.props.commentID}/>
         </div>
         </div>
         <AccordionPanel title="Who's there">
         <div id="collapseThree" className="panel-collapse collapse in">
-                      <NewThreadPanel select_options={this.props.select_options} feedback_level={this.props.feedback_level} candID={this.props.candID} sessionID={this.props.sessionID} commentID={this.props.commentID}></NewThreadPanel>
+                      <NewThreadPanel select_options={this.props.select_options} feedback_level={this.props.feedback_level} candID={this.props.candID} sessionID={this.props.sessionID} commentID={this.props.commentID} addThread={this.addThread.bind(this)}></NewThreadPanel>
             </div>
         </AccordionPanel>
         </SliderPanel>
