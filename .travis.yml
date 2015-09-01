@@ -61,8 +61,8 @@ before_script:
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
     - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
 
-env:
-  - LORIS_DB_CONFIG=project/config.xml
+#env:
+#  - LORIS_DB_CONFIG=project/config.xml
 
 script:
     # Run PHP -l on everything to ensure there's no syntax
