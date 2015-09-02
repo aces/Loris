@@ -184,8 +184,8 @@ class NDB_BVL_InstrumentStatus
                 "SELECT Data_entry FROM flag
                 WHERE CommentID=:PCID OR CommentID=:DDECID",
                 array(
-                    'PCID' => $principalCommentId,
-                    'DDECID' => $DDECommentId,
+                 'PCID'   => $principalCommentId,
+                 'DDECID' => $DDECommentId,
                 )
             );
 
