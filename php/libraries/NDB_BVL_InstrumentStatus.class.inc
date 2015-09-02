@@ -226,9 +226,10 @@ class NDB_BVL_InstrumentStatus
 
         // If Administration Status == None, remove from Conflict Resolver
         if ($status == 'None') {
-            $delete_statement = "DELETE FROM conflicts_unresolved
-                WHERE CommentId1='" . $principalCommentId . "'";
-            $GLOBALS['DB']->run($delete_statement);
+            $GLOBALS['DB']->run(
+                "DELETE FROM conflicts_unresolved WHERE CommentId1=:CID OR CommentId2=:CID",
+                array ('CID' => $this->_commentID)
+            );
         }
     }
 
