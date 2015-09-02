@@ -196,10 +196,10 @@ class NDB_BVL_InstrumentStatus
         // Remove conflicts for SDE & DDE form from the
         // Conflict Resolver if new status is In Progress
         if ($status == 'In Progress') {
-            $GLOBALS['DB']->run(
-                "DELETE FROM conflicts_unresolved WHERE CommentId1=:CID OR CommentId2=:CID",
-                array ('CID' => $this->_commentID)
-            );
+            $deleteWhere1 = array('CommentId1' => $this->_commentID);
+            $deleteWhere2 = array('CommentId2' => $this->_commentID);
+            $GLOBALS['DB']->delete('conflicts_unresolved', $deleteWhere1);
+            $GLOBALS['DB']->delete('conflicts_unresolved', $deleteWhere2);
         }
 
     }
