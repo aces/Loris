@@ -194,7 +194,7 @@ class NDB_BVL_InstrumentStatus
         }
 
         // Remove conflicts for SDE & DDE form from the
-        // Conflict Resolver if new status is In Progress
+        // Conflict Resolver if new status is 'In Progress'
         if ($status == 'In Progress') {
             $deleteWhere1 = array('CommentId1' => $this->_commentID);
             $deleteWhere2 = array('CommentId2' => $this->_commentID);
