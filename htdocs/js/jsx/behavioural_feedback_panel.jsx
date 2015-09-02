@@ -53,7 +53,8 @@ var FeedbackPanelContent = React.createClass({
           var thisRowCommentToggled = false;
         }
         return <FeedbackPanelRow key={row.FeedbackID} commentToggled = {thisRowCommentToggled} feedbackID={row.FeedbackID} sessionID={that.props.sessionID}
-        commentID={that.props.commentID} candID={that.props.candID} status={row.QC_status} date={row.date} commentToggle={that.markCommentToggle.bind(this, index)}
+        commentID={that.props.commentID} candID={that.props.candID} status={row.QC_status} date={row.date}
+        commentToggle={that.markCommentToggle.bind(this, index)} fieldname={row.FieldName}
         onClickClose={that.props.close_thread.bind(this,index)} onClickOpen={that.props.open_thread.bind(this,index)}/>
       }.bind(this));
       return(
@@ -172,7 +173,7 @@ var FeedbackPanelRow = React.createClass({
       <tbody>
       <tr>
       <td>{this.props.date}</td>
-      <td>FieldName</td>
+      <td>{this.props.fieldname}</td>
       <td>
       <div className="btn-group">
       <button name ="thread_button" type="button" className={buttonClass} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -223,14 +224,36 @@ var FeedbackPanelRow = React.createClass({
   });
 
   var AccordionPanel = React.createClass({
+    getInitialState: function(){
+      return{
+        toggled : false
+      }
+    },
+    toggleChange: function(){
+      this.setState({
+        toggled: !(this.state.toggled)
+      })
+    },
     render: function(){
+      if(this.state.toggled){
+       var panel_body_class = "panel-collapse collapse"
+       var arrow_class = "collapsed"
+      }
+      else{
+       var panel_body_class= "panel-collapse collapse in"
+       var arrow_class = null
+      }
       return(
         <div className="panel-group" id="accordion">
         <div className="panel panel-default" id="panel1">
         <div className="panel-heading">
-        <h4 className="panel-title">{this.props.title}</h4>
+        <h4 className="panel-title"><a className={arrow_class} onClick={this.toggleChange}>{this.props.title}</a></h4>
         </div>
+        <div id="collapseThree" className={panel_body_class}>
+        <div className="panel-body">
         {this.props.children}
+        </div>
+        </div>
         </div>
         </div>
       )
@@ -306,18 +329,32 @@ var FeedbackPanelRow = React.createClass({
     }
 }
 
-      return <div className="panel-body">
-      <div id ="new_feedback">
-      <textarea className="form-control" rows="3" id="comment" value={this.state.text_value} onChange={this.handleTextChange}></textarea>
-      <div className="form-inline" role="form">
-      <select name = "input_type" selected={this.state.select_value} onChange={this.handleSelectChange} className="form-control">
+      return <div id ="new_feedback">
+      <div className="form-group">
+      <textarea className="form-control" rows="4" id="comment" value={this.state.text_value} onChange={this.handleTextChange}></textarea>
+      </div>
+      <div className="form-group">
+      <div className="row">
+      <label className="col-xs-4">Field Name</label>
+      <div className="col-xs-8">
+      <select className="form-control input-sm" name = "input_type" selected={this.state.select_value} onChange={this.handleSelectChange} className="form-control">
       {options}
       </select>
-      <select name = "input" selected={this.state.input_value} onChange={this.handleInputChange} className="form-control">
+      </div>
+      </div>
+      </div>
+      <div className="form-group">
+      <div className="row">
+      <label className="col-xs-4">Feedback Type</label>
+      <div className="col-xs-8">
+      <select className="form-control input-sm" name = "input" selected={this.state.input_value} onChange={this.handleInputChange} className="form-control">
       {input}
       </select>
-      <button id="save_data" onClick={this.createNewThread} className="btn btn-default">Save data</button>
       </div>
+      </div>
+      </div>
+      <div className="form-group">
+      <button id="save_data" onClick={this.createNewThread} className="btn btn-default pull-right btn-sm">Save data</button>
       </div>
       </div>
     }
@@ -424,6 +461,10 @@ var FeedbackPanelRow = React.createClass({
       title = "New " + this.props.feedback_level + " level feedback";
       return (
         <SliderPanel>
+        <AccordionPanel title={title}>
+                      <NewThreadPanel select_options={this.props.select_options} feedback_level={this.props.feedback_level} candID={this.props.candID}
+                      sessionID={this.props.sessionID} commentID={this.props.commentID} addThread={this.addThread} feedback_types={this.props.feedback_types}></NewThreadPanel>
+        </AccordionPanel>
         <div className="panel-group" id="accordion">
         <div className="panel panel-default" id="panel1">
         <div className="panel-heading">
@@ -432,12 +473,6 @@ var FeedbackPanelRow = React.createClass({
         <FeedbackPanelContent threads={this.state.threads} close_thread={this.markThreadClosed} open_thread={this.markThreadOpened} feedback_level={this.props.feedback_level} candID={this.props.candID} sessionID={this.props.sessionID} commentID={this.props.commentID}/>
         </div>
         </div>
-        <AccordionPanel title={title}>
-        <div id="collapseThree" className="panel-collapse collapse in">
-                      <NewThreadPanel select_options={this.props.select_options} feedback_level={this.props.feedback_level} candID={this.props.candID}
-                      sessionID={this.props.sessionID} commentID={this.props.commentID} addThread={this.addThread} feedback_types={this.props.feedback_types}></NewThreadPanel>
-            </div>
-        </AccordionPanel>
         </SliderPanel>
       );
     }
