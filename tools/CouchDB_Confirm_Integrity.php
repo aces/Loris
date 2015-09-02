@@ -70,7 +70,7 @@ class CouchDBIntegrityChecker
             $pscid = $row['key'][0];
             $vl    = $row['key'][1];
             $sqlDB = $this->SQLDB->pselectRow(
-                "SELECT c.*, s.Visit_label, s.Active
+                "SELECT c.*, s.Visit_label, s.Active, ps.study_consent
                 FROM candidate c
                 LEFT JOIN session s USING (CandID)
                 LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
