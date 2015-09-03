@@ -282,7 +282,8 @@
                     </div>
 		    {/if}
                     <!--    Want to wrap page content only when sidebar is in view
-                            if not then just put page content in the div #page    -->
+
+                    if not then just put page content in the div #page    -->
         <div id="page-content-wrapper">
             {/if}
             {if $dynamictabs eq "dynamictabs"}
@@ -571,7 +572,8 @@
 
 
             <!-- </div> -->
-            </div>
+	</div>
+
             {else}
                 {$workspace}
             {/if}

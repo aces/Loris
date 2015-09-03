@@ -186,7 +186,7 @@ f             * List of visits
      */ 
     
     function getFeedbackPanel(){
-        $feedbackPanel = new TimePoint_List_FeedbackPanel($_REQUEST['candID']);
+        $feedbackPanel = new BVL_Feedback_Panel($_REQUEST['candID']);
         $html = $feedbackPanel->display();
         return $html;
     }

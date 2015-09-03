@@ -1,6 +1,7 @@
 var SliderPanel = React.createClass({
   render: function() {
-    return <div className="panel-group" id="bvl_feedback_menu">
+      return <div className="panel-group" id="bvl_feedback_menu">
+      <div className="breadcrumb-panel"><a className="info">Feedback for PSCID: {this.props.pscid}</a></div>
     {this.props.children}
     </div>
   }
@@ -37,9 +38,15 @@ var FeedbackPanelContent = React.createClass({
   closeThread(index){
     this.props.close_thread(index);
   },
-  render: function(){
+    render: function(){
+	if (this.props.feedback_level == "instrument"){
+	   var table_headers = <tr className="info"><td>Fieldname</td><td>Author</td></tr>
+	}
+	else{
+	    var table_headers = <tr className="info"><td>Author</td></tr>
+	}
 
-    if (this.props.threads){
+    if (this.props.threads.length){
       console.log("this props threads");
       console.log(this.props.threads);
       var currentEntryToggled = this.state.currentEntryToggled;
@@ -52,30 +59,37 @@ var FeedbackPanelContent = React.createClass({
         else{
           var thisRowCommentToggled = false;
         }
-        return <FeedbackPanelRow key={row.FeedbackID} commentToggled = {thisRowCommentToggled} feedbackID={row.FeedbackID} sessionID={that.props.sessionID}
-        commentID={that.props.commentID} candID={that.props.candID} status={row.QC_status} date={row.date}
-        commentToggle={that.markCommentToggle.bind(this, index)} fieldname={row.FieldName}
+          return <FeedbackPanelRow key={row.FeedbackID} commentToggled = {thisRowCommentToggled} feedbackID={row.FeedbackID}
+	  sessionID={that.props.sessionID} type={row.Type}
+        commentID={that.props.commentID} candID={that.props.candID} status={row.QC_status} date={row.Date}
+        commentToggle={that.markCommentToggle.bind(this, index)} fieldname={row.FieldName} author={row.User}
         onClickClose={that.props.close_thread.bind(this,index)} onClickOpen={that.props.open_thread.bind(this,index)}/>
       }.bind(this));
-      return(
-        <div className="panel-collapse collapse in">
-        <div className="panel-body">
-        <table id ="current_thread_table" className="table table-hover table-primary table-bordered dynamictable">
+
+	    var table =
+	            <table id ="current_thread_table" className="table table-hover table-primary table-bordered dynamictable">
         <thead id="current_thread_table_header">
-        <tr className="info">
-        <td>Date Opened</td>
-        <td>Author</td>
-        </tr>
+        {table_headers}
         </thead>
         {feedbackRows}
         </table>
+	
+	
+      return(
+        <div className="panel-collapse collapse in">
+        <div className="panel-body">
+	  {table}
         </div>
         </div>
       )
     }
     else{
-      return(
-        <div>There are no threads for this user!</div>
+	return(
+	            <div className="panel-body">
+
+            There are no threads for this user!
+	            </div>
+
       )
     }
   }
@@ -117,8 +131,6 @@ var FeedbackPanelRow = React.createClass({
   toggle_thread_comment: function(){
 
     this.setState({thread_comment_toggled : !this.state.thread_comment_toggled});
-    console.log(this.state.thread_comment_toggled);
-    console.log("in toggle thread comment, this is the feedbackid" + this.props.feedbackID);
 
   },
   new_thread_entry: function(comment){
@@ -150,7 +162,7 @@ var FeedbackPanelRow = React.createClass({
     if (this.state.thread_entries_toggled){
       var arrow = 'glyphicon glyphicon-chevron-down glyphs';
       var threadEntries = this.state.thread_entries_loaded.map(function(entry){
-        return <tr className="thread_entry"><td colSpan="100%">{entry.UserID} on {entry.Testdate} commented:
+        return <tr className="thread_entry"><td colSpan="100%">{entry.UserID} on {entry.TestDate} commented:
         <br/> {entry.Comment}</td></tr>}
       );
 
@@ -171,9 +183,10 @@ var FeedbackPanelRow = React.createClass({
     }
     return(
       <tbody>
-      <tr>
-      <td>{this.props.date}</td>
-      <td>{this.props.fieldname}</td>
+	<tr>
+	{this.props.fieldname? <td>{this.props.fieldname}<br/>{this.props.type}</td> : <td>{this.props.type}</td>}
+   
+      <td>{this.props.author} on:<br/>{this.props.date}</td>
       <td>
       <div className="btn-group">
       <button name ="thread_button" type="button" className={buttonClass} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -245,14 +258,12 @@ var FeedbackPanelRow = React.createClass({
       }
       return(
         <div className="panel-group" id="accordion">
-        <div className="panel panel-default" id="panel1">
+        <div className="panel panel-default">
         <div className="panel-heading">
         <h4 className="panel-title"><a className={arrow_class} onClick={this.toggleChange}>{this.props.title}</a></h4>
         </div>
-        <div id="collapseThree" className={panel_body_class}>
-        <div className="panel-body">
+        <div className={panel_body_class}>
         {this.props.children}
-        </div>
         </div>
         </div>
         </div>
@@ -285,7 +296,7 @@ var FeedbackPanelRow = React.createClass({
       console.log(this.state.input_value);
       console.log(this.state.select_value);
       var that = this;
-
+      if(this.state.text_value.length){ 
       request = $.ajax({
         type: "POST",
         url: "ajax/new_bvl_feedback.php",
@@ -304,13 +315,16 @@ var FeedbackPanelRow = React.createClass({
           });
           console.log("new thread data below");
           console.log(data);
-          that.props.addThread(data);
+            that.props.addThread(data);
+	    that.props.updateSummaryThread();
         },
         error: function (xhr, desc, err){
           console.log(xhr);
           console.log("Details: " + desc + "\nError:" + err);
         }
       });
+      }
+	
     },
     render: function(){
       var options = [];
@@ -319,6 +333,20 @@ var FeedbackPanelRow = React.createClass({
           options.push(<option value={key}>{this.props.select_options[key]}</option>)
         }
       }
+
+	if(this.props.feedback_level == "instrument"){
+	          var fieldname_select = <div className="form-group">
+	<div className="row">
+	
+      <label className="col-xs-4">Field Name</label>
+      <div className="col-xs-8">
+      <select className="form-control input-sm" name = "input_type" selected={this.state.select_value} onChange={this.handleSelectChange} className="form-control">
+      {options}
+      </select>
+      </div>
+      </div>
+      </div>
+	}
 
       var feedback_types = this.props.feedback_types;
       var input = [];
@@ -329,20 +357,11 @@ var FeedbackPanelRow = React.createClass({
     }
 }
 
-      return <div id ="new_feedback">
+      return <div className="panel-body" id ="new_feedback">
       <div className="form-group">
       <textarea className="form-control" rows="4" id="comment" value={this.state.text_value} onChange={this.handleTextChange}></textarea>
       </div>
-      <div className="form-group">
-      <div className="row">
-      <label className="col-xs-4">Field Name</label>
-      <div className="col-xs-8">
-      <select className="form-control input-sm" name = "input_type" selected={this.state.select_value} onChange={this.handleSelectChange} className="form-control">
-      {options}
-      </select>
-      </div>
-      </div>
-      </div>
+	{fieldname_select}
       <div className="form-group">
       <div className="row">
       <label className="col-xs-4">Feedback Type</label>
@@ -360,13 +379,68 @@ var FeedbackPanelRow = React.createClass({
     }
   });
 
+var FeedbackSummaryPanel = React.createClass({
+    getInitialState: function(){
+	return{
+	    summary: null
+	}
+    },
+    render: function(){
+	if(this.props.summary_data){
+	    var summary_rows = this.props.summary_data.map(function(row){
+		return <tr>
+		<td>{row.QC_Class}</td>
+		<td><a href={"main.php?test_name=" + row.Instrument + "&candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID}>{row.Instrument}</a></td>
+		<td><a href={"main.php?test_name=instrument_list&candID=" + row.CandID + "&sessionID="
+		+ row.SessionID}>{row.Visit}</a></td>
+		<td>{row.No_Threads}</td>
+		</tr>
+	    });
+	}
+	console.log("summary rows below");
+	console.log(summary_rows);
+	if (!(summary_rows === undefined || summary_rows.length == 0)){
+	    console.log("summary data props below");
+	    console.log(this.props.summary_data);
+	    console.log("summary_row below");
+	    console.log(summary_rows);
+	return <div className="panel-body">
+	<table className = "table table-hover table-primary table-bordered dynamictable">
+	<thead>
+	<tr className="info">
+	<th nowrap="nowrap">QC Class</th>
+
+        <th nowrap="nowrap">Instrument</th>
+
+       <th nowrap="nowrap">Visit</th>
+
+        <th nowrap="nowrap"># Threads</th>
+	</tr>	
+	</thead>
+	<tbody>
+	{summary_rows}
+	</tbody>
+	</table>
+	    </div>
+	}
+	else{
+	    return <div className="panel-body">
+	    This candidate has no behavioural feedback.
+	    </div>
+	}
+    }
+});
+
   var FeedbackPanel = React.createClass({
     getInitialState: function(){
       return {
-        threads: '',
+          threads: '',
+	  summary: null
       }
     },
-    componentDidMount: function(){
+      componentDidMount: function(){
+	  this.loadSummaryServerData();
+	  
       var that = this;
       request = $.ajax({
         type: "POST",
@@ -389,7 +463,31 @@ var FeedbackPanelRow = React.createClass({
           console.log("Details: " + desc + "\nError:" + err);
         }
       });
-      },
+    },
+         loadSummaryServerData: function(){
+	var that = this;
+
+	request = $.ajax({
+	    type:"POST",
+	    url: "ajax/get_bvl_feedback_summary.php",
+	    data:{
+		"candID": this.props.candID,
+		"sessionID" : this.props.sessionID,
+		"commentID" : this.props.commentID,
+	    },
+        success: function (data){
+	    that.setState(
+	    {
+		summary:data
+	    }
+	    );
+        },
+        error: function (xhr, desc, err){
+          console.log(xhr);
+          console.log("Details: " + desc + "\nError:" + err);
+        }	    
+	});
+    },
       loadThreadServerState: function(){
         var that = this;
         request = $.ajax({
@@ -407,6 +505,7 @@ var FeedbackPanelRow = React.createClass({
             that.setState({
               threads: state
             })
+	      that.loadSummaryServerData();
           },
           error: function (xhr, desc, err){
             console.log(xhr);
@@ -421,27 +520,71 @@ var FeedbackPanelRow = React.createClass({
         var threads = this.state.threads;
         var entry = this.state.threads[index];
         console.log(entry);
-        threads.splice(index, 1);
+          threads.splice(index, 1);
+	  var feedbackID = entry.FeedbackID;
+	  console.log("feedbackid" + feedbackID);
         entry.QC_status = 'closed';
 
-        threads.push(entry);
+          threads.push(entry);
 
-        this.setState({
+	  var that = this;
+
+	request = $.ajax({
+	    type:"POST",
+	    url: "ajax/close_bvl_feedback_thread.php",
+	    data:{
+		"candID": this.props.candID,
+		"feedbackID" : feedbackID
+	    },
+        success: function (data){
+	    console.log("in the success function of the open thread")
+	            that.setState({
           threads: threads
-        });
+		    });
+	    that.loadSummaryServerData();
+        },
+        error: function (xhr, desc, err){
+          console.log(xhr);
+          console.log("Details: " + desc + "\nError:" + err);
+        }	    
+	});
+
+
       },
       markThreadOpened: function(index) {
         console.log("in mark thread opened");
         var threads = this.state.threads;
         var entry = this.state.threads[index];
         threads.splice(index, 1);
-        entry.QC_status = 'opened';
+	  var feedbackID = entry.FeedbackID;
+
+	  entry.QC_status = 'opened';
 
         threads.unshift(entry);
 
-        this.setState({
+	  var that = this;
+	  
+	request = $.ajax({
+	    type:"POST",
+	    url: "ajax/open_bvl_feedback_thread.php",
+	    data:{
+		"candID": this.props.candID,
+		"feedbackID" : feedbackID
+	    },
+        success: function (data){
+	    console.log("in the success function of the open thread")
+	            that.setState({
           threads: threads
-        });
+		    });
+	    that.loadSummaryServerData();
+        },
+        error: function (xhr, desc, err){
+          console.log(xhr);
+          console.log("Details: " + desc + "\nError:" + err);
+        }	    
+	});
+
+	  
       },
       markCommentToggle: function(index) {
 
@@ -460,19 +603,20 @@ var FeedbackPanelRow = React.createClass({
     render: function(){
       title = "New " + this.props.feedback_level + " level feedback";
       return (
-        <SliderPanel>
-        <AccordionPanel title={title}>
-                      <NewThreadPanel select_options={this.props.select_options} feedback_level={this.props.feedback_level} candID={this.props.candID}
-                      sessionID={this.props.sessionID} commentID={this.props.commentID} addThread={this.addThread} feedback_types={this.props.feedback_types}></NewThreadPanel>
+          <SliderPanel pscid={this.props.pscid}>
+          <AccordionPanel title="Open Thread Summary">
+	  <FeedbackSummaryPanel summary_data={this.state.summary}/>
         </AccordionPanel>
-        <div className="panel-group" id="accordion">
-        <div className="panel panel-default" id="panel1">
-        <div className="panel-heading">
-        <h4 className="panel-title">Feedback thread</h4>
-        </div>
-        <FeedbackPanelContent threads={this.state.threads} close_thread={this.markThreadClosed} open_thread={this.markThreadOpened} feedback_level={this.props.feedback_level} candID={this.props.candID} sessionID={this.props.sessionID} commentID={this.props.commentID}/>
-        </div>
-        </div>
+        <AccordionPanel title={title}>
+          <NewThreadPanel select_options={this.props.select_options} feedback_level={this.props.feedback_level}
+	  candID={this.props.candID}
+          sessionID={this.props.sessionID} commentID={this.props.commentID} addThread={this.addThread}
+	  updateSummaryThread={this.loadSummaryServerData} feedback_types={this.props.feedback_types}></NewThreadPanel>
+        </AccordionPanel>
+        <AccordionPanel title="Feedback Threads">
+          <FeedbackPanelContent threads={this.state.threads} close_thread={this.markThreadClosed} open_thread={this.markThreadOpened} feedback_level={this.props.feedback_level}
+	  candID={this.props.candID} sessionID={this.props.sessionID} commentID={this.props.commentID}/>
+        </AccordionPanel>
         </SliderPanel>
       );
     }

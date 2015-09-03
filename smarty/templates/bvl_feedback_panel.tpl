@@ -187,6 +187,7 @@
 
 var feedback_level = {$feedback_level|@json_encode};
 var candID = {$candID|@json_encode};
+var PSCID = {$pscid|@json_encode};
 var sessionID = {$sessionID|@json_encode};
 var commentID = {$commentID|@json_encode};
 var select_option = {$FieldNames};
@@ -195,6 +196,7 @@ var feedback_types = {$feedback_types|@json_encode}
 var bvl_panel = BehaviouralFeedbackPanel({
 	feedback_level : feedback_level,
 	candID : candID,
+	pscid: PSCID,
 	sessionID : sessionID,
 	commentID : commentID,
   select_options: select_option,
