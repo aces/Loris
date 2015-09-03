@@ -6,7 +6,7 @@
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
         <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
         <script src="{$baseurl}/js/modernizr.min.js" type="text/javascript"></script>
-        <script src="{$baseurl}/js/react-with-addons-0.13.3.js" type="text/javascript"></script>
+        <script src="{$baseurl}/js/react-with-addons-0.13.3.min.js" type="text/javascript"></script>
         <script src="{$baseurl}/js/components/PaginationLinks.js" type="text/javascript"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery.dynamictable.js"></script>
@@ -204,11 +204,19 @@
                                     <ul class="dropdown-menu">
                                         {foreach from=$tab.subtabs item=mySubtab}
                                             {if $mySubtab.Visible == 1}
-                                            <li>
+                                                {if substr($mySubtab.Link,0,4) eq 'http'}
+                                                    <li>
+                                                        <a href="{$mySubtab.Link}">
+                                                            {$mySubtab.Label}
+                                                        </a>
+                                                    </li>
+                                                {else}
+                                                    <li>
                                                         <a href="{$baseurl}/{$mySubtab.Link}">
                                                             {$mySubtab.Label}
                                                         </a>
-                                            </li>
+                                                    </li>
+                                                {/if}
                                             {/if}
                                         {/foreach}
                                     </ul>
@@ -220,7 +228,7 @@
                         {if $bvl_feedback}
                         <li class="hidden-xs hidden-sm">
                             {*<a href="#" class="navbar-brand pull-right" id ="bvl_feedback">*}
-                            <a id="feedback_toggle" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
+                            <a class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
                             {*<a href="#" onclick="FeedbackButtonClicked()" class="navbar-brand pull-right" id ="bvl_feedback">*}
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
@@ -274,7 +282,8 @@
                     </div>
 		    {/if}
                     <!--    Want to wrap page content only when sidebar is in view
-                            if not then just put page content in the div #page    -->
+
+                    if not then just put page content in the div #page    -->
         <div id="page-content-wrapper">
             {/if}
             {if $dynamictabs eq "dynamictabs"}
@@ -563,7 +572,8 @@
 
 
             <!-- </div> -->
-            </div>
+	</div>
+
             {else}
                 {$workspace}
             {/if}

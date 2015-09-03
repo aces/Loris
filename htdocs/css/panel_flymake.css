@@ -5,6 +5,33 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     color: #fff;
 }
 
+.example-enter {
+  opacity: 0.01;
+  transition: opacity .5s ease-in;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+}
+
+.example-leave {
+  opacity: 1;
+  transition: opacity .5s ease-in;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+}
+
+.thread_entry{
+    background-color: rgba(221, 221, 221, 0.25)
+}
+
+.glyphs:before{
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
 .breadcrumb-panel{
     background-color: #064785;
     color: #fff;
@@ -58,7 +85,7 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 }
 
 .navmenu{
-    width: 500px; 
+    width: 500px;
     position: fixed;
     z-index: 1040;
     top: 0;
@@ -105,16 +132,20 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
 .feedback_entries_body{
     border-style: solid;
     border-style-top: none;
-    
+
 }
 
 .feedback_entries{
     color: #ffffff;
-    background-color: rgb(28, 112, 182);    
+    background-color: rgb(28, 112, 182);
 }
 
 .feedback_entries:hover{
     color: #000000;
+}
+
+.hide_sidebar{
+    left: 0;
 }
 
 @media (max-width:884px){
@@ -126,5 +157,5 @@ Author: Evan McIlroy <evanmcilroy@gmail.com>*/
     .panel-wrapper{
 	right: 0px;
     }
-      
+
 }

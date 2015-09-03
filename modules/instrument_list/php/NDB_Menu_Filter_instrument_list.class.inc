@@ -177,7 +177,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 
     function getFeedbackPanel()
     {
-        $feedbackPanel = new Instrument_List_FeedbackPanel($_REQUEST['candID'], $_REQUEST['sessionID']);
+        $feedbackPanel = new bvl_feedback_panel($_REQUEST['candID'], $_REQUEST['sessionID']);
         $html =  $feedbackPanel->display();
         return $html;
     }
