@@ -178,12 +178,9 @@
 </div><!-- /panel -->
 </body>
 
-<script type="text/jsx" src="js/jsx/behavioural_feedback_panel.jsx"></script>
+<script type="text/javascript" src="js/jsx/Behavioural_feedback_panel.js"></script>
 
-<script type="text/jsx">
-
-{*var feedback_level = {$feedback_level|@json_encode};*}
-{*feedback_level = JSON.parse(feedback_level);*}
+<script type="text/javascript">
 
 var feedback_level = {$feedback_level|@json_encode};
 var candID = {$candID|@json_encode};
@@ -193,15 +190,17 @@ var commentID = {$commentID|@json_encode};
 var select_option = {$FieldNames};
 var feedback_types = {$feedback_types|@json_encode}
 
-var bvl_panel = BehaviouralFeedbackPanel({
-	feedback_level : feedback_level,
-	candID : candID,
-	pscid: PSCID,
-	sessionID : sessionID,
-	commentID : commentID,
-  select_options: select_option,
-  feedback_types: feedback_types
-});
-
+  
+  
+  var bvl_panel = BehaviouralFeedbackPanel({
+	  feedback_level : feedback_level,
+	  candID : candID,
+	  pscid: PSCID,
+	  sessionID : sessionID,
+	  commentID : commentID,
+	  select_options: select_option,
+	  feedback_types: feedback_types
+  });
+  
 React.render(bvl_panel, document.getElementById("subby"));
 </script>
