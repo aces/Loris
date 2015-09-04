@@ -346,8 +346,9 @@ var dataTeamGraphics = React.createClass({
 			    <div className="panel-heading">
 			      At A Glance
 			    </div>
+                  <div className="panel-body">
 			    <div id="completedChart"></div>
-			    
+                      </div>
 			  </div>
 			</div>
 		);

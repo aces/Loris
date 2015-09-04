@@ -56,7 +56,7 @@
 						</div>					
 					</div>
 					<div class="row">
-						<div id="selction-ajax" class="col-sm-8 col-md-offset-4"></div>
+						<div id="selction-ajax" class="col-sm-12 col-md-offset-2"></div>
 					</div>
 					<div class="row">
 						<div class="form-group col-xs-12">
