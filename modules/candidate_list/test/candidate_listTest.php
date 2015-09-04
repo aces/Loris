@@ -26,11 +26,6 @@ require_once __DIR__
  */
 class CandidateListTestIntegrationTest extends LorisIntegrationTest
 {
-    private $_useEDCId;
-    private $_useEDCBackup;
-    private $_useProjectsId;
-    private $_useProjectsBackup;
-
     /**
      * Backs up the useEDC config value and sets the value to a known
      * value (true) for testing.
@@ -41,22 +36,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
 
-        $this->_useEDCId = $this->DB->pselectOne(
-            "SELECT ID FROM ConfigSettings WHERE NAME=:useEDC",
-            array(":useEDC" => "useEDC")
-        );
-
-        $this->_useEDCBackup = $this->DB->pselectOne(
-            "SELECT Value FROM Config WHERE ConfigID=:useEDC",
-            array(":useEDC" => $this->_useEDCId)
-        );
-
-        $this->DB->update(
-            "Config",
-            array("Value" => "true"),
-            array("ConfigID" => $this->_useEDCId)
-        );
-
+        $this->setupConfigSetting("useEDC", "true");
     }
 
     /**
@@ -66,16 +46,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      */
     function tearDown()
     {
-        $this->_useEDCBackup = $this->DB->pselectOne(
-            "SELECT Value FROM Config WHERE ConfigID=:useEDC",
-            array(":useEDC" => $this->_useEDCId)
-        );
-        $this->DB->update(
-            "Config",
-            array("Value" => $this->_useEDCBackup),
-            array("ConfigID" => $this->_useEDCId)
-        );
         parent::tearDown();
+        $this->restoreConfigSetting("useEDC");
     }
     /**
      * Tests that, when loading the candidate_list module, the breadcrumb
