@@ -431,7 +431,7 @@ var FeedbackSummaryPanel = React.createClass({
     }
 });
 
-  var FeedbackPanel = React.createClass({
+   FeedbackPanel = React.createClass({
     getInitialState: function(){
       return {
           threads: '',
@@ -622,4 +622,4 @@ var FeedbackSummaryPanel = React.createClass({
     }
   });
 
-  BehaviouralFeedbackPanel = React.createFactory(FeedbackPanel);
+  RBehaviouralFeedbackPanel = React.createFactory(FeedbackPanel);
