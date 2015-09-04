@@ -216,6 +216,27 @@ class NDB_Page
     }
 
     /**
+     * Wrapper to create a checkbox
+     *
+     * @param string $name     The field name of this checkbox
+     * @param string $label    The label to attach to this checkbox
+     * @param array  $options  Options to pass to QuickForm for this
+     *                         checkbox
+     * @param array  $optional Optional extra HTML attributes to add
+     *                         to the checkbox
+     *
+     * @return none
+     */
+    function addCheckbox($name, $label, $options, $optional=array())
+    {
+        $optional = array_merge(
+            array('class' => 'form-control input-sm'),
+            $optional
+        );
+        $this->form->addElement('checkbox', $name, $label, $options, $optional);
+    }
+
+    /**
      * Adds a hidden element to the current page. Note if the hidden element
      * needs a value it should be added to the defaults.
      *
@@ -277,6 +298,27 @@ class NDB_Page
         $attr=array('class' => 'form-control input-sm')
     ) {
         $this->form->addElement('password', $field, $label, $attr);
+    }
+
+    /**
+     * Creates an HTML checkbox and adds it to the current form.
+     *
+     * @param string $field   The fieldname for this checkbox
+     * @param string $label   The label to attach to this checkbox
+     * @param string $options Options to pass to HTML_QuickForm
+     * @param string $closer  ?????
+     *
+     * @return none
+     */
+    function addCheckbox($field, $label, $options=array(), $closer='</label>')
+    {
+        $this->form->addElement(
+            "advcheckbox",
+            $field,
+            $label,
+            $options,
+            array()
+        );
     }
 
     /**

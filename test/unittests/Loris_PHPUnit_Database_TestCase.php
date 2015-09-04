@@ -60,6 +60,29 @@ abstract class Loris_PHPUnit_Database_TestCase extends
     protected $database;
 
     /**
+     * Setup test
+     * Checks if tests are run on sandbox, otherwise skips them.
+     * Some of these tests may be destructive therefore should never be
+     * run in production
+     *
+     * @throws Exception
+     * @return void
+     */
+    protected function setUp()
+    {
+        $this->factory = NDB_Factory::singleton();
+
+        //if not in sandbox mode do not run tests
+        if (!$this->factory->settings(CONFIG_XML)->isSandbox()) {
+            $this->markTestSkipped(
+                "You are not in 'sandbox' mode.
+                This is a destructive test, it will be skipped!"
+            );
+        }
+        parent::setUp();
+    }
+
+    /**
      * Get database connection which will be used by PHPUnit
      * for clean-up and fixture loading into the test DB.
      *
@@ -68,16 +91,14 @@ abstract class Loris_PHPUnit_Database_TestCase extends
     final public function getConnection()
     {
         $this->factory = NDB_Factory::singleton();
-        $this->config  = $this->factory->Config(CONFIG_XML);
-
-        $database = $this->config->getSetting('database');
 
         if ($this->_conn === null) {
             if (self::$_pdo == null) {
                 self::$_pdo = new PDO(
-                    'mysql:dbname='.$database['database'].';host='.$database['host'],
-                    $database['username'],
-                    $database['password']
+                    'mysql:dbname='.$this->factory->settings()->dbName().';
+                    host='.$this->factory->settings()->dbHost(),
+                    $this->factory->settings()->dbUserName(),
+                    $this->factory->settings()->dbPassword()
                 );
             }
             $this->_conn = $this->createDefaultDBConnection(self::$_pdo);
@@ -94,12 +115,11 @@ abstract class Loris_PHPUnit_Database_TestCase extends
      */
     protected function createLorisDBConnection()
     {
-        $database       = $this->config->getSetting('database');
         $this->database = Database::singleton(
-            $database['database'],
-            $database['username'],
-            $database['password'],
-            $database['host']
+            $this->factory->settings()->dbName(),
+            $this->factory->settings()->dbUserName(),
+            $this->factory->settings()->dbPassword(),
+            $this->factory->settings()->dbHost()
         );
     }
 

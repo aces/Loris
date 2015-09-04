@@ -44,11 +44,19 @@ class NDB_Factory
     private static $_config = null;
 
     /**
+     * Settings object
+     * A proxy to NDB_Config
+     *
+     * @var Settings object
+     */
+    private static $_settings = null;
+
+    /**
      * Sets whether the factory should return real objects or testing objects
      *
      * @param boolean $val Whether testing should be enabled
      *
-     * @return none
+     * @return void
      */
     function setTesting($val)
     {
@@ -75,7 +83,7 @@ class NDB_Factory
      * Reset all of the private variables of the factory to the default
      * state. Used between testing runs.
      *
-     * @return none
+     * @return void
      */
     function reset()
     {
@@ -86,6 +94,8 @@ class NDB_Factory
         self::$_user    = null;
 
         self::$_config = null;
+
+        self::$_settings = null;
     }
 
     /**
@@ -250,6 +260,22 @@ class NDB_Factory
     {
         self::$_couchdb = $couchDB;
         return $couchDB;
+    }
+
+    /**
+     * Returns a singleton settings object
+     *
+     * @param string $configfile Location of XML file to parse config from
+     *
+     * @return Settings setting object
+     */
+    public function settings($configfile = "../project/config.xml")
+    {
+        if (self::$_settings !== null) {
+            return self::$_settings;
+        }
+        self::$_settings = new Settings($this->config($configfile));
+        return self::$_settings;
     }
 }
 ?>
