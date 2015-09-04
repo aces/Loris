@@ -1195,18 +1195,19 @@ class Utility extends PEAR
     */
     static function arrayToCSV($array)
     {
-        $csv = '';
-        foreach ($array['headers'] as $header) {
-            $csv .= ucwords(str_replace('_', ' ', $header)) . ",";
-        }
-        $csv = substr_replace($csv, "\n", -1);
+        $fp = fopen("php://temp", 'w+');
+
+        fputcsv($fp, $array['headers']);
         foreach ($array['data'] as $item) {
-            foreach ($item as $colm) {
-                $csv .= $colm . ",";
-            }
-            $csv = substr_replace($csv, "\n", -1);
+            fputcsv($fp, $item);
         }
-        return $csv;
+
+        // Read what we have written.
+        rewind($fp);
+        $csv_string = stream_get_contents($fp);
+
+        fclose($fp);
+        return $csv_string;
     }
 }
 ?>
