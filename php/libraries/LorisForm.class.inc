@@ -503,14 +503,22 @@ class LorisForm
      */
     function dateHTML($el)
     {
-        $cls = '';
+        $cls     = '';
+        $minYear = '';
+        $maxYear = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['options']['minYear'])) {
+            $minYear = "min=\"" . $el['options']['minYear'] . "-01-01\"";
+        }
+        if (isset($el['options']['maxYear'])) {
+            $maxYear = "max=\"" . $el['options']['maxYear'] . "-12-31\"";
         }
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
         $value    = $this->getValue($el['name']);
-        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls"
+        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear"
             . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
