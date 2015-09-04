@@ -233,7 +233,7 @@ class NDB_Page
             array('class' => 'form-control input-sm'),
             $optional
         );
-        $this->form->addElement('checkbox', $name, $label, $options, $optional);
+        $this->form->addElement('advcheckbox', $name, $label, $options, $optional);
     }
 
     /**
@@ -298,27 +298,6 @@ class NDB_Page
         $attr=array('class' => 'form-control input-sm')
     ) {
         $this->form->addElement('password', $field, $label, $attr);
-    }
-
-    /**
-     * Creates an HTML checkbox and adds it to the current form.
-     *
-     * @param string $field   The fieldname for this checkbox
-     * @param string $label   The label to attach to this checkbox
-     * @param string $options Options to pass to HTML_QuickForm
-     * @param string $closer  ?????
-     *
-     * @return none
-     */
-    function addCheckbox($field, $label, $options=array(), $closer='</label>')
-    {
-        $this->form->addElement(
-            "advcheckbox",
-            $field,
-            $label,
-            $options,
-            array()
-        );
     }
 
     /**
