@@ -100,4 +100,14 @@ $(document).ready(function() {
         checkAccessProfileForm();
     })
 
+
+    $('table#cand tr').click(function(){
+        location.href = $(this).find('td a#pscid').attr('href');
+    });
+
+    $('table#cand a.scanDoneLink').click(function(e) {
+        e.stopImmediatePropagation();
+    });
+
+
 });

@@ -240,7 +240,8 @@
     </thead>
     <tbody>
         {section name=item loop=$items}
-            <tr>
+		<!-- clicking row takes you to the candidate page --> 
+		<tr class="clickable_row">
             <!-- print out data rows -->
             {section name=piece loop=$items[item]}
                 {if $items[item][piece].bgcolor != ''}
@@ -250,7 +251,7 @@
                 {/if}
                 {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
                     {assign var="PSCID" value=$items[item][piece].value}
-                    <a href="{$baseurl}/main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
+                    <a href="{$baseurl}/main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}" id="pscid">{$items[item][piece].value}</a>
                 {elseif $items[item][piece].name == "scan_Done"}
                     {if $items[item][piece].value == 'Y'}
                         {assign var="scan_done" value="Yes"}
