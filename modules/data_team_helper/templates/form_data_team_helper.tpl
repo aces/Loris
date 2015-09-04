@@ -17,8 +17,8 @@
 				<form method="post">
 					<div class="row">
 						<div class="form-group col-sm-6">
-							<label class="col-sm-12 col-md-6">Visit Labels:</label>
-							<div class="col-sm-12 col-md-6">
+							<label class="col-sm-12 col-md-4">Visit Labels:</label>
+							<div class="col-sm-12 col-md-8">
 								<select name="visit_label" onchange="changefieldOptions()" id="visit_label" class="form-control input-sm">
 									<option value="All Visits" selected="selected">All Visits</option>
 									{foreach from=$visitLabels item=name key=val}
@@ -34,7 +34,7 @@
 
 						<div class="form-group col-sm-6">
 							<label class="col-sm-12 col-md-4">Instruments:</label>
-							<div class="col-xs-6 col-md-8">
+							<div class="col-sm-12 col-md-8">
 								<select name="instrument" id="instrument" class="form-control input-sm">
 									<option value="{$instrumentvalue}" selected="selected">{$instrumentvalue}></option>
 								</select>
@@ -43,15 +43,14 @@
 					</div>	
 					<div class ="row">
 						<div class ="form-group col-sm-6">
-							<label class ="col-sm-12 col-md-6">DCCID:</label>
-							<div class="col-sm-12 col-md-6">
-								<input name = "candidate" type="text" id="autocomplete-ajax" class="form-control form-autocomplete"/>
-								<input type="text" id="autocomplete-ajax-x" class="form-control form-autocomplete-hint">													
-							</div>							
-						</div>					
+							<label class ="col-sm-12 col-md-4">DCCID:</label>
+							<div class="col-sm-12 col-md-8">
+								<input name = "candidate" type="text" id="autocomplete-ajax" class="form-control"/>
+							</div>
+						</div>
 						<div class ="form-group col-sm-6">
 							<label class ="col-sm-12 col-md-4">PSCID:</label>
-							<div class="col-xs-6 col-md-8">
+							<div class="col-sm-12 col-md-8">
 								<input name = "PSCID" type="text" class="form-control"/>
 							</div>							
 						</div>					
