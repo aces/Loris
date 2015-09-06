@@ -29,7 +29,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-
                     <label class="col-sm-12 col-md-4">Use <abbr title="Expect Date of Confinement (ie. baby's due date)">EDC</abbr></label>
                     <div class="col-sm-12 col-md-8">
                         {html_options options=$useEDCOptions name="useEDC" selected=$subproject.options.useEDC class="form-control subprojectuseEDC"}
@@ -42,13 +41,18 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-sm-12 col-md-4">Recruitment Target:</label>
+                    <div class="col-sm-12 col-md-8">
+                        <input class="form-control subprojectRecruitmentTarget" name="target" placeholder="Please add a recruitment target here" value="{$subproject.RecruitmentTarget}">
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="col-sm-offset-4 col-sm-8 submit-area">
                         <button id="savesubproject{$subprojectID}" class="btn btn-primary savesubproject">Save</button>
                         <button class="btn btn-default" type="reset">Reset</button>
                         <label class="saveStatus"></label>
                     </div>
                 </div>
-
             </fieldset>
         </form>
     </div>
@@ -66,7 +70,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-
                     <label class="col-sm-12 col-md-4">Use <abbr title="Expect Date of Confinement (ie. baby's due date)">EDC</abbr></label>
                     <div class="col-sm-12 col-md-8">
                         {html_options options=$useEDCOptions name="useEDC" selected="Yes" class="form-control subprojectuseEDC"}
@@ -79,13 +82,18 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-sm-12 col-md-4">Recruitment Target:</label>
+                    <div class="col-sm-12 col-md-8">
+                        <input class="form-control subprojectRecruitmentTarget" name="target" placeholder="Please add a recruitment target here" value="">
+                    </div>
+                </div>
+                <div class="form-group">
                     <div class="col-sm-offset-4 col-sm-8 submit-area">
                         <button id="savesubprojectnew" class="btn btn-primary savesubproject">Save</button>
                         <button class="btn btn-default" type="reset">Reset</button>
                         <label class="saveStatus"></label>
                     </div>
                 </div>
-
             </fieldset>
         </form>
     </div>

@@ -90,7 +90,7 @@ Class TimePoint
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
                 unset($timePointList[$sessionID]);
-                throw new Exception("Could not select timepoint", null, $e);
+                throw $e;
             }
         }
 
