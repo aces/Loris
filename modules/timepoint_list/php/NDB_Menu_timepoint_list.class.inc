@@ -1,7 +1,6 @@
 <?php
 require_once 'NDB_Menu.class.inc';
 require_once 'TimePoint_List_ControlPanel.class.inc';
-require_once 'TimePoint_List_FeedbackPanel.class.inc';
 
 /**
  * The timepoint list menu
