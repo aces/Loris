@@ -435,13 +435,17 @@ class NDB_Config
             return null;
         }
         // Format the results the same way it was formatted in config.xml
+        // This variable assignment was done for phpcs... if anyone figures out
+        // a way around this, please correct it
+        $x = $info['WindowDifference'];
         return array(
-                'id'      => $info['SubprojectID'],
-                'title'   => $info['title'],
-                'options' => array(
-                              'useEDC'           => $info['useEDC'],
-                              'WindowDifference' => $info['WindowDifference'],
-                             ),
+                'id'                => $info['SubprojectID'],
+                'title'             => $info['title'],
+                'options'           => array(
+                                        'useEDC'           => $info['useEDC'],
+                                        'WindowDifference' => $x,
+                                       ),
+                'RecruitmentTarget' => $info['RecruitmentTarget'],
                );
     }
 
