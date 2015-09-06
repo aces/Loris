@@ -1,4 +1,4 @@
-pfSubject: Account Changes - {$study}
+Subject: Account Changes - {$study}
 
 {$realname},
 
