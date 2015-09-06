@@ -233,7 +233,7 @@ class NDB_Page
             array('class' => 'form-control input-sm'),
             $optional
         );
-        $this->form->addElement('checkbox', $name, $label, $options, $optional);
+        $this->form->addElement('advcheckbox', $name, $label, $options, $optional);
     }
 
     /**

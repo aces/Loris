@@ -119,10 +119,12 @@ $paths = $config->getSetting('paths');
 
 if (!empty($TestName)) {
     if (file_exists($paths['base'] . "modules/$TestName/js/$TestName.js")) {
-        if (strpos($_SERVER['REQUEST_URI'], "main.php") === false) {
-            $tpl_data['test_name_js'] = "js/$TestName.js";
+        if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
+            && strcmp($_SERVER['REQUEST_URI'], '/') != 0
+        ) {
+              $tpl_data['test_name_js'] = "js/$TestName.js";
         } else {
-            $tpl_data['test_name_js'] = "GetJS.php?Module=$TestName";
+              $tpl_data['test_name_js'] = "GetJS.php?Module=$TestName";
         }
     } elseif (file_exists($paths['base'] . "htdocs/js/modules/$TestName.js")) {
         // Old style, this should be removed after all modules are modularized.
@@ -131,10 +133,12 @@ if (!empty($TestName)) {
 
     // Get CSS for a module
     if (file_exists($paths['base'] . "modules/$TestName/css/$TestName.css")) {
-        if (strpos($_SERVER['REQUEST_URI'], "main.php") === false) {
-            $tpl_data['test_name_css'] = "css/$TestName";
+        if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
+            && strcmp($_SERVER['REQUEST_URI'], '/') != 0
+        ) {
+              $tpl_data['test_name_css'] = "css/$TestName";
         } else {
-            $tpl_data['test_name_css'] = "GetCSS.php?Module=$TestName";
+              $tpl_data['test_name_css'] = "GetCSS.php?Module=$TestName";
         }
     }
 

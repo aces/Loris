@@ -59,7 +59,7 @@
                     </div>
                     <div class="col-md-4">
                         <label>
-                            <input type="checkbox" name="addRadiologist" value="1"> Radiologist
+                            {$form.addRadiologist.html}
                         </label>
                     </div>
                 </div>

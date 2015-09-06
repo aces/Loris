@@ -245,6 +245,57 @@ class NDB_BVL_Feedback
         return $list;
     }
 
+
+    /**
+     * Get feedback type id given the feedback type name
+     *
+     * @param string $name feedback type name
+     *
+     * @return int feedback type id, empty array if none found
+     */
+    public function getFeedbackTypeIdByName($name)
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->Database();
+
+        $query = "SELECT  `Feedback_type`
+                    FROM  `feedback_bvl_type`
+                    WHERE  `Name` =  :name ";
+
+        return $db->pselectOne($query, array(':name' => $name));
+    }
+
+    /**
+     * Create new feedback type
+     *
+     * @param string $name        feedback type name
+     * @param string $description feedback type description
+     *
+     * @return int feedback type id
+     * @throws DatabaseException
+     * @throws LorisException
+     */
+    public function createFeedbackType($name, $description = null)
+    {
+        if (empty($name) || strlen($name)>100 ) {
+            throw new LorisException("Invalid feedback type name");
+        }
+
+        if (empty($description)) {
+            $description = null;
+        }
+
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->Database();
+
+        $values = array(
+                   'Name'        => $name,
+                   'Description' => $description,
+                  );
+        $db->insert("feedback_bvl_type", $values);
+        return $db->getLastInsertId();
+    }
+
     /**
      * Returns a type of the thread identified by the FeedbackID
      *

@@ -313,13 +313,18 @@ function addInstrument($sessionID, $testName)
      */
     // feedback object
     print $user->getUsername();
-    $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), null, $sessionID, $commentID);
-    if (PEAR::isError($feedback)) {
-        return PEAR::raiseError("Failed to create feedback object: " . $feedback->getMessage());
+    $feedback = NDB_BVL_Feedback::singleton($user->getUsername(), null, $sessionID);
+
+    //get thread feedback type
+    $threadFeedbackType = $feedback->getFeedbackTypeIdByName('other');
+    if (empty($threadFeedbackType))
+    {
+        //create thread feedback type "Other", if it does not exist
+        $threadFeedbackType = $feedback->createFeedbackType("Other", "Other");
     }
 
     // add the new thread
-    $success = $feedback->createThread('5', "Instrument ($testName) has been added to the battery. You may now complete data entry for this instrument. Please respond to this feedback to acknowledge the changes.", 'Y');
+    $success = $feedback->createThread('instrument', $threadFeedbackType, "Instrument ($testName) has been added to the battery. You may now complete data entry for this instrument. Please respond to this feedback to acknowledge the changes.", 'Y');
     if (PEAR::isError($success)) {
         return PEAR::raiseError("Failed to create feedback: ". $success->getMessage());
     }
@@ -409,7 +414,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         }
         
         // add the new thread
-        $success = $feedback->createThread('5', "The date of $dateType has been changed to $newDate.", 'N');
+        $success = $feedback->createThread('profile', '5', "The date of $dateType has been changed to $newDate.", 'N');
         if (PEAR::isError($success)) {
         	return PEAR::raiseError("Failed to create feedback: ". $success->getMessage());
         }
@@ -460,7 +465,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         }
         
         // add the new thread
-        $success = $feedback->createThread('5', "The date of $dateType has been changed to $newDate.", 'N');
+        $success = $feedback->createThread('session', '5', "The date of $dateType has been changed to $newDate.", 'N');
         if (PEAR::isError($success)) {
         	return PEAR::raiseError("Failed to create feedback: ". $success->getMessage());
         }

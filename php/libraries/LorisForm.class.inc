@@ -62,6 +62,9 @@ class LorisForm
         if (isset($attribs['onchange'])) {
             $el['onchange'] = $attribs['onchange'];
         }
+        if (isset($attribs['value'])) {
+            $el['value'] = $attribs['value'];
+        }
         return $el;
     }
     /**
@@ -223,6 +226,23 @@ class LorisForm
     }
 
     /**
+     * Adds a checkobox to the current form.
+     *
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $options An array of other attributes that should
+     *                        get added. Currently only the "value"
+     *                        attribute gets added.
+     *
+     * @return none, modifies $this->form as a side-effect.
+     */
+    function addCheckbox($name, $label, $options)
+    {
+        $el         =& $this->addBase($name, $label, $options);
+        $el['type'] = 'advcheckbox';
+    }
+
+    /**
      * Adds a header element to this LorisForm.
      *
      * @param string $name    The name of the header element, may be null
@@ -303,6 +323,9 @@ class LorisForm
             break;
         case 'header':
             $el = $this->addHeader($name, $label);
+            break;
+        case 'advcheckbox':
+            $el = $this->addCheckbox($name, $label, $options);
             break;
         case 'text':
         default:
@@ -480,14 +503,22 @@ class LorisForm
      */
     function dateHTML($el)
     {
-        $cls = '';
+        $cls     = '';
+        $minYear = '';
+        $maxYear = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['options']['minYear'])) {
+            $minYear = "min=\"" . $el['options']['minYear'] . "-01-01\"";
+        }
+        if (isset($el['options']['maxYear'])) {
+            $maxYear = "max=\"" . $el['options']['maxYear'] . "-12-31\"";
         }
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
         $value    = $this->getValue($el['name']);
-        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls"
+        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear"
             . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
@@ -788,11 +819,16 @@ class LorisForm
     function checkboxHTML($el)
     {
         $val     = $this->getValue($el['name']);
-        $checked ='';
+        $checked = '';
+        $value   = '';
         if (!empty($val)) {
             $checked = 'checked="checked"';
         }
-        return "<input name=\"$el[name]\" type=\"checkbox\" $checked /> $el[label]";
+        if (isset($el['value'])) {
+            $value = "value=\"$el[value]\"";
+        }
+        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value/>"
+            . " $el[label]";
     }
     /**
      * This is a slight difference from the HTML_QuickForm API.
