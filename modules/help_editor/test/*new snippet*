@@ -1,6 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: webdriver
-# key: C-c y w
-# binding: direct-keybinding
-# --
-WebDriverBy::cssSelector("")
