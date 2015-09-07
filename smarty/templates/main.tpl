@@ -14,7 +14,6 @@
         <script type="text/javascript" src="{$baseurl}/js/polyfiller.js"></script>
 
 {*temporary addition*}
-        <script src ="js/jasny-bootstrap-all.js"></script>
 
         <script>
             $.webshims.polyfill();
@@ -27,7 +26,6 @@
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="{$baseurl}/bootstrap/css/custom-css.css">
-        <!-- <link rel="stylesheet" href="bootstrap-3.1.1/css/magic-bootstrap.css"> -->
 
         <!-- Module-specific CSS -->
         {if $test_name_css}
