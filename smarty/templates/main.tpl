@@ -175,9 +175,7 @@
                         <img width=17 src="{$baseurl}/images/help.gif">
                     </button>
                    {if $bvl_feedback}
-                   <button type="button" class="navbar-toggle" onclick="FeedbackButtonClicked()">
-                   {*<button type="button" class="navbar-toggle">*}
-
+                   <button type="button" class="navbar-toggle">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-edit" style="color:white"></span>
                     </button>
@@ -190,6 +188,9 @@
                             <span class="glyphicon glyphicon-th-list"></span>
                         </a>
                     {/if}
+
+                   <!-- toggle feedback in mobile view -->
+
 
                     <a class="navbar-brand" href="{$baseurl}/">LORIS{if $sandbox}: DEV{/if}</a>
                </div>
@@ -227,9 +228,7 @@
                     <ul class="nav navbar-nav navbar-right" id="nav-right">
                         {if $bvl_feedback}
                         <li class="hidden-xs hidden-sm">
-                            {*<a href="#" class="navbar-brand pull-right" id ="bvl_feedback">*}
                             <a class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
-                            {*<a href="#" onclick="FeedbackButtonClicked()" class="navbar-brand pull-right" id ="bvl_feedback">*}
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
                         </li>
@@ -597,10 +596,10 @@
                             |
                         </li>
                         {foreach from=$links item=link}
-                                <li>  
+                                <li>
                                     <a href="{$link.url}" style="color: #2FA4E7" target="{$link.windowName}">
                                         {$link.label}
-                                    </a> 
+                                    </a>
                                     |
                                 </li>
                         {/foreach}

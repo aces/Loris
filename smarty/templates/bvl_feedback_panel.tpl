@@ -1,7 +1,7 @@
-<script src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+{*<script src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>*}
 <link rel="stylesheet" href="css/panel.css" type="text/css"/>
 <script src ="js/bvl_feedback_panel.js"></script>
-<link rel="stylesheet" href="css/jasny-bootstrap-all.css" type="text/css" />
+{*<link rel="stylesheet" href="css/jasny-bootstrap-all.css" type="text/css" />*}
 <meta itemprop="candID" context="{$candID}">
 <meta itemprop="sessionID" context="{$sessionID}">
 <meta itemprop="commentID" context="{$commentID}">
@@ -10,7 +10,6 @@
 
 
 
-<!-- <div class ="ui-responsive-panel" data-role="panel" id="right-panel" data-position-fixed="true" data-display="push" data-position="div"> -->
 <body>
 <div class ="panel-wrapper" id="bvl_feedback_menu">
   {*<right class="navmenu navmenu-default navmenu-fixed-right offcanvas" id="bvl_feedback_menu">*}
