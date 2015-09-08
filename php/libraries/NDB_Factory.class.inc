@@ -98,6 +98,7 @@ class NDB_Factory
         self::$config = null;
 
         self::$_settings = null;
+
         self::$_candidates = array();
         self::$_timepoints = array();
     }
