@@ -53,15 +53,12 @@ class NDB_Form_data_team_helper extends NDB_Form
     {
         //initializations
         $DB =& Database::singleton();
-        $extra_where = '';
         $conflicts = array();
         $smarty = new Smarty_neurodb();
 
         $config =& NDB_Config::singleton();
-        $study = $config->getSetting('study');
 
-        $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //converts the full_name into the test_name
-
+        $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
         //construct the instrument drop down..
         $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
         $this->tpl_data['FieldName'] = $_REQUEST['FieldName'];

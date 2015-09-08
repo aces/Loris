@@ -4,8 +4,6 @@
 
 <script src="js/d3.min.js" charset="utf-8"></script>
 <script src="js/c3.min.js"></script>
-<!-- code for the jsx transformer -->
-<script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
 
 <div class="row">
 	<div class="col-sm-12 col-md-7">
@@ -102,9 +100,9 @@
   </div>
 
 
-<script type="text/jsx" src="js/jsx/incompletes_candidates_panel.jsx"></script>
+<script type="text/javascript" src="js/jsx/data_team.js"></script>
 
-<script type="text/jsx">
+<script type="text/javascript">
 var incomplete = {$Incomplete_candidates|@json_encode};
 incomplete = JSON.parse(incomplete);
 
