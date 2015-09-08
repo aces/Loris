@@ -9,7 +9,7 @@
  * @author Evan McIlroy <evanmcilroy@gmail.com>
  * @license GNU
  */
-class BVL_Feedback_Panel extends NDB_Form
+class BVL_Feedback_Panel
 {
     var $_feedbackThread = '';
 
@@ -18,16 +18,6 @@ class BVL_Feedback_Panel extends NDB_Form
         $user =& User::singleton();
         $username = $user->getUsername();
         $this->_feedbackThread =& NDB_BVL_Feedback::Singleton($username, $candID, $sessionID, $commentID);
-    }
-
-    function hasAccess()
-    {
-
-        $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
-        return ($user->hasPermission('bvl_feedback'));
     }
 
     function display(){
