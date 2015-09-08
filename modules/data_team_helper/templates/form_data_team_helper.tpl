@@ -133,8 +133,15 @@ var FeedbackTab = BehaviouralFeedbackTab({
 });
 
 var percentCompleted = {$percent_completed|@json_encode};
+var pscid = {$candidate|@json_encode};
+var visit = {$visit_label|@json_encode};
+var instrument = {$test_name|@json_encode};
+
 var DataTeamGraphics = GraphicsPanel({
-	percentCompleted: percentCompleted
+	percentCompleted: percentCompleted,
+    pscid: pscid,
+    visit: visit,
+    instrument: instrument
 });
 	
 React.render(CandiPanel, document.getElementById("incomplete"));

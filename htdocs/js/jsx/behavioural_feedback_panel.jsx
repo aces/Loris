@@ -32,7 +32,6 @@ var FeedbackPanelContent = React.createClass({
   }
   },
   openThread(index){
-    console.log("in openThread " + " " + index)
     this.props.open_thread(index);
   },
   closeThread(index){
@@ -47,8 +46,6 @@ var FeedbackPanelContent = React.createClass({
 	}
 
     if (this.props.threads.length){
-      console.log("this props threads");
-      console.log(this.props.threads);
       var currentEntryToggled = this.state.currentEntryToggled;
 
       var that = this
@@ -147,7 +144,6 @@ var FeedbackPanelRow = React.createClass({
       "feedbackID" : feedbackID,
       "candID" : candID},
       success: function (response) {
-        console.log("new thread entry successfully added");
         that.loadServerState();
       },//end of success function
       error: function (xhr, desc, err){
@@ -175,11 +171,13 @@ var FeedbackPanelRow = React.createClass({
       var buttonText = 'closed';
       var buttonClass = 'btn btn-success dropdown-toggle btn-sm' ;
       var dropdown = <li><a onClick={this.props.onClickOpen}>Open</a></li>;
+      var commentButton = null;
     }
     else if (this.props.status == 'opened'){
       var buttonText = 'opened'
       var buttonClass = 'btn btn-danger dropdown-toggle btn-sm';
       var dropdown = <li><a onClick={this.props.onClickClose}>Close</a></li>;
+      var commentButton = <span className="glyphicon glyphicon-pencil" onClick={this.props.commentToggle}></span>;
     }
     return(
       <tbody>
@@ -198,12 +196,11 @@ var FeedbackPanelRow = React.createClass({
       </ul>
       </div>
       <span className={arrow} onClick={this.toggle_entries}></span>
-      <span className="glyphicon glyphicon-pencil" onClick={this.props.commentToggle}></span>
-
+      {commentButton}
       </td>
       </tr>
       { this.props.commentToggled ?
-        <CommentEntryForm onCommentSend={this.new_thread_entry}/>: null }
+        <CommentEntryForm user={this.props.user} onCommentSend={this.new_thread_entry} toggleThisThread={this.toggle_entries.bind(this)}/>: null }
         {threadEntries}
         </tbody>
       );
@@ -217,11 +214,11 @@ var FeedbackPanelRow = React.createClass({
       };
     },
     sendComment: function(){
-      console.log("how to send comment " + this.state.value);
       this.props.onCommentSend(this.state.value);
       this.setState({
         value: "Comment added!"
       })
+      this.props.toggleThisThread;
     },
     handleChange: function(event) {
       this.setState({value: event.target.value});
@@ -229,7 +226,7 @@ var FeedbackPanelRow = React.createClass({
     render: function(){
       var value = this.state.value;
       return (
-        <tr><td colSpan="100%">admin on today commented:
+        <tr><td colSpan="100%">Add a thread entry :
         <div className="input-group" style={{width:'100%'}}><textarea className="form-control" value={value} style={{resize:'none'}} rows="2" ref="threadEntry" onChange={this.handleChange}></textarea><span className="input-group-addon btn btn-primary" onClick={this.sendComment}>Send</span></div></td></tr>
       );
     }
@@ -292,9 +289,7 @@ var FeedbackPanelRow = React.createClass({
       this.setState({input_value: event.target.value});
     },
     createNewThread: function(){
-      console.log("in create new thread");
-      console.log(this.state.input_value);
-      console.log(this.state.select_value);
+
       var that = this;
       if(this.state.text_value.length){ 
       request = $.ajax({
@@ -313,8 +308,7 @@ var FeedbackPanelRow = React.createClass({
           that.setState({
             text_value: "The new thread has been submitted!"
           });
-          console.log("new thread data below");
-          console.log(data);
+
             that.props.addThread(data);
 	    that.props.updateSummaryThread();
         },
@@ -350,7 +344,6 @@ var FeedbackPanelRow = React.createClass({
 
       var feedback_types = this.props.feedback_types;
       var input = [];
-      console.log(feedback_types);
       for(var key in feedback_types) {
         if(feedback_types.hasOwnProperty(key)) {
           input.push(<option value={feedback_types[key].Type}>{feedback_types[key].Label}</option>)
@@ -397,13 +390,8 @@ var FeedbackSummaryPanel = React.createClass({
 		</tr>
 	    });
 	}
-	console.log("summary rows below");
-	console.log(summary_rows);
+
 	if (!(summary_rows === undefined || summary_rows.length == 0)){
-	    console.log("summary data props below");
-	    console.log(this.props.summary_data);
-	    console.log("summary_row below");
-	    console.log(summary_rows);
 	return <div className="panel-body">
 	<table className = "table table-hover table-primary table-bordered dynamictable">
 	<thead>
@@ -453,7 +441,6 @@ var FeedbackSummaryPanel = React.createClass({
         },
         success: function (data){
           state = data;
-          console.log(state);
           that.setState({
             threads: state
           })
@@ -473,7 +460,7 @@ var FeedbackSummaryPanel = React.createClass({
 	    data:{
 		"candID": this.props.candID,
 		"sessionID" : this.props.sessionID,
-		"commentID" : this.props.commentID,
+		"commentID" : this.props.commentID
 	    },
         success: function (data){
 	    that.setState(
@@ -501,7 +488,6 @@ var FeedbackSummaryPanel = React.createClass({
           },
           success: function (data){
             state = data;
-            console.log(state);
             that.setState({
               threads: state
             })
@@ -519,10 +505,8 @@ var FeedbackSummaryPanel = React.createClass({
       markThreadClosed: function(index) {
         var threads = this.state.threads;
         var entry = this.state.threads[index];
-        console.log(entry);
           threads.splice(index, 1);
 	  var feedbackID = entry.FeedbackID;
-	  console.log("feedbackid" + feedbackID);
         entry.QC_status = 'closed';
 
           threads.push(entry);
@@ -537,7 +521,6 @@ var FeedbackSummaryPanel = React.createClass({
 		"feedbackID" : feedbackID
 	    },
         success: function (data){
-	    console.log("in the success function of the open thread")
 	            that.setState({
           threads: threads
 		    });
@@ -552,7 +535,6 @@ var FeedbackSummaryPanel = React.createClass({
 
       },
       markThreadOpened: function(index) {
-        console.log("in mark thread opened");
         var threads = this.state.threads;
         var entry = this.state.threads[index];
         threads.splice(index, 1);
@@ -572,7 +554,6 @@ var FeedbackSummaryPanel = React.createClass({
 		"feedbackID" : feedbackID
 	    },
         success: function (data){
-	    console.log("in the success function of the open thread")
 	            that.setState({
           threads: threads
 		    });

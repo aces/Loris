@@ -191,7 +191,7 @@ var feedback_types = {$feedback_types|@json_encode}
 
   
   
-  var bvl_panel = BehaviouralFeedbackPanel({
+  var bvl_panel = RBehaviouralFeedbackPanel({
 	  feedback_level : feedback_level,
 	  candID : candID,
 	  pscid: PSCID,

@@ -65,23 +65,32 @@ class NDB_Form_data_team_helper extends NDB_Form
         //construct the instrument drop down..
         $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
         $this->tpl_data['FieldName'] = $_REQUEST['FieldName'];
-        $this->tpl_data['candidate'] = $_REQUEST['candidate'];
+        if ($_REQUEST['PSCID'] && !empty($_REQUEST['PSCID'])) {
+            $this->tpl_data['candidate'] = $_REQUEST['PSCID'];
+        } elseif ($_REQUEST['candidate'] && !empty($_REQUEST['candidate'])) {
+            $this->tpl_data['candidate']
+                = Candidate::singleton($_REQUEST['candidate'])->getPSCID();
+        } else {
+            $this->tpl_data['candidate'] = null;
+        }
         $this->tpl_data['test_name'] = $instrument;        
 
-        if (isset($_REQUEST['PSCID']) && !empty($_REQUEST['PSCID']) && (isset($_REQUEST['candidate'])) && !empty($_REQUEST['candidate'])){
+        if (isset($_REQUEST['PSCID']) && !empty($_REQUEST['PSCID'])
+            && (isset($_REQUEST['candidate'])) && !empty($_REQUEST['candidate'])
+        ) {
             $candID = ($_REQUEST['candidate']);
-        }
-        elseif (isset($_REQUEST['candidate']) && !empty($_REQUEST['candidate'])){
+        } elseif (isset($_REQUEST['candidate']) && !empty($_REQUEST['candidate'])) {
                 $candID = $_REQUEST['candidate'];
-        }        
-        elseif (isset($_REQUEST['PSCID']) && !empty($_REQUEST['PSCID'])){
+        } elseif (isset($_REQUEST['PSCID']) && !empty($_REQUEST['PSCID'])) {
             $query = "SELECT CandID FROM candidate WHERE PSCID = :PID";
             $qparams = (array('PID' => $_REQUEST['PSCID']));
-            $candID = $DB->pselectOne($query,$qparams);
+            $candID = $DB->pselectOne($query, $qparams);
         }
 
         //Percentage completed for the given instrument
-            $percent_completed = $this->_getPercentCompleted($instrument,$_REQUEST['visit_label'], $candID);
+            $percent_completed = $this->_getPercentCompleted(
+                $instrument, $_REQUEST['visit_label'], $candID
+            );
             $this->tpl_data['percent_completed'] = $percent_completed;
 
          /* Visit_labels
@@ -480,4 +489,3 @@ class NDB_Form_data_team_helper extends NDB_Form
 		return $test_names;
 	}
 }
-?>
