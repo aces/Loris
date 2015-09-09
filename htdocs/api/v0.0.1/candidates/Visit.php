@@ -164,24 +164,27 @@ class Visit extends \Loris\API\Candidates\Candidate
             }
         }
         if ($subprojectID === null) {
+            error_log("C");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error("Test battery specified does not exist");
             $this->safeExit(0);
 
         }
         // need to extract subprojectID
-        //TimePoint::createNew($this->CandID, $subprojectID, $this->VisitLabel);
+        \TimePoint::createNew($this->CandID, $subprojectID, $this->VisitLabel);
         $this->header("HTTP/1.1 201 Created");
     }
 }
 
 if (isset($_REQUEST['PrintVisit'])) {
+    parse_str(urldecode(file_get_contents("php://input")), $InputDataArray);
+    $InputData = json_encode($InputDataArray);
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $obj = new Visit(
             $_SERVER['REQUEST_METHOD'],
             $_REQUEST['CandID'],
             $_REQUEST['VisitLabel'],
-            file_get_contents("php://input")
+            $InputData
         );
     } else {
         $obj = new Visit(
