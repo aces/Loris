@@ -164,7 +164,6 @@ class Visit extends \Loris\API\Candidates\Candidate
             }
         }
         if ($subprojectID === null) {
-            error_log("C");
             $this->header("HTTP/1.1 400 Bad Request");
             $this->error("Test battery specified does not exist");
             $this->safeExit(0);
