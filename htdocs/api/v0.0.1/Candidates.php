@@ -103,8 +103,8 @@ class Candidates extends APIBase
      */
     public function handlePOST()
     {
-        if (isset($this->RequestData['candidate'])) {
-            $data = json_decode($this->RequestData['candidate'], true);
+        if (isset($this->RequestData['Candidate'])) {
+            $data = $this->RequestData;
             if ($data === null) {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->safeExit(0);
@@ -183,7 +183,7 @@ class Candidates extends APIBase
             $DoB,
             $edc,
             $gender,
-            $pscid
+            $PSCID
         );
     }
 }
