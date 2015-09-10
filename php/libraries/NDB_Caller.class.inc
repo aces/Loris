@@ -278,6 +278,7 @@ class NDB_Caller extends PEAR
                         not yet implemented."
                     );
                     header("HTTP/1.1 501 Not Implemented");
+                    exit(5);
                 }
                 break;
             default:
