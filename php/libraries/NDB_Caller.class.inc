@@ -270,12 +270,15 @@ class NDB_Caller extends PEAR
         if (isset($_REQUEST['format'])) {
             switch ($_REQUEST['format']) {
             case 'csv':
-                if (function_exists($menu->_getCSVData())) {
-                    $menu->_getCSVData();
+                if (method_exists($menu, "getCSVData")) {
+                    $csv_data = $menu->getCSVData();
+                    header("HTTP/1.1 200 OK");
+                    print $csv_data;
+                    exit(2);
                 } else {
                     error_log(
-                        "ERROR: This download of this table's data is 
-                        not yet implemented."
+                        "ERROR: This download of this table's data is "
+                        . "not yet implemented."
                     );
                     header("HTTP/1.1 501 Not Implemented");
                     exit(5);

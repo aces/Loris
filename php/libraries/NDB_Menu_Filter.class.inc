@@ -676,21 +676,17 @@ class NDB_Menu_Filter extends NDB_Menu
     }
 
     /**
-     * Controls access to a module's SQL tables, exporting a CSV file of the table
-     * to user. This script should ensure that only files relative to module's path
+     * Controls access to a module's SQL tables, transforming the table into a csv
+     * string. This script should ensure that only files relative to module's path
      * specified are accessible.
-     * @return void
-     * @access private
+     * @return string  csv formated string
      */
-    function _getCSVData()
+    function getCSVData()
     {
         $list['data']    = $this->_getFullList();
         $list['headers'] = $this->headers;
 
-        $csv_data = Utility::arrayToCSV($list);
-        header("HTTP/1.1 200 OK");
-        print $csv_data;
-        exit(2);
+        return Utility::arrayToCSV($list);
     }
 
     /**
