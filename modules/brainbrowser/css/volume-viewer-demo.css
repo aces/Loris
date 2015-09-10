@@ -30,28 +30,19 @@ body {
 
 #brainbrowser-wrapper {
   width: 100em;
-  /*margin: 50px auto;*/
   margin-left: 0px;
-  /*margin-top: 5000px;*/
 }
 
 #volume-viewer {
   display: inline;
-  /*display: inline-block;*/
-  /*background-color: #FFFFFF;*/
-  /*padding: 0.5em;*/
   border-radius: 10px;
 }
 
 .volume-container {
-  /*display: block;*/
-  /*display: table;*/
   display: inline;
-  /*margin: 0px auto;*/
 }
 
 canvas.slice-display {
-  /*display: block;*/
   margin: 3px 5px;
 }
 
@@ -72,28 +63,14 @@ canvas.slice-display {
 .volume-viewer-controls > div {
   margin-top: 0px;
   margin-bottom: 10px;
-  /*margin: 0 0 0 0px;*/
 }
 
 .volume-controls {
-  /*width: 600px;*/
   width: auto;
   max-width: 787px;
   min-width: 300px;
-  /*height: 100%;*/
   height: auto;
   max-height: 480px;
-}
-
-#global-controls {
-  /*-moz-border-radius: 10px 10px 0 0;*/
-  /*-webkit-border-radius: 10px 10px 0 0;*/
-  /*border-radius: 10px 10px 0 0;*/
-  /*padding-bottom: 0;*/
-}
-
-#global-controls .instructions {
-  /*padding: 10px 0 5px 0;*/
 }
 
 .control-heading {
@@ -159,7 +136,6 @@ canvas.slice-display {
 
 .thresh-input-left {
   position: absolute;
-  /*left: 3px;*/
 }
 
 .thresh-input-right {
@@ -171,7 +147,6 @@ canvas.slice-display {
   cursor: pointer;
 }
 
-/*.ui-widget-header {*/
 .ui-dialog-titlebar-close {
   color: #000000;
   font-weight: bold;
@@ -179,11 +154,9 @@ canvas.slice-display {
 
 .slice-series-button {
   font-size: 11px;
-  /*margin-left: 1px;*/
 }
 
 .slice-series-buttons {
-  /*margin-left: 10px;*/
   display: inline-block;
   float: right;
 }

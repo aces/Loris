@@ -44,32 +44,14 @@ body {
     line-height: 2;
 }
 
-.slice-display {
-    /*    height: 220px;*/
-}
-
 .volume-container {
     width: 260px;
     height: 100%;
     padding-bottom: 10px;
     display: inline;
-    /*display: block;*/
-    /*display: inline-table;*/
     margin: 0 auto;
     overflow: hidden;
     max-height: 1186px;
-}
-
-/*.volume-viewer-controls {
-    height: 320px !important; 
-}
-*/
-
-.blend-div {
-    /*   padding-top: 40px;*/
-}
-
-#blend-slider {
 }
 
 .control-heading {
@@ -103,9 +85,6 @@ body {
 }
 
 .ui-slider {
-    /*    width: 174px; */
-    /*margin-right: 38px;*/
-    /*margin-left: 38px;*/
     margin: auto;
 }
 
