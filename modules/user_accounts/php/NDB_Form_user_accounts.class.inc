@@ -37,24 +37,28 @@ class NDB_Form_User_Accounts extends NDB_Form
     {
         // create user object
         $editor =& User::singleton();
-        if (Utility::isErrorX($editor)) {
-            return PEAR::raiseError("User Error: ".$editor->getMessage());
-        }
 
         if ($this->page == 'edit_user') {
             if (!empty($this->identifier)) {
                 $user =& User::factory($this->identifier);
             }
 
-            $centerIdMatch
-                = $editor->getData('CenterID') == $user->getData('CenterID');
-            return $editor->hasPermission('user_accounts')
-                && ($editor->hasPermission('user_accounts_multisite')
-                       || empty($this->identifier)
-                       || $centerIdMatch
-                );
+            if ($editor->hasPermission('user_accounts')) {
+                if ($editor->hasPermission('user_accounts_multisite')) {
+                    return true;
+                }
+
+                if (empty($this->identifier)) {
+                    return true;
+                }
+
+                return $editor->getData('CenterID') == $user->getData('CenterID');
+            }
+
+            return false;
         }
 
+        // User can always access My Preferences page
         return true;
     }
 
@@ -374,11 +378,6 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         if (!empty($this->identifier)) {
             $user =& User::factory($this->identifier);
-            if (Utility::isErrorX($user)) {
-                return PEAR::raiseError(
-                    "User Error ($this->identifier): " . $user->getMessage()
-                );
-            }
 
             // add hidden permissions if editor has less permissions than user
             // being edited
