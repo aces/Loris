@@ -698,7 +698,8 @@ class NDB_Menu_Filter extends NDB_Menu
     function _getFullList()
     {
         // create DB object
-        $DB =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
         $qparams = array();
         // add the base query
