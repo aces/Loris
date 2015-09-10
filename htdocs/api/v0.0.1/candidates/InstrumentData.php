@@ -174,23 +174,6 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
         fclose($fp);
 
         parse_str(urldecode($data), $data);
-        error_log("message");
-        error_log("message");
-        error_log("message");
-        error_log("message");
-        error_log("message");
-        error_log("message");
-        error_log("message");
-        error_log("message");
-        error_log($data);
-        error_log("message");
-        error_log("message");
-        error_log("message");
-        error_log("message");
-        error_log("message");
-        error_log("message");
-        error_log("message");
-        error_log("message");
         if ($this->Instrument->validate($data)) {
             $this->Instrument->clearInstrument();
             $this->Instrument->_save($data[$this->Instrument->testName]);
