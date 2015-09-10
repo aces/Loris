@@ -67,8 +67,7 @@ canvas.slice-display {
 
 .volume-controls {
   width: auto;
-  max-width: 787px;
-  min-width: 300px;
+  min-width: 330px;
   height: auto;
   max-height: 480px;
 }
@@ -157,8 +156,8 @@ canvas.slice-display {
 }
 
 .slice-series-buttons {
-  display: inline-block;
-  float: right;
+  /*display: inline-block;*/
+  display: block;
 }
 
 #volume-file {

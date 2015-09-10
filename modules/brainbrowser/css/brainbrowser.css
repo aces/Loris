@@ -61,12 +61,10 @@ body {
     color: black;
     display: inline-block;
     width: auto;
-    max-width: 787px;
-    min-width: 300px;
+    min-width: 330px;
 }
 
 .control-inputs {
-    width: 60px;
     margin-right: 20px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -123,6 +121,7 @@ body {
     border-radius: 4px;
     -webkit-border-radius: 4px;
     display: inline;
+    left: 3px;
 }
 
 #app-name {
@@ -147,7 +146,6 @@ body {
     font-size: 16px;
     margin-top: 0.35em;
     margin-bottom: 0.35em;
-    /*padding-right: 15px;*/
     padding-right: 0px;
     margin-right: 0px;
 }
@@ -210,8 +208,7 @@ body {
 
 .panel-default {
     width: auto;
-    max-width: 787px;
-    min-width: 300px;
+    min-width: 330px;
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 0px;

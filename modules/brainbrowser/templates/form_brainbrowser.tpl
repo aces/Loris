@@ -8,11 +8,13 @@
 
 
     <script id="overlay-ui-template" type="x-volume-ui-template">
-
+<div class="row">
+<div class="form-group col-sm-12">
         <div class="overlay-viewer-display" id="panel-size"></div>
         <div class="volume-viewer-controls volume-controls">
-            <div class="filename-overlay clickable"></div>
+            <div class="filename-overlay clickable"  style="display: block; margin:auto;"></div>
             <span class="arrow glyphicon glyphicon-chevron-down"></span>
+
 
             <div class="blend-div" data-volume-id="{{VOLID}}">
                 <span class="control-heading" id="blend-heading{{VOLID}}">Blend (0.0 to 1.0)</span>
@@ -47,10 +49,12 @@
                 </div>
             </div>
         </div>
+        </div></div>
     </script>
 
 
     <script id="volume-ui-template4d" type="x-volume-ui-template">
+    < class="form-group col-sm-12 col-md-8">
         <div class="panel panel-default" id="subpanel-filename-{{VOLID}}">
             <div class="panel-heading" id="mri-panel-filename-{{VOLID}}">
 
@@ -62,16 +66,22 @@
             </div>
         </div>
 
+
+
         <div class="volume-viewer-controls volume-controls">
             <div class="coords">
+
+
                 <div class="control-heading" id="world-coordinates-heading-{{VOLID}}">
                     World Coordinates
                 </div>
+
                 <div class="world-coords" data-volume-id="{{VOLID}}">
                     X<input id="world-x-{{VOLID}}" class="control-inputs">
                     Y<input id="world-y-{{VOLID}}" class="control-inputs">
                     Z<input id="world-z-{{VOLID}}" class="control-inputs">
                 </div>
+
 
                 <div class="line-separator"></div>
 
@@ -129,6 +139,7 @@
 
                         <div class="line-separator"></div>
 
+
                     <div id="slice-series-{{VOLID}}" class="slice-series-div" data-volume-id="{{VOLID}}">
                         <div class="control-heading" id="slice-series-heading-{{VOLID}}">View Slices</div>
                         <div class="slice-series-buttons">
@@ -144,12 +155,21 @@
                 <!--closing filename-additional-info -->
             </div>
         </div>
-</br>
+        </div>
+
+<div class="form-group col-sm-0 col-md-4">&nbsp;</div>
+<div class="form-group col-sm-0 col-md-4">&nbsp;</div>
+<div class="form-group col-sm-0 col-md-4">&nbsp;</div>
+<div class="form-group col-sm-0 col-md-4">&nbsp;</div>
+<div class="form-group col-sm-0 col-md-4">&nbsp;</div>
+<div class="form-group col-sm-0 col-md-4">&nbsp;</div>
+<div class="form-group col-sm-0 col-md-4">&nbsp;</div>
+<div class="form-group col-sm-0 col-md-4">&nbsp;</div>
+<div class="form-group col-sm-0 col-md-4">&nbsp;</div>
 
         <div class="volume-viewer-display"></div>
 
     </script>
-
     <div id="brainbrowser-wrapper" style="display: inline-block">
 
         <div id="global-controls">
