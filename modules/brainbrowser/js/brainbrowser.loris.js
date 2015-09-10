@@ -369,51 +369,15 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
             context.putImageData(image_data, x, y);
           }
 
-          // Retrieve image from canvas and display it 
+          // Retrieve image from canvas and display it
           // in a dialog box.
           img.onload = function() {
             $("<div></div>").append(img).dialog({
               title: space_names[axis_name] + " Slicess",
               height: 600,
-              width: img.width,
-              //buttons:
-              //    [
-              //      {
-              //        text: "X",
-              //        'class': 'ui-dialog-titlebar-close'
-              //      }
-              //    ]
-
+              width: img.width
             });
-
-            // Getter
-            var buttons = $( ".ui-dialog-titlebar-close" ).dialog( "option", "buttons" );
-
-// Setter
-            $( ".ui-dialog-titlebar-close" ).dialog( "option", "buttons",
-                [
-                  {
-                    text: "X",
-                    //icons: {
-                    //  primary: "ui-icon-heart"
-                    //},
-                    click: function() {
-                      $( this ).dialog( "close" );
-                    }
-
-                    // Uncommenting the following line would hide the text,
-                    // resulting in the label being used as a tooltip
-                    //showText: false
-                  }
-                ]
-            );
-
-            //var close_button = document.getElementsByClassName(".ui-dialog-titlebar-close");
-            //close_button.getElementsByClassName("child")[0].value = "X";
           };
-
-
-
           img.src = canvas.toDataURL();
         });
       });
@@ -501,9 +465,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
               } else {
                 $('.arrow').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
               }
-            }
-          );
-
+            });
     });
 
 
