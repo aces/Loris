@@ -36,6 +36,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
     var $LinstQuestions = array();
 
+    var $LinstLines = array();
+
     /**
      * True if the page is being previewed from the instrument builder,
      * and not really loaded.
@@ -458,6 +460,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
             while (($line = fgets($fp, 4096)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
+                $this->LinstLines[] = $pieces;
 
                 $type      = $pieces[0];
                 $fieldname = isset($pieces[1]) ? $pieces[1] : null;
@@ -805,6 +808,131 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             }
             fclose($fp);
         }
+    }
+
+    /**
+     * Returns a JSON representation of the currently instantiated
+     * instrument.
+     *
+     * The format of the JSON representation is specified in the
+     * docs/API/InstrumentFormat documentation.
+     *
+     * @return string containing valid JSON
+     */
+    function toJSON()
+    {
+        $jsonObject = array(
+                'Meta'     => array(
+                        "InstrumentVersion"       => "1l",
+                        "InstrumentFormatVersion" => "v0.0.1-dev",
+                        "ShortName"               => "",
+                        "LongName"                => "",
+                        "IncludeMetaDataFields"   => true
+                    ),
+                'Elements' => array()
+            );
+        $elements  = array();
+        $pageTitle = 'Top';
+        foreach ($this->LinstLines as $value) {
+            $element                = array();
+            $element['Type']        = $value[0];
+            $element['Name']        = $value[1];
+            $element['Description'] = rtrim($value[2]);
+            switch ($value[0]) {
+                case 'selectmultiple':
+                    $selectMultiple  = true;
+                    $element['Type'] = 'select';
+                case 'select':
+
+                    $selectOptions = preg_split("/{-}/", trim($value[3]));
+                    // error_log(print_r($selectOptions, true));
+                    $opt           = array();
+                    foreach ($selectOptions as $o) {
+                        $arr = explode("=>", $o);
+                        $key = $arr[0];
+                        $val = $arr[1];
+                        if ($key[0] == "'" && $key[strlen($key)-1] == "'") {
+                            $key = substr($key, 1, -1);
+                        } else if ($key == 'NULL') {
+                            $key ='';
+                        }
+                        if ($val[0] == "'" && $val[strlen($val)-1] == "'") {
+                            $val = substr($val, 1, -1);
+                        }
+                        $opt[$key] = $val;
+                    }
+                    $element['Options'] = array(
+                            'Values'          => $opt,
+                            'AllowMultiple'   => ($selectMultiple ? true : false),
+                            'RequireResponse' => true
+                        );
+                    break;
+                case 'textarea':
+                    $largeText       = true;
+                    $element['Type'] = 'text';
+                case 'text':
+                    $element['Options'] = array(
+                            'Type'            => ($largeText ? 'large' : 'small'),
+                            'RequireResponse' => true
+                        );
+                    break;
+                case 'date':
+                    $element['Options'] = array(
+                            'MinDate'         => $value[3] . "-01-01",
+                            'MaxDate'         => rtrim($value[4]) . "-12-31",
+                            'RequireResponse' => true
+                        );
+                    break;
+                case 'numeric':
+                    $element['Options'] = array(
+                            'NumberType' => 'integer',
+                            'MinValue'   => (int) $value[3],
+                            'MaxValue'   => (int) rtrim($value[4])
+                        );
+                    break;
+                case 'score':
+                    break;
+                case 'label':
+                case 'header':
+                    unset($element['Name']);
+                    break;
+                case 'page':
+                    $pageElement = array(
+                            "Type"        => "ElementGroup",
+                            "GroupType"   => "Page",
+                            "Description" => $pageTitle,
+                            "Elements"    => $elements
+                        );
+                    $jsonObject['Elements'][] = $pageElement;
+                    unset($element['Type']);
+                    $elements  = array();
+                    $pageTitle = rtrim($value[2]);
+                    break;
+                case 'table':
+                    $jsonObject['Meta']['ShortName'] = rtrim($value[1]);
+                    unset($element['Type']);
+                case 'title':
+                    $jsonObject['Meta']['LongName'] = rtrim($value[1]);
+                default:
+                    unset($element['Type']);
+                    break;
+            }
+            if ($element['Type']) {
+                $elements[] = $element;
+            }
+        }
+        if (empty($jsonObject['Elements'])) {
+            $jsonObject['Elements'] = $elements;
+        } else {
+            $pageElement = array(
+                    "Type"        => "ElementGroup",
+                    "GroupType"   => "Page",
+                    "Description" => $pageTitle,
+                    "Elements"    => $elements
+                );
+            $jsonObject['Elements'][] = $pageElement;
+        }
+        return json_encode($jsonObject);
     }
 
 
