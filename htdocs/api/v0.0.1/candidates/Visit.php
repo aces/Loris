@@ -170,18 +170,20 @@ class Visit extends \Loris\API\Candidates\Candidate
 
         }
         // need to extract subprojectID
-        //TimePoint::createNew($this->CandID, $subprojectID, $this->VisitLabel);
+        \TimePoint::createNew($this->CandID, $subprojectID, $this->VisitLabel);
         $this->header("HTTP/1.1 201 Created");
     }
 }
 
 if (isset($_REQUEST['PrintVisit'])) {
+    parse_str(urldecode(file_get_contents("php://input")), $InputDataArray);
+    $InputData = json_encode($InputDataArray);
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $obj = new Visit(
             $_SERVER['REQUEST_METHOD'],
             $_REQUEST['CandID'],
             $_REQUEST['VisitLabel'],
-            file_get_contents("php://input")
+            $InputData
         );
     } else {
         $obj = new Visit(
