@@ -11,6 +11,7 @@ LORIS is a web-accessible database solution for neuroimaging, providing a secure
  * php5-json (for Debian/Ubuntu distributions)
  * Smarty 3
  * Package manager (for LINUX distributions)
+ * Composer
 
 # Installation
 

@@ -1,9 +1,9 @@
 # Survey Module Test Plan
 
-1.  Check user permission : Survey Participant Management
-2.  Selection Filter:  try filtering by PSCID, DCCID, Visit, and Instrument, ensure
-3.  Enter a PSCID, email, visit label and Instrument then use “Clear Form” : should show visit and instrument “All” and blank for PSCID and email
-4.  Ensure all columns are sortable (ascending and descendin.
+1.  Check user permission : Survey Participant Management.
+2.  Selection Filter:  try filtering by PSCID, Visit, and Instrument.
+3.  Enter a PSCID, email, visit label and Instrument then use “Clear Form” : should show visit and instrument “All” and blank for PSCID and email.
+4.  Ensure all columns are sortable (ascending and descending).
 5.  Click on a URL fill out field, make sure “Save and Continue” works (if mandatory fields are not filled out make sure it doesn’t allow you to save.
     Make sure that if you don’t fill out a field that is required, and you hit save and continue fields you have filled out are not erased.
 6.  Add Survey button:

@@ -29,7 +29,7 @@ require_once __DIR__
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
 */
-class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
+class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
 {
 
     var $show_queries = true;

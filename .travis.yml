@@ -39,7 +39,7 @@ install:
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.45.0.jar > /dev/null &
+    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.45.0.jar  2>1 > /dev/null &
 
 before_script:
     # Set up the Loris environment
@@ -50,7 +50,7 @@ before_script:
     # for the config file, and reset the Loris user's password for testing
     - mysql -e 'CREATE DATABASE LorisTest'
     - mysql LorisTest < SQL/0000-00-00-schema.sql
-    - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
+    - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE,DROP,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
     - mysql LorisTest -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aatestpass')), Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
     - sed -e "s/%HOSTNAME%/localhost/g"
           -e "s/%USERNAME%/SQLTestUser/g"
@@ -60,6 +60,9 @@ before_script:
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
     - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
 
+#env:
+ # - "LORIS_DB_CONFIG=test/config.xml"
+
 script:
     # Run PHP -l on everything to ensure there's no syntax
     # errors.
@@ -68,61 +71,37 @@ script:
         php -l $i || exit $?;
       done
     # Run unit tests to make sure functions still do what they should.
-    - vendor/bin/phpunit test/unittests/
+    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'LorisUnitTests for php/libraries'
+
 
     # Run integration tests to make sure everything didn't just
     # break
-    - vendor/bin/phpunit test/integrationtests/
+    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Core Integration Tests'
 
     # Run integration tests for specific modules
-    - vendor/bin/phpunit modules/brainbrowser/test
-    - vendor/bin/phpunit modules/candidate_list/test
-    - vendor/bin/phpunit modules/candidate_parameters/test
-    - vendor/bin/phpunit modules/configuration/test
-    - vendor/bin/phpunit modules/conflict_resolver/test
-    - vendor/bin/phpunit modules/create_timepoint/test
-    - vendor/bin/phpunit modules/dashboard/test
-    - vendor/bin/phpunit modules/data_integrity_flag/test
-    - vendor/bin/phpunit modules/data_team_helper/test
-    - vendor/bin/phpunit modules/datadict/test
-    - vendor/bin/phpunit modules/dicom_archive/test
-    - vendor/bin/phpunit modules/document_repository/test
-    - vendor/bin/phpunit modules/examiner/test
-    - vendor/bin/phpunit modules/final_radiological_review/test
-    - vendor/bin/phpunit modules/genomic_browser/test
-    - vendor/bin/phpunit modules/help_editor/test
-    - vendor/bin/phpunit modules/imaging_browser/test
-    - vendor/bin/phpunit modules/instrument_builder/test
-    - vendor/bin/phpunit modules/instrument_list/test
-    - vendor/bin/phpunit modules/instrument_manager/test
-    - vendor/bin/phpunit modules/mri_upload/test
-    - vendor/bin/phpunit modules/mri_violations/test
-    - vendor/bin/phpunit modules/new_profile/test
-    - vendor/bin/phpunit modules/next_stage/test
-    - vendor/bin/phpunit modules/reliability/test
-    - vendor/bin/phpunit modules/statistics/test
-    - vendor/bin/phpunit modules/survey_accounts/test
-    - vendor/bin/phpunit modules/timepoint_flag/test
-    - vendor/bin/phpunit modules/timepoint_list/test
-    - vendor/bin/phpunit modules/training/test
-    - vendor/bin/phpunit modules/user_accounts/test
+    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Module Integration Tests'
 
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     # Run PHPCS on the entire libraries directory.
     - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs
 
     # Run PHPCS on some scripts
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/CouchDB_Import_MRI.php
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/data_dictionary_builder.php
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/generic_includes.php
 
     # Run PHPCS on specific modules
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/File_Decompress.class.inc
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/imaging_uploader/php/NDB_Menu_Filter_imaging_uploader.class.inc
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/imaging_uploader/php/File_Decompress.class.inc
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/genomic_browser
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_list
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/conflict_resolver
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/dashboard
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/examiner
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/training
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/brainbrowser
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/configuration
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js

@@ -419,20 +419,30 @@ class NDB_Config
      */
     function getSubprojectSettings($subprojectID)
     {
-        // Sub Project
-        $subprojectSettings =$this->getSetting('subprojects');
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
-        //Loop through the subprojects to get an id out and to create
-        //the subproject drop down.
-        foreach (Utility::toArray($subprojectSettings['subproject'])
-            AS $subproject
-        ) {
-            if ($subproject['id']==$subprojectID) {
-                return $subproject;
-            }
+        try {
+            $info = $DB->pselectRow(
+                "SELECT * FROM subproject WHERE SubprojectID=:sp",
+                array('sp' => $subprojectID)
+            );
+        } catch(DatabaseException $e) {
+            return null;
         }
-        // no nodes found - returning null
-        return null;
+        // Format the results the same way it was formatted in config.xml
+        // This variable assignment was done for phpcs... if anyone figures out
+        // a way around this, please correct it
+        $x = $info['WindowDifference'];
+        return array(
+                'id'                => $info['SubprojectID'],
+                'title'             => $info['title'],
+                'options'           => array(
+                                        'useEDC'           => $info['useEDC'],
+                                        'WindowDifference' => $x,
+                                       ),
+                'RecruitmentTarget' => $info['RecruitmentTarget'],
+               );
     }
 
     /**
