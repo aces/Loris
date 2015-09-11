@@ -392,7 +392,7 @@ class NDB_Form_user_accounts extends NDB_Form
 
     function my_preferences()
     {
-        $this->identifier = $_SESSION['State']->getFullname();
+        $this->identifier = $_SESSION['State']->getUsername();
 
         ///get the value for additional_user_info flag
         $config =& NDB_Config::singleton();
