@@ -45,10 +45,12 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         // Set up database wrapper and config
-        $this->config = NDB_Config::singleton(__DIR__ . "/../../project/config.xml");
-        $database     = $this->config->getSetting('database');
+        $factory      = NDB_Factory::singleton();
+        $this->config = $factory->Config(CONFIG_XML);
 
-        $this->DB = Database::singleton(
+        $database = $this->config->getSetting('database');
+
+        $this->DB  = Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
@@ -78,7 +80,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
 
         $this->DB->run(
-            "INSERT INTO user_perm_rel SELECT 999990, PermID FROM permissions"
+            "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
 
         $user = User::factory('UnitTester');
@@ -107,6 +109,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     protected function login($username, $password)
     {
         $this->webDriver->get($this->url);
+        $this->webDriver->wait(120, 1000)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::Name("username")
+            )
+        );
 
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
@@ -136,7 +143,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
-
         // Delete the temporary user.
         $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
@@ -160,6 +166,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             array(":configName" => $configName)
         );
 
+        if(is_array($configID) && empty($configID)) {
+            // This likely just means the config is in config.xml
+            //throw new LorisException("Attempting to update Config setting not in database");
+            return;
+        }
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
             array(":confID" => $configID)
@@ -178,14 +189,18 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     }
 
     function restoreConfigSetting($configName) {
+        /*
         if(!isset($this->_oldConfig[$configName])) {
             throw new LorisException("Attempted to restore unsaved config setting");
         }
-        $this->DB->update(
-            "Config",
-            array("Value"    => $this->_oldConfig[$configName]['OldValue']),
-            array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
-        );
+         */
+        if(isset($this->_oldConfig[$configName])) {
+            $this->DB->update(
+                "Config",
+                array("Value"    => $this->_oldConfig[$configName]['OldValue']),
+                array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
+            );
+        }
     }
 
 }
