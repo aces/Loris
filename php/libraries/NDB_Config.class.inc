@@ -370,12 +370,8 @@ class NDB_Config
                 return $value;
             }
 
-            // Look inside the top level node
-            // is_array is called before the isset check. This is done to
-            // fix an undesirable feature of isset: it would sometimes
-            // return true is $value was not an array (see isset PHP doc)
-            // in PHP <= 5.3. This behavior was changed for PHP > 5.3.
-            if (is_array($value) && isset($value[$name])) {
+            // look inside the top level node
+            if (isset($value[$name])) {
                 return $value[$name];
             }
         }

@@ -1,11 +1,6 @@
 <br />
 {literal}
 <script>
-
-// Flag that indicates whether we already scrolled the browser window
-// to make an invalid field visible for the current submit event
-var scrolledToInvalidField;
-
 $(document).ready(function() {
     function toggleGroup(group) {
         if(group) {
@@ -29,42 +24,10 @@ $(document).ready(function() {
         section_el = $("#perms_" + section + " br:nth-child(1)").hide();
     });
     
-    // This will make sure that the flag indicating whether we scrolled
-    // to an invalid element when the form is submitted is reset
-    document.getElementsByName('fire_away')[0].addEventListener("click", function () {
-       scrolledToInvalidField = false;
-    });
-    
-    // Override default event handler for invalid input elements
-    // This will make sure that the invalid element appears at the top
-    // of the page.  
-    var elements = document.querySelectorAll('input,select,textarea');
-    var navbarHeader = document.getElementsByClassName("navbar-header");
-    for(var i = elements.length; i--;){
-        elements[i].addEventListener('invalid',function(){
-            // Only make the first invalid element visible when the
-            // form is submitted. 
-            // If this is not done we have no guarantee that the error message
-            // displayed will be for the element that we scrolled to (i.e we
-            // might ensure invalid element #10 is visible while the error
-            // message that is displayed by the page is for element #1, which 
-            // might be way higher up, and thus hidden from the view)
-            if(!scrolledToInvalidField) {
-                this.scrollIntoView(true);
-            
-                // scrollingIntoView is not enough: the navigation bar will appear
-                // over the invalid element and hide it.
-                // We have to scroll an additional number of pixels down so that 
-                // the elements becomes visible. 
-                window.scrollBy(0,- $(navbarHeader).height()- 10);
-                scrolledToInvalidField = true;
-            }
-        });
-    }
 });
 </script>
 {/literal}
-<form method="post" name="edit_user">
+<form method="post" name="edit_user" >
     {if $form.errors}
         <div class="alert alert-danger" role="alert">
             Please ensure that all required fields are filled
@@ -98,7 +61,6 @@ $(document).ready(function() {
         {else}
         <div class="row form-group form-inline form-inline">
         {/if}
-        {if $form.UserID_Group != null}
 	    	<label class="col-sm-12 col-sm-2 form-label">
                    {$form.UserID_Group.label}
             </label>
@@ -110,16 +72,7 @@ $(document).ready(function() {
                     <font class="form-error">{$form.errors.UserID_Group}</font>
                 </div>
             {/if}
-        {else}
-	    	<label class="col-sm-12 col-sm-2 form-label">
-                   {$form.UserID.label}
-            </label>
-	    	<div class="col-sm-10">
-	    		{$form.UserID.html}
-	    	</div>
-        
-        {/if}
-	     </div>
+	    </div>
     <!-- </div> -->
     <br>
     {if $form.errors.Password_Group}

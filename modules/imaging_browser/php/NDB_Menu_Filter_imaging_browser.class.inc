@@ -222,17 +222,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->addBasicText(
             'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)
         );
-
-        $config =& NDB_Config::singleton();
-        if ($config->getSetting('useProjects') === "true") {
-            $list_of_projects = $allAr;
-            $projectList = Utility::getProjectList();
-            foreach ($projectList as $key => $value) {
-                $list_of_projects[$key] =$value;
-            }
-            $this->addSelect('ProjectID', 'Project', $list_of_projects);  
-        }
-
+        $this->addSelect('ProjectID', 'Project', $allAr + Utility::getProjectList());
         $this->addSelect('SiteID', 'Site', $list_of_sites);
         $this->addSelect(
             'VisitQCStatus',

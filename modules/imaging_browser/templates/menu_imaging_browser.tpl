@@ -21,20 +21,20 @@
     <div class="panel-body" id="panel-body">
         <form method="post" action="main.php?test_name=imaging_browser">
              <div class="row">
-                <div class="form-group col-sm-4">
-                    <label class="col-sm-12 col-md-4">
-                        {$form.pscid.label}
-                    </label>
-                    <div class="col-sm-12 col-md-8">
-                        {$form.pscid.html}
-                    </div>
-                </div>
                  <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
                         {$form.DCCID.label}
                     </label>
                     <div class="col-sm-12 col-md-8">
                         {$form.DCCID.html}
+                    </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.pscid.label}
+                    </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.pscid.html}
                     </div>
                 </div>
                  <div class="form-group col-sm-4">
@@ -47,6 +47,14 @@
                 </div>
             </div>
             <div class="row">
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.ProjectID.label}
+                    </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.ProjectID.html}
+                    </div>
+                </div>
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
                         {$form.SiteID.label}
@@ -63,32 +71,22 @@
                         {$form.VisitQCStatus.html}
                     </div>
                 </div>
-                {if $form.ProjectID}
-                <div class="form-group col-sm-4">
-                    <label class="col-sm-12 col-md-4">
-                        {$form.ProjectID.label}
-                    </label>
-                    <div class="col-sm-12 col-md-8">
-                        {$form.ProjectID.html}
-                    </div>
-                </div>
-                {/if}
             </div>
             <div class="row">
-                <div class="form-group col-sm-4">
-                    <label class="col-sm-12 col-md-4">
-                        {$form.Scan_type.label}
-                   </label>
-                    <div class="col-sm-12 col-md-8">
-                        {$form.Scan_type.html}
-                    </div>
-                </div>
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
                         {$form.Pending.label}
                     </label>
                     <div class="col-sm-12 col-md-8">
                         {$form.Pending.html}
+                    </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.Scan_type.label}
+                   </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.Scan_type.html}
                     </div>
                 </div>
                 <div class="col-sm-2 col-sm-offset-8">

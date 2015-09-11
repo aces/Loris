@@ -1,12 +1,12 @@
 #LORIS Mac Install Guide
 
-This is a guide on how to get a LORIS instance Running on your Mac computer. It is designed for installation in a sandbox environment. It has been partially tested for Mac OS X 10.9 and 10.10.
+This is an a guide how to get a LORIS instance Running on your Mac computer. It has been tested for Mac OS X 10.9. 
 
 # 1. System Requirements
 
 Before continuing to the subsequent sections ensure that the following tools are installed.  Sudo permission is required.  This section covers installation and recommended versions of:
 
- * Mac OS X (tested for Mavericks - OS X 10.9 and 10.10)
+ * Mac OS X (tested for Mavericks - OS X 10.9)
  * Apache2
  * PHP
  * PEAR
@@ -177,41 +177,14 @@ extract it to `~/Sites/$projectname`
 
 ##2.2 Installing LORIS
 
-Run installer script to install core code, libraries, and MySQL schema (see Loris Installation Schematic). 
-The script will prompt for information, including usernames and folders which it will create automatically.
+Run installer script to install core code, libraries, and MySQL schema (see Loris Installation Schematic). The script will prompt for information, including usernames and folders which it will create automatically.
+
 ```
 cd ~/Sites/$projectname/tools
 ./install.sh
 ```
 
-The install script may not fully execute on Mac OS systems.  It is recommended to carefully review and execute manually the steps in the install.sh script on your system.  A few MySQL statement examples are provided in section 2.3. 
-Since the install script was created for LINUX OS, its apache2 setup steps won’t work. Section 3 describes how to set up the apache2 server for Mac.
-
-##2.3 Manually running install script steps
-
-Since you may not be able to fully execute the install.sh script at step 2.2, the following examples may help in manually executing the sequence of commands found in the install script.
-
-Set up these variables in your bash shell :
-``` 
-mysqldb=LORIS
-mysqlhost=localhost
-mysqluser=lorisuser  (suggested)
-mysqlpass=password 
-mysqlrootuser=root 
-```
-Keep this terminal window open to keep the variables in memory.
-
-Then execute the following commands in your bash shell to create the Loris database and the lorisuser MySQL user. 
-The prompt should ask for the root password. (The one entered in section 1.5.4) 
-```
-echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser -p -A
-echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser -p -A
-```
-
-Source the database schema with the following statement in your bash shell (the terminal window used at section 1.5.4) :
-```
-mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser -p -A 2>&1 < ~/Sites/$projectname/SQL/0000-00-00-schema.sql
-```
+The install script was created for LINUX OS so its apache2 setup steps won’t work. Section 3 describes how to apache2 server.
 
 # 3. Launching the Local Apache2 Server
 This section goes into details regarding setting up the local Apache2 server. There are Max OS X 10.10 (Yosemite) specific instructions in section 3.1. If you are not running Yosemite step 3.1 may be be skipped.
@@ -270,7 +243,7 @@ You can now access you LORIS sandbox using the url <a>http://localhost/~$usernam
 
 To access your sandbox on another device, replace ```localhost``` with your IP address for your machine.
 
-## 3.5 Setup Virtual Host
+## 3.5 Setup Virtual Host (Optional)
 
 The following section is a more advanced setting for you local apache server. This section is not necessary, but enables ```http://localhost.loris``` as an url shortcut, and creates LORIS-specific apache logs for easy troubleshooting (similar to ```/var/log/apache2/loris-err.log```).
 
@@ -317,17 +290,5 @@ Open the ```/etc/apache2/extra/httpd-vhosts.conf``` in the text editor and add t
  * <i>$username ⇾ your username for the computer</i>
  * <i>$pathToPear ⇾ path where PEAR installs .php files (see [section 1.3.4](#include_path) part 1)</i>
 
-## 3.6 Update Database
-
-Note that the default Loris setup assumes that Loris is running on localhost. If this
-is not the case, you'll have to manually update the URL and Host config variables in the
-ConfigSettings table by running the following SQL commands from a MySQL prompt:
-
-```SQL
-UPDATE Config SET Value='$yourURL' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url');
-UPDATE Config SET Value='$yourHostname' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
-```
-
-Make sure that `$yourURL` above contains the "http://" or "https://" and `$yourHostname` does not. If your server is only being accessed from localhost, you can skip this step.
 
 
