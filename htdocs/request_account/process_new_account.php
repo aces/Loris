@@ -82,8 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
           $err[] = 'The Email Address field is empty!';
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
           $err[] = 'Your email is not valid!';
-    }
-    else if($_REQUEST['from'] != $_REQUEST['from2']){
+    } else if ($_REQUEST['from'] != $_REQUEST['from2']) {
         $err[] = 'Your emails do not match';
     }
     if (isset($_SESSION['tntcon'])
