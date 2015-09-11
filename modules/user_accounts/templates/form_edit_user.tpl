@@ -341,6 +341,17 @@ $(document).ready(function() {
     	</div>
     </div>
     <div class="row form-group form-inline">
+        <label class="col-sm-2">
+          {$form.Supervisors_Group.label}
+        </label>
+        <div class="col-sm-10 col-xs-12">
+          <div>
+            {$form.Supervisors_Group.html}
+          </div>
+        </div>
+     </div>
+
+    <div class="row form-group form-inline">
     	<div class="col-sm-2">
     		<input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
     	</div>
