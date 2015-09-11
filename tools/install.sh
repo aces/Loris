@@ -234,6 +234,18 @@ while [ "$mysqluser" == "" ]; do
        	esac
 done;
 
+while [ "$mysqluserhost" == "" ]; do
+        read -p "What is the host for which MySQL user '$mysqluser' will connect from? " mysqluserhost
+        echo $mysqluserhost | tee -a $LOGFILE > /dev/null
+        case $mysqluserhost in
+                "" )
+                        read -p "What is the host for which MySQL user '$mysqluser' will connect from? " mysqluserhost
+                        continue;;
+                * )
+                        break;;
+        esac
+done;
+
 stty -echo
 
 while true; do
@@ -340,13 +352,13 @@ done;
 
 
 while true; do
-    read -p "Would you like to automatically create and grant privileges to MySQL user '$mysqluser'@'localhost'? [yn] " yn
+    read -p "Would you like to automatically create and grant privileges to MySQL user '$mysqluser'@'$mysqluserhost'? [yn] " yn
     echo $yn | tee -a $LOGFILE > /dev/null
     case $yn in
         [Yy]* )
             echo ""
-            echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'localhost' ..."
-            echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
+            echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'$mysqluserhost' ..."
+            echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'$mysqluserhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
             MySQLError=$?;
             if [ $MySQLError -ne 0 ] ; then
                 echo "Could not connect to database with the root user provided.";
@@ -354,7 +366,7 @@ while true; do
             fi
             break;;
         [Nn]* )
-            echo "Not automatically creating and granting privileges to MySQL user '$mysqluser'@'localhost'."
+            echo "Not automatically creating and granting privileges to MySQL user '$mysqluser'@'$mysqluserhost'."
             break;;
          * ) echo "Please enter 'y' or 'n'."
     esac
