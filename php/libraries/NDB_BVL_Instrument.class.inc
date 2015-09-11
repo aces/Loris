@@ -11,10 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-set_include_path(
-    get_include_path().":../project/libraries:
-    ../php/libraries:../htdocs:"
-);
 include_once 'BVL_Feedback_Panel.class.inc';
 
 /**
