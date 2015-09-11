@@ -418,7 +418,8 @@ class NDB_Config
                 );
                 foreach ($configSetting as $child) {
                     if (!isset($XMLValue[$child['Name']])) {
-                        $XMLValue[$child['Name']] = $this->getSettingFromDB($child['Name'], $child['ID']);
+                        $XMLValue[$child['Name']]
+                            = $this->getSettingFromDB($child['Name'], $child['ID']);
                     }
                 }
                 return $XMLValue;
