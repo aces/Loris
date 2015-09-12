@@ -25,11 +25,12 @@ require_once __DIR__ . "/../../../vendor/autoload.php";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
-$factory  = NDB_Factory::singleton();
-$config   = $factory->config(__DIR__ . "/../../../project/config.xml");
-$subprojs = $config->getSettingFromXML("subprojects");
-$db       = $factory->database();
-if (is_null($argv[1])
+$factory   = NDB_Factory::singleton();
+$config    = $factory->config(__DIR__ . "/../../../project/config.xml");
+$subprojs  = $config->getSettingFromXML("subprojects");
+$db        = $factory->database();
+$optionpos = 1; //The position of the option in the command line.
+if (is_null($argv[$optionpos])
 ) {
     echo ("The script needs an argument. The arguments are -s,-p or -a.\r\n");
     echo ("-s -> Imports only the subprojects from the XML.\r\n");
@@ -38,8 +39,8 @@ if (is_null($argv[1])
     echo ("      from the XML.\r\n");
     exit (2);
 }
-if ((isset($argv[1]) && $argv[1] === "-s")
-    || (isset($argv[1]) && $argv[1] === "-a")
+if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-s")
+    || (isset($argv[$optionpos]) && $argv[$optionpos] === "-a")
 ) {
     foreach ($subprojs['subproject'] as $row) {
         $windowDiff = "optimal";
@@ -62,8 +63,8 @@ if ((isset($argv[1]) && $argv[1] === "-s")
         $db->insert('subproject', $ins);
     }
 }
-if ((isset($argv[1]) && $argv[1] === "-p")
-    || (isset($argv[1]) && $argv[1] === "-a")
+if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-p")
+    || (isset($argv[$optionpos]) && $argv[$optionpos] === "-a")
 ) {
     $config   = $factory->config(__DIR__ . "/../../../project/config.xml");
     $projects = $config->getSettingFromXML("Projects");
