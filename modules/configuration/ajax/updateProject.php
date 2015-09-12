@@ -1,7 +1,7 @@
 <?php
 /**
 * This file is used by the Configuration module to update
-* or insert values into the Config table.
+* or insert values into the Project table.
 *
 * PHP version 5
 *
