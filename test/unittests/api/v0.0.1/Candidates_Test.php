@@ -86,17 +86,17 @@ class Candidates_Test extends PHPUnit_Framework_TestCase
         try {
             $API = $this->getMockBuilder(
                 '\Loris\API\Candidates')->disableOriginalConstructor()->setMethods(['createNew'])->getMock();
-            $API->expects($this->once())->method('createNew');//->expects($this->once());
+            $API->expects($this->once())->method('createNew');
             $API->__construct("POST",
-                ['candidate' => json_encode([
-                    'Candidate' => [
+                    ['Candidate' => [
                         'Project' => "loris",
                         'PSCID'   => 'HelloPSC',
                         'EDC'     => '2015-05-19',
                         'DoB'     => '2015-05-26',
                         'Gender'  => 'Male'
                     ]
-                ])]);
+                ]
+                );
         } catch(\Loris\API\SafeExitException $e) {
             $API = $e->Object;
         }
