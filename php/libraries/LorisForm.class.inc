@@ -1192,8 +1192,9 @@ class LorisForm
                 $fieldIdx  = substr($name, $bracketIdx+1);
                 $fieldIdx  = strstr($fieldIdx, ']', true);
                 if (!isset($arr[$fieldName])) {
-                    $arr[$fieldName]
-                        = $this->getValue($fieldName, $_REQUEST[$fieldName]);
+                    $value           = isset($_REQUEST[$fieldName])
+                        ? $_REQUEST[$fieldName] : null;
+                    $arr[$fieldName] = $this->getValue($fieldName, $value);
                 }
                 if ($el['type'] === 'advcheckbox') {
                     $val = $this->getValue($name);
@@ -1212,14 +1213,15 @@ class LorisForm
             if (!($el['type'] === 'header'
                 || ($el['type'] === 'static' && empty($_REQUEST[$name])))
             ) {
-                $arr[$name] = $this->getValue($name, $_REQUEST[$name]);
+                $value      = isset($_REQUEST[$name]) ? $_REQUEST[$name] : null;
+                $arr[$name] = $this->getValue($name, $value);
             }
 
             if ($el['type'] === 'date') {
                 // Convert dates to the type of group that was used
                 // by HTML_QuickForm. This should eventually be modified
                 // to just use a normal HTML5 date.
-                $vals       = explode("-", $this->getValue($name, $arr[$name]));
+                $vals       = explode("-", $arr[$name]);
                 $arr[$name] = array(
                                'Y' => $vals[0],
                                'M' => $vals[1],
