@@ -643,8 +643,9 @@ class NDB_BVL_Feedback
      * @param string  $public    Y or N depending on if the thread is public
      * @param string  $fieldname Optional fieldname for the thread to be
      *                           attached to
-     * FIXME : I have removed the level as a parameter as it was unused in the function call. I also tried to find all usages around the codebase and remove them. I believe I got them all but some issues may come up.
-     * @return Returns the set array. As we need the values in this array in dynamic front-end calls.
+     *
+     * @return array
+     * As we need the values in this array in dynamic front-end calls.
      *
      * @throws DatabaseException
      * @throws Exception
@@ -728,8 +729,8 @@ class NDB_BVL_Feedback
         $newEntryValues = array();
         $newEntryValues["feedbackID"] = $feedbackID;
         $newEntryValues["comment"] = $comment;
-        if ($fieldname != null){
-        $newEntryValues["fieldname"] = $fieldname;
+        if ($fieldname != null) {
+            $newEntryValues["fieldname"] = $fieldname;
         } else {
             $newEntryValues["fieldname"] = '';
         }
@@ -746,9 +747,10 @@ class NDB_BVL_Feedback
      * Creates a new entry under a thread, adds a record to the
      * feedback_bvl_entry table
      *
-     * @param  integer $feedbackID The threadID to hold the entry being created
-     * @param  string  $comment    The comment to add to the entry.
-     * @param  string  $username   The username of the entry author.
+     * @param integer $feedbackID The threadID to hold the entry being created
+     * @param string  $comment    The comment to add to the entry.
+     * @param string  $username   The username of the entry author.
+     *
      * @return void
      */
     function createEntry($feedbackID, $comment, $username)
@@ -959,18 +961,12 @@ class NDB_BVL_Feedback
         // create user object
         $user =& User::singleton();
 
-
-//        if (!$user->isMultiSiteEnabled($this->_username)) {
-//            throw new Exception("User is not allowed to close threads");
-//        }
-
         // new DB Object
         $db =& Database::singleton();
 
         $setArray = array(
                      "Status"   => 'closed',
                      "UserID"   => $this->_username,
-//                     "Testdate" => "NULL",
                     );
 
         $whereArray = array(
@@ -1016,12 +1012,13 @@ class NDB_BVL_Feedback
      * Used to re-open a thread identified by its feedbackID.
      *
      * @param integer $feedbackID The ID of the feedback thread being closed
-     * @author Evan McIlroy <evanmcilroy@gmail.com>
-     * @return void
      *
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     *
+     * @return void*
      */
-    
-    function openThread($feedbackID){
+    function openThread($feedbackID)
+    {
         $user =& User::singleton();
 
         $db =& Database::singleton();
@@ -1041,12 +1038,6 @@ class NDB_BVL_Feedback
             $whereArray = array_merge(
                 $whereArray,
                 array("FeedbackID" => $feedbackID)
-            );
-        }
-
-        else{
-            throw new Exception(
-                "Error: no feedback id selected"
             );
         }
 
@@ -1085,20 +1076,23 @@ class NDB_BVL_Feedback
         return $record;
     }
 
-    /** This function is currently used to check whether or not to render the bvl_feedback_icon
-     * in main.tpl. It checks if the user has the bvl feedback permission first, if the user
-     * has the permissions it then checks if the user is on the timepoint_list, instrument_list
+    /**
+     * This function is currently used to check whether or not to render
+     * the bvl_feedback_icon in main.tpl. It checks if the user has the
+     * bvl feedback permission first, if the user has the permissions it
+     * then checks if the user is on the timepoint_list, instrument_list
      * or on any instrument page.
      *
-     * Returns false if the user doesn't have the appropriate permissions or is not on one of the
-     * appropriate pages to return bvl_feedback.
+     * Returns false if the user doesn't have the appropriate permissions
+     * or is not on one of the appropriate pages to return bvl_feedback.
      *
      * @return bool|object
      * @throws ConfigurationException
      * @throws Exception
      * @author Evan McIlroy <evanmcilroy@gmail.com>
      */
-    static function bvlFeedbackPossible(){
+    static function bvlFeedbackPossible()
+    {
 
         // create user object
         $test_name = $_REQUEST['test_name'];
@@ -1109,32 +1103,29 @@ class NDB_BVL_Feedback
         }
 
         $site =& Site::singleton($user->getData('CenterID'));
-        if (Utility::isErrorX($site)) {
-            return PEAR::raiseError("Unable to construct the list_of_sites array: " . $site->getMessage());
-        }
 
-//        FIXME: This seems to check the user's site only and not if the user's site matches the test site.
         if ($site->isStudySite()) {
-            if ($user->hasPermission('bvl_feedback')){
-                if (($test_name === "timepoint_list") or ($test_name === "instrument_list")){
+            if ($user->hasPermission('bvl_feedback')) {
+                if (($test_name === "timepoint_list")
+                    || ($test_name === "instrument_list")
+                ) {
                     return true;
+                } else {
+                    $Factory = NDB_Factory::singleton();
+                    $DB = $Factory->Database(); //=& Database::singleton();
+                    $instruments_q = $DB->pselect(
+                        "SELECT Test_name FROM test_names",
+                        array()
+                    );
+
+                    foreach ($instruments_q as $row) {
+                        if ($row['Test_name'] == $test_name) {
+                            return true;
+                        }
+                    }
                 }
-
-               else{
-                   $Factory = NDB_Factory::singleton();
-                   $DB = $Factory->Database(); //=& Database::singleton();
-                   $instruments_q = $DB->pselect(
-                       "SELECT Test_name FROM test_names",
-                       array()
-                   );
-
-                   foreach ($instruments_q as $row) {
-                       if ($row['Test_name'] == $test_name) return true;
-                   }
-               }
             }
         }
         return false; //returning false when user is not on appropriate study site
     }
 }
-?>
