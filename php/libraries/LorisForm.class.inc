@@ -419,6 +419,7 @@ class LorisForm
                 $this->defaultValues[$name]
             );
         }
+
         return null;
     }
 
