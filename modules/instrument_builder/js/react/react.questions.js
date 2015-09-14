@@ -315,6 +315,9 @@ AddElement = React.createClass({
 	     	case 'multiselect':
 	     		selected = 'select';
 	     		break;
+	     	case 'page-break':
+	     		this.props.addPage(questionText);
+	     		return;
 	    }
 	    var element = {
 	    	Type: selected,
@@ -324,7 +327,7 @@ AddElement = React.createClass({
 	    	selected: this.state.selected
 	    };
 
-	    if(this.props.index){
+	    if(typeof this.props.index !== 'undefined'){
 	    	this.props.updateQuestions(element, this.props.index);
 	    } else {
 	    	this.props.updateQuestions(element);
@@ -356,6 +359,7 @@ AddElement = React.createClass({
 		switch(this.state.selected.id){
 			case 'header':
 			case 'label':
+			case 'page-break':
 				questionInput = <QuestionText updateState={this.updateState} element={this.state}/>
 				break;
 			case 'scored':
