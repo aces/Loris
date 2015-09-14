@@ -244,7 +244,7 @@ of this reference a CandidateObject. A CandidateObject is a JSON object of the f
 representing a candidate in Loris.
 
 ```
-GET /candidates
+GET /candidates/
 ```
 
 will return a JSON object of the form
