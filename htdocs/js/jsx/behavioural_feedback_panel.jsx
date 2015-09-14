@@ -21,7 +21,7 @@ var FeedbackPanelContent = React.createClass({
 
     if(index == this.state.currentEntryToggled){
       this.setState({
-        currentEntryToggled: null
+        currentEntryToggled: false
       });
     }
 
@@ -97,7 +97,7 @@ var FeedbackPanelRow = React.createClass({
   getInitialState: function(){
     return {
       thread_entries_toggled: false,
-      thread_entries_loaded: false,
+      thread_entries_loaded: [],
       thread_comment_toggled: false
     }
   },
@@ -108,10 +108,10 @@ var FeedbackPanelRow = React.createClass({
     var that = this;
 
     request = $.ajax({
-      type: "POST",
-      url: "ajax/get_thread_entry_data.php",
+      type: "GET",
+      url: "AjaxHelper.php?Module=bvl_feedback&script=get_thread_entry_data.php",
       data:{
-        "callFunc1" : this.props.feedbackID
+        "feedbackID" : this.props.feedbackID
       },
       success:function(data){
         that.setState({thread_entries_loaded : data});
@@ -139,7 +139,7 @@ var FeedbackPanelRow = React.createClass({
 
     request = $.ajax({
       type: "POST",
-      url: "ajax/thread_comment_bvl_feedback.php",
+      url: "AjaxHelper.php?Module=bvl_feedback&script=thread_comment_bvl_feedback.php",
       data: {"comment" : comment,
       "feedbackID" : feedbackID,
       "candID" : candID},
@@ -218,7 +218,7 @@ var FeedbackPanelRow = React.createClass({
       this.setState({
         value: "Comment added!"
       })
-      this.props.toggleThisThread;
+      this.props.toggleThisThread();
     },
     handleChange: function(event) {
       this.setState({value: event.target.value});
@@ -294,7 +294,7 @@ var FeedbackPanelRow = React.createClass({
       if(this.state.text_value.length){ 
       request = $.ajax({
         type: "POST",
-        url: "ajax/new_bvl_feedback.php",
+        url: "AjaxHelper.php?Module=bvl_feedback&script=new_bvl_feedback.php",
         data:{
           "input_type": this.state.input_value,
           "field_name" : this.state.select_value,
@@ -432,7 +432,7 @@ var FeedbackSummaryPanel = React.createClass({
       var that = this;
       request = $.ajax({
         type: "POST",
-        url: "ajax/react_get_bvl_threads.php",
+        url: "AjaxHelper?Module=bvl_feedback&script=react_get_bvl_threads.php",
         data:{
           "candID": this.props.candID,
           "sessionID" : this.props.sessionID,
@@ -456,7 +456,7 @@ var FeedbackSummaryPanel = React.createClass({
 
 	request = $.ajax({
 	    type:"POST",
-	    url: "ajax/get_bvl_feedback_summary.php",
+	    url: "AjaxHelper.php?Module=bvl_feedback&script=get_bvl_feedback_summary.php",
 	    data:{
 		"candID": this.props.candID,
 		"sessionID" : this.props.sessionID,
@@ -479,7 +479,7 @@ var FeedbackSummaryPanel = React.createClass({
         var that = this;
         request = $.ajax({
           type: "POST",
-          url: "ajax/react_get_bvl_threads.php",
+          url: "AjaxHelper.php?Module=bvl_feedback&script=react_get_bvl_threads.php",
           data:{
             "candID": this.props.candID,
             "sessionID" : this.props.sessionID,
@@ -515,7 +515,7 @@ var FeedbackSummaryPanel = React.createClass({
 
 	request = $.ajax({
 	    type:"POST",
-	    url: "ajax/close_bvl_feedback_thread.php",
+	    url: "AjaxHelper.php?Module=bvl_feedback&script=close_bvl_feedback_thread.php",
 	    data:{
 		"candID": this.props.candID,
 		"feedbackID" : feedbackID
@@ -548,7 +548,7 @@ var FeedbackSummaryPanel = React.createClass({
 	  
 	request = $.ajax({
 	    type:"POST",
-	    url: "ajax/open_bvl_feedback_thread.php",
+	    url: "AjaxHelper.php?Module=bvl_feedback&script=open_bvl_feedback_thread.php",
 	    data:{
 		"candID": this.props.candID,
 		"feedbackID" : feedbackID

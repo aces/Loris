@@ -297,10 +297,7 @@
             {if $dynamictabs neq "dynamictabs"}
             {* Add enough spacing to get below the menu *}
                 <br><br><br>
-            <div class="page-content inset">
-                {*<div id = "bvl_feedback_panel">*}
-                    {*{$feedback_panel}*}
-                {*</div>*}
+            <div class="page-content inset">  
 
                 {if $console}
                     <div class="alert alert-warning" role="alert">

@@ -1,19 +1,3 @@
-/*The config for the pagination of tables */
-var Config = React.createClass({
-    render: function() {
-        return <div>
-            <h2>Config</h2>
-            <label htmlFor="pageSize">Page Size:</label>
-            <select id="pageSize" value={this.props.pageSize} onChange={this.props.handlePageSizeChange}>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
-        </div>;
-    }
-});
-
 var PagedRowHeader = React.createClass({
     propType:{
         'header_row' : React.PropTypes.array.isRequired
@@ -222,7 +206,6 @@ var InstrumentConflictsRow = React.createClass({
 
 var BehaviouralFeedbackRow = React.createClass({
     handleClick: function(){
-        console.log("handle click");
         var link = React.findDOMNode(this.refs.feedback).href;
         var feedbackwindow = window.open(link, "Behavioural Feedback");
     },
@@ -249,7 +232,7 @@ var BehaviouralFeedbackRow = React.createClass({
             bvl_level = "Profile";
         }
 
-        return <tr data-dance = {bvl_link} key = {row.FeedbackID} onClick={this.handleClick}>
+        return <tr key = {row.FeedbackID} onClick={this.handleClick}>
             <td>
                 <a href={"main.php?test_name=timepoint_list&candID=" + row.CandID}>
 		      {row.CandID}

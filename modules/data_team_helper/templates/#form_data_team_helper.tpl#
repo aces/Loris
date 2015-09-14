@@ -100,7 +100,7 @@
   </div>
 
 
-<script type="text/javascript" src="GetJS.php?Module=data_team_helper&file=data_team_helper_react.js"></script>
+  <script type="text/javascript" src="GetJS.php?Module=data_team_helper&file=data_team_helper_react.js"></script>
 
 <script type="text/javascript">
 var incomplete = {$Incomplete_candidates|@json_encode};

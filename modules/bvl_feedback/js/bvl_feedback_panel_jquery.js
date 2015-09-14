@@ -9,7 +9,6 @@ $(document).ready(function() {
     var commentID = $('meta[itemprop="commentID"]').attr("context");
 
     $('.navbar-toggle').on('click',function(event){
-        console.log("navbar toggle clicked");
         $("#bvl_feedback_menu").toggleClass("active_panel");
         $("#bvl_panel_wrapper").toggleClass("bvl_panel");
 

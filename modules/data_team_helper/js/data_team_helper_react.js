@@ -1,64 +1,19 @@
-var Config = React.createClass({
-    displayName: "Config",
-
-    render: function render() {
-        return React.createElement(
-            "div",
-            null,
-            React.createElement(
-                "h2",
-                null,
-                "Config"
-            ),
-            React.createElement(
-                "label",
-                { htmlFor: "pageSize" },
-                "Page Size:"
-            ),
-            React.createElement(
-                "select",
-                { id: "pageSize", value: this.props.pageSize, onChange: this.props.handlePageSizeChange },
-                React.createElement(
-                    "option",
-                    { value: "1" },
-                    "1"
-                ),
-                React.createElement(
-                    "option",
-                    { value: "2" },
-                    "2"
-                ),
-                React.createElement(
-                    "option",
-                    { value: "3" },
-                    "3"
-                ),
-                React.createElement(
-                    "option",
-                    { value: "4" },
-                    "4"
-                )
-            )
-        );
-    }
-});
-
 var PagedRowHeader = React.createClass({
-    displayName: "PagedRowHeader",
+    displayName: 'PagedRowHeader',
 
     propType: {
         'header_row': React.PropTypes.array.isRequired
     },
     render: function render() {
         return React.createElement(
-            "thead",
+            'thead',
             null,
             React.createElement(
-                "tr",
-                { className: "info" },
+                'tr',
+                { className: 'info' },
                 this.props.header_row.map(function (header_column) {
                     return React.createElement(
-                        "th",
+                        'th',
                         null,
                         header_column
                     );
@@ -69,7 +24,7 @@ var PagedRowHeader = React.createClass({
 });
 
 var PagedTable = React.createClass({
-    displayName: "PagedTable",
+    displayName: 'PagedTable',
 
     propTypes: {
         'table_headers': React.PropTypes.array,
@@ -125,11 +80,11 @@ var PagedTable = React.createClass({
         });
         if (rows_for_current_page.length) {
             var table_contents = React.createElement(
-                "table",
-                { className: "table table-hover table-primary table-bordered colm-freeze" },
+                'table',
+                { className: 'table table-hover table-primary table-bordered colm-freeze' },
                 React.createElement(PagedRowHeader, { header_row: this.props.table_headers }),
                 React.createElement(
-                    "tbody",
+                    'tbody',
                     null,
                     rows_for_current_page
                 )
@@ -138,11 +93,11 @@ var PagedTable = React.createClass({
             var table_contents = "There is no data to display";
         }
         return React.createElement(
-            "div",
+            'div',
             null,
             table_contents,
             React.createElement(
-                "nav",
+                'nav',
                 null,
                 pager(page)
             )
@@ -157,41 +112,41 @@ function pager(page) {
     var pageLinks = [];
     if (page.currentPage > 1) {
         pageLinks.push(React.createElement(
-            "li",
+            'li',
             { onClick: page.handleClick(page.currentPage - 1) },
             React.createElement(
-                "span",
+                'span',
                 null,
-                "‹"
+                '‹'
             )
         ));
         if (page.currentPage > 2) {
             pageLinks.push(React.createElement(
-                "li",
+                'li',
                 { onClick: page.handleClick(1) },
                 React.createElement(
-                    "span",
+                    'span',
                     null,
-                    "1"
+                    '1'
                 )
             ));
             pageLinks.push(React.createElement(
-                "li",
+                'li',
                 null,
                 React.createElement(
-                    "span",
+                    'span',
                     null,
-                    "..."
+                    '...'
                 )
             ));
         }
     }
     if (page.numPages > 1) {
         pageLinks.push(React.createElement(
-            "li",
-            { className: "active" },
+            'li',
+            { className: 'active' },
             React.createElement(
-                "span",
+                'span',
                 null,
                 page.currentPage
             )
@@ -199,20 +154,20 @@ function pager(page) {
     }
     if (page.currentPage < page.numPages) {
         pageLinks.push(React.createElement(
-            "li",
+            'li',
             { onClick: page.handleClick(page.currentPage + 1) },
             React.createElement(
-                "span",
+                'span',
                 null,
                 page.currentPage + 1
             )
         ));
         if (page.currentPage < page.numPages - 1) {
             pageLinks.push(React.createElement(
-                "li",
+                'li',
                 { onClick: page.handleClick(page.currentPage + 2) },
                 React.createElement(
-                    "span",
+                    'span',
                     null,
                     page.currentPage + 2
                 )
@@ -220,10 +175,10 @@ function pager(page) {
         }
         if (page.currentPage < page.numPages - 2) {
             pageLinks.push(React.createElement(
-                "li",
+                'li',
                 { onClick: page.handleClick(page.currentPage + 3) },
                 React.createElement(
-                    "span",
+                    'span',
                     null,
                     page.currentPage + 3
                 )
@@ -231,43 +186,43 @@ function pager(page) {
         }
         if (page.currentPage < page.numPages - 3) {
             pageLinks.push(React.createElement(
-                "li",
-                { className: "disabled" },
+                'li',
+                { className: 'disabled' },
                 React.createElement(
-                    "span",
+                    'span',
                     null,
-                    "..."
+                    '...'
                 )
             ));
             pageLinks.push(React.createElement(
-                "li",
+                'li',
                 { onClick: page.handleClick(page.numPages) },
                 React.createElement(
-                    "span",
+                    'span',
                     null,
                     page.numPages
                 )
             ));
         }
         pageLinks.push(React.createElement(
-            "li",
+            'li',
             { onClick: page.handleClick(page.currentPage + 1) },
             React.createElement(
-                "span",
-                { "aria-hidden": "true" },
-                "›"
+                'span',
+                { 'aria-hidden': 'true' },
+                '›'
             )
         ));
     }
     return React.createElement(
-        "ul",
-        { className: "pagination pagination-sm" },
+        'ul',
+        { className: 'pagination pagination-sm' },
         pageLinks
     );
 }
 
 var IncompleteCandidatesRow = React.createClass({
-    displayName: "IncompleteCandidatesRow",
+    displayName: 'IncompleteCandidatesRow',
 
     handleClick: function handleClick() {
         var link = React.findDOMNode(this.refs.incomplete);
@@ -280,34 +235,34 @@ var IncompleteCandidatesRow = React.createClass({
     render: function render() {
         var row = this.props.row;
         return React.createElement(
-            "tr",
+            'tr',
             { key: row.id, onClick: this.handleClick },
             React.createElement(
-                "td",
+                'td',
                 null,
                 React.createElement(
-                    "a",
+                    'a',
                     { href: "main.php?test_name=instrument_list&candID=" + row.candid + "&sessionID=" + row.SessionID },
-                    " ",
+                    ' ',
                     row.visit_label,
-                    " "
+                    ' '
                 )
             ),
             React.createElement(
-                "td",
+                'td',
                 null,
                 React.createElement(
-                    "a",
+                    'a',
                     { href: "main.php?test_name=timepoint_list&candID=" + row.candid },
                     row.candid
                 )
             ),
             React.createElement(
-                "td",
+                'td',
                 null,
                 React.createElement(
-                    "a",
-                    { href: "main.php?test_name=" + row.test_name + "&candID=" + row.candid + "&sessionID=" + row.SessionID + "&commentID=" + row.commentid, ref: "incomplete" },
+                    'a',
+                    { href: "main.php?test_name=" + row.test_name + "&candID=" + row.candid + "&sessionID=" + row.SessionID + "&commentID=" + row.commentid, ref: 'incomplete' },
                     row.Full_name
                 )
             )
@@ -316,7 +271,7 @@ var IncompleteCandidatesRow = React.createClass({
 });
 
 var InstrumentConflictsRow = React.createClass({
-    displayName: "InstrumentConflictsRow",
+    displayName: 'InstrumentConflictsRow',
 
     handleClick: function handleClick(e) {
         //faking a form which posts to conflict_resolver
@@ -354,33 +309,33 @@ var InstrumentConflictsRow = React.createClass({
     render: function render() {
         var row = this.props.row;
         return React.createElement(
-            "tr",
+            'tr',
             { key: row.CandID + row.visit_label + row.test_name_display + row.FieldName, onClick: this.handleClick },
             React.createElement(
-                "td",
+                'td',
                 null,
                 row.visit_label
             ),
             React.createElement(
-                "td",
+                'td',
                 null,
                 React.createElement(
-                    "a",
+                    'a',
                     { href: "main.php?test_name=timepoint_list&candID=" + row.CandID },
                     row.CandID
                 )
             ),
             React.createElement(
-                "td",
+                'td',
                 null,
                 React.createElement(
-                    "a",
-                    { ref: "conflict", onClick: this.handleClick, href: "main.php?conflict_resolver", className: "conflict_resolver_link", "data-pscid": row.PSCID, "data-question": row.FieldName, "data-instrument": row.TableName, "data-visits": row.visit_label },
+                    'a',
+                    { ref: 'conflict', onClick: this.handleClick, href: 'main.php?conflict_resolver', className: 'conflict_resolver_link', 'data-pscid': row.PSCID, 'data-question': row.FieldName, 'data-instrument': row.TableName, 'data-visits': row.visit_label },
                     row.test_name_display
                 )
             ),
             React.createElement(
-                "td",
+                'td',
                 null,
                 row.FieldName
             )
@@ -389,7 +344,7 @@ var InstrumentConflictsRow = React.createClass({
 });
 
 var BehaviouralFeedbackRow = React.createClass({
-    displayName: "BehaviouralFeedbackRow",
+    displayName: 'BehaviouralFeedbackRow',
 
     handleClick: function handleClick() {
         console.log("handle click");
@@ -420,28 +375,28 @@ var BehaviouralFeedbackRow = React.createClass({
         }
 
         return React.createElement(
-            "tr",
-            { "data-dance": bvl_link, key: row.FeedbackID, onClick: this.handleClick },
+            'tr',
+            { 'data-dance': bvl_link, key: row.FeedbackID, onClick: this.handleClick },
             React.createElement(
-                "td",
+                'td',
                 null,
                 React.createElement(
-                    "a",
+                    'a',
                     { href: "main.php?test_name=timepoint_list&candID=" + row.CandID },
                     row.CandID
                 )
             ),
             React.createElement(
-                "td",
+                'td',
                 null,
                 React.createElement(
-                    "a",
-                    { href: bvl_link, onClick: this.handleClick, ref: "feedback" },
+                    'a',
+                    { href: bvl_link, onClick: this.handleClick, ref: 'feedback' },
                     bvl_level
                 )
             ),
             React.createElement(
-                "td",
+                'td',
                 null,
                 row.FieldName
             )
@@ -455,16 +410,16 @@ var DefaultPanel = React.createClass({ displayName: 'CandidatesPanelTable',
     },
     render: function render() {
         return React.createElement(
-            "div",
-            { className: "panel panel-primary" },
+            'div',
+            { className: 'panel panel-primary' },
             React.createElement(
-                "div",
-                { className: "panel-heading" },
+                'div',
+                { className: 'panel-heading' },
                 this.props.title
             ),
             React.createElement(
-                "div",
-                { className: "panel-body" },
+                'div',
+                { className: 'panel-body' },
                 this.props.children
             )
         );
@@ -472,7 +427,7 @@ var DefaultPanel = React.createClass({ displayName: 'CandidatesPanelTable',
 });
 
 var IncompleteCandidates = React.createClass({
-    displayName: "IncompleteCandidates",
+    displayName: 'IncompleteCandidates',
 
     render: function render() {
         return React.createElement(
@@ -488,7 +443,7 @@ var IncompleteCandidates = React.createClass({
 });
 
 var InstrumentConflicts = React.createClass({
-    displayName: "InstrumentConflicts",
+    displayName: 'InstrumentConflicts',
 
     render: function render() {
         return React.createElement(
@@ -504,7 +459,7 @@ var InstrumentConflicts = React.createClass({
 });
 
 var BehaviouralFeedback = React.createClass({
-    displayName: "BehaviouralFeedback",
+    displayName: 'BehaviouralFeedback',
 
     render: function render() {
         return React.createElement(
@@ -520,7 +475,7 @@ var BehaviouralFeedback = React.createClass({
 });
 
 var dataTeamGraphics = React.createClass({
-    displayName: "dataTeamGraphics",
+    displayName: 'dataTeamGraphics',
 
     componentDidMount: function componentDidMount() {
         var chart = c3.generate({
@@ -556,25 +511,25 @@ var dataTeamGraphics = React.createClass({
             var instrument_status = "Across All Instruments";
         }
         return React.createElement(
-            "div",
-            { className: "col-sm-12 col-md-5" },
+            'div',
+            { className: 'col-sm-12 col-md-5' },
             React.createElement(
-                "div",
-                { className: "panel panel-primary" },
+                'div',
+                { className: 'panel panel-primary' },
                 React.createElement(
-                    "div",
-                    { className: "panel-heading" },
-                    "At A Glance: ",
+                    'div',
+                    { className: 'panel-heading' },
+                    'At A Glance: ',
                     pscid_status,
-                    " - ",
+                    ' - ',
                     visit_status,
-                    " - ",
+                    ' - ',
                     instrument_status
                 ),
                 React.createElement(
-                    "div",
-                    { className: "panel-body" },
-                    React.createElement("div", { id: "completedChart" })
+                    'div',
+                    { className: 'panel-body' },
+                    React.createElement('div', { id: 'completedChart' })
                 )
             )
         );
