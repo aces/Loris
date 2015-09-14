@@ -95,7 +95,11 @@ class Project extends \Loris\API\APIBase
         $this->ProjectName = $projectName;
         include_once 'Utility.class.inc';
 
-        $this->ProjectID = $this->getProjectID($projectName);
+        if($projectName === 'loris') {
+            $this->ProjectID = 0;
+        } else {
+            $this->ProjectID = $this->getProjectID($projectName);
+        }
 
         if (!is_numeric($this->ProjectID)) {
             $this->header("HTTP/1.1 404 Not Found");
@@ -125,10 +129,17 @@ class Project extends \Loris\API\APIBase
                      ];
 
         if ($this->bCandidates) {
-            $rows    = $this->DB->pselect(
-                "SELECT CandID FROM candidate WHERE ProjectID=:projID",
-                array("projID" => $this->ProjectID)
-            );
+            if($this->ProjectID === 0) {
+                $rows = $this->DB->pselect(
+                    "SELECT CandID FROM candidate",
+                    array()
+                );
+            } else {
+                $rows = $this->DB->pselect(
+                    "SELECT CandID FROM candidate WHERE ProjectID=:projID",
+                    array("projID" => $this->ProjectID)
+                );
+            }
             $CandIDs = [];
 
             foreach ($rows as $row) {
