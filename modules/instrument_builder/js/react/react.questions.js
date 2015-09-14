@@ -211,7 +211,7 @@ ListElements = React.createClass({
 			                <li onClick={this.selectType.bind(this, "label", "Label")}>
 			                    <a id="label" className="option" title="Unemphasized display text">Label</a>
 			                </li>
-			                <li onClick={this.selectType.bind(this, "scored", "Scored Field")}>
+			                <li onClick={this.selectType.bind(this, "score", "Scored Field")}>
 			                    <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
 			                </li>
 			                <li className="divider"></li>
@@ -362,7 +362,7 @@ AddElement = React.createClass({
 			case 'page-break':
 				questionInput = <QuestionText updateState={this.updateState} element={this.state}/>
 				break;
-			case 'scored':
+			case 'score':
 			case 'textbox':
 			case 'textarea':
 				questionInput = <BasicOptions updateState={this.updateState} element={this.state}/>

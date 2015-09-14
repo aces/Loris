@@ -2,14 +2,10 @@ $(document).ready(function() {
     $(".options").hide();
     $("#textboxoptions").hide();
     $("#dropdownoptions").hide();
-
-    $("#load").click(function() {
-        Instrument.load()
-    });
-    document.getElementById("saveform").addEventListener("submit", function(ev) {
-        ev.preventDefault()
-        Instrument.save();
-    }, false);
+    // document.getElementById("saveform").addEventListener("submit", function(ev) {
+    //     ev.preventDefault()
+    //     Instrument.save();
+    // }, false);
     $("#elements").accordion({
         clearStyle: true,
         active: 1,

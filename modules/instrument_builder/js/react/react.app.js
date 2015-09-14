@@ -14,18 +14,106 @@ TabPane = React.createClass({
     }
 });
 LoadPane = React.createClass({
+	chooseFile: function (e) {
+		var value = e.target.files[0];
+		this.setState(function(state){
+			return {
+				file: value
+			};
+		});
+	},
+	loadFile: function () {
+		Instrument.load(this.state.file, this.props.loadCallback);
+	},
 	render: function () {
 		var spanDownStyle = {
 			display: 'none'
 		};
 		return (
-			<TabPane Title="Load and Instrument"
+			<TabPane Title="Load Instrument"
                 TabId={this.props.TabId}>
-                	<div className="col-xs-4">
-						<input className="fileUpload" type="file" id="instfile" />
+                	<div className="col-sm-4 col-xs-12">
+						<input className="fileUpload"
+							   type="file" id="instfile"
+			            	   onChange={this.chooseFile}
+						/>
 			            <br />
-			            <input className="btn btn-default" type="button" id="load" value="Load Instrument" />
+			            <input className="btn btn-primary"
+			            	   type="button" id="load"
+			            	   value="Load Instrument"
+			            	   onClick={this.loadFile}
+			            />
 			        </div>
+			</TabPane>
+		);
+	}
+});
+SavePane = React.createClass({
+	getInitialState: function() {
+	 	return {
+	 		fileName: '',
+	 		instrumentName: ''
+	 	};
+	},
+	onChangeFile: function(e){
+		var value = e.target.value;
+		this.setState(function(state){
+			return {
+				fileName: value
+			};
+		});
+	},
+	onChangeInst: function(e){
+		var value = e.target.value;
+		this.setState(function(state){
+			return {
+				instrumentName: value
+			};
+		});
+	},
+	render: function () {
+		var value = this.state.fileName;
+		return (
+			<TabPane Title="Save Instrument"
+                TabId={this.props.TabId}>
+                	<div className="form-group">
+                		<div className="col-xs-12">
+			                <label className="col-sm-2 control-label">Filename: </label>
+			                <div className="col-sm-4">
+			                    <input className="form-control"
+			                    	   type="text" id="filename"
+			                    	   value={value}
+			                    	   onChange={this.onChangeFile}
+			                   	/>
+			                </div>
+			            </div>
+			            <br /><br />
+			            <div className="col-xs-12">
+			                <label className="col-sm-2 control-label">Instrument Name: </label>
+			                <div className="col-sm-4">
+			                    <input className="form-control"
+			                    	   type="text" id="longname"
+			                    	   value={this.state.instrumentName}
+			                    	   onChange={this.onChangeInst}
+			                    />
+			                </div>
+			            </div>
+			            <br /><br />
+			            <br className="visible-xs" />
+			            <br className="visible-xs" />
+			            <br className="visible-xs" />
+			            <div className="col-xs-12">
+			            	<div className="col-xs-6 col-sm-2 col-sm-offset-2">
+			                	<input className="btn btn-primary col-xs-12" type="button" onclick="Instrument.validate()" value="Validate" />
+			                </div>
+			                <div className="col-xs-6 col-sm-2">
+			                	<input className="btn btn-primary col-xs-12"
+			                		   type="submit" value="Save"
+			                		   onClick={this.props.save}
+			                	/>
+			                </div>
+			            </div>
+		            </div>
 			</TabPane>
 		);
 	}
@@ -260,14 +348,33 @@ BuildPane = React.createClass({
 	}
 });
 InstrumentBuilderApp = React.createClass({
+	saveInstrument: function(){
+		Instrument.save(this.refs.savePane.state, this.refs.buildPane.state.Elements);
+	},
+	loadCallback: function(elements, info) {
+		this.refs.savePane.state = info;
+		this.refs.buildPane.state.Elements = elements;
+	},
 	render: function () {
 		var tabs = [];
-		tabs.push(<LoadPane
+		tabs.push(
+			<LoadPane
 				TabId="Load"
+				ref="loadPane"
+				loadCallback={this.loadCallback}
 			/>
 		);
-		tabs.push(<BuildPane
+		tabs.push(
+			<BuildPane
 				TabId="Build"
+				ref="buildPane"
+			/>
+		);
+		tabs.push(
+			<SavePane
+				TabId="Save"
+				ref="savePane"
+				save={this.saveInstrument}
 			/>
 		);
 		return (
