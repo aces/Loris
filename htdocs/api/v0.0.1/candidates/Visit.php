@@ -174,7 +174,21 @@ class Visit extends \Loris\API\Candidates\Candidate
         $this->header("HTTP/1.1 201 Created");
     }
 
-    function createNew($CandID, $subprojectID, $VL) {
+    /**
+     * Create a new timepoint
+     *
+     * This is a wrapper around the Timepoint::createNew function
+     * that can be stubbed out for testing.
+     *
+     * @param integer $CandID       The candidate with the visit
+     * @param integer $subprojectID The subproject for the new visit
+     * @param string  $VL           The visit label of the visit to
+     *                              be created
+     *
+     * @return none
+     */
+    function createNew($CandID, $subprojectID, $VL)
+    {
         \TimePoint::createNew($CandID, $subprojectID, $VL);
     }
 }

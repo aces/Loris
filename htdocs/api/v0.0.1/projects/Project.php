@@ -95,7 +95,7 @@ class Project extends \Loris\API\APIBase
         $this->ProjectName = $projectName;
         include_once 'Utility.class.inc';
 
-        if($projectName === 'loris') {
+        if ($projectName === 'loris') {
             $this->ProjectID = 0;
         } else {
             $this->ProjectID = $this->getProjectID($projectName);
@@ -129,7 +129,7 @@ class Project extends \Loris\API\APIBase
                      ];
 
         if ($this->bCandidates) {
-            if($this->ProjectID === 0) {
+            if ($this->ProjectID === 0) {
                 $rows = $this->DB->pselect(
                     "SELECT CandID FROM candidate",
                     array()

@@ -198,8 +198,8 @@ Class TimePoint
         // SubprojectID=$SubprojectID, VisitNo=nextVisitNumber(),
         // UserID=$State->getUsername(), etc...  NO Date_* are
         // specified here!
-        $factory  = NDB_Factory::singleton();
-        $db       = $factory->database();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         // select the candidate data
         $query = "SELECT c.PSCID, c.CenterID,
