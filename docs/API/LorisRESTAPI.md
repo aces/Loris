@@ -405,6 +405,12 @@ The format returned by a GET request is a JSON document of the form:
 
 ```js
 {
+    "Meta" : {
+        "Instrument" : $InstrumentName,
+        "Visit" : $VisitLabel,
+        "Candidate" : $CandID,
+        "DDE" : boolean
+    },
     "$InstrumentName" : {
         "FieldName1" : "Value1",
         "FieldName2" : "Value2",
