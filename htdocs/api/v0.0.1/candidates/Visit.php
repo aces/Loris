@@ -170,8 +170,12 @@ class Visit extends \Loris\API\Candidates\Candidate
 
         }
         // need to extract subprojectID
-        \TimePoint::createNew($this->CandID, $subprojectID, $this->VisitLabel);
+        $this->createNew($this->CandID, $subprojectID, $this->VisitLabel);
         $this->header("HTTP/1.1 201 Created");
+    }
+
+    function createNew($CandID, $subprojectID, $VL) {
+        \TimePoint::createNew($CandID, $subprojectID, $VL);
     }
 }
 

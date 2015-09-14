@@ -97,7 +97,15 @@ class Visit_Test extends BaseTestCase
             ]
         ], true);
         try {
-            $API = new \Loris\API\Candidates\Candidate\Visit("PUT", "123456", "V3", $JSON);
+            $API = $this->getMockBuilder(
+                '\Loris\API\Candidates\Candidate\Visit')->disableOriginalConstructor()->setMethods(['createNew'])->getMock();
+            $API->expects($this->once())->method('createNew');//->expects($this->once());
+            $API->__construct(
+                "PUT",
+                "123456",
+                "V3",
+                $JSON
+            );
         } catch(\Loris\API\SafeExitException $e) {
             $API = $e->Object;
         }
