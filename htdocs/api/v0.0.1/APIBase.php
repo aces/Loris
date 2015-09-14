@@ -65,10 +65,11 @@ abstract class APIBase
 
         $this->Factory = \NDB_Factory::singleton();
         $this->client  = new \NDB_Client();
-        // Even though it's not a command line client, this prevents
-        // the login related to showing the login screen from applying,
-        // then we manually
-        //$this->client->makeCommandLine();
+        if (defined("UNIT_TESTING")) {
+            // Unit tests are run from the command line, so avoid all
+            // the session stuff if we're in a unit test
+            $this->client->makeCommandLine();
+        }
         $this->client->initialize(__DIR__ . "/../../../project/config.xml");
 
         if (!defined("UNIT_TESTING")) {
