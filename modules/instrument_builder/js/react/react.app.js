@@ -155,54 +155,105 @@ DisplayElements = React.createClass({
 BuildPane = React.createClass({
 	getInitialState: function() {
 	 	return {
-	 		elements: [],
-	 		amountEditing: 0
+	 		Elements: [{
+	 			Type      	: "ElementGroup",
+    			GroupType 	: "Page",
+    			Description : "Top",
+    			Elements 	: []
+	 		}],
+	 		amountEditing : 0,
+	 		currentPage   : 0
 	 	};
 	},
 	editElement: function(elementIndex){
 		this.setState(function(state){
-			var temp = state.elements,
+			var temp = state.Elements,
 				edit = state.amountEditing + 1;
-			temp[elementIndex].editing = true;
+			temp[state.currentPage].Elements[elementIndex].editing = true;
 			return {
-				elements: temp,
+				Elements: temp,
 				amountEditing: edit
 			};
 		});
 	},
 	updateElement: function(element, index){
 		this.setState(function(state){
-			var temp = state.elements
+			var temp = state.Elements
 				edit = state.amountEditing - 1;
-			temp[index] = element;
+			temp[state.currentPage].Elements[index] = element;
 			return {
-				elements: temp,
+				Elements: temp,
 				amountEditing: edit
 			};
 		});
 	},
 	addQuestion: function(element){
 		this.setState(function(state){
-			var temp = state.elements;
-			temp.push(element);
+			var temp = state.Elements;
+			temp[state.currentPage].Elements.push(element);
 			return {
-				elements: temp
+				Elements: temp
+			};
+		});
+	},
+	addPage: function (pageName) {
+		this.setState(function(state){
+			var temp = state.Elements,
+				page = state.currentPage + 1;
+			temp.push({
+	 			Type      	: "ElementGroup",
+    			GroupType 	: "Page",
+    			Description : pageName,
+    			Elements 	: []
+	 		});
+			return {
+				Elements: temp,
+				currentPage: page
+			};
+		});
+	},
+	selectPage: function (index) {
+		this.setState(function(state){
+			return {
+				currentPage: index
 			};
 		});
 	},
 	render: function () {
-		var draggable = this.state.amountEditing === 0 ? true : false;
+		var draggable = this.state.amountEditing === 0 ? true : false,
+			that	  = this,
+			pages 	  = this.state.Elements.map((function(element, i){
+			        		return (
+			        			<li onClick={that.selectPage.bind(this, i)}>
+			                    	<a>{that.state.Elements[i].Description}</a>
+			                	</li>
+			                );
+			        	}));
 		return (
 			<TabPane Title="Build your Instrument"
                 TabId={this.props.TabId} Active={true}>
+                	<div className="form-group col-xs-12">
+					    <label for="selected-input" className="col-xs-2 col-sm-1 control-label">Page:</label>
+			            <div className="col-sm-4">
+			                <div className="btn-group">
+			                    <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			                        <span id="search_concept">{this.state.Elements[this.state.currentPage].Description}</span>
+			                        <span className="caret"></span>
+						        </button>
+						        <ul className="dropdown-menu" role="menu">
+						        	{pages}
+						        </ul>
+						    </div>
+						</div>
+					</div>
 					<DisplayElements
-						elements={this.state.elements}
+						elements={this.state.Elements[this.state.currentPage].Elements}
 						editElement={this.editElement}
 						updateElement={this.updateElement}
 						draggable = {draggable}
 					/>
 					<div className="row">
-						<AddElement updateQuestions={this.addQuestion}/>
+						<AddElement updateQuestions={this.addQuestion} addPage={this.addPage}/>
 					</div>
 			</TabPane>
 		);
