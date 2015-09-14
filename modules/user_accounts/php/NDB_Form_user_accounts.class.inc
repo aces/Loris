@@ -300,8 +300,22 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // full name
         //$this->addBasicText('Real_name', 'Full name');
-        $this->addBasicText('First_name', 'First name');
-        $this->addBasicText('Last_name', 'Last name');
+        $this->addBasicText(
+            'First_name',
+            'First name',
+            array(
+                'oninvalid' => "this.setCustomValidity('First name is required')",
+                'onchange'  => "this.setCustomValidity('')",
+            )
+        );
+        $this->addBasicText(
+            'Last_name',
+            'Last name',
+            array(
+                'oninvalid' => "this.setCustomValidity('Last name is required')",
+                'onchange'  => "this.setCustomValidity('')",
+            )
+        );
 
         $this->addRule('First_name', 'First name is required', 'required');
         $this->addRule('Last_name', 'Last name is required', 'required');
@@ -472,9 +486,24 @@ class NDB_Form_User_Accounts extends NDB_Form
         $this->addScoreColumn('UserID', 'User name');
 
         // full name
-        $this->addBasicText('First_name', 'First name');
-        $this->addBasicText('Last_name', 'Last name');
-
+        //$this->addBasicText('Real_name', 'Full name');
+        $this->addBasicText(
+            'First_name',
+            'First name',
+            array(
+                'oninvalid' => "this.setCustomValidity('First name is required')",
+                'onchange'  => "this.setCustomValidity('')",
+            )
+        );
+        $this->addBasicText(
+            'Last_name',
+            'Last name',
+            array(
+                'oninvalid' => "this.setCustomValidity('Last name is required')",
+                'onchange'  => "this.setCustomValidity('')",
+            )
+        );
+        
         $this->addRule('First_name', 'First name is required', 'required');
         $this->addRule('Last_name', 'Last name is required', 'required');
         $this->addRule(
@@ -506,8 +535,15 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // email address
-        $this->addBasicText('Email', 'Email address');
-
+        $this->addBasicText(
+            'Email',
+            'Email address',
+            array(
+                'oninvalid' => "this.setCustomValidity('Email address is required')",
+                'onchange'  => "this.setCustomValidity('')",
+            )
+        );
+        
         // email address rules
         $this->addRule('Email', 'Email address is required', 'required');
         $this->addRule('Email', 'Your email address must be valid', 'email');

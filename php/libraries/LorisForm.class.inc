@@ -66,6 +66,10 @@ class LorisForm
         if (isset($attribs['value'])) {
             $el['value'] = $attribs['value'];
         }
+        if (isset($attribs['oninvalid'])) {
+            $el['oninvalid'] = $attribs['oninvalid'];
+        }
+
         return $el;
     }
     /**
@@ -616,6 +620,14 @@ class LorisForm
         }
         $value = $this->getValue($el['name']);
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
+            . (
+                isset($el['onchange']) && $el['onchange']
+                ? " onchange=\"{$el['onchange']}\"" : ''
+              )
+            . (
+                isset($el['oninvalid']) && $el['oninvalid']
+                ? " oninvalid=\"{$el['oninvalid']}\"" : ''
+              )
             . (
                 isset($el['required']) && $el['required']
                 ? ' required' : ''
