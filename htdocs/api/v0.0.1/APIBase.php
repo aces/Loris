@@ -111,6 +111,9 @@ abstract class APIBase
         case 'OPTIONS':
             $this->handleOPTIONS();
             break;
+        case 'PATCH':
+            $this->handlePATCH();
+            break;
 
         }
     }
@@ -170,6 +173,17 @@ abstract class APIBase
      * @return none
      */
     function handlePOST()
+    {
+        $this->header("HTTP/1.1 501 Not Implemented");
+        $this->safeExit(0);
+    }
+
+    /**
+     * Handle a PATCH request
+     *
+     * @return none
+     */
+    function handlePATCH()
     {
         $this->header("HTTP/1.1 501 Not Implemented");
         $this->safeExit(0);

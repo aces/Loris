@@ -191,6 +191,37 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
         }
     }
 
+    /**
+     * Handle a PUT request
+     *
+     * @return none, but populates $this->JSON and writes to database
+     */
+    function handlePATCH()
+    {
+        $fp   = fopen("php://input", "r");
+        $data = '';
+        while (!feof($fp)) {
+            $data .= fread($fp, 1024);
+        }
+        fclose($fp);
+
+        parse_str(urldecode($data), $data);
+        if ($this->Instrument->validate($data)) {
+            $this->Instrument->_save($data[$this->Instrument->testName]);
+            $this->JSON = array("success" => "Updated");
+        } else {
+            $this->Header("HTTP/1.1 403 Forbidden");
+            if (!$this->Instrument->determineDataEntryAllowed()) {
+                $msg = "Can not update instruments that"
+                       . " are flagged as complete";
+
+                $this->JSON = array('error' => $msg);
+            } else {
+                $this->JSON = array("error" => "Could not update.");
+            }
+        }
+    }
+
 }
 
 if (isset($_REQUEST['PrintInstrumentData'])) {
