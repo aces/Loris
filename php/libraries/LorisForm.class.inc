@@ -1206,7 +1206,6 @@ class LorisForm
                 continue;
             }
 
-            // Normal case, just set it directly.
             // Check to see it the element type is a header or is a static
             // element without a request variable. If so do not add to the
             // reference array
