@@ -1,27 +1,66 @@
- <?php
+<?php
 /**
  * General behavioural feedback panel class.
  *
- * This class provides the behavioural feedback gui for the timepoint list, instrument
- * list and individual instruments.
+ * This class provides the behavioural feedback gui for the timepoint list,
+ * instrument list and individual instruments.
  *
- * @package Behavioural
- * @author Evan McIlroy <evanmcilroy@gmail.com>
- * @license GNU
+ * PHP version 5
+ *
+ * @category Behavioural
+ * @package  Main
+ * @author   Evan McIlroy <evanmcilroy@gmail.com>
+ * @license  GPLv3 <http://www.gnu.org/licenses/gpl-3.0.en.html>
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
+
+/**
+ * BVL_Feedback_Panel Class
+ *
+ * This class is used by the timepoint list,
+ * instrument list, and instrument classes.
+ *
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Imaging
+ * @author     Evan McIlroy <evanluc.mcin@gmail.com>
+ * @license    @GPLv3 <http://www.gnu.org/licenses/gpl-3.0.en.html>
+ * @link       https://github.com/aces/Loris-Trunk
  */
 class BVL_Feedback_Panel
 {
     var $_feedbackThread = '';
 
+    /**
+     * Creates the feedback thread for the given combination of candID,
+     * sessionID and commentID.
+     *
+     * @param int  $candID    The candidate ID.
+     * @param null $sessionID The session ID for a given visit. Optional.
+     * @param null $commentID The comment ID for a given instrument. Optional.
+     *
+     * @return null
+     */
     function BVL_Feedback_Panel($candID, $sessionID=null, $commentID=null)
     {
         $user =& User::singleton();
         $username = $user->getUsername();
         $this->_feedbackThread
-            =& NDB_BVL_Feedback::Singleton($username, $candID, $sessionID, $commentID);
+            =& NDB_BVL_Feedback::Singleton(
+                $username, $candID, $sessionID, $commentID
+            );
     }
 
-    function display(){
+    /**
+     * Function to display the feedback panel at the timepoint list,
+     * instrument list or instrument level.
+     *
+     * @return string The HTML for the appropriate feedback panel.
+     * @throws Exception
+     * @throws SmartyException
+     */
+    function display()
+    {
         $this->tpl_data['candID']
             = $this->_feedbackThread->_feedbackCandidateProfileInfo["CandID"];
         $candidateID
