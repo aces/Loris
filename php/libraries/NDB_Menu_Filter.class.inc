@@ -137,6 +137,8 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // start the filter form
         $this->_setupPage(null, null, null, null, 'filter');
+        $this->registerDefaultFilter();
+
         // $this->form = new HTML_QuickForm('filter');
 
         // set the filters
@@ -146,6 +148,18 @@ class NDB_Menu_Filter extends NDB_Menu
         $success = $this->_build();
 
         return true;
+    }
+
+    /**
+     * By default, trim all fields on the form before any processing/validation
+     * is done. Derived classes can override this behavior if needed.
+     *
+     * @return void
+     * @access public
+     */
+    function registerDefaultFilter()
+    {
+        $this->form->applyFilter('__ALL__', 'trim');
     }
 
     /**
@@ -204,15 +218,19 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // Go through the form's fields and set the valid ones.
         foreach ($this->formToFilter as $formKey => $dbField) {
-            if (isset($values[$formKey]) && $values[$formKey] !== '') {
-                $value = $values[$formKey];
-                if (in_array($dbField, $this->validFilters)) {
-                    $newFormFilters[$dbField] = $value;
+            if (isset($values[$formKey])) {
+                // Call to form->getValue will apply all the form filters that
+                // will modify the submitted data
+                $filteredValue = $this->form->getValue($formKey, $values[$formKey]);
+                if ($filteredValue !== '') {
+                    if (in_array($dbField, $this->validFilters)) {
+                        $newFormFilters[$dbField] = $filteredValue;
 
-                    if (in_array($dbField, $this->validHavingFilters)) {
-                        $this->having[$dbField] = $value;
-                    } else {
-                        $this->filter[$dbField] = $value;
+                        if (in_array($dbField, $this->validHavingFilters)) {
+                            $this->having[$dbField] = $filteredValue;
+                        } else {
+                            $this->filter[$dbField] = $filteredValue;
+                        }
                     }
                 }
             }
@@ -360,7 +378,6 @@ class NDB_Menu_Filter extends NDB_Menu
         // show data table with user information and access URLs
         $success = $this->_setDataTable();
     }
-
 
     /**
      * Sets the template data for the filter form
