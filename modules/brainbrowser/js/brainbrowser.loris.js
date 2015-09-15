@@ -16,8 +16,7 @@ function getQueryVariable(variable) {
 BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     "use strict";
     var loading_div = $("#loading");
-
-
+  
     var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [] ,
     bboptions = {};
 
