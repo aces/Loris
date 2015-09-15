@@ -2159,7 +2159,9 @@ class NDB_BVL_Instrument extends NDB_Page
 
         if (!empty($_REQUEST['commentID'])) {
             $feedbackPanel = new BVL_Feedback_Panel(
-                $_REQUEST['candID'], $_REQUEST['sessionID'], $_REQUEST['commentID']
+                $_REQUEST['candID'],
+                $_REQUEST['sessionID'],
+                $_REQUEST['commentID']
             );
 
             return $feedbackPanel->display();
