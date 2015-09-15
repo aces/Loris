@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once'ConflictDetector.class.inc';
+require_once 'ConflictDetector.class.inc';
 
 /**
  * Behavioural instrument status class
@@ -188,7 +188,7 @@ class NDB_BVL_InstrumentStatus
             $diff = ConflictDetector::detectConflictsForCommentIds(
                 $instrumentName,
                 $principalCommentId,
-                'DDE_'.$principalCommentId
+                'DDE_' . $principalCommentId
             );
             ConflictDetector::recordUnresolvedConflicts($diff);
         }
@@ -218,6 +218,19 @@ class NDB_BVL_InstrumentStatus
             array('CommentID' => $this->_commentID)
         );
         $updateResult = $this->select($this->_commentID);
+
+        $principalCommentId = (strpos($this->_commentID, 'DDE') === false
+            ? $this->_commentID
+            : substr($this->_commentID, 4)
+        );
+
+        // If Administration Status == None, remove from Conflict Resolver
+        if ($status == 'None') {
+            $deleteWhere1 = array('CommentId1' => $this->_commentID);
+            $deleteWhere2 = array('CommentId2' => $this->_commentID);
+            $GLOBALS['DB']->delete('conflicts_unresolved', $deleteWhere1);
+            $GLOBALS['DB']->delete('conflicts_unresolved', $deleteWhere2);
+        }
     }
 
     /**
