@@ -1150,7 +1150,14 @@ class LorisForm
             }
 
             // normal case, just set it directly
-            $arr[$name] = $_REQUEST[$name];
+            // Check to see it the element type is a header or is a static
+            // element without a request varible. If so do not add to the
+            // reference array
+            if (!($el['type'] === 'header'
+                || ($el['type'] === 'static' && empty($_REQUEST[$name])))
+            ) {
+                $arr[$name] = $_REQUEST[$name];
+            }
 
             if ($el['type'] === 'date') {
                 // Convert dates to the type of group that was used
