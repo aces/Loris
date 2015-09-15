@@ -16,7 +16,7 @@ function getQueryVariable(variable) {
 BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     "use strict";
     var loading_div = $("#loading");
-  
+
     var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [] ,
     bboptions = {};
 
@@ -505,7 +505,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         $("#time-val-" + vol_id).val(volume.current_time);
       }
     });      // Should cursors in all panels be synchronized?
-
 
     link = window.location.search;
 
