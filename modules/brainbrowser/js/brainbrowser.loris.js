@@ -373,7 +373,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
           // in a dialog box.
           img.onload = function() {
             $("<div></div>").append(img).dialog({
-              title: space_names[axis_name] + " Slicess",
+              title: space_names[axis_name] + " Slices",
               height: 600,
               width: img.width
             });
