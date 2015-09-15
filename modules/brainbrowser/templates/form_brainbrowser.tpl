@@ -191,7 +191,6 @@
 
     <div id="loading" style="display: block; color: #064785; font-size: 40px; font-weight: bold; text-align: center; margin: auto;">LOADING...</div>
 
-    <!--script type="text/javascript" src="js/brainbrowser.volume-viewer.ui-controls.min.js"></script-->
     <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=brainbrowser.loris.js"></script>
 
 {/literal}
