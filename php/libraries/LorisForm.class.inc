@@ -34,6 +34,7 @@ class LorisForm
     var $defaultValues = array();
     var $formRules     = array();
     var $errors        = array();
+    var $filters       = array();
     var $frozen        = false;
 
     /**
@@ -390,7 +391,7 @@ class LorisForm
     function getValue($name)
     {
         if (isset($_REQUEST[$name])) {
-            return $_REQUEST[$name];
+            return $this->_getFilteredValue($name, $_REQUEST[$name]);
         }
 
         $bracketIdx = strpos($name, '[');
@@ -405,14 +406,55 @@ class LorisForm
                     }
                     return 0;
                 }
-                return $_REQUEST[$fieldName][$fieldIdx];
+                return $this->_getFilteredValue(
+                    $fieldName,
+                    $_REQUEST[$fieldName][$fieldIdx]
+                );
             }
         }
 
         if (isset($this->defaultValues[$name])) {
-            return $this->defaultValues[$name];
+            return $this->_getFilteredValue(
+                $name,
+                $this->defaultValues[$name]
+            );
         }
+
         return null;
+    }
+
+    /**
+     * Gets the value of form element $name, after all filters have been
+     * applied. If there are no filters registered for element $name, then
+     * the original unmodified value is returned.
+     *
+     * @param string $name  name of the form element.
+     * @param string $value value of the form element.
+     *
+     * @return string value of the form element once all registered filters
+     *                (if any) have been applied.
+     */
+    private function _getFilteredValue($name, $value)
+    {
+        $newValue = $value;
+
+        // Apply field specific filters
+        if (isset($this->filters[$name])) {
+            if (in_array('trim', $this->filters[$name])) {
+                $new_value = trim($newValue);
+            }
+        }
+
+        // Apply filters that should be applied on all fields
+        if (isset($this->filters['__ALL__'])) {
+            foreach ($this->filters['__ALL__'] as $filterType) {
+                if (in_array('trim', $this->filters['__ALL__'])) {
+                    $newValue = trim($newValue);
+                }
+            }
+        }
+
+        return $newValue;
     }
 
     /**
@@ -723,13 +765,27 @@ class LorisForm
 
     /**
      * Reimplements the HTML_QuickForm applyFilter API.
-     * TODO: Implement this. We only ever use "trim", so that will be the only
-     *       thing implemented.
+     * Only trim operations are supported. Passing the special
+     * __ALL__ $elementName will apply the filter to every element
+     * in the form.
+     *
+     * @param string $elementName name of the element to which the filter
+     *                            should be applied.
+     * @param string $filterType  type of filter to apply.
      *
      * @return none
      */
-    function applyFilter()
+    function applyFilter($elementName, $filterType)
     {
+        if ($filterType == 'trim') {
+            if (!isset($this->filters[$elementName])) {
+                $this->filters[$elementName] = array();
+            }
+
+            $this->filters[$elementName][] = 'trim';
+        }
+
+        // Eventually, support for more filter types will be added here
     }
 
     /**
@@ -1136,7 +1192,8 @@ class LorisForm
                 $fieldIdx  = substr($name, $bracketIdx+1);
                 $fieldIdx  = strstr($fieldIdx, ']', true);
                 if (!isset($arr[$fieldName])) {
-                    $arr[$fieldName] = $_REQUEST[$fieldName];
+                    $arr[$fieldName]
+                        = $this->getValue($fieldName, $_REQUEST[$fieldName]);
                 }
                 if ($el['type'] === 'advcheckbox') {
                     $val = $this->getValue($name);
@@ -1149,21 +1206,21 @@ class LorisForm
                 continue;
             }
 
-            // normal case, just set it directly
+            // Normal case, just set it directly.
             // Check to see it the element type is a header or is a static
-            // element without a request varible. If so do not add to the
+            // element without a request variable. If so do not add to the
             // reference array
             if (!($el['type'] === 'header'
                 || ($el['type'] === 'static' && empty($_REQUEST[$name])))
             ) {
-                $arr[$name] = $_REQUEST[$name];
+                $arr[$name] = $this->getValue($name, $_REQUEST[$name]);
             }
 
             if ($el['type'] === 'date') {
                 // Convert dates to the type of group that was used
                 // by HTML_QuickForm. This should eventually be modified
                 // to just use a normal HTML5 date.
-                $vals       = explode("-", $arr[$name]);
+                $vals       = explode("-", $this->getValue($name, $arr[$name]));
                 $arr[$name] = array(
                                'Y' => $vals[0],
                                'M' => $vals[1],
