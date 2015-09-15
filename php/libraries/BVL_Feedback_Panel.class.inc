@@ -43,11 +43,14 @@ class BVL_Feedback_Panel
      */
     function BVL_Feedback_Panel($candID, $sessionID=null, $commentID=null)
     {
-        $user =& User::singleton();
+        $user     =& User::singleton();
         $username = $user->getUsername();
         $this->_feedbackThread
             =& NDB_BVL_Feedback::Singleton(
-                $username, $candID, $sessionID, $commentID
+                $username,
+                $candID,
+                $sessionID,
+                $commentID
             );
     }
 
@@ -64,22 +67,21 @@ class BVL_Feedback_Panel
         $this->tpl_data['candID']
             = $this->_feedbackThread->_feedbackCandidateProfileInfo["CandID"];
         $candidateID
-            =  $this->_feedbackThread->_feedbackCandidateProfileInfo["CandID"];
+        =  $this->_feedbackThread->_feedbackCandidateProfileInfo["CandID"];
         $candidateObject = Candidate::singleton($candidateID);
-        $this->tpl_data['pscid'] = $candidateObject->getPSCID();
+        $this->tpl_data['pscid']          = $candidateObject->getPSCID();
         $this->tpl_data['sessionID']
-            = $this->_feedbackThread->_feedbackCandidateProfileInfo["SessionID"];
+        = $this->_feedbackThread->_feedbackCandidateProfileInfo["SessionID"];
         $this->tpl_data['commentID']
-            = $this->_feedbackThread->_feedbackObjectInfo["CommentID"];
-        $this->tpl_data['thread_list'] = $this->_feedbackThread->getThreadList();
+        = $this->_feedbackThread->_feedbackObjectInfo["CommentID"];
+        $this->tpl_data['thread_list']    = $this->_feedbackThread->getThreadList();
         $this->tpl_data['feedback_level'] = $this->_feedbackThread->_feedbackLevel;
         $this->tpl_data['feedback_types']
             = $this->_feedbackThread->getFeedbackTypes();
-        $this->tpl_data['feedbacktypes'] = NDB_BVL_Feedback::getFeedbackTypes();
+        $this->tpl_data['feedbacktypes']  = NDB_BVL_Feedback::getFeedbackTypes();
 
         $summary = $this->_feedbackThread->getSummaryOfThreads();
         $this->tpl_data['thread_summary_headers'] = json_encode($summary);
-
 
         $field_names = Utility::getSourcefields($_REQUEST['test_name']);
         $Fields['Across All Fields'] = 'Across All Fields';
