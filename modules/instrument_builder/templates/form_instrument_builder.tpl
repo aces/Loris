@@ -6,6 +6,7 @@
 <script src="GetJS.php?Module=instrument_builder&file=react.questions.js"></script>
 <script src="GetJS.php?Module=instrument_builder&file=react.app.js"></script>
 
+<div id="message" class="error">&nbsp;</div>
 <div id="builder"></div>
 
 {literal}
@@ -24,5 +25,3 @@
 {/literal}
 
 <script type="application/ecmascript" src="js/FileSaver.min.js"></script>
-
-<div id="message" class="error">&nbsp;</div>

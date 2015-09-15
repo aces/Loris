@@ -288,10 +288,13 @@ var Instrument = {
                     tempElement = {};
                     specialCase = false;
                 }
-                callback(Elements, fileInfo);
+                callback.success(Elements, fileInfo);
             };
-        reader.onload = ParseInstrument;
-        var data = reader.readAsText(file);
-        alert("Instrument Loaded");
+        if (file.name.split('.')[1] === 'linst') {
+            reader.onload = ParseInstrument;
+            var data = reader.readAsText(file);
+        } else {
+            callback.error("typeError");
+        }
     }
 }

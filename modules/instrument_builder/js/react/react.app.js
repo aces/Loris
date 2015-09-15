@@ -14,25 +14,69 @@ TabPane = React.createClass({
     }
 });
 LoadPane = React.createClass({
+	getInitialState: function() {
+	 	return {
+	 		alert: ''
+	 	};
+	},
 	chooseFile: function (e) {
 		var value = e.target.files[0];
 		this.setState(function(state){
 			return {
-				file: value
+				file: value,
+				alert: ''
+			};
+		});
+	},
+	setAlert: function (type) {
+		this.setState(function(state){
+			return {
+				alert: type
+			};
+		});
+	},
+	resetAlert: function () {
+		this.setState(function(state){
+			return {
+				alert: ''
 			};
 		});
 	},
 	loadFile: function () {
-		Instrument.load(this.state.file, this.props.loadCallback);
+		var callback = {
+				success: this.props.loadCallback,
+				error: this.setAlert
+			};
+		Instrument.load(this.state.file, callback);
 	},
 	render: function () {
 		var spanDownStyle = {
-			display: 'none'
-		};
+				display: 'none'
+			},
+			alert = '';
+		switch (this.state.alert) {
+			case 'success':
+				alert = (
+					<div className="alert alert-success alert-dismissible" role="alert">
+						  <button type="button" className="close" onClick={this.resetAlert}><span aria-hidden="true">&times;</span></button>
+						  <strong>Success!</strong> Instrument Loaded
+					</div>
+				)
+				break;
+			case 'typeError':
+				alert = (
+					<div className="alert alert-danger alert-dismissible" role="alert">
+						  <button type="button" className="close" onClick={this.resetAlert}><span aria-hidden="true">&times;</span></button>
+						  <strong>Error!</strong> Wrong file format
+					</div>
+				)
+				break;
+		}
 		return (
 			<TabPane Title="Load Instrument"
                 TabId={this.props.TabId}>
                 	<div className="col-sm-4 col-xs-12">
+                		{alert}
 						<input className="fileUpload"
 							   type="file" id="instfile"
 			            	   onChange={this.chooseFile}
@@ -54,6 +98,14 @@ SavePane = React.createClass({
 	 		fileName: '',
 	 		instrumentName: ''
 	 	};
+	},
+	loadState: function(newState) {
+		this.setState(function(state){
+			return {
+				fileName: newState.fileName,
+				instrumentName: newState.instrumentName
+			};
+		});
 	},
 	onChangeFile: function(e){
 		var value = e.target.value;
@@ -253,6 +305,13 @@ BuildPane = React.createClass({
 	 		currentPage   : 0
 	 	};
 	},
+	loadElements: function(elements) {
+		this.setState(function(state){
+			return {
+				Elements: elements
+			};
+		});
+	},
 	editElement: function(elementIndex){
 		this.setState(function(state){
 			var temp = state.Elements,
@@ -352,8 +411,9 @@ InstrumentBuilderApp = React.createClass({
 		Instrument.save(this.refs.savePane.state, this.refs.buildPane.state.Elements);
 	},
 	loadCallback: function(elements, info) {
-		this.refs.savePane.state = info;
-		this.refs.buildPane.state.Elements = elements;
+		this.refs.savePane.loadState(info);
+		this.refs.buildPane.loadElements(elements);
+		this.refs.loadPane.setAlert('success');
 	},
 	render: function () {
 		var tabs = [];
@@ -383,13 +443,11 @@ InstrumentBuilderApp = React.createClass({
 					<li role="presentation"><a href="#Load" aria-controls="home" role="tab" data-toggle="tab">Load</a></li>
 				    <li role="presentation" className="active"><a href="#Build" aria-controls="build" role="tab" data-toggle="tab">Build</a></li>
 				    <li role="presentation"><a href="#Save" aria-controls="messages" role="tab" data-toggle="tab">Save</a></li>
-				    <li role="presentation"><a href="#Rules" aria-controls="settings" role="tab" data-toggle="tab">Rules</a></li>
 				 </ul>
 
 			  	<div className="tab-content row">
 				    {tabs}
 			  	</div>
-				<div className="row"><h1>HELLO WORLD</h1></div>
 			</div>
 		)
 	}
