@@ -101,10 +101,9 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                                       'OldValue2'      => $row['Value2'],
                                       'NewValue'       => $val,
                                       'ConflictID'     => $row['ConflictID'],
-                                      'ProjectID'      => $row['ProjectID'],
                                      );
 
-                    $DB->insert('conflicts_resolved', $resolutionLog);
+                    $DB->insert('conflicts_resolved', $resolutionLog); 
 
                     // update the source tables
                     $setArray    = array(
