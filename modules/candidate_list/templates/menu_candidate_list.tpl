@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div class="row">
-                {if 1 < count($form.centerID.options)}
+                {if count($form.centerID.options) > 1}
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
                         {$form.centerID.label}
