@@ -456,7 +456,6 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
             $x++;
         }
-
         return true;
     }
 }
