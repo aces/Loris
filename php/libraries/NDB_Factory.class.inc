@@ -32,16 +32,18 @@ require_once 'CouchDB.class.inc';
  */
 class NDB_Factory
 {
-    private static $_testdb = null;
-    private static $_db     = null;
+    public static $testdb = null;
+    public static $db     = null;
+    public static $config = null;
 
-    private static $_couchdb = null;
-    private static $_user    = null;
+    private static $_couchdb    = null;
+    private static $_user       = null;
+    private static $_candidates = array();
+    private static $_timepoints = array();
 
     var $Testing; // Whether or not Mock objects should be returned instead of
                   // real ones
     //
-    private static $_config = null;
 
     /**
      * Settings object
@@ -87,15 +89,18 @@ class NDB_Factory
      */
     function reset()
     {
-        self::$_testdb = null;
-        self::$_db     = null;
+        self::$testdb = null;
+        self::$db     = null;
 
         self::$_couchdb = null;
         self::$_user    = null;
 
-        self::$_config = null;
+        self::$config = null;
 
         self::$_settings = null;
+
+        self::$_candidates = array();
+        self::$_timepoints = array();
     }
 
     /**
@@ -108,17 +113,18 @@ class NDB_Factory
      */
     function config($configfile = "../project/config.xml")
     {
-        if (self::$_config !== null) {
-            return self::$_config;
+        if (self::$config !== null) {
+            return self::$config;
         }
         if ($this->Testing) {
-            Mock::generate("NDB_Config");
+            //Mock::generate("NDB_Config");
             $config = new MockNDB_Config();
         } else {
             $config = NDB_Config::singleton($configfile);
+            return $config;
         }
 
-        self::$_config = $config;
+        self::$config = $config;
         $config->load($configfile);
         return $config;
     }
@@ -133,7 +139,7 @@ class NDB_Factory
      */
     public function setConfig(NDB_Config $config)
     {
-        self::$_config = $config;
+        self::$config = $config;
         return $config;
     }
 
@@ -180,18 +186,18 @@ class NDB_Factory
     {
         $db_ref = null;
         if ($this->Testing) {
-            $db_ref = &self::$_testdb;
+            $db_ref = &self::$testdb;
             if ($db_ref !== null) {
                 return $db_ref;
             }
-            Mock::generate("Database");
-            self::$_testdb = new MockDatabase();
+            //Mock::generate("Database");
+            self::$testdb = new MockDatabase();
         } else {
-            $db_ref = &self::$_db;
+            $db_ref = &self::$db;
             if ($db_ref !== null) {
                 return $db_ref;
             }
-            self::$_db = Database::singleton();
+                self::$db = Database::singleton();
         }
         $config = $this->config();
         $dbc    = $config->getSetting('database');
@@ -215,7 +221,7 @@ class NDB_Factory
      */
     public function setDatabase(Database $db)
     {
-        self::$_db = $db;
+        self::$db = $db;
         return $db;
     }
 
@@ -276,6 +282,49 @@ class NDB_Factory
         }
         self::$_settings = new Settings($this->config($configfile));
         return self::$_settings;
+    }
+
+
+    /**
+     * Retrieve a candidate object representing this candidate
+     *
+     * @param integer $CandID The CandID of the candidate
+     *
+     * @return Candidate object
+     */
+    public function candidate($CandID)
+    {
+        if (isset(self::$_candidates[$CandID])) {
+            return self::$_candidates[$CandID];
+        }
+        if ($this->Testing) {
+            self::$_candidates[$CandID] = new MockCandidate($CandID);
+        } else {
+            self::$_candidates[$CandID] = Candidate::singleton($CandID);
+        }
+        return self::$_candidates[$CandID];
+
+    }
+
+    /**
+     * Retrieve a TimePoint object representing this session
+     *
+     * @param integer $sessionID The sessionID of the timepoint
+     *                           to retrieve
+     *
+     * @return TimePoint object for $sessionID
+     */
+    function timepoint($sessionID)
+    {
+        if (isset(self::$_timepoints[$sessionID])) {
+            return self::$_timepoints[$sessionID];
+        }
+        if ($this->Testing) {
+            self::$_timepoints[$sessionID] = new MockTimepoint($sessionID);
+        } else {
+            self::$_timepoints[$sessionID] = TimePoint::singleton($sessionID);
+        }
+        return self::$_timepoints[$sessionID];
     }
 }
 ?>

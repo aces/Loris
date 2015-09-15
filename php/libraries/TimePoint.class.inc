@@ -155,7 +155,7 @@ Class TimePoint
 
             $statuses = $db->pselect($query, array(":sessionID" => $sessionID));
             foreach ($statuses as $row) {
-                if (!isset( $this->_timePointInfo['status'])) {
+                if (!isset($this->_timePointInfo['status'])) {
                     $this->_timePointInfo['status'] = array();
                 }
                 $this->_timePointInfo['status'][$row['Name']] = $row['Value'];
@@ -198,7 +198,8 @@ Class TimePoint
         // SubprojectID=$SubprojectID, VisitNo=nextVisitNumber(),
         // UserID=$State->getUsername(), etc...  NO Date_* are
         // specified here!
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         // select the candidate data
         $query = "SELECT c.PSCID, c.CenterID,
@@ -210,7 +211,7 @@ Class TimePoint
         $row   = $db->pselectRow($query, array('CaID' => $candID));
 
         // if this is a web hit (thus state exists)
-        if (is_object($_SESSION['State'])) {
+        if (isset($_SESSION) && is_object($_SESSION['State'])) {
             // get username from State
             $userID = $_SESSION['State']->getUsername();
         } else {

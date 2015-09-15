@@ -276,8 +276,9 @@ class Utility extends PEAR
      */
     static function getSubprojectList()
     {
-        $DB     = Database::singleton();
-        $config = NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $config  = $factory->config();
 
         $subprojects = $DB->pselect("SELECT * FROM subproject", array());
 
@@ -296,7 +297,8 @@ class Utility extends PEAR
      */
     static function getProjectList()
     {
-        $config =& NDB_Config::singleton();
+        $Factory = NDB_Factory::singleton();
+        $config  = $Factory->config();
 
         // get the list of Subprojects
         $projectSettings = $config->getSetting('Projects');
@@ -752,7 +754,7 @@ class Utility extends PEAR
     static function getAllInstruments()
     {
         $Factory       = NDB_Factory::singleton();
-        $DB            = $Factory->Database(); //=& Database::singleton();
+        $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
             array()
@@ -1050,7 +1052,9 @@ class Utility extends PEAR
      */
     static function getExistingVisitLabels($projectID = null)
     {
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
         if ($projectID != null) {
             $ExtraProject_Criteria
                 = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
