@@ -819,6 +819,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      *
      * @return string containing valid JSON
      */
+    // @codingStandardsIgnoreStart
     function toJSON()
     {
         $jsonObject = array(
@@ -934,6 +935,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         }
         return json_encode($jsonObject);
     }
+    // @codingStandardsIgnoreEnd
 
 
 }
