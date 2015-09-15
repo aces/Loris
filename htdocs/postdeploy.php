@@ -11,6 +11,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
+if (file_exists('../project')) {
+    die("Directory 'project' already exists in LORIS root. Aborting deploy.");
+}
+
 $url      = parse_url(getenv("CLEARDB_DATABASE_URL"));
 $server   = $url["host"];
 $username = $url["user"];
