@@ -30,8 +30,8 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 {
 
     /**
-     * Returns true if the user has permission to access the conflict resolver
-     * module
+     * Returns true if the user has permission to access
+     * the conflict resolver module
      *
      * @return true if user has permission
      */
