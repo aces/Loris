@@ -240,9 +240,6 @@ class NDB_Caller extends PEAR
                 return $html;
             } else if (file_exists($linstfile)) {
                 $html = $this->loadInstrument($test_name, $subtest, $CommentID);
-                if (Utility::isErrorX($html)) {
-                    return PEAR::raiseError($html->getMessage());
-                }
                 $this->type = 'instrument';
                 return $html;
             }
@@ -416,9 +413,6 @@ class NDB_Caller extends PEAR
                 $_REQUEST['candID'],
                 $_REQUEST['sessionID']
             );
-        }
-        if (Utility::isErrorX($instrument)) {
-            return $instrument;
         }
 
         // save instrument form data
