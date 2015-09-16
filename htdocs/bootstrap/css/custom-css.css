@@ -94,7 +94,7 @@ html, body {
     border: 3px solid;
     border-color: #b94a48;
 }
-.has-error .form-error {
+.has-error, .form-error {
 color: #b94a48;
 }
 .has-warning .form-control {
