@@ -232,9 +232,6 @@ DisplayElements = React.createClass({
 	      parent.insertBefore(this.getPlaceholder(), targetRow);
 	    }
 	},
-	editElement: function (element, index) {
-		alert("ksfnks");
-	},
 	render: function () {
 		var temp = this.props.elements.map((function(element, i){
 						var row;
@@ -267,6 +264,9 @@ DisplayElements = React.createClass({
 										<button onClick={this.props.editElement.bind(this, i)} className="button">
 											Edit
 										</button>
+										<button onClick={this.props.deleteElement.bind(this, i)} className="button">
+											Delete
+										</button>
 									</td>
 								</tr>
 							)
@@ -278,7 +278,7 @@ DisplayElements = React.createClass({
 		return (
 			<table id="sortable" className="table table-hover">
 				<thead>
-					<tr className="info">
+					<tr>
 						<th className="col-xs-2">Database Name</th>
 						<th>Question Display (Front End)</th>
 						<th>Edit</th>
@@ -320,6 +320,15 @@ BuildPane = React.createClass({
 			return {
 				Elements: temp,
 				amountEditing: edit
+			};
+		});
+	},
+	deleteElement: function(elementIndex){
+		this.setState(function(state){
+			var temp = state.Elements;
+			temp[state.currentPage].Elements.splice(elementIndex, 1);
+			return {
+				Elements: temp
 			};
 		});
 	},
@@ -396,6 +405,7 @@ BuildPane = React.createClass({
 					<DisplayElements
 						elements={this.state.Elements[this.state.currentPage].Elements}
 						editElement={this.editElement}
+						deleteElement={this.deleteElement}
 						updateElement={this.updateElement}
 						draggable = {draggable}
 					/>
@@ -445,7 +455,7 @@ InstrumentBuilderApp = React.createClass({
 				    <li role="presentation"><a href="#Save" aria-controls="messages" role="tab" data-toggle="tab">Save</a></li>
 				 </ul>
 
-			  	<div className="tab-content row">
+			  	<div className="tab-content col-xs-12">
 				    {tabs}
 			  	</div>
 			</div>

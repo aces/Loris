@@ -14,6 +14,9 @@
 .selected {
     background: none;
 }
+table th {
+    color: black;
+}
 </style>
 <script>
     var builderApp = RInstrumentBuilderApp();
