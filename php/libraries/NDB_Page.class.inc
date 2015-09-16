@@ -535,5 +535,17 @@ class NDB_Page
         $this->form->setDefaults($defaults);
         return $defaults;
     }
+
+    /**
+     * Returns an ordered list of javascript dependencies that this page depends
+     * on.  These will get loaded into the template in order, so that
+     * interdependent files can be included in the correct order.
+     *
+     * @return array of strings with URLs to retrieve JS resources
+     */
+    function getJSDependencies() {
+        return array();
+    }
+
 }
 ?>
