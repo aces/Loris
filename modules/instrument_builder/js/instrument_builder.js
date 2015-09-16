@@ -84,16 +84,16 @@ function addQuestion() {
         return;
     }
 
-    questionText = document.getElementById("questionText");
-    questionName = document.getElementById("questionName");
-    if(questionText.value == '' && selected != 'line') {
-        if(selected == 'page-break') {
-            alert("Must use question text as page header");
-        } else {
-            alert("No question text specified");
-        }
-        return;
-    } 
+    // questionText = document.getElementById("questionText");
+    // questionName = document.getElementById("questionName");
+    // if(questionText.value == '' && selected != 'line') {
+    //     if(selected == 'page-break') {
+    //         alert("Must use question text as page header");
+    //     } else {
+    //         alert("No question text specified");
+    //     }
+    //     return;
+    // } 
     if(questionName.value == '' && selected != "header" && selected != "label" && selected != 'line' && selected != 'page-break') {
         alert("Must specifiy name for database to save value into");
         return;

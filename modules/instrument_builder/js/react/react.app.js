@@ -302,7 +302,8 @@ BuildPane = React.createClass({
     			Elements 	: []
 	 		}],
 	 		amountEditing : 0,
-	 		currentPage   : 0
+	 		currentPage   : 0,
+	 		elementDBNames : {}
 	 	};
 	},
 	loadElements: function(elements) {
@@ -333,24 +334,42 @@ BuildPane = React.createClass({
 		});
 	},
 	updateElement: function(element, index){
+		if (element.Name && element.Name in this.state.elementDBNames){
+			return false;
+		}
 		this.setState(function(state){
 			var temp = state.Elements
-				edit = state.amountEditing - 1;
+				edit = state.amountEditing - 1,
+				dbNa = state.elementDBNames;
 			temp[state.currentPage].Elements[index] = element;
+			if (element.Name) {
+				dbNa[element.Name] = '';
+			}
 			return {
 				Elements: temp,
-				amountEditing: edit
+				amountEditing: edit,
+				elementDBNames: dbNa
 			};
 		});
+		return true;
 	},
 	addQuestion: function(element){
+		if (element.Name && element.Name in this.state.elementDBNames){
+			return false;
+		}
 		this.setState(function(state){
-			var temp = state.Elements;
+			var temp = state.Elements,
+				dbNa = state.elementDBNames;
+			if (element.Name) {
+				dbNa[element.Name] = '';
+			}
 			temp[state.currentPage].Elements.push(element);
 			return {
-				Elements: temp
+				Elements: temp,
+				elementDBNames: dbNa
 			};
 		});
+		return true;
 	},
 	addPage: function (pageName) {
 		this.setState(function(state){

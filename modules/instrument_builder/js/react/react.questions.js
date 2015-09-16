@@ -3,16 +3,23 @@ QuestionText = React.createClass({
 		this.props.updateState({Description: e.target.value});
 	},
 	render: function () {
+		var errorMessage = '',
+			errorClass = 'form-group';
+		if (this.props.element.error && this.props.element.error.questionText) {
+			errorMessage = (<font className="form-error">{this.props.element.error.questionText}</font>);
+			errorClass += " has-error";
+		}
 		return (
-			<div className="form-group">
+			<div className={errorClass}>
                 <label className="col-sm-2 control-label">Question Text: </label>
                 <div className="col-sm-6">
-                    <input className="form-control"
+                    <input className="form-control col-xs-12"
                     	type="text" id="questionText"
                     	size="75"
                     	value={this.props.element ? this.props.element.Description : ''}
                     	onChange={this.onChange}
                     />
+                    {errorMessage}
                 </div>
             </div>
 		)
@@ -23,9 +30,15 @@ BasicOptions = React.createClass({
 		this.props.updateState({Name: e.target.value});
 	},
 	render: function () {
+		var errorMessage = '',
+			errorClass = 'form-group';
+		if (this.props.element.error && this.props.element.error.questionName) {
+			errorMessage = (<font className="form-error">{this.props.element.error.questionName}</font>);
+			errorClass += " has-error";
+		}
 		return (
 			<div>
-				<div className="form-group">
+				<div className={errorClass}>
 	                <label className="col-sm-2 control-label">Question Name: </label>
 	                <div className="col-sm-6">
 	                    <input className="form-control"
@@ -33,6 +46,7 @@ BasicOptions = React.createClass({
 	                    	onChange={this.onChange}
 	                    	value={this.props.element ? this.props.element.Name : ''}
 	                    />
+	                    {errorMessage}
 	                </div>
 	            </div>
             	<QuestionText updateState={this.props.updateState} element={this.props.element} />
@@ -284,6 +298,7 @@ AddElement = React.createClass({
 		var selected = this.state.selected.id,
 			questionText = this.state.Description,
 			questionName = this.state.Name,
+			hasError = false,
 			element;
 	    if(!selected) {
 	        alert("No element type selected");
@@ -292,15 +307,42 @@ AddElement = React.createClass({
 
 	    if(questionText == '' && selected != 'line') {
 	        if(selected == 'page-break') {
-	            alert("Must use question text as page header");
+	        	this.setState(function(state){
+	        		var temp = (state.error) ? state.error : {};
+	        		temp.questionText = "Must use question text as page header";
+					return {
+						error: temp
+					};
+				});
+				hasError = true;
 	        } else {
-	            alert("No question text specified");
+	        	this.setState(function(state){
+	        		var temp = (state.error) ? state.error : {};
+	        		temp.questionText = "No question text specified";
+					return {
+						error: temp
+					};
+				});
+				hasError = true;
 	        }
-	        return;
+	    }
+	    if (!hasError && this.state.error) {
+	    	delete this.state.error.questionText;
 	    }
 	    if(questionName == '' && selected != "header" && selected != "label" && selected != 'line' && selected != 'page-break') {
-	        alert("Must specifiy name for database to save value into");
-	        return;
+	    	this.setState(function(state){
+        		var temp = (state.error) ? state.error : {};
+        		temp.questionName = "Must specifiy name for database to save value into";
+				return {
+					error: temp
+				};
+			});
+	        hasError = true;
+	    } else if (this.state.error) {
+	    	delete this.state.error.questionName;
+	    }
+	    if (hasError) {
+	    	return;
 	    }
 	    switch(selected){
 	    	case 'header':
@@ -319,6 +361,7 @@ AddElement = React.createClass({
 	     		this.props.addPage(questionText);
 	     		return;
 	    }
+	    delete this.state.error;
 	    var element = {
 	    	Type: selected,
 	    	Description: questionText,
@@ -328,9 +371,18 @@ AddElement = React.createClass({
 	    };
 
 	    if(typeof this.props.index !== 'undefined'){
-	    	this.props.updateQuestions(element, this.props.index);
+	    	hasError = !this.props.updateQuestions(element, this.props.index);
 	    } else {
-	    	this.props.updateQuestions(element);
+	    	hasError = !this.props.updateQuestions(element);
+	    }
+	    if (hasError) {
+	    	this.setState(function(state){
+        		var temp = (state.error) ? state.error : {};
+        		temp.questionName = "Duplicate question name";
+				return {
+					error: temp
+				};
+			});
 	    }
 	},
 	addOption: function (multi) {
