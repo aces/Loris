@@ -190,7 +190,7 @@ try {
     if (isset($caller->controlPanel)) {
         $tpl_data['control_panel'] = $caller->controlPanel;
     }
-    if (isset($caller->feedbackPanel)) {
+    if (isset($caller->feedbackPanel) && $user->hasPermission('bvl_feedback')) {
         $tpl_data['bvl_feedback']   = NDB_BVL_Feedback::bvlFeedbackPossible();
         $tpl_data['feedback_panel'] = $caller->feedbackPanel;
     }
