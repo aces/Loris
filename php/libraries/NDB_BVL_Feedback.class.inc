@@ -1110,8 +1110,8 @@ class NDB_BVL_Feedback
                 ) {
                     return true;
                 } else {
-                    $Factory = NDB_Factory::singleton();
-                    $DB      = $Factory->Database(); //=& Database::singleton();
+                    $Factory       = NDB_Factory::singleton();
+                    $DB            = $Factory->Database(); //=& Database::singleton();
                     $instruments_q = $DB->pselect(
                         "SELECT Test_name FROM test_names",
                         array()
