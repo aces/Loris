@@ -728,7 +728,7 @@ class NDB_BVL_Feedback
 
         $newEntryValues = array();
         $newEntryValues["feedbackID"] = $feedbackID;
-        $newEntryValues["comment"] = $comment;
+        $newEntryValues["comment"]    = $comment;
         if ($fieldname != null) {
             $newEntryValues["fieldname"] = $fieldname;
         } else {
@@ -965,8 +965,8 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         $setArray = array(
-                     "Status"   => 'closed',
-                     "UserID"   => $this->_username,
+                     "Status" => 'closed',
+                     "UserID" => $this->_username,
                     );
 
         $whereArray = array(
@@ -1024,15 +1024,14 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         $setArray = array(
-            "Status" => 'opened',
-            "UserID" => $this->_username,
-        );
+                     "Status" => 'opened',
+                     "UserID" => $this->_username,
+                    );
 
         $whereArray = array(
                        "Public" => 'Y',
                        "Active" => 'Y',
-                      );
-        
+                      );        
         if (!empty($feedbackID)) {
             // only one thread to be closed
             $whereArray = array_merge(
@@ -1112,7 +1111,7 @@ class NDB_BVL_Feedback
                     return true;
                 } else {
                     $Factory = NDB_Factory::singleton();
-                    $DB = $Factory->Database(); //=& Database::singleton();
+                    $DB      = $Factory->Database(); //=& Database::singleton();
                     $instruments_q = $DB->pselect(
                         "SELECT Test_name FROM test_names",
                         array()
