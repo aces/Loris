@@ -1031,7 +1031,7 @@ class NDB_BVL_Feedback
         $whereArray = array(
                        "Public" => 'Y',
                        "Active" => 'Y',
-                      );        
+                      );
         if (!empty($feedbackID)) {
             // only one thread to be closed
             $whereArray = array_merge(
