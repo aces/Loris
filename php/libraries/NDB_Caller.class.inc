@@ -414,9 +414,6 @@ class NDB_Caller
                 $_REQUEST['sessionID']
             );
         }
-        if (Utility::isErrorX($instrument)) {
-            return $instrument;
-        }
 
         // save instrument form data
         $success = $instrument->save();
