@@ -305,6 +305,7 @@ class NDB_Caller extends PEAR
         if (method_exists($menu, 'save')) {
             $success = $menu->save();
         }
+        $this->page = $menu;
         $html = $menu->display();
 
         return $html;
