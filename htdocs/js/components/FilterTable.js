@@ -57,7 +57,6 @@ FilterField = React.createClass({displayName: 'FilterField',
                 )
         }
         if(this.props.Type === 'Dropdown') {
-            console.log(this.props.Options);
             var that = this;
             var options = Object.keys(this.props.Options).map(function (keyID) {
                 return React.createElement("option", {value: keyID}, that.props.Options[keyID]);
