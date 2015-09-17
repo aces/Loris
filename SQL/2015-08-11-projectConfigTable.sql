@@ -4,4 +4,3 @@ CREATE TABLE `Project` (
     `recruitmentTarget` INT(6) Default NULL,
     PRIMARY KEY (`ProjectID`)
 )ENGINE = InnoDB  DEFAULT CHARSET=utf8;
-
