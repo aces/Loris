@@ -222,7 +222,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'Visit_label' => 's.visit_label',
                                     'Project'   => 'c.ProjectID',
                                     'pscid'       => 'c.PSCID',
-                                    'Review_done' => "COALESCE(r.Review_Done, 'no')",
+                                    'Review_Done' => "COALESCE(r.Review_Done, 'no')",
                                     'Results'     => 'r.Final_Review_Results',
                                     'Final_Review_Results' 
                                                   => 'r.Final_Review_Results',
@@ -311,7 +311,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         $this->addBasicText('dccid', 'DCCID:', array("size"=>9, "maxlength"=>6));
         $this->addSelect('Visit_label', 'Visit Label:', $list_of_visit_labels);
         $this->addSelect('site', 'Site', $list_of_sites);
-        $this->addSelect('Review_done', 'Review Done:', $options_boolean);
+        $this->addSelect('Review_Done', 'Review Done:', $options_boolean);
         $this->addSelect(
             'Conflict',
             'Conflict between any reviews:',
