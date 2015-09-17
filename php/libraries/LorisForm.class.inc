@@ -66,6 +66,10 @@ class LorisForm
         if (isset($attribs['value'])) {
             $el['value'] = $attribs['value'];
         }
+        if (isset($attribs['oninvalid'])) {
+            $el['oninvalid'] = $attribs['oninvalid'];
+        }
+
         return $el;
     }
     /**
@@ -616,6 +620,14 @@ class LorisForm
         }
         $value = $this->getValue($el['name']);
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
+            . (
+                isset($el['onchange']) && $el['onchange']
+                ? " onchange=\"{$el['onchange']}\"" : ''
+              )
+            . (
+                isset($el['oninvalid']) && $el['oninvalid']
+                ? " oninvalid=\"{$el['oninvalid']}\"" : ''
+              )
             . (
                 isset($el['required']) && $el['required']
                 ? ' required' : ''
@@ -1192,8 +1204,9 @@ class LorisForm
                 $fieldIdx  = substr($name, $bracketIdx+1);
                 $fieldIdx  = strstr($fieldIdx, ']', true);
                 if (!isset($arr[$fieldName])) {
-                    $arr[$fieldName]
-                        = $this->getValue($fieldName, $_REQUEST[$fieldName]);
+                    $value           = isset($_REQUEST[$fieldName])
+                        ? $_REQUEST[$fieldName] : null;
+                    $arr[$fieldName] = $this->getValue($fieldName, $value);
                 }
                 if ($el['type'] === 'advcheckbox') {
                     $val = $this->getValue($name);
@@ -1206,21 +1219,21 @@ class LorisForm
                 continue;
             }
 
-            // Normal case, just set it directly.
             // Check to see it the element type is a header or is a static
             // element without a request variable. If so do not add to the
             // reference array
             if (!($el['type'] === 'header'
                 || ($el['type'] === 'static' && empty($_REQUEST[$name])))
             ) {
-                $arr[$name] = $this->getValue($name, $_REQUEST[$name]);
+                $value      = isset($_REQUEST[$name]) ? $_REQUEST[$name] : null;
+                $arr[$name] = $this->getValue($name, $value);
             }
 
             if ($el['type'] === 'date') {
                 // Convert dates to the type of group that was used
                 // by HTML_QuickForm. This should eventually be modified
                 // to just use a normal HTML5 date.
-                $vals       = explode("-", $this->getValue($name, $arr[$name]));
+                $vals       = explode("-", $arr[$name]);
                 $arr[$name] = array(
                                'Y' => $vals[0],
                                'M' => $vals[1],
