@@ -1,3 +1,11 @@
+/**
+ *	This file contains the React classes the LORIS form
+ *	elements.
+ */
+
+/*
+ *	This is the React class for a header element
+ */
 HeaderElement = React.createClass({
 	render: function(){
 		return (
@@ -6,6 +14,9 @@ HeaderElement = React.createClass({
 	}
 });
 
+/*
+ *	This is the React class for a label element
+ */
 LabelElement = React.createClass({
 	render: function(){
 		return (
@@ -14,8 +25,12 @@ LabelElement = React.createClass({
 	}
 });
 
+/*
+ *	This is the React class for a scored element
+ */
 ScoredElement = React.createClass({
 	render: function(){
+		var score = (this.props.score) ? this.props.score : 0;
 		return (
 			<div>
 			<label className="lab col-sm-4 col-xs-12">
@@ -23,7 +38,7 @@ ScoredElement = React.createClass({
 			</label>
 			<div className="col-sm-8">
 				<div className="col-xs-12 element">
-					0
+					{score}
 				</div>
 			</div>
 			</div>
@@ -31,6 +46,9 @@ ScoredElement = React.createClass({
 	}
 });
 
+/*
+ *	This is the React class for a textbox element
+ */
 TextboxElement = React.createClass({
 	render: function(){
 		return (
@@ -48,6 +66,9 @@ TextboxElement = React.createClass({
 	}
 });
 
+/*
+ *	This is the React class for a textarea element
+ */
 TextareaElement = React.createClass({
 	render: function(){
 		return (
@@ -65,10 +86,14 @@ TextareaElement = React.createClass({
 	}
 });
 
+/*
+ *	This is the React class for a select element
+ */
 SelectElement = React.createClass({
 	render: function(){
 		var multiple = '';
 		if(this.props.multiple){
+			// Set select type as mutiple
 			multiple = 'multiple';
 		}
 		return (
@@ -94,10 +119,11 @@ SelectElement = React.createClass({
 	}
 });
 
+/*
+ *	This is the React class for a date element
+ */
 DateElement = React.createClass({
 	render: function(){
-		var max = this.props.maxYear,
-			min = this.props.minYear;
 		return (
 			<div>
 			<label className="lab col-sm-4 col-xs-12">
@@ -107,8 +133,8 @@ DateElement = React.createClass({
 				<div className="col-xs-12 col-sm-6 element">
 					<input type="date"
 						   className="form-control input-sm user-success" 
-						   min={min}
-						   max={max}
+						   min={this.props.minYear}
+						   max={this.props.maxYear}
 				    />
 				</div>
 			</div>
@@ -117,6 +143,9 @@ DateElement = React.createClass({
 	}
 });
 
+/*
+ *	This is the React class for a numeric element
+ */
 NumericElement = React.createClass({
 	render: function(){
 		return (
@@ -138,10 +167,14 @@ NumericElement = React.createClass({
 	}
 });
 
+/*
+ *	This is the React class for a LORIS element. It takes
+ * 	in an element and render's the HTML based on its type
+ */
 LorisElement = React.createClass({
 	render: function (){
 		var element = this.props.element,
-			elementHtml = "dklfldkjf";
+			elementHtml = '';
 		switch(element.Type){
 			case 'header':
 				elementHtml = <HeaderElement header={element.Description} />;
@@ -149,8 +182,8 @@ LorisElement = React.createClass({
 			case 'label':
 				elementHtml = <LabelElement label={element.Description} />
 				break;
-			case 'scored':
-	    		elementHtml = <ScoredElement label={element.Description} />
+			case 'score':
+	    		elementHtml = <ScoredElement label={element.Description}/>
 	    		break;
 	    	case 'text':
 	    		if(element.Options.Type === 'small'){

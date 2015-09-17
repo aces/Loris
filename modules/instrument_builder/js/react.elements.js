@@ -1,3 +1,11 @@
+/**
+ *	This file contains the React classes the LORIS form
+ *	elements.
+ */
+
+/*
+ *	This is the React class for a header element
+ */
 HeaderElement = React.createClass({displayName: "HeaderElement",
 	render: function(){
 		return (
@@ -6,6 +14,9 @@ HeaderElement = React.createClass({displayName: "HeaderElement",
 	}
 });
 
+/*
+ *	This is the React class for a label element
+ */
 LabelElement = React.createClass({displayName: "LabelElement",
 	render: function(){
 		return (
@@ -14,8 +25,12 @@ LabelElement = React.createClass({displayName: "LabelElement",
 	}
 });
 
+/*
+ *	This is the React class for a scored element
+ */
 ScoredElement = React.createClass({displayName: "ScoredElement",
 	render: function(){
+		var score = (this.props.score) ? this.props.score : 0;
 		return (
 			React.createElement("div", null, 
 			React.createElement("label", {className: "lab col-sm-4 col-xs-12"}, 
@@ -23,7 +38,7 @@ ScoredElement = React.createClass({displayName: "ScoredElement",
 			), 
 			React.createElement("div", {className: "col-sm-8"}, 
 				React.createElement("div", {className: "col-xs-12 element"}, 
-					"0"
+					score
 				)
 			)
 			)
@@ -31,6 +46,9 @@ ScoredElement = React.createClass({displayName: "ScoredElement",
 	}
 });
 
+/*
+ *	This is the React class for a textbox element
+ */
 TextboxElement = React.createClass({displayName: "TextboxElement",
 	render: function(){
 		return (
@@ -48,6 +66,9 @@ TextboxElement = React.createClass({displayName: "TextboxElement",
 	}
 });
 
+/*
+ *	This is the React class for a textarea element
+ */
 TextareaElement = React.createClass({displayName: "TextareaElement",
 	render: function(){
 		return (
@@ -65,10 +86,14 @@ TextareaElement = React.createClass({displayName: "TextareaElement",
 	}
 });
 
+/*
+ *	This is the React class for a select element
+ */
 SelectElement = React.createClass({displayName: "SelectElement",
 	render: function(){
 		var multiple = '';
 		if(this.props.multiple){
+			// Set select type as mutiple
 			multiple = 'multiple';
 		}
 		return (
@@ -94,10 +119,11 @@ SelectElement = React.createClass({displayName: "SelectElement",
 	}
 });
 
+/*
+ *	This is the React class for a date element
+ */
 DateElement = React.createClass({displayName: "DateElement",
 	render: function(){
-		var max = this.props.maxYear,
-			min = this.props.minYear;
 		return (
 			React.createElement("div", null, 
 			React.createElement("label", {className: "lab col-sm-4 col-xs-12"}, 
@@ -107,8 +133,8 @@ DateElement = React.createClass({displayName: "DateElement",
 				React.createElement("div", {className: "col-xs-12 col-sm-6 element"}, 
 					React.createElement("input", {type: "date", 
 						   className: "form-control input-sm user-success", 
-						   min: min, 
-						   max: max}
+						   min: this.props.minYear, 
+						   max: this.props.maxYear}
 				    )
 				)
 			)
@@ -117,6 +143,9 @@ DateElement = React.createClass({displayName: "DateElement",
 	}
 });
 
+/*
+ *	This is the React class for a numeric element
+ */
 NumericElement = React.createClass({displayName: "NumericElement",
 	render: function(){
 		return (
@@ -138,10 +167,14 @@ NumericElement = React.createClass({displayName: "NumericElement",
 	}
 });
 
+/*
+ *	This is the React class for a LORIS element. It takes
+ * 	in an element and render's the HTML based on its type
+ */
 LorisElement = React.createClass({displayName: "LorisElement",
 	render: function (){
 		var element = this.props.element,
-			elementHtml = "dklfldkjf";
+			elementHtml = '';
 		switch(element.Type){
 			case 'header':
 				elementHtml = React.createElement(HeaderElement, {header: element.Description});
@@ -149,7 +182,7 @@ LorisElement = React.createClass({displayName: "LorisElement",
 			case 'label':
 				elementHtml = React.createElement(LabelElement, {label: element.Description})
 				break;
-			case 'scored':
+			case 'score':
 	    		elementHtml = React.createElement(ScoredElement, {label: element.Description})
 	    		break;
 	    	case 'text':
