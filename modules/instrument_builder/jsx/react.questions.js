@@ -8,7 +8,7 @@
  *	This is the React class for the question text input
  */
 QuestionText = React.createClass({
-	// Keep track of the current input
+    // Keep track of the current input
 	onChange: function(e){
 		this.props.updateState({Description: e.target.value});
 	},
@@ -85,7 +85,9 @@ DropdownOptions = React.createClass({
 		}
 	},
 	onChange: function(e){
-		this.setState({option: e.target.value});
+		this.setState({
+			option: e.target.value
+		});
 	},
 	// Add an option to the element
 	addOption: function(){
@@ -365,46 +367,43 @@ AddElement = React.createClass({
 	    if(questionText == '' && selected != 'line') {
 	    	// Error, question text is required. Set the element error flag
 	    	// for the questionText with message. Set the hasError flag
+	    	var temp = (state.error) ? state.error : {};
 	        if(selected == 'page-break') {
-	        	this.setState(function(state){
-	        		var temp = (state.error) ? state.error : {};
-	        		temp.questionText = "Must use question text as page header";
-					return {
-						error: temp
-					};
-				});
-				hasError = true;
+	        	temp.questionText = "Must use question text as page header";
 	        } else {
-	        	this.setState(function(state){
-	        		var temp = (state.error) ? state.error : {};
-	        		temp.questionText = "No question text specified";
-					return {
-						error: temp
-					};
-				});
-				hasError = true;
+	        	temp.questionText = "No question text specified";
 	        }
+	        this.setState({
+				error: temp
+			});
+			hasError = true;
 	    }
 	    if (!hasError && this.state.error) {
 	    	// No error, remove the elememt's questionText error flag
 	    	// if set
-	    	delete this.state.error.questionText;
+	    	var temp = this.state.error;
+	    	delete temp.questionText;
+	    	this.setState({
+				error: temp
+			});
 	    }
 	    if(questionName == '' && selected != "header" && selected != "label" && selected != 'line' && selected != 'page-break') {
 	    	// Error, question name is needed for the desired type. Set the element error flag
 	    	// for the questionName with message. Set the hasError flag
-	    	this.setState(function(state){
-        		var temp = (state.error) ? state.error : {};
-        		temp.questionName = "Must specifiy name for database to save value into";
-				return {
-					error: temp
-				};
+	    	var temp = (state.error) ? state.error : {};
+        	temp.questionName = "Must specifiy name for database to save value into";
+	    	this.setState({
+				error: temp
 			});
 	        hasError = true;
 	    } else if (this.state.error) {
 	    	// No error, remove the elememt's questionName error flag
 	    	// if set
-	    	delete this.state.error.questionName;
+	    	var temp = this.state.error;
+	    	delete temp.questionName;
+	    	this.setState({
+				error: temp
+			});
 	    }
 	    if (hasError) {
 	    	// An error is present, return
@@ -463,6 +462,9 @@ AddElement = React.createClass({
 	},
 	// Add an option to the options array
 	addOption: function (multi) {
+		// Use a function to update the state to enqueue an atomic
+		// update that consults the previous value of state before
+		// setting any values
 		this.setState(function(state){
 			var temp = state.options,
 				option = multi ? $("#newmultiSelectOption").val() : $("#newSelectOption").val();
@@ -474,10 +476,8 @@ AddElement = React.createClass({
 	},
 	// Reset the options array
 	resetOptions: function(){
-		this.setState(function(state){
-			return {
-				options: []
-			};
+		this.setState({
+			options: []
 		});
 	},
 	// Render the HTML

@@ -38,27 +38,21 @@ LoadPane = React.createClass({
 	// Indicates to the state which file has been choosen
 	chooseFile: function (e) {
 		var value = e.target.files[0];
-		this.setState(function(state){
-			return {
-				file: value,
-				alert: ''
-			};
+		this.setState({
+			file: value,
+			alert: ''
 		});
 	},
 	// Sets the alert to the specified type.
 	setAlert: function (type) {
-		this.setState(function(state){
-			return {
-				alert: type
-			};
+		this.setState({
+			alert: type
 		});
 	},
 	// Reset the alert to empty.
 	resetAlert: function () {
-		this.setState(function(state){
-			return {
-				alert: ''
-			};
+		this.setState({
+			alert: ''
 		});
 	},
 	// Loads the specified file into builder tab.
@@ -125,29 +119,23 @@ SavePane = React.createClass({
 	// Used to set the state when a file is loaded
 	// using the load tab.
 	loadState: function(newState) {
-		this.setState(function(state){
-			return {
-				fileName: newState.fileName,
-				instrumentName: newState.instrumentName
-			};
+		this.setState({
+			fileName: newState.fileName,
+			instrumentName: newState.instrumentName
 		});
 	},
 	// Keep track of the file name, saving it in the state
 	onChangeFile: function(e){
 		var value = e.target.value;
-		this.setState(function(state){
-			return {
-				fileName: value
-			};
+		this.setState({
+			fileName: value
 		});
 	},
 	// Keep track of the instrument name, saving it in the state
 	onChangeInst: function(e){
 		var value = e.target.value;
-		this.setState(function(state){
-			return {
-				instrumentName: value
-			};
+		this.setState({
+			instrumentName: value
 		});
 	},
 	// Render the HTML
@@ -240,7 +228,9 @@ DisplayElements = React.createClass({
 	    if (from < to) to--;
 	    if (this.nodePlacement == "after") to++;
 	    data.splice(to, 0, data.splice(from, 1)[0]);
-	    this.setState({data: data});
+	    this.setState({
+	    	data: data
+	   	});
 	},
 	// Used for the drag and drop rows
 	dragOver: function(e) {
@@ -355,16 +345,17 @@ BuildPane = React.createClass({
 	// Load in a group of elements, replacing any that
 	// were already present
 	loadElements: function(elements) {
-		this.setState(function(state){
-			return {
-				Elements: elements
-			};
+		this.setState({
+			Elements: elements
 		});
 	},
 	// Set the element editing flag to true to render the element
 	// as an AddQuestion object. Increase the number of editing to
 	// disable drag and drop
 	editElement: function(elementIndex){
+		// Use a function to update the state to enqueue an atomic
+		// update that consults the previous value of state before
+		// setting any values
 		this.setState(function(state){
 			var temp = state.Elements,
 				edit = state.amountEditing + 1;
@@ -377,6 +368,9 @@ BuildPane = React.createClass({
 	},
 	// Remove an element from the current page's elements.
 	deleteElement: function(elementIndex){
+		// Use a function to update the state to enqueue an atomic
+		// update that consults the previous value of state before
+		// setting any values
 		this.setState(function(state){
 			var temp = state.Elements;
 			temp[state.currentPage].Elements.splice(elementIndex, 1);
@@ -391,6 +385,9 @@ BuildPane = React.createClass({
 			// If the DB name already exists return false.
 			return false;
 		}
+		// Use a function to update the state to enqueue an atomic
+		// update that consults the previous value of state before
+		// setting any values
 		this.setState(function(state){
 			var temp = state.Elements,
 				// Decriment the editing count
@@ -415,6 +412,9 @@ BuildPane = React.createClass({
 			// If the DB name already exists return false.
 			return false;
 		}
+		// Use a function to update the state to enqueue an atomic
+		// update that consults the previous value of state before
+		// setting any values
 		this.setState(function(state){
 			var temp = state.Elements,
 				dbNa = state.elementDBNames;
@@ -432,6 +432,9 @@ BuildPane = React.createClass({
 	},
 	// Add a new page
 	addPage: function (pageName) {
+		// Use a function to update the state to enqueue an atomic
+		// update that consults the previous value of state before
+		// setting any values
 		this.setState(function(state){
 			var temp = state.Elements,
 				// change the current page to the new one
@@ -450,10 +453,8 @@ BuildPane = React.createClass({
 	},
 	// Change to a page
 	selectPage: function (index) {
-		this.setState(function(state){
-			return {
-				currentPage: index
-			};
+		this.setState({
+			currentPage: index
 		});
 	},
 	// Render the HTML
