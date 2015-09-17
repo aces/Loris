@@ -296,5 +296,11 @@ var Instrument = {
         } else {
             callback.error("typeError");
         }
+    },
+    Enumize: function (option) {
+        var enum_option = option.replace(/ /g, "_");
+        enum_option = enum_option.replace(/\./, "");
+        enum_option = enum_option.toLowerCase();
+        return enum_option;
     }
 }

@@ -1,11 +1,23 @@
+/**
+ *	This file contains the React classes for instrument builder
+ * 	module. It is used to add and edit questions in the instrument
+ *	builder.
+ */
+
+/*
+ *	This is the React class for the question text input
+ */
 QuestionText = React.createClass({displayName: "QuestionText",
+	// Keep track of the current input
 	onChange: function(e){
 		this.props.updateState({Description: e.target.value});
 	},
+	// Render the HTML
 	render: function () {
 		var errorMessage = '',
 			errorClass = 'form-group';
 		if (this.props.element.error && this.props.element.error.questionText) {
+			// If an error is present, display the error
 			errorMessage = (React.createElement("font", {className: "form-error"}, this.props.element.error.questionText));
 			errorClass += " has-error";
 		}
@@ -25,14 +37,21 @@ QuestionText = React.createClass({displayName: "QuestionText",
 		)
 	}
 });
+
+/*
+ *	This is the React class for the question name input
+ */
 BasicOptions = React.createClass({displayName: "BasicOptions",
+	// Keep track of the current input
 	onChange: function(e){
 		this.props.updateState({Name: e.target.value});
 	},
+	// Render the HTML
 	render: function () {
 		var errorMessage = '',
 			errorClass = 'form-group';
 		if (this.props.element.error && this.props.element.error.questionName) {
+			// If an error is present, display the error
 			errorMessage = (React.createElement("font", {className: "form-error"}, this.props.element.error.questionName));
 			errorClass += " has-error";
 		}
@@ -54,7 +73,12 @@ BasicOptions = React.createClass({displayName: "BasicOptions",
 		)
 	}
 });
+
+/*
+ *	This is the React class for the Dropdown options
+ */
 DropdownOptions = React.createClass({displayName: "DropdownOptions",
+	// Keep track the current option input
 	getInitialState: function() {
 		return {
 			option: ''
@@ -63,15 +87,18 @@ DropdownOptions = React.createClass({displayName: "DropdownOptions",
 	onChange: function(e){
 		this.setState({option: e.target.value});
 	},
+	// Add an option to the element
 	addOption: function(){
 		var temp = this.props.element.Options,
-			key = Enumize(this.state.option);
+			key = Instrument.Enumize(this.state.option);
 			temp.Values[key] = this.state.option;
 			this.props.updateState({Options: temp});
 	},
+	// Render the HTML
 	render: function () {
 		var multi = '',
 			options = this.props.element.Options.Values;
+		// Set the select option type
 		if(this.props.element.Options.AllowMultiple){
 			multi = "multiple";
 		}
@@ -104,7 +131,12 @@ DropdownOptions = React.createClass({displayName: "DropdownOptions",
 		)
 	}
 });
+
+/*
+ *	This is the React class for the date options
+ */
 DateOptions = React.createClass({displayName: "DateOptions",
+	// Keep track of the inputed years
 	onChange: function(e){
 		var options = this.props.element.Options;
 		if(e.target.id === 'datemin'){
@@ -114,7 +146,10 @@ DateOptions = React.createClass({displayName: "DateOptions",
 		}
 		this.props.updateState({Options: options});
 	},
+	// Render the HTML
 	render: function () {
+		// Truncate off the month and day from the date to only have the
+		// year.
 		var minYear = this.props.element.Options.MinDate.split('-')[0],
 			maxYear = this.props.element.Options.MaxDate.split('-')[0];
 		return (
@@ -134,7 +169,13 @@ DateOptions = React.createClass({displayName: "DateOptions",
 		)
 	}
 });
+
+/*
+ *	This is the React class for the numeric options
+ */
 NumericOptions = React.createClass({displayName: "NumericOptions",
+	// Keep track of the inputed numbers, casting them to
+	// interger values.
 	onChange: function(e){
 		var options = this.props.element.Options;
 		if(e.target.id === 'numericmin'){
@@ -144,6 +185,7 @@ NumericOptions = React.createClass({displayName: "NumericOptions",
 		}
 		this.props.updateState({Options: options});
 	},
+	// Render the HTML
 	render: function () {
 		return (
 			React.createElement("div", null, 
@@ -163,8 +205,12 @@ NumericOptions = React.createClass({displayName: "NumericOptions",
 	}
 });
 
-
+/*
+ *	This is the React class for the dropdown for the
+ * 	different question types.
+ */
 ListElements = React.createClass({displayName: "ListElements",
+	// Set the desired question type
 	selectType: function (newId, newValue) {
 		var newState = {
 				selected: {
@@ -174,6 +220,7 @@ ListElements = React.createClass({displayName: "ListElements",
 			},
 			multi = false,
 			textSize = 'small';
+		// Set the options for the desired type
 		switch(newId){
 			case 'textarea':
 				textSize = 'large';
@@ -205,6 +252,7 @@ ListElements = React.createClass({displayName: "ListElements",
 		};
 		this.props.updateState(newState);
 	},
+	// Render the HTML
 	render: function () {
 		return (
 			React.createElement("div", {className: "form-group"}, 
@@ -268,10 +316,16 @@ ListElements = React.createClass({displayName: "ListElements",
 	}
 });
 
+/*
+ *	This is the React class for adding a new element or
+ * 	editing an exsiting one
+ */
 AddElement = React.createClass({displayName: "AddElement",
+	// Keep track of the current element state
 	getInitialState: function() {
 		var state;
 		if(this.props.element){
+			// Editing an element, set to elements state
 			state = {
 				Options: this.props.element.Options,
 		 		Description: this.props.element.Description,
@@ -291,9 +345,11 @@ AddElement = React.createClass({displayName: "AddElement",
 		}
 	 	return state;
 	},
+	// Update element state
 	updateState: function(newState) {
 		this.setState(newState);
 	},
+	// Add a question to the buildPane
 	addQuestion: function () {
 		var selected = this.state.selected.id,
 			questionText = this.state.Description,
@@ -301,11 +357,14 @@ AddElement = React.createClass({displayName: "AddElement",
 			hasError = false,
 			element;
 	    if(!selected) {
+	    	// Error, no element selected, alert the user and return
 	        alert("No element type selected");
 	        return;
 	    }
 
 	    if(questionText == '' && selected != 'line') {
+	    	// Error, question text is required. Set the element error flag
+	    	// for the questionText with message. Set the hasError flag
 	        if(selected == 'page-break') {
 	        	this.setState(function(state){
 	        		var temp = (state.error) ? state.error : {};
@@ -327,9 +386,13 @@ AddElement = React.createClass({displayName: "AddElement",
 	        }
 	    }
 	    if (!hasError && this.state.error) {
+	    	// No error, remove the elememt's questionText error flag
+	    	// if set
 	    	delete this.state.error.questionText;
 	    }
 	    if(questionName == '' && selected != "header" && selected != "label" && selected != 'line' && selected != 'page-break') {
+	    	// Error, question name is needed for the desired type. Set the element error flag
+	    	// for the questionName with message. Set the hasError flag
 	    	this.setState(function(state){
         		var temp = (state.error) ? state.error : {};
         		temp.questionName = "Must specifiy name for database to save value into";
@@ -339,11 +402,15 @@ AddElement = React.createClass({displayName: "AddElement",
 			});
 	        hasError = true;
 	    } else if (this.state.error) {
+	    	// No error, remove the elememt's questionName error flag
+	    	// if set
 	    	delete this.state.error.questionName;
 	    }
 	    if (hasError) {
+	    	// An error is present, return
 	    	return;
 	    }
+	    // Setup the desired element to be added
 	    switch(selected){
 	    	case 'header':
 			case 'label':
@@ -358,9 +425,12 @@ AddElement = React.createClass({displayName: "AddElement",
 	     		selected = 'select';
 	     		break;
 	     	case 'page-break':
+	     		// If page-break, add new page to the buildPane
+	     		// element list
 	     		this.props.addPage(questionText);
 	     		return;
 	    }
+	    // Remove all error flags
 	    delete this.state.error;
 	    var element = {
 	    	Type: selected,
@@ -370,12 +440,18 @@ AddElement = React.createClass({displayName: "AddElement",
 	    	selected: this.state.selected
 	    };
 
+	    // Add/Update the Page's element array. The updateQuestion returns true
+	    // if element was added/updated, false if the element name already exists.
 	    if(typeof this.props.index !== 'undefined'){
+	    	// If editing, supply updateQuestion with the elements index in the
+	    	// Page's element array.
 	    	hasError = !this.props.updateQuestions(element, this.props.index);
 	    } else {
 	    	hasError = !this.props.updateQuestions(element);
 	    }
 	    if (hasError) {
+	    	// Error, element name already exists. Set the element error flag
+	    	// for the questionName with message.
 	    	this.setState(function(state){
         		var temp = (state.error) ? state.error : {};
         		temp.questionName = "Duplicate question name";
@@ -385,6 +461,7 @@ AddElement = React.createClass({displayName: "AddElement",
 			});
 	    }
 	},
+	// Add an option to the options array
 	addOption: function (multi) {
 		this.setState(function(state){
 			var temp = state.options,
@@ -395,6 +472,7 @@ AddElement = React.createClass({displayName: "AddElement",
 			};
 		});
 	},
+	// Reset the options array
 	resetOptions: function(){
 		this.setState(function(state){
 			return {
@@ -402,12 +480,14 @@ AddElement = React.createClass({displayName: "AddElement",
 			};
 		});
 	},
+	// Render the HTML
 	render: function () {
 		var questionInput,
 			multi = false,
 			options,
 			header = '',
 			buttons;
+		// Set the inputs to display based on the desired element type
 		switch(this.state.selected.id){
 			case 'header':
 			case 'label':
@@ -432,6 +512,7 @@ AddElement = React.createClass({displayName: "AddElement",
 	    	case 'defualt':
 	    		break;
 		}
+		// Set the button/header based on whether you are editing or adding an element.
 		if(this.props.element){
 			buttons = (
 				React.createElement("input", {className: "btn btn-default", type: "button", value: "Edit Row", onClick: this.addQuestion})
