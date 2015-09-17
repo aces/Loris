@@ -4,7 +4,7 @@
 <script src="/js/react.js"></script>
 <script src="GetJS.php?Module=instrument_builder&file=react.elements.js"></script>
 <script src="GetJS.php?Module=instrument_builder&file=react.questions.js"></script>
-<script src="GetJS.php?Module=instrument_builder&file=react.app.js"></script>
+<script src="GetJS.php?Module=instrument_builder&file=react.instrument_builder.js"></script>
 
 <div id="message" class="error">&nbsp;</div>
 <div id="builder"></div>
