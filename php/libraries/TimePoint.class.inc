@@ -67,6 +67,7 @@ Class TimePoint
                                    'Not Excluded',
                                   );
 
+
     /**
      * Returns an object representing this Timepoint, and ensures that only
      * one is ever created per Session.
@@ -79,14 +80,13 @@ Class TimePoint
     static function &singleton($sessionID)
     {
         // instantiate new TimePoint object
-        static $timePointList =array();
+        static $timePointList = array();
         if (!isset($timePointList[$sessionID])) {
             try {
                 $timePointList[$sessionID] = new TimePoint();
 
                 $success = $timePointList[$sessionID]->select($sessionID);
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
                 unset($timePointList[$sessionID]);
@@ -137,7 +137,7 @@ Class TimePoint
             $subprojectSettings   = $config->getSubprojectSettings(
                 $row['SubprojectID']
             );
-            $this->_timePointInfo['SubprojectTitle'] =$subprojectSettings['title'];
+            $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'];
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new Exception(
@@ -181,18 +181,17 @@ Class TimePoint
 
     }
 
+
     /**
      * Registers a new timepoint into the session table
      *
-     * @param integer $candID         6 digit CandID who is having a timepoint
-     *                                created.
+     * @param integer $candID         6 digit CandID having a timepoint created.
      * @param integer $SubprojectID   The subprojectID of the new timepoint
-     * @param string  $nextVisitLabel The visit label of the timepoint being
-     *                                created
+     * @param string  $nextVisitLabel The visit label of the timepoint being created
      *
      * @return A new TimePoint instance.
      */
-    static function createNew($candID, $SubprojectID, $nextVisitLabel=null)
+    static function createNew($candID, $SubprojectID, $nextVisitLabel = null)
     {
         // insert into session set CandID=$candID,
         // SubprojectID=$SubprojectID, VisitNo=nextVisitNumber(),
@@ -224,7 +223,7 @@ Class TimePoint
 
         // setup the insert data array
         $VisitLabel = $nextVisitLabel == null
-            ? 'V'.$row['nextVisitNo']
+            ? 'V' . $row['nextVisitNo']
             : $nextVisitLabel;
         $insertData = array(
                        'CandID'          => $candID,
@@ -276,7 +275,7 @@ Class TimePoint
      *
      * @return none, side-effect modifies session table.
      */
-    function setData($var, $value=null)
+    function setData($var, $value = null)
     {
         if (!is_array($var)) {
             $setData = array($var => $value);
@@ -442,7 +441,6 @@ Class TimePoint
     }
 
 
-
     /**
      * Gets whether or not a scan was done for this TimePoint
      *
@@ -510,7 +508,7 @@ Class TimePoint
      */
     function getCurrentStatus()
     {
-         $method = 'get'.$this->getCurrentStage().'Status';
+        $method = 'get' . $this->getCurrentStage() . 'Status';
         if (method_exists($this, $method)) {
             return $this->$method();
         } else {
@@ -525,7 +523,7 @@ Class TimePoint
      */
     function getCurrentDate()
     {
-        $getDateMethod = "getDateOf".$this->getCurrentStage();
+        $getDateMethod = "getDateOf" . $this->getCurrentStage();
         if (method_exists($this, $getDateMethod)) {
             return $this->$getDateMethod();
         } else {
@@ -555,7 +553,7 @@ Class TimePoint
             $this->_stageOptions
         );
 
-        $nextStageIndex = $index+1;
+        $nextStageIndex = $index + 1;
 
         return $this->_stageOptions[$nextStageIndex];
     }
@@ -618,6 +616,17 @@ Class TimePoint
         if ($this->isSubmitted() && $this->getApprovalStatus() != 'NULL') {
             if ($this->getApprovalStatus() == 'Failure') {
                 $newCurrentStage = 'Recycling Bin';
+                // delete from conflicts_unresolved if marked Recycling Bin
+                $commentIDs = $db->pselect(
+                    "SELECT CommentID FROM flag WHERE SessionID=:SID",
+                    array('SID' => $this->getSessionID())
+                );
+                foreach ($commentIDs as $commentID) {
+                    $deleteWhere1 = array('CommentId1' => $commentID);
+                    $deleteWhere2 = array('CommentId2' => $commentID);
+                    $db->delete('conflicts_unresolved', $deleteWhere1);
+                    $db->delete('conflicts_unresolved', $deleteWhere2);
+                }
             } else {
                 // in all other cases
                 $newCurrentStage = 'Approval';
@@ -637,10 +646,10 @@ Class TimePoint
         $today = date("Y-m-d");
 
         // update session table
-        $update_columns =array(
-                          "Date_stage_change" => $today,
-                          'Current_stage'     => $newCurrentStage,
-                         );
+        $update_columns = array(
+                           "Date_stage_change" => $today,
+                           'Current_stage'     => $newCurrentStage,
+                          );
 
         $dbErrors = $db->update(
             'session',
@@ -842,7 +851,7 @@ Class TimePoint
         $config    = NDB_Config::singleton();
         $candidate = Candidate::singleton($this->getCandID());
         $settings  = $config->getSubprojectSettings($this->getSubprojectID());
-        if ($settings['options']['useEDC']=="true") {
+        if ($settings['options']['useEDC'] == "true") {
             return $candidate->getCandidateEDC();
         }
 
