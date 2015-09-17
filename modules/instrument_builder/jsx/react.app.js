@@ -72,10 +72,7 @@ LoadPane = React.createClass({
 	},
 	// Render the HTML
 	render: function () {
-		var spanDownStyle = {
-				display: 'none'
-			},
-			alert = '';
+		var alert = '';
 		// Set up declared alerts, if there is any.
 		switch (this.state.alert) {
 			case 'success':
