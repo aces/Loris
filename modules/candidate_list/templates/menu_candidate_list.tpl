@@ -218,7 +218,12 @@
 <table border="0" valign="bottom" width="100%">
 <tr>
     <!-- title -->
-    <td class="controlPanelSection">{$numCandidates} subject(s) selected.</td>
+    <td class="controlPanelSection">
+        {$numCandidates} subject(s) selected. 
+        <a href="{$csvUrl}" download="{$csvFile}.csv">
+            Download as CSV
+        </a>
+    </td>
     <!-- display pagination links -->
     <td align="right">{$page_links}</td>
 </tr>

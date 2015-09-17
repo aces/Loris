@@ -676,12 +676,72 @@ class NDB_Menu_Filter extends NDB_Menu
     function display()
     {
         // dump the html for the menu
+        $this->tpl_data['csvUrl']  = 'main.php?'
+            . $_SERVER['QUERY_STRING']
+            . '&format=csv';
+        $this->tpl_data['csvFile'] = $_REQUEST['test_name'];
+        if (isset($_REQUEST['subtest'])) {
+            $this->tpl_data['csvFile'] .= '-' . $_REQUEST['subtest'];
+        }
+        $this->tpl_data['csvFile'] .= date('-Y_m_d');
         $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);
         $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("menu_$this->menu.tpl");
         return $html;
+    }
+
+    /**
+     * Controls access to a module's SQL tables, transforming the table into a csv
+     * string. This script should ensure that only files relative to module's path
+     * specified are accessible.
+     * @return string  csv formated string
+     */
+    function getCSVData()
+    {
+        $list['data']    = $this->_getFullList();
+        $list['headers'] = $this->headers;
+
+        return Utility::arrayToCSV($list);
+    }
+
+    /**
+     * Returns the full list of candidates, users, etc.
+     *
+     * @return array
+     * @access private
+     */
+    function _getFullList()
+    {
+        // create DB object
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $qparams = array();
+        // add the base query
+        $query  = '';
+        $query .= $this->_getBaseQuery();
+
+        $filterdetails = $this->_getBaseFilter();
+        $query        .= $filterdetails['clause'];
+        $qparams       = $filterdetails['params'];
+        // apply ORDER BY filters
+        $query .= " ORDER BY ";
+        if (!empty($this->filter['order'])) {
+            $query .= $this->filter['order']['field']
+                ." ".$this->filter['order']['fieldOrder'].", ";
+        }
+        $query .= $this->order_by;
+        // get the list
+
+        $this->_getNumberPages($query);
+
+        $config         =& NDB_Config::singleton();
+        $resultsPerPage = $config->getSetting('rowsPerPage');
+        $result         = $DB->pselect($query, $qparams);
+
+        return $result;
     }
 }
 ?>
