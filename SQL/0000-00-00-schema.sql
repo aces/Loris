@@ -2380,6 +2380,7 @@ CREATE TABLE `SNP` (
   `FunctionPrediction` enum('exonic','ncRNAexonic','splicing','UTR3','UTR5') DEFAULT NULL,
   `Damaging` enum('D','NA') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
+  `ExonicFunction` enum('nonsynonymous','unknown') DEFAULT NULL,
   `PlatformID` bigint(20) DEFAULT NULL,
   `GenomeLocID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`SNPID`),
