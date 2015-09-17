@@ -1,7 +1,7 @@
 <?php
 /**
 * This file is used by the Configuration module to update
-* or insert values into the Config table.
+* or insert values into the Project table.
 *
 * PHP version 5
 *
@@ -40,4 +40,3 @@ header("HTTP/1.1 200 OK");
 print '{ "ok" : "Success" }';
 exit();
 ?>
-

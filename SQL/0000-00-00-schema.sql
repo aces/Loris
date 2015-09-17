@@ -2274,6 +2274,7 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM Conf
 INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM ConfigSettings WHERE Name="Reply-to";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Produced by LorisDB" FROM ConfigSettings WHERE Name="X-MimeOLE";
 
+DROP TABLE IF EXISTS `subproject`;
 CREATE TABLE subproject (
     SubprojectID int(10) unsigned NOT NULL auto_increment,
     title varchar(255) NOT NULL,
@@ -2284,6 +2285,14 @@ CREATE TABLE subproject (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
 INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (1, 'Control', false, 'optimal');
 INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (2, 'Experimental', false, 'optimal');
+
+DROP TABLE IF EXISTS `Project`;
+CREATE TABLE `Project` (
+    `ProjectID` INT(2) Default NULL,
+    `Name` VARCHAR(255) NULL,
+    `recruitmentTarget` INT(6) Default NULL,
+    PRIMARY KEY (`ProjectID`)
+)ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
 CREATE TABLE StatisticsTabs(
     ID INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
