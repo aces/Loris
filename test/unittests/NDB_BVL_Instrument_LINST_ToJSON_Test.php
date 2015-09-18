@@ -3,7 +3,7 @@ namespace Loris\Tests;
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument.class.inc';
+require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument_LINST.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
 
@@ -41,7 +41,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends \PHPUnit_Framework_TestCase
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
-        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument_LINST")->setMethods(array("getFullName"))->getMock();
+        $this->i = $this->getMockBuilder("\Loris\Behavioural\NDB_BVL_Instrument_LINST")->setMethods(array("getFullName"))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->form = $this->QuickForm;
         $this->i->testName = "Test";
@@ -52,14 +52,15 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends \PHPUnit_Framework_TestCase
      * the method being tested
      */
     function _getAllMethodsExcept($methods) {
-        $AllMethods = get_class_methods('NDB_BVL_Instrument');
+        $AllMethods = get_class_methods('NDB_BVL_Instrument_LINST');
 
         return array_diff($AllMethods, $methods);
     }
 
     function testMetaData() {
-        $Instrument = "table{@}test\ntitle{@}test instrument"
-        $this->i->loadInstrumentFile(base64_encode($instrument), true);
+        $instrument = "table{@}test\ntitle{@}test instrument";
+        $base64 = "data://text/plain;base64," . base64_encode($instrument);
+        $this->i->loadInstrumentFile($base64, true);
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
         $ExpectedMeta = [
