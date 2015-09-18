@@ -205,5 +205,77 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($instrumentJSON, $outArray);
     }
+
+    function testPageElement() {
+        $instrument = "table{@}Test\n";
+        $instrument .= "title{@}Test Instrument\n";
+        $instrument .= "date{@}Date_taken{@}Date of Administration{@}2006{@}2012\n";
+        $instrument .= "static{@}Candidate_Age{@}Candidate Age (Months)\n";
+        $instrument .= "static{@}Window_Difference{@}Window Difference (+/- Days)\n";
+        $instrument .= "select{@}Examiner{@}Examiner{@}NULL=>''\n";
+        $instrument .= "header{@}{@}Page 1\n";
+        $instrument .= "page{@}{@}Page 2\n";
+        $instrument .= "header{@}{@}Page 2";
+
+        $base64 = "data://text/plain;base64," . base64_encode($instrument);
+        $this->i->loadInstrumentFile($base64, true);
+        $json = $this->i->toJSON();
+        $outArray = json_decode($json, true);
+        $ExpectedMeta = $instrumentJSON = array(
+            "Meta" => [
+                'InstrumentVersion' => "1l",
+                'InstrumentFormatVersion' => "v0.0.1a-dev",
+                "ShortName" => "Test",
+                "LongName" => "Test Instrument",
+                "IncludeMetaDataFields" => "true",
+            ],
+            "Elements" => [
+                [
+                    'Type' => 'ElementGroup',
+                    'GroupType' => 'Page',
+                    'Elements' => [
+                        [
+                          "Type" => "date",
+                          "Name" => "Date_taken",
+                          "Description" => "Date of Administration",
+                          "Options" => [
+                            "MinDate" => "2006-01-01",
+                            "MaxDate" => "2012-12-31"
+                          ]
+                        ],
+                        [
+                          "Type" => "select",
+                          "Name" => "Examiner",
+                          "Description" => "Examiner",
+                          "Options" => [
+                            "Values" => [
+                              "" => ""
+                            ],
+                            "AllowMultiple" => false,
+                            "RequireResponse" => false
+                          ]
+                        ],
+                        [
+                            'Type'        => "header",
+                            "Description" => "Page 1"
+                        ]
+                    ],
+                    'Description' => 'Top'
+                ],
+                [
+                    'Type' => 'ElementGroup',
+                    'GroupType' => 'Page',
+                    'Elements' => [
+                        [
+                            'Type'        => "header",
+                            "Description" => "Page 2"
+                        ]
+                    ],
+                    'Description' => 'Page 2'
+                ]
+            ]
+        );
+        $this->assertEquals($ExpectedMeta, $outArray);
+    }
 }
 ?>
