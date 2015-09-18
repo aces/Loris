@@ -73,332 +73,137 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals($ExpectedMeta, $outArray['Meta']);
     }
 
-    /*function testSelectElement() {
-        $value = array('value' => "Option");
-        $not_answered = array('value' => 'Option', 'not_answered' => 'Not Answered');
-        $this->i->addSelect("FieldName", "Field Description", $value);
-        $this->i->addSelect("FieldName2", "Field Description 2", $not_answered);
-        $this->i->form->addElement('select', "multiselect1", "Test Question", $value, array("multiple" => 'multiple'));
-        $this->i->form->addElement('select', "multiselect2", "Test Question", $not_answered, array('multiple' => "multiple"));
+    function testAllElements() {
+        $instrument = "table{@}Test\n";
+        $instrument .= "title{@}Test Instrument\n";
+        $instrument .= "date{@}Date_taken{@}Date of Administration{@}2006{@}2012\n";
+        $instrument .= "static{@}Candidate_Age{@}Candidate Age (Months)\n";
+        $instrument .= "static{@}Window_Difference{@}Window Difference (+/- Days)\n";
+        $instrument .= "select{@}Examiner{@}Examiner{@}NULL=>''\n";
+        $instrument .= "header{@}{@}Header\n";
+        $instrument .= "static{@}{@}label\n";
+        $instrument .= "text{@}FieldName{@}Field Description\n";
+        $instrument .= "select{@}texbox_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+        $instrument .= "textarea{@}FieldName{@}Field Description\n";
+        $instrument .= "select{@}textarea_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+        $instrument .= "select{@}FieldName{@}Field Description{@}NULL=>''{-}'option_1'=>'Option 1'{-}'option_2'=>'Option 2'{-}'option_3'=>'Option 3'{-}'not_answered'=>'Not Answered'\n";
+        $instrument .= "selectmultiple{@}FieldName{@}Field Description{@}NULL=>''{-}'option_1'=>'Option 1'{-}'option_2'=>'Option 2'{-}'option_3'=>'Option 3'{-}'option_4'=>'Option 4'{-}'not_answered'=>'Not Answered'\n";
+        $instrument .= "date{@}FieldName{@}Field Description{@}2003{@}2014\n";
+        $instrument .= "select{@}date_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+        $instrument .= "numeric{@}FieldName{@}Field Description{@}0{@}20\n";
+        $instrument .= "select{@}numeric_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'";
+
+        $base64 = "data://text/plain;base64," . base64_encode($instrument);
+        $this->i->loadInstrumentFile($base64, true);
         $json = $this->i->toJSON();
         $outArray = json_decode($json, true);
-        $selectElement = $outArray['Elements'][0];
-        $selectElement2 = $outArray['Elements'][1];
-
-        $multiselectElement = $outArray['Elements'][2];
-        $multiselectElement2 = $outArray['Elements'][3];
-
-        $this->assertEquals($selectElement,
-            [
-                'Type' => "select",
-                "Name" => "FieldName",
-                "Description" => "Field Description",
-                "Options" => [
+        $instrumentJSON = array(
+            "Meta" => [
+                'InstrumentVersion' => "1l",
+                'InstrumentFormatVersion' => "v0.0.1a-dev",
+                "ShortName" => "Test",
+                "LongName" => "Test Instrument",
+                "IncludeMetaDataFields" => "true",
+            ],
+            "Elements" => [
+                [
+                  "Type" => "date",
+                  "Name" => "Date_taken",
+                  "Description" => "Date of Administration",
+                  "Options" => [
+                    "MinDate" => "2006-01-01",
+                    "MaxDate" => "2012-12-31"
+                  ]
+                ],
+                [
+                  "Type" => "select",
+                  "Name" => "Examiner",
+                  "Description" => "Examiner",
+                  "Options" => [
                     "Values" => [
-                        "value" => "Option"
+                      "" => ""
                     ],
+                    "AllowMultiple" => false,
                     "RequireResponse" => false
+                  ]
                 ],
-            ]
-        );
-
-        $this->assertEquals($selectElement2,
-            [
-                'Type' => "select",
-                "Name" => "FieldName2",
-                "Description" => "Field Description 2",
-                "Options" => [
-                    "Values" => [
-                        "value" => "Option"
+                [
+                    'Type'        => "header",
+                    "Description" => "Header"
+                ],
+                [
+                    'Type'        => "text",
+                    "Name"        => "FieldName",
+                    "Description" => "Field Description",
+                    "Options"     => [
+                        "Type"            => "small",
+                        "RequireResponse" => true
+                    ]
+                ],
+                [
+                    'Type'        => "text",
+                    "Name"        => "FieldName",
+                    "Description" => "Field Description",
+                    "Options"     => [
+                        "Type"            => "large",
+                        "RequireResponse" => true
+                    ]
+                ],
+                [
+                    'Type' => "select",
+                    "Name" => "FieldName",
+                    "Description" => "Field Description",
+                    "Options" => [
+                        "Values" => [
+                           ''=>'',
+                           'option_1'=>'Option 1',
+                           'option_2'=>'Option 2',
+                           'option_3'=>'Option 3'
+                        ],
+                        "RequireResponse" => true,
+                        "AllowMultiple" => false,
                     ],
-                    "RequireResponse" => true
                 ],
-            ]
-        );
-
-        $this->assertEquals($multiselectElement,
-            [
-                'Type' => "select",
-                "Name" => "multiselect1",
-                "Description" => "Test Question",
-                "Options" => [
-                    "Values" => [
-                        "value" => "Option"
+                [
+                    'Type' => "select",
+                    "Name" => "FieldName",
+                    "Description" => "Field Description",
+                    "Options" => [
+                        "Values" => [
+                           ''=>'',
+                           'option_1'=>'Option 1',
+                           'option_2'=>'Option 2',
+                           'option_3'=>'Option 3',
+                           'option_4'=>'Option 4'
+                        ],
+                        "RequireResponse" => true,
+                        "AllowMultiple" => true,
                     ],
-                    "RequireResponse" => false,
-                    "AllowMultiple" => true,
                 ],
-            ]
-        );
-
-        $this->assertEquals($multiselectElement2,
-            [
-                'Type' => "select",
-                "Name" => "multiselect2",
-                "Description" => "Test Question",
-                "Options" => [
-                    "Values" => [
-                        "value" => "Option"
-                    ],
-                    "RequireResponse" => true,
-                    "AllowMultiple" => true,
+                [
+                    'Type'        => "date",
+                    "Name"        => "FieldName",
+                    "Description" => "Field Description",
+                    "Options"     => [
+                        "MinDate" => "2003-01-01",
+                        "MaxDate" => "2014-12-31",
+                        "RequireResponse" => true
+                    ]
                 ],
-            ]
-        );
-    }
-
-
-    function testTextElement() {
-        $this->i->addTextElement("FieldName", "Field Description for Text", array("value" => "Option"));
-        $this->i->addTextAreaElement("FieldName2", "Field Description2 for Text", array("value" => "Option"));
-        $json = $this->i->toJSON();
-        $outArray = json_decode($json, true);
-        $textElement = $outArray['Elements'][0];
-        $textareaElement = $outArray['Elements'][1];
-
-        $this->assertEquals($textElement,
-            [
-                'Type'        => "text",
-                "Name"        => "FieldName",
-                "Description" => "Field Description for Text",
-                "Options"     => [
-                    "Type"            => "small",
-                    "RequireResponse" => true
+                [
+                    'Type'        => "numeric",
+                    "Name"        => "FieldName",
+                    "Description" => "Field Description",
+                    "Options"     => [
+                        "NumberType" => "integer",
+                        "MinValue" => 0,
+                        "MaxValue" => 20,
+                        "RequireResponse" => true
+                    ]
                 ]
             ]
         );
-
-        $this->assertEquals($textareaElement,
-            [
-                'Type'        => "text",
-                "Name"        => "FieldName2",
-                "Description" => "Field Description2 for Text",
-                "Options"     => [
-                    "Type"            => "large",
-                    "RequireResponse" => true
-                ]
-            ]
-        );
+        $this->assertEquals($instrumentJSON, $outArray);
     }
-
-    function testDateElement() {
-        $this->i->addBasicDate(
-            "FieldName",
-            "Field Description",
-            [
-                'format'  => 'YMd',
-                "minYear" => "1990",
-                "maxYear" => "2000",
-                "addEmptyOption" => false,
-            ]
-        );
-        $this->i->addBasicDate(
-            "FieldName2",
-            "Field Description",
-            [
-                'format'  => 'YMd',
-                "minYear" => "1990",
-                "maxYear" => "2000",
-                "addEmptyOption" => true,
-            ]
-        );
-
-        $this->i->addDateElement(
-            "FieldName3",
-            "Field Description",
-            [
-                'format'  => 'YMd',
-                "minYear" => "1990",
-                "maxYear" => "2000",
-                "addEmptyOption" => false,
-            ]
-        );
-        $this->i->addDateElement(
-            "FieldName4",
-            "Field Description",
-            [
-                'format'  => 'YMd',
-                "minYear" => "1990",
-                "maxYear" => "2000",
-                "addEmptyOption" => true,
-            ]
-        );
-        $json = $this->i->toJSON();
-        $outArray = json_decode($json, true);
-        $dateElement = $outArray['Elements'][0];
-        $dateElement2 = $outArray['Elements'][1];
-        $dateElement3 = $outArray['Elements'][2];
-        $dateElement4 = $outArray['Elements'][3];
-
-        // They were added with addBasicDate, so response is
-        // not required.
-        $expectedResult = [
-                'Type'        => "date",
-                "Name"        => "FieldName",
-                "Description" => "Field Description",
-                "Options"     => [
-                    "MinDate" => "1990-01-01",
-                    "MaxDate" => "2000-12-31",
-                    "RequireResponse" => false
-                ]
-            ];
-
-        $this->assertEquals($dateElement, $expectedResult);
-
-        $expectedResult['Name'] = 'FieldName2';
-        $this->assertEquals($dateElement2, $expectedResult);
-
-        unset($expectedResult['Options']['RequireResponse']);
-
-        // The addDateElement wrappers add _date to the field name, the
-        // addBasicDate wrappers do not.
-        $expectedResult['Name'] = 'FieldName3_date';
-        $this->assertEquals($dateElement3, $expectedResult);
-
-        $expectedResult['Name'] = 'FieldName4_date';
-        $this->assertEquals($dateElement4, $expectedResult);
-    }
-
-    function testNumericElement() {
-        $this->i->addNumericElement("TestElement", "Test Description");
-        $json = $this->i->toJSON();
-        $outArray = json_decode($json, true);
-        $numericElement = $outArray['Elements'][0];
-
-        $this->assertEquals($numericElement,
-            [
-                "Type" => "numeric",
-                "Name" => "TestElement",
-                "Description" => "Test Description",
-                "Options" => [
-                    "NumberType" => "decimal"
-                ]
-            ]
-        );
-
-    }
-
-    function testScoreElement() {
-        $this->i->addScoreColumn(
-            "FieldName",
-            "Field Description",
-            "45"
-        );
-        $this->i->addScoreColumn(
-            "FieldName2",
-            null
-        );
-        $json = $this->i->toJSON();
-        $outArray = json_decode($json, true);
-        $scoreElement = $outArray['Elements'][0];
-        $scoreElement2 = $outArray['Elements'][1];
-
-        $this->assertEquals($scoreElement,
-            [
-                'Type'        => "score",
-                "Name"        => "FieldName",
-                "Description" => "Field Description",
-            ]
-        );
-        $this->assertEquals($scoreElement2,
-            [
-                'Type'        => "score",
-                "Name"        => "FieldName2",
-            ]
-        );
-
-    }
-
-    function testHeaderElement() {
-        // Since QuickForm arbitrarily decides to split things into "sections"
-        // when there's a header, the header test adds 2 headers to ensure that
-        // the JSON serialization was done according to spec, and not according
-        // to QuickForm's whims.
-        // The first "section" has no elements, and the second one, to make sure
-        // that the serialization won't die on a 0 element "section"
-        $this->i->form->addElement("header", null, "I am your test header");
-        $this->i->form->addElement("header", null, "I am another test header");
-        $this->i->addScoreColumn(
-            "FieldName2",
-            "Field Description",
-            "45"
-        );
-        $json = $this->i->toJSON();
-        $outArray = json_decode($json, true);
-        $headerElement = $outArray['Elements'][0];
-        $headerElement2= $outArray['Elements'][1];
-
-        $this->assertEquals($headerElement,
-            [
-                'Type'        => "header",
-                "Description" => "I am your test header",
-                "Options"     => [
-                    "Level" => 1
-                ]
-            ]
-        );
-        $this->assertEquals($headerElement2,
-            [
-                'Type'        => "header",
-                "Description" => "I am another test header",
-                "Options"     => [
-                    "Level" => 1
-                ]
-            ]
-        );
-
-        $this->assertEquals(count($outArray['Elements']), 3);
-    }
-
-    function testLabelElement() {
-        $this->i->addLabel("I am a label");
-        $json = $this->i->toJSON();
-        $outArray = json_decode($json, true);
-        $labelElement = $outArray['Elements'][0];
-
-        $this->assertEquals($labelElement,
-            [
-                'Type'        => "label",
-                "Description" => "I am a label"
-            ]
-        );
-        $this->assertEquals(count($outArray['Elements']), 1);
-    }
-
-    function testPageGroup() {
-        $this->i = $this->getMockBuilder("\NDB_BVL_Instrument")->setMethods(array("getFullName", "getSubtestList", '_setupForm'))->getMock();
-        $this->i->method('getFullName')->willReturn("Test Instrument");
-        $this->i->method('getSubtestList')->willReturn(
-            array(
-                array('Name' => 'Page 1', 'Description' => 'The first page'),
-                array('Name' => 'Page 2', 'Description' => 'The second page'),
-            )
-        );
-
-        $this->i->form = $this->QuickForm;
-        $this->i->testName = "Test";
-
-
-        $json = $this->i->toJSON();
-        $outArray = json_decode($json, true);
-        $page1 = $outArray['Elements'][0];
-        $page2 = $outArray['Elements'][1];
-        $this->assertEquals($page1,
-            [
-                'Type' => 'ElementGroup',
-                'GroupType' => 'Page',
-                'Elements' => [],
-                'Description' => 'The first page'
-            ]
-        );
-        $this->assertEquals($page2,
-            [
-                'Type' => 'ElementGroup',
-                'GroupType' => 'Page',
-                'Elements' => [],
-                'Description' => 'The second page'
-            ]
-        );
-    }*/
 }
 ?>
