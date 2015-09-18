@@ -65,13 +65,11 @@
 						</div>
 					</div>
 					<div class="row">
-					  <div class="col-md-6 col-md-offset-6">
+					  <div class="col-md-6 col-md-offset-8">
 					    <div class="col-sm-6">
 					      <input type="submit" name="filter" value="Show Data" id="filter" class="btn btn-sm btn-primary col-xs-12"/>
 					    </div>
-					    <div class="col-sm-6">
-					      <input type="clear" value="Clear Data" id="filter" class="btn btn-sm btn-primary col-xs-12"/>
-					    </div>
+
 					    
 							</div>
 					</div>
@@ -100,7 +98,7 @@
   </div>
 
 
-  <script type="text/javascript" src="GetJS.php?Module=data_team_helper&file=data_team_helper_react.js"></script>
+<script type="text/javascript" src="GetJS.php?Module=behavioural_qc_browser&file=behavioural_qc_browser_react.js"></script>
 
 <script type="text/javascript">
 var incomplete = {$Incomplete_candidates|@json_encode};

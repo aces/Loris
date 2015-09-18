@@ -5,7 +5,7 @@ require_once "NDB_Form.class.inc";
  * @package main
  */
 
-class NDB_Form_data_team_helper extends NDB_Form
+class NDB_Form_behavioural_qc_browser extends NDB_Form
 {
 
     function _hasAccess()
@@ -49,7 +49,7 @@ class NDB_Form_data_team_helper extends NDB_Form
     }
 
 
-    function data_team_helper()
+    function behavioural_qc_browser()
     {
         //initializations
         $DB =& Database::singleton();

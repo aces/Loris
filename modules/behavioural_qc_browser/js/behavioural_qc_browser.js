@@ -26,7 +26,7 @@ function changeVisitLabels()
         instrument_dropdown_value = instrument_dropdown_value.replace(/\+/g,' ');
     }
     request = $.ajax({
-	url: "AjaxHelper.php?Module=data_team_helper&script=GetInstruments.php",
+	url: "AjaxHelper.php?Module=behavioural_qc_browser&script=GetInstruments.php",
 	type: "get",
 	data: {"visit_label" : visit_label_value},
 	success: function(data){
@@ -54,7 +54,7 @@ $(document).ready(function() {
    
     //Auto completion for candidate ids. 
     $('#autocomplete-ajax').devbridgeAutocomplete({
-	serviceUrl: "AjaxHelper.php?Module=data_team_helper&script=GetCandidates.php",
+	serviceUrl: "AjaxHelper.php?Module=behavioural_qc_browser&script=GetCandidates.php",
 	params:{
 	    'instrument': function(){
 		return $("#instrument").val();
