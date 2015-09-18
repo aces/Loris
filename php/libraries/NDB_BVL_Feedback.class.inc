@@ -302,14 +302,17 @@ class NDB_BVL_Feedback
      * @param integer $feedbackID ID of the thread whose type we want to get
      *
      * @return string feedback type of the thread
-     * @fixme  This seems to try selecting a column that doesn't exist in Loris?
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
      */
     function getThreadType($feedbackID)
     {
         // new DB Object
         $db =& Database::singleton();
 
-        $query = "SELECT Type FROM feedback_bvl_thread WHERE FeedbackID = :FID";
+        $query = "SELECT Name FROM feedback_bvl_thread
+                  JOIN feedback_bvl_type ON
+                  feedback_bvl_type.Feedback_type = feedback_bvl_thread.Feedback_type
+                  WHERE feedback_bvl_thread.FeedbackID = :FID";
 
         $result = $db->pselectOne($query, array('FID' => $feedbackID));
         return $result;
@@ -594,7 +597,7 @@ class NDB_BVL_Feedback
                              ft.Status,
                              ft.Testdate DESC";
 
-        $result = $db->pselect($query, $qparams);
+            $result = $db->pselect($query, $qparams);
 
         return $result;
     }
@@ -635,24 +638,22 @@ class NDB_BVL_Feedback
     /**
      * Creates a new behavioural feedback thread
      *
-     * @param unused  $level     Unused variable. FIXME: Delete and update
-     *                           references.
      * @param integer $type      Feedback type ID
      * @param string  $comment   The content of the thread
      * @param string  $public    Y or N depending on if the thread is public
      * @param string  $fieldname Optional fieldname for the thread to be
      *                           attached to
      *
-     * @return void
+     * @return array
+     * As we need the values in this array in dynamic front-end calls.
      *
      * @throws DatabaseException
      * @throws Exception
      */
-    function createThread($level, $type, $comment, $public=null,$fieldname=null)
+    function createThread($type, $comment, $public=null,$fieldname=null)
     {
         // new DB Object
-        $factory = NDB_Factory::singleton();
-        $db      = $factory->Database();
+        $DB = Database::singleton();
 
         // public threads are inactive by default
         if ($public == 'Y') {
@@ -717,13 +718,29 @@ class NDB_BVL_Feedback
             );
         }
 
-        $success = $db->insert('feedback_bvl_thread', $setArray);
+        $success = $DB->insert('feedback_bvl_thread', $setArray);
 
         // get the FeedbackID for the new thread
-        $feedbackID = $db->getLastInsertId();
+        $feedbackID = $DB->getLastInsertId();
 
         // INSERT entry for the the thread into the feedback_bvl_thread
-        $this->createEntry($feedbackID, $comment);
+        $this->createEntry($feedbackID, $comment, $this->_username);
+
+        $newEntryValues = array();
+        $newEntryValues["feedbackID"] = $feedbackID;
+        $newEntryValues["comment"]    = $comment;
+        if ($fieldname != null) {
+            $newEntryValues["fieldname"] = $fieldname;
+        } else {
+            $newEntryValues["fieldname"] = '';
+        }
+        $newEntryValues["user"] = $this->_username;
+        $newEntryValues["date"] = $today;
+        $newEntryValues["type"] = $this->getThreadType($feedbackID);
+        //These new entries are returned to be used mostly dynamic rendering of
+        //new threads on the front-end
+        return $newEntryValues;
+
     }
 
     /**
@@ -732,10 +749,11 @@ class NDB_BVL_Feedback
      *
      * @param integer $feedbackID The threadID to hold the entry being created
      * @param string  $comment    The comment to add to the entry.
+     * @param string  $username   The username of the entry author.
      *
      * @return void
      */
-    function createEntry($feedbackID, $comment)
+    function createEntry($feedbackID, $comment, $username)
     {
         // new DB Object
         $db =& Database::singleton();
@@ -744,10 +762,13 @@ class NDB_BVL_Feedback
         $setArray = array(
                      'FeedbackID' => $feedbackID,
                      'Comment'    => $comment,
-                     'UserID'     => $this->_username,
+                     'UserID'     => $username,
                     );
 
         $success = $db->insert('feedback_bvl_entry', $setArray);
+
+        // Returning the set array so the data can be returned as JSON to the GUI.
+        return $setArray;
     }
 
     /**
@@ -933,23 +954,19 @@ class NDB_BVL_Feedback
      * @return void
      *  FIXME: This shares a lot of code from activateThread, it should be
      *         refactored
+     * FIXME: This needs to properly check for sites.
      */
     function closeThread($feedbackID=null)
     {
         // create user object
-        $user =& User::singleton($this->_username);
-
-        if (!$user->isMultiSiteEnabled($this->_username)) {
-            throw new Exception("User is not allowed to close threads");
-        }
+        $user =& User::singleton();
 
         // new DB Object
         $db =& Database::singleton();
 
         $setArray = array(
-                     "Status"   => 'closed',
-                     "UserID"   => $this->_username,
-                     "Testdate" => "NULL",
+                     "Status" => 'closed',
+                     "UserID" => $this->_username,
                     );
 
         $whereArray = array(
@@ -992,6 +1009,42 @@ class NDB_BVL_Feedback
     }
 
     /**
+     * Used to re-open a thread identified by its feedbackID.
+     *
+     * @param integer $feedbackID The ID of the feedback thread being closed
+     *
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     *
+     * @return void*
+     */
+    function openThread($feedbackID)
+    {
+        $user =& User::singleton();
+
+        $db =& Database::singleton();
+
+        $setArray = array(
+                     "Status" => 'opened',
+                     "UserID" => $this->_username,
+                    );
+
+        $whereArray = array(
+                       "Public" => 'Y',
+                       "Active" => 'Y',
+                      );
+        if (!empty($feedbackID)) {
+            // only one thread to be closed
+            $whereArray = array_merge(
+                $whereArray,
+                array("FeedbackID" => $feedbackID)
+            );
+        }
+
+        $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
+
+    }
+
+    /**
      * Returns a [verbose] element name of the feedback_bvl_thread.
      *
      * Status field, i.e. feedback status
@@ -1021,5 +1074,57 @@ class NDB_BVL_Feedback
         $record = $db->pselectOne($query, $param);
         return $record;
     }
+
+    /**
+     * This function is currently used to check whether or not to render
+     * the bvl_feedback_icon in main.tpl. It checks if the user has the
+     * bvl feedback permission first, if the user has the permissions it
+     * then checks if the user is on the timepoint_list, instrument_list
+     * or on any instrument page.
+     *
+     * Returns false if the user doesn't have the appropriate permissions
+     * or is not on one of the appropriate pages to return bvl_feedback.
+     *
+     * @return bool|object
+     * @throws ConfigurationException
+     * @throws Exception
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     */
+    static function bvlFeedbackPossible()
+    {
+
+        // create user object
+        $test_name = $_REQUEST['test_name'];
+
+        $user =& User::singleton();
+        if (Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error: " . $user->getMessage());
+        }
+
+        $site =& Site::singleton($user->getData('CenterID'));
+
+        if ($site->isStudySite()) {
+            if ($user->hasPermission('bvl_feedback')) {
+                if (($test_name === "timepoint_list")
+                    || ($test_name === "instrument_list")
+                ) {
+                    return true;
+                } else {
+                    $Factory       = NDB_Factory::singleton();
+                    $DB            = $Factory->Database();
+                    $instruments_q = $DB->pselect(
+                        "SELECT Test_name FROM test_names",
+                        array()
+                    );
+
+                    foreach ($instruments_q as $row) {
+                        if ($row['Test_name'] == $test_name) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false; //returning false when user is not on appropriate study site
+    }
 }
-?>

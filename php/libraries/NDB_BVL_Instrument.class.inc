@@ -11,6 +11,8 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+require_once 'BVL_Feedback_Panel.class.inc';
+
 /**
  * Base class for all NeuroDB behavioural instruments
  *
@@ -2158,6 +2160,25 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Function that displays the html the fetch feedback panel.
+     *
+     * @return string
+     */
+    function getFeedbackPanel()
+    {
+
+        if (!empty($_REQUEST['commentID'])) {
+            $feedbackPanel = new BVL_Feedback_Panel(
+                $_REQUEST['candID'],
+                $_REQUEST['sessionID'],
+                $_REQUEST['commentID']
+            );
+
+            return $feedbackPanel->display();
+        }
+    }
+
+    /**
      * Return the HTML for the review section of the survey module
      * By default, this will show every question from the parameter_type
      * table for this instrument, but it can be overridden/customized by
@@ -2550,4 +2571,3 @@ function _checkDate($dateElement)
     }
     return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
 }
-?>

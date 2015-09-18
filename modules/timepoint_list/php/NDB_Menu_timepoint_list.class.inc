@@ -177,6 +177,18 @@ class NDB_Menu_timepoint_list extends NDB_Menu
         }
         return  'Not Started';
     }
+    /**
+     * Used by the NDB_caller class when loading a page. 
+     * Call the display function of the appropriate modules feedback panel.
+     *
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     */ 
+    
+    function getFeedbackPanel(){
+        $feedbackPanel = new BVL_Feedback_Panel($_REQUEST['candID']);
+        $html = $feedbackPanel->display();
+        return $html;
+    }
 
     function getActionButtons() {
         $controlPanel = new TimePoint_List_ControlPanel($_REQUEST['candID']);
