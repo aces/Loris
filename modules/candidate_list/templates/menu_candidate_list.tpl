@@ -44,6 +44,7 @@
                 </div>
             </div>
             <div class="row">
+                {if count($form.centerID.options) > 1}
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
                         {$form.centerID.label}
@@ -52,6 +53,7 @@
                         {$form.centerID.html}
                     </div>
                 </div>
+                {/if}
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
                         {$form.SubprojectID.label}
