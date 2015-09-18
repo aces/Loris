@@ -429,7 +429,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             $this->InstrumentType = 'LINST';
 
             $db         = \Database::singleton();
-            $this->form = new \HTML_Quickform('test_form');
+
+            if (!isset($this->form)) {
+                $this->form = new \HTML_Quickform('test_form');
+            }
 
             $this->dateTimeFields = array("Date_taken");
             $this->formType       = 'XIN';
@@ -824,10 +827,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $jsonObject = array(
                        'Meta'     => array(
                                       "InstrumentVersion"       => "1l",
-                                      "InstrumentFormatVersion" => "v0.0.1-dev",
+                                      "InstrumentFormatVersion" => "v0.0.1a-dev",
                                       "ShortName"               => "",
                                       "LongName"                => "",
-                                      "IncludeMetaDataFields"   => true,
+                                      "IncludeMetaDataFields"   => "true",
                                      ),
                        'Elements' => array(),
                       );
@@ -838,13 +841,14 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             $element         = array();
             $element['Type'] = $value[0];
             $element['Name'] = $value[1];
-            $element['Description'] = rtrim($value[2]);
+            if ($value[0] !== 'table' && $value[0] !== 'title') {
+                $element['Description'] = rtrim($value[2]);
+            }
             switch ($value[0]) {
             case 'selectmultiple':
                 $selectMultiple  = true;
                 $element['Type'] = 'select';
             case 'select':
-
                 $selectOptions = preg_split("/{-}/", trim($value[3]));
                 $opt           = array();
                 foreach ($selectOptions as $o) {
@@ -921,7 +925,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 unset($element['Type']);
                 break;
             }
-            if ($element['Type']) {
+            if (isset($element['Type'])) {
                 $elements[] = $element;
             }
         }

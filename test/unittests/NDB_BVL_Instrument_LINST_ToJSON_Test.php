@@ -58,7 +58,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends \PHPUnit_Framework_TestCase
     }
 
     function testMetaData() {
-        $instrument = "table{@}test\ntitle{@}test instrument";
+        $instrument = "table{@}Test\ntitle{@}Test Instrument";
         $base64 = "data://text/plain;base64," . base64_encode($instrument);
         $this->i->loadInstrumentFile($base64, true);
         $json = $this->i->toJSON();
