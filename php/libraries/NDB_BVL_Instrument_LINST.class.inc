@@ -427,8 +427,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     {
         if (file_exists($filename) || $base64 === true) {
             $this->InstrumentType = 'LINST';
-
-            $db         = \Database::singleton();
+            $db = \Database::singleton();
 
             if (!isset($this->form)) {
                 $this->form = new \HTML_Quickform('test_form');
@@ -856,8 +855,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $specialCase     = true;
                     $element['Type'] = 'select';
                 case 'select':
-                    $selectOptions   = preg_split("/{-}/", trim($value[3]));
-                    $opt             = array();
+                    $selectOptions = preg_split("/{-}/", trim($value[3]));
+                    $opt           = array();
                     $RequireResponse = false;
                     foreach ($selectOptions as $o) {
                         $arr = explode("=>", $o);
@@ -885,20 +884,18 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                           );
                     break;
                 case 'textarea':
-                    $specialCase       = true;
+                    $specialCase     = true;
                     $element['Type'] = 'text';
                 case 'text':
                     $textType           = ($specialCase ? 'large' : 'small');
-                    $element['Options'] = array(
-                                           'Type'            => $textType,
-                                          );
+                    $element['Options'] = array('Type' => $textType);
                     break;
                 case 'date':
                     $minDate            = $value[3] . "-01-01";
                     $maxDate            = rtrim($value[4]) . "-12-31";
                     $element['Options'] = array(
-                                           'MinDate'         => $minDate,
-                                           'MaxDate'         => $maxDate,
+                                           'MinDate' => $minDate,
+                                           'MaxDate' => $maxDate,
                                           );
                     break;
                 case 'numeric':
