@@ -1,6 +1,6 @@
 <?php
 /**
- * This is a file called use by the behavioural qc browser
+ * This is a file called used by the behavioural qc browser
  * auto-complete to retrieve candidates for a given
  * instrument and/or visit.
  *

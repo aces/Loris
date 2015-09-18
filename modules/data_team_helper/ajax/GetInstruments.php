@@ -1,5 +1,18 @@
 <?php
-/* This is used by the data_team_helper module */
+/**
+ * This is a file called used by the behavioural qc browser
+ * and called from it's js file. When a visit is selected
+ * from the dropdown, it's corresponding instruments are
+ * retrieved and rendered in the instrument dropdown.
+ *
+ * PHP Version 5
+ *
+ * @category Behavioural
+ * @package  Loris
+ * @author   Evan McIlroy <evanmcilroy@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
 header("content-type:application/json");
 ini_set('default_charset', 'utf-8');
 require_once "Database.class.inc";
@@ -17,7 +30,7 @@ $flattened_result = array();
 //gets the given visit_label and returns the instrument
 
 //If all visits are selected return all visits
-if ($_REQUEST['visit_label'] == 'All Visits'){
+if ($_REQUEST['visit_label'] == 'All Visits') {
     $instruments = Utility::getAllInstruments();
     array_unshift($instruments, "All Instruments");
 
@@ -29,18 +42,14 @@ if ($_REQUEST['visit_label'] == 'All Visits'){
 
     print json_encode($flattened_result);
     exit();
-}
-
-//else a specific visit is set and only return visit instruments 
-else{
+} else {
     $instruments = Utility::getVisitInstruments($_REQUEST['visit_label']);
-//flattening the array result for proper json encoding
-    if ($instruments == null){
+    //flattening the array result for proper json encoding
+    if ($instruments == null) {
         $flattened_result[0] = "No instruments for this visit";
         print json_encode($flattened_result);
         exit();
-    }
-    else{
+    } else {
         foreach ($instruments as $k => $v) {
             $flattened_result[$k] = $v['Test_name_display'];
         }
