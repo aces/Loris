@@ -66,11 +66,8 @@
 					</div>
 					<div class="row">
 					  <div class="col-md-6 col-md-offset-6">
-					    <div class="col-sm-6">
+					    <div class="col-sm-6 col-md-offset-6">
 					      <input type="submit" name="filter" value="Show Data" id="filter" class="btn btn-sm btn-primary col-xs-12"/>
-					    </div>
-					    <div class="col-sm-6">
-					      <input type="clear" value="Clear Data" id="filter" class="btn btn-sm btn-primary col-xs-12"/>
 					    </div>
 					    
 							</div>
