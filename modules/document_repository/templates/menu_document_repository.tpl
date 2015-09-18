@@ -46,7 +46,7 @@
     </tr>
 </script>
 <script id="file" type="x-tmpl-mustache">
-    <tr class="{{ parentID }}a" {{ ^filtered }}style="display:none" {{ /filtered }}>
+    <tr class="{{ parentID }}a fileRow" {{ ^filtered }}style="display:none" {{ /filtered }}>
         <td class="blah fileColumn">
             {{ #depth }}
                 {{ #first }}

@@ -68,18 +68,27 @@ class NDB_Client
         include_once "NDB_BVL_Feedback.class.inc";
 
         // Load the config file.
-        $config = NDB_Config::singleton($configFile);
+        $factory = NDB_Factory::singleton();
+
+        $config = $factory->config($configFile);
 
         // Load the database object with settings from config
         // so that after this we can just call Database::singleton()
         // with no parameters
-        $dbConfig = $config->getSetting('database');
-        $DB       =& Database::singleton(
-            $dbConfig['database'],
-            $dbConfig['username'],
-            $dbConfig['password'],
-            $dbConfig['host']
-        );
+        $DBSettings = $config->getSetting("database");
+        if (!defined("UNIT_TESTING")) {
+            $DB = Database::singleton(
+                $DBSettings['database'],
+                $DBSettings['username'],
+                $DBSettings['password'],
+                $DBSettings['host'],
+                true
+            );
+        }
+
+        // Now make sure the factory reference is the same as the
+        // singleton reference
+        $DB = $factory->database();
 
         // add extra include paths. This must be done
         // after the database is connected, since the setting
@@ -135,6 +144,7 @@ class NDB_Client
             } elseif ($auth === true) {
                 $error = $login->setState();
             } elseif ($auth === false) {
+                header("HTTP/1.1 403 Forbidden");
                 $login->clearState();
             }
         }
@@ -153,6 +163,24 @@ class NDB_Client
 
         // finished initializing
         return true;
+    }
+
+    /**
+     * Returns true if the user is logged in
+     *
+     * @return true iff user is logged in
+     */
+    function isLoggedIn()
+    {
+        if (!isset($_SESSION['State'])) {
+            $_SESSION['State'] =& State::singleton();
+            $login = new SinglePointLogin();
+            $_SESSION['State']->setProperty('login', $login);
+        } else {
+            $login = $_SESSION['State']->getProperty('login');
+        }
+
+        return $login->isLoggedIn();
     }
 }
 ?>

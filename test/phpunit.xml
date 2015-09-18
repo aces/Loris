@@ -6,6 +6,7 @@
     <testsuites>
         <testsuite name='LorisUnitTests for php/libraries'>
             <directory>./unittests/</directory>
+            <directory>./unittests/api</directory>
         </testsuite>
 
         <testsuite name='Loris Core Integration Tests'>

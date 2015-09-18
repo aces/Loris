@@ -246,29 +246,6 @@ INSERT INTO `feedback_bvl_type` VALUES
 UNLOCK TABLES;
 
 --
--- Table structure for table `feedback_bvl_types_site`
---
-
-DROP TABLE IF EXISTS `feedback_bvl_types_site`;
-CREATE TABLE `feedback_bvl_types_site` (
-  `Feedback_type` int(11) unsigned NOT NULL default '0',
-  `CenterID` tinyint(2) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`Feedback_type`,`CenterID`),
-  KEY `FK_feedback_bvl_types_site_2` (`CenterID`),
-  CONSTRAINT `FK_feedback_bvl_types_site_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `FK_feedback_bvl_types_site_1` FOREIGN KEY (`Feedback_type`) REFERENCES `feedback_bvl_type` (`Feedback_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `feedback_bvl_types_site`
---
-
-LOCK TABLES `feedback_bvl_types_site` WRITE;
-/*!40000 ALTER TABLE `feedback_bvl_types_site` DISABLE KEYS */;
-/*!40000 ALTER TABLE `feedback_bvl_types_site` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `feedback_mri_comment_types`
 --
 
@@ -1876,6 +1853,17 @@ CREATE TABLE `mri_violations_log` (
   `ValidRange` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`LogID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `violations_resolved` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `hash` varchar(255) NOT NULL,
+  `ExtID` bigint(20) NOT NULL,
+  `TypeTable` varchar(255) DEFAULT NULL,
+  `User` varchar(255) DEFAULT NULL,
+  `ChangeDate` datetime DEFAULT NULL,
+  `Resolved` enum('unresolved', 'reran', 'emailed', 'inserted', 'rejected', 'inserted_flag', 'other') DEFAULT 'unresolved',
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `participant_accounts` (

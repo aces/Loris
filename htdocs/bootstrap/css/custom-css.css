@@ -157,3 +157,7 @@ div.navbar div.container div.navbar-brand {
     background: inherit;
     text-align: center;
 }
+
+.controlPanelSection {
+    padding-bottom: 6px;
+}

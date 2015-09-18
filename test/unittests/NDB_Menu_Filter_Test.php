@@ -72,6 +72,8 @@ class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
      *     2. Invalid filters are thrown away.
      *     3. Only validFilters are set in $this->filter
      *     4. Only validHavingFilters are set in $this->having
+     *     5. Values of all fields are (PHP) trimmed before being put into the 
+     *        filter
      *
      * @covers NDB_Menu_Filter::_setFilters
      */
@@ -80,6 +82,15 @@ class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub = $this->getMock('NDB_Menu_Filter', $this->_getAllMethodsExcept($method));
 
+        $stub->form = new LorisForm('filter');
+        $stub->form->applyFilter('__ALL__', 'trim');
+        $submittedValues = array(
+                'FakeField'        => '      I should be put into filter     ',
+                'FakeInvalidField' => 'I should not be set',
+                'FakeHaving'       => 'I should be put into having'
+        );
+        $_REQUEST =& $submittedValues;
+
         $stub->formToFilter = array(
             'FakeField'  => 'table.column',
             'FakeHaving' => 'abcd.def'
@@ -87,13 +98,7 @@ class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
         $stub->validFilters = array('table.column', 'abcd.def');
         $stub->validHavingFilters = array('abcd.def');
 
-        $stub->_setFilters(
-            array(
-                'FakeField'        => 'I should be put into filter',
-                'FakeInvalidField' => 'I should not be set',
-                'FakeHaving'       => 'I should be put into having'
-            )
-            );
+        $stub->_setFilters($submittedValues);
 
         $this->assertEquals(
             $stub->filter,

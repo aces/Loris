@@ -276,8 +276,9 @@ class Utility extends PEAR
      */
     static function getSubprojectList()
     {
-        $DB     = Database::singleton();
-        $config = NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $config  = $factory->config();
 
         $subprojects = $DB->pselect("SELECT * FROM subproject", array());
 
@@ -296,7 +297,8 @@ class Utility extends PEAR
      */
     static function getProjectList()
     {
-        $config =& NDB_Config::singleton();
+        $Factory = NDB_Factory::singleton();
+        $config  = $Factory->config();
 
         // get the list of Subprojects
         $projectSettings = $config->getSetting('Projects');
@@ -752,7 +754,7 @@ class Utility extends PEAR
     static function getAllInstruments()
     {
         $Factory       = NDB_Factory::singleton();
-        $DB            = $Factory->Database(); //=& Database::singleton();
+        $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
             array()
@@ -1050,7 +1052,9 @@ class Utility extends PEAR
      */
     static function getExistingVisitLabels($projectID = null)
     {
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
         if ($projectID != null) {
             $ExtraProject_Criteria
                 = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
@@ -1184,6 +1188,30 @@ class Utility extends PEAR
             }
         }
         return $prefixStr;
+    }
+
+    /**
+    * Coverts array into CSV string
+    *
+    * @param array $array the array to be converted
+    *
+    * @return string CSV string of data
+    */
+    static function arrayToCSV($array)
+    {
+        $fp = fopen("php://temp", 'w+');
+
+        fputcsv($fp, $array['headers']);
+        foreach ($array['data'] as $item) {
+            fputcsv($fp, $item);
+        }
+
+        // Read what we have written.
+        rewind($fp);
+        $csv_string = stream_get_contents($fp);
+
+        fclose($fp);
+        return $csv_string;
     }
 }
 ?>
