@@ -25,10 +25,10 @@ require_once __DIR__ . "/../../../vendor/autoload.php";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
-$factory  = NDB_Factory::singleton();
-$config   = $factory->config(__DIR__ . "/../../../project/config.xml");
-$subprojs = $config->getSettingFromXML("subprojects");
-$db       = $factory->database();
+$factory   = NDB_Factory::singleton();
+$config    = $factory->config(__DIR__ . "/../../../project/config.xml");
+$subprojs  = $config->getSettingFromXML("subprojects");
+$db        = $factory->database();
 $optionpos = 1; //The position of the option in the command line.
 
 if (is_null($argv[$optionpos])
