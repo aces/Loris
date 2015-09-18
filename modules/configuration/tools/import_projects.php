@@ -52,7 +52,7 @@ if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-s")
                 'SubprojectID'     => $row['id'],
                 'title'            => $row['title'],
                 'useEDC'           => 0,
-                'WindowDifference' => $row['options']['WindowDifference'],
+                'WindowDifference' => $windowDiff,
                );
         if ($row['options']['useEDC'] === '1'
             || $row['options']['useEDC'] === 'true'
