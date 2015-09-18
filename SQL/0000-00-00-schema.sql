@@ -2294,8 +2294,6 @@ CREATE TABLE `Project` (
     `recruitmentTarget` INT(6) Default NULL,
     PRIMARY KEY (`ProjectID`)
 )ENGINE = InnoDB  DEFAULT CHARSET=utf8;
-INSERT INTO Project (ProjectID, Name, recruitmentTarget) VALUES (1,'Sample Project' , 50);
-INSERT INTO Project (ProjectID, Name, recruitmentTarget) VALUES (2,'Another Sample Project' , 50);
 
 CREATE TABLE StatisticsTabs(
     ID INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
