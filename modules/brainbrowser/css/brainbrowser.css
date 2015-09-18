@@ -44,32 +44,14 @@ body {
     line-height: 2;
 }
 
-.slice-display {
-    /*    height: 220px;*/
-}
-
 .volume-container {
     width: 260px;
     height: 100%;
     padding-bottom: 10px;
     display: inline;
-    /*display: block;*/
-    /*display: inline-table;*/
     margin: 0 auto;
     overflow: hidden;
     max-height: 1186px;
-}
-
-/*.volume-viewer-controls {
-    height: 320px !important; 
-}
-*/
-
-.blend-div {
-    /*   padding-top: 40px;*/
-}
-
-#blend-slider {
 }
 
 .control-heading {
@@ -79,12 +61,10 @@ body {
     color: black;
     display: inline-block;
     width: auto;
-    max-width: 787px;
-    min-width: 300px;
+    min-width: 330px;
 }
 
 .control-inputs {
-    width: 60px;
     margin-right: 20px;
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -103,9 +83,6 @@ body {
 }
 
 .ui-slider {
-    /*    width: 174px; */
-    /*margin-right: 38px;*/
-    /*margin-left: 38px;*/
     margin: auto;
 }
 
@@ -144,6 +121,7 @@ body {
     border-radius: 4px;
     -webkit-border-radius: 4px;
     display: inline;
+    left: 3px;
 }
 
 #app-name {
@@ -168,7 +146,6 @@ body {
     font-size: 16px;
     margin-top: 0.35em;
     margin-bottom: 0.35em;
-    /*padding-right: 15px;*/
     padding-right: 0px;
     margin-right: 0px;
 }
@@ -231,8 +208,7 @@ body {
 
 .panel-default {
     width: auto;
-    max-width: 787px;
-    min-width: 300px;
+    min-width: 330px;
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 0px;
