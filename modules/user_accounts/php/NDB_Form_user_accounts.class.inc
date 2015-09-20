@@ -696,6 +696,16 @@ class NDB_Form_User_Accounts extends NDB_Form
             if (!$isPasswordStrong) {
                 $errors['Password_Group']
                     = 'The password is weak, or the passwords do not match';
+            } else {
+                $currentPass = $DB->pselectOne(
+                    "SELECT COALESCE(Password_hash, Password_md5) "
+                    . "as Current_password FROM users WHERE UserID = :UID",
+                    array('UID' => $this->identifier)
+                );
+                if (User::MD5Unsalt($values['Password_md5'], $currentPass)) {
+                    $errors['Password_Group']
+                        = 'New and old passwords are identical: choose another one';
+                }
             }
         }
 
@@ -766,6 +776,16 @@ class NDB_Form_User_Accounts extends NDB_Form
             if (!$isPasswordStrong) {
                 $errors['Password_md5']
                     = 'The password is weak, or the passwords do not match';
+            }  else {
+                $currentPass = $DB->pselectOne(
+                    "SELECT COALESCE(Password_hash, Password_md5) "
+                    . "as Current_password FROM users WHERE UserID = :UID",
+                    array('UID' => $this->identifier)
+                );
+                if (User::MD5Unsalt($values['Password_md5'], $currentPass)) {
+                    $errors['Password_Group']
+                        = 'New and old passwords are identical: choose another one';
+                }
             }
         }
 
