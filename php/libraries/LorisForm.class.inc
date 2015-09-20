@@ -69,6 +69,9 @@ class LorisForm
         if (isset($attribs['oninvalid'])) {
             $el['oninvalid'] = $attribs['oninvalid'];
         }
+        if (isset($attribs['pattern'])) {
+            $el['pattern'] = $attribs['pattern'];
+        }
 
         return $el;
     }
@@ -394,24 +397,53 @@ class LorisForm
      */
     function getValue($name)
     {
+        // Not all elements of the form go into $_REQUEST, thus the isset test
         if (isset($_REQUEST[$name])) {
-            return $this->_getFilteredValue($name, $_REQUEST[$name]);
+            // If submitted value in $_REQUEST is an array return the array
+            // of filtered values
+            if (is_array($_REQUEST[$name])) {
+                $filteredValues = array();
+                foreach ($_REQUEST[$name] as $k => $v) {
+                    // Checkbox values get converted from (on,off) to (1,0)
+                    if ($this->_isAdvCheckbox("{$name}[$k]")) {
+                        $rawValue = $_REQUEST[$name][$k] == 'on' ? 1 : 0;
+                    } else {
+                        $rawValue = $_REQUEST[$name][$k];
+                    }
+                    // This is more for consistency since it would be odd to apply a
+                    // filter to a checkbox value
+                    $filteredValues[$k]
+                        = $this->_getFilteredValue("[$name}[$k]", $rawValue);
+                }
+
+                return $filteredValues;
+            } else {
+                // if submitted value is not an array, filter it
+                return $this->_getFilteredValue($name, $_REQUEST[$name]);
+            }
         }
 
+        // Check to see if the element name is of the form name[idx]
+        // (if so there should be a 'name' array in $_REQUEST)
         $bracketIdx = strpos($name, '[');
         if ($bracketIdx !== false) {
             $fieldName = strstr($name, '[', true);
             $fieldIdx  = substr($name, $bracketIdx+1);
             $fieldIdx  = strstr($fieldIdx, ']', true);
+            // This should always be true
             if (isset($_REQUEST[$fieldName])) {
-                if ($this->form[$name]['type'] === 'advcheckbox') {
-                    if ($_REQUEST[$fieldName][$fieldIdx] == 'on') {
-                        return 1;
-                    }
-                    return 0;
+                if ($this->_isAdvCheckbox($name)) {
+                    // Only the checkboxes turned on are put in $_REQUEST,
+                    // thus the isset check
+                    $value = isset($_REQUEST[$fieldName][$fieldIdx])
+                        ? $_REQUEST[$fieldName][$fieldIdx] : null;
+
+                    $rawValue = $value == 'on' ? 1 : 0;
+                    return $this->_getFilteredValue($name, $rawValue);
                 }
+
                 return $this->_getFilteredValue(
-                    $fieldName,
+                    $name,
                     $_REQUEST[$fieldName][$fieldIdx]
                 );
             }
@@ -428,24 +460,54 @@ class LorisForm
     }
 
     /**
+     * Determines if a fomr element if of type 'advcheckbox'.
+     *
+     * @param string $elementName Name of a form element that exists in the $form.
+     *
+     * @return boolean true if the element is a checkbox, false otherwise.
+     */
+    private function _isAdvCheckbox($elementName)
+    {
+        // If the element is not in a group
+        if (isset($this->form[$elementName])) {
+            return $this->form[$elementName]['type'] == 'advcheckbox';
+        }
+
+        // Element is in a groug: check in each group
+        foreach ($this->form as $element) {
+            if (is_array($element) && $element['type'] == 'group') {
+                // Check all elements of the current group for the element
+                foreach ($element['elements'] as $groupElement) {
+                    // Check if name is right
+                    if ($groupElement['name'] == $elementName) {
+                        return $groupElement['type'] == 'advcheckbox';
+                    }
+                }
+            }
+        }
+
+        // Should not happen
+        return false;
+    }
+
+    /**
      * Gets the value of form element $name, after all filters have been
      * applied. If there are no filters registered for element $name, then
      * the original unmodified value is returned.
      *
-     * @param string $name  name of the form element.
-     * @param string $value value of the form element.
+     * @param string $name  name of the form element in the $form.
+     * @param string $value value of the form element in $_REQUEST or null if
+     *               none was found.
      *
      * @return string value of the form element once all registered filters
      *                (if any) have been applied.
      */
     private function _getFilteredValue($name, $value)
     {
-        $newValue = $value;
-
         // Apply field specific filters
         if (isset($this->filters[$name])) {
             if (in_array('trim', $this->filters[$name])) {
-                $new_value = trim($newValue);
+                $new_value = trim($value);
             }
         }
 
@@ -453,7 +515,18 @@ class LorisForm
         if (isset($this->filters['__ALL__'])) {
             foreach ($this->filters['__ALL__'] as $filterType) {
                 if (in_array('trim', $this->filters['__ALL__'])) {
-                    $newValue = trim($newValue);
+                    // Value for the element is in array so filter all
+                    // elements in the array of values
+                    if (is_array($value)) {
+                        $newValue = array();
+                        foreach ($value as $k => $v) {
+                            $newValue[$k]
+                                = $this->_getFilteredValue("{$name}[$k]", $v);
+                        }
+                    } else {
+                        // Submitted value not an array: trim it
+                        $newValue = trim($value);
+                    }
                 }
             }
         }
@@ -627,6 +700,10 @@ class LorisForm
             . (
                 isset($el['oninvalid']) && $el['oninvalid']
                 ? " oninvalid=\"{$el['oninvalid']}\"" : ''
+              )
+            . (
+                isset($el['pattern']) && $el['pattern']
+                ? " pattern=\"{$el['pattern']}\"" : ''
               )
             . (
                 isset($el['required']) && $el['required']
@@ -1204,17 +1281,7 @@ class LorisForm
                 $fieldIdx  = substr($name, $bracketIdx+1);
                 $fieldIdx  = strstr($fieldIdx, ']', true);
                 if (!isset($arr[$fieldName])) {
-                    $value           = isset($_REQUEST[$fieldName])
-                        ? $_REQUEST[$fieldName] : null;
-                    $arr[$fieldName] = $this->getValue($fieldName, $value);
-                }
-                if ($el['type'] === 'advcheckbox') {
-                    $val = $this->getValue($name);
-                    if ($val === 'on') {
-                        $arr[$fieldName][$fieldIdx] = 1;
-                    } else {
-                        $arr[$fieldName][$fieldIdx] = 0;
-                    }
+                    $arr[$fieldName] = $this->getValue($fieldName);
                 }
                 continue;
             }
@@ -1225,8 +1292,7 @@ class LorisForm
             if (!($el['type'] === 'header'
                 || ($el['type'] === 'static' && empty($_REQUEST[$name])))
             ) {
-                $value      = isset($_REQUEST[$name]) ? $_REQUEST[$name] : null;
-                $arr[$name] = $this->getValue($name, $value);
+                  $arr[$name] = $this->getValue($name);
             }
 
             if ($el['type'] === 'date') {
