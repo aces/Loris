@@ -1,0 +1,3 @@
+Fails PHPCS
+Uses unprepared statements
+Uses PHP4 style exceptions
