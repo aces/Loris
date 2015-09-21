@@ -764,7 +764,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $values['Password_md5'],
                 array(
                  $values['__Confirm'],
-                 $values['UserID'],
+                 $this->identifier,
                  $values['Email'],
                 ),
                 array(
