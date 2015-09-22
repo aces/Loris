@@ -184,8 +184,8 @@ class NDB_Menu_timepoint_list extends NDB_Menu
      * @author Evan McIlroy <evanmcilroy@gmail.com>
      */ 
     
-    function getFeedbackPanel(){
-        $feedbackPanel = new BVL_Feedback_Panel($_REQUEST['candID']);
+    function getFeedbackPanel($candID, $sessionID = null){
+        $feedbackPanel = new BVL_Feedback_Panel($candID);
         $html = $feedbackPanel->display();
         return $html;
     }

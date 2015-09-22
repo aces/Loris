@@ -174,9 +174,9 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
      * @author Evan McIlroy <evanmcilroy@gmail.com>
      */
 
-    function getFeedbackPanel()
+    function getFeedbackPanel($candID, $sessionID)
     {
-        $feedbackPanel = new bvl_feedback_panel($_REQUEST['candID'], $_REQUEST['sessionID']);
+        $feedbackPanel = new bvl_feedback_panel($candID, $sessionID);
         $html =  $feedbackPanel->display();
         return $html;
     }

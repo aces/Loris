@@ -297,7 +297,7 @@ class NDB_Caller extends PEAR
             $this->controlPanel = $menu->getControlPanel();
         }
         if (method_exists($menu, 'getFeedbackPanel')) {
-            $this->feedbackPanel = $menu->getFeedbackPanel();
+            $this->feedbackPanel = $menu->getFeedbackPanel($_REQUEST['candID'], $_REQUEST['sessionID']);
         }
         if (method_exists($menu, 'save')) {
             $success = $menu->save();
@@ -409,7 +409,7 @@ class NDB_Caller extends PEAR
             $this->controlPanel = $instrument->getControlPanel();
         }
         if (method_exists($instrument, 'getFeedbackPanel')) {
-            $this->feedbackPanel = $instrument->getFeedbackPanel();
+            $this->feedbackPanel = $instrument->getFeedbackPanel($_REQUEST['candID'],$_REQUEST['sessionID']);
         }
         if (Utility::isErrorX($instrument)) {
             return $instrument;
