@@ -48,6 +48,9 @@ var FeedbackPanelContent = React.createClass({
   },
   closeThread: function closeThread(index) {
     this.props.close_thread(index);
+    this.setState({
+      currentEntryToggled: null
+    });
   },
   render: function render() {
     if (this.props.feedback_level == "instrument") {
@@ -91,7 +94,7 @@ var FeedbackPanelContent = React.createClass({
           sessionID: that.props.sessionID, type: row.Type,
           commentID: that.props.commentID, candID: that.props.candID, status: row.QC_status, date: row.Date,
           commentToggle: that.markCommentToggle.bind(this, index), fieldname: row.FieldName, author: row.User,
-          onClickClose: that.props.close_thread.bind(this, index), onClickOpen: that.props.open_thread.bind(this, index) });
+          onClickClose: this.closeThread.bind(this, index), onClickOpen: that.props.open_thread.bind(this, index) });
       }).bind(this));
 
       var table = React.createElement(
@@ -770,17 +773,6 @@ var FeedbackPanel = React.createClass({
         console.log("Details: " + desc + "\nError:" + err);
       }
     });
-  },
-  markCommentToggle: function markCommentToggle(index) {
-    if (index == this.state.currentEntryToggled) {
-      this.setState({
-        currentEntryToggled: null
-      });
-    } else {
-      this.setState({
-        currentEntryToggled: index
-      });
-    }
   },
   render: function render() {
     title = "New " + this.props.feedback_level + " level feedback";
