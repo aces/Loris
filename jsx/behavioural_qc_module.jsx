@@ -79,45 +79,12 @@ var PagedTable = React.createClass({
             var table_contents = "There is no data to display";
         }
         return <div>
-        {table_contents}
-            <nav>
-		{pager(page)}
-            </nav>
+        {table_contents}	
+        <nav>
+	<pager_component page={page}/>
+        </nav>
         </div>
     }
-})
-
-
-/**
- * Renders a pager component.
- */
-var pager = React.createClass({
-    var pageLinks = []
-    if (page.currentPage > 1) {
-        pageLinks.push(<li onClick={page.handleClick(page.currentPage - 1)}><span>‹</span></li>)
-        if (page.currentPage > 2) {
-            pageLinks.push(<li onClick={page.handleClick(1)}><span>1</span></li>)
-            pageLinks.push(<li><span>...</span></li>)
-        }
-    }
-    if(page.numPages > 1){  pageLinks.push(<li className="active"><span>{page.currentPage}</span></li>)
-    }
-    if (page.currentPage < page.numPages) {
-        pageLinks.push(<li onClick={page.handleClick(page.currentPage + 1)}><span>{page.currentPage + 1}</span></li>)
-        if (page.currentPage < page.numPages - 1) {
-            pageLinks.push(<li onClick={page.handleClick(page.currentPage + 2)}><span>{page.currentPage + 2}</span></li>)
-        }
-        if(page.currentPage < page.numPages - 2){
-            pageLinks.push(<li onClick={page.handleClick(page.currentPage + 3)}><span>{page.currentPage + 3}</span></li>)
-        }
-        if(page.currentPage < page.numPages - 3){
-            pageLinks.push(<li className="disabled"><span>...</span></li>)
-            pageLinks.push(<li onClick={page.handleClick(page.numPages)}><span>{page.numPages}</span></li>)
-        }
-        pageLinks.push(<li onClick={page.handleClick(page.currentPage + 1)}><span aria-hidden="true">›</span>
-        </li>)
-    }
-    return <ul className="pagination pagination-sm">{pageLinks}</ul>
 });
 
 var IncompleteCandidatesRow = React.createClass({
@@ -146,7 +113,6 @@ var IncompleteCandidatesRow = React.createClass({
                 </a>
             </td>
         </tr>;
-
     }
 });
 
@@ -293,12 +259,47 @@ var InstrumentConflicts = React.createClass({
 
 var BehaviouralFeedback = React.createClass({
     render: function(){
+	console.log("in bvl fb");
         return(
             <DefaultPanel title={this.props.title}>
                 <PagedTable table_rows={this.props.feedback} table_headers={this.props.header}>
                     <BehaviouralFeedbackRow/>
                 </PagedTable>
             </DefaultPanel>
+        );
+    }
+});
+
+var pager_component = React.createClass({
+    render: function(){
+	var page = this.props.page;
+	var pageLinks = []
+	if (page.currentPage > 1) {
+            pageLinks.push(<li onClick={page.handleClick(page.currentPage - 1)}><span>‹</span></li>)
+            if (page.currentPage > 2) {
+		pageLinks.push(<li onClick={page.handleClick(1)}><span>1</span></li>)
+		pageLinks.push(<li><span>...</span></li>)
+            }
+	}
+	if(page.numPages > 1){  pageLinks.push(<li className="active"><span>{page.currentPage}</span></li>)
+	}
+	if (page.currentPage < page.numPages) {
+            pageLinks.push(<li onClick={page.handleClick(page.currentPage + 1)}><span>{page.currentPage + 1}</span></li>)
+            if (page.currentPage < page.numPages - 1) {
+		pageLinks.push(<li onClick={page.handleClick(page.currentPage + 2)}><span>{page.currentPage + 2}</span></li>)
+            }
+            if(page.currentPage < page.numPages - 2){
+		pageLinks.push(<li onClick={page.handleClick(page.currentPage + 3)}><span>{page.currentPage + 3}</span></li>)
+            }
+            if(page.currentPage < page.numPages - 3){
+		pageLinks.push(<li><span>...</span></li>)
+		pageLinks.push(<li onClick={page.handleClick(page.numPages)}><span>{page.numPages}</span></li>)
+            }
+            pageLinks.push(<li onClick={page.handleClick(page.currentPage + 1)}><span aria-hidden="true">›</span>
+		</li>)
+	}	
+        return (
+	    <ul className="pagination pagination-sm">{pageLinks}</ul>
         );
     }
 });
@@ -351,7 +352,7 @@ var dataTeamGraphics = React.createClass({
                     <div className="panel-body">
                         <div id="completedChart"></div>
                     </div>
-                </div>
+            </div>
             </div>
         );
     }
