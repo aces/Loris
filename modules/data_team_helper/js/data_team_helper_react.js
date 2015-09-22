@@ -95,12 +95,11 @@ var PagedTable = React.createClass({
         return React.createElement(
             'div',
             null,
-            React.createElement('here', null),
             table_contents,
             React.createElement(
                 'nav',
                 null,
-                React.createElement(BVLPagination, { page: page })
+                React.createElement(BVLPager, { page: page })
             )
         );
     }

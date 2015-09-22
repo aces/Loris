@@ -81,7 +81,7 @@ var PagedTable = React.createClass({
         return <div>
         {table_contents}	
         <nav>
-	    <BVLPagination page={page}/>
+	    <BVLPager page={page}/>
         </nav>
         </div>
     }
