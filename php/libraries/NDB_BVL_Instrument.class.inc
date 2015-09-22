@@ -109,13 +109,13 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     var $_doubleDataEntryDiffIgnoreColumns
         = array(
-            'CommentID',
-            'UserID',
-            'Testdate',
-            'Window_Difference',
-            'Candidate_Age',
-            'Data_entry_completion_status',
-        );
+           'CommentID',
+           'UserID',
+           'Testdate',
+           'Window_Difference',
+           'Candidate_Age',
+           'Data_entry_completion_status',
+          );
 
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
@@ -192,7 +192,7 @@ class NDB_BVL_Instrument extends NDB_Page
         } else {
             if (!class_exists($class)
                 && ($guarantee_exists === true
-                    && !file_exists($base."project/instruments/$class.class.inc"))
+                && !file_exists($base."project/instruments/$class.class.inc"))
             ) {
                 throw new Exception("Instrument does not exist");
             }
@@ -614,9 +614,9 @@ class NDB_BVL_Instrument extends NDB_Page
                 $agemonths = (round($agemonths*10) / 10.0);
                 if (!empty($age)) {
                     $query_params = array(
-                        'TN'  => $this->testName,
-                        'CID' => $this->getCommentID(),
-                    );
+                                     'TN'  => $this->testName,
+                                     'CID' => $this->getCommentID(),
+                                    );
 
                     $validage = $DB->pselectOne(
                         "SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays)
@@ -803,13 +803,13 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $config      =& NDB_Config::singleton();
         $dateOptions = array(
-            'language'         => 'en',
-            'format'           => 'YMd',
-            'minYear'          => $config->getSetting('startYear'),
-            'maxYear'          => $config->getSetting('endYear'),
-            'addEmptyOption'   => true,
-            'emptyOptionValue' => null,
-        );
+                        'language'         => 'en',
+                        'format'           => 'YMd',
+                        'minYear'          => $config->getSetting('startYear'),
+                        'maxYear'          => $config->getSetting('endYear'),
+                        'addEmptyOption'   => true,
+                        'emptyOptionValue' => null,
+                       );
 
         $this->dateOptions = $dateOptions;
 
@@ -887,10 +887,10 @@ class NDB_BVL_Instrument extends NDB_Page
             }
         }
         return array(
-            $CertificationEnabled,
-            $CertificationProjects,
-            $CertificationInstruments,
-        );
+                $CertificationEnabled,
+                $CertificationProjects,
+                $CertificationInstruments,
+               );
     }
 
 
@@ -941,9 +941,9 @@ class NDB_BVL_Instrument extends NDB_Page
                     AND centerID =:cid
                  ORDER BY full_name",
                 array(
-                    'tid'     => $test_id,
-                    'cert_id' => 'certified',
-                    'cid'     => $centerID,
+                 'tid'     => $test_id,
+                 'cert_id' => 'certified',
+                 'cid'     => $centerID,
                 )
             );
         } else {
@@ -1114,18 +1114,18 @@ class NDB_BVL_Instrument extends NDB_Page
                 //handle time
                 $formDateValue = explode(":", $databaseValue);
                 $formDateValue = array(
-                    "H" => $formDateValue[0],
-                    "i" => $formDateValue[1],
-                );
+                                  "H" => $formDateValue[0],
+                                  "i" => $formDateValue[1],
+                                 );
             } else {
                 //handle date
                 // split mysql Date_taken field into array
                 $formDateValue = explode('-', $databaseValue);
                 $formDateValue = array(
-                    'Y' => $formDateValue[0],
-                    'M' => $formDateValue[1],
-                    'd' => $formDateValue[2],
-                );
+                                  'Y' => $formDateValue[0],
+                                  'M' => $formDateValue[1],
+                                  'd' => $formDateValue[2],
+                                 );
             }
         }
         return $formDateValue;
@@ -1493,10 +1493,10 @@ class NDB_BVL_Instrument extends NDB_Page
             $field,
             $label,
             array(
-                null           => '',
-                'yes'          => 'Yes',
-                'no'           => 'No',
-                'not_answered' => 'Not Answered',
+             null           => '',
+             'yes'          => 'Yes',
+             'no'           => 'No',
+             'not_answered' => 'Not Answered',
             )
         );
 
@@ -1529,9 +1529,9 @@ class NDB_BVL_Instrument extends NDB_Page
         $rules=array(),
         $rule_message='This field is required.',
         $refusals = array(
-            ''             => '',
-            'not_answered' => 'Not Answered',
-        )
+                     ''             => '',
+                     'not_answered' => 'Not Answered',
+                    )
     ) {
         $group[] = $this->createText($field, $label);
         $this->WrapperTextElements[$field] = $group[0];
@@ -1562,27 +1562,27 @@ class NDB_BVL_Instrument extends NDB_Page
      *       out of the NDB_BVL_Instrument into an EARLI base class.
      */
     function addTextAreaElementRD($field,
-                                  $label,
-                                  $rules=array(),
-                                  $rule_message='You must specify or select from the drop-down'
+        $label,
+        $rules=array(),
+        $rule_message='You must specify or select from the drop-down'
     ) {
         $group[] =& $this->form->createElement(
             "textarea",
             $field,
             null,
             array(
-                'cols' => 25,
-                'rows' => 4,
+             'cols' => 25,
+             'rows' => 4,
             )
         );
         $group[] =& $this->createSelect(
             $field."_status",
             "",
             array(
-                null             => '',
-                "88_refused"     => "88 Refused",
-                "99_do_not_know" => "99 Do not know",
-                'not_answered'   => 'Not Answered',
+             null             => '',
+             "88_refused"     => "88 Refused",
+             "99_do_not_know" => "99 Do not know",
+             'not_answered'   => 'Not Answered',
             )
         );
 
@@ -1614,9 +1614,9 @@ class NDB_BVL_Instrument extends NDB_Page
             $field,
             $label,
             array(
-                'cols'  => 25,
-                'rows'  => 4,
-                'class' => 'form-control',
+             'cols'  => 25,
+             'rows'  => 4,
+             'class' => 'form-control',
             )
         );
         $this->WrapperTextElements[$field] = $group[0];
@@ -1624,8 +1624,8 @@ class NDB_BVL_Instrument extends NDB_Page
             $field."_status",
             "",
             array(
-                null           => '',
-                'not_answered' => 'Not Answered',
+             null           => '',
+             'not_answered' => 'Not Answered',
             ),
             array('class' => 'form-control input-sm not-answered')
         );
@@ -1668,19 +1668,19 @@ class NDB_BVL_Instrument extends NDB_Page
             $field,
             null,
             array(
-                'language'       => 'en',
-                'format'         => 'H:i',
-                'addEmptyOption' => true,
+             'language'       => 'en',
+             'format'         => 'H:i',
+             'addEmptyOption' => true,
             )
         );
         $group[] =& $this->createSelect(
             $field . "_status",
             "",
             array(
-                null           => '',
-                "dnk"          => "DNK",
-                "refusal"      => "Refusal",
-                'not_answered' => 'Not Answered',
+             null           => '',
+             "dnk"          => "DNK",
+             "refusal"      => "Refusal",
+             'not_answered' => 'Not Answered',
             )
         );
         $this->addGroup($group, $field . "_group", $label, null, false);
@@ -1716,8 +1716,8 @@ class NDB_BVL_Instrument extends NDB_Page
             $label,
             $options,
             array(
-                'class' => 'form-control input-sm '.$name."_date",
-                'style' => 'max-width:33%; display:inline-block;',
+             'class' => 'form-control input-sm '.$name."_date",
+             'style' => 'max-width:33%; display:inline-block;',
             )
         );
         $this->WrapperDateWithStatusElements[$name . "_date"] = $group[0];
@@ -1729,8 +1729,8 @@ class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_status",
             null,
             array(
-                null           => "",
-                'not_answered' => "Not Answered",
+             null           => "",
+             'not_answered' => "Not Answered",
             ),
             array('class' => 'form-control input-sm not-answered')
         );
@@ -1794,10 +1794,10 @@ class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_status",
             null,
             array(
-                null             => "",
-                '88_refused'     => "88 Refused",
-                '99_do_not_know' => "99 Do not know",
-                'not_answered'   => "Not Answered",
+             null             => "",
+             '88_refused'     => "88 Refused",
+             '99_do_not_know' => "99 Do not know",
+             'not_answered'   => "Not Answered",
             )
         );
         $this->addGroup(
@@ -1844,8 +1844,8 @@ class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             null,
             array(
-                null           => "",
-                'not_answered' => "Not Answered",
+             null           => "",
+             'not_answered' => "Not Answered",
             ),
             array('class' => 'form-control input-sm not-answered')
         );
@@ -1879,10 +1879,10 @@ class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             null,
             array(
-                null             => "",
-                "88_refused"     => "88 Refused",
-                "99_do_not_know" => "99 Do not know",
-                'not_answered'   => "Not Answered",
+             null             => "",
+             "88_refused"     => "88 Refused",
+             "99_do_not_know" => "99 Do not know",
+             'not_answered'   => "Not Answered",
             ),
             array('class' => 'form-control input-sm not-answered')
         );
@@ -1966,16 +1966,16 @@ class NDB_BVL_Instrument extends NDB_Page
             if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
                 if ($otherData[$key] != $value) {
                     $diff[] = array(
-                        'TableName'      => $this->table,
-                        'ExtraKeyColumn' => null,
-                        'ExtraKey1'      => ' ',
-                        'ExtraKey2'      => ' ',
-                        'FieldName'      => $key,
-                        'CommentId1'     => $this->getCommentID(),
-                        'Value1'         => $value,
-                        'CommentId2'     => $otherInstrument->getCommentID(),
-                        'Value2'         => $otherData[$key],
-                    );
+                               'TableName'      => $this->table,
+                               'ExtraKeyColumn' => null,
+                               'ExtraKey1'      => ' ',
+                               'ExtraKey2'      => ' ',
+                               'FieldName'      => $key,
+                               'CommentId1'     => $this->getCommentID(),
+                               'Value1'         => $value,
+                               'CommentId2'     => $otherInstrument->getCommentID(),
+                               'Value2'         => $otherData[$key],
+                              );
                 }
             }
         }
@@ -2057,8 +2057,8 @@ class NDB_BVL_Instrument extends NDB_Page
             "SELECT COLUMN_NAME FROM information_schema.columns
             WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
             array(
-                'table' => $this->table,
-                'db'    => $dbconfig['database'],
+             'table' => $this->table,
+             'db'    => $dbconfig['database'],
             )
         );
 
@@ -2138,9 +2138,9 @@ class NDB_BVL_Instrument extends NDB_Page
                     $BasePath = $paths['base'] . 'project/instruments/';
                     $TestName = $this->testName;
                     if (file_exists(
-                            $BasePath
-                            . "NDB_BVL_Instrument_$TestName.class.inc"
-                        )
+                        $BasePath
+                        . "NDB_BVL_Instrument_$TestName.class.inc"
+                    )
                         || file_exists($BasePath . "$TestName.linst")
                     ) {
                         // save possible changes from the control panel...
@@ -2161,6 +2161,9 @@ class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * Function that displays the html the fetch feedback panel.
+     *
+     * @param candidateID $candID    The candidate ID for the panel.
+     * @param timepointID $sessionID The session ID for the panel.
      *
      * @return string
      */
@@ -2259,10 +2262,10 @@ class NDB_BVL_Instrument extends NDB_Page
         } else if ($element['type'] === "date") {
             if (get_class($this->form) === 'LorisForm') {
                 $element['options'] = array(
-                    'mindate'         => "1990-01-01",
-                    'maxdate'         => "2000-12-31",
-                    'RequireResponse' => false,
-                );
+                                       'mindate'         => "1990-01-01",
+                                       'maxdate'         => "2000-12-31",
+                                       'RequireResponse' => false,
+                                      );
                 //$element['RequireResponse'] = false;
             } else {
                 $html = new DOMDocument();
@@ -2291,9 +2294,9 @@ class NDB_BVL_Instrument extends NDB_Page
                     $maxYear = $year->lastChild->textContent;
 
                     $element['options'] = array(
-                        'mindate' => $minYear . "-01-01",
-                        'maxdate' => $maxYear . "-12-31",
-                    );
+                                           'mindate' => $minYear . "-01-01",
+                                           'maxdate' => $maxYear . "-12-31",
+                                          );
 
                 }
             }
@@ -2331,7 +2334,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         $el['name'] = $elementName;
                         $elObj      = $this->WrapperTextElements[$elementName];
                         if ((is_array($elObj)
-                                && $elObj['type'] === 'textarea')
+                            && $elObj['type'] === 'textarea')
                             || (!is_array($elObj) && $elObj->_type == 'textarea')
                         ) {
                             $el['type'] = 'textarea';

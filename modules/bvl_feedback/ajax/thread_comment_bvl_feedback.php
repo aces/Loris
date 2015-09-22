@@ -1,7 +1,7 @@
 <?php
 /**
  * Used to create a new entry on a specific thread via the bvl feedback
- * panel.  
+ * panel.
  *
  * PHP version 5
  *
