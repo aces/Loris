@@ -102,7 +102,7 @@ var PagedTable = React.createClass({
             React.createElement(
                 'nav',
                 null,
-                React.createElement(BehaviouralFeedbackDANCING, { page: page })
+                React.createElement('pager', { page: page })
             )
         );
     }
@@ -111,38 +111,124 @@ var PagedTable = React.createClass({
 /**
  * Renders a pager component.
  */
-// var pager = React.createClass({
-//     render: function(){
-// 	console.log("in pager");
-// 	var page = this.props.page;
-// 	var pageLinks = []
-// 	if (page.currentPage > 1) {
-//             pageLinks.push(<li onClick={page.handleClick(page.currentPage - 1)}><span>‹</span></li>)
-//             if (page.currentPage > 2) {
-// 		pageLinks.push(<li onClick={page.handleClick(1)}><span>1</span></li>)
-// 		pageLinks.push(<li><span>...</span></li>)
-//             }
-// 	}
-// 	if(page.numPages > 1){  pageLinks.push(<li className="active"><span>{page.currentPage}</span></li>)
-// 	}
-// 	if (page.currentPage < page.numPages) {
-//             pageLinks.push(<li onClick={page.handleClick(page.currentPage + 1)}><span>{page.currentPage + 1}</span></li>)
-//             if (page.currentPage < page.numPages - 1) {
-// 		pageLinks.push(<li onClick={page.handleClick(page.currentPage + 2)}><span>{page.currentPage + 2}</span></li>)
-//             }
-//             if(page.currentPage < page.numPages - 2){
-// 		pageLinks.push(<li onClick={page.handleClick(page.currentPage + 3)}><span>{page.currentPage + 3}</span></li>)
-//             }
-//             if(page.currentPage < page.numPages - 3){
-// 		pageLinks.push(<li className="disabled"><span>...</span></li>)
-// 		pageLinks.push(<li onClick={page.handleClick(page.numPages)}><span>{page.numPages}</span></li>)
-//             }
-//             pageLinks.push(<li onClick={page.handleClick(page.currentPage + 1)}><span aria-hidden="true">›</span>
-// 		</li>)
-// 	}
-// 	return <ul className="pagination pagination-sm">{pageLinks}</ul>
-//     }
-// });
+var pager = React.createClass({
+    displayName: 'pager',
+
+    render: function render() {
+        console.log("in pager");
+        var page = this.props.page;
+        var pageLinks = [];
+        if (page.currentPage > 1) {
+            pageLinks.push(React.createElement(
+                'li',
+                { onClick: page.handleClick(page.currentPage - 1) },
+                React.createElement(
+                    'span',
+                    null,
+                    '‹'
+                )
+            ));
+            if (page.currentPage > 2) {
+                pageLinks.push(React.createElement(
+                    'li',
+                    { onClick: page.handleClick(1) },
+                    React.createElement(
+                        'span',
+                        null,
+                        '1'
+                    )
+                ));
+                pageLinks.push(React.createElement(
+                    'li',
+                    null,
+                    React.createElement(
+                        'span',
+                        null,
+                        '...'
+                    )
+                ));
+            }
+        }
+        if (page.numPages > 1) {
+            pageLinks.push(React.createElement(
+                'li',
+                { className: 'active' },
+                React.createElement(
+                    'span',
+                    null,
+                    page.currentPage
+                )
+            ));
+        }
+        if (page.currentPage < page.numPages) {
+            pageLinks.push(React.createElement(
+                'li',
+                { onClick: page.handleClick(page.currentPage + 1) },
+                React.createElement(
+                    'span',
+                    null,
+                    page.currentPage + 1
+                )
+            ));
+            if (page.currentPage < page.numPages - 1) {
+                pageLinks.push(React.createElement(
+                    'li',
+                    { onClick: page.handleClick(page.currentPage + 2) },
+                    React.createElement(
+                        'span',
+                        null,
+                        page.currentPage + 2
+                    )
+                ));
+            }
+            if (page.currentPage < page.numPages - 2) {
+                pageLinks.push(React.createElement(
+                    'li',
+                    { onClick: page.handleClick(page.currentPage + 3) },
+                    React.createElement(
+                        'span',
+                        null,
+                        page.currentPage + 3
+                    )
+                ));
+            }
+            if (page.currentPage < page.numPages - 3) {
+                pageLinks.push(React.createElement(
+                    'li',
+                    { className: 'disabled' },
+                    React.createElement(
+                        'span',
+                        null,
+                        '...'
+                    )
+                ));
+                pageLinks.push(React.createElement(
+                    'li',
+                    { onClick: page.handleClick(page.numPages) },
+                    React.createElement(
+                        'span',
+                        null,
+                        page.numPages
+                    )
+                ));
+            }
+            pageLinks.push(React.createElement(
+                'li',
+                { onClick: page.handleClick(page.currentPage + 1) },
+                React.createElement(
+                    'span',
+                    { 'aria-hidden': 'true' },
+                    '›'
+                )
+            ));
+        }
+        return React.createElement(
+            'ul',
+            { className: 'pagination pagination-sm' },
+            pageLinks
+        );
+    }
+});
 
 var IncompleteCandidatesRow = React.createClass({
     displayName: 'IncompleteCandidatesRow',
@@ -384,7 +470,6 @@ var BehaviouralFeedback = React.createClass({
     displayName: 'BehaviouralFeedback',
 
     render: function render() {
-        console.log("in bvl fb");
         return React.createElement(
             DefaultPanel,
             { title: this.props.title },
@@ -397,121 +482,16 @@ var BehaviouralFeedback = React.createClass({
     }
 });
 
-var BehaviouralFeedbackDANCING = React.createClass({
-    displayName: 'BehaviouralFeedbackDANCING',
+var hereitis = React.createClass({
+    displayName: 'hereitis',
 
     render: function render() {
-        console.log("in feedback dancing");
-        var page = this.props.page;
-        var pageLinks = [];
-        if (page.currentPage > 1) {
-            pageLinks.push(React.createElement(
-                'li',
-                { onClick: page.handleClick(page.currentPage - 1) },
-                React.createElement(
-                    'span',
-                    null,
-                    '‹'
-                )
-            ));
-            if (page.currentPage > 2) {
-                pageLinks.push(React.createElement(
-                    'li',
-                    { onClick: page.handleClick(1) },
-                    React.createElement(
-                        'span',
-                        null,
-                        '1'
-                    )
-                ));
-                pageLinks.push(React.createElement(
-                    'li',
-                    null,
-                    React.createElement(
-                        'span',
-                        null,
-                        '...'
-                    )
-                ));
-            }
-        }
-        if (page.numPages > 1) {
-            pageLinks.push(React.createElement(
-                'li',
-                { className: 'active' },
-                React.createElement(
-                    'span',
-                    null,
-                    page.currentPage
-                )
-            ));
-        }
-        if (page.currentPage < page.numPages) {
-            pageLinks.push(React.createElement(
-                'li',
-                { onClick: page.handleClick(page.currentPage + 1) },
-                React.createElement(
-                    'span',
-                    null,
-                    page.currentPage + 1
-                )
-            ));
-            if (page.currentPage < page.numPages - 1) {
-                pageLinks.push(React.createElement(
-                    'li',
-                    { onClick: page.handleClick(page.currentPage + 2) },
-                    React.createElement(
-                        'span',
-                        null,
-                        page.currentPage + 2
-                    )
-                ));
-            }
-            if (page.currentPage < page.numPages - 2) {
-                pageLinks.push(React.createElement(
-                    'li',
-                    { onClick: page.handleClick(page.currentPage + 3) },
-                    React.createElement(
-                        'span',
-                        null,
-                        page.currentPage + 3
-                    )
-                ));
-            }
-            if (page.currentPage < page.numPages - 3) {
-                pageLinks.push(React.createElement(
-                    'li',
-                    null,
-                    React.createElement(
-                        'span',
-                        null,
-                        '...'
-                    )
-                ));
-                pageLinks.push(React.createElement(
-                    'li',
-                    { onClick: page.handleClick(page.numPages) },
-                    React.createElement(
-                        'span',
-                        null,
-                        page.numPages
-                    )
-                ));
-            }
-            pageLinks.push(React.createElement(
-                'li',
-                { onClick: page.handleClick(page.currentPage + 1) },
-                React.createElement(
-                    'span',
-                    { 'aria-hidden': 'true' },
-                    '›'
-                )
-            ));
-        }
+        console.log("in here");
+
         return React.createElement(
-            'ul',
-            { className: 'pagination pagination-sm' },
-            pageLinks
+            'div',
+            null,
+            'hi'
         );
     }
 });
@@ -537,6 +517,7 @@ var dataTeamGraphics = React.createClass({
         });
     },
     render: function render() {
+        console.log("here");
         if (this.props.pscid) {
             var pscid_status = "Candidate " + this.props.pscid;
         } else {
@@ -573,7 +554,8 @@ var dataTeamGraphics = React.createClass({
                     { className: 'panel-body' },
                     React.createElement('div', { id: 'completedChart' })
                 )
-            )
+            ),
+            React.createElement('hereitis', null)
         );
     }
 });
