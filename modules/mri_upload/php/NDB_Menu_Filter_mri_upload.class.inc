@@ -331,7 +331,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         $db        = Database::singleton();
         $file_name =  $file->fileInfo['name'];
         $pname     = '';
-        $IsPhantom = $args['values']['IsPhantom'];
+        $IsPhantom = 'N'; //$args['values']['IsPhantom'];
         ///////////////////////////////////////////////////////////////////////
         ///////////////If empty get it using User class////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -347,7 +347,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         /////Get the pscid, candid and visit_label/////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        if ($args['values']['IsPhantom']=='N') {
+        //if ($args['values']['IsPhantom']=='N') {
             if ((!empty($args['values']['CandID']))
                 && (!empty($args['values']['PSCID']))
                 &&(!empty($args['values']['VisitLabel']))
@@ -368,7 +368,7 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
                     )
                 );
             }
-        }
+        //}
         //////////////////////////////////////////////////////////////////
         ///Get the directory to which the temp file has been moved to/////
         /// MRI_upload Incoming directory/////////////////////////////////
