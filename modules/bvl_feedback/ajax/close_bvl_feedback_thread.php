@@ -1,9 +1,14 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: evanmcilroy
- * Date: 15-06-18
- * Time: 2:07 PM
+ * File to close a BVL feedback thread via the BVL feedback panel.
+ *
+ * PHP version 5
+ *
+ * @category Behavioural
+ * @package  Main
+ * @author   Evan McIlroy <evanmcilroy@gmail.com>
+ * @license  GPLv3 <http://www.gnu.org/licenses/gpl-3.0.en.html>
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
 ini_set('default_charset', 'utf-8');

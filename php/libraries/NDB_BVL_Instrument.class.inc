@@ -2168,7 +2168,7 @@ class NDB_BVL_Instrument extends NDB_Page
     {
 
         $commentID = $this->getCommentID();
-        
+
         if (!empty($commentID)) {
             $feedbackPanel = new BVL_Feedback_Panel(
                 $candID,

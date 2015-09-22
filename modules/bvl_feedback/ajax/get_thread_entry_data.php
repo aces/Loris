@@ -3,11 +3,13 @@
  * This AJAX request serves the purpose of getting the entries for a given
  * bvl_feedback thread.
  *
- * Currently used in the bvl_feedback popup.
+ * PHP version 5
  *
- * @author:  Evan McIlroy <evanmciroy@gmail.com>
- * @returns: JSON object containing entries for a given bvl_feedback thread.
- * Date: 15-05-26
+ * @category Behavioural
+ * @package  Main
+ * @author   Evan McIlroy <evanmcilroy@gmail.com>
+ * @license  GPLv3 <http://www.gnu.org/licenses/gpl-3.0.en.html>
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
 header("content-type:application/json");
