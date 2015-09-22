@@ -18,18 +18,16 @@ var FeedbackPanelContent = React.createClass({
     }
   },
   markCommentToggle: function(index) {
-
     if(index == this.state.currentEntryToggled){
       this.setState({
-        currentEntryToggled: false
+        currentEntryToggled: null
       });
     }
-
     else{
       this.setState({
       currentEntryToggled: index
     });
-  }
+    }
   },
   openThread(index){
     this.props.open_thread(index);
@@ -423,7 +421,7 @@ var FeedbackPanel = React.createClass({
     getInitialState: function(){
       return {
           threads: '',
-	  summary: null
+	      summary: null
       }
     },
       componentDidMount: function(){
@@ -463,11 +461,9 @@ var FeedbackPanel = React.createClass({
 		"commentID" : this.props.commentID
 	    },
         success: function (data){
-	    that.setState(
-	    {
+	    that.setState({
 		summary:data
-	    }
-	    );
+	    });
         },
         error: function (xhr, desc, err){
           console.log(xhr);
@@ -568,7 +564,6 @@ var FeedbackPanel = React.createClass({
 	  
       },
       markCommentToggle: function(index) {
-
         if(index == this.state.currentEntryToggled){
           this.setState({
             currentEntryToggled: null

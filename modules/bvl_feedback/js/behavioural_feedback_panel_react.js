@@ -33,10 +33,9 @@ var FeedbackPanelContent = React.createClass({
     };
   },
   markCommentToggle: function markCommentToggle(index) {
-
     if (index == this.state.currentEntryToggled) {
       this.setState({
-        currentEntryToggled: false
+        currentEntryToggled: null
       });
     } else {
       this.setState({
@@ -773,7 +772,6 @@ var FeedbackPanel = React.createClass({
     });
   },
   markCommentToggle: function markCommentToggle(index) {
-
     if (index == this.state.currentEntryToggled) {
       this.setState({
         currentEntryToggled: null
