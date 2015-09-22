@@ -304,7 +304,7 @@ var CommentEntryForm = React.createClass({
     this.setState({
       value: "Comment added!"
     });
-    this.props.toggleThisThread;
+    this.props.toggleThisThread();
   },
   handleChange: function handleChange(event) {
     this.setState({ value: event.target.value });
@@ -628,7 +628,7 @@ var FeedbackSummaryPanel = React.createClass({
   }
 });
 
-FeedbackPanel = React.createClass({
+var FeedbackPanel = React.createClass({
   displayName: "FeedbackPanel",
 
   getInitialState: function getInitialState() {

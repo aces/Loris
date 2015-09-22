@@ -419,7 +419,7 @@ var FeedbackSummaryPanel = React.createClass({
     }
 });
 
-   FeedbackPanel = React.createClass({
+var FeedbackPanel = React.createClass({
     getInitialState: function(){
       return {
           threads: '',
