@@ -1090,16 +1090,10 @@ class NDB_BVL_Feedback
      * @throws Exception
      * @author Evan McIlroy <evanmcilroy@gmail.com>
      */
-    static function bvlFeedbackPossible()
+    static function bvlFeedbackPossible($test_name)
     {
 
-        // create user object
-        $test_name = $_REQUEST['test_name'];
-
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " . $user->getMessage());
-        }
 
         $site =& Site::singleton($user->getData('CenterID'));
 
