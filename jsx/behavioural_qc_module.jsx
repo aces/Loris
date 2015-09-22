@@ -81,11 +81,12 @@ var PagedTable = React.createClass({
         return <div>
         {table_contents}	
         <nav>
-	<pager_component page={page}/>
+	    <BVLPagination page={page}/>
         </nav>
         </div>
     }
 });
+
 
 var IncompleteCandidatesRow = React.createClass({
     handleClick: function(){
@@ -134,8 +135,6 @@ var InstrumentConflictsRow = React.createClass({
 
             },
             success: function(data){
-                console.log(data);
-                console.log("in success");
                 if (data != "") {
                     var link = "main.php?test_name=conflict_resolver";
                     window.open(link,'newStuff'); //open's link in newly opened tab!
@@ -170,7 +169,7 @@ var InstrumentConflictsRow = React.createClass({
     }
 });
 
-var BehaviouralFeedbackRow = React.createClass({
+var BehaviouralFedbackRow = React.createClass({
     handleClick: function(){
         var link = React.findDOMNode(this.refs.feedback).href;
         var feedbackwindow = window.open(link, "Behavioural Feedback");
@@ -259,7 +258,6 @@ var InstrumentConflicts = React.createClass({
 
 var BehaviouralFeedback = React.createClass({
     render: function(){
-	console.log("in bvl fb");
         return(
             <DefaultPanel title={this.props.title}>
                 <PagedTable table_rows={this.props.feedback} table_headers={this.props.header}>
@@ -270,7 +268,7 @@ var BehaviouralFeedback = React.createClass({
     }
 });
 
-var pager_component = React.createClass({
+var BVLPager = React.createClass({
     render: function(){
 	var page = this.props.page;
 	var pageLinks = []

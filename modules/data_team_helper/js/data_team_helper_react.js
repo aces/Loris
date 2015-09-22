@@ -68,8 +68,6 @@ var PagedTable = React.createClass({
     },
     render: function render() {
         var page = this.getPage();
-        console.log("in render");
-        console.log(page);
         var rows_to_map = page.table_rows;
         var children_to_map = this.props.children;
         var rows_for_current_page = rows_to_map.map(function (row) {
@@ -102,47 +100,11 @@ var PagedTable = React.createClass({
             React.createElement(
                 'nav',
                 null,
-                React.createElement(BehaviouralFeedbackDANCING, { page: page })
+                React.createElement(BVLPagination, { page: page })
             )
         );
     }
 });
-
-/**
- * Renders a pager component.
- */
-// var pager = React.createClass({
-//     render: function(){
-// 	console.log("in pager");
-// 	var page = this.props.page;
-// 	var pageLinks = []
-// 	if (page.currentPage > 1) {
-//             pageLinks.push(<li onClick={page.handleClick(page.currentPage - 1)}><span>‹</span></li>)
-//             if (page.currentPage > 2) {
-// 		pageLinks.push(<li onClick={page.handleClick(1)}><span>1</span></li>)
-// 		pageLinks.push(<li><span>...</span></li>)
-//             }
-// 	}
-// 	if(page.numPages > 1){  pageLinks.push(<li className="active"><span>{page.currentPage}</span></li>)
-// 	}
-// 	if (page.currentPage < page.numPages) {
-//             pageLinks.push(<li onClick={page.handleClick(page.currentPage + 1)}><span>{page.currentPage + 1}</span></li>)
-//             if (page.currentPage < page.numPages - 1) {
-// 		pageLinks.push(<li onClick={page.handleClick(page.currentPage + 2)}><span>{page.currentPage + 2}</span></li>)
-//             }
-//             if(page.currentPage < page.numPages - 2){
-// 		pageLinks.push(<li onClick={page.handleClick(page.currentPage + 3)}><span>{page.currentPage + 3}</span></li>)
-//             }
-//             if(page.currentPage < page.numPages - 3){
-// 		pageLinks.push(<li className="disabled"><span>...</span></li>)
-// 		pageLinks.push(<li onClick={page.handleClick(page.numPages)}><span>{page.numPages}</span></li>)
-//             }
-//             pageLinks.push(<li onClick={page.handleClick(page.currentPage + 1)}><span aria-hidden="true">›</span>
-// 		</li>)
-// 	}
-// 	return <ul className="pagination pagination-sm">{pageLinks}</ul>
-//     }
-// });
 
 var IncompleteCandidatesRow = React.createClass({
     displayName: 'IncompleteCandidatesRow',
@@ -213,8 +175,6 @@ var InstrumentConflictsRow = React.createClass({
 
             },
             success: function success(data) {
-                console.log(data);
-                console.log("in success");
                 if (data != "") {
                     var link = "main.php?test_name=conflict_resolver";
                     window.open(link, 'newStuff'); //open's link in newly opened tab!
@@ -266,8 +226,8 @@ var InstrumentConflictsRow = React.createClass({
     }
 });
 
-var BehaviouralFeedbackRow = React.createClass({
-    displayName: 'BehaviouralFeedbackRow',
+var BehaviouralFedbackRow = React.createClass({
+    displayName: 'BehaviouralFedbackRow',
 
     handleClick: function handleClick() {
         var link = React.findDOMNode(this.refs.feedback).href;
@@ -384,7 +344,6 @@ var BehaviouralFeedback = React.createClass({
     displayName: 'BehaviouralFeedback',
 
     render: function render() {
-        console.log("in bvl fb");
         return React.createElement(
             DefaultPanel,
             { title: this.props.title },
@@ -397,11 +356,10 @@ var BehaviouralFeedback = React.createClass({
     }
 });
 
-var BehaviouralFeedbackDANCING = React.createClass({
-    displayName: 'BehaviouralFeedbackDANCING',
+var BVLPager = React.createClass({
+    displayName: 'BVLPager',
 
     render: function render() {
-        console.log("in feedback dancing");
         var page = this.props.page;
         var pageLinks = [];
         if (page.currentPage > 1) {
