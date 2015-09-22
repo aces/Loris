@@ -1085,6 +1085,8 @@ class NDB_BVL_Feedback
      * Returns false if the user doesn't have the appropriate permissions
      * or is not on one of the appropriate pages to return bvl_feedback.
      *
+     * @param test_name $test_name The name of the test to be checked.
+     *
      * @return bool|object
      * @throws ConfigurationException
      * @throws Exception
