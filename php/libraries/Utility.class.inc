@@ -268,6 +268,24 @@ class Utility extends PEAR
         return $list;
     }
 
+    /**
+     * Returns a list of study Projects
+     *
+     * @return array an associative array("projectID" => "project title")
+     * @access public
+     */
+    static function getProjectList()
+    {
+        $DB     = Database::singleton();
+        $config = NDB_Config::singleton();
+        // get the list of projects
+        $projects = $DB->pselect("SELECT * FROM Project", array());
+        $project  = array();
+        foreach ($projects as $row) {
+            $project[$row['ProjectID']] = $row['Name'];
+        }
+        return $project;
+    }
 
     /**
      * Returns a list of study Subprojects
@@ -287,26 +305,6 @@ class Utility extends PEAR
             $subprojs[$row['SubprojectID']] = $row['title'];
         }
         return $subprojs;
-    }
-
-    /**
-     * Returns a list of study Projects
-     *
-     * @return array an associative array("projectID" => "project title")
-     * @access public
-     */
-    static function getProjectList()
-    {
-        $Factory = NDB_Factory::singleton();
-        $config  = $Factory->config();
-
-        // get the list of Subprojects
-        $projectSettings = $config->getSetting('Projects');
-        foreach (Utility::toArray($projectSettings['project']) AS $project) {
-
-            $list[$project['id']] =$project['title'];
-        }
-        return $list;
     }
 
     /**
