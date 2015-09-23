@@ -1,0 +1,60 @@
+#log_box {
+  width: 600px;
+  height: 200px;
+  border: 2px solid #064785;
+  overflow: auto;
+  padding: 5px; 
+}
+
+progress {
+  /*position: relative;*/
+  width: 400px;
+  height: 20px;
+  color: #1C70B6;
+  border-style: none;
+  border-radius: 10px;
+}
+
+/* Firefox */
+progress::-moz-progress-bar {
+  background: #1C70B6;
+  border-radius: 10px;
+}
+
+/* Chrome */
+progress::-webkit-progress-value {
+  background: #1C70B6;
+  border-radius: 10px;
+}
+
+/* Polyfill */
+progress[aria-valuenow]:before  {
+  background: #1C70B6;
+  border-radius: 10px;
+}
+
+.progress{
+  background-color: lightgrey;
+  height: 30px;
+<<<<<<< HEAD
+=======
+}
+
+#progresslabel {
+  width: 95%;
+  position: absolute;
+  z-index: 1000;
+  color: white;
+  text-align: center;
+  padding-top: 4px;
+>>>>>>> 18f5d23... implment an progress bar for uploading a file in the imaging uploader
+}
+
+#progresslabel {
+  width: 95%;
+  position: absolute;
+  z-index: 1000;
+  color: white;
+  text-align: center;
+  padding-top: 4px;
+}

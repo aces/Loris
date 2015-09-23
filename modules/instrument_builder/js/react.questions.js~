@@ -462,9 +462,13 @@ AddElement = React.createClass({displayName: "AddElement",
 	},
 	// Add an option to the options array
 	addOption: function (multi) {
+<<<<<<< HEAD
+
+=======
 		// Use a function to update the state to enqueue an atomic
 		// update that consults the previous value of state before
 		// setting any values
+>>>>>>> e659278... modify they way to update the state of a class
 		this.setState(function(state){
 			var temp = state.options,
 				option = multi ? $("#newmultiSelectOption").val() : $("#newSelectOption").val();

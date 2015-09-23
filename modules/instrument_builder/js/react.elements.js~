@@ -119,11 +119,26 @@ SelectElement = React.createClass({displayName: "SelectElement",
 	}
 });
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  *	This is the React class for a date element
  */
 DateElement = React.createClass({displayName: "DateElement",
 	render: function(){
+=======
+DateElement = React.createClass({displayName: "DateElement",
+	render: function(){
+		var max = this.props.maxYear,
+			min = this.props.minYear;
+>>>>>>> 5d6b592... change file structure and add compiled react files
+=======
+/*
+ *	This is the React class for a date element
+ */
+DateElement = React.createClass({displayName: "DateElement",
+	render: function(){
+>>>>>>> 7b95b8d... make minor changes based on feedback
 		return (
 			React.createElement("div", null, 
 			React.createElement("label", {className: "lab col-sm-4 col-xs-12"}, 
@@ -133,8 +148,18 @@ DateElement = React.createClass({displayName: "DateElement",
 				React.createElement("div", {className: "col-xs-12 col-sm-6 element"}, 
 					React.createElement("input", {type: "date", 
 						   className: "form-control input-sm user-success", 
+<<<<<<< HEAD
+<<<<<<< HEAD
 						   min: this.props.minYear, 
 						   max: this.props.maxYear}
+=======
+						   min: min, 
+						   max: max}
+>>>>>>> 5d6b592... change file structure and add compiled react files
+=======
+						   min: this.props.minYear, 
+						   max: this.props.maxYear}
+>>>>>>> 7b95b8d... make minor changes based on feedback
 				    )
 				)
 			)
@@ -143,9 +168,18 @@ DateElement = React.createClass({displayName: "DateElement",
 	}
 });
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 /*
  *	This is the React class for a numeric element
  */
+=======
+>>>>>>> 5d6b592... change file structure and add compiled react files
+=======
+/*
+ *	This is the React class for a numeric element
+ */
+>>>>>>> 7b95b8d... make minor changes based on feedback
 NumericElement = React.createClass({displayName: "NumericElement",
 	render: function(){
 		return (
@@ -167,14 +201,31 @@ NumericElement = React.createClass({displayName: "NumericElement",
 	}
 });
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 7b95b8d... make minor changes based on feedback
 /*
  *	This is the React class for a LORIS element. It takes
  * 	in an element and render's the HTML based on its type
  */
+<<<<<<< HEAD
 LorisElement = React.createClass({displayName: "LorisElement",
 	render: function (){
 		var element = this.props.element,
 			elementHtml = '';
+=======
+LorisElement = React.createClass({displayName: "LorisElement",
+	render: function (){
+		var element = this.props.element,
+			elementHtml = "dklfldkjf";
+>>>>>>> 5d6b592... change file structure and add compiled react files
+=======
+LorisElement = React.createClass({displayName: "LorisElement",
+	render: function (){
+		var element = this.props.element,
+			elementHtml = '';
+>>>>>>> 7b95b8d... make minor changes based on feedback
 		switch(element.Type){
 			case 'header':
 				elementHtml = React.createElement(HeaderElement, {header: element.Description});
@@ -182,7 +233,15 @@ LorisElement = React.createClass({displayName: "LorisElement",
 			case 'label':
 				elementHtml = React.createElement(LabelElement, {label: element.Description})
 				break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 			case 'score':
+=======
+			case 'scored':
+>>>>>>> 5d6b592... change file structure and add compiled react files
+=======
+			case 'score':
+>>>>>>> 7b95b8d... make minor changes based on feedback
 	    		elementHtml = React.createElement(ScoredElement, {label: element.Description})
 	    		break;
 	    	case 'text':

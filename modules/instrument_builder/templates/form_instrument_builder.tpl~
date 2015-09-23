@@ -4,7 +4,7 @@
 <script src="/js/react.js"></script>
 <script src="GetJS.php?Module=instrument_builder&file=react.elements.js"></script>
 <script src="GetJS.php?Module=instrument_builder&file=react.questions.js"></script>
-<script src="GetJS.php?Module=instrument_builder&file=react.instrument_builder.js"></script>
+<script src="GetJS.php?Module=instrument_builder&file=react.app.js"></script>
 
 <div id="message" class="error">&nbsp;</div>
 <div id="builder"></div>
@@ -28,3 +28,4 @@ table th {
 {/literal}
 
 <script type="application/ecmascript" src="js/FileSaver.min.js"></script>
+>>>>>>> 436043f... add alerts on success and failure of upload instrument
