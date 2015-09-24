@@ -70,19 +70,6 @@
             <candidate>ProbandDoB</candidate>
             <parameter_session>MRI_Done</parameter_session>
         </HeaderTable>
-        <Projects>
-            <project>
-                <id>1</id>
-                <title>Sample Project</title>
-                <recruitmentTarget>50</recruitmentTarget>
-            </project>
-            <project>
-                <id>2</id>
-                <title>Another Sample Project</title>
-                <recruitmentTarget>50</recruitmentTarget>
-            </project>
-        </Projects>
-
         <!-- defines how visit labels are assigned -->
         <visitLabel subprojectID="1">
             <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
