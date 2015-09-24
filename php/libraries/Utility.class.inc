@@ -276,8 +276,8 @@ class Utility extends PEAR
      */
     static function getProjectList()
     {
-        $DB     = Database::singleton();
-        $config = NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
         // get the list of projects
         $projects = $DB->pselect("SELECT * FROM Project", array());
         $project  = array();

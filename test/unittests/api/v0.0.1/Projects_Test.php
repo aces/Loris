@@ -17,11 +17,30 @@ class Projects_Test extends BaseTestCase
         $this->Factory->setTesting(true);
 
         $this->Config = $this->Factory->config();
-
+        $this->Database = $this->Factory->database();
 
 
         $this->getMockBuilder('NDB_Config')->setMockClassName("MockNDB_Config")->getMock();
         $this->getMockBuilder('Database')->setMockClassName("MockDatabase")->getMock();
+
+        $this->Database->method("pselect")->will($this->returnCallback(
+            function ($query, $params) {
+                if($query == "SELECT * FROM Project") {
+                    return [
+                        [
+                            "ProjectID" => 1,
+                            "Name" => "Sample Project"
+                        ],
+                        [
+                            "ProjectID" => 2,
+                            "Name" => "Another Sample Project"
+                        ]
+                    ];
+                }
+
+                return array();
+            }
+        ));
 
         /*
         $this->Config->method("getSetting")->will($this->returnCallback(
@@ -176,20 +195,6 @@ class Projects_Test extends BaseTestCase
                                         ]
                                     ]
                                 ]
-                    ];
-                }
-                if($arg === 'Projects') {
-                    return [
-                        "project" => [
-                            [
-                                "id" => 1,
-                                "title" => "Sample Project"
-                            ],
-                            [
-                                    "id" => 2,
-                                    "title" => "Another Sample Project"
-                            ]
-                        ]
                     ];
                 }
                 return null;
