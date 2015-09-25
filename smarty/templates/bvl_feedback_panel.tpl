@@ -16,7 +16,7 @@
 </div><!-- /panel -->
 </body>
 
-<script type="text/javascript" src="GetJS.php?Module=bvl_feedback&file=behavioural_feedback_panel_react.js"></script>
+<script type="text/javascript" src="GetJS.php?Module=bvl_feedback&file=react.behavioural_feedback_panel.js"></script>
 
 <script type="text/javascript">
 

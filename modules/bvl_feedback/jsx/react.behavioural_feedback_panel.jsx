@@ -1,10 +1,16 @@
 var SliderPanel = React.createClass({
   render: function() {
-      return <div className="panel-group" id="bvl_feedback_menu">
-      <div className="breadcrumb-panel"><a className="info">Feedback for PSCID: {this.props.pscid}</a></div>
-    {this.props.children}
-    </div>
-  }
+      return (
+        <div className="panel-group" id="bvl_feedback_menu">
+            <div className="breadcrumb-panel">
+                <a className="info">
+                    Feedback for PSCID: {this.props.pscid}
+                </a>
+            </div>
+            {this.props.children}
+        </div>
+      );
+    }
 });
 
 var FeedbackPanelContent = React.createClass({
@@ -433,7 +439,7 @@ var FeedbackPanel = React.createClass({
       var that = this;
       request = $.ajax({
         type: "POST",
-        url: "AjaxHelper?Module=bvl_feedback&script=react_get_bvl_threads.php",
+        url: "AjaxHelper.php?Module=bvl_feedback&script=react_get_bvl_threads.php",
         data:{
           "candID": this.props.candID,
           "sessionID" : this.props.sessionID,
