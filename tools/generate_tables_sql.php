@@ -45,7 +45,7 @@ foreach($instruments AS $instrument){
     foreach($items AS $item){
         $paramId="";
         $bits=explode("{@}",trim($item));
-        if(ereg("Examiner[0-9]*" , $bits[1])){
+        if(preg_match("/Examiner[0-9]*/" , (string)(array_key_exists(1,$bits) ? $bits[1] : null))){
             continue;
         }
         switch($bits[0]){
@@ -68,26 +68,31 @@ foreach($instruments AS $instrument){
 
             //generate specific column definitions for specific types of HTML elements
             default:
-                if($bits[1] == "") {
+                if((array_key_exists(1,$bits) ? $bits[1] : "") == "") {
                     continue;
                 }
                 if($bits[0]=="select"){
-                    $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
-                } else if($bits[0]=="selectmultiple"){
+                    $bits[0]=enumizeOptions(
+                        array_key_exists(3,$bits) ? $bits[3] : null,
+                        $table = array(),
+                        $bits[1]
+                    );
+                } else if((array_key_exists(0,$bits) ? $bits[0] : null) =="selectmultiple"){
                     $bits[0]="varchar(255)";
-                } else if($bits[0]=="textarea"){
+                } else if((array_key_exists(0,$bits) ? $bits[0] : null) == "textarea"){
                     $bits[0]="text";
-                } else if($bits[0]=="text"){
+                } else if((array_key_exists(0,$bits) ? $bits[0] : null) == "text"){
                     $bits[0]="varchar(255)";
-                } else if($bits[0]=="checkbox") {
+                } else if((array_key_exists(0,$bits) ? $bits[0] : null) == "checkbox") {
                     $bits[0]="varchar(255)";
-                } else if ($bits[0]=="static") {
+                } else if ((array_key_exists(0,$bits) ? $bits[0] : null) == "static") {
                     $bits[0]="varchar(255)";
-                } else if ($bits[0]=="radio") {
-                    $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
+                } else if ((array_key_exists(0,$bits) ? $bits[0] : null) == "radio") {
+                    $bits[0]=enumizeOptions($bits[3], $table = array(), $bits[1]);
                 }
-                
-                $bits[2]=htmlspecialchars($bits[2]);
+                if(array_key_exists(2,$bits)){
+                    $bits[2]=htmlspecialchars($bits[2]);
+                }
                 $output.="`$bits[1]` $bits[0] default NULL,\n";
         }
 
