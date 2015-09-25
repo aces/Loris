@@ -316,6 +316,7 @@ class NDB_Form_Dashboard extends NDB_Form
     ) {
         $this->tpl_data['recruitment'][$ID]['total_recruitment'] = $totalRecruitment;
         $this->tpl_data['recruitment'][$ID]['title'] = $title;
+        $this->tpl_data['recruitment'][$ID]['title'] = $title;
 
         if (!empty($recruitmentTarget)) {
             $this->tpl_data['recruitment'][$ID]['recruitment_target']

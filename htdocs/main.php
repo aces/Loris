@@ -65,6 +65,7 @@ function tplFromRequest($param)
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['test_name']   = $TestName;
 $tpl_data['subtest']     = $subtest;
+
 tplFromRequest('candID');
 tplFromRequest('sessionID');
 tplFromRequest('commentID');
@@ -192,6 +193,13 @@ try {
     if (isset($caller->controlPanel)) {
         $tpl_data['control_panel'] = $caller->controlPanel;
     }
+    if (isset($caller->feedbackPanel) && $user->hasPermission('bvl_feedback')) {
+        $tpl_data['bvl_feedback']   = NDB_BVL_Feedback::bvlFeedbackPossible(
+            $TestName
+        );
+        $tpl_data['feedback_panel'] = $caller->feedbackPanel;
+    }
+
     $tpl_data['workspace'] = $workspace;
 } catch(ConfigurationException $e) {
     header("HTTP/1.1 500 Internal Server Error");

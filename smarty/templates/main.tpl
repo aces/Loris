@@ -13,9 +13,13 @@
         <script type="text/javascript" src="{$baseurl}/js/jquery.dynamictable.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/jquery.fileupload.js"></script>
         <script type="text/javascript" src="{$baseurl}/js/polyfiller.js"></script>
+
+{*temporary addition*}
+
         <script>
             $.webshims.polyfill();
         </script>
+
         <!-- Custom JavaScript for the Menu Toggle -->
    
         <link type="text/css" href="{$baseurl}/css/loris-jquery/jquery-ui-1.10.4.custom.min.css" rel="Stylesheet" />
@@ -23,7 +27,6 @@
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="{$baseurl}/bootstrap/css/custom-css.css">
-        <!-- <link rel="stylesheet" href="bootstrap-3.1.1/css/magic-bootstrap.css"> -->
 
         <!-- Module-specific CSS -->
         {if $test_name_css}
@@ -156,9 +159,10 @@
     </head>
     {/if}
     <body>
+	    
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
-            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="nav-left">
                <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse"
                         data-target="#example-navbar-collapse">
@@ -169,17 +173,23 @@
                         <span class="sr-only">Toggle navigation</span>
                         <img width=17 src="{$baseurl}/images/help.gif">
                     </button>
-                    <button type="button" class="navbar-toggle" onclick="FeedbackButtonClicked()">
+                   {if $bvl_feedback}
+                   <button type="button" class="navbar-toggle">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="glyphicon glyphicon-edit" style="color:white"></span>
                     </button>
+                   {/if}
 
-                    <!-- toggle sidebar in mobile view -->
+
+                   <!-- toggle sidebar in mobile view -->
                     {if $control_panel}
                         <a id="menu-toggle" href="#" class="navbar-brand">
                             <span class="glyphicon glyphicon-th-list"></span>
                         </a>
                     {/if}
+
+                   <!-- toggle feedback in mobile view -->
+
 
                     <a class="navbar-brand" href="{$baseurl}/">LORIS{if $sandbox}: DEV{/if}</a>
                </div>
@@ -214,12 +224,15 @@
                             {/if}
                         {/foreach}
                     </ul>
-                    <ul class="nav navbar-nav navbar-right">
+                    <ul class="nav navbar-nav navbar-right" id="nav-right">
+                        {if $bvl_feedback}
                         <li class="hidden-xs hidden-sm">
-                            <a href="#" onclick="FeedbackButtonClicked()" class="navbar-brand pull-right">
+                            <a class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
                         </li>
+                        {/if}
+
                         <li class="hidden-xs hidden-sm">
                             <a href="#" class="navbar-brand pull-right help-button">
                                 <img width=17 src="{$baseurl}/images/help.gif">
@@ -252,18 +265,23 @@
             </nav>
         {/if}
         <div id="page" class="container-fluid">
-            {if $control_panel}
-                <div class="wrapper">
+		{if $control_panel or $feedback_panel}
+			{if $control_panel}
+				<div id = "page_wrapper_sidebar" class ="wrapper">
+			{/if}
+		    <div id="bvl_panel_wrapper">
                 <!-- Sidebar -->
-            
+                            {$feedback_panel}
+			    {if $control_panel}
                     <div id="sidebar-wrapper" class="sidebar-div">
-                        <div id="sidebar-content">
+                       <div id="sidebar-content">
                             {$control_panel}
                         </div>
                     </div>
-            
-        <!--    Want to wrap page content only when sidebar is in view
-                if not then just put page content in the div #page    -->
+		    {/if}
+                    <!--    Want to wrap page content only when sidebar is in view
+
+                    if not then just put page content in the div #page    -->
         <div id="page-content-wrapper">
             {/if}
             {if $dynamictabs eq "dynamictabs"}
@@ -280,7 +298,8 @@
             {if $dynamictabs neq "dynamictabs"}
             {* Add enough spacing to get below the menu *}
                 <br><br><br>
-            <div class="page-content inset">
+            <div class="page-content inset">  
+
                 {if $console}
                     <div class="alert alert-warning" role="alert">
                         <h3>Console Output</h3>
@@ -544,21 +563,20 @@
                                 </div>  
                             {/if}
                         </div>
-                         
-                        
-                    </div>              
-                
-                
+                    </div>
 
-                   
-                <!-- </div> -->
-            </div>
+
+            <!-- </div> -->
+	</div>
+
             {else}
                 {$workspace}
             {/if}
-        </div>
+		</div>
 
-        {if $control_panel}
+	</div>
+
+        {if $control_panel or $feedback_panel}
         </div></div>
         {/if}
 
@@ -574,10 +592,10 @@
                             |
                         </li>
                         {foreach from=$links item=link}
-                                <li>  
+                                <li>
                                     <a href="{$link.url}" style="color: #2FA4E7" target="{$link.windowName}">
                                         {$link.label}
-                                    </a> 
+                                    </a>
                                     |
                                 </li>
                         {/foreach}

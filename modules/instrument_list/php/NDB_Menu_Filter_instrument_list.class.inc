@@ -167,5 +167,18 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 
         $this->tpl_data['display'] = array_merge($candidate->getData(), $timePoint->getData());
     }
+    /**
+     * Used by the NDB_caller class when loading a page. 
+     * Call the display function of the appropriate modules feedback panel.
+     *
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     */
+
+    function getFeedbackPanel($candID, $sessionID)
+    {
+        $feedbackPanel = new bvl_feedback_panel($candID, $sessionID);
+        $html =  $feedbackPanel->display();
+        return $html;
+    }
 }
 ?>

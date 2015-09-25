@@ -11,6 +11,8 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+require_once 'BVL_Feedback_Panel.class.inc';
+
 /**
  * Base class for all NeuroDB behavioural instruments
  *
@@ -332,12 +334,12 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-    * Method to display the form - usually not overridden as it
-    * includes all the base code that any instrument will require.
-    *
-    * @return void
-    * @access public
-    */
+     * Method to display the form - usually not overridden as it
+     * includes all the base code that any instrument will require.
+     *
+     * @return void
+     * @access public
+     */
     function display()
     {
         // ALWAYS INCLUDE THESE!
@@ -921,7 +923,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $CertificationEnabled,
             $CertificationProjects,
             $CertificationInstruments
-        ) = $this->_getCertificationConfig();
+            ) = $this->_getCertificationConfig();
         if ($CertificationEnabled && in_array($project, $CertificationProjects)
             && in_array($this->testName, $CertificationInstruments)
         ) {
@@ -1197,19 +1199,19 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-    * Attaches a user defined rule (conditions) to a form element (grouped or not).
-    *
-    * @param string $elname  Name of element registering the rule
-    * @param array  $rules   Array of rules to apply in an AND fashion.
-    *                        Rules are written in rose ({@}) format
-    *                        (ie. array('q_8{@}=={@}1_yes','q_8_a_status{@}=={@}').
-    *                        ORs may be written within the same array value.
-    * @param string $message Message to print upon rule violation
-    * @param string $group   Empty if a non-grouped element is registering the rule.
-    *                        Otherwise, name of the group registering the rule.
-    *
-    * @return none
-    */
+     * Attaches a user defined rule (conditions) to a form element (grouped or not).
+     *
+     * @param string $elname  Name of element registering the rule
+     * @param array  $rules   Array of rules to apply in an AND fashion.
+     *                        Rules are written in rose ({@}) format
+     *                        (ie. array('q_8{@}=={@}1_yes','q_8_a_status{@}=={@}').
+     *                        ORs may be written within the same array value.
+     * @param string $message Message to print upon rule violation
+     * @param string $group   Empty if a non-grouped element is registering the rule.
+     *                        Otherwise, name of the group registering the rule.
+     *
+     * @return none
+     */
     function XINRegisterRule($elname, $rules, $message="", $group="")
     {
         if (!is_array($rules)) {
@@ -1396,10 +1398,10 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-    * Determines what the data entry status flag should be set to
-    *
-    * @return string  Either 'Complete' or 'Incomplete'
-    */
+     * Determines what the data entry status flag should be set to
+     *
+     * @return string  Either 'Complete' or 'Incomplete'
+     */
     function _determineDataEntryCompletionStatus()
     {
         // don't bother checking anything if the required elements array is empty
@@ -1430,8 +1432,8 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Gets the data entry completion status for this instrument
      *
-    * @return string Either 'Complete' or 'Incomplete'
-    */
+     * @return string Either 'Complete' or 'Incomplete'
+     */
     function getDataEntryCompletionStatus()
     {
         $db =& Database::singleton();
@@ -1443,13 +1445,13 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-    * Sets the data entry completion status
-    *
-    * @param string $status The status - either 'Complete'
-    *                       or 'Incomplete'
-    *
-    * @return none
-    */
+     * Sets the data entry completion status
+     *
+     * @param string $status The status - either 'Complete'
+     *                       or 'Incomplete'
+     *
+     * @return none
+     */
     function _setDataEntryCompletionStatus($status)
     {
         if (!in_array($status, array('Complete', 'Incomplete'))) {
@@ -1504,23 +1506,23 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-    * Wrapper to create a text field with an accompanying status field.
-    *
-    * @param string $field        The database field in which the response
-    *                             will be stored
-    * @param string $label        The question text to display
-    * @param array  $rules        rules with values and comparisson operators
-    *                             {@} seperated.
-    *                             Example: array(
-    *                                 'q_40{@}=={@}1_yes',
-    *                                 'q_40_b{@}=={@}1_yes'
-    *                                 )
-    * @param string $rule_message rule message to display
-    * @param array  $refusals     options in the refusal select (ie. Refusal,
-    *                             Unknown, Not Answered).
-    *
-    * @return none
-    */
+     * Wrapper to create a text field with an accompanying status field.
+     *
+     * @param string $field        The database field in which the response
+     *                             will be stored
+     * @param string $label        The question text to display
+     * @param array  $rules        rules with values and comparisson operators
+     *                             {@} seperated.
+     *                             Example: array(
+     *                                 'q_40{@}=={@}1_yes',
+     *                                 'q_40_b{@}=={@}1_yes'
+     *                                 )
+     * @param string $rule_message rule message to display
+     * @param array  $refusals     options in the refusal select (ie. Refusal,
+     *                             Unknown, Not Answered).
+     *
+     * @return none
+     */
     function addTextElement(
         $field,
         $label,
@@ -1591,16 +1593,16 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-    * Wrapper to create a text area field, with an accompanying status field.
-    *
-    * @param string $field        The database field in which the response
-    *                             will be stored
-    * @param string $label        The question text to display
-    * @param array  $rules        {@} delimited rules
-    * @param string $rule_message rule message to display upon rule violation
-    *
-    * @return none
-    */
+     * Wrapper to create a text area field, with an accompanying status field.
+     *
+     * @param string $field        The database field in which the response
+     *                             will be stored
+     * @param string $label        The question text to display
+     * @param array  $rules        {@} delimited rules
+     * @param string $rule_message rule message to display upon rule violation
+     *
+     * @return none
+     */
     function addTextAreaElement(
         $field,
         $label,
@@ -1639,18 +1641,18 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-    * Wrapper to create an Hour/Minute field, with an accompanying status field.
-    *
-    * @param string $field        Name given to the HTML QuickForm Element
-    *                             being created
-    * @param string $label        The question text to display
-    * @param array  $rules        Additional rules to apply to the element
-    *                             being added,{@} delimited
-    * @param string $rule_message Message to display upon rule violation.
-    *
-    * @return none
-    * @note   only used by EARLI? What is "dnk"? This should be cleaned up to use
-    */
+     * Wrapper to create an Hour/Minute field, with an accompanying status field.
+     *
+     * @param string $field        Name given to the HTML QuickForm Element
+     *                             being created
+     * @param string $label        The question text to display
+     * @param array  $rules        Additional rules to apply to the element
+     *                             being added,{@} delimited
+     * @param string $rule_message Message to display upon rule violation.
+     *
+     * @return none
+     * @note   only used by EARLI? What is "dnk"? This should be cleaned up to use
+     */
     function addHourMinElement(
         $field,
         $label,
@@ -1692,16 +1694,16 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-    * Adds a date group with a status box and appropriate rule
-    * Note: $this->dateOptions must be defined by the subclass calling this
-    * wrapper function
-    *
-    * @param string $name    Name prepended to the HTMLQuickform element
-    * @param string $label   Element label
-    * @param array  $options optional override of class's dateOptions
-    *
-    * @return none
-    */
+     * Adds a date group with a status box and appropriate rule
+     * Note: $this->dateOptions must be defined by the subclass calling this
+     * wrapper function
+     *
+     * @param string $name    Name prepended to the HTMLQuickform element
+     * @param string $label   Element label
+     * @param array  $options optional override of class's dateOptions
+     *
+     * @return none
+     */
     function addDateElement($name, $label, $options = null)
     {
 
@@ -1762,7 +1764,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array  $options optional override of class's dateOptions
      *
      * @return none
-    */
+     */
     function addMonthYear($field, $label, $options=array())
     {
         if (is_array($options)) {
@@ -1774,16 +1776,16 @@ class NDB_BVL_Instrument extends NDB_Page
 
 
     /**
-    * Wrapper with a user-created date group, a status box and appropriate rule
-    *
-    * @param string $name      The database name to add to the form
-    * @param string $label     The question text
-    * @param array  $dateArray QuickForm date options to use
-    *
-    * @return none
-    * @note   This was only ever used by the EARLI instrument and should be moved
-    *       out of the NDB_BVL_Instrument into an EARLI base class.
-    */
+     * Wrapper with a user-created date group, a status box and appropriate rule
+     *
+     * @param string $name      The database name to add to the form
+     * @param string $label     The question text
+     * @param array  $dateArray QuickForm date options to use
+     *
+     * @return none
+     * @note   This was only ever used by the EARLI instrument and should be moved
+     *       out of the NDB_BVL_Instrument into an EARLI base class.
+     */
     function addCustomDateElement($name, $label, $dateArray)
     {
         $group[] = $this->createDate($name . "_date", null, $dateArray);
@@ -1905,11 +1907,11 @@ class NDB_BVL_Instrument extends NDB_Page
      * nulled before the current score run, in case a change in the data
      * affected which scores are calculated so that the old (incorrect) data
      * doesn't remain.
-    *
-    * @param array $scoreCols list of scoring fields to null
-    *
-    * @return none
-    */
+     *
+     * @param array $scoreCols list of scoring fields to null
+     *
+     * @return none
+     */
     function _nullScores($scoreCols)
     {
         $db =& Database::singleton();
@@ -2154,6 +2156,30 @@ class NDB_BVL_Instrument extends NDB_Page
                 return $html;
 
             }
+        }
+    }
+
+    /**
+     * Function that displays the html the fetch feedback panel.
+     *
+     * @param candidateID $candID    The candidate ID for the panel.
+     * @param timepointID $sessionID The session ID for the panel.
+     *
+     * @return string
+     */
+    function getFeedbackPanel($candID, $sessionID)
+    {
+
+        $commentID = $this->getCommentID();
+
+        if (!empty($commentID)) {
+            $feedbackPanel = new BVL_Feedback_Panel(
+                $candID,
+                $sessionID,
+                $commentID
+            );
+
+            return $feedbackPanel->display();
         }
     }
 
@@ -2544,10 +2570,9 @@ function _checkDate($dateElement)
         || empty($dateElement['d'])
         || empty($dateElement['Y'])
     ) {
-            // otherwise, if any of the three elements are empty, return
-            // false b/c date entry has been attempted
-            return false;
+        // otherwise, if any of the three elements are empty, return
+        // false b/c date entry has been attempted
+        return false;
     }
     return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
 }
-?>
