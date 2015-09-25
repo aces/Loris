@@ -869,7 +869,6 @@ class NDB_BVL_Instrument extends NDB_Page
         $CertificationInstruments = array();
 
         if ($CertificationEnabled) {
-            $CertificationProjects = array();
             foreach (
                 Utility::toArray($CertificationConfig['CertificationProjects'])
                 AS $key => $value
@@ -878,7 +877,6 @@ class NDB_BVL_Instrument extends NDB_Page
                     $CertificationProjects[$projID] = $projID;
                 }
             }
-            $CertificationInstruments = array();
             foreach (
                 Utility::toArray($CertificationConfig['CertificationInstruments'])
                 AS $instrument
