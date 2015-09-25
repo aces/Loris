@@ -169,7 +169,7 @@ var InstrumentConflictsRow = React.createClass({
     }
 });
 
-var BehaviouralFedbackRow = React.createClass({
+var BehaviouralFeedbackRow = React.createClass({
     handleClick: function(){
         var link = React.findDOMNode(this.refs.feedback).href;
         var feedbackwindow = window.open(link, "Behavioural Feedback");
