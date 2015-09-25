@@ -411,6 +411,35 @@ class NDB_Config
     }
 
     /**
+    * Get list of projects for this projects, given a ProjectID.
+    *
+    * @param integer $ProjectID The ProjectID we want settings for
+    *
+    * @return an array of settings for this project.
+    */
+    function getProjectSettings($ProjectID)
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+        try
+        {
+             $info =$DB->pselectRow(
+                 "SELECT * FROM Project WHERE ProjectID=:sp",
+                 array('sp' => $ProjectID)
+             );
+        } catch (DatabaseException $e)
+        {
+            return null;
+        }
+        //Format the result into config.xml format.
+        return array(
+                'id'                => $info['ProjectID'],
+                'Name'              => $info['Name'],
+                'recruitmentTarget' => $info['recruitmentTarget'],
+               );
+    }
+
+    /**
      * Get list of Subprojects for this project, given a subprojectID.
      * This is differentiated from the default getSetting() because
      * Subprojects will probably eventually get their own table instead
