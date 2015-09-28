@@ -2127,7 +2127,7 @@ class NDB_BVL_Instrument extends NDB_Page
                     $BasePath
                     . "NDB_BVL_Instrument_$TestName.class.inc"
                 )
-                || file_exists($BasePath . "$TestName.linst")
+                    || file_exists($BasePath . "$TestName.linst")
                 ) {
                     // save possible changes from the control panel...
                     $success = $controlPanel->save();
