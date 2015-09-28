@@ -93,7 +93,9 @@ class CouchDBIntegrityChecker
                 $this->CouchDB->deleteDoc($row['id']);
             } else if ($sqlDb['study_consent'] !== 'yes') {
                 print "No consent for candidate for $row[id].\n";
-                $this->CouchDB->deleteDoc($row['id']);
+                print "***NOT DELETED*** PLEASE MANUALLY VERIFY***";
+                print_r($sqlDB);
+                //$this->CouchDB->deleteDoc($row['id']);
             }
         }
 
