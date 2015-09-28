@@ -46,7 +46,9 @@ class Utility extends PEAR
      */
     static function isErrorX($data, $code=null)
     {
-        throw new LorisException("Utility::isErrorX has been deprecated. Anywhere using them should use real PHP exceptions instead.");
+        throw new LorisException(
+            "Utility::isErrorX has been deprecated. Use PHP5 exceptions instead."
+        );
     }
 
     /**
