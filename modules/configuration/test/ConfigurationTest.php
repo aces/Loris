@@ -42,18 +42,18 @@ class ConfigurationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains(
-            "Configuration", 
+            "Configuration",
             $bodyText,
             "Configuration does'nt appear in body text"
         );
     }
 
-    /** 
-     * Verify that Config module appears in Admin main menu only 
+    /**
+     * Verify that Config module appears in Admin main menu only
      * if the user has permission "config".
      *
      * @return void
-     */    
+     */
     public function testConfigurationMenuDisplayWithPermission()
     {
         $configMenu = $this->webDriver->findElements(
@@ -73,13 +73,13 @@ class ConfigurationTest extends LorisIntegrationTest
             "There must be exacly 1 configuration menu when the user have permission"
         );
     }
-    
-    /** 
-     * Verify that Config module does not appears in Admin main 
+
+    /**
+     * Verify that Config module does not appears in Admin main
      * menu if the user don't have the 'config' permission.
      *
      * @return void
-     */    
+     */
     public function testConfigurationMenuDontDisplayWithoutPermission()
     {
         // Create a new user that don't have the 'config' permission.
@@ -100,16 +100,16 @@ class ConfigurationTest extends LorisIntegrationTest
              'Password_hash'    => null,
              'Password_expiry'  => '2099-12-31',
              'Pending_approval' => 'N',
-            )   
+            )
         );
 
         $this->DB->run(
-            "INSERT IGNORE INTO user_perm_rel 
-                 SELECT 888880, PermID 
-                 FROM permissions 
+            "INSERT IGNORE INTO user_perm_rel
+                 SELECT 888880, PermID
+                 FROM permissions
                  WHERE code <> 'config' AND code <> 'superuser'"
         );
-        
+
         // Logout
         $this->webDriver->get($this->url . "?logout=true");
         $loginButton = $this->webDriver
@@ -121,27 +121,27 @@ class ConfigurationTest extends LorisIntegrationTest
 
         $configMenu = $this->webDriver->findElements(
             WebDriverBy::xPath(
-                "   
+                "  
                 //ul[@class='nav navbar-nav']
                 //a[contains(text(), 'Admin')]
                 /..
                 /ul[@class='dropdown-menu']
                 //a[contains(text(), 'Configuration')]
                 "
-            )   
-        );  
+            )
+        );
         $this->assertCount(
-            0,  
+            0,
             $configMenu,
             ".
-             No configuration menu should appear when the user don't have 
+             No configuration menu should appear when the user don't have
              permission. Because this test failed, you will need to delete
-             the UserTester2 and his permissions youself. 
+             the UserTester2 and his permissions youself.
              Use:
              \tDELETE FROM LorisTest.user_perm_rel WHERE userID = 888880;
              \tDELETE FROM LorisTest.users WHERE ID = 888880;
             "
-        ); 
+        );
 
         // Verify that the configuration module wont load.
         $this->webDriver->get($this->url . "?test_name=configuration");
@@ -151,13 +151,13 @@ class ConfigurationTest extends LorisIntegrationTest
 
         $this->assertContains(
             "Configuration",
-            $bodyText, 
+            $bodyText,
             "The page doesn't show 'Configuration'"
         );
- 
+
         $this->assertContains(
-            "You do not have access to this page", 
-            $bodyText, 
+            "You do not have access to this page",
+            $bodyText,
             "Error message don't fit"
         );
 
@@ -174,41 +174,41 @@ class ConfigurationTest extends LorisIntegrationTest
      * Click on all the drop down arrows to see if they expand sections properly.
      *
      * @return void
-     */ 
+     */
     public function testConfigurationDropdownDisplay()
     {
         $dbTabList = array();
         $this->DB->select(
-            "SELECT 
+            "SELECT
                 ID,
-                Label 
-            FROM 
-                LorisTest.ConfigSettings 
-            WHERE 
-                Visible = 1 AND 
-                Parent IS NULL 
-            ORDER BY 
+                Label
+            FROM
+                LorisTest.ConfigSettings
+            WHERE
+                Visible = 1 AND
+                Parent IS NULL
+            ORDER BY
                 OrderNumber",
             $dbTabList
         );
         $dbTabCount = count($dbTabList);
 
         $this->webDriver->get($this->url . "?test_name=configuration");
-        $tabList = $this->webDriver->findElements(
+        $tabList  = $this->webDriver->findElements(
             WebDriverBy::cssSelector(".nav-pills > li > a")
         );
         $tabCount = count($tabList);
 
         $this->assertEquals(
-            $dbTabCount, 
-            $tabCount, 
+            $dbTabCount,
+            $tabCount,
             "The number of displayed tabs don't match database"
         );
 
         for ($i = 0; $i < $tabCount; $i++) {
             $this->assertEquals(
-                $dbTabList[$i]["Label"], 
-                $tabList[$i]->getText(), 
+                $dbTabList[$i]["Label"],
+                $tabList[$i]->getText(),
                 "Tab and config labels don't match"
             );
 
@@ -223,14 +223,14 @@ class ConfigurationTest extends LorisIntegrationTest
             );
 
             $dbConfigSettings = $this->DB->pselect(
-                "SELECT 
-                    Label 
-                FROM 
-                    LorisTest.ConfigSettings 
-                WHERE 
-                    Visible = 1 AND 
-                    Parent = :ID 
-                ORDER BY 
+                "SELECT
+                    Label
+                FROM
+                    LorisTest.ConfigSettings
+                WHERE
+                    Visible = 1 AND
+                    Parent = :ID
+                ORDER BY
                     OrderNumber",
                 array( ":ID" => $dbTabList[$i]["ID"])
             );
@@ -243,7 +243,7 @@ class ConfigurationTest extends LorisIntegrationTest
                     "
                 )
             );
-            $submitDiv = $this->webDriver->findElements(
+            $submitDiv      = $this->webDriver->findElements(
                 WebDriverBy::cssSelector(
                     "
                     #lorisworkspace > div > div > .active
@@ -257,11 +257,11 @@ class ConfigurationTest extends LorisIntegrationTest
                 "Submit div missing for the " . $dbTabList[$i]["Label"] . "tab"
             );
 
-            $configSettingsCount = count($configSettings) - count($submitDiv);
+            $configSettingsCount   = count($configSettings) - count($submitDiv);
             $dbConfigSettingsCount = count($dbConfigSettings);
             $this->assertEquals(
-                $configSettingsCount, 
-                $dbConfigSettingsCount, 
+                $configSettingsCount,
+                $dbConfigSettingsCount,
                 "ConfigSettingsCount don't match"
             );
 
@@ -297,24 +297,24 @@ class ConfigurationTest extends LorisIntegrationTest
 
         $dbConfigs = array();
         $this->DB->select(
-            "SELECT 
+            "SELECT
                 cs.ID as ID,
                 cs.Name,
                 cs.AllowMultiple,
                 cs.DataType,
                 c.ID as ConfigID,
-                c.Value 
-            FROM 
-                ConfigSettings cs 
-            JOIN Config c 
-                ON (c.ConfigID = cs.ID) 
-            WHERE 
-                Visible = 1 AND 
-                Parent IS NOT NULL 
-            ORDER BY 
+                c.Value
+            FROM
+                ConfigSettings cs
+            JOIN Config c
+                ON (c.ConfigID = cs.ID)
+            WHERE
+                Visible = 1 AND
+                Parent IS NOT NULL
+            ORDER BY
                 cs.ID",
             $dbConfigs
-        ); 
+        );
 
         foreach ($dbConfigs as $dbConfig) {
             $configDiv = $this->webDriver->findElement(
@@ -379,7 +379,7 @@ class ConfigurationTest extends LorisIntegrationTest
                     $dbConfig['ConfigID'],
                     "Input ID don't match database for config :" . $dbConfig['Name']
                 );
- 
+
                 $this->assertEquals(
                     $inputs[0]->getAttribute("value"),
                     $dbConfig['Value'],
@@ -387,7 +387,7 @@ class ConfigurationTest extends LorisIntegrationTest
                 );
 
                 $this->assertEquals(
-                    0, 
+                    0,
                     $dbConfig['AllowMultiple'],
                     "AllowMultiple value error for config :" . $dbConfig['Name']
                 );
@@ -402,7 +402,7 @@ class ConfigurationTest extends LorisIntegrationTest
                      WebDriverBy::xPath("./select/option[@selected]")
                 );
 
-                // Verify Add and Remove buttons 
+                // Verify Add and Remove buttons
                 $removeButtons = $configDiv->findElements(
                      WebDriverBy::xPath(
                          "
@@ -459,7 +459,7 @@ class ConfigurationTest extends LorisIntegrationTest
                     $inputs,
                     "Input textarea count for config :" . $dbConfig['Name']
                 );
- 
+
                 $this->assertEquals(
                     $inputs[0]->getAttribute("name"),
                     $dbConfig['ConfigID'],
@@ -480,7 +480,7 @@ class ConfigurationTest extends LorisIntegrationTest
                 break;
             default:
                 $dataType = $dbConfig['DataType'];
-                $config = $dbConfig['Name'];
+                $config   = $dbConfig['Name'];
                 $this->fail(
                     "Unsupported DataType '" . $dataType . "'; config :" . $config
                 );
@@ -490,18 +490,18 @@ class ConfigurationTest extends LorisIntegrationTest
     }
 
     /**
-     * Go through each field in the configuration module. For each field, try 
+     * Go through each field in the configuration module. For each field, try
      * changing the value and submit. There should be a "submited" confirmation.
-     * Try to see if the change actually affected LORIS in some way. 
+     * Try to see if the change actually affected LORIS in some way.
      * For example, for the project description in the dashboard settings, go to
-     * the dashboard to see if the project description actually changed. 
+     * the dashboard to see if the project description actually changed.
      *
      * @note this should use dataprovider.
      *
      * @group gloabal_LORIS_test
      *
      * @depends testConfigurationInputAvailableAndFits
-     * 
+     *
      * @return void
      */
     public function testConfigurationValueChangeEffects()
@@ -511,35 +511,35 @@ class ConfigurationTest extends LorisIntegrationTest
 
         $dbConfigs = array();
         $this->DB->select(
-            "SELECT 
+            "SELECT
                 cs.ID as ID,
                 cs.Name as Name,
                 cs.AllowMultiple as AllowMultiple,
                 cs.DataType as DataType,
                 c.ID as ConfigID,
-                c.Value as Value 
-            FROM 
-                ConfigSettings cs 
-            JOIN Config c 
-                ON (c.ConfigID = cs.ID) 
-            WHERE 
-                Visible = 1 AND 
-                Parent IS NOT NULL 
+                c.Value as Value
+            FROM
+                ConfigSettings cs
+            JOIN Config c
+                ON (c.ConfigID = cs.ID)
+            WHERE
+                Visible = 1 AND
+                Parent IS NOT NULL
             ORDER BY
                 cs.ID",
             $dbConfigs
-        ); 
+        );
         foreach ($dbConfigs as $dbConfig) {
             switch ($dbConfig['Name']) {
             default:
                 break;
             }
-        } 
+        }
     }
 
     /**
-     * Verify that Help section shows ans contains a title, 
-     * content, edit button and a close button. 
+     * Verify that Help section shows ans contains a title,
+     * content, edit button and a close button.
      *
      * @note : remaining test to code
      *   -  buttons click.
@@ -564,19 +564,19 @@ class ConfigurationTest extends LorisIntegrationTest
 
         // $helpLink[0] is the button for mobile display
         $helpLink[1]->click();
-        sleep(2);
+        sleep(10);
 
         $helpContent = $this->webDriver->findElements(
             WebDriverBy::xPath(
                 "//div[contains(@class, 'help-content')]"
             )
-        ); 
+        );
         $this->assertCount(
             1,
             $helpContent,
             "help content don't appears"
         );
-        
+
         $headers = $helpContent[0]->findElements(
             WebDriverBy::xPath(
                 ".//h3[contains(text(), 'Configuration')]"
@@ -609,7 +609,7 @@ class ConfigurationTest extends LorisIntegrationTest
             $closeButton,
             "There must be exacly 1 close button in help content"
         );
-        
+
         $helpTextContent = $helpContent[0]->findElements(
             WebDriverBy::xPath(
                 "./pre/*"
@@ -624,7 +624,7 @@ class ConfigurationTest extends LorisIntegrationTest
 
     /**
      * This should test something about the subproject page.
-     * 
+     *
      * @return void
      */
     public function testSubproject()
