@@ -1,4 +1,5 @@
 /*global document: false, $: false*/
+$(document).ready(function() {
 
 var scanLineChart, recruitmentPieChart, recruitmentBarChart, recruitmentLineChart;
 
@@ -267,4 +268,5 @@ $.ajax({
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
     }
+});
 });
