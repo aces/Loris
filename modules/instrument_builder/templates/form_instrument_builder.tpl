@@ -1,7 +1,6 @@
 <meta charset="utf-8"/>
 <script type="text/javascript" src="GetJS.php?Module=instrument_builder&file=instrument_builder.instrument.js"></script>
 <script type="text/javascript" src="GetJS.php?Module=instrument_builder&file=instrument_builder.rules.js"></script>
-<script src="/js/react.js"></script>
 <script src="GetJS.php?Module=instrument_builder&file=react.elements.js"></script>
 <script src="GetJS.php?Module=instrument_builder&file=react.questions.js"></script>
 <script src="GetJS.php?Module=instrument_builder&file=react.instrument_builder.js"></script>
