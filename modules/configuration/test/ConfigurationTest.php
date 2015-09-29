@@ -564,7 +564,6 @@ class ConfigurationTest extends LorisIntegrationTest
 
         // $helpLink[0] is the button for mobile display
         $helpLink[1]->click();
-        sleep(10);
 
         $helpContent = $this->webDriver->findElements(
             WebDriverBy::xPath(
@@ -629,7 +628,7 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function testSubproject()
     {
-        $this->markTestSkipped("To do...");
+        $this->markTestSkipped("Not yet implemented");
     }
 }
 ?>
