@@ -61,7 +61,7 @@ $user_input = readline("What is the name of your project? ");
 $projectname = rtrim($user_input);
 
 // Where project's statistics will be stored
-$project1 = array();
+$project_statistics = array();
 
 // Number of Scanning - Visits
 $query1 = $db->pselect("select count(*) from session where Scan_done='Y'", array());
@@ -108,65 +108,65 @@ $headers = array(
     '# of scans'
 );
 
-// Extracts data from each query and puts into $project1 array
-$project1[$headers[0]] = $projectname;
+// Extracts data from each query and puts into $project_statistics array
+$project_statistics[$headers[0]] = $projectname;
 
 foreach($query1 as $i => $row) {
     foreach($row as $j => $count) {
-        $project1[$headers[1]] = $count;
+        $project_statistics[$headers[1]] = $count;
     }
     break;
 }
 foreach($query2 as $i => $row) {
     foreach($row as $j => $count) {
-        $project1[$headers[2]] = $count;
+        $project_statistics[$headers[2]] = $count;
     }
     break;
 }
 foreach($query3 as $i => $row) {
     foreach($row as $j => $count) {
-        $project1[$headers[3]] = $count;
+        $project_statistics[$headers[3]] = $count;
     }
     break;
 }
 foreach($query4 as $i => $row) {
     foreach($row as $j => $count) {
-        $project1[$headers[4]] = $count;
+        $project_statistics[$headers[4]] = $count;
     }
     break;
 }
 foreach($query5 as $i => $row) {
     foreach($row as $j => $count) {
-        $project1[$headers[5]] = $count;
+        $project_statistics[$headers[5]] = $count;
     }
     break;
 }
 foreach($query6 as $i => $row) {
     foreach($row as $j => $count) {
-        $project1[$headers[6]] = $count;
+        $project_statistics[$headers[6]] = $count;
     }
     break;
 }
 
-$project1[$headers[7]] = $query7;
+$project_statistics[$headers[7]] = $query7;
 
 foreach($query8 as $i => $row) {
     foreach($row as $j => $count) {
-        $project1[$headers[8]] = $count;
+        $project_statistics[$headers[8]] = $count;
     }
     break;
 }
 
 foreach($headers as $header) {
-    if($project1[$header] == NULL) {
-        $project1[$header] = "Unknown";
+    if($project_statistics[$header] == NULL) {
+        $project_statistics[$header] = "Unknown";
     }
 }
 
 // Adds headers and project statistics into csv file
 fputcsv($fp, $headers);
 
-fputcsv($fp, $project1);
+fputcsv($fp, $project_statistics);
 
 echo "File writing for $projectname complete.\n\n";
 
