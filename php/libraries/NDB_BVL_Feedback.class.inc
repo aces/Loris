@@ -1111,14 +1111,6 @@ class NDB_BVL_Feedback
                     $instruments_q = $DB->pselect(
                         "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
                         array('testName' => $test_name)
-                    );
-                    error_log("message");
-                    error_log("message");
-                    error_log("message");
-                    error_log(print_r($instruments_q, true));
-                    error_log("message");
-                    error_log("message");
-                    error_log("message");
                     if ($instruments_q == 1) {
                         return true;
                     }
