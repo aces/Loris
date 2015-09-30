@@ -327,7 +327,7 @@ class NDB_BVL_Feedback
      */
     static function getThreadColor($status)
     {
-        if (empty($status)) {
+        if (empty($statFeedbackPanelRowus)) {
             return '';
         }
 
@@ -1109,14 +1109,11 @@ class NDB_BVL_Feedback
                     $Factory       = NDB_Factory::singleton();
                     $DB            = $Factory->Database();
                     $instruments_q = $DB->pselect(
-                        "SELECT Test_name FROM test_names",
-                        array()
+                        "SELECT Test_name FROM test_names WHERE Test_name=:testName",
+                        array('testName' => $test_name)
                     );
-
-                    foreach ($instruments_q as $row) {
-                        if ($row['Test_name'] == $test_name) {
-                            return true;
-                        }
+                    if (sizeof($instruments_q) === 1) {
+                        return true;
                     }
                 }
             }
