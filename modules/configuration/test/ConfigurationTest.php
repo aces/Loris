@@ -563,7 +563,7 @@ class ConfigurationTest extends LorisIntegrationTest
         );
 
         // $helpLink[0] is the button for mobile display
-        $helpLink[1]->click();
+        $helpLink[0]->click();
 
         $page = $this->webDriver->findElement(
             WebDriverBy::id('page')
