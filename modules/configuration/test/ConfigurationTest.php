@@ -565,18 +565,19 @@ class ConfigurationTest extends LorisIntegrationTest
         // $helpLink[0] is the button for mobile display
         $helpLink[1]->click();
 
-        $helpContent = $this->webDriver->findElements(
-            WebDriverBy::xPath(
-                "//div[contains(@class, 'help-content')]"
-            )
+        $page = $this->webDriver->findElement(
+            WebDriverBy::id('page')
+        ); 
+        $help = $page->findElements(
+            WebDriverBy::xPath("./div[contains(@class, 'help-content')]")
         );
         $this->assertCount(
             1,
-            $helpContent,
+            $help,
             "help content don't appears"
         );
 
-        $headers = $helpContent[0]->findElements(
+        $headers = $help[0]->findElements(
             WebDriverBy::xPath(
                 ".//h3[contains(text(), 'Configuration')]"
             )
@@ -587,7 +588,7 @@ class ConfigurationTest extends LorisIntegrationTest
             "There must be exacly 1 configuration header in help content"
         );
 
-        $editButton = $helpContent[0]->findElements(
+        $editButton = $help[0]->findElements(
             WebDriverBy::xPath(
                 "./button[@id='helpedit']"
             )
@@ -598,7 +599,7 @@ class ConfigurationTest extends LorisIntegrationTest
             "There must be exacly 1 edit button in help content"
         );
 
-        $closeButton = $helpContent[0]->findElements(
+        $closeButton = $help[0]->findElements(
             WebDriverBy::xPath(
                 "./button[@id='helpclose']"
             )
@@ -609,7 +610,7 @@ class ConfigurationTest extends LorisIntegrationTest
             "There must be exacly 1 close button in help content"
         );
 
-        $helpTextContent = $helpContent[0]->findElements(
+        $helpTextContent = $help[0]->findElements(
             WebDriverBy::xPath(
                 "./pre/*"
             )
