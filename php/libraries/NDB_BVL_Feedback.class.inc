@@ -327,7 +327,7 @@ class NDB_BVL_Feedback
      */
     static function getThreadColor($status)
     {
-        if (empty($statFeedbackPanelRowus)) {
+        if (empty($status)) {
             return '';
         }
 
