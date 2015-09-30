@@ -1109,10 +1109,17 @@ class NDB_BVL_Feedback
                     $Factory       = NDB_Factory::singleton();
                     $DB            = $Factory->Database();
                     $instruments_q = $DB->pselect(
-                        "SELECT Test_name FROM test_names WHERE Test_name=:testName",
+                        "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
                         array('testName' => $test_name)
                     );
-                    if (sizeof($instruments_q) === 1) {
+                    error_log("message");
+                    error_log("message");
+                    error_log("message");
+                    error_log(print_r($instruments_q, true));
+                    error_log("message");
+                    error_log("message");
+                    error_log("message");
+                    if ($instruments_q == 1) {
                         return true;
                     }
                 }
