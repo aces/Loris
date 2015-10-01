@@ -16,7 +16,7 @@
                             <div class="col-sm-12 col-md-9">{$form.Instrument.html}</div>
                         </div>
                     </div>
-                    <div class="row">    
+                    <div class="row">
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.CandID.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.CandID.html}</div>
@@ -28,14 +28,16 @@
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.PSCID.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.PSCID.html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.Project.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.Question.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.Question.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
                         </div>
                     </div>
                     <div class="row">
@@ -84,44 +86,46 @@
             <table class="table table-hover table-primary table-bordered dynamictable" border="0">
                 <thead>
 
-                    {foreach from=$form.errors item=error}
+                {foreach from=$form.errors item=error}
                     <tr>
-                        <td nowrap="nowrap" colspan="5" class="error">{$error}</td>
+                        <td nowrap="nowrap" colspan="6" class="error">{$error}</td>
                     </tr>
-                    {/foreach}
-                    
-                    <tr class="info">
-                        <th>No.</th>
-                        {section name=header loop=$headers}
+                {/foreach}
+
+                <tr class="info">
+                    <th>No.</th>
+                    {section name=header loop=$headers}
                         <th><a href="main.php?test_name=conflict_resolver&submenu=resolved_conflicts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
-                        {if $headers[header].displayName == "TableName"}
-                            Instrument
-                        {else if $headers[header].displayName == "CandID"}
-                            DCCID
-                        {else if $headers[header].displayName == "FieldName"}
-                            Question                    
-                        {else}
-                            {$headers[header].displayName}
-                        {/if}
-                        </a></th>
-                        {/section}
-                        <th>Corrected Answer</th>
-                    </tr>
+                                {if $headers[header].displayName == "TableName"}
+                                    Instrument
+                                {else if $headers[header].displayName == "CandID"}
+                                    DCCID
+                                {else if $headers[header].displayName == "ProjectID"}
+                                    Project
+                                {else if $headers[header].displayName == "FieldName"}
+                                    Question
+                                {else}
+                                    {$headers[header].displayName}
+                                {/if}
+                            </a></th>
+                    {/section}
+                    <th>Corrected Answer</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {section name=item loop=$items}
-                    <tr>
-                        {section name=piece loop=$items[item]}
-                            <td>
-                                {$items[item][piece].value}
-                            </td>
-                        {/section}
-                    </tr>
-                    {sectionelse}
-                        <tr>
-                            <tr><td colspan="7">No resolved conflicts found.</td></tr>
-                        </tr>
+                {section name=item loop=$items}
+                <tr>
+                    {section name=piece loop=$items[item]}
+                        <td>
+                            {$items[item][piece].value}
+                        </td>
                     {/section}
+                </tr>
+                {sectionelse}
+                    <tr>
+                        <tr><td colspan="8">No resolved conflicts found.</td></tr>
+                    </tr>
+                {/section}
                 </tbody>
             </table>
         </div>

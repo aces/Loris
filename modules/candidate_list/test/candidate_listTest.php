@@ -31,6 +31,7 @@ require_once __DIR__
 
 class CandidateListTestIntegrationTest extends LorisIntegrationTest
 {
+<<<<<<< HEAD
     private $_useEDCId;
     private $_useEDCBackup;
     private $_useProjectsId;
@@ -42,6 +43,8 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     private $_centerID;
 
 
+=======
+>>>>>>> aces/master
     /**
      * Backs up the useEDC config value and sets the value to a known
      * value (true) for testing.
@@ -54,6 +57,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
 
         parent::setUp();
 
+<<<<<<< HEAD
         $this->createLorisDBConnection();
 
         $this->_useEDCId     = $this->DB->pselectOne(
@@ -104,6 +108,9 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
             array(":uID" => $this->_uID)
         );
 
+=======
+        $this->setupConfigSetting("useEDC", "true");
+>>>>>>> aces/master
     }
 
 
@@ -114,6 +121,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      */
     function tearDown()
     {
+<<<<<<< HEAD
 
         $this->_useEDCBackup = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:useEDC",
@@ -155,6 +163,10 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
         $compositeDs->addDataSet($ds1);
 
         return $compositeDs;
+=======
+        parent::tearDown();
+        $this->restoreConfigSetting("useEDC");
+>>>>>>> aces/master
     }
 
 

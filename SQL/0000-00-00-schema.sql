@@ -246,29 +246,6 @@ INSERT INTO `feedback_bvl_type` VALUES
 UNLOCK TABLES;
 
 --
--- Table structure for table `feedback_bvl_types_site`
---
-
-DROP TABLE IF EXISTS `feedback_bvl_types_site`;
-CREATE TABLE `feedback_bvl_types_site` (
-  `Feedback_type` int(11) unsigned NOT NULL default '0',
-  `CenterID` tinyint(2) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`Feedback_type`,`CenterID`),
-  KEY `FK_feedback_bvl_types_site_2` (`CenterID`),
-  CONSTRAINT `FK_feedback_bvl_types_site_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `FK_feedback_bvl_types_site_1` FOREIGN KEY (`Feedback_type`) REFERENCES `feedback_bvl_type` (`Feedback_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `feedback_bvl_types_site`
---
-
-LOCK TABLES `feedback_bvl_types_site` WRITE;
-/*!40000 ALTER TABLE `feedback_bvl_types_site` DISABLE KEYS */;
-/*!40000 ALTER TABLE `feedback_bvl_types_site` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `feedback_mri_comment_types`
 --
 
@@ -288,10 +265,10 @@ CREATE TABLE `feedback_mri_comment_types` (
 LOCK TABLES `feedback_mri_comment_types` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_comment_types` DISABLE KEYS */;
 INSERT INTO `feedback_mri_comment_types` VALUES 
-    (1,'Geometric intensity','volume','a:2:{s:5:\"field\";s:19:\"Geometric_intensity\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
-    (2,'Intensity artifact','volume','a:2:{s:5:\"field\";s:9:\"Intensity_artifact\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
-    (3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
-    (4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:34:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:6:\"Slight\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+    (1,'Geometric distortion','volume','a:2:{s:5:\"field\";s:20:\"Geometric_distortion\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+    (2,'Intensity artifact','volume','a:2:{s:5:\"field\";s:18:\"Intensity_artifact\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
+    (3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
+    (4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:31:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
     (5,'Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),	    (6,'Overall','volume',''),
     (7,'Subject','visit',''),	
     (8,'Dominant Direction Artifact (DWI ONLY)','volume','a:2:{s:5:"field";s:14:"Color_Artifact";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"Good";i:2;s:4:"Fair";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}'),
@@ -370,22 +347,15 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `feedback_mri_comments`;
 CREATE TABLE `feedback_mri_comments` (
   `CommentID` int(11) unsigned NOT NULL auto_increment,
-  `MRIID` int(11) unsigned default NULL,
   `FileID` int(10) unsigned default NULL,
   `SeriesUID` varchar(64) default NULL,
   `EchoTime` double default NULL,
   `SessionID` int(10) unsigned default NULL,
-  `PatientName` varchar(255) default NULL,
-  `CandID` varchar(6) default NULL,
-  `VisitNo` int(2) default NULL,
   `CommentTypeID` int(11) unsigned NOT NULL default '0',
   `PredefinedCommentID` int(11) unsigned default NULL,
   `Comment` text,
   `ChangeTime` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`CommentID`),
-  KEY `MRIID` (`MRIID`),
-  KEY `Candidate` (`CandID`,`VisitNo`),
-  KEY `NonCandidate` (`PatientName`),
   KEY `FK_feedback_mri_comments_1` (`CommentTypeID`),
   KEY `FK_feedback_mri_comments_2` (`PredefinedCommentID`),
   KEY `FK_feedback_mri_comments_3` (`FileID`),
@@ -437,7 +407,6 @@ CREATE TABLE `files` (
   `SeriesUID` varchar(64) DEFAULT NULL,
   `EchoTime` double DEFAULT NULL,
   `CoordinateSpace` varchar(255) default NULL,
-  `ClassifyAlgorithm` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
   `FileType` enum('mnc','obj','xfm','xfmmnc','imp','vertstat','xml','txt','nii','nii.gz') default NULL,
@@ -1240,6 +1209,7 @@ CREATE TABLE `tarchive_series` (
   `PhaseEncoding` varchar(255) default NULL,
   `NumberOfFiles` int(11) NOT NULL default '0',
   `SeriesUID` varchar(255) default NULL,
+  `Modality` ENUM ('MR', 'PT') default NULL,
   PRIMARY KEY  (`TarchiveSeriesID`),
   KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `tarchive_series_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE
@@ -1410,8 +1380,8 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Password_md5,Password_expiry) 
-VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','4817577f267cc8bb20c3e58b48a311b9f6','2015-03-30');
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Password_md5,Pending_approval,Password_expiry)
+VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','4817577f267cc8bb20c3e58b48a311b9f6','N','2016-03-30');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1884,6 +1854,17 @@ CREATE TABLE `mri_violations_log` (
   PRIMARY KEY (`LogID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `violations_resolved` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `hash` varchar(255) NOT NULL,
+  `ExtID` bigint(20) NOT NULL,
+  `TypeTable` varchar(255) DEFAULT NULL,
+  `User` varchar(255) DEFAULT NULL,
+  `ChangeDate` datetime DEFAULT NULL,
+  `Resolved` enum('unresolved', 'reran', 'emailed', 'inserted', 'rejected', 'inserted_flag', 'other') DEFAULT 'unresolved',
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `participant_accounts` (
     `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `SessionID` int(6) DEFAULT NULL,
@@ -1992,7 +1973,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('DICOM Archive', 'main.php?test_name=dicom_archive', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 2),
     ('Imaging Browser', 'main.php?test_name=imaging_browser', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 3),
     ('MRI Violated Scans', 'main.php?test_name=mri_violations', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 4),
-    ('MRI Upload', 'main.php?test_name=mri_upload', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 5);
+    ('Imaging Uploader', 'main.php?test_name=imaging_uploader', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 5);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Statistics', 'main.php?test_name=statistics', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 1),
@@ -2293,6 +2274,26 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM Conf
 INSERT INTO Config (ConfigID, Value) SELECT ID, "no-reply@example.com" FROM ConfigSettings WHERE Name="Reply-to";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Produced by LorisDB" FROM ConfigSettings WHERE Name="X-MimeOLE";
 
+DROP TABLE IF EXISTS `subproject`;
+CREATE TABLE subproject (
+    SubprojectID int(10) unsigned NOT NULL auto_increment,
+    title varchar(255) NOT NULL,
+    useEDC boolean,
+    WindowDifference enum('optimal', 'battery'),
+    RecruitmentTarget int(10) unsigned,
+    PRIMARY KEY (SubprojectID)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
+INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (1, 'Control', false, 'optimal');
+INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (2, 'Experimental', false, 'optimal');
+
+DROP TABLE IF EXISTS `Project`;
+CREATE TABLE `Project` (
+    `ProjectID` INT(2) Default NULL,
+    `Name` VARCHAR(255) NULL,
+    `recruitmentTarget` INT(6) Default NULL,
+    PRIMARY KEY (`ProjectID`)
+)ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
 CREATE TABLE StatisticsTabs(
     ID INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     ModuleName varchar(255) NOT NULL,
@@ -2378,6 +2379,7 @@ CREATE TABLE `SNP` (
   `FunctionPrediction` enum('exonic','ncRNAexonic','splicing','UTR3','UTR5') DEFAULT NULL,
   `Damaging` enum('D','NA') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
+  `ExonicFunction` enum('nonsynonymous','unknown') DEFAULT NULL,
   `PlatformID` bigint(20) DEFAULT NULL,
   `GenomeLocID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`SNPID`),
@@ -2456,3 +2458,4 @@ CREATE TABLE `server_processes` (
   KEY `FK_task_1` (`userid`),
   CONSTRAINT `FK_task_1` FOREIGN KEY (`userid`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

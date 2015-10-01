@@ -1,10 +1,7 @@
 <br />
 {literal}
+<script type="text/javascript" src="js/invalid_form_scroll.js"></script>
 <script>
-
-// Flag that indicates whether we already scrolled the browser window
-// to make an invalid field visible for the current submit event
-var scrolledToInvalidField;
 
 $(document).ready(function() {
     function toggleGroup(group) {
@@ -28,39 +25,6 @@ $(document).ready(function() {
         section = id.substring(7);
         section_el = $("#perms_" + section + " br:nth-child(1)").hide();
     });
-    
-    // This will make sure that the flag indicating whether we scrolled
-    // to an invalid element when the form is submitted is reset
-    document.getElementsByName('fire_away')[0].addEventListener("click", function () {
-       scrolledToInvalidField = false;
-    });
-    
-    // Override default event handler for invalid input elements
-    // This will make sure that the invalid element appears at the top
-    // of the page.  
-    var elements = document.querySelectorAll('input,select,textarea');
-    var navbarHeader = document.getElementsByClassName("navbar-header");
-    for(var i = elements.length; i--;){
-        elements[i].addEventListener('invalid',function(){
-            // Only make the first invalid element visible when the
-            // form is submitted. 
-            // If this is not done we have no guarantee that the error message
-            // displayed will be for the element that we scrolled to (i.e we
-            // might ensure invalid element #10 is visible while the error
-            // message that is displayed by the page is for element #1, which 
-            // might be way higher up, and thus hidden from the view)
-            if(!scrolledToInvalidField) {
-                this.scrollIntoView(true);
-            
-                // scrollingIntoView is not enough: the navigation bar will appear
-                // over the invalid element and hide it.
-                // We have to scroll an additional number of pixels down so that 
-                // the elements becomes visible. 
-                window.scrollBy(0,- $(navbarHeader).height()- 10);
-                scrolledToInvalidField = true;
-            }
-        });
-    }
 });
 </script>
 {/literal}
@@ -340,6 +304,17 @@ $(document).ready(function() {
     		</div>
     	</div>
     </div>
+    <div class="row form-group form-inline">
+        <label class="col-sm-2">
+          {$form.Supervisors_Group.label}
+        </label>
+        <div class="col-sm-10 col-xs-12">
+          <div>
+            {$form.Supervisors_Group.html}
+          </div>
+        </div>
+     </div>
+
     <div class="row form-group form-inline">
     	<div class="col-sm-2">
     		<input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />

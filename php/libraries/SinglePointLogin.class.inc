@@ -55,8 +55,12 @@ class SinglePointLogin
         $tpl_data['currentyear'] = date('Y');
 
         // remove logout from request
-        parse_str($_SERVER['QUERY_STRING'], $params);
-        unset($params['logout']);
+        if (isset($_SERVER['QUERY_STRING'])) {
+            parse_str($_SERVER['QUERY_STRING'], $params);
+            unset($params['logout']);
+        } else {
+            $params = array();
+        }
 
         $config =& NDB_Config::singleton();
 

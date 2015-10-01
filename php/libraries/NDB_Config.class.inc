@@ -411,6 +411,35 @@ class NDB_Config
     }
 
     /**
+    * Get list of projects for this projects, given a ProjectID.
+    *
+    * @param integer $ProjectID The ProjectID we want settings for
+    *
+    * @return an array of settings for this project.
+    */
+    function getProjectSettings($ProjectID)
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+        try
+        {
+             $info =$DB->pselectRow(
+                 "SELECT * FROM Project WHERE ProjectID=:sp",
+                 array('sp' => $ProjectID)
+             );
+        } catch (DatabaseException $e)
+        {
+            return null;
+        }
+        //Format the result into config.xml format.
+        return array(
+                'id'                => $info['ProjectID'],
+                'Name'              => $info['Name'],
+                'recruitmentTarget' => $info['recruitmentTarget'],
+               );
+    }
+
+    /**
      * Get list of Subprojects for this project, given a subprojectID.
      * This is differentiated from the default getSetting() because
      * Subprojects will probably eventually get their own table instead
@@ -423,20 +452,30 @@ class NDB_Config
      */
     function getSubprojectSettings($subprojectID)
     {
-        // Sub Project
-        $subprojectSettings =$this->getSetting('subprojects');
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
-        //Loop through the subprojects to get an id out and to create
-        //the subproject drop down.
-        foreach (Utility::toArray($subprojectSettings['subproject'])
-            AS $subproject
-        ) {
-            if ($subproject['id']==$subprojectID) {
-                return $subproject;
-            }
+        try {
+            $info = $DB->pselectRow(
+                "SELECT * FROM subproject WHERE SubprojectID=:sp",
+                array('sp' => $subprojectID)
+            );
+        } catch(DatabaseException $e) {
+            return null;
         }
-        // no nodes found - returning null
-        return null;
+        // Format the results the same way it was formatted in config.xml
+        // This variable assignment was done for phpcs... if anyone figures out
+        // a way around this, please correct it
+        $x = $info['WindowDifference'];
+        return array(
+                'id'                => $info['SubprojectID'],
+                'title'             => $info['title'],
+                'options'           => array(
+                                        'useEDC'           => $info['useEDC'],
+                                        'WindowDifference' => $x,
+                                       ),
+                'RecruitmentTarget' => $info['RecruitmentTarget'],
+               );
     }
 
     /**

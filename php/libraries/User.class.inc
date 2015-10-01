@@ -267,7 +267,7 @@ class User extends UserPermissions
     /**
      * Generates a random alphanumeric password
      *
-     * @param int $length Length of password to generate
+     * @param int $length Length of password to generate (has to be >= 2)
      *
      * @return string
      * @access public
@@ -278,14 +278,36 @@ class User extends UserPermissions
         // start with a blank password
         $password = '';
 
-        // define possible characters
-        $possible = '0123456789bcdfghjkmnpqrstvwxyz';
+        $numbers      = '0123456789';
+        $specialChars = '!@#$%^&*()';
+
+        $possible = $numbers . $specialChars . 'abcdefghijklmnopqrstuvwxyz';
 
         // length of possible characters minus one
-        $possible_cnt = 29; //strlen($possible) - 1;
+        $possible_cnt = strlen($possible) - 1;
 
         // add random characters to $password until $length is reached
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length-2; $i++) {
+            $password .= substr($possible, mt_rand(0, $possible_cnt), 1);
+        }
+
+        if (strpbrk($password, $specialChars) === false) {
+            $password .= substr(
+                $specialChars,
+                mt_rand(0, strlen($specialChars)-1),
+                1
+            );
+        }
+
+        if (strpbrk($password, $numbers) === false) {
+            $password .= substr(
+                $numbers,
+                mt_rand(0, strlen($numbers)-1),
+                1
+            );
+        }
+
+        for ($i = strlen($password); $i < $length; $i++) {
             $password .= substr($possible, mt_rand(0, $possible_cnt), 1);
         }
 
@@ -364,10 +386,12 @@ class User extends UserPermissions
      * database.
      *
      * @param string $password The plain text password to be hashed and saved.
+     * @param string $expiry   The password expiry date. If not supplied, the
+     *                         password expiry date will be set to now+6months.
      *
      * @return none
      */
-    function updatePassword($password)
+    function updatePassword($password, $expiry = null)
     {
         // Check if the PHP 5.5 password hashing API is available.
         $php55 = false;
@@ -375,10 +399,12 @@ class User extends UserPermissions
             $php55 = true;
         }
 
-        $expiry = date(
-            'Y-m-d',
-            mktime(0, 0, 0, date('n') + 6, date('j'), date('Y'))
-        );
+        if (is_null($expiry)) {
+            $expiry = date(
+                'Y-m-d',
+                mktime(0, 0, 0, date('n') + 6, date('j'), date('Y'))
+            );
+        }
 
         $updateArray = array('Password_expiry' => $expiry);
 

@@ -47,7 +47,7 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
 
     /**
      * Set up the class and smarty variables to use for the menu filter
-     * 
+     *
      * @return none
      */
     function _setupVariables()
@@ -69,15 +69,15 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
         );
         $this->order_by = 'PatientName';
         $this->headers = array('PatientName',
-                               'CandID',
-                               'Visit_label',
-                               'Scan_type',
-                               'Severity',
-                               'Header',
-                               'Value',
-                               'ValidRange',
-                               'ValidRegex',
-                               'SeriesUID'
+            'CandID',
+            'Visit_label',
+            'Scan_type',
+            'Severity',
+            'Header',
+            'Value',
+            'ValidRange',
+            'ValidRegex',
+            'SeriesUID'
         );
         $this->validFilters = array(
             'l.TarchiveID',
@@ -86,10 +86,10 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
             'l.CandID'
         );
         $this->formToFilter = array (
-                                    'TarchiveID' => 'l.TarchiveID',
-                                    'SeriesUID' => 'l.SeriesUID',
-                                    'PatientName' => 'l.PatientName',
-                                    'CandID' => 'l.CandID'
+            'TarchiveID' => 'l.TarchiveID',
+            'SeriesUID' => 'l.SeriesUID',
+            'PatientName' => 'l.PatientName',
+            'CandID' => 'l.CandID'
         );
     }
 
@@ -156,13 +156,12 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
                     'name' => $key
                 );
                 $row['CandID'] = isset($item['CandID']) ? $item['CandID'] : '';
-                $row['CommentID'] = isset($item['CommentID']) 
-                    ? $item['CommentID'] 
+                $row['CommentID'] = isset($item['CommentID'])
+                    ? $item['CommentID']
                     : '';
-                $row['SessionID'] = isset($item['SessionID']) 
-                    ? $item['SessionID'] 
+                $row['SessionID'] = isset($item['SessionID'])
+                    ? $item['SessionID']
                     : '';
-
 
                 $this->tpl_data['items'][$x][$i] = $row;
                 $i++;

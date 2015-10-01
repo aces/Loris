@@ -234,6 +234,18 @@ while [ "$mysqluser" == "" ]; do
        	esac
 done;
 
+while [ "$mysqluserhost" == "" ]; do
+        read -p "What is the host for which MySQL user '$mysqluser' will connect from? " mysqluserhost
+        echo $mysqluserhost | tee -a $LOGFILE > /dev/null
+        case $mysqluserhost in
+                "" )
+                        read -p "What is the host for which MySQL user '$mysqluser' will connect from? " mysqluserhost
+                        continue;;
+                * )
+                        break;;
+        esac
+done;
+
 stty -echo
 
 while true; do
@@ -292,59 +304,95 @@ stty echo
 
 echo ""
 while true; do
-    echo ""
-    echo "Attempting to create the MySQL database '$mysqldb' ..."
-    result=$(echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1);
-    if [[ $result == *1044* ]] || [[ $result == *1045* ]]; then
-        echo "Could not connect to database with the root user provided. Please try again.";
-        read -p "Existing root MySQL username: " mysqlrootuser
-        echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
-        stty -echo
-        while true; do
-            read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
-            echo ""
-            read -p "Re-enter the password to check for accuracy: " mysqlrootpass2
-            if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
-                break;
-            fi
-            echo ""
-            echo "Passwords did not match. Please try again.";
-         done;
-         stty echo
-    # Needed for mysql version > 5.6
-    elif [[ $result == *password* ]] && [[ $result != *1007* ]] ; then
-        echo "Warning: Using a password on the command line interface can be insecure.";
-        break;
-    elif [[ $result == *1007* ]] ; then
-        echo "Could not create the database $mysqldb. A database with the name $mysqldb already exists.";
-        read -p "Choose a different database name: " mysqldb
-    elif [[ $result != '' ]]; then
-        echo "Could not create the database with the root user provided.";
-        exit 1;
-    else
-        break;
-    fi
+    read -p "Would you like to automatically create the MySQL database for LORIS? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
+    case $yn in
+        [Yy]* )
+            while true; do
+                echo ""
+                echo "Attempting to create the MySQL database '$mysqldb' ..."
+                result=$(echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1);
+                if [[ $result == *1044* ]] || [[ $result == *1045* ]]; then
+                    echo "Could not connect to database with the root user provided. Please try again.";
+                    read -p "Existing root MySQL username: " mysqlrootuser
+                    echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
+                    stty -echo
+                    while true; do
+                        read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
+                        echo ""
+                        read -p "Re-enter the password to check for accuracy: " mysqlrootpass2
+                        if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
+                            break;
+                        fi
+                        echo ""
+                        echo "Passwords did not match. Please try again.";
+                     done;
+                     stty echo
+                # Needed for mysql version > 5.6
+                elif [[ $result == *password* ]] && [[ $result != *1007* ]] ; then
+                    echo "Warning: Using a password on the command line interface can be insecure.";
+                    break;
+                elif [[ $result == *1007* ]] ; then
+                    echo "Could not create the database $mysqldb. A database with the name $mysqldb already exists.";
+                    read -p "Choose a different database name: " mysqldb
+                elif [[ $result != '' ]]; then
+                    echo "Could not create the database with the root user provided.";
+                    exit 1;
+                else
+                    break;
+                fi
+            done;
+            break;;
+        [Nn]* )
+            echo "Not automatically creating MySQL database for LORIS."
+            break;;
+         * ) echo "Please enter 'y' or 'n'."
+    esac
 done;
 
 
-echo ""
-echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'localhost' ..."
-echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'localhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
-MySQLError=$?;
-if [ $MySQLError -ne 0 ] ; then
-    echo "Could not connect to database with the root user provided.";
-    exit 1;
-fi
+while true; do
+    read -p "Would you like to automatically create and grant privileges to MySQL user '$mysqluser'@'$mysqluserhost'? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
+    case $yn in
+        [Yy]* )
+            echo ""
+            echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'$mysqluserhost' ..."
+            echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'$mysqluserhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
+            MySQLError=$?;
+            if [ $MySQLError -ne 0 ] ; then
+                echo "Could not connect to database with the root user provided.";
+                exit 1;
+            fi
+            break;;
+        [Nn]* )
+            echo "Not automatically creating and granting privileges to MySQL user '$mysqluser'@'$mysqluserhost'."
+            break;;
+         * ) echo "Please enter 'y' or 'n'."
+    esac
+done;
 
 
-echo ""
-echo "Creating/populuating database tables from schema."
-echo ""
-mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-00-schema.sql
-echo "Updating LORIS 'admin' user's password."
-pw_expiry=$(date --date="6 month" +%Y-%m-%d)
-echo "Updating LORIS 'admin' user's password reset date to be $pw_expiry"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Password_expiry='$pw_expiry', Pending_approval='N' WHERE ID=1"
+while true; do
+    read -p "Would you like to automatically create/populate database tables from schema? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
+    case $yn in
+        [Yy]* )
+            echo ""
+            echo "Creating/populuating database tables from schema."
+            echo ""
+            mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-00-schema.sql
+            echo "Updating Loris admin user's password."
+            pw_expiry=$(date --date="6 month" +%Y-%m-%d)
+            echo "Updating admin password reset date to be $pw_expiry"
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Password_expiry='$pw_expiry', Pending_approval='N' WHERE ID=1"
+            break;;
+        [Nn]* )
+            echo "Not automatically creating/populating database tables from schema."
+            break;;
+         * ) echo "Please enter 'y' or 'n'."
+    esac
+done;
 
 
 echo ""
@@ -356,14 +404,26 @@ sed -e "s/%HOSTNAME%/$mysqlhost/g" \
     < ../docs/config/config.xml > ../project/config.xml
 
 
-echo ""
-echo "Populating database config."
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='DownloadPath')"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='imagePath')"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='data')"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='mincPath')"
-mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
+while true; do
+    read -p "Would you like to automatically populate database config? [yn] " yn
+    echo $yn | tee -a $LOGFILE > /dev/null
+    case $yn in
+        [Yy]* )
+            echo ""
+            echo "Populating database config."
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='DownloadPath')"
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='imagePath')"
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='data')"
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='mincPath')"
+            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
+            break;;
+        [Nn]* )
+            echo "Not automatically populating database config."
+            break;;
+         * ) echo "Please enter 'y' or 'n'."
+    esac
+done;
 
 
 echo ""

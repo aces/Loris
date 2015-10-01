@@ -1,48 +1,92 @@
 <?php
+/**
+* The user account page
+*
+* PHP Version 5
+*
+* @category Main
+* @package  User_Account
+* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+* @link     https://www.github.com/aces/Loris/
+*/
+
 require_once "NDB_Form.class.inc";
 require_once "Email.class.inc";
 
 /**
- * The forms for the user accounts menu
- * @package main
- */
-class NDB_Form_user_accounts extends NDB_Form
+* Implements the user account page
+*
+* @category Main
+* @package  User_Account
+* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+* @link     https://www.github.com/aces/Loris/
+*/
+class NDB_Form_User_Accounts extends NDB_Form
 {
+    /**
+     * Determines whether this form is in edit or create mode.
+     *
+     * @return boolean true if in crete mode, false otherwise.
+     */
+    function isCreatingNewUser()
+    {
+        return $this->page == 'edit_user' && $this->identifier == '';
+    }
+
+    /**
+     * Controls who's got access to this page, namely those who have the
+     * 'user_accounts' and who either have permission
+     * 'user_accounts_multisite' or whose site matches the site of the user they
+     * are trying to edit.
+     *
+     * @return true if user has access, false otherwise.
+     */
     function _hasAccess()
     {
         // create user object
         $editor =& User::singleton();
-        if (Utility::isErrorX($editor)) {
-            return PEAR::raiseError("User Error: ".$editor->getMessage());
-        }
 
         if ($this->page == 'edit_user') {
-            if(!empty($this->identifier)) {
+            if (!$this->isCreatingNewUser()) {
                 $user =& User::factory($this->identifier);
-                if(Utility::isErrorX($user)) {
-                    return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
-                }
             }
 
-            return ($editor->hasPermission('user_accounts') && ($editor->hasPermission('user_accounts_multisite') || (empty($this->identifier) || $editor->getData('CenterID') == $user->getData('CenterID'))));
+            if ($editor->hasPermission('user_accounts')) {
+                if ($editor->hasPermission('user_accounts_multisite')) {
+                    return true;
+                }
+
+                if ($this->isCreatingNewUser()) {
+                    return true;
+                }
+
+                return $editor->getData('CenterID') == $user->getData('CenterID');
+            }
+
+            return false;
         }
 
+        // User can always access My Preferences page
         return true;
     }
 
+    /**
+     * Computes the initial values this page will be filled with.
+     *
+     * @return the default values for the initial state of this page.
+     */
     function _getDefaults()
     {
         $defaults = array();
- 
-        if (!empty($this->identifier)) {
+
+        if (!$this->isCreatingNewUser()) {
             $user =& User::factory($this->identifier);
-            if(Utility::isErrorX($user)) {
-                return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
-            }
             // get the user defaults
-	        $defaults = $user->getData();
-     	    // remove the password hash
-	        unset($defaults['Password_md5']);
+            $defaults = $user->getData();
+            // remove the password hash
+            unset($defaults['Password_md5']);
 
             // get the user's permissions
             $perms = $user->getPermissionIDs();
@@ -56,102 +100,99 @@ class NDB_Form_user_accounts extends NDB_Form
         return $defaults;
     }
 
+    /**
+     * Processes the data entered in the form.
+     *
+     * @param array $values values entered in the form.
+     *
+     * @return void
+     */
     function _process($values)
     {
         $config = NDB_Config::singleton();
-    	// build the "real name"
-    	$values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
-    	
+
+        //The arrays that contain the edited permissions
+        $permissionsRemoved = array();
+        $permissionsAdded   = array();
+
+        $editor =& User::singleton();
+
+        // build the "real name"
+        $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
+
         //create the user
-        if (!empty($this->identifier)) {
+        if (!is_null($this->identifier)) {
             $user =& User::factory($this->identifier);
-        }
-        else{
+        } else {
             // Since the form has been validated there are two possibilities:
             //    - UID is set
             //    - UID is not set but the "Match UID to email" checkbox is checked
-            $effectiveUID 
-                = $values['NA_UserID'] == 'on' ? $values['Email'] : $values['UserID'];
-            $user =& User::factory($effectiveUID);
+            $effectiveUID = $values['NA_UserID'] == 'on'
+                ? $values['Email'] : $values['UserID'];
+            $user         =& User::factory($effectiveUID);
         }
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
-        }
+
         ////Get the current permissions/////
         $current_permissionids = $user->getPermissionIDs();
 
-
-    	
-	    // store the permission IDs
-	    if (!empty($values['permID'])) {
+        // store the permission IDs
+        if (!empty($values['permID'])) {
             $permIDs = $values['permID'];
-	        unset($values['permID']);
-	    }
+        }
+        unset($values['permID']);
 
         // store whether to send an email or not
         if (!empty($values['SendEmail'])) {
             $send = $values['SendEmail'];
-	        unset($values['SendEmail']);
-	    }
+        }
+        unset($values['SendEmail']);
+
+        //store the supervisors emails
+        if (!empty($values['supervisorEmail'])) {
+            $supervisorEmails = $values['supervisorEmail'];
+        }
+        unset($values['supervisorEmail']);
 
         // make user name match email address
-	    if (!empty($values['NA_UserID'])) {
-	        $values['UserID'] = $values['Email'];
-            unset($values['NA_UserID']);
-	    }
+        if (!empty($values['NA_UserID'])) {
+            $values['UserID'] = $values['Email'];
+        }
+        unset($values['NA_UserID']);
 
         // generate new password
-	    if (!empty($values['NA_Password'])) {
-	        $values['Password_md5'] = User::newPassword();
+        if (!empty($values['NA_Password'])) {
+            $values['Password_md5']    = User::newPassword();
             $values['Password_expiry'] = '0000-00-00';
-            unset($values['NA_Password']);
-	    }
+        }
+        unset($values['NA_Password']);
 
         // make the set
         foreach ($values as $key => $value) {
-            if (!empty($value) || $value === '0') {
-                $set[$key] = $value;
-            }
+            $set[$key] = $value;
         }
 
         // update the user
-        if (empty($this->identifier)) {
+        if ($this->isCreatingNewUser()) {
             // insert a new user
             $success = User::insert($set);
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("user_accounts::_process() insert: ".$success->getMessage());
-            }
-
-            $user =& User::factory($set['UserID']);
-            if (Utility::isErrorX($user)) {
-                return PEAR::raiseError("User Error (".$set['UserID'] ."): ".$user->getMessage());
-            }
-        }
-        else {
+            $user    =& User::factory($set['UserID']);
+        } else {
             // update the user
-            $user =& User::factory($this->identifier);
-            if (Utility::isErrorX($user)) {
-                return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
-            }
-
+            $user    =& User::factory($this->identifier);
             $success = $user->update($set);
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("user_accounts::_process() update: ".$success->getMessage());
-            }
         }
 
         // prepend two random characters
         if (isset($set['Password_md5'])) {
             // Update CouchDB. Must do before password is salted/hashed.
-            $user->updatePassword($set['Password_md5']);
+            $expiry = isset($values['Password_expiry'])
+                ? $values['Password_expiry'] : null;
+            $user->updatePassword($set['Password_md5'], $expiry);
         }
 
         // update the user permissions if applicable
         if (!empty($permIDs)) {
             $success = $user->removePermissions();
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("user_accounts::_process() remove permissions: ".$success->getMessage());
-            }
 
             foreach ($permIDs as $key => $value) {
                 if ($value == 0) {
@@ -159,23 +200,46 @@ class NDB_Form_user_accounts extends NDB_Form
                     ///Then insert into the user_account_history as 'D'
                     if (in_array($key, $current_permissionids)) {
                         $user->insertIntoUserAccountHistory($key, 'D');
+                        $permissionsRemoved[]
+                            = $this->getDescriptionUsingPermID($key);
                     }
                     unset($permIDs[$key]);
                 } else {
-                    /* if the user didn't have the permission 
-                    and the permission is now assigned then insert 
-                    insert into the user_account_history as 'I'
+                    /* if the user didn't have the permission
+                       and the permission is now assigned then insert
+                       insert into the user_account_history as 'I'
                     */
                     if (!(in_array($key, $current_permissionids))) {
                         $user->insertIntoUserAccountHistory($key, 'I');
+                        $permissionsAdded[]
+                            = $this->getDescriptionUsingPermID($key);
+                    }
+                }
+            }
+
+            // send the selected supervisors an email
+            // (only if permissions have changed for the user)
+            if (isset($supervisorEmails)) {
+                foreach ($supervisorEmails as $email => $checkValue) {
+                    if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
+                        if ($checkValue == 1) {
+                            $msg_data['current_user'] = $editor->getFullname();
+                            $msg_data['study']        = $config->getSetting('title');
+                            $msg_data['realname']     = $values['Real_name'];
+                            $msg_data['username']     = $user->getUsername();
+                            $msg_data['permissions_added']   = $permissionsAdded;
+                            $msg_data['permissions_removed'] = $permissionsRemoved;
+                            Email::send(
+                                $email,
+                                'permissions_change_notify_supervisor.tpl',
+                                $msg_data
+                            );
+                        }
                     }
                 }
             }
 
             $success = $user->addPermissions(array_keys($permIDs));
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("user_accounts::_process() add permissions: ".$success->getMessage());
-            }
         }
 
         // send the user an email
@@ -184,14 +248,14 @@ class NDB_Form_user_accounts extends NDB_Form
             $config =& NDB_Config::singleton();
 
             // send the user an email
-            $msg_data['study'] = $config->getSetting('title');
-            $msg_data['url'] = $config->getSetting('url');
+            $msg_data['study']    = $config->getSetting('title');
+            $msg_data['url']      = $config->getSetting('url');
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
             $msg_data['password'] = $values['Password_md5'];
 
-            $template = (empty($this->identifier)) ? 'new_user.tpl' : 'edit_user.tpl';
-
+            $template = (is_null($this->identifier))
+                ? 'new_user.tpl' : 'edit_user.tpl';
             Email::send($values['Email'], $template, $msg_data);
         }
 
@@ -199,8 +263,16 @@ class NDB_Form_user_accounts extends NDB_Form
         $this->form->freeze();
     }
 
+    /**
+     * Controls the output/behaviour of the form when in "edit" mode
+     * (i.e user already exists in the database).
+     *
+     * @return void
+     */
+    // @codingStandardsIgnoreStart
     function edit_user()
     {
+        // @codingStandardsIgnoreEnd
         $this->redirect = "test_name=$this->name";
 
         ///get the value for additional_user_info flag
@@ -209,48 +281,80 @@ class NDB_Form_user_accounts extends NDB_Form
 
         //------------------------------------------------------------
 
-
         // it is a new user
-        if (empty($this->identifier)) {
+        if ($this->identifier == '') {
             // user name
             $group[] = $this->createText('UserID', 'User name');
-            $group[] = $this->createCheckbox('NA_UserID', "Make user name match email address");
-            $this->addGroup($group, 'UserID_Group', 'User name', $this->_GUIDelimiter, FALSE);
+            $group[] = $this->createCheckbox(
+                'NA_UserID',
+                'Make user name match email address'
+            );
+            $this->addGroup(
+                $group,
+                'UserID_Group',
+                'User name',
+                $this->_GUIDelimiter,
+                false
+            );
             unset($group);
 
-        }
-        // it is an existing user
-        else {
-            // display user name
+        } else {
+            // It is an existing user:
+            //     display user name
             $this->addScoreColumn('UserID', 'User name');
         }
 
         // password
         $group[] = $this->createPassword('Password_md5');
         $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
-        $this->addGroup($group, 'Password_Group', 'Password', $this->_GUIDelimiter, FALSE);
+        $this->addGroup(
+            $group,
+            'Password_Group',
+            'Password',
+            $this->_GUIDelimiter,
+            false
+        );
         $this->addPassword('__Confirm', 'Confirm Password');
         unset($group);
 
-        // full name
-        //$this->addBasicText('Real_name', 'Full name');
-        $this->addBasicText('First_name', 'First name');
-        $this->addBasicText('Last_name', 'Last name');
-
-        // full name rules
-        //$this->form->addRule('Real_name', 'Full name is required', 'required');
-        //$this->form->addRule('Real_name', 'Full name must be less than 50 characters long', 'maxlength', 50);
-
-        $this->addRule('First_name', 'First name is required', 'required');
-        $this->addRule('Last_name', 'Last name is required', 'required');
-        $this->addRule('First_name', 'First name must be less than 120 characters long', 'maxlength', 120);
-		$this->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
+        // The supplied pattern is:
+        //   - must have at least one non-whitespace characters
+        //   - once leading and trailing spaces are stripped, the field should
+        //       not exceed 120 chars
+        $onInvalidMsg
+            = "this.setCustomValidity('First name is required and "
+              . "should not exceed 120 characters')";
+        $this->addBasicText(
+            'First_name',
+            'First name',
+            array(
+             'oninvalid' => $onInvalidMsg,
+             'onchange'  => "this.setCustomValidity('')",
+             'pattern'   => '^\s*\S.{0,119}\s*$',
+            )
+        );
+        // The supplied pattern is:
+        //   - must have at least one non-whitespace characters
+        //   - once leading and trailing spaces are stripped, the field should
+        //       not exceed 120 chars
+        $onInvalidMsg
+            = "this.setCustomValidity('Last name is required and "
+              . "should not exceed 120 characters')";
+        $this->addBasicText(
+            'Last_name',
+            'Last name',
+            array(
+             'oninvalid' => $onInvalidMsg,
+             'onchange'  => "this.setCustomValidity('')",
+             'pattern'   => '^\s*\S.{0,119}\s*$',
+            )
+        );
 
         // extra info
 
-        ////if the option is not set or if it's and it's true then display it 
+        ////if the option is not set or if it's and it's true then display it
 
-        if (isset($additional_user_info) && $additional_user_info){
+        if ($additional_user_info) {
             $this->addBasicText('Degree', 'Degree');
             $this->addBasicText('Position_title', 'Academic Position');
             $this->addBasicText('Institution', 'Institution');
@@ -262,67 +366,120 @@ class NDB_Form_user_accounts extends NDB_Form
             $this->addBasicText('Country', 'Country');
             $this->addBasicText('Fax', 'FAX');
         }
-        
+
         // email address
         $group[] = $this->createText('Email', 'Email address');
         $group[] = $this->createCheckbox('SendEmail', 'Send email to user');
-        $this->addGroup($group, 'Email_Group', 'Email address', $this->_GUIDelimiter, FALSE);
+        $this->addGroup(
+            $group,
+            'Email_Group',
+            'Email address',
+            $this->_GUIDelimiter,
+            false
+        );
         unset($group);
 
         //------------------------------------------------------------
 
         // get user permissions
         $editor =& User::singleton();
-        if(Utility::isErrorX($editor)) {
-            return PEAR::raiseError("User Error: ".$editor->getMessage());
-        }
 
         // center ID
         if ($editor->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
             $siteOptions =& Utility::getSiteList(false);
-        }
-        else {
+        } else {
             // allow only to add to their own site
-            $siteOptions = array($editor->getData('CenterID') => $editor->getData('Site'));
+            $siteOptions
+                = array(
+                   $editor->getData('CenterID') => $editor->getData('Site'),
+                  );
         }
         $this->addSelect('CenterID', 'Site', $siteOptions);
 
         // active
-    	 $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
-	    $this->addSelect('Pending_approval', 'Pending approval', array('Y' => 'Yes', 'N' => 'No'));
+        $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
+        $this->addSelect(
+            'Pending_approval',
+            'Pending approval',
+            array(
+             'Y' => 'Yes',
+             'N' => 'No',
+            )
+        );
 
         //------------------------------------------------------------
 
         // get the editor's permissions
-        $perms = $editor->getPermissionsVerbose();
+        $perms    = $editor->getPermissionsVerbose();
         $lastRole = '';
         foreach ($perms as $row) {
-            if($row['type'] != $lastRole) {
+            if ($row['type'] != $lastRole) {
                 $lastRole = $row['type'];
-                $group[] = $this->form->createElement('static', null, null, '</div>' .
-                        "<h3 id=\"header_$lastRole\" class=\"perm_header button\" style=\"text-align: center; margin-top: 5px;\">".ucwords($row['type']).'</h3>'
-                        . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">");
+                $group[]  = $this->form->createElement(
+                    'static',
+                    null,
+                    null,
+                    '</div>'
+                    . "<h3 id=\"header_$lastRole\" "
+                    . "class=\"perm_header button\" "
+                    . "style=\"text-align: center; margin-top: 5px;\">"
+                    .ucwords($row['type'])
+                    . '</h3>'
+                    . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
+                );
             }
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
                 "$row[description]<br>",
-                array(
-                 "class" => "perm_$lastRole",
-                )
+                array("class" => "perm_$lastRole")
             );
         }
-        $this->addGroup($group, 'PermID_Group', 'Permissions', "", FALSE);
+        $this->addGroup($group, 'PermID_Group', 'Permissions', "", false);
         unset($group);
 
-        if (!empty($this->identifier)) {
-            $user =& User::factory($this->identifier);
-            if(Utility::isErrorX($user)) {
-                return PEAR::raiseError("User Error ($this->identifier): ".$user->getMessage());
-            }
+        //getting users name and emails to create checkboxes
+        // to email supervisors on permissions changes
+        $DB_factory =& NDB_Factory::singleton();
+        $DB         = $DB_factory->database();
 
-            // add hidden permissions if editor has less permissions than user being edited
-            $perms = array_diff($user->getPermissionIDs(), $editor->getPermissionIDs());
+        $query = "SELECT u.Real_Name, u.email FROM permissions p
+                  JOIN user_perm_rel up ON (p.permID = up.PermID)
+                  JOIN users u ON (u.ID = up.userID)
+                  WHERE p.code = 'send_to_dcc'";
+
+        $results = $DB->pselect($query, array());
+
+        $group[] = $this->form->createElement(
+            'static',
+            null,
+            null,
+            '</div>'
+            . "<h3 id=\"header_supervisors\" class=\"perm_header button\" "
+            . "style=\"text-align: center; margin-top: 5px;\"> "
+            . "Data Supervisors to Email </h3> "
+            . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">"
+        );
+
+        foreach ($results as $row) {
+            $group[] = $this->createCheckbox(
+                'supervisorEmail['.$row['email'].']',
+                "$row[Real_Name]<br>"
+            );
+        }
+
+        $this->addGroup($group, 'Supervisors_Group', 'Supervisors', "", false);
+        unset($group);
+
+        if (!$this->isCreatingNewUser()) {
+            $user =& User::factory($this->identifier);
+
+            // add hidden permissions if editor has less permissions than user
+            // being edited
+            $perms = array_diff(
+                $user->getPermissionIDs(),
+                $editor->getPermissionIDs()
+            );
             foreach ($perms as $value) {
                 $this->addHidden("permID[$value]", 1);
             }
@@ -331,10 +488,16 @@ class NDB_Form_user_accounts extends NDB_Form
         //------------------------------------------------------------
 
         // unique key and password rules
-        $this->form->addFormRule(array(&$this, '_validate_edit_user'));
+        $this->form->addFormRule(array(&$this, '_validateEditUser'));
     }
 
-
+    /**
+     * Controls the output/behaviour of the form is used to edit
+     * the user's preferences.
+     *
+     * @return void
+     */
+    // @codingStandardsIgnoreStart
     function my_preferences()
     {
         $this->identifier = $_SESSION['State']->getUsername();
@@ -349,23 +512,36 @@ class NDB_Form_user_accounts extends NDB_Form
         $this->addScoreColumn('UserID', 'User name');
 
         // full name
-        //$this->addBasicText('Real_name', 'Full name');
-        $this->addBasicText('First_name', 'First name');
-        $this->addBasicText('Last_name', 'Last name');
-
-        // full name rules
-        //$this->form->addRule('Real_name', 'Full name is required', 'required');
-        //$this->form->addRule('Real_name', 'Full name must be less than 50 characters long', 'maxlength', 50);
-
-        $this->addRule('First_name', 'First name is required', 'required');
-        $this->addRule('Last_name', 'Last name is required', 'required');
-        $this->addRule('First_name', 'First name must be less than 120 characters long', 'maxlength', 120);
-		$this->addRule('Last_name', 'Last name must be less than 120 characters long', 'maxlength', 120);
+        // The supplied pattern is:
+        //   - must have at least one non-whitespace characters (i.e. required)
+        //   - once leading and trailing spaces are stripped, the field should
+        //       not exceed 120 chars
+        $this->addBasicText(
+            'First_name',
+            'First name',
+            array(
+             'oninvalid' => "this.setCustomValidity('First name is required and should not exceed 120 characters')",
+             'onchange'  => "this.setCustomValidity('')",
+             'pattern'   => '^\s*\S.{0,119}\s*$',
+            )
+        );
+        // The supplied pattern is:
+        //   - must have at least one non-whitespace characters (i.e. required)
+        //   - once leading and trailing spaces are stripped, the field should
+        //       not exceed 120 chars
+        $this->addBasicText(
+            'Last_name',
+            'Last name',
+            array(
+             'oninvalid' => "this.setCustomValidity('Last name is required and should not exceed 120 characters')",
+             'onchange'  => "this.setCustomValidity('')",
+             'pattern'   => '^\s*\S.{0,119}\s*$',
+            )
+        );
 
         // extra info
-        ////if the option is not set or if it's and it's true then display it 
-        if ((!isset($additional_user_info)) || ($additional_user_info)){
-            
+        ////if the option is not set or if it's and it's true then display it
+        if ($additional_user_info) {
             $this->addBasicText('Degree', 'Degree');
             $this->addBasicText('Position_title', 'Academic Position');
             $this->addBasicText('Institution', 'Institution');
@@ -377,13 +553,26 @@ class NDB_Form_user_accounts extends NDB_Form
             $this->addBasicText('Country', 'Country');
             $this->addBasicText('Fax', 'FAX');
         }
+
         // email address
-        $this->addBasicText('Email', 'Email address');
+        $this->addBasicText(
+            'Email',
+            'Email address',
+            array(
+             'oninvalid' => "this.setCustomValidity('Email address is required')",
+             'onchange'  => "this.setCustomValidity('')",
+            )
+        );
 
         // email address rules
         $this->addRule('Email', 'Email address is required', 'required');
         $this->addRule('Email', 'Your email address must be valid', 'email');
-        $this->addRule('Email', 'Your email address must be less than 255 characters long', 'maxlength', 255);
+        $this->addRule(
+            'Email',
+            'Your email address must be less than 255 characters long',
+            'maxlength',
+            255
+        );
 
         // password
         $this->form->addElement('password', 'Password_md5', 'New Password');
@@ -391,93 +580,151 @@ class NDB_Form_user_accounts extends NDB_Form
 
         // document repository notifications
         $editor =& User::singleton();
-        if ($editor->hasPermission('document_repository_view') || $editor->hasPermission('document_repository_delete')) {
-                $doc_Repo_Notifications_Options = array('N' => 'No', 'Y' => 'Yes');
-                $this->addSelect('Doc_Repo_Notifications', 'Receive Document Repository email notifications', $doc_Repo_Notifications_Options); 
+        if ($editor->hasPermission('document_repository_view')
+            || $editor->hasPermission('document_repository_delete')
+        ) {
+                $doc_Repo_Notifications_Options
+                    = array(
+                       'N' => 'No',
+                       'Y' => 'Yes',
+                      );
+                $this->addSelect(
+                    'Doc_Repo_Notifications',
+                    'Receive Document Repository email notifications',
+                    $doc_Repo_Notifications_Options
+                );
         }
 
         //------------------------------------------------------------
 
         // unique key and password rules
-        $this->form->addFormRule(array(&$this, '_validate_my_preferences'));
+        $this->form->addFormRule(array(&$this, '_validateMyPreferences'));
     }
 
 
-    function _validate_edit_user($values)
+    /**
+     * Validates the data entered in the edit user form.
+     *
+     * @return array $errors all the errors found.
+     */
+    function _validateEditUser($values)
     {
         // create DB object
-        $DB =& Database::singleton();
-        if(Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
-
+        $DB     =& Database::singleton();
         $errors = array();
 
         //============================================
         //         Validate UserID and NA_UserID
         //============================================
-        
-        if(empty($this->identifier)) {
+        if ($this->isCreatingNewUser()) {
             // Clicked on "UID == email" and specified a UID
-            if(!empty($values['UserID']) && $values['NA_UserID'] == 'on') {
-                $errors['UserID_Group'] = 'You cannot enter a user name if you want it to match the email address';
-            }
-            // Not clicked on "UID == email" and not specified a UID
-            elseif(empty($values['UserID']) && $values['NA_UserID'] != 'on') {
-                $errors['UserID_Group'] = 'You must enter a user name or choose to make it match the email address';
-            }
-            // Either specified a UID or clicked on "UID = email" with a non-empty email
-            elseif(!empty($values['UserID']) || ($values['NA_UserID'] == 'on' && $values['Email'])) { 
-        	       $effectiveUID = empty($values['UserID']) ? $values['Email'] : $values['UserID'];
-        	       
+            if (!is_null($values['UserID']) && $values['NA_UserID'] == 'on') {
+                $errors['UserID_Group']
+                    = 'You cannot enter a user name '
+                    . 'if you want it to match the email address';
+            } elseif (is_null($values['UserID']) && $values['NA_UserID'] != 'on') {
+                // Not clicked on "UID == email" and not specified a UID
+                $errors['UserID_Group']
+                    = 'You must enter a user name '
+                    . 'or choose to make it match the email address';
+            } elseif (!is_null($values['UserID'])
+                || ($values['NA_UserID'] == 'on' && $values['Email'])
+            ) {
+                // Either specified a UID or clicked on "UID = email"
+                // with a non-empty email
+                $effectiveUID = is_null($values['UserID'])
+                    ? $values['Email'] : $values['UserID'];
+
                 // check username's uniqueness
-                $result = $DB->pselectOne("SELECT COUNT(*) FROM users WHERE UserID = :UID",
+                $result = $DB->pselectOne(
+                    "SELECT COUNT(*) FROM users WHERE UserID = :UID",
                     array('UID' => $effectiveUID)
                 );
-
-                if (Utility::isErrorX($result)) {
-                    return PEAR::raiseError("DB Error: ".$result->getMessage());
-                }
 
                 if ($result > 0) {
                     $errors['UserID_Group'] = 'The user name already exists';
                 }
 
                 if (strlen($effectiveUID) > 255) {
-                    $errors['UserID_Group'] = 'The user name must not exsceed 255 characters';
+                    $errors['UserID_Group']
+                        = 'The user name must not exsceed 255 characters';
                 }
             }
         }
-        
+
         //==================================
         //        Password validation
         //==================================
-        if(!empty($this->identifier)) {
-            $pass = $DB->pselectOne("SELECT COALESCE(Password_hash, Password_md5) as Current_password FROM users WHERE UserID = :UID",
-                                    array('UID' => $this->identifier) );
-             //case of new user the password column will be null so either password should be set or
+        if (!is_null($this->identifier)) {
+            $pass = $DB->pselectOne(
+                "SELECT COALESCE(Password_hash, Password_md5) "
+                . "as Current_password FROM users WHERE UserID = :UID",
+                array('UID' => $this->identifier)
+            );
+
+            //case of new user the password column will be null
+            //so either password should be set or
             // password should be generated
-            if (empty($pass) && empty($values['Password_md5']) && $values['NA_Password'] != 'on') {
-                $errors['Password_Group'] = 'Please specify password or click Generate new password';
+            if (is_null($pass)
+                && is_null($values['Password_md5'])
+                && $values['NA_Password'] != 'on'
+            ) {
+                $errors['Password_Group']
+                    = 'Please specify password or click Generate new password';
             }
-        }
-        
-        // if password is user-defined, and user wants to change password
-        if (empty($values['NA_Password']) 
-            && (!empty($values['Password_md5']) || !empty($values['__Confirm']))
-        ) {
-            // check password strength
-            if (!User::isPasswordStrong($values['Password_md5'], array($values['__Confirm'], $values['UserID'], $values['Email']), array('==', '!=', '!='))) {
-                $errors['Password_Group'] = 'The password is weak, or the passwords do not match';
-            }
-        }
-        
-        // if password is generated then the email user button should be clicked
-        if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
-               $errors['Email_Group'] = 'When generating a new password, please notify the user by checking Send email to user box';
         }
 
-        if (empty($this->identifier) && ($values['NA_Password'] != 'on') && empty($values['Password_md5']) ) {
+        // if password is user-defined, and user wants to change password
+        if (empty($values['NA_Password'])
+            && (!empty($values['Password_md5']) || !empty($values['__Confirm']))
+        ) {
+            $isPasswordStrong = User::isPasswordStrong(
+                $values['Password_md5'],
+                array(
+                 $values['__Confirm'],
+                 $values['UserID'],
+                 $values['Email'],
+                ),
+                array(
+                 '==',
+                 '!=',
+                 '!=',
+                )
+            );
+
+            // check password strength
+            if (!$isPasswordStrong) {
+                $errors['Password_Group']
+                    = 'The password is weak, or the passwords do not match';
+            } else {
+                $currentPass = $DB->pselectOne(
+                    "SELECT COALESCE(Password_hash, Password_md5) "
+                    . "as Current_password FROM users WHERE UserID = :UID",
+                    array('UID' => $this->identifier)
+                );
+                if (User::MD5Unsalt($values['Password_md5'], $currentPass)) {
+                    $errors['Password_Group']
+                        = 'New and old passwords are identical: choose another one';
+                }
+            }
+        }
+
+        // if password is generated then the email user button should be clicked
+        if ($values['NA_Password'] == "on" && $values['SendEmail'] != "on") {
+               $errors['Email_Group']
+                   = 'When generating a new password, '
+                   . 'please notify the user by checking Send email to user box';
+        }
+
+        if ($values['NA_Password'] == 'on' && $values['Password_md5'] != '') {
+            $errors['Password_Group'] = 'You must leave the password field empty '
+                . 'if you want the system to generate one for you';
+        }
+
+        if (is_null($this->identifier)
+            && ($values['NA_Password'] != 'on')
+            && empty($values['Password_md5'])
+        ) {
                $errors['Password_Group'] = 'Password is required';
         }
 
@@ -487,8 +734,8 @@ class NDB_Form_user_accounts extends NDB_Form
 
         // If an email was entered
         if (!empty($values['Email'])) {
-            $emailError = $this->getEmailError($DB, $values['Email']);
-            if(!is_null($emailError)) {
+            $emailError = $this->_getEmailError($DB, $values['Email']);
+            if (!is_null($emailError)) {
                 $errors['Email_Group'] = $emailError;
             }
         } else {
@@ -499,35 +746,66 @@ class NDB_Form_user_accounts extends NDB_Form
         return $errors;
     }
 
-
-    function _validate_my_preferences($values)
+    /**
+     * Validates the data entered in the form when editing one's preferences.
+     *
+     * @return array $errors all the errors found
+     */
+    function _validateMyPreferences($values)
     {
         // create DB object
-        $DB =& Database::singleton();
-        if(Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
-
+        $DB     =& Database::singleton();
         $errors = array();
 
         // if password is user-defined, and user wants to change password
         if (!empty($values['Password_md5'])) {
             // check password strength
-            if (!User::isPasswordStrong($values['Password_md5'], array($values['__Confirm'], $values['identifier'], $values['Email']), array('==', '!=', '!='))) {
-                $errors['Password_md5'] = 'The password is weak, or the passwords do not match';
+            $isPasswordStrong = User::isPasswordStrong(
+                $values['Password_md5'],
+                array(
+                 $values['__Confirm'],
+                 $this->identifier,
+                 $values['Email'],
+                ),
+                array(
+                 '==',
+                 '!=',
+                 '!=',
+                )
+            );
+            if (!$isPasswordStrong) {
+                $errors['Password_md5']
+                    = 'The password is weak, or the passwords do not match';
+            }  else {
+                $currentPass = $DB->pselectOne(
+                    "SELECT COALESCE(Password_hash, Password_md5) "
+                    . "as Current_password FROM users WHERE UserID = :UID",
+                    array('UID' => $this->identifier)
+                );
+                if (User::MD5Unsalt($values['Password_md5'], $currentPass)) {
+                    $errors['Password_Group']
+                        = 'New and old passwords are identical: choose another one';
+                }
             }
         }
 
         // Validate email
-        $emailError = $this->getEmailError($DB, $values['Email']);
-        if(!is_null($emailError)) {
+        $emailError = $this->_getEmailError($DB, $values['Email']);
+        if (!is_null($emailError)) {
             $errors['Email'] = $emailError;
         }
 
         return $errors;
     }
-    
-    private function getEmailError($DB, $email) {
+
+    /**
+     * Validates that en email address entered for a given user
+     * (either new or existing) is valid and unique.
+     *
+     * @return string error message if email is invalid, null otherwise.
+     */
+    private function _getEmailError($DB, $email)
+    {
         // check email address' uniqueness
         $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
         $params = array('VEmail' => $email);
@@ -536,9 +814,6 @@ class NDB_Form_user_accounts extends NDB_Form
             $params['UID'] = $this->identifier;
         }
         $result = $DB->pselectOne($query, $params);
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         // Email already exists in database
         if ($result > 0) {
@@ -549,6 +824,21 @@ class NDB_Form_user_accounts extends NDB_Form
         }
 
         return null;
+    }
+
+    function getDescriptionUsingPermID($permID)
+    {
+        $db_factory =& NDB_Factory::singleton();
+        $db         = $db_factory->database();
+
+        $permission = $db->pselectOne(
+            "SELECT Description FROM permissions WHERE permID =:pID",
+            array('pID' => $permID)
+        );
+        if (is_array($permission) && count($permission)) {
+            list(,$description) = each($permission[0]);
+        }
+        return $permission;
     }
 }
 ?>

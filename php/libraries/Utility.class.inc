@@ -268,26 +268,6 @@ class Utility extends PEAR
         return $list;
     }
 
-
-    /**
-     * Returns a list of study Subprojects
-     *
-     * @return array       an associative array("SubprojectID" => "Subproject title")
-     */
-    static function getSubprojectList()
-    {
-        $config =& NDB_Config::singleton();
-
-        // get the list of Subprojects
-        $subprojectSettings = $config->getSetting('subprojects');
-        foreach (Utility::toArray(
-            $subprojectSettings['subproject']
-        ) as $subproject) {
-            $list[$subproject['id']] =$subproject['title'];
-        }
-        return $list;
-    }
-
     /**
      * Returns a list of study Projects
      *
@@ -296,15 +276,35 @@ class Utility extends PEAR
      */
     static function getProjectList()
     {
-        $config =& NDB_Config::singleton();
-
-        // get the list of Subprojects
-        $projectSettings = $config->getSetting('Projects');
-        foreach (Utility::toArray($projectSettings['project']) AS $project) {
-
-            $list[$project['id']] =$project['title'];
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+        // get the list of projects
+        $projects = $DB->pselect("SELECT * FROM Project", array());
+        $project  = array();
+        foreach ($projects as $row) {
+            $project[$row['ProjectID']] = $row['Name'];
         }
-        return $list;
+        return $project;
+    }
+
+    /**
+     * Returns a list of study Subprojects
+     *
+     * @return array       an associative array("SubprojectID" => "Subproject title")
+     */
+    static function getSubprojectList()
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $config  = $factory->config();
+
+        $subprojects = $DB->pselect("SELECT * FROM subproject", array());
+
+        $subprojs = array();
+        foreach ($subprojects as $row) {
+            $subprojs[$row['SubprojectID']] = $row['title'];
+        }
+        return $subprojs;
     }
 
     /**
@@ -679,7 +679,7 @@ class Utility extends PEAR
      *
      * @return array The same array passed in, after modifications.
      */
-    function nullifyEmpty(&$arr, $field)
+    public static function nullifyEmpty(&$arr, $field)
     {
         if ($arr[$field] === '') {
             $arr[$field] = null;
@@ -752,7 +752,7 @@ class Utility extends PEAR
     static function getAllInstruments()
     {
         $Factory       = NDB_Factory::singleton();
-        $DB            = $Factory->Database(); //=& Database::singleton();
+        $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
             array()
@@ -1050,7 +1050,9 @@ class Utility extends PEAR
      */
     static function getExistingVisitLabels($projectID = null)
     {
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
         if ($projectID != null) {
             $ExtraProject_Criteria
                 = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
@@ -1184,6 +1186,30 @@ class Utility extends PEAR
             }
         }
         return $prefixStr;
+    }
+
+    /**
+    * Coverts array into CSV string
+    *
+    * @param array $array the array to be converted
+    *
+    * @return string CSV string of data
+    */
+    static function arrayToCSV($array)
+    {
+        $fp = fopen("php://temp", 'w+');
+
+        fputcsv($fp, $array['headers']);
+        foreach ($array['data'] as $item) {
+            fputcsv($fp, $item);
+        }
+
+        // Read what we have written.
+        rewind($fp);
+        $csv_string = stream_get_contents($fp);
+
+        fclose($fp);
+        return $csv_string;
     }
 }
 ?>

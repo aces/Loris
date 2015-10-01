@@ -20,7 +20,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testCandidateParametersDoespageLoad()
+    function testCandidateParametersDoesPageLoad()
     {
         $this->webDriver->get($this->url . "?test_name=candidate_parameters");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();

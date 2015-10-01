@@ -34,6 +34,7 @@ class LorisForm
     var $defaultValues = array();
     var $formRules     = array();
     var $errors        = array();
+    var $filters       = array();
     var $frozen        = false;
 
     /**
@@ -62,6 +63,16 @@ class LorisForm
         if (isset($attribs['onchange'])) {
             $el['onchange'] = $attribs['onchange'];
         }
+        if (isset($attribs['value'])) {
+            $el['value'] = $attribs['value'];
+        }
+        if (isset($attribs['oninvalid'])) {
+            $el['oninvalid'] = $attribs['oninvalid'];
+        }
+        if (isset($attribs['pattern'])) {
+            $el['pattern'] = $attribs['pattern'];
+        }
+
         return $el;
     }
     /**
@@ -223,6 +234,23 @@ class LorisForm
     }
 
     /**
+     * Adds a checkobox to the current form.
+     *
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $options An array of other attributes that should
+     *                        get added. Currently only the "value"
+     *                        attribute gets added.
+     *
+     * @return none, modifies $this->form as a side-effect.
+     */
+    function addCheckbox($name, $label, $options)
+    {
+        $el         =& $this->addBase($name, $label, $options);
+        $el['type'] = 'advcheckbox';
+    }
+
+    /**
      * Adds a header element to this LorisForm.
      *
      * @param string $name    The name of the header element, may be null
@@ -304,6 +332,9 @@ class LorisForm
         case 'header':
             $el = $this->addHeader($name, $label);
             break;
+        case 'advcheckbox':
+            $el = $this->addCheckbox($name, $label, $options);
+            break;
         case 'text':
         default:
             $el = $this->addText($name, $label, $options);
@@ -366,30 +397,141 @@ class LorisForm
      */
     function getValue($name)
     {
+        // Not all elements of the form go into $_REQUEST, thus the isset test
         if (isset($_REQUEST[$name])) {
-            return $_REQUEST[$name];
+            // If submitted value in $_REQUEST is an array return the array
+            // of filtered values
+            if (is_array($_REQUEST[$name])) {
+                $filteredValues = array();
+                foreach ($_REQUEST[$name] as $k => $v) {
+                    // Checkbox values get converted from (on,off) to (1,0)
+                    if ($this->_isAdvCheckbox("{$name}[$k]")) {
+                        $rawValue = $_REQUEST[$name][$k] == 'on' ? 1 : 0;
+                    } else {
+                        $rawValue = $_REQUEST[$name][$k];
+                    }
+                    // This is more for consistency since it would be odd to apply a
+                    // filter to a checkbox value
+                    $filteredValues[$k]
+                        = $this->_getFilteredValue("[$name}[$k]", $rawValue);
+                }
+
+                return $filteredValues;
+            } else {
+                // if submitted value is not an array, filter it
+                return $this->_getFilteredValue($name, $_REQUEST[$name]);
+            }
         }
 
+        // Check to see if the element name is of the form name[idx]
+        // (if so there should be a 'name' array in $_REQUEST)
         $bracketIdx = strpos($name, '[');
         if ($bracketIdx !== false) {
             $fieldName = strstr($name, '[', true);
             $fieldIdx  = substr($name, $bracketIdx+1);
             $fieldIdx  = strstr($fieldIdx, ']', true);
+            // This should always be true
             if (isset($_REQUEST[$fieldName])) {
-                if ($this->form[$name]['type'] === 'advcheckbox') {
-                    if ($_REQUEST[$fieldName][$fieldIdx] == 'on') {
-                        return 1;
-                    }
-                    return 0;
+                if ($this->_isAdvCheckbox($name)) {
+                    // Only the checkboxes turned on are put in $_REQUEST,
+                    // thus the isset check
+                    $value = isset($_REQUEST[$fieldName][$fieldIdx])
+                        ? $_REQUEST[$fieldName][$fieldIdx] : null;
+
+                    $rawValue = $value == 'on' ? 1 : 0;
+                    return $this->_getFilteredValue($name, $rawValue);
                 }
-                return $_REQUEST[$fieldName][$fieldIdx];
+
+                return $this->_getFilteredValue(
+                    $name,
+                    $_REQUEST[$fieldName][$fieldIdx]
+                );
             }
         }
 
         if (isset($this->defaultValues[$name])) {
-            return $this->defaultValues[$name];
+            return $this->_getFilteredValue(
+                $name,
+                $this->defaultValues[$name]
+            );
         }
+
         return null;
+    }
+
+    /**
+     * Determines if a fomr element if of type 'advcheckbox'.
+     *
+     * @param string $elementName Name of a form element that exists in the $form.
+     *
+     * @return boolean true if the element is a checkbox, false otherwise.
+     */
+    private function _isAdvCheckbox($elementName)
+    {
+        // If the element is not in a group
+        if (isset($this->form[$elementName])) {
+            return $this->form[$elementName]['type'] == 'advcheckbox';
+        }
+
+        // Element is in a groug: check in each group
+        foreach ($this->form as $element) {
+            if (is_array($element) && $element['type'] == 'group') {
+                // Check all elements of the current group for the element
+                foreach ($element['elements'] as $groupElement) {
+                    // Check if name is right
+                    if ($groupElement['name'] == $elementName) {
+                        return $groupElement['type'] == 'advcheckbox';
+                    }
+                }
+            }
+        }
+
+        // Should not happen
+        return false;
+    }
+
+    /**
+     * Gets the value of form element $name, after all filters have been
+     * applied. If there are no filters registered for element $name, then
+     * the original unmodified value is returned.
+     *
+     * @param string $name  name of the form element in the $form.
+     * @param string $value value of the form element in $_REQUEST or null if
+     *               none was found.
+     *
+     * @return string value of the form element once all registered filters
+     *                (if any) have been applied.
+     */
+    private function _getFilteredValue($name, $value)
+    {
+        // Apply field specific filters
+        if (isset($this->filters[$name])) {
+            if (in_array('trim', $this->filters[$name])) {
+                $new_value = trim($value);
+            }
+        }
+
+        // Apply filters that should be applied on all fields
+        if (isset($this->filters['__ALL__'])) {
+            foreach ($this->filters['__ALL__'] as $filterType) {
+                if (in_array('trim', $this->filters['__ALL__'])) {
+                    // Value for the element is in array so filter all
+                    // elements in the array of values
+                    if (is_array($value)) {
+                        $newValue = array();
+                        foreach ($value as $k => $v) {
+                            $newValue[$k]
+                                = $this->_getFilteredValue("{$name}[$k]", $v);
+                        }
+                    } else {
+                        // Submitted value not an array: trim it
+                        $newValue = trim($value);
+                    }
+                }
+            }
+        }
+
+        return $newValue;
     }
 
     /**
@@ -480,14 +622,22 @@ class LorisForm
      */
     function dateHTML($el)
     {
-        $cls = '';
+        $cls     = '';
+        $minYear = '';
+        $maxYear = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['options']['minYear'])) {
+            $minYear = "min=\"" . $el['options']['minYear'] . "-01-01\"";
+        }
+        if (isset($el['options']['maxYear'])) {
+            $maxYear = "max=\"" . $el['options']['maxYear'] . "-12-31\"";
         }
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
         $value    = $this->getValue($el['name']);
-        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls"
+        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear"
             . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
@@ -543,6 +693,18 @@ class LorisForm
         }
         $value = $this->getValue($el['name']);
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
+            . (
+                isset($el['onchange']) && $el['onchange']
+                ? " onchange=\"{$el['onchange']}\"" : ''
+              )
+            . (
+                isset($el['oninvalid']) && $el['oninvalid']
+                ? " oninvalid=\"{$el['oninvalid']}\"" : ''
+              )
+            . (
+                isset($el['pattern']) && $el['pattern']
+                ? " pattern=\"{$el['pattern']}\"" : ''
+              )
             . (
                 isset($el['required']) && $el['required']
                 ? ' required' : ''
@@ -692,13 +854,27 @@ class LorisForm
 
     /**
      * Reimplements the HTML_QuickForm applyFilter API.
-     * TODO: Implement this. We only ever use "trim", so that will be the only
-     *       thing implemented.
+     * Only trim operations are supported. Passing the special
+     * __ALL__ $elementName will apply the filter to every element
+     * in the form.
+     *
+     * @param string $elementName name of the element to which the filter
+     *                            should be applied.
+     * @param string $filterType  type of filter to apply.
      *
      * @return none
      */
-    function applyFilter()
+    function applyFilter($elementName, $filterType)
     {
+        if ($filterType == 'trim') {
+            if (!isset($this->filters[$elementName])) {
+                $this->filters[$elementName] = array();
+            }
+
+            $this->filters[$elementName][] = 'trim';
+        }
+
+        // Eventually, support for more filter types will be added here
     }
 
     /**
@@ -788,11 +964,16 @@ class LorisForm
     function checkboxHTML($el)
     {
         $val     = $this->getValue($el['name']);
-        $checked ='';
+        $checked = '';
+        $value   = '';
         if (!empty($val)) {
             $checked = 'checked="checked"';
         }
-        return "<input name=\"$el[name]\" type=\"checkbox\" $checked /> $el[label]";
+        if (isset($el['value'])) {
+            $value = "value=\"$el[value]\"";
+        }
+        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value/>"
+            . " $el[label]";
     }
     /**
      * This is a slight difference from the HTML_QuickForm API.
@@ -1100,21 +1281,19 @@ class LorisForm
                 $fieldIdx  = substr($name, $bracketIdx+1);
                 $fieldIdx  = strstr($fieldIdx, ']', true);
                 if (!isset($arr[$fieldName])) {
-                    $arr[$fieldName] = $_REQUEST[$fieldName];
-                }
-                if ($el['type'] === 'advcheckbox') {
-                    $val = $this->getValue($name);
-                    if ($val === 'on') {
-                        $arr[$fieldName][$fieldIdx] = 1;
-                    } else {
-                        $arr[$fieldName][$fieldIdx] = 0;
-                    }
+                    $arr[$fieldName] = $this->getValue($fieldName);
                 }
                 continue;
             }
 
-            // normal case, just set it directly
-            $arr[$name] = $_REQUEST[$name];
+            // Check to see it the element type is a header or is a static
+            // element without a request variable. If so do not add to the
+            // reference array
+            if (!($el['type'] === 'header'
+                || ($el['type'] === 'static' && empty($_REQUEST[$name])))
+            ) {
+                  $arr[$name] = $this->getValue($name);
+            }
 
             if ($el['type'] === 'date') {
                 // Convert dates to the type of group that was used

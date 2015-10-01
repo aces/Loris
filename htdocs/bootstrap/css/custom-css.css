@@ -94,7 +94,7 @@ html, body {
     border: 3px solid;
     border-color: #b94a48;
 }
-.has-error .form-error {
+.has-error, .form-error {
 color: #b94a48;
 }
 .has-warning .form-control {
@@ -156,4 +156,8 @@ ul#navlist {
 div.navbar div.container div.navbar-brand {
     background: inherit;
     text-align: center;
+}
+
+.controlPanelSection {
+    padding-bottom: 6px;
 }
