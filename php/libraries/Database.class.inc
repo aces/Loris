@@ -26,7 +26,7 @@ define("DEBUG", false);
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Database extends PEAR
+class Database
 {
     /**
      * The database handle, created by the connect() method
@@ -117,12 +117,6 @@ class Database extends PEAR
                     $host,
                     $trackChanges
                 );
-                if ($connections[$connection]->isError($ok)) {
-                    unset($connections[$connection]);
-                    throw new DatabaseException(
-                        'Could not connect to database: '.$ok->getMessage()
-                    );
-                }
             }
 
             // return the connection
@@ -276,9 +270,6 @@ class Database extends PEAR
 
         // Track changes must be called after last insertId is set
         $err = $this->_trackChanges($table, $set, '2=1', 'I');
-        if ($this->isError($err)) {
-            return $err;
-        }
         return true;
     }
 
@@ -367,9 +358,6 @@ class Database extends PEAR
         }
 
         $err = $this->_trackChanges($table, $set, $where);
-        if ($this->isError($err)) {
-            return $err;
-        }
         $this->_printQuery($query.$where);
 
         $prep   = $this->_PDO->prepare($prepQ);
@@ -417,13 +405,6 @@ class Database extends PEAR
         // There is no set clause for a delete, so add a fake
         // one.
         $err = $this->_trackChanges($table, array(), $where, 'D');
-        if ($this->isError($err)) {
-            throw new DatabaseException(
-                "Unable to track changes for delete statement.",
-                $query,
-                $where
-            );
-        }
 
         $this->_printQuery($query);
         $this->affected = $this->_PDO->exec($query);
@@ -505,7 +486,7 @@ class Database extends PEAR
     function selectRow($query, &$result)
     {
         $this->select($query, $result);
-        if (!$this->isError($result) && is_array($result) && isset($result[0])) {
+        if (is_array($result) && isset($result[0])) {
             $result = $result[0];
         }
     }
@@ -528,7 +509,7 @@ class Database extends PEAR
     {
         $result = null;
         $this->select($query, $result);
-        if (!$this->isError($result) && is_array($result) && count($result)) {
+        if (is_array($result) && count($result)) {
             list(,$result) = each($result[0]);
         }
         return $result;
@@ -644,7 +625,7 @@ class Database extends PEAR
     function pselectOne($query, $params)
     {
         $result = $this->pselectRow($query, $params);
-        if (!$this->isError($result) && is_array($result) && count($result)) {
+        if (is_array($result) && count($result)) {
 
             list(,$result) = each($result);
         }
@@ -749,9 +730,6 @@ class Database extends PEAR
 
         // get the table description
         $this->select("SHOW INDEX FROM $table", $description);
-        if ($this->isError($description)) {
-            return $description;
-        }
 
         // find the primary key columns
         foreach ($description AS $column) {
@@ -814,9 +792,6 @@ class Database extends PEAR
 
             // select the database data
             $this->select($query, $oldRows);
-            if ($this->isError($oldRows)) {
-                return $oldRows;
-            }
 
             // track history for all affected rows
             foreach ($oldRows AS $oldRow) {
