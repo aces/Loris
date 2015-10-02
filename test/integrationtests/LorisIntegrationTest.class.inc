@@ -79,9 +79,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        $this->DB->run(
-            "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
-        );
+        $this->resetPermissions();
 
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
@@ -214,13 +212,13 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function setupPermissions($permissions) {
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
+        $prepare = $this->DB->prepare(
+            "INSERT INTO user_perm_rel
+                SELECT 999990, PermID
+                    FROM permissions
+                    WHERE code=:perm"
+        );
         foreach ($permissions as $value) {
-            $prepare = $this->DB->prepare(
-                            "INSERT INTO user_perm_rel
-                                SELECT 999990, PermID
-                                    FROM permissions
-                                    WHERE code=:perm"
-                        );
             $this->DB->execute($prepare, array("perm" => $value));
         }
     }
@@ -231,7 +229,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return none
      */
-    function restorePermissions() {
+    function resetPermissions() {
         $this->DB->run(
             "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
