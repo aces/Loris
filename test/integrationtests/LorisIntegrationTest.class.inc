@@ -154,7 +154,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     }
 
 
-    private $_oldConfig      = array();
+    private $_oldConfig = array();
 
     function setupConfigSetting($configName, $value) {
         if(isset($this->_oldConfig[$configName])) {
