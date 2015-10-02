@@ -447,7 +447,7 @@ echo "Ubuntu distribution detected."
                     exit 1
                 fi;
                 # Need to pipe to sudo tee because > is done as the logged in user, even if run through sudo
-                sed -e "s#%LORISROOT%#$RootDir/#g" \
+                sed -e "s#%LORISROOT%#$RootDir#g" \
                     -e "s#%PROJECTNAME%#$projectname#g" \
       	            -e "s#%LOGDIRECTORY%#$logdirectory#g" \
                     < ../docs/config/apache2-site | sudo tee /etc/apache2/sites-available/$projectname.conf > /dev/null
