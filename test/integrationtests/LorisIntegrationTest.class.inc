@@ -154,7 +154,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     }
 
 
-    private $_oldConfig = array();
+    private $_oldConfig      = array();
 
     function setupConfigSetting($configName, $value) {
         if(isset($this->_oldConfig[$configName])) {
@@ -201,6 +201,25 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
                 array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
             );
         }
+    }
+
+    function setupPermissions($permissions) {
+        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
+        foreach ($permissions as $value) {
+            $prepare = $this->DB->prepare(
+                            "INSERT INTO user_perm_rel
+                                SELECT 999990, PermID
+                                    FROM permissions
+                                    WHERE code=:perm"
+                        );
+            $this->DB->execute($prepare, array("perm" => $value));
+        }
+    }
+
+    function restorePermissions() {
+        $this->DB->run(
+            "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
+        );
     }
 
 }
