@@ -144,7 +144,7 @@ $.ajax({
             bindto: '#scanChart',
             data: {
                 x: 'x',
-                x_format: '%m-%Y',
+                xFormat: '%m-%Y',
                 columns: scanLineData,
                 type: 'area-spline'
             },
@@ -240,7 +240,7 @@ $.ajax({
             bindto: '#recruitmentChart',
             data: {
                 x: 'x',
-                x_format: '%m-%Y',
+                xFormat: '%m-%Y',
                 columns: recruitmentLineData,
                 type: 'area-spline'
             },
