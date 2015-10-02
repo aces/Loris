@@ -2,9 +2,9 @@
 <head>
 <meta charset="utf-8"/>
 <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
-<link rel="stylesheet" href="../bootstrap-3.1.1/css/bootstrap.css">
+<link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
 <!-- shortcut icon that displays on the browser window -->
-<link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
+<link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 <!-- page title -->
 <title>Request LORIS Account</title>
 <!--  end page header -->
@@ -41,9 +41,11 @@
     </center>
     <br>
 </div>
-<center><h2>Request Account</h2></center>
-<h3>Please fill in the form below. We will contact you once your account has been approved.</h3>
-
+<center>
+    <h2>Request Account</h2>
+    <h3>Please fill in the form below.</h3>
+    <h5> We will contact you once your account has been approved.</h5>
+</center>
 <form action="process_new_account.php" method="post" name="form1" id="form1" class="form-horizontal">
 <div class="form-group">
     <label  class="col-sm-4 control-label" size="75">First Name:</label>
@@ -75,23 +77,10 @@
                 <input name="Submit" class="btn btn-primary col-xs-4" type="submit" value="Submit"/>
             </div>
 </div>
-<br><br><br>
 <div class="row">
-                <table class="LoginFooter" align="center">
+                <table class="LoginFooter" align="center" style="position: relative">
                     <tr>
                     <hr width = 70%>
-                    <td width="100%">
-                    {if $studylinks}
-                    <ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
-
-                    <li id="active">|</li>
-                    {foreach from=$studylinks item=link}
-                    <li><a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> | </li>
-                    {/foreach}
-
-                    </ul>
-                    {/if}
-                    </td>
                     </tr>
                     <tr>
                     <!--td align="center" colspan="1"><br><font color="#C40A29">A WebGL-compatible browser is required for full functionality.</font></td-->

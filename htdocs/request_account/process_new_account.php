@@ -41,7 +41,8 @@ $tpl_data = array();
 
 // create an instance of the config object
 $config           = NDB_Config::singleton();
-$tpl_data['css']  = "../".$config->getSetting('css');
+$tpl_data['baseurl']  = $config->getSetting('url');
+$tpl_data['css']  = $config->getSetting('css');
 $tpl_data['rand'] = rand(0, 9999);
 $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
