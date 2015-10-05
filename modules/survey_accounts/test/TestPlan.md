@@ -28,4 +28,4 @@
     b. Status should be set to `In Progress` once the URL is accessed by user (or tester)
     c. Status should be set to `Complete` once the survey is completed by clicking on Submit Data button on the review page.
 9.  Verify instrument is marked as `Complete` and Administration is set to `All` after step 8.c
-10. Test all functionality on multiple browsers (Chrome and Firefox minimum).rv
+10. Test all functionality on multiple browsers (Chrome and Firefox minimum).
