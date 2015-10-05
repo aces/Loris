@@ -21,7 +21,7 @@
  b) Table displays resolved conflicts
  c) Field 'Corrected answer' has a value
  d) Pagination [1 | 2 | 3 ...] appears at top and bottom when n > 25, and it works
-  e) Clicking on a column name sorts data properly
+ e) Clicking on a column name sorts data properly
 5. Filter for the specific parameter (Choose the one that applies):
   - Select the right instrument from the 'All Instruments' drop-down
   - Input the right DCCID
