@@ -79,9 +79,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             )
         );
 
-        $this->DB->run(
-            "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
-        );
+        $this->resetPermissions();
 
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
@@ -201,6 +199,40 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
                 array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
             );
         }
+    }
+
+    /**
+     * Helper function to set user permissions. The function works by deleting
+     * all current permissions for the user then adding the specified permissions
+     * to the TestUser.
+     *
+     * @param array $permissions List of permissions codes to add TestUser
+     *
+     * @return none
+     */
+    function setupPermissions($permissions) {
+        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
+        $prepare = $this->DB->prepare(
+            "INSERT INTO user_perm_rel
+                SELECT 999990, PermID
+                    FROM permissions
+                    WHERE code=:perm"
+        );
+        foreach ($permissions as $value) {
+            $this->DB->execute($prepare, array("perm" => $value));
+        }
+    }
+
+    /**
+     * Helper function to reset user permissions. The function works by adding
+     * all permissions to the TestUser.
+     *
+     * @return none
+     */
+    function resetPermissions() {
+        $this->DB->run(
+            "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
+        );
     }
 
 }
