@@ -89,7 +89,8 @@ var PagedTable = React.createClass({
 
 
 var IncompleteCandidatesRow = React.createClass({
-    handleClick: function(){
+    handleClick: function(event){
+        event.preventDefault();
         var link = React.findDOMNode(this.refs.incomplete);
         window.open(link, "Incomplete Candidate");
     },
@@ -170,7 +171,8 @@ var InstrumentConflictsRow = React.createClass({
 });
 
 var BehaviouralFeedbackRow = React.createClass({
-    handleClick: function(){
+    handleClick: function(event){
+        event.preventDefault();
         var link = React.findDOMNode(this.refs.feedback).href;
         var feedbackwindow = window.open(link, "Behavioural Feedback");
     },
