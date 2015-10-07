@@ -30,13 +30,13 @@
     Should update coordinates for all volumes.
 9. Select a different panel size from the `Choose Panel Size` drop-down.
     Should change the size of the three displayed volumes.
-10. Test "View slices" buttons (Sagittal, Coronal and Axial).
+10. Test `View slices` buttons (Sagittal, Coronal and Axial).
     Should give a screenshot of all slices within the selected orientation.
-11. "BrainBrowser Volume Viewer"
+11. `BrainBrowser Volume Viewer`
     a) Close BrainBrowser window
-    b) Load BrainBrowser by clicking on the "BrainBrowser Volume Viewer" link below the pic.
+    b) Load BrainBrowser by clicking on the `BrainBrowser Volume Viewer` link below the pic.
     c) Repeat 2 to 9 steps.
-12. Load BrainBrowser using the "Add panel" checkbox (on the left of the pic) and the “3D only” button (left panel).
+12. Load BrainBrowser using the `Add panel` checkbox (on the left of the pic) and the “3D only” button (left panel).
     a) Should display only the selected image(s), no overlay.
     b) Repeat 2 to 9 steps on each displayed volume.
     c) Check that it updates only the appropriate image.
