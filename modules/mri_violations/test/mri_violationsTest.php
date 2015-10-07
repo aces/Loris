@@ -20,7 +20,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testMriViolationsDoespageLoad()
+    function testMriViolationsDoesPageLoad()
     {
         $this->webDriver->get($this->url . "?test_name=mri_violations");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
@@ -33,7 +33,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testMriProtocolViolationsDoespageLoad()
+    function testMriProtocolViolationsDoesPageLoad()
     {
         $this->webDriver->get($this->url . "?test_name=mri_violations&submenu=mri_protocol_violations");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
@@ -46,7 +46,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testMriProtocolCheckViolationsDoespageLoad()
+    function testMriProtocolCheckViolationsDoesPageLoad()
     {
         $this->webDriver->get($this->url . "?test_name=mri_violations&submenu=mri_protocol_check_violations");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
