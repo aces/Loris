@@ -37,79 +37,81 @@ $headers = array(
     '# of scans'
 );
 
+$counter = 0;
 
-
-$projectname = $config->getSetting('project');
 
 // Where project's statistics will be stored
 $project_statistics = array();
-
+// Project name
+$projectname = $config->getSetting('title');
 // Number of Scanning - Visits
 $number_scanning_visits = $db->pselect("select count(*) from session where Scan_done='Y'", array());
-
 // Number of Sites
-$number_sites = $db->pselect("select count(*), Name from psc WHERE CenterID <>1", array());
-
+$number_sites = $db->pselect("select count(*) from psc WHERE CenterID <>1", array());
 // Variable Count
 $variable_count = $db->pselect("select count(*) from parameter_type where queryable='1' and Name not like '%_status'", array());
-
 // Number of instruments
 $number_instruments = $db->pselect("select count(*) from test_names", array());
-
 // Total number of visits (for all candidates)
 $number_visits = $db->pselect("select count(*) from session where Active='Y' AND Current_stage <> 'Not Started'", array());
-
 // Number of candidates
 $number_candidates = $db->pselect("SELECT count(*) FROM candidate c WHERE c.Active = 'Y' and c.CenterID <> 1 and pscid <> 'scanner'", array());
-
 // GB of imaging data (raw and processed)
-$dir = $config->getSetting("UploadDir");
-
-$handle = fopen ('php://stdin', 'r');
-$dir_name = "/data/$projectname/data";
-if(file_exists($dir_name)) {
-    exec("cd /data/$projectname/data;du -h .");
-    $gb_imaging_data = fgets($handle);
-} else {
-    $gb_imaging_data = NULL;
-}
-fclose($handle);
-
-// # of scans
+$dir_path = $config->getSetting('imagePath');
+$gb_imaging_data_array = NULL;
+if(file_exists($dir_path)) exec("cd $dir_path;du -h .", $gb_imaging_data_array);
+# of scans
 $number_scans = $db->pselect("select count(*) from files", array());
 
-
-$queries = compact(
-    $number_scanning_visits, $number_sites,
-    $variable_count, $number_instruments,
-    $number_visits, $number_candidates, $number_scans
+$queries = array(
+    'number_scanning_visits',
+    'number_sites',
+    'variable_count',
+    'number_instruments',
+    'number_visits',
+    'number_candidates',
+    'gb_imaging_data',
+    'number_scans'
 );
 
 // Extracts data from each query and puts into $project_statistics array
-
-
 $project_statistics[$headers[0]] = $projectname;
 $i = 1;
-while ($i < 9) {
-    foreach ($queries as $query) {
-        if ($i != 7) {
-            foreach ($query as $j => $row) {
-                foreach ($row as $k => $count) {
-                    $project_statistics[$headers[$i]] = $count;
-                }
-                $i++;
-//                break;
-                continue;
-            }
 
-        } elseif ($i == 7) {
-            $project_statistics[$headers[$i]] = $gb_imaging_data;
+foreach ($queries as $query) {
+    if ($i != 7) {
+        foreach ($$query as $j => $row) {
+            foreach ($row as $k => $count) {
+                $project_statistics[$headers[$i]] = $count;
+            }
             $i++;
+            break;
         }
+
+    } elseif ($i == 7) {
+        $units_array = array('B' => 0.000000001, 'K' => 0.000001, 'M' => 0.001, 'G' => 1);
+        $sum = 0.0;
+
+        foreach ($gb_imaging_data_array as $key => $row) {
+
+            $data = explode('./', $row, 2);
+
+            $data_size = (float)substr($data[0], 0, -2);
+            $data_unit = rtrim(substr($data[0], -2));
+//            print "Size: $data_size ";
+//            print "unit: " . $data_unit . "\n";
+            foreach ($units_array as $unit => $numBytes) {
+                if ($unit == $data_unit) {
+                    $sum += $data_size * $numBytes;
+                    break;
+                }
+            }
+        }
+        $project_statistics[$headers[$i]] = $sum;
+        $i++;
+//        print "SUM: " . $sum . "\n";
     }
 }
-
-
 
 // If query is blank, populate csv with "Unknown"
 foreach($headers as $header) {
@@ -120,51 +122,12 @@ foreach($headers as $header) {
 
 // Adds headers and project statistics into csv file
 fputcsv($fp, $headers);
-
 fputcsv($fp, $project_statistics);
 
 echo "File writing for $projectname complete.\n\n";
 
 fclose($fp);
 
+$recipient = "loris-dev@bic.mni.mcgill.ca";
 
-//$file_type = "text/csv";
-//$file_size = filesize($output_file);
-//$handle = fopen($output_file, "r");
-//$content = fread($handle, $file_size);
-//fclose($handle);
-//
-//$content = chunk_split(base64_encode($content));
-//
-//$to = "stellajhlee@hotmail.com";
-//$subject = "Project Statistics";
-//
-//$message = "<html>
-//<head>
-//  <title>Project Statistics</title>
-//</head>
-//<body><table><tr><td>MAKE</td></tr></table></body></html>";
-//
-//$uid = md5(uniqid(time()));
-//
-//#$header = "From: ".$from_name." <".$from_mail.">\r\n";
-//#$header .= "Reply-To: ".$replyto."\r\n";
-//$header .= "MIME-Version: 1.0\r\n";
-//$header .= "Content-Type: multipart/mixed; boundary=\"".$uid."\"\r\n\r\n";
-//$header .= "This is a multi-part message in MIME format.\r\n";
-//$header .= "--".$uid."\r\n";
-//$header .= "Content-type:text/html; charset=iso-8859-1\r\n";
-//$header .= "Content-Transfer-Encoding: 7bit\r\n\r\n";
-//$header .= $message."\r\n\r\n";
-//$header .= "--".$uid."\r\n";
-//$header .= "Content-Type: text/csv; name=\"".$output_file."\"\r\n"; // use diff. tyoes here
-//$header .= "Content-Transfer-Encoding: base64\r\n";
-//$header .= "Content-Disposition: attachment; filename=\"".$output_file."\"\r\n\r\n";
-//$header .= $content."\r\n\r\n";
-//$header .= "--".$uid."--";
-//
-//mail($to, $subject, $message, $header);
-
-
-?>
-
+echo "Please email $output_file to $recipient.\n\n";
