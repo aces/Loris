@@ -2,8 +2,8 @@
 
 1. Load BrainBrowser by clicking on the chosen minc file.
 2. Navigate on all three views (sagittal, coronal and axial). 
-    a) Check that coordinates updating while moving cursor.
-    b) Check that slices are updated in the other views correctly
+    - Check that coordinates updating while moving cursor.
+    - Check that slices are updated in the other views correctly
         - if move toward the nose, should also see the nose in the other views
         - same for top of the head
         - same for left-right orientation
