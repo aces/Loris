@@ -32,18 +32,14 @@
     Should change the size of the three displayed volumes.
 10. Test `View slices` buttons (Sagittal, Coronal and Axial).
     Should give a screenshot of all slices within the selected orientation.
-11. `BrainBrowser Volume Viewer`
-    - Close BrainBrowser window
-    - Load BrainBrowser by clicking on the `BrainBrowser Volume Viewer` link below the pic.
-    - Repeat 2 to 9 steps.
-12. Load BrainBrowser using the `Add panel` checkbox (on the left of the pic) and the “3D only” button (left panel).
+11. Load BrainBrowser using the `Add panel` checkbox (on the left of the pic) and the “3D only” button (left panel).
     - Should display only the selected image(s), no overlay.
     - Repeat 2 to 9 steps on each displayed volume.
     - Check that it updates only the appropriate image.
-13. Load BrainBrowser using the “Add panel” checkbox (on the left of the pic) and the “3D overlay” button (left panel).
+12. Load BrainBrowser using the “Add panel” checkbox (on the left of the pic) and the “3D overlay” button (left panel).
     - Should display the selected images plus the overlay.
     - Repeat 2 to 9 steps on each displayed volume.
     - Check that it updates only the appropriate image.
-14. Test the “Blend” option (text box and slider) on the overlay.
+13. Test the “Blend” option (text box and slider) on the overlay.
     - Check that it switches display between the different volumes
     - Check that it updates the slider and text box respectively.
