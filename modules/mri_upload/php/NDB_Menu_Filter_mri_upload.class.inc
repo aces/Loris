@@ -177,7 +177,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         include_once "File_Upload.class.inc";
 
         //get the stored-file path
-        echo "AA";
         $file   = new File_Upload;
         $config = NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
@@ -187,7 +186,6 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
         //pass the existing form ($form) by reference to File_Upload,
         // and register the file_upload field names being used.
         $file->registerForm($this->form);
-        echo "BB";
         //Set the target directory that you want files moved
         //into once they are validated and processed.
         $MRIUploadIncomingPath = $config->getSetting('MRIUploadIncomingPath');
@@ -202,14 +200,12 @@ class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
             "mri_file",
             $this
         );
-        echo "CC";
         $user = User::singleton();
         //set the the IDs to the handler functions.
         $file->setHandlerArgs(array("values" => $values));
 
         //proccesses them (including verify, move, and import steps)
         $file->processFiles();
-        echo "DD";
         //display error messages
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
