@@ -18,3 +18,4 @@ docs/js/
 docs/usr/
 docs/var/
 tools/ip_output.txt.back
+logs/*.log
