@@ -1973,7 +1973,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('DICOM Archive', 'main.php?test_name=dicom_archive', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 2),
     ('Imaging Browser', 'main.php?test_name=imaging_browser', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 3),
     ('MRI Violated Scans', 'main.php?test_name=mri_violations', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 4),
-    ('Imaging Uploader', 'main.php?test_name=imaging_uploader', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 5);
+    ('Imaging Uploader', 'main.php?test_name=mri_upload', (SELECT ID FROM LorisMenu as L WHERE Label='Imaging'), 5);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Statistics', 'main.php?test_name=statistics', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 1),

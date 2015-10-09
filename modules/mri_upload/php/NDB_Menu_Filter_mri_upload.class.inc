@@ -29,7 +29,7 @@ require_once __DIR__
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
 */
-class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
+class NDB_Menu_Filter_Mri_Upload extends NDB_Menu_Filter_Form
 {
 
     var $show_queries = true;
@@ -177,7 +177,6 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         include_once "File_Upload.class.inc";
 
         //get the stored-file path
-
         $file   = new File_Upload;
         $config = NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
@@ -187,7 +186,6 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         //pass the existing form ($form) by reference to File_Upload,
         // and register the file_upload field names being used.
         $file->registerForm($this->form);
-
         //Set the target directory that you want files moved
         //into once they are validated and processed.
         $MRIUploadIncomingPath = $config->getSetting('MRIUploadIncomingPath');
@@ -202,14 +200,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             "mri_file",
             $this
         );
-
         $user = User::singleton();
         //set the the IDs to the handler functions.
         $file->setHandlerArgs(array("values" => $values));
 
         //proccesses them (including verify, move, and import steps)
         $file->processFiles();
-
         //display error messages
         if (!empty($file->errorLog)) {
             while (list($fileType,$fileErrors)=each($file->errorLog)) {
