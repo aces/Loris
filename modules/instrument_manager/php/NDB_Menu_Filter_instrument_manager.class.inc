@@ -35,7 +35,7 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
             $writable = true;
         }
 
-        $this->tpl_data['writeable'] = $writable;
+        $this->tpl_data['writable'] = $writable;
 
         if($writable && $_POST['install'] == 'Install Instrument') {
             $db = Database::singleton();
