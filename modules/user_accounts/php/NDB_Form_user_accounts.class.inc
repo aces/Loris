@@ -166,6 +166,13 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
         unset($values['NA_Password']);
 
+        // If editing a user and nothing was specified in the password text field
+        // remove Password_md5 from the value set, otherwise Password_md5
+        // will be set to '' by the system
+        if ($values['Password_md5'] == '' && !$this->isCreatingNewUser()) {
+            unset($values['Password_md5']);
+        }
+
         // make the set
         foreach ($values as $key => $value) {
             $set[$key] = $value;
@@ -682,7 +689,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $values['Password_md5'],
                 array(
                  $values['__Confirm'],
-                 $values['UserID'],
+                 isset($values['UserID']) ? $values['UserID'] : $this->identifier,
                  $values['Email'],
                 ),
                 array(
