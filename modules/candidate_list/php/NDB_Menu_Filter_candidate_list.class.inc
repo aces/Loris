@@ -79,6 +79,21 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             )
         );
 
+        $this->formToFilter = array(
+                               'centerID'     => 'c.CenterID',
+                               'DCCID'        => 'c.CandID',
+                               'PSCID'        => 'c.PSCID',
+                               'gender'       => 'c.Gender',
+                               'SubprojectID' => 's.SubprojectID',
+                              );
+
+        $this->validFilters = array(
+                               'pso.ID',
+                               'c.CenterID',
+                               'c.CandID',
+                               'c.PSCID',
+                               'c.Gender',
+                              );
         if ($config->getSetting("useEDC")==="true") {
             $this->columns[]           ='DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
             $this->formToFilter['edc'] = 'c.EDC';
@@ -115,13 +130,6 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $this->group_by = 'c.CandID';
         $this->order_by = 'psc.Name, c.CandID DESC, s.VisitNo';
 
-        $this->validFilters = array(
-                               'pso.ID',
-                               'c.CenterID',
-                               'c.CandID',
-                               'c.PSCID',
-                               'c.Gender',
-                              );
         if ($useProjects) {
             $this->validFilters[] = 'c.ProjectID';
         }
@@ -145,13 +153,6 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                     );
         $this->EqualityFilters    = array('session.SubprojectID');
 
-        $this->formToFilter = array(
-                               'centerID'     => 'c.CenterID',
-                               'DCCID'        => 'c.CandID',
-                               'PSCID'        => 'c.PSCID',
-                               'gender'       => 'c.Gender',
-                               'SubprojectID' => 's.SubprojectID',
-                              );
         if ($useProjects) {
             $this->formToFilter = array_merge(
                 $this->formToFilter,
