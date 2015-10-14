@@ -914,15 +914,18 @@ class Database
     }
 
     /**
-     * Temporary stub function
+     * Database class no longer extends PEAR
      *
      * @param mixed $data The variable to check
      * @param mixed $msgcode Additional error message / error code to check
-     * @return boolean false
+     * @return none
+     * @deprecated Database class no longer extends PEAR
      */
     function isError($data, $msgcode)
     {
-        return false;
+        throw new DatabaseException(
+            "Could not retrieve schema of table $tableName"
+        );
     }
 }
 ?>
