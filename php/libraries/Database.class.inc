@@ -916,10 +916,10 @@ class Database
     /**
      * Database class no longer extends PEAR
      *
-     * @param  mixed $data    The variable to check
-     * @param  mixed $msgcode Additional error message / error code to check
+     * @param mixed $data    The variable to check
+     * @param mixed $msgcode Additional error message / error code to check
      *
-     * @return none
+     * @return     none
      * @deprecated Database class no longer extends PEAR
      */
     function isError($data, $msgcode)
