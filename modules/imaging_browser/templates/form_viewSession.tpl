@@ -92,7 +92,7 @@
                                  {else}
                                  <div class="static-info">
                                  {if $files[file].Caveat}
-                                  <a href="main.php?test_name=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
+                                  <a href="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
                                  {else}No caveats{/if}
                                  </div>
                                  {/if}
