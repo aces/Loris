@@ -161,13 +161,13 @@
 
     <div id="brainbrowser-wrapper" style="display: inline-block">
         <div id="global-controls">
-            <span id="sync-volumes-wrapper" class="btn btn-sm btn-primary clickable">
+            <span id="sync-volumes-wrapper" class="clickable">
                 <input type="checkbox" class="button ui-helper-hidden-accessible" id="sync-volumes">
-                <label for="sync-volumes" id="sync-volumes" class="clickable">Sync Volumes</label>
+                <label for="sync-volumes" id="sync-volumes" class="clickable btn btn-sm btn-primary">Sync Volumes</label>
             </span>
 
             <div class="btn-group">
-                <select id="panel-size" class="form-control input-sm panel-size clickable">
+                <select id="panel-size" class="form-control panel-size clickable">
                     <option value="256" SELECTED>Choose Panel Size</option>
                     <option value="100">100 Pixels</option>
                     <option value="200">200 Pixels</option>
