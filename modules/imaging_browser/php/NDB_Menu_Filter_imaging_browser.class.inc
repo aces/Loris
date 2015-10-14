@@ -178,6 +178,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         );
         $this->EqualityFilters = array('f.AcquisitionProtocolID');
         $this->searchKeyword    = array();
+        
+        $this->tpl_data['numTimepoints'] = 0;
     }
 
     /**
