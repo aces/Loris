@@ -918,6 +918,7 @@ class Database
      *
      * @param  mixed $data    The variable to check
      * @param  mixed $msgcode Additional error message / error code to check
+     *
      * @return none
      * @deprecated Database class no longer extends PEAR
      */
