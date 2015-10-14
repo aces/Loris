@@ -743,5 +743,24 @@ class NDB_Menu_Filter extends NDB_Menu
 
         return $result;
     }
+
+    /**
+     * Returns an array of filters that are currently set for this
+     * menu filter
+     *
+     * @return array of filters that are set
+     */
+    function _getFilterValues()
+    {
+        $FilterValues = array();
+        foreach ($this->formToFilter as $formName => $field) {
+            if (isset($_REQUEST[$formName])) {
+                $FilterValues[$formName] = $_REQUEST[$formName];
+            } else {
+                $FilterValues[$formName] = null;
+            }
+        }
+        return $FilterValues;
+    }
 }
 ?>

@@ -206,7 +206,9 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             'Archive Location', 
             array('size' => 10, "maxlength" => 25)
         );
-        
+
+        $this->tpl_data['filterValuesJSON'] = json_encode($this->_getFilterValues());
+
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
 

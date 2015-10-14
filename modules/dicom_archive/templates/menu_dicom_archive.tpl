@@ -23,7 +23,8 @@
         );
     var filterTable = RDICOMFilterTable(
         {
-            Sites: {$Sites|@json_encode}
+            Sites: {$Sites|@json_encode},
+            FilterValues: {$filterValuesJSON}
         }
     );
     React.render(pageLinks, document.getElementById("pageLinks"));
