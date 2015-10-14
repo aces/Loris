@@ -924,7 +924,7 @@ class Database
     function isError($data, $msgcode)
     {
         throw new DatabaseException(
-            "Could not retrieve schema of table $tableName"
+            "Database class no longer extends PEAR"
         );
     }
 }
