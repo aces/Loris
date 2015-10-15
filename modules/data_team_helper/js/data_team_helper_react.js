@@ -119,14 +119,14 @@ var IncompleteCandidatesRow = React.createClass({displayName: "IncompleteCandida
 });
 
 var InstrumentConflictsRow = React.createClass({displayName: "InstrumentConflictsRow",
-    handleClick: function(e){
+    handleClick: function(event){
         //faking a form which posts to conflict_resolver
+        event.preventDefault();
         var link = React.findDOMNode(this.refs.conflict);
         request = $.ajax({
-            url: "main.php?conflict_resolver",
+            url: "main.php?test_name=conflict_resolver",
             type : "post",
             data: {
-                "reset" : "true",
                 "PSCID" : link.dataset.pscid,
                 "Instrument" : link.dataset.instrument,
                 "Question" : link.dataset.question,
@@ -137,8 +137,9 @@ var InstrumentConflictsRow = React.createClass({displayName: "InstrumentConflict
             },
             success: function(data){
                 if (data != "") {
-                    var link = "main.php?test_name=conflict_resolver";
-                    window.open(link,'newStuff'); //open's link in newly opened tab!
+                    var wnd = window.open("data:text/html," + encodeURIComponent(data), "newStuff");
+                    window.focus();
+                    //window.open(link,'newStuff'); //open's link in newly opened tab!
                 }
 
             },
@@ -161,7 +162,7 @@ var InstrumentConflictsRow = React.createClass({displayName: "InstrumentConflict
                 )
             ), 
             React.createElement("td", null, 
-                React.createElement("a", {ref: "conflict", onClick: this.handleClick, href: "main.php?conflict_resolver", className: "conflict_resolver_link", "data-pscid": row.PSCID, "data-question": row.FieldName, "data-instrument": row.TableName, "data-visits": row.visit_label}, 
+                React.createElement("a", {ref: "conflict", onClick: this.handleClick, href: "main.php?test_name=conflict_resolver", className: "conflict_resolver_link", "data-pscid": row.PSCID, "data-question": row.FieldName, "data-instrument": row.TableName, "data-visits": row.visit_label}, 
 		      row.test_name_display
                 )
             ), 
