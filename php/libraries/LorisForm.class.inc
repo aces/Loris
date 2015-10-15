@@ -72,6 +72,9 @@ class LorisForm
         if (isset($attribs['pattern'])) {
             $el['pattern'] = $attribs['pattern'];
         }
+        if (isset($attribs['required']) && $attribs['required'] === true) {
+            $el['required'] = true;
+        }
 
         return $el;
     }
