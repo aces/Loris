@@ -6,7 +6,7 @@
 5. Download a file and check content.
 6. Add files in repository to test search according to file name, file type, version, site and uploaded by.
 7. Check that expand/collapse works for non-empty categories. Check that when performing a search, the categories
-   containing the resulting files (and only those) are automatically expanded
+   containing the resulting files (and only those) are shown in a list format
 8. Check that if a category contains special characters (e.g. space, dot or comma) it can be expanded.
 9. Add two files with the same name but with different contents in two different categories. Verify that, when 
    downloaded, their contents are different.
