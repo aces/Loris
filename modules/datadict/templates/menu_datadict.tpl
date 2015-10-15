@@ -53,7 +53,7 @@
     <!-- title -->
     <td class="controlPanelSection">List of Profiles</td>
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
 
@@ -102,3 +102,16 @@
                         
     <!-- end data table -->
     </table>
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/main.php?test_name=conflict_resolver&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
+
