@@ -268,6 +268,8 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             }
             $x++;
         }
+        $this->tpl_data['TotalItems'] = $this->TotalItems;
+
         return true;
     }
 }
