@@ -45,12 +45,18 @@ var FeedbackPanelContent = React.createClass({
       });
   },
     render: function(){
-	if (this.props.feedback_level == "instrument"){
-	   var table_headers = <tr className="info"><td>Fieldname</td><td>Author</td></tr>
-	}
-	else{
-	    var table_headers = <tr className="info"><td>Author</td></tr>
-	}
+      var table_headers = '';
+    	if (this.props.feedback_level == "instrument") {
+    	  table_headers = <tr className="info"><td>Fieldname</td><td>Author</td></tr>
+    	} else {
+    	    var table_headers = (
+            <tr className="info">
+              <td>Type</td>
+              <td>Author</td>
+              <td>Action</td>
+            </tr>
+          );
+    	}
 
     if (this.props.threads.length){
       var currentEntryToggled = this.state.currentEntryToggled;
@@ -63,11 +69,23 @@ var FeedbackPanelContent = React.createClass({
         else{
           var thisRowCommentToggled = false;
         }
-          return <FeedbackPanelRow key={row.FeedbackID} commentToggled = {thisRowCommentToggled} feedbackID={row.FeedbackID}
-	  sessionID={that.props.sessionID} type={row.Type}
-        commentID={that.props.commentID} candID={that.props.candID} status={row.QC_status} date={row.Date}
-        commentToggle={that.markCommentToggle.bind(this, index)} fieldname={row.FieldName} author={row.User}
-        onClickClose={this.closeThread.bind(this,index)} onClickOpen={that.props.open_thread.bind(this,index)}/>
+          return (
+            <FeedbackPanelRow key={row.FeedbackID}
+                              commentToggled = {thisRowCommentToggled}
+                              feedbackID={row.FeedbackID}
+	                            sessionID={that.props.sessionID}
+                              type={row.Type}
+                              commentID={that.props.commentID}
+                              candID={that.props.candID}
+                              status={row.QC_status}
+                              date={row.Date}
+                              commentToggle={that.markCommentToggle.bind(this, index)}
+                              fieldname={row.FieldName}
+                              author={row.User}
+                              onClickClose={this.closeThread.bind(this,index)}
+                              onClickOpen={that.props.open_thread.bind(this,index)}
+            />
+          )
       }.bind(this));
 
 	    var table =
@@ -129,8 +147,14 @@ var FeedbackPanelRow = React.createClass({
       }
     });
   },
-  toggle_entries: function(){
-    this.setState({thread_entries_toggled: !this.state.thread_entries_toggled});
+  toggle_entries: function(newComment){
+    var toggle = false;
+    if (newComment) {
+      toggle = true;
+    } else {
+      toggle = !this.state.thread_entries_toggled;
+    }
+    this.setState({thread_entries_toggled: toggle});
   },
   toggle_thread_comment: function(){
 
@@ -188,28 +212,27 @@ var FeedbackPanelRow = React.createClass({
     }
     return(
       <tbody>
-	<tr>
-	{this.props.fieldname? <td>{this.props.fieldname}<br/>{this.props.type}</td> : <td>{this.props.type}</td>}
-   
-      <td>{this.props.author} on:<br/>{this.props.date}</td>
-      <td>
-      <div className="btn-group">
-      <button name ="thread_button" type="button" className={buttonClass} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      {buttonText}
-      <span className="caret"></span>
-      </button>
-      <ul className="dropdown-menu">
-      {dropdown}
-      </ul>
-      </div>
-      <span className={arrow} onClick={this.toggle_entries}></span>
-      {commentButton}
-      </td>
-      </tr>
-      { this.props.commentToggled ?
-        <CommentEntryForm user={this.props.user} onCommentSend={this.new_thread_entry} toggleThisThread={this.toggle_entries.bind(this)}/>: null }
-        {threadEntries}
-        </tbody>
+      	<tr>
+      	  {this.props.fieldname? <td>{this.props.fieldname}<br/>{this.props.type}</td> : <td>{this.props.type}</td>}
+          <td>{this.props.author} on:<br/>{this.props.date}</td>
+          <td>
+            <div className="btn-group">
+              <button name ="thread_button" type="button" className={buttonClass} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {buttonText}
+                <span className="caret"></span>
+              </button>
+              <ul className="dropdown-menu">
+                {dropdown}
+              </ul>
+            </div>
+            <span className={arrow} onClick={this.toggle_entries.bind(this, false)}></span>
+            {commentButton}
+          </td>
+        </tr>
+        {this.props.commentToggled ?
+              <CommentEntryForm user={this.props.user} onCommentSend={this.new_thread_entry} toggleThisThread={this.toggle_entries.bind(this, true)}/>: null }
+              {threadEntries}
+      </tbody>
       );
     }
   });

@@ -45,12 +45,18 @@ var FeedbackPanelContent = React.createClass({displayName: "FeedbackPanelContent
       });
   },
     render: function(){
-	if (this.props.feedback_level == "instrument"){
-	   var table_headers = React.createElement("tr", {className: "info"}, React.createElement("td", null, "Fieldname"), React.createElement("td", null, "Author"))
-	}
-	else{
-	    var table_headers = React.createElement("tr", {className: "info"}, React.createElement("td", null, "Author"))
-	}
+      var table_headers = '';
+    	if (this.props.feedback_level == "instrument") {
+    	  table_headers = React.createElement("tr", {className: "info"}, React.createElement("td", null, "Fieldname"), React.createElement("td", null, "Author"))
+    	} else {
+    	    var table_headers = (
+            React.createElement("tr", {className: "info"}, 
+              React.createElement("td", null, "Type"), 
+              React.createElement("td", null, "Author"), 
+              React.createElement("td", null, "Action")
+            )
+          );
+    	}
 
     if (this.props.threads.length){
       var currentEntryToggled = this.state.currentEntryToggled;
@@ -63,11 +69,23 @@ var FeedbackPanelContent = React.createClass({displayName: "FeedbackPanelContent
         else{
           var thisRowCommentToggled = false;
         }
-          return React.createElement(FeedbackPanelRow, {key: row.FeedbackID, commentToggled: thisRowCommentToggled, feedbackID: row.FeedbackID, 
-	  sessionID: that.props.sessionID, type: row.Type, 
-        commentID: that.props.commentID, candID: that.props.candID, status: row.QC_status, date: row.Date, 
-        commentToggle: that.markCommentToggle.bind(this, index), fieldname: row.FieldName, author: row.User, 
-        onClickClose: this.closeThread.bind(this,index), onClickOpen: that.props.open_thread.bind(this,index)})
+          return (
+            React.createElement(FeedbackPanelRow, {key: row.FeedbackID, 
+                              commentToggled: thisRowCommentToggled, 
+                              feedbackID: row.FeedbackID, 
+	                            sessionID: that.props.sessionID, 
+                              type: row.Type, 
+                              commentID: that.props.commentID, 
+                              candID: that.props.candID, 
+                              status: row.QC_status, 
+                              date: row.Date, 
+                              commentToggle: that.markCommentToggle.bind(this, index), 
+                              fieldname: row.FieldName, 
+                              author: row.User, 
+                              onClickClose: this.closeThread.bind(this,index), 
+                              onClickOpen: that.props.open_thread.bind(this,index)}
+            )
+          )
       }.bind(this));
 
 	    var table =
@@ -129,8 +147,14 @@ var FeedbackPanelRow = React.createClass({displayName: "FeedbackPanelRow",
       }
     });
   },
-  toggle_entries: function(){
-    this.setState({thread_entries_toggled: !this.state.thread_entries_toggled});
+  toggle_entries: function(newComment){
+    var toggle = false;
+    if (newComment) {
+      toggle = true;
+    } else {
+      toggle = !this.state.thread_entries_toggled;
+    }
+    this.setState({thread_entries_toggled: toggle});
   },
   toggle_thread_comment: function(){
 
@@ -188,28 +212,27 @@ var FeedbackPanelRow = React.createClass({displayName: "FeedbackPanelRow",
     }
     return(
       React.createElement("tbody", null, 
-	React.createElement("tr", null, 
-	this.props.fieldname? React.createElement("td", null, this.props.fieldname, React.createElement("br", null), this.props.type) : React.createElement("td", null, this.props.type), 
-   
-      React.createElement("td", null, this.props.author, " on:", React.createElement("br", null), this.props.date), 
-      React.createElement("td", null, 
-      React.createElement("div", {className: "btn-group"}, 
-      React.createElement("button", {name: "thread_button", type: "button", className: buttonClass, "data-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "false"}, 
-      buttonText, 
-      React.createElement("span", {className: "caret"})
-      ), 
-      React.createElement("ul", {className: "dropdown-menu"}, 
-      dropdown
+      	React.createElement("tr", null, 
+      	  this.props.fieldname? React.createElement("td", null, this.props.fieldname, React.createElement("br", null), this.props.type) : React.createElement("td", null, this.props.type), 
+          React.createElement("td", null, this.props.author, " on:", React.createElement("br", null), this.props.date), 
+          React.createElement("td", null, 
+            React.createElement("div", {className: "btn-group"}, 
+              React.createElement("button", {name: "thread_button", type: "button", className: buttonClass, "data-toggle": "dropdown", "aria-haspopup": "true", "aria-expanded": "false"}, 
+                buttonText, 
+                React.createElement("span", {className: "caret"})
+              ), 
+              React.createElement("ul", {className: "dropdown-menu"}, 
+                dropdown
+              )
+            ), 
+            React.createElement("span", {className: arrow, onClick: this.toggle_entries.bind(this, false)}), 
+            commentButton
+          )
+        ), 
+        this.props.commentToggled ?
+              React.createElement(CommentEntryForm, {user: this.props.user, onCommentSend: this.new_thread_entry, toggleThisThread: this.toggle_entries.bind(this, true)}): null, 
+              threadEntries
       )
-      ), 
-      React.createElement("span", {className: arrow, onClick: this.toggle_entries}), 
-      commentButton
-      )
-      ), 
-       this.props.commentToggled ?
-        React.createElement(CommentEntryForm, {user: this.props.user, onCommentSend: this.new_thread_entry, toggleThisThread: this.toggle_entries.bind(this)}): null, 
-        threadEntries
-        )
       );
     }
   });
