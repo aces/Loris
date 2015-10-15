@@ -221,7 +221,7 @@ class NDB_Menu_Filter extends NDB_Menu
             if (isset($values[$formKey])) {
                 // Call to form->getValue will apply all the form filters that
                 // will modify the submitted data
-                $filteredValue = $this->form->getValue($formKey, $values[$formKey]);
+                $filteredValue = $values[$formKey];
                 if ($filteredValue !== '') {
                     if (in_array($dbField, $this->validFilters)) {
                         $newFormFilters[$dbField] = $filteredValue;
