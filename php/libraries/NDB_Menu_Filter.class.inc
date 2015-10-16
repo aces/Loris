@@ -596,6 +596,7 @@ class NDB_Menu_Filter extends NDB_Menu
         $config =& NDB_Config::singleton();
         // configure the page pagination
         $rowsPerPage = $config->getSetting('rowsPerPage');
+
         $pageID = isset($_GET['pageID']) ? $_GET['pageID'] : 1;
 
         $this->tpl_data['rowsPerPage'] = $rowsPerPage;
