@@ -1,7 +1,7 @@
 <script language="javascript" src="GetJS.php?Module=configuration&file=project.js">
 </script>
 <p>Use this page to manage the configuration of existing projects, or to add a new one.</p>
-<p>To configure study subprojects <a href="{$baseurl}/main.php?test_name=configuration&subtest=subproject">click here</a>.</p>
+<p>To configure study subprojects <a href="main.php?test_name=configuration&subtest=subproject">click here</a>.</p>
 
 <div class="col-md-3">
 <ul class="nav nav-pills nav-stacked" role="tablist" data-tabs="tabs">
