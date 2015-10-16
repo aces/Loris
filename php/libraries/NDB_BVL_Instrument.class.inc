@@ -1390,7 +1390,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
         $fieldValue = $db->pselectOne($query, array('CID' => $this->getCommentID()));
 
-        if (!empty($fieldValue) && !$db->isError($fieldValue)) {
+        if (!empty($fieldValue)) {
             return $fieldValue;
         }
         return false;
