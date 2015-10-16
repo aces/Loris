@@ -18,6 +18,12 @@ ini_set('default_charset', 'utf-8');
 require_once "Database.class.inc";
 require_once "NDB_Client.class.inc";
 
+$user =& User::singleton();
+if (!$user->hasPermission('data_team_helper')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 $db          =& Database::singleton();
 $searchArray = array();
 
