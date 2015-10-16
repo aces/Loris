@@ -190,9 +190,21 @@ class SinglePointLogin
                . ' the passwords do not match';
         }
 
-        // check that password has changed
-        if (User::MD5Unsalt($_POST['password'], $data['Password_md5'])) {
-            $this->_lastError = 'You cannot keep the same password';
+        // Keeping the same password is not allowed
+        // 1. If we are using PHP >= 5.5 and user has a value in column
+        // Password_hash then use function password_verify to make sure that the
+        // password changed
+        // 2. If we are using PHP < 5.5 or if there is no value in column
+        // Password_hash for the user, use "old" MD5Unsalt to make sure password
+        // changed
+        if (function_exists('password_verify') && !empty($data['Password_hash'])) {
+            if (password_verify($_POST['password'], $data['Password_hash'])) {
+                $this->_lastError = 'You cannot keep the same password';
+            }
+        } else {
+            if (User::MD5Unsalt($_POST['password'], $data['Password_md5'])) {
+                $this->_lastError = 'You cannot keep the same password';
+            }
         }
 
         // if errors
