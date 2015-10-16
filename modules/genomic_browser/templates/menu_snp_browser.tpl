@@ -252,7 +252,7 @@
       {/if} 
       <!-- display pagination links -->
       {if {$resultcount} != '' && $resultcount > 25}  
-        <td align="right">Pages:&nbsp;&nbsp;&nbsp; {$page_links}</td>
+        <td align="right" id="pageLinks"></td>
       {/if}
     </tr>
     </table>
@@ -293,3 +293,17 @@
   </div>
 </div>
 <br>
+
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/main.php?test_name=genomic_browser&submenu=snp_browser&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
+

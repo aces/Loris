@@ -110,7 +110,7 @@
     <td class="controlPanelSection"><a href="main.php?test_name=final_radiological_review&subtest=final_radiological_review">Create new review</a></td>
     *}
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
 </div>
@@ -149,4 +149,17 @@
     <!-- end data table -->
     </table>
 </div>
+
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/main.php?test_name=final_radiological_review&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
 

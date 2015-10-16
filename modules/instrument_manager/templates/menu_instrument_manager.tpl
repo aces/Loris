@@ -30,7 +30,7 @@ Automatic uploading of instruments has been disabled.
 <tr>
     <!-- title -->
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
 </div>
@@ -64,3 +64,17 @@ Automatic uploading of instruments has been disabled.
     </tbody>
 <!-- end data table -->
 </table>
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/main.php?test_name=instrument_manager&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
+
+
