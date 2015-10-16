@@ -53,16 +53,21 @@ FilterField = React.createClass({
         var item = <div></div>;
         if(this.props.Type === 'Text') {
             item = <div className="col-sm-12 col-md-8">
-                    <input name={this.props.FormName} type="text" className="form-control input-sm" />
+                    <input name={this.props.FormName} type="text" className="form-control input-sm"
+                            defaultValue={this.props.Value}/>
                 </div>
         }
         if(this.props.Type === 'Dropdown') {
             var that = this;
             var options = Object.keys(this.props.Options).map(function (keyID) {
+                var selected;
                 if (keyID === "") {
                     return;
                 }
-                return <option value={keyID}>{that.props.Options[keyID]}</option>;
+                if (keyID === that.props.Value) {
+                    selected = "selected";
+                }
+                return <option value={keyID} selected={selected}>{that.props.Options[keyID]}</option>;
             });
             options.unshift(<option value="">All</option>);
             item =  <div className="col-sm-12 col-md-8">
