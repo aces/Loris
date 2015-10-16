@@ -108,7 +108,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=conflict_resolver&pageID=" + pageNum
+        location.href="{$baseurl}/main.php?test_name=datadict&pageID=" + pageNum
     },
     Active: {$pageID}
 });
