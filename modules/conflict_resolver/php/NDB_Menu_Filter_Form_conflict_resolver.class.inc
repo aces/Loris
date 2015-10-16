@@ -52,8 +52,6 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
      */
     function _process($values)
     {
-        print_r($values); // die();
-        
         if (!is_array($values) || count($values) == 0) {
             return true;
         }
