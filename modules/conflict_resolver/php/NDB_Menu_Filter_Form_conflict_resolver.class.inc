@@ -52,6 +52,8 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
      */
     function _process($values)
     {
+        print_r($values); // die();
+        
         if (!is_array($values) || count($values) == 0) {
             return true;
         }
@@ -61,7 +63,8 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         $user =& User::singleton();
 
         foreach ($values AS $key => $val) {
-            if ($val != 'none') {
+            // The only valid values are 1, 2 or none.  Therefore we are only allowing an update if 1 or 2 rather than different from none.
+            if (($val == 1) || ($val == 2)) {
                 $hash = $key;
                 $row  = $DB->pselectRow(
                     "SELECT cr.ConflictID, cr.TableName, cr.ExtraKeyColumn,
