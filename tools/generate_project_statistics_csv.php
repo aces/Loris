@@ -98,8 +98,6 @@ foreach ($queries as $query) {
 
             $data_size = (float)substr($data[0], 0, -2);
             $data_unit = rtrim(substr($data[0], -2));
-//            print "Size: $data_size ";
-//            print "unit: " . $data_unit . "\n";
             foreach ($units_array as $unit => $numBytes) {
                 if ($unit == $data_unit) {
                     $sum += $data_size * $numBytes;
@@ -109,7 +107,6 @@ foreach ($queries as $query) {
         }
         $project_statistics[$headers[$i]] = $sum;
         $i++;
-//        print "SUM: " . $sum . "\n";
     }
 }
 
