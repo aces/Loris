@@ -81,7 +81,6 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 
 			$x++;
 		}
-        $this->tpl_data['TotalItems'] = $this->TotalItems;
 		return true;
 	}
 

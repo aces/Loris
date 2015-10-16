@@ -247,7 +247,6 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             }
             $x++;
         }
-        $this->tpl_data['TotalItems'] = $this->TotalItems;
     }
 
     /**
