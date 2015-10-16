@@ -44,7 +44,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     {
         // create user object
         $user = User::singleton();
-        return $user->hasPermission('mri_upload');
+        return $user->hasPermission('imaging_uploader');
     }
 
     /**
