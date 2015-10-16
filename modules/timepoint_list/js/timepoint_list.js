@@ -25,4 +25,27 @@ $(document).ready(function() {
 
         form.appendTo('body').submit();
     });
+    
+    $(".timepoint_imaging_datasets").click(function(e) {
+        e.preventDefault();
+        var form = $('<form />', {
+            "action" : "main.php?test_name=imaging_browser",
+            "method" : "post"
+        });
+        var values = {
+            "reset" : "true",
+            "pscid" : this.dataset.pscid,
+            "filter" : "Show Data"
+        };
+
+        $.each(values, function(name, value) {
+            $("<input />", {
+                type: 'hidden',
+                name: name,
+                value: value
+            }).appendTo(form);
+        });
+
+        form.appendTo('body').submit();
+    });
 });
