@@ -30,7 +30,7 @@
 
             <ul>
     {section name=error loop=$error_message}
-                <li><strong>{$error_message[error]}</strong></li>
+                <li style="color: red;"><strong>{$error_message[error]}</strong></li>
     {/section}
             </ul>
 {/if}
