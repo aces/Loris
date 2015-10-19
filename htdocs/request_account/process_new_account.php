@@ -75,13 +75,13 @@ try {
 $err = array();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if (!checkLen('name')) {
-        $err[] = 'The First Name field is empty!';
+        $err[] = 'The minimum length for First Name field is 3 characters';
     }
     if (!checkLen('lastname')) {
-         $err[] = 'The Last Name field is empty!';
+         $err[] = 'The minimum length for Last Name field is 3 characters';
     }
     if (!checkLen('from')) {
-          $err[] = 'The Email Address field is empty!';
+          $err[] = 'Your email is not valid!';
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
           $err[] = 'Your email is not valid!';
     }
