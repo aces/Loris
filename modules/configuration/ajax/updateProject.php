@@ -11,6 +11,13 @@
 * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
 * @link     https://github.com/aces/Loris
 */
+
+$user =& User::singleton();
+if (!$user->hasPermission('config')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
