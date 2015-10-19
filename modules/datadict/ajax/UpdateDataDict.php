@@ -1,7 +1,7 @@
 <?php
 
 $user =& User::singleton();
-if (!$user->hasPermission('data_dict_view') && !$user->hasPermission('data_dict_edit')) {
+if (!$user->hasPermission('data_dict_edit')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
