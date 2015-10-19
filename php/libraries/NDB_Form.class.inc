@@ -90,6 +90,11 @@ class NDB_Form extends NDB_Page
             throw new Exception("Form does not exist: $name $page", 404);
         }
 
+        //set the baseurl of the tpl_data
+        $config =& NDB_Config::singleton();
+        $www    = $config->getSetting('www');
+        $obj->tpl_data['baseurl'] = $www['url'];
+
         return $obj;
     }
 
