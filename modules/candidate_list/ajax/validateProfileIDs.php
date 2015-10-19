@@ -15,7 +15,8 @@
 $user =& User::singleton();
 $site =& Site::singleton($user->getData('CenterID'));
 if (!($user->hasPermission('access_all_profiles')
-            || ($site->isStudySite() && $user->hasPermission('data_entry')))) {
+    || ($site->isStudySite() && $user->hasPermission('data_entry')))
+) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
