@@ -16,6 +16,12 @@
  * @link     https://github.com/aces/Loris
  */
 
+$user =& User::singleton();
+if (!$user->hasPermission('server_processes_manager')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 require_once "ServerProcessesMonitor.class.inc";
 
 $pids   = explode('_', $_REQUEST['ids']);

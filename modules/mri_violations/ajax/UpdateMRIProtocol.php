@@ -1,4 +1,11 @@
 <?php
+
+$user =& User::singleton();
+if (!$user->hasPermission('violated_scans_edit')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 ini_set('default_charset', 'utf-8');
 
 require_once "Database.class.inc";

@@ -13,15 +13,23 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-header("content-type:application/json");
+
 ini_set('default_charset', 'utf-8');
 require_once "Database.class.inc";
 require_once 'NDB_Config.class.inc';
 require_once 'NDB_Client.class.inc';
+
+$user =& User::singleton();
+if (!$user->hasPermission('data_team_helper')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 $config =& NDB_Config::singleton();
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
+header("content-type:application/json");
 
 require_once "Utility.class.inc";
 
