@@ -1325,7 +1325,6 @@ class LorisForm
     {
         $retVal = array();
         $this->getGroupValues(array_keys($_REQUEST), $retVal);
-        print "VALUES SIZE: " . count($retVal);
         return $retVal;
     }
 
