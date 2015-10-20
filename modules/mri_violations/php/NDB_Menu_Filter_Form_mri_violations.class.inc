@@ -310,7 +310,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
         $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
-        $this->addBasicText('Filename', 'File name');
+        $this->addBasicText('Filename', 'MincFile');
         $this->addBasicText('SeriesUID', 'Series UID');
         $this->addSelect("ProblemType", "Type of problem", $problemOptions);
 
