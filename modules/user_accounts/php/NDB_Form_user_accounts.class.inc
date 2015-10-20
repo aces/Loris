@@ -433,13 +433,16 @@ class NDB_Form_User_Accounts extends NDB_Form
                     . "style=\"text-align: center; margin-top: 5px;\">"
                     .ucwords($row['type'])
                     . '</h3>'
-                    . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
+                    . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">",
+                    array(),
+                    false
                 );
             }
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
-                "$row[description]<br>",
-                array("class" => "perm_$lastRole")
+                htmlspecialchars($row[description]) . "<br>",
+                array("class" => "perm_$lastRole"),
+                false
             );
         }
         $this->addGroup($group, 'PermID_Group', 'Permissions', "", false);
@@ -465,13 +468,17 @@ class NDB_Form_User_Accounts extends NDB_Form
             . "<h3 id=\"header_supervisors\" class=\"perm_header button\" "
             . "style=\"text-align: center; margin-top: 5px;\"> "
             . "Data Supervisors to Email </h3> "
-            . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">"
+            . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">",
+            array(),
+            false
         );
 
         foreach ($results as $row) {
             $group[] = $this->createCheckbox(
-                'supervisorEmail['.$row['email'].']',
-                "$row[Real_Name]<br>"
+                'supervisorEmail['. htmlspecialchars($row['email']) .']',
+                "$row[Real_Name]<br>",
+                array(),
+                false
             );
         }
 
