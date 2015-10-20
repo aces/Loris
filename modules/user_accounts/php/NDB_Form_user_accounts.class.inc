@@ -338,6 +338,7 @@ class NDB_Form_User_Accounts extends NDB_Form
              'oninvalid' => $onInvalidMsg,
              'onchange'  => "this.setCustomValidity('')",
              'pattern'   => '^\s*\S.{0,119}\s*$',
+             'required'  => true,
             )
         );
         // The supplied pattern is:
@@ -354,6 +355,7 @@ class NDB_Form_User_Accounts extends NDB_Form
              'oninvalid' => $onInvalidMsg,
              'onchange'  => "this.setCustomValidity('')",
              'pattern'   => '^\s*\S.{0,119}\s*$',
+             'required'  => true,
             )
         );
 
@@ -530,6 +532,7 @@ class NDB_Form_User_Accounts extends NDB_Form
              'oninvalid' => "this.setCustomValidity('First name is required and should not exceed 120 characters')",
              'onchange'  => "this.setCustomValidity('')",
              'pattern'   => '^\s*\S.{0,119}\s*$',
+             'required'  => true,
             )
         );
         // The supplied pattern is:
@@ -543,6 +546,7 @@ class NDB_Form_User_Accounts extends NDB_Form
              'oninvalid' => "this.setCustomValidity('Last name is required and should not exceed 120 characters')",
              'onchange'  => "this.setCustomValidity('')",
              'pattern'   => '^\s*\S.{0,119}\s*$',
+             'required'  => true,
             )
         );
 
