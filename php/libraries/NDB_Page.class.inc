@@ -156,7 +156,7 @@ class NDB_Page
      *
      * @return none
      */
-    function addLabel($label, $toEntities)
+    function addLabel($label, $toEntities=true)
     {
         $this->form->addElement('static', null, $label, $toEntities);
     }
