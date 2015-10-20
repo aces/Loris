@@ -37,8 +37,8 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
         $fileName = $_FILES["file"]["name"];
 
         // Escape OS DIRECTORY_SEPARATOR from fileName and user
-        $user     = str_replace(DIRECTORY_SEPARATOR, "", $user);
-        $fileName = str_replace(DIRECTORY_SEPARATOR, "", $fileName);
+        $user     = str_replace(DIRECTORY_SEPARATOR, "_", $user);
+        $fileName = str_replace(DIRECTORY_SEPARATOR, "_", $fileName);
 
         // __DIR__ is the document_repository ajax directory
         // when this script is executing. Go up a level to the
