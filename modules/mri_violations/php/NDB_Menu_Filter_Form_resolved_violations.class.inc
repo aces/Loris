@@ -106,7 +106,6 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
                     array('hash' => $key)
                     );
-                //echo "ID[2] = ".$ID_mri_violations_log."\n";
                 if(!empty($ID_mri_violations_log)){
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
                     $newlyResolved['ExtID'] = $ID_mri_violations_log;
@@ -119,14 +118,11 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
                     array('hash' => $key)
                     );
-                //echo "ID[3] = ".$ID_MRICandidateErrors."\n";
                 if(!empty($ID_MRICandidateErrors)){
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                     $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
                 } 
-                //echo "DO INSERT NOW!\n";
-                var_dump($newlyResolved);
-                $DB->insert('violations_resolved', $newlyResolved);                
+                $DB->insert('violations_resolved', $newlyResolved);
             }
         }
         
@@ -281,10 +277,22 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
+        if (Utility::isErrorX($user)) {
+            return PEAR::raiseError("User Error: ".$user->getMessage());
+        }
+        $config =& NDB_Config::singleton();
+        $study = $config->getSetting('study');
+        $dateOptions = array(
+            'language'        => 'en',
+            'format'          => 'YMd',
+            'addEmptyOption'  => true,
+            'minYear'         => $study['startYear'] - $study['ageMax'],
+            'maxYear'         => $study['endYear'] - $study['ageMin']
+        );
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
-        $this->addBasicText('TimeRun', 'Time Run');
-        $this->addBasicText('Filename', 'File name');
+        $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
+        $this->addBasicText('Filename', 'MincFile');
         $this->addBasicText('SeriesUID', 'Series UID');
         $this->addSelect(
             "ProblemType",
