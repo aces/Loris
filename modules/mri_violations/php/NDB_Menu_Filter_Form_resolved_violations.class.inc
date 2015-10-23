@@ -48,9 +48,6 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         }
         $DB =& Database::singleton();
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            throw new LorisException("User Error: ".$user->getMessage());
-        }
 
         foreach ($values AS $key=>$val) {
             $hash = $key;
@@ -277,9 +274,6 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            throw new LorisException("User Error: ".$user->getMessage());
-        }
         $config =& NDB_Config::singleton();
         $study = $config->getSetting('study');
         $dateOptions = array(
@@ -341,17 +335,11 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
-            if(Utility::isErrorX($sites)) {
-                throw new LorisException("DB Error: ".$sites->getMessage());
-            }
             if(is_array($sites)) $sites = array('' => 'All') + $sites;
         }
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (Utility::isErrorX($site)) {
-                throw new LorisException("DB Error: ".$site->getMessage());
-            }
             if ($site->isStudySite()) {
                 $sites = array($user->getData('CenterID') => $user->getData('Site'));
             }
