@@ -2,16 +2,6 @@
 <link rel="stylesheet" href="css/c3.css">
 <script src="js/d3.min.js" charset="utf-8"></script>
 <script src="js/c3.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("#violationsTable").DynamicTable({ "freezeColumn" : "PatientName" });
-    });
-</script>
-<style>
-    .static-col {
-        width: 12em;
-    }
-</style>
 <div class="row">
     <div class="col-sm-12">
         <div class="col-md-8 col-sm-8">

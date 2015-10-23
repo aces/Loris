@@ -42,7 +42,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
         // create user object
         $user =& User::singleton();
         if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
+            throw new LorisException("User Error: ".$user->getMessage());
         }
 
         $this->tpl_data['violated_scans_modifications']
@@ -61,7 +61,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
         // create user object
         $user =& User::singleton();
         if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
+            throw new LorisException("User Error: ".$user->getMessage());
         }
         $this->columns = array(
             'mpv.CandID',

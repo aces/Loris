@@ -24,3 +24,6 @@
     font-size: 16px;
     color: inherit
 }
+.static-col {
+    width: 12em;
+}

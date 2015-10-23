@@ -1,14 +1,4 @@
 <script src="js/filterControl.js" type="text/javascript"></script>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("#violationsTable").DynamicTable({ "freezeColumn" : "PatientName" });
-    });
-</script>
-<style>
-    .static-col {
-        width: 12em;
-    }
-</style>
 <div class="row">
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
