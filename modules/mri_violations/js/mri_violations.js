@@ -31,6 +31,7 @@ $(document).ready(function(){
 
         form.appendTo('body').submit();
     });
+    $("#violationsTable").DynamicTable({ "freezeColumn" : "PatientName" });
 });
 $(window).resize(function(){
     Table.checkOverflow("content", "scrollRight", "scrollLeft");
