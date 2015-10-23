@@ -89,6 +89,9 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-4 col-sm-8 submit-area">
+                        <div class="alert alert-warning">
+                          <strong>Warning!</strong> To create timepoints for this new subproject, a visitLabel entry will have to be added in the config.xml file.<br> Documentation can be found under "Project-Customization > Study Variables > Visit labels" in the <a href="https://github.com/aces/Loris/wiki/Project-Customization" target="_blank">Wiki</a>.
+                        </div>
                         <button id="savesubprojectnew" class="btn btn-primary savesubproject">Save</button>
                         <button class="btn btn-default" type="reset">Reset</button>
                         <label class="saveStatus"></label>
