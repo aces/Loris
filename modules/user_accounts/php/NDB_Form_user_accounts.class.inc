@@ -200,18 +200,8 @@ class NDB_Form_User_Accounts extends NDB_Form
         // update the user permissions if applicable
         if (!empty($permIDs)) {
             $success = $user->removePermissions();
-
             foreach ($permIDs as $key => $value) {
-                if ($value == 0) {
-                    //if the permission existed before and it's removed now///
-                    ///Then insert into the user_account_history as 'D'
-                    if (in_array($key, $current_permissionids)) {
-                        $user->insertIntoUserAccountHistory($key, 'D');
-                        $permissionsRemoved[]
-                            = $this->getDescriptionUsingPermID($key);
-                    }
-                    unset($permIDs[$key]);
-                } else {
+                if ($value == 'on') {
                     /* if the user didn't have the permission
                        and the permission is now assigned then insert
                        insert into the user_account_history as 'I'
@@ -221,6 +211,15 @@ class NDB_Form_User_Accounts extends NDB_Form
                         $permissionsAdded[]
                             = $this->getDescriptionUsingPermID($key);
                     }
+                } else {
+                    //if the permission existed before and it's removed now///
+                    ///Then insert into the user_account_history as 'D'
+                    if (in_array($key, $current_permissionids)) {
+                        $user->insertIntoUserAccountHistory($key, 'D');
+                        $permissionsRemoved[]
+                            = $this->getDescriptionUsingPermID($key);
+                    }
+                    unset($permIDs[$key]);
                 }
             }
 
