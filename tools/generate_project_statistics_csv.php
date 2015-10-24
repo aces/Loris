@@ -9,8 +9,8 @@
 set_include_path(get_include_path().":../php/libraries:");
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
-require_once"Utility.class.inc";
-require_once"Database.class.inc";
+require_once "Utility.class.inc";
+require_once "Database.class.inc";
 
 $client = new NDB_Client();
 $client->makeCommandLine();
@@ -80,7 +80,7 @@ $i = 1;
 
 foreach ($queries as $query) {
     if ($i != 7) {
-        foreach ($$query as $j => $row) {
+        foreach ($query as $j => $row) {
             foreach ($row as $k => $count) {
                 $project_statistics[$headers[$i]] = $count;
             }
