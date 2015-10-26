@@ -333,6 +333,7 @@ class NDB_Caller extends PEAR
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
         }
+        $this->page = $form;
         $html = $form->display();
         return $html;
     }
@@ -360,6 +361,7 @@ class NDB_Caller extends PEAR
 
         $success = $form->save();
 
+        $this->page = $form;
         $html = $form->display();
 
         return $html;
@@ -444,6 +446,7 @@ class NDB_Caller extends PEAR
             }
         }
 
+        $this->page = $instrument;
         $html = $instrument->display();
 
         return $html;
