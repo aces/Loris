@@ -352,5 +352,23 @@ class NDB_Form_Dashboard extends NDB_Form
             }
         }
     }
+
+    function getJSDependencies() {
+        $factory = NDB_Factory::singleton();
+        $config = $factory->config();
+
+        $www = $config->getSetting('www');
+        $baseurl = $www['url'];
+
+        $baseDeps = parent::getJSDependencies();
+
+        return array_merge($baseDeps,
+            array(
+                $baseurl . '/js/d3.min.js',
+                $baseurl . '/js/c3.min.js'
+            )
+        );
+
+    }
 }
 ?>
