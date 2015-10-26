@@ -134,7 +134,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
                           //'COALESCE(pso.ID,1) AS Participant_Status',
         $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Gender';
-        $this->order_by = 'psc.Name, c.CandID DESC';
+        $this->order_by = 'c.PSCID ASC';
 
         if ($useProjects) {
             $this->validFilters[] = 'c.ProjectID';
