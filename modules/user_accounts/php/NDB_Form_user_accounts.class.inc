@@ -628,21 +628,21 @@ class NDB_Form_User_Accounts extends NDB_Form
         //============================================
         if ($this->isCreatingNewUser()) {
             // Clicked on "UID == email" and specified a UID
-            if (!is_null($values['UserID']) && $values['NA_UserID'] == 'on') {
+            if (!empty($values['UserID']) && $values['NA_UserID'] == 'on') {
                 $errors['UserID_Group']
                     = 'You cannot enter a user name '
                     . 'if you want it to match the email address';
-            } elseif (is_null($values['UserID']) && $values['NA_UserID'] != 'on') {
+            } elseif (empty($values['UserID']) && $values['NA_UserID'] != 'on') {
                 // Not clicked on "UID == email" and not specified a UID
                 $errors['UserID_Group']
                     = 'You must enter a user name '
                     . 'or choose to make it match the email address';
-            } elseif (!is_null($values['UserID'])
+            } elseif (!empty($values['UserID'])
                 || ($values['NA_UserID'] == 'on' && $values['Email'])
             ) {
                 // Either specified a UID or clicked on "UID = email"
                 // with a non-empty email
-                $effectiveUID = is_null($values['UserID'])
+                $effectiveUID = empty($values['UserID'])
                     ? $values['Email'] : $values['UserID'];
 
                 // check username's uniqueness
@@ -676,7 +676,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             //so either password should be set or
             // password should be generated
             if (is_null($pass)
-                && is_null($values['Password_md5'])
+                && empty($values['Password_md5'])
                 && $values['NA_Password'] != 'on'
             ) {
                 $errors['Password_Group']
