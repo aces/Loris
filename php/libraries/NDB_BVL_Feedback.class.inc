@@ -1112,7 +1112,7 @@ class NDB_BVL_Feedback
                         "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
                         array('testName' => $test_name)
                     );
-                    if ($instruments_q == 1) {
+                    if ($instruments_q[0]['Count(*)'] == 1) {
                         return true;
                     }
                 }
