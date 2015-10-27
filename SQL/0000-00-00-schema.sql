@@ -2043,7 +2043,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='violated_scans_view_allsites' AND m.Label='MRI Violated Scans';
 
--- MRI Upload
+-- Imaging Uploader
 INSERT INTO LorisMenuPermissions (MenuID, PermID) p CROSS JOIN LorisMenu m WHERE p.code='imaging_uploader' AND m.Label='Imaging Uploader';
 
 -- Statistics -- Config file currently does not require any permission 
