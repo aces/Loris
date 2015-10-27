@@ -543,24 +543,25 @@ class NDB_Page
      *
      * @return array of strings with URLs to retrieve JS resources
      */
-    function getJSDependencies() {
+    function getJSDependencies()
+    {
         $factory = NDB_Factory::singleton();
-        $config = $factory->config();
+        $config  = $factory->config();
 
-        $www = $config->getSetting('www');
+        $www     = $config->getSetting('www');
         $baseurl = $www['url'];
 
         return array(
-            $baseurl . '/js/jquery/jquery-1.11.0.min.js',
-            $baseurl . '/js/modernizr.min.js',
-            $baseurl . '/js/react-with-addons-0.13.3.min.js',
-            $baseurl . '/js/components/PaginationLinks.js',
-            $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
-            $baseurl . '/js/jquery.dynamictable.js',
-            $baseurl . '/js/jquery.fileupload.js',
-            $baseurl . '/js/polyfiller.js',
-            $baseurl . '/bootstrap/js/bootstrap.min.js',
-        );
+                $baseurl . '/js/jquery/jquery-1.11.0.min.js',
+                $baseurl . '/js/modernizr.min.js',
+                $baseurl . '/js/react-with-addons-0.13.3.min.js',
+                $baseurl . '/js/components/PaginationLinks.js',
+                $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
+                $baseurl . '/js/jquery.dynamictable.js',
+                $baseurl . '/js/jquery.fileupload.js',
+                $baseurl . '/js/polyfiller.js',
+                $baseurl . '/bootstrap/js/bootstrap.min.js',
+               );
     }
 }
 ?>
