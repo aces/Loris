@@ -399,7 +399,7 @@ while true; do
             mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-01-Permission.sql
             mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-02-Menus.sql
             mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-03-ConfigTables.sql
-            mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-03-Help.sql
+            mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-04-Help.sql
             echo "Updating Loris admin user's password."
             pw_expiry=$(date --date="6 month" +%Y-%m-%d)
             echo "Updating admin password reset date to be $pw_expiry"
