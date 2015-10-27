@@ -219,7 +219,7 @@ DROP TABLE IF EXISTS `server_processes`;
 CREATE TABLE `server_processes` (
   `id`                int(11) unsigned NOT NULL AUTO_INCREMENT,
   `pid`               int(11) unsigned NOT NULL,
-  `type`              enum('mri_upload') NOT NULL,
+  `type`              enum('imaging_uploader') NOT NULL,
   `stdout_file`       varchar(255) DEFAULT NULL,
   `stderr_file`       varchar(255) DEFAULT NULL,
   `exit_code_file`    varchar(255) DEFAULT NULL,

@@ -157,7 +157,7 @@ class ServerProcessLauncher
     /**
      * Launch an MRI upload process
      *
-     * @param int    $mriUploadId    ID of the MRI upload in the mri_upload table.
+     * @param int    $mriUploadId    ID of the MRI upload in the imaging_uploader table.
      * @param string $sourceLocation location of the MRI file
      *
      * @return int ID (in the database) of the launched process or null

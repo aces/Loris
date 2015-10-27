@@ -1,6 +1,6 @@
 <?php
 /**
- * Mri_upload class file
+ * Imaging_uploader class file
  *
  * PHP version 5
  *
@@ -75,7 +75,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                                's.Visit_label',
                                'mu.IsPhantom',
                               );
-        $this->query        = " FROM mri_upload mu LEFT JOIN session".
+        $this->query        = " FROM imaging_uploader mu LEFT JOIN session".
                               " s ON (s.ID = mu.SessionID)".
                               " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
                               " WHERE 1=1 ";
@@ -315,7 +315,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     }
 
     /**
-     * Inserts into the mri_upload table the following information:
+     * Inserts into the imaging_uploader table the following information:
      *   - UploadedBy, UploadDate, UploadLocation, SessionID and
      *     PatientName
      *
@@ -345,7 +345,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             $user_name = $user->getUsername();
         }
         ///////////////////////////////////////////////////////////////////////
-        ////////////////////Insert values into mri_upload//////////////////////
+        ////////////////////Insert values into imaging_uploader ///////////////
         ///////////////////////////////////////////////////////////////////////
         $date = date('Y-m-d H:i:s');
         ///////////////////////////////////////////////////////////////////////
@@ -375,7 +375,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         }
         //////////////////////////////////////////////////////////////////
         ///Get the directory to which the temp file has been moved to/////
-        /// MRI_upload Incoming directory/////////////////////////////////
+        /// imaging_uploader Incoming directory //////////////////////////
         //////////////////////////////////////////////////////////////////
         $uploaded_file_path = trim(
             $file->getDestinationDirectory() .
@@ -385,7 +385,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///if the DestinationDirectory/getDestinationFilename//////////
         //is not empty, then remove the uploaded directory in the /tmp/
         ////Otherwise keep uploaded directory in the /tmp and insert///
-        ////into the mri_upload table//////////////////////////////////
+        ////into the imaging_uploader table ///////////////////////////
         ///////////////////////////////////////////////////////////////
         if ($uploaded_file_path) {
             $this->removeTempDir();
@@ -401,13 +401,13 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                    'IsPhantom'      => $IsPhantom,
                   );
         $db->Insert(
-            'mri_upload',
+            'imaging_uploader',
             $values
         );
         if ($ImagingUploaderAutoLaunch) {
             // Get MRI upload ID of the upload entry that was just inserted
             $query       = "SELECT UploadID
-                       FROM mri_upload
+                       FROM imaging_uploader
                        WHERE UploadedBy     = :UploadedBy
                        AND   UploadDate     = :UploadDate
                        AND   UploadLocation = :UploadLocation

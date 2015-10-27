@@ -30,7 +30,7 @@ class MriUploadServerProcess extends AbstractServerProcess
     /**
      * String identifying the type of process for all objects of this class.
      */
-    const PROCESS_TYPE = 'mri_upload';
+    const PROCESS_TYPE = 'imaging_uploader';
 
     /**
      * Basename of the file used to set the environment variables before the
@@ -45,7 +45,7 @@ class MriUploadServerProcess extends AbstractServerProcess
     const IMAGING_UPLOAD_FILE_PATH = 'uploadNeuroDB/imaging_upload_file.pl';
 
     /**
-     * ID of the MRI upload request in the mri_upload table.
+     * ID of the MRI upload request in the imaging_uploader table.
      *
      * @var
      */

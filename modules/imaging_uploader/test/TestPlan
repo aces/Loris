@@ -1,7 +1,7 @@
                                     MRI upload module - Test plan
                                     =============================
                                     
-1. Check that you have access to the MRI upload page if you have either the mri_upload or superuser permission.
+1. Check that you have access to the MRI upload page if you have either the imaging_uploader or superuser permission.
 2. Check that when accessing the MRI Upload page, the search result table displays all the uploads done for all users.
 3. Check that the visit label combo box contains all the possible visit labels (taken from Visit_Windows mySQL table).
 4. Try uploading an invalid file (a .jpg or .txt) with syntactically correct CandID, PSCID and visit labels. Make sure
