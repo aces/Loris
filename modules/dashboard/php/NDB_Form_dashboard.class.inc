@@ -353,6 +353,13 @@ class NDB_Form_Dashboard extends NDB_Form
         }
     }
 
+
+    /**
+     * Add dependency on D3 and C3 javascript libraries
+     * for the pretty dashboards in the chart
+     *
+     * @return array of javascript files to be included
+     */
     function getJSDependencies()
     {
         $factory = NDB_Factory::singleton();
