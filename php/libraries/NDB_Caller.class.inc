@@ -237,6 +237,7 @@ class NDB_Caller
                 return $html;
             } else if (file_exists($linstfile)) {
                 $html = $this->loadInstrument($test_name, $subtest, $CommentID);
+
                 $this->type = 'instrument';
                 return $html;
             }
