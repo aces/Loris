@@ -23,9 +23,6 @@ ob_start('ob_gzhandler');
 // Create an output buffer to capture console output, separately from the
 // gzip handler.
 ob_start();
-// start benchmarking
-$timer = new Benchmark_Timer;
-$timer->start();
 
 // load the client
 $client = new NDB_Client;
@@ -38,7 +35,6 @@ $subtest  = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';
 // make local instances of objects
 $config =& NDB_Config::singleton();
 
-$timer->setMarker('Loaded client');
 //--------------------------------------------------
 
 /**
@@ -90,7 +86,6 @@ try {
 
 // the the list of tabs, their links and perms
 $tpl_data['tabs'] = NDB_Config::GetMenuTabs();
-$timer->setMarker('Drew user information');
 
 //--------------------------------------------------
 
@@ -114,7 +109,6 @@ if (!empty($_REQUEST['sessionID'])) {
 
 $link_args['MRIBrowser'] = $argstring;
 
-$timer->setMarker('Configured browser arguments for the MRI browser');
 
 //--------------------------------------------------
 
@@ -182,8 +176,6 @@ if (!empty($_REQUEST['sessionID'])) {
 
 }
 
-$timer->setMarker('Drew the top workspace tables');
-
 //--------------------------------------------------
 
 // load the menu or instrument
@@ -222,8 +214,6 @@ try {
     $tpl_data['error_message'][] = $e->getMessage();
 }
 
-$timer->setMarker('Drew main workspace');
-
 //--------------------------------------------------
 
 try {
@@ -240,8 +230,6 @@ try {
 } catch(Exception $e) {
     $tpl_data['error_message'][] = $e->getMessage();
 }
-
-$timer->setMarker('Drew breadcrumbs');
 
 //--------------------------------------------------
 
@@ -288,20 +276,9 @@ $smarty = new Smarty_neurodb;
 $smarty->assign($tpl_data);
 $smarty->display('main.tpl');
 
-$timer->setMarker('Compiled HTML page');
-
 //--------------------------------------------------
 
 
 
 ob_end_flush();
-
-// timer
-$timer->stop();
-if ($config->getSetting('showTiming')) {
-    // display timer
-    $timer->display();
-}
-
-//print '<pre>'; print_r($tpl_data); print '</pre>';
 ?>
