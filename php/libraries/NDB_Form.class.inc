@@ -91,9 +91,10 @@ class NDB_Form extends NDB_Page
         }
 
         //set the baseurl of the tpl_data
-        $config =& NDB_Config::singleton();
-        $www    = $config->getSetting('www');
-        $obj->tpl_data['baseurl'] = $www['url'];
+        $factory  = NDB_Factory::singleton();
+        $settings = $factory->settings();
+
+        $obj->tpl_data['baseurl'] = $settings->getBaseURL();
 
         return $obj;
     }
