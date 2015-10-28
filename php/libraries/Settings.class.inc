@@ -48,7 +48,8 @@ class Settings
         $this->_config = $_config;
     }
 
-    public function getBaseURL() {
+    public function getBaseURL()
+    {
         $url = getenv("LORIS_BASEURL");
         if (!empty($url)) {
             return $url;
@@ -56,6 +57,7 @@ class Settings
         $www = $this->_config->getSetting('www');
         return $www['url'];
     }
+
     /**
      * Check if sandbox setting is true
      *

@@ -71,7 +71,7 @@ tplFromRequest('sessionID');
 tplFromRequest('commentID');
 tplFromRequest('dynamictabs');
 
-$factory = NDB_Factory::singleton();
+$factory  = NDB_Factory::singleton();
 $settings = $factory->settings();
 
 $tpl_data['baseurl'] = $settings->getBaseURL();
