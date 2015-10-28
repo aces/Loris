@@ -28,7 +28,9 @@ ENV LORIS_SQL_DB=LorisDB
 ENV LORIS_SQL_HOST=mysql
 ENV LORIS_SQL_USER=loris
 ENV LORIS_SQL_PASSWORD=
+ENV LORIS_BASEURL=
 
+EXPOSE 80
 VOLUME ["/var/www/loris/project", "/var/log/apache2", "/var/lib/php5"]
 
 ADD docs/Docker/LorisWeb-EntryPoint.sh /entrypoint.sh
