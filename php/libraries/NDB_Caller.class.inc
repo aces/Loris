@@ -77,7 +77,9 @@ class NDB_Caller extends PEAR
     */
     function load($test_name, $subtest, $CommentID = '', $nextpage=null)
     {
-        $config = NDB_Config::singleton();
+        $factory  = NDB_Factory::singleton();
+        $config   = $factory->config();
+        $settings = $factory->settings();
         // if no first argument, return
         if (empty($test_name)) {
             return;
@@ -86,10 +88,10 @@ class NDB_Caller extends PEAR
             && isset($_POST['login'])
         ) {
             header("HTTP/1.1 303 See Other");
-             $url  = $config->getSetting('url');
-             $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
-             // sending user to the url that was requested
-             header("Location: $url");
+            $url = $settings->getBaseURL();
+            $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
+            // sending user to the url that was requested
+            header("Location: $url");
         }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];

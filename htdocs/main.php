@@ -71,12 +71,10 @@ tplFromRequest('sessionID');
 tplFromRequest('commentID');
 tplFromRequest('dynamictabs');
 
-$url = getenv("LORIS_BASEURL");
-if (empty($url)) {
-    $www = $config->getSetting('www');
-    $url = $www['url'];
-}
-$tpl_data['baseurl'] = $www['url'];
+$factory = NDB_Factory::singleton();
+$settings = $factory->settings();
+
+$tpl_data['baseurl'] = $settings->getBaseURL();
 
 // study title
 $tpl_data['study_title'] = $config->getSetting('title');
