@@ -71,8 +71,11 @@ tplFromRequest('sessionID');
 tplFromRequest('commentID');
 tplFromRequest('dynamictabs');
 
-$www = $config->getSetting('www');
-$tpl_data['baseurl'] = $www['url'];
+$factory = NDB_Factory::singleton();
+$settings = $factory->settings();
+
+$tpl_data['baseurl'] = $settings->getBaseURL();
+
 // study title
 $tpl_data['study_title'] = $config->getSetting('title');
 // draw the user information table
