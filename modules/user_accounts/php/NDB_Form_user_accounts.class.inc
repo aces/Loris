@@ -228,7 +228,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             if (isset($supervisorEmails)) {
                 foreach ($supervisorEmails as $email => $checkValue) {
                     if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
-                        if ($checkValue == 1) {
+                        if ($checkValue == 'on') {
                             $msg_data['current_user'] = $editor->getFullname();
                             $msg_data['study']        = $config->getSetting('title');
                             $msg_data['realname']     = $values['Real_name'];
