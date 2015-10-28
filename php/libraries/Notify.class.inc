@@ -11,7 +11,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once 'PEAR.php';
 /**
  * A static class to encapsulate the notification spooling system
  *
@@ -21,7 +20,7 @@ require_once 'PEAR.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Notify extends PEAR
+class Notify
 {
     /**
      * Spools a new notification message for sending, unless the exact

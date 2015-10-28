@@ -16,7 +16,6 @@
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "PEAR.php";
 
 /**
  * Class that implements a wrapper around a Loris battery.
@@ -27,7 +26,7 @@ require_once "PEAR.php";
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_BVL_Battery extends PEAR
+class NDB_BVL_Battery
 {
     /**
      * ID column of session table - identifies a visit - which is the

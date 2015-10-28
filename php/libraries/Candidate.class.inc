@@ -12,8 +12,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once "PEAR.php";
-
 /* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
