@@ -12,10 +12,7 @@
  */
 namespace Loris\Behavioural;
 require_once 'NDB_Page.class.inc';
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/Array.php';
 require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
-require_once 'HTML/QuickForm/Renderer/Default.php';
 
 /**
  * Base class for all NeuroDB behavioural instruments
