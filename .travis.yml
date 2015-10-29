@@ -15,6 +15,7 @@ before_install:
     - if [ "$TRAVIS_BRANCH" == "master" ]; then
         echo "Do not send pull requests to the master branch, send them to VERSION-dev branches" && exit 1;
       fi
+    - pip install --user codecov
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
     # are hidden when Selenium tries to find them.
@@ -104,3 +105,6 @@ script:
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
+
+after_success:
+    - codecov
