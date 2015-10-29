@@ -2440,7 +2440,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function toJSON()
     {
-        $smarty   = new Smarty_neurodb;
+        $smarty = new Smarty_neurodb;
         //$renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
         $subtests = $this->getSubtestList();
