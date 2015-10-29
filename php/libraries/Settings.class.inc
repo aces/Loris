@@ -48,6 +48,12 @@ class Settings
         $this->_config = $_config;
     }
 
+    /**
+     * Returns the base URL for LORIS to use to
+     * construct URLs in the front end.
+     *
+     * @return string the URL that LORIS is installed at
+     */
     public function getBaseURL()
     {
         $url = getenv("LORIS_BASEURL");
