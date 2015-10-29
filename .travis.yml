@@ -67,15 +67,15 @@ script:
         php -l $i || exit $?;
       done
     # Run unit tests to make sure functions still do what they should.
-    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'LorisUnitTests for php/libraries'
+    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'LorisUnitTests for php/libraries' --coverage-clover=coverage.xml
 
 
     # Run integration tests to make sure everything didn't just
     # break
-    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Core Integration Tests'
+    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Core Integration Tests' --coverage-clover=coverage.xml
 
     # Run integration tests for specific modules
-    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Module Integration Tests'
+    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Module Integration Tests' --coverage-clover=coverage.xml
 
     # Run PHPCS on the entire libraries directory.
     - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
@@ -101,3 +101,6 @@ script:
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
+
+after_success:
+    -bash <(curl -s https://codecov.io/bash)
