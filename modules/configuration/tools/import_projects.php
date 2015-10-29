@@ -38,7 +38,7 @@ if (is_null($argv[$optionpos])
     echo ("-p -> Imports only the projects from the XML.\r\n");
     echo ("-a -> Imports both the subprojects and the projects \r\n");
     echo ("      from the XML.\r\n");
-    exit (2);
+    exit(2);
 }
 if ((isset($argv[$optionpos]) && $argv[$optionpos] === "-s")
     || (isset($argv[$optionpos]) && $argv[$optionpos] === "-a")
