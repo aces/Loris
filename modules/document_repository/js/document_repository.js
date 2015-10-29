@@ -207,11 +207,11 @@ function renderTree(){
             if(!filtered){
                 var dirData = {
                     name: path[depth - 1],
-                    id: path[depth - 1].replace(/[ >()]/g,"_"),
+                    id: path[depth - 1].replace(/[^\w]/gi,"_"),
                     Comment: dir.Comment,
                     parentID: function(){
                         if(depth >= 2)
-                         return path[depth - 2].replace(/[ >()]/g,"_");
+                         return path[depth - 2].replace(/[^\w]/gi,"_");
                         return null;
                     },
                     indent: function(){
@@ -237,7 +237,7 @@ function renderTree(){
                     $("#dir-tree").append(renderDir);
                 } else {
                     //new table layout
-                    $("#" + path[depth - 2].replace(/[ >()]/g,"_") + "a").after(renderDir);
+                    $("#" + path[depth - 2].replace(/[^\w]/gi,"_") + "a").after(renderDir);
                 }
             }
             var files = fileDir[i].Files;
@@ -248,7 +248,7 @@ function renderTree(){
                 Mustache.parse(file);   // optional, speeds up future uses
                 if(!filtered){
                     files[ii].indent = (depth)*60;
-                    files[ii].parentID = path[depth - 1].replace(/[ >()]/g,"_");
+                    files[ii].parentID = path[depth - 1].replace(/[^\w]/gi,"_");
                     files[ii].depth =   function(){
                                             var depthArray = [];
                                             for (var i = 0; i < depth; i++) {
@@ -262,7 +262,7 @@ function renderTree(){
                                             return depthArray;
                                         }
                     var renderedFile = Mustache.render(file, files[ii]);
-                    $("#" + path[depth - 1].replace(/[ >()]/g,"_") + "a").after(renderedFile);
+                    $("#" + path[depth - 1].replace(/[^\w]/gi,"_") + "a").after(renderedFile);
                 } else {
                     files[ii].filtered = true;
                     var renderedFile = Mustache.render(file, files[ii]);

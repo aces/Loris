@@ -87,7 +87,7 @@ class NDB_Caller extends PEAR
         ) {
             header("HTTP/1.1 303 See Other");
              $url  = $config->getSetting('url');
-             $url .= $_SERVER['REQUEST_URI'];
+             $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
              // sending user to the url that was requested
              header("Location: $url");
         }
@@ -267,8 +267,40 @@ class NDB_Caller extends PEAR
 
         $success = $menu->setup();
 
+        if (isset($_REQUEST['format'])) {
+            switch ($_REQUEST['format']) {
+            case 'csv':
+                if (method_exists($menu, "getCSVData")) {
+                    $csv_data = $menu->getCSVData();
+                    header("HTTP/1.1 200 OK");
+                    print $csv_data;
+                    exit(2);
+                } else {
+                    error_log(
+                        "ERROR: This download of this table's data is "
+                        . "not yet implemented."
+                    );
+                    header("HTTP/1.1 501 Not Implemented");
+                    exit(5);
+                }
+                break;
+            default:
+                error_log(
+                    "ERROR: This format is not yet supproted."
+                );
+                header("HTTP/1.1 501 Not Implemented");
+                exit(5);
+            }
+        }
+
         if (method_exists($menu, 'getControlPanel')) {
             $this->controlPanel = $menu->getControlPanel();
+        }
+        if (method_exists($menu, 'getFeedbackPanel')) {
+            $this->feedbackPanel = $menu->getFeedbackPanel(
+                $_REQUEST['candID'],
+                $_REQUEST['sessionID']
+            );
         }
         if (method_exists($menu, 'save')) {
             $success = $menu->save();
@@ -378,6 +410,12 @@ class NDB_Caller extends PEAR
 
         if (method_exists($instrument, 'getControlPanel')) {
             $this->controlPanel = $instrument->getControlPanel();
+        }
+        if (method_exists($instrument, 'getFeedbackPanel')) {
+            $this->feedbackPanel = $instrument->getFeedbackPanel(
+                $_REQUEST['candID'],
+                $_REQUEST['sessionID']
+            );
         }
         if (Utility::isErrorX($instrument)) {
             return $instrument;

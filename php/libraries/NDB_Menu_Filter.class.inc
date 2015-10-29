@@ -137,6 +137,8 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // start the filter form
         $this->_setupPage(null, null, null, null, 'filter');
+        $this->registerDefaultFilter();
+
         // $this->form = new HTML_QuickForm('filter');
 
         // set the filters
@@ -146,6 +148,18 @@ class NDB_Menu_Filter extends NDB_Menu
         $success = $this->_build();
 
         return true;
+    }
+
+    /**
+     * By default, trim all fields on the form before any processing/validation
+     * is done. Derived classes can override this behavior if needed.
+     *
+     * @return void
+     * @access public
+     */
+    function registerDefaultFilter()
+    {
+        $this->form->applyFilter('__ALL__', 'trim');
     }
 
     /**
@@ -204,15 +218,19 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // Go through the form's fields and set the valid ones.
         foreach ($this->formToFilter as $formKey => $dbField) {
-            if (isset($values[$formKey]) && $values[$formKey] !== '') {
-                $value = $values[$formKey];
-                if (in_array($dbField, $this->validFilters)) {
-                    $newFormFilters[$dbField] = $value;
+            if (isset($values[$formKey])) {
+                // Call to form->getValue will apply all the form filters that
+                // will modify the submitted data
+                $filteredValue = $values[$formKey];
+                if ($filteredValue !== '') {
+                    if (in_array($dbField, $this->validFilters)) {
+                        $newFormFilters[$dbField] = $filteredValue;
 
-                    if (in_array($dbField, $this->validHavingFilters)) {
-                        $this->having[$dbField] = $value;
-                    } else {
-                        $this->filter[$dbField] = $value;
+                        if (in_array($dbField, $this->validHavingFilters)) {
+                            $this->having[$dbField] = $filteredValue;
+                        } else {
+                            $this->filter[$dbField] = $filteredValue;
+                        }
                     }
                 }
             }
@@ -360,7 +378,6 @@ class NDB_Menu_Filter extends NDB_Menu
         // show data table with user information and access URLs
         $success = $this->_setDataTable();
     }
-
 
     /**
      * Sets the template data for the filter form
@@ -578,15 +595,21 @@ class NDB_Menu_Filter extends NDB_Menu
         // create instance of config object
         $config =& NDB_Config::singleton();
         // configure the page pagination
+        $rowsPerPage = $config->getSetting('rowsPerPage');
+
             $params = array(
                        'mode'       => 'Sliding',
-                       'perPage'    => $config->getSetting('rowsPerPage'),
+                       'perPage'    => $rowsPerPage,
                        'delta'      => 3,
                        'totalItems' => $this->TotalItems,
                       );
             $pager  = Pager::factory($params);
             $links  = $pager->getLinks();
-            $this->tpl_data['page_links'] = $links['all'];
+
+            $this->tpl_data['page_links']  = $links['all'];
+            $this->tpl_data['rowsPerPage'] = $rowsPerPage;
+            $this->tpl_data['pageID']      = isset($_GET['pageID']) ?
+                $_GET['pageID'] : 1;
 
             // print out column headings
             $i = 0;
@@ -653,12 +676,91 @@ class NDB_Menu_Filter extends NDB_Menu
     function display()
     {
         // dump the html for the menu
+        $this->tpl_data['csvUrl']  = 'main.php?'
+            . $_SERVER['QUERY_STRING']
+            . '&format=csv';
+        $this->tpl_data['csvFile'] = $_REQUEST['test_name'];
+        if (isset($_REQUEST['subtest'])) {
+            $this->tpl_data['csvFile'] .= '-' . $_REQUEST['subtest'];
+        }
+        $this->tpl_data['csvFile'] .= date('-Y_m_d');
         $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);
         $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("menu_$this->menu.tpl");
         return $html;
+    }
+
+    /**
+     * Controls access to a module's SQL tables, transforming the table into a csv
+     * string. This script should ensure that only files relative to module's path
+     * specified are accessible.
+     * @return string  csv formated string
+     */
+    function getCSVData()
+    {
+        $list['data']    = $this->_getFullList();
+        $list['headers'] = $this->headers;
+
+        return Utility::arrayToCSV($list);
+    }
+
+    /**
+     * Returns the full list of candidates, users, etc.
+     *
+     * @return array
+     * @access private
+     */
+    function _getFullList()
+    {
+        // create DB object
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $qparams = array();
+        // add the base query
+        $query  = '';
+        $query .= $this->_getBaseQuery();
+
+        $filterdetails = $this->_getBaseFilter();
+        $query        .= $filterdetails['clause'];
+        $qparams       = $filterdetails['params'];
+        // apply ORDER BY filters
+        $query .= " ORDER BY ";
+        if (!empty($this->filter['order'])) {
+            $query .= $this->filter['order']['field']
+                ." ".$this->filter['order']['fieldOrder'].", ";
+        }
+        $query .= $this->order_by;
+        // get the list
+
+        $this->_getNumberPages($query);
+
+        $config         =& NDB_Config::singleton();
+        $resultsPerPage = $config->getSetting('rowsPerPage');
+        $result         = $DB->pselect($query, $qparams);
+
+        return $result;
+    }
+
+    /**
+     * Returns an array of filters that are currently set for this
+     * menu filter
+     *
+     * @return array of filters that are set
+     */
+    function _getFilterValues()
+    {
+        $FilterValues = array();
+        foreach ($this->formToFilter as $formName => $field) {
+            if (isset($_REQUEST[$formName])) {
+                $FilterValues[$formName] = $_REQUEST[$formName];
+            } else {
+                $FilterValues[$formName] = null;
+            }
+        }
+        return $FilterValues;
     }
 }
 ?>

@@ -11,6 +11,7 @@ LORIS is a web-accessible database solution for neuroimaging, providing a secure
  * php5-json (for Debian/Ubuntu distributions)
  * Smarty 3
  * Package manager (for LINUX distributions)
+ * Composer
 
 # Installation
 
@@ -37,6 +38,8 @@ LORIS is a web-accessible database solution for neuroimaging, providing a secure
 
 3. Run installer script to install core code, libraries, and MySQL schema (see LORIS Setup Schematic). The script will prompt for information, including usernames and folders which it will create automatically.
 
+For more information, please read the [Install Script wiki page](https://github.com/aces/Loris/wiki/Install-Script).
+
     ```
     cd /var/www/$projectname/tools
     ./install.sh
@@ -52,8 +55,18 @@ Log in with the username “admin” and the password you supplied for this user
     sudo a2dissite default
     sudo a2ensite $projectname
     ```
+5. Note that the default Loris setup assumes that Loris is running on localhost. If this
+is not the case, you'll have to manually update the URL and Host config variables in the
+ConfigSettings table by running the following SQL commands from a MySQL prompt:
 
-5. Notes for LORIS post-installation setup are contained in the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup).
+```SQL
+UPDATE Config SET Value='$yourURL' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url');
+UPDATE Config SET Value='$yourHostname' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
+```
+
+Make sure that `$yourURL` above contains the "http://" or "https://" and `$yourHostname` does not. If your server is only being accessed from localhost, you can skip this step.
+
+6. Notes for LORIS post-installation setup are contained in the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup).
 
 # Community
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions.

@@ -1,0 +1,1 @@
+ALTER TABLE subproject ADD RecruitmentTarget int(10) unsigned;

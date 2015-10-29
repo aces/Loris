@@ -57,6 +57,7 @@ table th{
     width:7em; 
     left:0;
     top:auto;
+    word-wrap: break-word;
     border-right: 0px none black; 
     border-top-width:3px; /*only relevant for first row*/
 }
@@ -93,7 +94,7 @@ html, body {
     border: 3px solid;
     border-color: #b94a48;
 }
-.has-error .form-error {
+.has-error, .form-error {
 color: #b94a48;
 }
 .has-warning .form-control {
@@ -155,4 +156,8 @@ ul#navlist {
 div.navbar div.container div.navbar-brand {
     background: inherit;
     text-align: center;
+}
+
+.controlPanelSection {
+    padding-bottom: 6px;
 }

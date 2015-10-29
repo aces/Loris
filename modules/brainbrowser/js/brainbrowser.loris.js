@@ -17,7 +17,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     "use strict";
     var loading_div = $("#loading");
 
-
     var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [] ,
     bboptions = {};
 
@@ -369,7 +368,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
             context.putImageData(image_data, x, y);
           }
 
-          // Retrieve image from canvas and display it 
+          // Retrieve image from canvas and display it
           // in a dialog box.
           img.onload = function() {
             $("<div></div>").append(img).dialog({
@@ -378,7 +377,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
               width: img.width
             });
           };
-          
           img.src = canvas.toDataURL();
         });
       });
@@ -459,6 +457,14 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
        });
 
+        $('.arrow').on("click", function() {
+              $('#filename-additional-info-'+vol_id).slideToggle("fast");
+              if ($('.arrow').hasClass('glyphicon-chevron-down')) {
+                $('.arrow').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+              } else {
+                $('.arrow').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+              }
+            });
     });
 
 
@@ -499,7 +505,6 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         $("#time-val-" + vol_id).val(volume.current_time);
       }
     });      // Should cursors in all panels be synchronized?
-
 
     link = window.location.search;
 

@@ -36,6 +36,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
     var $LinstQuestions = array();
 
+    var $LinstLines = array();
+
     /**
      * True if the page is being previewed from the instrument builder,
      * and not really loaded.
@@ -424,7 +426,12 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     function loadInstrumentFile($filename, $base64 = false)
     {
         if (file_exists($filename) || $base64 === true) {
+            $this->InstrumentType = 'LINST';
             $db = \Database::singleton();
+
+            if (!isset($this->form)) {
+                $this->form = new \HTML_Quickform('test_form');
+            }
 
             $this->dateTimeFields = array("Date_taken");
             $this->formType       = 'XIN';
@@ -436,7 +443,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             // otherwise we don't.. but even on other pages, we need to
             // parse the whole file for table{@} and other meta elements
             $addElements = true;
-            if (isset($_REQUEST['subtest']) && $_REQUEST['subtest']) {
+            if (!empty($this->page)) {
                 $currentPage = $_REQUEST['subtest'];
                 $addElements = false;
             } else {
@@ -455,6 +462,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
             while (($line = fgets($fp, 4096)) !== false) {
                 $pieces = preg_split("/{@}/", $line);
+                $this->LinstLines[] = $pieces;
 
                 $type      = $pieces[0];
                 $fieldname = isset($pieces[1]) ? $pieces[1] : null;
@@ -597,19 +605,21 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                            );
                         }
 
-                        $pieces[5] = trim($pieces[5]);
-                        if ($pieces[5] === 'MonthYear') {
-                            $this->addMonthYear(
-                                $pieces[1],
-                                $pieces[2],
-                                $dateOptions
-                            );
-                        } else {
-                            $this->addDateElement(
-                                $pieces[1],
-                                $pieces[2],
-                                $dateOptions
-                            );
+                        if (isset($pieces[5])) {
+                            $pieces[5] = trim($pieces[5]);
+                            if ($pieces[5] === 'MonthYear') {
+                                $this->addMonthYear(
+                                    $pieces[1],
+                                    $pieces[2],
+                                    $dateOptions
+                                );
+                            } else {
+                                $this->addDateElement(
+                                    $pieces[1],
+                                    $pieces[2],
+                                    $dateOptions
+                                );
+                            }
                         }
                     }
                     $this->LinstQuestions[$pieces[1]] = array('type' => 'date');
@@ -734,7 +744,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             }
             fclose($fp);
         }
-
     }
 
     /**
@@ -803,6 +812,143 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             }
             fclose($fp);
         }
+    }
+
+    /**
+     * Returns a JSON representation of the currently instantiated
+     * instrument.
+     *
+     * The format of the JSON representation is specified in the
+     * docs/API/InstrumentFormat documentation.
+     *
+     * @return string containing valid JSON
+     */
+    function toJSON()
+    {
+        $jsonObject = array(
+                       'Meta'     => array(
+                                      "InstrumentVersion"       => "1l",
+                                      "InstrumentFormatVersion" => "v0.0.1a-dev",
+                                      "ShortName"               => "",
+                                      "LongName"                => "",
+                                      "IncludeMetaDataFields"   => "true",
+                                     ),
+                       'Elements' => array(),
+                      );
+        $elements   = array();
+        $pageTitle  = 'Top';
+
+        foreach ($this->LinstLines as $value) {
+            if (strpos($value[1], "_status") !== false) {
+                $lastIndex = count($elements) - 1;
+                $elements[$lastIndex]['Options']['RequireResponse'] = true;
+            } else {
+                $element         = array();
+                $element['Type'] = $value[0];
+                $element['Name'] = $value[1];
+                $specialCase     = false;
+                if ($value[0] !== 'table' && $value[0] !== 'title') {
+                    $element['Description'] = rtrim($value[2]);
+                }
+                switch ($value[0]) {
+                case 'selectmultiple':
+                    $specialCase     = true;
+                    $element['Type'] = 'select';
+                case 'select':
+                    $selectOptions = preg_split("/{-}/", trim($value[3]));
+                    $opt           = array();
+                    $RequireResponse = false;
+                    foreach ($selectOptions as $o) {
+                        $arr = explode("=>", $o);
+                        $key = $arr[0];
+                        $val = $arr[1];
+                        if ($key[0] == "'" && $key[strlen($key)-1] == "'") {
+                            $key = substr($key, 1, -1);
+                        } else if ($key == 'NULL') {
+                            $key ='';
+                        }
+                        if ($val[0] == "'" && $val[strlen($val)-1] == "'") {
+                            $val = substr($val, 1, -1);
+                        }
+                        if ($key === 'not_answered') {
+                            $RequireResponse = true;
+                        } else {
+                            $opt[$key] = $val;
+                        }
+                    }
+                    $AllowMultiple      = ($specialCase ? true : false);
+                    $element['Options'] = array(
+                                           'Values'          => $opt,
+                                           'AllowMultiple'   => $AllowMultiple,
+                                           'RequireResponse' => $RequireResponse,
+                                          );
+                    break;
+                case 'textarea':
+                    $specialCase     = true;
+                    $element['Type'] = 'text';
+                case 'text':
+                    $textType           = ($specialCase ? 'large' : 'small');
+                    $element['Options'] = array('Type' => $textType);
+                    break;
+                case 'date':
+                    $minDate            = $value[3] . "-01-01";
+                    $maxDate            = rtrim($value[4]) . "-12-31";
+                    $element['Options'] = array(
+                                           'MinDate' => $minDate,
+                                           'MaxDate' => $maxDate,
+                                          );
+                    break;
+                case 'numeric':
+                    $element['Options'] = array(
+                                           'NumberType' => 'integer',
+                                           'MinValue'   => (int) $value[3],
+                                           'MaxValue'   => (int) rtrim($value[4]),
+                                          );
+                    break;
+                case 'score':
+                    break;
+                case 'label':
+                case 'header':
+                    unset($element['Name']);
+                    break;
+                case 'page':
+                    $pageElement = array(
+                                    "Type"        => "ElementGroup",
+                                    "GroupType"   => "Page",
+                                    "Description" => $pageTitle,
+                                    "Elements"    => $elements,
+                                   );
+                    $jsonObject['Elements'][] = $pageElement;
+                    unset($element['Type']);
+                    $elements  = array();
+                    $pageTitle = rtrim($value[2]);
+                    break;
+                case 'table':
+                    $jsonObject['Meta']['ShortName'] = rtrim($value[1]);
+                    unset($element['Type']);
+                case 'title':
+                    $jsonObject['Meta']['LongName'] = rtrim($value[1]);
+                default:
+                    unset($element['Type']);
+                    break;
+                }
+                if (isset($element['Type'])) {
+                    $elements[] = $element;
+                }
+            }
+        }
+        if (empty($jsonObject['Elements'])) {
+            $jsonObject['Elements'] = $elements;
+        } else {
+            $pageElement = array(
+                            "Type"        => "ElementGroup",
+                            "GroupType"   => "Page",
+                            "Description" => $pageTitle,
+                            "Elements"    => $elements,
+                           );
+            $jsonObject['Elements'][] = $pageElement;
+        }
+        return json_encode($jsonObject);
     }
 
 

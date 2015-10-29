@@ -71,6 +71,7 @@ class NDB_Form extends NDB_Page
 
         // set the local variables
         $obj->_setupPage($name, $page, $identifier, null, 'test_form');
+        $obj->registerDefaultFilter();
 
         $access = $obj->_hasAccess();
 
@@ -89,9 +90,25 @@ class NDB_Form extends NDB_Page
             throw new Exception("Form does not exist: $name $page", 404);
         }
 
+        //set the baseurl of the tpl_data
+        $config =& NDB_Config::singleton();
+        $www    = $config->getSetting('www');
+        $obj->tpl_data['baseurl'] = $www['url'];
+
         return $obj;
     }
 
+    /**
+     * By default, trim all fields on the form before any processing/validation
+     * is done. Derived classes can override this behavior if needed.
+     *
+     * @return void
+     * @access public
+     */
+    function registerDefaultFilter()
+    {
+        $this->form->applyFilter('__ALL__', 'trim');
+    }
 
     /**
      * Returns false if user does not have access to page.

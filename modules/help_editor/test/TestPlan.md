@@ -1,6 +1,6 @@
-Help Module Test Plan
+#Help Module Test Plan
 
-1.  Click on help button at the top. Contextual pulldown should appear.
+1.  Click on help button at the top. Contextual pull-down should appear.
 2.  Verify that help is in fact contextual, reflecting current LORIS page contents.
 3.  Click Close Button. Ensure it closes.
 4.  Test Steps1-3 for various pages.
@@ -20,15 +20,15 @@ Help Module Test Plan
 16. Sort all header columns.
 17. Check multiple pages links.
 18. Check filter expansion.
-19. In the help editor, exmamine a topic that has project specific help text and make sure
+19. In the help editor, examine a topic that has project specific help text and make sure
     that this is the help text that is displayed in the result table and not the generic help
     text.
-20. Go to the acces profile page (or any other page). Click the help icon in the upper right corner
+20. Go to the access profile page (or any other page). Click the help icon in the upper right corner
     and edit the help text. When taken to the edit help text page, click on the help icon in the
     upper right corner and click the Edit button again. Click the 'Return to edit help content'
     and afterwards on the 'Return to Access Profile'. Make sure you are taken to the Access Profile page.
-21. Test Undo Button - In the Help Editor , add content and click on Undo. Make sure the none of the recent changes were
+21. Test Reset Button - In the Help Editor , add content and click on Reset. Make sure the none of the recent changes were
     saved and the page reloads with the default content.
-22. Test Preview Button - In the Help Editor, update title , content and click on the Preview buttong. Make sure
+22. Test Preview Button - In the Help Editor, update title , content and click on the Preview button. Make sure
     the recent changes are visible in the help side panel. Continue updating the content and click review button should
     show the latest help content in the side panel.

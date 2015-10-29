@@ -10,6 +10,13 @@
  * @license  Loris license
  * @link     https://www.github.com/Jkat/Loris-Trunk/
  */
+
+$user =& User::singleton();
+if (!$user->hasPermission('document_repository_view') && !$user->hasPermission('document_repository_delete')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 set_include_path(get_include_path().":../../project/libraries:../../php/libraries:");
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();

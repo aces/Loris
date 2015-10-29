@@ -29,13 +29,13 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
         );
 
         $writable = true;
-        if (!is_writeable($this->path . "project/instruments") || !is_writable($this->path . "project/tables_sql")) {
+        if (!is_writable($this->path . "project/instruments") || !is_writable($this->path . "project/tables_sql")) {
             $writable = false;
         } else {
             $writable = true;
         }
 
-        $this->tpl_data['writeable'] = $writable;
+        $this->tpl_data['writable'] = $writable;
 
         if($writable && $_POST['install'] == 'Install Instrument') {
             $db = Database::singleton();

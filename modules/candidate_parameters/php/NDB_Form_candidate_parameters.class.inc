@@ -435,6 +435,9 @@ class NDB_Form_candidate_parameters extends NDB_Form
         return $ret;
     }
 
+    /**
+     * @throws DatabaseException
+     */
     function candidate_parameters()
     {
         $DB =& Database::singleton();
@@ -514,24 +517,27 @@ class NDB_Form_candidate_parameters extends NDB_Form
                 $consentQuestion = array($question['name']=> $question['label'],
                                          $question['name'] . '_date' => "Date of <BR> $question[label]",
                                          $question['name'] . '_withdrawal' => "Date of withdrawal <BR> of $question[label]",
+                                         'entry_staff'=>'Data Entry Staff',
                                          'data_entry_date' =>'Date Updated',
-                                         'entry_staff'=>'Data Entry Staff');
+                                        );
                 $fields = $question['name'].', '.$question['name'] . '_date, '.$question['name'] . '_withdrawal, ';
-                $study_consent = $DB->pselect("SELECT $fields entry_staff,data_entry_date 
+                $study_consent = $DB->pselect("SELECT $fields entry_staff,data_entry_date
                                                FROM consent_info_history WHERE CandID=:cid", 
                                                array('cid'=>$this->identifier));
                $study_consent_hist = array();
                 for ($i=0; $i<sizeof($study_consent); $i++ ) {
-                    foreach ($study_consent[$i] as $key=>$value) {
-                        if ($key == $question['name'] && empty($study_consent[$i][$question['name']])) {
-                            break;
-                        }
-                        if (!empty($study_consent[$i][$question['name']])) {
-                           $study_consent_hist[$i][$key] = $value;
-                        }
+                    foreach($consentQuestion as $key => $column_title) {
+                          if ($key == $question['name'] && empty($study_consent[$i][$question['name']])) {
+                              break;
+                          }
+
+                         if (!empty($study_consent[$i][$question['name']])) {
+                             $study_consent_hist[$i][$key] = $study_consent[$i][$key];
+                         }
                     }
                 }
-            $this->tpl_data['consent_list'][$question['name']] = array('label'=>$consentQuestion, 
+
+            $this->tpl_data['consent_list'][$question['name']] = array('label'=>$consentQuestion,
                                                                        'history'=>$study_consent_hist);
             }
         }

@@ -17,6 +17,13 @@ ini_set('default_charset', 'utf-8');
 require_once "Database.class.inc";
 require_once 'NDB_Client.class.inc';
 require_once "Utility.class.inc";
+
+$user =& User::singleton();
+if (!$user->hasPermission('config')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
@@ -28,26 +35,29 @@ foreach ($_POST as $key => $value) {
             $DB->delete('Config', array('ID' => $key));
         } else {
             $DB->update(
-                'Config', 
-                array('Value' => $value), 
+                'Config',
+                array('Value' => $value),
                 array('ID' => $key)
             );
         }
     } else { //add new or remove
-        $keySplit = split("-", $key);
-        $valueSplit = split("-", $value);
+        $keySplit   = explode("-", $key);
+        $valueSplit = explode("-", $value);
         if ($keySplit[0] == 'add') {
             if ($value !== "") {
                 $DB->insert(
-                    'Config', 
-                    array('ConfigID' => $keySplit[1], 'Value' => $value)
+                    'Config',
+                    array(
+                     'ConfigID' => $keySplit[1],
+                     'Value'    => $value,
+                    )
                 );
             }
         } elseif ($valueSplit[0] == 'remove') {
             $DB->delete('Config', array('ID' => $valueSplit[1]));
         }
-    } 
-} 
+    }
+}
 
 
 exit();

@@ -106,6 +106,11 @@
 {/function}
 
 <p>Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide.</p>
+<p>To configure study subprojects <a href="{$baseurl}/main.php?test_name=configuration&subtest=subproject">click here</a>.
+{if $useProjects == 'true'}
+    To configure study projects <a href="{$baseurl}/main.php?test_name=configuration&subtest=project">click here</a>.
+{/if}
+</p>
 <br>
 
 <div class="col-md-3">

@@ -40,9 +40,11 @@ session_start();
 $tpl_data = array();
 
 // create an instance of the config object
-$config           = NDB_Config::singleton();
-$tpl_data['css']  = "../".$config->getSetting('css');
-$tpl_data['rand'] = rand(0, 9999);
+$config = NDB_Config::singleton();
+
+$tpl_data['baseurl']     = $config->getSetting('url');
+$tpl_data['css']         = $config->getSetting('css');
+$tpl_data['rand']        = rand(0, 9999);
 $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['currentyear'] = date('Y');
@@ -73,13 +75,13 @@ try {
 $err = array();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if (!checkLen('name')) {
-        $err[] = 'The First Name field is empty!';
+        $err[] = 'The minimum length for First Name field is 3 characters';
     }
     if (!checkLen('lastname')) {
-         $err[] = 'The Last Name field is empty!';
+         $err[] = 'The minimum length for Last Name field is 3 characters';
     }
     if (!checkLen('from')) {
-          $err[] = 'The Email Address field is empty!';
+          $err[] = 'Your email is not valid!';
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
           $err[] = 'Your email is not valid!';
     }

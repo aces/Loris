@@ -1,4 +1,5 @@
 /*global document: false, $: false*/
+$(document).ready(function() {
 
 var scanLineChart, recruitmentPieChart, recruitmentBarChart, recruitmentLineChart;
 
@@ -144,7 +145,7 @@ $.ajax({
             bindto: '#scanChart',
             data: {
                 x: 'x',
-                x_format: '%m-%Y',
+                xFormat: '%m-%Y',
                 columns: scanLineData,
                 type: 'area-spline'
             },
@@ -177,7 +178,7 @@ $.ajax({
 $.ajax({
     url: 'AjaxHelper.php?Module=dashboard&script=get_recruitment_pie_data.php',
     type: 'post',
-    success: function(data) {
+        success: function(data) {
         var jsonData = $.parseJSON(data);
         var recruitmentPieData = formatPieData(jsonData);
         recruitmentPieChart = c3.generate({
@@ -240,7 +241,7 @@ $.ajax({
             bindto: '#recruitmentChart',
             data: {
                 x: 'x',
-                x_format: '%m-%Y',
+                xFormat: '%m-%Y',
                 columns: recruitmentLineData,
                 type: 'area-spline'
             },
@@ -267,4 +268,5 @@ $.ajax({
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
     }
+});
 });

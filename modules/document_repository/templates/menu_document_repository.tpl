@@ -21,7 +21,7 @@
 
 <script id="dir" type="x-tmpl-mustache">
     <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
-        <td class="fileColumn">
+        <td class="fileColumn" colspan="10">
             {{ #depth }}
                 {{ #first }}
                     <div class="spacer" style="border-left: none;"> </div>
@@ -43,11 +43,10 @@
                 </span>
             {{ /indent }}
         </td>
-        <td colspan="9"></td>
     </tr>
 </script>
 <script id="file" type="x-tmpl-mustache">
-    <tr class="{{ parentID }}a" {{ ^filtered }}style="display:none" {{ /filtered }}>
+    <tr class="{{ parentID }}a fileRow" {{ ^filtered }}style="display:none" {{ /filtered }}>
         <td class="blah fileColumn">
             {{ #depth }}
                 {{ #first }}

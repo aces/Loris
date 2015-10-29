@@ -289,6 +289,7 @@ label em {
 }
 #dir-tree>tr>td:first-child {
     padding: 0px;
+    /*height: 100%;*/
 }
 #dir-tree>tr>td:first-child>div{
     -webkit-box-sizing: border-box;
@@ -323,4 +324,15 @@ label em {
 }
 .fileColumn{
     min-width: 350px;
+}
+.directoryRow{
+    height: 50px;
+}
+.fileRow{
+    height: 60px;
+}
+@-moz-document url-prefix() {
+    .directoryRow>td{
+    height: 100%;
+}
 }

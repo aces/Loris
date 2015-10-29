@@ -44,6 +44,7 @@
                 </div>
             </div>
             <div class="row">
+                {if count($form.centerID.options) > 1}
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
                         {$form.centerID.label}
@@ -52,6 +53,7 @@
                         {$form.centerID.html}
                     </div>
                 </div>
+                {/if}
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
                         {$form.SubprojectID.label}
@@ -218,7 +220,12 @@
 <table border="0" valign="bottom" width="100%">
 <tr>
     <!-- title -->
-    <td class="controlPanelSection">{$numCandidates} subject(s) selected.</td>
+    <td class="controlPanelSection">
+        {$numCandidates} subject(s) selected. 
+        <a href="{$csvUrl}" download="{$csvFile}.csv">
+            Download as CSV
+        </a>
+    </td>
     <!-- display pagination links -->
     <td align="right">{$page_links}</td>
 </tr>
