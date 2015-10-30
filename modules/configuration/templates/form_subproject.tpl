@@ -89,6 +89,9 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-4 col-sm-8 submit-area">
+                        <div class="alert alert-warning">
+                          <strong>Warning!</strong> After adding a new subproject, Visit labels for this subproject must be created by editing the config.xml back-end configuration file.
+                        </div>
                         <button id="savesubprojectnew" class="btn btn-primary savesubproject">Save</button>
                         <button class="btn btn-default" type="reset">Reset</button>
                         <label class="saveStatus"></label>
