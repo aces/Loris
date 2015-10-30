@@ -54,7 +54,9 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".inc">../php</directory>
-            <directory suffix=".inc">../htdocs</directory>
+            <directory suffix=".php">../htdocs</directory>
+            <directory suffix=".inc">../modules</directory>
+            <directory suffix=".php">../modules</directory>
         </whitelist>
     </filter>
 
