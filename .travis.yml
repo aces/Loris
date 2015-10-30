@@ -94,4 +94,6 @@ script:
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
+
+after_success:
     - bash <(curl -s https://codecov.io/bash)
