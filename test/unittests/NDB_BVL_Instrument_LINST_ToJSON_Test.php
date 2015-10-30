@@ -32,9 +32,13 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends \PHPUnit_Framework_TestCase
         $mockdb = $this->getMockBuilder("\Database")->getMock();
         $mockconfig = $this->getMockBuilder("\NDB_Config")->getMock();
 
+        $factory->setDatabase($mockdb)
+        $factory->setConfig($mockconfig);
+        /*
         \NDB_Factory::$db = $mockdb;
         \NDB_Factory::$testdb = $mockdb;
         \NDB_Factory::$config = $mockconfig;
+         */
 
         $this->QuickForm = new \LorisForm(); //$this->getMock("HTML_Quickform");
         $this->Client = new \NDB_Client;
