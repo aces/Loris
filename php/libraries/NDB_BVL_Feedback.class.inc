@@ -495,7 +495,7 @@ class NDB_BVL_Feedback
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= ", ft.CommentID";
         }
-        $query .= " ORDER BY ft.CandID, ft.Feedback_level, ft.Status";
+        $query .= " ORDER BY ft.CandID, ft.Feedback_level";
 
         $result = $db->pselect($query, $qparams);
 
