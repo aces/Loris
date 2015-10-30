@@ -16,6 +16,8 @@ matrix:
 sudo: false
 
 before_install:
+    - echo "HELLO";
+    - echo "$TRAVIS_BRANCH";
     - if [ "$TRAVIS_BRANCH" == "master" ]; then
         echo "Do not send pull requests to the master branch, send them to VERSION-dev branches" && exit 1;
       fi
