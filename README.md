@@ -43,7 +43,8 @@ For more information, please read the [Install Script wiki page](https://github.
     ```
     cd /var/www/$projectname/tools
     ./install.sh
-    sudo service apache2 reload
+    sudo a2enmod rewrite
+    sudo service apache2 restart
     ```
 
 4. Go to http://localhost to verify that the LORIS core database has been successfully installed. Congratulations!
