@@ -93,7 +93,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
             // set the user's permission defaults
             foreach ($perms as $value) {
-                $defaults["permID[$value]"] = 1;
+                $defaults["permID[$value]"] = 'on';
             }
         }
 
