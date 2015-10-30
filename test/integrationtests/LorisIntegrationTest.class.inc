@@ -62,7 +62,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             1
         );
         $this->url = $this->config->getSetting("url") . "/main.php";
-        if(empty($this->url)) {
+        if($this->url == "/main.php") {
             print_r($database);
             print_r($this->config);
         }
