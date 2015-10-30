@@ -110,7 +110,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     protected function login($username, $password)
     {
-        print "$this->url";
         $this->webDriver->get($this->url);
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(

@@ -64,7 +64,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      */
     function _addMetadataFields()
     {
-        $config      =& \NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
         $dateOptions = array(
                         'language'         => 'en',
                         'format'           => 'YMd',
