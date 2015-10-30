@@ -80,77 +80,102 @@ class NDB_Page
     /**
      * Wrapper to create a file element and add it to the current page
      *
-     * @param string $name  The name of this file element
-     * @param string $label The label to attach to this element
+     * @param string $name       The name of this file element
+     * @param string $label      The label to attach to this element
+     * @param bool   $toEntities Whether all HTML special characters in $name and
+     *                           $label should be converted to HTML entities when
+     *                           obtaining the HTML representation for this element.
      *
      * @return none
      */
-    function addFile($name, $label)
+    function addFile($name, $label, $toEntities=true)
     {
         $this->form->addElement(
             'file',
             $name,
             $label,
-            array('class' => 'fileUpload')
+            array('class' => 'fileUpload'),
+            $toEntities
         );
     }
 
     /**
      * Wrapper to create a header
      *
-     * @param string $header The text to put in the header
+     * @param string $header     The text to put in the header
+     * @param bool   $toEntities Whether all HTML special characters in the header
+     *                           text should be converted to HTML entities when
+     *                           obtaining the HTML representation for this element.
      *
      * @return none
      */
-    function addHeader($header)
+    function addHeader($header, $toEntities=true)
     {
-        $this->form->addElement('header', null, $header);
+        $this->form->addElement('header', null, $header, $toEntities);
     }
 
     /**
      * Wrapper to create a select drop-down list
      *
-     * @param string $name     The field name of this select dropdown
-     * @param string $label    The label to attach to this dropdown
-     * @param array  $options  Options to pass to QuickForm for this
-     *                         select
-     * @param array  $optional Optional extra HTML attributes to add
-     *                         to the select
+     * @param string $name       The field name of this select dropdown
+     * @param string $label      The label to attach to this dropdown
+     * @param array  $options    Options to pass to QuickForm for this
+     *                           select
+     * @param array  $optional   Optional extra HTML attributes to add
+     *                           to the select
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return none
      */
-    function addSelect($name, $label, $options, $optional=array())
+    function addSelect($name, $label, $options, $optional=array(), $toEntities=true)
     {
         $optional = array_merge(
             array('class' => 'form-control input-sm'),
             $optional
         );
-        $this->form->addElement('select', $name, $label, $options, $optional);
+        $this->form->addElement(
+            'select',
+            $name,
+            $label,
+            $options,
+            $optional,
+            $toEntities
+        );
     }
 
     /**
      * Wrapper to create a static label to the current page
      *
-     * @param string $label The text to add to the label.
+     * @param string $label      The text to add to the label.
+     * @param bool   $toEntities Whether all HTML special characters in $label
+     *                           should be converted to HTML entities when obtaining
+     *                           the HTML representation for this element.
      *
      * @return none
      */
-    function addLabel($label)
+    function addLabel($label, $toEntities=true)
     {
-        $this->form->addElement('static', null, $label);
+        $this->form->addElement('static', null, $label, $toEntities);
     }
 
     /**
      * Wrapper to create a static score column
      *
-     * @param string $name  The name of the score column
-     * @param string $label Label to attach to the score
+     * @param string $name       The name of the score column
+     * @param string $label      Label to attach to the score
+     * @param bool   $toEntities Whether all HTML special characters in $name
+     *                           and $label should be converted to HTML
+     *                           entities when obtaining the HTML representation
+     *                           for this element.
      *
      * @return none
      */
-    function addScoreColumn($name, $label)
+    function addScoreColumn($name, $label, $toEntities=true)
     {
-        $this->form->addElement('static', $name, $label);
+        $this->form->addElement('static', $name, $label, $toEntities);
     }
 
 
@@ -158,16 +183,19 @@ class NDB_Page
      * Adds a text element to the current page with no accompanying
      * not answered option
      *
-     * @param string $field   The name of the text element to add
-     * @param string $label   Label to attach to the text element
-     * @param array  $options QuickForm options to pass to addElement
+     * @param string $field      The name of the text element to add
+     * @param string $label      Label to attach to the text element
+     * @param array  $options    QuickForm options to pass to addElement
+     * @param bool   $toEntities Whether all HTML special characters in $name and
+     *                           $label should be converted to HTML entities when
+     *                           obtaining the HTML representation for this element.
      *
      * @return none
      */
-    function addBasicText($field, $label, $options=array())
+    function addBasicText($field, $label, $options=array(), $toEntities=true)
     {
         $options = array_merge(array('class' => 'form-control input-sm'), $options);
-        $this->form->addElement('text', $field, $label, $options);
+        $this->form->addElement('text', $field, $label, $options, $toEntities);
     }
 
     /**
@@ -177,29 +205,43 @@ class NDB_Page
      * @param string $field          The name of the text area to add
      * @param string $label          Label to attach to the text area field
      * @param array  $specifications Extra HTML options to add to the textarea
+     * @param bool   $toEntities     Whether all HTML special characters in $name
+     *                               and $label should be converted to HTML entities
+     *                               when obtaining the HTML representation for this
+     *                               element.
      *
      * @return none
      */
     function addBasicTextArea(
         $field,
         $label,
-        $specifications=array()
+        $specifications=array(),
+        $toEntities=true
     ) {
         $specifications = array_merge(
             array('class' => 'form-control input-sm'),
             $specifications
         );
-        $this->form->addElement('textarea', $field, $label, $specifications);
+        $this->form->addElement(
+            'textarea',
+            $field,
+            $label,
+            $specifications,
+            $toEntities
+        );
     }
 
     /**
      * Adds a date field (without an accompanying not answered option) to the
      * current page.
      *
-     * @param string $field   The name of the date field
-     * @param string $label   Label to attach to the date field in the frontend
-     * @param array  $options Options to pass to HTML_QuickForm
-     * @param array  $attr    Extra HTML attributes to add to the date group.
+     * @param string $field      The name of the date field
+     * @param string $label      Label to attach to the date field in the frontend
+     * @param array  $options    Options to pass to HTML_QuickForm
+     * @param array  $attr       Extra HTML attributes to add to the date group.
+     * @param bool   $toEntities Whether all HTML special characters in $name and
+     *                           $label should be converted to HTML entities when
+     *                           obtaining the HTML representation for this element.
      *
      * @return none
      */
@@ -210,30 +252,53 @@ class NDB_Page
         $attr=array(
                'class' => 'form-control input-sm',
                'style' => 'max-width:33%; display:inline-block;',
-              )
+              ),
+        $toEntities=true
     ) {
-        $this->form->addElement('date', $field, $label, $options, $attr);
+        $this->form->addElement(
+            'date',
+            $field,
+            $label,
+            $options,
+            $attr,
+            $toEntities
+        );
     }
 
     /**
      * Wrapper to create a checkbox
      *
-     * @param string $name     The field name of this checkbox
-     * @param string $label    The label to attach to this checkbox
-     * @param array  $options  Options to pass to QuickForm for this
-     *                         checkbox
-     * @param array  $optional Optional extra HTML attributes to add
-     *                         to the checkbox
+     * @param string $name       The field name of this checkbox
+     * @param string $label      The label to attach to this checkbox
+     * @param array  $options    Options to pass to QuickForm for this
+     *                           checkbox
+     * @param array  $optional   Optional extra HTML attributes to add
+     *                           to the checkbox
+     * @param bool   $toEntities Whether all HTML special characters in $name and
+     *                           $label should be converted to HTML entities when
+     *                           obtaining the HTML representation for this element.
      *
      * @return none
      */
-    function addCheckbox($name, $label, $options, $optional=array())
-    {
+    function addCheckbox(
+        $name,
+        $label,
+        $options,
+        $optional=array(),
+        $toEntities=true
+    ) {
         $optional = array_merge(
             array('class' => 'form-control input-sm'),
             $optional
         );
-        $this->form->addElement('advcheckbox', $name, $label, $options, $optional);
+        $this->form->addElement(
+            'advcheckbox',
+            $name,
+            $label,
+            $options,
+            $optional,
+            $toEntities
+        );
     }
 
     /**
@@ -243,12 +308,15 @@ class NDB_Page
      * @param string $label      The label to attach to the element
      * @param array  $attributes List of HTML attributes to add to the
      *                           element
+     * @param bool   $toEntities Whether all HTML special characters in $label
+     *                           should be converted to HTML entities when
+     *                           obtaining the HTML representation for this element.
      *
      * @return none
      */
-    function addHidden($label, $attributes=null)
+    function addHidden($label, $attributes=null, $toEntities=true)
     {
-        $this->form->addElement('hidden', $label, $attributes);
+        $this->form->addElement('hidden', $label, $attributes, $toEntities);
     }
 
     /**
@@ -259,6 +327,10 @@ class NDB_Page
      * @param string $label                The label to attach to this field
      * @param array  $not_answered_options List of options to use in the "_status"
      *                                     dropdown.
+     * @param bool   $toEntities           Whether all HTML special characters in
+     *                                     $field and $label should be converted to
+     *                                     HTML entities when obtaining the HTML
+     *                                     representation for this element.
      *
      * @return none
      */
@@ -268,15 +340,17 @@ class NDB_Page
         $not_answered_options=array(
                                ''             => '',
                                'not_answered' => 'Not Answered',
-                              )
+                              ),
+        $toEntities=true
     ) {
         $group   = array();
-        $group[] = $this->createTextArea($field, '');
+        $group[] = $this->createTextArea($field, '', $toEntities);
         $group[] = $this->createSelect(
             $field . '_status',
             '',
             $not_answered_options,
-            array('class' => 'form-control input-sm not-answered')
+            array('class' => 'form-control input-sm not-answered'),
+            $toEntities
         );
 
         $this->addGroup($group, $field . '_group', $label, null, false);
@@ -286,18 +360,22 @@ class NDB_Page
     /**
      * Creates a password element and adds it to the current form.
      *
-     * @param string $field The name of the password field to add
-     * @param string $label The label to attach to this element
-     * @param array  $attr  List of extra HTML attributes to add to the element
+     * @param string $field      The name of the password field to add
+     * @param string $label      The label to attach to this element
+     * @param array  $attr       List of extra HTML attributes to add to the element
+     * @param bool   $toEntities Whether all HTML special characters in $field and
+     *                           $label should be converted to HTML entities when
+     *                           obtaining the HTML representation for this element.
      *
      * @return none
      */
     function addPassword(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attr=array('class' => 'form-control input-sm'),
+        $toEntities=true
     ) {
-        $this->form->addElement('password', $field, $label, $attr);
+        $this->form->addElement('password', $field, $label, $attr, $toEntities);
     }
 
     /**
@@ -351,10 +429,14 @@ class NDB_Page
     /**
      * Creates a QuickForm Select dropdown but does not add it to the page
      *
-     * @param string $field   The field name for this select
-     * @param string $label   The label to attach to the element
-     * @param array  $options Extra options to pass to QuickForm
-     * @param array  $attr    Extra HTML attributes to add to the element
+     * @param string $field      The field name for this select
+     * @param string $label      The label to attach to the element
+     * @param array  $options    Extra options to pass to QuickForm
+     * @param array  $attr       Extra HTML attributes to add to the element
+     * @param bool   $toEntities Whether all HTML special characters in $field,
+     *                           $label and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return HTML_QuickForm select element
      */
@@ -362,43 +444,65 @@ class NDB_Page
         $field,
         $label,
         $options=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attr=array('class' => 'form-control input-sm'),
+        $toEntities=true
     ) {
-        return $this->form->createElement("select", $field, $label, $options, $attr);
+        return $this->form->createElement(
+            "select",
+            $field,
+            $label,
+            $options,
+            $attr,
+            $toEntities
+        );
     }
 
     /**
      * Creates a QuickForm text element but does not add it to the form
      *
-     * @param string $field The field name for this text element
-     * @param string $label The label to attach to the element
-     * @param array  $attr  Extra HTML attributes to add to the element
+     * @param string $field      The field name for this text element
+     * @param string $label      The label to attach to the element
+     * @param array  $attr       Extra HTML attributes to add to the element
+     * @param bool   $toEntities Whether all HTML special characters in $field and
+     *                           $label should be converted to HTML entities when
+     *                           obtaining the HTML representation for this element.
      *
      * @return HTML_QuickForm Text element
      */
     function createText(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attr=array('class' => 'form-control input-sm'),
+        $toEntities=true
     ) {
-        return $this->form->createElement("text", $field, $label, $attr);
+        return $this->form->createElement(
+            "text",
+            $field,
+            $label,
+            $attr,
+            $toEntities
+        );
     }
 
     /**
      * Creates a QuickForm TextArea element but does not add it to the form.
      *
-     * @param string $field The field name for the TextArea
-     * @param string $label The label to attach to this TextArea
+     * @param string $field      The field name for the TextArea
+     * @param string $label      The label to attach to this TextArea
+     * @param bool   $toEntities Whether all HTML special characters in $field and
+     *                           $label should be converted to HTML entities when
+     *                           obtaining the HTML representation for this element.
      *
      * @return HTML_QuickForm textarea element
      */
-    function createTextArea($field, $label=null)
+    function createTextArea($field, $label=null, $toEntities=true)
     {
         return $this->form->createElement(
             "textarea",
             $field,
             $label,
-            array('class' => 'form-control input-sm')
+            array('class' => 'form-control input-sm'),
+            $toEntities
         );
     }
 
@@ -410,6 +514,9 @@ class NDB_Page
      * @param array  $dateOptions List of options to pass to QuickForm
      * @param array  $attr        List of HTML attributes to add to the date
      *                            group.
+     * @param bool   $toEntities  Whether all HTML special characters in $field and
+     *                            $label should be converted to HTML entities when
+     *                            obtaining the HTML representation for this element.
      *
      * @return HTML_QuickForm date element
      */
@@ -420,53 +527,68 @@ class NDB_Page
         $attr=array(
                'class' => 'form-control input-sm',
                'style' => 'max-width:33%; display:inline-block;',
-              )
+              ),
+        $toEntities=true
     ) {
         return $this->form->createElement(
             "date",
             $field,
             $label,
             $dateOptions,
-            $attr
+            $attr,
+            $toEntities
         );
     }
 
     /**
      * Creates an HTML checkbox but does not add it to the form.
      *
-     * @param string $field   The fieldname for this checkbox
-     * @param string $label   The label to attach to this checkbox
-     * @param string $options Options to pass to HTML_QuickForm
-     * @param string $closer  ?????
+     * @param string $field      The fieldname for this checkbox
+     * @param string $label      The label to attach to this checkbox
+     * @param string $options    Options to pass to HTML_QuickForm
+     * @param bool   $toEntities Whether all HTML special characters in $name and
+     *                           $label should be converted to HTML entities when
+     *                           obtaining the HTML representation for this element.
      *
      * @return QuickForm_Element representing checkbox
      */
-    function createCheckbox($field, $label, $options=null, $closer='</label>')
+    function createCheckbox($field, $label, $options=null, $toEntities=true)
     {
         return $this->form->createElement(
             "advcheckbox",
             $field,
             $label,
             $options,
-            array()
+            array(),
+            $toEntities
         );
     }
 
     /**
      * Creates a password form element but does not add it to the page
      *
-     * @param string $field The fieldname for the password box
-     * @param string $label The label to attach to the form element
-     * @param array  $attr  List of HTML attributes to add to the element
+     * @param string $field      The fieldname for the password box
+     * @param string $label      The label to attach to the form element
+     * @param array  $attr       List of HTML attributes to add to the element
+     * @param bool   $toEntities Whether all HTML special characters in $name and
+     *                           $label should be converted to HTML entities when
+     *                           obtaining the HTML representation for this element.
      *
      * @return QuickForm_Element Form element
      */
     function createPassword(
         $field,
         $label=null,
-        $attr=array('class' => 'form-control input-sm')
+        $attr=array('class' => 'form-control input-sm'),
+        $toEntities=true
     ) {
-        return $this->form->createElement('password', $field, $label, $attr);
+        return $this->form->createElement(
+            'password',
+            $field,
+            $label,
+            $attr,
+            $toEntities
+        );
     }
 
     /**

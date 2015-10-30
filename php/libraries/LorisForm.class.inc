@@ -44,18 +44,24 @@ class LorisForm
      * things specific to one type of element X should go in
      * the createX function.
      *
-     * @param string $name    The form name of the element being added
-     * @param string $label   The label to attach to the GUI in the form
-     * @param array  $attribs An array of extra HTML attributes to be
-     *                        added to this element.
+     * @param string $name       The form name of the element being added
+     * @param string $label      The label to attach to the GUI in the form
+     * @param array  $attribs    An array of extra HTML attributes to be
+     *                           added to this element.
+     * @param bool   $toEntities Whether all HTML special characters should
+     *                           be converted to HTML entities when obtaining
+     *                           the HTML representation for this element. The
+     *                           way the conversion takes place is dependant on
+     *                           the type of the element.
      *
      * @return array describing the form element
      */
-    protected function &createBase($name, $label, $attribs=array())
+    protected function &createBase($name, $label, $attribs=array(), $toEntities=true)
     {
         $el = array(
-               'label' => $label,
-               'name'  => $name,
+               'label'      => $label,
+               'name'       => $name,
+               'toEntities' => $toEntities,
               );
         if (isset($attribs['class'])) {
             $el['class'] = $attribs['class'];
@@ -83,17 +89,22 @@ class LorisForm
      * of any shared attributes that are shared between different
      * element types.
      *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $attribs An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
+     * @param string $name       The element name.
+     * @param string $label      The label to attach to this element.
+     * @param array  $attribs    An array of other attributes that should
+     *                           get added. Currently only the "class"
+     *                           attribute gets added.
+     * @param bool   $toEntities Whether all HTML special characters should
+     *                           be converted to HTML entities when obtaining
+     *                           the HTML representation for this element. The
+     *                           way the conversion is performed is dependant on
+     *                           the type of the element.
      *
      * @return &array A reference to the array that was added to $this->form
      */
-    protected function &addBase($name, $label, $attribs)
+    protected function &addBase($name, $label, $attribs, $toEntities=true)
     {
-        $el = $this->createBase($name, $label, $attribs);
+        $el = $this->createBase($name, $label, $attribs, $toEntities);
         $this->form[$name] =& $el;
         return $el;
     }
@@ -101,19 +112,28 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addSelect" API.
      *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of the options (values) to add
-     *                        to this select dropdown.
-     * @param array  $attribs An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
+     * @param string $name       The element name.
+     * @param string $label      The label to attach to this element.
+     * @param array  $options    An array of the options (values) to add
+     *                           to this select dropdown.
+     * @param array  $attribs    An array of other attributes that should
+     *                           get added. Currently only the "class"
+     *                           attribute gets added.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addSelect($name, $label, $options, $attribs = array())
-    {
-        $el            =& $this->addBase($name, $label, $attribs);
+    public function addSelect(
+        $name,
+        $label,
+        $options,
+        $attribs = array(),
+        $toEntities=true
+    ) {
+        $el            =& $this->addBase($name, $label, $attribs, $toEntities);
         $el['type']    = 'select';
         $el['options'] = $options;
         if (isset($attribs['multiple'])) {
@@ -127,66 +147,82 @@ class LorisForm
      *
      * Reimplementation of HTML_QuickForm's "addStatic" API.
      *
-     * @param string $name  The element name.
-     * @param string $label The label to attach to this element.
+     * @param string $name       The element name.
+     * @param string $label      The label to attach to this element.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return none, but modifies $this->form as a side-effect
      */
-    public function addStatic($name, $label)
+    public function addStatic($name, $label, $toEntities=true)
     {
-        $el         =& $this->addBase($name, $label, array());
+        $el         =& $this->addBase($name, $label, array(), $toEntities);
         $el['type'] = 'static';
     }
 
     /**
      * Reimplementation of HTML_QuickForm's "addPassword" API.
      *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
+     * @param string $name       The element name.
+     * @param string $label      The label to attach to this element.
+     * @param array  $options    An array of other attributes that should
+     *                           get added. Currently only the "class"
+     *                           attribute gets added.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addPassword($name, $label, $options=array())
+    public function addPassword($name, $label, $options=array(), $toEntities=true)
     {
-        $el         =& $this->addBase($name, $label, $options);
+        $el         =& $this->addBase($name, $label, $options, $toEntities);
         $el['type'] = 'password';
     }
 
     /**
      * Reimplementation of HTML_QuickForm's "addText" API.
      *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
+     * @param string $name       The element name.
+     * @param string $label      The label to attach to this element.
+     * @param array  $options    An array of other attributes that should
+     *                           get added. Currently only the "class"
+     *                           attribute gets added.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addText($name, $label, $options=array())
+    public function addText($name, $label, $options=array(), $toEntities=true)
     {
-        $el         =& $this->addBase($name, $label, $options);
+        $el         =& $this->addBase($name, $label, $options, $toEntities);
         $el['type'] = 'text';
     }
 
     /**
      * Reimplementation of HTML_QuickForm's "addTextArea" API.
      *
-     * @param string $elname  The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
-     *                        get added. Currently only the "class",
-     *                        "rows", and "cols" attributes will get
-     *                        added.
+     * @param string $elname     The element name.
+     * @param string $label      The label to attach to this element.
+     * @param array  $options    An array of other attributes that should
+     *                           get added. Currently only the "class",
+     *                           "rows", and "cols" attributes will get
+     *                           added.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addTextArea($elname, $label, $options=array())
+    public function addTextArea($elname, $label, $options=array(), $toEntities=true)
     {
-        $el         =& $this->addBase($elname, $label, $options);
+        $el         =& $this->addBase($elname, $label, $options, $toEntities);
         $el['type'] = 'textarea';
         if (isset($options['cols'])) {
             $el['cols'] = $options['cols'];
@@ -202,19 +238,28 @@ class LorisForm
      * HTML5 input type="date" element, while QuickForm added three dropdowns
      * for year/month/day.
      *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of options that should get added,
-     *                        such as the date format, min or max date etc.
-     * @param array  $attribs An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
+     * @param string $name       The element name.
+     * @param string $label      The label to attach to this element.
+     * @param array  $options    An array of options that should get added,
+     *                           such as the date format, min or max date etc.
+     * @param array  $attribs    An array of other attributes that should
+     *                           get added. Currently only the "class"
+     *                           attribute gets added.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addDate($name, $label, $options, $attribs = array())
-    {
-        $el            =& $this->addBase($name, $label, $attribs);
+    public function addDate(
+        $name,
+        $label,
+        $options,
+        $attribs = array(),
+        $toEntities=true
+    ) {
+        $el            =& $this->addBase($name, $label, $attribs, $toEntities);
         $el['type']    = 'date';
         $el['options'] = $options;
     }
@@ -222,51 +267,63 @@ class LorisForm
     /**
      * Adds a file to the current form.
      *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
-     *                        get added. Currently only the "class"
-     *                        attribute gets added.
+     * @param string $name       The element name.
+     * @param string $label      The label to attach to this element.
+     * @param array  $options    An array of other attributes that should
+     *                           get added. Currently only the "class"
+     *                           attribute gets added.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    function addFile($name, $label, $options)
+    function addFile($name, $label, $options, $toEntities=true)
     {
-        $el         =& $this->addBase($name, $label, $options);
+        $el         =& $this->addBase($name, $label, $options, $toEntities);
         $el['type'] = 'file';
     }
 
     /**
      * Adds a checkobox to the current form.
      *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other attributes that should
-     *                        get added. Currently only the "value"
-     *                        attribute gets added.
+     * @param string $name       The element name.
+     * @param string $label      The label to attach to this element.
+     * @param array  $options    An array of other attributes that should
+     *                           get added. Currently only the "value"
+     *                           attribute gets added.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    function addCheckbox($name, $label, $options)
+    function addCheckbox($name, $label, $options, $toEntities=true)
     {
-        $el         =& $this->addBase($name, $label, $options);
+        $el         =& $this->addBase($name, $label, $options, $toEntities);
         $el['type'] = 'advcheckbox';
     }
 
     /**
      * Adds a header element to this LorisForm.
      *
-     * @param string $name    The name of the header element, may be null
-     * @param string $label   The description for the header
-     * @param array  $options Other options for this header element
+     * @param string $name       The name of the header element, may be null
+     * @param string $label      The description for the header
+     * @param array  $options    Other options for this header element
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return none
      */
-    function addHeader($name, $label, $options = array())
+    function addHeader($name, $label, $options = array(), $toEntities=true)
     {
         $name = $this->_generateName($name);
 
-        $el         =& $this->addBase($name, $label, $options);
+        $el         =& $this->addBase($name, $label, $options, $toEntities);
         $el['type'] = 'header';
     }
     /**
@@ -291,17 +348,21 @@ class LorisForm
      * calls the appropriate $this->addX wrapper based on the "type"
      * passed to the function call.
      *
-     * @param string $type    The type of element to add.
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
-     * @param array  $options An array of other options that should
-     *                        be added. This generalls maps to the
-     *                        third option of the addX wrapper.
-     * @param array  $attribs Other attributes to be added. This is
-     *                        mostly only used for the "select" type,
-     *                        where "options" has a different meaning
-     *                        and attribs takes the place of what "options"
-     *                        is for other types.
+     * @param string $type       The type of element to add.
+     * @param string $name       The element name.
+     * @param string $label      The label to attach to this element.
+     * @param array  $options    An array of other options that should
+     *                           be added. This generalls maps to the
+     *                           third option of the addX wrapper.
+     * @param array  $attribs    Other attributes to be added. This is
+     *                           mostly only used for the "select" type,
+     *                           where "options" has a different meaning
+     *                           and attribs takes the place of what "options"
+     *                           is for other types.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return none, but modifies this->form as a side-effect
      */
@@ -310,37 +371,38 @@ class LorisForm
         $name,
         $label,
         $options=array(),
-        $attribs=array()
+        $attribs=array(),
+        $toEntities=true
     ) {
         $el = null;
         switch($type)  {
         case 'select':
-            $el = $this->addSelect($name, $label, $options, $attribs);
+            $el = $this->addSelect($name, $label, $options, $attribs, $toEntities);
             break;
         case 'date':
-            $el = $this->addDate($name, $label, $options, $attribs);
+            $el = $this->addDate($name, $label, $options, $attribs, $toEntities);
             break;
         case 'file':
-            $el = $this->addFile($name, $label, $options);
+            $el = $this->addFile($name, $label, $options, $toEntities);
             break;
         case 'static':
-            $el = $this->addStatic($name, $label);
+            $el = $this->addStatic($name, $label, $toEntities);
             break;
         case 'textarea':
-            $el = $this->addTextArea($name, $label, $options);
+            $el = $this->addTextArea($name, $label, $options, $toEntities);
             break;
         case 'password':
-            $el = $this->addPassword($name, $label, $options);
+            $el = $this->addPassword($name, $label, $options, $toEntities);
             break;
         case 'header':
-            $el = $this->addHeader($name, $label);
+            $el = $this->addHeader($name, $label, $toEntities);
             break;
         case 'advcheckbox':
-            $el = $this->addCheckbox($name, $label, $options);
+            $el = $this->addCheckbox($name, $label, $options, $toEntities);
             break;
         case 'text':
         default:
-            $el = $this->addText($name, $label, $options);
+            $el = $this->addText($name, $label, $options, $toEntities);
             break;
         }
     }
@@ -351,18 +413,22 @@ class LorisForm
      * Creates a text element that can be added to the page but
      * does not itself add the element.
      *
-     * @param string $elname  The name of the element to be added to
-     *                        the form
-     * @param string $label   The name of the label to attach to the
-     *                        form
-     * @param array  $attribs An array of extra HTML attributes to be
-     *                        added to this element.
+     * @param string $elname     The name of the element to be added to
+     *                           the form
+     * @param string $label      The name of the label to attach to the
+     *                           form
+     * @param array  $attribs    An array of extra HTML attributes to be
+     *                           added to this element.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return array of the form that can be added to $this->form
      */
-    function createText($elname, $label, $attribs = array())
+    function createText($elname, $label, $attribs = array(), $toEntities=true)
     {
-        $el         =& $this->createBase($elname, $label, $attribs);
+        $el         =& $this->createBase($elname, $label, $attribs, $toEntities);
         $el['type'] = 'text';
         return $el;
     }
@@ -373,16 +439,20 @@ class LorisForm
      * Creates a text element that can be added to the page but
      * does not itself add the element.
      *
-     * @param string $elname The name of the element to be added to
-     *                       the form
-     * @param string $label  The name of the label to attach to the
-     *                       form
+     * @param string $elname     The name of the element to be added to
+     *                           the form
+     * @param string $label      The name of the label to attach to the
+     *                           form
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return array of the form that can be added to $this->form
      */
-    function createTextArea($elname, $label)
+    function createTextArea($elname, $label, $toEntities=true)
     {
-        $el         =& $this->createBase($elname, $label);
+        $el         =& $this->createBase($elname, $label, $toEntities);
         $el['type'] = 'textarea';
         return $el;
     }
@@ -569,8 +639,10 @@ class LorisForm
                 $selected = 'selected="selected"';
             }
 
-            $strOptions .= "<option value='$optionKey' $selected>"
-                .$optionVal
+            $strOptions .= "<option value='"
+                . $this->_getHtml($optionKey, $el['toEntities'])
+                . "' $selected>"
+                . $this->_getHtml($optionVal, $el['toEntities'])
                 . "</option>";
         }
 
@@ -583,7 +655,9 @@ class LorisForm
         if (isset($el['multiple'])) {
             $multiple = "multiple=\"multiple\"";
         }
-        $retVal = "<select name=\"$el[name]\" $cls $changehandler $multiple";
+        $retVal = "<select name=\""
+            . $this->_getHtml($el['name'], $el['toEntities'])
+            . "\" $cls $changehandler $multiple";
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if ($el['requireMsg']) {
@@ -599,6 +673,21 @@ class LorisForm
     }
 
     /**
+     * Gets the HTML representation associated with the value passed as
+     * argument.
+     *
+     * @param string $value      the value to write in HTML.
+     * @param bool   $toEntities whether special HTML characters should
+     *                           be converted to HTML entities during
+     *                           the conversion.
+     *
+     * @return string HTML text for the supplied value.
+     */
+    private function _getHtml($value, $toEntities=true)
+    {
+        return $toEntities ? htmlspecialchars($value) : $value;
+    }
+    /**
      * Generates the HTML to add to the page when rendered for a static
      * element.
      *
@@ -609,9 +698,9 @@ class LorisForm
     function staticHTML($el)
     {
         if (empty($el['name'])) {
-            return $el['label'];
+            return $this->_getHtml($el['label'], $el['toEntities']);
         }
-        $val = $this->getValue($el['name']);
+        $val = $this->_getHtml($this->getValue($el['name'], $el['toEntities']));
 
         return $val;
     }
@@ -639,13 +728,15 @@ class LorisForm
         }
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
-        $value    = $this->getValue($el['name']);
-        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear"
+        $value    = $this->_getHtml($this->getValue($el['name']), $el['toEntities']);
+        $elmnt    = "<input name=\""
+            . $this->_getHtml($el['name'], $el['toEntities'])
+            . "\" type=\"date\" $cls $minYear $maxYear"
             . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
             !empty($value)
-                ? ' value="' . $this->getValue($el['name']) . '" '
+                ? ' value="' . $value . '" '
                 : ''
             )
             . ">";
@@ -714,7 +805,7 @@ class LorisForm
               )
             . (
                 !empty($value)
-                ? ' value="' . $this->getValue($el['name']) . '"'
+                ? ' value="' . $this->_getHtml($value, $el['toEntities']) . '"'
                 : ''
               )
             .">";
@@ -731,11 +822,13 @@ class LorisForm
     function fileHTML($el)
     {
         $cls = '';
-        $val = $this->getValue($el['name']);
+        $val = $this->_getHtml($this->getValue($el['name']), $el['toEntities']);
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        return "<input name=\"$el[name]\" type=\"file\" $cls"
+        return "<input name=\""
+            . $this->_getHtml($el['name'], $el['toEntities'])
+            . "\" type=\"file\" $cls"
             . (
                 !empty($val)
                 ? ' value="' . $val . '"'
@@ -766,11 +859,13 @@ class LorisForm
         if (isset($el['cols'])) {
             $dims .= " cols=\"$el[cols]\"";
         }
-        $value = $this->getValue($el['name']);
-        return "<textarea name=\"$el[name]\" $cls $dims>"
+        $value = $this->_getHtml($this->getValue($el['name']), $el['toEntities']);
+        return "<textarea name=\""
+            . $this->_getHtml($el['name'], $el['toEntities'])
+            . "\" $cls $dims>"
             . (
                 !empty($value)
-                ? $this->getValue($el['name']) : ''
+                ? $value : ''
               )
             ."</textarea>";
     }
@@ -953,7 +1048,7 @@ class LorisForm
      */
     function headerHTML($el)
     {
-        return "<h2>$el[label]</h2>";
+        return "<h2>" . $this->_getHtml($el['label'], $el['toEntities']) . "</h2>";
     }
 
     /**
@@ -966,18 +1061,23 @@ class LorisForm
      */
     function checkboxHTML($el)
     {
-        $val     = $this->getValue($el['name']);
+        $val     = $this->_getHtml($this->getValue($el['name'], $el['toEntities']));
         $checked = '';
         $value   = '';
         if (!empty($val)) {
             $checked = 'checked="checked"';
         }
         if (isset($el['value'])) {
-            $value = "value=\"$el[value]\"";
+            $value = "value=\""
+                . $this->_getHtml($el['value'], $el['toEntities'])
+                . "\"";
         }
-        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value/>"
-            . " $el[label]";
+        return "<input name=\""
+            . $this->_getHtml($el['name'], $el['toEntities'])
+            . "\" type=\"checkbox\" $checked $value/> "
+            . $this->_getHtml($el['label'], $el['toEntities']);
     }
+
     /**
      * This is a slight difference from the HTML_QuickForm API.
      * Whereas in HTML_QuickForm, you instantiated an array renderer,
@@ -1187,35 +1287,62 @@ class LorisForm
      *
      * Creates an element without adding it to the form.
      *
-     * @param string $type    The type of element to be created.
-     * @param string $elname  The name of the element to be added
-     * @param string $label   The label to attach to the element
-     * @param array  $options Element specific options to pass
-     *                        to create* wrappers
-     * @param array  $attribs An array of extra HTML attributes to
-     *                        add to the element.
+     * @param string $type       The type of element to be created.
+     * @param string $elname     The name of the element to be added
+     * @param string $label      The label to attach to the element
+     * @param array  $options    Element specific options to pass
+     *                           to create* wrappers
+     * @param array  $attribs    An array of extra HTML attributes to
+     *                           add to the element.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return array of the form supported by $this->form
      */
-    function createElement($type, $elname, $label, $options, $attribs=array())
-    {
+    function createElement(
+        $type,
+        $elname,
+        $label,
+        $options,
+        $attribs=array(),
+        $toEntities=true
+    ) {
         switch($type) {
         case 'text':
-            return $this->createText($elname, $label, $options, $attribs);
+            return $this->createText(
+                $elname,
+                $label,
+                $options,
+                $attribs,
+                $toEntities
+            );
         case 'select':
-            return $this->createSelect($elname, $label, $options, $attribs);
+            return $this->createSelect(
+                $elname,
+                $label,
+                $options,
+                $attribs,
+                $toEntities
+            );
         case 'static':
             /* Label seems to usually be the wrong attribute for static
              * elements?
              */
-            $el         = $this->createBase($elname, $options, $attribs);
+            $el         = $this->createBase(
+                $elname,
+                $options,
+                $attribs,
+                $toEntities
+            );
             $el['type'] = 'static';
             break;
         case 'advcheckbox':
         case 'textarea':
         case 'date':
         case 'password':
-            $el         = $this->createBase($elname, $label, $options);
+            $el         = $this->createBase($elname, $label, $options, $toEntities);
             $el['type'] = $type;
             break;
         default:
@@ -1227,18 +1354,27 @@ class LorisForm
     /**
      * Creates a select element but does not add it to the page.
      *
-     * @param string $name    The name of the element to be added
-     * @param string $label   The label to attach to the element
-     * @param array  $options Array of options to add to the select
-     *                        dropdown.
-     * @param array  $attribs An array of extra HTML attributes to
-     *                        add to the element.
+     * @param string $name       The name of the element to be added
+     * @param string $label      The label to attach to the element
+     * @param array  $options    Array of options to add to the select
+     *                           dropdown.
+     * @param array  $attribs    An array of extra HTML attributes to
+     *                           add to the element.
+     * @param bool   $toEntities Whether all HTML special characters in $name, $label
+     *                           and all $options should be converted to HTML
+     *                           entities when obtaining the HTML representation for
+     *                           this element.
      *
      * @return array of the form supported by $this->form
      */
-    public function createSelect($name, $label, $options, $attribs = array())
-    {
-        $el            =& $this->createBase($name, $label, $attribs);
+    public function createSelect(
+        $name,
+        $label,
+        $options,
+        $attribs = array(),
+        $toEntities=true
+    ) {
+        $el            =& $this->createBase($name, $label, $attribs, $toEntities);
         $el['type']    = 'select';
         $el['options'] = $options;
         if (isset($attribs['multiple'])) {
