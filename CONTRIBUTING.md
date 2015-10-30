@@ -3,6 +3,11 @@
 We'd love to have you contribute to Loris. The first thing you should do
 before contributing is probably sign up for the [LORIS developers' mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev).
 
+## Development branches
+
+Pull requests should be based on and sent to the VERSIONNUMBER-dev branch of the version that your bug fix (or feature) is targetting.
+The master branch is reserved for stable releases.
+
 ## Code Contributions
 
 If you'd like to contribute code, here are some things to keep in mind.
