@@ -45,7 +45,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         // Set up database wrapper and config
-        $factory      = NDB_Factory::singleton();
+        $factory = NDB_Factory::singleton();
+        $factory->reset();
+
         $this->config = $factory->Config(CONFIG_XML);
 
         $database = $this->config->getSetting('database');
@@ -58,8 +60,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             1
         );
         $this->url = $this->config->getSetting("url") . "/main.php";
-
-        print_r($this->config->getSetting("url"));
 
         $this->DB->insert(
             "users",
