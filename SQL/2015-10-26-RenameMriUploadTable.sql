@@ -1,0 +1,1 @@
+Rename Table mri_upload TO imaging_uploader;

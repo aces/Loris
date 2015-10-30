@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Script to read messages written by mri_upload
+ * Script to read messages written by imaging_uploader
  *
  * PHP version 5
  *
