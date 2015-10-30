@@ -261,6 +261,7 @@ class NDB_Config
         }
 
         $factory = NDB_Factory::singleton();
+
         $db = $factory->database();
         if ($db->isConnected() !== true) {
             // no database connection, fall back on config.xml
