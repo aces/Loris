@@ -62,10 +62,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             1
         );
         $this->url = $this->config->getSetting("url") . "/main.php";
-        if($this->url == "/main.php") {
-            print_r($database);
-            print_r($this->config);
-        }
 
         $this->DB->insert(
             "users",
@@ -115,7 +111,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     protected function login($username, $password)
     {
         print "$this->url";
-        print_r($this->webDriver);
         $this->webDriver->get($this->url);
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
