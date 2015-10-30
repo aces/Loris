@@ -51,4 +51,11 @@
 
     </testsuites>
 
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".inc">../php</directory>
+            <directory suffix=".inc">../htdocs</directory>
+        </whitelist>
+    </filter>
+
 </phpunit>
