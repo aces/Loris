@@ -51,7 +51,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->factory->setTesting(false);
 
         $this->config = $this->factory->Config(CONFIG_XML);
-        print_r($this->config);
 
         $database = $this->config->getSetting('database');
 
@@ -63,6 +62,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             1
         );
         $this->url = $this->config->getSetting("url") . "/main.php";
+        if(empty($this->url)) {
+            print_r($database);
+            print_r($this->config);
+        }
 
         $this->DB->insert(
             "users",
