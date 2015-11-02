@@ -10,10 +10,20 @@
     <script id="overlay-ui-template" type="x-volume-ui-template">
         <div class="row">
             <div class="overlay-viewer-display" id="panel-size"></div>
-            <div class="form-group col-sm-8">
+            <div class="form-group col-sm-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+
+                        <div class="filename clickable"></div>
+                        <h3 class="panel-title filename clickable">Overlay</h3>
+
+                        <span class="arrow glyphicon glyphicon-chevron-down clickable"></span>
+
+                    </div>
+                </div>
+            
                 <div class="volume-viewer-controls volume-controls">
                     <div class="filename-overlay clickable"  style="display: block; margin:auto;"></div>
-                    <span class="arrow glyphicon glyphicon-chevron-down"></span>
 
 
                     <div class="blend-div" data-volume-id="{{VOLID}}">
@@ -57,7 +67,7 @@
     <script id="volume-ui-template4d" type="x-volume-ui-template">
         <div class="row">
         <div class="volume-viewer-display"></div>
-            <div class="form-group col-sm-12 col-md-8">
+            <div class="form-group col-sm-3">
                 <div class="panel panel-default" id="subpanel-filename-{{VOLID}}">
                     <div class="panel-heading" id="mri-panel-filename-{{VOLID}}">
 

@@ -222,7 +222,3 @@ body {
 .volume-viewer-display, .overlay-viewer-display {
     float: right;
 }
-
-.col-sm-12, .col-sm-8 {
-    width: 25%;
-}
