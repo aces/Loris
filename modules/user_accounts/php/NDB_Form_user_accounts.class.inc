@@ -93,7 +93,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
             // set the user's permission defaults
             foreach ($perms as $value) {
-                $defaults["permID[$value]"] = 1;
+                $defaults["permID[$value]"] = 'on';
             }
         }
 
@@ -200,18 +200,8 @@ class NDB_Form_User_Accounts extends NDB_Form
         // update the user permissions if applicable
         if (!empty($permIDs)) {
             $success = $user->removePermissions();
-
             foreach ($permIDs as $key => $value) {
-                if ($value == 0) {
-                    //if the permission existed before and it's removed now///
-                    ///Then insert into the user_account_history as 'D'
-                    if (in_array($key, $current_permissionids)) {
-                        $user->insertIntoUserAccountHistory($key, 'D');
-                        $permissionsRemoved[]
-                            = $this->getDescriptionUsingPermID($key);
-                    }
-                    unset($permIDs[$key]);
-                } else {
+                if ($value == 'on') {
                     /* if the user didn't have the permission
                        and the permission is now assigned then insert
                        insert into the user_account_history as 'I'
@@ -221,6 +211,15 @@ class NDB_Form_User_Accounts extends NDB_Form
                         $permissionsAdded[]
                             = $this->getDescriptionUsingPermID($key);
                     }
+                } else {
+                    //if the permission existed before and it's removed now///
+                    ///Then insert into the user_account_history as 'D'
+                    if (in_array($key, $current_permissionids)) {
+                        $user->insertIntoUserAccountHistory($key, 'D');
+                        $permissionsRemoved[]
+                            = $this->getDescriptionUsingPermID($key);
+                    }
+                    unset($permIDs[$key]);
                 }
             }
 
@@ -229,7 +228,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             if (isset($supervisorEmails)) {
                 foreach ($supervisorEmails as $email => $checkValue) {
                     if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
-                        if ($checkValue == 1) {
+                        if ($checkValue == 'on') {
                             $msg_data['current_user'] = $editor->getFullname();
                             $msg_data['study']        = $config->getSetting('title');
                             $msg_data['realname']     = $values['Real_name'];
@@ -629,21 +628,21 @@ class NDB_Form_User_Accounts extends NDB_Form
         //============================================
         if ($this->isCreatingNewUser()) {
             // Clicked on "UID == email" and specified a UID
-            if (!is_null($values['UserID']) && $values['NA_UserID'] == 'on') {
+            if (!empty($values['UserID']) && $values['NA_UserID'] == 'on') {
                 $errors['UserID_Group']
                     = 'You cannot enter a user name '
                     . 'if you want it to match the email address';
-            } elseif (is_null($values['UserID']) && $values['NA_UserID'] != 'on') {
+            } elseif (empty($values['UserID']) && $values['NA_UserID'] != 'on') {
                 // Not clicked on "UID == email" and not specified a UID
                 $errors['UserID_Group']
                     = 'You must enter a user name '
                     . 'or choose to make it match the email address';
-            } elseif (!is_null($values['UserID'])
+            } elseif (!empty($values['UserID'])
                 || ($values['NA_UserID'] == 'on' && $values['Email'])
             ) {
                 // Either specified a UID or clicked on "UID = email"
                 // with a non-empty email
-                $effectiveUID = is_null($values['UserID'])
+                $effectiveUID = empty($values['UserID'])
                     ? $values['Email'] : $values['UserID'];
 
                 // check username's uniqueness
@@ -677,7 +676,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             //so either password should be set or
             // password should be generated
             if (is_null($pass)
-                && is_null($values['Password_md5'])
+                && empty($values['Password_md5'])
                 && $values['NA_Password'] != 'on'
             ) {
                 $errors['Password_Group']
