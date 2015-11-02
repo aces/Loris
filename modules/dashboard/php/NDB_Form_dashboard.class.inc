@@ -59,22 +59,15 @@ class NDB_Form_Dashboard extends NDB_Form
         $this->tpl_data['last_login']          = $last_login;
         $this->tpl_data['project_description']
             = $config->getSetting('projectDescription');
-        $dashboard_links = $config->getSetting('dashboardLinks');
+        $dashboard_links = $config->getExternalLinks('dashboard');
         if (!empty($dashboard_links)) {
-            foreach (Utility::toArray($dashboard_links['link']) AS $link) {
-                $LinkArgs = '';
-                $BaseURL  = $link['@']['url'];
-                if (isset($link['@']['args'])) {
-                    $LinkArgs = $link_args[$link['@']['args']];
-                }
-                $LinkLabel  = $link['#'];
-                $WindowName = md5($link['@']['url']);
+            foreach($dashboard_links as $text => $url) {
                 $this->tpl_data['dashboard_links'][]
                     = array(
-                       'url'        => $BaseURL . $LinkArgs,
-                       'label'      => $LinkLabel,
-                       'windowName' => $WindowName,
-                      );
+                        'url' => $url,
+                        'label' => $text,
+                        'WindowName' => md5($url)
+                    );
             }
         }
 

@@ -254,20 +254,15 @@ $tpl_data['mantis_url'] = $config->getSetting('mantis_url');
 
 
 //Display the links, as specified in the config file
-$links =$config->getSetting('links');
-foreach (Utility::toArray($links['link']) AS $link) {
-    $LinkArgs = '';
-    $BaseURL  = $link['@']['url'];
-    if (isset($link['@']['args'])) {
-        $LinkArgs = $link_args[$link['@']['args']];
-    }
-    $LinkLabel           = $link['#'];
-    $WindowName          = md5($link['@']['url']);
+$links =$config->getExternalLinks('FooterLink');
+
+foreach ($links as $label => $url) {
+    $WindowName = md5($url);
     $tpl_data['links'][] =array(
-                           'url'        => $BaseURL . $LinkArgs,
-                           'label'      => $LinkLabel,
-                           'windowName' => $WindowName,
-                          );
+        'url'        => $url,
+        'label'      => $label,
+        'windowName' => $WindowName,
+    );
 }
 
 

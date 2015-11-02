@@ -573,5 +573,25 @@ class NDB_Config
         return $thisLevel;
     }
 
+    function getExternalLinks($type) {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $results = $db->pselect(
+            "SELECT LinkText, LinkURL
+                FROM ExternalLinks l JOIN ExternalLinkTypes lt
+                    ON (l.LinkTypeID=lt.LinkTypeID)
+                WHERE lt.LinkType=:name",
+            array('name' => $type)
+        );
+
+        print_r($results);
+        $mapped = array();
+        foreach($results as $row) {
+            $mapped[$row['LinkText']] = $row['LinkURL'];
+        }
+        return $mapped;
+    }
+
 }
 ?>

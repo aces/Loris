@@ -69,24 +69,15 @@ class SinglePointLogin
         $tpl_data['action']        = $_SERVER['PHP_SELF']
             . '?' . http_build_query($params);
         $tpl_data['error_message'] = $this->_lastError;
-        try {
-            $study_links = $config->getSetting('Studylinks');
-            foreach (Utility::toArray($study_links['link']) AS $link) {
-                $LinkArgs = '';
-                $BaseURL  = $link['@']['url'];
-                if (isset($link['@']['args'])) {
-                    $LinkArgs = $link_args[$link['@']['args']];
-                }
-                $LinkLabel  = $link['#'];
-                $WindowName = md5($link['@']['url']);
-                $tpl_data['studylinks'][] =array(
-                                            'url'        => $BaseURL . $LinkArgs,
-                                            'label'      => $LinkLabel,
-                                            'windowName' => $WindowName,
-                                           );
-            }
-        } catch(ConfigurationException $e) {
-            // If StudyLinks aren't defined, it shouldn't be fatal.
+
+        $study_links = $config->getExternalLinks('Studylinks');
+        foreach ($study_links as $label => $url) {
+            $WindowName = md5($link['@']['url']);
+            $tpl_data['studylinks'][] =array(
+                'url'        => $url,
+                'label'      => $label,
+                'windowName' => $WindowName,
+            );
         }
 
         $study_title = $config->getSetting('title');
