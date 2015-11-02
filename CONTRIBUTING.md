@@ -5,8 +5,9 @@ before contributing is probably sign up for the [LORIS developers' mailing list]
 
 ## Development branches
 
-Pull requests should be based on and sent to the VERSIONNUMBER-dev branch of the version that your bug fix (or feature) is targetting.
-The master branch is reserved for stable releases.
+Pull requests should be based on and sent to the VERSIONNUMBER-dev branch of the version that you are targeting. The master branch is reserved for stable releases.
+
+Your current version number can be found in the VERSION file under the LORIS root (as of version 15.10).
 
 ## Code Contributions
 
