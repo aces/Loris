@@ -573,7 +573,15 @@ class NDB_Config
         return $thisLevel;
     }
 
-    function getExternalLinks($type) {
+    /**
+     * Retrieve a set of links to display to the user
+     *
+     * @param string $type The type of links to show
+     *
+     * @return associative array of Label => URL
+     */
+    function getExternalLinks($type)
+    {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
@@ -585,9 +593,8 @@ class NDB_Config
             array('name' => $type)
         );
 
-        print_r($results);
         $mapped = array();
-        foreach($results as $row) {
+        foreach ($results as $row) {
             $mapped[$row['LinkText']] = $row['LinkURL'];
         }
         return $mapped;

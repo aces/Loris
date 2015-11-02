@@ -258,11 +258,12 @@ $links =$config->getExternalLinks('FooterLink');
 
 foreach ($links as $label => $url) {
     $WindowName = md5($url);
-    $tpl_data['links'][] =array(
-        'url'        => $url,
-        'label'      => $label,
-        'windowName' => $WindowName,
-    );
+
+    $tpl_data['links'][] = array(
+                            'url'        => $url,
+                            'label'      => $label,
+                            'windowName' => $WindowName,
+                          );
 }
 
 
