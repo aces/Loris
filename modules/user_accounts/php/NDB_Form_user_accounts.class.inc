@@ -95,11 +95,27 @@ class NDB_Form_User_Accounts extends NDB_Form
             foreach ($perms as $value) {
                 $defaults["permID[$value]"] = 'on';
             }
+
+            // Prevent Javascript injection on all fields
+            $defaults['UserID']      = htmlspecialchars($defaults['UserID']);
+            $defaults['First_name']  = htmlspecialchars($defaults['First_name']);
+            $defaults['Last_name']   = htmlspecialchars($defaults['Last_name']);
+            $defaults['Real_name']   = htmlspecialchars($defaults['Real_name']);
+            $defaults['Email']       = htmlspecialchars($defaults['Email']);
+            $defaults['Degree']      = htmlspecialchars($defaults['Degree']);
+            $defaults['Institution'] = htmlspecialchars($defaults['Institution']);
+            $defaults['Address']     = htmlspecialchars($defaults['Address']);
+            $defaults['City']        = htmlspecialchars($defaults['City']);
+            $defaults['State']       = htmlspecialchars($defaults['State']);
+            $defaults['Zip_code']    = htmlspecialchars($defaults['Zip_code']);
+            $defaults['Country']     = htmlspecialchars($defaults['Country']);
+            $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
+
         }
 
         return $defaults;
     }
-
+   
     /**
      * Processes the data entered in the form.
      *
@@ -439,7 +455,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
-                "$row[description]<br>",
+                htmlspecialchars($row['description']) . "<br>",
                 array("class" => "perm_$lastRole")
             );
         }
@@ -471,8 +487,8 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         foreach ($results as $row) {
             $group[] = $this->createCheckbox(
-                'supervisorEmail['.$row['email'].']',
-                "$row[Real_Name]<br>"
+                'supervisorEmail[' . $row['email'] .']',
+                htmlspecialchars($row['Real_Name']) . "<br>"
             );
         }
 
