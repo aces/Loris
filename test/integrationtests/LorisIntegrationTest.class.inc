@@ -127,7 +127,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         // are run one will fail due to the login taking too long?
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::id("page")
+                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )
         );
     }
