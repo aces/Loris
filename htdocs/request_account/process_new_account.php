@@ -78,12 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $err[] = 'The minimum length for First Name field is 3 characters';
     }
     if (!checkLen('lastname')) {
-         $err[] = 'The minimum length for Last Name field is 3 characters';
+        $err[] = 'The minimum length for Last Name field is 3 characters';
     }
     if (!checkLen('from')) {
-          $err[] = 'Your email is not valid!';
+        $err[] = 'Your email is not valid!';
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
-          $err[] = 'Your email is not valid!';
+        $err[] = 'Your email is not valid!';
     }
     if (isset($_SESSION['tntcon'])
         && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']
@@ -92,10 +92,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 
     $fields = array(
-        'name'     => 'First Name',
-        'lastname' => 'Last Name',
-        'from'     => 'Email',
-    );
+               'name'     => 'First Name',
+               'lastname' => 'Last Name',
+               'from'     => 'Email',
+              );
 
     // For each fields, check if quotes or if some HTML/PHP
     // tags have been entered
@@ -114,10 +114,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 
     if (!count($err)) {
-        $name      = htmlspecialchars($_REQUEST["name"],ENT_QUOTES);
-        $lastname  = htmlspecialchars($_REQUEST["lastname"],ENT_QUOTES);
-        $from      = htmlspecialchars($_REQUEST["from"],ENT_QUOTES);
-        $verif_box = htmlspecialchars($_REQUEST["verif_box"],ENT_QUOTES);
+        $name      = htmlspecialchars($_REQUEST["name"], ENT_QUOTES);
+        $lastname  = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
+        $from      = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
+        $verif_box = htmlspecialchars($_REQUEST["verif_box"], ENT_QUOTES);
 
         // check to see if verificaton code was correct
         // if verification code was correct send the message and show this page
