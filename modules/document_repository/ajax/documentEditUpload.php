@@ -1,7 +1,7 @@
 <?php
 
-$user =& User::singleton();
-if (!$user->hasPermission('document_repository_view') && !$user->hasPermission('document_repository_delete')) {
+$userSingleton =& User::singleton();
+if (!$userSingleton->hasPermission('document_repository_view') && !$userSingleton->hasPermission('document_repository_delete')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
@@ -23,7 +23,6 @@ if (Utility::isErrorX($DB)) {
 
 $action = $_POST['action'];
 
-$userSingleton =& User::singleton();
 if (Utility::isErrorX($userSingleton)) {
     return PEAR::raiseError("User Error: ".$userSingleton->getMessage());
 }
