@@ -528,7 +528,7 @@ AddElement = React.createClass({
 		return (
 			<div className="col-xs-12">
 				{header}
-			    <form className="form-horizontal" role="form">
+			    <div className="form-horizontal" role="form">
 			    	<ListElements updateState={this.updateState} value={this.state.selected.value}/>
 			    	{questionInput}
 			        <div className="form-group">
@@ -536,7 +536,7 @@ AddElement = React.createClass({
 			                {buttons}
 			            </div>
 			        </div>
-			    </form>
+			    </div>
 			</div>
 		)
 	}
