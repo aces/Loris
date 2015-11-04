@@ -61,13 +61,13 @@ class NDB_Form_Dashboard extends NDB_Form
             = $config->getSetting('projectDescription');
         $dashboard_links = $config->getExternalLinks('dashboard');
         if (!empty($dashboard_links)) {
-            foreach($dashboard_links as $text => $url) {
+            foreach ($dashboard_links as $text => $url) {
                 $this->tpl_data['dashboard_links'][]
                     = array(
-                        'url' => $url,
-                        'label' => $text,
-                        'WindowName' => md5($url)
-                    );
+                       'url'        => $url,
+                       'label'      => $text,
+                       'WindowName' => md5($url),
+                      );
             }
         }
 
