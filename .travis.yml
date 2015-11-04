@@ -9,10 +9,6 @@ php:
     - 5.6
     - '7'
 
-matrix:
-    allow_failures:
-        - php: '7'
-
 sudo: false
 
 before_install:
@@ -52,11 +48,12 @@ before_script:
     - mysql LorisTest < SQL/0000-00-00-schema.sql
     - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE,DROP,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
     - mysql LorisTest -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aatestpass')), Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
-    - sed -e "s/%HOSTNAME%/localhost/g"
-          -e "s/%USERNAME%/SQLTestUser/g"
-          -e "s/%PASSWORD%/TestPassword/g"
-          -e "s/%DATABASE%/LorisTest/g"
-          < docs/config/config.xml > project/config.xml
+    #- sed -e "s/%HOSTNAME%/localhost/g"
+    #      -e "s/%USERNAME%/SQLTestUser/g"
+    #      -e "s/%PASSWORD%/TestPassword/g"
+    #      -e "s/%DATABASE%/LorisTest/g"
+    #      < test/config.xml > project/config.xml
+    - cp test/config.xml project/config.xml
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
     - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
 
@@ -71,15 +68,7 @@ script:
         php -l $i || exit $?;
       done
     # Run unit tests to make sure functions still do what they should.
-    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'LorisUnitTests for php/libraries'
-
-
-    # Run integration tests to make sure everything didn't just
-    # break
-    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Core Integration Tests'
-
-    # Run integration tests for specific modules
-    - vendor/bin/phpunit --configuration test/phpunit.xml --testsuite 'Loris Module Integration Tests'
+    - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
 
     # Run PHPCS on the entire libraries directory.
     - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
@@ -105,3 +94,6 @@ script:
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)

@@ -221,7 +221,8 @@ class NDB_Factory
      */
     public function setDatabase(Database $db)
     {
-        self::$db = $db;
+        self::$db     = $db;
+        self::$testdb = $db;
         return $db;
     }
 
