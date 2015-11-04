@@ -47,7 +47,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     {
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
-        $this->config  = $this->factory->Config(CONFIG_XML);
+        $this->factory->reset();
+        $this->factory->setTesting(false);
+
+        $this->config = $this->factory->Config(CONFIG_XML);
 
         $database = $this->config->getSetting('database');
 
