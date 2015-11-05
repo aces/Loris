@@ -61,6 +61,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
+        $this->_displayBrief = !(isset($_REQUEST['format']));
+
         $this->columns = array(
                           'psc.Name AS PSC',
                           'candidate.CandID AS DCCID',
