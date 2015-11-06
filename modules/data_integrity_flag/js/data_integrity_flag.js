@@ -33,7 +33,7 @@ function changeVisitLabels() {
     }
     $.get("AjaxHelper.php?Module=data_team_helper&script=GetInstruments.php&visit_label=" + visit_label_value,
         function (data) {
-            instruments = data.split("\n");
+            instruments = data;
             instrument_dropdown.options.length = 0;
             var i, numInstruments = instruments.length, val;
             for (i = 0; i < numInstruments; i += 1) {

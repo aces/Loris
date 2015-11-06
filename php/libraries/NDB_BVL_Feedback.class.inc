@@ -495,7 +495,7 @@ class NDB_BVL_Feedback
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= ", ft.CommentID";
         }
-        $query .= " ORDER BY ft.CandID, ft.Feedback_level, ft.Status";
+        $query .= " ORDER BY ft.CandID, ft.Feedback_level";
 
         $result = $db->pselect($query, $qparams);
 
@@ -1108,7 +1108,7 @@ class NDB_BVL_Feedback
                 } else {
                     $Factory       = NDB_Factory::singleton();
                     $DB            = $Factory->Database();
-                    $instruments_q = $DB->pselect(
+                    $instruments_q = $DB->pselectOne(
                         "SELECT Count(*) FROM test_names WHERE Test_name=:testName",
                         array('testName' => $test_name)
                     );

@@ -75,7 +75,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             array(
              'min(s.SubprojectID) as Subproject',
              'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
-             's.Scan_done as scan_Done',
+             'MAX(s.Scan_done) as scan_Done',
             )
         );
 
@@ -127,8 +127,9 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             $this->query .= " AND c.CenterID=" . $user->getCenterID();
         }
 
-        $this->group_by = 'c.CandID';
-        $this->order_by = 'psc.Name, c.CandID DESC, s.VisitNo';
+                          //'COALESCE(pso.ID,1) AS Participant_Status',
+        $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Gender';
+        $this->order_by = 'psc.Name, c.CandID DESC';
 
         if ($useProjects) {
             $this->validFilters[] = 'c.ProjectID';
