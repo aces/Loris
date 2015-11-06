@@ -70,13 +70,16 @@ class NDB_Form_new_profile extends NDB_Form
     function new_profile()
     {
         $config =& NDB_Config::singleton();
-        $study = $config->getSetting('study');
+        $startYear = $config->getSetting('startYear');
+        $endYear = $config->getSetting('endYear');
+        $ageMax = $config->getSetting('ageMax');
+        $ageMin = $config->getSetting('ageMin');
         $dateOptions = array(
                              'language'        => 'en',
                              'format'          => 'YMd',
                              'addEmptyOption'  => true,
-                             'minYear'         => $study['startYear'] - $study['ageMax'],
-                             'maxYear'         => $study['endYear'] - $study['ageMin']
+                             'minYear'         => $startYear - $ageMax,
+                             'maxYear'         => $endYear - $ageMin
                              );
 
         // add date of birth

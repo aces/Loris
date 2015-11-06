@@ -9,7 +9,7 @@
     {foreach from=$subprojects key=subprojectID item=subproject name=configContent}
     <li {if $smarty.foreach.configContent.first}class="active"{/if}><a href="#subproject{$subprojectID}" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>{$subproject.title}</a></li>
     {/foreach}
-    <li {if $smarty.foreach.configContent.first}class="active"{/if}><a href="#subprojectnew" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>New SubprojectID</a></li>
+    <li {if count($subprojects) == 0}class="active"{/if}><a href="#subprojectnew" data-toggle="tab" {if count($subprojects) == 0}class="active"{/if}>New SubprojectID</a></li>
 </ul>
 </div>
 
@@ -57,7 +57,7 @@
         </form>
     </div>
     {/foreach}
-    <div id="subprojectnew" class="tab-pane {if $smarty.foreach.tabContent.first} active{/if}">
+    <div id="subprojectnew" class="tab-pane {if count($subprojects) == 0} active{/if}">
         <h2>New Subproject</h2>
         <br>
         <form class="form-horizontal" role="form" method="post" id="form{$subprojectID}">
@@ -89,6 +89,9 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-4 col-sm-8 submit-area">
+                        <div class="alert alert-warning">
+                          <strong>Warning!</strong> After adding a new subproject, Visit labels for this subproject must be created by editing the config.xml back-end configuration file.
+                        </div>
                         <button id="savesubprojectnew" class="btn btn-primary savesubproject">Save</button>
                         <button class="btn btn-default" type="reset">Reset</button>
                         <label class="saveStatus"></label>
