@@ -116,7 +116,7 @@
     <td class="controlPanelSection">{$numTimepoints} subject timepoint(s) selected.</td>
 
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
 
@@ -171,3 +171,16 @@
 {if $numTimepoints}
   {$numTimepoints} subject timepoint(s) selected.<br>
 {/if}
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/main.php?test_name=imaging_browser&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
+

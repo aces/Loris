@@ -83,7 +83,7 @@
         <table id="LogEntries" border="0" valign="bottom" width="100%">
             <tr>
                 <!-- display pagination links -->
-                <td align="right">{$page_links}</td>
+                <td align="right" id="pageLinks"></td>
             </tr>
         </table>
             <table id="violationsTable" class="table table-hover table-primary table-bordered" border="0">
@@ -160,3 +160,16 @@
 </div>
 </div>
 </div>
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/main.php?test_name=mri_violations&submenu=resolved_violations&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
+
