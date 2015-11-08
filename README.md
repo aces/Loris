@@ -1,5 +1,8 @@
 #LORIS Neuroimaging Platform
 
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+Note: Your default credentials after deployment will be 'admin' as the username and your password will be the uniquely generated password used by ClearDB.
+
 LORIS is a web-accessible database solution for neuroimaging, providing a secure infrastructure to automate the flow of clinical data for complex multi-site neuroimaging studies.
 
 # Prerequisites
