@@ -103,6 +103,7 @@ class NDB_Form_Dashboard extends NDB_Form
 
         // Charts
         $this->tpl_data['total_scans'] = $DB->pselectOne(
+            "SELECT COUNT(*) FROM files f",
             array()
         );
 
