@@ -158,7 +158,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                      'c.ProjectID',
                                      's.Scan_done',
                                      'pso.ID',
-                                     's.Visit_label'
+                                     's.Visit_label',
+                                     'c.Gender',
                                     );
 
         if ($useProjects) {
