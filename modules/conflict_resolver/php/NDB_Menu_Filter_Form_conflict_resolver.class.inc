@@ -81,11 +81,11 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
                     // insert into conflicts_resolved
                     $user1         = $DB->pselectOne(
-                        "SELECT UserID FROM $row[TableName] WHERE CommentID=:CID",
+                        "SELECT UserID FROM flag WHERE CommentID=:CID",
                         array('CID' => $row['CommentId1'])
                     );
                     $user2         = $DB->pselectOne(
-                        "SELECT UserID FROM $row[TableName] WHERE CommentID=:CID",
+                        "SELECT UserID FROM flag WHERE CommentID=:CID",
                         array('CID' => $row['CommentId2'])
                     );
                     $resolutionLog = array(
