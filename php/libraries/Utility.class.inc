@@ -328,7 +328,7 @@ class Utility extends PEAR
      */
     static function getSubprojectsForProject($projectID = null)
     {
-        return getSubprojectList($projectID);
+        return self::getSubprojectList($projectID);
     }
 
     /**
