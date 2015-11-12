@@ -415,10 +415,10 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     $this->form->form[$hash]['name'] = "resolvable[$hash]";
                 }
                 if ($key === 'Problem') {
-                    if($val="Could not identify scan type"){
+                    if($val === "Could not identify scan type"){
                         $this->tpl_data['join_tbl'] = "mri_protocol_violated_scans";
                     }
-                    elseif($val="Protocol Violation"){
+                    elseif($val === "Protocol Violation"){
                         $this->tpl_data['join_tbl'] = "mri_violations_log";
                     }
                     else{
