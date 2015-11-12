@@ -290,6 +290,9 @@ class Utility extends PEAR
     /**
      * Returns a list of study Subprojects
      *
+     * @param integer $projectID The project for which you would like
+     *                           to get the subprojects
+     * 
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
     static function getSubprojectList($projectID = null)
@@ -299,9 +302,11 @@ class Utility extends PEAR
         $config  = $factory->config();
 
         if (isset($projectID)) {
-            $subprojects = $DB->pselect("SELECT * FROM subproject"
-                . "JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID",
-                array('pID' => $projectID));
+            $subprojects = $DB->pselect(
+                "SELECT * FROM subproject" .
+                "JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID",
+                array('pID' => $projectID)
+            );
         } else {
             $subprojects = $DB->pselect("SELECT * FROM subproject", array());
         }
