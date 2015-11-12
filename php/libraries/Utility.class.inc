@@ -292,7 +292,7 @@ class Utility extends PEAR
      *
      * @param integer $projectID The project for which you would like
      *                           to get the subprojects
-     * 
+     *
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
     static function getSubprojectList($projectID = null)
