@@ -198,7 +198,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             LEFT JOIN session s
             ON (mri_protocol_violated_scans.CandID = s.CandID)
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)"
+            ON (p.CenterID = c.CenterID)
+            WHERE Resolved is NULL"
             . " UNION " .
             "SELECT PatientName,
                 TimeRun,
@@ -223,7 +224,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             LEFT JOIN session s
             ON (mri_violations_log.CandID = s.CandID)
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)"
+            ON (p.CenterID = c.CenterID)
+            WHERE Resolved is NULL"
             . " UNION " .
             "SELECT PatientName,
                 TimeRun,
@@ -247,7 +249,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             ON (c.CandID = s.CandID)
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
-            ) as v WHERE 1=1";
+            WHERE Resolved is NULL)
+            as v WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
