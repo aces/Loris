@@ -307,7 +307,9 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             'Could not identify scan type'
             => 'Could not identify scan type',
             'Protocol Violation'
-            => 'MRI Protocol Check violation'
+            => 'MRI Protocol Check violation',
+            'Visit label does not exist'
+            => 'Visit label does not exist'
         );
 
         $this->addBasicText('PatientName', 'Patient Name');
