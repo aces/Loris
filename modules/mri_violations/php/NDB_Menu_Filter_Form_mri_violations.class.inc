@@ -426,7 +426,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     }
                 }
                 if ($key === 'SeriesUID') {
-                    $this->tpl_data['series'] = $val;
+                    $this->tpl_data['items'][$x]['series'] = $val;
                 }
                 else {
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
