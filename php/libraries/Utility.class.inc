@@ -303,7 +303,7 @@ class Utility extends PEAR
 
         if (!is_null($projectID)) {
             $subprojects = $DB->pselect(
-                "SELECT * FROM subproject" .
+                "SELECT * FROM subproject " .
                 "JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID",
                 array('pID' => $projectID)
             );
