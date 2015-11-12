@@ -301,7 +301,7 @@ class Utility extends PEAR
         $DB      = $factory->database();
         $config  = $factory->config();
 
-        if (isset($projectID)) {
+        if (!is_null($projectID)) {
             $subprojects = $DB->pselect(
                 "SELECT * FROM subproject" .
                 "JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID",
