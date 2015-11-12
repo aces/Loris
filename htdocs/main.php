@@ -86,6 +86,9 @@ try {
     $tpl_data['user']['user_from_study_site'] = $site->isStudySite();
 } catch(Exception $e) {
     $tpl_data['error_message'][] = "Error: " . $e->getMessage();
+    $tpl_data['error_message'][] = "Stack Trace: <pre>"
+        . $e->getTraceAsString()
+        . "</pre>";
 }
 
 // the the list of tabs, their links and perms
@@ -164,6 +167,9 @@ if (!empty($_REQUEST['candID'])) {
         $tpl_data['candidate'] = $candidate->getData();
     } catch(Exception $e) {
         $tpl_data['error_message'][] = $e->getMessage();
+        $tpl_data['error_message'][] = "Stack Trace: <pre>"
+            . $e->getTraceAsString()
+            . "</pre>";
     }
 }
 
@@ -178,6 +184,9 @@ if (!empty($_REQUEST['sessionID'])) {
     } catch(Exception $e) {
         $tpl_data['error_message'][]
             = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
+        $tpl_data['error_message'][] = "Stack Trace: <pre>"
+            . $e->getTraceAsString()
+            . "</pre>";
     }
 
 }
@@ -204,6 +213,9 @@ try {
 } catch(ConfigurationException $e) {
     header("HTTP/1.1 500 Internal Server Error");
     $tpl_data['error_message'][] = $e->getMessage();
+    $tpl_data['error_message'][] = "Stack Trace: <pre>"
+        . $e->getTraceAsString()
+        . "</pre>";
 } catch(DatabaseException $e) {
     header("HTTP/1.1 500 Internal Server Error");
     $tpl_data['error_message'][] = $e->getMessage();
@@ -220,6 +232,9 @@ try {
         break;
     }
     $tpl_data['error_message'][] = $e->getMessage();
+    $tpl_data['error_message'][] = "Stack Trace: <pre>"
+        . $e->getTraceAsString()
+        . "</pre>";
 }
 
 $timer->setMarker('Drew main workspace');

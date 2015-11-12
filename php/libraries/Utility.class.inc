@@ -46,17 +46,9 @@ class Utility extends PEAR
      */
     static function isErrorX($data, $code=null)
     {
-        if (!is_a($data, 'PEAR_Error')) {
-            return false;
-        }
-
-        if (is_null($code)) {
-            return true;
-        } elseif (is_string($code)) {
-            return $data->getMessage() == $code;
-        }
-
-        return $data->getCode() == $code;
+        throw new LorisException(
+            "Utility::isErrorX has been deprecated. Use PHP5 exceptions instead."
+        );
     }
 
     /**
