@@ -873,7 +873,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 Utility::toArray($CertificationConfig['CertificationProjects'])
                 AS $key => $value
             ) {
-                if(is_array($value['CertificationProject'])) {
+                if (is_array($value['CertificationProject'])) {
                     $value = $value['CertificationProject'];
                 }
                 foreach ($value as $k=>$projID) {
