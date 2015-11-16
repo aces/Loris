@@ -24,6 +24,7 @@
     var filterTable = RDICOMFilterTable(
         {
             Sites: {$Sites|@json_encode},
+            Genders: {$Genders|@json_encode},
             FilterValues: {$filterValuesJSON}
         }
     );

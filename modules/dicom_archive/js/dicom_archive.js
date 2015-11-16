@@ -32,7 +32,8 @@ DICOMFilterTable = React.createClass({displayName: 'DICOMFilterTable',
                     ), 
                     React.createElement(FilterField, {
                         Label: "Gender", 
-                        Type: "Text", 
+                        Type: "Dropdown", 
+                        Options: this.props.Genders,
                         FormName: "Gender", 
                         Value: this.getFormValue("Gender")}
                     )
