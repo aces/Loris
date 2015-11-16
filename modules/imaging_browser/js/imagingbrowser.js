@@ -15,9 +15,8 @@ $(document).ready(function () {
                 );
                 w.focus();
             } else {
-                var panel_heading = $('#panel-main-heading')
                 var message = '<div class="alert alert-warning">Please select at least 1 image</div>';
-                $(message).hide().appendTo(panel_heading).fadeIn(500).delay(1000).fadeOut(500)
+                $(message).hide().appendTo('#panel-main-heading').fadeIn(500).delay(1000).fadeOut(500)
             }
         };
     };
