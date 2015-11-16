@@ -96,7 +96,9 @@ class NDB_Caller
         // get the files path, aka the base directory
         $base = $config->getSetting('base');
 
-        if (is_dir($base . "project/modules/$test_name") || is_dir($base . "modules/$test_name")) {
+        if (is_dir($base . "project/modules/$test_name")
+            || is_dir($base . "modules/$test_name")
+        ) {
             $ModuleDir = is_dir($base . "project/modules/$test_name")
                 ? $base . "project/modules/$test_name"
                 : $base . "modules/$test_name";

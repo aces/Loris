@@ -53,7 +53,8 @@ class Smarty_NeuroDB extends Smarty
 
         $this->loristemplate_dir    = $basePath . "smarty/templates/";
         $this->project_template_dir = $basePath . "project/templates/";
-        $this->modules_dir          = is_dir($basePath . "project/modules/$moduleName")
+
+        $this->modules_dir = is_dir($basePath . "project/modules/$moduleName")
             ? $basePath . "project/modules/$moduleName"
             : $basePath . "modules/$moduleName" ;
 
