@@ -89,6 +89,10 @@ class SinglePointLogin
         } catch(ConfigurationException $e) {
             $tpl_data['study_logo'] = '';
         }
+
+        $www = $config->getSetting('www');
+        $tpl_data['baseurl'] = $www['url'];
+
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
