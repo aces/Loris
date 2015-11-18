@@ -36,13 +36,15 @@ class Login extends APIBase {
 
         $login = new \SinglePointLogin();
 
+        $www = $config->getSetting("www");
+        $baseURL = $www['url'];
         if($login->passwordAuthenticate($user, $password, false)) {
             $token = array(
                 // JWT related tokens to for the JWT library to validate
-                "iss"  => "getBaseURLCall()",
-                "aud" => "getBaseURLCall()",
+                "iss"  => $baseURL,
+                "aud" => $baseURL,
                 // Issued at
-                "iat" => time(), 
+                "iat" => time(),
                 "nbf" => time(),
                 // Expire in 1 day
                 "exp" => time() + 86400,
