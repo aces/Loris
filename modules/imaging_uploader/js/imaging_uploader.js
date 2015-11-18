@@ -132,7 +132,7 @@ function uploadFile() {
                 document.close();
             } else {
                 $("fileUpload").val("");
-                $("#mri_upload").submit();
+                $("#filter").click();
             }
         }
     });
