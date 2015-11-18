@@ -224,7 +224,7 @@ class SinglePointLogin
             
         }
 
-        // Now true password validation
+        // Now try password validation
         
         // This wasn't a login form, so don't waste any time
         if (empty($_POST['login'])) {
