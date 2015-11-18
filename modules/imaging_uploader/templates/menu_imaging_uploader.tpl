@@ -144,6 +144,14 @@
 </table>
 *}
 
+<!--  title table with pagination -->
+<table border="0" valign="bottom" width="100%">
+<tr>
+    <!-- display pagination links -->
+    <td align="right">{$page_links}</td>
+</tr>
+</table>
+
 <div class="row">
     <table class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
         <thead>

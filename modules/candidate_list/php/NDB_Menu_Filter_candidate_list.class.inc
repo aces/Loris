@@ -152,7 +152,15 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                      'max(s.Current_stage)',
                                      $FeedbackSQL,
                                     );
-        $this->EqualityFilters    = array('session.SubprojectID');
+        $this->EqualityFilters    = array(
+                                     's.SubprojectID',
+                                     'c.CenterID',
+                                     'c.ProjectID',
+                                     's.Scan_done',
+                                     'pso.ID',
+                                     's.Visit_label',
+                                     'c.Gender',
+                                    );
 
         if ($useProjects) {
             $this->formToFilter = array_merge(

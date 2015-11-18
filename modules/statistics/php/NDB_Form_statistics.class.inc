@@ -361,6 +361,7 @@ class NDB_Form_statistics extends NDB_Form
         }
         // MRI INTEGRITY STATS
         // MRI parameter form is completed, but nothing in tarchive
+        /*
         $DB->select("SELECT COUNT(distinct f.CommentID) as val,
                             s.CenterID as CenterID
                             FROM flag f JOIN session s ON (f.SessionID=s.ID) 
@@ -382,6 +383,7 @@ class NDB_Form_statistics extends NDB_Form
         foreach($result as $row) {
             $this->tpl_data['mri_errors'][$row['CenterID']]['no_tarchive'] = $row['val'];
         }
+         */
 
         // MRI parameter form completed, but nothing in browser
         $DB->select("SELECT s.CenterID as CenterID,
