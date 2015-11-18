@@ -112,7 +112,7 @@ class NDB_BVL_Instrument_Instrument_Preview
      *
      * @return none
      */
-    function _save()
+    function _save($values)
     {
         return;
     }

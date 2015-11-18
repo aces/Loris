@@ -36,7 +36,7 @@ if (getenv('LORIS_DB_CONFIG')) {
 }
 define('TABLE_FIXTURES_PATH', __DIR__ . "/fixtures/tables/");
 
-echo "\n Using config: ".CONFIG_XML." \n";
+//echo "\n Using config: ".CONFIG_XML." \n";
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__.'/unittests/Loris_PHPUnit_Database_TestCase.php';
