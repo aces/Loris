@@ -552,7 +552,7 @@ class NDB_Page
         $baseurl = $www['url'];
 
         $paths = $config->getSetting("paths");
- 
+
         $TestName = $this->name;
 
         $files = array(
@@ -567,7 +567,11 @@ class NDB_Page
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
                  );
         if (file_exists($paths['base'] . "modules/$TestName/js/$TestName.js")) {
-            error_log("WARNING: Relying on $TestName.js getting automatically loaded will soon be removed. Override getJSDependencies() instead");
+            error_log(
+                "WARNING: Relying on $TestName.js getting automatically loaded will"
+                . " soon be removed. "
+                . "Override getJSDependencies() instead"
+            );
 
             if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
                 && strcmp($_SERVER['REQUEST_URI'], '/') != 0
