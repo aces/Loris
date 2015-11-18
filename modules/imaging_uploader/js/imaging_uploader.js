@@ -126,8 +126,14 @@ function uploadFile() {
             return xhr;
         },
         success: function (data) {
-            alert("File Uploaded");
-            location.reload();
+            if (data.indexOf("The following errors occured while attempting to display this page:") > -1) {
+                document.open();
+                document.write(data);
+                document.close();
+            } else {
+                $("fileUpload").val("");
+                $("#mri_upload").submit();
+            }
         }
     });
 }
