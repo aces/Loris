@@ -48,7 +48,7 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
 
             $exists = $db->pselectOne("SELECT count(*) FROM test_names WHERE Test_name=:testname", array('testname' => $_FILES['install_file']['name']));
             if($exists <= 0) {
-                $db_config = $config->getSetting('database')['database'];
+                $db_config = $config->getSetting('database');
                 exec("php generate_tables_sql_and_testNames.php < $new_file");
 
                 $instrument =& NDB_BVL_Instrument::factory(
