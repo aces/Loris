@@ -120,6 +120,7 @@ string: navigator.platform,
 
 };
 BrowserDetect.init();
+{/literal}
 
 $(document).ready(function() {
     $("#loginAPI").click(function(e) {
@@ -144,10 +145,10 @@ $(document).ready(function() {
                         xhr.setRequestHeader("Authorization", "Bearer " + token);
                     },
                     success: function() {
-                        window.location = "/";
+                        window.location = "{$baseurl}/main.php";
                     },
                     error: function() {
-                        window.location = "/";
+                        window.location = "{$baseurl}/main.php";
                     }
                 });
             },
@@ -160,7 +161,6 @@ $(document).ready(function() {
 // -->
 </script>
 
-{/literal}
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 </head>
