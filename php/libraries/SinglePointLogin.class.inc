@@ -238,13 +238,12 @@ class SinglePointLogin
         $config = $factory->config();
 
 
-        $sharedKey = "example_key";
+        $sharedKey = $config->getSetting("JWTKey");
 
         //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
             $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, array("HS256"));
         } catch(Exception $e) {
-            print_r($e);
             return false;
         }
 
