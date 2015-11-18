@@ -239,6 +239,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     {
         //make sure the file-name is  valid
         $temp_file = $file->fileInfo['tmp_name'];
+        $temp_dir  = $this->tempdir();
         $db        = Database::singleton();
         $errors    = array();
         $config    = NDB_Config::singleton();
@@ -249,6 +250,10 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $header_patient_name    = array();
         $file_name = $file->fileInfo['name'];
         $file_path = $temp_dir. "/". $file_name;
+        $isPhantom = $args['values']['IsPhantom'];
+        if (empty($isPhantom)){
+            $errors[] ="Make sure 'Are these Phantom Scans' is filled out.";
+        }
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
