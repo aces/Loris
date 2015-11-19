@@ -251,7 +251,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $file_name = $file->fileInfo['name'];
         $file_path = $temp_dir. "/". $file_name;
         $isPhantom = $args['values']['IsPhantom'];
-        if (empty($isPhantom)){
+        if (empty($isPhantom)) {
             $errors[] ="Make sure 'Are these Phantom Scans' is filled out.";
         }
         ///////////////////////////////////////////////////////////////////////
