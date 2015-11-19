@@ -84,7 +84,8 @@ just configured with an appropriate user.
 
 ## 1.3 Apache
 
-A sample apache configuration file is in `docs/config/apache2-site`. You can copy this file the apache configuration directory, adding the appropriate suffix:
+A sample apache configuration file is in `docs/config/apache2-site`. 
+You can copy this file to the apache configuration directory (`/etc/httpd/conf.d/`), adding the appropriate suffix:
 
 ```bash
 cp docs/config/apache-site /etc/httpd/conf.d/apache-site.conf
