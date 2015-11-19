@@ -144,14 +144,14 @@ Main function
 $(function () {
     "use strict";
     change();
-    // $(".submit-button").click(
-    //     function (e){
-    //         if(e.currentTarget.id === "filter"){
-    //             $("#mri_upload").submit();
-    //         } else if (e.currentTarget.id === "upload"){
-    //             e.preventDefault();
-    //             uploadFile();
-    //         }
-    //     }
-    // );
+    $(".submit-button").click(
+        function (e){
+            if(e.currentTarget.id === "filter"){
+                $("#mri_upload").submit();
+            } else if (e.currentTarget.id === "upload"){
+                e.preventDefault();
+                uploadFile();
+            }
+        }
+    );
 });
