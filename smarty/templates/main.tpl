@@ -359,7 +359,7 @@
                                     </a>.
                                 </p>
                                 <p>
-                                    <a href="javascript:location.reload(true);">
+                                    <a href="javascript:history.back(-1)">
                                         Please click here to go back
                                     </a>.
                                 </p>
