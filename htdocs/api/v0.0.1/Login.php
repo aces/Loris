@@ -1,10 +1,10 @@
 <?php
 namespace Loris\API;
 set_include_path(get_include_path() . ":" . __DIR__);
-require_once 'APIBase.php';
-require_once '../../../vendor/autoload.php';
+require_once __DIR__ . '/APIBase.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 class Login extends APIBase {
-    function __construct($method, $data) {
+    function __construct($method, $data = array()) {
         $this->AllowedMethods = array(
             'POST',
         );
@@ -23,40 +23,20 @@ class Login extends APIBase {
 
         $this->HTTPMethod = $method;
         $this->handleRequest();
-
     }
+
     function handlePOST() {
-        $factory = \NDB_Factory::singleton();
-        $config = $factory->config();
-
-        $key = $config->getSetting("JWTKey");
-
-        $user = $this->RequestData['username'];
+        $user     = $this->RequestData['username'];
         $password = $this->RequestData['password'];
 
-        $login = new \SinglePointLogin();
+        $login = $this->getLoginAuthenticator();
 
-        $www = $config->getSetting("www");
-        $baseURL = $www['url'];
         if($login->passwordAuthenticate($user, $password, false)) {
-            $token = array(
-                // JWT related tokens to for the JWT library to validate
-                "iss"  => $baseURL,
-                "aud" => $baseURL,
-                // Issued at
-                "iat" => time(),
-                "nbf" => time(),
-                // Expire in 1 day
-                "exp" => time() + 86400,
-                // Additional payload data
-                "user" => $user
-            );
-
             $this->JSON = array(
-                    "token" => \Firebase\JWT\JWT::encode($token, $key, "HS256")
-                );
+                           "token" => $this->getEncodedToken($user)
+                          );
         } else {
-            header("HTTP/1.1 401 Unauthorized");
+            $this->header("HTTP/1.1 401 Unauthorized");
             if(!empty($login->_lastError)) {
                 $this->JSON = array(
                     "error" => $login->_lastError
@@ -65,6 +45,35 @@ class Login extends APIBase {
 
         }
     }
+
+    function getLoginAuthenticator() {
+        return new \SinglePointLogin();
+    }
+
+    function getEncodedToken($user) {
+        $factory = \NDB_Factory::singleton();
+        $config = $factory->config();
+
+        $www = $config->getSetting("www");
+        $baseURL = $www['url'];
+
+        $token = array(
+            // JWT related tokens to for the JWT library to validate
+            "iss"  => $baseURL,
+            "aud" => $baseURL,
+            // Issued at
+            "iat" => time(),
+            "nbf" => time(),
+            // Expire in 1 day
+            "exp" => time() + 86400,
+            // Additional payload data
+            "user" => $user
+        );
+
+        $key = $config->getSetting("JWTKey");
+        return \Firebase\JWT\JWT::encode($token, $key, "HS256");
+    }
+
     function calculateETag() {
         return;
     }
