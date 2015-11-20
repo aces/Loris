@@ -15,6 +15,37 @@ require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTestWith
 class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
     /**
+     * Backs up the useEDC config value and sets the value to a known
+     * value (true) for testing.
+     *
+     * @return none
+     */
+    function setUp()
+    {
+        parent::setUp();
+
+        $this->DB->insert(
+            'candidate',
+            array(
+             'CandID'          => 888888,
+             'CenterID'        => $centerID,
+             'PSCID'           => 'DCC8888'
+            )
+        );
+    }
+
+    /**
+     * Restore the values backed up in the setUp function
+     *
+     * @return none
+     */
+    function tearDown()
+    {
+        parent::tearDown();
+        $this->DB->delete("candidate", array("CandID" => '888888'));
+    }
+
+    /**
      * Tests that, when loading the candidate_parameters module, some
      * text appears in the body.
      *
@@ -35,7 +66,11 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
      */
     function testCandidateParametersAddFamilyDoespageLoad()
     {
+<<<<<<< HEAD
         $this->webDriver->get($this->url . "?test_name=candidate_parameters&subtest=add_family&candID=000000&identifier=000000");
+=======
+        $this->webDriver->get($this->url . "?test_name=candidate_parameters&subtest=add_family&candID=888888&identifier=888888");
+>>>>>>> attempt to fix travis failures
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Add Family", $bodyText);
     }
