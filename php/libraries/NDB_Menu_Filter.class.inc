@@ -116,7 +116,12 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     var $searchKey = array();
 
+    /**
+     * The number of resutls per page used.
+     * Either from config or from filter.
+     */
     var $resultsPerPage;
+    
     /**
      * Calls other member functions to do all the work necessary to create the menu
      *
@@ -130,6 +135,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
         $config               =& NDB_Config::singleton();
         $this->resultsPerPage =  $config->getSetting('rowsPerPage');
+        
         // set the headers if necessary
         if (!is_array($this->headers) || count($this->headers) == 0) {
             foreach ($this->columns as $value) {
@@ -477,7 +483,7 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         $this->_getNumberPages($query);
-        
+
         $config         =& NDB_Config::singleton();
         $resultsPerPage = $this->resultsPerPage;
         $limit          = " LIMIT $resultsPerPage"
@@ -599,6 +605,7 @@ class NDB_Menu_Filter extends NDB_Menu
         $config =& NDB_Config::singleton();
         // configure the page pagination
         $rowsPerPage = $this->resultsPerPage;
+        
             $params = array(
                        'mode'       => 'Sliding',
                        'perPage'    => $rowsPerPage,

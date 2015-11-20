@@ -163,8 +163,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'c.CenterID',
             's.MRIQCStatus',
             'pending',
-            'f.AcquisitionProtocolID',
-            'ResultsPerPage'
+            'ResultsPerPage',
+            'f.AcquisitionProtocolID'
         );
 
         $this->formToFilter = array(
@@ -175,8 +175,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'SiteID' => 'c.CenterID',
             'VisitQCStatus' => 's.MRIQCStatus',
             'Pending' => 'pending',
-            'Scan_type'=>'f.AcquisitionProtocolID',
-            'ResultsPerPage' => 'ResultsPerPage'
+            'ResultsPerPage' => 'ResultsPerPage',
+            'Scan_type'=>'f.AcquisitionProtocolID'
         );
         $this->EqualityFilters = array('f.AcquisitionProtocolID');
         $this->searchKeyword    = array();
