@@ -605,7 +605,7 @@ class NDB_Menu_Filter extends NDB_Menu
         $config =& NDB_Config::singleton();
         // configure the page pagination
         $rowsPerPage = $this->resultsPerPage;
-        
+
             $params = array(
                        'mode'       => 'Sliding',
                        'perPage'    => $rowsPerPage,

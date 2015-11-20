@@ -338,7 +338,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
      * @return null
      */
     function _addValidFilters($prepared_key, $field, $val)
-    {   
+    {
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if ($field == 'ResultsPerPage') {
