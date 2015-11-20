@@ -121,7 +121,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * Either from config or from filter.
      */
     var $resultsPerPage;
-    
+
     /**
      * Calls other member functions to do all the work necessary to create the menu
      *
@@ -133,9 +133,9 @@ class NDB_Menu_Filter extends NDB_Menu
         // setup the menu's variables
         $success = $this->_setupVariables();
 
-        $config               =& NDB_Config::singleton();
+        $config =& NDB_Config::singleton();
         $this->resultsPerPage =  $config->getSetting('rowsPerPage');
-        
+
         // set the headers if necessary
         if (!is_array($this->headers) || count($this->headers) == 0) {
             foreach ($this->columns as $value) {
