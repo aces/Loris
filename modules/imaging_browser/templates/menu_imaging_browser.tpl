@@ -63,6 +63,14 @@
                         {$form.VisitQCStatus.html}
                     </div>
                 </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.ResultsPerPage.label}
+                    </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.ResultsPerPage.html}
+                    </div>
+                </div>
                 {if $form.ProjectID}
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">

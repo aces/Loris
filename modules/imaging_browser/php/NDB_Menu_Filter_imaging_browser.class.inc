@@ -163,7 +163,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'c.CenterID',
             's.MRIQCStatus',
             'pending',
-            'f.AcquisitionProtocolID'
+            'f.AcquisitionProtocolID',
+            'ResultsPerPage'
         );
 
         $this->formToFilter = array(
@@ -174,7 +175,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'SiteID' => 'c.CenterID',
             'VisitQCStatus' => 's.MRIQCStatus',
             'Pending' => 'pending',
-            'Scan_type'=>'f.AcquisitionProtocolID'
+            'Scan_type'=>'f.AcquisitionProtocolID',
+            'ResultsPerPage' => 'ResultsPerPage'
         );
         $this->EqualityFilters = array('f.AcquisitionProtocolID');
         $this->searchKeyword    = array();
@@ -242,6 +244,12 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             array(''=>'All', 'Pass'=>'Pass', 'Fail'=>'Fail')
         );
 
+        $this->addSelect(
+            'ResultsPerPage',
+            'Results per page',
+            array(''=>'', '1'=>'50', '2'=>'100', '3'=>'1000', '4'=>'10000')
+        );
+        
         $this->addSelect(
             'Pending',
             'Pending and New',
@@ -330,10 +338,26 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
      * @return null
      */
     function _addValidFilters($prepared_key, $field, $val)
-    {
+    {   
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
-            if ($field != 'pending' && $field !='AcquisitionProtocolID') {
+            if ($field == 'ResultsPerPage') {
+                switch ($val) {
+                case "1":
+                    $this->resultsPerPage = 50; 
+                    break;
+                case "2":
+                    $this->resultsPerPage = 100; 
+                    break;
+                case "3":
+                    $this->resultsPerPage = 1000; 
+                    break;
+                case "4":
+                    $this->resultsPerPage = 10000; 
+                    break;
+                }
+            }
+            else if ($field != 'pending' && $field !='AcquisitionProtocolID') {
                 if (in_array($field, $this->CheckboxFilters) && $val) {
                     $query .= " AND $field";
                 } elseif (strtolower(substr($field, -8)) == 'centerid'
