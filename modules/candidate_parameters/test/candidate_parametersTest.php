@@ -41,8 +41,8 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
      */
     function tearDown()
     {
-        parent::tearDown();
         $this->DB->delete("candidate", array("CandID" => '888888'));
+        parent::tearDown();
     }
 
     /**
