@@ -28,6 +28,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
             'candidate',
             array(
              'CandID'          => 888888,
+             'CenterID'        => 1,
              'PSCID'           => 'DCC8888'
             )
         );
