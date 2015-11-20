@@ -100,13 +100,17 @@ if (!empty($instrumentParameterTypeIDString)) {
         "DELETE FROM parameter_type_category_rel
         WHERE ParameterTypeID in ($instrumentParameterTypeIDString)"
     );
+}
 
+if (!empty($instrumentParameterTypeCategoryIDString)) {
     //delete all 'Instrument' entries from parameter_type_category
     $DB->run(
         "DELETE FROM parameter_type_category
         WHERE ParameterTypeCategoryID IN ($instrumentParameterTypeCategoryIDString)"
     );
+}
 
+if (!empty($instrumentParameterTypeIDString)) {
     //delete all 'Instrument' entries from parameter_type
     $DB->run(
         "DELETE FROM parameter_type
