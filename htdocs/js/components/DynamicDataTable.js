@@ -52,7 +52,7 @@ DynamicDataTable = React.createClass({
             );
         }
 
-        return React.createElement(StaticDataTable, { Headers: this.state.Headers, Data: this.state.Data });
+        return React.createElement(StaticDataTable, { Headers: this.state.Headers, Data: this.state.Data, getFormattedCell: this.props.getFormattedCell });
     }
 });
 
