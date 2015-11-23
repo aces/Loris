@@ -23,6 +23,7 @@ function loadDefaultStatus() {
                 default_vals = data.split(";");
                 $('#participant_statusID').val(default_vals[0]);
                 if (default_vals.length > 1) {
+                    alert('lds: ' + default_vals[1]);
                     loadDefaultSubOption(default_vals[0], default_vals[1]);
                 }
             });
@@ -33,6 +34,8 @@ function loadDefaultSubOption(defaultPstat, defaultPstat_sub) {
     var pstatus_sub = document.getElementById('participant_suboptions'),
         options,
         dropdown_value = defaultPstat_sub;
+
+alert('ldso: ' + dropdown_value);
     $.get("AjaxHelper.php?Module=candidate_parameters&script=GetParticipant_suboptions.php&p_status=" + defaultPstat,
             function (data) {
             options = data.split("\n");
@@ -84,6 +87,20 @@ function changeParticipantStatus() {
             }
            });
 }
+function ckeckStatusAndOptions() {
+    "use strict";
+    //get the value for the visit selected
+    var pstatus_dropdown = document.getElementById('participant_status'); 
+    var pstatus_sub = document.getElementById('participant_suboptions');
+    
+    //alert('-|' + pstatus_dropdown.value + '|-|' + pstatus_sub.value + '|-');
+
+    if (pstatus_dropdown.value == '5' && (pstatus_sub.value == '0' || pstatus_sub.value == ' ')) {
+        $('input[type="submit"]').prop('disabled', true);
+    } else {
+        $('input[type="submit"]').prop('disabled', false);
+    }
+}
 
 //runs the function when the page is loaded..
 $(function () {
@@ -91,7 +108,12 @@ $(function () {
     loadDefaultStatus();
     $("#participant_status").change(function() {
         changeParticipantStatus();
+        ckeckStatusAndOptions();
     });
+    $("#participant_suboptions").change(function() {
+        ckeckStatusAndOptions();
+    });
+    ckeckStatusAndOptions();
 });
 
 
