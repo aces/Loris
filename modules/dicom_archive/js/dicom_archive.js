@@ -7,6 +7,11 @@ DICOMFilterTable = React.createClass({displayName: 'DICOMFilterTable',
         return undefined;
     },
     render: function() {
+        var Genders = {
+            M: 'Male',
+            F: 'Female',
+            O: 'N/A'
+        };
         return (React.createElement(FilterTable, {Module: "dicom_archive"}, 
                 React.createElement("div", {className: "row"}, 
                     React.createElement(FilterField, {
@@ -33,7 +38,7 @@ DICOMFilterTable = React.createClass({displayName: 'DICOMFilterTable',
                     React.createElement(FilterField, {
                         Label: "Gender", 
                         Type: "Dropdown", 
-                        Options: this.props.Genders,
+                        Options: Genders,
                         FormName: "Gender", 
                         Value: this.getFormValue("Gender")}
                     )
