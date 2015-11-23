@@ -24,6 +24,7 @@
  */
 class NDB_Menu_Filter extends NDB_Menu
 {
+    var $AjaxModule = false;
     var $TotalItems;
     /**
      * The columns to SELECT
@@ -372,6 +373,9 @@ class NDB_Menu_Filter extends NDB_Menu
         // show selection form table
         $success = $this->_setFilterForm();
 
+        if($this->AjaxModule) {
+            return;
+        }
         // get the list
         $this->list = $this->_getList();
 
@@ -697,6 +701,23 @@ class NDB_Menu_Filter extends NDB_Menu
         return Utility::arrayToCSV($list);
     }
 
+    function toJSON() {
+        $data = $this->_getFullList();
+
+        $headers = array_map(
+            function($header) {
+                return ucwords(str_replace('_', ' ', $header));
+            },
+                $this->headers
+        );
+        foreach($data as $row) {
+            $MappedData[] = array_values($row);
+        }
+        return json_encode(array(
+            'Headers' => $headers,
+            'Data'    => $MappedData,
+        ));
+    }
     /**
      * Returns the full list of candidates, users, etc.
      *
