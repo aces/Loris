@@ -6,6 +6,7 @@
 </script>
 {/literal}
 <script type="text/javascript" src="{$baseurl}/js/advancedMenu.js"></script>
+<script type="text/javascript" src="{$baseurl}/GetJS.php?Module=candidate_list&file=columnFormatter.js"></script>
 
 <div class="row">
 <div class="col-sm-9">
@@ -216,77 +217,13 @@
 </div>
 {/if}
 </div>
-<div class="row">
-<table border="0" valign="bottom" width="100%">
-<tr>
-    <!-- title -->
-    <td class="controlPanelSection">
-        {$numCandidates} subject(s) selected. 
-        <a href="{$csvUrl}" download="{$csvFile}.csv">
-            Download as CSV
-        </a>
-    </td>
-    <!-- display pagination links -->
-    <td align="right" id="pageLinks"></td>
-</tr>
-</table>
-<table id="cand" class="table table-hover table-primary table-bordered colm-freeze" border="0" width="100%">
-    <thead>
-        <tr class="info">
-         <th id="number">No.</th>
-            <!-- print out column headings - quick & dirty hack -->
-            {section name=header loop=$headers}
-                {if $headers[header].displayName == 'PSCID'}
-                    <th id="pscid">
-                {else}
-                    <th>
-                {/if}
-                <a href="{$baseurl}/candidate_list/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-            {/section}
-        </tr>
-    </thead>
-    <tbody>
-        {section name=item loop=$items}
-            <tr>
-            <!-- print out data rows -->
-            {section name=piece loop=$items[item]}
-                {if $items[item][piece].bgcolor != ''}
-                    <td style="background-color:{$items[item][piece].bgcolor}">
-                {else}
-                    <td>
-                {/if}
-                {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-                    {assign var="PSCID" value=$items[item][piece].value}
-                    <a href="{$baseurl}/{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
-                {elseif $items[item][piece].name == "scan_Done"}
-                    {if $items[item][piece].value == 'Y'}
-                        {assign var="scan_done" value="Yes"}
-                        <a class="scanDoneLink" data-pscid="{$PSCID}" href="{$baseurl}/imaging_browser/?pscid={$PSCID}&filter=Show%20Data">{$scan_done}</a>
-                    {else}
-                        {assign var="scan_done" value="No"}
-                        {$scan_done}
-                    {/if}
-                {else}
-                    {$items[item][piece].value}
-                {/if}
-                </td>
-            {/section}
-            </tr>
-        {sectionelse}
-            <tr><td colspan="12">No candidates found</td></tr>
-        {/section}
-    </tbody>
-<!-- end data table -->
-</table>
+<div id="test" />
+<script type="text/javascript" src="{$baseurl}/GetJS.php?Module=candidate_list&file=columnFormatter.js"></script>
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$numCandidates},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=candidate_list&pageID=" + pageNum
-    },
-    Active: {$pageID}
+var pageLinks = RDynamicDataTable({
+    "DataURL" : "{$baseurl}/main.php?test_name=candidate_list&format=json",
+    "getFormattedCell" : formatColumn
 });
-React.render(pageLinks, document.getElementById("pageLinks"));
+
+React.render(pageLinks, document.getElementById("test"));
 </script>
