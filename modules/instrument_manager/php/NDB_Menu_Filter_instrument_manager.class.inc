@@ -6,9 +6,6 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
     function _hasAccess()
     {
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
         return $user->hasPermission('superuser');
     }
 

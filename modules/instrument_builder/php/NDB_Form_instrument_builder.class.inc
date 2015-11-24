@@ -14,9 +14,6 @@ class NDB_Form_instrument_builder extends NDB_Form
     function _has_perm($perm)
     {
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
         return $user->hasPermission($perm);
     }
     function instrument_builder()

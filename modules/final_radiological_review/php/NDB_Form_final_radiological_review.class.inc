@@ -55,9 +55,6 @@ class NDB_Form_final_radiological_review extends NDB_Form
     function _has_perm($perm)
     {
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
         return $user->hasPermission($perm);
     }
 

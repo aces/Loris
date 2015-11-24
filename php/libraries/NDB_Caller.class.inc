@@ -11,9 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
 */
-require_once 'PEAR.php';
-require_once 'User.class.inc';
-require_once 'NDB_Menu.class.inc';
 
 /**
  * Caller class
@@ -27,7 +24,7 @@ require_once 'NDB_Menu.class.inc';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Caller extends PEAR
+class NDB_Caller
 {
     /**
      * Identifies what type of script is being run (menu, form or instrument)
@@ -240,9 +237,7 @@ class NDB_Caller extends PEAR
                 return $html;
             } else if (file_exists($linstfile)) {
                 $html = $this->loadInstrument($test_name, $subtest, $CommentID);
-                if (Utility::isErrorX($html)) {
-                    return PEAR::raiseError($html->getMessage());
-                }
+
                 $this->type = 'instrument';
                 return $html;
             }

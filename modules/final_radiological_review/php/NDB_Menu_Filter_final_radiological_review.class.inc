@@ -106,9 +106,6 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
     function _hasAccess()
     {
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
         return $user->hasPermission('view_final_radiological_review');
     }
 
@@ -266,9 +263,6 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         }
         $list_of_sites = array(null =>'All');
         $sitesList = Utility::getSiteList(false);
-        if (Utility::isErrorX($sitesList)) {
-            return PEAR::raiseError("DB Error: ".$sitesList->getMessage());
-        }
         foreach ($sitesList as $key=>$value) {
             $list_of_sites[$key]= $value;
         } 
