@@ -94,23 +94,30 @@ getColumn(
 
 $instrumentParameterTypeIDString = implode(', ', $instrumentParameterTypeIDs);
 
-//delete all 'Instrument' entries from parameter_type_category_rel
-$DB->run(
-    "DELETE FROM parameter_type_category_rel
-    WHERE ParameterTypeID in ($instrumentParameterTypeIDString)"
-);
+if (!empty($instrumentParameterTypeIDString)) {
+    //delete all 'Instrument' entries from parameter_type_category_rel
+    $DB->run(
+        "DELETE FROM parameter_type_category_rel
+        WHERE ParameterTypeID in ($instrumentParameterTypeIDString)"
+    );
+}
 
-//delete all 'Instrument' entries from parameter_type_category
-$DB->run(
-    "DELETE FROM parameter_type_category
-    WHERE ParameterTypeCategoryID IN ($instrumentParameterTypeCategoryIDString)"
-);
+if (!empty($instrumentParameterTypeCategoryIDString)) {
+    //delete all 'Instrument' entries from parameter_type_category
+    $DB->run(
+        "DELETE FROM parameter_type_category
+        WHERE ParameterTypeCategoryID IN ($instrumentParameterTypeCategoryIDString)"
+    );
+}
 
-//delete all 'Instrument' entries from parameter_type
-$DB->run(
-    "DELETE FROM parameter_type
-    WHERE ParameterTypeID IN ($instrumentParameterTypeIDString)"
-);
+if (!empty($instrumentParameterTypeIDString)) {
+    //delete all 'Instrument' entries from parameter_type
+    $DB->run(
+        "DELETE FROM parameter_type
+        WHERE ParameterTypeID IN ($instrumentParameterTypeIDString)"
+    );
+}
+
 
 print "Cleared data from BVL instruments\n";
 
