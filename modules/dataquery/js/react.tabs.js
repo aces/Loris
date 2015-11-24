@@ -104,9 +104,9 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
     },
     render: function() {
         var buttons = (
-            React.createElement("div", {className: "commands"}, 
-                React.createElement("button", {onClick: this.runQuery}, "Run Query"), 
-                React.createElement("button", {onClick: this.downloadCSV}, "Download Table as CSV")
+            React.createElement("div", {className: "commands col-xs-12 form-group"}, 
+                React.createElement("button", {className: "btn btn-primary", onClick: this.runQuery}, "Run Query"), 
+                React.createElement("button", {className: "btn btn-primary", onClick: this.downloadCSV}, "Download Table as CSV")
             )
             );
         var criteria = [];
@@ -134,11 +134,34 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
         }
         return React.createElement(TabPane, {TabId: this.props.TabId}, 
                     React.createElement("h2", null, "Query Criteria"), criteria, " ", buttons, 
-                    React.createElement("h2", null, "Data"), 
-                    React.createElement(DataTable, {
+                    React.createElement("div", {className: "form-group form-horizontal col-xs-12"}, 
+                        React.createElement("label", {for: "selected-input", className: "col-sm-1 control-label"}, "Data"), 
+                        React.createElement("div", {className: "col-sm-4"}, 
+                            React.createElement("div", {className: "btn-group"}, 
+                                React.createElement("button", {id: "selected-input", type: "button", className: "btn btn-default dropdown-toggle", "data-toggle": "dropdown"}, 
+                                    React.createElement("span", {id: "search_concept"}, this.props.displayType), 
+                                    React.createElement("span", {className: "caret"})
+                                ), 
+                                React.createElement("ul", {className: "dropdown-menu", role: "menu"}, 
+                                    React.createElement("li", null, 
+                                        React.createElement("div", {className: "col-sm-12"}, 
+                                            React.createElement("h5", {className: ""}, "Cross-sectional")
+                                        )
+                                    ), 
+                                    React.createElement("li", null, 
+                                        React.createElement("div", {className: "col-sm-12"}, 
+                                            React.createElement("h5", {className: ""}, "Longitudial")
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    ), 
+                    React.createElement(StaticDataTable, {
                         Headers: this.props.Fields, 
-                        Identifiers: this.props.Sessions, 
-                        Data: this.props.Data}
+                        RowNumLabel: "Identifiers", 
+                        Data: this.props.Data, 
+                        RowNumCol: this.props.RowInfo}
                     )
                )
     }

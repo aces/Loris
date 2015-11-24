@@ -89,7 +89,11 @@ DataTable = React.createClass({displayName: "DataTable",
         return (
             React.createElement("div", null, 
                 React.createElement(PaginationLinks, {Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber}), 
+<<<<<<< Updated upstream
                 React.createElement("table", {className: "table table-hover table-primary table-bordered"}, 
+=======
+                React.createElement("table", {className: "table table-hover table-primary table-bordered dynamicTable"}, 
+>>>>>>> Stashed changes
                     React.createElement("thead", null, 
                         React.createElement("tr", {className: "info"}, headers)
                     ), 
