@@ -131,7 +131,6 @@ function uploadFile() {
                 document.write(data);
                 document.close();
             } else {
-                $("fileUpload").val("");
                 $("#filter").click();
             }
         }
@@ -147,6 +146,7 @@ $(function () {
     $(".submit-button").click(
         function (e){
             if(e.currentTarget.id === "filter"){
+                $("input[name=mri_file]").val("");
                 $("#mri_upload").submit();
             } else if (e.currentTarget.id === "upload"){
                 e.preventDefault();
