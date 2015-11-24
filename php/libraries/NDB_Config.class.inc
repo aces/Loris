@@ -572,5 +572,32 @@ class NDB_Config
         return $thisLevel;
     }
 
+    /**
+     * Retrieve a set of links to display to the user
+     *
+     * @param string $type The type of links to show
+     *
+     * @return associative array of Label => URL
+     */
+    function getExternalLinks($type)
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $results = $db->pselect(
+            "SELECT LinkText, LinkURL
+                FROM ExternalLinks l JOIN ExternalLinkTypes lt
+                    ON (l.LinkTypeID=lt.LinkTypeID)
+                WHERE lt.LinkType=:name",
+            array('name' => $type)
+        );
+
+        $mapped = array();
+        foreach ($results as $row) {
+            $mapped[$row['LinkText']] = $row['LinkURL'];
+        }
+        return $mapped;
+    }
+
 }
 ?>
