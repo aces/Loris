@@ -170,6 +170,8 @@ class Database
             $username,
             $password
         );
+        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+
         $this->_preparedStoreHistory = $this->_PDO->prepare(
             "INSERT INTO history (tbl, col, new, old,"
             ." primaryCols, primaryVals, userID, type)"
