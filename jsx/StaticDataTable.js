@@ -13,7 +13,8 @@ StaticDataTable = React.createClass({
         return {
             'PageNumber' : 1,
             'SortColumn' : -1,
-            'SortOrder' : 'ASC'
+            'SortOrder' : 'ASC',
+            'RowsPerPage' : 20
         };
     },
     getDefaultProps: function() {
@@ -42,8 +43,14 @@ StaticDataTable = React.createClass({
             }
         }
     },
+    changeRowsPerPage: function(val) {
+       this.setState({
+           'RowsPerPage' : val.target.value,
+           'PageNumber' : 1
+       });
+    },
     render: function() {
-        var rowsPerPage = 20;
+        var rowsPerPage = this.state.RowsPerPage;
         var headers = [<th onClick={this.setSortColumn(-1)}>{this.props.RowNumLabel}</th>];
         for(var i = 0; i < this.props.Headers.length; i += 1) {
             headers.push(<th onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
@@ -127,9 +134,17 @@ StaticDataTable = React.createClass({
             );
         }
 
+        var RowsPerPageDropdown = (<select onChange={this.changeRowsPerPage}>
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+                <option>1000</option>
+                <option>5000</option>
+                <option>10000</option>
+            </select>
+            );
         return (
             <div>
-                <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
                 <table className="table table-hover table-primary table-bordered">
                     <thead>
                         <tr className="info">{headers}</tr>
@@ -138,7 +153,13 @@ StaticDataTable = React.createClass({
                         {rows}
                     </tbody>
                     <tfoot>
-                        <tr><td className="info" colSpan={headers.length}>{rows.length} rows displayed of {this.props.Data.length} </td></tr>
+                        <tr>
+                        <td className="info" colSpan={headers.length}>{rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown}) 
+                            <div className="pull-right">
+                                <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
+                            </div>
+ </td>
+                        </tr>
                     </tfoot>
                 </table>
             </div>
