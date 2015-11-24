@@ -64,7 +64,11 @@ StaticDataTable = React.createClass({
                     val = null;
                 }
 
-                index.push({ RowIdx: i, Value: val });
+                if (this.props.RowNumCol) {
+                    index.push({ RowIdx: i, Value: val, Content: this.props.RowNumCol[i]});
+                } else {
+                    index.push({ RowIdx: i, Value: val, Content: i+1 });
+                }
             }
             index.sort(function(a, b) {
                 if(that.state.SortOrder === 'ASC') {
@@ -90,8 +94,11 @@ StaticDataTable = React.createClass({
             });
         } else {
             for(var i = 0; i < this.props.Data.length; i += 1) {
-                index.push({ RowIdx: i });
-
+                if (this.props.RowNumCol) {
+                    index.push({ RowIdx: i, Content: this.props.RowNumCol[i]});
+                } else {
+                    index.push({ RowIdx: i, Content: i+1});
+                }
             }
         }
         for(var i = (rowsPerPage*(this.state.PageNumber-1));
@@ -114,7 +121,7 @@ StaticDataTable = React.createClass({
             }
             rows.push(
                 <tr colSpan={headers.length}>
-                    <td>{index[i].RowIdx + 1}</td>
+                    <td>{index[i].Content}</td>
                     {curRow}
                 </tr>
             );
