@@ -2018,7 +2018,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 
 -- Conflict Resolver
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='Conflict Resolver';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='conflict_resolver' AND m.Label='Conflict Resolver';
 
 -- Examiner
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
