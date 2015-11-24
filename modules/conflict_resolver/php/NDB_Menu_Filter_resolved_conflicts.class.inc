@@ -69,7 +69,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             $this->columns[] = 'candidate.ProjectID as Project';
         }
 
-        $this->columns      =array_merge(
+        $this->columns = array_merge(
             $this->columns,
             array(
              'conflicts_resolved.FieldName',
@@ -79,10 +79,18 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
              'session.CenterID',
             )
         );
-        $this->query        = " FROM conflicts_resolved
+        $this->query   = " FROM conflicts_resolved
             LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID) WHERE 1=1";
+
+        $user = User::singleton();
+        if (!$user->hasPermission('access_all_profiles')) {
+            // restrict data to own site
+            $this->query .= " AND candidate.CenterID=";
+            $this->query .= $user->getCenterID();
+        }
+
         $this->group_by     = '';
         $this->order_by     = 'conflicts_resolved.TableName, session.Visit_label';
         $this->validFilters = array(
