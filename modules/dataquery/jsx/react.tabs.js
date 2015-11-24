@@ -104,9 +104,9 @@ ViewDataTabPane = React.createClass({
     },
     render: function() {
         var buttons = (
-            <div className="commands">
-                <button onClick={this.runQuery}>Run Query</button>
-                <button onClick={this.downloadCSV}>Download Table as CSV</button>
+            <div className="commands col-xs-12 form-group">
+                <button className="btn btn-primary" onClick={this.runQuery}>Run Query</button>
+                <button className="btn btn-primary" onClick={this.downloadCSV}>Download Table as CSV</button>
             </div>
             );
         var criteria = [];
@@ -134,11 +134,34 @@ ViewDataTabPane = React.createClass({
         }
         return <TabPane TabId={this.props.TabId}>
                     <h2>Query Criteria</h2>{criteria} {buttons}
-                    <h2>Data</h2>
-                    <DataTable
+                    <div className='form-group form-horizontal col-xs-12'>
+                        <label for="selected-input" className="col-sm-1 control-label">Data</label>
+                        <div className="col-sm-4">
+                            <div className="btn-group">
+                                <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <span id="search_concept">{this.props.displayType}</span>
+                                    <span className="caret"></span>
+                                </button>
+                                <ul className="dropdown-menu" role="menu">
+                                    <li>
+                                        <div className="col-sm-12">
+                                            <h5 className="">Cross-sectional</h5>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div className="col-sm-12">
+                                            <h5 className="">Longitudial</h5>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <StaticDataTable
                         Headers={this.props.Fields}
-                        Identifiers={this.props.Sessions}
+                        RowNumLabel="Identifiers"
                         Data={this.props.Data}
+                        RowNumCol={this.props.RowInfo}
                     />
                </TabPane>
     }

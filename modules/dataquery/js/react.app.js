@@ -114,13 +114,15 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
     },
     getInitialState: function() {
         return {
+            displayType: 'Cross-sectional',
             fields: [],
             criteria: {},
             sessiondata: {},
             grouplevel: 0,
             savedQueries: {},
             queriesLoaded: false,
-            ActiveTab :  'Info'
+            ActiveTab :  'Info',
+            ActiveSessions: []
         };
     },
     loadSavedQuery: function (fields, criteria) {
@@ -288,20 +290,23 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
         var i, j;
         var rowdata = [];
         var currow;
+        var ActiveSessions = [];
 
+        // console.log(sessiondata);
         if(this.state.grouplevel === 0) {
-            for(j = 0; sessions && j < sessions.length; j += 1) {
+            for(var session in sessiondata){
                 var currow = [];
                 for(i = 0; fields && i < fields.length; i += 1) {
                     var fieldSplit = fields[i].split(",")
                         currow[i] = '.';
-                    var sd = sessiondata[sessions[j]];
+                    var sd = sessiondata[session];
                     if(sd) {
                         currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
                     }
 
                 }
                 rowdata.push(currow);
+                ActiveSessions.push(session);
             }
         } else {
             var Prefixes = [], prefix;
@@ -341,7 +346,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
             }
             */
         }
-        return rowdata;
+        return {'rowdata': rowdata, 'ActiveSessions': ActiveSessions};
     },
     render: function() {
         var tabs = [], tabsNav = [];
@@ -370,12 +375,14 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 Fields: this.state.fields, 
                 Criteria: this.state.criteria, 
                 Sessions: this.getSessions(), 
-                Data: rowData, 
-                onRunQueryClicked: this.runQuery}
+                Data: rowData.rowdata, 
+                RowInfo: rowData.ActiveSessions, 
+                onRunQueryClicked: this.runQuery, 
+                displayType: this.state.displayType}
         ));
         tabs.push(React.createElement(StatsVisualizationTabPane, {TabId: "Statistics", 
                 Fields: this.state.fields, 
-                Data: rowData}));
+                Data: rowData.rowdata}));
         tabs.push(React.createElement(ManageSavedQueriesTabPane, {TabId: "SavedQueriesTab", 
                         userQueries: this.props.SavedQueries.User, 
                         globalQueries: this.props.SavedQueries.Shared, 
