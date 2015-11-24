@@ -84,13 +84,13 @@ function changeParticipantStatus() {
             }
            });
 }
-function ckeckStatusAndOptions() {
+function checkStatusAndOptions() {
     "use strict";
     //get the value for the visit selected
     var pstatus_dropdown = document.getElementById('participant_status'); 
     var pstatus_sub = document.getElementById('participant_suboptions');
 
-    if (pstatus_dropdown.value == '5' && (pstatus_sub.value == '0' || pstatus_sub.value == ' ')) {
+    if (pstatus_dropdown.options[pstatus_dropdown.selectedIndex].text == 'Inactive' && pstatus_sub.options[pstatus_sub.selectedIndex].text == '') {
         $('input[type="submit"]').prop('disabled', true);
     } else {
         $('input[type="submit"]').prop('disabled', false);
@@ -102,12 +102,12 @@ $(function () {
     loadDefaultStatus();
     $("#participant_status").change(function() {
         changeParticipantStatus();
-        ckeckStatusAndOptions();
+        checkStatusAndOptions();
     });
     $("#participant_suboptions").change(function() {
-        ckeckStatusAndOptions();
+        checkStatusAndOptions();
     });
-    ckeckStatusAndOptions();
+    checkStatusAndOptions();
 });
 
 
