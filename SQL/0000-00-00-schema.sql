@@ -2036,8 +2036,15 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='view_final_radiological_review' AND m.Label='Radiological Reviews';
 
--- DICOM Archive -- Config file currently does not require any permission
--- Imaging Browser -- Config file currently does not require any permission
+-- DICOM Archive
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='dicom_archive_view_allsites' AND m.Label='DICOM Archive';
+    
+-- Imaging Browser
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='imaging_browser_view_site' AND m.Label='Imaging Browser';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='imaging_browser_view_allsites' AND m.Label='Imaging Browser';
 
 -- MRI Violated Scans
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
@@ -2047,7 +2054,9 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='imaging_uploader' AND m.Label='Imaging Uploader';
 
--- Statistics -- Config file currently does not require any permission 
+-- Statistics
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='Statistics';
 
 -- Data Query Tool
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
@@ -2059,7 +2068,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 
 -- Document Repository
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
-    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='file_upload' AND m.Label='Document Repository';
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='document_repository_view' AND m.Label='Document Repository';
 
 -- Data Integrity Flag
 INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID 
