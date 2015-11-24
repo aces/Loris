@@ -268,6 +268,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             }
             $x++;
         }
+
         return true;
     }
 }

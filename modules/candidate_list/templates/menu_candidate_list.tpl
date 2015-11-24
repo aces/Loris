@@ -227,7 +227,7 @@
         </a>
     </td>
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
 <table id="cand" class="table table-hover table-primary table-bordered colm-freeze" border="0" width="100%">
@@ -278,3 +278,15 @@
     </tbody>
 <!-- end data table -->
 </table>
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$numCandidates},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/main.php?test_name=candidate_list&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
