@@ -1,3 +1,4 @@
+/*global document, $, window*/
 $(document).ready(function () {
     "use strict";
     var callback = function (extraparam) {
