@@ -2,7 +2,7 @@
     <div class="row hidden-xs">
         {if isset($certifications['content'])}
         <div class="col-sm-4">
-            <h3>Online training completed</h3>
+            <h3>Online training to be completed</h3>
             <p>Select an instrument below to review the training content.</p>
         </div>
         <div class="col-sm-4 col-sm-offset-1">
