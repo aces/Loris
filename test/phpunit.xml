@@ -54,14 +54,14 @@
          for now it's disabled, but eventually we'll want to make
          sure everything is tested.. -->
 
-    <!--filter>
+    <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".inc">../php</directory>
-            <directory suffix=".php">../htdocs</directory>
-            <directory>../modules</directory>
-            <directory>../modules/dashboard/php/</directory>
-            <directory>../modules/dashboard/ajax/</directory>
+            <!--directory suffix=".php">../htdocs</directory-->
+        <directory>../modules/*/php</directory>
+            <!--directory>../modules/dashboard/php/</directory>
+            <directory>../modules/dashboard/ajax/</directory-->
         </whitelist>
-    </filter-->
+    </filter>
 
 </phpunit>
