@@ -69,7 +69,7 @@ class NDB_Reliability extends NDB_Form
      *
      * @return void
      */
-    static function &factory($name, $page, $identifier, $reliability_center_id)
+    static function &reliabilityfactory($name, $page, $identifier, $reliability_center_id)
     {
         // check that the form class exists
         if (class_exists("NDB_Reliability_$name")) {
