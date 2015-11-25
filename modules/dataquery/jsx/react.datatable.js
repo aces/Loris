@@ -89,11 +89,7 @@ DataTable = React.createClass({
         return (
             <div>
                 <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
-<<<<<<< Updated upstream
                 <table className="table table-hover table-primary table-bordered">
-=======
-                <table className="table table-hover table-primary table-bordered dynamicTable">
->>>>>>> Stashed changes
                     <thead>
                         <tr className="info">{headers}</tr>
                     </thead>
