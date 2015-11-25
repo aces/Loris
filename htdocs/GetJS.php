@@ -69,7 +69,8 @@ if (is_dir($basePath . "project/modules/$Module")
         : $basePath . "modules/$Module";
     set_include_path(
         get_include_path() . ':' .
-        $ModuleDir . "/php");
+        $ModuleDir . "/php"
+    );
 } else {
     error_log("ERROR: Module does not exist");
     header("HTTP/1.1 400 Bad Request");
