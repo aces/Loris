@@ -161,7 +161,7 @@ ViewDataTabPane = React.createClass({
                         Headers={this.props.Fields}
                         RowNumLabel="Identifiers"
                         Data={this.props.Data}
-                        RowNumCol={this.props.RowInfo}
+                        RowNameMap={this.props.RowInfo}
                     />
                </TabPane>
     }
