@@ -65,7 +65,7 @@ StaticDataTable = React.createClass({
                 }
 
                 if (this.props.RowNumCol) {
-                    index.push({ RowIdx: i, Value: val, Content: this.props.RowNumCol[i]});
+                    index.push({ RowIdx: i, Value: val, Content: this.props.RowNameMap[i]});
                 } else {
                     index.push({ RowIdx: i, Value: val, Content: i+1 });
                 }
@@ -95,7 +95,7 @@ StaticDataTable = React.createClass({
         } else {
             for(var i = 0; i < this.props.Data.length; i += 1) {
                 if (this.props.RowNumCol) {
-                    index.push({ RowIdx: i, Content: this.props.RowNumCol[i]});
+                    index.push({ RowIdx: i, Content: this.props.RowNameMap[i]});
                 } else {
                     index.push({ RowIdx: i, Content: i+1});
                 }
