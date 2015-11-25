@@ -21,7 +21,7 @@ before_install:
 
 install:
     # Install composer modules
-    - composer install --prefer-source
+    - composer install -vvv --prefer-dist
     - phpenv rehash
 
     # Install jslint
