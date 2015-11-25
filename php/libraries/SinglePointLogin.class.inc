@@ -72,7 +72,7 @@ class SinglePointLogin
 
         $study_links = $config->getExternalLinks('Studylinks');
         foreach ($study_links as $label => $url) {
-            $WindowName = md5($link['@']['url']);
+            $WindowName = md5($url);
             $tpl_data['studylinks'][] = array(
                                          'url'        => $url,
                                          'label'      => $label,
