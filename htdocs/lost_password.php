@@ -42,9 +42,6 @@ if (isset($_POST['username'])) {
 
     // create the user object
     $user =& User::singleton($_POST['username']);
-    if (PEAR::isError($user)) {
-        $tpl_data['error_message'] = $user->getMessage();
-    }
 
     $email = $user->getData('Email');
 

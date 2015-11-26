@@ -67,9 +67,6 @@ function MapSubprojectID(&$results) {
 $query = "select * from test_names order by Test_name";
 //$query = "select * from test_names where Test_name like 'a%' order by Test_name";  //for rapid testing
 $DB->select($query, $instruments);
-if (PEAR::isError($instruments)) {
-	PEAR::raiseError("Couldn't get instruments. " . $instruments->getMessage());
-}
 
 foreach ($instruments as $instrument) {
 	//Query to pull the data from the DB
@@ -91,10 +88,6 @@ foreach ($instruments as $instrument) {
         }
     }
 	$DB->select($query, $instrument_table);
-	if (PEAR::isError($instrument_table)) {
-		print "Cannot pull instrument table data ".$instrument_table->getMessage()."<br>\n";
-		die();
-	}
     MapSubprojectID($instrument_table);
 	writeExcel($Test_name, $instrument_table, $dataDir);
 
@@ -110,10 +103,6 @@ if (count($result) > 0) {
 	$Test_name = "figs_year3_relatives";
 	$query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, fyr.* from candidate c, session s, flag f, figs_year3_relatives fyr where c.PSCID not like 'dcc%' and fyr.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = fyr.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
 	$DB->select($query, $instrument_table);
-	if (PEAR::isError($instrument_table)) {
-		print "Cannot figs_year3_relatives data ".$instrument_table->getMessage()."<br>\n";
-		die();
-	}
 	MapSubprojectID($instrument_table);
 	writeExcel($Test_name, $instrument_table, $dataDir);
 }
@@ -125,10 +114,6 @@ $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
 $query = "select distinct c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID from candidate c, session s where c.CandID = s.CandID and substring(c.PSCID, 1, 3) in ('PHI', 'STL', 'SEA', 'UNC') and c.Active='Y' order by c.PSCID";
 $DB->select($query, $results);
-if (PEAR::isError($results)) {
-	PEAR::raiseError("Couldn't get candidate info. " . $results->getMessage());
-}
-
 
 MapSubprojectID(&$results);
 writeExcel($Test_name, $results, $dataDir);
@@ -140,9 +125,6 @@ writeExcel($Test_name, $results, $dataDir);
 $Test_name = "DataDictionary";
 $query = "select Name, Type, Description, SourceField, SourceFrom from parameter_type where SourceField is not null order by SourceFrom";
 $DB->select($query, $dictionary);
-if (PEAR::isError($dictionary)) {
-	PEAR::raiseError("Could not generate data dictionary. " . $dictionary->getMessage());
-}
 writeExcel($Test_name, $dictionary, $dataDir);
 
 //MRI data construction

@@ -40,10 +40,6 @@ if ($action=='one') {
 
 // DB Object
 $db =& Database::singleton();
-if(PEAR::isError($db)) {
-    fwrite(STDERR, "Could not connect to database: ".$DB->getMessage()."\n");
-    return false;
-}
 
 // get the list of timepoints - submitted to DCC, Pass or In Progress
 $query = "SELECT * FROM session as s WHERE s.Active = 'Y' AND s.Submitted = 'Y' AND s.Current_stage='Approval' AND s.Approval IN('In progress', 'Pass')";
@@ -56,10 +52,6 @@ $query .= " ORDER BY s.ID";
 
 $result = array();
 $db->select($query, $result);
-if (PEAR::isError($result)) {
-    fwrite(STDERR, "DBError, failed to get the list of timepoints: \n $query \n".$result->getMessage());
-    return false;
-}
 
 // return a msg
 if (count($result)==0) {
@@ -86,35 +78,19 @@ foreach ($result as $currentTimepoint) {
     // create Flag object
     if (isset($timepointFlagObject)) unset($timepointFlagObject);
     $timepointFlagObject = new TimePoint_Flag();
-    if (PEAR::isError($timepointFlagObject)) {
-        fwrite(STDERR, "Error, failed to create Flag object for sessionID ($sessionID):\n".$timepointFlagObject->getMessage());
-        return false;
-    }
     $success = $timepointFlagObject->select($sessionID);
-    if (PEAR::isError($success)) {
-        fwrite(STDERR, "Error, failed to create Flag object for sessionID ($sessionID) - SELECT failed:\n".$timepointFlagObject->getMessage());
-        return false;
-    }
 
     $constantsArray = array($timepointFlagObject->showConstant('TIMEPOINT_FLAG_MISSING_DATA'),$timepointFlagObject->showConstant('TIMEPOINT_FLAG_NA_INSTRUMENT'));
     
     // get flag types to assign the proper status to the session/flag records
     if (empty($flagTypeIDs)) { 
         $flagTypeIDs = $timepointFlagObject->getFlagTypeIDs();
-        if (PEAR::isError($flagTypeIDs)) {
-            fwrite(STDERR, "Error, failed to get the list of typeIDs:\n".$flagTypeIDs->getMessage());
-            return false;
-        }
     }
     
     // evaluate the flags for the timepoint and get the list of triggered flags and their statuses
     // flag statuses are captured as constants TIMEPOINT_FLAG_TRIGGER, TIMEPOINT_FLAG_NA_INSTRUMENT, TIMEPOINT_FLAG_NULL
     $flagList = array();
     $flagList = $timepointFlagObject->evaluateTimepointFlags();
-    if (PEAR::isError($flagList)) {
-        fwrite(STDERR, "Error, failed to evaluate flags for timepoint ($sessionID):\n". $flagList->getMessage());
-        return false;
-    }
 
     // if there are no flags skip to next timepoint
     if (count($flagList)==0) continue;
@@ -123,10 +99,6 @@ foreach ($result as $currentTimepoint) {
         
         // check if the flag exists, i.e. previously triggered
         $flagExists = $timepointFlagObject->timepointFlagExists($sessionID, $flagName);
-        if (PEAR::isError($flagExists)) {
-            fwrite(STDERR, "Error:\n".$flagExists->getMessage());
-            return false;
-        }
 
         // skip to next flag if it's already in the table
         if ($flagExists) {
@@ -139,10 +111,6 @@ foreach ($result as $currentTimepoint) {
 
         // get the flag's defined/default type
         $flagType = $timepointFlagObject->getFlagType($flagName);
-        if (PEAR::isError($flagType)) {
-            fwrite(STDERR, "Error, failed to get the flag's type ($flagName):\n".$flagType->getMessage());
-            return false;
-        }
 
         // define the flag's new type
         if (in_array($flagStatus, $constantsArray)) {
@@ -160,10 +128,6 @@ foreach ($result as $currentTimepoint) {
 
             // insert the new flag record into the flag/session table
 //            $success = $timepointFlagObject->insertFlag($flagName, $newFlagTypeID);
-            if (PEAR::isError($success)) {
-                fwrite(STDERR, "DB Error:\n".$success->getMessage());
-                return false;
-            }
 
             // if there are new flags to add, the evarall status of the timepoint's excl evaluation needs to be reset
             // if the overal excusion flag is NOT NULL,
@@ -171,10 +135,6 @@ foreach ($result as $currentTimepoint) {
             if (!empty($currentTimepoint['BVLQCExclusion'])) {
                  // reset the status to NULL
 //                $success = $timepointFlagObject->setBVLQCExclusion(null);
-                if (PEAR::isError($success)) {
-                    fwrite(STDERR, "DB Error:\n".$success->getMessage());
-                    $prevFlagName2 = 1;
-                }
             }
 
             // ALSO RESET THE APPROVAL FROM PASS to IN PROGRESS!!!
