@@ -15,7 +15,7 @@
 		{section name=item loop=$status}
 		<li>
 			{if $access.status and $status[item].showlink}
-                        	<img src="{$baseurl}/images/{$status[item].icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;<a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setStageUpdate={$status[item].label}">{$status[item].label}</a>
+                        	<img src="{$baseurl}/images/{$status[item].icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;<a href="?setStageUpdate={$status[item].label}">{$status[item].label}</a>
 			{else}
                         	<img src="{$baseurl}/images/{$status[item].icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;{$status[item].label}
 			{/if}
@@ -29,9 +29,9 @@
 		<li>
 			{if $access.send_to_dcc===true}
     				{if $send_to_dcc.set_submitted=='Check'}
-                        		<img src="{$baseurl}/images/{$send_to_dcc.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;<a href="main.php?test_name=timepoint_flag&subtest=check_timepoint_flag&identifier={$sessionID}">{$send_to_dcc.reverse|default:"Send To DCC"}</a><br>
+                        		<img src="{$baseurl}/images/{$send_to_dcc.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;<a href="{$baseurl}/timepoint_flag/check_timepoint_flag/?identifier={$sessionID}">{$send_to_dcc.reverse|default:"Send To DCC"}</a><br>
 	    			{else}
-                        	<img src="{$baseurl}/images/{$send_to_dcc.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;<a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setSubmitted={$send_to_dcc.set_submitted}">{$send_to_dcc.reverse|default:"Send To DCC"}</a>
+                        	<img src="{$baseurl}/images/{$send_to_dcc.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;<a href="?setSubmitted={$send_to_dcc.set_submitted}">{$send_to_dcc.reverse|default:"Send To DCC"}</a>
     				{/if}
 			{else}
                         <span title='{$access.send_to_dcc_status_message}'><img src="{$baseurl}/images/{$send_to_dcc.icon|default:'locked'}.gif" alt="" border="0" width="12" height="12" />&nbsp;Send To DCC</span>
@@ -62,7 +62,7 @@
 		<li>
                 	<img src="{$baseurl}/images/{$bvl_qc_type_hardcopy.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;
 			{if $bvl_qc_type_hardcopy.showlink}
-                        	<a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setBVLQCType=Hardcopy">Hardcopy</a>
+                        	<a href="?setBVLQCType=Hardcopy">Hardcopy</a>
 			{else}
                                                 Hardcopy
 			{/if}
@@ -74,7 +74,7 @@
 		<li>
 			<img src="{$baseurl}/images/{$bvl_qc_status_none.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;
 			{if $bvl_qc_status_none.showlink}
-                        	<a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setBVLQCStatus=">Not Done</a>
+                        	<a href="?setBVLQCStatus=">Not Done</a>
 			{else}
                                                 Not Done
 			{/if}
@@ -83,7 +83,7 @@
 		<li>
                 	<img src="{$baseurl}/images/{$bvl_qc_status_complete.icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />&nbsp;
 			{if $bvl_qc_status_complete.showlink}
-                        	<a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setBVLQCStatus=Complete">Complete</a>
+                        	<a href="?setBVLQCStatus=Complete">Complete</a>
 			{else}
                                                 Complete
 			{/if}
