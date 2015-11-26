@@ -94,11 +94,8 @@ script:
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
 
-<<<<<<< HEAD
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
 
-=======
->>>>>>> Updated .travis.yml for Code coverage reports
 after_success:
     - bash <(curl -s https://codecov.io/bash)
