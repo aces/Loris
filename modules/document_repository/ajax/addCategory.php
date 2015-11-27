@@ -29,11 +29,6 @@ $config = NDB_Config::singleton();
 
 // create Database object
 $DB =& Database::singleton();
-if (Utility::isErrorX($DB)) {
-    print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die();
-}
-
-
 
 if (empty($_POST['category_name']) && $_POST['category_name'] !== '0') {
     header("HTTP/1.1 400 Bad Request");
@@ -54,10 +49,6 @@ if ($_POST['comments'] !== '') {
 }
 
 $user =& User::singleton();
-if (Utility::isErrorX($user)) {
-    return PEAR::raiseError("User Error: ".$user->getMessage());
-}
-
 //if user has document repository permission
 if ($user->hasPermission('document_repository_view') || $user->hasPermission('document_repository_delete')) {
     $DB->insert(

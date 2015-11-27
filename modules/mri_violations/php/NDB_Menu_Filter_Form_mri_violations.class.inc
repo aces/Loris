@@ -36,9 +36,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         $this->tpl_data['violated_scans_modifications'] 
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
@@ -51,9 +48,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         }
         $DB =& Database::singleton();
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         foreach ($values['resolvable'] AS $key=>$val) {
             $hash = $key;
             $row = $DB->pselectRow(
@@ -146,9 +140,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         // set the class variables
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         $config =& NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
@@ -288,9 +279,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         $config =& NDB_Config::singleton();
         $study = $config->getSetting('study');
         $dateOptions = array(
@@ -339,9 +327,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
-            if(Utility::isErrorX($sites)) {
-                return PEAR::raiseError("DB Error: ".$sites->getMessage());
-            }
             if(is_array($sites)){
                 $sites = array('' => 'All') + $sites;
             }
@@ -349,9 +334,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (Utility::isErrorX($site)) {
-                return PEAR::raiseError("DB Error: ".$site->getMessage());
-            }
             if ($site->isStudySite()) {
                 $sites = array($user->getData('CenterID') => $user->getData('Site'));
             }
