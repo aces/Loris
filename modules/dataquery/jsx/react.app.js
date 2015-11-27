@@ -118,11 +118,11 @@ DataQueryApp = React.createClass({
             fields: [],
             criteria: {},
             sessiondata: {},
-            grouplevel: 0,
+            grouplevel: 1,
             savedQueries: {},
             queriesLoaded: false,
             ActiveTab :  'Info',
-            ActiveSessions: []
+            rowData: {}
         };
     },
     loadSavedQuery: function (fields, criteria) {
@@ -211,6 +211,7 @@ DataQueryApp = React.createClass({
     },
     getSessions: function() {
         if (Object.keys(this.state.criteria).length === 0) {
+            // console.log(this.props.AllSessions);
             return this.props.AllSessions;
         }
 
@@ -276,6 +277,8 @@ DataQueryApp = React.createClass({
                         }
                         that.setState({ 'sessiondata' : sessiondata});
                         console.log("Received data");
+                        var rowdata = that.getRowData();
+                        that.setState({'rowData': rowdata});
                     }
                 });
 
@@ -289,64 +292,73 @@ DataQueryApp = React.createClass({
         var fields = this.state.fields;
         var i, j;
         var rowdata = [];
-        var currow;
-        var ActiveSessions = [];
+        var currow = [];
+        var Identifiers = [];
+        var RowHeaders = [];
 
-        // console.log(sessiondata);
         if(this.state.grouplevel === 0) {
+            for(i = 0; fields && i < fields.length; i += 1) {
+                RowHeaders.push(fields[i]);
+            }
             for(var session in sessiondata){
-                var currow = [];
+                currow = [];
                 for(i = 0; fields && i < fields.length; i += 1) {
                     var fieldSplit = fields[i].split(",")
                         currow[i] = '.';
                     var sd = sessiondata[session];
-                    if(sd) {
+                    if(sd[fieldSplit[0]]) {
                         currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
                     }
 
                 }
                 rowdata.push(currow);
-                ActiveSessions.push(session);
+                Identifiers.push(session);
             }
+            console.log(rowdata);
         } else {
-            var Prefixes = [], prefix;
-            for(i = 0; i < sessions.length; i += 1) {
-                if(sessions[i] === []) {
-                    continue;
+            var Visits = [],
+                visit, identifier, temp, colHeader, index;
+            for(var session in sessiondata){
+                sessiondata[session.toUpperCase()] = sessiondata[session];
+                delete session[session];
+                temp = session.split(',')
+                visit = temp[1].toUpperCase();
+                if (Visits.indexOf(visit) === -1) {
+                    Visits.push(visit);
                 }
-                prefix = sessions[i].pop().toUpperCase();
-                if (Prefixes.indexOf(prefix) === -1) {
-                    Prefixes.push(prefix);
-                }
-            }
-            Prefixes.sort();
-            console.log(Prefixes);
-
-
-            /*
-            for (el in obj) {
-                if (obj.hasOwnProperty(el)) {
-                    identifier = el.split(',');
-                    i = parseInt(group_level, 10);
-                    prefix = [];
-                    while (i > 0) {
-                        i -= 1;
-                        prefix.push(identifier.pop());
-                    }
-                    sPrefix = prefix.join("_").toUpperCase();
-                    // Create a new row. We'll initialize it to empty after we know how many columns there are,
-                    // which depends on how many prefixes are found in this loop.
-                    row = [];
-                    row[0] = identifier.join(",");
-                    existingRows[identifier.join(",")] = row;
-                    if (Prefixes.indexOf(sPrefix) === -1) {
-                        Prefixes.push(sPrefix);
-                    }
+                identifier = temp[0].toUpperCase();
+                if (Identifiers.indexOf(identifier) === -1) {
+                    Identifiers.push(identifier);
                 }
             }
-            */
+            Visits.sort();
+            for(visit in Visits){
+                for(i = 0; fields && i < fields.length; i += 1){
+                    RowHeaders.push(Visits[visit] + '_' + fields[i])
+                }
+            }
+            for(identifier in Identifiers){
+                currow = [];
+                for(colHeader in RowHeaders){
+                    temp = Identifiers[identifier] +',' + RowHeaders[colHeader]
+                    .split('_')[0];
+                    index = sessiondata[temp];
+                    if(!index){
+                        currow.push(".");
+                    } else {
+                        temp = index[RowHeaders[colHeader].split(',')[0].split('_')[1]];
+                        if(temp){
+                            temp = temp.data[RowHeaders[colHeader].split(',')[1]];
+                        } else {
+                            temp = '.';
+                        }
+                        currow.push(temp);
+                    }
+                }
+                rowdata.push(currow);
+            }
         }
-        return {'rowdata': rowdata, 'ActiveSessions': ActiveSessions};
+        return {'rowdata': rowdata, 'Identifiers': Identifiers, 'RowHeaders': RowHeaders};
     },
     render: function() {
         var tabs = [], tabsNav = [];
@@ -369,20 +381,20 @@ DataQueryApp = React.createClass({
                 Criteria={this.state.criteria}
             />
         );
-        var rowData = this.getRowData();
         tabs.push(<ViewDataTabPane
                 TabId="ViewData"
                 Fields={this.state.fields}
                 Criteria={this.state.criteria}
                 Sessions={this.getSessions()}
-                Data={rowData.rowdata}
-                RowInfo={rowData.ActiveSessions}
+                Data={this.state.rowData.rowdata}
+                RowInfo={this.state.rowData.Identifiers}
+                RowHeaders={this.state.rowData.RowHeaders}
                 onRunQueryClicked={this.runQuery}
                 displayType={this.state.displayType}
         />);
         tabs.push(<StatsVisualizationTabPane TabId="Statistics"
                 Fields={this.state.fields}
-                Data={rowData.rowdata} />);
+                Data={this.state.rowData.rowdata} />);
         tabs.push(<ManageSavedQueriesTabPane TabId="SavedQueriesTab"
                         userQueries={this.props.SavedQueries.User}
                         globalQueries={this.props.SavedQueries.Shared}

@@ -158,10 +158,10 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
                         )
                     ), 
                     React.createElement(StaticDataTable, {
-                        Headers: this.props.Fields, 
+                        Headers: this.props.RowHeaders, 
                         RowNumLabel: "Identifiers", 
                         Data: this.props.Data, 
-                        RowNumCol: this.props.RowInfo}
+                        RowNameMap: this.props.RowInfo}
                     )
                )
     }
