@@ -393,5 +393,17 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $this->tpl_data['numCandidates'] = $this->TotalItems;
         return true;
     }
+
+    function getJSDependencies() {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps = parent::getJSDependencies();
+        return array_merge($deps,
+            array(
+                $baseURL . "/js/advancedMenu.js",
+                $baseURL . "/candidate_list/js/columnFormatter.js",
+            )
+        );
+    }
 }
 ?>

@@ -5,8 +5,6 @@
     });
 </script>
 {/literal}
-<script type="text/javascript" src="{$baseurl}/js/advancedMenu.js"></script>
-<script type="text/javascript" src="{$baseurl}/GetJS.php?Module=candidate_list&file=columnFormatter.js"></script>
 
 <div class="row">
 <div class="col-sm-9">
@@ -217,13 +215,12 @@
 </div>
 {/if}
 </div>
-<div id="test" />
-<script type="text/javascript" src="{$baseurl}/GetJS.php?Module=candidate_list&file=columnFormatter.js"></script>
+<div id="datatable" />
 <script>
-var pageLinks = RDynamicDataTable({
+var table = RDynamicDataTable({
     "DataURL" : "{$baseurl}/main.php?test_name=candidate_list&format=json",
     "getFormattedCell" : formatColumn
 });
 
-React.render(pageLinks, document.getElementById("test"));
+React.render(table, document.getElementById("datatable"));
 </script>
