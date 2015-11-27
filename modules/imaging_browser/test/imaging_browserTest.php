@@ -35,7 +35,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTestWithCandidat
      */
     function testImagingBrowserViewSessionDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=imaging_browser&subtest=viewSession&sessionID=0");
+        $this->webDriver->get($this->url . "?test_name=imaging_browser&subtest=viewSession&sessionID=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("View Session", $bodyText);
     }

@@ -49,7 +49,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
         ));
 
         $this->DB->insert('session', array(
-            'ID' => '0',
+            'ID' => '999999',
             'CandID' => '000000',
             'Visit_label' => 'Test',
             'CenterID' => 1,
