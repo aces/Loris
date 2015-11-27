@@ -349,7 +349,7 @@ class NDB_Caller
     function loadReliability($class, $page, $identifier, $reliability_center_id)
     {
         // make an instance of the form's object
-        $form = NDB_Reliability::factory(
+        $form = NDB_Reliability::reliabilityfactory(
             $class,
             $page,
             $identifier,

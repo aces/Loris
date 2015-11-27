@@ -1,12 +1,11 @@
 <?php
-require_once 'PEAR.php';
 
 /**
  * HelpFile class
  * @package main
  * @subpackage unused
  */
-class HelpFile extends PEAR
+class HelpFile
 {
     /**
      * Identifies the help file

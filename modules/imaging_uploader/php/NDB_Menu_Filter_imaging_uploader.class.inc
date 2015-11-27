@@ -13,7 +13,6 @@
 
 require_once 'NDB_Menu_Filter_Form.class.inc';
 require_once 'Log.class.inc';
-require_once "Archive/Tar.php";
 require_once "File_Decompress.class.inc";
 require_once "Message.class.inc";
 require_once __DIR__
