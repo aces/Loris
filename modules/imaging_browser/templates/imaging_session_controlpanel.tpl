@@ -45,7 +45,7 @@
     <h3>Visit Level QC</h3>
     <div class="visit-level-feedback">
           <a class="btn btn-default" href="#"
-               onClick="javascript:open_popup('feedback_mri_popup.php?sessionID={$subject.sessionID}')">
+               onClick="javascript:open_popup('{$baseurl}/feedback_mri_popup.php?sessionID={$subject.sessionID}')">
                  <span class="text-default">
                      <span class="glyphicon glyphicon-pencil feedback-text"></span>
                      <span class="hidden-xs feedback-text"> Visit Level Feedback</span>

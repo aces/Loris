@@ -1,5 +1,4 @@
 <!-- Main table -->
-<script src="GetJS.php?Module=imaging_browser&file=imagingbrowser.js"></script>
 {* Olga: show3DViewer not tested *}
 {if $show3DViewer}
 {*<td nowrap="nowrap">the first opening td already opened in main.tpl *}<input type="button" name="button" value="3D Viewer" class="button" id = "dccid" name = "dccid" style = "background-color: #816e91" onclick="window.open('BrainBrowser/display.html?sessionID={$subject.sessionID}')" /></td>
@@ -47,7 +46,7 @@
                 <div class="panel-body panel-mri-body" id="panel-body-{$files[file].FileID}">
                   <div class="row">
                    <div class="col-xs-9 imaging_browser_pic">
-                      <a href="#noID" onClick="window.open('main.php?test_name=brainbrowser&minc_id={$files[file].FileID}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto, scrollbars=yes')">
+                      <a href="#noID" onClick="window.open('{$baseurl}/brainbrowser/?minc_id={$files[file].FileID}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto, scrollbars=yes')">
                       <img class='img-checkpic img-responsive' src="{$files[file].CheckPic}">
                       </a>
                    </div><!--closing imaging_browser_pic div -->
