@@ -51,7 +51,7 @@ class ExaminerTest extends LorisIntegrationTest
     public function testEditExaminerPageLoads()
     {
         $this->webDriver->get(
-            $this->url . "?test_name=examiner&subtest=editExaminer&identifier=0"
+            $this->url . "?test_name=examiner&subtest=editExaminer&identifier=1"
         );
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
