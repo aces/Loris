@@ -52,6 +52,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
 
     public function tearDown() {
         $this->DB->delete("candidate", array('CandID' => '000000'));
+        parent::tearDown();
     }
 }
 ?>
