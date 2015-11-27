@@ -19,7 +19,7 @@
         <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
     </div>
     <div class="panel-body" id="panel-body">
-        <form method="post" action="main.php?test_name=imaging_browser">
+        <form method="post" action="{$baseurl}/imaging_browser/">
              <div class="row">
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
@@ -99,7 +99,7 @@
                            name="reset"
                            value="Clear Form"
                            class="btn btn-sm btn-primary col-xs-12"
-                           onclick="location.href='main.php?test_name=imaging_browser&reset=true'" />
+                           onclick="location.href='{$baseurl}/imaging_browser/?reset=true'" />
                 </div>
                </div><!--closing row -->
         </form>
@@ -128,7 +128,7 @@
             {* Add 3 to the numOutputTypes (native, selected, all types plus
                other types in the database *}
             <th {if $item.name eq 'Links'}colspan="{$numOutputTypes+3}"{/if}>
-            {if $item neq ''}<a href="main.php?test_name=imaging_browser&filter[order][field]={$item.name}&filter[order][fieldOrder]={$item.fieldOrder}">{/if}
+            {if $item neq ''}<a href="{$baseurl}/imaging_browser/?filter[order][field]={$item.name}&filter[order][fieldOrder]={$item.fieldOrder}">{/if}
                 {$item.displayName}
             {if $item neq ''}</a>{/if}
             </th>
@@ -156,11 +156,11 @@
         {/section}
         {* Links to files/output types *}
         {section name=typeIdx loop=$outputTypes}
-        	     <td><a href="main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$items[item].sessionID}&outputType={if $outputTypes[typeIdx].outputType=='selected'}native&selectedOnly=1
+        	     <td><a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$items[item].sessionID}&outputType={if $outputTypes[typeIdx].outputType=='selected'}native&selectedOnly=1
                     {else}{$outputTypes[typeIdx].outputType|escape:"url"}{/if}&backURL={$backURL|escape:"url"}">{$outputTypes[typeIdx].outputType}</a>
     	    </td>
         {/section}
-                <td><a href="main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$items[item].sessionID}&backURL={$backURL|escape:"url"}">all types</a></td>
+                <td><a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$items[item].sessionID}&backURL={$backURL|escape:"url"}">all types</a></td>
         </tr>
         {sectionelse}
         <tr><td colspan="8">Nothing found</td></tr>
@@ -177,7 +177,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=imaging_browser&pageID=" + pageNum
+        location.href="{$baseurl}/imaging_browser/?pageID=" + pageNum
     },
     Active: {$pageID}
 });
