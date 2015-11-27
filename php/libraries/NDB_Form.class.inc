@@ -147,11 +147,6 @@ class NDB_Form extends NDB_Page
     {
         if ($this->form->validate()) {
             $success = $this->form->process(array(&$this, "_save"), false);
-            // Just in case QuickForm returned a PEAR error instead of an
-            // exception..
-            if (Utility::isErrorX($success)) {
-                throw new Exception($success->getMessage());
-            }
         }
     }
 

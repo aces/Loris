@@ -110,9 +110,12 @@ class NDB_BVL_Instrument_Instrument_Preview
     /**
      * Overwrites the save function to not save data since this is only a preview.
      *
+     * @param array $values Unused, but required so that function as same signature
+     *                      as base class
+     *
      * @return none
      */
-    function _save()
+    function _save($values)
     {
         return;
     }

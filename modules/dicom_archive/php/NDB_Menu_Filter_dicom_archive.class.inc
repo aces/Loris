@@ -171,9 +171,6 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
     {
         $list_of_sites = array('' => 'All');
         $sitesList = Utility::getSiteList(false);
-        if (Utility::isErrorX($sitesList)) {
-            return PEAR::raiseError("DB Error: ".$sitesList->getMessage());
-        }
 
         foreach ($sitesList as $key=>$value) {
             $list_of_sites[$key]= $value;

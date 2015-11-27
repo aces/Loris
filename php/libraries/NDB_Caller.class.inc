@@ -201,12 +201,9 @@ class NDB_Caller
             }
 
             // it is a reliability form
-            $proj_reliable = $base . "project/libraries/"
-                                   . "NDB_Reliability_$test_name.class.inc";
-            $php_reliable  = $base . "php/libraries/"
+            $proj_reliable = $base . "project/reliability/"
                                    . "NDB_Reliability_$test_name.class.inc";
             if ($this->existsAndRequire($proj_reliable)
-                || $this->existsAndRequire($php_reliable)
             ) {
 
                 $html = $this->loadReliability(
@@ -302,7 +299,8 @@ class NDB_Caller
         if (method_exists($menu, 'save')) {
             $success = $menu->save();
         }
-        $html = $menu->display();
+        $this->page = $menu;
+        $html       = $menu->display();
 
         return $html;
     }
@@ -329,7 +327,8 @@ class NDB_Caller
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
         }
-        $html = $form->display();
+        $this->page = $form;
+        $html       = $form->display();
         return $html;
     }
 
@@ -347,7 +346,7 @@ class NDB_Caller
     function loadReliability($class, $page, $identifier, $reliability_center_id)
     {
         // make an instance of the form's object
-        $form = NDB_Reliability::factory(
+        $form = NDB_Reliability::reliabilityfactory(
             $class,
             $page,
             $identifier,
@@ -356,7 +355,8 @@ class NDB_Caller
 
         $success = $form->save();
 
-        $html = $form->display();
+        $this->page = $form;
+        $html       = $form->display();
 
         return $html;
     }
@@ -414,9 +414,6 @@ class NDB_Caller
                 $_REQUEST['sessionID']
             );
         }
-        if (Utility::isErrorX($instrument)) {
-            return $instrument;
-        }
 
         // save instrument form data
         $success = $instrument->save();
@@ -440,7 +437,8 @@ class NDB_Caller
             }
         }
 
-        $html = $instrument->display();
+        $this->page = $instrument;
+        $html       = $instrument->display();
 
         return $html;
     }

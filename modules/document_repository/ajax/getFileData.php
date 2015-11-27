@@ -13,9 +13,6 @@ $client->initialize("../../project/config.xml");
 
 // create Database object
 $DB =& Database::singleton();
-if(PEAR::isError($DB)) { 
-    print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die(); 
-}
 
 $result = $DB->pselectRow("SELECT * FROM document_repository where record_id =:identifier", array(':identifier'=> $_GET['id']));
 

@@ -17,15 +17,8 @@ $config = NDB_Config::singleton();
 
 // create Database object
 $DB =& Database::singleton();
-if (Utility::isErrorX($DB)) {
-    print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die();
-}
 
 $action = $_POST['action'];
-
-if (Utility::isErrorX($userSingleton)) {
-    return PEAR::raiseError("User Error: ".$userSingleton->getMessage());
-}
 
 //if user has document repository permission
 if ($userSingleton->hasPermission('document_repository_view') || $userSingleton->hasPermission('document_repository_delete')) {

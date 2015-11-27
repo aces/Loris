@@ -50,5 +50,17 @@
         </testsuite>
 
     </testsuites>
+    <!-- This is currently breaking the coverage.xml generation, so
+         for now it's disabled, but eventually we'll want to make
+         sure everything is tested.. -->
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".inc">../php</directory>
+            <!--directory suffix=".php">../htdocs</directory-->
+            <directory suffix=".inc">../modules/*/php</directory>
+            <!--directory>../modules/dashboard/ajax/</directory-->
+        </whitelist>
+    </filter>
 
 </phpunit>

@@ -54,10 +54,6 @@ $config =& NDB_Config::singleton();
 $dbConfig = $config->getSetting('database');
 // DB Object
 $DB =& Database::singleton('NIH_PD', $dbConfig['username'], $dbConfig['password'], $dbConfig['host']);
-if(PEAR::isError($DB)) {
-    fwrite(STDERR, "Could not connect to database: ".$DB->getMessage());
-    return false;
-}
 $GLOBALS['DB'] =& $DB;
 $db =& $DB;
 
@@ -74,10 +70,6 @@ $query .= " AND Objective = 1";
 $query .= " ORDER BY CenterID, Date_visit";
 
 $db->select($query,$result);
-if (PEAR::isError($db)) {
-    fwrite(STDERR, "DBError, failed to get the list of sessionIDs: \n".$result->getMessage());
-    return false;
-}
 
 // set array of instrument used for exclusion
 $instrumentLabels = array("BTSI_Y1","FTSI_Y1","Neurological_exam","WASI","WJ-III","DAS","DISC","CBCL","FIGS_Y1");
@@ -116,11 +108,6 @@ foreach ($result as $currentTimepoint) {
     
     // create TimePoint_exclusion object
     $timepointFlagObject =& TimePoint_Flag::singleton($sessionID);
-    if (PEAR::isError($timepointFlagObject)) {
-        // if error, stop processing
-        fwrite(STDERR, "Timepoint_Flag Object Error: " . $timepointFlagObject->getMessage()."\n");
-        return false;
-    }
     
     // from the timepoint class
     $data['Site'] = $timepointFlagObject->getPSC();
@@ -137,10 +124,6 @@ foreach ($result as $currentTimepoint) {
     */
     $query = "SELECT c.DoB, c.EDC, c.PSCID, s.Date_visit, w.Date_taken as WASI_date, d.Date_taken as DAS_date FROM candidate as c LEFT JOIN session as s USING (CandID) LEFT JOIN flag as f ON (s.ID = f.SessionID) LEFT JOIN wasi as w ON (f.CommentID = w.CommentID) LEFT JOIN das as d ON (f.CommentID = d.CommentID) WHERE f.Test_name IN ('wasi', 'das') AND s.VisitNo=1 AND c.CandID=".$data['DCCID'];
     $db->selectRow($query, $candrow);
-    if (PEAR::isError($candrow)) {
-        fwrite(STDERR, $candrow->getMessage());
-        return false;
-    }
     
     $data['PSCID'] = $candrow['PSCID'];
     
@@ -196,15 +179,7 @@ foreach ($result as $currentTimepoint) {
     ** FEEDBACK status info
     */
     $feedback =& NDB_BVL_Feedback::singleton($username, null, $sessionID);
-    if (PEAR::isError($feedback)) {
-        fwrite(STDERR, $feedback->getMessage()."\n");
-        return false;
-    }
     $feedback_status = $feedback->getMaxThreadStatus('Y');
-    if (PEAR::isError($feedback_status)) {
-        fwrite(STDERR, $feedback_status->getMessage()."\n");
-        return false;
-    }
     // prepare the $data element
     if (!is_array($feedback_status)) {
         $data['Feedback'] = $feedback_status;
@@ -216,10 +191,6 @@ foreach ($result as $currentTimepoint) {
     // get list of NA instruments
     $NAinstruments = array();
     $NAinstruments = $timepointFlagObject->getListOfNonAdministeredInstruments();
-    if (PEAR::isError($NAinstruments)) {
-        fwrite(STDERR, "Error, Failed to get the list of NA instruments: \n".$NAinstruments->getMessage());
-        return false;
-    }
     // set the NA instrument data
     if (count($NAinstruments)>0) {
         foreach ($instrumentList as $instrument) {
@@ -235,10 +206,6 @@ foreach ($result as $currentTimepoint) {
     // get the full list of flags (once)
     if (!isset($listOfFlags)) {
         $listOfFlags = $timepointFlagObject->getListOfFlags();
-        if (PEAR::isError($listOfFlags)) {
-            fwrite(STDERR, "Error, failed to get the list of flags: \n".$listOfFlags->getMessage());
-            return false;
-        }
     }
     
     // loop the list of flags and assign it a flag type from the table
@@ -256,10 +223,6 @@ foreach ($result as $currentTimepoint) {
         // get the flag type & status from DB
         $flagData = $timepointFlagObject->getFlag($sessionID, $flagName);
         
-        if (PEAR::isError($flagData)) {
-            fwrite(STDERR, "Error, failed to get the flag record ($flagName): \n".$flagData->getMessage());
-            return false;
-        }
         
         if (!isset($listOfTriggers[$flagName])) {
             $indexCount = 1;
@@ -271,10 +234,6 @@ foreach ($result as $currentTimepoint) {
             // get list of triggers for the flag
             $listOfTriggers[$flagName] = $timepointFlagObject->getListOfTriggers($flagName);
             
-            if (PEAR::isError($listOfTriggers[$flagName])) {
-                fwrite(STDERR, $listOfTriggers[$flagName]->getMessage()."\n");
-                return false;
-            }
             
             if (is_array($listOfTriggers[$flagName])) {
                 
@@ -296,10 +255,6 @@ foreach ($result as $currentTimepoint) {
             
             // get the list of triggers field values
             $listTriggerFieldValues = $timepointFlagObject->getTriggerFieldValues($flagName);
-            if (PEAR::isError($listTriggerFieldValues)) {
-                fwrite(STDERR, "Error, failed to get the trigger field values for flag ($flagName): \n".$listTriggerFieldValues->getMessage());
-                return false;
-            }
             
             // add to data array
             $data[$flagName] = $flagData;
@@ -311,10 +266,6 @@ foreach ($result as $currentTimepoint) {
             // get the array of review fields w/ field values
             $reviewfieldArray = $timepointFlagObject->getFlagReviewFieldsValues($flagName);
             
-            if (PEAR::isError($reviewfieldArray)) {
-                fwrite(STDERR, "Error: ".$reviewfieldArray->getMessage());
-                return false;
-            }
             
             if (is_array($reviewfieldArray) && count($reviewfieldArray) > 0) {
                 foreach ($reviewfieldArray as $reviewFieldLabel=>$reviewFieldValue) {
@@ -344,10 +295,6 @@ foreach ($result as $currentTimepoint) {
         $adverseArray = array();
         $query = "SELECT Findings_confirmed FROM NIH_PD_DEV.mri_adverse WHERE SessionID = '$sessionID' AND Findings_confirmed IS NOT NULL GROUP BY SessionID";
         $db->selectRow($query, $adverseArray);
-        if (PEAR::isError($adverseArray)) {
-            fwrite(STDERR, $adverseArray->getMessage());
-            return false;
-        }
         // if the ID was returned then there was a findings
         if (count($adverseArray) == 0 || empty($adverseArray['Findings_confirmed'])) {
             // adverse finding DNE

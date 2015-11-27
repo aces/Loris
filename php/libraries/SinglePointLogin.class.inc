@@ -72,7 +72,7 @@ class SinglePointLogin
 
         $study_links = $config->getExternalLinks('Studylinks');
         foreach ($study_links as $label => $url) {
-            $WindowName = md5($link['@']['url']);
+            $WindowName = md5($url);
             $tpl_data['studylinks'][] = array(
                                          'url'        => $url,
                                          'label'      => $label,
@@ -233,8 +233,12 @@ class SinglePointLogin
                      'Success'         => 'Y',
                      'Failcode'        => null,
                      'Login_timestamp' => date('Y-m-d H:i:s'),
-                     'IP_address'      => $_SERVER['REMOTE_ADDR'],
-                     'Page_requested'  => $_SERVER['REQUEST_URI'],
+                     'IP_address'      => isset($_SERVER['REMOTE_ADDR'])
+                                              ? $_SERVER['REMOTE_ADDR']
+                                              : 'Unknown',
+                     'Page_requested'  => isset($_SERVER['REQUEST_URI'])
+                                              ? $_SERVER['REQUEST_URI']
+                                              : 'Unknown',
                     );
 
         // save the new password if the last password expired
