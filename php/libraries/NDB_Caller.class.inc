@@ -201,12 +201,9 @@ class NDB_Caller
             }
 
             // it is a reliability form
-            $proj_reliable = $base . "project/libraries/"
-                                   . "NDB_Reliability_$test_name.class.inc";
-            $php_reliable  = $base . "php/libraries/"
+            $proj_reliable = $base . "project/reliability/"
                                    . "NDB_Reliability_$test_name.class.inc";
             if ($this->existsAndRequire($proj_reliable)
-                || $this->existsAndRequire($php_reliable)
             ) {
 
                 $html = $this->loadReliability(
