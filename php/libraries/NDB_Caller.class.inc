@@ -302,7 +302,8 @@ class NDB_Caller
         if (method_exists($menu, 'save')) {
             $success = $menu->save();
         }
-        $html = $menu->display();
+        $this->page = $menu;
+        $html       = $menu->display();
 
         return $html;
     }
@@ -329,7 +330,8 @@ class NDB_Caller
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
         }
-        $html = $form->display();
+        $this->page = $form;
+        $html       = $form->display();
         return $html;
     }
 
@@ -356,7 +358,8 @@ class NDB_Caller
 
         $success = $form->save();
 
-        $html = $form->display();
+        $this->page = $form;
+        $html       = $form->display();
 
         return $html;
     }
@@ -440,7 +443,8 @@ class NDB_Caller
             }
         }
 
-        $html = $instrument->display();
+        $this->page = $instrument;
+        $html       = $instrument->display();
 
         return $html;
     }

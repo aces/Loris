@@ -4,18 +4,10 @@
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
-        <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
-        <script src="{$baseurl}/js/modernizr.min.js" type="text/javascript"></script>
-        <script src="{$baseurl}/js/react-with-addons-0.13.3.min.js" type="text/javascript"></script>
-        <script src="{$baseurl}/js/components/PaginationLinks.js" type="text/javascript"></script>
-        <script src="{$baseurl}/js/components/FilterTable.js" type="text/javascript"></script>
-        <script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
-        <script type="text/javascript" src="{$baseurl}/js/jquery.dynamictable.js"></script>
-        <script type="text/javascript" src="{$baseurl}/js/jquery.fileupload.js"></script>
-        <script type="text/javascript" src="{$baseurl}/js/polyfiller.js"></script>
 
-{*temporary addition*}
-
+        {section name=jsfile loop=$jsfiles}
+            <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
+        {/section}
         <script>
             $.webshims.polyfill();
         </script>
@@ -33,15 +25,9 @@
             <link rel="stylesheet" href="{$test_name_css}" type="text/css" />
         {/if}
 
-        <!-- Latest compiled and minified JavaScript -->
-        <script src="{$baseurl}/bootstrap/js/bootstrap.min.js"></script>
         <title>
             {$study_title}
         </title>
-
-        {if $test_name_js}
-            <script type="text/javascript" src="{$test_name_js}"></script>
-        {/if}
 
         {literal}
             <script language="javascript" type="text/javascript">
@@ -152,7 +138,6 @@
             </script>
         {/literal}
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
-        <script type="text/javascript" src="{$baseurl}/js/jquery/jqueryslidemenu.js"></script>
         <link href="{$baseurl}/css/simple-sidebar.css" rel="stylesheet">
 
          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />

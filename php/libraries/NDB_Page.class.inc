@@ -535,5 +535,53 @@ class NDB_Page
         $this->form->setDefaults($defaults);
         return $defaults;
     }
+
+    /**
+     * Returns an ordered list of javascript dependencies that this page depends
+     * on.  These will get loaded into the template in order, so that
+     * interdependent files can be included in the correct order.
+     *
+     * @return array of strings with URLs to retrieve JS resources
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $www     = $config->getSetting('www');
+        $baseurl = $www['url'];
+
+        $paths = $config->getSetting("paths");
+
+        $TestName = $this->name;
+
+        $files = array(
+                  $baseurl . '/js/jquery/jquery-1.11.0.min.js',
+                  $baseurl . '/js/modernizr.min.js',
+                  $baseurl . '/js/react-with-addons-0.13.3.min.js',
+                  $baseurl . '/js/components/PaginationLinks.js',
+                  $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
+                  $baseurl . '/js/jquery.dynamictable.js',
+                  $baseurl . '/js/jquery.fileupload.js',
+                  $baseurl . '/js/polyfiller.js',
+                  $baseurl . '/bootstrap/js/bootstrap.min.js',
+                 );
+        if (file_exists($paths['base'] . "modules/$TestName/js/$TestName.js")) {
+            error_log(
+                "WARNING: Relying on $TestName.js getting automatically loaded will"
+                . " soon be removed. "
+                . "Override getJSDependencies() instead"
+            );
+
+            if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
+                && strcmp($_SERVER['REQUEST_URI'], '/') != 0
+            ) {
+                $files[] = "js/$TestName.js";
+            } else {
+                $files[] = $baseurl . "/GetJS.php?Module=$TestName";
+            }
+        }
+        return $files;
+    }
 }
 ?>
