@@ -26,6 +26,14 @@ class Login extends APIBase {
     }
 
     function handlePOST() {
+        if(empty($this->RequestData['username']) || empty($this->RequestData['password'])) {
+            $this->header("HTTP/1.1 400 Bad Request");
+            $this->JSON = array(
+                "error" => "Missing username or password"
+            );
+            return;
+
+        }
         $user     = $this->RequestData['username'];
         $password = $this->RequestData['password'];
 
