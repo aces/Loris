@@ -22,7 +22,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTest
      */
     function testNextStageDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=next_stage");
+        $this->webDriver->get($this->url . "?test_name=next_stage&identifier=0");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Next Stage", $bodyText);
     }
