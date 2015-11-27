@@ -774,5 +774,19 @@ class NDB_Menu_Filter extends NDB_Menu
         }
         return $FilterValues;
     }
+
+    function getJSDependencies() {
+        $factory = NDB_Factory::singleton();
+        $depends = parent::getJSDependencies();
+        $baseURL = $factory->settings()->getBaseURL();
+        return array_merge(
+            $depends,
+            array(
+                $baseURL . '/js/components/StaticDataTable.js',
+                $baseURL . '/js/components/DynamicDataTable.js',
+            )
+
+        );
+    }
 }
 ?>
