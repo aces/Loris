@@ -296,7 +296,7 @@
                 {/if}
                 <!-- <div class="panel panel-primary"> -->
                     
-                    {if $crumbs != ""}
+                    {if $crumbs != "" && empty($error_message)}
                         <div class="alert alert-info alert-sm">
                             {section name=crumb loop=$crumbs}
                                 {if $test_name == "conflicts_resolve"}
