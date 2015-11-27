@@ -158,7 +158,7 @@ ViewDataTabPane = React.createClass({
                         </div>
                     </div>
                     <StaticDataTable
-                        Headers={this.props.Fields}
+                        Headers={this.props.RowHeaders}
                         RowNumLabel="Identifiers"
                         Data={this.props.Data}
                         RowNameMap={this.props.RowInfo}
