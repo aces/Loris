@@ -30,9 +30,6 @@ if (get_magic_quotes_gpc()) {
 
 // create user object
 $user =& User::singleton();
-if (Utility::isErrorX($user)) {
-	return PEAR::raiseError("User Error: ".$user->getMessage());
-}
 
 if ($user->hasPermission('data_dict_edit')) { //if user has edit permission
 	if ($DB->pselectOne("SELECT COUNT(*) FROM parameter_type_override WHERE Name =:id",array('id'=>$name))==0) {  //if it doesn't exist
