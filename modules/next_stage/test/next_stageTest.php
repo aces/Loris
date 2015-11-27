@@ -11,8 +11,8 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class nextStageTestIntegrationTest extends LorisIntegrationTest
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
+class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
     /**
      * Tests that, when loading the Next_stage module, some
