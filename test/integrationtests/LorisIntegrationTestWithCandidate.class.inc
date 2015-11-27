@@ -47,11 +47,21 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
             'UserID' => 1,
             'Entity_type' => 'Human'
         ));
+
+        $this->DB->insert('session', array(
+            'ID' => '0',
+            'CandID' => '000000',
+            'Visit_label' => 'Test',
+            'CenterID' => 1,
+
+
+        ));
         // Set up database wrapper and config
     }
 
     public function tearDown() {
         $this->DB->delete("candidate", array('CandID' => '000000'));
+        $this->DB->delete("session", array('CandID' => '000000'));
         parent::tearDown();
     }
 }
