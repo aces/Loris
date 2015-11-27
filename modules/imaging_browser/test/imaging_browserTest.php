@@ -11,8 +11,8 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
+class imagingBrowserTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
     /**
      * Tests that, when loading the imaging_browser module, some
