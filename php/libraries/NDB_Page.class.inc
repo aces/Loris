@@ -575,7 +575,6 @@ class NDB_Page
             );
 
             if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
-                && strcmp($_SERVER['REQUEST_URI'], '/') != 0
             ) {
                 $files[] = $baseurl . "/$TestName/js/$TestName.js";
             } else {
