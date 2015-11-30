@@ -254,27 +254,26 @@ if ($config->getSetting("sandbox") === '1') {
     $tpl_data['sandbox'] = true;
 }
 
-// This should be array_filter, but to have access to both key and value in array_filter
-// we need to require PHP >= 5.6
+// This should be array_filter, but to have access to both key and value
+// in array_filter we need to require PHP >= 5.6
 $realPerms = array();
-foreach($user->getPermissions() as $permName => $hasPerm) {
-    if($hasPerm === true) {
+foreach ($user->getPermissions() as $permName => $hasPerm) {
+    if ($hasPerm === true) {
         $realPerms[] = $permName;
     }
 }
-
-
+$tpl_data['userPerms']  = $realPerms;
 $tpl_data['jsonParams'] = json_encode(
     array(
-        'BaseURL' => $tpl_data['baseurl'],
-        'TestName' => $tpl_data['test_name'],
-        'Subtest' => $tpl_data['subtest'],
-        'CandID' => $tpl_data['candID'],
-        'SessionID' => $tpl_data['sessionID'],
-        'CommentID' => $tpl_data['commentID']
+     'BaseURL'   => $tpl_data['baseurl'],
+     'TestName'  => $tpl_data['test_name'],
+     'Subtest'   => $tpl_data['subtest'],
+     'CandID'    => $tpl_data['candID'],
+     'SessionID' => $tpl_data['sessionID'],
+     'CommentID' => $tpl_data['commentID'],
     )
 );
-$tpl_data['userPerms'] = $realPerms;
+
 $tpl_data['css'] = $config->getSetting('css');
 
 //--------------------------------------------------
