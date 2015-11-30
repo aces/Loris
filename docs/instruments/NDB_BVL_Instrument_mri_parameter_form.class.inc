@@ -435,12 +435,8 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
     ///Setting trackchanges to false because getting error messages
     $db->_trackChanges = false;
     ////////////////////////////////////////////////////////////////
-              try {       
-                $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
-              } catch (DatabaseException $ex) {
-                print $result->getMessage();
-                throw new DatabaseException('Could not save to database');
-              }
+
+              $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
               return true;
           }
 

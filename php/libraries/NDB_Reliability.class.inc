@@ -415,19 +415,13 @@ class NDB_Reliability extends NDB_Form
         // UofA is a special case--they never enter their own data.
         // So the available examiners are either the ones at the logged
         // in user's site, or UofA
-        try {
-            $results = $db->pselect(
-                "SELECT examinerID, full_name
-                    FROM examiners
-                WHERE centerID IN (:CentID, 6)
-                    ORDER BY full_name",
-                array('CentID' => $centerID)
-            );
-        } catch (DatabaseException $ex)  {
-            throw new DatabaseException(
-                "Could not get examiner names: ".$results->getMessage()
-            );
-        }
+        $results = $db->pselect(
+            "SELECT examinerID, full_name
+                FROM examiners
+            WHERE centerID IN (:CentID, 6)
+                ORDER BY full_name",
+            array('CentID' => $centerID)
+        );
 
         $examiners = array('' => '');
 

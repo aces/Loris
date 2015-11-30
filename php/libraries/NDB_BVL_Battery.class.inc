@@ -118,11 +118,7 @@ class NDB_BVL_Battery
         $firstVisit=null
     ) {
         // assert that a battery has already been selected
-        try {
-            $error = $this->_assertBatterySelected();
-        } catch (Exception $ex) {
-            return $error;
-        }
+        $error = $this->_assertBatterySelected();
 
         // get the current battery (center id is irrelevant here,
         // as is stage probably)
@@ -175,18 +171,10 @@ class NDB_BVL_Battery
     {
         $DB = Database::singleton();
         // assert that a battery has already been selected
-        try {
-            $error = $this->_assertBatterySelected();
-        } catch (Exception $ex) {
-            return $error;
-        }
+        $error = $this->_assertBatterySelected();
 
         // assert that the instrument is valid
-        try {
-            $error = $this->_assertValidInstrument($testName);
-        } catch (Exception $ex) {
-            return $error;
-        }
+        $error = $this->_assertValidInstrument($testName);
 
         // get SessionID, UserID
         $query = "SELECT ID as SessionID, UserID FROM session WHERE ID=:SID";
