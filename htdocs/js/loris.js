@@ -1,10 +1,32 @@
 var LorisHelper = function(configParams, userPerms) {
     "use strict";
     var lorisObj = configParams;
-    lorisObj.loadFilteredMenu = function(module, filters) {
-        "use strict";
-        console.log("Not yet implemented");
-        return;
+
+    // Filters will only get applied on a POST, so
+    // on click we need to fake a form which posts
+    // to the module in order to get filters applied
+    // when there's a link to a filtered menu
+    lorisObj.loadFilteredMenuClickHandler = function(module, filters) {
+        return function(e) {
+            e.preventDefault();
+            var form = $('<form />', {
+                "action" : configParams.BaseURL + "/" + module + "/",
+                "method" : "post"
+            }); 
+            var values = filters;
+            filters.reset = "true";
+            filters.filter = "Show Data";
+
+            $.each(values, function(name, value) {
+                $("<input />", {
+                    type: 'hidden',
+                    name: name,
+                    value: value
+                }).appendTo(form);
+            }); 
+
+            form.appendTo('body').submit();
+        }; 
     }
     lorisObj.getCookie = function(c_name) {
         "use strict";

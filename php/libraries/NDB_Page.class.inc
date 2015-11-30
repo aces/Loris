@@ -577,7 +577,7 @@ class NDB_Page
             if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
                 && strcmp($_SERVER['REQUEST_URI'], '/') != 0
             ) {
-                $files[] = "js/$TestName.js";
+                $files[] = $baseurl . "/$TestName/js/$TestName.js";
             } else {
                 $files[] = $baseurl . "/GetJS.php?Module=$TestName";
             }
