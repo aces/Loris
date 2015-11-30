@@ -1,12 +1,4 @@
 {literal}
-
-    <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=jquery.mousewheel.min.js"></script>
-    <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=three.min.js"></script>
-
-    <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=brainbrowser.volume-viewer.min.js"></script>
-    <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=brainbrowser.config.js"></script>
-
-
     <script id="overlay-ui-template" type="x-volume-ui-template">
         <div class="row">
             <div class="overlay-viewer-display" id="panel-size"></div>
@@ -198,7 +190,4 @@
     <div id="brainbrowser"></div>
 
     <div id="loading" style="display: block; color: #064785; font-size: 40px; font-weight: bold; text-align: center; margin: auto;">LOADING...</div>
-
-    <script type="text/javascript" src="GetJS.php?Module=brainbrowser&file=brainbrowser.loris.js"></script>
-
 {/literal}
