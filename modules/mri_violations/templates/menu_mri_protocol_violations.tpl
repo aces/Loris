@@ -1,11 +1,11 @@
-<script type="text/javascript" src="GetJS.php?Module=mri_violations&file=mri_protocol_violations.js"></script>
+<script type="text/javascript" src="{$baseurl}/mri_violations/js/mri_protocol_violations.js"></script>
 <link rel="stylesheet" href="css/c3.css">
 <script src="js/d3.min.js" charset="utf-8"></script>
 <script src="js/c3.min.js"></script>
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="main.php?test_name=mri_violations&submenu=mri_protocol_violations">
+        <form method="post" action="{$baseurl}/mri_violations/?submenu=mri_protocol_violations">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -47,7 +47,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=mri_protocol_violations&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/?submenu=mri_protocol_violations&reset=true'">
                             </div>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=mri_protocol_violations&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/?submenu=mri_protocol_violations&reset=true'">
                         </div>
                     </div>
                     <input type="hidden" name="test_name" value="mri_violations" />
@@ -70,7 +70,7 @@
 
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs">
-        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations">Protocol violations</a></li>
+        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations">Protocol violations</a></li>
         <li class="statsTab active"><a class="statsTabLink">Resolved violations</a></li>
     </ul>
     <div class="tab-content">
@@ -130,7 +130,7 @@
                 <tr class="info">
                     <th nowrap="nowrap">No.</th>
                     {section name=header loop=$headers}
-                        <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&submenu=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                        <th nowrap="nowrap"><a href="{$baseurl}/mri_violations/?submenu=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                     {/section}
                 </tr>
                 </thead>
@@ -158,7 +158,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=mri_violations&submenu=mri_protocol_violations&pageID=" + pageNum
+        location.href="{$baseurl}/mri_violations/?submenu=mri_protocol_violations&pageID=" + pageNum
     },
     Active: {$pageID}
 });
