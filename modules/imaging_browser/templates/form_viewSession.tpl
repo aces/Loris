@@ -84,14 +84,14 @@
                                <label>Caveat</label>
                                  {if $has_qc_permission}
                                  {if $files[file].Caveat}
-                                 <a href="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
+                                 <a href="{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
                                  {/if}
                                  {html_options options=$caveat_options selected=$files[file].Caveat tabindex="5"
                                   name="caveat[`$files[file].FileID`]" class="form-control input-sm"}
                                  {else}
                                  <div class="static-info">
                                  {if $files[file].Caveat}
-                                  <a href="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
+                                  <a href="{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&SeriesUID={$files[file].SeriesUID}&filter=true">Caveat List</a>
                                  {else}No caveats{/if}
                                  </div>
                                  {/if}
@@ -101,32 +101,32 @@
                    <div class="row mri-second-row-panel col-xs-12">
                            {if $files[file].FileID}
                                 <a class="btn btn-default"
-                                   href="#noID" onClick='window.open("feedback_mri_popup.php?fileID={$files[file].FileID}",
+                                   href="#noID" onClick='window.open("{$baseurl}/feedback_mri_popup.php?fileID={$files[file].FileID}",
                                          "feedback_mri","width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes")'>
                                    <span class="text-default">
                                         <span class="glyphicon glyphicon-pencil"></span>
                                         <span class="hidden-xs">QC Comments</span>
                                    </span>
                                 </a>
-                           <a class="btn btn-default" href="mri/jiv/get_file.php?file={$files[file].FullFilename}">
+                           <a class="btn btn-default" href="{$baseurl}/mri/jiv/get_file.php?file={$files[file].FullFilename}">
                                <span class="glyphicon glyphicon-download-alt"></span><span class="hidden-xs"> Download MINC</span>
                            </a>
                            {else}&nbsp;
                            {/if}
                            {if $files[file].XMLprotocol != ""}
-                               <a class="btn btn-default" href="mri/jiv/get_file.php?file={$files[file].XMLprotocol}">
+                               <a class="btn btn-default" href="{$baseurl}/mri/jiv/get_file.php?file={$files[file].XMLprotocol}">
                                <span class="glyphicon glyphicon-download-alt"></span><span class="hidden-xs"> Download XML Protocol</span>
                                </a>
                            {/if} 
                         </div> <!--closing mri-second-row-panel div -->
                          <div class="row mri-third-row-panel col-xs-12">
                            {if $files[file].XMLprotocol != ""}
-                               <a class="btn btn-default" href="mri/jiv/get_file.php?file={$files[file].XMLreport}">
+                               <a class="btn btn-default" href="{$baseurl}/mri/jiv/get_file.php?file={$files[file].XMLreport}">
                                <span class="glyphicon glyphicon-download-alt"></span><span class="hidden-xs"> Download XML Report</span>
                                </a>
                            {/if}
                            {if $files[file].NrrdFile != ""}
-                               <a class="btn btn-default" href="mri/jiv/get_file.php?file={$files[file].NrrdFile}">
+                               <a class="btn btn-default" href="{$baseurl}/mri/jiv/get_file.php?file={$files[file].NrrdFile}">
                                <span class="glyphicon glyphicon-download-alt"></span><span class="hidden-xs"> Download NRRD</span>
                                </a>
                            {/if}
