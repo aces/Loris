@@ -118,8 +118,9 @@ class NDB_BVL_Battery
         $firstVisit=null
     ) {
         // assert that a battery has already been selected
-        $error = $this->_assertBatterySelected();
-        if ($this->isError($error)) {
+        try {
+            $error = $this->_assertBatterySelected();
+        } catch (Exception $ex) {
             return $error;
         }
 
@@ -174,14 +175,16 @@ class NDB_BVL_Battery
     {
         $DB = Database::singleton();
         // assert that a battery has already been selected
-        $error = $this->_assertBatterySelected();
-        if ($this->isError($error)) {
+        try {
+            $error = $this->_assertBatterySelected();
+        } catch (Exception $ex) {
             return $error;
         }
 
         // assert that the instrument is valid
-        $error = $this->_assertValidInstrument($testName);
-        if ($this->isError($error)) {
+        try {
+            $error = $this->_assertValidInstrument($testName);
+        } catch (Exception $ex) {
             return $error;
         }
 

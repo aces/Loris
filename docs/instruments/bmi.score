@@ -69,8 +69,9 @@ if(empty($bmi)) {
 
 }
 //save scores
-$result = $db->update('bmi', $scores, $WhereCriteria);
-if ($db->isError($result)) {
+try {
+    $result = $db->update('bmi', $scores, $WhereCriteria);
+}catch (DatabaseException $ex) {
     print "Could not save total score: ". $result->getMessage();
     exit(3);
 }

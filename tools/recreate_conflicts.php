@@ -71,7 +71,7 @@ foreach ($allInstruments as $instrument=>$Full_name) {
         array('testname' => $instrument)
     );
     if (Utility::isErrorX($clear_conflicts)) {
-        return PEAR::raiseError(
+        throw new LorisException(
             "Error, failed to clear conflicts: ".
             $clear_conflicts->getMessage()
         );

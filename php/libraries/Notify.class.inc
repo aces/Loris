@@ -37,8 +37,14 @@ class Notify
     {
         $db =& Database::singleton();
 
-        $typeID = Notify::getTypeID($type);
-        if (empty($typeID) || Notify::isError($typeID)) {
+        try {
+            $typeID = Notify::getTypeID($type);
+            if (empty($typeID)) {
+                throw new Exception(
+                    "Could not retrieve notification type id for type '$type'"
+                );
+            }
+        } catch (Exception $ex) {
             throw new Exception(
                 "Could not retrieve notification type id for type '$type'"
             );
