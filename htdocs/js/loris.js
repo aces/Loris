@@ -10,7 +10,7 @@ var LorisHelper = function(configParams, userPerms) {
         return function(e) {
             e.preventDefault();
             var form = $('<form />', {
-                "action" : configParams.BaseURL + "/" + module + "/",
+                "action" : configParams.BaseURL + "/main.php?test_name=" + module,
                 "method" : "post"
             }); 
             var values = filters;
@@ -50,4 +50,3 @@ var LorisHelper = function(configParams, userPerms) {
     }
     return lorisObj;
 };
-
