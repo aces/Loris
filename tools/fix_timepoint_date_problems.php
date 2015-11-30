@@ -200,6 +200,7 @@ switch ($action)
        // handle the error and skip to next time point
            fwrite(STDERR, "Error, failed to get the list of needed instruments for candidate ($candID), timepoint ($sessionID):\n");
            fwrite(STDERR, $listNewInstruments->getMessage()."\n");
+           continue;
        }
 
        // if there are missing instruments
