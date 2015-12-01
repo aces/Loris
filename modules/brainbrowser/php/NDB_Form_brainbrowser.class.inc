@@ -45,11 +45,20 @@ class NDB_Form_Brainbrowser extends NDB_Form
         return true;
     }
 
-    function getJSDependencies() {
+    /**
+     * Override base function to include brainbrowser javascript files
+     * and dependencies
+     *
+     * @return array of javascript files to be included
+     */
+    function getJSDependencies()
+    {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
+
         $deps = parent::getJSDependencies();
-        return array_merge($deps,
+        return array_merge(
+            $deps,
             array(
              $baseURL . "/brainbrowser/js/jquery.mousewheel.min.js",
              $baseURL . "/brainbrowser/js/three.min.js",
