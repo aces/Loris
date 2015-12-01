@@ -106,7 +106,8 @@ incomplete = JSON.parse(incomplete);
 var CandiPanel = IncompleteCandidatesPanel({
 	title: "Incomplete Forms",
 	header: ["Visit", "DCCID", "Instrument"],
-	incomplete_candidates: incomplete
+	incomplete_candidates: incomplete,
+    BaseURL : loris.BaseURL
 });
 
 var conflicts = {$Conflicts|@json_encode};
@@ -115,7 +116,8 @@ conflicts = JSON.parse(conflicts);
 var ConflictsPanel = InstrumentConflictsPanel({
 	title: "Data Entry Conflicts",
 	header: ["Visit", "DCCID", "Instrument", "Field Name"],
-	conflicts: conflicts
+	conflicts: conflicts,
+    BaseURL : loris.BaseURL
 }); 
 
 var feedback = {$Bvl_Feedback|@json_encode};
@@ -124,7 +126,8 @@ feedback = JSON.parse(feedback);
 var FeedbackTab = BehaviouralFeedbackTab({
 	title: "Behvarioural Feedback",
 	header:["DCCID", "Feedback Level", "Field Name"],
-	feedback: feedback
+	feedback: feedback,
+    BaseURL : loris.BaseURL
 });
 
 var percentCompleted = {$percent_completed|@json_encode};

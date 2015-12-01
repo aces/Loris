@@ -239,7 +239,7 @@ var IncompleteCandidates = React.createClass({
         return (
             <DefaultPanel title={this.props.title}>
                 <PagedTable table_rows={this.props.incomplete_candidates} table_headers={this.props.header}>
-                    <IncompleteCandidatesRow/>
+                    <IncompleteCandidatesRow BaseURL={this.props.BaseURL} />
                 </PagedTable>
             </DefaultPanel>
         );
@@ -251,7 +251,7 @@ var InstrumentConflicts = React.createClass({
         return(
             <DefaultPanel title={this.props.title}>
                 <PagedTable table_rows={this.props.conflicts} table_headers={this.props.header}>
-                    <InstrumentConflictsRow/>
+                    <InstrumentConflictsRow BaseURL={this.props.BaseURL} />
                 </PagedTable>
             </DefaultPanel>
         );
@@ -263,7 +263,7 @@ var BehaviouralFeedback = React.createClass({
         return(
             <DefaultPanel title={this.props.title}>
                 <PagedTable table_rows={this.props.feedback} table_headers={this.props.header}>
-                    <BehaviouralFeedbackRow/>
+                    <BehaviouralFeedbackRow BaseURL={this.props.BaseURL} />
                 </PagedTable>
             </DefaultPanel>
         );
