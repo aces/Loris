@@ -35,9 +35,9 @@ update LorisMenu SET Link='/genomic_browser/' WHERE Link="main.php?test_name=gen
 -- Admin menu
 -- This needs to be tested after sourcing additional_user_info patch
 update LorisMenu SET Link='/user_accounts/' WHERE Link="main.php?test_name=user_accounts";
---- BELOW THIS NEEDS TO BE TESTED AT ALL.
 update LorisMenu SET Link='/survey_accounts/' WHERE Link="main.php?test_name=survey_accounts";
 update LorisMenu SET Link='/help_editor/' WHERE Link="main.php?test_name=help_editor";
+--- BELOW THIS NEEDS TO BE TESTED AT ALL.
 update LorisMenu SET Link='/instrument_manager/' WHERE Link="main.php?test_name=datadict";
 update LorisMenu SET Link='/configuration/' WHERE Link="main.php?test_name=configuration";
 update LorisMenu SET Link='/server_process_manager/' WHERE Link="main.php?test_name=datadict";
