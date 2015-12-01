@@ -4,61 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0f991e54e3c6c702746709f471275b27",
-    "content-hash": "df56906eb609b353723c0129c38fdb38",
+    "hash": "fc840655c893e486510e8154d7ba9a5c",
+    "content-hash": "6d9f7c2dbdf42b17a291b69e7f4357b3",
     "packages": [
-        {
-            "name": "pear-pear.php.net/Benchmark",
-            "version": "1.2.9",
-            "dist": {
-                "type": "file",
-                "url": "https://pear.php.net/get/Benchmark-1.2.9.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "php": ">=4.0.0.0"
-            },
-            "replace": {
-                "pear-pear/benchmark": "== 1.2.9.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "description": "Framework to benchmark PHP scripts or function calls."
-        },
-        {
-            "name": "pear-pear.php.net/Mail",
-            "version": "1.2.0",
-            "dist": {
-                "type": "file",
-                "url": "https://pear.php.net/get/Mail-1.2.0.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "php": ">=4.4.9.0"
-            },
-            "replace": {
-                "pear-pear/mail": "== 1.2.0.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "description": "PEAR's Mail package defines an interface for implementing mailers under the PEAR hierarchy.  It also provides supporting functions useful to multiple mailer backends.  Currently supported backends include: PHP's native mail() function, sendmail, and SMTP.  This package also provides a RFC822 email address list validation utility class."
-        },
         {
             "name": "smarty/smarty",
             "version": "v3.1.27",
