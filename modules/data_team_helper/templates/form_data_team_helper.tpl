@@ -1,9 +1,9 @@
-<script type ="text/javascript" src ="js/jquery/jquery.autocomplete.js"></script>
-<link rel="stylesheet" href="css/auto-complete.css">
-<link rel="stylesheet" href="css/c3.css">
+<script type ="text/javascript" src ="{$baseurl}/js/jquery/jquery.autocomplete.js"></script>
+<link rel="stylesheet" href="{$baseurl}/css/auto-complete.css">
+<link rel="stylesheet" href="{$baseurl}/css/c3.css">
 
-<script src="js/d3.min.js" charset="utf-8"></script>
-<script src="js/c3.min.js"></script>
+<script src="{$baseurl}/js/d3.min.js" charset="utf-8"></script>
+<script src="{$baseurl}/js/c3.min.js"></script>
 
 <div class="row">
 	<div class="col-sm-12 col-md-7">
@@ -97,7 +97,7 @@
   </div>
 
 
-<script type="text/javascript" src="GetJS.php?Module=data_team_helper&file=data_team_helper_react.js"></script>
+<script type="text/javascript" src="{$baseurl}/data_team_helper/js/behavioural_qc_module.js"></script>
 
 <script type="text/javascript">
 var incomplete = {$Incomplete_candidates|@json_encode};
