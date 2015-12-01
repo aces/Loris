@@ -79,7 +79,7 @@ $(document).ready(function() {
 	var $sessionID = $(this).data("sessionid");
 	var $commentID = $(this).data("commentid");
 	
-	var instrument_window = window.open("main.php?test_name=" + $test_name + "&sessionID=" + $sessionID + "&candID=" + $candID
+	var instrument_window = window.open(loris.BaseURL + "/" + $candID + "/" + $sessionID + "/" + $test_name + "/"
 					    + "&commentID=" + $commentID);
 	$(instrument_window.document).ready(function (e){
 	    var $navbar_toggle = $(instrument_window.document).contents().find("#feedback_toggle");
