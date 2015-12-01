@@ -38,6 +38,6 @@ update LorisMenu SET Link='/user_accounts/' WHERE Link="main.php?test_name=user_
 update LorisMenu SET Link='/survey_accounts/' WHERE Link="main.php?test_name=survey_accounts";
 update LorisMenu SET Link='/help_editor/' WHERE Link="main.php?test_name=help_editor";
 --- BELOW THIS NEEDS TO BE TESTED AT ALL.
-update LorisMenu SET Link='/instrument_manager/' WHERE Link="main.php?test_name=datadict";
+update LorisMenu SET Link='/instrument_manager/' WHERE Link="main.php?test_name=instrument_manager";
 update LorisMenu SET Link='/configuration/' WHERE Link="main.php?test_name=configuration";
-update LorisMenu SET Link='/server_process_manager/' WHERE Link="main.php?test_name=datadict";
+update LorisMenu SET Link='/server_process_manager/' WHERE Link="main.php?test_name=server_process_manager";
