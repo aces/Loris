@@ -1,6 +1,6 @@
 /*global document: false, $: false, window: false*/
 $(document).ready(function(){
-    $.getScript("js/modules/dynamic_table.table.js")
+    $.getScript(loris.BaseURL + "/js/modules/dynamic_table.table.js")
         .done(function(){
             Table.setup("content", "scrollRight", "scrollLeft");
             Table.checkOverflow("content", "scrollRight", "scrollLeft");
@@ -55,7 +55,7 @@ $(document).ready(function () {
     $("select[name=Test_name]").change(function (e) {
         var testname = $(this).val();
 
-        $.get("AjaxHelper.php?Module=survey_accounts&script=GetEmailContent.php", {
+        $.get(loris.BaseURl + "/survey_accounts/ajax/GetEmailContent.php", {
             test_name: testname
         },
         function(content) {
