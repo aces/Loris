@@ -218,7 +218,7 @@
 <div id="datatable" />
 <script>
 var table = RDynamicDataTable({
-    "DataURL" : "{$baseurl}/main.php?test_name=candidate_list&format=json",
+    "DataURL" : "{$baseurl}/candidate_list/?format=json",
     "getFormattedCell" : formatColumn
 });
 
