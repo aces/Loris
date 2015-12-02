@@ -488,7 +488,6 @@ the form:
         "OutputType" : "native",
         "Filename" : "abc.mnc",
         "AcquisitionType" : "t1w/t2w/etc",
-        "OverallFileQC" : "Pass/Fail"
     }, /* More files */]
 }
 ```
