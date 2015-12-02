@@ -209,7 +209,7 @@ $(document).ready(function() {
                         <div class="form-group">
                             <input id="password" name="password" class="form-control" type="password" placeholder="Password"/>
                         </div>
-                            <input class="btn btn-primary col-xs-12" id="loginAPI" name="login" type="button" value="Login" />
+                            <input class="btn btn-primary col-xs-12" id="loginAPI" name="login" type="submit" value="Login" />
                         <br><br><br>
                         <a href="lost_password.php"><center>Forgot your password?</center></a>
                         <a href="request_account/process_new_account.php"><center>Request Account</center></a>
