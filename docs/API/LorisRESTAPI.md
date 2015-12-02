@@ -508,7 +508,7 @@ of the form
 {
     "Meta" : {
         "CandID" : $CandID,
-        "Visit" : "$VisitLabel
+        "Visit" : $VisitLabel
     },
    "QC" : "Pass|Fail"
    "Pending" : boolean,
@@ -526,7 +526,7 @@ GET /candidates/$CandID/$VisitLabel/images/$Filename
 Returns raw file with the appropriate MimeType headers for each Filename retrieved from
 `/candidates/$CandID/$Visit/images`.
 
-`. Only `GET` is currently supported, but future versions of this API may include PUT
+Only `GET` is currently supported, but future versions of this API may include `PUT`
 support to insert new (or processed) data into LORIS.
 
 ## 4.3.1 Image Level QC Data
@@ -540,7 +540,7 @@ Returns file level QC information. It will return a JSON object of the form
 
 ```js
 {
-    "Meta” : {
+    "Meta" : {
         "CandID" : $CandID,
         "Visit" : $VisitLabel,
         "File" : $Filename
@@ -604,7 +604,7 @@ This will return a JSON summary of the important headers for this filename. It
 will return a JSON object of the form:
 
 ```js
-    "Meta” : {
+    "Meta" : {
         "CandID" : $CandID,
         "Visit" : $VisitLabel,
         "File" : $Filename
@@ -656,7 +656,7 @@ This will return a JSON object that extracts one specific header from $Filename.
 The JSON object is of the form:
 ```js
 {
-    "Meta” : {
+    "Meta" : {
         "CandID" : $CandID,
         "Visit" : $VisitLabel,
         "File" : $Filename,
