@@ -122,6 +122,7 @@ string: navigator.platform,
 BrowserDetect.init();
 {/literal}
 
+    /*
 $(document).ready(function() {
     $("#loginAPI").click(function(e) {
         var username = document.getElementById("username").value,
@@ -158,6 +159,7 @@ $(document).ready(function() {
         });
     });
 });
+    */
 // -->
 </script>
 
@@ -202,18 +204,20 @@ $(document).ready(function() {
 		  			</font>
 		  		</div>
 		  		<div class="row">
-			  		<div class="col-xs-12">
-                        <div class="form-group">
-                            <input id="username" name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
+                    <form action="{$action}" method="post">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <input id="username" name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
+                            </div>
+                            <div class="form-group">
+                                <input id="password" name="password" class="form-control" type="password" placeholder="Password"/>
+                            </div>
+                                <input class="btn btn-primary col-xs-12" id="loginAPI" name="login" type="submit" value="Login" />
+                            <br><br><br>
+                            <a href="lost_password.php"><center>Forgot your password?</center></a>
+                            <a href="request_account/process_new_account.php"><center>Request Account</center></a>
                         </div>
-                        <div class="form-group">
-                            <input id="password" name="password" class="form-control" type="password" placeholder="Password"/>
-                        </div>
-                            <input class="btn btn-primary col-xs-12" id="loginAPI" name="login" type="submit" value="Login" />
-                        <br><br><br>
-                        <a href="lost_password.php"><center>Forgot your password?</center></a>
-                        <a href="request_account/process_new_account.php"><center>Request Account</center></a>
-			  		</div>
+                    </form>
 			  	</div>	
 		  		<div class="row">
 		  		<table class="LorisFooter" align="center">
