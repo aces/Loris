@@ -122,9 +122,7 @@ string: navigator.platform,
 BrowserDetect.init();
 {/literal}
 
-
 $(document).ready(function() {
-    /*
     $("#loginAPI").click(function(e) {
         var username = document.getElementById("username").value,
             password = document.getElementById("password").value,
@@ -159,7 +157,6 @@ $(document).ready(function() {
             }
         });
     });
-    */
 });
 // -->
 </script>
