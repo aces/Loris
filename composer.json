@@ -6,12 +6,30 @@
     {
         "type" : "pear",
         "url" : "https://pear.php.net"
+    },
+    {
+        "type": "package",
+        "package": {
+            "name": "PHPOffice/PHPExcel",
+            "version": "1.8.0",
+            "source": {
+                "url": "https://github.com/PHPOffice/PHPExcel.git",
+                "type": "git",
+                "reference": "1.8.0"
+            },
+            "autoload": {
+                "psr-0": {
+                    "PHPExcel": "Classes/"
+                }
+            }
+        }
     }
     ],
     "require" : {
         "smarty/smarty" : "~3.1",
         "pear-pear.php.net/Benchmark" : "~1.2",
-        "pear-pear.php.net/Mail" : "~1.2"
+        "pear-pear.php.net/Mail" : "~1.2",
+        "PHPOffice/PHPExcel": "1.8.*"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : ">= 2.0",
