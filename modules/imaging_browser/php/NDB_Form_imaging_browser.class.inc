@@ -588,7 +588,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $baseURL = $factory->settings()->getBaseURL();
             $depends = array_merge($depends,
                 array(
-                    $baseURL . "/imaging_browser/js/imagingbrowser.js"
+                    $baseurl . "/imaging_browser/js/ImagePanel.js"
                 ));
 
         }
