@@ -90,7 +90,7 @@ function checkStatusAndOptions() {
     var pstatus_dropdown = document.getElementById('participant_status'); 
     var pstatus_sub = document.getElementById('participant_suboptions');
 
-    if (pstatus_dropdown.options[pstatus_dropdown.selectedIndex].text == 'Inactive' && pstatus_sub.options[pstatus_sub.selectedIndex].text == '') {
+    if (pstatus_dropdown && pstatus_dropdown.options[pstatus_dropdown.selectedIndex].text == 'Inactive' && pstatus_sub.options[pstatus_sub.selectedIndex].text == '') {
         $('input[type="submit"]').prop('disabled', true);
     } else {
         $('input[type="submit"]').prop('disabled', false);
