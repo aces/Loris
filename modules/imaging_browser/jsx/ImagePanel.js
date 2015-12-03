@@ -176,7 +176,7 @@ ImagePanelQCSelectedSelector = React.createClass({
                 FileID={this.props.FileID}
                 editable={this.props.HasQCPerm}
                 options={this.props.SelectedOptions}
-                defaultValue="Test"
+                defaultValue={this.props.Selected}
             />
         );
     }
@@ -216,6 +216,7 @@ ImagePanelQCPanel = React.createClass({
                     FileID={this.props.FileID}
                     HasQCPerm={this.props.HasQCPerm}
                     SelectedOptions={this.props.SelectedOptions}
+                    Selected={this.props.Selected}
                 />
                 <ImagePanelQCCaveatSelector
                     FileID={this.props.FileID}
@@ -246,6 +247,7 @@ ImagePanelBody = React.createClass({
                                 QCStatus={this.props.QCStatus}
                                 Caveat={this.props.Caveat}
                                 SelectedOptions={this.props.SelectedOptions}
+                                Selected={this.props.Selected}
                             />
                          </div>
                     </div>
@@ -299,6 +301,7 @@ ImagePanel = React.createClass({
                         QCStatus={this.props.QCStatus}
                         Caveat={this.props.Caveat}
                         SelectedOptions={this.props.SelectedOptions}
+                        Selected={this.props.Selected}
                     /> }
             </div>
         );
