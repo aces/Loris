@@ -109,78 +109,14 @@
 
 </div>
 
-<!--  title table with pagination -->
-<table id="LogEntries" border="0" valign="bottom" width="100%">
-<tr>
-<!-- title -->
-<td class="controlPanelSection">{$numTimepoints} subject timepoint(s) selected.</td>
+<div id="datatable">
 
-<!-- display pagination links -->
-<td align="right" id="pageLinks"></td>
-</tr>
-</table>
-
-<table class="table table-hover table-primary table-bordered dynamictable" width="100%" border="1">
-<thead>
-    <tr class="info">
-        <th>No.</th>
-    {foreach from=$headers item=item key=key}
-        {* Add 3 to the numOutputTypes (native, selected, all types plus
-           other types in the database *}
-        <th {if $item.name eq 'Links'}colspan="{$numOutputTypes+3}"{/if}>
-        {if $item neq ''}<a href="{$baseurl}/imaging_browser/?filter[order][field]={$item.name}&filter[order][fieldOrder]={$item.fieldOrder}">{/if}
-            {$item.displayName}
-        {if $item neq ''}</a>{/if}
-        </th>
-    {/foreach}
-    </tr>
-</thead>
-<tbody>
-    <tr>
-    
-    {section name=item loop=$items}
-            <!-- print out data rows -->
-            <td nowrap="nowrap">{$items[item][0].value}</td>
-            {section name=piece loop=$items[item]}
-            {if $items[item][piece].name neq 'Links' && $items[item][piece].name neq ''} 
-                <td nowrap="nowrap">
-                {if $items[item][piece].name == "First_Acq_Date" || $items[item][piece].name == "Last_QC"}
-                    {$items[item][piece].value|date_format}
-                {elseif $items[item][piece].name == "New_Data" && $items[item][piece].value == "new"}
-                    <span class="newdata">NEW</span>
-                {else}
-                    {$items[item][piece].value}
-                {/if}
-                </td>
-            {/if}
-    {/section}
-    {* Links to files/output types *}
-    {section name=typeIdx loop=$outputTypes}
-             <td><a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$items[item].sessionID}&outputType={if $outputTypes[typeIdx].outputType=='selected'}native&selectedOnly=1
-                {else}{$outputTypes[typeIdx].outputType|escape:"url"}{/if}&backURL={$backURL|escape:"url"}">{$outputTypes[typeIdx].outputType}</a>
-        </td>
-    {/section}
-            <td><a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$items[item].sessionID}&backURL={$backURL|escape:"url"}">all types</a></td>
-    </tr>
-    {sectionelse}
-    <tr><td colspan="8">Nothing found</td></tr>
-    {/section}
-</tbody>
-</table>
-
-{if $numTimepoints}
-{$numTimepoints} subject timepoint(s) selected.<br>
-{/if}
 <script>
-var pageLinks = RPaginationLinks(
-{
-RowsPerPage : {$rowsPerPage},
-Total: {$TotalItems},
-onChangePage: function(pageNum) {
-    location.href="{$baseurl}/imaging_browser/?pageID=" + pageNum
-},
-Active: {$pageID}
+var table = RDynamicDataTable({
+        "DataURL" : "{$baseurl}/imaging_browser/?format=json",
+        "getFormattedCell" : formatColumn
+
 });
-React.render(pageLinks, document.getElementById("pageLinks"));
+React.render(table, document.getElementById("datatable"));
 </script>
 
