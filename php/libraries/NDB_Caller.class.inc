@@ -271,19 +271,19 @@ class NDB_Caller
                     $csv_data = $menu->getCSVData();
                     header("HTTP/1.1 200 OK");
                     print $csv_data;
-                    exit (2);
+                    exit(2);
                 } else {
                     error_log(
                         "ERROR: This download of this table's data is "
                         . "not yet implemented."
                     );
                     header("HTTP/1.1 501 Not Implemented");
-                    exit (5);
+                    exit(5);
                 }
                 break;
             case 'json':
                 print $menu->toJSON();
-                exit (0);
+                exit(0);
                 break;
             default:
                 error_log(
