@@ -58,6 +58,21 @@ if (empty($Module) || empty($File)) {
     exit(2);
 }
 
+if (is_dir($basePath . "project/modules/$Module")
+    || is_dir($basePath . "modules/$Module")
+) {
+    $ModuleDir = is_dir($basePath . "project/modules/$Module")
+        ? $basePath . "project/modules/$Module"
+        : $basePath . "modules/$Module";
+    set_include_path(
+        get_include_path() . ':' .
+        $ModuleDir . "/php"
+    );
+} else {
+    error_log("ERROR: Module does not exist");
+    header("HTTP/1.1 400 Bad Request");
+    exit(5);
+}
 // Make sure that the user isn't trying to break out of the $path by
 // using a relative filename.
 // No need to check for '/' since all downloads are relative to $basePath
@@ -68,7 +83,7 @@ if (strpos("..", $File) !== false) {
 }
 
 
-$FullPath = $basePath . "/modules/$Module/static/$File";
+$FullPath = "$ModuleDir/static/$File";
 
 if (!file_exists($FullPath)) {
     error_log("ERROR: File $File does not exist");

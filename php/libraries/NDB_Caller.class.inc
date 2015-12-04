@@ -96,14 +96,17 @@ class NDB_Caller
         // get the files path, aka the base directory
         $base = $config->getSetting('base');
 
-        if (is_dir($base . "modules/$test_name")) {
+        if (is_dir($base . "project/modules/$test_name")
+            || is_dir($base . "modules/$test_name")
+        ) {
+            $ModuleDir = is_dir($base . "project/modules/$test_name")
+                ? $base . "project/modules/$test_name"
+                : $base . "modules/$test_name";
             // New module style
             // Only supports Menu_Filters and Forms.
             // Modules can not have instruments or reliability.
             set_include_path(
-                $base . "project/libraries:"
-                . $base . "modules/$test_name:"
-                . $base . "modules/$test_name/php:"
+                "$ModuleDir/php:"
                 . get_include_path()
             );
 
