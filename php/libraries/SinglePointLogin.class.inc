@@ -80,8 +80,10 @@ class SinglePointLogin
                                         );
         }
 
-        $study_title = $config->getSetting('title');
-        $tpl_data['study_title'] = $study_title;
+        $study_title       = $config->getSetting('title');
+        $study_description = $config->getSetting('StudyDescription');
+        $tpl_data['study_title']       = $study_title;
+        $tpl_data['study_description'] = $study_description;
         try {
             $tpl_data['study_logo'] = $config->getSetting('studylogo');
         } catch(ConfigurationException $e) {
@@ -113,14 +115,16 @@ class SinglePointLogin
         $tpl_data['title'] = $config->getSetting('title');
         $tpl_data['css']   = $config->getSetting('css');
         $study_title       = $config->getSetting('title');
+        $study_description = $config->getSetting('StudyDescription');
         try {
             $study_logo = $config->getSetting('studylogo');
         } catch(ConfigurationException $e) {
             $study_logo = '';
         }
 
-        $tpl_data['study_title'] = $study_title;
-        $tpl_data['study_logo']  = $study_logo;
+        $tpl_data['study_title']       = $study_title;
+        $tpl_data['study_description'] = $study_description;
+        $tpl_data['study_logo']        = $study_logo;
 
         $tpl_data['action'] = $_SERVER['PHP_SELF']
             .'?'
