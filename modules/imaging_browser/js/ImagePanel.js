@@ -424,11 +424,41 @@ DownloadButton = React.createClass({
         );
     }
 });
+
+ImageQCCommentsButton = React.createClass({
+    openWindowHandler: function (e) {
+        e.preventDefault();
+        window.open("feedback_mri_popup.php?fileID=" + this.props.FileID, "feedback_mri", "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes");
+    },
+    render: function () {
+        if (!this.props.FileID || this.props.FileID == '') {
+            return React.createElement('span', null);
+        };
+        return React.createElement(
+            'a',
+            { 'class': 'btn btn-default',
+                href: '#noID',
+                onClick: this.openWindowHandler
+            },
+            React.createElement(
+                'span',
+                { 'class': 'text-default' },
+                React.createElement('span', { 'class': 'glyphicon glyphicon-pencil' }),
+                React.createElement(
+                    'span',
+                    { 'class': 'hidden-xs' },
+                    'QC Comments'
+                )
+            )
+        );
+    }
+});
 ImageDownloadButtons = React.createClass({
     render: function () {
         return React.createElement(
             'div',
             { className: 'row' },
+            React.createElement(ImageQCCommentsButton, { FileID: this.props.FileID }),
             React.createElement(DownloadButton, { FileName: this.props.Fullname,
                 Label: 'Download Minc',
                 BaseURL: this.props.BaseURL
@@ -481,6 +511,7 @@ ImagePanelBody = React.createClass({
                 ),
                 React.createElement(ImageDownloadButtons, {
                     BaseURL: this.props.BaseURL,
+                    FileID: this.props.FileID,
                     Fullname: this.props.Fullname,
                     XMLProtocol: this.props.XMLProtocol,
                     XMLReport: this.props.XMLReport,

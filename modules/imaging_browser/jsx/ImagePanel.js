@@ -243,10 +243,39 @@ DownloadButton = React.createClass({
         );
     }
 });
+
+ImageQCCommentsButton = React.createClass({
+    openWindowHandler: function(e) {
+        e.preventDefault();
+        window.open(
+            "feedback_mri_popup.php?fileID=" + this.props.FileID,
+            "feedback_mri",
+            "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes"
+        );
+    },
+    render: function() {
+        if (!this.props.FileID || this.props.FileID == '') {
+            return <span />;
+        };
+        return (
+            <a class="btn btn-default"
+                href="#noID" 
+                onClick={this.openWindowHandler}
+                >
+                    <span class="text-default">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        <span class="hidden-xs">QC Comments</span>
+                    </span>
+            </a>
+        );
+    }
+});
 ImageDownloadButtons = React.createClass({
     render: function() {
         return (
             <div className="row">
+                <ImageQCCommentsButton FileID={this.props.FileID} />
+
                 <DownloadButton FileName={this.props.Fullname} 
                     Label="Download Minc"
                     BaseURL={this.props.BaseURL}
@@ -291,6 +320,7 @@ ImagePanelBody = React.createClass({
                     </div>
                     <ImageDownloadButtons
                             BaseURL={this.props.BaseURL}
+                            FileID={this.props.FileID}
                             Fullname={this.props.Fullname}
                             XMLProtocol={this.props.XMLProtocol}
                             XMLReport={this.props.XMLReport}
