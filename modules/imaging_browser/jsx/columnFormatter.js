@@ -9,12 +9,12 @@ function formatColumn(column, cell, rowData) {
         var cellTypes = cell.split(",");
         var cellLinks = []
         for(var i = 0; i < cellTypes.length; i += 1) {
-            cellLinks.push(<a href={loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&outputType=" + cellTypes[i]}>all types</a>);
-            cellLinks.push(" ");
+            cellLinks.push(<a href={loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&outputType=" + cellTypes[i]}>{cellTypes[i]}</a>);
+            cellLinks.push(" | ");
 
         }
         cellLinks.push(<a href={loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&selectedOnly=1"}>selected</a> );
-        cellLinks.push(" ");
+        cellLinks.push(" | ");
         cellLinks.push(<a href={loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11]}>all types</a> );
         return (
                 <td>

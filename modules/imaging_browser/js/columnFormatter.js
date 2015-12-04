@@ -16,16 +16,16 @@ function formatColumn(column, cell, rowData) {
             cellLinks.push(React.createElement(
                 'a',
                 { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&outputType=" + cellTypes[i] },
-                'all types'
+                cellTypes[i]
             ));
-            cellLinks.push(" ");
+            cellLinks.push(" | ");
         }
         cellLinks.push(React.createElement(
             'a',
             { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&selectedOnly=1" },
             'selected'
         ));
-        cellLinks.push(" ");
+        cellLinks.push(" | ");
         cellLinks.push(React.createElement(
             'a',
             { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] },
