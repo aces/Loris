@@ -787,7 +787,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * Adds React table related dependencies to menu filters, since forms don't
-     * usually have tables
+     * usually have tables or pagination
      *
      * @return array of javascript files to be sourced
      */
