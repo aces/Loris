@@ -146,6 +146,7 @@ ImageQCDropdown = React.createClass({
         );
     }
 });
+
 ImagePanelQCStatusSelector = React.createClass({
     render: function() {
         var qcStatusLabel;
@@ -229,6 +230,43 @@ ImagePanelQCPanel = React.createClass({
     }
 });
 
+DownloadButton = React.createClass({
+    render: function() {
+        if (!this.props.FileName || this.props.FileName == '') {
+            return <span />;
+        };
+        return (
+            <a href={this.props.BaseURL + "/mri/jiv/get_file.php?file=" + this.props.FileName} className="btn btn-default">
+                <span className="glyphicon glyphicon-download-alt"></span>
+                <span className="hidden-xs">{this.props.Label}</span>
+            </a>
+        );
+    }
+});
+ImageDownloadButtons = React.createClass({
+    render: function() {
+        return (
+            <div className="row">
+                <DownloadButton FileName={this.props.Fullname} 
+                    Label="Download Minc"
+                    BaseURL={this.props.BaseURL}
+                />
+                <DownloadButton FileName={this.props.XMLProtocol}
+                    BaseURL={this.props.BaseURL}
+                    Label="Download XML Protocol"
+                />
+                <DownloadButton FileName={this.props.XMLReport} 
+                    BaseURL={this.props.BaseURL}
+                    Label="Download XML Report"
+                />
+                <DownloadButton FileName={this.props.NrrdFile} 
+                    BaseURL={this.props.BaseURL}
+                    Label="Download NRRD"
+                />
+            </div>
+        );
+    }
+});
 ImagePanelBody = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     render: function() {
@@ -251,6 +289,13 @@ ImagePanelBody = React.createClass({
                             />
                          </div>
                     </div>
+                    <ImageDownloadButtons
+                            BaseURL={this.props.BaseURL}
+                            Fullname={this.props.Fullname}
+                            XMLProtocol={this.props.XMLProtocol}
+                            XMLReport={this.props.XMLReport}
+                            XMLReport={this.props.NrrdFile}
+                        />
                     {this.props.HeadersExpanded ? <ImagePanelHeadersTable HeaderInfo={this.props.HeaderInfo} /> : ''}
                 </div>
             </div>
@@ -289,6 +334,8 @@ ImagePanel = React.createClass({
                 />
                 {this.state.BodyCollapsed ? '' : 
                     <ImagePanelBody
+                        BaseURL={this.props.BaseURL}
+
                         FileID={this.props.FileID}
                         Filename={this.props.Filename}
                         Checkpic={this.props.Checkpic}
@@ -302,6 +349,11 @@ ImagePanel = React.createClass({
                         Caveat={this.props.Caveat}
                         SelectedOptions={this.props.SelectedOptions}
                         Selected={this.props.Selected}
+
+                        Fullname={this.props.Fullname}
+                        XMLProtocol={this.props.XMLProtocol}
+                        XMLReport={this.props.XMLReport}
+                        NrrdFile={this.props.NrrdFile}
                     /> }
             </div>
         );

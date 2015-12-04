@@ -23,6 +23,8 @@
           <script>
           React.render(
                   RImagePanel({
+                      'BaseURL' : "{$baseurl}",
+
                       'FileID'   : "{$files[file].FileID}",
                       'Filename' : "{$files[file].Filename}",
                       'QCStatus' : "{$files[file].QCStatus}",
@@ -55,7 +57,12 @@
                           "InterlaceRejected" : "{$files[file].InterlaceRejected}",
                           "IntergradientRejected"  : "{$files[file].IntergradientRejected}",
                           "SlicewiseRejected" : "{$files[file].SlicewiseRejected}"
-                      }
+                      },
+
+                      'Fullname' : "{$files[file].FullFilename}",
+                      "XMLProtocol" : "{$files[file].XMLprotocol}",
+                      "XMLReport" : "{$files[file].XMLreport}",
+                      "NrrdFile" : "{$files[file].NrrdFile}"
                   }),
                   document.getElementById("image-{$files[file].FileID}" )
                   );
@@ -71,29 +78,7 @@
                                         <span class="hidden-xs">QC Comments</span>
                                    </span>
                                 </a>
-                           <a class="btn btn-default" href="{$baseurl}/mri/jiv/get_file.php?file={$files[file].FullFilename}">
-                               <span class="glyphicon glyphicon-download-alt"></span><span class="hidden-xs"> Download MINC</span>
-                           </a>
-                           {else}&nbsp;
-                           {/if}
-                           {if $files[file].XMLprotocol != ""}
-                               <a class="btn btn-default" href="{$baseurl}/mri/jiv/get_file.php?file={$files[file].XMLprotocol}">
-                               <span class="glyphicon glyphicon-download-alt"></span><span class="hidden-xs"> Download XML Protocol</span>
-                               </a>
-                           {/if} 
-                        </div> <!--closing mri-second-row-panel div -->
-                         <div class="row mri-third-row-panel col-xs-12">
-                           {if $files[file].XMLprotocol != ""}
-                               <a class="btn btn-default" href="{$baseurl}/mri/jiv/get_file.php?file={$files[file].XMLreport}">
-                               <span class="glyphicon glyphicon-download-alt"></span><span class="hidden-xs"> Download XML Report</span>
-                               </a>
-                           {/if}
-                           {if $files[file].NrrdFile != ""}
-                               <a class="btn btn-default" href="{$baseurl}/mri/jiv/get_file.php?file={$files[file].NrrdFile}">
-                               <span class="glyphicon glyphicon-download-alt"></span><span class="hidden-xs"> Download NRRD</span>
-                               </a>
-                           {/if}
-                           *}
+            *}
        {/section}
    </div> <!-- closing panel-body div-->
 </div>

@@ -321,6 +321,7 @@ ImageQCDropdown = React.createClass({
         );
     }
 });
+
 ImagePanelQCStatusSelector = React.createClass({
     render: function () {
         var qcStatusLabel;
@@ -406,6 +407,47 @@ ImagePanelQCPanel = React.createClass({
     }
 });
 
+DownloadButton = React.createClass({
+    render: function () {
+        if (!this.props.FileName || this.props.FileName == '') {
+            return React.createElement('span', null);
+        };
+        return React.createElement(
+            'a',
+            { href: this.props.BaseURL + "/mri/jiv/get_file.php?file=" + this.props.FileName, className: 'btn btn-default' },
+            React.createElement('span', { className: 'glyphicon glyphicon-download-alt' }),
+            React.createElement(
+                'span',
+                { className: 'hidden-xs' },
+                this.props.Label
+            )
+        );
+    }
+});
+ImageDownloadButtons = React.createClass({
+    render: function () {
+        return React.createElement(
+            'div',
+            { className: 'row' },
+            React.createElement(DownloadButton, { FileName: this.props.Fullname,
+                Label: 'Download Minc',
+                BaseURL: this.props.BaseURL
+            }),
+            React.createElement(DownloadButton, { FileName: this.props.XMLProtocol,
+                BaseURL: this.props.BaseURL,
+                Label: 'Download XML Protocol'
+            }),
+            React.createElement(DownloadButton, { FileName: this.props.XMLReport,
+                BaseURL: this.props.BaseURL,
+                Label: 'Download XML Report'
+            }),
+            React.createElement(DownloadButton, { FileName: this.props.NrrdFile,
+                BaseURL: this.props.BaseURL,
+                Label: 'Download NRRD'
+            })
+        );
+    }
+});
 ImagePanelBody = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     render: function () {
@@ -437,6 +479,13 @@ ImagePanelBody = React.createClass({
                         })
                     )
                 ),
+                React.createElement(ImageDownloadButtons, {
+                    BaseURL: this.props.BaseURL,
+                    Fullname: this.props.Fullname,
+                    XMLProtocol: this.props.XMLProtocol,
+                    XMLReport: this.props.XMLReport,
+                    XMLReport: this.props.NrrdFile
+                }),
                 this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, { HeaderInfo: this.props.HeaderInfo }) : ''
             )
         );
@@ -474,6 +523,8 @@ ImagePanel = React.createClass({
                 HeadersExpanded: !this.state.HeadersCollapsed
             }),
             this.state.BodyCollapsed ? '' : React.createElement(ImagePanelBody, {
+                BaseURL: this.props.BaseURL,
+
                 FileID: this.props.FileID,
                 Filename: this.props.Filename,
                 Checkpic: this.props.Checkpic,
@@ -486,7 +537,12 @@ ImagePanel = React.createClass({
                 QCStatus: this.props.QCStatus,
                 Caveat: this.props.Caveat,
                 SelectedOptions: this.props.SelectedOptions,
-                Selected: this.props.Selected
+                Selected: this.props.Selected,
+
+                Fullname: this.props.Fullname,
+                XMLProtocol: this.props.XMLProtocol,
+                XMLReport: this.props.XMLReport,
+                NrrdFile: this.props.NrrdFile
             })
         );
     }
