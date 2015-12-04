@@ -422,11 +422,6 @@ class NDB_Reliability extends NDB_Form
                 ORDER BY full_name",
             array('CentID' => $centerID)
         );
-        if ($db->isError($results)) {
-            return $this->raiseError(
-                "Could not get examiner names: ".$results->getMessage()
-            );
-        }
 
         $examiners = array('' => '');
 
