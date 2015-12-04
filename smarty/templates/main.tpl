@@ -132,12 +132,12 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="main.php?test_name=user_accounts&subtest=my_preferences">
+                                    <a href="{$baseurl}/preferences/">
                                         My Preferences
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="main.php?logout=true">
+                                    <a href="{$baseurl}/main.php?logout=true">
                                         Log Out
                                     </a>
                                 </li>

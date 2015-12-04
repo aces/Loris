@@ -19,7 +19,7 @@ $(document).ready(function() {
         jQuery.ajax(
                 {
                     "type" : "post",
-                    "url" : "AjaxHelper.php?Module=configuration&script=updateSubproject.php",
+                    "url" : loris.BaseURL + "/configuration/ajax/updateSubproject.php",
                     "data" : {
                         "subprojectID" : subprojectID,
                         "title" : title,

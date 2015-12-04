@@ -37,8 +37,8 @@ var LorisHelper = function(configParams, userPerms) {
             cookie = cookies[i].split("=");
             if (cookie[0] === c_name) {
                 return cookie[1];
-            }
-        }
+            }   
+        }   
         return undefined;
     };
     lorisObj.userHasPermission = function(permname) {

@@ -1,6 +1,6 @@
 <br />
 {literal}
-<script type="text/javascript" src="js/invalid_form_scroll.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/invalid_form_scroll.js"></script>
 <script>
 
 $(document).ready(function() {
@@ -323,7 +323,7 @@ $(document).ready(function() {
     		<input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" />
     	</div>
     	<div class="col-sm-2">
-    		<input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=user_accounts'" value="Back" type="button" />
+    		<input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/'" value="Back" type="button" />
     	</div>
     </div>
 <!-- </form> -->

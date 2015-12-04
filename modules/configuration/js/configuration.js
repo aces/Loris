@@ -44,7 +44,7 @@ $(function () {
         
         $.ajax({
             type: 'post',
-            url: 'AjaxHelper.php?Module=configuration&script=process.php',
+            url: loris.BaseURL + '/configuration/ajax/process.php',
             data: {id: id},
             success: function () {
                 if ($(button).parent().parent().parent().children().length > 1) {
@@ -76,7 +76,7 @@ $(function () {
 
         $.ajax({
             type: 'post',
-            url: 'AjaxHelper.php?Module=configuration&script=process.php',
+            url: loris.BaseURL + '/configuration/ajax/process.php',
             data: form,
             success: function () {
                 var html = "<label>Submitted</label>";

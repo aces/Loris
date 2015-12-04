@@ -31,7 +31,7 @@ function changeVisitLabels() {
     if (instrument_dropdown_value !== undefined) {
         instrument_dropdown_value = instrument_dropdown_value.replace(/\+/g, ' ');
     }
-    $.get("AjaxHelper.php?Module=data_team_helper&script=GetInstruments.php&visit_label=" + visit_label_value,
+    $.get(loris.BaseURL + "/data_team_helper/ajax/GetInstruments.php?visit_label=" + visit_label_value,
         function (data) {
             instruments = data;
             instrument_dropdown.options.length = 0;

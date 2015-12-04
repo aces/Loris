@@ -3,7 +3,7 @@ function updateBehaviouralTab() {
     'use strict';
     var BehaviouralProject = document.getElementById("BehaviouralProject"),
         request = $.ajax({
-            url: '/main.php?test_name=statistics&subtest=stats_behavioural&dynamictabs=dynamictabs&BehaviouralProject=' + BehaviouralProject.value,
+            url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' + BehaviouralProject.value,
             type: 'GET',
             data: 'html',
             success: function (response) {
@@ -61,7 +61,7 @@ function hideStats(clicked) {
     checkOverflow();
 }
 $(document).ready(function(){
-    $.getScript("js/modules/dynamic_table.table.js")
+    $.getScript(loris.BaseURL + "/js/modules/dynamic_table.table.js")
         .done(function(){
             Table.setup("content", "scrollRight", "scrollLeft");
             Table.checkOverflow("content", "scrollRight", "scrollLeft", "headcol");

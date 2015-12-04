@@ -582,6 +582,20 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         $controlPanel = new Imaging_Session_ControlPanel($_REQUEST['sessionID']);
         return $controlPanel->display();
     }
+
+    function getJSDependencies() {
+        $depends = parent::getJSDependencies();
+        if($this->page === 'viewSession') {
+            $factory = NDB_Factory::singleton();
+            $baseURL = $factory->settings()->getBaseURL();
+            $depends = array_merge($depends,
+                array(
+                    $baseURL . "/imaging_browser/js/imagingbrowser.js"
+                ));
+
+        }
+        return $depends;
+    }
 }
 
 ?>
