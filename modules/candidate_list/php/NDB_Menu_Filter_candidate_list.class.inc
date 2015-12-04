@@ -66,7 +66,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           'c.CandID AS DCCID',
                           'c.PSCID',
                           'c.Gender',
-                          "COALESCE(pso.Description,'\"Active\"') AS Participant_Status",
+                          "COALESCE(pso.Description,'\"Active\"') "
+                              . " AS Participant_Status",
                          );
         if ($useProjects) {
             $this->columns[] = 'p.Name as Project';
@@ -394,14 +395,22 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         return true;
     }
 
-    function getJSDependencies() {
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $deps = parent::getJSDependencies();
-        return array_merge($deps,
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
             array(
-                $baseURL . "/js/advancedMenu.js",
-                $baseURL . "/candidate_list/js/columnFormatter.js",
+             $baseURL . "/js/advancedMenu.js",
+             $baseURL . "/candidate_list/js/columnFormatter.js",
             )
         );
     }
