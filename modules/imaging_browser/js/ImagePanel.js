@@ -436,17 +436,17 @@ ImageQCCommentsButton = React.createClass({
         };
         return React.createElement(
             'a',
-            { 'class': 'btn btn-default',
+            { className: 'btn btn-default',
                 href: '#noID',
                 onClick: this.openWindowHandler
             },
             React.createElement(
                 'span',
-                { 'class': 'text-default' },
-                React.createElement('span', { 'class': 'glyphicon glyphicon-pencil' }),
+                { className: 'text-default' },
+                React.createElement('span', { className: 'glyphicon glyphicon-pencil' }),
                 React.createElement(
                     'span',
-                    { 'class': 'hidden-xs' },
+                    { className: 'hidden-xs' },
                     'QC Comments'
                 )
             )

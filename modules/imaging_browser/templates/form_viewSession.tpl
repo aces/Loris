@@ -67,18 +67,6 @@
                   document.getElementById("image-{$files[file].FileID}" )
                   );
           </script>
-          {*
-                   <div class="row mri-second-row-panel col-xs-12">
-                           {if $files[file].FileID}
-                                <a class="btn btn-default"
-                                   href="#noID" onClick='window.open("{$baseurl}/feedback_mri_popup.php?fileID={$files[file].FileID}",
-                                         "feedback_mri","width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes")'>
-                                   <span class="text-default">
-                                        <span class="glyphicon glyphicon-pencil"></span>
-                                        <span class="hidden-xs">QC Comments</span>
-                                   </span>
-                                </a>
-            *}
        {/section}
    </div> <!-- closing panel-body div-->
 </div>
