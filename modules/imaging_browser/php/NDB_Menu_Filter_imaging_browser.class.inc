@@ -27,6 +27,7 @@ require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
  */
 class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 {
+    var $AjaxModule = true;
     /**
      * Determine whether the user has permission to view this page
      *
@@ -129,7 +130,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             "$NewDataSubquery as New_Data",
             "$T1PassSubquery as T1_Passed",
             "$T2PassSubquery as T2_Passed",
-            "'links' as Links",
+            "GROUP_CONCAT(DISTINCT OutputType) as Links",
             's.ID as sessionID'
         );
         $this->order_by = 'c.PSCID, s.Visit_label';
