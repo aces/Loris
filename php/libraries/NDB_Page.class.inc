@@ -557,6 +557,7 @@ class NDB_Page
 
         $files = array(
                   $baseurl . '/js/jquery/jquery-1.11.0.min.js',
+                  $baseurl . '/js/helpHandler.js',
                   $baseurl . '/js/modernizr.min.js',
                   $baseurl . '/js/react-with-addons-0.13.3.min.js',
                   $baseurl . '/js/components/PaginationLinks.js',
@@ -576,7 +577,7 @@ class NDB_Page
             if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
                 && strcmp($_SERVER['REQUEST_URI'], '/') != 0
             ) {
-                $files[] = "js/$TestName.js";
+                $files[] = $baseurl . "/$TestName/js/$TestName.js";
             } else {
                 $files[] = $baseurl . "/GetJS.php?Module=$TestName";
             }
