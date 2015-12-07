@@ -281,6 +281,26 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
             filter: evt.currentTarget.value
         });
     },
+    addAll: function() {
+        var i, index, fieldName;
+        for(i in this.state.categoryFields[this.state.selectedCategory]) {
+            fieldName = this.state.categoryFields[this.state.selectedCategory][i].key.join(',');
+            index = this.props.selectedFields.indexOf(fieldName);
+            if(index === -1) {
+                this.props.onFieldChange("add", fieldName);
+            }
+        }
+    },
+    deleteAll: function() {
+        var i, index, fieldName;
+        for(i in this.state.categoryFields[this.state.selectedCategory]) {
+            fieldName = this.state.categoryFields[this.state.selectedCategory][i].key.join(',');
+            index = this.props.selectedFields.indexOf(fieldName);
+            if(index >= 0) {
+                this.props.onFieldChange("remove", fieldName);
+            }
+        }
+    },
     render: function() {
         return (
             React.createElement("div", null, 
@@ -289,6 +309,10 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
                     React.createElement("div", {className: "col-md-2 block"}, 
                         React.createElement("label", null, "Search:"), React.createElement("input", {type: "text", onChange: this.filterChange})
                     )
+                ), 
+                React.createElement("div", {className: "row"}, 
+                    React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this.addAll}, "Add All"), 
+                    React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this.deleteAll}, "Remove All")
                 ), 
                 React.createElement(CategoryList, {
                     items: this.props.items, 
