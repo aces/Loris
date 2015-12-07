@@ -143,18 +143,20 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
     fieldChange: function(changeType, fieldName) {
         //clone the fields array so that setState triggers a rerender
         // if we don't clone it and mutate it s etState thinks that the state has not changed
-        var fields = this.state.fields.slice(0);
-        var idx = fields.indexOf(fieldName);
-        if (changeType === 'add') {
-            if(idx === -1) {
-                fields.push(fieldName);
+        this.setState(function(state){
+            var fields = state.fields.slice(0);
+            var idx = fields.indexOf(fieldName);
+            if (changeType === 'add') {
+                if(idx === -1) {
+                    fields.push(fieldName);
+                }
+            } else if (changeType === 'remove') {
+                if(idx > -1) {
+                    fields.splice(idx, 1);
+                }
             }
-        } else if (changeType === 'remove') {
-            if(idx > -1) {
-                fields.splice(idx, 1);
-            }
-        }
-        this.setState({ fields: fields, loadedQuery: '' });
+            return { fields: fields, loadedQuery: '' };
+        });
     },
     criteriaFieldChange: function(changeType, fieldName) {
         var fields = this.state.criteria;

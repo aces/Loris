@@ -281,6 +281,26 @@ FieldSelector = React.createClass({
             filter: evt.currentTarget.value
         });
     },
+    addAll: function() {
+        var i, index, fieldName;
+        for(i in this.state.categoryFields[this.state.selectedCategory]) {
+            fieldName = this.state.categoryFields[this.state.selectedCategory][i].key.join(',');
+            index = this.props.selectedFields.indexOf(fieldName);
+            if(index === -1) {
+                this.props.onFieldChange("add", fieldName);
+            }
+        }
+    },
+    deleteAll: function() {
+        var i, index, fieldName;
+        for(i in this.state.categoryFields[this.state.selectedCategory]) {
+            fieldName = this.state.categoryFields[this.state.selectedCategory][i].key.join(',');
+            index = this.props.selectedFields.indexOf(fieldName);
+            if(index >= 0) {
+                this.props.onFieldChange("remove", fieldName);
+            }
+        }
+    },
     render: function() {
         return (
             <div>
@@ -289,6 +309,10 @@ FieldSelector = React.createClass({
                     <div className="col-md-2 block">
                         <label>Search:</label><input type="text" onChange={this.filterChange}/>
                     </div>
+                </div>
+                <div className="row">
+                    <button type="button" className="btn btn-primary" onClick={this.addAll}>Add All</button>
+                    <button type="button" className="btn btn-primary" onClick={this.deleteAll}>Remove All</button>
                 </div>
                 <CategoryList
                     items={this.props.items}
