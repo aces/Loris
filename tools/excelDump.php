@@ -11,7 +11,7 @@
 
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
-require_once 'Spreadsheet/Excel/Writer.php';
+//require_once 'Spreadsheet/Excel/Writer.php';
 require_once "Archive/Tar.php";
 require_once "CouchDB_MRI_Importer.php";
 
@@ -115,7 +115,7 @@ $Test_name = "candidate_info";
 $query = "select distinct c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID from candidate c, session s where c.CandID = s.CandID and substring(c.PSCID, 1, 3) in ('PHI', 'STL', 'SEA', 'UNC') and c.Active='Y' order by c.PSCID";
 $DB->select($query, $results);
 
-MapSubprojectID(&$results);
+MapSubprojectID($results);
 writeExcel($Test_name, $results, $dataDir);
 
 /*
@@ -164,6 +164,25 @@ delTree($dataDir);
 echo "$tarFile ready in $destinationDir\n";
 
 
+/**
+* Converst the column number into the excel column name in letters
+* 
+* @param int $num The column number
+* 
+* @return string $letter The excel column name in letters
+* 
+**/
+function getNameFromNumber($num)
+{
+    $numeric = $num % 26;
+    $letter  = chr(65 + $numeric);
+    $num2    = intval($num / 26);
+    if ($num2 > 0) {
+        return getNameFromNumber($num2 - 1) . $letter;
+    } else {
+        return $letter;
+    }
+}
 
 
 /**
@@ -181,11 +200,19 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
 	$junkCols = array("CommentID", "UserID", "Examiner", "Testdate", "Data_entry_completion_status"); //columns to be removed
 
 	// create empty Excel file to fill up
-	$workbook = new Spreadsheet_Excel_Writer("$dataDir/$Test_name.xls");
+    // Create a new PHPExcel Object
+    $ExcelApplication = new PHPExcel();
+    // Removing builtin sheet make it easier to use same function to add sheets later
+    $ExcelApplication->removeSheetByIndex(0);
+    
+
+	// $workbook = new Spreadsheet_Excel_Writer("$dataDir/$Test_name.xls");
 
 	//Excel has a 256 column limit per worksheet.  If our instrument table/array is greater, split it into the needed number of worksheets
 	for ($w = 1; $w <= ceil(count($instrument_table[0]) / $maxColsPerWorksheet); $w++) {
-		$worksheets[] =& $workbook->addWorkSheet("Sheet{$w}");
+		// $worksheets[] =& $workbook->addWorkSheet("Sheet{$w}");
+        $ExcelWorkSheet = new PHPExcel_Worksheet($ExcelApplication, "Sheet{$w}");
+        $ExcelApplication->addSheet($ExcelWorkSheet, -1);
 	}
 
 	//ensure non-empty result set
@@ -200,12 +227,12 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
 	}
 
 	//Use Excel 97/2000 Binary File Format thereby allowing cells to contain more than 255 characters.
-	$workbook->setVersion(8); // Use Excel97/2000 Format.
+	// $workbook->setVersion(8); // Use Excel97/2000 Format.
 
 	// Formatting for the header row; bold and frozen
-	$headerFormat =& $workbook->addFormat();
-	$headerFormat->setBold();
-	$headerFormat->setAlign('center');
+	//$headerFormat =& $workbook->addFormat();
+	//$headerFormat->setBold();
+	//$headerFormat->setAlign('center');
 
 	// Formatting:  Freeze only the first worksheet, at the metaCols and header intersection.
 	// This is not used to be compatible with figs_year3_relatives and the candidate_info.csv files where there are non-standard numbers of columns
@@ -214,39 +241,70 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
 
 	// add all header rows
 	$headers = array_keys($instrument_table[0]);
-	foreach ($headers as $headerNum=>$header) {
+    $ExcelWorkSheet->fromArray($headers, ' ', 'A1');
+
+    // Bold Cyan Column headers
+    $numCol = count($instrument_table[0]) - 1;
+    $header = 'a1:' . getNameFromNumber($numCol) . '1';
+    $ExcelWorkSheet->getStyle($header)->getFill()->setFillType(
+        \PHPExcel_Style_Fill::FILL_SOLID
+    )->getStartColor()->setARGB('00e0ffff');
+
+    $hor_cen = \PHPExcel_Style_Alignment::HORIZONTAL_CENTER;
+    $style   = array(
+                'font'      => array('bold' => true),
+                'alignment' => array('horizontal' => $hor_cen),
+               );
+    $ExcelWorkSheet->getStyle($header)->applyFromArray($style);
+
+	//foreach ($headers as $headerNum=>$header) {
 		//figure out which sheet number the header belongs on
-		$worksheetNum = intval($headerNum  / $maxColsPerWorksheet);
-		$worksheet =& $worksheets[$worksheetNum];
+	//	$worksheetNum = intval($headerNum  / $maxColsPerWorksheet);
+		//$worksheet =& $worksheets[$worksheetNum];
 		//figure out the column (only tricky if there is more than one worksheet.
-		$col = $headerNum % $maxColsPerWorksheet;
-		$worksheet->write(0, $col, $header, $headerFormat);
-	}
+	//	$col = $headerNum % $maxColsPerWorksheet;
+		//$worksheet->write(0, $col, $header, $headerFormat);
+	//}
 
 	// add data to worksheet
-	$rowCount=1;  //start right after the header
-	foreach ($instrument_table as $row) {
-		$dataRow = array_values($row);
-		foreach ($dataRow as $valueNum=>$value){
-			//figure out which sheet number the header belongs on
-			$worksheetNum = intval($valueNum  / $maxColsPerWorksheet);
-			$worksheet =& $worksheets[$worksheetNum];
-			//figure out the column (only tricky if there is more than one worksheet)
-			$col = $valueNum % $maxColsPerWorksheet;
-			//Replace NULLs with . (dots)
-			if (is_null($value)) $value = ".";
-			$worksheet->write($rowCount, $col, $value);
-		}
-		$rowCount++;
-	}
+    $ExcelWorkSheet->fromArray($instrument_table, ' ', 'A2');
+    
+//	$rowCount=1;  //start right after the header
+//	foreach ($instrument_table as $row) {
+//		$dataRow = array_values($row);
+//		foreach ($dataRow as $valueNum=>$value){
+//			//figure out which sheet number the header belongs on
+//			$worksheetNum = intval($valueNum  / $maxColsPerWorksheet);
+//			$worksheet =& $worksheets[$worksheetNum];
+//			//figure out the column (only tricky if there is more than one worksheet)
+//			$col = $valueNum % $maxColsPerWorksheet;
+//			//Replace NULLs with . (dots)
+//			if (is_null($value)) $value = ".";
+//			$worksheet->write($rowCount, $col, $value);
+//		}
+//		$rowCount++;
+//	}
 
+    // Redimension columns to max size of data
+    for ($col = 0; $col <= $numCol; $col++) {
+        $ExcelWorkSheet->getColumnDimension(
+            getNameFromNumber($col)
+        )->setAutoSize(true);
+    }
+  
+    
+    
+    
 	// save file to disk
-	if ($workbook->close() === true) {
-		unset($worksheets); // need to unset for the next instrument
-		echo "Success: $Test_name\n";
-	} else {
-		echo"ERROR: Could not save $Test_name spreadsheet.\n";
-	}
+    $writer = PHPExcel_IOFactory::createWriter($ExcelApplication, 'Excel2007');
+    $writer->save("$dataDir/$Test_name.xls");
+    
+//	if ($workbook->close() === true) {
+//		unset($worksheets); // need to unset for the next instrument
+//		echo "Success: $Test_name\n";
+//	} else {
+//		echo"ERROR: Could not save $Test_name spreadsheet.\n";
+//	}
 } //end function writeExcel
 
 /**
