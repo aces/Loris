@@ -1000,7 +1000,7 @@ class Database
             $this->run($createStmt);
 
             foreach ($rowData as $row) {
-                $this->insert($tableName, $row);
+                $this->unsafeinsert($tableName, $row);
             }
         } else {
             throw new DatabaseException(
