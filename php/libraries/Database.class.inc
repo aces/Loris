@@ -247,7 +247,7 @@ class Database
      * Insert a row into the database without validating input.
      *
      * This will insert a row. HTML from any field in the row will *not* be
-     * automatically * escaped. This should only be called when we know the source of
+     * automatically escaped. This should only be called when we know the source of
      * the input is trustworthy and must contain HTML.
      *
      * @param string $table the table into which to insert the row
