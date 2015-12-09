@@ -267,7 +267,7 @@ class Database
      *
      * @return A copy of $set with the HTML characters escaped
      */
-    private function HTMLEscapeArray($set)
+    private function _HTMLEscapeArray($set)
     {
         $retVal = array();
         foreach ($set as $key => $val) {
@@ -291,7 +291,7 @@ class Database
     private function _realinsert($table, $set, $autoescape = true)
     {
         if ($autoescape === true) {
-            $set = $this->HTMLEscapeArray($set);
+            $set = $this->_HTMLEscapeArray($set);
         }
         $query  = "INSERT INTO $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set);
@@ -323,7 +323,7 @@ class Database
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
-        $err = $this->_trackChanges($table, $set, '2=1', 'I');
+        $err = $this->trackChanges($table, $set, '2=1', 'I');
         return true;
     }
 
@@ -415,7 +415,7 @@ class Database
     private function _realupdate($table, $set, $i_where, $autoescape = true)
     {
         if ($autoescape === true) {
-            $set = $this->HTMLEscapeArray($set);
+            $set = $this->_HTMLEscapeArray($set);
         }
         /* This is still here to print the easily readable version on
          * the top of the page when showDatabaseQueries is on. It isn't
@@ -450,7 +450,7 @@ class Database
             );
         }
 
-        $err = $this->_trackChanges($table, $set, $where);
+        $err = $this->trackChanges($table, $set, $where);
         $this->_printQuery($query.$where);
 
         $prep   = $this->_PDO->prepare($prepQ);
@@ -497,7 +497,7 @@ class Database
 
         // There is no set clause for a delete, so add a fake
         // one.
-        $err = $this->_trackChanges($table, array(), $where, 'D');
+        $err = $this->trackChanges($table, array(), $where, 'D');
 
         $this->_printQuery($query);
         $this->affected = $this->_PDO->exec($query);
@@ -769,8 +769,9 @@ class Database
      * @return string A string that can be used to generate a prepared statement with
      *                appropriate variable names generated for data binding.
      */
-    private function _implodeAsPrepared($glue, $dataArray, &$exec_vals = null, $prefix='')
-    {
+    private function _implodeAsPrepared(
+        $glue, $dataArray, &$exec_vals = null, $prefix=''
+    ) {
         if (!is_array($dataArray) || count($dataArray)==0) {
             return '';
         }
@@ -813,7 +814,7 @@ class Database
      *
      * @return none As a side-effect populates history table
      */
-    protected function _trackChanges($table, $set, $where, $type='U')
+    protected function trackChanges($table, $set, $where, $type='U')
     {
         // Tracking changes on the history table would result in an
         // infinite loop
