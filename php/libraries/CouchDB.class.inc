@@ -344,7 +344,7 @@ class CouchDB
                 if($printValue) {
                     print $line;
                 } else {
-                    $response .= $handler->gets();
+                    $response .= $line;
                 }
             }
         }

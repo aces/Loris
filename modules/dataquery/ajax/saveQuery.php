@@ -19,7 +19,8 @@ $baseDocument = array(
 if(isset($_REQUEST['QueryName'])) {
     $baseDocument['Meta']['name'] = $_REQUEST['QueryName'];
 }
-if($_REQUEST['SharedQuery'] === true) {
+if($_REQUEST['SharedQuery'] === "true") {
+    error_log("IN HERE");
     $baseDocument['Meta']['user'] = 'global';
     $baseDocument['Meta']['name'] = $user->getUserName() . ': ' . $_REQUEST['QueryName'];
 }

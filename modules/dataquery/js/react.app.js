@@ -35,7 +35,14 @@ SavedQueriesList = React.createClass({displayName: "SavedQueriesList",
             userSaved.push(React.createElement("li", {key: this.props.userQueries[i]}, React.createElement("a", {href: "#", onClick: this.loadQuery(this.props.userQueries[i])}, queryName)));
         }
         for(var i = 0; i < this.props.globalQueries.length; i += 1) {
-            globalSaved.push(React.createElement("li", {key: this.props.globalQueries[i]}, React.createElement("a", {href: "#"}, this.props.globalQueries[i])));
+            curQuery = this.props.queryDetails[this.props.globalQueries[i]];
+            console.log(curQuery.Meta);
+            if(curQuery.Meta && curQuery.Meta.name) {
+                queryName = curQuery.Meta.name;
+            } else {
+                queryName = this.props.globalQueries[i];
+            }
+            globalSaved.push(React.createElement("li", {key: this.props.globalQueries[i]}, React.createElement("a", {href: "#", onClick: this.loadQuery(this.props.globalQueries[i])}, queryName)));
         }
         return (
              React.createElement("ul", {className: "nav nav-tabs navbar-right"}, 
@@ -73,21 +80,24 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
         // Load the save queries' details
         var promises = [];
         var that = this;
-        for (var i = 0; i < this.props.SavedQueries.User.length; i += 1) {
-            var curRequest;
-            curRequest = Promise.resolve(
-                    $.ajax("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.props.SavedQueries.User[i]), {
-                        data: {
-                            DocID: that.props.SavedQueries.User[i]
-                        },
-                        dataType: 'json'
-                    }).then(function(value) {
-                        var queries = that.state.savedQueries;
+        for(var key in this.state.queryIDs){
+            console.log(this.state.queryIDs[key][0]);
+            for (var i = 0; i < this.state.queryIDs[key].length; i += 1) {
+                var curRequest;
+                curRequest = Promise.resolve(
+                        $.ajax("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.state.queryIDs[key][i]), {
+                            data: {
+                                DocID: that.state.queryIDs[key][i]
+                            },
+                            dataType: 'json'
+                        }).then(function(value) {
+                            var queries = that.state.savedQueries;
 
-                        queries[value._id] = value;
-                        that.setState({ 'savedQueries' : queries});
-                    });
-            promises.push(curRequest);
+                            queries[value._id] = value;
+                            that.setState({ 'savedQueries' : queries});
+                        });
+                promises.push(curRequest);
+            }
         }
 
         var allDone = Promise.all(promises).then(function(value) {
@@ -102,6 +112,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
         })
     },
     saveCurrentQuery: function(name, shared) {
+        var that = this;
         $.post("AjaxHelper.php?Module=dataquery&script=saveQuery.php",
             {
                 Fields: this.state.fields,
@@ -109,6 +120,24 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 QueryName: name,
                 SharedQuery: shared,
             }, function(data) {
+                var id = JSON.parse(data).id,
+                    queryIDs = that.state.queryIDs;
+                if (shared === true) {
+                    queryIDs.Shared.push(id);
+                } else {
+                    queryIDs.User.push(id);
+                }
+                $.get("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + id, function(value) {
+                        var queries = that.state.savedQueries;
+
+                        queries[value._id] = value;
+                        that.setState({
+                            'savedQueries' : queries,
+                            'queryIDs' : queryIDs,
+                            alertLoaded: false,
+                            alertSaved: true
+                        });
+                    });
             });
 
     },
@@ -119,8 +148,11 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
             criteria: {},
             sessiondata: {},
             grouplevel: 1,
+            queryIDs: this.props.SavedQueries,
             savedQueries: {},
             queriesLoaded: false,
+            alertLoaded: false,
+            alertSaved: false,
             ActiveTab :  'Info',
             rowData: {}
         };
@@ -137,7 +169,9 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
         }
         this.setState({
             fields: fields,
-            criteria: criteriaState
+            criteria: criteriaState,
+            alertLoaded: true,
+            alertSaved: false
         });
     },
     fieldChange: function(changeType, fieldName) {
@@ -362,8 +396,14 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
         }
         return {'rowdata': rowdata, 'Identifiers': Identifiers, 'RowHeaders': RowHeaders};
     },
+    dismissAlert: function() {
+        this.setState({
+            alertLoaded: false,
+            alertSaved: false
+        });
+    },
     render: function() {
-        var tabs = [], tabsNav = [];
+        var tabs = [], tabsNav = [], alert = React.createElement("div", null);
         tabs.push(React.createElement(InfoTabPane, {
                 TabId: "Info", 
                 UpdatedTime: this.props.UpdatedTime}
@@ -398,13 +438,33 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 Fields: this.state.fields, 
                 Data: this.state.rowData.rowdata}));
         tabs.push(React.createElement(ManageSavedQueriesTabPane, {TabId: "SavedQueriesTab", 
-                        userQueries: this.props.SavedQueries.User, 
-                        globalQueries: this.props.SavedQueries.Shared, 
+                        userQueries: this.state.queryIDs.User, 
+                        globalQueries: this.state.queryIDs.Shared, 
                         onSaveQuery: this.saveCurrentQuery, 
                         queryDetails: this.state.savedQueries, 
                         queriesLoaded: this.state.queriesLoaded}
                 ));
 
+        if(this.state.alertLoaded) {
+            alert = (
+                React.createElement("div", {className: "alert alert-success", role: "alert"}, 
+                    React.createElement("button", {type: "button", className: "close", "aria-label": "Close", onClick: this.dismissAlert}, 
+                        React.createElement("span", {"aria-hidden": "true"}, "×")
+                    ), 
+                    React.createElement("strong", null, "Success"), " Query Loaded."
+                )
+            )
+        }
+        if(this.state.alertSaved) {
+            alert = (
+                React.createElement("div", {className: "alert alert-success", role: "alert"}, 
+                    React.createElement("button", {type: "button", className: "close", "aria-label": "Close", onClick: this.dismissAlert}, 
+                        React.createElement("span", {"aria-hidden": "true"}, "×")
+                    ), 
+                    React.createElement("strong", null, "Success"), " Query Saved."
+                )
+            )
+        }
         var widthClass = "col-md-12";
         var sideBar = React.createElement("div", null)
         if(this.state.fields.length > 0 && this.state.ActiveTab !== 'ViewData') {
@@ -417,6 +477,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 );
         }
         return React.createElement("div", null, 
+                    alert, 
                     React.createElement("div", {className: widthClass}, 
                         React.createElement("nav", {className: "nav nav-tabs"}, 
                             React.createElement("ul", {className: "nav nav-tabs navbar-left", "data-tabs": "tabs"}, 
@@ -427,8 +488,8 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                                 React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Statistics", "data-toggle": "tab"}, "Statistical Analysis"))
                             ), 
                             React.createElement(SavedQueriesList, {
-                                userQueries: this.props.SavedQueries.User, 
-                                globalQueries: this.props.SavedQueries.Shared, 
+                                userQueries: this.state.queryIDs.User, 
+                                globalQueries: this.state.queryIDs.Shared, 
                                 queryDetails: this.state.savedQueries, 
                                 queriesLoaded: this.state.queriesLoaded, 
                                 onSelectQuery: this.loadSavedQuery, 
