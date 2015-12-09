@@ -450,6 +450,10 @@ ManageSavedQueriesTabPane = React.createClass({
                 {savePrompt}
             </div>
         );
-        return <TabPane content={content} TabId={this.props.TabId} />;
+        return (
+            <TabPane TabId={this.props.TabId}>
+                {content}
+            </TabPane>
+        );
     }
 });
