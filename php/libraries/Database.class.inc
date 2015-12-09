@@ -826,7 +826,7 @@ class Database
         $this->select("SHOW INDEX FROM $table", $description);
 
         // find the primary key columns
-        if(is_array($description)) {
+        if (is_array($description)) {
             foreach ($description AS $column) {
                 if ($column['Key_name']=='PRIMARY') {
                     $primaryKeys[] = $column['Column_name'];
