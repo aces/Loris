@@ -267,7 +267,7 @@ class Database
      *
      * @return A copy of $set with the HTML characters escaped
      */
-    public function HTMLEscapeArray($set)
+    private function HTMLEscapeArray($set)
     {
         $retVal = array();
         foreach ($set as $key => $val) {
@@ -307,7 +307,6 @@ class Database
 
         // There is no where clause for an insert, so add a fake
         // one.
-
         $this->_printQuery($query);
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
@@ -770,7 +769,7 @@ class Database
      * @return string A string that can be used to generate a prepared statement with
      *                appropriate variable names generated for data binding.
      */
-    function _implodeAsPrepared($glue, $dataArray, &$exec_vals = null, $prefix='')
+    private function _implodeAsPrepared($glue, $dataArray, &$exec_vals = null, $prefix='')
     {
         if (!is_array($dataArray) || count($dataArray)==0) {
             return '';
@@ -814,7 +813,7 @@ class Database
      *
      * @return none As a side-effect populates history table
      */
-    private function _trackChanges($table, $set, $where, $type='U')
+    protected function _trackChanges($table, $set, $where, $type='U')
     {
         // Tracking changes on the history table would result in an
         // infinite loop
