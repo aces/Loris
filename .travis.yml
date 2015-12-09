@@ -70,8 +70,6 @@ script:
       do
         php -l $i || exit $?;
       done
-    # Run unit tests to make sure functions still do what they should.
-    - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
 
     # Run PHPCS on the entire libraries directory.
     - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
@@ -97,6 +95,9 @@ script:
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
+
+    # Run unit tests to make sure functions still do what they should.
+    - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
