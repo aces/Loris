@@ -19,7 +19,7 @@ class FakePDO extends PDO
 }
 
 class FakeDatabase extends Database {
-    protected function _trackChanges($table, $set, $where, $type='U') {
+    protected function trackChanges($table, $set, $where, $type='U') {
     }
 }
 
