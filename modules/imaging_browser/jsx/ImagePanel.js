@@ -273,7 +273,7 @@ ImageQCCommentsButton = React.createClass({
 ImageDownloadButtons = React.createClass({
     render: function() {
         return (
-            <div className="row">
+            <div className="row mri-second-row-panel col-xs-12">
                 <ImageQCCommentsButton FileID={this.props.FileID} />
 
                 <DownloadButton FileName={this.props.Fullname} 
