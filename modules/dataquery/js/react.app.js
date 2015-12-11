@@ -402,6 +402,12 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
             alertSaved: false
         });
     },
+    resetQuery: function(){
+        this.setState({
+            fields: [],
+            criteria: {}
+        });
+    },
     render: function() {
         var tabs = [], tabsNav = [], alert = React.createElement("div", null);
         tabs.push(React.createElement(InfoTabPane, {
@@ -472,7 +478,8 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
             sideBar = React.createElement("div", {className: "col-md-2"}, 
                     React.createElement(FieldsSidebar, {
                         Fields: this.state.fields, 
-                        Criteria: this.state.criteria}
+                        Criteria: this.state.criteria, 
+                        resetQuery: this.resetQuery}
                     )
                 );
         }

@@ -32,9 +32,6 @@ FieldsSidebar = React.createClass({displayName: "FieldsSidebar",
             Criteria: {}
         }
     },
-    reloadPage: function() {
-        location.reload();
-    },
     render: function() {
         if((!this.props.Fields || this.props.Fields.length === 0)
                 &&
@@ -50,7 +47,7 @@ FieldsSidebar = React.createClass({displayName: "FieldsSidebar",
             }
         }
         return (React.createElement(Sidebar, {Name: "Fields"}, 
-                    React.createElement("button", {onClick: this.reloadPage}, "Clear Query"), 
+                    React.createElement("button", {onClick: this.props.resetQuery}, "Clear Query"), 
                     React.createElement("ul", {className: "list-group"}, 
                         fieldList
                     )

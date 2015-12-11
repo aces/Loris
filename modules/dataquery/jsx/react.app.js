@@ -402,6 +402,12 @@ DataQueryApp = React.createClass({
             alertSaved: false
         });
     },
+    resetQuery: function(){
+        this.setState({
+            fields: [],
+            criteria: {}
+        });
+    },
     render: function() {
         var tabs = [], tabsNav = [], alert = <div />;
         tabs.push(<InfoTabPane
@@ -473,6 +479,7 @@ DataQueryApp = React.createClass({
                     <FieldsSidebar
                         Fields={this.state.fields}
                         Criteria={this.state.criteria}
+                        resetQuery={this.resetQuery}
                     />
                 </div>;
         }
