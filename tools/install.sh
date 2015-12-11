@@ -194,7 +194,7 @@ if [ $os_distro = "Ubuntu" ]; then
 elif [ $os_distro = "CentOS" ]; then
     sudo chown apache.apache ../modules/document_repository/user_uploads
 else
-    echo "$os_distro Linux distribution detected. We currently do not support this. Please manually set the permissions for user_uploads directory in ../modules/document_repository"
+    echo "$os_distro Linux distribution detected. We currently do not support this. Please manually chown/chgrp the user_uploads directory in ../modules/document_repository to the web server"
 fi
 
 
