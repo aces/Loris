@@ -22,15 +22,9 @@ require_once "FeedbackMRI.class.inc";
 
 // create DB object
 $DB =& Database::singleton();
-if (PEAR::isError($DB)) {
-    return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-}
 
 // user is logged in, let's continue with the show...
 $user =& User::singleton($_SESSION['State']->getUsername());
-if (PEAR::isError($user)) {
-    die("Error creating user object: ".$user->getMessage());
-}
 
 // check permissions
 if ($user->hasPermission('imaging_browser_qc')) {
@@ -101,9 +95,6 @@ if ($comments->objectType == 'volume') {
 }
 
 $result = $DB->pselect($query, $qparams);
-if (PEAR::isError($result)) {
-    $tpl_data['error_message'][] = $result->getMessage();
-}
 
 if (count($result) > 0) {
     $i = 0;

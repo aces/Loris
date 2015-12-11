@@ -37,9 +37,6 @@ class NDB_Form_survey_accounts extends NDB_Form
     {
         // create user object
         $editor =& User::singleton();
-        if (Utility::isErrorX($editor)) {
-            return PEAR::raiseError("User Error: ".$editor->getMessage());
-        }
 
         return $editor->hasPermission('user_accounts');
     }
@@ -203,9 +200,6 @@ class NDB_Form_survey_accounts extends NDB_Form
                 'CommentID'        => $commentID
             )
         );
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error: ".$success->getMessage());
-        }
         $this->tpl_data['success'] = $success;
  
         if ($email) {

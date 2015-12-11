@@ -2,7 +2,7 @@
   <div class="row">
     <div id="tabs">
       <ul class="nav nav-tabs">
-        <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=genomic_browser">CNV</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/">CNV</a></li>
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>SNP</strong></a></li>
       </ul>
       <br>
@@ -11,7 +11,7 @@
   <div class="row">
     <div class="tab-content">
       <div class="tab-pane active">
-        <form method="post" action="main.php?test_name=genomic_browser&submenu=snp_browser">
+        <form method="post" action="{$baseurl}/genomic_browser/?submenu=snp_browser">
           <div class="col-sm-12">
             <div class="row">
               <div class="form-group col-sm-7">
@@ -230,7 +230,7 @@
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="col-sm-6 col-xs-12 col-md-5">
-                      <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=genomic_browser&reset=true'" />
+                      <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/genomic_browser/?reset=true'" />
                     </div>
                   </div>
                 </div>
@@ -247,6 +247,9 @@
       <!-- title -->
       {if {$resultcount} != '' }
         <td class="controlpanelsection">Variants found: <strong>{$resultcount}</strong> total</td>
+        <a href="{$csvUrl}" download="{$csvFile}.csv">
+          Download all fields as CSV
+        </a>
       {else}
         <td>No variants found. </td>
       {/if} 
@@ -263,7 +266,7 @@
           <th>No.</th>
           <!-- print out column headings - quick & dirty hack -->
           {section name=header loop=$headers}
-            <th><a href="main.php?test_name=genomic_browser&submenu=snp_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+            <th><a href="{$baseurl}/genomic_browser/?submenu=snp_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
           {/section}
         </tr>
       </thead>
@@ -279,7 +282,7 @@
             {/if}
             {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
               {assign var="PSCID" value=$items[item][piece].value}
-              <a href="main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
+              <a href="{$baseurl}/{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
             {else}
               {$items[item][piece].value}
             {/if }
@@ -300,7 +303,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=genomic_browser&submenu=snp_browser&pageID=" + pageNum
+        location.href="{$baseurl}/genomic_browser/?submenu=snp_browser&pageID=" + pageNum
     },
     Active: {$pageID}
 });

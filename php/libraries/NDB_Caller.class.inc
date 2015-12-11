@@ -96,14 +96,17 @@ class NDB_Caller
         // get the files path, aka the base directory
         $base = $config->getSetting('base');
 
-        if (is_dir($base . "modules/$test_name")) {
+        if (is_dir($base . "project/modules/$test_name")
+            || is_dir($base . "modules/$test_name")
+        ) {
+            $ModuleDir = is_dir($base . "project/modules/$test_name")
+                ? $base . "project/modules/$test_name"
+                : $base . "modules/$test_name";
             // New module style
             // Only supports Menu_Filters and Forms.
             // Modules can not have instruments or reliability.
             set_include_path(
-                $base . "project/libraries:"
-                . $base . "modules/$test_name:"
-                . $base . "modules/$test_name/php:"
+                "$ModuleDir/php:"
                 . get_include_path()
             );
 
@@ -201,12 +204,9 @@ class NDB_Caller
             }
 
             // it is a reliability form
-            $proj_reliable = $base . "project/libraries/"
-                                   . "NDB_Reliability_$test_name.class.inc";
-            $php_reliable  = $base . "php/libraries/"
+            $proj_reliable = $base . "project/reliability/"
                                    . "NDB_Reliability_$test_name.class.inc";
             if ($this->existsAndRequire($proj_reliable)
-                || $this->existsAndRequire($php_reliable)
             ) {
 
                 $html = $this->loadReliability(
@@ -302,7 +302,8 @@ class NDB_Caller
         if (method_exists($menu, 'save')) {
             $success = $menu->save();
         }
-        $html = $menu->display();
+        $this->page = $menu;
+        $html       = $menu->display();
 
         return $html;
     }
@@ -329,7 +330,8 @@ class NDB_Caller
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
         }
-        $html = $form->display();
+        $this->page = $form;
+        $html       = $form->display();
         return $html;
     }
 
@@ -347,7 +349,7 @@ class NDB_Caller
     function loadReliability($class, $page, $identifier, $reliability_center_id)
     {
         // make an instance of the form's object
-        $form = NDB_Reliability::factory(
+        $form = NDB_Reliability::reliabilityfactory(
             $class,
             $page,
             $identifier,
@@ -356,7 +358,8 @@ class NDB_Caller
 
         $success = $form->save();
 
-        $html = $form->display();
+        $this->page = $form;
+        $html       = $form->display();
 
         return $html;
     }
@@ -414,9 +417,6 @@ class NDB_Caller
                 $_REQUEST['sessionID']
             );
         }
-        if (Utility::isErrorX($instrument)) {
-            return $instrument;
-        }
 
         // save instrument form data
         $success = $instrument->save();
@@ -440,7 +440,8 @@ class NDB_Caller
             }
         }
 
-        $html = $instrument->display();
+        $this->page = $instrument;
+        $html       = $instrument->display();
 
         return $html;
     }

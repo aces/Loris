@@ -70,7 +70,8 @@ tplFromRequest('dynamictabs');
 $factory  = NDB_Factory::singleton();
 $settings = $factory->settings();
 
-$tpl_data['baseurl'] = $settings->getBaseURL();
+$baseURL = $settings->getBaseURL();
+$tpl_data['baseurl'] = $baseURL;
 
 // study title
 $tpl_data['study_title'] = $config->getSetting('title');
@@ -118,25 +119,13 @@ $link_args['MRIBrowser'] = $argstring;
 $paths = $config->getSetting('paths');
 
 if (!empty($TestName)) {
-    if (file_exists($paths['base'] . "modules/$TestName/js/$TestName.js")) {
-        if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
-            && strcmp($_SERVER['REQUEST_URI'], '/') != 0
-        ) {
-              $tpl_data['test_name_js'] = "js/$TestName.js";
-        } else {
-              $tpl_data['test_name_js'] = "GetJS.php?Module=$TestName";
-        }
-    } elseif (file_exists($paths['base'] . "htdocs/js/modules/$TestName.js")) {
-        // Old style, this should be removed after all modules are modularized.
-        $tpl_data['test_name_js'] = "js/modules/$TestName.js";
-    }
-
     // Get CSS for a module
-    if (file_exists($paths['base'] . "modules/$TestName/css/$TestName.css")) {
+    $base = $paths['base'];
+    if (file_exists($base . "modules/$TestName/css/$TestName.css")) {
         if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
             && strcmp($_SERVER['REQUEST_URI'], '/') != 0
         ) {
-              $tpl_data['test_name_css'] = "css/$TestName";
+              $tpl_data['test_name_css'] = "$baseURL/$TestName/css/$TestName.css";
         } else {
               $tpl_data['test_name_css'] = "GetCSS.php?Module=$TestName";
         }
@@ -188,11 +177,16 @@ try {
     if (isset($caller->controlPanel)) {
         $tpl_data['control_panel'] = $caller->controlPanel;
     }
+
     if (isset($caller->feedbackPanel) && $user->hasPermission('bvl_feedback')) {
         $tpl_data['bvl_feedback']   = NDB_BVL_Feedback::bvlFeedbackPossible(
             $TestName
         );
         $tpl_data['feedback_panel'] = $caller->feedbackPanel;
+    }
+
+    if (isset($caller->page)) {
+        $tpl_data['jsfiles'] = $caller->page->getJSDependencies();
     }
 
     $tpl_data['workspace'] = $workspace;
@@ -262,20 +256,40 @@ if ($config->getSetting("sandbox") === '1') {
     $tpl_data['sandbox'] = true;
 }
 
+// This should be array_filter, but to have access to both key and value
+// in array_filter we need to require PHP >= 5.6
+$realPerms = array();
+foreach ($user->getPermissions() as $permName => $hasPerm) {
+    if ($hasPerm === true) {
+        $realPerms[] = $permName;
+    }
+}
+$tpl_data['userPerms']  = $realPerms;
+$tpl_data['jsonParams'] = json_encode(
+    array(
+     'BaseURL'   => $tpl_data['baseurl'],
+     'TestName'  => $tpl_data['test_name'],
+     'Subtest'   => $tpl_data['subtest'],
+     'CandID'    => $tpl_data['candID'],
+     'SessionID' => $tpl_data['sessionID'],
+     'CommentID' => $tpl_data['commentID'],
+    )
+);
+
+$tpl_data['css'] = $config->getSetting('css');
+
+//--------------------------------------------------
+
+//Output template using Smarty
 // Assign the console output to a variable, then stop
 // capturing output so that smarty can render
 $tpl_data['console'] = htmlspecialchars(ob_get_contents());
 ob_end_clean();
 
-
-//Output template using Smarty
-$tpl_data['css'] = $config->getSetting('css');
-
 $smarty = new Smarty_neurodb;
 $smarty->assign($tpl_data);
 $smarty->display('main.tpl');
 
-//--------------------------------------------------
 
 
 

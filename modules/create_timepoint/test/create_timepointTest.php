@@ -11,8 +11,8 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class createTimepointTestIntegrationTest extends LorisIntegrationTest
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
+class createTimepointTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
     /**
      * Tests that, when loading the create_timepoint module, some
@@ -22,7 +22,7 @@ class createTimepointTestIntegrationTest extends LorisIntegrationTest
      */
     function testCreateTimepointDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=create_timepoint");
+        $this->webDriver->get($this->url . "?test_name=create_timepoint&candID=000000&identifier=000000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Create Time Point", $bodyText);
     }

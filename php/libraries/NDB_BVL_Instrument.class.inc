@@ -160,7 +160,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     static function factory($instrument, $commentID, $page, $guarantee_exists = true)
     {
-        include_once 'HTML/QuickForm.php';
+        //include_once 'HTML/QuickForm.php';
         $class = "NDB_BVL_Instrument_$instrument";
 
         // Make sure the instrument class has been included/required!
@@ -542,17 +542,9 @@ class NDB_BVL_Instrument extends NDB_Page
             // the database
             $dataEntryCompletionStatus
                 = $this->_determineDataEntryCompletionStatus();
-            if (Utility::isErrorX($dataEntryCompletionStatus)) {
-                print "Could not determine DECS: "
-                    .  $dataEntryCompletionStatus->getMessage()
-                    ."<br>\n";
-            }
             $success = $this->_setDataEntryCompletionStatus(
                 $dataEntryCompletionStatus
             );
-            if (Utility::isErrorX($success)) {
-                print "Could not set DECS: ".$success->getMessage()."<br>\n";
-            }
         } else {
             $submittedData = $this->form->getSubmitValues();
 
@@ -1042,9 +1034,6 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         // get a database connection
         $db =& Database::singleton();
-        if (Utility::isErrorX($db)) {
-            return $db;
-        }
 
         $query = "SELECT Subtest_name AS Name, Description
             FROM instrument_subtests
@@ -1052,9 +1041,6 @@ class NDB_BVL_Instrument extends NDB_Page
                 ORDER BY Order_number";
 
         $results = $db->pselect($query, array('TN' => $this->testName));
-        if (Utility::isErrorX($results)) {
-            return $results;
-        }
 
         return $results;
     }
@@ -2131,27 +2117,20 @@ class NDB_BVL_Instrument extends NDB_Page
             $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
             $success      = $controlPanel->select($_REQUEST['commentID']);
 
-            if (Utility::isErrorX($success)) {
-                $tpl_data['error_message'][] = $success->getMessage();
-            } else {
-                $config = NDB_Config::singleton();
-                $paths  = $config->getSetting('paths');
-                if (empty($subtest)) {
-                    // check if the file/class exists
-                    $BasePath = $paths['base'] . 'project/instruments/';
-                    $TestName = $this->testName;
-                    if (file_exists(
-                        $BasePath
-                        . "NDB_BVL_Instrument_$TestName.class.inc"
-                    )
-                        || file_exists($BasePath . "$TestName.linst")
-                    ) {
-                        // save possible changes from the control panel...
-                        $success = $controlPanel->save();
-                        if (Utility::isErrorX($success)) {
-                            $tpl_data['error_message'][] = $success->getMessage();
-                        }
-                    }
+            $config = NDB_Config::singleton();
+            $paths  = $config->getSetting('paths');
+            if (empty($subtest)) {
+                // check if the file/class exists
+                $BasePath = $paths['base'] . 'project/instruments/';
+                $TestName = $this->testName;
+                if (file_exists(
+                    $BasePath
+                    . "NDB_BVL_Instrument_$TestName.class.inc"
+                )
+                    || file_exists($BasePath . "$TestName.linst")
+                ) {
+                    // save possible changes from the control panel...
+                    $success = $controlPanel->save();
                 }
 
                 // display the control panel
@@ -2443,8 +2422,8 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function toJSON()
     {
-        $smarty   = new Smarty_neurodb;
-        $renderer = new HTML_QuickForm_Renderer_Array($smarty);
+        $smarty = new Smarty_neurodb;
+        //$renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
         $subtests = $this->getSubtestList();
         foreach ($subtests as $subtest) {

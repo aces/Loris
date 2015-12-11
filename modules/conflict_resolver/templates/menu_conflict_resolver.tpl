@@ -1,8 +1,8 @@
-<script src="js/filterControl.js" type="text/javascript"></script>
+<script src="{$baseurl}/js/filterControl.js" type="text/javascript"></script>
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="main.php?test_name=conflict_resolver">
+        <form method="post" action="{$baseurl}/conflict_resolver/">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -73,7 +73,7 @@
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs ">
         <li class="active"><a id="onLoad">Unresolved Conflicts</a></li>
-        <li><a href="main.php?test_name=conflict_resolver&submenu=resolved_conflicts">Resolved Conflicts</a></li>
+        <li><a href="{$baseurl}/conflict_resolver/?submenu=resolved_conflicts">Resolved Conflicts</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active">
@@ -84,7 +84,7 @@
                     <td align="right" id="pageLinks"></td>
                 </tr>
             </table>
-            <form method="post" action="main.php?test_name=conflict_resolver" name="conflict_resolver" id="conflict_resolver">
+            <form method="post" action="{$baseurl}/conflict_resolver/" name="conflict_resolver" id="conflict_resolver">
                 <table class="table table-hover table-primary table-bordered table-unresolved-conflicts dynamictable" border="0">
                     <thead>
 
@@ -97,7 +97,7 @@
                     <tr class="info">
                         <th>No.</th>
                         {section name=header loop=$headers}
-                            <th><a href="main.php?test_name=conflict_resolver&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                            <th><a href="{$baseurl}/conflict_resolver/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                                     {if $headers[header].displayName == "TableName"}
                                         Instrument
                                     {else if $headers[header].displayName == "CandID"}
@@ -163,7 +163,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=conflict_resolver&pageID=" + pageNum
+        location.href="{$baseurl}/conflict_resolver/?pageID=" + pageNum
     },
     Active: {$pageID}
 });

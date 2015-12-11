@@ -38,8 +38,8 @@ class Notify
         $db =& Database::singleton();
 
         $typeID = Notify::getTypeID($type);
-        if (empty($typeID) || Notify::isError($typeID)) {
-            throw new Exception(
+        if (empty($typeID)) {
+            throw new LorisException(
                 "Could not retrieve notification type id for type '$type'"
             );
         }

@@ -16,9 +16,6 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 	{
 		// create user object
 		$user =& User::singleton();
-		if(Utility::isErrorX($user)) {
-			return PEAR::raiseError("User Error: ".$user->getMessage());
-		}
 
 		return ($user->hasPermission('data_dict_view') || $user->hasPermission('data_dict_edit'));
 	}

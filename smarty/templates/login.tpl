@@ -141,7 +141,13 @@ BrowserDetect.init();
 	 		</div>
 	 	</div>
  	</div>
- 	<div class="row panel panel-default col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+   <div class="col-xs-12"> <!--maindiv start -->
+    <div class="row panel panel-default col-xs-6 col-xs-offset-1">
+        <div class="panel-body">
+            {$study_description}
+         </div>
+    </div>
+ 	<div class="row panel panel-default col-xs-4 col-xs-offset-1">
 		  <div class="panel-body">
 		  		<div class="col-xs-12">
 		  			<center>
@@ -179,6 +185,7 @@ BrowserDetect.init();
 					<hr width = 70%>
 					<td width="100%">
                     {if $studylinks}
+                    <center>
 					<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
 
 					<li id="active">|</li>
@@ -187,6 +194,7 @@ BrowserDetect.init();
 					{/foreach}
 
 					</ul>
+                    </center>
                     {/if}
 					</td>
 					</tr>
@@ -194,6 +202,7 @@ BrowserDetect.init();
 					<!--td align="center" colspan="1"><br><font color="#C40A29">A WebGL-compatible browser is required for full functionality.</font></td-->
 					</tr>       
 					<tr>
+                    <br>
 					<td align="center" colspan="1" style="color:#808080" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
 					</tr>	
 					<tr>
@@ -210,7 +219,7 @@ BrowserDetect.init();
 				</div>
 		  </div>
 	</div>
-
+  </div> <!--closing maindiv -->
 
 
 <!-- old study web links positioning
