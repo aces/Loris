@@ -483,42 +483,38 @@ ImagePanelBody = React.createClass({
     render: function () {
         return React.createElement(
             'div',
-            { className: 'panel panel-default' },
+            { className: 'panel-body' },
             React.createElement(
                 'div',
-                { className: 'panel-body' },
+                { className: 'row' },
                 React.createElement(
                     'div',
-                    { className: 'row' },
-                    React.createElement(
-                        'div',
-                        { className: 'col-xs-9 imaging_browser_pic' },
-                        React.createElement('img', { className: 'img-checkpic img-responsive', src: this.props.Checkpic })
-                    ),
-                    React.createElement(
-                        'div',
-                        { className: 'col-xs-3 mri-right-panel' },
-                        React.createElement(ImagePanelQCPanel, {
-                            FileID: this.props.FileID,
-                            FileNew: this.props.FileNew,
-                            HasQCPerm: this.props.HasQCPerm,
-                            QCStatus: this.props.QCStatus,
-                            Caveat: this.props.Caveat,
-                            SelectedOptions: this.props.SelectedOptions,
-                            Selected: this.props.Selected
-                        })
-                    )
+                    { className: 'col-xs-9 imaging_browser_pic' },
+                    React.createElement('img', { className: 'img-checkpic img-responsive', src: this.props.Checkpic })
                 ),
-                React.createElement(ImageDownloadButtons, {
-                    BaseURL: this.props.BaseURL,
-                    FileID: this.props.FileID,
-                    Fullname: this.props.Fullname,
-                    XMLProtocol: this.props.XMLProtocol,
-                    XMLReport: this.props.XMLReport,
-                    XMLReport: this.props.NrrdFile
-                }),
-                this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, { HeaderInfo: this.props.HeaderInfo }) : ''
-            )
+                React.createElement(
+                    'div',
+                    { className: 'col-xs-3 mri-right-panel' },
+                    React.createElement(ImagePanelQCPanel, {
+                        FileID: this.props.FileID,
+                        FileNew: this.props.FileNew,
+                        HasQCPerm: this.props.HasQCPerm,
+                        QCStatus: this.props.QCStatus,
+                        Caveat: this.props.Caveat,
+                        SelectedOptions: this.props.SelectedOptions,
+                        Selected: this.props.Selected
+                    })
+                )
+            ),
+            React.createElement(ImageDownloadButtons, {
+                BaseURL: this.props.BaseURL,
+                FileID: this.props.FileID,
+                Fullname: this.props.Fullname,
+                XMLProtocol: this.props.XMLProtocol,
+                XMLReport: this.props.XMLReport,
+                XMLReport: this.props.NrrdFile
+            }),
+            this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, { HeaderInfo: this.props.HeaderInfo }) : ''
         );
     }
 });
@@ -544,37 +540,41 @@ ImagePanel = React.createClass({
         return React.createElement(
             'div',
             { className: 'col-xs-12 col-md-6' },
-            React.createElement(ImagePanelHeader, {
-                FileID: this.props.FileID,
-                Filename: this.props.Filename,
-                QCStatus: this.props.QCStatus,
-                onToggleBody: this.toggleBody,
-                onToggleHeaders: this.toggleHeaders,
-                Expanded: !this.state.BodyCollapsed,
-                HeadersExpanded: !this.state.HeadersCollapsed
-            }),
-            this.state.BodyCollapsed ? '' : React.createElement(ImagePanelBody, {
-                BaseURL: this.props.BaseURL,
+            React.createElement(
+                'div',
+                { className: 'panel panel-default' },
+                React.createElement(ImagePanelHeader, {
+                    FileID: this.props.FileID,
+                    Filename: this.props.Filename,
+                    QCStatus: this.props.QCStatus,
+                    onToggleBody: this.toggleBody,
+                    onToggleHeaders: this.toggleHeaders,
+                    Expanded: !this.state.BodyCollapsed,
+                    HeadersExpanded: !this.state.HeadersCollapsed
+                }),
+                this.state.BodyCollapsed ? '' : React.createElement(ImagePanelBody, {
+                    BaseURL: this.props.BaseURL,
 
-                FileID: this.props.FileID,
-                Filename: this.props.Filename,
-                Checkpic: this.props.Checkpic,
-                HeadersExpanded: !this.state.HeadersCollapsed,
+                    FileID: this.props.FileID,
+                    Filename: this.props.Filename,
+                    Checkpic: this.props.Checkpic,
+                    HeadersExpanded: !this.state.HeadersCollapsed,
 
-                HeaderInfo: this.props.HeaderInfo,
+                    HeaderInfo: this.props.HeaderInfo,
 
-                FileNew: this.props.FileNew,
-                HasQCPerm: this.props.HasQCPerm,
-                QCStatus: this.props.QCStatus,
-                Caveat: this.props.Caveat,
-                SelectedOptions: this.props.SelectedOptions,
-                Selected: this.props.Selected,
+                    FileNew: this.props.FileNew,
+                    HasQCPerm: this.props.HasQCPerm,
+                    QCStatus: this.props.QCStatus,
+                    Caveat: this.props.Caveat,
+                    SelectedOptions: this.props.SelectedOptions,
+                    Selected: this.props.Selected,
 
-                Fullname: this.props.Fullname,
-                XMLProtocol: this.props.XMLProtocol,
-                XMLReport: this.props.XMLReport,
-                NrrdFile: this.props.NrrdFile
-            })
+                    Fullname: this.props.Fullname,
+                    XMLProtocol: this.props.XMLProtocol,
+                    XMLReport: this.props.XMLReport,
+                    NrrdFile: this.props.NrrdFile
+                })
+            )
         );
     }
 });

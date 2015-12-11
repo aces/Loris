@@ -300,7 +300,6 @@ ImagePanelBody = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     render: function() {
         return (
-            <div className="panel panel-default">
                 <div className="panel-body">
                     <div className="row">
                         <div className="col-xs-9 imaging_browser_pic">
@@ -328,7 +327,6 @@ ImagePanelBody = React.createClass({
                         />
                     {this.props.HeadersExpanded ? <ImagePanelHeadersTable HeaderInfo={this.props.HeaderInfo} /> : ''}
                 </div>
-            </div>
         );
     }
 });
@@ -353,6 +351,7 @@ ImagePanel = React.createClass({
     render: function() {
         return (
             <div className="col-xs-12 col-md-6">
+                <div className="panel panel-default">
                 <ImagePanelHeader 
                     FileID={this.props.FileID}
                     Filename={this.props.Filename}
@@ -385,6 +384,7 @@ ImagePanel = React.createClass({
                         XMLReport={this.props.XMLReport}
                         NrrdFile={this.props.NrrdFile}
                     /> }
+                </div>
             </div>
         );
     }
