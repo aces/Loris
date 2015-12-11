@@ -32,9 +32,6 @@ FieldsSidebar = React.createClass({
             Criteria: {}
         }
     },
-    reloadPage: function() {
-        location.reload();
-    },
     render: function() {
         if((!this.props.Fields || this.props.Fields.length === 0)
                 &&
@@ -50,7 +47,7 @@ FieldsSidebar = React.createClass({
             }
         }
         return (<Sidebar Name="Fields">
-                    <button onClick={this.reloadPage}>Clear Query</button>
+                    <button onClick={this.props.resetQuery}>Clear Query</button>
                     <ul className="list-group">
                         {fieldList}
                     </ul>
