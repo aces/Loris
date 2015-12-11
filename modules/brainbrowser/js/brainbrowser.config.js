@@ -59,12 +59,12 @@
     },
     {
       name: "Spectral",
-      url: loris.BaseURL + "/brainbrowser/color_maps/spectral.txt",
+      url: loris.BaseURL + "/brainbrowser/static/color_maps/spectral.txt",
       cursor_color: "#FFFFFF"
     },
     {
       name: "Thermal",
-      url: loris.BaseURL + "/brainbrowser/color_maps/thermal.txt",
+      url: loris.BaseURL + "/brainbrowser/static/color_maps/thermal.txt",
       cursor_color: "#FFFFFF"
     },
     {
