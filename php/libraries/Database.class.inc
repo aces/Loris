@@ -228,18 +228,71 @@ class Database
     }
 
     /**
-     * Inserts a row
+     * Insert a row into the database
      *
-     * Inserts a single row into the specified table, containing the values specified
+     * This will insert a row. HTML from any field in the row will be automatically
+     * escaped to avoid injection.
      *
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
      * @return none
-     * @access public
      */
-    function insert($table, $set)
+    public function insert($table, $set)
     {
+        return $this->_realinsert($table, $set, true);
+    }
+
+    /**
+     * Insert a row into the database without validating input.
+     *
+     * This will insert a row. HTML from any field in the row will *not* be
+     * automatically escaped. This should only be called when we know the source of
+     * the input is trustworthy and must contain HTML.
+     *
+     * @param string $table the table into which to insert the row
+     * @param array  $set   the values with which to fill the new row
+     *
+     * @return none
+     */
+    public function unsafeinsert($table, $set)
+    {
+        return $this->_realinsert($table, $set, false);
+    }
+
+    /**
+     * Escapes the HTML from an array that is about to be inserted into the database
+     *
+     * @param array $set The array to be inserted as a new row
+     *
+     * @return A copy of $set with the HTML characters escaped
+     */
+    private function _HTMLEscapeArray($set)
+    {
+        $retVal = array();
+        foreach ($set as $key => $val) {
+            $retVal[$key] = htmlspecialchars($val);
+        }
+        return $retVal;
+    }
+
+    /**
+     * Inserts a row
+     *
+     * Inserts a single row into the specified table, containing the values specified
+     *
+     * @param string $table      the table into which to insert the row
+     * @param array  $set        the values with which to fill the new row
+     * @param bool   $autoescape determines whether the values to be set should
+     *                           automatically have the html escaped
+     *
+     * @return none
+     */
+    private function _realinsert($table, $set, $autoescape = true)
+    {
+        if ($autoescape === true) {
+            $set = $this->_HTMLEscapeArray($set);
+        }
         $query  = "INSERT INTO $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set);
 
@@ -254,7 +307,6 @@ class Database
 
         // There is no where clause for an insert, so add a fake
         // one.
-
         $this->_printQuery($query);
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
@@ -271,7 +323,7 @@ class Database
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
-        $err = $this->_trackChanges($table, $set, '2=1', 'I');
+        $err = $this->trackChanges($table, $set, '2=1', 'I');
         return true;
     }
 
@@ -315,17 +367,56 @@ class Database
     /**
      * Updates a row
      *
-     * Updates a single row in the specified table
+     * Updates a single row in the specified table. This will automatically escape
+     * any HTML in the data being inserted for security.
      *
      * @param string $table   the table into which to insert the row
      * @param array  $set     the values with which to fill the new row
      * @param array  $i_where the selection filter, joined as a boolean and
      *
      * @return none
+     */
+    public function update($table, $set, $i_where)
+    {
+        return $this->_realupdate($table, $set, $i_where, true);
+    }
+
+    /**
+     * Updates a row
+     *
+     * Updates a single row in the specified table. This will *not* automatically
+     * escape and should be used with caution, only when you know you need to
+     * insert HTML and know that you can trust it.
+     *
+     * @param string $table   the table into which to insert the row
+     * @param array  $set     the values with which to fill the new row
+     * @param array  $i_where the selection filter, joined as a boolean and
+     *
+     * @return none
+     */
+    public function unsafeupdate($table, $set, $i_where)
+    {
+        return $this->_realupdate($table, $set, $i_where, false);
+    }
+    /**
+     * Updates a row
+     *
+     * Updates a single row in the specified table
+     *
+     * @param string $table      the table into which to insert the row
+     * @param array  $set        the values with which to fill the new row
+     * @param array  $i_where    the selection filter, joined as a boolean and
+     * @param bool   $autoescape determines whether the values to be set should
+     *                           automatically have the html escaped
+     *
+     * @return none
      * @access public
      */
-    function update($table, $set, $i_where)
+    private function _realupdate($table, $set, $i_where, $autoescape = true)
     {
+        if ($autoescape === true) {
+            $set = $this->_HTMLEscapeArray($set);
+        }
         /* This is still here to print the easily readable version on
          * the top of the page when showDatabaseQueries is on. It isn't
          * actually executed. */
@@ -359,7 +450,7 @@ class Database
             );
         }
 
-        $err = $this->_trackChanges($table, $set, $where);
+        $err = $this->trackChanges($table, $set, $where);
         $this->_printQuery($query.$where);
 
         $prep   = $this->_PDO->prepare($prepQ);
@@ -406,7 +497,7 @@ class Database
 
         // There is no set clause for a delete, so add a fake
         // one.
-        $err = $this->_trackChanges($table, array(), $where, 'D');
+        $err = $this->trackChanges($table, array(), $where, 'D');
 
         $this->_printQuery($query);
         $this->affected = $this->_PDO->exec($query);
@@ -678,8 +769,9 @@ class Database
      * @return string A string that can be used to generate a prepared statement with
      *                appropriate variable names generated for data binding.
      */
-    function _implodeAsPrepared($glue, $dataArray, &$exec_vals = null, $prefix='')
-    {
+    private function _implodeAsPrepared(
+        $glue, $dataArray, &$exec_vals = null, $prefix=''
+    ) {
         if (!is_array($dataArray) || count($dataArray)==0) {
             return '';
         }
@@ -722,7 +814,7 @@ class Database
      *
      * @return none As a side-effect populates history table
      */
-    private function _trackChanges($table, $set, $where, $type='U')
+    protected function trackChanges($table, $set, $where, $type='U')
     {
         // Tracking changes on the history table would result in an
         // infinite loop
@@ -734,9 +826,11 @@ class Database
         $this->select("SHOW INDEX FROM $table", $description);
 
         // find the primary key columns
-        foreach ($description AS $column) {
-            if ($column['Key_name']=='PRIMARY') {
-                $primaryKeys[] = $column['Column_name'];
+        if (is_array($description)) {
+            foreach ($description AS $column) {
+                if ($column['Key_name']=='PRIMARY') {
+                    $primaryKeys[] = $column['Column_name'];
+                }
             }
         }
 
@@ -906,7 +1000,7 @@ class Database
             $this->run($createStmt);
 
             foreach ($rowData as $row) {
-                $this->insert($tableName, $row);
+                $this->unsafeinsert($tableName, $row);
             }
         } else {
             throw new DatabaseException(
