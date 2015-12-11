@@ -102,6 +102,9 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
             identifiers: this.props.Sessions
         });
     },
+    changeDataDisplay: function(displayID) {
+        this.props.changeDataDisplay(displayID);
+    },
     render: function() {
         var buttons = (
             React.createElement("div", {className: "commands col-xs-12 form-group"}, 
@@ -143,12 +146,12 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
                                     React.createElement("span", {className: "caret"})
                                 ), 
                                 React.createElement("ul", {className: "dropdown-menu", role: "menu"}, 
-                                    React.createElement("li", null, 
+                                    React.createElement("li", {onClick: this.changeDataDisplay.bind(this, 0)}, 
                                         React.createElement("div", {className: "col-sm-12"}, 
                                             React.createElement("h5", {className: ""}, "Cross-sectional")
                                         )
                                     ), 
-                                    React.createElement("li", null, 
+                                    React.createElement("li", {onClick: this.changeDataDisplay.bind(this, 1)}, 
                                         React.createElement("div", {className: "col-sm-12"}, 
                                             React.createElement("h5", {className: ""}, "Longitudial")
                                         )

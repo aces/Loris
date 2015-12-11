@@ -147,7 +147,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
             fields: [],
             criteria: {},
             sessiondata: {},
-            grouplevel: 1,
+            grouplevel: 0,
             queryIDs: this.props.SavedQueries,
             savedQueries: {},
             queriesLoaded: false,
@@ -313,7 +313,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                         }
                         that.setState({ 'sessiondata' : sessiondata});
                         console.log("Received data");
-                        var rowdata = that.getRowData();
+                        var rowdata = that.getRowData(that.state.grouplevel);
                         that.setState({'rowData': rowdata});
                     }
                 });
@@ -322,7 +322,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
         }
 
     },
-    getRowData: function() {
+    getRowData: function(displayID) {
         var sessiondata = this.state.sessiondata;
         var sessions = this.getSessions();
         var fields = this.state.fields;
@@ -332,7 +332,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
         var Identifiers = [];
         var RowHeaders = [];
 
-        if(this.state.grouplevel === 0) {
+        if(displayID === 0) {
             for(i = 0; fields && i < fields.length; i += 1) {
                 RowHeaders.push(fields[i]);
             }
@@ -408,6 +408,13 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
             criteria: {}
         });
     },
+    changeDataDisplay: function(displayID){
+        var rowdata = this.getRowData(displayID);
+        this.setState({
+            grouplevel: displayID,
+            rowData: rowdata
+        });
+    },
     render: function() {
         var tabs = [], tabsNav = [], alert = React.createElement("div", null);
         tabs.push(React.createElement(InfoTabPane, {
@@ -429,6 +436,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 Criteria: this.state.criteria}
             )
         );
+        var displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudial";
         tabs.push(React.createElement(ViewDataTabPane, {
                 TabId: "ViewData", 
                 Fields: this.state.fields, 
@@ -438,7 +446,8 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 RowInfo: this.state.rowData.Identifiers, 
                 RowHeaders: this.state.rowData.RowHeaders, 
                 onRunQueryClicked: this.runQuery, 
-                displayType: this.state.displayType}
+                displayType: displayType, 
+                changeDataDisplay: this.changeDataDisplay}
         ));
         tabs.push(React.createElement(StatsVisualizationTabPane, {TabId: "Statistics", 
                 Fields: this.state.fields, 

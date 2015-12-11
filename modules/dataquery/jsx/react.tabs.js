@@ -102,6 +102,9 @@ ViewDataTabPane = React.createClass({
             identifiers: this.props.Sessions
         });
     },
+    changeDataDisplay: function(displayID) {
+        this.props.changeDataDisplay(displayID);
+    },
     render: function() {
         var buttons = (
             <div className="commands col-xs-12 form-group">
@@ -143,12 +146,12 @@ ViewDataTabPane = React.createClass({
                                     <span className="caret"></span>
                                 </button>
                                 <ul className="dropdown-menu" role="menu">
-                                    <li>
+                                    <li onClick={this.changeDataDisplay.bind(this, 0)}>
                                         <div className="col-sm-12">
                                             <h5 className="">Cross-sectional</h5>
                                         </div>
                                     </li>
-                                    <li>
+                                    <li onClick={this.changeDataDisplay.bind(this, 1)}>
                                         <div className="col-sm-12">
                                             <h5 className="">Longitudial</h5>
                                         </div>
