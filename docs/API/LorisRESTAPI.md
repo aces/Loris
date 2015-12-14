@@ -511,7 +511,6 @@ of the form
     },
    "QC" : "Pass|Fail"
    "Pending" : boolean,
-   "Caveat" : boolean
 }
 ```
 
@@ -579,7 +578,7 @@ This (in combination with raw) will let you extract the headers in a JSON
 format that BrainBrowser can load. It will return a JSON object of the format
 
 ```js
-????
+{"xspace":{"start":"","space_length":"","step":""},"yspace":{"start":"","space_length":"","step":""},"zspace":{"start":"","space_length":"","step":""},"order":["xspace","zspace","yspace"]}
 ```
 
 ### 4.4.3 Thumbnail Format
@@ -603,6 +602,7 @@ This will return a JSON summary of the important headers for this filename. It
 will return a JSON object of the form:
 
 ```js
+{
     "Meta" : {
         "CandID" : $CandID,
         "Visit" : $VisitLabel,
@@ -634,9 +634,9 @@ will return a JSON object of the form:
         "TimeDimension" : {
             "Length" : "",
             "StepSize" : ""
-        },,
+        }
     }
-    "
+}
 ```
 ### 4.5.2 Complete Headers
 ```

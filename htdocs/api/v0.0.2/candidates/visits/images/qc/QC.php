@@ -10,8 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-namespace Loris\API\Candidates\Candidate\Visit\QC;
-require_once '../../Visit.php';
+namespace Loris\API\Candidates\Candidate\Visit\Imaging\Qc;
+require_once __DIR__ . '/../Image.php';
 /**
  * Handles API requests for the candidate's visit. Extends
  * Candidate so that the constructor will validate the candidate
@@ -23,7 +23,7 @@ require_once '../../Visit.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Imaging extends \Loris\API\Candidates\Candidate\Visit
+class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
 {
     /**
      * Construct a visit class object to serialize candidate visits
@@ -33,7 +33,7 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
      * @param string $VisitLabel The visit label to be serialized
      * @param string $InputData  The data posted to this URL
      */
-    public function __construct($method, $CandID, $VisitLabel)
+    public function __construct($method, $CandID, $VisitLabel, $Filename)
     {
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
 
@@ -42,13 +42,8 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
         if (empty($this->AllowedMethods)) {
             $this->AllowedMethods = ['GET', 'PUT', 'PATCH'];
         }
-        $this->CandID     = $CandID;
-        $this->VisitLabel = $VisitLabel;
 
-        //   $this->Timepoint = \Timepoint::singleton($timepointID);
-        // Parent constructor will handle validation of
-        // CandID
-        parent::__construct($method, $CandID, $VisitLabel);
+        parent::__construct($method, $CandID, $VisitLabel, $Filename);
 
         if ($requestDelegationCascade) {
             $this->handleRequest();
@@ -63,26 +58,20 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
      */
     public function handleGET()
     {
-        $factory = \NDB_Factory::singleton();
-        $DB = $factory->database();
-         $qcstatus = $DB->pselectRow(
-         "SELECT MRIQCStatus, MRIQCPending 
-             FROM session s JOIN candidate c ON (c.CandID=s.CandID) WHERE c.Active='Y' AND s.Active='Y'
-             AND s.Visit_label=:VL AND c.CandID=:CID",
-             array('VL' => $this->VisitLabel, 'CID' => $this->CandID)
-         );
-          
-
         $this->JSON = [
-                       'Meta' => [
-                                    'CandID' => $this->CandID,
-                                    'Visit' => $this->VisitLabel
-                                 ]
-                      ];
-
-        $this->JSON['SessionQC'] = $qcstatus['MRIQCStatus'];
-        $this->JSON['Pending'] = $qcstatus['MRIQCPending'] === 'N' ? false : true;
-
+            'Meta' => [
+                'CandID' => $this->CandID,
+                'Visit' => $this->VisitLabel,
+                'File' => $this->Filename,
+                ],
+                'QC' => 'Not yet implemented',
+                'Selected' => 'Not yet implemented',
+                'CaveatList' => 'Not yet implemented',
+                'Comments' => 'Not yet implemented',
+            ];
+    }
+    public function calculateETag() {
+        return null;
     }
 
     public function handlePUT()
@@ -94,11 +83,12 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
     }
 }
 
-if (isset($_REQUEST['PrintQC'])) {
-    $obj = new Imaging(
+if (isset($_REQUEST['PrintImageQC'])) {
+    $obj = new QC(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID'],
-        $_REQUEST['VisitLabel']
+        $_REQUEST['VisitLabel'],
+        $_REQUEST['Filename']
     );
     print $obj->toJSONString();
 }
