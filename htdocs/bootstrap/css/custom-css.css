@@ -106,15 +106,14 @@ color: #b94a48;
 }
 
 /*
- *  CSS for login footer
+ *  CSS for Loris footer
  */
-.LoginFooter {
+.LorisFooter {
     bottom:0;
     clear: both;
-    height: 3em;
     width: 100%;
     font-size: 0.9em;
-    color: gray;
+    color: black;
     text-align: center;
     vertical-align: bottom;
 }
