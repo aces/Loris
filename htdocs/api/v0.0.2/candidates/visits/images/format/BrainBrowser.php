@@ -58,6 +58,8 @@ class BrainBrowser extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      */
     public function handleGET()
     {
+        $order = $this->getHeader("image:dimorder");
+        $orderArray = split(",", $order);
         $this->JSON = [
             'xspace' => [
                 'start' =>  $this->getHeader("xspace:start"),
@@ -74,8 +76,15 @@ class BrainBrowser extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                 'space_length' => $this->getHeader("zspace:length"),
                 'step' => $this->getHeader("zspace:step"),
                 ],
-            'order' => $this->getHeader("image:dimorder")
         ];
+        if (count($orderArray) === 4) {
+            $this->JSON['time'] = [
+                'start' =>  $this->getHeader("time:start"),
+                'space_length' => $this->getHeader("time:length"),
+                'step' => $this->getHeader("time:step"),
+                ];
+        }
+        $this->JSON['order'] = $orderArray;
     }
 
     protected function getHeader($headerName) {
