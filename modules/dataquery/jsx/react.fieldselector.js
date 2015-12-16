@@ -1,13 +1,17 @@
 CategoryItem = React.createClass({
     render: function() {
-        var classList = "list-group-item";
+        var classList = "list-group-item",
+            badge = '';
         if(this.props.selected) {
             classList += " active";
+        }
+        if(this.props.count >= 0) {
+            badge = <span className="badge">{this.props.count}</span>
         }
         return (
             <a href="#" className={classList} onClick={this.props.onClick}>
                 {this.props.name}
-                <span className="badge">{this.props.count}</span>
+                {badge}
             </a>
         );
     }

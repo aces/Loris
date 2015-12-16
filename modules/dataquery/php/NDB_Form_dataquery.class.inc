@@ -37,7 +37,11 @@ class NDB_Form_dataquery extends NDB_Form
 
         $cat_tpl = array();
         foreach($categories as $row) {
-            $cat_tpl[$row['key'][0]] = $row['value'];
+            if ($row['value']) {
+                $cat_tpl[$row['key'][0]] = $row['value'];
+            } else {
+                $cat_tpl[$row['key'][0]] = -1;
+            }
         }
         $this->tpl_data['categories'] = $cat_tpl;
 

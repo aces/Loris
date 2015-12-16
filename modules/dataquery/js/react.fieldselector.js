@@ -1,13 +1,17 @@
 CategoryItem = React.createClass({displayName: "CategoryItem",
     render: function() {
-        var classList = "list-group-item";
+        var classList = "list-group-item",
+            badge = '';
         if(this.props.selected) {
             classList += " active";
+        }
+        if(this.props.count >= 0) {
+            badge = React.createElement("span", {className: "badge"}, this.props.count)
         }
         return (
             React.createElement("a", {href: "#", className: classList, onClick: this.props.onClick}, 
                 this.props.name, 
-                React.createElement("span", {className: "badge"}, this.props.count)
+                badge
             )
         );
     }
