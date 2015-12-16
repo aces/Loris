@@ -1,0 +1,4 @@
+The getAssemblyRoot() in Image.php should be implemented.
+
+Currently, it just returns a hardcoded string, but it should
+read the imagePath from the config file
