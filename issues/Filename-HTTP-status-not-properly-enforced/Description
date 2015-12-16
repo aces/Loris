@@ -1,0 +1,4 @@
+The URLs with a single filename parameter (ie the Image.php top level)
+should return a 404 if the file is not in the imaging browser,
+and a 500 error if it is in the imaging browser but it can't be
+accessed for some reason.
