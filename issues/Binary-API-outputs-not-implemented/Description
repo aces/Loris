@@ -1,3 +1,9 @@
 The endpoints of the API that output binary data (ie retrieving
 the file, retrieving the thumbnail, or the raw format) aren't
 yet implemented. 
+
+Things that need to be done:
+1. Base Image.php should return minc file (with mime type)
+2. /format/raw not implemented at all
+3. /format/thumbnail not implemented at all
+
