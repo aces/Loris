@@ -103,7 +103,9 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
     }
 
     protected function getAssemblyRoot() {
-        return "/data/ibis/data/";
+        $factory = \NDB_Factory::singleton();
+        $config = $factory->Config();
+        return $config->getSetting("imagePath");
     }
     protected function getDatabaseDir() {
         $factory = \NDB_Factory::singleton();
