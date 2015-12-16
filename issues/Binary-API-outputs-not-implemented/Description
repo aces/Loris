@@ -1,0 +1,3 @@
+The endpoints of the API that output binary data (ie retrieving
+the file, retrieving the thumbnail, or the raw format) aren't
+yet implemented. 
