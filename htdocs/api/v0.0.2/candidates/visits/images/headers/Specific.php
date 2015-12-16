@@ -23,7 +23,7 @@ require_once __DIR__ . '/../Image.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
+class SpecificHeader extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
 {
     /**
      * Construct a visit class object to serialize candidate visits
@@ -33,17 +33,19 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      * @param string $VisitLabel The visit label to be serialized
      * @param string $InputData  The data posted to this URL
      */
-    public function __construct($method, $CandID, $VisitLabel, $Filename)
+    public function __construct($method, $CandID, $VisitLabel, $Filename, $Header)
     {
         $requestDelegationCascade = $this->AutoHandleRequestDelegation;
 
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET', 'PUT', 'PATCH'];
+            $this->AllowedMethods = ['GET'];
         }
 
         parent::__construct($method, $CandID, $VisitLabel, $Filename);
+
+        $this->Header = $Header;
 
         if ($requestDelegationCascade) {
             $this->handleRequest();
@@ -58,41 +60,18 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      */
     public function handleGET()
     {
+
+        foreach ($headersDB as $row) {
+            $headers[$row['Header']] = $row['Value'];
+        }
         $this->JSON = [
             'Meta' => [
                 'CandID' => $this->CandID,
                 'Visit' => $this->VisitLabel,
-                'Filename' => $this->Filename
+                'Filename' => $this->Filename,
+                "Header" => $this->Header
             ],
-            'Physical' => [
-                "TE" => $this->getHeader('acquisition:echo_time'),
-                "TR" => $this->getHeader('acquisition:repetition_time'),
-                "TI" => $this->getHeader('acquisition:inversion_time'), 
-                "SliceThickness" => $this->getHeader('acquisition:slice_thickness')
-            ],
-            'Description' => [
-                "SeriesName" => $this->getHeader("acquisition:protocol"),
-                "SeriesDescription" => $this->getHeader("acquisition:series_description")
-            ],
-            'Dimensions' => [
-                "XSpace" => [
-                    "Length" => $this->getHeader("xspace:length"),
-                    "StepSize" => $this->getHeader("xspace:step"),
-                ],
-                "YSpace" => [
-                    "Length" => $this->getHeader("yspace:length"),
-                    "StepSize" => $this->getHeader("yspace:step"),
-                ],
-                "ZSpace" => [
-                    "Length" => $this->getHeader("zspace:length"),
-                    "StepSize" => $this->getHeader("zspace:step"),
-                ],
-                "TimeDimension" => [
-                    "Length" => $this->getHeader("time:length"),
-                    "StepSize" => $this->getHeader("time:step"),
-                ],
-            ],
-
+            "Value" => $this->getHeader($this->Header)
         ];
     }
     public function calculateETag() {
@@ -108,12 +87,13 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     }
 }
 
-if (isset($_REQUEST['PrintHeadersSummary'])) {
-    $obj = new Headers(
+if (isset($_REQUEST['PrintSpecificHeader'])) {
+    $obj = new SpecificHeader(
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID'],
         $_REQUEST['VisitLabel'],
-        $_REQUEST['Filename']
+        $_REQUEST['Filename'],
+        $_REQUEST['Header']
     );
     print $obj->toJSONString();
 }

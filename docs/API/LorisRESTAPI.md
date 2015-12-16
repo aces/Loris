@@ -550,7 +550,7 @@ Returns file level QC information. It will return a JSON object of the form
 }
 ```
 
-`PUT` or `PATCH requests to the same URL will update the QC information.
+`PUT` or `PATCH` requests to the same URL will update the QC information.
 
 ## 4.4 Alternate formats
 
@@ -578,7 +578,23 @@ This (in combination with raw) will let you extract the headers in a JSON
 format that BrainBrowser can load. It will return a JSON object of the format
 
 ```js
-{"xspace":{"start":"","space_length":"","step":""},"yspace":{"start":"","space_length":"","step":""},"zspace":{"start":"","space_length":"","step":""},"order":["xspace","zspace","yspace"]}
+{
+    "xspace": {
+        "start":"",
+        "space_length":"",
+        "step":""},
+    "yspace": {
+        "start":"",
+        "space_length":"",
+        "step":""
+    },
+    "zspace": {
+        "start":"",
+        "space_length":"",
+        "step":""
+    },
+    "order":["xspace","zspace","yspace"]
+}
 ```
 
 ### 4.4.3 Thumbnail Format
@@ -644,6 +660,22 @@ GET /candidates/$CandID/$VisitLabel/images/$Filename/headers/full
 ```
 
 This will return a JSON object with ALL headers for this acquisition. 
+
+The JSON will be of the form:
+
+```js
+{
+    "Meta" : {
+        "CandID" : $CandID,
+        "Visit" : $VisitLabel,
+        "File" : $Filename
+    },
+    "Headers" : {
+        "dicomheader" : "value",
+        /* more headers ... */
+    }
+}
+```
 
 ### 4.5.3 Specific Header
 ```
