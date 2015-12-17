@@ -11,7 +11,6 @@
 
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
-//require_once 'Spreadsheet/Excel/Writer.php';
 require_once "Archive/Tar.php";
 require_once "CouchDB_MRI_Importer.php";
 
@@ -20,6 +19,8 @@ require_once "CouchDB_MRI_Importer.php";
 $dumpName = "dataDump" . date("dMy"); // label for dump
 $config = NDB_Config::singleton();
 $paths = $config->getSetting('paths');
+print "paths:";
+print_r($paths);
 $dataDir = $paths['base'] . "tools/$dumpName/"; //temporary working directory
 $destinationDir = $paths['base'] . "htdocs/dataDumps"; //temporary working directory
 
@@ -46,14 +47,13 @@ $d->close();
 
 //Substitute words for numbers in Subproject data field
 function MapSubprojectID(&$results) {
-    global $config;
-    $subprojectLookup = array();
-    // Look it up from the config
-    $study = $config->getSetting('study');
-    foreach ($study["subprojects"]["subproject"] as $subproject) {
-	    $subprojectLookup[$subproject["id"]] = $subproject["title"];
-    }
-
+    $projectID = 1;
+    $subprojectLookup = Utility::getSubprojectList($projectID);
+        
+    print "subprojectLookup: ";
+    print_r($subprojectLookup);
+    die;
+    
     for ($i = 0; $i < count($results); $i++) {
 	    $results[$i]["SubprojectID"] = 
                 $subprojectLookup[$results[$i]["SubprojectID"]];
@@ -194,26 +194,13 @@ function getNameFromNumber($num)
  * @param unknown_type $dataDir The  output directory.
  */
 function writeExcel ($Test_name, $instrument_table, $dataDir) {
-	//Modifiable parameters
-	$maxColsPerWorksheet = 250;  //leave a little bit of extra room
 	//    $metaCols = array("PSCID", "CandID", "Visit_label", "Examiner_name", "Data_entry_completion_status", "Date_taken"); //metadata columns
 	$junkCols = array("CommentID", "UserID", "Examiner", "Testdate", "Data_entry_completion_status"); //columns to be removed
 
 	// create empty Excel file to fill up
     // Create a new PHPExcel Object
     $ExcelApplication = new PHPExcel();
-    // Removing builtin sheet make it easier to use same function to add sheets later
-    $ExcelApplication->removeSheetByIndex(0);
-    
-
-	// $workbook = new Spreadsheet_Excel_Writer("$dataDir/$Test_name.xls");
-
-	//Excel has a 256 column limit per worksheet.  If our instrument table/array is greater, split it into the needed number of worksheets
-	for ($w = 1; $w <= ceil(count($instrument_table[0]) / $maxColsPerWorksheet); $w++) {
-		// $worksheets[] =& $workbook->addWorkSheet("Sheet{$w}");
-        $ExcelWorkSheet = new PHPExcel_Worksheet($ExcelApplication, "Sheet{$w}");
-        $ExcelApplication->addSheet($ExcelWorkSheet, -1);
-	}
+    $ExcelWorkSheet = $ExcelApplication->getSheet(0);
 
 	//ensure non-empty result set
 	if (count($instrument_table) ==0) { //empty result set
@@ -225,19 +212,6 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
 	for ($i = 0; $i < count($instrument_table); $i++) {
 		$instrument_table[$i] = array_diff_key($instrument_table[$i], array_flip($junkCols));
 	}
-
-	//Use Excel 97/2000 Binary File Format thereby allowing cells to contain more than 255 characters.
-	// $workbook->setVersion(8); // Use Excel97/2000 Format.
-
-	// Formatting for the header row; bold and frozen
-	//$headerFormat =& $workbook->addFormat();
-	//$headerFormat->setBold();
-	//$headerFormat->setAlign('center');
-
-	// Formatting:  Freeze only the first worksheet, at the metaCols and header intersection.
-	// This is not used to be compatible with figs_year3_relatives and the candidate_info.csv files where there are non-standard numbers of columns
-	//	$worksheet =& $worksheets[0];
-	//	$worksheet->freezePanes(array(1, count($metaCols), 1, count($metaCols)));  //change after # of cols are decided.
 
 	// add all header rows
 	$headers = array_keys($instrument_table[0]);
@@ -257,33 +231,8 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
                );
     $ExcelWorkSheet->getStyle($header)->applyFromArray($style);
 
-	//foreach ($headers as $headerNum=>$header) {
-		//figure out which sheet number the header belongs on
-	//	$worksheetNum = intval($headerNum  / $maxColsPerWorksheet);
-		//$worksheet =& $worksheets[$worksheetNum];
-		//figure out the column (only tricky if there is more than one worksheet.
-	//	$col = $headerNum % $maxColsPerWorksheet;
-		//$worksheet->write(0, $col, $header, $headerFormat);
-	//}
-
 	// add data to worksheet
     $ExcelWorkSheet->fromArray($instrument_table, ' ', 'A2');
-    
-//	$rowCount=1;  //start right after the header
-//	foreach ($instrument_table as $row) {
-//		$dataRow = array_values($row);
-//		foreach ($dataRow as $valueNum=>$value){
-//			//figure out which sheet number the header belongs on
-//			$worksheetNum = intval($valueNum  / $maxColsPerWorksheet);
-//			$worksheet =& $worksheets[$worksheetNum];
-//			//figure out the column (only tricky if there is more than one worksheet)
-//			$col = $valueNum % $maxColsPerWorksheet;
-//			//Replace NULLs with . (dots)
-//			if (is_null($value)) $value = ".";
-//			$worksheet->write($rowCount, $col, $value);
-//		}
-//		$rowCount++;
-//	}
 
     // Redimension columns to max size of data
     for ($col = 0; $col <= $numCol; $col++) {
@@ -291,20 +240,11 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
             getNameFromNumber($col)
         )->setAutoSize(true);
     }
-  
-    
-    
-    
+
 	// save file to disk
     $writer = PHPExcel_IOFactory::createWriter($ExcelApplication, 'Excel2007');
     $writer->save("$dataDir/$Test_name.xls");
     
-//	if ($workbook->close() === true) {
-//		unset($worksheets); // need to unset for the next instrument
-//		echo "Success: $Test_name\n";
-//	} else {
-//		echo"ERROR: Could not save $Test_name spreadsheet.\n";
-//	}
 } //end function writeExcel
 
 /**
