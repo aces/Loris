@@ -215,21 +215,28 @@ class SinglePointLogin
         return true;
     }
 
-    function authenticate() {
-        // First try JWT authentication, which is cheaper and doesn't involve database calls
-        $headers = getallheaders();
-        $authHeader = $headers['Authorization'];//_SERVER['HTTP_AUTHORIZATION'];
-        if(!empty($authHeader)) {
-            $token = split(" ", $authHeader);
+    /**
+     * Attempt to authenticate a user's credentials by any supported means.
+     *
+     * @return none, but may modified session state
+     */
+    function authenticate()
+    {
+        // First try JWT authentication, which is cheaper and
+        // doesn't involve database calls
+        $headers    = getallheaders();
+        $authHeader = $headers['Authorization'];
+        if (!empty($authHeader)) {
+            $token = explode(" ", $authHeader);
             // Index 0 is "Bearer", 1 is the token
-            if($this->JWTAuthenticate($token[1]) === true) {
+            if ($this->JWTAuthenticate($token[1]) === true) {
                 return true;
             }
-            
+
         }
 
         // Now try password validation
-        
+
         // This wasn't a login form, so don't waste any time
         if (empty($_POST['login'])) {
             return false;
@@ -237,10 +244,18 @@ class SinglePointLogin
         return $this->passwordAuthenticate($_POST['username'], $_POST['password']);
     }
 
-    function JWTAuthenticate($token) {
+    /**
+     * Attempts to authenticate a JWT token
+     *
+     * @param string $token The token extracted from the
+     *                      Authorization: Bearer header
+     *
+     * @return true if the session is valid, false otherwise
+     */
+    function JWTAuthenticate($token)
+    {
         $factory = NDB_Factory::singleton();
-        $config = $factory->config();
-
+        $config  = $factory->config();
 
         $sharedKey = $config->getSetting("JWTKey");
 
@@ -251,15 +266,26 @@ class SinglePointLogin
             return false;
         }
 
-        $decodedArray = (array) $decoded;
-        $this->_username = isset($decodedArray['user']) ? $decodedArray['user'] : 'Unknown';
+        $decodedArray    = (array) $decoded;
+        $this->_username
+            = isset($decodedArray['user'])
+                ? $decodedArray['user'] : 'Unknown';
         return isset($decodedArray['user']);
     }
 
     /**
      * Checks whether a given username and password are valid
      *
-     * @return bool
+     * @param string $username The username to validate
+     * @param string $password The username to validate
+     * @param bool   $redirect If this flag is true, this
+     *                         function may instead print
+     *                         out a login or password expiry
+     *                         page. when trying to authenticate.
+     *                         If false, it won't provide any output
+     *                         in those situation.
+     *
+     * @return bool true if the username and password are valid
      * @access public
      */
     function passwordAuthenticate($username, $password, $redirect = true)
@@ -289,7 +315,7 @@ class SinglePointLogin
             $success = $this->save();
 
             if ($success == false) {
-                if($redirect) {
+                if ($redirect) {
                     $this->showPasswordExpiryScreen();
                 }
                 return false;
@@ -318,7 +344,7 @@ class SinglePointLogin
 
         // create DB object
         $factory = NDB_Factory::singleton();
-        $DB =& $factory->database();
+        $DB      =& $factory->database();
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
@@ -383,7 +409,7 @@ class SinglePointLogin
                 // check if the password expired
                 if (strcmp($row['Password_expiry'], date('Y-m-d', time())) < 1) {
                     // show password expiry screen
-                    if($redirect) {
+                    if ($redirect) {
                         $this->showPasswordExpiryScreen();
                     }
                     return false;
