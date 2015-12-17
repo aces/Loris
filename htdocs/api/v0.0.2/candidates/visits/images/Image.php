@@ -85,11 +85,33 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
         $this->Header('Content-Type: application/octet-stream');
         $this->Header('Content-Length: '.filesize($fullDir));
         $this->Header('Content-Disposition: filename='.$this->Filename);
+
         while(!feof($fp)) {
-            print fread($fp);
+            print fread($fp, 1024);
         }
         $this->safeExit();
     }
+    protected function getHeader($headerName) {
+        $factory = \NDB_Factory::singleton();
+        $db = $factory->Database();
+
+        return $db->pselectOne("SELECT Value
+            FROM parameter_file pf 
+            JOIN parameter_type pt USING (ParameterTypeID)
+            JOIN files f USING (FileID)
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c ON (s.CandID=c.CandID)
+            WHERE c.Active='Y' AND s.Active='Y' AND c.CandID=:CID and s.Visit_label=:VL AND f.File LIKE CONCAT('%', :Fname) AND pt.Name = :Header",
+                array(
+                    'CID' => $this->CandID,
+                    'VL' => $this->VisitLabel,
+                    'Fname' => $this->Filename,
+                    'Header'=>$headerName
+                )   
+            );  
+
+    }   
+
     public function calculateETag() {
         return null;
     }
