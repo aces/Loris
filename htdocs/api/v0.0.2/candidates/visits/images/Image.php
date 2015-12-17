@@ -72,7 +72,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      */
     public function handleGET()
     {
-        $fullDir = $this->getAssemblyRoot() . "/" . $this->getDatabaseDir();
+        $fullDir = $this->getFullPath();
         ob_end_clean();
 
         $fp = fopen($fullDir, "r") ;
@@ -133,6 +133,9 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
     {
     }
 
+    protected function getFullPath() {
+        return $this->getAssemblyRoot() . "/" . $this->getDatabaseDir();
+    }
     protected function getAssemblyRoot() {
         $factory = \NDB_Factory::singleton();
         $config = $factory->Config();
