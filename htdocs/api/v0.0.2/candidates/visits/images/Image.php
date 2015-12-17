@@ -139,7 +139,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
     protected function getAssemblyRoot() {
         $factory = \NDB_Factory::singleton();
         $config = $factory->Config();
-        return $config->getSetting("imagePath");
+        return $config->getSetting("mincPath");
     }
     protected function getDatabaseDir() {
         $factory = \NDB_Factory::singleton();
