@@ -81,8 +81,17 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
             error_log("Could not open $fullDir to send to client");
             $this->safeExit(1);
         }
+
         $this->Header('Cache-control: private');
-        $this->Header('Content-Type: application/octet-stream');
+
+        $mincHeader = $this->getHeader("header");
+
+        if(substr($mincHeader, 0, 4) === 'hdf5') {
+            $contentType = 'application/x.minc2';
+        } else {
+            $contentType = 'application/octet-stream';
+        }
+        $this->Header("Content-Type: $contentType");
         $this->Header('Content-Length: '.filesize($fullDir));
         $this->Header('Content-Disposition: filename='.$this->Filename);
 
