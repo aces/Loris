@@ -248,7 +248,7 @@ ImageQCCommentsButton = React.createClass({
     openWindowHandler: function(e) {
         e.preventDefault();
         window.open(
-            "feedback_mri_popup.php?fileID=" + this.props.FileID,
+            this.props.BaseURL + "/feedback_mri_popup.php?fileID=" + this.props.FileID,
             "feedback_mri",
             "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes"
         );
@@ -274,7 +274,9 @@ ImageDownloadButtons = React.createClass({
     render: function() {
         return (
             <div className="row mri-second-row-panel col-xs-12">
-                <ImageQCCommentsButton FileID={this.props.FileID} />
+                <ImageQCCommentsButton FileID={this.props.FileID} 
+                    BaseURL={this.props.BaseURL}
+                />
 
                 <DownloadButton FileName={this.props.Fullname} 
                     Label="Download Minc"

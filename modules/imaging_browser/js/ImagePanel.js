@@ -1,4 +1,6 @@
 ImagePanelHeader = React.createClass({
+    displayName: 'ImagePanelHeader',
+
     mixins: [React.addons.PureRenderMixin],
     render: function () {
         var QCStatusLabel;
@@ -57,6 +59,8 @@ ImagePanelHeader = React.createClass({
 });
 
 ImagePanelHeadersTable = React.createClass({
+    displayName: 'ImagePanelHeadersTable',
+
     componentDidMount: function () {
         $(this.getDOMNode()).DynamicTable();
     },
@@ -287,6 +291,8 @@ ImagePanelHeadersTable = React.createClass({
     }
 });
 ImageQCDropdown = React.createClass({
+    displayName: 'ImageQCDropdown',
+
     render: function () {
         var dropdown;
         if (this.props.editable) {
@@ -323,6 +329,8 @@ ImageQCDropdown = React.createClass({
 });
 
 ImagePanelQCStatusSelector = React.createClass({
+    displayName: 'ImagePanelQCStatusSelector',
+
     render: function () {
         var qcStatusLabel;
         if (this.props.HasQCPerm && this.props.FileNew) {
@@ -353,6 +361,8 @@ ImagePanelQCStatusSelector = React.createClass({
     }
 });
 ImagePanelQCSelectedSelector = React.createClass({
+    displayName: 'ImagePanelQCSelectedSelector',
+
     render: function () {
         return React.createElement(ImageQCDropdown, {
             Label: 'Selected',
@@ -365,6 +375,8 @@ ImagePanelQCSelectedSelector = React.createClass({
     }
 });
 ImagePanelQCCaveatSelector = React.createClass({
+    displayName: 'ImagePanelQCCaveatSelector',
+
     render: function () {
         return React.createElement(ImageQCDropdown, {
             Label: 'Caveat',
@@ -381,6 +393,8 @@ ImagePanelQCCaveatSelector = React.createClass({
     }
 });
 ImagePanelQCPanel = React.createClass({
+    displayName: 'ImagePanelQCPanel',
+
     mixins: [React.addons.PureRenderMixin],
     render: function () {
         return React.createElement(
@@ -408,6 +422,8 @@ ImagePanelQCPanel = React.createClass({
 });
 
 DownloadButton = React.createClass({
+    displayName: 'DownloadButton',
+
     render: function () {
         if (!this.props.FileName || this.props.FileName == '') {
             return React.createElement('span', null);
@@ -426,9 +442,11 @@ DownloadButton = React.createClass({
 });
 
 ImageQCCommentsButton = React.createClass({
+    displayName: 'ImageQCCommentsButton',
+
     openWindowHandler: function (e) {
         e.preventDefault();
-        window.open("feedback_mri_popup.php?fileID=" + this.props.FileID, "feedback_mri", "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes");
+        window.open(this.props.BaseURL + "/feedback_mri_popup.php?fileID=" + this.props.FileID, "feedback_mri", "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes");
     },
     render: function () {
         if (!this.props.FileID || this.props.FileID == '') {
@@ -454,11 +472,15 @@ ImageQCCommentsButton = React.createClass({
     }
 });
 ImageDownloadButtons = React.createClass({
+    displayName: 'ImageDownloadButtons',
+
     render: function () {
         return React.createElement(
             'div',
             { className: 'row mri-second-row-panel col-xs-12' },
-            React.createElement(ImageQCCommentsButton, { FileID: this.props.FileID }),
+            React.createElement(ImageQCCommentsButton, { FileID: this.props.FileID,
+                BaseURL: this.props.BaseURL
+            }),
             React.createElement(DownloadButton, { FileName: this.props.Fullname,
                 Label: 'Download Minc',
                 BaseURL: this.props.BaseURL
@@ -479,6 +501,8 @@ ImageDownloadButtons = React.createClass({
     }
 });
 ImagePanelBody = React.createClass({
+    displayName: 'ImagePanelBody',
+
     mixins: [React.addons.PureRenderMixin],
     render: function () {
         return React.createElement(
@@ -520,6 +544,8 @@ ImagePanelBody = React.createClass({
 });
 
 ImagePanel = React.createClass({
+    displayName: 'ImagePanel',
+
     getInitialState: function () {
         return {
             'BodyCollapsed': false,
