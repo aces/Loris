@@ -476,7 +476,7 @@
                         </li>
                         {foreach from=$links item=link}
                                 <li>
-                                    <a href="{$link.url}" style="color: #2FA4E7" target="{$link.windowName}">
+                                    <a href="{$link.url}" target="{$link.windowName}">
                                         {$link.label}
                                     </a>
                                     |
@@ -484,11 +484,11 @@
                         {/foreach}
                     </ul>    
                 </center>
-                <div align="center" colspan="1" style="color:#808080" >
+                <div align="center" colspan="1">
                     Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
-      		<div align="center" colspan="1" style="color:#808080">
-                    Created by <a href="http://mcin-cnim.ca/" style="color: #2FA4E7" target="_blank">
+      		<div align="center" colspan="1">
+                    Created by <a href="http://mcin-cnim.ca/" target="_blank">
                          MCIN
                     </a>
                 </div>
