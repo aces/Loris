@@ -93,6 +93,19 @@ if (!file_exists($FullPath)) {
 
 $MimeType = "text/css";
 
+$mtime = new DateTime();
+$mtime->setTimestamp(filemtime($FullPath));
+header("Last-Modified: " . $mtime->format(DateTime::RFC822));
+
+if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+    $ifmodifiedsince = new DateTime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+    if (!($mtime > $ifmodifiedsince)) {
+        header("HTTP/1.1 304 Not Modified");
+        exit(0);
+    }
+}
+
+
 $etag = md5(filemtime($FullPath));
 header("ETag: $etag");
 if (isset($_SERVER['HTTP_IF_NONE_MATCH'])
@@ -103,7 +116,7 @@ if (isset($_SERVER['HTTP_IF_NONE_MATCH'])
 }
 
 // $MimeType = "application/javascript";
-// header("Content-type: $MimeType");
+//header("Content-type: $MimeType");
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
 fclose($fp);
