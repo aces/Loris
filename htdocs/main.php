@@ -218,12 +218,6 @@ try {
     $crumbs     = $breadcrumb->getBreadcrumb();
 
     $tpl_data['crumbs'] = $crumbs;
-    parse_str($crumbs[0]['query'], $parsed);
-    if (isset($parsed['test_name'])) {
-        $tpl_data['top_level'] = $parsed['test_name'];
-    } else {
-        $tpl_data['top_level'] = '';
-    }
 } catch(Exception $e) {
     $tpl_data['error_message'][] = $e->getMessage();
 }
