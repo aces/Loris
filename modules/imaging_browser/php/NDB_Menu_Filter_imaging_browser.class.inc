@@ -126,7 +126,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             's.visit_label as Visit_Label',
             "$PendingFailSubquery as QC_Status",
             'MIN(md.AcquisitionDate) as First_Acq_Date',
-            'MAX(fqc.QCLastChangeTime) as Last_QC',
+            'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
             "$NewDataSubquery as New_Data",
             "$T1PassSubquery as T1_Passed",
             "$T2PassSubquery as T2_Passed",
