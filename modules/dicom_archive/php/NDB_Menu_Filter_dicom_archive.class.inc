@@ -304,5 +304,17 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
        
         return true;
     }
+
+    function getJSDependencies() {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/dicom_archive/js/columnFormatter.js",
+            )   
+        );  
+    }
 }
 ?>
