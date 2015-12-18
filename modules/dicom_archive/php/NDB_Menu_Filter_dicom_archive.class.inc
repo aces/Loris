@@ -56,8 +56,6 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             LEFT JOIN candidate c ON (c.CandID=s.CandID) WHERE 1=1";
 
         $colsFirst = array(
-            't.TarchiveID as TarchiveID',
-            's.ID as SessionID'
         );
         
         $TransferStatus = $this->_getTransferStatusFromQuery();
@@ -73,7 +71,10 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             't.DateAcquired as Acquisition',
             't.ArchiveLocation as Archive_Location',
             "'View Details' as Metadata",
-            "'View Images' as MRI_Browser"
+            "'View Images' as MRI_Browser",
+            // For constructing links, not in headers array
+            't.TarchiveID as TarchiveID',
+            's.ID as SessionID'
         );
 
         $this->columns = array_merge($colsFirst, $colsLast);
