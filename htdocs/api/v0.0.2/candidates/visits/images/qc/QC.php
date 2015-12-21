@@ -58,14 +58,22 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      */
     public function handleGET()
     {
+        $factory = \NDB_Factory::singleton();
+        $DB = $factory->Database();
+        $QCStatus = $DB->pselectRow("SELECT QCStatus, 
+                pf.Value as Selected FROM files f
+                LEFT JOIN files_qcstatus fqc ON (f.FileID=fqc.FileID)
+                LEFT JOIN parameter_file pf ON (f.FileID=pf.FileID)
+                LEFT JOIN parameter_type pt ON (pf.ParameterTypeID=pt.ParameterTypeID AND pt.Name = 'Selected')
+                WHERE f.File LIKE CONCAT('%', :FName)", array('FName' => $this->Filename));
         $this->JSON = [
             'Meta' => [
                 'CandID' => $this->CandID,
                 'Visit' => $this->VisitLabel,
                 'File' => $this->Filename,
                 ],
-                'QC' => 'Not yet implemented',
-                'Selected' => 'Not yet implemented',
+                'QC' => $QCStatus['QCStatus'],
+                'Selected' => $QCStatus['Selected'],
                 'CaveatList' => 'Not yet implemented',
                 'Comments' => 'Not yet implemented',
             ];
