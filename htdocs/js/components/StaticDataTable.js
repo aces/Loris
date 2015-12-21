@@ -1,4 +1,6 @@
 StaticDataTable = React.createClass({
+    displayName: 'StaticDataTable',
+
     mixins: [React.addons.PureRenderMixin],
     propTypes: {
         Headers: React.PropTypes.array.isRequired,
@@ -50,6 +52,19 @@ StaticDataTable = React.createClass({
         });
     },
     render: function () {
+        if (this.props.Data == null) {
+            return React.createElement(
+                'div',
+                {
+                    className: 'alert alert-info no-result-found-panel'
+                },
+                React.createElement(
+                    'strong',
+                    null,
+                    'No result found.'
+                )
+            );
+        }
         var rowsPerPage = this.state.RowsPerPage;
         var headers = [React.createElement(
             'th',
