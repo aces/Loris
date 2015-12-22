@@ -19,8 +19,6 @@ require_once "CouchDB_MRI_Importer.php";
 $dumpName = "dataDump" . date("dMy"); // label for dump
 $config = NDB_Config::singleton();
 $paths = $config->getSetting('paths');
-print "paths:";
-print_r($paths);
 $dataDir = $paths['base'] . "tools/$dumpName/"; //temporary working directory
 $destinationDir = $paths['base'] . "htdocs/dataDumps"; //temporary working directory
 
@@ -47,13 +45,9 @@ $d->close();
 
 //Substitute words for numbers in Subproject data field
 function MapSubprojectID(&$results) {
-    $projectID = 1;
+    $projectID = null;
     $subprojectLookup = Utility::getSubprojectList($projectID);
-        
-    print "subprojectLookup: ";
-    print_r($subprojectLookup);
-    die;
-    
+
     for ($i = 0; $i < count($results); $i++) {
 	    $results[$i]["SubprojectID"] = 
                 $subprojectLookup[$results[$i]["SubprojectID"]];
@@ -242,6 +236,7 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
     }
 
 	// save file to disk
+    print "Creating " . $Test_name . ".xls\n";
     $writer = PHPExcel_IOFactory::createWriter($ExcelApplication, 'Excel2007');
     $writer->save("$dataDir/$Test_name.xls");
     
