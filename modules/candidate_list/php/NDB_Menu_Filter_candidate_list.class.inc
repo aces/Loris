@@ -26,15 +26,17 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
     /**
      * Overloading this method to allow access to site users (their own site only)
      * and users w/ multisite privs
+     * 
      * @return true if user has access, false otherwise
+     * 
      */
     function _hasAccess()
     {
         // create user object
         $user =& User::singleton();
         $site =& Site::singleton($user->getData('CenterID'));
-        $this->tpl_data['access_all_profiles']
-            = $user->hasPermission('access_all_profiles');
+        $aap = $user->hasPermission('access_all_profiles');
+        $this->tpl_data['access_all_profiles'] = $aap;
         return (
             $user->hasPermission('access_all_profiles')
             || ($site->isStudySite() && $user->hasPermission('data_entry'))
@@ -67,7 +69,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           'c.PSCID',
                           'c.Gender',
                           "COALESCE(pso.Description,'\"Active\"') "
-                              . " AS Participant_Status",
+                          . " AS Participant_Status",
                          );
         if ($useProjects) {
             $this->columns[] = 'p.Name as Project';
@@ -216,8 +218,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
                 $list_of_sites = array();
-                $list_of_sites[$user->getData('CenterID')]
-                    = $user->getData('Site');
+                $list_of_sites[$user->getData('CenterID')] = $user->getData('Site');
             }
         }
 
@@ -337,8 +338,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $subprojectlist = Utility::getSubprojectList();
         $projectlist    = Utility::getProjectList();
 
-        $participantOptions
-            = NDB_Form_candidate_parameters::getParticipantStatusOptions();
+        $pOptions = NDB_Form_candidate_parameters::getParticipantStatusOptions();
         // print out
         $x = 0;
         foreach ($this->list as $item) {
@@ -381,7 +381,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                         $itemi['value'] = '';
                     }
                 } else if ($key == 'Participant_Status' && !empty($val)) {
-                    $itemi['value'] = $participantOptions[$val];
+                    $itemi['value'] = $pOptions[$val];
                 } else if ($key=='scan_done') {
                     $itemi['value'] = $val;
                 }
