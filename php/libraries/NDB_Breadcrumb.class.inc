@@ -84,9 +84,24 @@ class NDB_Breadcrumb
         // go the the next crumb
         $this->_lastIndex++;
 
+        $tn = $this->_parameters['test_name'];
+        $st = $this->_parameters['subtest'];
+
+        unset($this->_parameters['test_name']);
+        unset($this->_parameters['subtest']);
         // set the query string
         $this->_breadcrumb[$this->_lastIndex]['query']
-            = http_build_query($this->_parameters);
+            = "/" . $tn. "/";
+        if (!empty($st)) {
+            $this->_breadcrumb[$this->_lastIndex]['query']
+                .= "/" . $st . "/";
+
+        }
+        $this->_breadcrumb[$this->_lastIndex]['query']
+            .= "?" . http_build_query($this->_parameters);
+
+        $this->_parameters['test_name'] = $tn;
+        $this->_parameters['subtest']   = $st;
 
         // set the crumb text
         if (!is_null($text)) {

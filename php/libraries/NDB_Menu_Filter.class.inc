@@ -24,6 +24,7 @@
  */
 class NDB_Menu_Filter extends NDB_Menu
 {
+    var $AjaxModule = false;
     var $TotalItems;
     /**
      * The columns to SELECT
@@ -372,6 +373,9 @@ class NDB_Menu_Filter extends NDB_Menu
         // show selection form table
         $success = $this->_setFilterForm();
 
+        if ($this->AjaxModule) {
+            return;
+        }
         // get the list
         $this->list = $this->_getList();
 
@@ -687,6 +691,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * Controls access to a module's SQL tables, transforming the table into a csv
      * string. This script should ensure that only files relative to module's path
      * specified are accessible.
+     *
      * @return string  csv formated string
      */
     function getCSVData()
@@ -697,6 +702,32 @@ class NDB_Menu_Filter extends NDB_Menu
         return Utility::arrayToCSV($list);
     }
 
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $data = $this->_getFullList();
+
+        $headers = array_map(
+            function ($header) {
+                return ucwords(str_replace('_', ' ', $header));
+            },
+            $this->headers
+        );
+        foreach ($data as $row) {
+            $MappedData[] = array_values($row);
+        }
+        return json_encode(
+            array(
+             'Headers' => $headers,
+             'Data'    => $MappedData,
+            )
+        );
+    }
     /**
      * Returns the full list of candidates, users, etc.
      *
@@ -752,6 +783,28 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
         return $FilterValues;
+    }
+
+    /**
+     * Adds React table related dependencies to menu filters, since forms don't
+     * usually have tables or pagination
+     *
+     * @return array of javascript files to be sourced
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $depends = parent::getJSDependencies();
+        $baseURL = $factory->settings()->getBaseURL();
+        return array_merge(
+            $depends,
+            array(
+             $baseURL . '/js/components/PaginationLinks.js',
+             $baseURL . '/js/components/FilterTable.js',
+             $baseURL . '/js/components/StaticDataTable.js',
+             $baseURL . '/js/components/DynamicDataTable.js',
+            )
+        );
     }
 }
 ?>

@@ -22,6 +22,7 @@
  */
 class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 {
+    var $AjaxModule = true;
     /**
      * Overloading this method to allow access to site users (their own site only)
      * and users w/ multisite privs
@@ -65,15 +66,16 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           'c.CandID AS DCCID',
                           'c.PSCID',
                           'c.Gender',
-                          'COALESCE(pso.ID,1) AS Participant_Status',
+                          "COALESCE(pso.Description,'\"Active\"') "
+                              . " AS Participant_Status",
                          );
         if ($useProjects) {
-            $this->columns[] = 'min(c.ProjectID) as Project';
+            $this->columns[] = 'p.Name as Project';
         }
         $this->columns =array_merge(
             $this->columns,
             array(
-             'min(s.SubprojectID) as Subproject',
+             'GROUP_CONCAT(DISTINCT sp.title) as Subproject',
              'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
              'MAX(s.Scan_done) as scan_Done',
             )
@@ -121,6 +123,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
             LEFT JOIN participant_status_options pso
                 ON (ps.participant_status=pso.ID)
+            LEFT JOIN project p ON (c.ProjectID=p.ProjectID)
+            LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
             WHERE c.Entity_type = 'Human' AND c.Active = 'Y'";
 
         if (!$user->hasPermission('access_all_profiles')) {
@@ -389,6 +393,26 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         }
         $this->tpl_data['numCandidates'] = $this->TotalItems;
         return true;
+    }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/js/advancedMenu.js",
+             $baseURL . "/candidate_list/js/columnFormatter.js",
+            )
+        );
     }
 }
 ?>

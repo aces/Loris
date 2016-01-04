@@ -281,6 +281,10 @@ class NDB_Caller
                     exit(5);
                 }
                 break;
+            case 'json':
+                print $menu->toJSON();
+                exit(0);
+                break;
             default:
                 error_log(
                     "ERROR: This format is not yet supproted."
