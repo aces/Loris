@@ -1,4 +1,3 @@
-<!-- Control Panel -->
     {if $subject.backURL!=""}<h3>Navigation</h3>{/if}
     <ul>
        {if $subject.backURL != ""}
@@ -53,7 +52,6 @@
         </a>
      </div>
 
-    {if $subject.has_permission}<form action='' method='post'>{/if}
     <div class='div-controlpanel-bottom'>
         <div class="form-group">
             <label>QC Status</label>

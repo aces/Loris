@@ -174,6 +174,10 @@ if (!empty($_REQUEST['sessionID'])) {
 try {
     $caller    =& NDB_Caller::singleton();
     $workspace = $caller->load($TestName, $subtest);
+    if (isset($caller->page->FormAction)) {
+        print "FORM ACTION:";
+        $tpl_data['FormAction'] = $caller->page->FormAction;
+    }
     if (isset($caller->controlPanel)) {
         $tpl_data['control_panel'] = $caller->controlPanel;
     }
