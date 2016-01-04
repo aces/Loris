@@ -88,4 +88,31 @@ class NDB_Form_dataquery extends NDB_Form
 
         $this->tpl_data['sessions'] = $sessions;
     }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/dataquery/js/arrayintersect.js",
+             $baseURL . "/dataquery/js/react.fieldselector.js",
+             $baseURL . "/dataquery/js/react.tabs.js",
+             $baseURL . "/dataquery/js/react.sidebar.js",
+             $baseURL . "/dataquery/js/react.app.js",
+             $baseURL . "/dataquery/js/jstat.js",
+             $baseURL . "/js/components/StaticDataTable.js",
+             $baseURL . "/js/flot/jquery.flot.min.js",
+             $baseurl . '/js/components/PaginationLinks.js'
+            )
+        );
+    }
 }
