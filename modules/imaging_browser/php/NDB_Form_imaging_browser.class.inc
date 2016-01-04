@@ -118,6 +118,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 = array ('' => '&nbsp;', true => 'True', false => 'False');
             $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ? true : false;
+            $this->FormAction = "/imaging_browser/viewSession/?sessionID=" . $this->sessionID;
+
         }
     }
     /**
