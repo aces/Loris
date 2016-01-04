@@ -171,7 +171,149 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
 });
 
 ScatterplotGraph = React.createClass({displayName: "ScatterplotGraph",
+    lsFit: function (data) {
+        var i = 0,
+            means = jStat(data).mean(),
+            xmean = means[0],
+            ymean = means[1],
+            interim = 0,
+            numerator  = 0,
+            denominator = 0,
+            slope,
+            xi,
+            yi;
+
+            for (i = 0; i < data.length; i += 1) {
+                xi = data[i][0];
+                yi = data[i][1];
+                numerator += (xi - xmean) * (yi - ymean);
+                denominator += ((xi - xmean) * (xi - xmean));
+            }
+
+            slope = numerator / denominator;
+
+            return [(ymean - slope * xmean), slope];
+    },
+    minmaxx: function (arr) {
+        var i, min, max;
+
+        for (i = 0; i < arr.length; i += 1) {
+            if (arr[i][0] < min || min === undefined) {
+                if (arr[i][0] !== undefined && arr[i][0] !== null) {
+                    min = arr[i][0];
+                }
+            }
+            if (arr[i][0] > max || max === undefined) {
+                if (arr[i][0] !== undefined && arr[i][0] !== null) {
+                    max = arr[i][0];
+                }
+            }
+        }
+        return [min, max];
+    },
+    updateScatterplot: function() {
+        var xaxis = document.getElementById("scatter-xaxis").value,
+            yaxis = document.getElementById("scatter-yaxis").value,
+            grouping = document.getElementById("scatter-group").value,
+            data = this.props.Data,
+            points = [],
+            min,
+            max,
+            field1 = [],
+            field2 = [],
+            grouped_points = {},
+            i = 0,
+            group_label,
+            minmax,
+            LS,
+            slope,
+            start,
+            plots = [],
+            label,
+            plotY = function (x) { return [x, start + (slope * x)]; },
+            dataset;
+
+        for (i = 0; i < data.length; i += 1) {
+            points.push([data[i][xaxis], data[i][yaxis]]);
+            field1.push(data[i][xaxis]);
+            field2.push(data[i][yaxis]);
+            if (grouping) {
+                group_label = data[i][grouping];
+                if (!(grouped_points[group_label] instanceof Array)) {
+                    grouped_points[group_label] = [];
+                }
+                grouped_points[group_label].push([data[i][xaxis], data[i][yaxis]]);
+            }
+        }
+
+
+
+        if (grouping === 'ungrouped') {
+            minmax = this.minmaxx(points);
+            min = minmax[0];
+            max = minmax[1];
+            LS = this.lsFit(points);
+            slope = LS[1];
+            start = LS[0];
+
+            $.plot("#scatterplotdiv", [{
+
+                label: 'Data Points',
+                data: points,
+                points: { show: true }
+            }, // Least Squares Fit
+                {
+                    label: 'Least Squares Fit',
+                    data: jStat.seq(min, max, 3, plotY),
+                    lines: { show: true }
+                }], {});
+        } else {
+            minmax = this.minmaxx(points);
+            min = minmax[0];
+            max = minmax[1];
+            i = 0;
+
+            for (dataset in grouped_points) {
+                if (grouped_points.hasOwnProperty(dataset)) {
+                    label = document.getElementById("scatter-group").selectedOptions.item(0).textContent + " = " + dataset;
+                    plots.push({
+                        color: i,
+                        label: dataset,
+                        data: grouped_points[dataset],
+                        points: { show: true }
+                    });
+                    LS = this.lsFit(grouped_points[dataset]);
+                    //LS = lsFit(grouped_points[dataset].convertNumbers());
+                    slope = LS[1];
+                    start = LS[0];
+                    plots.push({
+                        color: i,
+                        // label: "LS Fit for " + dataset,
+                        data: jStat.seq(min, max, 3, plotY),
+                        lines: { show: true }
+                    });
+                    i += 1;
+                }
+            }
+            $.plot("#scatterplotdiv", plots, {});
+        }
+
+        $("#correlationtbl tbody").children().remove();
+        $("#correlationtbl tbody").append("<tr><td>" + jStat.covariance(field1, field2) + "</td><td>" + jStat.corrcoeff(field1, field2) + "</td></tr>");
+    },
     render: function() {
+        var options = this.props.Fields.map(function(element, key){
+                console.log(element);
+                return (
+                    React.createElement("option", {value: key}, 
+                        element
+                    )
+                );
+            })
+            scatterStyle = {
+                width: "500px",
+                height: "500px"
+            };
         return (
             React.createElement("div", null, 
                 React.createElement("h2", null, "Scatterplot"), 
@@ -180,8 +322,9 @@ ScatterplotGraph = React.createClass({displayName: "ScatterplotGraph",
                     "Column for X Axis"
                 ), 
                 React.createElement("div", {className: "col-xs-8 col-md-3"}, 
-                    React.createElement("select", null, 
-                        React.createElement("option", null, "None")
+                    React.createElement("select", {id: "scatter-xaxis", onChange: this.updateScatterplot}, 
+                        React.createElement("option", null, "None"), 
+                        options
                     )
                 ), 
 
@@ -189,8 +332,9 @@ ScatterplotGraph = React.createClass({displayName: "ScatterplotGraph",
                     "Column for Y Axis"
                 ), 
                 React.createElement("div", {className: "col-xs-8 col-md-3"}, 
-                    React.createElement("select", null, 
-                        React.createElement("option", null, "None")
+                    React.createElement("select", {id: "scatter-yaxis", onChange: this.updateScatterplot}, 
+                        React.createElement("option", null, "None"), 
+                        options
                     )
                 ), 
 
@@ -198,8 +342,22 @@ ScatterplotGraph = React.createClass({displayName: "ScatterplotGraph",
                     "Group by column"
                 ), 
                 React.createElement("div", {className: "col-xs-8 col-md-3"}, 
-                    React.createElement("select", null, 
-                        React.createElement("option", null, "None")
+                    React.createElement("select", {id: "scatter-group", onChange: this.updateScatterplot}, 
+                        React.createElement("option", null, "None"), 
+                        options
+                    )
+                ), 
+                React.createElement("h3", null, "Scatterplot"), 
+                React.createElement("div", {id: "scatterplotdiv", style: scatterStyle}), 
+                React.createElement("h3", null, "Statistics"), 
+                React.createElement("table", {id: "correlationtbl"}, 
+                    React.createElement("thead", null, 
+                        React.createElement("tr", null, 
+                            React.createElement("th", null, "Covariance"), 
+                            React.createElement("th", null, "Correlation Coefficient")
+                        )
+                    ), 
+                    React.createElement("tbody", null
                     )
                 )
             )
@@ -218,71 +376,79 @@ StatsVisualizationTabPane = React.createClass({displayName: "StatsVisualizationT
         }
     },
     render: function() {
-        if(this.state.displayed === false) {
-            var content = React.createElement("div", null, "Statistics not yet calculated.");
-            return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
-        }
+        // if(this.state.displayed === false) {
+        //     var content = <div>Statistics not yet calculated.</div>;
+        //     // return <TabPane content={content} TabId={this.props.TabId} />;
+        // } else 
         if(this.props.Data.length === 0) {
             var content = React.createElement("div", null, "Could not calculate stats, query not run");
-            return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
-        }
-        var stats = jStat(this.props.Data),
-            min = stats.min(),
-            max = stats.max(),
-            stddev = stats.stdev(),
-            mean = stats.mean(),
-            meandev = stats.meandev(),
-            meansqerr = stats.meansqerr(),
-            quartiles = stats.quartiles(),
-            rows = [];
+            // return <TabPane content={content} TabId={this.props.TabId} />;
+        } else {
+            var stats = jStat(this.props.Data),
+                min = stats.min(),
+                max = stats.max(),
+                stddev = stats.stdev(),
+                mean = stats.mean(),
+                meandev = stats.meandev(),
+                meansqerr = stats.meansqerr(),
+                quartiles = stats.quartiles(),
+                rows = [];
 
 
-      for(var i = 0; i < this.props.Fields.length; i += 1) {
-          rows.push(React.createElement("tr", null, 
-              React.createElement("td", null, this.props.Fields[i]), 
-              React.createElement("td", null, min[i]), 
-              React.createElement("td", null, max[i]), 
-              React.createElement("td", null, stddev[i]), 
-              React.createElement("td", null, mean[i]), 
-              React.createElement("td", null, meandev[i]), 
-              React.createElement("td", null, meansqerr[i]), 
-              React.createElement("td", null, quartiles[i][0]), 
-              React.createElement("td", null, quartiles[i][1]), 
-              React.createElement("td", null, quartiles[i][2])
-          ));
-      }
+            for(var i = 0; i < this.props.Fields.length; i += 1) {
+                rows.push(React.createElement("tr", null, 
+                    React.createElement("td", null, this.props.Fields[i]), 
+                    React.createElement("td", null, min[i]), 
+                    React.createElement("td", null, max[i]), 
+                    React.createElement("td", null, stddev[i]), 
+                    React.createElement("td", null, mean[i]), 
+                    React.createElement("td", null, meandev[i]), 
+                    React.createElement("td", null, meansqerr[i]), 
+                    React.createElement("td", null, quartiles[i][0]), 
+                    React.createElement("td", null, quartiles[i][1]), 
+                    React.createElement("td", null, quartiles[i][2])
+                ));
+            }
 
-      var statsTable = (
-          React.createElement("table", {className: "table table-hover table-primary table-bordered colm-freeze"}, 
-            React.createElement("thead", null, 
-                React.createElement("tr", {className: "info"}, 
-                    React.createElement("th", null, "Measure"), 
-                    React.createElement("th", null, "Min"), 
-                    React.createElement("th", null, "Max"), 
-                    React.createElement("th", null, "Standard Deviation"), 
-                    React.createElement("th", null, "Mean"), 
-                    React.createElement("th", null, "Mean Deviation"), 
-                    React.createElement("th", null, "Mean Squared Error"), 
-                    React.createElement("th", null, "First Quartile"), 
-                    React.createElement("th", null, "Second Quartile"), 
-                    React.createElement("th", null, "Third Quartile")
+            var statsTable = (
+                React.createElement("table", {className: "table table-hover table-primary table-bordered colm-freeze"}, 
+                    React.createElement("thead", null, 
+                        React.createElement("tr", {className: "info"}, 
+                            React.createElement("th", null, "Measure"), 
+                            React.createElement("th", null, "Min"), 
+                            React.createElement("th", null, "Max"), 
+                            React.createElement("th", null, "Standard Deviation"), 
+                            React.createElement("th", null, "Mean"), 
+                            React.createElement("th", null, "Mean Deviation"), 
+                            React.createElement("th", null, "Mean Squared Error"), 
+                            React.createElement("th", null, "First Quartile"), 
+                            React.createElement("th", null, "Second Quartile"), 
+                            React.createElement("th", null, "Third Quartile")
+                        )
+                    ), 
+                    React.createElement("tbody", null, 
+                        rows
+                    )
                 )
-            ), 
-            React.createElement("tbody", null, 
-                rows
+            );
+
+            var content = (
+                React.createElement("div", null, 
+                    React.createElement("h2", null, "Basic Statistics"), 
+                    statsTable, 
+
+                    React.createElement(ScatterplotGraph, {
+                        Fields: this.props.Fields, 
+                        Data: this.props.Data}
+                    )
+                )
+            );
+        }
+        return (
+            React.createElement(TabPane, {TabId: this.props.TabId}, 
+                content
             )
-          )
-      );
-
-      var content = (
-          React.createElement("div", null, 
-          React.createElement("h2", null, "Basic Statistics"), 
-          statsTable, 
-
-          React.createElement(ScatterplotGraph, null)
-          )
-          );
-      return React.createElement(TabPane, {content: content, TabId: this.props.TabId});
+        );
     }
 });
 

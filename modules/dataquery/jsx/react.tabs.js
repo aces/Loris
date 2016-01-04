@@ -171,7 +171,149 @@ ViewDataTabPane = React.createClass({
 });
 
 ScatterplotGraph = React.createClass({
+    lsFit: function (data) {
+        var i = 0,
+            means = jStat(data).mean(),
+            xmean = means[0],
+            ymean = means[1],
+            interim = 0,
+            numerator  = 0,
+            denominator = 0,
+            slope,
+            xi,
+            yi;
+
+            for (i = 0; i < data.length; i += 1) {
+                xi = data[i][0];
+                yi = data[i][1];
+                numerator += (xi - xmean) * (yi - ymean);
+                denominator += ((xi - xmean) * (xi - xmean));
+            }
+
+            slope = numerator / denominator;
+
+            return [(ymean - slope * xmean), slope];
+    },
+    minmaxx: function (arr) {
+        var i, min, max;
+
+        for (i = 0; i < arr.length; i += 1) {
+            if (arr[i][0] < min || min === undefined) {
+                if (arr[i][0] !== undefined && arr[i][0] !== null) {
+                    min = arr[i][0];
+                }
+            }
+            if (arr[i][0] > max || max === undefined) {
+                if (arr[i][0] !== undefined && arr[i][0] !== null) {
+                    max = arr[i][0];
+                }
+            }
+        }
+        return [min, max];
+    },
+    updateScatterplot: function() {
+        var xaxis = document.getElementById("scatter-xaxis").value,
+            yaxis = document.getElementById("scatter-yaxis").value,
+            grouping = document.getElementById("scatter-group").value,
+            data = this.props.Data,
+            points = [],
+            min,
+            max,
+            field1 = [],
+            field2 = [],
+            grouped_points = {},
+            i = 0,
+            group_label,
+            minmax,
+            LS,
+            slope,
+            start,
+            plots = [],
+            label,
+            plotY = function (x) { return [x, start + (slope * x)]; },
+            dataset;
+
+        for (i = 0; i < data.length; i += 1) {
+            points.push([data[i][xaxis], data[i][yaxis]]);
+            field1.push(data[i][xaxis]);
+            field2.push(data[i][yaxis]);
+            if (grouping) {
+                group_label = data[i][grouping];
+                if (!(grouped_points[group_label] instanceof Array)) {
+                    grouped_points[group_label] = [];
+                }
+                grouped_points[group_label].push([data[i][xaxis], data[i][yaxis]]);
+            }
+        }
+
+
+
+        if (grouping === 'ungrouped') {
+            minmax = this.minmaxx(points);
+            min = minmax[0];
+            max = minmax[1];
+            LS = this.lsFit(points);
+            slope = LS[1];
+            start = LS[0];
+
+            $.plot("#scatterplotdiv", [{
+
+                label: 'Data Points',
+                data: points,
+                points: { show: true }
+            }, // Least Squares Fit
+                {
+                    label: 'Least Squares Fit',
+                    data: jStat.seq(min, max, 3, plotY),
+                    lines: { show: true }
+                }], {});
+        } else {
+            minmax = this.minmaxx(points);
+            min = minmax[0];
+            max = minmax[1];
+            i = 0;
+
+            for (dataset in grouped_points) {
+                if (grouped_points.hasOwnProperty(dataset)) {
+                    label = document.getElementById("scatter-group").selectedOptions.item(0).textContent + " = " + dataset;
+                    plots.push({
+                        color: i,
+                        label: dataset,
+                        data: grouped_points[dataset],
+                        points: { show: true }
+                    });
+                    LS = this.lsFit(grouped_points[dataset]);
+                    //LS = lsFit(grouped_points[dataset].convertNumbers());
+                    slope = LS[1];
+                    start = LS[0];
+                    plots.push({
+                        color: i,
+                        // label: "LS Fit for " + dataset,
+                        data: jStat.seq(min, max, 3, plotY),
+                        lines: { show: true }
+                    });
+                    i += 1;
+                }
+            }
+            $.plot("#scatterplotdiv", plots, {});
+        }
+
+        $("#correlationtbl tbody").children().remove();
+        $("#correlationtbl tbody").append("<tr><td>" + jStat.covariance(field1, field2) + "</td><td>" + jStat.corrcoeff(field1, field2) + "</td></tr>");
+    },
     render: function() {
+        var options = this.props.Fields.map(function(element, key){
+                console.log(element);
+                return (
+                    <option value={key}>
+                        {element}
+                    </option>
+                );
+            })
+            scatterStyle = {
+                width: "500px",
+                height: "500px"
+            };
         return (
             <div>
                 <h2>Scatterplot</h2>
@@ -180,8 +322,9 @@ ScatterplotGraph = React.createClass({
                     Column for X Axis
                 </div>
                 <div className="col-xs-8 col-md-3">
-                    <select>
+                    <select id="scatter-xaxis" onChange={this.updateScatterplot}>
                         <option>None</option>
+                        {options}
                     </select>
                 </div>
 
@@ -189,8 +332,9 @@ ScatterplotGraph = React.createClass({
                     Column for Y Axis
                 </div>
                 <div className="col-xs-8 col-md-3">
-                    <select>
+                    <select id="scatter-yaxis" onChange={this.updateScatterplot}>
                         <option>None</option>
+                        {options}
                     </select>
                 </div>
 
@@ -198,10 +342,24 @@ ScatterplotGraph = React.createClass({
                     Group by column
                 </div>
                 <div className="col-xs-8 col-md-3">
-                    <select>
+                    <select id="scatter-group" onChange={this.updateScatterplot}>
                         <option>None</option>
+                        {options}
                     </select>
                 </div>
+                <h3>Scatterplot</h3>
+                <div id="scatterplotdiv" style={scatterStyle}></div>
+                <h3>Statistics</h3>
+                <table id="correlationtbl">
+                    <thead>
+                        <tr>
+                            <th>Covariance</th>
+                            <th>Correlation Coefficient</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         );
     }
@@ -218,71 +376,79 @@ StatsVisualizationTabPane = React.createClass({
         }
     },
     render: function() {
-        if(this.state.displayed === false) {
-            var content = <div>Statistics not yet calculated.</div>;
-            return <TabPane content={content} TabId={this.props.TabId} />;
-        }
+        // if(this.state.displayed === false) {
+        //     var content = <div>Statistics not yet calculated.</div>;
+        //     // return <TabPane content={content} TabId={this.props.TabId} />;
+        // } else 
         if(this.props.Data.length === 0) {
             var content = <div>Could not calculate stats, query not run</div>;
-            return <TabPane content={content} TabId={this.props.TabId} />;
+            // return <TabPane content={content} TabId={this.props.TabId} />;
+        } else {
+            var stats = jStat(this.props.Data),
+                min = stats.min(),
+                max = stats.max(),
+                stddev = stats.stdev(),
+                mean = stats.mean(),
+                meandev = stats.meandev(),
+                meansqerr = stats.meansqerr(),
+                quartiles = stats.quartiles(),
+                rows = [];
+
+
+            for(var i = 0; i < this.props.Fields.length; i += 1) {
+                rows.push(<tr>
+                    <td>{this.props.Fields[i]}</td>
+                    <td>{min[i]}</td>
+                    <td>{max[i]}</td>
+                    <td>{stddev[i]}</td>
+                    <td>{mean[i]}</td>
+                    <td>{meandev[i]}</td>
+                    <td>{meansqerr[i]}</td>
+                    <td>{quartiles[i][0]}</td>
+                    <td>{quartiles[i][1]}</td>
+                    <td>{quartiles[i][2]}</td>
+                </tr>);
+            }
+
+            var statsTable = (
+                <table className="table table-hover table-primary table-bordered colm-freeze">
+                    <thead>
+                        <tr className="info">
+                            <th>Measure</th>
+                            <th>Min</th>
+                            <th>Max</th>
+                            <th>Standard Deviation</th>
+                            <th>Mean</th>
+                            <th>Mean Deviation</th>
+                            <th>Mean Squared Error</th>
+                            <th>First Quartile</th>
+                            <th>Second Quartile</th>
+                            <th>Third Quartile</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rows}
+                    </tbody>
+                </table>
+            );
+
+            var content = (
+                <div>
+                    <h2>Basic Statistics</h2>
+                    {statsTable}
+
+                    <ScatterplotGraph
+                        Fields={this.props.Fields}
+                        Data={this.props.Data}
+                    />
+                </div>
+            );
         }
-        var stats = jStat(this.props.Data),
-            min = stats.min(),
-            max = stats.max(),
-            stddev = stats.stdev(),
-            mean = stats.mean(),
-            meandev = stats.meandev(),
-            meansqerr = stats.meansqerr(),
-            quartiles = stats.quartiles(),
-            rows = [];
-
-
-      for(var i = 0; i < this.props.Fields.length; i += 1) {
-          rows.push(<tr>
-              <td>{this.props.Fields[i]}</td>
-              <td>{min[i]}</td>
-              <td>{max[i]}</td>
-              <td>{stddev[i]}</td>
-              <td>{mean[i]}</td>
-              <td>{meandev[i]}</td>
-              <td>{meansqerr[i]}</td>
-              <td>{quartiles[i][0]}</td>
-              <td>{quartiles[i][1]}</td>
-              <td>{quartiles[i][2]}</td>
-          </tr>);
-      }
-
-      var statsTable = (
-          <table className="table table-hover table-primary table-bordered colm-freeze">
-            <thead>
-                <tr className="info">
-                    <th>Measure</th>
-                    <th>Min</th>
-                    <th>Max</th>
-                    <th>Standard Deviation</th>
-                    <th>Mean</th>
-                    <th>Mean Deviation</th>
-                    <th>Mean Squared Error</th>
-                    <th>First Quartile</th>
-                    <th>Second Quartile</th>
-                    <th>Third Quartile</th>
-                </tr>
-            </thead>
-            <tbody>
-                {rows}
-            </tbody>
-          </table>
-      );
-
-      var content = (
-          <div>
-          <h2>Basic Statistics</h2>
-          {statsTable}
-
-          <ScatterplotGraph />
-          </div>
-          );
-      return <TabPane content={content} TabId={this.props.TabId} />;
+        return (
+            <TabPane TabId={this.props.TabId}>
+                {content}
+            </TabPane>
+        );
     }
 });
 

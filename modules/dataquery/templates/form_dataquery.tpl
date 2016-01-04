@@ -2,6 +2,7 @@
 <script src="GetJS.php?Module=dataquery&file=arrayintersect.js"></script>
 <!-- <script src="GetJS.php?Module=dataquery&file=react.datatable.js"></script> -->
 <script src="/js/components/StaticDataTable.js"></script>
+<script src="/js/flot/jquery.flot.min.js"></script>
 <script src="GetJS.php?Module=dataquery&file=react.fieldselector.js"></script>
 <script src="GetJS.php?Module=dataquery&file=react.tabs.js"></script>
 <script src="GetJS.php?Module=dataquery&file=react.sidebar.js"></script>

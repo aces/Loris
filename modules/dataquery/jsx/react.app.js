@@ -482,7 +482,7 @@ DataQueryApp = React.createClass({
         }
         var widthClass = "col-md-12";
         var sideBar = <div />
-        if(this.state.fields.length > 0 && this.state.ActiveTab !== 'ViewData') {
+        if(this.state.fields.length > 0 && this.state.ActiveTab !== 'ViewData' && this.state.ActiveTab !== 'Statistics') {
             widthClass = "col-md-10";
             sideBar = <div className="col-md-2">
                     <FieldsSidebar
