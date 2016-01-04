@@ -450,7 +450,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 changeDataDisplay: this.changeDataDisplay}
         ));
         tabs.push(React.createElement(StatsVisualizationTabPane, {TabId: "Statistics", 
-                Fields: this.state.fields, 
+                Fields: this.state.rowData.RowHeaders, 
                 Data: this.state.rowData.rowdata}));
         tabs.push(React.createElement(ManageSavedQueriesTabPane, {TabId: "SavedQueriesTab", 
                         userQueries: this.state.queryIDs.User, 
