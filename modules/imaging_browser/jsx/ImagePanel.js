@@ -32,7 +32,8 @@ ImagePanelHeader = React.createClass({
         return (
 
             <div className="panel-heading">
-                <h3 className="panel-title">{this.props.Filename}</h3>
+                <input type="checkbox" data-file-id={this.props.FileID} className="mripanel user-success" />
+                <h3 className="panel-title">{this.props.Filename} </h3>
                 {QCStatusLabel}
                 {arrow}
                 {headerButton}
