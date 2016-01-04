@@ -430,9 +430,12 @@ DownloadButton = React.createClass({
         if (!this.props.FileName || this.props.FileName == '') {
             return React.createElement('span', null);
         };
+        var style = {
+            margin: 6
+        };
         return React.createElement(
             'a',
-            { href: this.props.BaseURL + "/mri/jiv/get_file.php?file=" + this.props.FileName, className: 'btn btn-default' },
+            { href: this.props.BaseURL + "/mri/jiv/get_file.php?file=" + this.props.FileName, className: 'btn btn-default', style: style },
             React.createElement('span', { className: 'glyphicon glyphicon-download-alt' }),
             React.createElement(
                 'span',

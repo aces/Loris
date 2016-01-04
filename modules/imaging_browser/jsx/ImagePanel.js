@@ -236,8 +236,11 @@ DownloadButton = React.createClass({
         if (!this.props.FileName || this.props.FileName == '') {
             return <span />;
         };
+        var style = {
+            margin: 6
+        }
         return (
-            <a href={this.props.BaseURL + "/mri/jiv/get_file.php?file=" + this.props.FileName} className="btn btn-default">
+            <a href={this.props.BaseURL + "/mri/jiv/get_file.php?file=" + this.props.FileName} className="btn btn-default" style={style}>
                 <span className="glyphicon glyphicon-download-alt"></span>
                 <span className="hidden-xs">{this.props.Label}</span>
             </a>
@@ -278,7 +281,6 @@ ImageDownloadButtons = React.createClass({
                 <ImageQCCommentsButton FileID={this.props.FileID} 
                     BaseURL={this.props.BaseURL}
                 />
-
                 <DownloadButton FileName={this.props.Fullname} 
                     Label="Download Minc"
                     BaseURL={this.props.BaseURL}
