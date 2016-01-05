@@ -168,7 +168,8 @@ StaticDataTable = React.createClass({
             );
         }
 
-        var RowsPerPageDropdown = (<select onChange={this.changeRowsPerPage}>
+        var RowsPerPageDropdown = (
+            <select className="input-sm perPage" onChange={this.changeRowsPerPage}>
                 <option>20</option>
                 <option>50</option>
                 <option>100</option>
@@ -188,9 +189,12 @@ StaticDataTable = React.createClass({
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td className="info" colSpan={headers.length}>{rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown}) 
-                                <div>
-                                    <button className="btn btn-primary" onClick={this.downloadCSV}>Download Table as CSV</button>
+                            <td className="info" colSpan={headers.length}>
+                                <div className="col-xs-12 footerText">
+                                    {rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown})
+                                </div>
+                                <div className="col-xs-6">
+                                    <button className="btn btn-primary downloadCSV" onClick={this.downloadCSV}>Download Table as CSV</button>
                                 </div>
                                 <div className="pull-right">
                                     <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />

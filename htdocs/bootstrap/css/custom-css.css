@@ -182,3 +182,16 @@ div.navbar div.container div.navbar-brand {
     color: #FFFFFF;
     background-color: #1c70b6;
 }
+/*
+ *  Styling for the staticTable component
+ */
+.downloadCSV {
+    margin: 20px 0px;
+}
+.footerText {
+    color: white;
+}
+.perPage {
+    width: 75px;
+    color: black;
+}
