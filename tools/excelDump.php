@@ -240,6 +240,7 @@ function writeExcel ($Test_name, $instrument_table, $dataDir) {
     $writer = PHPExcel_IOFactory::createWriter($ExcelApplication, 'Excel2007');
     $writer->save("$dataDir/$Test_name.xls");
     
+    unset($ExcelApplication);
 } //end function writeExcel
 
 /**
