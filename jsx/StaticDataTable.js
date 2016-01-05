@@ -49,6 +49,31 @@ StaticDataTable = React.createClass({
            'PageNumber' : 1
        });
     },
+    downloadCSV: function() {
+        var headers = this.props.Fields,
+            csvworker = new Worker('js/workers/savecsv.js');
+
+
+        csvworker.addEventListener('message', function (e) {
+            var dataURL, dataDate, link;
+            if (e.data.cmd === 'SaveCSV') {
+                dataDate = new Date().toISOString();
+                dataURL = window.URL.createObjectURL(e.data.message);
+                link = document.createElement("a");
+                link.download = "data-" + dataDate + ".csv";
+                link.type = "text/csv";
+                link.href = dataURL;
+                $(link)[0].click();
+
+            }
+        });
+        csvworker.postMessage({
+            cmd: 'SaveFile',
+            data: this.props.Data,
+            headers: this.props.Headers,
+            identifiers: this.props.RowNameMap
+        });
+    },
     render: function() {
         if (this.props.Data == null) {
             return (
@@ -163,11 +188,14 @@ StaticDataTable = React.createClass({
                     </tbody>
                     <tfoot>
                         <tr>
-                        <td className="info" colSpan={headers.length}>{rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown}) 
-                            <div className="pull-right">
-                                <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
-                            </div>
- </td>
+                            <td className="info" colSpan={headers.length}>{rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown}) 
+                                <div>
+                                    <button className="btn btn-primary" onClick={this.downloadCSV}>Download Table as CSV</button>
+                                </div>
+                                <div className="pull-right">
+                                    <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
+                                </div>
+                            </td>
                         </tr>
                     </tfoot>
                 </table>
