@@ -467,9 +467,8 @@ class NDB_Config
         // Format the results the same way it was formatted in config.xml
         // This variable assignment was done for phpcs... if anyone figures out
         // a way around this, please correct it
-        if (!empty($info))
-        {
-            $x = $info['WindowDifference'];            
+        if (!empty($info)) {
+            $x = $info['WindowDifference'];
             return array(
                     'id'                => $info['SubprojectID'],
                     'title'             => $info['title'],
