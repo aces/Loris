@@ -55,9 +55,7 @@ if ((isset($argv[1]) && $argv[1] === "confirm")
 }
 
 $DB    = Database::singleton();
-$query = "SELECT ID, subprojectID from session";
 if (!empty($argv[1]) && $argv[1]!="confirm") {
-    $query .=" WHERE visit_label='$argv[1]'";
     $visit_label = $argv[1];
 } else {
     $visit_labels = $DB->pselect(
@@ -127,12 +125,12 @@ function populateVisitLabel($result, $visit_label)
 }
 
 if (isset($visit_label)) {
-    $query   ="SELECT s.ID, s.subprojectID, s.CandID from session 
+    $query ="SELECT s.ID, s.subprojectID, s.CandID from session 
             s LEFT JOIN candidate c USING (CandID) 
             WHERE s.Active='Y'
             AND c.Active='Y' AND s.visit_label=:vl";
-    $where   = array('vl' => $argv[1]);
-    
+    $where = array('vl' => $argv[1]);
+
     $results = $DB->pselect($query, $where);
     foreach ($results AS $result) {
         populateVisitLabel($result, $visit_label);
