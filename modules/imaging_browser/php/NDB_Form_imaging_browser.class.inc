@@ -69,10 +69,10 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     }
 
     /**
-    * Sets up main parameters 
-    *
-    * @return NULL
-    */
+     * Sets up main parameters 
+     *
+     * @return NULL
+     */
     function viewSession() 
     {
         $this->DB = Database::singleton();
@@ -93,9 +93,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
 
             $file = $this->DB->pselectOne(
                 "SELECT File FROM files f 
-	         JOIN session s 
-	         ON (s.ID=f.SessionID) 
-	         WHERE s.ID=:sid AND FileType='obj'", 
+                JOIN session s 
+                ON (s.ID=f.SessionID) 
+                WHERE s.ID=:sid AND FileType='obj'", 
                 array('sid' =>$this->sessionID)
             );
             if (!empty($file)) {
@@ -111,14 +111,16 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $types[$type] = $type;
             }
             $this->tpl_data['selected_options'] = $types;
- 
+
             $this->tpl_data['status_options'] 
                 = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
             $this->tpl_data['caveat_options'] 
                 = array ('' => '&nbsp;', true => 'True', false => 'False');
             $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ? true : false;
-            $this->FormAction = "/imaging_browser/viewSession/?sessionID=" . $this->sessionID;
+            if ($this->_hasQCPerm()) {
+                $this->FormAction = "/imaging_browser/viewSession/?sessionID=" . $this->sessionID;
+            }
 
         }
     }
