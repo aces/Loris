@@ -127,10 +127,10 @@ function populateVisitLabel($result, $visit_label)
 }
 
 if (isset($visit_label)) {
-    $query   ="SELECT s.ID, s.subprojectID, s.CandID from session
-            s LEFT JOIN candidate c USING (CandID)
+    $query   ="SELECT s.ID, s.subprojectID, s.CandID from session 
+            s LEFT JOIN candidate c USING (CandID) 
             WHERE s.Active='Y'
-            AND c.Active='Y' AND s.visit_label =:vl";
+            AND c.Active='Y' AND s.visit_label=:vl";
     $where   = array('vl' => $argv[1]);
     
     $results = $DB->pselect($query, $where);
