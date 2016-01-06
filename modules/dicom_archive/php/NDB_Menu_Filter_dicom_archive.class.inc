@@ -305,6 +305,35 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
         return true;
     }
 
+    function toArray() {
+        $unanonymized = parent::toArray();
+        $retVal = array(
+            'Headers' => $unanonymized['Headers'],
+        );
+        $data = array();
+
+        foreach ($unanonymized['Data'] as &$row) {
+            $val = $row[2];
+            if (!preg_match($this->dicomArchiveSettings['patientNameRegex'], $val) &&
+                !preg_match($this->dicomArchiveSettings['LegoPhantomRegex'], $val) &&
+                !preg_match($this->dicomArchiveSettings['LivingPhantomRegex'], $val)
+            ) {
+                $row[2] = "INVALID - HIDDEN";    
+            }
+
+            $val = $row[1];
+            if (! preg_match($this->dicomArchiveSettings['patientIDRegex'], $val)) {
+                $row[1] = 'INVALID - HIDDEN';
+            }
+
+            $data[] = $row;
+        }
+        return array(
+            'Headers' => $unanonymized['Headers'],
+            'Data' => $data,
+        );
+
+    }
     function getJSDependencies() {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();

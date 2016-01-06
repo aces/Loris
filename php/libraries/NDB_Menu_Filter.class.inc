@@ -702,14 +702,7 @@ class NDB_Menu_Filter extends NDB_Menu
         return Utility::arrayToCSV($list);
     }
 
-    /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
-     *
-     * @return a json encoded string of the headers and data from this table
-     */
-    function toJSON()
-    {
+    function toArray() {
         $data = $this->_getFullList();
 
         $headers = array_map(
@@ -721,12 +714,20 @@ class NDB_Menu_Filter extends NDB_Menu
         foreach ($data as $row) {
             $MappedData[] = array_values($row);
         }
-        return json_encode(
-            array(
+        return array(
              'Headers' => $headers,
              'Data'    => $MappedData,
-            )
-        );
+            );
+    }
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        return json_encode($this->toArray());
     }
     /**
      * Returns the full list of candidates, users, etc.

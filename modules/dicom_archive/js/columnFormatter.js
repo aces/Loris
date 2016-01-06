@@ -30,6 +30,13 @@ function formatColumn(column, cell, rowData) {
             )
         );
     }
+    if (cell === "INVALID - HIDDEN") {
+        return React.createElement(
+            'td',
+            { className: 'error' },
+            cell
+        );
+    }
     return React.createElement(
         'td',
         null,

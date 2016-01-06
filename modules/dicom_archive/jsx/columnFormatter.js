@@ -10,5 +10,8 @@ function formatColumn(column, cell, rowData) {
         var url = loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[10];
         return <td><a href={url}>{cell}</a></td>;
     }
+    if (cell === "INVALID - HIDDEN") {
+        return <td className="error">{cell}</td>;
+    }
     return <td>{cell}</td>;
 }
