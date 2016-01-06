@@ -54,7 +54,7 @@ if ((isset($argv[1]) && $argv[1] === "confirm")
     $confirm = true;
 }
 
-$DB    = Database::singleton();
+$DB = Database::singleton();
 if (!empty($argv[1]) && $argv[1]!="confirm") {
     $visit_label = $argv[1];
 } else {
