@@ -22,6 +22,19 @@ $paths = $config->getSetting('paths');
 $dataDir = $paths['base'] . "tools/$dumpName/"; //temporary working directory
 $destinationDir = $paths['base'] . "htdocs/dataDumps"; //temporary working directory
 
+/** Caching to discISAM 1.0*/
+//$cacheMethod = PHPExcel_CachedObjectStorageFactory:: cache_to_discISAM;
+//$cacheSettings = array( 'dir'  => '/tmp' // If you have a large file you can cache it optional
+//                      );
+//PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
+
+$cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_sqlite3;
+if (PHPExcel_Settings::setCacheStorageMethod($cacheMethod)) {
+    echo date('H:i:s') , " Enable Cell Caching using " , $cacheMethod , " method" , EOL;
+} else {
+    echo date('H:i:s') , " Unable to set Cell Caching using " , $cacheMethod , " method, reverting to memory" , EOL;
+}
+
 /*
 * Prepare output/tmp directories, if needed.
 */
