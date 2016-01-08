@@ -50,6 +50,15 @@ StaticDataTable = React.createClass({
        });
     },
     render: function() {
+        if (this.props.Data == null) {
+            return (
+                <div 
+                    className="alert alert-info no-result-found-panel"
+                >
+                    <strong>No result found.</strong>
+                </div>
+            );
+        }
         var rowsPerPage = this.state.RowsPerPage;
         var headers = [<th onClick={this.setSortColumn(-1)}>{this.props.RowNumLabel}</th>];
         for(var i = 0; i < this.props.Headers.length; i += 1) {

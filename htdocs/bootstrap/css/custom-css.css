@@ -175,3 +175,10 @@ div.navbar div.container div.navbar-brand {
     to { transform: scale(1) rotate(360deg);}
 }
 
+/*
+ *      CSS for alert div
+ */
+.no-result-found-panel {
+    color: #FFFFFF;
+    background-color: #1c70b6;
+}
