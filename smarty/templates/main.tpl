@@ -212,7 +212,7 @@
                                         &gt; 
                                     {/if}
                                 {else}
-                                    <a href="{$crumbs[crumb].query}" style="color: white">
+                                    <a href="{$baseurl}{$crumbs[crumb].query}" style="color: white">
                                         <label>{$crumbs[crumb].text}</label>
                                     </a> 
                                     {if not $smarty.section.crumb.last}
