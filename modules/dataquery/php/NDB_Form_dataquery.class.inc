@@ -105,6 +105,7 @@ class NDB_Form_dataquery extends NDB_Form
             array(
              $baseURL . "/dataquery/js/arrayintersect.js",
              $baseURL . "/dataquery/js/react.fieldselector.js",
+             $baseURL . "/dataquery/js/react.filterBuilder.js",
              $baseURL . "/dataquery/js/react.tabs.js",
              $baseURL . "/dataquery/js/react.sidebar.js",
              $baseURL . "/dataquery/js/react.app.js",

@@ -56,15 +56,20 @@ FieldSelectTabPane = React.createClass({displayName: "FieldSelectTabPane",
 FilterSelectTabPane = React.createClass({displayName: "FilterSelectTabPane",
     mixins: [React.addons.PureRenderMixin],
     render: function() {
-        return React.createElement(TabPane, {TabId: this.props.TabId}, 
-                    React.createElement(FieldSelector, {title: "Filters", 
-                        items: this.props.categories, 
-                        type: "Criteria", 
-                        onFieldChange: this.props.onFieldChange, 
-                        onCriteriaChange: this.props.onCriteriaChange, 
-                        selectedFields: this.props.selectedFields, Criteria: this.props.Criteria}
-                    )
-               )
+        // return <TabPane TabId={this.props.TabId}>
+        //             <FieldSelector title="Filters"
+        //                 items={this.props.categories}
+        //                 type="Criteria"
+        //                 onFieldChange={this.props.onFieldChange}
+        //                 onCriteriaChange={this.props.onCriteriaChange}
+        //                 selectedFields={this.props.selectedFields} Criteria={this.props.Criteria}
+        //             />
+        //        </TabPane>
+        return (
+            React.createElement(TabPane, {TabId: this.props.TabId}, 
+                React.createElement(FilterBuilder, {items: this.props.categories})
+            )
+        );
     }
 });
 
