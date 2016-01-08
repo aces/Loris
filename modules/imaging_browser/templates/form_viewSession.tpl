@@ -18,7 +18,7 @@
     </div> <!-- closing panel-heading div-->
    <div class="panel-body">
       {section name=file loop=$files}
-          <div id="image-{$files[file].FileID}" />
+          <div id="image-{$files[file].FileID}"></div>
 
           <script>
           React.render(
