@@ -35,16 +35,19 @@
         <title>
             {$study_title}
         </title>
-
-        {literal}
             <script language="javascript" type="text/javascript">
                 $(document).ready(function(){
                     {if $crumbs != "" && empty($error_message)}
+                        var crumbs = {$crumbs|@json_encode},
+                            baseurl = "{$baseurl}",
+                            breadcrumbs = RBreadcrumbs({
+                                breadcrumbs: crumbs,
+                                baseURL: baseurl
+                            });
                         React.render(breadcrumbs, document.getElementById("breadcrumbs"));
                     {/if}
                 })
             </script>
-        {/literal}
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
         <link href="{$baseurl}/css/simple-sidebar.css" rel="stylesheet">
 
