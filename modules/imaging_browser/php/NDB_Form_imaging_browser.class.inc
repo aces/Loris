@@ -153,7 +153,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL 
             OR AcquisitionProtocolID not in (1, 2, 3, 52)) 
             AND PendingStaging=0 $extra_where_string 
-            ORDER BY files.OutputType, sel.Value DESC, AcquisitionProtocolID",
+            ORDER BY files.OutputType, files.File",
             array(
                'SID' => $this->sessionID,
                'selectedTypeID' => $this->DB->selectOne(
