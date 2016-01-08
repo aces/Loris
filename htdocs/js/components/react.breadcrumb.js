@@ -1,6 +1,6 @@
 Breadcrumbs = React.createClass({displayName: "Breadcrumbs",
 	render: function () {
-		var baseurl = this.props.baseURL + "/main.php?",
+		var baseurl = this.props.baseURL,
 			breadcrumbs = this.props.breadcrumbs.map(function(element, i){
 				var url = baseurl + element.query
 					crumb = (
