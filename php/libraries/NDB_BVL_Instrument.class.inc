@@ -15,6 +15,7 @@ require_once 'BVL_Feedback_Panel.class.inc';
 
 /**
  * Base class for all NeuroDB behavioural instruments
+ * Base class for all NeuroDB behavioural instruments
  *
  * Throws PEAR errors. Also requires PEAR HTML_Quickform.
  *
@@ -1706,6 +1707,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function addDateElement($name, $label, $options = null)
     {
+
 
         if ($options === null) {
             $options = $this->dateOptions;
