@@ -27,17 +27,116 @@ LogicOperator = React.createClass({
 });
 
 FilterRule = React.createClass({
+	getInitialState: function() {
+		return {
+			operators: {
+				"enum" : {
+					"equal" : "=",
+					"notEqual" : "!="
+				}
+			}
+		}
+	},
 	selectInstrument: function(event){
-		var rule = this.props.rule;
+		var rule = this.props.rule,
+			that = this;
 		if(event.target.value){
 			rule.instrument = event.target.value;
-			this.props.updateRule(this.props.index, rule)
+			$.get("AjaxHelper.php?Module=dataquery&script=datadictionary.php", { category: rule.instrument}, function(data) {
+                rule.fields = data;
+                that.props.updateRule(that.props.index, rule);
+            }, 'json');
 		}
+	},
+	fieldSelect: function() {
+		var rule = this.props.rule;
+		delete rule.field;
+		delete rule.fieldType;
+		delete rule.operator;
+		delete rule.value;
+		if(event.target.value) {
+			rule.field = rule.fields[event.target.value].key[1];
+			rule.fieldType = rule.fields[event.target.value].value.Type;
+		}
+		this.props.updateRule(that.props.index, rule);
+	},
+	operatorSelect: function() {
+		var rule = this.props.rule;
+		delete rule.operator;
+		delete rule.value;
+		if(event.target.value) {
+			rule.operator = event.target.value;
+		}
+		this.props.updateRule(that.props.index, rule);
+	},
+	valueSet: function() {
+		var rule = this.props.rule;
+		delete rule.value;
+		if(event.target.value) {
+			rule.value = event.target.value;
+		}
+		this.props.updateRule(that.props.index, rule);
 	},
 	render: function() {
 		var rule;
 		if(this.props.rule.instrument) {
-			rule = "yes";
+			var fields = this.props.rule.fields.map(function(field, index){
+					return (
+						<option value={index}>{field.key[1]}</option>
+					);
+				}),
+				operators = [],
+				inputOptions, input, operatorKey, operatorSelect, options, value;
+			if(this.props.rule.fieldType) {
+				inputType = this.props.rule.fieldType.split("(");
+				operatorKey = inputType[0]
+				for(var key in this.state.operators[operatorKey]){
+					operators.push(
+						<option value={key} onChange={this.operatorSelect}>
+							{this.state.operators[operatorKey][key]}
+						</option>
+					);
+				}
+				value = (this.props.rule.operator) ? this.props.rule.operator : "";
+				operatorSelect = (
+					<select className="input-sm col-xs-4" onChange={this.operatorSelect} value={value}>
+						<option value=""></option>
+						{operators}
+					</select>
+				);
+				if(this.props.rule.operator){
+					switch(operatorKey){
+						case "enum":
+							inputOptions = enumToArray(this.props.rule.fieldType);
+							options = inputOptions.map(function(option){
+								return (
+									<option value={option}>
+										{option}
+									</option>
+								);
+							});
+							value = (this.props.rule.value) ? this.props.rule.value : "";
+							input = (
+								<select className="input-sm col-xs-4" onChange={this.valueSet} value={value}>
+									<option value=""></option>
+									{options}
+								</select>
+							);
+						default:
+							break;
+					}
+				}
+			}
+			rule = (
+				<div className="col-xs-10">
+					<select className="input-sm col-xs-4" onChange={this.fieldSelect}>
+						<option value=""></option>
+						{fields}
+					</select>
+					{operatorSelect}
+					{input}
+				</div>
+			);
 		} else {
 			var options = this.props.items.map(function(item){
 				return (

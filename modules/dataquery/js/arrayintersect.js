@@ -75,6 +75,15 @@ var arrayIntersect = function(arrays) {
     return results;
 };
 
+var enumToArray = function(enumString) {
+    var tempArray = enumString.split("(")[1].split("'"),
+        array = [];
+    for(var i = 1; i < tempArray.length; i += 2) {
+        array.push(tempArray[i]);
+    }
+    return array;
+}
+
 /*
 //For testing:
 a = [['a', 'b'], ['d', 'e'], ['f', 'v']];
