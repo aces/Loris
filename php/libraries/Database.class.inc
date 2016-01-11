@@ -369,8 +369,10 @@ class Database
             );
         } elseif ($result === 0) {
             if (DEBUG) {
-                fwrite(STDERR, "Replace statement executed successfully "
-                               . "but 0 matched rows: " . $query. "\n"
+                fwrite(
+                    STDERR,
+                    "Replace statement executed successfully "
+                    . "but 0 matched rows: " . $query. "\n"
                 );
                 return;
             }
@@ -525,8 +527,10 @@ class Database
             );
         } elseif ($result === 0) {
             if (DEBUG) {
-                fwrite(STDERR, "Database DELETE executed successfully "
-                               . "but 0 matched rows: " . $query. "\n"
+                fwrite(
+                    STDERR,
+                    "Database DELETE executed successfully "
+                    . "but 0 matched rows: " . $query. "\n"
                 );
                 return;
             }
@@ -651,8 +655,10 @@ class Database
             );
         } elseif ($result === 0) {
             if (DEBUG) {
-                fwrite(STDERR, "Database statement executed successfully "
-                               . "but 0 matched rows: " . $query. "\n"
+                fwrite(
+                    STDERR,
+                    "Database statement executed successfully "
+                    . "but 0 matched rows: " . $query. "\n"
                 );
                 return;
             }
