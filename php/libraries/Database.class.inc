@@ -664,7 +664,7 @@ class Database
             }
         }
 
-        $this->affected = result;
+        $this->affected = $result;
 
         $this->lastInsertID = $this->_PDO->lastInsertId();
     }
