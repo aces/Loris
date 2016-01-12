@@ -75,6 +75,21 @@ var arrayIntersect = function(arrays) {
     return results;
 };
 
+var getSessions = function(group) {
+    var sessions = [],
+        session = []
+    for(var i = 0; i < group.children.length; i++) {
+        sessions.push(group.children[i].session);
+    }
+    if(group.activeOperator === 0) {
+        session = arrayIntersect(sessions);
+    } else {
+        // TODO: create a arrayUnion function and pass
+        //       the sessions to it
+    }
+    return session;
+}
+
 var enumToArray = function(enumString) {
     var tempArray = enumString.split("(")[1].split("'"),
         array = [];

@@ -174,7 +174,9 @@ FilterRule = React.createClass({displayName: "FilterRule",
 				React.createElement("div", {className: "panel-body"}, 
 					rule, 
 					React.createElement("div", {className: "col-xs-2"}, 
-						React.createElement("button", {className: "btn btn-danger btn-sm pull-right"}, 
+						React.createElement("button", {className: "btn btn-danger btn-sm pull-right", 
+								onClick: this.props.deleteRule.bind(this, this.props.index)
+						}, 
 							React.createElement("span", {className: "glyphicon glyphicon-remove"}), " Delete"
 						)
 					)
@@ -208,16 +210,7 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		 	sessions = [],
 		 	session = [];
 		group.children[index] = child;
-		for(var i = 0; i < group.children.length; i++) {
-			sessions.push(group.children[i].session);
-		}
-		if(group.activeOperator === 0) {
-			session = arrayIntersect(sessions);
-		} else {
-			// TODO: create a arrayUnion function and pass
-			//       the sessions to it
-		}
-		group.session = session;
+		group.session = getSessions(group);
 		if(this.props.index) {
 			this.props.updateSessions(this.props.index, group);
 		} else {
@@ -249,6 +242,16 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 			this.props.updateFilter(group)
 		}
 	},
+	deleteChild: function(index) {
+		var group = this.props.group;
+		group.children.splice(index, 1);
+		group.session = getSessions(group);
+		if(this.props.index) {
+			this.props.updateGroup(this.props.index, group);
+		} else {
+			this.props.updateFilter(group);
+		}
+	},
 	render: function() {
 		var logicOperator = (
 				React.createElement(LogicOperator, {logicOperator: this.props.group.activeOperator, 
@@ -264,7 +267,8 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		    							items: that.props.items, 
 		    							index: index, 
 		    							updateRule: that.updateChild, 
-		    							updateSessions: that.updateSessions}
+		    							updateSessions: that.updateSessions, 
+		    							deleteRule: that.deleteChild}
 		    				)
 		    			)
 		    		);
@@ -275,13 +279,23 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		    							 items: that.props.items, 
 		    							 index: index, 
 		    							 updateGroup: that.updateChild, 
-		    							 updateSessions: that.updateSessions}
+		    							 updateSessions: that.updateSessions, 
+		    							 deleteGroup: that.deleteChild}
 		    				)
 		    			)
 		    		);
 		    	}
-		    });
-
+		    }),
+			deleteButton;
+		if(this.props.deleteGroup){
+			deleteButton = (
+				React.createElement("button", {className: "btn btn-danger btn-sm pull-right", 
+										onClick: this.props.deleteGroup.bind(this, this.props.index)
+				}, 
+					React.createElement("span", {className: "glyphicon glyphicon-remove"}), " Add Rule"
+				)
+			)
+		}
 		return (
 			React.createElement("div", {className: "tree"}, 
 				React.createElement("ul", {className: "firstUL"}, 
@@ -291,6 +305,7 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 								logicOperator
 							), 
 							React.createElement("div", {className: "col-xs-10"}, 
+								deleteButton, 
 								React.createElement("button", {className: "btn btn-primary btn-sm pull-right", 
 										onClick: this.addChild.bind(this, "group")
 								}, 

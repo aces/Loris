@@ -174,7 +174,9 @@ FilterRule = React.createClass({
 				<div className="panel-body">
 					{rule}
 					<div className="col-xs-2">
-						<button className="btn btn-danger btn-sm pull-right">
+						<button className="btn btn-danger btn-sm pull-right"
+								onClick={this.props.deleteRule.bind(this, this.props.index)}
+						>
 							<span className="glyphicon glyphicon-remove"></span> Delete
 						</button>
 					</div>
@@ -208,16 +210,7 @@ FilterGroup = React.createClass({
 		 	sessions = [],
 		 	session = [];
 		group.children[index] = child;
-		for(var i = 0; i < group.children.length; i++) {
-			sessions.push(group.children[i].session);
-		}
-		if(group.activeOperator === 0) {
-			session = arrayIntersect(sessions);
-		} else {
-			// TODO: create a arrayUnion function and pass
-			//       the sessions to it
-		}
-		group.session = session;
+		group.session = getSessions(group);
 		if(this.props.index) {
 			this.props.updateSessions(this.props.index, group);
 		} else {
@@ -249,6 +242,16 @@ FilterGroup = React.createClass({
 			this.props.updateFilter(group)
 		}
 	},
+	deleteChild: function(index) {
+		var group = this.props.group;
+		group.children.splice(index, 1);
+		group.session = getSessions(group);
+		if(this.props.index) {
+			this.props.updateGroup(this.props.index, group);
+		} else {
+			this.props.updateFilter(group);
+		}
+	},
 	render: function() {
 		var logicOperator = (
 				<LogicOperator logicOperator={this.props.group.activeOperator}
@@ -265,6 +268,7 @@ FilterGroup = React.createClass({
 		    							index = {index}
 		    							updateRule = {that.updateChild}
 		    							updateSessions = {that.updateSessions}
+		    							deleteRule = {that.deleteChild}
 		    				/>
 		    			</li>
 		    		);
@@ -276,12 +280,22 @@ FilterGroup = React.createClass({
 		    							 index = {index}
 		    							 updateGroup = {that.updateChild}
 		    							 updateSessions = {that.updateSessions}
+		    							 deleteGroup = {that.deleteChild}
 		    				/>
 		    			</li>
 		    		);
 		    	}
-		    });
-
+		    }),
+			deleteButton;
+		if(this.props.deleteGroup){
+			deleteButton = (
+				<button className="btn btn-danger btn-sm pull-right"
+										onClick={this.props.deleteGroup.bind(this, this.props.index)}
+				>
+					<span className="glyphicon glyphicon-remove"></span> Add Rule
+				</button>
+			)
+		}
 		return (
 			<div className="tree">
 				<ul className="firstUL">
@@ -291,6 +305,7 @@ FilterGroup = React.createClass({
 								{logicOperator}
 							</div>
 							<div className="col-xs-10">
+								{deleteButton}
 								<button className="btn btn-primary btn-sm pull-right"
 										onClick={this.addChild.bind(this, "group")}
 								>
