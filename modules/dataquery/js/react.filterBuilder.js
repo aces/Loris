@@ -1,13 +1,6 @@
 LogicOperator = React.createClass({displayName: "LogicOperator",
-	getInitialState: function() {
-		return {
-			activeOperator: 0
-		}
-	},
 	changeOperator: function(op) {
-		this.setState({
-			activeOperator: op
-		});
+		this.props.updateGroupOperator(op);
 	},
 	render: function() {
 		var andClass = "btn btn-primary",
@@ -70,9 +63,35 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		this.props.updateRule(that.props.index, rule);
 	},
 	valueSet: function() {
-		var rule = this.props.rule;
+		var rule = this.props.rule,
+			that = this;
 		delete rule.value;
 		if(event.target.value) {
+			var responseHandler = function(data) {
+		            rule.session = data;
+		            that.props.updateSessions(rule);
+		        },
+				ajaxRetrieve = function(script) {
+		            $.get("AjaxHelper.php?Module=dataquery&script=" + script,
+		                  {
+		                    category: rule.instrument,
+		                    field: rule.field,
+		                    value: event.target.value
+		                  },
+		                  responseHandler,
+		                  'json'
+		            );
+		        };
+		    switch(rule.operator) {
+		    	case "equal":
+		    		ajaxRetrieve("queryEqual.php");
+		    		break;
+		    	case "notEqual":
+		    		ajaxRetrieve("queryNotEqual.php");
+		    		break;
+		    	default:
+		    		break;
+		    }
 			rule.value = event.target.value;
 		}
 		this.props.updateRule(that.props.index, rule);
@@ -175,8 +194,43 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 			this.props.updateFilter(group);
 		}
 	},
+	updateGroupOperator: function(operator) {
+		var group = this.props.group;
+		group.activeOperator = operator;
+		if(this.props.index) {
+			this.props.updateGroup(index, group);
+		} else {
+			this.props.updateFilter(group);
+		}
+	},
+	updateSessions: function(index, child) {
+		// TODO: FIX SO THAT IT PASSES THE FULL CHILD INSTEAD
+		// 		 OF JUST THE SESSION
+		var group = this.props.group,
+		 	sessions = [],
+		 	session = [];
+		group.children[index] = child;
+		for(var i = 0; i < group.children.length; i++) {
+			sessions.push(group.children[i].session);
+		}
+		if(group.activeOperator === 0) {
+			session = arrayIntersect(sessions);
+		} else {
+
+		}
+		group.session = session;
+		if(this.props.index) {
+			this.props.updateSessions(this.props.index, group);
+		} else {
+			this.props.updateFilter(group)
+		}
+	},
 	render: function() {
-		var logicOperator = React.createElement(LogicOperator, {logicOperator: this.props.logicOperator}),
+		var logicOperator = (
+				React.createElement(LogicOperator, {logicOperator: this.props.group.activeOperator, 
+							   updateGroupOperator: this.updateGroupOperator}
+				)
+			),
 			that = this,
 		    children = this.props.group.children.map(function(child, index){
 		    	if(child.type === "rule") {
@@ -185,7 +239,8 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		    				React.createElement(FilterRule, {rule: child, 
 		    							items: that.props.items, 
 		    							index: index, 
-		    							updateRule: that.updateChild}
+		    							updateRule: that.updateChild, 
+		    							updateSessions: that.updateSessions}
 		    				)
 		    			)
 		    		);
@@ -195,7 +250,8 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		    				React.createElement(FilterGroup, {group: child, 
 		    							 items: that.props.items, 
 		    							 index: index, 
-		    							 updateRule: that.updateChild}
+		    							 updateRule: that.updateChild, 
+		    							 updateSessions: that.updateSessions}
 		    				)
 		    			)
 		    		);
