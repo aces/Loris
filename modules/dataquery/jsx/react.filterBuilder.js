@@ -1,13 +1,6 @@
 LogicOperator = React.createClass({
-	getInitialState: function() {
-		return {
-			activeOperator: 0
-		}
-	},
 	changeOperator: function(op) {
-		this.setState({
-			activeOperator: op
-		});
+		this.props.updateGroupOperator(op);
 	},
 	render: function() {
 		var andClass = "btn btn-primary",
@@ -70,9 +63,35 @@ FilterRule = React.createClass({
 		this.props.updateRule(that.props.index, rule);
 	},
 	valueSet: function() {
-		var rule = this.props.rule;
+		var rule = this.props.rule,
+			that = this;
 		delete rule.value;
 		if(event.target.value) {
+			var responseHandler = function(data) {
+		            rule.session = data;
+		            that.props.updateSessions(rule);
+		        },
+				ajaxRetrieve = function(script) {
+		            $.get("AjaxHelper.php?Module=dataquery&script=" + script,
+		                  {
+		                    category: rule.instrument,
+		                    field: rule.field,
+		                    value: event.target.value
+		                  },
+		                  responseHandler,
+		                  'json'
+		            );
+		        };
+		    switch(rule.operator) {
+		    	case "equal":
+		    		ajaxRetrieve("queryEqual.php");
+		    		break;
+		    	case "notEqual":
+		    		ajaxRetrieve("queryNotEqual.php");
+		    		break;
+		    	default:
+		    		break;
+		    }
 			rule.value = event.target.value;
 		}
 		this.props.updateRule(that.props.index, rule);
@@ -170,13 +189,72 @@ FilterGroup = React.createClass({
 		var group = this.props.group;
 		group.children[index] = child;
 		if(this.props.index) {
-			this.props.updateGroup(index, group);
+			this.props.updateGroup(this.props.index, group);
 		} else {
 			this.props.updateFilter(group);
 		}
 	},
+	updateGroupOperator: function(operator) {
+		var group = this.props.group;
+		group.activeOperator = operator;
+		if(this.props.index) {
+			this.props.updateGroup(this.props.index, group);
+		} else {
+			this.props.updateFilter(group);
+		}
+	},
+	updateSessions: function(index, child) {
+		var group = this.props.group,
+		 	sessions = [],
+		 	session = [];
+		group.children[index] = child;
+		for(var i = 0; i < group.children.length; i++) {
+			sessions.push(group.children[i].session);
+		}
+		if(group.activeOperator === 0) {
+			session = arrayIntersect(sessions);
+		} else {
+			// TODO: create a arrayUnion function and pass
+			//       the sessions to it
+		}
+		group.session = session;
+		if(this.props.index) {
+			this.props.updateSessions(this.props.index, group);
+		} else {
+			this.props.updateFilter(group)
+		}
+	},
+	addChild: function(type) {
+		var child,
+			group = this.props.group;
+		if(type === "rule") {
+			child = {
+				type: "rule"
+			}
+		} else {
+			child = {
+				type: "group",
+				activeOperator: 0,
+				children: [
+					{
+						type: "rule"
+					}
+				]
+			}
+		}
+		group.children.push(child);
+		if(this.props.index) {
+			this.props.updateGroup(this.props.index, group);
+		} else {
+			this.props.updateFilter(group)
+		}
+	},
 	render: function() {
-		var logicOperator = <LogicOperator logicOperator={this.props.logicOperator} />,
+		var logicOperator = (
+				<LogicOperator logicOperator={this.props.group.activeOperator}
+							   updateGroupOperator={this.updateGroupOperator}
+				/>
+			),
 			that = this,
 		    children = this.props.group.children.map(function(child, index){
 		    	if(child.type === "rule") {
@@ -186,6 +264,7 @@ FilterGroup = React.createClass({
 		    							items = {that.props.items}
 		    							index = {index}
 		    							updateRule = {that.updateChild}
+		    							updateSessions = {that.updateSessions}
 		    				/>
 		    			</li>
 		    		);
@@ -195,7 +274,8 @@ FilterGroup = React.createClass({
 		    				<FilterGroup group={child}
 		    							 items={that.props.items}
 		    							 index = {index}
-		    							 updateRule = {that.updateChild}
+		    							 updateGroup = {that.updateChild}
+		    							 updateSessions = {that.updateSessions}
 		    				/>
 		    			</li>
 		    		);
@@ -206,7 +286,23 @@ FilterGroup = React.createClass({
 			<div className="tree">
 				<ul className="firstUL">
 					<li>
-						{logicOperator}
+						<div className="row">
+							<div className="col-xs-2">
+								{logicOperator}
+							</div>
+							<div className="col-xs-10">
+								<button className="btn btn-primary btn-sm pull-right"
+										onClick={this.addChild.bind(this, "group")}
+								>
+									<span className="glyphicon glyphicon-add"></span> Add Group
+								</button>
+								<button className="btn btn-primary btn-sm pull-right"
+										onClick={this.addChild.bind(this, "rule")}
+								>
+									<span className="glyphicon glyphicon-add"></span> Add Rule
+								</button>
+							</div>
+						</div>
 						<ul>
 							{children}
 						</ul>

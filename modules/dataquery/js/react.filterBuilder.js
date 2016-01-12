@@ -189,7 +189,7 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		var group = this.props.group;
 		group.children[index] = child;
 		if(this.props.index) {
-			this.props.updateGroup(index, group);
+			this.props.updateGroup(this.props.index, group);
 		} else {
 			this.props.updateFilter(group);
 		}
@@ -198,14 +198,12 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		var group = this.props.group;
 		group.activeOperator = operator;
 		if(this.props.index) {
-			this.props.updateGroup(index, group);
+			this.props.updateGroup(this.props.index, group);
 		} else {
 			this.props.updateFilter(group);
 		}
 	},
 	updateSessions: function(index, child) {
-		// TODO: FIX SO THAT IT PASSES THE FULL CHILD INSTEAD
-		// 		 OF JUST THE SESSION
 		var group = this.props.group,
 		 	sessions = [],
 		 	session = [];
@@ -216,11 +214,37 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		if(group.activeOperator === 0) {
 			session = arrayIntersect(sessions);
 		} else {
-
+			// TODO: create a arrayUnion function and pass
+			//       the sessions to it
 		}
 		group.session = session;
 		if(this.props.index) {
 			this.props.updateSessions(this.props.index, group);
+		} else {
+			this.props.updateFilter(group)
+		}
+	},
+	addChild: function(type) {
+		var child,
+			group = this.props.group;
+		if(type === "rule") {
+			child = {
+				type: "rule"
+			}
+		} else {
+			child = {
+				type: "group",
+				activeOperator: 0,
+				children: [
+					{
+						type: "rule"
+					}
+				]
+			}
+		}
+		group.children.push(child);
+		if(this.props.index) {
+			this.props.updateGroup(this.props.index, group);
 		} else {
 			this.props.updateFilter(group)
 		}
@@ -250,7 +274,7 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		    				React.createElement(FilterGroup, {group: child, 
 		    							 items: that.props.items, 
 		    							 index: index, 
-		    							 updateRule: that.updateChild, 
+		    							 updateGroup: that.updateChild, 
 		    							 updateSessions: that.updateSessions}
 		    				)
 		    			)
@@ -262,7 +286,23 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 			React.createElement("div", {className: "tree"}, 
 				React.createElement("ul", {className: "firstUL"}, 
 					React.createElement("li", null, 
-						logicOperator, 
+						React.createElement("div", {className: "row"}, 
+							React.createElement("div", {className: "col-xs-2"}, 
+								logicOperator
+							), 
+							React.createElement("div", {className: "col-xs-10"}, 
+								React.createElement("button", {className: "btn btn-primary btn-sm pull-right", 
+										onClick: this.addChild.bind(this, "group")
+								}, 
+									React.createElement("span", {className: "glyphicon glyphicon-add"}), " Add Group"
+								), 
+								React.createElement("button", {className: "btn btn-primary btn-sm pull-right", 
+										onClick: this.addChild.bind(this, "rule")
+								}, 
+									React.createElement("span", {className: "glyphicon glyphicon-add"}), " Add Rule"
+								)
+							)
+						), 
 						React.createElement("ul", null, 
 							children
 						)
