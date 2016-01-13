@@ -702,7 +702,18 @@ class NDB_Menu_Filter extends NDB_Menu
         return Utility::arrayToCSV($list);
     }
 
-    function toArray() {
+    /**
+     * Converts this menu filter to an array of the form
+     *
+     * Headers => (string array)
+     * Data => (array of arrays of row data)
+     *
+     * Suitable for serializing to JSON, CSV, etc..
+     *
+     * @return associative array
+     */
+    function toArray()
+    {
         $data = $this->_getFullList();
 
         $headers = array_map(
@@ -715,10 +726,11 @@ class NDB_Menu_Filter extends NDB_Menu
             $MappedData[] = array_values($row);
         }
         return array(
-             'Headers' => $headers,
-             'Data'    => $MappedData,
-            );
+                'Headers' => $headers,
+                'Data'    => $MappedData,
+               );
     }
+
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
