@@ -4,7 +4,6 @@
 <meta itemprop="sessionID" context="{$sessionID}">
 <meta itemprop="commentID" context="{$commentID}">
 <script src="/js/react-with-addons-0.13.3.js"></script>
-<script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
 
 
 
