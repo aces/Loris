@@ -394,7 +394,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
         $feedback =& NDB_BVL_Feedback::singleton($user->getUsername(), null, $sessionID);
         
         // add the new thread
-        $success = $feedback->createThread('session', '5', "The date of $dateType has been changed to $newDate.", 'N');
+        $success = $feedback->createThread('visit', '5', "The date of $dateType has been changed to $newDate.", 'N');
         
         // log the change
         fwrite(STDERR, "Updated date of $dateType to $newDate, for candidate $candID, timepoint $sessionID. Check the DB record!\n");
