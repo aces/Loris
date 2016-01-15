@@ -374,7 +374,6 @@ class Database
                     "Replace statement executed successfully "
                     . "but 0 matched rows: " . $query. "\n"
                 );
-                return;
             }
         }
 
@@ -532,7 +531,6 @@ class Database
                     "Database DELETE executed successfully "
                     . "but 0 matched rows: " . $query. "\n"
                 );
-                return;
             }
         }
 
@@ -660,7 +658,6 @@ class Database
                     "Database statement executed successfully "
                     . "but 0 matched rows: " . $query. "\n"
                 );
-                return;
             }
         }
 
