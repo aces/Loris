@@ -1,9 +1,8 @@
-<link rel="stylesheet" href="css/panel.css" type="text/css"/>
-<script type="text/javascript" src ="GetJS.php?Module=bvl_feedback&file=bvl_feedback_panel_jquery.js"></script>
+<link rel="stylesheet" href="{$base_url}/css/panel.css" type="text/css"/>
+<script type="text/javascript" src ="{$base_url}/GetJS.php?Module=bvl_feedback&file=bvl_feedback_panel_jquery.js"></script>
 <meta itemprop="candID" context="{$candID}">
 <meta itemprop="sessionID" context="{$sessionID}">
 <meta itemprop="commentID" context="{$commentID}">
-<script src="/js/react-with-addons-0.13.3.js"></script>
 <script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
 
 
@@ -16,7 +15,7 @@
 </div><!-- /panel -->
 </body>
 
-<script type="text/javascript" src="GetJS.php?Module=bvl_feedback&file=react.behavioural_feedback_panel.js"></script>
+<script type="text/javascript" src="{$base_url}/GetJS.php?Module=bvl_feedback&file=react.behavioural_feedback_panel.js"></script>
 
 <script type="text/javascript">
 
