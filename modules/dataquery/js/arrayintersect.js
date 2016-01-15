@@ -79,7 +79,9 @@ var getSessions = function(group) {
     var sessions = [],
         session = []
     for(var i = 0; i < group.children.length; i++) {
-        sessions.push(group.children[i].session);
+        if(group.children[i].session) {
+            sessions.push(group.children[i].session);
+        }
     }
     if(group.activeOperator === 0) {
         session = arrayIntersect(sessions);

@@ -147,13 +147,18 @@ FilterRule = React.createClass({
 				}
 			}
 			rule = (
-				<div className="col-xs-10">
-					<select className="input-sm col-xs-4" onChange={this.fieldSelect}>
-						<option value=""></option>
-						{fields}
-					</select>
-					{operatorSelect}
-					{input}
+				<div>
+					<div className="col-xs-12">
+						<label className="instrumentLabel">{this.props.rule.instrument}</label>
+					</div>
+					<div className="col-xs-10">
+						<select className="input-sm col-xs-4" onChange={this.fieldSelect}>
+							<option value=""></option>
+							{fields}
+						</select>
+						{operatorSelect}
+						{input}
+					</div>
 				</div>
 			);
 		} else {

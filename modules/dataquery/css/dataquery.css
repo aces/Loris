@@ -53,3 +53,6 @@ h4 {
 .firstUL {
 	padding-left: 0px
 }
+.instrumentLabel {
+    word-break: break-all;
+}

@@ -147,13 +147,18 @@ FilterRule = React.createClass({displayName: "FilterRule",
 				}
 			}
 			rule = (
-				React.createElement("div", {className: "col-xs-10"}, 
-					React.createElement("select", {className: "input-sm col-xs-4", onChange: this.fieldSelect}, 
-						React.createElement("option", {value: ""}), 
-						fields
+				React.createElement("div", null, 
+					React.createElement("div", {className: "col-xs-12"}, 
+						React.createElement("label", {className: "instrumentLabel"}, this.props.rule.instrument)
 					), 
-					operatorSelect, 
-					input
+					React.createElement("div", {className: "col-xs-10"}, 
+						React.createElement("select", {className: "input-sm col-xs-4", onChange: this.fieldSelect}, 
+							React.createElement("option", {value: ""}), 
+							fields
+						), 
+						operatorSelect, 
+						input
+					)
 				)
 			);
 		} else {
