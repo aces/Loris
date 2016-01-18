@@ -118,7 +118,7 @@ FilterRule = React.createClass({displayName: "FilterRule",
 				}
 				value = (this.props.rule.operator) ? this.props.rule.operator : "";
 				operatorSelect = (
-					React.createElement("select", {className: "input-sm col-xs-4", onChange: this.operatorSelect, value: value}, 
+					React.createElement("select", {className: "input-sm col-xs-4 ", onChange: this.operatorSelect, value: value}, 
 						React.createElement("option", {value: ""}), 
 						operators
 					)
@@ -204,6 +204,7 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 	updateGroupOperator: function(operator) {
 		var group = this.props.group;
 		group.activeOperator = operator;
+		group.session = getSessions(group);
 		if(this.props.index) {
 			this.props.updateGroup(this.props.index, group);
 		} else {

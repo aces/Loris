@@ -75,6 +75,32 @@ var arrayIntersect = function(arrays) {
     return results;
 };
 
+var arrayUnion = function(arrays) {
+    // Base cases: the union of nothing is empty,
+    //             the union of a single array is itself.
+    if(arrays.length === 0) {
+        return [];
+    }
+    if(arrays.length === 1) {
+        return arrays[0];
+    }
+
+    var results = [],
+        obj = {}
+        getKey = function(element) {
+            return element[0] + "," + element[1];
+        };
+    for (var i = 0; i < arrays.length; i++){
+        for(var j = 0; j < arrays[i].length; j++){
+            obj[getKey(arrays[i][j])] = arrays[i][j];
+        }
+    }
+    for(var k in obj) {
+        results.push(obj[k]);
+    }
+    return results;
+}
+
 var getSessions = function(group) {
     var sessions = [],
         session = []
@@ -86,8 +112,7 @@ var getSessions = function(group) {
     if(group.activeOperator === 0) {
         session = arrayIntersect(sessions);
     } else {
-        // TODO: create a arrayUnion function and pass
-        //       the sessions to it
+        session = arrayUnion(sessions);
     }
     return session;
 }
