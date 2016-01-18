@@ -107,13 +107,14 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         $this->addBasicText('full_name', 'Full Name:');
         $this->addBasicText('citation_name', 'Citation Name:');
         $config =& NDB_Config::singleton();
-        $study = $config->getSetting('study');
+        $startYear = $config->getSetting('startYear');
+        $endYear = $config->getSetting('endYear');
         $dateOptions = array(
                              'language'        => 'en',
                              'format'          => 'YMd',
                              'addEmptyOption'  => true,
-                             'minYear'         => $study['startYear'] - $study['ageMax'],
-                             'maxYear'         => $study['endYear'] - $study['ageMin']
+                             'minYear'         => $startYear,
+                             'maxYear'         => $endYear
                              );
         $this->addBasicDate('start_date', 'Start Date:', $dateOptions);
         $this->addBasicDate('end_date', 'End Date:', $dateOptions);
