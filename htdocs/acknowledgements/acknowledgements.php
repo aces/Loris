@@ -24,7 +24,8 @@ $db     = Database::singleton();
 
 $publication_date = $_GET["date"];
 $results          = $db->pselect(
-    "SELECT *
+    "SELECT full_name, citation_name,
+            title, start_date, end_date
      FROM acknowledgements
      WHERE start_date <= :publication_date",
     array('publication_date' => $publication_date)
