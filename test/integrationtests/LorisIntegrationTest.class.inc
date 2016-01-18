@@ -97,6 +97,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
         $this->login("UnitTester", "4test4");
 
+        if (extension_loaded('xdebug')) {
+            xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+        }
+
     }
 
     /**
@@ -145,6 +149,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
+        if (extension_loaded('xdebug')) {
+            $data = xdebug_get_code_coverage();
+            xdebug_stop_code_coverage(false);
+        }
+
         // Delete the temporary user.
         $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
