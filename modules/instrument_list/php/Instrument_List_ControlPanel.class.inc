@@ -11,7 +11,7 @@ require_once "NDB_BVL_Battery.class.inc";
 
 Class Instrument_List_ControlPanel extends TimePoint
 {
-    function Instrument_List_ControlPanel($sessionID){
+    function __construct($sessionID){
     	$this->select($sessionID);
     }
  
