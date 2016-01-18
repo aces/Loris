@@ -16,7 +16,7 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
 
 /**
  * This class provides the code to create the menu filter form that allows
- * for data entry of entities that should be acknowledged in publications 
+ * for data entry of entities that should be acknowledged in publications
  *
  * PHP Version 5
  *
