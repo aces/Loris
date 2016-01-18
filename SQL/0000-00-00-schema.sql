@@ -17,6 +17,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `acknowledgements`
+--
+
+DROP TABLE IF EXISTS `acknowledgements`;
+CREATE TABLE `acknowledgements` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(255) DEFAULT NULL,
+  `citation_name` varchar(255) DEFAULT NULL,
+  `title` enum('bachelors','masters','phd','postdoc','md','registered_nurse') DEFAULT NULL,
+  `start_date` date,
+  `end_date` date,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `acknowledgements`
+-- 
+
+LOCK TABLES `acknowledgements` WRITE;
+/*!40000 ALTER TABLE `acknowledgements` DISABLE KEYS */;
+/*!40000 ALTER TABLE `acknowledgements` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `candidate`
 --
 
