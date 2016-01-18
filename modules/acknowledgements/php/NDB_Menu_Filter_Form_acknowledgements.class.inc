@@ -64,9 +64,8 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     {
         // set the class variables
         $this->columns = array(
-            'first_name',
-            'middle_name',
-            'last_name',
+            'full_name',
+            'citation_name',
             'title',
             'start_date',
             'end_date'
@@ -74,25 +73,22 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         $this->query = " FROM acknowledgements WHERE 1=1";
         $this->group_by = '';
         $this->validFilters = array(
-            'first_name',
-            'middle_name',
-            'last_name',
+            'full_name',
+            'citation_name',
             'title',
             'start_date',
             'end_date'
         );
         $this->headers = array(
-            'first_name', 
-            'middle_name',
-            'last_name', 
+            'full_name', 
+            'citation_name',
             'title',
             'start_date', 
             'end_date'
         );
         $this->formToFilter = array(
-            'first_name' => 'first_name',
-            'middle_name' => 'middle_name',
-            'last_name' => 'last_name',
+            'full_name' => 'full_name',
+            'citation_name' => 'citation_name',
             'title' => 'title',
             'start_date' => 'start_date',
             'end_date' => 'end_date'
@@ -104,13 +100,12 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         // gather titles, this should match enum in acknowledgements table
-        $titles = array('' => '', 'bac' => 'Bachelors', 'doc' => 'Doctor', 'mas' => 'Masters', 'phd' => 'PHD', 'pos' => 'Postdoctoral', 'rn' => 'Registered Nurse');
+        $titles = array('' => '', 'bachelors' => 'Bachelors', 'masters' => 'Masters', 'phd' => 'PhD', 'posdoc' => 'Postdoctoral', 'md'=>'MD', 'registered_nurse' => 'Registered Nurse');
 
         // add form elements
         $this->addSelect('title', 'Title:', $titles);
-        $this->addBasicText('first_name', 'First Name:');
-        $this->addBasicText('middle_name', 'Middle Name:');
-        $this->addBasicText('last_name', 'Last Name:');
+        $this->addBasicText('full_name', 'Full Name:');
+        $this->addBasicText('citation_name', 'Citation Name:');
         $config =& NDB_Config::singleton();
         $study = $config->getSetting('study');
         $dateOptions = array(
