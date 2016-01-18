@@ -23,10 +23,14 @@ FilterRule = React.createClass({displayName: "FilterRule",
 	getInitialState: function() {
 		return {
 			operators: {
-				"enum" : {
-					"equal" : "=",
-					"notEqual" : "!="
-				}
+				// "enum" : {
+				"equal" : "=",
+				"notEqual" : "!=",
+				"lessThanEqual" : "<=",
+		    	"greaterThanEqual" : ">=",
+		    	"startsWith" : "startsWith",
+		    	"contains" : "contains"
+				// }
 			}
 		}
 	},
@@ -89,9 +93,22 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		    	case "notEqual":
 		    		ajaxRetrieve("queryNotEqual.php");
 		    		break;
+		    	case "lessThanEqual":
+		    		ajaxRetrieve("queryLessThanEqual.php");
+		    		break;
+		    	case "greaterThanEqual":
+		    		ajaxRetrieve("queryGreaterThanEqual.php");
+		    		break;
+		    	case "startsWith":
+		    		ajaxRetrieve("queryStartsWith.php");
+		    		break;
+		    	case "contains":
+		    		ajaxRetrieve("queryContains.php");
+		    		break;
 		    	default:
 		    		break;
 		    }
+
 			rule.value = event.target.value;
 		}
 		this.props.updateRule(that.props.index, rule);
@@ -109,10 +126,12 @@ FilterRule = React.createClass({displayName: "FilterRule",
 			if(this.props.rule.fieldType) {
 				inputType = this.props.rule.fieldType.split("(");
 				operatorKey = inputType[0]
-				for(var key in this.state.operators[operatorKey]){
+				// for(var key in this.state.operators[operatorKey]){
+				// {this.state.operators[operatorKey][key]}
+				for(var key in this.state.operators){
 					operators.push(
 						React.createElement("option", {value: key, onChange: this.operatorSelect}, 
-							this.state.operators[operatorKey][key]
+							this.state.operators[key]
 						)
 					);
 				}
