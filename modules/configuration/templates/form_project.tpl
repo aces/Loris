@@ -1,7 +1,8 @@
-<script language="javascript" src="GetJS.php?Module=configuration&file=project.js">
+<script language="javascript" src="{$baseurl}/configuration/js/project.js">
 </script>
+<script language="javascript" src="{$baseurl}/configuration/js/SubprojectRelations.js"></script>
 <p>Use this page to manage the configuration of existing projects, or to add a new one.</p>
-<p>To configure study subprojects <a href="{$baseurl}/main.php?test_name=configuration&subtest=subproject">click here</a>.</p>
+<p>To configure study subprojects <a href="{$baseurl}/configuration/subproject/">click here</a>.</p>
 
 <div class="col-md-3">
 <ul class="nav nav-pills nav-stacked" role="tablist" data-tabs="tabs">
@@ -41,6 +42,15 @@
                         <label class="saveStatus"></label>
                     </div>
                 </div>
+                <div id="subprojects{$ProjectID}"></div>
+
+                <script>
+                    var filterTable = RSubprojectRelations({
+                        ProjectID : {$ProjectID},
+                        Relations: {$project.subprojects|@json_encode}
+                    });
+                    React.render(filterTable, document.getElementById("subprojects{$ProjectID}"));
+                </script>
 
             </fieldset>
         </form>

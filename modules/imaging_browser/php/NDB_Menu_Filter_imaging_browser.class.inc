@@ -36,15 +36,9 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     function _hasAccess()
     {
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
 
         // allow only to view own site data
         $site =& Site::singleton($user->getData('CenterID'));
-        if (Utility::isErrorX($site)) {
-            return PEAR::raiseError("DB Error: ".$site->getMessage());
-        }
 
         return ($user->hasPermission('imaging_browser_view_allsites') || ($site->isStudySite() && $user->hasPermission('imaging_browser_view_site')));
     }
@@ -191,25 +185,16 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         
         // PSC
         if ($user->hasPermission('imaging_browser_view_allsites')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList();
-            if(Utility::isErrorX($list_of_sites)) {
-                return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
-            }
             if(is_array($list_of_sites)) $list_of_sites = array('' => 'All') + $list_of_sites;
         }
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (Utility::isErrorX($site)) {
-                return PEAR::raiseError("DB Error: ".$site->getMessage());
-            }
             if ($site->isStudySite()) {
                 $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
             }

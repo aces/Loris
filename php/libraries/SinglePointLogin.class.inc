@@ -69,28 +69,21 @@ class SinglePointLogin
         $tpl_data['action']        = $_SERVER['PHP_SELF']
             . '?' . http_build_query($params);
         $tpl_data['error_message'] = $this->_lastError;
-        try {
-            $study_links = $config->getSetting('Studylinks');
-            foreach (Utility::toArray($study_links['link']) AS $link) {
-                $LinkArgs = '';
-                $BaseURL  = $link['@']['url'];
-                if (isset($link['@']['args'])) {
-                    $LinkArgs = $link_args[$link['@']['args']];
-                }
-                $LinkLabel  = $link['#'];
-                $WindowName = md5($link['@']['url']);
-                $tpl_data['studylinks'][] =array(
-                                            'url'        => $BaseURL . $LinkArgs,
-                                            'label'      => $LinkLabel,
-                                            'windowName' => $WindowName,
-                                           );
-            }
-        } catch(ConfigurationException $e) {
-            // If StudyLinks aren't defined, it shouldn't be fatal.
+
+        $study_links = $config->getExternalLinks('Studylinks');
+        foreach ($study_links as $label => $url) {
+            $WindowName = md5($url);
+            $tpl_data['studylinks'][] = array(
+                                         'url'        => $url,
+                                         'label'      => $label,
+                                         'windowName' => $WindowName,
+                                        );
         }
 
-        $study_title = $config->getSetting('title');
-        $tpl_data['study_title'] = $study_title;
+        $study_title       = $config->getSetting('title');
+        $study_description = $config->getSetting('StudyDescription');
+        $tpl_data['study_title']       = $study_title;
+        $tpl_data['study_description'] = $study_description;
         try {
             $tpl_data['study_logo'] = $config->getSetting('studylogo');
         } catch(ConfigurationException $e) {
@@ -122,14 +115,16 @@ class SinglePointLogin
         $tpl_data['title'] = $config->getSetting('title');
         $tpl_data['css']   = $config->getSetting('css');
         $study_title       = $config->getSetting('title');
+        $study_description = $config->getSetting('StudyDescription');
         try {
             $study_logo = $config->getSetting('studylogo');
         } catch(ConfigurationException $e) {
             $study_logo = '';
         }
 
-        $tpl_data['study_title'] = $study_title;
-        $tpl_data['study_logo']  = $study_logo;
+        $tpl_data['study_title']       = $study_title;
+        $tpl_data['study_description'] = $study_description;
+        $tpl_data['study_logo']        = $study_logo;
 
         $tpl_data['action'] = $_SERVER['PHP_SELF']
             .'?'
@@ -238,8 +233,12 @@ class SinglePointLogin
                      'Success'         => 'Y',
                      'Failcode'        => null,
                      'Login_timestamp' => date('Y-m-d H:i:s'),
-                     'IP_address'      => $_SERVER['REMOTE_ADDR'],
-                     'Page_requested'  => $_SERVER['REQUEST_URI'],
+                     'IP_address'      => isset($_SERVER['REMOTE_ADDR'])
+                                              ? $_SERVER['REMOTE_ADDR']
+                                              : 'Unknown',
+                     'Page_requested'  => isset($_SERVER['REQUEST_URI'])
+                                              ? $_SERVER['REQUEST_URI']
+                                              : 'Unknown',
                     );
 
         // save the new password if the last password expired

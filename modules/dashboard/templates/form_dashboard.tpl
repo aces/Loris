@@ -1,6 +1,4 @@
 <link rel="stylesheet" href="css/c3.css">
-<script src="js/d3.min.js" charset="utf-8"></script>
-<script src="js/c3.min.js"></script>
 
 <div class="row">
     <div class="col-lg-8">

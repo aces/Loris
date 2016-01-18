@@ -36,7 +36,7 @@ $result = $DB->pselectOne(
     "SELECT DefaultEmail FROM participant_emails WHERE Test_name=:TN",
     array('TN' => $_REQUEST['test_name'])
 );
-if (Utility::isErrorX($result) || empty($result)) {
+if (empty($result)) {
     print "";
 } else {
     print $result;

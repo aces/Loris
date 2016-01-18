@@ -9,7 +9,7 @@
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
         </div>
         <div class="panel-body" id="panel-body">
-            <form method="post" action="main.php?test_name=datadict">
+            <form method="post" action="{$baseurl}/datadict/">
                 <div class="row">
                     <div class="form-group col-sm-6">
                     <!-- {* <td>Objective:</td>
@@ -32,7 +32,7 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
                         </div>
                         <div class="col-sm-4">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=datadict&reset=true'" />
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/datadict/?reset=true'" />
                         </div>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
     <!-- title -->
     <td class="controlPanelSection">List of Profiles</td>
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
 
@@ -65,7 +65,7 @@
              <th>No.</th>
                 {section name=header loop=$headers}
                 {** if $headers[header].name != "Name"**}
-                    <th><a href="main.php?test_name=datadict&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
+                    <th><a href="{$baseurl}/datadict/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
                     
                 {**/if***}
                 {/section}
@@ -102,3 +102,16 @@
                         
     <!-- end data table -->
     </table>
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/datadict/?pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
+

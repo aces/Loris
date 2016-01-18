@@ -102,9 +102,6 @@ class NDB_Client
         // include Smarty
         include_once "Smarty_hook.class.inc";
 
-        if (Utility::isErrorX($DB)) {
-            die("Could not connect to database: ".$DB->getMessage());
-        }
         $GLOBALS['DB'] =& $DB;
 
         // tell Pear to print errors if the config says so
@@ -118,6 +115,21 @@ class NDB_Client
             return true;
         }
 
+        // Content-Security policy for LORIS
+        // 1. By default, only allow things that are self-hosted
+        // 2. Allow inline CSS and JS (inline JS is required for
+        //    the Loris base class to load smarty variables
+        // 3. Allow unsafe-eval because jQuery requires it to load
+        //    our menus. It will be fixed in jQuery 3.0.0.
+        //    See: https://github.com/jquery/jquery/issues/2012
+        // 4. Allow data URLs for fonts, because our bootstrap theme
+        //    seems to load a font that way.
+        header(
+            "Content-Security-Policy: "
+            . "default-src 'self' 'unsafe-inline'; "
+            . "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+            . "font-src 'self' data:"
+        );
         // start php session
         session_start();
 
@@ -140,8 +152,7 @@ class NDB_Client
         }
         if (!$login->isLoggedIn()) {
             $auth = $login->authenticate();
-            if (Utility::isErrorX($auth)) {
-            } elseif ($auth === true) {
+            if ($auth === true) {
                 $error = $login->setState();
             } elseif ($auth === false) {
                 header("HTTP/1.1 403 Forbidden");
@@ -157,9 +168,6 @@ class NDB_Client
         }
 
         $user =& User::singleton($_SESSION['State']->getUsername());
-        if (Utility::isErrorX($user)) {
-             die("Could not validate user: ".$user->getMessage());
-        }
 
         // finished initializing
         return true;

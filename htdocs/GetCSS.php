@@ -76,7 +76,18 @@ if (strpos("..", $File) !== false) {
 if ($Instrument !== null) {
     $FullPath = $basePath . "/project/instruments/$File";
 } else {
-    $FullPath = $basePath . "/modules/$Module/css/$File";
+    if (is_dir($basePath . "project/modules/$Module")
+        || is_dir($basePath . "modules/$Module")
+    ) {
+        $ModuleDir = is_dir($basePath . "project/modules/$Module")
+            ? $basePath . "project/modules/$Module"
+            : $basePath . "modules/$Module";
+    } else {
+        error_log("ERROR: Module does not exist");
+        header("HTTP/1.1 400 Bad Request");
+        exit(5);
+    }
+    $FullPath = "$ModuleDir/css/$File";
 }
 
 if (!file_exists($FullPath)) {
@@ -87,6 +98,19 @@ if (!file_exists($FullPath)) {
 
 $MimeType = "text/css";
 header("Content-type: $MimeType");
+
+$mtime = new DateTime();
+$mtime->setTimestamp(filemtime($FullPath));
+header("Last-Modified: " . $mtime->format(DateTime::RFC822));
+
+if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+    $ifmodifiedsince = new DateTime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+    if (!($mtime > $ifmodifiedsince)) {
+        header("HTTP/1.1 304 Not Modified");
+        exit(0);
+    }
+}
+
 
 $etag = md5(filemtime($FullPath));
 header("ETag: $etag");

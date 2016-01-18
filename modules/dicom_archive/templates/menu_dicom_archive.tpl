@@ -16,7 +16,7 @@
                     RowsPerPage : {$rowsPerPage|default:10},
                     Total: {$numTimepoints|default:0},
                     onChangePage: function(pageNum) {
-                        location.href="{$baseurl}/main.php?test_name=dicom_archive&pageID=" + pageNum
+                        location.href="{$baseurl}/dicom_archive/?pageID=" + pageNum
                     },
                     Active: {$pageID}
         }
@@ -38,7 +38,7 @@
     	<th>No.</th>
     {section name=header loop=$headers}
             <th nowrap="nowrap">
-                <a href="main.php?test_name=dicom_archive&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a>
+                <a href="{$baseurl}/dicom_archive/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a>
             </th>
     {/section}
         </tr>
@@ -49,10 +49,10 @@
     {section name=piece loop=$items[item]}
         <td{if $items[item][piece].name == "Transfer_Status"} class="{$items[item][piece].class}"{elseif $items[item][piece].class == "error"} class="{$items[item][piece].class}"{/if}>
             {if $items[item][piece].name == "Metadata"}
-            <a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item][piece].tarchiveID}&backURL={$backURL|escape:"url"}">{$items[item][piece].value}</a>
+            <a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$items[item][piece].tarchiveID}&backURL={$backURL|escape:"url"}">{$items[item][piece].value}</a>
             {elseif $items[item][piece].name == "MRI_Browser"}
                 {if $items[item][piece].sessionID != ""}
-            <a href="main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$items[item][piece].sessionID}&outputType=native&backURL={$backURL|escape:"url"}">{$items[item][piece].value}</a>{else}&nbsp;{/if}
+            <a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$items[item][piece].sessionID}&outputType=native&backURL={$backURL|escape:"url"}">{$items[item][piece].value}</a>{else}&nbsp;{/if}
             {else}
                  {$items[item][piece].value}
             {/if}

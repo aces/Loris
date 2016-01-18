@@ -11,10 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once 'PEAR.php';
-require_once "NDB_Config.class.inc";
-require_once 'NDB_Factory.class.inc';
-
 
 
 /**
@@ -27,7 +23,7 @@ require_once 'NDB_Factory.class.inc';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Utility extends PEAR
+class Utility
 {
     /**
      * This is identical to PEAR::isError from PEAR only the function
@@ -46,17 +42,9 @@ class Utility extends PEAR
      */
     static function isErrorX($data, $code=null)
     {
-        if (!is_a($data, 'PEAR_Error')) {
-            return false;
-        }
-
-        if (is_null($code)) {
-            return true;
-        } elseif (is_string($code)) {
-            return $data->getMessage() == $code;
-        }
-
-        return $data->getCode() == $code;
+        throw new LorisException(
+            "Utility::isErrorX has been deprecated. Use PHP5 exceptions instead."
+        );
     }
 
     /**
@@ -224,7 +212,7 @@ class Utility extends PEAR
      *         should be interpreted as an associative array since the keys
      *         refer to the centerID, not the array index.
      */
-    function getAssociativeSiteList($study_site = true, $DCC = true)
+    static function getAssociativeSiteList($study_site = true, $DCC = true)
     {
         $DB =& Database::singleton();
 

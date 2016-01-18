@@ -192,7 +192,7 @@ class NDB_BVL_InstrumentStatus
             // Run ConflictDetector if Data_entry of SDE and DDE are both Complete
             $count = 0;
             foreach ($query as $key => $dataEntryStatus) {
-                if ($dataEntryStatus == 'Complete') {
+                if ($dataEntryStatus['Data_entry'] == 'Complete') {
                     $count++;
                 }
                 if ($count > 1) {

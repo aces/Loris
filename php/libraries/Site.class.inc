@@ -10,9 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once "PEAR.php";
-require_once "Database.class.inc";
-require_once "User.class.inc";
 
 /**
  * A site object represents a site in the PSC table of

@@ -34,6 +34,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     protected $config;
     protected $DB;
     protected $url;
+    protected $factory;
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -45,8 +46,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         // Set up database wrapper and config
-        $factory      = NDB_Factory::singleton();
-        $this->config = $factory->Config(CONFIG_XML);
+        $this->factory = NDB_Factory::singleton();
+        $this->factory->reset();
+        $this->factory->setTesting(false);
+
+        $this->config = $this->factory->Config(CONFIG_XML);
 
         $database = $this->config->getSetting('database');
 
@@ -127,7 +131,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         // are run one will fail due to the login taking too long?
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::id("page")
+                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )
         );
     }
@@ -149,6 +153,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         if ($this->webDriver) {
             $this->webDriver->quit();
         }
+
+        $this->factory->reset();
     }
 
 

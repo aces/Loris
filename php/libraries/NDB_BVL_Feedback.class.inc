@@ -433,9 +433,6 @@ class NDB_BVL_Feedback
         $query .= " GROUP BY $queryBy";
 
         $success = $db->pselectOne($query, $qparams);
-        if (Utility::isErrorX($success)) {
-            return "DB Error: ".$success->getMessage();
-        }
         return $success;
     }
 
@@ -514,9 +511,6 @@ class NDB_BVL_Feedback
 
         // create user object
         $user =& User::singleton($this->_username);
-        if (Utility::isErrorX($user)) {
-            return "Unable to create user object".$user->getMessage();
-        }
         $hasReadPermission = $user->hasPermission('access_all_profiles');
 
         $query   = "SELECT c.CandID as CandID, c.PSCID as PSCID";
@@ -894,10 +888,6 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         $user =& User::singleton($this->_username);
-        if (Utility::isErrorX($user)) {
-            return "Unable to create user object in activate threads: "
-                . $user->getMessage();
-        }
 
         $setArray = array(
                      "Active"   => 'Y',

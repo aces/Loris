@@ -35,9 +35,6 @@ class NDB_Form_data_team_helper extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         return ($user->hasPermission('data_team_helper'));
     }
     /**
@@ -569,9 +566,6 @@ class NDB_Form_data_team_helper extends NDB_Form
             );
         }
 
-        if (Utility::isErrorX($test_names)) {
-            return PEAR::raiseError("DB Error: ".$instruments->getMessage());
-        }
         return $test_names;
     }
 }

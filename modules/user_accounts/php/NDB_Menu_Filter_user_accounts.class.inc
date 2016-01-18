@@ -11,9 +11,6 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         return $user->hasPermission('user_accounts');
     }
@@ -21,9 +18,6 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
     function _setupVariables()
     {
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         // the base query
         $query = " FROM users LEFT JOIN psc ON (psc.CenterID = users.CenterID) WHERE 1=1 ";
@@ -53,25 +47,16 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
     {
     	// create user object
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         // PSC
         if ($user->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites =& Utility::getSiteList(false);
-            if(Utility::isErrorX($list_of_sites)) {
-                return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
-            } 
             if(is_array($list_of_sites)) $list_of_sites = array('' => 'All',0=>'Not Assigned') + $list_of_sites;
         }
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (Utility::isErrorX($site)) {
-                return PEAR::raiseError("Unable to construct the list_of_sites array: ".$site->getMessage());
-            }
             $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
         }
 

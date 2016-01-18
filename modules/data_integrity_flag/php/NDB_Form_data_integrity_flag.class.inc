@@ -12,9 +12,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         return ($user->hasPermission('data_integrity_flag'));
     }
 
@@ -49,9 +46,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 
         // get the userID
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         $user_name = $user->getUsername();
 
         $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //get actual test_name
@@ -73,9 +67,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         $sucess =  $DB->update('data_integrity_flag',array('latest_entry'=>0),array('dataflag_instrument' => $instrument, 'dataflag_visitlabel'=>$visit_label));
         $success = $DB->insert("data_integrity_flag", array('dataflag_instrument'=>$instrument,'dataflag_visitlabel'=>$visit_label,'dataflag_comment'=>$comment,'dataflag_date'=>$date,'dataflag_status'=>$flag,'latest_entry'=>1,'dataflag_userid'=>$user_name));
 
-        if(PEAR::isError($success)) {
-            return PEAR::raiseError("NDB_Form_data_integrity_flag::_process: ".$success->getMessage());
-        }
         $this->tpl_data['success'] = true;
     }
 
@@ -191,10 +182,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
     function AddWhere($Column, $Filter) {
         // create Database object
         $DB = Database::singleton();
-        if(PEAR::isError($DB)) {
-            print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-            die();
-        }
 
         if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments' &&  $_REQUEST[$Filter] !=='All Visits') {
 
@@ -223,10 +210,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 
         // create Database object
         $DB = Database::singleton();
-        if(PEAR::isError($DB)) {
-            print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-            die();
-        }
 
         $is_error_set = false;
 
