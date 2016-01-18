@@ -42,7 +42,7 @@ class Imaging_Session_ControlPanel
      *
      * @return NULL
      */
-    function Imaging_Session_ControlPanel($sessionID)
+    function __construct($sessionID)
     {
         $this->sessionID = $sessionID;
     }
@@ -172,7 +172,7 @@ class MRINavigation
     *
     * @return NULL
     */
-    function MRINavigation($sessionID = null)
+    function __construct($sessionID = null)
     {
         $this->sessionID           = $sessionID;
         $this->FilteredSessionList = $_SESSION['State']
