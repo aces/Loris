@@ -11,8 +11,6 @@
  *  @version  GIT: <git_id>
  *  @link     https://www.github.com/aces/Loris-Trunk/
  **/
-require_once "NDB_Form.class.inc";
-require_once "TimePoint_Flag.class.inc";
 
 /**
  *  Candidate Parameter form

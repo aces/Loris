@@ -14,8 +14,6 @@
  * @link       https://www.github.com/olgatsib/Loris-Trunk/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Provides the PHP code for the menu filter for the dicom archive
  *

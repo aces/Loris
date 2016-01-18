@@ -1,7 +1,5 @@
 <?php
-require_once 'NDB_Menu.class.inc';
-require_once 'TimePoint_List_ControlPanel.class.inc';
-
+require_once __DIR__ . '/TimePoint_List_ControlPanel.class.inc';
 /**
  * The timepoint list menu
  * @package main

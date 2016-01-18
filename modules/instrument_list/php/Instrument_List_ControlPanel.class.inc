@@ -1,5 +1,4 @@
 <?php
-require_once "NDB_BVL_Battery.class.inc";
 /**
  * Time Point status control panel class
  *

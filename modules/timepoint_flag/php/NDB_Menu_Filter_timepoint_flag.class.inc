@@ -11,21 +11,6 @@
  *  @version  GIT: <git_id>
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'NDB_Menu_Filter.class.inc';
-
-/**
- * NDB_Menu_Filter_timepoint_flag.call.inc File Doc Comment
- *
- * PHP Version 5
- * 
- *  @category Main
- *  @package  Timepoint_Flag
- *  @author   jharlap <username@example.com>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @version  GIT: <git_id>
- *  @link     https://www.github.com/aces/Loris-Trunk/
- */
-require_once 'TimePoint_Flag.class.inc';
 
 /**
  * The menu for timepoint flags

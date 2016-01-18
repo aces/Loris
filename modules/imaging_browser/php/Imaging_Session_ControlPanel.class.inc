@@ -12,9 +12,6 @@
  * @link     https://github.com/aces/Loris-Trunk
 */
 
-require_once "NDB_BVL_Battery.class.inc";
-require_once 'NDB_Form.class.inc';
-require_once 'MRIFile.class.inc';
 /**
  * Imaging browser control panel class
  *

@@ -1,5 +1,4 @@
 <?php
-require_once 'NDB_Menu_Filter.class.inc';
 /**
  * @package main
 */
