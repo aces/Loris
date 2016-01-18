@@ -4,9 +4,9 @@
  * for data entry of entities that should be acknowledged in publications
  *
  * PHP Version 5
- * 
+ *
  * @category Behavioural
- * @package  Main 
+ * @package  Main
  * @author   Justin Kat <justin.kat@mail.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
@@ -16,7 +16,7 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
 
 /**
  * This class provides the code to create the menu filter form that allows
- * for data entry of entities that should be acknowledged in publications   
+ * for data entry of entities that should be acknowledged in publications  
  *
  * PHP Version 5
  *
@@ -24,7 +24,7 @@ require_once 'NDB_Menu_Filter_Form.class.inc';
  * @package  Main
  * @author   Justin Kat <justin.kat@mail.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris      
+ * @link     https://github.com/aces/Loris
  */
 
 class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
@@ -44,7 +44,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     }
 
     /**
-     * processes the submitted form
+     * Processes the submitted form
      *
      * @param array $values Array of submitted values
      *
@@ -84,7 +84,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     }
 
     /**
-     * Sets up all the class variables needed for the 
+     * Sets up all the class variables needed for the
      * acknowledgements menu filter
      *
      * @return true on success
