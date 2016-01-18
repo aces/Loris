@@ -1,70 +1,77 @@
-<div class="col-sm-12">
-    <div class="col-md-8 col-sm-8">
+<div class="row">
+<div class="col-sm-9">
+<div class="panel panel-primary">
+    <div class="panel-heading" onclick="hideFilter(this)">
+        Selection Filter 
+        <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
+    </div>
+    <div class="panel-body">
         <form method="post" action="main.php?test_name=acknowledgements">
-            <div class="panel panel-primary">
-                <div class="panel-heading" onclick="hideFilter();">
-                    Selection Filter
-                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
-                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.full_name.label}
+                    </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.full_name.html}
+                    </div>
                 </div>
-                <div class="panel-body" id="panel-body">
-                    <div class="row">
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">{$form.first_name.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.first_name.html}</div>
-                            <label class="col-sm-12 col-md-4">{$form.title.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.title.html}</div>
-                            <label class="col-sm-12 col-md-4">{$form.title.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.title.html}</div>
-                        </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.citation_name.label}
+                    </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.citation_name.html}
                     </div>
-                    <div class="row">    
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">{$form.middle_name.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.middle_name.html}</div>
-                            <label class="col-sm-12 col-md-4">{$form.start_date.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.start_date.html}</div>
-                            <label class="col-sm-12 col-md-4">{$form.start_date.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.start_date.html}</div>
-                        </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.title.label}
+                    </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.title.html}
                     </div>
-                    <div class="row">
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">{$form.last_name.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.last_name.html}</div>
-                            <label class="col-sm-12 col-md-4">{$form.end_date.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.end_date.html}</div>
-                            <label class="col-sm-12 col-md-4">{$form.start_date.label}</label>
-                            <div class="col-sm-12 col-md-8">{$form.start_date.html}</div>
-                        </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.start_date.label}
+                    </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.start_date.html}
                     </div>
-                    <div class="row">
-                        <div class="form-group col-sm-6 col-sm-offset-6 hidden-sm">
-                            <div class="col-sm-5 col-xs-12">
-                                <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.end_date.label}
+                    </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.end_date.html}
+                    </div>
+                </div>
+            </div>
+            <br class="visible-xs">
+            <div id="advanced-buttons">
+                            <div class="col-sm-4 col-md-3 col-xs-12 col-md-offset-6">
+                                <input type="submit" name="filter" value="Show Data" id="showdata_advanced_options" class="btn btn-sm btn-primary col-xs-12" />
+                            </div>
+
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="visible-xs col-xs-12"> </div>
+                            <div class="col-sm-4 col-md-3 col-xs-12">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=acknowledgements&reset=true'" />
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
-                            <div class="col-sm-5 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=acknowledgements&reset=true'">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row visible-sm">
-                        <div class="col-sm-6">
-                            <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
-                        </div>
-                        <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=acknowledgements&reset=true'">
-                        </div>
-                    </div>
-                    <input type="hidden" name="test_name" value="acknowledgements" />
-                </div>
             </div>
         </form>
     </div>
+</div>
 </div>
 
 <div id="tabs" style="background: white">
@@ -98,13 +105,10 @@
                         <tbody>
                             <tr>
                                 <td nowrap="nowrap">
-                                    <div class="col-sm-12 col-md-12">{$form.first_name.html}</div>
+                                    <div class="col-sm-12 col-md-12">{$form.full_name.html}</div>
                                 </td>
                                 <td nowrap="nowrap">
-                                    <div class="col-sm-12 col-md-12">{$form.middle_name.html}</div>
-                                </td>
-                                <td nowrap="nowrap">
-                                    <div class="col-sm-12 col-md-12">{$form.last_name.html}</div>
+                                    <div class="col-sm-12 col-md-12">{$form.citation_name.html}</div>
                                 </td>
                                 <td nowrap="nowrap">
                                     <div class="col-sm-12 col-md-12">{$form.title.html}</div>
@@ -118,7 +122,7 @@
                             </tr>
 
                             <tr>
-                                <td nowrap="nowrap" colspan="5" id="message-area">
+                                <td nowrap="nowrap" colspan="4" id="message-area">
                                     
                                 </td>
                                 <td nowrap="nowrap">
@@ -131,17 +135,17 @@
                                 {section name=piece loop=$items[item]}
                                     {if $items[item][piece].name != ""}
                                         <td>
-                                            {if $items[item][piece].value == "bac"}
+                                            {if $items[item][piece].value == "bachelors"}
                                                 Bachelors
-                                            {elseif $items[item][piece].value == "doc"}
-                                                Doctor
-                                            {elseif $items[item][piece].value == "mas"}
+                                            {elseif $items[item][piece].value == "masters"}
                                                 Masters
                                             {elseif $items[item][piece].value == "phd"}
-                                                PHD
-                                            {elseif $items[item][piece].value == "pos"}
+                                                PhD
+                                            {elseif $items[item][piece].value == "postdoc"}
                                                 Postdoctoral
-                                            {elseif $items[item][piece].value == "rn"}
+                                            {elseif $items[item][piece].value == "md"}
+                                                MD
+                                            {elseif $items[item][piece].value == "registered_nurse"}
                                                 Registered Nurse
                                             {else}
                                                 {$items[item][piece].value}
