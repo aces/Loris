@@ -84,11 +84,14 @@ just configured with an appropriate user.
 
 ## 1.3 Apache
 
-A sample apache configuration file is in `docs/config/apache2-site.conf`.
-You can copy this file to `/etc/httpd/conf.d` and update the paths and
-settings as appropriate for your server. Ensure that the DocumentRoot
-is pointing to the htdocs/ directory under your LORIS root (usually
-`/var/www/loris/htdocs`)
+A sample apache configuration file is in `docs/config/apache2-site`. 
+You can copy this file to the apache configuration directory (`/etc/httpd/conf.d/`), adding the appropriate suffix:
+
+```bash
+cp docs/config/apache-site /etc/httpd/conf.d/apache-site.conf
+```
+
+Update the paths and settings in this new file as appropriate for your server, ensuring that all placeholders (`%LORISROOT%`, `%PROJECTNAME%`, `%LOGDIRECTORY%`) are populated. Ensure that the DocumentRoot is pointing to the htdocs/ directory under your LORIS root (usually `/var/www/loris/htdocs`).
 
 You'll have to create a `smarty/templates_c/` directory under the LORIS
 root and assure that it's writable by Apache.
