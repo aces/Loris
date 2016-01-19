@@ -94,20 +94,18 @@ class CouchDBDemographicsImporter {
     }
 
     function _getSubproject($id) {
-        $subprojs = Utility::getSubprojectList();
-        foreach($subprojs as $subproj) {
-            if($subproj['id'] == $id) {
-                return $subproj['title'];
-            }
+        $config = NDB_Config::singleton();
+        $subprojs = $config->getSubprojectSettings($id);
+        if($subprojs['id'] == $id) {
+            return $subprojs['title'];
         }
     }
 
     function _getProject($id) {
-        $subprojs = Utility::getProjectList();
-        foreach($subprojs as $subproj) {
-            if($subproj['id'] == $id) {
-                return $subproj['title'];
-            }
+        $config = NDB_Config::singleton();
+        $subprojs = $config->getProjectSettings($id);
+        if($subprojs['id'] == $id) {
+            return $subprojs['Name'];
         }
     }
 
