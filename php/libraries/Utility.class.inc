@@ -1133,7 +1133,7 @@ class Utility
      *
      * @return string $prefixStr minus the largest common piece of $suffixStr
      */
-    function removeCommonAffix($suffixStr, $prefixStr)
+    static function removeCommonAffix($suffixStr, $prefixStr)
     {
         $lastFound = '';
         // Start from the end of $suffixStr and work backwords, to make sure
