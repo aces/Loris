@@ -94,9 +94,7 @@ class CouchDBDemographicsImporter {
     }
 
     function _getSubproject($id) {
-        $config = NDB_Config::singleton();
-        $subprojsXML = $config->getSetting("subprojects");
-        $subprojs = $subprojsXML['subproject'];
+        $subprojs = Utility::getSubprojectList();
         foreach($subprojs as $subproj) {
             if($subproj['id'] == $id) {
                 return $subproj['title'];
@@ -105,9 +103,7 @@ class CouchDBDemographicsImporter {
     }
 
     function _getProject($id) {
-        $config = NDB_Config::singleton();
-        $subprojsXML = $config->getSetting("Projects");
-        $subprojs = $subprojsXML['project'];
+        $subprojs = Utility::getProjectList();
         foreach($subprojs as $subproj) {
             if($subproj['id'] == $id) {
                 return $subproj['title'];
