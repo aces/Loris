@@ -104,12 +104,6 @@ class NDB_Client
 
         $GLOBALS['DB'] =& $DB;
 
-        // tell Pear to print errors if the config says so
-        if ($config->getSetting('showPearErrors')) {
-            $GLOBALS['_PEAR_default_error_mode'] = PEAR_ERROR_PRINT;
-            //$setoptions  = &$GLOBALS['_PEAR_default_error_options'];
-        }
-
         // stop here if this is a command line client
         if (!$this->_isWebClient) {
             return true;
