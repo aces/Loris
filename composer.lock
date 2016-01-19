@@ -1,10 +1,11 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "61a6f53941a51ebf79b3b006b443f766",
+    "content-hash": "21473db769fdf77b7b4111b0f0efa6d5",
     "packages": [
         {
             "name": "pear-pear.php.net/OLE",
@@ -67,16 +68,16 @@
         },
         {
             "name": "smarty/smarty",
-            "version": "v3.1.27",
+            "version": "v3.1.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/smarty-php/smarty.git",
-                "reference": "4537d8aae6c4a26f5439bc3a05d3437d25c2c4d2"
+                "reference": "35480f10e7ce9b0fdaf23d3799d7b79463919b1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/4537d8aae6c4a26f5439bc3a05d3437d25c2c4d2",
-                "reference": "4537d8aae6c4a26f5439bc3a05d3437d25c2c4d2",
+                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/35480f10e7ce9b0fdaf23d3799d7b79463919b1e",
+                "reference": "35480f10e7ce9b0fdaf23d3799d7b79463919b1e",
                 "shasum": ""
             },
             "require": {
@@ -118,7 +119,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-06-18 00:55:59"
+            "time": "2015-12-21 01:57:06"
         }
     ],
     "packages-dev": [
@@ -962,22 +963,25 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "2.4.0",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "32a879f4f35019d78d568db2885d7779ca084a33"
+                "reference": "e4fb41d5d0387d556e2c25534d630b3cce90ea67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/32a879f4f35019d78d568db2885d7779ca084a33",
-                "reference": "32a879f4f35019d78d568db2885d7779ca084a33",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/e4fb41d5d0387d556e2c25534d630b3cce90ea67",
+                "reference": "e4fb41d5d0387d556e2c25534d630b3cce90ea67",
                 "shasum": ""
             },
             "require": {
                 "ext-tokenizer": "*",
                 "ext-xmlwriter": "*",
                 "php": ">=5.1.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
             },
             "bin": [
                 "scripts/phpcs",
@@ -1032,20 +1036,20 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2015-11-23 21:30:59"
+            "time": "2015-12-11 00:12:46"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.0",
+            "version": "v2.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "f79824187de95064a2f5038904c4d7f0227fedb5"
+                "reference": "34c8a4b51e751e7ea869b8262f883d008a2b81b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/f79824187de95064a2f5038904c4d7f0227fedb5",
-                "reference": "f79824187de95064a2f5038904c4d7f0227fedb5",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/34c8a4b51e751e7ea869b8262f883d008a2b81b8",
+                "reference": "34c8a4b51e751e7ea869b8262f883d008a2b81b8",
                 "shasum": ""
             },
             "require": {
@@ -1081,7 +1085,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-11-30 12:35:10"
+            "time": "2016-01-13 10:28:07"
         }
     ],
     "aliases": [],
