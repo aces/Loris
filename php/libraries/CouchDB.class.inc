@@ -118,6 +118,9 @@ class SocketWrapper
                     "Could not read from CouchDB server at $this->host:$this->port"
                 );
             }
+            while (!feof($this->socket)) {
+                $status .= fgets($this->socket);
+            }
             return $status;
         }
     }
