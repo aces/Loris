@@ -31,7 +31,7 @@ install:
     - wget "http://selenium-release.storage.googleapis.com/2.45/selenium-server-standalone-2.45.0.jar"
 
     #- PHP_INI_SCAN_DIR=":test/" php -S localhost:8000 -t htdocs 2>1 >/dev/null&
-    - PHP_INI_SCAN_DIR=":test/" php -S localhost:8000 -t htdocs &
+    - PHP_INI_SCAN_DIR="$PHP_INI_SCAN_DIR:test/" php -S localhost:8000 -t htdocs &
     #- php -S localhost:8000 -t htdocs &
 
     # Start Selenium and redirect Selenium WebDriver
