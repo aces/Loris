@@ -19,5 +19,4 @@ foreach ($data as $file => $lines) {
 }
 fprintf($fp, "\t</project>\n");
 fprintf($fp, "</coverage>\n");
-//file_put_contents("selenium.coverage." . time() . ".serialized", serialize($data));
-
+fclose($fp);
