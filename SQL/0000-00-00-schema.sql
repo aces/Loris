@@ -1613,7 +1613,7 @@ CREATE TABLE `mri_upload` (
   `number_of_mincCreated` int(11) DEFAULT NULL,
   `TarchiveID` int(11) DEFAULT NULL,
   `SessionID` int(10) unsigned DEFAULT NULL,
-  `IsValidated` tinyint(1) NOT NULL DEFAULT '0',
+  `IsCandidateInfoValidated` tinyint(1) DEFAULT NULL,
   `IsTarchiveValidated` tinyint(1) NOT NULL DEFAULT '0',
   `IsPhantom` enum('N','Y') NOT NULL DEFAULT 'N',
   PRIMARY KEY (`UploadID`)
