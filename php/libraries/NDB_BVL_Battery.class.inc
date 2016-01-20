@@ -307,8 +307,12 @@ class NDB_BVL_Battery
                     f.CommentID,
                     CONCAT('DDE_', f.CommentID) AS DDECommentID,
                     ts.Subgroup_name as Sub_group,
-                    t.isDirectEntry
-                FROM flag AS f, test_names as t, test_subgroups as ts ";
+                    ts.group_order as Subgroup_order,
+                    t.isDirectEntry";
+        if (!is_null($stage)) {
+            $query .= ", b.instr_order as instrument_order";
+        }
+        $query .= " FROM flag AS f, test_names as t, test_subgroups as ts ";
         $qparams = array('SID' => $this->sessionID);
 
         if (!is_null($stage)) {
@@ -333,8 +337,14 @@ class NDB_BVL_Battery
             }
         }
 
-        $query .= "ORDER BY Sub_group, Full_name";
-
+        $query .= " ORDER BY Subgroup_order";
+        if (!is_null($stage)) {
+            $query .= ", instrument_order";
+        }
+        else {
+            $query .= ", Full_name";
+        }
+        //print_r($query);
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
 
