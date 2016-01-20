@@ -103,9 +103,9 @@ class CouchDBDemographicsImporter {
 
     function _getProject($id) {
         $config = NDB_Config::singleton();
-        $subprojs = $config->getProjectSettings($id);
-        if($subprojs['id'] == $id) {
-            return $subprojs['Name'];
+        $projs = $config->getProjectSettings($id);
+        if($projs['id'] == $id) {
+            return $projs['Name'];
         }
     }
 
