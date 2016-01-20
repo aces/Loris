@@ -1,2 +1,2 @@
-DELETE FROM LORIS.Config where ConfigID = (SELECT ID FROM LORIS.ConfigSettings where name = 'showPearErrors');
-DELETE FROM LORIS.ConfigSettings where name = 'showPearErrors';
+DELETE FROM Config where ConfigID = (SELECT ID FROM ConfigSettings where name = 'showPearErrors');
+DELETE FROM ConfigSettings where name = 'showPearErrors';
