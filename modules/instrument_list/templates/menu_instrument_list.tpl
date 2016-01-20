@@ -25,8 +25,11 @@
 	<tbody>
 	   	<tr{if $instruments[group][instrument].isDirectEntry} class="directentry"{/if}>
 	    	<td>
-		    	<a href="main.php?test_name={$instruments[group][instrument].testName}&candID={$candID}&sessionID={$sessionID}&commentID={$instruments[group][instrument].commentID}">
-	            {$instruments[group][instrument].fullName}</a></td>
+                <a href="main.php?test_name={$instruments[group][instrument].testName}&candID={$candID}&sessionID={$sessionID}&commentID={$instruments[group][instrument].commentID}">
+                    {if isset($instruments[group][instrument].instrumentOrder)}
+                        {$instruments[group][instrument].instrumentOrder}  -
+                    {/if}
+                    {$instruments[group][instrument].fullName}</a></td>
 	    	<td>{$instruments[group][instrument].dataEntryStatus}</td>
 	    	<td>{$instruments[group][instrument].administrationStatus}</td>
 	    	<td bgcolor="{$instruments[group][instrument].feedbackColor}">

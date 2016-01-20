@@ -68,12 +68,16 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
             return PEAR::raiseError('Battery Error: '.$battery->getMessage());
         }
         $success = $battery->selectBattery($_REQUEST['sessionID']);
+
         if (Utility::isErrorX($success)) {
             return PEAR::raiseError('instrument_list::setup() battery: '.$success->getMessage());
         }
+        $this->tpl_data['stage'] = Utility::getStageUsingCandID($this->tpl_data['candID']);
+        $this->tpl_data['subprojectID'] = Utility::getSubprojectIDUsingCandID($this->tpl_data['candID']);
 
         // get the list of instruments
-        $listOfInstruments = $battery->getBatteryVerbose();
+        $listOfInstruments = $battery->getBatteryVerbose($this->tpl_data['stage'], $this->tpl_data['subprojectID']);
+
         if(Utility::isErrorX($listOfInstruments)) {
             return PEAR::raiseError('instrument_list::setup() instruments: '.$listOfInstruments->getMessage());
         }
@@ -114,7 +118,6 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
                 if(Utility::isErrorX($success)) {
                     return PEAR::raiseError("instrument_list::setup() instrument status: ".$success->getMessage());
                 }
-		
                 $this->tpl_data['instruments'][$x][$i]['fullName'] = $instrument['Full_name'];
                 $this->tpl_data['instruments'][$x][$i]['dataEntryStatus'] = $status->getDataEntryStatus();
                 $this->tpl_data['instruments'][$x][$i]['administrationStatus'] = $status->getAdministrationStatus();
@@ -124,7 +127,8 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
                 $this->tpl_data['instruments'][$x][$i]['ddeCommentID'] = $instrument['DDECommentID'];
                 $this->tpl_data['instruments'][$x][$i]['ddeDataEntryStatus'] = $ddeStatus->getDataEntryStatus();
                 $this->tpl_data['instruments'][$x][$i]['isDirectEntry'] = $instrument['isDirectEntry'];
-                		
+                $this->tpl_data['instruments'][$x][$i]['instrumentOrder'] = $instrument['instrument_order'];
+
                 // create feedback object for the time point
                 $feedback = NDB_BVL_Feedback::singleton($username, null, null, $instrument['CommentID']);
                 if (Utility::isErrorX($feedback)) {
