@@ -28,15 +28,8 @@ if($_REQUEST['SharedQuery'] === "true") {
 $fields = $_REQUEST['Fields'];
 
 $cond = $_REQUEST['Filters'];
-foreach($cond as $field => $filter) {
-    $condition = array(
-        'Field' => $field,
-        'Operator' => $filter['operator'],
-        'Value' => $filter['value']
-    );
-    $baseDocument['Conditions'][] = $condition;
 
-}
+$baseDocument['Conditions'] = $cond;
 $baseDocument['Fields'] = $fields;
 
 error_log(print_r($baseDocument, true));
