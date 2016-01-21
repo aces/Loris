@@ -114,9 +114,14 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		this.props.updateRule(that.props.index, rule);
 	},
 	render: function() {
-		var rule;
+		var rule,
+			fieldIndex,
+			that = this;
 		if(this.props.rule.instrument) {
 			var fields = this.props.rule.fields.map(function(field, index){
+					if(that.props.rule.field && field.key[1] === that.props.rule.field) {
+						fieldIndex = index
+					}
 					return (
 						React.createElement("option", {value: index}, field.key[1])
 					);
@@ -160,7 +165,15 @@ FilterRule = React.createClass({displayName: "FilterRule",
 									options
 								)
 							);
+							break;
 						default:
+							input = (
+								React.createElement("input", {type: "text", 
+									   className: "input-sm col-xs-4", 
+									   onChange: this.valueSet, 
+									   value: this.props.rule.value}
+								)
+							);
 							break;
 					}
 				}
@@ -171,7 +184,7 @@ FilterRule = React.createClass({displayName: "FilterRule",
 						React.createElement("label", {className: "instrumentLabel"}, this.props.rule.instrument)
 					), 
 					React.createElement("div", {className: "col-xs-10"}, 
-						React.createElement("select", {className: "input-sm col-xs-4", onChange: this.fieldSelect}, 
+						React.createElement("select", {className: "input-sm col-xs-4", onChange: this.fieldSelect, value: fieldIndex}, 
 							React.createElement("option", {value: ""}), 
 							fields
 						), 
@@ -354,33 +367,15 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 });
 
 FilterBuilder = React.createClass({displayName: "FilterBuilder",
-	getInitialState: function() {
-		return {
-			filter: {
-				type: "group",
-				activeOperator: 0,
-				children: [
-					{
-						type: "rule"
-					}
-				]
-			}
-		}
-	},
-	updateFilter: function(filter) {
-		this.setState({
-			filter: filter
-		});
-	},
     render: function() {
         return (
         	React.createElement("div", null, 
         		React.createElement("h1", {className: "col-xs-12"}, "Filter"), 
         		React.createElement("div", {className: "col-xs-12"}, 
 	        		React.createElement("div", {className: "well well-primary"}, 
-	        			React.createElement(FilterGroup, {group: this.state.filter, 
+	        			React.createElement(FilterGroup, {group: this.props.filter, 
 	        						 items: this.props.items, 
-	        						 updateFilter: this.updateFilter}
+	        						 updateFilter: this.props.updateFilter}
 	        			)
 					)
 				)

@@ -5,16 +5,10 @@ SavedQueriesList = React.createClass({
     componentDidMount: function() {
     },
     loadQuery: function(queryName) {
-        var that = this;
-        return function() {
-            $.getJSON("AjaxHelper.php?Module=dataquery&script=GetDoc.php", { DocID: queryName},
-            function(data) {
-                if(that.props.onSelectQuery) {
-                    that.props.onSelectQuery(data.Fields, data.Conditions);
-                }
-            }
-            );
-        }
+        this.props.onSelectQuery(
+            this.props.queryDetails[queryName].Fields,
+            this.props.queryDetails[queryName].Conditions
+        );
     },
     render: function() {
         var userSaved = [];
@@ -32,7 +26,7 @@ SavedQueriesList = React.createClass({
             } else {
                 queryName = this.props.userQueries[i];
             }
-            userSaved.push(<li key={this.props.userQueries[i]}><a href="#" onClick={this.loadQuery(this.props.userQueries[i])}>{queryName}</a></li>);
+            userSaved.push(<li key={this.props.userQueries[i]}><a href="#" onClick={this.loadQuery.bind(this, this.props.userQueries[i])}>{queryName}</a></li>);
         }
         for(var i = 0; i < this.props.globalQueries.length; i += 1) {
             curQuery = this.props.queryDetails[this.props.globalQueries[i]];
@@ -42,7 +36,7 @@ SavedQueriesList = React.createClass({
             } else {
                 queryName = this.props.globalQueries[i];
             }
-            globalSaved.push(<li key={this.props.globalQueries[i]}><a href="#" onClick={this.loadQuery(this.props.globalQueries[i])}>{queryName}</a></li>);
+            globalSaved.push(<li key={this.props.globalQueries[i]}><a href="#" onClick={this.loadQuery.bind(this, this.props.globalQueries[i])}>{queryName}</a></li>);
         }
         return (
              <ul className="nav nav-tabs navbar-right">
@@ -154,24 +148,140 @@ DataQueryApp = React.createClass({
             alertLoaded: false,
             alertSaved: false,
             ActiveTab :  'Info',
-            rowData: {}
+            rowData: {},
+            filter: {
+                type: "group",
+                activeOperator: 0,
+                children: [
+                    {
+                        type: "rule"
+                    }
+                ]
+            }
         };
     },
-    loadSavedQuery: function (fields, criteria) {
-        var criteriaState = {};
-        for(var i = 0; i < criteria.length; i +=1 ) {
-            var critObj = criteria[i];
-
-            criteriaState[critObj.Field] = {
-                "operator" : critObj.Operator,
-                "value"    : critObj.Value
+    buildFilterRule: function(rule) {
+        var script;
+        $.ajax({
+            url: "AjaxHelper.php?Module=dataquery&script=datadictionary.php",
+            success: function(data) {
+                rule.fields = data;
+            },
+            async: false,
+            data: { category: rule.instrument },
+            dataType: 'json'
+        });
+        for(var i = 0; i < rule.fields.length; i++){
+            if(rule.fields[i].key[1] === rule.field){
+                rule.fieldType = rule.fields[i].value.Type;
+                break;
             }
         }
-        this.setState({
-            fields: fields,
-            criteria: criteriaState,
-            alertLoaded: true,
-            alertSaved: false
+        switch(rule.operator) {
+            case "equal":
+                script = "queryEqual.php";
+                break;
+            case "notEqual":
+                script = "queryNotEqual.php";
+                break;
+            case "lessThanEqual":
+                script = "queryLessThanEqual.php";
+                break;
+            case "greaterThanEqual":
+                script = "queryGreaterThanEqual.php";
+                break;
+            case "startsWith":
+                script = "queryStartsWith.php";
+                break;
+            case "contains":
+                script = "queryContains.php";
+                break;
+            default:
+                break;
+        }
+        $.ajax({
+            url: "AjaxHelper.php?Module=dataquery&script=" + script,
+            success: function(data) {
+                rule.session = data;
+            },
+            async: false,
+            data: {
+                category: rule.instrument,
+                field: rule.field,
+                value: rule.value
+            },
+            dataType: 'json'
+        });
+        return rule;
+    },
+    buildFilterGroup: function(group) {
+        for(var i = 0; i < group.children.length; i++){
+            if(group.children[i].type === "rule") {
+                group.children[i] = this.buildFilterRule(group.children[i]);
+            } else if(group.children[i].type === "group") {
+                group.children[i] = this.buildFilterGroup(group.children[i]);
+            }
+        }
+        group.session = getSessions(group);
+        return group;
+    },
+    loadSavedQuery: function (fields, criteria) {
+        var filterState = {};
+        if(Array.isArray(criteria)){
+            // filterState = {
+            //     filter: {
+            //         type: "group",
+            //         activeOperator: 0,
+            //         children: []
+            //     }
+            // }
+            filterState = this.state.filter;
+            filterState.children = criteria.map(function(item){
+                var fieldInfo = item.Field.split(",");
+                    rule = {
+                        "instrument" : fieldInfo[0],
+                        "field"      : fieldInfo[1],
+                        "value"      : item.Value,
+                        "type"       : "rule"
+                    };
+                switch(item.Operator) {
+                    case "=":
+                        rule.operator = "equal";
+                        break;
+                    case "!=":
+                        rule.operator = "notEqual";
+                        break;
+                    case "<=":
+                        rule.operator = "lessThanEqual";
+                        break;
+                    case ">=":
+                        rule.operator = "greaterThanEqual";
+                        break;
+                    default:
+                        rule.operator = item.Operator;
+                        break;
+                }
+                return rule;
+            });
+            // for(var i = 0; i < criteria.length; i +=1 ) {
+            //     var critObj = criteria[i];
+
+            //     criteriaState[critObj.Field] = {
+            //         "operator" : critObj.Operator,
+            //         "value"    : critObj.Value
+            //     }
+            // }
+        } else {
+            criteriaState = criteria;
+        }
+        filterState = this.buildFilterGroup(filterState);
+        this.setState(function(state) {
+           return  {
+                fields: fields,
+                filter: filterState,
+                alertLoaded: true,
+                alertSaved: false
+            }
         });
     },
     fieldChange: function(changeType, fieldName) {
@@ -203,47 +313,6 @@ DataQueryApp = React.createClass({
             delete fields[fieldName];
         }
         this.setState({ criteria: fields, loadedQuery: '' });
-    },
-    criteriaChange: function(fieldName, criteriaItem) {
-        var criteria = this.state.criteria;
-        var fieldArray = fieldName.split(",");
-        var that = this;
-        var responseHandler = function(data) {
-            var state = that.state.criteria,
-                cstate = state[fieldName];
-
-            cstate.sessions = data;
-            state[fieldName] = cstate;
-
-            that.setState(state);
-        };
-        criteria[fieldName] = criteriaItem;
-        this.setState({ criteria: criteria} );
-
-        var ajaxRetrieve = function(script) {
-            $.get("AjaxHelper.php?Module=dataquery&script=" + script,
-                  {
-                    category: fieldArray[0],
-                    field: fieldArray[1],
-                    value: criteriaItem.value
-                  },
-                  responseHandler,
-                  'json'
-            );
-        };
-        if (criteriaItem.operator === '=') {
-            ajaxRetrieve("queryEqual.php");
-        } else if (criteriaItem.operator === '!=') {
-            ajaxRetrieve("queryNotEqual.php");
-        } else if (criteriaItem.operator === '<=') {
-            ajaxRetrieve("queryLessThanEqual.php");
-        } else if (criteriaItem.operator === '>=') {
-            ajaxRetrieve("queryGreaterThanEqual.php");
-        } else if (criteriaItem.operator === 'startsWith') {
-            ajaxRetrieve("queryStartsWith.php");
-        } else if (criteriaItem.operator === 'contains') {
-            ajaxRetrieve("queryContains.php");
-        }
     },
     getSessions: function() {
         if (Object.keys(this.state.criteria).length === 0) {
@@ -415,6 +484,11 @@ DataQueryApp = React.createClass({
             rowData: rowdata
         });
     },
+    updateFilter: function(filter) {
+        this.setState({
+            filter: filter
+        });
+    },
     render: function() {
         var tabs = [], tabsNav = [], alert = <div />;
         tabs.push(<InfoTabPane
@@ -427,13 +501,19 @@ DataQueryApp = React.createClass({
                 onFieldChange={this.fieldChange}
                 selectedFields={this.state.fields}
         />);
+        // tabs.push(<FilterSelectTabPane
+        //         TabId="DefineFilters"
+        //         categories={this.props.categories}
+        //         onFieldChange={this.criteriaFieldChange}
+        //         selectedFields={Object.keys(this.state.criteria)}
+        //         Criteria={this.state.criteria}
+        //     />
+        // );
         tabs.push(<FilterSelectTabPane
                 TabId="DefineFilters"
                 categories={this.props.categories}
-                onCriteriaChange={this.criteriaChange}
-                onFieldChange={this.criteriaFieldChange}
-                selectedFields={Object.keys(this.state.criteria)}
-                Criteria={this.state.criteria}
+                filter={this.state.filter}
+                updateFilter={this.updateFilter}
             />
         );
         var displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudial";

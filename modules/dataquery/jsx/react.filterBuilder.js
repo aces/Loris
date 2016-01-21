@@ -114,9 +114,14 @@ FilterRule = React.createClass({
 		this.props.updateRule(that.props.index, rule);
 	},
 	render: function() {
-		var rule;
+		var rule,
+			fieldIndex,
+			that = this;
 		if(this.props.rule.instrument) {
 			var fields = this.props.rule.fields.map(function(field, index){
+					if(that.props.rule.field && field.key[1] === that.props.rule.field) {
+						fieldIndex = index
+					}
 					return (
 						<option value={index}>{field.key[1]}</option>
 					);
@@ -160,7 +165,15 @@ FilterRule = React.createClass({
 									{options}
 								</select>
 							);
+							break;
 						default:
+							input = (
+								<input type="text"
+									   className="input-sm col-xs-4"
+									   onChange={this.valueSet}
+									   value={this.props.rule.value}
+								/>
+							);
 							break;
 					}
 				}
@@ -171,7 +184,7 @@ FilterRule = React.createClass({
 						<label className="instrumentLabel">{this.props.rule.instrument}</label>
 					</div>
 					<div className="col-xs-10">
-						<select className="input-sm col-xs-4" onChange={this.fieldSelect}>
+						<select className="input-sm col-xs-4" onChange={this.fieldSelect} value={fieldIndex}>
 							<option value=""></option>
 							{fields}
 						</select>
@@ -354,33 +367,15 @@ FilterGroup = React.createClass({
 });
 
 FilterBuilder = React.createClass({
-	getInitialState: function() {
-		return {
-			filter: {
-				type: "group",
-				activeOperator: 0,
-				children: [
-					{
-						type: "rule"
-					}
-				]
-			}
-		}
-	},
-	updateFilter: function(filter) {
-		this.setState({
-			filter: filter
-		});
-	},
     render: function() {
         return (
         	<div>
         		<h1 className="col-xs-12">Filter</h1>
         		<div className="col-xs-12">
 	        		<div className="well well-primary">
-	        			<FilterGroup group={this.state.filter}
+	        			<FilterGroup group={this.props.filter}
 	        						 items={this.props.items}
-	        						 updateFilter = {this.updateFilter}
+	        						 updateFilter = {this.props.updateFilter}
 	        			/>
 					</div>
 				</div>
