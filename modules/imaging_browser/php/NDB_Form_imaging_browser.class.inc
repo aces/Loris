@@ -13,9 +13,7 @@
  * @link       https://github.com/aces/Loris-Trunk
 */
 
-require_once 'Imaging_Session_ControlPanel.class.inc';
-require_once 'Notify.class.inc';
-
+require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
 /**
  * NDB_Form_Imaging_Browser Class
  *

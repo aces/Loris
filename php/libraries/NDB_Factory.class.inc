@@ -15,11 +15,6 @@
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris/
  */
-require_once 'NDB_Factory.class.inc';
-require_once 'User.class.inc';
-require_once 'NDB_Config.class.inc';
-require_once 'Database.class.inc';
-require_once 'CouchDB.class.inc';
 
 /**
  * Implementation of factory class described in this file's file comment

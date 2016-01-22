@@ -1,6 +1,4 @@
 <?php
-require_once 'NDB_Form.class.inc';
-
 /**
  * The forms for the start next stage menu
  * @package main
