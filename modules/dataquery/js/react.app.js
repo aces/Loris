@@ -107,9 +107,10 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
     },
     saveFilterRule: function(rule) {
         var savedRule = {
-            "Field"    : rule.field,
-            "Operator" : rule.operator,
-            "Value"    : rule.value
+            "field"      : rule.field,
+            "operator"   : rule.operator,
+            "value"      : rule.value,
+            "instrument" : rule.instrument
         }
         return savedRule;
     },
@@ -186,6 +187,9 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
     },
     loadFilterRule: function(rule) {
         var script;
+        if(!rule.type){
+            rule.type = "rule"
+        }
         $.ajax({
             url: "AjaxHelper.php?Module=dataquery&script=datadictionary.php",
             success: function(data) {
@@ -240,10 +244,13 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
     },
     loadFilterGroup: function(group) {
         for(var i = 0; i < group.children.length; i++){
-            if(group.children[i].type === "rule") {
-                group.children[i] = this.loadFilterRule(group.children[i]);
-            } else if(group.children[i].type === "group") {
+            if(group.children[i].activeOperator) {
+                if(!group.children[i].type){
+                    group.children[i].type = "group"
+                }
                 group.children[i] = this.loadFilterGroup(group.children[i]);
+            } else {
+                group.children[i] = this.loadFilterRule(group.children[i]);
             }
         }
         group.session = getSessions(group);
@@ -252,14 +259,11 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
     loadSavedQuery: function (fields, criteria) {
         var filterState = {};
         if(Array.isArray(criteria)){
-            // filterState = {
-            //     filter: {
-            //         type: "group",
-            //         activeOperator: 0,
-            //         children: []
-            //     }
-            // }
-            filterState = this.state.filter;
+            filterState = {
+                type: "group",
+                activeOperator: 0,
+                children: []
+            };
             filterState.children = criteria.map(function(item){
                 var fieldInfo = item.Field.split(",");
                     rule = {
@@ -287,16 +291,8 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 }
                 return rule;
             });
-            // for(var i = 0; i < criteria.length; i +=1 ) {
-            //     var critObj = criteria[i];
-
-            //     criteriaState[critObj.Field] = {
-            //         "operator" : critObj.Operator,
-            //         "value"    : critObj.Value
-            //     }
-            // }
         } else {
-            criteriaState = criteria;
+            filterState = criteria;
         }
         filterState = this.loadFilterGroup(filterState);
         this.setState(function(state) {
