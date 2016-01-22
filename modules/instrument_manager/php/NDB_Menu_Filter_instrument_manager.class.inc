@@ -1,5 +1,4 @@
 <?php
-require_once 'NDB_Menu_Filter.class.inc';
 
 class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
 {

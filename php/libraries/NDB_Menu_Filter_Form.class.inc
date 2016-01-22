@@ -12,8 +12,6 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Menu_Filter_Form Class
  *

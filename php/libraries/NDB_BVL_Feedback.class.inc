@@ -25,8 +25,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'User.class.inc';
-require_once 'Database.class.inc';
 
 /**
  * A NDB_BVL_Feedback object wraps access to behavioural feedback related
