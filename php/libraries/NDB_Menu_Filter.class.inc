@@ -518,9 +518,9 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
 
-        if (is_array($this->searchKey)
-            && count($this->searchKey) > 0
-            && $this->searchKey['keyword'] !== ''
+        if (is_array($this->searchKeyword)
+            && count($this->searchKeyword) > 0
+            && !empty($this->searchKey['keyword'])
         ) {
             $WhereClause .= " AND (";
             $fields       = array();
