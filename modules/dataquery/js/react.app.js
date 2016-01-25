@@ -181,7 +181,8 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                     {
                         type: "rule"
                     }
-                ]
+                ],
+                session: this.props.AllSessions
             }
         };
     },
@@ -335,29 +336,18 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
         this.setState({ criteria: fields, loadedQuery: '' });
     },
     getSessions: function() {
-        if (Object.keys(this.state.criteria).length === 0) {
-            // console.log(this.props.AllSessions);
-            return this.props.AllSessions;
-        }
-
-        // Get an array where of the results of each criteria
-        var sessionsArrays = [];
-        for (var el in  this.state.criteria) {
-            if(this.state.criteria.hasOwnProperty(el)) {
-                var crit = this.state.criteria[el];
-                if(crit.sessions) {
-                    sessionsArrays.push(crit.sessions)
-                }
-            }
-        }
-
-        // Then do an intersection on the sessions that came out of each
-        // criteria (equivalent to a logical AND between the operators)
-        var sessions = arrayIntersect(sessionsArrays);
-        return sessions;
+        return this.state.filter.session;
     },
     runQuery: function(fields, sessions) {
-        var DocTypes = [], that = this;
+        var DocTypes = [],
+            that = this,
+            semaphore = 0,
+            ajaxComplete = function(){
+                if(semaphore == 0){
+                    var rowdata = that.getRowData(that.state.grouplevel);
+                    that.setState({'rowData': rowdata});
+                }
+            };
         // Get list of DocTypes to be retrieved
         for(var i = 0 ; i < fields.length; i += 1) {
             var field_split = fields[i].split(",");
@@ -365,6 +355,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
             if(DocTypes.indexOf(category) === -1) {
                 // Found a new type of doc, retrieve the data
                 DocTypes.push(category);
+                semaphore++;
                 $.ajax({
                     type: "POST",
                     url: "AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
@@ -374,42 +365,43 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                     },
                     dataType: 'text',
                     success: function(data) {
-                        var i, row, rows, identifier,
-                            sessiondata = that.state.sessiondata;
-                        data = JSON.parse(data);
-                        rows = data.rows;
-                        for(i = 0; i < rows.length; i += 1) {
-                            /*
-                             * each row is a JSON object of the
-                             * form:
-                             * {
-                             *  "key" : [category, pscid, vl],
-                             *  "value" : [pscid, vl],
-                             *  "doc": {
-                             *      Meta: { stuff }
-                             *      data: { "FieldName" : "Value", .. }
-                             * }
-                             */
-                            row = rows[i];
-                            identifier = row.value;
-                            if(!sessiondata.hasOwnProperty(identifier)) {
-                                sessiondata[identifier] = {
+                        if(data) {
+                            var i, row, rows, identifier,
+                                sessiondata = that.state.sessiondata;
+                            data = JSON.parse(data);
+                            rows = data.rows;
+                            for(i = 0; i < rows.length; i += 1) {
+                                /*
+                                 * each row is a JSON object of the
+                                 * form:
+                                 * {
+                                 *  "key" : [category, pscid, vl],
+                                 *  "value" : [pscid, vl],
+                                 *  "doc": {
+                                 *      Meta: { stuff }
+                                 *      data: { "FieldName" : "Value", .. }
+                                 * }
+                                 */
+                                row = rows[i];
+                                identifier = row.value;
+                                if(!sessiondata.hasOwnProperty(identifier)) {
+                                    sessiondata[identifier] = {
+                                    }
                                 }
+
+                                sessiondata[identifier][row.key[0]] = row.doc;
+
                             }
-
-                            sessiondata[identifier][row.key[0]] = row.doc;
-
+                            that.setState({ 'sessiondata' : sessiondata});
                         }
-                        that.setState({ 'sessiondata' : sessiondata});
                         console.log("Received data");
-                        var rowdata = that.getRowData(that.state.grouplevel);
-                        that.setState({'rowData': rowdata});
+                        semaphore--;
+                        ajaxComplete();
                     }
                 });
 
             }
         }
-
     },
     getRowData: function(displayID) {
         var sessiondata = this.state.sessiondata;
