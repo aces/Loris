@@ -20,24 +20,27 @@ $server   = $url["host"];
 $username = $url["user"];
 $password = $url["pass"];
 $db       = substr($url["path"], 1);
-$conn     = new mysqli($server, $username, $password, $db);
+$conn     = new PDO("mysql:host=".$server."; dbname=".$db, $username, $password);
 
 $path_to_file = '../SQL/0000-00-00-schema.sql';
 $sqls         = file_get_contents($path_to_file);
-$lines        = explode("\n", $sqls);
-$sqls         = '';
-foreach ($lines as $line) {
-    $line = trim($line);
-    if ($line && substr($line, 0, 2) !== "--") {
-        $sqls .= $line . "\n";
-    }
-}
-$sqls = explode(";", $sqls);
-foreach ($sqls as $sql) {
-    if (trim($sql)) {
-        $conn->query($sql);
-    }
-}
+$conn->exec($sqls);
+
+$path_to_file = '../SQL/0000-00-01-Permission.sql';
+$sqls         = file_get_contents($path_to_file);
+$conn->exec($sqls);
+
+$path_to_file = '../SQL/0000-00-02-Menus.sql';
+$sqls         = file_get_contents($path_to_file);
+$conn->exec($sqls);
+
+$path_to_file = '../SQL/0000-00-03-ConfigTables.sql';
+$sqls         = file_get_contents($path_to_file);
+$conn->exec($sqls);
+
+$path_to_file = '../SQL/0000-00-04-Help.sql';
+$sqls         = file_get_contents($path_to_file);
+$conn->exec($sqls);
 
 $conn->query(
     "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$password')), 
