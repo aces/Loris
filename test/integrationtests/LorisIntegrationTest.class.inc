@@ -31,10 +31,15 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      * to use to script a web browser.
      */
     protected $webDriver;
+
+    /**
+     * Instance variable
+     */
+    protected $factory;
     protected $config;
     protected $DB;
     protected $url;
-    protected $factory;
+    private   $_oldConfig = array();
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -166,12 +171,23 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->factory->reset();
     }
 
-
-    private $_oldConfig = array();
-
-    function setupConfigSetting($configName, $value) {
-        if(isset($this->_oldConfig[$configName])) {
-            throw new LorisException("Attempted to change already changed config setting");
+    /**
+     * Set a config setting to a new value and store the previous value
+     * in the oldConfig instance variable.
+     *
+     * @param string $configName The config name
+     * @param mixed  $value      The new value for that config
+     *
+     * @throws LorisException
+     *
+     * @return none
+     */
+    function setupConfigSetting($configName, $value)
+    {
+        if (isset($this->_oldConfig[$configName])) {
+            throw new LorisException(
+                "Attempted to change already changed config setting"
+            );
         }
 
         $configID = $this->DB->pselectOne(
@@ -179,20 +195,22 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             array(":configName" => $configName)
         );
 
-        if(is_array($configID) && empty($configID)) {
+        if (is_array($configID) && empty($configID)) {
             // This likely just means the config is in config.xml
-            //throw new LorisException("Attempting to update Config setting not in database");
-            return;
+            throw new LorisException(
+                "Attempting to update Config setting not in database"
+            );
         }
+
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
             array(":confID" => $configID)
         );
 
         $this->_oldConfig[$configName] = array(
-            'ConfigID' => $configID,
-            'OldValue' => $oldVal,
-        );
+                                          'ConfigID' => $configID,
+                                          'OldValue' => $oldVal,
+                                         );
 
         $this->DB->update(
             "Config",
@@ -201,16 +219,27 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    function restoreConfigSetting($configName) {
-        /*
-        if(!isset($this->_oldConfig[$configName])) {
-            throw new LorisException("Attempted to restore unsaved config setting");
+    /**
+     * Restores a config to its saved (previous) value.
+     *
+     * @param string $configName The name of the config to restore
+     *
+     * @throws LorisException
+     *
+     * @return none
+     */
+    function restoreConfigSetting($configName)
+    {
+        if (!isset($this->_oldConfig[$configName])) {
+            throw new LorisException(
+                "Attempted to restore unsaved config setting"
+            );
         }
-         */
-        if(isset($this->_oldConfig[$configName])) {
+
+        if (isset($this->_oldConfig[$configName])) {
             $this->DB->update(
                 "Config",
-                array("Value"    => $this->_oldConfig[$configName]['OldValue']),
+                array("Value" => $this->_oldConfig[$configName]['OldValue']),
                 array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
             );
         }
@@ -225,16 +254,25 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return none
      */
-    function setupPermissions($permissions) {
+    function setupPermissions($permissions)
+    {
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $prepare = $this->DB->prepare(
-            "INSERT INTO user_perm_rel
-                SELECT 999990, PermID
-                    FROM permissions
-                    WHERE code=:perm"
+
+        $codes = array('codes' => implode("','", $permissions));
+
+        $permids = $this->DB->pselect(
+            'select PermID from permissions where code IN ( :codes )',
+            $codes
         );
-        foreach ($permissions as $value) {
-            $this->DB->execute($prepare, array("perm" => $value));
+
+        foreach ($permids as $row) {
+            $this->DB->insert(
+                "user_perm_rel",
+                array(
+                 "UserID" => '999990',
+                 "PermID" => $row['PermID'],
+                )
+            );
         }
     }
 
@@ -244,7 +282,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return none
      */
-    function resetPermissions() {
+    function resetPermissions()
+    {
         $this->DB->run(
             "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
