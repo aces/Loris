@@ -1,4 +1,7 @@
 <?php
+
+require_once __DIR__ . '/Instrument_List_ControlPanel.class.inc';
+
 /**
  * The timepoint details menu
  * @package behavioural
