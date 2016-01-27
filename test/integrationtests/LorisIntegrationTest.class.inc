@@ -280,5 +280,36 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Helper function to determine if a menu item is prensent
+     * under a given category.
+     *
+     * Note: By giving and empty string in any parameter will act as a joker.
+     *   ex: assertMenuItemPresent('', 'Configuration') will return true if
+     *       one or more menu item 'Configuration' exist under any category.
+     *   ex: assertMenuItemPresent('Admin', '') will return true is any
+     *       category 'Admin' has at least one  menu item.
+     *
+     * @param string $category The parent Label of the menu item
+     * @param string $menu     The label of the menu item
+     *
+     * @return boolean true    If the menu item exists under the category.
+     */
+    function assertMenuItemPresent($category, $menu)
+    {
+        $configMenu = $this->webDriver->findElements(
+            WebDriverBy::xPath(
+                "
+                //ul[@class='nav navbar-nav']
+                //a[contains(text(), '$category')]
+                /..
+                /ul[@class='dropdown-menu']
+                //a[contains(text(), '$menu')]
+                "
+            )
+        );
+        return count($configMenu) > 0;
+    }
+
 }
 ?>
