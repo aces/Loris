@@ -668,7 +668,7 @@ class Database
             throw new DatabaseException($err[2], $prepared->queryString, $params);
         }
 
-        if (isset($options['nofetch']) && $options['nofetch'] == true) {
+        if (!empty($options['nofetch']) && $options['nofetch'] == true) {
             return;
         }
 
