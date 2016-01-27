@@ -33,7 +33,6 @@ class ConfigurationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    /*
     public function testConfigurationPageLoads()
     {
         $this->webDriver->get($this->url . "?test_name=configuration");
@@ -43,7 +42,7 @@ class ConfigurationTest extends LorisIntegrationTest
         )->getText();
         $this->assertEquals("Configuration", $breadcrumbText);
     }
-    */
+
     /**
      * Verify that Config module appears in Admin main menu only
      * if the user has permission "config".
@@ -100,7 +99,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $this->assertCount(
             0,
             $configMenu,
-            "There must be exacly 1 configuration menu when the user have permission"
+            "Configuration menu must not be there if user don't have permission"
         );
     }
 
