@@ -31,10 +31,15 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      * to use to script a web browser.
      */
     protected $webDriver;
+
+    /**
+     * Instance variable
+     */
+    protected $factory;
     protected $config;
     protected $DB;
     protected $url;
-    protected $factory;
+    private   $_oldConfig = array();
 
     private $_oldConfig = array();
 
@@ -193,10 +198,15 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
 
         if (is_array($configID) && empty($configID)) {
+<<<<<<< HEAD
+=======
+            // This likely just means the config is in config.xml
+>>>>>>> fix setupPermissions and phpcs
             throw new LorisException(
                 "Attempting to update Config setting not in database"
             );
         }
+
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
             array(":confID" => $configID)
@@ -213,7 +223,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             array("ConfigID" => $configID)
         );
     }
-
 
     /**
      * Restores a config to its saved (previous) value.
@@ -252,11 +261,12 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     function setupPermissions($permissions)
     {
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $prepare = $this->DB->prepare(
-            "INSERT INTO user_perm_rel
-                SELECT 999990, PermID
-                    FROM permissions
-                    WHERE code=:perm"
+
+        $codes = array('codes' => implode("','", $permissions));
+
+        $permids = $this->DB->pselect(
+            'select PermID from permissions where code IN ( :codes )',
+            $codes
         );
         foreach ($permissions as $value) {
             $this->DB->execute(
