@@ -654,8 +654,8 @@ class Database
      *                               while executing it
      * @param array        $options  A list of key=>value pairs.
      *                               - nofetch : to prevent the fetchAll
-     *                                 function to be excuted. Usefull for
-     *                                 insert or updat prepared statements.
+     *                                 function to be excuted. Useful for
+     *                                 insert or update prepared statements.
      *
      * @return array An array of rows in the format ColName => Value after
      *               executing the statement.
