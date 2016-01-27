@@ -227,12 +227,14 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function setupPermissions($permissions) {
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-
-        $codes = array('codes' => implode("','", $permissions));
-        $permids = $this->DB->pselect('select PermID from permissions where code IN ( :codes )', $codes);
-
-        foreach ($permids as $row) {
-            $this->DB->insert("user_perm_rel", array("UserID" => '999990', "PermID" => $row['PermID']));
+        $prepare = $this->DB->prepare(
+            "INSERT INTO user_perm_rel
+                SELECT 999990, PermID
+                    FROM permissions
+                    WHERE code=:perm"
+        );
+        foreach ($permissions as $value) {
+            $this->DB->execute($prepare, array("perm" => $value));
         }
     }
 
