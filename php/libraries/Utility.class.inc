@@ -898,7 +898,8 @@ class Utility
     /**
      * Looks up visit stage using candidate ID.
      *
-     * @param $CandID
+     * @param string $CandID candidate ID
+     *
      * @return array
      * @throws DatabaseException
      */
@@ -913,7 +914,8 @@ class Utility
     /**
      * Looks up visit stage using candidate ID.
      *
-     * @param $CandID
+     * @param string $CandID candidate ID
+     *
      * @return array
      * @throws DatabaseException
      */

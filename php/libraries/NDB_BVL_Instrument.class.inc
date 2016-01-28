@@ -195,7 +195,7 @@ class NDB_BVL_Instrument extends NDB_Page
         } else {
             if (!class_exists($class)
                 && ($guarantee_exists === true
-                    && !file_exists($base."project/instruments/$class.class.inc"))
+                && !file_exists($base."project/instruments/$class.class.inc"))
             ) {
                 throw new Exception("Instrument does not exist");
             }
@@ -1554,9 +1554,9 @@ class NDB_BVL_Instrument extends NDB_Page
      *       out of the NDB_BVL_Instrument into an EARLI base class.
      */
     function addTextAreaElementRD($field,
-                                  $label,
-                                  $rules=array(),
-                                  $rule_message='You must specify or select from the drop-down'
+        $label,
+        $rules=array(),
+        $rule_message='You must specify or select from the drop-down'
     ) {
         $group[] =& $this->form->createElement(
             "textarea",
@@ -2127,9 +2127,9 @@ class NDB_BVL_Instrument extends NDB_Page
                 $BasePath = $paths['base'] . 'project/instruments/';
                 $TestName = $this->testName;
                 if (file_exists(
-                        $BasePath
-                        . "NDB_BVL_Instrument_$TestName.class.inc"
-                    )
+                    $BasePath
+                    . "NDB_BVL_Instrument_$TestName.class.inc"
+                )
                     || file_exists($BasePath . "$TestName.linst")
                 ) {
                     // save possible changes from the control panel...
@@ -2319,7 +2319,7 @@ class NDB_BVL_Instrument extends NDB_Page
                         $el['name'] = $elementName;
                         $elObj      = $this->WrapperTextElements[$elementName];
                         if ((is_array($elObj)
-                                && $elObj['type'] === 'textarea')
+                            && $elObj['type'] === 'textarea')
                             || (!is_array($elObj) && $elObj->_type == 'textarea')
                         ) {
                             $el['type'] = 'textarea';

@@ -340,8 +340,7 @@ class NDB_BVL_Battery
         $query .= " ORDER BY Subgroup_order";
         if (!is_null($stage)) {
             $query .= ", instrument_order";
-        }
-        else {
+        } else {
             $query .= ", Full_name";
         }
         //print_r($query);
