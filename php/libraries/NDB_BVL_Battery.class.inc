@@ -302,7 +302,7 @@ class NDB_BVL_Battery
         $error = $this->_assertBatterySelected();
 
         // craft the select query
-        $query   = "SELECT f.Test_name,
+        $query = "SELECT f.Test_name,
                     t.Full_name,
                     f.CommentID,
                     CONCAT('DDE_', f.CommentID) AS DDECommentID,
@@ -312,7 +312,7 @@ class NDB_BVL_Battery
         if (!is_null($stage)) {
             $query .= ", b.instr_order as instrument_order";
         }
-        $query .= " FROM flag AS f, test_names as t, test_subgroups as ts ";
+        $query  .= " FROM flag AS f, test_names as t, test_subgroups as ts ";
         $qparams = array('SID' => $this->sessionID);
 
         if (!is_null($stage)) {
