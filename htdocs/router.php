@@ -17,7 +17,7 @@ if (preg_match('#^/bootstrap/(.*)#', $_SERVER["REQUEST_URI"])){
 	// of Visit_label
 	// RewriteRule ^([0-9]{6,6})/([0-9]+)/$ /main.php?test_name=instrument_list&candID=$1&sessionID=$2
 	$getParams = explode("/", $_SERVER["REQUEST_URI"]);
-	$_REQUEST["test_name"] = "timepoint_list";
+	$_REQUEST["test_name"] = "instrument_list";
 	$_REQUEST['candID'] = $getParams[1];
 	$_REQUEST['sessionID'] = $getParams[2];
 	include_once __DIR__ . "/main.php";
@@ -64,9 +64,10 @@ if (preg_match('#^/bootstrap/(.*)#', $_SERVER["REQUEST_URI"])){
 	$_GET["Module"] = $getParams[1];
 	$_GET['file'] = $getParams[3];
 	include_once __DIR__ . "/GetStatic.php";
-} else if (preg_match('#^/([a-zA-Z_-]+)/static/([a-zA-Z0-9_.-/]+)$#', $_SERVER["REQUEST_URI"])) {
+} else if (preg_match('#^/([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-/]+)$#', $_SERVER["REQUEST_URI"])) {
 	// RewriteRule ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$ /AjaxHelper.php?Module=$1&script=$2 [QSA]
 	// NOT SURE IF THIS WORKS IF FILE IS NOT SPECIFIED
+	error_log("IN HERE");
 	$getParams = explode("/", $_SERVER["REQUEST_URI"]);
 	$_GET["Module"] = $getParams[1];
 	$_GET['script'] = $getParams[3];
