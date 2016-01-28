@@ -38,7 +38,7 @@ if (preg_match('#^/bootstrap/(.*)#', $_SERVER["REQUEST_URI"])){
 	$_REQUEST['sessionID'] = $getParams[2];
 	$_REQUEST['subtest'] = $getParams[4];
 	include_once __DIR__ . "/main.php";
-} else if (preg_match('#^/([a-zA-Z_-]+)/$#', $_SERVER["REQUEST_URI"])) {
+} else if (preg_match('#^/([a-zA-Z_-]+)/(\?|$)#', $_SERVER["REQUEST_URI"])) {
 	// RewriteRule ^([a-zA-Z_-]+)/$ /main.php?test_name=$1 [QSA]
 	$getParams = explode("/", $_SERVER["REQUEST_URI"]);
 	$_REQUEST["test_name"] = $getParams[1];
