@@ -835,10 +835,8 @@ class NDB_BVL_Feedback
      * @param integer $feedbackID The ID of the feedback thread being closed
      *
      * @return void
-     * FIXME: deleteTread is spelled wrong. Find all references (none?) and
-     *        rename or delete this function if it's unused
      */
-    function deleteTread($feedbackID)
+    function deleteThread($feedbackID)
     {
         // new DB Object
         $db =& Database::singleton();
