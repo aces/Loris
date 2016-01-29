@@ -1183,7 +1183,6 @@ class Utility
         fclose($fp);
         return $csv_string;
     }
-}
 
     /**
      * QuickForm rule to check that a date is valid.
@@ -1213,4 +1212,5 @@ class Utility
         }
         return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
     }
+}
 ?>
