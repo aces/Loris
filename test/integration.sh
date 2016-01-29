@@ -30,15 +30,40 @@ echo "******************************************************************
 ******************************************************************";
 
 # Set config values in LorisTest DB
-mysql -D LorisTest -u SQLTestUser -pTestPassword -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
+host="localhost"
+database="LorisTest"
+username="SQLTestUser"
+password="TestPassword"
+url="http://localhost:8000"
 
-mysql -D LorisTest -u SQLTestUser -pTestPassword -e "UPDATE Config SET Value='$(pwd | sed "s#test##")' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
+while getopts ":m:h:D:u:p:l:" opt; do
+  case $opt in
+    m) module="$OPTARG"
+    ;;
+    h) host="$OPTARG"
+    ;;
+    D) database="$OPTARG"
+    ;;
+    u) username="$OPTARG"
+    ;;
+    p) password="$OPTARG"
+    ;;
+    l) url="$OPTARG"
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2
+    ;;
+  esac
+done
+
+mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
+
+mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value='$(pwd | sed "s#test##")' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
 
 
 if [ ! -z "$1" ]; then
   # Run integration tests for a sepecific module
-  echo Running integration test for module: $1;
-  ../vendor/bin/phpunit --configuration phpunit.xml ../modules/$1/test
+  echo Running integration test for module: $module;
+  ../vendor/bin/phpunit --configuration phpunit.xml ../modules/$module/test
 else
  # Run all integration tests
  ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'Loris Core Integration Tests'
