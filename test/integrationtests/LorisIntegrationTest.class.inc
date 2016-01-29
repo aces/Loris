@@ -295,7 +295,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return boolean true    If the menu item exists under the category.
      */
-    function assertMenuItemPresent($category, $menu)
+    function isMenuItemPresent($category, $menu)
     {
         $configMenu = $this->webDriver->findElements(
             WebDriverBy::xPath(
