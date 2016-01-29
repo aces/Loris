@@ -12,7 +12,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-
 $url = ltrim($_SERVER['REQUEST_URI'], "/");
 
 if (preg_match(
