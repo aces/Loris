@@ -12,7 +12,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once "NDB_Form.class.inc";
 
 /**
  * Stub class for BrainBrowser module to load
@@ -43,6 +42,30 @@ class NDB_Form_Brainbrowser extends NDB_Form
     function _hasAccess()
     {
         return true;
+    }
+
+    /**
+     * Override base function to include brainbrowser javascript files
+     * and dependencies
+     *
+     * @return array of javascript files to be included
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+
+        $deps = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/brainbrowser/js/jquery.mousewheel.min.js",
+             $baseURL . "/brainbrowser/js/three.min.js",
+             $baseURL . "/brainbrowser/js/brainbrowser.volume-viewer.min.js",
+             $baseURL . "/brainbrowser/js/brainbrowser.config.js",
+             $baseURL . "/brainbrowser/js/brainbrowser.loris.js",
+            )
+        );
     }
 }
 ?>

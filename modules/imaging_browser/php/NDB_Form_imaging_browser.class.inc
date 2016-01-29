@@ -13,9 +13,7 @@
  * @link       https://github.com/aces/Loris-Trunk
 */
 
-require_once 'Imaging_Session_ControlPanel.class.inc';
-require_once 'Notify.class.inc';
-
+require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
 /**
  * NDB_Form_Imaging_Browser Class
  *
@@ -49,15 +47,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function _hasAccess()
     {
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
 
         // allow only to view own site data
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if (Utility::isErrorX($timePoint)) {
-            return PEAR::raiseError("TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage());
-        }
 
         return ($user->hasPermission('imaging_browser_view_allsites') || ($user->getData('CenterID') == $timePoint->getData('CenterID') && $user->hasPermission('imaging_browser_view_site')));
     }
@@ -70,9 +62,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function _hasQCPerm()
     {
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
 
         return $user->hasPermission('imaging_browser_qc');
     }
@@ -85,10 +74,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function viewSession() 
     {
         $this->DB = Database::singleton();
-        if (Utility::isErrorX($this->DB)) {
-            print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-            die();
-        }
 
         $this->sessionID = $_REQUEST['sessionID'];
 
@@ -166,7 +151,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL 
             OR AcquisitionProtocolID not in (1, 2, 3, 52)) 
             AND PendingStaging=0 $extra_where_string 
-            ORDER BY files.OutputType, sel.Value DESC, AcquisitionProtocolID",
+            ORDER BY files.OutputType, files.File",
             array(
                'SID' => $this->sessionID,
                'selectedTypeID' => $this->DB->selectOne(
@@ -344,9 +329,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     $success = $this->DB->update(
                         'files_qcstatus', $updateSet, $updateWhere
                     );
-                    if (Utility::isErrorX($success)) {
-                        die("DB Error: ".$success->getMessage());
-                    }
                 } else {
                     $file = new MRIFile($curFileID);
                     $updateSet['SeriesUID'] = $file->getParameter(
@@ -444,9 +426,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                         $success = $this->DB->insert('parameter_file', $insertSet);
                     }
                 }
-                if (Utility::isErrorX($success)) {
-                    die("DB Error: ".$success->getMessage());
-                }
             }
         }
     }
@@ -489,9 +468,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $success = $this->DB->update(
                 'session', $updateSet, array('ID'=>$this->sessionID)
             );
-            if (Utility::isErrorX($success)) {
-                die("DB Error: ".$success->getMessage());
-            }
             // sppool a message to the mri qc status rss channel
             if (($save_visit_status != $old_visit_status) 
                 || ($old_pending_status != $_POST['visit_pending'])
@@ -548,9 +524,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function getSubjectData() 
     {
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if (Utility::isErrorX($timePoint)) {
-            print $timePoint->getMessage()."<br>";
-        }
 
         $subjectData['sessionID'] = $_REQUEST['sessionID'];
         $subjectData['SubprojectID'] = $timePoint->getSubprojectID();
@@ -567,36 +540,33 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
         $subjectData['candid'] = $timePoint->getCandID();
         $subjectData['scanner'] = $this->scanner;
-        $candidate =& Candidate::singleton($timePoint->getCandID());
-        if (Utility::isErrorX($candidate)) { 
-            print $candidate->getMessage()."<br>";
-        } else {
-            $subjectData['pscid'] = $candidate->getPSCID();
-            $subjectData['dob'] = $candidate->getCandidateDoB();
-            $subjectData['edc'] = $candidate->getCandidateEDC();
-            $subjectData['gender'] = $candidate->getCandidateGender();
 
-            // This doesn't work. 
-            //Need to find the proper way to get the TarchiveID. 
-            //It should be per file, not per candidate. --Dave
-            $params = array();
-            $EntityType = $candidate->getData('Entity_type');
-            if ($EntityType == 'Scanner') {
-                $ID = ":PPSCID";
-                $params['PPSCID'] = $timePoint->getData('PSCID');
-            } else {
-                $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
-                $params['PPSCID'] = $candidate->getPSCID();
-                $params['PCandID'] = $timePoint->getCandID();
-                $params['PVL'] = $timePoint->getVisitLabel();
-            }
-            $tarchiveIDs = $this->DB->pselect(
-                "SELECT TarchiveID 
-                FROM tarchive 
-                WHERE PatientName LIKE $ID", $params
-            );
-            $subjectData['tarchiveids'] = $tarchiveIDs;
+        $candidate =& Candidate::singleton($timePoint->getCandID());
+        $subjectData['pscid'] = $candidate->getPSCID();
+        $subjectData['dob'] = $candidate->getCandidateDoB();
+        $subjectData['edc'] = $candidate->getCandidateEDC();
+        $subjectData['gender'] = $candidate->getCandidateGender();
+
+        // This doesn't work. 
+        //Need to find the proper way to get the TarchiveID. 
+        //It should be per file, not per candidate. --Dave
+        $params = array();
+        $EntityType = $candidate->getData('Entity_type');
+        if ($EntityType == 'Scanner') {
+            $ID = ":PPSCID";
+            $params['PPSCID'] = $timePoint->getData('PSCID');
+        } else {
+            $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
+            $params['PPSCID'] = $candidate->getPSCID();
+            $params['PCandID'] = $timePoint->getCandID();
+            $params['PVL'] = $timePoint->getVisitLabel();
         }
+        $tarchiveIDs = $this->DB->pselect(
+            "SELECT TarchiveID 
+            FROM tarchive 
+            WHERE PatientName LIKE $ID", $params
+        );
+        $subjectData['tarchiveids'] = $tarchiveIDs;
         // Cache the data
         return $subjectData;
     }
@@ -609,6 +579,20 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     {
         $controlPanel = new Imaging_Session_ControlPanel($_REQUEST['sessionID']);
         return $controlPanel->display();
+    }
+
+    function getJSDependencies() {
+        $depends = parent::getJSDependencies();
+        if($this->page === 'viewSession') {
+            $factory = NDB_Factory::singleton();
+            $baseURL = $factory->settings()->getBaseURL();
+            $depends = array_merge($depends,
+                array(
+                    $baseURL . "/imaging_browser/js/imagingbrowser.js"
+                ));
+
+        }
+        return $depends;
     }
 }
 

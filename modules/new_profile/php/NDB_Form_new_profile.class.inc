@@ -1,6 +1,4 @@
 <?php
-require_once "NDB_Form.class.inc";
-
 /**
  * The forms for the new profile menu
  * @package main
@@ -11,14 +9,8 @@ class NDB_Form_new_profile extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         $site =& Site::singleton($user->getData('CenterID'));
-        if (Utility::isErrorX($site)) {
-            return PEAR::raiseError("Unable to construct the list_of_sites array: ".$site->getMessage());
-        }
         if ($site->isStudySite()) {
             return $user->hasPermission('data_entry');
         }
@@ -42,9 +34,6 @@ class NDB_Form_new_profile extends NDB_Form
 
         // create the candidate
         $candID = Candidate::createNew($user->getData('CenterID'), $dob, $edc, $values['gender'], $values['PSCID']);
-        if (Utility::isErrorX($candID)) {
-            return PEAR::raiseError("new_profile::_process(): ".$candID->getMessage());
-        }
 
         // get the candidate
         $candidate =& Candidate::singleton($candID);
@@ -52,9 +41,6 @@ class NDB_Form_new_profile extends NDB_Form
         if($config->getSetting('useProjects') == "true") {
             $candidate->setData('ProjectID', $values['ProjectID']);
 
-        }
-        if (Utility::isErrorX($candidate)) {
-            return PEAR::raiseError("Candidate Error ($candID): ".$candidate->getMessage());
         }
 
         //------------------------------------------------------------
@@ -70,13 +56,16 @@ class NDB_Form_new_profile extends NDB_Form
     function new_profile()
     {
         $config =& NDB_Config::singleton();
-        $study = $config->getSetting('study');
+        $startYear = $config->getSetting('startYear');
+        $endYear = $config->getSetting('endYear');
+        $ageMax = $config->getSetting('ageMax');
+        $ageMin = $config->getSetting('ageMin');
         $dateOptions = array(
                              'language'        => 'en',
                              'format'          => 'YMd',
                              'addEmptyOption'  => true,
-                             'minYear'         => $study['startYear'] - $study['ageMax'],
-                             'maxYear'         => $study['endYear'] - $study['ageMin']
+                             'minYear'         => $startYear - $ageMax,
+                             'maxYear'         => $endYear - $ageMin
                              );
 
         // add date of birth

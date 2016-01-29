@@ -17,8 +17,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Implements the menu filter for mri_violations_log table
  *
@@ -39,9 +37,6 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
     function _hasAccess()
     {
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
         return $user->hasPermission('violated_scans_view_allsites');
     }
 
@@ -52,7 +47,7 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $this->query = " FROM mri_violations_log l JOIN mri_scan_type m
+        $this->query = " FROM mri_violations_log l LEFT JOIN mri_scan_type m
                          ON m.ID=l.Scan_type WHERE 1=1 ";
         $this->columns = array(
             'l.PatientName',

@@ -25,8 +25,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'User.class.inc';
-require_once 'Database.class.inc';
 
 /**
  * A NDB_BVL_Feedback object wraps access to behavioural feedback related
@@ -433,9 +431,6 @@ class NDB_BVL_Feedback
         $query .= " GROUP BY $queryBy";
 
         $success = $db->pselectOne($query, $qparams);
-        if (Utility::isErrorX($success)) {
-            return "DB Error: ".$success->getMessage();
-        }
         return $success;
     }
 
@@ -495,7 +490,7 @@ class NDB_BVL_Feedback
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= ", ft.CommentID";
         }
-        $query .= " ORDER BY ft.CandID, ft.Feedback_level, ft.Status";
+        $query .= " ORDER BY ft.CandID, ft.Feedback_level";
 
         $result = $db->pselect($query, $qparams);
 
@@ -514,9 +509,6 @@ class NDB_BVL_Feedback
 
         // create user object
         $user =& User::singleton($this->_username);
-        if (Utility::isErrorX($user)) {
-            return "Unable to create user object".$user->getMessage();
-        }
         $hasReadPermission = $user->hasPermission('access_all_profiles');
 
         $query   = "SELECT c.CandID as CandID, c.PSCID as PSCID";
@@ -894,10 +886,6 @@ class NDB_BVL_Feedback
         $db =& Database::singleton();
 
         $user =& User::singleton($this->_username);
-        if (Utility::isErrorX($user)) {
-            return "Unable to create user object in activate threads: "
-                . $user->getMessage();
-        }
 
         $setArray = array(
                      "Active"   => 'Y',

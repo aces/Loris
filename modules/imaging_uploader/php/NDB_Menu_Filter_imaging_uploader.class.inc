@@ -11,11 +11,6 @@
  * @link     https://github.com/mohadesz/Loris-Trunk
 */
 
-require_once 'NDB_Menu_Filter_Form.class.inc';
-require_once 'Log.class.inc';
-require_once "Archive/Tar.php";
-require_once "File_Decompress.class.inc";
-require_once "Message.class.inc";
 require_once __DIR__
              . "/../../server_processes_manager/php/ServerProcessLauncher.class.inc";
 
@@ -138,7 +133,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ) { //catch file overload error...
             $upload_max_size = ini_get('upload_max_filesize');
             $error_message   = "Please make sure files are not larger than " .
-                     $upload_max_size;
+                 $upload_max_size . "<br>Please refresh this page to return ".
+                "to the Imaging Uploader module";
             $tpl_data['error_message'][] =  $error_message;
         }
         return true;
@@ -239,6 +235,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     {
         //make sure the file-name is  valid
         $temp_file = $file->fileInfo['tmp_name'];
+        $temp_dir  = $this->tempdir();
         $db        = Database::singleton();
         $errors    = array();
         $config    = NDB_Config::singleton();
@@ -249,6 +246,11 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $header_patient_name    = array();
         $file_name = $file->fileInfo['name'];
         $file_path = $temp_dir. "/". $file_name;
+        $isPhantom = $args['values']['IsPhantom'];
+        if (empty($isPhantom)) {
+            $errors[] ="Make sure 'Are these Phantom Scans' is filled out.
+            <br>Please refresh this page to return to the Imaging Uploader module";
+        }
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
@@ -261,7 +263,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             $visit_label = trim($args['values']['Visit_label']);
             if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
                 $errors[] ="Make sure the CandID, PSCID and Visit_label are ".
-                "filled out ";
+                "filled out. <br>Please refresh this page to return to the Imaging
+                Uploader module.";
             }
 
             ///////////////////////////////////////////////////////////////////////
@@ -282,7 +285,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                         $errors[] = "Make sure you enter the CandID: $candid ,".
                                     " PSCID: $pscid and the corresponding".
                                     " Visit-label: $visit_label which".
-                                    " already exist";
+                                    " already exist. <br>Please refresh this page".
+                                    "to return to the Imaging Uploader module";
                 }
             }
         }
@@ -292,7 +296,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         if (!$this->isCompressed($temp_file)) {
             $errors[] = "The file $temp_file is not of type".
-                        " .tgz, .tar.gz or .zip";
+                        " .tgz, .tar.gz or .zip. <br>Please refresh this
+                        page to return to the Imaging Uploader module";
         }
 
         if (count($errors) > 0) {

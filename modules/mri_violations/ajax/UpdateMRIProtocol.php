@@ -22,9 +22,6 @@ $column_name = $table_desc[$column_id]['Field'];
 
 // create user object
 $user =& User::singleton();
-if(PEAR::isError($user)) {
-    return PEAR::raiseError("User Error: ".$user->getMessage());
-}
 
 if ($user->hasPermission('violated_scans_edit')){
      $DB->update('mri_protocol',array($column_name=>$value),array('ID'=>$row_id));

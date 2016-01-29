@@ -33,9 +33,6 @@ $client->makeCommandLine();
 $client->initialize($configFile);
 
 $DB = Database::singleton();
-if (Utility::isErrorX($DB)) {
-     return("Could not connect to database: ".$DB->getMessage());
-}
 session_start();
 $tpl_data = array();
 
@@ -78,27 +75,46 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $err[] = 'The minimum length for First Name field is 3 characters';
     }
     if (!checkLen('lastname')) {
-         $err[] = 'The minimum length for Last Name field is 3 characters';
+        $err[] = 'The minimum length for Last Name field is 3 characters';
     }
     if (!checkLen('from')) {
-          $err[] = 'Your email is not valid!';
+        $err[] = 'Your email is not valid!';
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
-          $err[] = 'Your email is not valid!';
+        $err[] = 'Your email is not valid!';
     }
     if (isset($_SESSION['tntcon'])
         && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']
     ) {
         $err[] = 'The verification code is incorrect';
     }
+
+    $fields = array(
+               'name'     => 'First Name',
+               'lastname' => 'Last Name',
+               'from'     => 'Email',
+              );
+
+    // For each fields, check if quotes or if some HTML/PHP
+    // tags have been entered
+    foreach ($fields as $key => $field) {
+        $value = $_REQUEST[$key];
+        if (preg_match('/["]/', html_entity_decode($value))) {
+            $err[] = "You can't use quotes in $field";
+        }
+        if (strlen($value) > strlen(strip_tags($value))) {
+            $err[] = "You can't use tags in $field";
+        }
+    }
+
     if (count($err)) {
         $tpl_data['error_message'] = $err;
     }
 
     if (!count($err)) {
-        $name      = $_REQUEST["name"];
-        $lastname  = $_REQUEST["lastname"];
-        $from      = $_REQUEST["from"];
-        $verif_box = $_REQUEST["verif_box"];
+        $name      = htmlspecialchars($_REQUEST["name"], ENT_QUOTES);
+        $lastname  = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
+        $from      = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
+        $verif_box = htmlspecialchars($_REQUEST["verif_box"], ENT_QUOTES);
 
         // check to see if verificaton code was correct
         // if verification code was correct send the message and show this page
@@ -116,16 +132,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             "SELECT COUNT(*) FROM users WHERE Email = :VEmail",
             array('VEmail' => $from)
         );
-        if (Utility::isErrorX($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
 
         if ($result == 0) {
             // insert into db only if email address if it doesnt exist
             $success = $DB->insert('users', $vals);
-            if (Utility::isErrorX($success)) {
-                return PEAR::raiseError("DB Error: ".$success->getMessage());
-            }
         }
         unset($_SESSION['tntcon']);
         //redirect to a new page

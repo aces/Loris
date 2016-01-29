@@ -11,17 +11,9 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace Loris\Behavioural;
-require_once 'NDB_Page.class.inc';
-require_once "PEAR.php";
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/Array.php';
-require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
-require_once 'HTML/QuickForm/Renderer/Default.php';
 
 /**
  * Base class for all NeuroDB behavioural instruments
- *
- * Throws PEAR errors. Also requires PEAR HTML_Quickform.
  *
  * @category Main
  * @package  Behavioural
@@ -68,7 +60,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      */
     function _addMetadataFields()
     {
-        $config      =& \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
+
         $dateOptions = array(
                         'language'         => 'en',
                         'format'           => 'YMd',
@@ -135,7 +129,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * TODO: Update this to parse from LINST file
      *
      * @return array
-     * @throws PEAR::Error
      */
     function getSubtestList()
     {

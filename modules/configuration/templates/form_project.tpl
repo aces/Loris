@@ -1,14 +1,15 @@
-<script language="javascript" src="GetJS.php?Module=configuration&file=project.js">
+<script language="javascript" src="{$baseurl}/configuration/js/project.js">
 </script>
+<script language="javascript" src="{$baseurl}/configuration/js/SubprojectRelations.js"></script>
 <p>Use this page to manage the configuration of existing projects, or to add a new one.</p>
-<p>To configure study subprojects <a href="{$baseurl}/main.php?test_name=configuration&subtest=subproject">click here</a>.</p>
+<p>To configure study subprojects <a href="{$baseurl}/configuration/subproject/">click here</a>.</p>
 
 <div class="col-md-3">
 <ul class="nav nav-pills nav-stacked" role="tablist" data-tabs="tabs">
     {foreach from=$projects key=ProjectID item=project name=configContent}
     <li {if $smarty.foreach.configContent.first}class="active"{/if}><a href="#project{$ProjectID}" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>{$project.Name}</a></li>
     {/foreach}
-    <li {if $smarty.foreach.configContent.first}class="active"{/if}><a href="#projectnew" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>New ProjectID</a></li>
+    <li {if count($projects) == 0}class="active"{/if}><a href="#projectnew" data-toggle="tab" {if count($projects) == 0}class="active"{/if}>New ProjectID</a></li>
 </ul>
 </div>
 
@@ -41,12 +42,21 @@
                         <label class="saveStatus"></label>
                     </div>
                 </div>
+                <div id="subprojects{$ProjectID}"></div>
+
+                <script>
+                    var filterTable = RSubprojectRelations({
+                        ProjectID : {$ProjectID},
+                        Relations: {$project.subprojects|@json_encode}
+                    });
+                    React.render(filterTable, document.getElementById("subprojects{$ProjectID}"));
+                </script>
 
             </fieldset>
         </form>
     </div>
     {/foreach}
-    <div id="projectnew" class="tab-pane {if $smarty.foreach.tabContent.first} active{/if}">
+    <div id="projectnew" class="tab-pane {if count($projects) == 0}{count($projects)} active{/if}">
         <h2>New Project</h2>
         <br>
         <form class="form-horizontal" role="form" method="post" id="form{$ProjectID}">

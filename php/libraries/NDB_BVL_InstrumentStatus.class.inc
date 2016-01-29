@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once 'ConflictDetector.class.inc';
 
 /**
  * Behavioural instrument status class
@@ -192,7 +191,7 @@ class NDB_BVL_InstrumentStatus
             // Run ConflictDetector if Data_entry of SDE and DDE are both Complete
             $count = 0;
             foreach ($query as $key => $dataEntryStatus) {
-                if ($dataEntryStatus == 'Complete') {
+                if ($dataEntryStatus['Data_entry'] == 'Complete') {
                     $count++;
                 }
                 if ($count > 1) {

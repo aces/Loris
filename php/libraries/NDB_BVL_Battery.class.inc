@@ -16,7 +16,6 @@
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "PEAR.php";
 
 /**
  * Class that implements a wrapper around a Loris battery.
@@ -27,7 +26,7 @@ require_once "PEAR.php";
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_BVL_Battery extends PEAR
+class NDB_BVL_Battery
 {
     /**
      * ID column of session table - identifies a visit - which is the
@@ -120,9 +119,6 @@ class NDB_BVL_Battery extends PEAR
     ) {
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if ($this->isError($error)) {
-            return $error;
-        }
 
         // get the current battery (center id is irrelevant here,
         // as is stage probably)
@@ -176,15 +172,9 @@ class NDB_BVL_Battery extends PEAR
         $DB = Database::singleton();
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if ($this->isError($error)) {
-            return $error;
-        }
 
         // assert that the instrument is valid
         $error = $this->_assertValidInstrument($testName);
-        if ($this->isError($error)) {
-            return $error;
-        }
 
         // get SessionID, UserID
         $query = "SELECT ID as SessionID, UserID FROM session WHERE ID=:SID";
@@ -218,7 +208,7 @@ class NDB_BVL_Battery extends PEAR
         $ddeCommentID = 'DDE_'.$commentID;
 
         // insert the dde into the test table
-         $success = $DB->insert($testName, array('CommentID' => $ddeCommentID));
+        $success = $DB->insert($testName, array('CommentID' => $ddeCommentID));
 
         // insert the dde into the flag table
         $success = $DB->insert(

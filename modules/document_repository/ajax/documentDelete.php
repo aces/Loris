@@ -17,9 +17,6 @@ $config = NDB_Config::singleton();
 
 // create Database object
 $DB =& Database::singleton();
-if (Utility::isErrorX($DB)) {
-    print "Could not connect to database: ".$DB->getMessage()."<br>\n"; die();
-}
 
 $rid = $_POST['id'];
 
@@ -31,9 +28,6 @@ $dataDir  = $DB->pselectOne("Select Data_dir from document_repository where reco
                             array(':identifier'=> $rid));
 
 $user =& User::singleton();
-if (Utility::isErrorX($user)) {
-    return PEAR::raiseError("User Error: ".$user->getMessage());
-}
 
 //if user has document repository delete permission
 if ($user->hasPermission('document_repository_delete')) {

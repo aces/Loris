@@ -95,23 +95,17 @@ class CouchDBDemographicsImporter {
 
     function _getSubproject($id) {
         $config = NDB_Config::singleton();
-        $subprojsXML = $config->getSetting("subprojects");
-        $subprojs = $subprojsXML['subproject'];
-        foreach($subprojs as $subproj) {
-            if($subproj['id'] == $id) {
-                return $subproj['title'];
-            }
+        $subprojs = $config->getSubprojectSettings($id);
+        if($subprojs['id'] == $id) {
+            return $subprojs['title'];
         }
     }
 
     function _getProject($id) {
         $config = NDB_Config::singleton();
-        $subprojsXML = $config->getSetting("Projects");
-        $subprojs = $subprojsXML['project'];
-        foreach($subprojs as $subproj) {
-            if($subproj['id'] == $id) {
-                return $subproj['title'];
-            }
+        $projs = $config->getProjectSettings($id);
+        if($projs['id'] == $id) {
+            return $projs['Name'];
         }
     }
 

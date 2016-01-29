@@ -127,9 +127,6 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
             header("Location: ?test_name=statistics#data_entry");
         }
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
         $center = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID=:cid", array('cid'=>$_REQUEST['CenterID'])); 
         $id = $center['ID'];
         $name = $center['Name'];

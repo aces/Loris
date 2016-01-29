@@ -27,10 +27,10 @@
         <div class="col-xs-12">
             <label class="col-xs-6">Go to:</label>
             <div class="col-xs-6">
-                <a href="main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$form.SessionID.html}" target="_blank">Imaging Browser</a>
+                <a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$form.SessionID.html}" target="_blank">Imaging Browser</a>
             </div>
             <div class="col-xs-6 col-xs-offset-6">
-                <a href="main.php?test_name=radiology_review&candID={$form.CandID.html}&sessionID={$form.SessionID.html}&commentID={$form.CommentID.html}" target="_blank">Original Radiology Review</a>
+                <a href="{$baseurl}/{$form.CandID.html}/{$form.SessionID.html}/radiology_review/?commentID={$form.CommentID.html}" target="_blank">Original Radiology Review</a>
             </div>
         </div>
     </div>

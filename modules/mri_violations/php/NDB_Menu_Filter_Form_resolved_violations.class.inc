@@ -12,8 +12,6 @@
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'NDB_Menu_Filter.class.inc';
-require_once 'NDB_Menu_Filter_Form.class.inc';
 
 /**
  * Implement the menu filter for searching through resolved violations
@@ -410,10 +408,10 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     // do nothing
                 }
                 if ($key === 'Problem') {
-                    if($val="Could not identify scan type"){    
+                    if($val === "Could not identify scan type"){
                         $this->tpl_data['join_tbl'] = "mri_protocol_violated_scans";
                     }
-                    elseif($val="Protocol Violation"){
+                    elseif($val === "Protocol Violation"){
                         $this->tpl_data['join_tbl'] = "mri_violations_log";
                     }
                     else{
@@ -421,7 +419,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     }
                 }
                 if ($key === 'SeriesUID') {
-                    $this->tpl_data['series'] = $val;
+                    $this->tpl_data['items'][$x]['series'] = $val;
                 } else {		 
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;

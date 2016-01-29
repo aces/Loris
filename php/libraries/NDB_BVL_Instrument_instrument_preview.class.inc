@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once "NDB_Form.class.inc";
 
 /**
  * Extends NDB_BVL_Instrument class in order to load the LINST file from
@@ -110,9 +109,12 @@ class NDB_BVL_Instrument_Instrument_Preview
     /**
      * Overwrites the save function to not save data since this is only a preview.
      *
+     * @param array $values Unused, but required so that function as same signature
+     *                      as base class
+     *
      * @return none
      */
-    function _save()
+    function _save($values)
     {
         return;
     }

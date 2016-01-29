@@ -34,6 +34,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     protected $config;
     protected $DB;
     protected $url;
+    protected $factory;
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -45,8 +46,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         // Set up database wrapper and config
-        $factory      = NDB_Factory::singleton();
-        $this->config = $factory->Config(CONFIG_XML);
+        $this->factory = NDB_Factory::singleton();
+        $this->factory->reset();
+        $this->factory->setTesting(false);
+
+        $this->config = $this->factory->Config(CONFIG_XML);
 
         $database = $this->config->getSetting('database');
 
@@ -93,6 +97,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
         $this->login("UnitTester", "4test4");
 
+        if (extension_loaded('xdebug')) {
+            xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+        }
+
     }
 
     /**
@@ -127,7 +135,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         // are run one will fail due to the login taking too long?
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::id("page")
+                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )
         );
     }
@@ -141,6 +149,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
+        if (extension_loaded('xdebug')) {
+            $data = xdebug_get_code_coverage();
+            xdebug_stop_code_coverage(false);
+        }
+
         // Delete the temporary user.
         $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
@@ -149,6 +162,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         if ($this->webDriver) {
             $this->webDriver->quit();
         }
+
+        $this->factory->reset();
     }
 
 

@@ -1,9 +1,9 @@
-<script src="js/filterControl.js" type="text/javascript"></script>
+<script src="{$baseurl}/js/filterControl.js" type="text/javascript"></script>
 
 <div class="row">
     <div class="col-sm-12">
         <div class="col-md-8 col-sm-8">
-            <form method="post" action="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations">
+            <form method="post" action="{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations">
                 <div class="panel panel-primary">
                     <div class="panel-heading" onclick="hideFilter();">
                         Selection Filter
@@ -63,7 +63,7 @@
         <table border="0" valign="bottom" width="100%">
             <tr>
                 <!-- title -->
-                <td align="right">{$page_links}</td>
+                <td align="right" id="pageLinks"></td>
             </tr>
         </table>
     </div>
@@ -78,7 +78,7 @@
                         <th nowrap="nowrap">No.</th>
                         {section name=header loop=$headers}
                             <th nowrap="nowrap">
-                                <a href="main.php?test_name=mri_violations&submenu=mri_protocol_check_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a>
+                                <a href="{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a>
                             </th>
                         {/section}
                     </tr>
@@ -95,7 +95,7 @@
                             {section name=piece loop=$items[item]}
                                 <td nowrap="nowrap">
                                     {if $items[item][piece].name== "PatientName"}
-                                        <a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item].TarchiveID}">{$items[item][piece].value}</a>
+                                        <a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$items[item].TarchiveID}">{$items[item][piece].value}</a>
                                     {else}
                                         {$items[item][piece].value}
                                     {/if}
@@ -126,3 +126,16 @@
         </div>
     </div>
 </div>
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
+

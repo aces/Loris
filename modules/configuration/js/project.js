@@ -4,8 +4,8 @@ $(document).ready(function() {
         var form = $(e.currentTarget).closest('form');
 
         var ProjectID = $(form.find(".ProjectID")).val();
-        var Name = $(form.find(".Name")).val();
-        var recruitmentTarget= $(form.find(".recruitmentTarget")).val();
+        var Name = $(form.find(".projectName")).val();
+        var recruitmentTarget= $(form.find(".projectrecruitmentTarget")).val();
         e.preventDefault();
         var successClosure = function(i, form) {
             return function() {
@@ -16,7 +16,7 @@ $(document).ready(function() {
         jQuery.ajax(
                 {
                     "type" : "post",
-                    "url" : "AjaxHelper.php?Module=configuration&script=updateProject.php",
+                    "url" : loris.BaseURL + "/configuration/ajax/updateProject.php",
                     "data" : {
                         "ProjectID" : ProjectID,
                         "Name" : Name,

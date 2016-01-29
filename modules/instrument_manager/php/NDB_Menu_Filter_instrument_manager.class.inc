@@ -1,14 +1,10 @@
 <?php
-require_once 'NDB_Menu_Filter.class.inc';
 
 class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
 {
     function _hasAccess()
     {
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
         return $user->hasPermission('superuser');
     }
 
@@ -73,6 +69,7 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
 
     function _setDataTableRows($count)
     {
+        $factory = NDB_Factory::singleton();
         $db = Database::singleton();
         $x = 0;
         foreach ($this->list as $item) {
@@ -93,7 +90,7 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
                 } else if($key == "Table_Installed") {
                     // This should also check that all the columns exist and have the right type, for new style instruments
                     $exists = $db->pselectOne("SELECT count(*) FROM information_schema.tables WHERE TABLE_SCHEMA=:dbname AND TABLE_NAME=:tablename", array(
-                        'dbname' => 'loris',
+                        'dbname' => $factory->settings()->dbName(),
                         'tablename' => $this->tpl_data['items'][$x]['instrument_name']
                     ));
                     if($exists > 0) {
@@ -127,9 +124,10 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
     }
 
     function CheckType($tablename, $columnname, $type) {
+        $factory = NDB_Factory::singleton();
         $db = Database::singleton();
         $exists = $db->pselectOne("SELECT count(*) FROM information_schema.columns WHERE TABLE_SCHEMA=:dbname AND TABLE_NAME=:tablename AND COLUMN_NAME=:columnname AND DATA_TYPE=:typename", array(
-            'dbname' => 'loris',
+            'dbname' => $factory->settings()->dbName(),
             'columnname' => $columnname,
             'tablename' => $tablename,
             'typename'  => $type
@@ -139,7 +137,9 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
         }
         return null;
     }
+    
     function CheckTable($instname) {
+        $factory = NDB_Factory::singleton();
         $filename = $this->path . "project/instruments/$instname.linst";
         $fp = fopen($filename, "r");
         $db = Database::singleton();
@@ -180,7 +180,7 @@ class NDB_Menu_Filter_instrument_manager extends NDB_Menu_Filter
                 // check the values in the enum
                 $enums = explode("{-}", $pieces[3]);
                 $db_enum = $db->pselectOne("SELECT COLUMN_TYPE FROM information_schema.columns WHERE TABLE_SCHEMA=:dbname AND TABLE_NAME=:tablename AND COLUMN_NAME=:columnname AND DATA_TYPE='enum'", array(
-                    'dbname' => 'loris',
+                    'dbname' => $factory->settings()->dbName(),
                     'columnname' => $name,
                     'tablename' => $instname
                 ));

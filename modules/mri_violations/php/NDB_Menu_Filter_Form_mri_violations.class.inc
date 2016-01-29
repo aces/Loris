@@ -14,8 +14,6 @@
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'NDB_Menu_Filter.class.inc';
-require_once 'NDB_Menu_Filter_Form.class.inc';
 /**
  * Implement the menu filter for searching through all violated scans
  *
@@ -36,9 +34,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         $this->tpl_data['violated_scans_modifications'] 
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
@@ -51,9 +46,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         }
         $DB =& Database::singleton();
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         foreach ($values['resolvable'] AS $key=>$val) {
             $hash = $key;
             $row = $DB->pselectRow(
@@ -146,9 +138,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         // set the class variables
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         $config =& NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
@@ -198,7 +187,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             LEFT JOIN session s
             ON (mri_protocol_violated_scans.CandID = s.CandID)
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)"
+            ON (p.CenterID = c.CenterID)
+            WHERE Resolved is NULL"
             . " UNION " .
             "SELECT PatientName,
                 TimeRun,
@@ -223,7 +213,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             LEFT JOIN session s
             ON (mri_violations_log.CandID = s.CandID)
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)"
+            ON (p.CenterID = c.CenterID)
+            WHERE Resolved is NULL"
             . " UNION " .
             "SELECT PatientName,
                 TimeRun,
@@ -247,7 +238,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             ON (c.CandID = s.CandID)
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
-            ) as v WHERE 1=1";
+            WHERE Resolved is NULL)
+            as v WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
@@ -285,9 +277,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         $config =& NDB_Config::singleton();
         $study = $config->getSetting('study');
         $dateOptions = array(
@@ -304,7 +293,9 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             'Could not identify scan type'
             => 'Could not identify scan type',
             'Protocol Violation'
-            => 'MRI Protocol Check violation'
+            => 'MRI Protocol Check violation',
+            'Visit label does not exist'
+            => 'Visit label does not exist'
         );
 
         $this->addBasicText('PatientName', 'Patient Name');
@@ -334,9 +325,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
-            if(Utility::isErrorX($sites)) {
-                return PEAR::raiseError("DB Error: ".$sites->getMessage());
-            }
             if(is_array($sites)){
                 $sites = array('' => 'All') + $sites;
             }
@@ -344,9 +332,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (Utility::isErrorX($site)) {
-                return PEAR::raiseError("DB Error: ".$site->getMessage());
-            }
             if ($site->isStudySite()) {
                 $sites = array($user->getData('CenterID') => $user->getData('Site'));
             }
@@ -410,10 +395,10 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     $this->form->form[$hash]['name'] = "resolvable[$hash]";
                 }
                 if ($key === 'Problem') {
-                    if($val="Could not identify scan type"){
+                    if($val === "Could not identify scan type"){
                         $this->tpl_data['join_tbl'] = "mri_protocol_violated_scans";
                     }
-                    elseif($val="Protocol Violation"){
+                    elseif($val === "Protocol Violation"){
                         $this->tpl_data['join_tbl'] = "mri_violations_log";
                     }
                     else{
@@ -421,7 +406,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     }
                 }
                 if ($key === 'SeriesUID') {
-                    $this->tpl_data['series'] = $val;
+                    $this->tpl_data['items'][$x]['series'] = $val;
                 }
                 else {
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
