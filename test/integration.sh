@@ -7,16 +7,13 @@
 #       example: bash integration.sh configuration
 
 # Test database and test config.xml have to be created before running tests. This is a one time setup.
-#   1 - create a LorisTest DB and source the default schema (lori/SQL/0000-00-00-schema.sql)
+#   1 - create a LorisTest DB and source the default schema (SQL/0000-00-00-schema.sql)
 #   2 - create a MySQL user SQLTestUser with password TestPassword.
-#   3 - Modify config.xml file in loris/test/ folder.
-#       Some changes to make in this loris/test/config.xml file:
+#   3 - Modify config.xml file in test/ folder if necessary.
+#       Some changes to verify in this test/config.xml file:
 #       *  Database connection credentials: specify credentials to LorisTest DB which you create in step 1
 #       *  Set sandbox mode to 1: <sandbox>1</sandbox>
 #       *  Set SyncAccounts to false: <SyncAccounts>false</SyncAccounts>
-
-# set environment variable LORIS_DB_CONFIG which is the path to test config.xml file
-export LORIS_DB_CONFIG=$(pwd)/config.xml
 
 #start PHP's built in webserver
 php -S localhost:8000 -t ../htdocs ../htdocs/router.php 2>1 > /dev/null &
@@ -24,18 +21,18 @@ php -S localhost:8000 -t ../htdocs ../htdocs/router.php 2>1 > /dev/null &
 # Start Selenium and redirect Selenium WebDriver
 # output to /dev/null so that it doesn't flood the
 # screen in the middle of our other tests
-#java -jar /home/kmarasinska/Selenium_server/selenium-server-standalone-2.45.0.jar > /dev/null &
+# java -jar selenium-server-standalone-2.45.0.jar > /dev/null &
 echo "******************************************************************
   REMINDER: Selenium needs to be running to run integration tests
 ******************************************************************";
 
-# Set config values in LorisTest DB
 host="localhost"
 database="LorisTest"
 username="SQLTestUser"
 password="TestPassword"
 url="http://localhost:8000"
 
+# Custom DB variables specified by optional commandline arguments
 while getopts ":m:h:D:u:p:l:" opt; do
   case $opt in
     m) module="$OPTARG"
@@ -55,6 +52,16 @@ while getopts ":m:h:D:u:p:l:" opt; do
   esac
 done
 
+# set environment variable LORIS_DB_CONFIG which is the path to test config.xml file
+sed -i \
+    -e "s/%HOSTNAME%/$host/g" \
+    -e "s/%USERNAME%/$username/g" \
+    -e "s/%PASSWORD%/$password/g" \
+    -e "s/%DATABASE%/$database/g" \
+    config.xml
+export LORIS_DB_CONFIG=$(pwd)/config.xml
+
+# Set config values in LorisTest DB
 mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
 
 mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value='$(pwd | sed "s#test##")' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
