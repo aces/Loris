@@ -20,71 +20,72 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      *
      * @return void
      */
-    // function testNextStageDoespageLoad()
-    // {
-    //     // $this->markTestSkipped("Permissions not correctly set up for next_page test");
-    //     $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
-    //     $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-    //     $this->assertContains("Next Stage", $bodyText);
-    // }
+    function testNextStageDoespageLoad()
+    {
+        // $this->markTestSkipped("Permissions not correctly set up for next_page test");
+        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Next Stage", $bodyText);
+    }
 
     /**
      * Tests that, page loads with data_entry permission
      *
      * @return void
      */
-    // function testNextStageDoesPageLoadWithPermission()
-    // {
-    //     $this->setupPermissions(array("data_entry"));
-    //     $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
-    //     $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-    //     $this->assertContains("Next Stage", $bodyText);
-    //     $this->resetPermissions();
-    // }
+    function testNextStageDoesPageLoadWithPermission()
+    {
+        $this->setupPermissions(array("data_entry"));
+        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Next Stage", $bodyText);
+        $this->resetPermissions();
+    }
 
     /**
      * Tests that, page does not loads without data_entry permission
      *
      * @return void
      */
-    // function testNextStageDoesNotPageLoadWithoutPermission()
-    // {
-    //     $this->setupPermissions(array());
-    //     $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
-    //     $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-    //     $this->assertContains("You do not have access to this page.", $bodyText);
-    //     $this->resetPermissions();
-    // }
+    function testNextStageDoesNotPageLoadWithoutPermission()
+    {
+        $this->setupPermissions(array());
+        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
+    }
 
     /**
      * Tests that, page does not loads for different study site
      *
      * @return void
      */
-    // function testNextStageDoesNotPageLoadWithDifferentStudySite()
-    // {
-    //     // Change users CenterID
-    //     $this->changeStudySite();
+    function testNextStageDoesNotPageLoadWithDifferentStudySite()
+    {
+        // Change users CenterID
+        $this->changeStudySite();
 
-    //     // Check to make sure page doesn't load without permission
-    //     $this->setupPermissions(array());
-    //     $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
-    //     $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-    //     $this->assertContains("You do not have access to this page.", $bodyText);
-    //     $this->resetPermissions();
+        // Check to make sure page doesn't load without permission
+        $this->setupPermissions(array());
+        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
 
-    //     // Check to make sure page doesn't load with permission
-    //     $this->setupPermissions(array("data_entry"));
-    //     $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
-    //     $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-    //     $this->assertContains("You do not have access to this page.", $bodyText);
-    //     $this->resetPermissions();
+        // Check to make sure page doesn't load with permission
+        $this->setupPermissions(array("data_entry"));
+        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
 
-    //     // Delete created center
-    //     $this->resetStudySite();
-    // }
+        // Delete created center
+        $this->resetStudySite();
+    }
+
     /**
-     * Tests that, page returns error if dates dont match
+     * Tests that page returns error if dates dont match
      *
      * @return void
      */
