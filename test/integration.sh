@@ -7,7 +7,7 @@
 #       example: bash integration.sh configuration
 
 # Test database and test config.xml have to be created before running tests. This is a one time setup.
-#   1 - create a LorisTest DB and source the default schema (SQL/0000-00-00-schema.sql)
+#   1 - create a LorisTest DB and source the default schemas (SQL/0000-00-*.sql)
 #   2 - create a MySQL user SQLTestUser with password TestPassword.
 #   3 - Modify config.xml file in test/ folder if necessary.
 #       Some changes to verify in this test/config.xml file:
@@ -16,7 +16,7 @@
 #       *  Set SyncAccounts to false: <SyncAccounts>false</SyncAccounts>
 
 #start PHP's built in webserver
-php -S localhost:8000 -t ../htdocs ../htdocs/router.php 2>1 > /dev/null &
+php -S localhost:8000 -t ../htdocs ../htdocs/router.php 2>&1 > /dev/null &
 
 # Start Selenium and redirect Selenium WebDriver
 # output to /dev/null so that it doesn't flood the
