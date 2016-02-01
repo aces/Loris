@@ -41,8 +41,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     protected $url;
     private   $_oldConfig = array();
 
-    private $_oldConfig = array();
-
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
@@ -198,10 +196,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
 
         if (is_array($configID) && empty($configID)) {
-<<<<<<< HEAD
-=======
             // This likely just means the config is in config.xml
->>>>>>> fix setupPermissions and phpcs
             throw new LorisException(
                 "Attempting to update Config setting not in database"
             );
