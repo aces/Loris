@@ -67,7 +67,7 @@ mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value
 mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value='$(pwd | sed "s#test##")' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
 
 
-if [ ! -z "$1" ]; then
+if [ ! -z "$module" ]; then
   # Run integration tests for a sepecific module
   echo Running integration test for module: $module;
   ../vendor/bin/phpunit --configuration phpunit.xml ../modules/$module/test
