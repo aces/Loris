@@ -12,9 +12,10 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-error_log("URL:  " . $_SERVER['REQUEST_URI']);
+
+$_SERVER['REQUEST_URI'] = preg_replace("#^(/*)(.+)#", "$2", $_SERVER['REQUEST_URI']);
 if (preg_match(
-    '#^/bootstrap/(.*)#',
+    '#^bootstrap/(.*)#',
     $_SERVER["REQUEST_URI"]
 )) {
     // Bootstrap is not a Loris module, don't rewrite it.
@@ -23,7 +24,7 @@ if (preg_match(
     //		bootstrap/$1 [L]
     return false;
 } else if (preg_match(
-    '#^/([0-9]{6,6})/$#',
+    '#^([0-9]{6,6})/$#',
     $_SERVER["REQUEST_URI"]
 )) {
     // Redirect /CandID/ to visit label list
@@ -38,7 +39,7 @@ if (preg_match(
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
-    '#^/([0-9]{6,6})/([0-9]+)/$#',
+    '#^([0-9]{6,6})/([0-9]+)/$#',
     $_SERVER["REQUEST_URI"]
 )) {
     // Want to redirect /CandID/Visit_label/ to instrument list, but
@@ -51,12 +52,12 @@ if (preg_match(
     $getParams = explode("/", $_SERVER["REQUEST_URI"]);
 
     $_REQUEST["test_name"] = "instrument_list";
-    $_REQUEST['candID']    = $getParams[1];
-    $_REQUEST['sessionID'] = $getParams[2];
+    $_REQUEST['candID']    = $getParams[0];
+    $_REQUEST['sessionID'] = $getParams[1];
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
-    '#^/([0-9]{6,6})/([0-9]+)/([a-zA-Z_]+)/$#',
+    '#^([0-9]{6,6})/([0-9]+)/([a-zA-Z_]+)/$#',
     $_SERVER["REQUEST_URI"]
 )) {
     // Redirect /CandID/Visit/Instrument/ to the instrument
@@ -66,13 +67,13 @@ if (preg_match(
 
     $getParams = explode("/", $_SERVER["REQUEST_URI"]);
 
-    $_REQUEST["test_name"] = $getParams[3];
-    $_REQUEST['candID']    = $getParams[1];
-    $_REQUEST['sessionID'] = $getParams[2];
+    $_REQUEST["test_name"] = $getParams[2];
+    $_REQUEST['candID']    = $getParams[0];
+    $_REQUEST['sessionID'] = $getParams[1];
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
-    '#^/([0-9]{6,6})/([0-9]+)/([a-zA-Z_]+)/([a-zA-Z0-9_]+)/$#',
+    '#^([0-9]{6,6})/([0-9]+)/([a-zA-Z_]+)/([a-zA-Z0-9_]+)/$#',
     $_SERVER["REQUEST_URI"]
 )) {
     // Redirect /CandID/Visit/Instrument/subtest/ to the instrument
@@ -82,14 +83,14 @@ if (preg_match(
 
     $getParams = explode("/", $_SERVER["REQUEST_URI"]);
 
-    $_REQUEST["test_name"] = $getParams[3];
-    $_REQUEST['candID']    = $getParams[1];
-    $_REQUEST['sessionID'] = $getParams[2];
-    $_REQUEST['subtest']   = $getParams[4];
+    $_REQUEST["test_name"] = $getParams[2];
+    $_REQUEST['candID']    = $getParams[0];
+    $_REQUEST['sessionID'] = $getParams[1];
+    $_REQUEST['subtest']   = $getParams[3];
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
-    '#^/([a-zA-Z_-]+)/(\?|$)#',
+    '#^([a-zA-Z_-]+)/(\?|$)#',
     $_SERVER["REQUEST_URI"]
 )) {
     // RewriteRule
@@ -98,11 +99,11 @@ if (preg_match(
 
     $getParams = explode("/", $_SERVER["REQUEST_URI"]);
 
-    $_REQUEST["test_name"] = $getParams[1];
+    $_REQUEST["test_name"] = $getParams[0];
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
-    '#^/([a-zA-Z_-]+)/css/([a-zA-Z0-9_.-]+)$#',
+    '#^([a-zA-Z_-]+)/css/([a-zA-Z0-9_.-]+)$#',
     $_SERVER["REQUEST_URI"]
 )) {
     // RewriteRule
@@ -112,12 +113,12 @@ if (preg_match(
 
     $getParams = explode("/", $_SERVER["REQUEST_URI"]);
 
-    $_GET["Module"]   = $getParams[1];
-    $_REQUEST['file'] = $getParams[3];
+    $_GET["Module"]   = $getParams[0];
+    $_REQUEST['file'] = $getParams[2];
 
     include_once __DIR__ . "/GetCSS.php";
 } else if (preg_match(
-    '#^/([a-zA-Z_-]+)/js/([a-zA-Z0-9_.-]+)$#',
+    '#^([a-zA-Z_-]+)/js/([a-zA-Z0-9_.-]+)$#',
     $_SERVER["REQUEST_URI"]
 )) {
     // RewriteRule
@@ -127,12 +128,12 @@ if (preg_match(
 
     $getParams = explode("/", $_SERVER["REQUEST_URI"]);
 
-    $_GET["Module"] = $getParams[1];
-    $_GET['file']   = $getParams[3];
+    $_GET["Module"] = $getParams[0];
+    $_GET['file']   = $getParams[2];
 
     include_once __DIR__ . "/GetJS.php";
 } else if (preg_match(
-    '#^/([a-zA-Z_-]+)/static/([a-zA-Z0-9_.-/]+)$#',
+    '#^([a-zA-Z_-]+)/static/([a-zA-Z0-9_.-/]+)$#',
     $_SERVER["REQUEST_URI"]
 )) {
     // RewriteRule
@@ -142,12 +143,12 @@ if (preg_match(
 
     $getParams = explode("/", $_SERVER["REQUEST_URI"]);
 
-    $_GET["Module"] = $getParams[1];
-    $_GET['file']   = $getParams[3];
+    $_GET["Module"] = $getParams[0];
+    $_GET['file']   = $getParams[2];
 
     include_once __DIR__ . "/GetStatic.php";
 } else if (preg_match(
-    '#^/([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-/]+)$#',
+    '#^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-/]+)$#',
     $_SERVER["REQUEST_URI"]
 )) {
     // RewriteRule
@@ -157,12 +158,12 @@ if (preg_match(
 
     $getParams = explode("/", $_SERVER["REQUEST_URI"]);
 
-    $_GET["Module"] = $getParams[1];
-    $_GET['script'] = $getParams[3];
+    $_GET["Module"] = $getParams[0];
+    $_GET['script'] = $getParams[2];
 
     include_once __DIR__ . "/AjaxHelper.php";
 } else if (preg_match(
-    '#^/([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)/$#',
+    '#^([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)/$#',
     $_SERVER["REQUEST_URI"]
 )) {
     // RewriteRule
@@ -171,12 +172,12 @@ if (preg_match(
 
     $getParams = explode("/", $_SERVER["REQUEST_URI"]);
 
-    $_REQUEST["test_name"] = $getParams[1];
-    $_REQUEST['subtest']   = $getParams[2];
+    $_REQUEST["test_name"] = $getParams[0];
+    $_REQUEST['subtest']   = $getParams[1];
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
-    '#^/preferences/$#',
+    '#^preferences/$#',
     $_SERVER["REQUEST_URI"]
 )) {
     // Preferences is a special case for url rewriting
