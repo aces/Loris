@@ -13,7 +13,8 @@
  */
 
 
-$_SERVER['REQUEST_URI'] = preg_replace("#^(/*)(.+)#", "$2", $_SERVER['REQUEST_URI']);
+$_SERVER['REQUEST_URI'] = ltrim($_SERVER["REQUEST_URI"], "/");
+
 if (preg_match(
     '#^bootstrap/(.*)#',
     $_SERVER["REQUEST_URI"]
