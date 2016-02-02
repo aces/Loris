@@ -109,24 +109,77 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    function testNewProfileDoBDateError() {
+    // function testNewProfileDoBDateError() {
+    //     $this->webDriver->get($this->url . "/new_profile/");
+
+    //     $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
+    //     $dates[0]->sendKeys("01/01/2015");
+    //     $dates[1]->sendKeys("01/02/2015");
+
+    //     $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
+    //     $gender->sendKeys("Male");
+
+    //     $pscid = $this->webDriver->findElement(WebDriverBy::Name("PSCID"));
+    //     $pscid->sendKeys("Control");
+
+    //     $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+    //     $startVisit->click();
+
+    //     $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+    //     $this->assertContains("Date of Birth fields must match.", $bodyText);
+    // }
+
+    /*
+     * Tests that page returns error if EDC dates dont match
+     *
+     * @return none
+     */
+    // function testNewProfileEDCDateError() {
+    //     $this->setUpConfigSetting("useEDC", "true");
+
+    //     $this->webDriver->get($this->url . "/new_profile/");
+
+    //     $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
+    //     $dates[0]->sendKeys("01/01/2015");
+    //     $dates[1]->sendKeys("01/01/2015");
+    //     $dates[2]->sendKeys("01/01/2015");
+    //     $dates[3]->sendKeys("01/02/2015");
+
+    //     $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
+    //     $gender->sendKeys("Male");
+
+    //     $pscid = $this->webDriver->findElement(WebDriverBy::Name("PSCID"));
+    //     $pscid->sendKeys("Control");
+
+    //     $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+    //     $startVisit->click();
+
+    //     $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+    //     $this->assertContains("Estimated Due date fields must match.", $bodyText);
+
+    //     $this->restoreConfigSetting("useEDC");
+    // }
+
+    /*
+     * Tests that page returns error if PSCID is not filled out
+     *
+     * @return none
+     */
+    function testNewProfilePSCIDError() {
         $this->webDriver->get($this->url . "/new_profile/");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
         $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/02/2015");
+        $dates[1]->sendKeys("01/01/2015");
 
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
-
-        $pscid = $this->webDriver->findElement(WebDriverBy::Name("PSCID"));
-        $pscid->sendKeys("Control");
 
         $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
 
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Date of Birth fields must match.", $bodyText);
+        $this->assertContains("PSCID must be specified", $bodyText);
     }
 }
 ?>
