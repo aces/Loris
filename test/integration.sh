@@ -17,6 +17,7 @@
 
 #start PHP's built in webserver
 php -S localhost:8000 -t ../htdocs ../htdocs/router.php 2>&1 > /dev/null &
+php_pid=$!
 
 # Start Selenium and redirect Selenium WebDriver
 # output to /dev/null so that it doesn't flood the
@@ -77,3 +78,4 @@ else
  ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'Loris Module Integration Tests'
 fi
 
+kill $php_pid
