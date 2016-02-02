@@ -36,6 +36,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     protected $url;
     protected $factory;
 
+    private $_oldConfig = array();
+
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
@@ -166,12 +168,23 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->factory->reset();
     }
 
-
-    private $_oldConfig = array();
-
-    function setupConfigSetting($configName, $value) {
-        if(isset($this->_oldConfig[$configName])) {
-            throw new LorisException("Attempted to change already changed config setting");
+    /**
+     * Set a config setting to a new value and store the previous value
+     * in the oldConfig instance variable.
+     *
+     * @param string $configName The config name
+     * @param mixed  $value      The new value for that config
+     *
+     * @throws LorisException
+     *
+     * @return none
+     */
+    function setupConfigSetting($configName, $value)
+    {
+        if (isset($this->_oldConfig[$configName])) {
+            throw new LorisException(
+                "Attempted to change already changed config setting"
+            );
         }
 
         $configID = $this->DB->pselectOne(
@@ -179,10 +192,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             array(":configName" => $configName)
         );
 
-        if(is_array($configID) && empty($configID)) {
-            // This likely just means the config is in config.xml
-            //throw new LorisException("Attempting to update Config setting not in database");
-            return;
+        if (is_array($configID) && empty($configID)) {
+            throw new LorisException(
+                "Attempting to update Config setting not in database"
+            );
         }
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
@@ -190,9 +203,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
 
         $this->_oldConfig[$configName] = array(
-            'ConfigID' => $configID,
-            'OldValue' => $oldVal,
-        );
+                                          'ConfigID' => $configID,
+                                          'OldValue' => $oldVal,
+                                         );
 
         $this->DB->update(
             "Config",
@@ -201,16 +214,27 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    function restoreConfigSetting($configName) {
+
+    /**
+     * Restores a config to its saved (previous) value.
+     *
+     * @param string $configName The name of the config to restore
+     *
+     * @throws LorisException
+     *
+     * @return none
+     */
+    function restoreConfigSetting($configName)
+    {
         /*
         if(!isset($this->_oldConfig[$configName])) {
             throw new LorisException("Attempted to restore unsaved config setting");
         }
          */
-        if(isset($this->_oldConfig[$configName])) {
+        if (isset($this->_oldConfig[$configName])) {
             $this->DB->update(
                 "Config",
-                array("Value"    => $this->_oldConfig[$configName]['OldValue']),
+                array("Value" => $this->_oldConfig[$configName]['OldValue']),
                 array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
             );
         }
@@ -225,7 +249,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return none
      */
-    function setupPermissions($permissions) {
+    function setupPermissions($permissions)
+    {
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
         $prepare = $this->DB->prepare(
             "INSERT INTO user_perm_rel
@@ -234,7 +259,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
                     WHERE code=:perm"
         );
         foreach ($permissions as $value) {
-            $this->DB->execute($prepare, array("perm" => $value));
+            $this->DB->execute(
+                $prepare,
+                array("perm" => $value),
+                array('nofetch' => true)
+            );
         }
     }
 
@@ -244,10 +273,42 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return none
      */
-    function resetPermissions() {
+    function resetPermissions()
+    {
         $this->DB->run(
             "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
+    }
+
+    /**
+     * Helper function to determine if a menu item is prensent
+     * under a given category.
+     *
+     * Note: By giving and empty string in any parameter will act as a joker.
+     *   ex: assertMenuItemPresent('', 'Configuration') will return true if
+     *       one or more menu item 'Configuration' exist under any category.
+     *   ex: assertMenuItemPresent('Admin', '') will return true is any
+     *       category 'Admin' has at least one  menu item.
+     *
+     * @param string $category The parent Label of the menu item
+     * @param string $menu     The label of the menu item
+     *
+     * @return boolean true    If the menu item exists under the category.
+     */
+    function isMenuItemPresent($category, $menu)
+    {
+        $configMenu = $this->webDriver->findElements(
+            WebDriverBy::xPath(
+                "
+                //ul[@class='nav navbar-nav']
+                //a[contains(text(), '$category')]
+                /..
+                /ul[@class='dropdown-menu']
+                //a[contains(text(), '$menu')]
+                "
+            )
+        );
+        return count($configMenu) > 0;
     }
 
 }

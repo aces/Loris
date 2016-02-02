@@ -652,16 +652,24 @@ class Database
      * @param PDOStatement $prepared The prepared statement
      * @param array        $params   The values to bind to the statement
      *                               while executing it
+     * @param array        $options  A list of key=>value pairs.
+     *                               - nofetch : to prevent the fetchAll
+     *                                 function to be excuted. Useful for
+     *                                 insert or update prepared statements.
      *
      * @return array An array of rows in the format ColName => Value after
      *               executing the statement.
      */
-    function execute($prepared, $params)
+    function execute($prepared, $params, $options = array())
     {
         $execRun = $prepared->execute($params);
         if ($execRun === false) {
             $err = $prepared->errorInfo();
             throw new DatabaseException($err[2], $prepared->queryString, $params);
+        }
+
+        if (!empty($options['nofetch']) && $options['nofetch'] == true) {
+            return;
         }
 
         $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
