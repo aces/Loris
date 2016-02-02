@@ -23,19 +23,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     function testMriViolationsDoesPageLoad()
     {
         $this->webDriver->get($this->url . "?test_name=mri_violations");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Mri Violations", $bodyText);
-    }
-
-    /**
-     * Tests that, when loading the Mri_violations module > mri_protocol_violations submodule, some
-     * text appears in the body.
-     *
-     * @return void
-     */
-    function testMriProtocolViolationsDoesPageLoad()
-    {
-        $this->webDriver->get($this->url . "?test_name=mri_violations&submenu=mri_protocol_violations");
+        sleep(2);
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Mri Violations", $bodyText);
     }
@@ -49,12 +37,70 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     function testMriProtocolCheckViolationsDoesPageLoad()
     {
         $this->webDriver->get($this->url . "?test_name=mri_violations&submenu=mri_protocol_check_violations");
+        sleep(2);
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Mri Violations", $bodyText);
+        $this->assertContains("Mri Violations", $bodyText,
+            "Mri Violations module page did not load as expected.");
     }
 
-    // todo: write some tests
+    /**
+     * Verify that MRI Violations module appears in Admin main menu only
+     * if the user has permission "violated_scans_view_allsites".
+     *
+     * @return void
+     */
+    public function testMriViolationsMenuDisplayWithPermission()
+    {
+        $this->setupPermissions(array('violated_scans_view_allsites'));
+        $this->webDriver->navigate()->refresh();
+        $this->assertTrue(
+            $this->isMenuItemPresent('Imaging', 'MRI Violated Scans'),
+            "MRI Violations menu must be there if the user has permission"
+        );
+    }
+
+    /**
+     * Verify that MRI Violations module DOES NOT appear in Imaging menu
+     * if the user doesn't have permission "violated_scans_view_allsites".
+     *
+     * @return void
+     */
+    public function testMriViolationsMenuDisplayWithoutPermission()
+    {
+        $this->setupPermissions(array());
+        $this->webDriver->navigate()->refresh();
+        $this->assertFalse(
+            $this->isMenuItemPresent('Imaging', 'MRI Violated Scans'),
+            "MRI Violations menu must not be there if the user does not ".
+            "have permission"
+        );
+    }
+
+    /**
+     * Verify that MRI Violations module
+     *
+     * @return void
+     */
+    public function testMriViolationsFilterResults()
+    {
+        $this->webDriver->get($this->url . "?test_name=mri_violations");
+        $this->webDriver->wait(120, 1000)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::Name("filter")
+            )
+        );
+        $this->assertContains("Show Data", $this->webDriver->getPageSource());
+        $showDataButton = $this->webDriver
+            ->findElement(WebDriverBy::Name("filter"));
+        //$showDataButton = $this->webDriver
+        //    ->findElement(WebDriverBy::cssSelector("input.col-xs-12.btn-primary.btn-sm.btn[value='Show Data'][name='filter'][type='submit']"));
+
+        $showDataButton->click();
+        sleep(3);
+        $assertText = $this->webDriver->findElement(WebDriverBy::xPath('//*[@id="page"]/div/div[1]/a/label'))->getText();
+        $this->assertContains("Mri Violations", $assertText,
+            "MRI Violations menu filter did not reload page as expected.");
+    }
+
 }
-
-
 ?>
