@@ -20,40 +20,40 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    // function testNewProfilePageLoads()
-    // {
-    //     $this->setUpConfigSetting("useEDC", "true");
-    //     $this->setUpConfigSetting("useProjects", "true");
+    function testNewProfilePageLoads()
+    {
+        $this->setUpConfigSetting("useEDC", "true");
+        $this->setUpConfigSetting("useProjects", "true");
 
-    //     $this->webDriver->get($this->url . "/new_profile/");
-    //     $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-    //     $this->assertContains("New Profile", $bodyText);
+        $this->webDriver->get($this->url . "/new_profile/");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("New Profile", $bodyText);
 
-    //     $dobField = $this->webDriver->findElement(WebDriverBy::Name("dob1"));
-    //     $this->assertEquals("input", $dobField->getTagName());
-    //     //$this->assertEquals("date", $dobField->getAttribute("type"));
+        $dobField = $this->webDriver->findElement(WebDriverBy::Name("dob1"));
+        $this->assertEquals("input", $dobField->getTagName());
+        //$this->assertEquals("date", $dobField->getAttribute("type"));
 
-    //     $dob2Field = $this->webDriver->findElement(WebDriverBy::Name("dob2"));
-    //     $this->assertEquals("input", $dob2Field->getTagName());
-    //     //$this->assertEquals("date", $dob2Field->getAttribute("type"));
+        $dob2Field = $this->webDriver->findElement(WebDriverBy::Name("dob2"));
+        $this->assertEquals("input", $dob2Field->getTagName());
+        //$this->assertEquals("date", $dob2Field->getAttribute("type"));
 
-    //     $edcField = $this->webDriver->findElement(WebDriverBy::Name("edc1"));
-    //     $this->assertEquals("input", $edcField->getTagName());
-    //     //$this->assertEquals("date", $edcField->getAttribute("type"));
+        $edcField = $this->webDriver->findElement(WebDriverBy::Name("edc1"));
+        $this->assertEquals("input", $edcField->getTagName());
+        //$this->assertEquals("date", $edcField->getAttribute("type"));
 
-    //     $edc2Field = $this->webDriver->findElement(WebDriverBy::Name("edc2"));
-    //     $this->assertEquals("input", $edc2Field->getTagName());
-    //     //$this->assertEquals("date", $edc2Field->getAttribute("type"));
+        $edc2Field = $this->webDriver->findElement(WebDriverBy::Name("edc2"));
+        $this->assertEquals("input", $edc2Field->getTagName());
+        //$this->assertEquals("date", $edc2Field->getAttribute("type"));
 
-    //     $genderField = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-    //     $this->assertEquals("select", $genderField->getTagName());
+        $genderField = $this->webDriver->findElement(WebDriverBy::Name("gender"));
+        $this->assertEquals("select", $genderField->getTagName());
 
-    //     $projectField = $this->webDriver->findElement(WebDriverBy::Name("ProjectID"));
-    //     $this->assertEquals("select", $projectField->getTagName());
+        $projectField = $this->webDriver->findElement(WebDriverBy::Name("ProjectID"));
+        $this->assertEquals("select", $projectField->getTagName());
 
-    //     $this->restoreConfigSetting("useEDC");
-    //     $this->restoreConfigSetting("useProjects");
-    // }
+        $this->restoreConfigSetting("useEDC");
+        $this->restoreConfigSetting("useProjects");
+    }
 
     /**
      * Tests that with useProjects turned off, project related fields do not
@@ -61,20 +61,20 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    // function testNewProfileLoadsWithoutProjects() {
-    //     $this->setUpConfigSetting("useProjects", "false");
+    function testNewProfileLoadsWithoutProjects() {
+        $this->setUpConfigSetting("useProjects", "false");
 
-    //     $this->webDriver->get($this->url . "/new_profile/");
+        $this->webDriver->get($this->url . "/new_profile/");
 
-    //     try {
-    //         $projectField = $this->webDriver->findElement(WebDriverBy::Name("ProjectID"));
-    //     } catch(NoSuchElementException $e) {
-    //         $projectField = null;
-    //     }
-    //     $this->assertNull($projectField);
+        try {
+            $projectField = $this->webDriver->findElement(WebDriverBy::Name("ProjectID"));
+        } catch(NoSuchElementException $e) {
+            $projectField = null;
+        }
+        $this->assertNull($projectField);
 
-    //     $this->restoreConfigSetting("useProjects");
-    // }
+        $this->restoreConfigSetting("useProjects");
+    }
 
     /**
      * Tests that with useEDC turned off, edc related fields do not appear
@@ -82,83 +82,85 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    // function testNewProfileLoadsWithoutEDC() {
-    //     $this->setUpConfigSetting("useEDC", "false");
+    function testNewProfileLoadsWithoutEDC() {
+        $this->setUpConfigSetting("useEDC", "false");
 
-    //     $this->webDriver->get($this->url . "/new_profile/");
+        $this->webDriver->get($this->url . "/new_profile/");
 
-    //     try {
-    //         $edc1 = $this->webDriver->findElement(WebDriverBy::Name("edc1"));
-    //     } catch(NoSuchElementException $e) {
-    //         $edc1 = null;
-    //     }
-    //     $this->assertNull($edc1);
+        try {
+            $edc1 = $this->webDriver->findElement(WebDriverBy::Name("edc1"));
+        } catch(NoSuchElementException $e) {
+            $edc1 = null;
+        }
+        $this->assertNull($edc1);
 
-    //     try {
-    //         $edc2 = $this->webDriver->findElement(WebDriverBy::Name("edc2"));
-    //     } catch(NoSuchElementException $e) {
-    //         $edc2 = null;
-    //     }
+        try {
+            $edc2 = $this->webDriver->findElement(WebDriverBy::Name("edc2"));
+        } catch(NoSuchElementException $e) {
+            $edc2 = null;
+        }
 
-    //     $this->assertNull($edc2);
-    //     $this->restoreConfigSetting("useEDC");
-    // }
+        $this->assertNull($edc2);
+        $this->restoreConfigSetting("useEDC");
+    }
 
     /**
      * Tests that page returns error if DoB dates dont match
      *
      * @return none
      */
-    // function testNewProfileDoBDateError() {
-    //     $this->webDriver->get($this->url . "/new_profile/");
+    function testNewProfileDoBDateError() {
+        $this->webDriver->get($this->url . "/new_profile/");
 
-    //     $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
-    //     $dates[0]->sendKeys("01/01/2015");
-    //     $dates[1]->sendKeys("01/02/2015");
+        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
+        $dates[0]->sendKeys("01/01/2015");
+        $dates[1]->sendKeys("01/02/2015");
 
-    //     $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-    //     $gender->sendKeys("Male");
+        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
+        $gender->sendKeys("Male");
 
-    //     $pscid = $this->webDriver->findElement(WebDriverBy::Name("PSCID"));
-    //     $pscid->sendKeys("Control");
+        // Config set for PSCID to be auto created
+        // $pscid = $this->webDriver->findElement(WebDriverBy::Name("PSCID"));
+        // $pscid->sendKeys("Control");
 
-    //     $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-    //     $startVisit->click();
+        $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+        $startVisit->click();
 
-    //     $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-    //     $this->assertContains("Date of Birth fields must match.", $bodyText);
-    // }
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Date of Birth fields must match.", $bodyText);
+    }
 
     /*
      * Tests that page returns error if EDC dates dont match
      *
      * @return none
      */
-    // function testNewProfileEDCDateError() {
-    //     $this->setUpConfigSetting("useEDC", "true");
+    function testNewProfileEDCDateError() {
+        $this->setUpConfigSetting("useEDC", "true");
 
-    //     $this->webDriver->get($this->url . "/new_profile/");
+        $this->webDriver->get($this->url . "/new_profile/");
 
-    //     $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
-    //     $dates[0]->sendKeys("01/01/2015");
-    //     $dates[1]->sendKeys("01/01/2015");
-    //     $dates[2]->sendKeys("01/01/2015");
-    //     $dates[3]->sendKeys("01/02/2015");
+        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
+        $dates[0]->sendKeys("01/01/2015");
+        $dates[1]->sendKeys("01/01/2015");
+        $dates[2]->sendKeys("01/01/2015");
+        $dates[3]->sendKeys("01/02/2015");
 
-    //     $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-    //     $gender->sendKeys("Male");
+        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
+        $gender->sendKeys("Male");
 
-    //     $pscid = $this->webDriver->findElement(WebDriverBy::Name("PSCID"));
-    //     $pscid->sendKeys("Control");
+        // Config set for PSCID to be auto created
+        // $pscid = $this->webDriver->findElement(WebDriverBy::Name("PSCID"));
+        // $pscid->sendKeys("Control");
 
-    //     $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-    //     $startVisit->click();
+        $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+        $startVisit->click();
 
-    //     $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-    //     $this->assertContains("Estimated Due date fields must match.", $bodyText);
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Estimated Due date fields must match.", $bodyText);
 
-    //     $this->restoreConfigSetting("useEDC");
-    // }
+        $this->restoreConfigSetting("useEDC");
+    }
 
     /*
      * Tests that page returns error if PSCID is not filled out
@@ -166,20 +168,23 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      * @return none
      */
     function testNewProfilePSCIDError() {
-        $this->webDriver->get($this->url . "/new_profile/");
 
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/01/2015");
+        $this->markTestSkipped("Config not properly set up to test that PSCID is required");
 
-        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-        $gender->sendKeys("Male");
+        // $this->webDriver->get($this->url . "/new_profile/");
 
-        $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-        $startVisit->click();
+        // $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
+        // $dates[0]->sendKeys("01/01/2015");
+        // $dates[1]->sendKeys("01/01/2015");
 
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("PSCID must be specified", $bodyText);
+        // $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
+        // $gender->sendKeys("Male");
+
+        // $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+        // $startVisit->click();
+
+        // $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        // $this->assertContains("PSCID must be specified", $bodyText);
     }
 
     /**
