@@ -25,6 +25,16 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     public function setUp(){
         parent::setUp();
 
+        /*$this->DB->delete("users", array('ID' => 999990));
+        $this->DB->delete("mri_protocol_violated_scans", array('ID' => 1));
+        $this->DB->delete("violations_resolved", array('ID' => 51));
+        $this->DB->delete("candidate", array('ID' => 58));
+        $this->DB->delete("mri_scan_type", array('ID' => 40));
+        $this->DB->delete("mri_scan_type", array('ID' => 41));
+        $this->DB->delete("session", array('ID' => 39));
+        $this->DB->delete("psc", array('CenterID' => 1));
+        $this->DB->delete("MRICandidateErrors", array('ID' => 1));*/
+
         $this->DB->insert(
             "mri_protocol_violated_scans",
             array(
@@ -73,7 +83,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'DoB' => '2006-12-06',
                 'EDC' => NULL,
                 'Gender' => 'Female',
-                'CenterID' => 2,
+                'CenterID' => 1,
                 'ProjectID' => 1,
                 'Ethnicity' => NULL,
                 'Active' => 'Y',
@@ -111,8 +121,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "session",
             array(
                 'ID' => 39,
-                'CandID' => 690316,
-                'CenterID' => 2,
+                'CandID' => 176648,
+                'CenterID' => 1,
                 'VisitNo' => 1,
                 'Visit_label' => 'Initial_Assessment_Screening',
                 'SubprojectID' => 7,
@@ -144,7 +154,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             )
         );
 
-        $this->DB->insert(
+        /*$this->DB->insert(
             "psc",
             array(
                 'CenterID' => 1,
@@ -154,7 +164,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
                 'MRI_alias' => 'DCC',
                 'Study_site' => 'Y',
             )
-        );
+        );*/
 
         $this->DB->insert(
             "MRICandidateErrors",
@@ -185,22 +195,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Mri Violations", $bodyText);
     }
-
-    /**
-     * Tests that, when loading the Mri_violations module > mri_protocol_check_violations submodule, some
-     * text appears in the body.
-     *
-     * @return void
-     */
-    function testMriProtocolCheckViolationsDoesPageLoad()
-    {
-        $this->webDriver->get($this->url . "/mri_violations/mri_protocol_check_violations/");
-        sleep(2);
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Mri Violations", $bodyText,
-            "Mri Violations module page did not load as expected.");
-    }
-
+    
     /**
      * Verify that MRI Violations module appears in Admin main menu only
      * if the user has permission "violated_scans_view_allsites".
@@ -268,23 +263,23 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     public function tearDown()
     {
-        parent::setUp();
+        parent::tearDown();
 
         // Delete the temporary user.
+        $this->DB->delete("session", array('ID' => 39));
+        $this->DB->delete("candidate", array('ID' => 58));
         $this->DB->delete("mri_protocol_violated_scans", array('ID' => 1));
         $this->DB->delete("violations_resolved", array('ID' => 51));
-        $this->DB->delete("candidate", array('ID' => 58));
         $this->DB->delete("mri_scan_type", array('ID' => 40));
         $this->DB->delete("mri_scan_type", array('ID' => 41));
-        $this->DB->delete("session", array('ID' => 39));
-        $this->DB->delete("psc", array('CenterID' => 1));
+        //$this->DB->delete("psc", array('CenterID' => 1));
         $this->DB->delete("MRICandidateErrors", array('ID' => 1));
 
-        if ($this->webDriver) {
+        /*if ($this->webDriver) {
             $this->webDriver->quit();
-        }
+        }*/
 
-        $this->factory->reset();
+        //$this->factory->reset();
     }
 
 }
