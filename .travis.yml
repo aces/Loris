@@ -30,7 +30,7 @@ install:
       # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.45/selenium-server-standalone-2.45.0.jar"
 
-    - PHP_INI_SCAN_DIR=":test/" php -S localhost:8000 -t htdocs 2>1 > /dev/null & 
+    - PHP_INI_SCAN_DIR=":test/" php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null & 
 
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
@@ -66,6 +66,8 @@ script:
       do
         php -l $i || exit $?;
       done
+    # Run unit tests to make sure functions still do what they should.
+    - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
 
     # Run PHPCS on the entire libraries directory.
     - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
