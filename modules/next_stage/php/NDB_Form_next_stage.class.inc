@@ -131,7 +131,7 @@ class NDB_Form_next_stage extends NDB_Form
         if (empty($values['date1']['M']) && empty($values['date1']['d']) && empty($values['date1']['Y'])) {
             $errors['date1'] .= "Date is required. \n";
         }
-        elseif (!_checkDate($values['date1'])) {
+        elseif (!Utility::_checkDate($values['date1'])) {
             $errors['date1'] .= "Date is not a valid date. \n";
         }
 
