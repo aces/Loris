@@ -16,7 +16,7 @@
 #       *  Set SyncAccounts to false: <SyncAccounts>false</SyncAccounts>
 
 # set environment variable LORIS_DB_CONFIG to test config.xml file
-host="localhost"
+host="127.0.0.1"
 database="LorisTest"
 username="SQLTestUser"
 password="TestPassword"

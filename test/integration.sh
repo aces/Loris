@@ -26,7 +26,7 @@ echo "******************************************************************
   REMINDER: Selenium needs to be running to run integration tests
 ******************************************************************";
 
-host="localhost"
+host="127.0.0.1"
 database="LorisTest"
 username="SQLTestUser"
 password="TestPassword"
