@@ -22,7 +22,7 @@ class instrumentListTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentListDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=instrument_list");
+        $this->webDriver->get($this->url . "/instrument_list/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("instrument_list", $bodyText);
     }
