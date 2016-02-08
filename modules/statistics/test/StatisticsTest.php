@@ -7,58 +7,70 @@ class StatisticsTest extends LorisIntegrationTest
 
 
 
-public function testDashboardLoris()
+    public function StatisticsTest_Load()
     {
-         $this->webDriver->get($this->url . '?test_name=dashboard');
- 
-         $loris = $this->webDriver
-             ->findElement(WebDriverBy::cssSelector("#nav-left > div.navbar-header > a"));
-             $loris->click();
-             $assertText = $this->webDriver
-             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
-         $this->assertContains("Welcome", $assertText);
+        
+
+            $this->webDriver->get($this->url . '/statistics/');
+            
+            $assertContent = $this->webDriver->findElement(WebDriverBy::cssSelector("#page > h2")).getText();
+            
+            $this->assertContains("Welcome to the statistics page", $assertContent);
+        }
+
+
+    // Tests that, when loading the statistics module, click the Demographic Statistics, it shows General statistics
+    public function StatisticsTest_DemographicStatistics()
+    {
+        
+
+            $this->webDriver->get($this->url . '/statistics/?subtest=stats_demographic&dynamictabs=dynamictabs');
+            
+            $assertContent = $this->webDriver->findElement(WebDriverBy::cssSelector("#demographics > h2:nth-child(1)")).getText();
+            
+            $this->assertContains("General statistics", $assertContent);
+        }
+
+
+    // Tests that, when loading the Behavioural Statistics module, click the Demographic Statistics, it shows Data Entry Statistics
+    public function StatisticsTest_BehaviouralStatistics()
+    {
+        
+
+            $this->webDriver->get($this->url . '/statistics/?subtest=stats_behavioural&dynamictabs=dynamictabs');
+            
+            $assertContent = $this->webDriver->findElement(WebDriverBy::cssSelector("#data_entry > h2:nth-child(1)")).getText();
+            
+            $this->assertContains("Data Entry Statistics", $assertContent);
+
+    }
+      
+
+    // Tests that, when loading the Reliability Statistics module, click the Demographic Statistics, it shows Reliability Statistics
+    public function StatisticsTest_ReliabilityStatistics()
+    {
+        
+
+            $this->webDriver->get($this->url . '/statistics/?subtest=stats_reliability&dynamictabs=dynamictabs');
+            
+            $assertContent = $this->webDriver->findElement(WebDriverBy::cssSelector("#reliability > h2")).getText();
+            
+            $this->assertContains("Reliability Statistics", $assertContent);
+
      }
 
+    // Tests that, when loading the Imaging Statistics module, click the Demographic Statistics, it shows General Statistics with QC Status for
+    public function StatisticsTest_ImagingStatistics()
+    {
+        
 
+            $this->webDriver->get($this->url . '/statistics/?subtest=stats_MRI&dynamictabs=dynamictabs');
+            
+            $assertContent = $this->webDriver->findElement(WebDriverBy::cssSelector("#mri > h2:nth-child(1)")).getText();
+            
+            $this->assertContains("General Statistics with QC Status for", $assertContent);
 
+    }
 
-
-
-
-
-
-    // public function testTabsFrameworkLoads()
-    // {
-    //     $this->webDriver->get($this->url . '?test_name=statistics');
-
-    //     try {
-    //         // If this is the mobile view, we need to expand the dropdown
-    //         // before the stats links are visible.
-    //         $expand = $this->webDriver->findElement(WebDriverBy::ID("down"));
-    //         $expand->click();
-    //     } catch(ElementNotVisibleException $e) {
-    //         // Using the desktop version, so the mobile link isn't visible and
-    //         // doesn't need to be clicked.
-    //     }
-
-    //     // Ensure that Demographic Statistics link is there. There's nothing special
-    //     // about Demographics, it's just a randomly chosen default tab to ensure that
-    //     // something shows up. Ideally, this should loop through the StatisticsTabs
-    //     // table and ensure that they all appear.
-    //     try {
-    //         $link = $this->webDriver->findElement(WebDriverBy::PartialLinkText("Demographic Statistics"));
-    //         $this->assertContains("Demographic", $link->getText());
-    //     } catch(NoSuchElementException $e) {
-    //         print $this->webDriver->getPageSource();
-    //         $this->fail("Could not find demographic tab link");
-    //     }
-    // }
-
-    // public function testGeneralDescriptionTabLoads() {
-    //     $this->webDriver->get($this->url . '?test_name=statistics&subtest=stats_general&dynamictabs=dynamictabs');
-    //     $header = $this->webDriver->findElement(WebDriverBy::XPath("//div[@id = 'page']/h2"));
-    //     $this->assertContains("Welcome to the statistics page", $header->getText());
-
-    // }
 }
 ?>
