@@ -164,7 +164,7 @@ if (preg_match(
 
     include_once __DIR__ . "/AjaxHelper.php";
 } else if (preg_match(
-    '#^([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)/$#',
+    '#^([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)/(\?|$)#',
     $url
 )) {
     // RewriteRule
