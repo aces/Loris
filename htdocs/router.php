@@ -36,7 +36,7 @@ if (preg_match(
     $getParams = explode("/", $url);
 
     $_REQUEST["test_name"] = "timepoint_list";
-    $_REQUEST['candID']    = $getParams[1];
+    $_REQUEST['candID']    = $getParams[0];
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
