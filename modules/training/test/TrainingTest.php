@@ -36,7 +36,7 @@ class TrainingTest extends LorisIntegrationTest
      */
     public function testTrainingPageLoads()
     {
-        $this->webDriver->get($this->url . "?test_name=training");
+        $this->webDriver->get($this->url . "/training/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Training", $bodyText);
