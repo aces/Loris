@@ -49,7 +49,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get(
             $this->url
-            . "/conflict_resolver/resolved_conflicts/"
+            . "/conflict_resolver/?submenu=resolved_conflicts"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
