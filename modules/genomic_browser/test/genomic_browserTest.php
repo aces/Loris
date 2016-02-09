@@ -51,6 +51,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
+/*----
     function testGenomicBrowserDoespageLoad()
     {
         $this->webDriver->get(
@@ -72,10 +73,14 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
 
     /**
      * Tests that, when loading the genomic_browser module, the
-     * breadcrumb is 'Genomic browser'.
+     * breadcrumb is 'Genomic browser' or an error is given according 
+     * to the user's permissions.
+     *
+     * @depends testGenomicBrowserDoespageLoad
      *
      * @return void
      */
+/*----
     function testGenomicBrowserDoespageLoadPermissions()
     {
 
@@ -144,13 +149,14 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
+/*----
     public function testConfigurationMenuDisplayWithPermissions()
     {
         // Without permissions
         $this->setupPermissions(array(''));
         $this->webDriver->navigate()->refresh();
         $this->assertFalse(
-            $this->assertMenuItemPresent('Tools', 'Genomic Browser'),
+            $this->isMenuItemPresent('Tools', 'Genomic Browser'),
             "Menu item shoudn't be there."
         );
 
@@ -158,7 +164,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('genomic_browser_view_site'));
         $this->webDriver->navigate()->refresh();
         $this->assertTrue(
-            $this->assertMenuItemPresent('Tools', 'Genomic Browser'),
+            $this->isMenuItemPresent('Tools', 'Genomic Browser'),
             "Menu item missing."
         );
 
@@ -166,7 +172,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('genomic_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
         $this->assertTrue(
-            $this->assertMenuItemPresent('Tools', 'Genomic Browser'),
+            $this->isMenuItemPresent('Tools', 'Genomic Browser'),
             "Menu item missing."
         );
     }
@@ -175,8 +181,11 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      * Tests that, when loading the genomic_browser module
      * default submenu, the active tab text is CNV.
      *
+     * @depends testGenomicBrowserDoespageLoad
+     *
      * @return void
      */
+/*----
     function testGenomicBrowserCNVBrowserDoespageLoad()
     {
         $this->webDriver->get(
@@ -200,8 +209,11 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      * Tests that, when loading the genomic_browser module
      *   > snp_browser submenu, the active tab text is SNP.
      *
+     * @depends testGenomicBrowserDoespageLoad
+     *
      * @return void
      */
+/*----
     function testGenomicBrowserSNPBrowserDoespageLoad()
     {
         $this->webDriver->get(
@@ -209,17 +221,189 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $tabText = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                "
+            WebDriverBy::xPath("
                 //div[@id='tabs']
                 /ul
                 /li[contains(@class, 'active')]
-            "
-            )
+            ")
         )->getText();
 
         $this->assertEquals("SNP", $tabText);
     }
 
+    /**
+     * Tests that, a message is displayed when there is no data
+     * in the CNV table.
+     *
+     * @depends testGenomicBrowserDoespageLoad
+     *
+     * @return void
+     */
+//*----
+    function testGenomicBrowserCNVEmptyDatatable()
+    {
+        $this->_deleteCNVdata();
+
+        $this->webDriver->get(
+            $this->url . "?test_name=genomic_browser"
+        );
+
+        $message = $this->webDriver->findElement(
+            WebDriverBy::id("LogEntries")
+        )->getText();
+        $this->assertEquals("No variants found.", $message);
+
+        $rows = $this->webDriver->findElements(
+            WebDriverBy::xPath("
+                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')//tr]
+            ")
+        );
+        $this->assertCount(0, $rows, "");
+    }
+
+    private function _insertCandidates()
+    {
+        $this->DB->insert("candidate", array(
+            'CandID' => '000001',
+            'PSCID'  => 'TST9999',
+            'CenterID' => 1,
+            'Active' => 'Y',
+            'UserID' => 1,
+            'Entity_type' => 'Human'
+        ));
+
+        $this->DB->insert("candidate", array(
+            'CandID' => '000002',
+            'PSCID'  => 'TST9998',
+            'CenterID' => 1,
+            'Active' => 'Y',
+            'UserID' => 1,
+            'Entity_type' => 'Human'
+        ));
+    }
+
+    private function _insertCNVdata()
+    {
+        $this->_insertCandidates();
+
+        $this->DB->insert("CNV", array(
+            'CNVID' => 9999999999,
+            'CandID' => '000001',
+            'Description' => 'CNV 1',
+            'Type' => 'gain',
+            'EventName' => 'Event 1',
+            'Common_CNV' => 'Y',
+            'Characteristics' => 'Benign',
+            'CopyNumChange' => 1,
+            'Inheritance' => 'de novo',
+            'ArrayReport' => 'Normal',
+            'Markers' => 'Marker 1',
+            'ArrayReportDetail' => 'Array report detail 1',
+            'ValidationMethod' => 'Validation method 1'
+        ));
+        $this->DB->insert("CNV", array(
+            'CNVID' => 9999999998,
+            'CandID' => '000001',
+            'Description' => 'CNV 2',
+            'Type' => 'gain',
+            'EventName' => 'Event 1',
+            'Common_CNV' => 'Y',
+            'Characteristics' => 'Benign',
+            'CopyNumChange' => 1,
+            'Inheritance' => 'de novo',
+            'ArrayReport' => 'Normal',
+            'Markers' => 'Marker 1',
+            'ArrayReportDetail' => 'Array report detail 1',
+            'ValidationMethod' => 'Validation method 1'
+        ));
+        $this->DB->insert("CNV", array(
+            'CNVID' => 9999999997,
+            'CandID' => '000001',
+            'Description' => 'CNV 3',
+            'Type' => 'gain',
+            'EventName' => 'Event 1',
+            'Common_CNV' => 'Y',
+            'Characteristics' => 'Benign',
+            'CopyNumChange' => 1,
+            'Inheritance' => 'de novo',
+            'ArrayReport' => 'Normal',
+            'Markers' => 'Marker 1',
+            'ArrayReportDetail' => 'Array report detail 1',
+            'ValidationMethod' => 'Validation method 1'
+        ));
+        $this->DB->insert("CNV", array(
+            'CNVID' => 9999999996,
+            'CandID' => '000002',
+            'Description' => 'CNV 4',
+            'Type' => 'gain',
+            'EventName' => 'Event 1',
+            'Common_CNV' => 'Y',
+            'Characteristics' => 'Benign',
+            'CopyNumChange' => 1,
+            'Inheritance' => 'de novo',
+            'ArrayReport' => 'Normal',
+            'Markers' => 'Marker 1',
+            'ArrayReportDetail' => 'Array report detail 1',
+            'ValidationMethod' => 'Validation method 1'
+        ));
+        $this->DB->insert("CNV", array(
+            'CNVID' => 9999999995,
+            'CandID' => '000002',
+            'Description' => 'CNV 5',
+            'Type' => 'gain',
+            'EventName' => 'Event 1',
+            'Common_CNV' => 'Y',
+            'Characteristics' => 'Benign',
+            'CopyNumChange' => 1,
+            'Inheritance' => 'de novo',
+            'ArrayReport' => 'Normal',
+            'Markers' => 'Marker 1',
+            'ArrayReportDetail' => 'Array report detail 1',
+            'ValidationMethod' => 'Validation method 1'
+        ));
+    }
+
+    private function _deleteCNVdata()
+    {
+        $this->DB->delete("CNV", array("CNVID" => '9999999999'));
+        $this->DB->delete("CNV", array("CNVID" => '9999999998'));
+        $this->DB->delete("CNV", array("CNVID" => '9999999997'));
+        $this->DB->delete("CNV", array("CNVID" => '9999999996'));
+        $this->DB->delete("CNV", array("CNVID" => '9999999995'));
+        $this->DB->delete("candidate", array('CandID' => '000001'));
+        $this->DB->delete("candidate", array('CandID' => '000002'));
+    } 
+
+    /**
+     * Tests that, CNV data is presented in the dynamictable.
+     *
+     * @depends testGenomicBrowserCNVEmptyDatatable
+     *
+     * @return void
+     */
+    function testGenomicBrowserCNVDatatable()
+    {
+        $this->_deleteCNVdata();
+        $this->_insertCNVdata();
+
+        $this->webDriver->get(
+            $this->url . "?test_name=genomic_browser"
+        );
+
+        $message = $this->webDriver->findElement(
+            WebDriverBy::id("LogEntries")
+        )->getText();
+        $this->assertEquals("Variants found: 5 total", $message);
+sleep(20);
+        $rows = $this->webDriver->findElements(
+            WebDriverBy::xPath("
+                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')//tr]
+            ")
+        );
+
+        $this->assertCount(5, $rows, "");
+
+        $this->_deleteCNVdata();
+    }
 }
 ?>
