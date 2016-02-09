@@ -287,8 +287,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function changeStudySite()
     {
-        $this->DB->insert("psc", array("CenterID" => 999));
-        $this->DB->update("users", array("CenterID" => 999), array("ID" => 999990));
+        $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
+        $this->DB->update("users", array("CenterID" => 99), array("ID" => 999990));
     }
 
     /**
@@ -299,7 +299,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     function resetStudySite()
     {
         $this->DB->update("users", array("CenterID" => 1), array("ID" => 999990));
-        $this->DB->delete("psc", array("CenterID" => 999));
+        $this->DB->delete("psc", array("CenterID" => 99));
     }
 
     /**
@@ -331,6 +331,16 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             )
         );
         return count($configMenu) > 0;
+    }
+
+    /**
+     * Helper function to change the users Study Site
+     *
+     * @return none
+     */
+    function deleteCandidate($pscid)
+    {
+        $this->DB->delete("Candidate", array("PSCID" => $pscid));
     }
 
 }
