@@ -130,11 +130,11 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Date of Birth fields must match.", $bodyText);
     }
 
-    
+    /*
      * Tests that page returns error if EDC dates dont match
      *
      * @return none
-     
+     */
     function testNewProfileEDCDateError() {
         $this->setUpConfigSetting("useEDC", "true");
 
@@ -269,6 +269,49 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("PSCID: BBQ0000", $bodyText);
 
         $this->deleteCandidate("BBQ0000");
+        $this->resetStudySite();
+    }
+
+    /*
+     * Tests that candidate is created
+     *
+     * @return none
+     */
+    function testNewProfilePSCIDSequential() {
+
+        $this->changeStudySite();
+        $this->webDriver->get($this->url . "/new_profile/");
+
+        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
+        $dates[0]->sendKeys("01/01/2015");
+        $dates[1]->sendKeys("01/01/2015");
+
+        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
+        $gender->sendKeys("Male");
+
+        $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+        $startVisit->click();
+
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("PSCID: BBQ0000", $bodyText);
+
+        $this->webDriver->get($this->url . "/new_profile/");
+
+        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
+        $dates[0]->sendKeys("01/01/2015");
+        $dates[1]->sendKeys("01/01/2015");
+
+        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
+        $gender->sendKeys("Male");
+
+        $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+        $startVisit->click();
+
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("PSCID: BBQ0001", $bodyText);
+
+        $this->deleteCandidate("BBQ0000");
+        $this->deleteCandidate("BBQ0001");
         $this->resetStudySite();
     }
 }
