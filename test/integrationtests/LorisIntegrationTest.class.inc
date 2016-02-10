@@ -304,6 +304,44 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Helper function to create a subproject
+     *
+     * @param string $title Name of the subproject
+     *
+     * @return none
+     */
+    function createSubproject($title)
+    {
+        $this->DB->insert(
+            "subproject",
+            array(
+             "title"             => $title,
+             "WindowDifference"  => "optimal",
+             "RecruitmentTarget" => "100",
+            )
+        );
+    }
+
+    /**
+     * Helper function to delete a subproject
+     *
+     * @param string $title Name of the subproject
+     *
+     * @return none
+     */
+    function deleteSubproject($title)
+    {
+        $this->DB->delete(
+            "subproject",
+            array(
+             "title"             => $title,
+             "WindowDifference"  => "optimal",
+             "RecruitmentTarget" => "100",
+            )
+        );
+    }
+
+    /**
      * Helper function to determine if a menu item is prensent
      * under a given category.
      *
