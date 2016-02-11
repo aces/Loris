@@ -9,7 +9,11 @@ StaticDataTable = React.createClass({
         getFormattedCell: React.PropTypes.func
     },
     componentDidMount: function() {
-        $(".dynamictable").DynamicTable();
+        if(this.props.freezeColumn) {
+            $("#dynamictable").DynamicTable({"freezeColumn" : this.props.freezeColumn});
+        } else {
+            $("#dynamictable").DynamicTable();
+        }
     },
     getInitialState: function() {
         return {
@@ -64,7 +68,11 @@ StaticDataTable = React.createClass({
         var rowsPerPage = this.state.RowsPerPage;
         var headers = [<th onClick={this.setSortColumn(-1)}>{this.props.RowNumLabel}</th>];
         for(var i = 0; i < this.props.Headers.length; i += 1) {
-            headers.push(<th onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+            if(this.props.Headers[i] == this.props.freezeColumn){
+                headers.push(<th id={this.props.freezeColumn} onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+            }else {
+                headers.push(<th onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+            }
         }
         var rows = [];
         var curRow = [];
@@ -156,7 +164,7 @@ StaticDataTable = React.createClass({
             );
         return (
             <div>
-                <table className="table table-hover table-primary table-bordered dynamictable">
+                <table className="table table-hover table-primary table-bordered" id="dynamictable">
                     <thead>
                         <tr className="info">{headers}</tr>
                     </thead>
