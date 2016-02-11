@@ -145,7 +145,7 @@ class SinglePointLogin
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
         $smarty->display('password_expiry.tpl');
-        die();
+        return false;
     }
 
 

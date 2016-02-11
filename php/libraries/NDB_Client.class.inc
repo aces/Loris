@@ -139,7 +139,7 @@ class NDB_Client
             //ob_end_clean();
             $login->showLoginScreen();
             //terminate script
-            die();
+            return false;
         }
 
         $user =& User::singleton($_SESSION['State']->getUsername());
