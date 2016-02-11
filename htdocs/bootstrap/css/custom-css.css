@@ -239,10 +239,10 @@ div.navbar div.container div.navbar-brand {
   border-left: 10px solid #064785;
 }
 .btn-breadcrumb .btn.btn-primary:not(:last-child):before {
-  border-left: 10px solid #042d54;
+  border-left: 12px solid #042d54;
 }
 .btn-breadcrumb .btn.btn-primary:hover:not(:last-child):after {
-  border-left: 10px solid #042d54;
+  border-left: 12px solid #042d54;
 }
 .btn-breadcrumb .btn.btn-primary:hover:not(:last-child):before {
   border-left: 10px solid #042d54;
