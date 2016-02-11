@@ -66,6 +66,13 @@ if ($tabInformation['TrainingType'] == 'text') {
         $instrument . '.mp4',
         $type
     );
+} else if ($tabInformation['TrainingType'] == 'vimeo') {
+    $tabHTML = createTabHTML(
+        'vimeo',
+        $tabInformation['Title'],
+        $tabInformation['Content'],
+        $type
+    );
 } else if ($tabInformation['TrainingType'] == 'quiz') {
     $tabHTML = createTabHTML(
         'quiz',
@@ -139,4 +146,5 @@ function createTabHTML($contentType, $title, $tabVariables, $type)
 
     return $html;
 }
+
 ?>
