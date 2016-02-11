@@ -36,7 +36,7 @@ class ExaminerTest extends LorisIntegrationTest
      */
     public function testExaminerPageLoads()
     {
-        $this->webDriver->get($this->url . "?test_name=examiner");
+        $this->webDriver->get($this->url . "/examiner/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Examiner", $bodyText);
