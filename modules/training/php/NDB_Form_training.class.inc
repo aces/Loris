@@ -193,6 +193,8 @@ class NDB_Form_Training extends NDB_Form
 
     /**
      * Gathers JS dependecies and merge them with the parent
+     * Include the column formatter required to display the feedback link colours
+     * in the training menu
      *
      * @return array of javascript to be inserted
      */

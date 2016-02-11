@@ -22,6 +22,8 @@
         {include file='training_pdf.tpl' filename=$tabVariables}
     {elseif $contentType=='video'}
         {include file='training_video.tpl' filename=$tabVariables}
+    {elseif $contentType=='vimeo'}
+        {include file='training_vidmo.tpl' filename=$tabVariables}
     {elseif $contentType=='quiz'}
         {include file='training_quiz.tpl' questions=$tabVariables}
     {/if}
@@ -43,6 +45,8 @@
     {if $contentType=='text' or $contentType=='pdf'}
         I have completed reading this section of the training module.
     {elseif $contentType=='video'}
+        I have completed watching this section of the training module.
+    {elseif $contentType=='vimeo'}
         I have completed watching this section of the training module.
     {elseif $contentType=='quiz'}
         Submit your answers to the quiz. If any answers are incorrect, you will be prompted to repeat the certification training.
