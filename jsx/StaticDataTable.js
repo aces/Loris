@@ -8,7 +8,9 @@ StaticDataTable = React.createClass({
         // func(ColumnName, CellData, EntireRowData)
         getFormattedCell: React.PropTypes.func
     },
-
+    componentDidMount: function() {
+        $(".dynamictable").DynamicTable();
+    },
     getInitialState: function() {
         return {
             'PageNumber' : 1,
@@ -154,7 +156,7 @@ StaticDataTable = React.createClass({
             );
         return (
             <div>
-                <table className="table table-hover table-primary table-bordered">
+                <table className="table table-hover table-primary table-bordered dynamictable">
                     <thead>
                         <tr className="info">{headers}</tr>
                     </thead>
