@@ -906,8 +906,8 @@ class Utility
     static function getStageUsingCandID($CandID)
     {
         $db    =& Database::singleton();
-        $query = "select DISTINCT Current_stage from session where CandID='$CandID'";
-        $stage = $db->pselect($query);
+        $query = "select DISTINCT Current_stage from session where CandID = :CandID";
+        $stage = $db->pselect($query, array('CandID' => $CandID));
         return $stage[0]['Current_stage'];
     }
 
@@ -922,8 +922,8 @@ class Utility
     static function getSubprojectIDUsingCandID($CandID)
     {
         $db    =& Database::singleton();
-        $query = "select DISTINCT SubprojectID from session where CandID='$CandID'";
-        $stage = $db->pselect($query);
+        $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
+        $stage = $db->pselect($query, array('CandID' => $CandID));
         return $stage[0]['SubprojectID'];
     }
 
