@@ -903,11 +903,11 @@ class Utility
      * @return array
      * @throws DatabaseException
      */
-    static function getStageUsingCandID($CandID)
+    static function getStageUsingCandID($Cand_id)
     {
         $db    =& Database::singleton();
         $query = "select DISTINCT Current_stage from session where CandID = :CandID";
-        $stage = $db->pselect($query, array('CandID' => $CandID));
+        $stage = $db->pselect($query, array('CandID' => $Cand_id));
         return $stage[0]['Current_stage'];
     }
 
@@ -919,11 +919,11 @@ class Utility
      * @return array
      * @throws DatabaseException
      */
-    static function getSubprojectIDUsingCandID($CandID)
+    static function getSubprojectIDUsingCandID($Cand_id)
     {
         $db    =& Database::singleton();
         $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
-        $stage = $db->pselect($query, array('CandID' => $CandID));
+        $stage = $db->pselect($query, array('CandID' => $Cand_id));
         return $stage[0]['SubprojectID'];
     }
 
