@@ -237,6 +237,8 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * text appears in the body.
      *
      * @return void
+     */
+
     function testImagingBrowserDoespageLoad()
     {
         $this->webDriver->get(
@@ -248,7 +250,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	)->getText();
         $this->assertContains("Imaging Browser", $breadcrumbText);
     }
-     */
 
 /******** A ********/
 
@@ -258,6 +259,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * and "view_allsites" permissions
      *
      * @return void
+    */
 
     function testImagingBrowserDoespageLoadPermissions()
     {
@@ -301,7 +303,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
     }    
 
-    */
 
     /**
      * Step 2
@@ -309,32 +310,95 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * is "view_onsite" and all data sets if "view_allsites" permissions
      *
      * @return void
+    */
 
     function testImagingBrowserViewDatasetDependingOnPermissions()
     {
-        // With permission imaging_browser_view_site
+        // With permission imaging_browser_view_site: 0 subjects found from DCC site
         $this->setupPermissions(array('imaging_browser_view_site'));
         $this->webDriver->navigate()->refresh();
 
-sleep(10);
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
+        $ControlPanelText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector(".controlPanelSection")
+        )->getText();
+        $this->assertContains("0 subject timepoint(s) selected", $ControlPanelText);
 
-        // With permission imaging_browser_view_allsites
+        // With permission imaging_browser_view_allsites: 2 subjects with imaging data found
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-sleep(10);
-
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
+        $ControlPanelText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector(".controlPanelSection")
+        )->getText();
+        $this->assertContains("2 subject timepoint(s) selected", $ControlPanelText);
     }
-     */
-
      
 
 
     /**
-     * Step 3a: TODO
-     * Tests that all filters work
+     * Step 3a & 4 combined
+     * Tests that Filters (tested for PSCID here) and that Show Data and Clear Form work
      *
      * @return void
      */
+
+    function testImagingBrowserFiltersAndShowClearButtons()
+    {
+        // Testing for PSCID
+        $this->setupPermissions(array('imaging_browser_view_allsites'));
+        $this->webDriver->navigate()->refresh();
+
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
+        $PSCIDOptions = $this->webDriver->findElement(
+            WebDriverBy::Name("pscid")
+        );
+	$PSCIDOptions ->sendKeys("AOL");
+
+        $ShowData = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("div.col-sm-2:nth-child(3) > input:nth-child(1)")
+        );
+	$ShowData->click();
+	sleep(5);
+
+
+        $ControlPanelText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector(".controlPanelSection")
+        )->getText();
+        $this->assertContains("1 subject timepoint(s) selected", $ControlPanelText);
+
+        //  Now reset using clear button and confirm site set back to all and 2 subjects found
+
+        $ClearForm = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("div.col-sm-2:nth-child(4) > input:nth-child(1)")
+        );
+	$ClearForm->click();
+	sleep(5);
+
+        $PSCIDCleared = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("div.row:nth-child(1) > div:nth-child(1) > div:nth-child(2) > input:nth-child(1)")
+        )->getText();
+        $this->assertEquals("", $PSCIDCleared);
+
+        $ShowData = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("div.col-sm-2:nth-child(3) > input:nth-child(1)")
+        );
+	$ShowData->click();
+	sleep(5);
+
+
+        $ControlPanelText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector(".controlPanelSection")
+        )->getText();
+        $this->assertContains("2 subject timepoint(s) selected", $ControlPanelText);
+    }
+
 
     /**
      * Step 3b
@@ -342,6 +406,7 @@ sleep(10);
      * is "view_onsite" and "All" if "view_allsites" permissions
      *
      * @return void
+     */
 
 
     function testImagingBrowserSiteDependingOnPermissions()
@@ -380,22 +445,49 @@ sleep(10);
         $this->assertContains("All", $SiteFilterText);
 
     }
+
+
+    /**
+     * Step 5
+     * Tests that column headers are sortable: Will check PSCID only
+     *
+     * @return void
     */
 
+    function testImagingBrowserSortableByTableHeader()
+    {
+        $this->setupPermissions(array('imaging_browser_view_allsites'));
+        $this->webDriver->navigate()->refresh();
 
-    /**
-     * Step 4: TODO
-     * Tests that Clear and Show data Buttons work
-     *
-     * @return void
-     */
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
+        $PSCIDHeader = $this->webDriver->findElement(
+            WebDriverBy::cssSelector(".info > th:nth-child(3) > a:nth-child(1)")
+        );
+	$PSCIDHeader->click();
+	sleep(5);
+	
+	$FirstEntry = $this->webDriver->findElement(
+            WebDriverBy::cssSelector(".table > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(3)")
+        )->getText();
 
-    /**
-     * Step 5: TODO
-     * Tests that column headers are sortable
-     *
-     * @return void
-     */
+        $this->assertContains("AOL0002", $FirstEntry);
+
+	// click again and make sure the order is now reversed
+        $PSCIDHeader = $this->webDriver->findElement(
+            WebDriverBy::cssSelector(".info > th:nth-child(3) > a:nth-child(1)")
+        );
+	$PSCIDHeader->click();
+	sleep(5);
+
+	$FirstEntry = $this->webDriver->findElement(
+            WebDriverBy::cssSelector(".table > tbody:nth-child(2) > tr:nth-child(1) > td:nth-child(3)")
+        )->getText();
+
+        $this->assertContains("BOL0003", $FirstEntry);
+
+    }
 
 
     /** Step 6
@@ -403,6 +495,7 @@ sleep(10);
      *
      * @return void
      *
+     */
 
     function testViewSessionLinksNative()
     {
@@ -423,14 +516,15 @@ sleep(10);
         $bodyText = $this->webDriver->findElement(
 	    WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("View Session", $bodyText);
+
+	// Selected link tested in the next test
     }
 
-    **/
 
 /******** B ********/
 
     /**
-     * Step 1
+     * Steps 1 & 2
      * Tests that the links on the sidebar work
      * It is done manually, a FOR loop is a better idea
      *
@@ -438,7 +532,7 @@ sleep(10);
     **/
 
 
-    function testViewSessionSidebarLinks()
+    function testViewSessionNavigationLinks()
     {
 	// Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
@@ -453,11 +547,11 @@ sleep(10);
             $this->url . "/imaging_browser/"
         );
 
-        $NativeLink = $this->webDriver->findElement(
-            WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a')
+        $SelectedLink = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
         );
 
-	$NativeLink->click();
+	$SelectedLink->click();
 	sleep(5);
 
         $BackToListButton = $this->webDriver->findElement(
@@ -511,11 +605,92 @@ sleep(10);
         )->getText();
 	
         $this->assertContains("Test Site AOL", $SiteText1);
+    }
 
+
+/*
+    function testViewSessionLinks()
+    {
+	// LINKS NEXT //
+	// Forms should be added first, not sure how
+
+        $this->setupPermissions(array('imaging_browser_view_allsites'));
+        $this->webDriver->navigate()->refresh();
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
+
+        $SelectedLink = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
+        );
+
+	$SelectedLink->click();
+	sleep(5);
+
+	//MRI Parameter form
+        $MRIParamForm = $this->webDriver->findElement(
+	    WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[2]/li[1]/a')
+	);
+        $MRIParamForm->click();
+	sleep(5);
+
+        $MRIFormHeader= $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[2]/li[1]/a')
+        )->getText();
+	
+// 	First assertion works if the form is already included, which is often not the case when testing
+//	So allow the second assertion as a pass
+//        $this->assertContains("MRI Parameter Form", $MRIFormHeader);
+        $this->assertContains("This page (mri_parameter_form) is under construction", $MRIFormHeader);
+
+	//Radiology review form
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
+
+        $SelectedLink = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
+        );
+
+	$SelectedLink->click();
+	sleep(5);
+
+        $RadiologyForm = $this->webDriver->findElement(
+	    WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[2]/li[2]/a')
+	);
+        $RadiologyForm->click();
+	sleep(5);
+
+        $RadFormHeader= $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="test_form"]/div/div[1]/div/h3')
+        )->getText();
+	
+//        $this->assertContains("Radiology Review Form", $RadFormHeader);
+        $this->assertContains("This page (radiology_review) is under construction", $RadFormHeader);
+
+    }
+*/
+
+/*
+    function testViewSessionVolumeViewerLinks()
+    {
 	// VOLUME VIEWER MENU NEXT //
 	// Currently awaiting redmine 9385 //
-/*
 	// select an image first then click on 3DOnly
+
+        $this->setupPermissions(array('imaging_browser_view_allsites'));
+        $this->webDriver->navigate()->refresh();
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
+
+        $SelectedLink = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
+        );
+
+	$SelectedLink->click();
+	sleep(5);
+
 
         $ImageCheckbox = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="image-200"]/div/div/div[1]/input')
@@ -535,19 +710,105 @@ sleep(10);
             WebDriverBy::xPath('//*[@id="page"]/div/div[1]/a/label')
         )->getText();
         $this->assertContains("Brainbrowser", $BreadCrumbText);
+    }
 */
 
-	// LINKS NEXT //
+    /**
+     * Steps 3 through 7
+     * Visit level feedback
+     * 
+     *
+     * @return void
+    **/
 
-//	Test that Links: MRI Parameter form & Radiology review work
+    function testViewSessionVisitLevelFeedback()
+    {
+	// Setting permissions to view all sites to view all datasets
+        $this->setupPermissions(array('imaging_browser_view_allsites'));
+        $this->webDriver->navigate()->refresh();
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
 
-//*[@id="sidebar-content"]/ul[2]/li[1]/a
-//*[@id="sidebar-content"]/ul[2]/li[2]/a
+        $NativeLink = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a')
+        );
 
-//*[@id="test_form"]/div/div[1]/div/h3 MRI Parameter Form
+	$NativeLink->click();
+	sleep(5);
 
-//*[@id="test_form"]/div/div[1]/div/h3 Radiology Review Form
+        $VisitLevelFeedback = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="sidebar-content"]/div[1]/a/span/span[2]')
+        );
 
+	$VisitLevelFeedback->click();
+
+
+//	ATEMTPTING TO CHANGE THE WINDOW HANDLES TO POPUP, NO SUCCESS
+//	$handles = $this->webDriver->get(
+//	    $this->window_handles()
+//	);
+//	$last_window = end($handles);
+//	$this->$webDriver->focusWindow($last_window);
+
+//        $PopUpPSCID = $this->webDriver->findElement(
+//            WebDriverBy::xPath('/html/body/div/table/tbody/tr[2]/td')
+//        )->getText();
+//        $this->assertContains("AOL0002", $PopUpPSCID);
+
+
+        $QCStatus = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="sidebar-content"]/div[2]/div/label')
+        )->getText();
+        $this->assertContains("QC Status", $QCStatus);
+
+        $QCPending = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="sidebar-content"]/div[2]/label')
+        )->getText();
+        $this->assertContains("QC Pending", $QCPending);
+
+
+	// Check that the QC status are editable with correct permission
+        $this->setupPermissions(array('imaging_browser_view_allsites', 'imaging_browser_qc'));
+        $this->webDriver->navigate()->refresh();
+
+        $QCPendingNo = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="sidebar-content"]/div[2]/select/option[2]')
+        )->getText();
+        $this->assertContains("No", $QCPendingNo);
+
+        $QCStatusPass = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="sidebar-content"]/div[2]/div/select/option[2]')
+        )->getText();
+        $this->assertContains("Pass", $QCStatusPass);
+
+	// Test that we cna edit the QC status by changing it from Blank to Pass
+
+	// Send option Pass (second option) from dropdown menu,
+	// Click save,
+	// Check data again to make sure it is now FIIRST option
+
+
+        $QCStatusSetPass = $this->webDriver->findElement(
+            WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(1) > select:nth-child(2) > option:nth-child(2)")
+        );
+        $QCStatusSetPass->click();
+
+	// Testing the button Save is viewable, clickable and works by watching the QC status set to Pass after removing permissions 
+        $QCSaveShow = $this->webDriver->findElement(
+            WebDriverBy::xPath('//input[@accessKey="s"]')
+        );
+        $QCSaveShow->click();
+
+
+//        $this->setupPermissions(array('imaging_browser_view_allsites'));
+//        $this->webDriver->navigate()->refresh();
+	
+//	AT THIS POINT, I SEE THINGS WORKING, BUT A POP UP MESSAGE DUE TO POST FORM SUBMISSION PREVENTS ASSERTION
+//        $QCStatus = $this->webDriver->findElement(
+//            WebDriverBy::cssSelector("#image-200 > div > div > div.panel-heading > span.label.label-success")
+//        )->getText();
+//        $this->assertContains("Pass", $QCStatus);
     }
 
     /**
@@ -556,7 +817,7 @@ sleep(10);
      * 
      *
      * @return void
-    **/
+    */
 
 
     function testViewSessionBreadCrumb()
@@ -595,6 +856,182 @@ sleep(10);
 	
         $this->assertContains("Selection Filter", $SelectionFilter);
     }
+
+
+/******** C ********/
+
+    /**
+     * Step 1
+     * Future feature
+     *
+     * @return void
+    **/
+
+    /**
+     * Step 2
+     * Scan-Level QC Flags viewable and editabled depending on permission
+     *
+     * @return void
+    **/
+
+
+
+    function testScanLevelQCFlags()
+    {
+	// Setting permissions to view all sites to view all datasets
+        $this->setupPermissions(array('imaging_browser_view_allsites'));
+        $this->webDriver->navigate()->refresh();
+
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
+
+        $SelectedLink = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
+        );
+
+	$SelectedLink->click();
+	sleep(5);
+
+        $MainPanelText1 = $this->webDriver->findElement(
+	    WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(1) > label:nth-child(1)")
+	)->getText();
+
+        $this->assertContains("QC Status", $MainPanelText1);
+
+        $MainPanelText2 = $this->webDriver->findElement(
+	    WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(2) > label:nth-child(1)")
+	)->getText();
+
+        $this->assertContains("Selected", $MainPanelText2);
+
+        $MainPanelText3 = $this->webDriver->findElement(
+	    WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(3) > label:nth-child(1)")
+	)->getText();
+
+        $this->assertContains("Caveat", $MainPanelText3);
+
+	// Setting permissions to view all sites and have qc persmissions
+        $this->setupPermissions(array('imaging_browser_view_allsites', 'imaging_browser_qc'));
+        $this->webDriver->navigate()->refresh();
+
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
+
+        $SelectedLink = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
+        );
+
+	$SelectedLink->click();
+	sleep(5);
+
+	// Only with the correct persmissions would the options in the dropdown menu appear
+        $QCStatusPass = $this->webDriver->findElement(
+	    WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(1) > select:nth-child(2)")
+	)->getText();
+
+        $this->assertContains("Pass", $QCStatusPass);
+
+        $QCSelectedFlair = $this->webDriver->findElement(
+	    WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(2) > select:nth-child(2)")
+	)->getText();
+
+        $this->assertContains("flair", $QCSelectedFlair);
+
+        $QCStatusCaveatTrue = $this->webDriver->findElement(
+	    WebDriverBy::cssSelector("div.row:nth-child(3) > select:nth-child(2) > option:nth-child(2)")
+	)->getText();
+        $this->assertContains("True", $QCStatusCaveatTrue);
+
+
+	// Caveat Link only if view all_sites violated scans permissions
+        $this->setupPermissions(array('imaging_browser_view_allsites', 'imaging_browser_qc','violated_scans_view_allsites'));
+        $this->webDriver->navigate()->refresh();
+
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
+
+        $SelectedLink = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
+        );
+
+	$SelectedLink->click();
+	sleep(5);
+
+//	DOES NOT EXIST IN MY TEST-SPECIFIC DATASET, I GOT THIS PATH FROM DEMO!
+//        $CaveatListLink = $this->webDriver->findElement(
+//	    WebDriverBy::xPath('//*[@id="panel-body-23"]/div[1]/div[2]/div/div[3]/a')
+//	);
+
+//	$CaveatListLink->click();
+//	sleep(5);
+
+//        $breadcrumbText = $this->webDriver->findElement(
+//	    WebDriverBy::cssSelector("body")
+//	)->getText();
+//        $this->assertContains("Mri Violations", $breadcrumbText);
+
+    }
+
+    /**
+     * Step 3
+     * Selected set to NULL
+     *
+     * @return void
+    **/
+
+    /**
+     * Step 4
+     * Future Release
+     *
+     * @return void
+    **/
+
+    /**
+     * Step 5
+     * This is tested in B-Step2 (awaiting redmine 9385)
+     *
+     * @return void
+    **/
+
+    /**
+     * Step 6
+     * Link to comments launches window
+     *
+     * @return void
+    **/
+
+    function testCommentsWindowLaunch()
+    {
+	// Setting permissions to view all sites to view all datasets
+        $this->setupPermissions(array('imaging_browser_view_allsites'));
+        $this->webDriver->navigate()->refresh();
+
+        $this->webDriver->get(
+            $this->url . "/imaging_browser/"
+        );
+
+        $SelectedLink = $this->webDriver->findElement(
+            WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
+        );
+
+	$SelectedLink->click();
+	sleep(5);
+
+        $CommentsButton = $this->webDriver->findElement(
+	    WebDriverBy::cssSelector(".mri-second-row-panel > a:nth-child(1) > span:nth-child(1) > span:nth-child(2)")
+	);
+
+	$CommentsButton->click();
+	sleep(5);
+
+	// Should assert that a window is launched, but I don't know how to select a pop up window
+    }
+
+/******** D & E ********/
+	// Not tested because of the popup window issue... 
 
     public function tearDown() {
 
