@@ -63,5 +63,38 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Create Time Point", $bodyText);
     }
+
+    /**
+     * Tests that, when loading the create_timepoint module, some
+     * text appears in the body.
+     *
+     * @return void
+
+    function testCreateTimepointSelectSubproject()
+    {
+        $this->webDriver->get(
+            $this->url . "/create_timepoint/?candID=900000&identifier=900000"
+        );
+
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("h3")
+        )->getText();
+        $this->assertContains("Create Time Point", $bodyText);
+
+        $subPS = $this->webDriver->findElement(WebDriverBy::Name("subprojectID"));
+        $subPS->sendKeys("subprojet 2\r");
+
+        $vl = $this->webDriver->findElement(WebDriverBy::Name("visitlabel"));
+        $vl->sendKeys("V06");
+
+        $ctp = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+        $ctp->click();
+
+        $visitlabel = $this->webDriver->findElement(
+            WebDriverBy::cssSelector(".col-sm-12~ .col-sm-12+ .col-sm-12 label")
+        )->getText();
+        $this->assertContains("Visit label", $visitlabel);
+    }
+     */
 }
 ?>
