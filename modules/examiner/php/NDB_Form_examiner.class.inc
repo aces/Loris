@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-require_once "NDB_Form.class.inc";
 
 /**
  * Examiner module: Form used to update examiner certification status

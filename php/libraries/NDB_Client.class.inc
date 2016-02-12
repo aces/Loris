@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once 'Utility.class.inc';
 
 /**
  * NeuroDB client - takes care of loading the configuration, creating the first
@@ -49,24 +48,6 @@ class NDB_Client
     */
     function initialize($configFile = null)
     {
-        // require all relevant OO class libraries
-        include_once "NDB_Config.class.inc";
-        include_once "Database.class.inc";
-        include_once "SinglePointLogin.class.inc";
-        include_once "State.class.inc";
-        include_once "User.class.inc";
-        include_once "Site.class.inc";
-        include_once 'NDB_Caller.class.inc';
-
-        include_once "Candidate.class.inc";
-        include_once "NDB_BVL_Battery.class.inc";
-        include_once "NDB_BVL_Instrument.class.inc";
-        include_once "NDB_BVL_InstrumentStatus.class.inc";
-        include_once "TimePoint.class.inc";
-        include_once "Utility.class.inc";
-
-        include_once "NDB_BVL_Feedback.class.inc";
-
         // Load the config file.
         $factory = NDB_Factory::singleton();
 
@@ -103,12 +84,6 @@ class NDB_Client
         include_once "Smarty_hook.class.inc";
 
         $GLOBALS['DB'] =& $DB;
-
-        // tell Pear to print errors if the config says so
-        if ($config->getSetting('showPearErrors')) {
-            $GLOBALS['_PEAR_default_error_mode'] = PEAR_ERROR_PRINT;
-            //$setoptions  = &$GLOBALS['_PEAR_default_error_options'];
-        }
 
         // stop here if this is a command line client
         if (!$this->_isWebClient) {

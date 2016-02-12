@@ -12,8 +12,6 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once 'NDB_Menu_Filter_Form.class.inc';
-
 /**
  * Menu_Filter_Form_Conflicts_Resolver Class
  *

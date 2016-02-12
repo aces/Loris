@@ -22,7 +22,7 @@ class datadictTestIntegrationTest extends LorisIntegrationTest
      */
     function testDatadictDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=datadict");
+        $this->webDriver->get($this->url . "/datadict/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Data Dictionary", $bodyText);
     }

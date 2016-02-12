@@ -41,7 +41,7 @@ Class TimePoint_List_ControlPanel extends Candidate
      *
      * @return null As a side-effect loads candidate into current object
      */
-    function TimePoint_List_ControlPanel($candID)
+    function __construct($candID)
     {
         $this->select($candID);
     }

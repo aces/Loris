@@ -11,8 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 namespace Loris\Behavioural;
-require_once 'NDB_Page.class.inc';
-require_once 'NDB_BVL_InstrumentStatus_ControlPanel.class.inc';
 
 /**
  * Base class for all NeuroDB behavioural instruments

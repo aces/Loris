@@ -11,9 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once "AbstractServerProcess.class.inc";
-require_once "NDB_Config.class.inc";
-
+require_once __DIR__ . "/AbstractServerProcess.class.inc";
 /**
  * A class for holding a set of functions to perform a complete MRI
  * upload on the server.

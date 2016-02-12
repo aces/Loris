@@ -15,6 +15,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
+require_once __DIR__ . "/LorisIntegrationTest.class.inc";
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
