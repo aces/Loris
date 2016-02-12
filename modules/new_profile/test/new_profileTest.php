@@ -188,38 +188,6 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
     }
 
     /*
-     * Tests that page returns error if EDC dates dont match
-     *
-     * @return none
-     */
-    function testNewProfileEDCDateError() {
-        $this->setUpConfigSetting("useEDC", "true");
-
-        $this->webDriver->get($this->url . "/new_profile/");
-
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/01/2015");
-        $dates[2]->sendKeys("01/01/2015");
-        $dates[3]->sendKeys("01/02/2015");
-
-        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-        $gender->sendKeys("Male");
-
-        // Config set for PSCID to be auto created
-        // $pscid = $this->webDriver->findElement(WebDriverBy::Name("PSCID"));
-        // $pscid->sendKeys("Control");
-
-        $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-        $startVisit->click();
-
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Estimated Due date fields must match.", $bodyText);
-
-        $this->restoreConfigSetting("useEDC");
-    }
-
-    /*
      * Tests that candidate is created
      *
      * @return none
