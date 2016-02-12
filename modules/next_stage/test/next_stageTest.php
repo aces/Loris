@@ -200,7 +200,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
         $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-sleep(30);
+
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Next stage started.", $bodyText);
     }
