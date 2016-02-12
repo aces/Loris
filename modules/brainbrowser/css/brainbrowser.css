@@ -61,7 +61,6 @@ body {
     color: black;
     display: inline-block;
     width: auto;
-    min-width: 330px;
 }
 
 .control-inputs {
@@ -154,6 +153,12 @@ body {
     padding: 1px;
     float: right;
     text-align: center;
+    display: inline;
+}
+
+.intensity-heading {
+    padding: 1px;
+    display: inline;
 }
 
 #color-map-select {

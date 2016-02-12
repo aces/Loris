@@ -11,10 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once "NDB_Form.class.inc";
-require_once "Utility.class.inc";
-require_once "HelpFile.class.inc";
-
 /**
  * A class for holding a set of functions to add/update content 
  * for all modules
@@ -39,9 +35,6 @@ class NDB_Form_help_editor extends NDB_Form
     {
         // create user object
         $user = User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
             // check user permissions
         return $user->hasPermission('context_help');
@@ -55,10 +48,6 @@ class NDB_Form_help_editor extends NDB_Form
     {
         $DB = Database::singleton();
         //Get the default values
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".
-                                     $DB->getMessage());
-        } 
         if (isset($_REQUEST['helpID'])) {
             $helpID = $_REQUEST['helpID'];
         }
@@ -108,10 +97,6 @@ class NDB_Form_help_editor extends NDB_Form
     { 
         $DB = Database::singleton();
         //Get the default values
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".
-                                     $DB->getMessage());
-        }
         if (isset($_REQUEST['helpID'])) {
             $helpID = $_REQUEST['helpID'];
         }
@@ -135,9 +120,6 @@ class NDB_Form_help_editor extends NDB_Form
                         'projectContent' => $values['content'],
                         'updated' => date('Y-m-d h:i:s', time())
                         ));
-            if (Utility::isErrorX($success)) {
-                $this->tpl_data['error_message'][] = $success->getMessage();
-            }
         } else {
             //content does not exist insert the help file
             if (!empty($_REQUEST['section']) 
@@ -151,9 +133,6 @@ class NDB_Form_help_editor extends NDB_Form
                             'created' => date('Y-m-d h:i:s', time())
                             ));
                  // check errors
-                if (Utility::isErrorX($parentID)) {
-                    $this->tpl_data['error_message'][] = $parentID->getMessage();
-                }
 
             }
             if (!empty($_REQUEST['section']) 
@@ -169,10 +148,6 @@ class NDB_Form_help_editor extends NDB_Form
                             'created' => date('Y-m-d h:i:s', time())
                             ));
 
-                // check errors
-                if (Utility::isErrorX($helpID)) {
-                    $this->tpl_data['error_message'][] = $helpID->getMessage();
-                }
             } else if ( !empty($_REQUEST['section']) 
                         && $_REQUEST['subsection'] == 'undefined') { 
                 //default case
@@ -183,10 +158,6 @@ class NDB_Form_help_editor extends NDB_Form
                             'created' => date('Y-m-d h:i:s', time())
                             ));
 
-                // check errors
-                if (Utility::isErrorX($helpID)) {
-                    $this->tpl_data['error_message'][] = $helpID->getMessage();
-                }
             }
 
         }

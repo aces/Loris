@@ -29,7 +29,7 @@
                                 <input type="submit" name="filter" id="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
                             </div>
                             <div class="col-sm-6">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/main.php?test_name=server_processes_manager&reset=true'" />
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/server_processes_manager/?reset=true'" />
                             </div>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
                 <th>No.</th>
                 <!-- print out column headings - quick & dirty hack -->
                 {section name=header loop=$headers}
-                    <th><a href="{$baseurl}/main.php?test_name=server_processes_manager&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                    <th><a href="{$baseurl}/server_processes_manager/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                 {/section}
             </tr>
         </thead>

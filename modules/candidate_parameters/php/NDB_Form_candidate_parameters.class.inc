@@ -11,9 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once "NDB_Form.class.inc";
-require_once "Utility.class.inc";
-
 /**
  * A class for holding a set of functions to update candidate 
  * info page.
@@ -42,25 +39,18 @@ class NDB_Form_candidate_parameters extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         // check that the $candID is passed b/c the profile needs to be opened
         if ($this->identifier != $_REQUEST['candID']) {
-            return PEAR::raiseError("NDB_Form_candidate_parameters::_access: 
+            throw new LorisException("NDB_Form_candidate_parameters::_access: 
                        Candidate Profile Error (".$_REQUEST['candID']."): ");
         }
 
         $candidate =& Candidate::singleton($this->identifier);
-        if (Utility::isErrorX($candidate)) {
-            return PEAR::raiseError("Candidate Error 
-                           ($this->identifier): ".$candidate->getMessage());
-        }
 
         // check user permissions
-	return ($user->hasPermission('candidate_parameter_edit')  
-                && $user->getData('CenterID') == $candidate->getData('CenterID'));  
+        return ($user->hasPermission('candidate_parameter_edit')  
+            && $user->getData('CenterID') == $candidate->getData('CenterID'));  
     }
      /**
       * Returns default values for all candidate parameters
@@ -106,16 +96,12 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $familyid = $DB->pselectOne("SELECT FamilyID from family WHERE 
                                     CandID=:CandidateID",
                                     array('CandidateID'=>$this->identifier));
-        if (Utility::isErrorX($familyid)) {
-            return PEAR::raiseError("Error: ".$familyid->getMessage());
-        } else {
-            $this->tpl_data['familyID'] = $familyid;
-            $relations                  = $DB->pselect("SELECT CandID, Relationship_type 
-                                          FROM family WHERE FamilyID=:fam_id AND 
-                                          CandID <> '$this->identifier'",
-                                          array('fam_id'=> $familyid));
+        $this->tpl_data['familyID'] = $familyid;
+        $relations                  = $DB->pselect("SELECT CandID, Relationship_type 
+            FROM family WHERE FamilyID=:fam_id AND 
+            CandID <> '$this->identifier'",
+            array('fam_id'=> $familyid));
 
-        }
         $this->tpl_data['sibling_list'] = array();
         foreach ($relations as $relation) {
             $relation['Relationship_type']    = $this->relationType[$relation['Relationship_type']];
@@ -282,32 +268,20 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
        if (isset($values['FamilyMemberID'])) { 
            $fid = $DB->pselectOne("SELECT FamilyID FROM family WHERE CandID=:CaID", array('CaID' => $this->identifier));
-           if (Utility::isErrorX($fid)) {
-               return PEAR::raiseError("Could not family id: ".$fid->getMessage());
-           }
            if (empty($fid)) {
                $famID = $DB->pselectOne("SELECT max(FamilyID) from family");
-               if (Utility::isErrorX($famID)) {
-                   return PEAR::raiseError("Could not family id: ".$famID->getMessage());
-               }
                if (empty($famID)) {
                    $famID = 0;
                }
                $fid = $famID+1;
                $success = $DB->insert('family', array('CandID'=>$this->identifier, 'FamilyID'=>$fid,
                            'Relationship_type'=>$values['relation_type']));
-               if (Utility::isErrorX($success)) {
-                   return PEAR::raiseError("DB Error: ".$success->getMessage());
-               }
 
            }
 
            $value   = $values['FamilyMemberID'];
            $success = $DB->insert('family', array('CandID'=>$value,'FamilyID'=>$fid,
                                   'Relationship_type'=>$values['relation_type']));
-           if (Utility::isErrorX($success)) {
-               return PEAR::raiseError("DB Error: ".$success->getMessage());
-           }
           
        }
        // updating participant status
@@ -345,12 +319,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
                $success = $DB->insert("participant_status",$participant_vals);
            }
 
-           if (Utility::isErrorX($success)) {
-               return PEAR::raiseError(
-                       "NDB_Form_candidate_parameters::_process: ".$success->getMessage()
-                       );
-           }
-
            $current_status = $DB->pselectOne("SELECT participant_status FROM participant_status_history
                                               WHERE CandID = :cid ORDER BY data_entry_date DESC", 
                                               array("cid"=>$values['CandID']) );
@@ -362,12 +330,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
                                 'CandID' => $participant_vals['CandID'],
                                 'reason_specify'=>$participant_vals['reason_specify'],
                                 'reason_specify_status'=>$participant_vals['reason_specify_status']));
-               if (Utility::isErrorX($success)) {
-                   return PEAR::raiseError(
-                           "NDB_Form_candidate_parameters::_process: ".$success->getMessage()
-                           );
-               }
-
            }
           
        }
@@ -444,9 +406,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $config =& NDB_Config::singleton();
         
         $candidate =& Candidate::singleton($this->identifier);
-        if (Utility::isErrorX($candidate)) {
-            return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
-        }
 
         // candID
         $this->tpl_data['candID'] = $candidate->getData('CandID');

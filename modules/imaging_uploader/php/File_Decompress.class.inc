@@ -26,7 +26,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-require_once 'PEAR.php';
 
 /**
  * File_Decompress Class
@@ -39,7 +38,7 @@ require_once 'PEAR.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class File_Decompress extends PEAR
+class File_Decompress
 {
     var $dest_path;
     var $file_name;

@@ -141,7 +141,13 @@ BrowserDetect.init();
 	 		</div>
 	 	</div>
  	</div>
- 	<div class="row panel panel-default col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+   <div class="col-xs-12"> <!--maindiv start -->
+    <div class="row panel panel-default col-xs-6 col-xs-offset-1">
+        <div class="panel-body">
+            {$study_description}
+         </div>
+    </div>
+ 	<div class="row panel panel-default col-xs-4 col-xs-offset-1">
 		  <div class="panel-body">
 		  		<div class="col-xs-12">
 		  			<center>
@@ -174,11 +180,12 @@ BrowserDetect.init();
 			  		</div>
 			  	</div>	
 		  		<div class="row">
-		  		<table class="LoginFooter" align="center">
+		  		<table class="LorisFooter" align="center">
 					<tr>
 					<hr width = 70%>
 					<td width="100%">
                     {if $studylinks}
+                    <center>
 					<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
 
 					<li id="active">|</li>
@@ -187,30 +194,29 @@ BrowserDetect.init();
 					{/foreach}
 
 					</ul>
+                    </center>
                     {/if}
 					</td>
 					</tr>
 					<tr>
-					<!--td align="center" colspan="1"><br><font color="#C40A29">A WebGL-compatible browser is required for full functionality.</font></td-->
-					</tr>       
-					<tr>
-					<td align="center" colspan="1" style="color:#808080" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
+                    <br>
+					<td align="center" colspan="1">A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
 					</tr>	
 					<tr>
-					<td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; {$currentyear}. All rights reserved.</td>
+					<td align="center" colspan="1">Powered by LORIS &copy; {$currentyear}. All rights reserved.</td>
 					</tr>	
 					<tr>
-					<td align="center" colspan="1"style="color: #808080">Created by <a href="http://mcin-cnim.ca" style="color: #064785" target="_blank">MCIN</a></td>
+					<td align="center" colspan="1">Created by <a href="http://mcin-cnim.ca" style="color: #064785" target="_blank">MCIN</a></td>
 					</tr>
 					<tr>
-					<td align="center" colspan="1" style="color: #808080"> Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>
+					<td align="center" colspan="1">Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>
 
 					</tr>
 				</table>
 				</div>
 		  </div>
 	</div>
-
+  </div> <!--closing maindiv -->
 
 
 <!-- old study web links positioning

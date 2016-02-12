@@ -10,7 +10,6 @@
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'NDB_Config.class.inc';
 
 /**
  * Wrapper around PHP IO functions (fopen/close/get/etc)
@@ -72,6 +71,11 @@ class SocketWrapper
     function open()
     {
         $this->socket = fsockopen($this->host, $this->port);
+        if ($this->socket === false) {
+            throw new \LorisException(
+                "Could not connect to CouchDB server at $this->host:$this->port"
+            );
+        }
     }
 
     /**
@@ -81,7 +85,10 @@ class SocketWrapper
      */
     function close()
     {
-        fclose($this->socket);
+        $status = fclose($this->socket);
+        if ($status === false) {
+            throw new \LorisException("Could not close CouchDB network socket");
+        };
     }
 
     /**
@@ -104,7 +111,13 @@ class SocketWrapper
     function gets()
     {
         if ($this->socket) {
-            return fgets($this->socket);
+            $status = fgets($this->socket);
+            if ($status === false) {
+                throw new \LorisException(
+                    "Could not read from CouchDB server at $this->host:$this->port"
+                );
+            }
+            return $status;
         }
     }
 
@@ -117,7 +130,10 @@ class SocketWrapper
      */
     function write($str)
     {
-        fwrite($this->socket, $str);
+        $status = fwrite($this->socket, $str);
+        if ($status === false) {
+            throw new \LorisException("Could not write to CouchDB server");
+        }
     }
 }
 

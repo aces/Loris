@@ -11,8 +11,8 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class candidateParametersTestIntegrationTest extends LorisIntegrationTest
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
+class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
     /**
      * Tests that, when loading the candidate_parameters module, some
@@ -22,7 +22,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTest
      */
     function testCandidateParametersDoesPageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=candidate_parameters");
+        $this->webDriver->get($this->url . "/candidate_parameters/?candID=000000&identifier=000000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Candidate Parameters", $bodyText);
     }
@@ -35,7 +35,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTest
      */
     function testCandidateParametersAddFamilyDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=candidate_parameters&subtest=add_family");
+        $this->webDriver->get($this->url . "/candidate_parameters/add_family/?candID=000000&identifier=000000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Add Family", $bodyText);
     }
@@ -48,7 +48,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTest
      */
     function testCandidateParametersUpdateParticipantStatusDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=candidate_parameters&subtest=update_participant_status");
+        $this->webDriver->get($this->url . "/candidate_parameters/update_participant_status/?candID=000000&identifier=000000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains(" Update Participant Status", $bodyText);
     }
@@ -61,7 +61,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTest
      */
     function testCandidateParametersUpdateCandidateInfoDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=candidate_parameters&subtest=update_candidate_info");
+        $this->webDriver->get($this->url . "/candidate_parameters/update_candidate_info/?candID=000000&identifier=000000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Update Candidate Info", $bodyText);
     }
@@ -74,7 +74,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTest
      */
     function testCandidateParametersUpdateProbandInfoDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=candidate_parameters&subtest=update_proband_info");
+        $this->webDriver->get($this->url . "/candidate_parameters/update_proband_info/?candID=000000&identifier=000000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Update Proband Info", $bodyText);
     }
@@ -87,7 +87,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTest
      */
     function testCandidateParametersUpdateConsentInfoDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=candidate_parameters&subtest=update_consent_info");
+        $this->webDriver->get($this->url . "/candidate_parameters/update_consent_info/?candID=000000&identifier=000000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Update Consent Info", $bodyText);
     }

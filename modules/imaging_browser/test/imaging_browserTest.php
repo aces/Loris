@@ -11,8 +11,8 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
+class imagingBrowserTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
     /**
      * Tests that, when loading the imaging_browser module, some
@@ -22,7 +22,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testImagingBrowserDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=imaging_browser");
+        $this->webDriver->get($this->url . "/imaging_browser/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Imaging Browser", $bodyText);
     }
@@ -35,7 +35,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testImagingBrowserViewSessionDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=imaging_browser&subtest=viewSession");
+        $this->webDriver->get($this->url . "/imaging_browser/viewSession/?sessionID=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("View Session", $bodyText);
     }

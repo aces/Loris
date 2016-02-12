@@ -25,23 +25,6 @@
         <name>Example database</name>
     </database>
 
-    <!-- Following links will appear on the footer of the home page of loris installation -->
-    <Studylinks>
-        <link url='http://www.loris.ca'>Loris Website</link>
-        <link url='https://github.com/aces'>GitHub</link>
-    </Studylinks>
-
-    <links>
-        <link url='http://www.loris.ca'>Loris Website</link>
-        <link url='https://github.com/aces'>GitHub</link>
-    </links>
-
-    <dashboard>
-        <!-- The dashboard links will appear just below the project description on the Dashboard. -->
-        <dashboardLinks>
-            <link url='http://www.loris.ca'>Important Website</link>
-        </dashboardLinks>
-    </dashboard>
     <CouchDB>
         <SyncAccounts>false</SyncAccounts>
     </CouchDB>

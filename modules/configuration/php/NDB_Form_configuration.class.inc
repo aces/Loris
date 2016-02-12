@@ -11,8 +11,6 @@
  * @link     https://github.com/aces/Loris-Trunk
 */
 
-require_once 'NDB_Form.class.inc';
-
 /**
  * Admin_Config Class
  *
@@ -36,9 +34,6 @@ class NDB_Form_Configuration extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         return $user->hasPermission('config');
     }
 
@@ -53,12 +48,6 @@ class NDB_Form_Configuration extends NDB_Form
         $config =& NDB_Config::singleton();
 
         $this->DB = Database::singleton();
-        if (Utility::isErrorX($this->DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-            die();
-        }
 
         $parentMenuItems = $this->DB->pselect(
             "SELECT Label, Name 
@@ -154,6 +143,8 @@ class NDB_Form_Configuration extends NDB_Form
             $projects    = array();
             foreach ($projectList as $ProjectID => $Name) {
                 $projects[$ProjectID] = $config->getProjectSettings($ProjectID);
+                $projects[$ProjectID]['subprojects']
+                    = Utility::getSubprojectsForProject($ProjectID);
             }
             $this->tpl_data['projects'] = $projects;
         } else {

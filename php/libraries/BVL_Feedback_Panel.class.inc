@@ -38,10 +38,8 @@ class BVL_Feedback_Panel
      * @param int  $candID    The candidate ID.
      * @param null $sessionID The session ID for a given visit. Optional.
      * @param null $commentID The comment ID for a given instrument. Optional.
-     *
-     * @return null
      */
-    function BVL_Feedback_Panel($candID, $sessionID=null, $commentID=null)
+    function __construct($candID, $sessionID=null, $commentID=null)
     {
         $user     =& User::singleton();
         $username = $user->getUsername();

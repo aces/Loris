@@ -12,8 +12,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once "PEAR.php";
-
 /* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
@@ -340,7 +338,10 @@ class Candidate
         if (is_null($var)) {
             return $this->candidateInfo;
         } else {
-            return $this->candidateInfo[$var];
+            if (isset($this->candidateInfo[$var])) {
+                return $this->candidateInfo[$var];
+            }
+            return null;
         }
     }
 

@@ -49,6 +49,22 @@ class Settings
     }
 
     /**
+     * Returns the base URL for LORIS to use to
+     * construct URLs in the front end.
+     *
+     * @return string the URL that LORIS is installed at
+     */
+    public function getBaseURL()
+    {
+        $url = getenv("LORIS_BASEURL");
+        if (!empty($url)) {
+            return $url;
+        }
+        $www = $this->_config->getSetting('www');
+        return $www['url'];
+    }
+
+    /**
      * Check if sandbox setting is true
      *
      * @return bool true if 'sandbox' config value is equivalent to true

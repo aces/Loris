@@ -11,10 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once 'PEAR.php';
-require_once "NDB_Config.class.inc";
-require_once 'NDB_Factory.class.inc';
-
 
 
 /**
@@ -27,7 +23,7 @@ require_once 'NDB_Factory.class.inc';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Utility extends PEAR
+class Utility
 {
     /**
      * This is identical to PEAR::isError from PEAR only the function
@@ -46,17 +42,9 @@ class Utility extends PEAR
      */
     static function isErrorX($data, $code=null)
     {
-        if (!is_a($data, 'PEAR_Error')) {
-            return false;
-        }
-
-        if (is_null($code)) {
-            return true;
-        } elseif (is_string($code)) {
-            return $data->getMessage() == $code;
-        }
-
-        return $data->getCode() == $code;
+        throw new LorisException(
+            "Utility::isErrorX has been deprecated. Use PHP5 exceptions instead."
+        );
     }
 
     /**
@@ -224,7 +212,7 @@ class Utility extends PEAR
      *         should be interpreted as an associative array since the keys
      *         refer to the centerID, not the array index.
      */
-    function getAssociativeSiteList($study_site = true, $DCC = true)
+    static function getAssociativeSiteList($study_site = true, $DCC = true)
     {
         $DB =& Database::singleton();
 
@@ -1145,7 +1133,7 @@ class Utility extends PEAR
      *
      * @return string $prefixStr minus the largest common piece of $suffixStr
      */
-    function removeCommonAffix($suffixStr, $prefixStr)
+    static function removeCommonAffix($suffixStr, $prefixStr)
     {
         $lastFound = '';
         // Start from the end of $suffixStr and work backwords, to make sure
@@ -1194,6 +1182,35 @@ class Utility extends PEAR
 
         fclose($fp);
         return $csv_string;
+    }
+
+    /**
+     * QuickForm rule to check that a date is valid.
+     * This is used by create timepoint and start timepoint pages,
+     * so it probably shouldn't be in the instrument class.
+     *
+     * @param array $dateElement The date element in QuickForm array format.
+     *
+     * @return True if the date is invalid, false if it's valid.
+     */
+    function _checkDate($dateElement)
+    {
+        if (empty($dateElement['M'])
+            && empty($dateElement['d'])
+            && empty($dateElement['Y'])
+        ) {
+            // if all three elements are empty, return true b/c it'll
+            // save the NULL in date field
+            return true;
+        } elseif (empty($dateElement['M'])
+            || empty($dateElement['d'])
+            || empty($dateElement['Y'])
+        ) {
+            // otherwise, if any of the three elements are empty, return
+            // false b/c date entry has been attempted
+            return false;
+        }
+        return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
     }
 }
 ?>

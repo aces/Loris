@@ -41,7 +41,7 @@
                                 <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit">
                             </div>
                             <div class="col-sm-6 col-md-2 col-xs-12">
-                                <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" onclick="location.href='main.php?test_name=examiner&subtest=editExaminer&reset=true&identifier={$identifier}'">
+                                <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" onclick="location.href='{$baseurl}/examiner/editExaminer/?reset=true&identifier={$identifier}'">
                             </div>
                         </div>
                         {/if}

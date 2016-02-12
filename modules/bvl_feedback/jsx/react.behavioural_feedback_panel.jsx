@@ -134,7 +134,7 @@ var FeedbackPanelRow = React.createClass({
 
     request = $.ajax({
       type: "GET",
-      url: "AjaxHelper.php?Module=bvl_feedback&script=get_thread_entry_data.php",
+      url: loris.BaseURL + "/bvl_feedback/ajax/get_thread_entry_data.php",
       data:{
         "feedbackID" : this.props.feedbackID
       },
@@ -170,7 +170,7 @@ var FeedbackPanelRow = React.createClass({
 
     request = $.ajax({
       type: "POST",
-      url: "AjaxHelper.php?Module=bvl_feedback&script=thread_comment_bvl_feedback.php",
+      url: loris.BaseURL + "/bvl_feedback/ajax/thread_comment_bvl_feedback.php",
       data: {"comment" : comment,
       "feedbackID" : feedbackID,
       "candID" : candID},
@@ -324,7 +324,7 @@ var FeedbackPanelRow = React.createClass({
       if(this.state.text_value.length){ 
       request = $.ajax({
         type: "POST",
-        url: "AjaxHelper.php?Module=bvl_feedback&script=new_bvl_feedback.php",
+        url: loris.BaseURL + "/bvl_feedback/ajax/new_bvl_feedback.php",
         data:{
           "input_type": this.state.input_value,
           "field_name" : this.state.select_value,
@@ -462,7 +462,7 @@ var FeedbackPanel = React.createClass({
       var that = this;
       request = $.ajax({
         type: "POST",
-        url: "AjaxHelper.php?Module=bvl_feedback&script=react_get_bvl_threads.php",
+        url: loris.BaseURL + "/bvl_feedback/ajax/react_get_bvl_threads.php",
         data:{
           "candID": this.props.candID,
           "sessionID" : this.props.sessionID,
@@ -486,7 +486,7 @@ var FeedbackPanel = React.createClass({
 
 	request = $.ajax({
 	    type:"POST",
-	    url: "AjaxHelper.php?Module=bvl_feedback&script=get_bvl_feedback_summary.php",
+	    url: loris.BaseURL + "/bvl_feedback/ajax/get_bvl_feedback_summary.php",
 	    data:{
 		"candID": this.props.candID,
 		"sessionID" : this.props.sessionID,
@@ -507,7 +507,7 @@ var FeedbackPanel = React.createClass({
         var that = this;
         request = $.ajax({
           type: "POST",
-          url: "AjaxHelper.php?Module=bvl_feedback&script=react_get_bvl_threads.php",
+          url: loris.BaseURL + "/bvl_feedback/ajax/react_get_bvl_threads.php",
           data:{
             "candID": this.props.candID,
             "sessionID" : this.props.sessionID,

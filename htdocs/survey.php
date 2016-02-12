@@ -266,10 +266,6 @@ class DirectDataEntryMainPage
             array('key' => $this->key)
         );
 
-        if (Utility::isErrorX($currentStatus)) {
-            return false;
-        }
-
         if ($currentStatus === 'Complete') {
             // Already completed, don't want to accidentally change it back to
             // started or some other status..

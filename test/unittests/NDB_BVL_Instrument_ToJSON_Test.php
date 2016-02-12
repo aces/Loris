@@ -18,6 +18,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends \PHPUnit_Framework_TestCase
         if(!defined("UNIT_TESTING")) {
             define("UNIT_TESTING", true);
         }
+        date_default_timezone_set("UTC");
         $this->Session = $this->getMock('stdClass', array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'));
         $this->MockSinglePointLogin = $this->getMock('SinglePointLogin');
         $this->Session->method("getProperty")->willReturn($this->MockSinglePointLogin);

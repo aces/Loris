@@ -12,9 +12,6 @@
  * @link     https://github.com/aces/Loris-Trunk
 */
 
-require_once "NDB_BVL_Battery.class.inc";
-require_once 'NDB_Form.class.inc';
-require_once 'MRIFile.class.inc';
 /**
  * Imaging browser control panel class
  *
@@ -42,7 +39,7 @@ class Imaging_Session_ControlPanel
      *
      * @return NULL
      */
-    function Imaging_Session_ControlPanel($sessionID)
+    function __construct($sessionID)
     {
         $this->sessionID = $sessionID;
     }
@@ -55,9 +52,6 @@ class Imaging_Session_ControlPanel
     function _hasAccess()
     {
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
         return $user->hasPermission('imaging_browser_qc');
     }
 
@@ -70,9 +64,6 @@ class Imaging_Session_ControlPanel
     {
         $DB        = Database::singleton();
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if (Utility::isErrorX($timePoint)) {
-            print $timePoint->getMessage()."<br>";
-        }
 
         $subjectData['sessionID'] = $_REQUEST['sessionID'];
         $subjectData['candid']    = $timePoint->getCandID();
@@ -87,20 +78,17 @@ class Imaging_Session_ControlPanel
         );
 
         $candidate =& Candidate::singleton($timePoint->getCandID());
-        if (Utility::isErrorX($candidate)) {
-            print $candidate->getMessage()."<br>";
+
+        $params     = array();
+        $EntityType = $candidate->getData('Entity_type');
+        if ($EntityType == 'Scanner') {
+            $ID = ":PPSCID";
+            $params['PPSCID'] = $timePoint->getData('PSCID');
         } else {
-            $params     = array();
-            $EntityType = $candidate->getData('Entity_type');
-            if ($EntityType == 'Scanner') {
-                $ID = ":PPSCID";
-                $params['PPSCID'] = $timePoint->getData('PSCID');
-            } else {
-                $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
-                $params['PPSCID']  = $candidate->getPSCID();
-                $params['PCandID'] = $timePoint->getCandID();
-                $params['PVL']     = $timePoint->getVisitLabel();
-            }
+            $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
+            $params['PPSCID']  = $candidate->getPSCID();
+            $params['PCandID'] = $timePoint->getCandID();
+            $params['PVL']     = $timePoint->getVisitLabel();
         }
         $tarchiveIDs = $DB->pselect(
             "SELECT TarchiveID 
@@ -181,7 +169,7 @@ class MRINavigation
     *
     * @return NULL
     */
-    function MRINavigation($sessionID = null)
+    function __construct($sessionID = null)
     {
         $this->sessionID           = $sessionID;
         $this->FilteredSessionList = $_SESSION['State']

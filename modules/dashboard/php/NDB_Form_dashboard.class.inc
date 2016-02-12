@@ -12,9 +12,6 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-require_once "NDB_Form.class.inc";
-require_once "Utility.class.inc";
-
 /**
  * Dashboard: displays recruitment and study progression charts,
  * user tasks and document repository notifications
@@ -59,21 +56,14 @@ class NDB_Form_Dashboard extends NDB_Form
         $this->tpl_data['last_login']          = $last_login;
         $this->tpl_data['project_description']
             = $config->getSetting('projectDescription');
-        $dashboard_links = $config->getSetting('dashboardLinks');
+        $dashboard_links = $config->getExternalLinks('dashboard');
         if (!empty($dashboard_links)) {
-            foreach (Utility::toArray($dashboard_links['link']) AS $link) {
-                $LinkArgs = '';
-                $BaseURL  = $link['@']['url'];
-                if (isset($link['@']['args'])) {
-                    $LinkArgs = $link_args[$link['@']['args']];
-                }
-                $LinkLabel  = $link['#'];
-                $WindowName = md5($link['@']['url']);
+            foreach ($dashboard_links as $text => $url) {
                 $this->tpl_data['dashboard_links'][]
                     = array(
-                       'url'        => $BaseURL . $LinkArgs,
-                       'label'      => $LinkLabel,
-                       'windowName' => $WindowName,
+                       'url'        => $url,
+                       'label'      => $text,
+                       'WindowName' => md5($url),
                       );
             }
         }
@@ -352,6 +342,33 @@ class NDB_Form_Dashboard extends NDB_Form
                     = round($totalMales / $totalRecruitment * 100);
             }
         }
+    }
+
+
+    /**
+     * Add dependency on D3 and C3 javascript libraries
+     * for the pretty dashboards in the chart
+     *
+     * @return array of javascript files to be included
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $www     = $config->getSetting('www');
+        $baseurl = $www['url'];
+
+        $baseDeps = parent::getJSDependencies();
+
+        return array_merge(
+            $baseDeps,
+            array(
+             $baseurl . '/js/d3.min.js',
+             $baseurl . '/js/c3.min.js',
+            )
+        );
+
     }
 }
 ?>

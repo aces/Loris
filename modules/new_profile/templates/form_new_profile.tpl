@@ -1,8 +1,8 @@
 {if $success}
 
 <p>New candidate created. DCCID: {$candID} PSCID: {$PSCID}<br />
-<a href="main.php?test_name=timepoint_list&candID={$candID}">Access this candidate</a><br />
-<a href="main.php?test_name=new_profile">Recruit another candidate</a></p>
+<a href="{$baseurl}/{$candID}/">Access this candidate</a><br />
+<a href="{$baseurl}/new_profile/">Recruit another candidate</a></p>
 
 {else}
 

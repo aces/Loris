@@ -106,15 +106,14 @@ color: #b94a48;
 }
 
 /*
- *  CSS for login footer
+ *  CSS for Loris footer
  */
-.LoginFooter {
+.LorisFooter {
     bottom:0;
     clear: both;
-    height: 3em;
     width: 100%;
     font-size: 0.9em;
-    color: gray;
+    color: black;
     text-align: center;
     vertical-align: bottom;
 }
@@ -160,4 +159,26 @@ div.navbar div.container div.navbar-brand {
 
 .controlPanelSection {
     padding-bottom: 6px;
+}
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+/*
+ *      CSS for alert div
+ */
+.no-result-found-panel {
+    color: #FFFFFF;
+    background-color: #1c70b6;
 }
