@@ -7,11 +7,11 @@
 #       example: bash integration.sh configuration
 
 # Test database and test config.xml have to be created before running tests. This is a one time setup.
-#   1 - create a LorisTest DB and source the default schemas (SQL/0000-00-*.sql)
-#   2 - create a MySQL user SQLTestUser with password TestPassword.
+#   1 - create a test DB and source the default schemas (SQL/0000-00-*.sql)
+#   2 - create a MySQL test user with a test password.
 #   3 - Modify config.xml file in test/ folder if necessary.
 #       Some changes to verify in this test/config.xml file:
-#       *  Database connection credentials: specify credentials to LorisTest DB which you create in step 1
+#       *  Database connection credentials: specify credentials to the test DB which you create in step 1
 #       *  Set sandbox mode to 1: <sandbox>1</sandbox>
 #       *  Set SyncAccounts to false: <SyncAccounts>false</SyncAccounts>
 
@@ -62,7 +62,7 @@ echo "******************************************************************
   REMINDER: Selenium needs to be running to run integration tests
 ******************************************************************";
 
-# Set config values in LorisTest DB
+# Set config values in the test DB
 mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
 
 mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value='$(pwd | sed "s#test##")' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
