@@ -279,7 +279,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
     }
-    
+
     /**
      * Helper function to change the users Study Site
      *
@@ -335,8 +335,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
     /**
      * Helper function to click on a element and wait for the new page to be loaded.
-     * When the DOM is reloaded, the elements of the previous page become stale. 
-     * Selenium will raise an exception when a function (like getText) are called on 
+     * When the DOM is reloaded, the elements of the previous page become stale.
+     * Selenium will raise an exception when a function (like getText) are called on
      * those elements.
      *
      * Note: If the page don't reload, this will produce an infinite loop.
@@ -346,15 +346,15 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      * @return void Once the element is stale.
      */
     public function clickToLoadNewPage($clickable)
-    {   
+    {
         $clickable->click();
         try {
             while (true) {
                 $clickable->getText();
-            }   
+            }
         } catch (StaleElementReferenceException $e) {
             return;
-        }   
-    } 
+        }
+    }
 }
 ?>
