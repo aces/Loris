@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The timepoint details menu
  * @package behavioural
