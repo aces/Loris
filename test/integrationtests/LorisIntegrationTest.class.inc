@@ -340,7 +340,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function deleteCandidate($pscid)
     {
-        $this->DB->delete("Candidate", array("PSCID" => $pscid));
+        $this->DB->delete("candidate", array("PSCID" => $pscid));
     }
 
 }
