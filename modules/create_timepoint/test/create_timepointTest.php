@@ -59,7 +59,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepointDoespageLoad()
     {
-        $this->safeGet($this->url . "/create_timepoint/?candID=000000&identifier=000000");
+        $this->safeGet($this->url . "/create_timepoint/?candID=900000&identifier=900000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Create Time Point", $bodyText);
     }
@@ -76,10 +76,8 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
 
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("h3")
-        )->getText();
-        $this->assertContains("Create Time Point", $bodyText);
+        $h3 = $this->webDriver->findElement(WebDriverBy::cssSelector("h3"));
+        $this->assertContains("Create Time Point", $h3->getText());
 
         $subPS = $this->webDriver->findElement(WebDriverBy::Name("subprojectID"));
         $subPS->sendKeys("subprojet 2\r");
