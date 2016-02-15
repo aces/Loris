@@ -898,7 +898,7 @@ class Utility
     /**
      * Looks up visit stage using candidate ID.
      *
-     * @param string $CandID candidate ID
+     * @param string $Cand_id candidate ID
      *
      * @return array
      * @throws DatabaseException
@@ -906,15 +906,16 @@ class Utility
     static function getStageUsingCandID($Cand_id)
     {
         $db    =& Database::singleton();
-        $query = "select DISTINCT Current_stage from session where CandID = :CandID";
-        $stage = $db->pselect($query, array('CandID' => $Cand_id));
+        $query = "select DISTINCT Current_stage from session where ".
+            "CandID = :Cand_id";
+        $stage = $db->pselect($query, array('Cand_id' => $Cand_id));
         return $stage[0]['Current_stage'];
     }
 
     /**
      * Looks up visit stage using candidate ID.
      *
-     * @param string $CandID candidate ID
+     * @param string $Cand_id candidate ID
      *
      * @return array
      * @throws DatabaseException
