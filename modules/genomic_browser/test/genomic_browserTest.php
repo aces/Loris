@@ -62,7 +62,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return array The filters list
     */
-    private function _getCNVFilters()
+    private function _getSNPFilters()
     {
         return array(
                 'centerID',
@@ -403,25 +403,27 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name($filter)
         )->sendKeys("$value");
 
-        $this->webDriver->findElement(
+        $button = $this->webDriver->findElement(
             WebDriverBy::xPath(
                 "
                 //input[@name='filter']
             "
             )
-        )->click();
+        );
+        $this->clickToLoadNewPage($button);
 
         $message = $this->webDriver->findElement(
             WebDriverBy::id("LogEntries")
         )->getText();
 
-        $this->webDriver->findElement(
+        $button = $this->webDriver->findElement(
             WebDriverBy::xPath(
                 "
                 //input[@name='reset']
             "
             )
-        )->click();
+        );
+        $this->clickToLoadNewPage($button);
 
         $this->assertEquals("Variants found: $count total", $message);
     }
@@ -996,23 +998,20 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     /**
      * Tests that, "Show data" button apply filters.
      *
-     * @depends testGenomicBrowserCNVDatatable
+     * @depends testGenomicBrowserSNPDatatable
      *
      * @return void
      */
-    function testGenomicBrowserCNVFilters()
+    function testGenomicBrowserSNPFilters()
     {
 
-        $this->webDriver->get($this->url . "/genomic_browser/?submendu=snp_browser");
+        $this->webDriver->get($this->url . "/genomic_browser/?submenu=snp_browser");
         $filters = $this->_getSNPFilters();
 
         foreach ($filters as $filter) {
             switch ($filter) {
             case 'rsID':
-                $this->assertFiltering($filter, 'loss', 1);
-                break;
-            case '':
-                $this->assertFiltering($filter, 'CNV 2', 1);
+                $this->assertFiltering($filter, 'rs0000002', 2);
                 break;
             }
         }
