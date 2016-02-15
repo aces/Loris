@@ -789,7 +789,8 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
 
         $QCStatusSetPass = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(1) > select:nth-child(2) > option:nth-child(2)")
+//            WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(1) > select:nth-child(2) > option:nth-child(2)")
+            WebDriverBy::cssSelector("select.user-success > option:nth-child(1)")
         );
         $QCStatusSetPass->click();
 
