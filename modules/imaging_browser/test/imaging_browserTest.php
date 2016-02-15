@@ -168,7 +168,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         ));
 
         $this->DB->insert('parameter_type', array(
-             'ParameterTypeID' => 1,
+             'ParameterTypeID' => 1000,
              'Name' => 'Selected',
              'Type' => NULL,
              'Description' => NULL,
@@ -177,15 +177,14 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'SourceField' => NULL,
              'SourceFrom' => NULL,
              'SourceCondition' => NULL,
-             'CurrentGUITable' => NULL,
+             'CurrentGUITable' => 'AnyTextToDeleteThisEntry',
              'Queryable' => 1,
              'IsFile' => 0,
         ));
-
         $this->DB->insert('parameter_file', array(
              'ParameterFileID' => 10,
              'FileID' => 1,
-             'ParameterTypeID' => 1,
+             'ParameterTypeID' => 1000,
              'Value' => 't2',
              'InsertTime' => 0,
         ));
@@ -194,7 +193,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert('parameter_file', array(
              'ParameterFileID' => 11,
              'FileID' => 2,
-             'ParameterTypeID' => 1,
+             'ParameterTypeID' => 1000,
              'Value' => 't1',
              'InsertTime' => 0,
         ));
@@ -782,11 +781,11 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("Pass", $QCStatusPass);
 
-	// Test that we cna edit the QC status by changing it from Blank to Pass
+	// Test that we can edit the QC status by changing it from Blank to Pass
 
 	// Send option Pass (second option) from dropdown menu,
 	// Click save,
-	// Check data again to make sure it is now FIIRST option
+	// Check PASS green flag appears next to file name
 
 
         $QCStatusSetPass = $this->webDriver->findElement(
@@ -1046,7 +1045,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("mri_processing_protocol", array('ProcessProtocolID' => '2'));
         $this->DB->delete("parameter_file", array('ParameterFileID' => '10'));
         $this->DB->delete("parameter_file", array('ParameterFileID' => '11'));
-        $this->DB->delete("parameter_type", array('ParameterTypeID' => '1'));
+        $this->DB->delete("parameter_type", array('CurrentGUITable' => 'AnyTextToDeleteThisEntry'));
         $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999998'));
         $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999999'));
         $this->DB->delete("files_qcstatus", array('FileID' => '1'));
