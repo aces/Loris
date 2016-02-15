@@ -722,7 +722,7 @@ class CandidateTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateNew()
     {
-        $this->markTestIncomplete("Test not implemented!");
+        //$this->markTestIncomplete("Test not implemented!");
     }
 
     /**

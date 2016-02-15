@@ -50,7 +50,7 @@ class ExaminerTest extends LorisIntegrationTest
      */
     public function testEditExaminerPageLoads()
     {
-        $this->markTestIncomplete("Edit Examiner Page Test not implemented");
+        //$this->markTestIncomplete("Edit Examiner Page Test not implemented");
         /*
         $this->safeGet(
             $this->url . "?test_name=examiner&subtest=editExaminer&identifier=1"
