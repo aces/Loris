@@ -604,7 +604,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $DB  = Database::singleton();
             $age = $this->getCandidateAge($values['Date_taken']);
             if (empty($age)) {
-                throw new Exception("Instrument error: Candidate age could not be found.");
+                throw new Exception("Candidate age could not be found.");
             }
             $agedays   = $age['year']*365 + $age['mon']*30 + $age['day'];
             $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
