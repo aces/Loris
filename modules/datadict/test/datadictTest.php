@@ -83,11 +83,14 @@ class datadictTestIntegrationTest extends LorisIntegrationTest
         $searchButton->click();
 
 		try {
+			while($searchButton->isDisabled()) {
+			}
+/*
                 $this->webDriver->wait(120, 1000)->until(
                     WebDriverExpectedCondition::presenceOfElementLocated(
                         WebDriverBy::TagName("tr")
                     )
-                ); 
+                ); */
 		} catch(Exception $e) {
 			$this->webDriver->executescript("document.documentElement.outerHTML");
 
