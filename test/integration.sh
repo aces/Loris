@@ -19,7 +19,7 @@
 export LORIS_DB_CONFIG=$(pwd)/config.xml
 
 #start PHP's built in webserver
-php -S localhost:8000 -t ../htdocs 2>1 > /dev/null &
+php -S localhost:8000 -t ../htdocs ../htdocs/router.php 2>1 > /dev/null &
 
 # Start Selenium and redirect Selenium WebDriver
 # output to /dev/null so that it doesn't flood the

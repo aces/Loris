@@ -25,8 +25,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'User.class.inc';
-require_once 'Database.class.inc';
 
 /**
  * A NDB_BVL_Feedback object wraps access to behavioural feedback related
@@ -632,6 +630,7 @@ class NDB_BVL_Feedback
     /**
      * Creates a new behavioural feedback thread
      *
+     * @param string  $level     Feedback level
      * @param integer $type      Feedback type ID
      * @param string  $comment   The content of the thread
      * @param string  $public    Y or N depending on if the thread is public
@@ -644,7 +643,7 @@ class NDB_BVL_Feedback
      * @throws DatabaseException
      * @throws Exception
      */
-    function createThread($type, $comment, $public=null,$fieldname=null)
+    function createThread($level, $type, $comment, $public=null,$fieldname=null)
     {
         // new DB Object
         $DB = Database::singleton();
@@ -675,7 +674,7 @@ class NDB_BVL_Feedback
                      'Date_taken'    => $today,
                      'UserID'        => $this->_username,
                     );
-        if ($this->_feedbackLevel=='instrument') {
+        if ($level == 'instrument' || $this->_feedbackLevel=='instrument') {
             $feedbackInfo =& $this->_feedbackCandidateProfileInfo;
 
             $setArray = array_merge(
@@ -689,7 +688,7 @@ class NDB_BVL_Feedback
                 )
             );
 
-        } elseif ($this->_feedbackLevel=='visit') {
+        } elseif ($level == 'visit' || $this->_feedbackLevel=='visit') {
             $setArray = array_merge(
                 $setArray,
                 array(
@@ -698,7 +697,7 @@ class NDB_BVL_Feedback
                  "Feedback_level" => "visit",
                 )
             );
-        } elseif ($this->_feedbackLevel=='profile') {
+        } elseif ($level == 'profile' || $this->_feedbackLevel=='profile') {
             $setArray = array_merge(
                 $setArray,
                 array(
@@ -837,10 +836,8 @@ class NDB_BVL_Feedback
      * @param integer $feedbackID The ID of the feedback thread being closed
      *
      * @return void
-     * FIXME: deleteTread is spelled wrong. Find all references (none?) and
-     *        rename or delete this function if it's unused
      */
-    function deleteTread($feedbackID)
+    function deleteThread($feedbackID)
     {
         // new DB Object
         $db =& Database::singleton();

@@ -37,7 +37,7 @@ function hideFilter(obj) {
     'use strict';
 
      var heading = $(obj);
-     var arrow = $(obj).children('.arrow');
+     var arrow   = $(obj).children('.arrow');
      if (heading.hasClass('panel-collapsed')) {
             // expand the panel
             heading.parents('.panel').find('.panel-body').slideDown();
@@ -59,11 +59,11 @@ function toggleMe() {
 
 
 $(function(){
-	$('input[name=dob]').datepicker({
-		dateFormat: 'yy-mm-dd',
-		changeMonth: true,
-		changeYear: true
-	});
+        $('input[name=dob]').datepicker({
+            dateFormat: 'yy-mm-dd',
+            changeMonth: true,
+            changeYear: true
+        });
 });
 
 

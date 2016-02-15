@@ -14,8 +14,6 @@
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'NDB_Menu_Filter.class.inc';
-require_once 'NDB_Menu_Filter_Form.class.inc';
 /**
  * Implement the menu filter for searching through all violated scans
  *

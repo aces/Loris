@@ -48,7 +48,11 @@ DynamicDataTable = React.createClass({
         }
 
         return (
-                <StaticDataTable Headers={this.state.Headers} Data={this.state.Data} getFormattedCell={this.props.getFormattedCell} />
+                <StaticDataTable Headers={this.state.Headers}
+                                 Data={this.state.Data}
+                                 getFormattedCell={this.props.getFormattedCell}
+                                 freezeColumn={this.props.freezeColumn}
+                />
             );
     }
 });

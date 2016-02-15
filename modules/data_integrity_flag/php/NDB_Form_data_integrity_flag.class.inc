@@ -1,5 +1,4 @@
 <?php
-require_once "NDB_Form.class.inc";
 
 /**
  * @package main

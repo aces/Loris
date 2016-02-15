@@ -282,6 +282,7 @@ class NDB_Caller
                 }
                 break;
             case 'json':
+                header('Content-Type: application/json');
                 print $menu->toJSON();
                 exit(0);
                 break;
