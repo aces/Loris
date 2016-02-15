@@ -7,6 +7,7 @@
  * @category Test
  * @package  Loris
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Xavier Lecours <xavier.lecoursboucher@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -21,6 +22,7 @@ require_once __DIR__
  * @category Test
  * @package  Loris
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Xavier Lecours <xavier.lecoursboucher@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
