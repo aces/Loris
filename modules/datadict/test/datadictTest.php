@@ -82,11 +82,15 @@ class datadictTestIntegrationTest extends LorisIntegrationTest
 
         $searchButton->click();
 
-        $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::TagName("tr")
-            )
-        );
+		try {
+                $this->webDriver->wait(120, 1000)->until(
+                    WebDriverExpectedCondition::presenceOfElementLocated(
+                        WebDriverBy::TagName("tr")
+                    )
+                ); 
+		} catch(Exception $e) {
+
+		}
 
         $rows = $this->webDriver->findElements(WebDriverBy::cssSelector("table tbody tr"));
 
