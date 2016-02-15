@@ -336,7 +336,11 @@ DataQueryApp = React.createClass({
         this.setState({ criteria: fields, loadedQuery: '' });
     },
     getSessions: function() {
-        return this.state.filter.session;
+        if(this.state.filter.children.length > 0) {
+            return this.state.filter.session;
+        } else {
+            return this.props.AllSessions;
+        }
     },
     runQuery: function(fields, sessions) {
         var DocTypes = [],
@@ -348,6 +352,10 @@ DataQueryApp = React.createClass({
                     that.setState({'rowData': rowdata});
                 }
             };
+        this.setState({
+            "rowData" : {},
+            "sessiondata" : {}
+        });
         // Get list of DocTypes to be retrieved
         for(var i = 0 ; i < fields.length; i += 1) {
             var field_split = fields[i].split(",");
