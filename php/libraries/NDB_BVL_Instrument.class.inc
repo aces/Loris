@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'HTML/QuickForm.php';
+include_once 'HTML/QuickForm.php';
 
 /**
  * Base class for all NeuroDB behavioural instruments
