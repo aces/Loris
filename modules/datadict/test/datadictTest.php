@@ -89,6 +89,7 @@ class datadictTestIntegrationTest extends LorisIntegrationTest
                     )
                 ); 
 		} catch(Exception $e) {
+			$this->webDriver->execute_script("document.documentElement.outerHTML");
 
 		}
 
