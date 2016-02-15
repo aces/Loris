@@ -26,168 +26,243 @@ require_once __DIR__
  */
 class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
 {
-    /* TODO
-       - Does the dropdown "Display:" filter work? The "Summary fields"
-         option should display a dozen columns in the data table.
-         "All fields" should show many more columns.
-       - Apply a Candidate or Gene filter, then click on a different
-         tab (CNV/SNP). Verify that the filter still applies.
-    */
 
+    /**
+     * Provide a list of the CNV form filters
+     *
+     * @return array The filters list
+    */
     private function _getCNVFilters()
     {
         return array(
-             'centerID',
-             'SubprojectID',
-             'DCCID',
-             'gender',
-             'External_ID',
-             'PSCID',
-             'Gene_Symbol',
-             'Gene_Name',
-             'Chromosome',
-             'Platform',
-             'CNV_Type',
-             'Event_Name',
-             'Characteristics',
-             'Common_CNV',
-             'Copy_Num_Change',
-             'Inheritance',
-             'CNV_Description'
+                'centerID',
+                'SubprojectID',
+                'DCCID',
+                'gender',
+                'External_ID',
+                'PSCID',
+                'Gene_Symbol',
+                'Gene_Name',
+                'Chromosome',
+                'Platform',
+                'CNV_Type',
+                'Event_Name',
+                'Characteristics',
+                'Common_CNV',
+                'Copy_Num_Change',
+                'Inheritance',
+                'CNV_Description',
+               );
+    }
+
+    /**
+     * Provide a list of the SNP form filters
+     *
+     * @return array The filters list
+    */
+    private function _getCNVFilters()
+    {
+        return array(
+                'centerID',
+                'DCCID',
+                'PSCID',
+                'gender',
+                'SubprojectID',
+                'dob',
+                'External_ID',
+                'rsID',
+                'SNP_Name',
+                'SNP_Description',
+                'SNP_External_Source',
+                'Observed_Base',
+                'Reference_Base',
+                'Array_Report',
+                'Markers',
+                'Validation_Method',
+                'Validated',
+                'Function_Prediction',
+                'Damaging',
+                'Genotype_Quality',
+                'Exonic_Function',
+                'Chromosome',
+                'Gene_Symbol',
+                'Platform',
+               );
+    }
+
+    /**
+     * The data insertion function to be run before each test.
+     *
+     * @before
+     * @return void
+     */
+    public function insertData()
+    {
+        $this->DB->insert(
+            "candidate",
+            array(
+             'CandID'      => '000001',
+             'PSCID'       => 'TST9999',
+             'CenterID'    => 1,
+             'Active'      => 'Y',
+             'UserID'      => 1,
+             'Entity_type' => 'Human',
+            )
+        );
+
+        $this->DB->insert("psc", array("CenterID" => 2));
+
+        $this->DB->insert(
+            "candidate",
+            array(
+             'CandID'      => '000002',
+             'PSCID'       => 'TST9998',
+             'CenterID'    => 2,
+             'Active'      => 'Y',
+             'UserID'      => 1,
+             'Entity_type' => 'Human',
+            )
+        );
+
+        $this->DB->insert(
+            "CNV",
+            array(
+             'CNVID'             => 9999999999,
+             'CandID'            => '000001',
+             'Description'       => 'CNV 1',
+             'Type'              => 'gain',
+             'EventName'         => 'Event 1',
+             'Common_CNV'        => 'Y',
+             'Characteristics'   => 'Benign',
+             'CopyNumChange'     => 1,
+             'Inheritance'       => 'de novo',
+             'ArrayReport'       => 'Normal',
+             'Markers'           => 'Marker 1',
+             'ArrayReportDetail' => 'Array report detail 1',
+             'ValidationMethod'  => 'Validation method 1',
+            )
+        );
+        $this->DB->insert(
+            "CNV",
+            array(
+             'CNVID'             => 9999999998,
+             'CandID'            => '000001',
+             'Description'       => 'CNV 2',
+             'Type'              => 'gain',
+             'EventName'         => 'Event 1',
+             'Common_CNV'        => 'Y',
+             'Characteristics'   => 'Benign',
+             'CopyNumChange'     => 1,
+             'Inheritance'       => 'de novo',
+             'ArrayReport'       => 'Normal',
+             'Markers'           => 'Marker 1',
+             'ArrayReportDetail' => 'Array report detail 1',
+             'ValidationMethod'  => 'Validation method 1',
+            )
+        );
+        $this->DB->insert(
+            "CNV",
+            array(
+             'CNVID'             => 9999999997,
+             'CandID'            => '000001',
+             'Description'       => 'CNV 3',
+             'Type'              => 'gain',
+             'EventName'         => 'Event 1',
+             'Common_CNV'        => 'Y',
+             'Characteristics'   => 'Benign',
+             'CopyNumChange'     => 1,
+             'Inheritance'       => 'de novo',
+             'ArrayReport'       => 'Normal',
+             'Markers'           => 'Marker 1',
+             'ArrayReportDetail' => 'Array report detail 1',
+             'ValidationMethod'  => 'Validation method 1',
+            )
+        );
+        $this->DB->insert(
+            "CNV",
+            array(
+             'CNVID'             => 9999999996,
+             'CandID'            => '000002',
+             'Description'       => 'CNV 4',
+             'Type'              => 'gain',
+             'EventName'         => 'Event 1',
+             'Common_CNV'        => 'Y',
+             'Characteristics'   => 'Benign',
+             'CopyNumChange'     => 1,
+             'Inheritance'       => 'de novo',
+             'ArrayReport'       => 'Normal',
+             'Markers'           => 'Marker 1',
+             'ArrayReportDetail' => 'Array report detail 1',
+             'ValidationMethod'  => 'Validation method 1',
+            )
+        );
+        $this->DB->insert(
+            "CNV",
+            array(
+             'CNVID'             => 9999999995,
+             'CandID'            => '000002',
+             'Description'       => 'CNV 5',
+             'Type'              => 'loss',
+             'EventName'         => 'Event 1',
+             'Common_CNV'        => 'Y',
+             'Characteristics'   => 'Benign',
+             'CopyNumChange'     => 1,
+             'Inheritance'       => 'de novo',
+             'ArrayReport'       => 'Normal',
+             'Markers'           => 'Marker 1',
+             'ArrayReportDetail' => 'Array report detail 1',
+             'ValidationMethod'  => 'Validation method 1',
+            )
+        );
+
+        $this->DB->insert(
+            "SNP",
+            array(
+             'SNPID'  => 9999999999,
+             'CandID' => '000001',
+             'rsID'   => 'rs0000001',
+            )
+        );
+        $this->DB->insert(
+            "SNP",
+            array(
+             'SNPID'  => 9999999998,
+             'CandID' => '000001',
+             'rsID'   => 'rs0000002',
+            )
+        );
+        $this->DB->insert(
+            "SNP",
+            array(
+             'SNPID'  => 9999999997,
+             'CandID' => '000001',
+             'rsID'   => 'rs0000003',
+            )
+        );
+        $this->DB->insert(
+            "SNP",
+            array(
+             'SNPID'  => 9999999996,
+             'CandID' => '000002',
+             'rsID'   => 'rs0000001',
+            )
+        );
+        $this->DB->insert(
+            "SNP",
+            array(
+             'SNPID'  => 9999999995,
+             'CandID' => '000002',
+             'rsID'   => 'rs0000002',
+            )
         );
     }
 
     /**
-     * @before
-     */ 
-    public function insertData()
-    {
-        $this->DB->insert("candidate", array(
-            'CandID' => '000001',
-            'PSCID'  => 'TST9999',
-            'CenterID' => 1,
-            'Active' => 'Y',
-            'UserID' => 1,
-            'Entity_type' => 'Human'
-        ));
-
-        $this->DB->insert("psc", array("CenterID" => 2));
-
-        $this->DB->insert("candidate", array(
-            'CandID' => '000002',
-            'PSCID'  => 'TST9998',
-            'CenterID' => 2,
-            'Active' => 'Y',
-            'UserID' => 1,
-            'Entity_type' => 'Human'
-        ));
-
-        $this->DB->insert("CNV", array(
-            'CNVID' => 9999999999,
-            'CandID' => '000001',
-            'Description' => 'CNV 1',
-            'Type' => 'gain',
-            'EventName' => 'Event 1',
-            'Common_CNV' => 'Y',
-            'Characteristics' => 'Benign',
-            'CopyNumChange' => 1,
-            'Inheritance' => 'de novo',
-            'ArrayReport' => 'Normal',
-            'Markers' => 'Marker 1',
-            'ArrayReportDetail' => 'Array report detail 1',
-            'ValidationMethod' => 'Validation method 1'
-        ));
-        $this->DB->insert("CNV", array(
-            'CNVID' => 9999999998,
-            'CandID' => '000001',
-            'Description' => 'CNV 2',
-            'Type' => 'gain',
-            'EventName' => 'Event 1',
-            'Common_CNV' => 'Y',
-            'Characteristics' => 'Benign',
-            'CopyNumChange' => 1,
-            'Inheritance' => 'de novo',
-            'ArrayReport' => 'Normal',
-            'Markers' => 'Marker 1',
-            'ArrayReportDetail' => 'Array report detail 1',
-            'ValidationMethod' => 'Validation method 1'
-        ));
-        $this->DB->insert("CNV", array(
-            'CNVID' => 9999999997,
-            'CandID' => '000001',
-            'Description' => 'CNV 3',
-            'Type' => 'gain',
-            'EventName' => 'Event 1',
-            'Common_CNV' => 'Y',
-            'Characteristics' => 'Benign',
-            'CopyNumChange' => 1,
-            'Inheritance' => 'de novo',
-            'ArrayReport' => 'Normal',
-            'Markers' => 'Marker 1',
-            'ArrayReportDetail' => 'Array report detail 1',
-            'ValidationMethod' => 'Validation method 1'
-        ));
-        $this->DB->insert("CNV", array(
-            'CNVID' => 9999999996,
-            'CandID' => '000002',
-            'Description' => 'CNV 4',
-            'Type' => 'gain',
-            'EventName' => 'Event 1',
-            'Common_CNV' => 'Y',
-            'Characteristics' => 'Benign',
-            'CopyNumChange' => 1,
-            'Inheritance' => 'de novo',
-            'ArrayReport' => 'Normal',
-            'Markers' => 'Marker 1',
-            'ArrayReportDetail' => 'Array report detail 1',
-            'ValidationMethod' => 'Validation method 1'
-        ));
-        $this->DB->insert("CNV", array(
-            'CNVID' => 9999999995,
-            'CandID' => '000002',
-            'Description' => 'CNV 5',
-            'Type' => 'loss',
-            'EventName' => 'Event 1',
-            'Common_CNV' => 'Y',
-            'Characteristics' => 'Benign',
-            'CopyNumChange' => 1,
-            'Inheritance' => 'de novo',
-            'ArrayReport' => 'Normal',
-            'Markers' => 'Marker 1',
-            'ArrayReportDetail' => 'Array report detail 1',
-            'ValidationMethod' => 'Validation method 1'
-        ));
-
-        $this->DB->insert("SNP", array(
-            'SNPID' => 9999999999,
-            'CandID' => '000001',
-            'rsID' => 'rs0000001'
-        ));
-        $this->DB->insert("SNP", array(
-            'SNPID' => 9999999998,
-            'CandID' => '000001',
-            'rsID' => 'rs0000002'
-        ));
-        $this->DB->insert("SNP", array(
-            'SNPID' => 9999999997,
-            'CandID' => '000001',
-            'rsID' => 'rs0000003'
-        ));
-        $this->DB->insert("SNP", array(
-            'SNPID' => 9999999996,
-            'CandID' => '000002',
-            'rsID' => 'rs0000001'
-        ));
-        $this->DB->insert("SNP", array(
-            'SNPID' => 9999999995,
-            'CandID' => '000002',
-            'rsID' => 'rs0000002'
-        ));
-    }
-
-    /**
+     * The data deletion function to be run after each test.
+     *
      * @after
-     */ 
+     * @return void
+     */
     public function deleteData()
     {
         $this->DB->delete("CNV", array("CNVID" => '9999999999'));
@@ -203,8 +278,15 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("candidate", array('CandID' => '000001'));
         $this->DB->delete("candidate", array('CandID' => '000002'));
         $this->DB->delete("psc", array('CenterID' => 2));
-    } 
+    }
 
+    /**
+     * An helper function to ensure the new page is load after a click.
+     *
+     * @param WebDriverElement $webDriverElement the element to click.
+     *
+     * @return void
+     */
     public function clickToLoadNewPage($webDriverElement)
     {
         $webDriverElement->click();
@@ -217,50 +299,102 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         }
     }
 
-    protected function onNotSuccessfulTest($exception)
+    /**
+     * When a test fails, this function clean up the DB.
+     *
+     * @param Exception $e The triggered exception on failure.
+     *
+     * @return void
+     */
+    protected function onNotSuccessfulTest($e)
     {
         $this->deleteData();
-        throw $exception;
+        throw $e;
     }
 
-    private function assertColumnSorting($header, $column_number, $asc_value, $desc_value)
+    /**
+     * Helper function to assert the culumn content is sorted
+     * upon click on the header.
+     *
+     * @param string $header     The header label
+     * @param int    $col_number The column index (1 based)
+     * @param string $asc        The expected value on ascending sort
+     * @param string $desc       The expected value on descending sort
+     *
+     * @return void
+     */
+    public function assertColumnSorting($header, $col_number, $asc, $desc)
     {
-var_dump($column_number);
         // ASC sorting
         $header_link = $this->webDriver->findElement(
-            WebDriverBy::xPath("
-                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')]/thead/tr/th/a[text()='$header']
-            ")
-        ); 
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /thead
+                /tr
+                /th
+                /a[text()='$header']
+            "
+            )
+        );
         $this->clickToLoadNewPage($header_link);
-        $body = $this->webDriver->findElement(
+        $body            = $this->webDriver->findElement(
             WebDriverBy::xPath("//body")
-        ); 
+        );
         $first_row_value = $body->findElement(
-            WebDriverBy::xPath("
-                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')]/tbody/tr[1]/td[$column_number]
-            ")
-        )->getText(); 
-        $this->assertEquals($first_row_value, $asc_value);
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /tbody
+                /tr[1]
+                /td[$col_number]
+            "
+            )
+        )->getText();
+        $this->assertEquals($first_row_value, $asc);
 
         // DESC sorting
         $header_link = $this->webDriver->findElement(
-            WebDriverBy::xPath("
-                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')]/thead/tr/th/a[text()='$header']
-            ")
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /thead
+                /tr
+                /th
+                /a[text()='$header']
+            "
+            )
         );
         $this->clickToLoadNewPage($header_link);
-        $body = $this->webDriver->findElement(
+        $body            = $this->webDriver->findElement(
             WebDriverBy::xPath("//body")
-        ); 
+        );
         $first_row_value = $body->findElement(
-            WebDriverBy::xPath("
-                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')]/tbody/tr[1]/td[$column_number]
-            ")
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /tbody
+                /tr[1]
+                /td[$col_number]
+            "
+            )
         )->getText();
-        $this->assertEquals($first_row_value, $desc_value);
+        $this->assertEquals($first_row_value, $desc);
     }
 
+    /**
+     * Helper function to assert data filtering.
+     *
+     * @param string $filter The name of the filter element
+     * @param string $value  The value to be inputed
+     * @param int    $count  the expected count of results in the datatable
+     *
+     * @return void
+     */
     protected function assertFiltering($filter, $value, $count)
     {
         $this->webDriver->findElement(
@@ -268,9 +402,11 @@ var_dump($column_number);
         )->sendKeys("$value");
 
         $this->webDriver->findElement(
-            WebDriverBy::xPath("
+            WebDriverBy::xPath(
+                "
                 //input[@name='filter']
-            ")
+            "
+            )
         )->click();
 
         $message = $this->webDriver->findElement(
@@ -278,9 +414,11 @@ var_dump($column_number);
         )->getText();
 
         $this->webDriver->findElement(
-            WebDriverBy::xPath("
+            WebDriverBy::xPath(
+                "
                 //input[@name='reset']
-            ")
+            "
+            )
         )->click();
 
         $this->assertEquals("Variants found: $count total", $message);
@@ -293,7 +431,6 @@ var_dump($column_number);
      *
      * @return void
      */
-/*----
     function testGenomicBrowserDoespageLoad()
     {
         $this->webDriver->get($this->url . "/genomic_browser/");
@@ -313,14 +450,13 @@ var_dump($column_number);
 
     /**
      * Tests that, when loading the genomic_browser module, the
-     * breadcrumb is 'Genomic browser' or an error is given according 
+     * breadcrumb is 'Genomic browser' or an error is given according
      * to the user's permissions.
      *
      * @depends testGenomicBrowserDoespageLoad
      *
      * @return void
      */
-/*----
     function testGenomicBrowserDoespageLoadPermissions()
     {
 
@@ -385,7 +521,6 @@ var_dump($column_number);
      *
      * @return void
      */
-/*----
     public function testConfigurationMenuDisplayWithPermissions()
     {
         // Without permissions
@@ -421,7 +556,6 @@ var_dump($column_number);
      *
      * @return void
      */
-/*----
     function testGenomicBrowserCNVBrowserDoespageLoad()
     {
         $this->webDriver->get($this->url . "/genomic_browser/");
@@ -447,7 +581,6 @@ var_dump($column_number);
      *
      * @return void
      */
-/*----
     function testGenomicBrowserCNVEmptyDatatable()
     {
         $this->deleteData();
@@ -459,9 +592,14 @@ var_dump($column_number);
         $this->assertEquals("No variants found.", $message);
 
         $rows = $this->webDriver->findElements(
-            WebDriverBy::xPath("
-                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')//tr]
-            ")
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /tbody
+                /tr
+            "
+            )
         );
         $this->assertCount(0, $rows, "");
     }
@@ -473,7 +611,6 @@ var_dump($column_number);
      *
      * @return void
      */
-/*----
     function testGenomicBrowserCNVDatatable()
     {
         $this->webDriver->get($this->url . "/genomic_browser/");
@@ -483,9 +620,14 @@ var_dump($column_number);
         )->getText();
         $this->assertEquals("Variants found: 5 total", $message);
         $rows = $this->webDriver->findElements(
-            WebDriverBy::xPath("
-                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')]/tbody/tr
-            ")
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /tbody
+                /tr
+            "
+            )
         );
 
         $this->assertCount(5, $rows, "There should be 5 records in the table.");
@@ -498,68 +640,72 @@ var_dump($column_number);
      *
      * @return void
      */
-/*----
     function testGenomicBrowserCNVDataSortableBrief()
     {
         $expected_headers = array(
-            'No.',
-            'DCCID',
-            'PSCID',
-            'Subproject',
-            'Chromosome',
-            'StartLoc',
-            'Size',
-            'Gene Name',
-            'Platform',
-            'CNV Type',
-            'CNV Description',
-            'Copy Num Change',
-            'Common CNV',
-        );
+                             'No.',
+                             'DCCID',
+                             'PSCID',
+                             'Subproject',
+                             'Chromosome',
+                             'StartLoc',
+                             'Size',
+                             'Gene Name',
+                             'Platform',
+                             'CNV Type',
+                             'CNV Description',
+                             'Copy Num Change',
+                             'Common CNV',
+                            );
 
         $this->webDriver->get($this->url . "/genomic_browser/");
 
         $headers = $this->webDriver->findElements(
-            WebDriverBy::xPath("
-                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')]/thead/tr/th
-            ")
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /thead
+                /tr
+                /th
+            "
+            )
         );
 
         $this->assertCount(
-            count($expected_headers), 
-            $headers, 
+            count($expected_headers),
+            $headers,
             "There should be " . count($expected_headers) . " columns in the table."
         );
 
         foreach ($expected_headers as $index => $header) {
             switch ($header) {
-                case 'No.':
-                    break;
-                case 'DCCID':
-                    $this->assertColumnSorting($header, $index+1, '000001', '000002');
-                    break;
-                case 'PSCID':
-                    $this->assertColumnSorting($header, $index+1, 'TST9998', 'TST9999');
-                    break;
-                case 'CNV Type':
-                    $this->assertColumnSorting($header, $index+1, 'gain', 'loss');
-                    break;
-                case 'CNV Description':
-                    $this->assertColumnSorting($header, $index+1, 'CNV 1', 'CNV 5');
-                    break;
-        //TODO : Add more cases...
+            case 'No.':
+                break;
+            case 'DCCID':
+                $this->assertColumnSorting($header, $index+1, '000001', '000002');
+                break;
+            case 'PSCID':
+                $this->assertColumnSorting($header, $index+1, 'TST9998', 'TST9999');
+                break;
+            case 'CNV Type':
+                $this->assertColumnSorting($header, $index+1, 'gain', 'loss');
+                break;
+            case 'CNV Description':
+                $this->assertColumnSorting($header, $index+1, 'CNV 1', 'CNV 5');
+                break;
+            //TODO : Add more cases...
             }
         }
     }
 
-    /** 
+    /**
      * Tests that, CNV data is displayed according to user's permissions
      *
      * @depends testGenomicBrowserCNVDatatable
      *
      * @return void
      */
-/*----
     function testGenomicBrowserCNVSitePermission()
     {
         $this->setupPermissions(array('genomic_browser_view_site'));
@@ -573,14 +719,13 @@ var_dump($column_number);
         $this->assertEquals("Variants found: 3 total", $message);
     }
 
-    /** 
+    /**
      * Tests that, "Show data" button apply filters.
      *
      * @depends testGenomicBrowserCNVDatatable
      *
      * @return void
      */
-/*----
     function testGenomicBrowserCNVFilters()
     {
 
@@ -589,14 +734,95 @@ var_dump($column_number);
 
         foreach ($filters as $filter) {
             switch ($filter) {
-                case 'CNV_Type':
-                    $this->assertFiltering($filter, 'loss', 1);
-                    break;
-                case 'CNV_Description':
-                    $this->assertFiltering($filter, 'CNV 2', 1);
-                    break;
+            case 'CNV_Type':
+                $this->assertFiltering($filter, 'loss', 1);
+                break;
+            case 'CNV_Description':
+                $this->assertFiltering($filter, 'CNV 2', 1);
+                break;
             }
         }
+    }
+
+    /**
+     * Tests that, CNV 'Show brief fields' filter works.
+     *
+     * Note: the brief fields option should have been tested in
+     * testGenomicBrowserCVNDataSortableBrief
+     *
+     * @-depends testGenomicBrowserCNVDatatable
+     *
+     * @return void
+     */
+    function testGenomicBrowserCNVShowBriefFields()
+    {
+
+        $expected_headers = array(
+                             'No.',
+                             'PSC',
+                             'DCCID',
+                             'PSCID',
+                             'Gender',
+                             'Subproje',
+                             'DoB',
+                             'ExternalID',
+                             'Chromosome',
+                             'Strand',
+                             'StartLoc',
+                             'EndLoc',
+                             'Size',
+                             'Gene Symbol',
+                             'Gene Name',
+                             'Platform',
+                             'CNV Type',
+                             'CNV Description',
+                             'Copy Num Change',
+                             'Event Name',
+                             'Common CNV',
+                             'Characteristics',
+                             'Inheritance',
+                             'Array Report',
+                             'Markers',
+                             'Validation Method',
+                            );
+
+        $this->webDriver->get($this->url . "/genomic_browser/");
+
+        // Apply filter
+        $this->webDriver->findElement(
+            WebDriverBy::Name('Show_Brief_Results')
+        )->sendKeys("All fields");
+
+        $button = $this->webDriver->findElement(
+            WebDriverBy::xPath(
+                "
+                //input[@name='filter']
+            "
+            )
+        );
+
+        $this->clickToLoadNewPage($button);
+
+        // Check column count
+        $this->webDriver->get($this->url . "/genomic_browser/");
+        $headers = $this->webDriver->findElements(
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /thead
+                /tr
+                /th
+            "
+            )
+        );
+
+        $this->assertCount(
+            count($expected_headers),
+            $headers,
+            "There should be " . count($expected_headers) . " columns in the table."
+        );
+
     }
 
     /**
@@ -607,17 +833,18 @@ var_dump($column_number);
      *
      * @return void
      */
-/*----
     function testGenomicBrowserSNPBrowserDoespageLoad()
     {
         $this->webDriver->get($this->url . "/genomic_browser/?submenu=snp_browser");
 
         $tabText = $this->webDriver->findElement(
-            WebDriverBy::xPath("
+            WebDriverBy::xPath(
+                "
                 //div[@id='tabs']
                 /ul
                 /li[contains(@class, 'active')]
-            ")
+            "
+            )
         )->getText();
 
         $this->assertEquals("SNP", $tabText);
@@ -631,7 +858,6 @@ var_dump($column_number);
      *
      * @return void
      */
-/*----
     function testGenomicBrowserSNPEmptyDatatable()
     {
         $this->deleteData();
@@ -643,9 +869,14 @@ var_dump($column_number);
         $this->assertEquals("No variants found.", $message);
 
         $rows = $this->webDriver->findElements(
-            WebDriverBy::xPath("
-                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')//tr]
-            ")
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /tbody
+                /tr
+            "
+            )
         );
         $this->assertCount(0, $rows, "");
     }
@@ -657,7 +888,6 @@ var_dump($column_number);
      *
      * @return void
      */
-/*----
     function testGenomicBrowserSNPDatatable()
     {
         $this->webDriver->get($this->url . "/genomic_browser/");
@@ -667,22 +897,26 @@ var_dump($column_number);
         )->getText();
         $this->assertEquals("Variants found: 5 total", $message);
         $rows = $this->webDriver->findElements(
-            WebDriverBy::xPath("
-                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')]/tbody/tr
-            ")
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /tbody
+                /tr
+            "
+            )
         );
 
         $this->assertCount(5, $rows, "There should be 5 records in the table.");
     }
 
-    /** 
+    /**
      * Tests that, SNP data is displayed according to user's permissions
      *
      * @depends testGenomicBrowserSNPDatatable
      *
      * @return void
      */
-/*----
     function testGenomicBrowserSNPSitePermission()
     {
         $this->setupPermissions(array('genomic_browser_view_site'));
@@ -695,64 +929,176 @@ var_dump($column_number);
         $this->resetPermissions();
         $this->assertEquals("Variants found: 3 total", $message);
     }
-//*/
 
     /**
      * Tests that, SNP data is sortable in the Dynamictable.
      *
-     * @********************************** depends testGenomicBrowserSNPDatatable
+     * @depends testGenomicBrowserSNPDatatable
      *
      * @return void
      */
     function testGenomicBrowserSNPDataSortableBrief()
     {
         $expected_headers = array(
-            'No.',
-            'DCCID',
-            'PSCID',
-            'Subproject',
-            'Chromosome',
-            'StartLoc',
-            'Gene Name',
-            'Platform',
-            'RsID',
-            'SNP Name',
-            'SNP Description',
-            'Function Prediction'
-        );
+                             'No.',
+                             'DCCID',
+                             'PSCID',
+                             'Subproject',
+                             'Chromosome',
+                             'StartLoc',
+                             'Gene Name',
+                             'Platform',
+                             'RsID',
+                             'SNP Name',
+                             'SNP Description',
+                             'Function Prediction',
+                            );
 
         $this->webDriver->get($this->url . "/genomic_browser/?submenu=snp_browser");
         $headers = $this->webDriver->findElements(
-            WebDriverBy::xPath("
-                //div[@id='lorisworkspace']//table[contains(@class, 'dynamictable')]/thead/tr/th
-            ")
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /thead
+                /tr
+                /th
+            "
+            )
         );
 
         $this->assertCount(
-            count($expected_headers), 
-            $headers, 
+            count($expected_headers),
+            $headers,
             "There should be " . count($expected_headers) . " columns in the table."
         );
 
-        foreach ($expected_headers as $index => $header) {
-//            $this->webDriver->get($this->url . "/genomic_browser/?submenu=snp_browser");
+        foreach ($expected_headers as $i => $header) {
             switch ($header) {
-                case 'No.':
-                    break;
-                case 'DCCID':
-                    $this->assertColumnSorting($header, $index+1, '000001', '000002');
-                    break;
-                case 'PSCID':
-                    $this->assertColumnSorting($header, $index+1, 'TST9998', 'TST9999');
-                    break;
-                case 'RsID':
-                    $this->assertColumnSorting($header, $index+1, 'rs0000001', 'rs0000003');
-                    break;
-        //TODO : Add more cases...
+            case 'No.':
+                break;
+            case 'DCCID':
+                $this->assertColumnSorting($header, $i+1, '000001', '000002');
+                break;
+            case 'PSCID':
+                $this->assertColumnSorting($header, $i+1, 'TST9998', 'TST9999');
+                break;
+            case 'RsID':
+                $this->assertColumnSorting($header, $i+1, 'rs0000001', 'rs0000003');
+                break;
+            //TODO : Add more cases...
             }
         }
     }
 
+    /**
+     * Tests that, "Show data" button apply filters.
+     *
+     * @depends testGenomicBrowserCNVDatatable
+     *
+     * @return void
+     */
+    function testGenomicBrowserCNVFilters()
+    {
 
+        $this->webDriver->get($this->url . "/genomic_browser/?submendu=snp_browser");
+        $filters = $this->_getSNPFilters();
+
+        foreach ($filters as $filter) {
+            switch ($filter) {
+            case 'rsID':
+                $this->assertFiltering($filter, 'loss', 1);
+                break;
+            case '':
+                $this->assertFiltering($filter, 'CNV 2', 1);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Tests that, SNP 'Show brief fields' filter works.
+     *
+     * Note: the brief fields option should have been tested in
+     * testGenomicBrowserSNPDataSortableBrief
+     *
+     * @-depends testGenomicBrowserSNPDatatable
+     *
+     * @return void
+     */
+    function testGenomicBrowserSNPShowBriefFields()
+    {
+
+        $expected_headers = array(
+                             'No.',
+                             'PSC',
+                             'DCCID',
+                             'PSCID',
+                             'Gender',
+                             'Subproject',
+                             'DoB',
+                             'ExternalID',
+                             'Chromosome',
+                             'Strand',
+                             'StartLoc',
+                             'EndLoc',
+                             'Size',
+                             'Gene Symbol',
+                             'Gene Name',
+                             'Platform',
+                             'RsID',
+                             'SNP Name',
+                             'SNP Description',
+                             'External Source',
+                             'Observed Base',
+                             'Reference Base',
+                             'Array Report',
+                             'Markers',
+                             'Validation Method',
+                             'Validated',
+                             'Function Prediction',
+                             'Damaging',
+                             'Genotype Quality',
+                             'Exonic Function',
+                            );
+
+        $this->webDriver->get($this->url . "/genomic_browser/?submendu=snp_browser");
+
+        // Apply filter
+        $this->webDriver->findElement(
+            WebDriverBy::Name('Show_Brief_Results')
+        )->sendKeys("All fields");
+
+        $button = $this->webDriver->findElement(
+            WebDriverBy::xPath(
+                "
+                //input[@name='filter']
+            "
+            )
+        );
+
+        $this->clickToLoadNewPage($button);
+
+        // Check column count
+        $this->webDriver->get($this->url . "/genomic_browser/?submenu=snp_browser");
+        $headers = $this->webDriver->findElements(
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /thead
+                /tr
+                /th
+            "
+            )
+        );
+
+        $this->assertCount(
+            count($expected_headers),
+            $headers,
+            "There should be " . count($expected_headers) . " columns in the table."
+        );
+
+    }
 }
 ?>
