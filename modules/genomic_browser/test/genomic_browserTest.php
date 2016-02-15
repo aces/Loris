@@ -112,14 +112,14 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             )
         );
 
-        $this->DB->insert("psc", array("CenterID" => 2));
+        $this->DB->insert("psc", array("CenterID" => 92));
 
         $this->DB->insert(
             "candidate",
             array(
              'CandID'      => '000002',
              'PSCID'       => 'TST9998',
-             'CenterID'    => 2,
+             'CenterID'    => 92,
              'Active'      => 'Y',
              'UserID'      => 1,
              'Entity_type' => 'Human',
@@ -279,7 +279,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("SNP", array("SNPID" => '9999999995'));
         $this->DB->delete("candidate", array('CandID' => '000001'));
         $this->DB->delete("candidate", array('CandID' => '000002'));
-        $this->DB->delete("psc", array('CenterID' => 2));
+        $this->DB->delete("psc", array('CenterID' => 92));
     }
 
     /**
@@ -299,19 +299,6 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         } catch (StaleElementReferenceException $e) {
             return;
         }
-    }
-
-    /**
-     * When a test fails, this function clean up the DB.
-     *
-     * @param Exception $e The triggered exception on failure.
-     *
-     * @return void
-     */
-    protected function onNotSuccessfulTest($e)
-    {
-        $this->deleteData();
-        throw $e;
     }
 
     /**
