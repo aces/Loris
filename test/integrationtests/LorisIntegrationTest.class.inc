@@ -378,7 +378,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
         try {
             // Load the new page
-            $this->webdriver->get($url);
+            $this->webDriver->get($url);
 
             // Use the old page reference util it detach from the DOM
             while (true) {

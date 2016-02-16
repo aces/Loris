@@ -22,7 +22,7 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataIntegrityFlagDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/data_integrity_flag/");
+        $this->safeGet($this->url . "/data_integrity_flag/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Data Integrity Flag", $bodyText);
     }
