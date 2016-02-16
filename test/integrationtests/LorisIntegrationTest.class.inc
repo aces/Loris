@@ -63,7 +63,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             $database['host'],
             1
         );
-        $this->url = $this->config->getSetting("url") . "/main.php";
+        $this->url = $this->config->getSetting("url");
 
         $this->DB->insert(
             "users",
@@ -278,6 +278,28 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->DB->run(
             "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
+    }
+    
+    /**
+     * Helper function to change the users Study Site
+     *
+     * @return none
+     */
+    function changeStudySite()
+    {
+        $this->DB->insert("psc", array("CenterID" => 999));
+        $this->DB->update("users", array("CenterID" => 999), array("ID" => 999990));
+    }
+
+    /**
+     * Helper function to reset the users Study Site
+     *
+     * @return none
+     */
+    function resetStudySite()
+    {
+        $this->DB->update("users", array("CenterID" => 1), array("ID" => 999990));
+        $this->DB->delete("psc", array("CenterID" => 999));
     }
 
     /**

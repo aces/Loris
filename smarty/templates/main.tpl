@@ -5,7 +5,8 @@
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 
-        {* This can't be loaded from getJSDependencies(), because it's needs access to smarty
+        {* 
+        This can't be loaded from getJSDependencies(), because it's needs access to smarty
            variables to be instantiated, so that other js files don't need access to smarty variables
            and can access them through the loris global (ie. loris.BaseURL) *}
         <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
@@ -29,7 +30,7 @@
 
         <!-- Module-specific CSS -->
         {if $test_name_css}
-            <link rel="stylesheet" href="{$test_name_css}" type="text/css" />
+            <link rel="stylesheet" href="{$baseurl}/{$test_name_css}" type="text/css" />
         {/if}
 
         <title>
@@ -42,6 +43,14 @@
     </head>
     {/if}
     <body>
+    {* Defining a FormAction variable will allow use to define
+       a form element which covers the scope of both the sidebar,
+       and the workspace. This let's us put controls for the main
+       page inside of the side panel.
+    *}
+        {if $FormAction} 
+        <form action="{$FormAction}" method="post">
+        {/if}
 	    
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
@@ -493,6 +502,9 @@
                     </a>
                 </div>
             </div>
+        {/if}
+        {if $FormAction} 
+        </form> 
         {/if}
     </body>
 </html>
