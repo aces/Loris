@@ -37,6 +37,7 @@ class NDB_Page
 
     /**
      * Reference to the HTML QuickForm
+     *
      * @var LorisForm
      */
     var $form;

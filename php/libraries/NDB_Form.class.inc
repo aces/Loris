@@ -23,6 +23,7 @@ class NDB_Form extends NDB_Page
 {
     /**
      * Stores the template
+     *
      * @var    string
      * @access private
      */
@@ -30,6 +31,7 @@ class NDB_Form extends NDB_Page
 
     /**
      * Redirect URL
+     *
      * @var    string
      * @access private
      */
@@ -37,6 +39,7 @@ class NDB_Form extends NDB_Page
 
     /**
      * Separates the group elements
+     *
      * @var    string
      * @access private
      */

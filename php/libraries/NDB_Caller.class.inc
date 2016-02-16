@@ -28,13 +28,15 @@ class NDB_Caller
 {
     /**
      * Identifies what type of script is being run (menu, form or instrument)
-     * @var    string
+     *
+     * @var string
      */
     var $type;
 
     /**
      * Determines how data entry is being performed (directly from a study
      * participant, or by a data entry staff.)
+     *
      * @var string
      */
     var $DataEntry;

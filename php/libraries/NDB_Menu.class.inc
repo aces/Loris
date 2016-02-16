@@ -25,6 +25,7 @@ class NDB_Menu extends NDB_Page
 {
     /**
      * The menu's name
+     *
      * @var    string
      * @access private
      */
@@ -32,6 +33,7 @@ class NDB_Menu extends NDB_Page
 
     /**
      * The menu's mode
+     *
      * @var    string
      * @access private
      */
@@ -39,6 +41,7 @@ class NDB_Menu extends NDB_Page
 
     /**
      * The template data for Smarty
+     *
      * @var    array
      * @access private
      */

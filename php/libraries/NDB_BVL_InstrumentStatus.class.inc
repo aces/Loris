@@ -99,6 +99,7 @@ class NDB_BVL_InstrumentStatus
 
     /**
      * Gets the SessionID of the current instrument
+     *
      * @return int
      * @access public
      */
@@ -119,6 +120,7 @@ class NDB_BVL_InstrumentStatus
 
     /**
      * Gets the current administration status of the instrument
+     *
      * @return string
      */
     function getAdministrationStatus()
