@@ -356,5 +356,37 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             return;
         }
     }
+
+    /**
+     * Helper function to decorate the webdriver->get function so it
+     * ensure that the new page is load before it returns.
+     *
+     * @param string $url The url to get.
+     *
+     * @return void
+     */
+    function safeGet($url)
+    {
+        // keep a reference from the actual page
+        $elementFromOldPage = $this->webdriver->findElement(
+            WebDriverBy::xPath(
+                "
+                //div[@class='navbar-header']/a
+                "
+            )
+        );
+
+        try {
+            // Load the new page
+            $this-webdriver->get($url);
+
+            // Use the old page reference util it detach from the DOM
+            while (true) {
+                $elementFromOldPage->getText();
+            }
+        } catch (StaleElementReferenceException $e) {
+            return;
+        }
+    }
 }
 ?>
