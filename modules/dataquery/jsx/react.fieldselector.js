@@ -147,8 +147,8 @@ FieldItem = React.createClass({
 
         return (
             <div className={classList} onClick={this.props.onClick}>
-                <h4 className="list-group-item-heading col-sm-12 col-md-2">{displayName}{criteria}{downloadIcon}</h4>
-                <span className="col-sm-12 col-md-10">{this.props.Description}</span>
+                <h4 className="list-group-item-heading col-xs-12">{displayName}{criteria}{downloadIcon}</h4>
+                <span className="col-xs-12">{this.props.Description}</span>
             </div>
         );
     }
@@ -309,30 +309,35 @@ FieldSelector = React.createClass({
         return (
             <div>
                 <div className="row">
-                    <h1 className="col-md-10">{this.props.title}</h1>
-                    <div className="col-md-2 block">
-                        <label>Search:</label><input type="text" onChange={this.filterChange}/>
+                    <h1 className="col-md-8">{this.props.title}</h1>
+                    <div className="form-group col-sm-4 search">
+                        <label className="col-sm-12 col-md-4">Search within instrument:</label>
+                        <div className="col-sm-12 col-md-8">
+                            <input type="text" onChange={this.filterChange} className="form-control input-sm"/>
+                        </div>
                     </div>
                 </div>
-                <div className="row">
+                <div className="row form-group">
                     <button type="button" className="btn btn-primary" onClick={this.addAll}>Add All</button>
                     <button type="button" className="btn btn-primary" onClick={this.deleteAll}>Remove All</button>
                 </div>
-                <CategoryList
-                    items={this.props.items}
-                    onCategorySelect={this.onCategorySelect}
-                />
-                <FieldList
-                    items={this.state.categoryFields[this.state.selectedCategory]}
-                    type={this.props.type}
-                    category={this.state.selectedCategory}
-                    Criteria={this.props.Criteria}
-                    onFieldSelect={this.onFieldSelect}
-                    onCriteriaChange={this.props.onCriteriaChange}
-                    FieldsPerPage="15"
-                    selected={this.props.selectedFields || []}
-                    Filter={this.state.filter}
-                />
+                <div className="row">
+                    <CategoryList
+                        items={this.props.items}
+                        onCategorySelect={this.onCategorySelect}
+                    />
+                    <FieldList
+                        items={this.state.categoryFields[this.state.selectedCategory]}
+                        type={this.props.type}
+                        category={this.state.selectedCategory}
+                        Criteria={this.props.Criteria}
+                        onFieldSelect={this.onFieldSelect}
+                        onCriteriaChange={this.props.onCriteriaChange}
+                        FieldsPerPage="15"
+                        selected={this.props.selectedFields || []}
+                        Filter={this.state.filter}
+                    />
+                </div>
             </div>
         );
     }

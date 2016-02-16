@@ -147,8 +147,8 @@ FieldItem = React.createClass({displayName: "FieldItem",
 
         return (
             React.createElement("div", {className: classList, onClick: this.props.onClick}, 
-                React.createElement("h4", {className: "list-group-item-heading col-sm-12 col-md-2"}, displayName, criteria, downloadIcon), 
-                React.createElement("span", {className: "col-sm-12 col-md-10"}, this.props.Description)
+                React.createElement("h4", {className: "list-group-item-heading col-xs-12"}, displayName, criteria, downloadIcon), 
+                React.createElement("span", {className: "col-xs-12"}, this.props.Description)
             )
         );
     }
@@ -309,29 +309,34 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
         return (
             React.createElement("div", null, 
                 React.createElement("div", {className: "row"}, 
-                    React.createElement("h1", {className: "col-md-10"}, this.props.title), 
-                    React.createElement("div", {className: "col-md-2 block"}, 
-                        React.createElement("label", null, "Search:"), React.createElement("input", {type: "text", onChange: this.filterChange})
+                    React.createElement("h1", {className: "col-md-8"}, this.props.title), 
+                    React.createElement("div", {className: "form-group col-sm-4 search"}, 
+                        React.createElement("label", {className: "col-sm-12 col-md-4"}, "Search within instrument:"), 
+                        React.createElement("div", {className: "col-sm-12 col-md-8"}, 
+                            React.createElement("input", {type: "text", onChange: this.filterChange, className: "form-control input-sm"})
+                        )
                     )
                 ), 
-                React.createElement("div", {className: "row"}, 
+                React.createElement("div", {className: "row form-group"}, 
                     React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this.addAll}, "Add All"), 
                     React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this.deleteAll}, "Remove All")
                 ), 
-                React.createElement(CategoryList, {
-                    items: this.props.items, 
-                    onCategorySelect: this.onCategorySelect}
-                ), 
-                React.createElement(FieldList, {
-                    items: this.state.categoryFields[this.state.selectedCategory], 
-                    type: this.props.type, 
-                    category: this.state.selectedCategory, 
-                    Criteria: this.props.Criteria, 
-                    onFieldSelect: this.onFieldSelect, 
-                    onCriteriaChange: this.props.onCriteriaChange, 
-                    FieldsPerPage: "15", 
-                    selected: this.props.selectedFields || [], 
-                    Filter: this.state.filter}
+                React.createElement("div", {className: "row"}, 
+                    React.createElement(CategoryList, {
+                        items: this.props.items, 
+                        onCategorySelect: this.onCategorySelect}
+                    ), 
+                    React.createElement(FieldList, {
+                        items: this.state.categoryFields[this.state.selectedCategory], 
+                        type: this.props.type, 
+                        category: this.state.selectedCategory, 
+                        Criteria: this.props.Criteria, 
+                        onFieldSelect: this.onFieldSelect, 
+                        onCriteriaChange: this.props.onCriteriaChange, 
+                        FieldsPerPage: "15", 
+                        selected: this.props.selectedFields || [], 
+                        Filter: this.state.filter}
+                    )
                 )
             )
         );
