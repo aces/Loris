@@ -24,7 +24,7 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
     function testFinalRadiologicalReviewDoespageLoad()
     {
         $this->markTestSkipped("The radiology_review instrument is missing for final_radiological_review test");
-        /*$this->webDriver->get($this->url . "?test_name=final_radiological_review");
+        /*$this->safeGet($this->url . "?test_name=final_radiological_review");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Final Radiological Review", $bodyText);
          */
@@ -40,7 +40,7 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
     {
         $this->markTestSkipped("The radiology_review instrument is missing for final_radiological_review test");
         /*
-        $this->webDriver->get($this->url . "?test_name=final_radiological_review&subtest=final_radiological_review");
+        $this->safeGet($this->url . "?test_name=final_radiological_review&subtest=final_radiological_review");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Final Radiological Review", $bodyText);
          */

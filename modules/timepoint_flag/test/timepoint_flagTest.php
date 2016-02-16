@@ -36,7 +36,7 @@ class Timepoint_FlagTestIntegrationTest extends LorisIntegrationTest
      */
     function testTimepointFlagDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/timepoint_flag/");
+        $this->safeGet($this->url . "/timepoint_flag/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertContains("Timepoint Flag", $bodyText);

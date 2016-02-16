@@ -57,7 +57,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
      */
     function testCandidateListPageLoads()
     {
-        $this->webDriver->get($this->url . "/candidate_list/");
+        $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Access Profile", $bodyText);
@@ -78,7 +78,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     function testCandidateListAdvancedOptionsAppear()
     {
 
-        $this->webDriver->get($this->url . "/candidate_list/");
+        $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Access Profile", $bodyText);
