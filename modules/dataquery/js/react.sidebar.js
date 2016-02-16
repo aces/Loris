@@ -42,15 +42,18 @@ FieldsSidebar = React.createClass({displayName: "FieldsSidebar",
         var fieldDiv = '';
         var fieldList = [];
         if(this.props.Fields) {
-            for(var i = 0; i < this.props.Fields.length; i += 1) {
+            for(var i = this.props.Fields.length - 1; i >= 0; i--) {
                 fieldList.push(React.createElement("li", {className: "list-group-item", key: this.props.Fields[i]}, this.props.Fields[i]));
             }
         }
-        return (React.createElement(Sidebar, {Name: "Fields"}, 
-                    React.createElement("button", {onClick: this.props.resetQuery}, "Clear Query"), 
-                    React.createElement("ul", {className: "list-group"}, 
-                        fieldList
-                    )
+        return (
+            React.createElement(Sidebar, {Name: "Fields"}, 
+                React.createElement("div", {className: "form-group"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this.props.resetQuery}, "Clear Query")
+                ), 
+                React.createElement("ul", {className: "list-group"}, 
+                    fieldList
+                )
             ));
     }
 });
