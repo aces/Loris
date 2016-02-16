@@ -30,6 +30,7 @@ class InstrumentData extends \Loris\API\Candidates\Candidate\Instruments
 
     /**
      * Construct a request handler for candidate instrument data
+     *
      * @param string  $method     The HTTP method to be handled
      * @param string  $CandID     The CandID this API call is for
      * @param string  $Visit      The Visit this API call is for
