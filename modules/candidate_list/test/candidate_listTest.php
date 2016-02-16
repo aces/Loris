@@ -13,7 +13,7 @@
  */
 
 require_once __DIR__
-    . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+    . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
 
 /**
  * CandidateListTestIntegrationTest
@@ -24,8 +24,30 @@ require_once __DIR__
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class CandidateListTestIntegrationTest extends LorisIntegrationTest
+class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
+    /**
+     * The expected result when searches successfully retrieve candidate
+     *  TST0001.
+     *  All items represent the text of each column in the displayed HTML
+     *  candidate table.
+     */
+    private static $_TST0001 = array(
+                                '1',
+                                'Data Coordinating Center',
+                                '0',
+                                'TST0001',
+                                '',
+                                '"Active"',
+                                '',
+                                '',
+                                '',
+                                '',
+                                '1',
+                                '',
+                                'None',
+                               );
+
     /**
      * Backs up the useEDC config value and sets the value to a known
      * value (true) for testing.
@@ -47,6 +69,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
+
         $this->restoreConfigSetting("useEDC");
     }
     /**
@@ -127,6 +150,170 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("Feedback")
         );
         $this->assertEquals("select", $feedbackOptions->getTagName());
+    }
+
+    /**
+     * Performs various searches by PSCID (and PSCID only).
+     *
+     * @return void.
+     */
+    function testFilterByPscid()
+    {
+        $this->webDriver->get($this->url . "/candidate_list/");
+
+        // Enter something that does not even make sense in the PSCID field
+        // Verify that no candidates are returned
+        $this->_assertSearchBy(
+            array('PSCID' => 'PSCID that does not exist'),
+            null
+        );
+
+        // Search using a PSCID that does not exist
+        // Verify that no candidates are returned
+        $this->_assertSearchBy(
+            array('PSCID' => 'TST0003'),
+            null
+        );
+
+        // Search using PSCID TST0001
+        // Verify that only one candidate is returned: TST0001
+        $this->_assertSearchBy(
+            array('PSCID' => 'TST0001'),
+            array(self::$_TST0001)
+        );
+
+        // Search for candidate with PSCID tst0001
+        // Verify that candidate TST0001 is returned (checks that searches
+        // are case-insensitive)
+        $this->_assertSearchBy(
+            array('PSCID' => 'tst0001'),
+            array(self::$_TST0001)
+        );
+
+        // Search for PSCID that contains string t0
+        // Verify that candidate TST0001 is returned
+        $this->_assertSearchBy(
+            array('PSCID' => 't0'),
+            array(self::$_TST0001)
+        );
+    }
+
+    /**
+     * Performs various searches by DCCID (and DCCID only).
+     *
+     * @return void.
+     */
+    function testFilterByDccId()
+    {
+        $this->webDriver->get($this->url . "/candidate_list/");
+
+        // Search using an invalid DCCID
+        // Verify that no candidates are returned
+        $this->_assertSearchBy(
+            array('DCCID' => 'Not even a DCCID'),
+            null
+        );
+
+        // Search using a valid DCCID that does not exist
+        // Verify that no candidates are returned
+        $this->_assertSearchBy(
+            array('DCCID' => '666666'),
+            null
+        );
+
+        // Search using a valid DCCID that does not exist
+        // Verify that no candidates are returned
+        $this->_assertSearchBy(
+            array('DCCID' => '000'),
+            null
+        );
+
+        // Search for candidate with DCCID == 0
+        // Verify that candidate TST0001 is returned
+        $this->_assertSearchBy(
+            array('DCCID' => '0'),
+            array(self::$_TST0001)
+        );
+    }
+
+    /**
+     * Performs a candidate search using the specified criteria and verifies
+     * the candidates obtained.
+     *
+     * @param array  $criteria        criteria for the search.
+     * @param string $expectedResults the candidates that should be returned.
+     *
+     * @return void.
+     */
+    private function _assertSearchBy(array $criteria, $expectedResults)
+    {
+        foreach ($criteria as $elementName => $elementValue) {
+            $element = $this->webDriver->findElement(
+                WebDriverBy::Name($elementName)
+            );
+            switch ($element->getTagName()) {
+            case 'input':
+                $element->clear();
+                $element->sendKeys($elementValue);
+                break;
+            case 'select':
+                $selectElement = new WebDriverSelect($element);
+                $selectElement->selectByVisibleText($elementValue);
+                break;
+            default:
+                throw Exception(
+                    'Element type ' . $element->getTagName() . ' not supported'
+                );
+            }
+        }
+
+        $showDataButton = $this->webDriver->findElement(
+            WebDriverBy::Id("showdata_advanced_options")
+        );
+        $showDataButton->click();
+
+        $this->_assertCandidateTableContents('datatable', $expectedResults);
+    }
+
+    /**
+     * Compares the content of the candidate table with an expected content.
+     *
+     * @param string $tableName    name of the HTML table.
+     * @param string $expectedRows array of candidates that the table should contain.
+     *
+     * @return void
+     */
+    private function _assertCandidateTableContents($tableName, $expectedRows)
+    {
+        $dataTable = $this->webDriver->findElement(WebDriverBy::Id($tableName));
+        if (is_null($expectedRows)) {
+            $this->assertContains('No result found', $dataTable->getText());
+        } else {
+            $actualRows = $dataTable->findElements(
+                WebDriverBy::xpath('.//tbody//tr')
+            );
+            $this->assertEquals(
+                count($actualRows),
+                count($expectedRows),
+                "Number of candidates returned should be "
+                . count($expectedRows) . ", not " . count($actualRows)
+            );
+            for ($i=0; $i<count($actualRows); $i++) {
+                $elements      = $actualRows[$i]->findElements(
+                    WebDriverBy::xpath('.//td')
+                );
+                $actualColumns = array();
+                foreach ($elements as $e) {
+                    $actualColumns[] = $e->getText();
+                }
+                $expectedColumns = $expectedRows[$i];
+                $this->assertEquals(
+                    $actualColumns,
+                    $expectedColumns,
+                    "Candidates at row $i differ"
+                );
+            }
+        }
     }
 }
 ?>
