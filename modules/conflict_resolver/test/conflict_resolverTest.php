@@ -67,7 +67,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function testConflictResolverPermission()
     {
          $this->setupPermissions(array("conflict_resolver"));
-         $this->webDriver->get($this->url . "?test_name=conflict_resolver");
+         $this->webDriver->get($this->url . "/conflict_resolver/");
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::id("onLoad")
          )->getText();
@@ -85,7 +85,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->setupPermissions(array("conflict_resolver"));
          $this->webDriver->get(
              $this->url
-             . "?test_name=conflict_resolver&submenu=resolved_conflicts"
+             . "/conflict_resolver/?submenu=resolved_conflicts"
          );
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
@@ -102,7 +102,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function testConflictResolverWithoutPermission()
     {
          $this->setupPermissions(array());
-         $this->webDriver->get($this->url . "?test_name=conflict_resolver");
+         $this->webDriver->get($this->url . "/conflict_resolver/");
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
