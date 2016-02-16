@@ -368,7 +368,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     function safeGet($url)
     {
         // keep a reference from the actual page
-        $elementFromOldPage = $this->webdriver->findElement(
+        $elementFromOldPage = $this->webDriver->findElement(
             WebDriverBy::xPath(
                 "
                 //div[@class='navbar-header']/a
@@ -378,7 +378,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
         try {
             // Load the new page
-            $this-webdriver->get($url);
+            $this->webdriver->get($url);
 
             // Use the old page reference util it detach from the DOM
             while (true) {
