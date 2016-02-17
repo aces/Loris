@@ -754,7 +754,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
     {
 	// Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
@@ -763,28 +762,19 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a')
         );
 
-	$NativeLink->click();
-	sleep(5);
+	$this->clickToLoadNewPage($NativeLink);
 
         $VisitLevelFeedback = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="sidebar-content"]/div[1]/a/span/span[2]')
         );
-
+        $handle = $this->webDriver->getWindowHandle(); 
 	$VisitLevelFeedback->click();
-
-
-//	ATEMTPTING TO CHANGE THE WINDOW HANDLES TO POPUP, NO SUCCESS
-//	$handles = $this->safeGet(
-//	    $this->window_handles()
-//	);
-//	$last_window = end($handles);
-//	$this->$webDriver->focusWindow($last_window);
+        $this->webDriver->switchTo()->window($handle);
 
 //        $PopUpPSCID = $this->webDriver->findElement(
 //            WebDriverBy::xPath('/html/body/div/table/tbody/tr[2]/td')
 //        )->getText();
 //        $this->assertContains("AOL0002", $PopUpPSCID);
-
 
         $QCStatus = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="sidebar-content"]/div[2]/div/label')
@@ -795,7 +785,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="sidebar-content"]/div[2]/label')
         )->getText();
         $this->assertContains("QC Pending", $QCPending);
-
 
 	// Check that the QC status are editable with correct permission
         $this->setupPermissions(array('imaging_browser_view_allsites', 'imaging_browser_qc'));
