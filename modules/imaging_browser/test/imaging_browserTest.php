@@ -770,7 +770,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $handle = $this->webDriver->getWindowHandle(); 
 	$VisitLevelFeedback->click();
         $handles = $this->webDriver->getWindowHandles();
-        
+        var_dump($handles); 
         $this->webDriver->switchTo()->window($handles[1])->close();
         $this->webDriver->switchTo()->window($handle);
 
