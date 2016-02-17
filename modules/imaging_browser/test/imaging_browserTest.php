@@ -769,8 +769,9 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         $handle = $this->webDriver->getWindowHandle(); 
 	$VisitLevelFeedback->click();
-        $popupHandle = end($this->webDriver->getWindowHandles());
-        $this->webDriver->switchTo()->window($popupHandle)->close();
+        $handles = $this->webDriver->getWindowHandles();
+        
+        $this->webDriver->switchTo()->window($handles[1])->close();
         $this->webDriver->switchTo()->window($handle);
 
 //        $PopUpPSCID = $this->webDriver->findElement(
