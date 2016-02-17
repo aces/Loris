@@ -267,7 +267,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-
     function testImagingBrowserDoespageLoad()
     {
         $this->safeGet(
@@ -741,7 +740,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     **/
-
     function testViewSessionVisitLevelFeedback()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -811,14 +809,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->findElement(
             WebDriverBy::Name('visit_status')
         )->sendKeys("Pass");
-/*
-[XLB :: The css selector wasn't valid]
-        $QCStatusSetPass = $this->webDriver->findElement(
-//            WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(1) > select:nth-child(2) > option:nth-child(2)")
-            WebDriverBy::cssSelector("select.user-success > option:nth-child(1)")
-        );
-        $QCStatusSetPass->click();
-*/
+
 	// Testing the button Save is viewable, clickable and works by watching the QC status set to Pass after removing permissions 
         $QCSaveShow = $this->webDriver->findElement(
             WebDriverBy::xPath('//input[@accessKey="s"]')
@@ -843,7 +834,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     */
-
     function testViewSessionBreadCrumb()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -864,15 +854,13 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a')
         );
 
-	$NativeLink->click();
-	sleep(5);
+	$this->clickToLoadNewPage($NativeLink);
 
         $BreadCrumbLink = $this->webDriver->findElement(
 	    WebDriverBy::xPath('//*[@id="page-content-wrapper"]/div/div[1]/a[1]/label')
 	);
 
-        $BreadCrumbLink->click();
-	sleep(5);
+        $this->clickToLoadNewPage($BreadCrumbLink);
 
         $SelectionFilter = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[1]/div/div/div[1]')
@@ -897,9 +885,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     **/
-
-
-
     function testScanLevelQCFlags()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -914,8 +899,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
         );
 
-	$SelectedLink->click();
-	sleep(5);
+	$this->clickToLoadNewPage($SelectedLink);
 
         $MainPanelText1 = $this->webDriver->findElement(
 	    WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(1) > label:nth-child(1)")
@@ -947,8 +931,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
         );
 
-	$SelectedLink->click();
-	sleep(5);
+	$this->clickToLoadNewPage($SelectedLink);
 
 	// Only with the correct persmissions would the options in the dropdown menu appear
         $QCStatusPass = $this->webDriver->findElement(
@@ -981,9 +964,11 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
         );
 
-	$SelectedLink->click();
-	sleep(5);
+	$this->clickToLoadNewPage($SelectedLink);
 
+        $this->markTestIncomplete(
+            'Missing test-specific dataset'
+        );
 //	DOES NOT EXIST IN MY TEST-SPECIFIC DATASET, I GOT THIS PATH FROM DEMO!
 //        $CaveatListLink = $this->webDriver->findElement(
 //	    WebDriverBy::xPath('//*[@id="panel-body-23"]/div[1]/div[2]/div/div[3]/a')
@@ -1041,17 +1026,26 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
         );
 
-	$SelectedLink->click();
-	sleep(5);
+	$this->clickToLoadNewPage($SelectedLink);
 
         $CommentsButton = $this->webDriver->findElement(
 	    WebDriverBy::cssSelector(".mri-second-row-panel > a:nth-child(1) > span:nth-child(1) > span:nth-child(2)")
 	);
 
+        $handleList = $this->webDriver->getWindowHandles();
 	$CommentsButton->click();
-	sleep(5);
 
 	// Should assert that a window is launched, but I don't know how to select a pop up window
+        $newHandleList = $this->webDriver->getWindowHandles();
+
+        $diff = array_diff($newHandleList, $handleList);
+        $this->assertCount(1, $diff);
+
+        $this->webDriver->switchTo()->window($diff[1]);
+        $newWindowText = $this->webDriver->findElement(
+            WebDriverBy::xPath('//body')
+        )->getText();
+        $this->assertContains("Click here to close this window", $newWindowText);
     }
 
 /******** D & E ********/
