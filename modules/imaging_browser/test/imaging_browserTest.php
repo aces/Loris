@@ -806,7 +806,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// Click save,
 	// Check PASS green flag appears next to file name
         $this->webDriver->findElement(
-            WebDriverBy::xPath('//select[contains(@name,"status[")]')
+            WebDriverBy::xPath('//div[@class="row"]//select[contains(@name, "status")]')
         )->sendKeys("Pass");
 
 	// Testing the button Save is viewable, clickable and works by watching the QC status set to Pass after removing permissions 
