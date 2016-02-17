@@ -209,6 +209,7 @@ class NDB_Form_Training extends NDB_Form
              $baseurl . "/training/js/training_helper.js",
             )
         );
+        return $deps;
     }
 }
 ?>
