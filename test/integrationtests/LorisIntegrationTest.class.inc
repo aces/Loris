@@ -130,16 +130,18 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $passwordEl->sendKeys($password);
 
         $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
-        $login->click();
+        $this->clickToLoadNewPage($login);
 
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
         // are run one will fail due to the login taking too long?
+        /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )
         );
+        */
     }
 
     /**

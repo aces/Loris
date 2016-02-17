@@ -267,7 +267,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-//*----
+/*----
     function testImagingBrowserDoespageLoad()
     {
         $this->safeGet(
@@ -289,7 +289,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     */
-//*----
+/*----
     function testImagingBrowserDoespageLoadPermissions()
     {
 
@@ -340,7 +340,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     */
-//*----
+/*----
     function testImagingBrowserViewDatasetDependingOnPermissions()
     {
         // With permission imaging_browser_view_site: 0 subjects found from DCC site
@@ -375,7 +375,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-//*----
+/*----
     function testImagingBrowserFiltersAndShowClearButtons()
     {
         // Testing for PSCID
@@ -436,7 +436,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-//*----
+/*----
     function testImagingBrowserSiteDependingOnPermissions()
     {
         // With permission imaging_browser_view_site
@@ -481,7 +481,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * @return void
     */
 
-//*----
+/*----
     function testImagingBrowserSortableByTableHeader()
     {
         $this->setupPermissions(array('imaging_browser_view_allsites'));
@@ -524,7 +524,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * @return void
      *
      */
-//*----
+/*----
     function testViewSessionLinksNative()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -558,7 +558,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     **/
-//*----
+/*----
     function testViewSessionNavigationLinks()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -634,7 +634,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Test Site AOL", $SiteText1);
     }
 
-//*----
+/*----
     function testViewSessionLinks()
     {
         $this->markTestIncomplete(
@@ -699,7 +699,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
     }
 
-//*----
+/*----
     function testViewSessionVolumeViewerLinks()
     {
         $this->markTestSkipped(
@@ -757,7 +757,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
-var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText());
 
         $NativeLink = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a')
@@ -770,6 +769,8 @@ var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText())
         );
         $handle = $this->webDriver->getWindowHandle(); 
 	$VisitLevelFeedback->click();
+        $popupHandle = end($this->webDriver->getWindowHandles());
+        $this->webDriver->switchTo()->window($popupHandle)->close();
         $this->webDriver->switchTo()->window($handle);
 
 //        $PopUpPSCID = $this->webDriver->findElement(
@@ -806,7 +807,6 @@ var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText())
 	// Send option Pass (second option) from dropdown menu,
 	// Click save,
 	// Check PASS green flag appears next to file name
-var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText());
         $this->webDriver->findElement(
             WebDriverBy::xPath('//select[contains(@name,"status[")]')
         )->sendKeys("Pass");
@@ -835,7 +835,7 @@ var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText())
      *
      * @return void
     */
-//*----
+/*----
     function testViewSessionBreadCrumb()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -887,7 +887,7 @@ var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText())
      *
      * @return void
     **/
-//*----
+/*----
     function testScanLevelQCFlags()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -1015,7 +1015,7 @@ var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText())
      * @return void
     **/
 
-//*----
+/*----
     function testCommentsWindowLaunch()
     {
 	// Setting permissions to view all sites to view all datasets
