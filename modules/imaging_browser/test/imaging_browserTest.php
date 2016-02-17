@@ -267,6 +267,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
+//*----
     function testImagingBrowserDoespageLoad()
     {
         $this->safeGet(
@@ -288,6 +289,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     */
+//*----
     function testImagingBrowserDoespageLoadPermissions()
     {
 
@@ -338,6 +340,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     */
+//*----
     function testImagingBrowserViewDatasetDependingOnPermissions()
     {
         // With permission imaging_browser_view_site: 0 subjects found from DCC site
@@ -372,6 +375,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
+//*----
     function testImagingBrowserFiltersAndShowClearButtons()
     {
         // Testing for PSCID
@@ -432,6 +436,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
+//*----
     function testImagingBrowserSiteDependingOnPermissions()
     {
         // With permission imaging_browser_view_site
@@ -476,6 +481,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * @return void
     */
 
+//*----
     function testImagingBrowserSortableByTableHeader()
     {
         $this->setupPermissions(array('imaging_browser_view_allsites'));
@@ -518,6 +524,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * @return void
      *
      */
+//*----
     function testViewSessionLinksNative()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -551,6 +558,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     **/
+//*----
     function testViewSessionNavigationLinks()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -626,6 +634,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Test Site AOL", $SiteText1);
     }
 
+//*----
     function testViewSessionLinks()
     {
         $this->markTestIncomplete(
@@ -690,6 +699,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
     }
 
+//*----
     function testViewSessionVolumeViewerLinks()
     {
         $this->markTestSkipped(
@@ -807,24 +817,24 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// Click save,
 	// Check PASS green flag appears next to file name
         $this->webDriver->findElement(
-            WebDriverBy::Name('visit_status')
+            WebDriverBy::xPath('//select[contains(@name,"status[")]')
         )->sendKeys("Pass");
 
 	// Testing the button Save is viewable, clickable and works by watching the QC status set to Pass after removing permissions 
         $QCSaveShow = $this->webDriver->findElement(
             WebDriverBy::xPath('//input[@accessKey="s"]')
         );
-        $QCSaveShow->click();
+        $this->clickToLoadNewPage($QCSaveShow);
 
 
 //        $this->setupPermissions(array('imaging_browser_view_allsites'));
 //        $this->webDriver->navigate()->refresh();
 	
 //	AT THIS POINT, I SEE THINGS WORKING, BUT A POP UP MESSAGE DUE TO POST FORM SUBMISSION PREVENTS ASSERTION
-//        $QCStatus = $this->webDriver->findElement(
-//            WebDriverBy::cssSelector("#image-200 > div > div > div.panel-heading > span.label.label-success")
-//        )->getText();
-//        $this->assertContains("Pass", $QCStatus);
+        $QCStatus = $this->webDriver->findElement(
+            WebDriverBy::xPath('//div[contains(@id, "image-")]//span[@class="label label-success"]')
+        )->getText();
+        $this->assertContains("Pass", $QCStatus);
     }
 
     /**
@@ -834,6 +844,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     */
+//*----
     function testViewSessionBreadCrumb()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -885,6 +896,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     **/
+//*----
     function testScanLevelQCFlags()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -1012,6 +1024,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * @return void
     **/
 
+//*----
     function testCommentsWindowLaunch()
     {
 	// Setting permissions to view all sites to view all datasets
