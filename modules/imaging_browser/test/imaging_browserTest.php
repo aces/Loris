@@ -805,6 +805,9 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// Send option Pass (second option) from dropdown menu,
 	// Click save,
 	// Check PASS green flag appears next to file name
+        
+        $handle = $this->webDriver->getWindowHandle(); 
+        var_dump($this->webDriver->switchTo()->window($handle)->getTitle());
         $this->webDriver->findElement(
             WebDriverBy::Name('status[1]')
         )->sendKeys("Pass");
