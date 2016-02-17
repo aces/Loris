@@ -231,6 +231,36 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
     }
 
+    public function tearDown() {
+
+        parent::tearDown();
+
+        // tear down test-specific dataset
+
+        $this->DB->run('SET foreign_key_checks =0');
+        $this->DB->delete("files", array('FileID' => '1'));
+        $this->DB->delete("files", array('FileID' => '2'));
+        $this->DB->delete("mri_processing_protocol", array('ProcessProtocolID' => '1'));
+        $this->DB->delete("mri_processing_protocol", array('ProcessProtocolID' => '2'));
+        $this->DB->delete("parameter_file", array('ParameterFileID' => '10'));
+        $this->DB->delete("parameter_file", array('ParameterFileID' => '11'));
+        $this->DB->delete("parameter_type", array('CurrentGUITable' => 'AnyTextToDeleteThisEntry'));
+        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999998'));
+        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999999'));
+        $this->DB->delete("files_qcstatus", array('FileID' => '1'));
+        $this->DB->delete("files_qcstatus", array('FileID' => '2'));
+        $this->DB->delete("session", array('ID' => '999997'));
+        $this->DB->delete("session", array('ID' => '999998'));
+        $this->DB->delete("session", array('ID' => '999999'));
+        $this->DB->delete("candidate", array('CandID' => '000001'));
+        $this->DB->delete("candidate", array('CandID' => '000002'));
+        $this->DB->delete("candidate", array('CandID' => '000003'));
+        $this->DB->delete("psc", array('CenterID' => '253'));
+        $this->DB->delete("psc", array('CenterID' => '254'));
+        $this->DB->run('SET foreign_key_checks =1');
+
+    }
+
     /**
      * Tests that, when loading the imaging_browser module, some
      * text appears in the body.
@@ -259,7 +289,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     */
-
     function testImagingBrowserDoespageLoadPermissions()
     {
 
@@ -310,7 +339,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     */
-
     function testImagingBrowserViewDatasetDependingOnPermissions()
     {
         // With permission imaging_browser_view_site: 0 subjects found from DCC site
@@ -345,7 +373,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-
     function testImagingBrowserFiltersAndShowClearButtons()
     {
         // Testing for PSCID
@@ -406,11 +433,8 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-
-
     function testImagingBrowserSiteDependingOnPermissions()
     {
-
         // With permission imaging_browser_view_site
         $this->setupPermissions(array('imaging_browser_view_site'));
         $this->webDriver->navigate()->refresh();
@@ -495,7 +519,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * @return void
      *
      */
-
     function testViewSessionLinksNative()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -529,8 +552,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     **/
-
-
     function testViewSessionNavigationLinks()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -606,10 +627,11 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Test Site AOL", $SiteText1);
     }
 
-
-/*
     function testViewSessionLinks()
     {
+        $this->markTestIncomplete(
+            'Forms should be added first, not sure how'
+        );
 	// LINKS NEXT //
 	// Forms should be added first, not sure how
 
@@ -668,11 +690,12 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("This page (radiology_review) is under construction", $RadFormHeader);
 
     }
-*/
 
-/*
     function testViewSessionVolumeViewerLinks()
     {
+        $this->markTestSkipped(
+            'Currently awaiting redmine 9385'
+        );
 	// VOLUME VIEWER MENU NEXT //
 	// Currently awaiting redmine 9385 //
 	// select an image first then click on 3DOnly
@@ -710,7 +733,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("Brainbrowser", $BreadCrumbText);
     }
-*/
 
     /**
      * Steps 3 through 7
@@ -786,14 +808,17 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// Send option Pass (second option) from dropdown menu,
 	// Click save,
 	// Check PASS green flag appears next to file name
-
-
+        $this->webDriver->findElement(
+            WebDriverBy::Name('visit_status')
+        )->sendKeys("Pass");
+/*
+[XLB :: The css selector wasn't valid]
         $QCStatusSetPass = $this->webDriver->findElement(
 //            WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(1) > select:nth-child(2) > option:nth-child(2)")
             WebDriverBy::cssSelector("select.user-success > option:nth-child(1)")
         );
         $QCStatusSetPass->click();
-
+*/
 	// Testing the button Save is viewable, clickable and works by watching the QC status set to Pass after removing permissions 
         $QCSaveShow = $this->webDriver->findElement(
             WebDriverBy::xPath('//input[@accessKey="s"]')
@@ -818,7 +843,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     */
-
 
     function testViewSessionBreadCrumb()
     {
@@ -1032,36 +1056,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
 /******** D & E ********/
 	// Not tested because of the popup window issue... 
-
-    public function tearDown() {
-
-        parent::tearDown();
-
-        // tear down test-specific dataset
-
-        $this->DB->run('SET foreign_key_checks =0');
-        $this->DB->delete("files", array('FileID' => '1'));
-        $this->DB->delete("files", array('FileID' => '2'));
-        $this->DB->delete("mri_processing_protocol", array('ProcessProtocolID' => '1'));
-        $this->DB->delete("mri_processing_protocol", array('ProcessProtocolID' => '2'));
-        $this->DB->delete("parameter_file", array('ParameterFileID' => '10'));
-        $this->DB->delete("parameter_file", array('ParameterFileID' => '11'));
-        $this->DB->delete("parameter_type", array('CurrentGUITable' => 'AnyTextToDeleteThisEntry'));
-        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999998'));
-        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999999'));
-        $this->DB->delete("files_qcstatus", array('FileID' => '1'));
-        $this->DB->delete("files_qcstatus", array('FileID' => '2'));
-        $this->DB->delete("session", array('ID' => '999997'));
-        $this->DB->delete("session", array('ID' => '999998'));
-        $this->DB->delete("session", array('ID' => '999999'));
-        $this->DB->delete("candidate", array('CandID' => '000001'));
-        $this->DB->delete("candidate", array('CandID' => '000002'));
-        $this->DB->delete("candidate", array('CandID' => '000003'));
-        $this->DB->delete("psc", array('CenterID' => '253'));
-        $this->DB->delete("psc", array('CenterID' => '254'));
-        $this->DB->run('SET foreign_key_checks =1');
-
-    }
 
 }
 ?>
