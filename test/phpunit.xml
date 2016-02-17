@@ -14,6 +14,7 @@
         </testsuite>
 
         <testsuite name='Loris Module Integration Tests'>
+<!--
             <directory>../modules/candidate_list/test/</directory>
             <directory>../modules/candidate_parameters/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
@@ -32,7 +33,9 @@
             <directory>../modules/final_radiological_review/test/</directory>
             <directory>../modules/genomic_browser/test/</directory>
             <directory>../modules/help_editor/test/</directory>
+-->
             <directory>../modules/imaging_browser/test/</directory>
+<!--
             <directory>../modules/instrument_builder/test/</directory>
             <directory>../modules/instrument_list/test/</directory>
             <directory>../modules/instrument_manager/test/</directory>
@@ -47,6 +50,7 @@
             <directory>../modules/timepoint_list/test/</directory>
             <directory>../modules/training/test/</directory>
             <directory>../modules/user_accounts/test/</directory>
+-->
         </testsuite>
 
     </testsuites>
