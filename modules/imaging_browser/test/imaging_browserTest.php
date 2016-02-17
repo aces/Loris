@@ -757,6 +757,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
+var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText());
 
         $NativeLink = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a')
