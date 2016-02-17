@@ -202,14 +202,6 @@ class NDB_Form_Training extends NDB_Form
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
-        print_r($baseURL);
-        print_r($deps);
-        /*return array_merge(
-            $deps,
-            array(
-                $baseURL . "/training/js/training.js",
-            )
-        );*/
         return $deps;
     }
 }
