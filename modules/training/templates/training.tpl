@@ -5,6 +5,8 @@
             Please read the following:
         {elseif $contentType=='video'}
             Please watch the following:
+        {elseif $contentType=='vimeo'}
+            Please watch the following:
         {elseif $contentType=='quiz'}
             Please complete the quiz below in order to receive certification:
         {/if}
@@ -23,7 +25,7 @@
     {elseif $contentType=='video'}
         {include file='training_video.tpl' filename=$tabVariables}
     {elseif $contentType=='vimeo'}
-        {include file='training_vidmo.tpl' filename=$tabVariables}
+        {include file='training_vimeo.tpl' filename=$tabVariables}
     {elseif $contentType=='quiz'}
         {include file='training_quiz.tpl' questions=$tabVariables}
     {/if}

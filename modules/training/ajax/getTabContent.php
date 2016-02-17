@@ -67,10 +67,16 @@ if ($tabInformation['TrainingType'] == 'text') {
         $type
     );
 } else if ($tabInformation['TrainingType'] == 'vimeo') {
+    $oembed_endpoint = 'http://vimeo.com/api/oembed';
+    $video_url = 'http://vimeo.com/' . $tabInformation['Content'];
+    //$json_url = $oembed_endpoint . '.json?url=' . rawurlencode($video_url) . '&width=640';
+    $xml_url = $oembed_endpoint . '.xml?url=' . rawurlencode($video_url);
+    $oembed = simplexml_load_string(curl_get($xml_url));
+
     $tabHTML = createTabHTML(
         'vimeo',
         $tabInformation['Title'],
-        $tabInformation['Content'],
+        html_entity_decode($oembed->html),
         $type
     );
 } else if ($tabInformation['TrainingType'] == 'quiz') {
@@ -147,4 +153,14 @@ function createTabHTML($contentType, $title, $tabVariables, $type)
     return $html;
 }
 
+// Curl helper function
+function curl_get($url) {
+    $curl = curl_init($url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+    $return = curl_exec($curl);
+    curl_close($curl);
+    return $return;
+}
 ?>
