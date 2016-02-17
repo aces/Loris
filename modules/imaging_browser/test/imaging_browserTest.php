@@ -240,7 +240,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
     function testImagingBrowserDoespageLoad()
     {
-        $this->webDriver->get(
+        $this->safeGet(
 	    $this->url . "/imaging_browser/"
 	);
 
@@ -266,7 +266,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // Without permissions
         $this->setupPermissions(array(''));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
 	    $this->url . "/imaging_browser/");
 
         $errorText = $this->webDriver->findElement(
@@ -281,7 +281,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // With permission imaging_browser_view_site
         $this->setupPermissions(array('imaging_browser_view_site'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $breadcrumbText = $this->webDriver->findElement(
@@ -292,7 +292,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $breadcrumbText = $this->webDriver->findElement(
@@ -317,7 +317,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_site'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $ControlPanelText = $this->webDriver->findElement(
@@ -328,7 +328,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // With permission imaging_browser_view_allsites: 2 subjects with imaging data found
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $ControlPanelText = $this->webDriver->findElement(
@@ -352,7 +352,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $PSCIDOptions = $this->webDriver->findElement(
@@ -414,7 +414,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // With permission imaging_browser_view_site
         $this->setupPermissions(array('imaging_browser_view_site'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $SiteTopMenuTextAll = $this->webDriver->findElement(
@@ -431,7 +431,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $SiteTopMenuTextAll = $this->webDriver->findElement(
@@ -458,7 +458,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $PSCIDHeader = $this->webDriver->findElement(
@@ -501,7 +501,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -542,7 +542,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// to view buttons: Back to List and Next, then we can check Prev
 
 	//Back to List Button
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -567,7 +567,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Selection Filter", $SelectionFilter);
 
 	//Next Button
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -615,7 +615,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -643,7 +643,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("This page (mri_parameter_form) is under construction", $MRIFormHeader);
 
 	//Radiology review form
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -679,7 +679,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -725,7 +725,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -744,7 +744,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
 
 //	ATEMTPTING TO CHANGE THE WINDOW HANDLES TO POPUP, NO SUCCESS
-//	$handles = $this->webDriver->get(
+//	$handles = $this->safeGet(
 //	    $this->window_handles()
 //	);
 //	$last_window = end($handles);
@@ -832,7 +832,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// then perform the breadcrumb test
 
 	//Back to List Button
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -882,7 +882,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -915,7 +915,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites', 'imaging_browser_qc'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -949,7 +949,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites', 'imaging_browser_qc','violated_scans_view_allsites'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -1009,7 +1009,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
