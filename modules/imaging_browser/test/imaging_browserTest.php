@@ -806,7 +806,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// Click save,
 	// Check PASS green flag appears next to file name
         $this->webDriver->findElement(
-            WebDriverBy::Name('//select[@name="status[1]")]')
+            WebDriverBy::Name('status[1]')
         )->sendKeys("Pass");
 
 	// Testing the button Save is viewable, clickable and works by watching the QC status set to Pass after removing permissions 
