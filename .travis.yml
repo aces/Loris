@@ -34,7 +34,11 @@ install:
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
 
     - PHP_INI_SCAN_DIR=":test/" php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null & 
-
+    - echo "Extracting firefox and setting PATH variable..."
+    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
+    - export PATH="/tmp/firefox:$PATH"
+    - echo "Using firefox version `firefox --version`"
+    - ls -lR /usr/lib/firefox
     - which firefox
     - firefox --version
 
@@ -100,11 +104,6 @@ script:
     - jslint htdocs/js/jquery.dynamictable.js
 
     # Run unit tests to make sure functions still do what they should.
-    - echo "Extracting firefox and setting PATH variable..."
-    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
-    - export PATH="/tmp/firefox:$PATH"
-    - echo "Using firefox version `firefox --version`"
-    - ls -lR /usr/lib/firefox
     - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
 
 after_success:
