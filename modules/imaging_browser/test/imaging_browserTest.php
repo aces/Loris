@@ -805,7 +805,12 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// Send option Pass (second option) from dropdown menu,
 	// Click save,
 	// Check PASS green flag appears next to file name
-        
+        $this->webDriver->wait(120, 1000)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::ID("image-1")
+            )
+        );       
+ 
         $handle = $this->webDriver->getWindowHandle(); 
         var_dump($this->webDriver->switchTo()->window($handle)->getTitle());
         var_dump($this->webDriver->findElement(WebDriverBy::xPath('//div[@class="panel panel-default"]'))->getText());
