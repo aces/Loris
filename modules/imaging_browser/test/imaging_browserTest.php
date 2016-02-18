@@ -815,7 +815,8 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         var_dump($this->webDriver->findElement(WebDriverBy::xPath('//div[@class="panel panel-default"]'))->getText());
         var_dump($this->webDriver->findElement(WebDriverBy::xPath('//div[@class="panel panel-default"]//div[@class="panel-body"]'))->getText());
 
-        var_dump($this->webDriver->getPageSource());
+        $bob = $this->webDriver->getPageSource();
+        var_dump(strstr($bob, 'RImagePanel'));
         $this->webDriver->executeScript("$('body').html(navigator.userAgent + JSON.stringify(React))", array());
         var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText());
 $this->webDriver->executeScript('
