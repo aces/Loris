@@ -100,6 +100,10 @@ script:
     - jslint htdocs/js/jquery.dynamictable.js
 
     # Run unit tests to make sure functions still do what they should.
+    - echo "Extracting firefox and setting PATH variable..."
+    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
+    - export PATH="/tmp/firefox:$PATH"
+    - echo "Using firefox version `firefox --version`"
     - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
 
 after_success:
