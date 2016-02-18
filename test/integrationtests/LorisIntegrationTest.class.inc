@@ -92,9 +92,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         // Set up WebDriver implementation and login
 
         $capabilities = array(
-            \WebDriverCapabilityType::BROWSER_NAME => 'chrome',
-   //         \WebDriverCapabilityType::VERSION => '44.0',
-   //         \WebDriverCapabilityType::JAVASCRIPT_ENABLED => 'true'
+            \WebDriverCapabilityType::BROWSER_NAME => 'firefox',
+            \WebDriverCapabilityType::VERSION => '44.0',
+            \WebDriverCapabilityType::JAVASCRIPT_ENABLED => 'true'
         );
 
         $this->webDriver = RemoteWebDriver::create(
