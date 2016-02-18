@@ -104,7 +104,7 @@ script:
     - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
     - echo "Using firefox version `firefox --version`"
-    - ls -l /usr/lib/firefox
+    - ls -lR /usr/lib/firefox
     - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
 
 after_success:
