@@ -814,6 +814,8 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         var_dump($this->webDriver->switchTo()->window($handle)->getTitle());
         var_dump($this->webDriver->findElement(WebDriverBy::xPath('//div[@class="panel panel-default"]'))->getText());
         var_dump($this->webDriver->findElement(WebDriverBy::xPath('//div[@class="panel panel-default"]//div[@class="panel-body"]'))->getText());
+
+        var_dump($this->webDriver->getPageSource());
         $this->webDriver->executeScript("$('body').html(navigator.userAgent + JSON.stringify(React))", array());
 $this->webDriver->executeScript('
 "use strict";
