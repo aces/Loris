@@ -799,7 +799,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="sidebar-content"]/div[2]/div/select/option[2]')
         )->getText();
         $this->assertContains("Pass", $QCStatusPass);
-
 	// Test that we can edit the QC status by changing it from Blank to Pass
 
 	// Send option Pass (second option) from dropdown menu,
@@ -816,6 +815,24 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         var_dump($this->webDriver->findElement(WebDriverBy::xPath('//div[@class="panel panel-default"]'))->getText());
         var_dump($this->webDriver->findElement(WebDriverBy::xPath('//div[@class="panel panel-default"]//div[@class="panel-body"]'))->getText());
         $this->webDriver->executeScript("$('body').html(navigator.userAgent + JSON.stringify(React))", array());
+$this->webDriver->executeScript('
+"use strict";
+
+var HelloMessage = React.createClass({
+  displayName: "HelloMessage",
+
+  render: function render() {
+    return React.createElement(
+      "div",
+      null,
+      "Hello ",
+      this.props.name
+    );
+  }
+});
+
+React.render(React.createElement(HelloMessage, { name: "John" }), document.getElementsByTagName("body")[0])
+', array());
         var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText());
         $this->webDriver->findElement(
             WebDriverBy::Name('status[1]')
