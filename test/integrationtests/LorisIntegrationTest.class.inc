@@ -90,7 +90,12 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
         // Set up WebDriver implementation and login
-        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+
+        $capabilities = array(
+            \WebDriverCapabilityType::BROWSER_NAME => 'firefox',
+            \WebDriverCapabilityType::VERSION => '44.0',
+            \WebDriverCapabilityType::JAVASCRIPT_ENABLED => 'true'
+        );
 
         $this->webDriver = RemoteWebDriver::create(
             'http://localhost:4444/wd/hub',
@@ -130,16 +135,18 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $passwordEl->sendKeys($password);
 
         $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
-        $login->click();
+        $this->clickToLoadNewPage($login);
 
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
         // are run one will fail due to the login taking too long?
+        /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )
         );
+        */
     }
 
     /**
@@ -279,7 +286,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
     }
-    
+
     /**
      * Helper function to change the users Study Site
      *
@@ -333,5 +340,60 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         return count($configMenu) > 0;
     }
 
+    /**
+     * Helper function to click on a element and wait for the new page to be loaded.
+     * When the DOM is reloaded, the elements of the previous page become stale.
+     * Selenium will raise an exception when a function (like getText) are called on
+     * those elements.
+     *
+     * Note: If the page don't reload, this will produce an infinite loop.
+     *
+     * @param webDriverElement $clickable The element to be clicked
+     *
+     * @return void Once the element is stale.
+     */
+    public function clickToLoadNewPage($clickable)
+    {
+        $clickable->click();
+        try {
+            while (true) {
+                $clickable->getText();
+            }
+        } catch (StaleElementReferenceException $e) {
+            return;
+        }
+    }
+
+    /**
+     * Helper function to decorate the webdriver->get function so it
+     * ensure that the new page is load before it returns.
+     *
+     * @param string $url The url to get.
+     *
+     * @return void
+     */
+    function safeGet($url)
+    {
+        // keep a reference from the actual page
+        $elementFromOldPage = $this->webDriver->findElement(
+            WebDriverBy::xPath(
+                "
+                //div[@class='navbar-header']/a
+                "
+            )
+        );
+
+        try {
+            // Load the new page
+            $this->webDriver->get($url);
+
+            // Use the old page reference util it detach from the DOM
+            while (true) {
+                $elementFromOldPage->getText();
+            }
+        } catch (StaleElementReferenceException $e) {
+            return;
+        }
+    }
 }
 ?>
