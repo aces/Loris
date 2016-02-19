@@ -51,11 +51,13 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserSnpBrowserDoespageLoad()
     {
-        $this->webDriver
-            ->get($this->url . "/genomic_browser/?submenu=snp_browser");
+        $this->safeGet(
+            $this->url . "/genomic_browser/?submenu=snp_browser"
+        );
 
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
 
         $this->assertContains("Genomic Browser", $bodyText);
     }
