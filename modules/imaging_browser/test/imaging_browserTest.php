@@ -857,7 +857,7 @@ var Timer = React.createClass({
 React.render(React.createElement(Timer, null), document.getElementById("image-1"));
 ', array());
 sleep(2);
-        var_dump(strstr($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText(),'<div id="image-1">'));
+        var_dump($this->webDriver->findElement(WebDriverBy::ID('lorisworkspace'))->getText());
         $this->webDriver->executeScript("$('body').html(navigator.userAgent + JSON.stringify(React))", array());
         var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText());
 
