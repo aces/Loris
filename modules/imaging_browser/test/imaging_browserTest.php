@@ -813,7 +813,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         var_dump($this->webDriver->findElement(WebDriverBy::ID('image-1'))->getText());
 
         $bob = $this->webDriver->getPageSource();
-        var_dump($bob);
+        var_dump(strstr($bob,'<div id="image-1">'));
 $this->webDriver->executeScript('
 "use strict";
 
