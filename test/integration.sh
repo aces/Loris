@@ -7,24 +7,13 @@
 #       example: bash integration.sh configuration
 
 # Test database and test config.xml have to be created before running tests. This is a one time setup.
-#   1 - create a LorisTest DB and source the default schemas (SQL/0000-00-*.sql)
-#   2 - create a MySQL user SQLTestUser with password TestPassword.
+#   1 - create a test DB and source the default schemas (SQL/0000-00-*.sql)
+#   2 - create a MySQL test user with a test password.
 #   3 - Modify config.xml file in test/ folder if necessary.
 #       Some changes to verify in this test/config.xml file:
-#       *  Database connection credentials: specify credentials to LorisTest DB which you create in step 1
+#       *  Database connection credentials: specify credentials to the test DB which you create in step 1
 #       *  Set sandbox mode to 1: <sandbox>1</sandbox>
 #       *  Set SyncAccounts to false: <SyncAccounts>false</SyncAccounts>
-
-#start PHP's built in webserver
-php -S localhost:8000 -t ../htdocs ../htdocs/router.php 2>&1 > /dev/null &
-
-# Start Selenium and redirect Selenium WebDriver
-# output to /dev/null so that it doesn't flood the
-# screen in the middle of our other tests
-# java -jar selenium-server-standalone-2.45.0.jar > /dev/null &
-echo "******************************************************************
-  REMINDER: Selenium needs to be running to run integration tests
-******************************************************************";
 
 host="127.0.0.1"
 database="LorisTest"
@@ -61,7 +50,19 @@ sed -i \
     config.xml
 export LORIS_DB_CONFIG=$(pwd)/config.xml
 
-# Set config values in LorisTest DB
+#start PHP's built in webserver
+php -S localhost:8000 -t ../htdocs ../htdocs/router.php 2>&1 > /dev/null &
+php_pid=$!
+
+# Start Selenium and redirect Selenium WebDriver
+# output to /dev/null so that it doesn't flood the
+# screen in the middle of our other tests
+# java -jar selenium-server-standalone-2.45.0.jar > /dev/null &
+echo "******************************************************************
+  REMINDER: Selenium needs to be running to run integration tests
+******************************************************************";
+
+# Set config values in the test DB
 mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
 
 mysql -h $host -D $database -u $username -p$password -e "UPDATE Config SET Value='$(pwd | sed "s#test##")' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
@@ -77,3 +78,4 @@ else
  ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'Loris Module Integration Tests'
 fi
 
+kill $php_pid
