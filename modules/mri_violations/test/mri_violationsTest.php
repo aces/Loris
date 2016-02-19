@@ -22,7 +22,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testMriViolationsDoesPageLoad()
     {
-        $this->webDriver->get($this->url . "/mri_violations/");
+        $this->safeGet($this->url . "/mri_violations/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Mri Violations", $bodyText);
     }
@@ -35,7 +35,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testMriProtocolViolationsDoesPageLoad()
     {
-        $this->webDriver->get($this->url . "/mri_violations/?submenu=mri_protocol_violations");
+        $this->safeGet($this->url . "/mri_violations/?submenu=mri_protocol_violations");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Mri Violations", $bodyText);
     }
@@ -48,7 +48,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      */
     function testMriProtocolCheckViolationsDoesPageLoad()
     {
-        $this->webDriver->get($this->url . "/mri_violations/?submenu=mri_protocol_check_violations");
+        $this->safeGet($this->url . "/mri_violations/?submenu=mri_protocol_check_violations");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Mri Violations", $bodyText);
     }
