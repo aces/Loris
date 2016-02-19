@@ -16,6 +16,7 @@ set_include_path(get_include_path().":../../project/libraries:../../php/librarie
 ini_set('default_charset', 'utf-8');
 /**
  * Request LORIS account form
+ *
  * @package main
  */
 //session_start();
