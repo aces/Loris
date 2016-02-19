@@ -24,7 +24,7 @@ class Statistics_Test extends LorisIntegrationTest
             $link = $this->webDriver->findElement(WebDriverBy::PartialLinkText("Demographic Statistics"));
             $this->assertContains("Demographic", $link->getText());
         } catch(NoSuchElementException $e) {
-            print $this->getPageSource();
+            print $this->webDriver->getPageSource();
             $this->fail("Could not find demographic tab link");
         }
     }
