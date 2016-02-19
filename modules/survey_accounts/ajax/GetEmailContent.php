@@ -12,6 +12,13 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+
+$user =& User::singleton();
+if (!$user->hasPermission('user_accounts')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 

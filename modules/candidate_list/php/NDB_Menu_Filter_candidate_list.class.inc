@@ -75,10 +75,25 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             array(
              'min(s.SubprojectID) as Subproject',
              'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
-             's.Scan_done as scan_Done',
+             'MAX(s.Scan_done) as scan_Done',
             )
         );
 
+        $this->formToFilter = array(
+                               'centerID'     => 'c.CenterID',
+                               'DCCID'        => 'c.CandID',
+                               'PSCID'        => 'c.PSCID',
+                               'gender'       => 'c.Gender',
+                               'SubprojectID' => 's.SubprojectID',
+                              );
+
+        $this->validFilters = array(
+                               'pso.ID',
+                               'c.CenterID',
+                               'c.CandID',
+                               'c.PSCID',
+                               'c.Gender',
+                              );
         if ($config->getSetting("useEDC")==="true") {
             $this->columns[]           ='DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
             $this->formToFilter['edc'] = 'c.EDC';
@@ -112,16 +127,10 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             $this->query .= " AND c.CenterID=" . $user->getCenterID();
         }
 
-        $this->group_by = 'c.CandID';
-        $this->order_by = 'psc.Name, c.CandID DESC, s.VisitNo';
+                          //'COALESCE(pso.ID,1) AS Participant_Status',
+        $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Gender';
+        $this->order_by = 'psc.Name, c.CandID DESC';
 
-        $this->validFilters = array(
-                               'pso.ID',
-                               'c.CenterID',
-                               'c.CandID',
-                               'c.PSCID',
-                               'c.Gender',
-                              );
         if ($useProjects) {
             $this->validFilters[] = 'c.ProjectID';
         }
@@ -143,15 +152,16 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                      'max(s.Current_stage)',
                                      $FeedbackSQL,
                                     );
-        $this->EqualityFilters    = array('session.SubprojectID');
+        $this->EqualityFilters    = array(
+                                     's.SubprojectID',
+                                     'c.CenterID',
+                                     'c.ProjectID',
+                                     's.Scan_done',
+                                     'pso.ID',
+                                     's.Visit_label',
+                                     'c.Gender',
+                                    );
 
-        $this->formToFilter = array(
-                               'centerID'     => 'c.CenterID',
-                               'DCCID'        => 'c.CandID',
-                               'PSCID'        => 'c.PSCID',
-                               'gender'       => 'c.Gender',
-                               'SubprojectID' => 's.SubprojectID',
-                              );
         if ($useProjects) {
             $this->formToFilter = array_merge(
                 $this->formToFilter,

@@ -1,3 +1,7 @@
+Subject: [LORIS Study {$study}] Document Repository Changes 
+
+You are receiving this automated email because: 
+
 {if isset($newDocument)}
 New document named "{$document}" was added!
 Visit {$newDocument} to view the updates.
@@ -14,3 +18,7 @@ Visit {$deleteDocument} to view the updates.
 New category named "{$category}" was added!
 Visit {$newCategory} to view the updates.
 {/if}
+
+Thank you,
+
+LORIS Team

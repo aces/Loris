@@ -12,7 +12,11 @@
  * @link     https://github.com/aces/Loris-Trunk
 */
 
-
+$user =& User::singleton();
+if (!$user->hasPermission('mri_upload')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
 require_once "../tools/generic_includes.php";

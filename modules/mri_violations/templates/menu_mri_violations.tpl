@@ -2,7 +2,6 @@
 <link rel="stylesheet" href="css/c3.css">
 <script src="js/d3.min.js" charset="utf-8"></script>
 <script src="js/c3.min.js"></script>
-
 <div class="row">
     <div class="col-sm-12">
         <div class="col-md-8 col-sm-8">
@@ -101,90 +100,92 @@
                             <td align="right">{$page_links}</td>
                         </tr>
                     </table>
-                    <div id="results" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="table-scroll" id="content">
-                                <form method="post" action="main.php?test_name=mri_violations"  name="mri_violations" id="mri_violations">
-                                    <table class="table table-hover table-primary table-bordered" border="0">
-                                        <thead>
-                                        <tr class="info">
-                                            <th>No.</th>
-                                            {section name=header loop=$headers}
-                                                {if $headers[header].name ne 'SeriesUID' && $headers[header].name ne 'join_id' && $headers[header].name ne 'Resolved' && $headers[header].name ne 'hash'}
-                                                    <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                                                {elseif $headers[header].name eq 'hash'}
-                                                    <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">Resolution status</a></th>
-                                                {/if}
-                                            {/section}
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {section name=item loop=$items}
-                                            <tr>
-                                                <!-- print out data rows -->
-                                                {section name=piece loop=$items[item]}
-                                                    {if $items[item][piece]}
-                                                        {if $items[item][piece].value eq 'Could not identify scan type'}
-                                                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                                <a href="#" class="mri_violations" id="mri_protocol_violations" data-PatientName="{$items[item].PatientName}" "{if $series}"data-SeriesUID="{$series}{/if}">{$items[item][piece].value}</a>
-                                                            </td>
-                                                        {elseif $items[item][piece].value eq 'Protocol Violation'}
-                                                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                                <a href="#" class="mri_violations" id="mri_protocol_check_violations" data-PatientName="{$items[item].PatientName}" "{if $series}" data-SeriesUID="{$series}{/if}">{$items[item][piece].value}</a>
-                                                            </td>
-                                                        {elseif $items[item][piece].name == "Project"}
-                                                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                                {$projects[$items[item][piece].value]}
-                                                            </td>
-                                                        {elseif $items[item][piece].name == "Subproject"}
-                                                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                                {$subprojects[$items[item][piece].value]}
-                                                            </td>
-                                                        {elseif $items[item][piece].name == "Site"}
-                                                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                                {$sites[$items[item][piece].value]}
-                                                            </td>
-                                                        {elseif $items[item][piece].name == "join_id"}
-                                                            <!-- skip, do nothing -->
-                                                        {elseif $items[item][piece].name == "Resolved"}
-                                                            <!-- skip, do nothing -->
-                                                        {elseif $items[item][piece].name == "hash"}
-                                                            <td nowrap="nowrap" colspan="4" bgcolor="{$items[item][piece].bgcolor}">
-                                                                {*adds the select menu generated by a utility in the controller*}
-                                                                {$form[$items[item][piece].value].html}
-                                                            </td>
-                                                        {else}
-                                                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                                {$items[item][piece].value}
-                                                            </td>
-                                                        {/if}
-                                                    {/if}
-                                                {/section}
-                                            </tr>
-                                            {sectionelse}
-                                            <tr><td colspan="12">No data found</td></tr>
-                                        {/section}
-                                        <tr>
-                                            <td nowrap="nowrap" colspan="6" id="message-area">
-
-                                            </td>
-                                            <td nowrap="nowrap" colspan="2">
-                                                <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
-                                                <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </form>
-                            </div>
-                            <a class="left carousel-control"  id="scrollLeft" href="#results">
-                                <span class="glyphicon glyphicon-chevron-left"></span>
-                            </a>
-                            <a class="right carousel-control" id="scrollRight" href="#results" data-slide="next">
-                                <span class="glyphicon glyphicon-chevron-right"></span>
-                            </a>
-                        </div>
-                    </div>
+                    <form method="post" action="main.php?test_name=mri_violations"  name="mri_violations" id="mri_violations">
+                        <table id="violationsTable" class="table table-hover table-primary table-bordered" border="0">
+                            <thead>
+                            <tr class="info">
+                                <th>No.</th>
+                                {section name=header loop=$headers}
+                                    {if $headers[header].name eq 'PatientName'}
+                                        <th nowrap="nowrap" id="PatientName"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                                    {elseif $headers[header].name ne 'SeriesUID' && $headers[header].name ne 'join_id' && $headers[header].name ne 'Resolved' && $headers[header].name ne 'hash'}
+                                        <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                                    {elseif $headers[header].name eq 'hash'}
+                                        <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">Resolution status</a></th>
+                                    {/if}
+                                {/section}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {section name=item loop=$items}
+                                <tr>
+                                    <!-- print out data rows -->
+                                    {section name=piece loop=$items[item]}
+                                        {if $items[item][piece]}
+                                            {if $items[item][piece].value eq 'Could not identify scan type'}
+                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                                    <a href="#"
+                                                       class="mri_violations"
+                                                       id="mri_protocol_violations"
+                                                       data-PatientName="{$items[item].PatientName}"
+                                                       {if $items[item].series}
+                                                            data-SeriesUID="{$items[item].series}"
+                                                       {/if}
+                                                    >
+                                                        {$items[item][piece].value}
+                                                    </a>
+                                                </td>
+                                            {elseif $items[item][piece].value eq 'Protocol Violation'}
+                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                                    <a href="#" class="mri_violations" id="mri_protocol_check_violations" data-PatientName="{$items[item].PatientName}" "{if $items[item].series}" data-SeriesUID="{$items[item].series}{/if}">{{$items[item][piece].value}}</a>
+                                                </td>
+                                            {elseif $items[item][piece].name == "Project"}
+                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                                    {$projects[$items[item][piece].value]}
+                                                </td>
+                                            {elseif $items[item][piece].name == "Subproject"}
+                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                                    {$subprojects[$items[item][piece].value]}
+                                                </td>
+                                            {elseif $items[item][piece].name == "Site"}
+                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                                    {$sites[$items[item][piece].value]}
+                                                </td>
+                                            {elseif $items[item][piece].name == "join_id"}
+                                                <!-- skip, do nothing -->
+                                            {elseif $items[item][piece].name == "Resolved"}
+                                                <!-- skip, do nothing -->
+                                            {elseif $items[item][piece].name == "hash"}
+                                                <td nowrap="nowrap" colspan="4" bgcolor="{$items[item][piece].bgcolor}">
+                                                    {*adds the select menu generated by a utility in the controller*}
+                                                    {$form[$items[item][piece].value].html}
+                                                </td>
+                                            {else}
+                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                                                    {$items[item][piece].value}
+                                                </td>
+                                            {/if}
+                                        {/if}
+                                    {/section}
+                                </tr>
+                                {sectionelse}
+                                <tr><td colspan="12">No data found</td></tr>
+                            {/section}
+                            <tr>
+                                <td nowrap="nowrap" colspan="1"> </td>
+                                <td nowrap="nowrap" colspan="1"> </td>
+                                <td nowrap="nowrap" colspan="1"> </td>
+                                <td nowrap="nowrap" colspan="1"> </td>
+                                <td nowrap="nowrap" colspan="1"> </td>
+                                <td nowrap="nowrap" colspan="1"> </td>
+                                <td nowrap="nowrap" colspan="5">
+                                    <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
+                                    <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
                 </div>
             </div>
         </div>

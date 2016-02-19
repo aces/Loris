@@ -160,7 +160,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     static function factory($instrument, $commentID, $page, $guarantee_exists = true)
     {
-        //include_once 'HTML/QuickForm.php';
+        include_once 'HTML/QuickForm.php';
         $class = "NDB_BVL_Instrument_$instrument";
 
         // Make sure the instrument class has been included/required!
@@ -873,6 +873,9 @@ class NDB_BVL_Instrument extends NDB_Page
                 Utility::toArray($CertificationConfig['CertificationProjects'])
                 AS $key => $value
             ) {
+                if (is_array($value['CertificationProject'])) {
+                    $value = $value['CertificationProject'];
+                }
                 foreach ($value as $k=>$projID) {
                     $CertificationProjects[$projID] = $projID;
                 }
@@ -1390,7 +1393,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
         $fieldValue = $db->pselectOne($query, array('CID' => $this->getCommentID()));
 
-        if (!empty($fieldValue) && !$db->isError($fieldValue)) {
+        if (!empty($fieldValue)) {
             return $fieldValue;
         }
         return false;

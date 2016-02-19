@@ -1,5 +1,5 @@
 <!-- start the selection table -->
-{if $writeable}
+{if $writable}
 <div class="row">
     <div class="col-xs-4">
         <form method="post" action="main.php?test_name=instrument_manager" enctype="multipart/form-data">
@@ -18,7 +18,7 @@
 </div>
 {else}
 <div class="alert alert-warning">
-Instrument directory or tables_sql not writeable.
+Instrument directory or tables_sql not writable.
 Automatic uploading of instruments has been disabled.
 </div>
 {/if}

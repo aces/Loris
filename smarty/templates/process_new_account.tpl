@@ -25,16 +25,6 @@
 <div class="panel-body">
 {if not $success}
 <div class="col-xs-12">
-{if $error_message != ""}
-            <p>The following errors have occured while submitting form :
-
-            <ul>
-    {section name=error loop=$error_message}
-                <li><strong>{$error_message[error]}</strong></li>
-    {/section}
-            </ul>
-{/if}
-
 <div class="col-xs-12">
     <center>
     <img src="{$baseurl}/images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_Logo_141007.png'" align="middle" width="92%">
@@ -46,6 +36,13 @@
     <h3>Please fill in the form below.</h3>
     <h5> We will contact you once your account has been approved.</h5>
 </center>
+{if $error_message != ""}
+    {section name=error loop=$error_message}
+        <div class="alert alert-danger">
+       {$error_message[error]}
+        </div>
+    {/section}
+{/if}
 <form action="process_new_account.php" method="post" name="form1" id="form1" class="form-horizontal">
 <div class="form-group">
     <label  class="col-sm-4 control-label" size="75">First Name:</label>

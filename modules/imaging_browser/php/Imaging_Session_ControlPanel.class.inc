@@ -116,7 +116,7 @@ class Imaging_Session_ControlPanel
         $subjectData['mantis']          = $config->getSetting('mantis_url');
         $subjectData['has_permission']  = $this->_hasAccess();
         $subjectData['status_options']  = array(
-                                           ''     => '',
+                                           'Unrated' => '',
                                            'Pass' => 'Pass',
                                            'Fail' => 'Fail',
                                           );

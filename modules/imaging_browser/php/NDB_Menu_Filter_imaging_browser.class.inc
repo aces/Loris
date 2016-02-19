@@ -77,7 +77,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                 SELECT MIN(files_qcstatus.QCStatus+0) 
                 FROM files JOIN files_qcstatus 
                 USING (FileID) 
-                WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=44 
+                WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=44 and (files_qcstatus.QCStatus=1 or files_qcstatus.QCStatus=2)
                 GROUP BY files.SessionID), '')
             WHEN '' THEN ''
             WHEN 1 THEN 'Passed'
@@ -89,7 +89,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                 SELECT MIN(files_qcstatus.QCStatus+0) 
                 FROM files JOIN files_qcstatus 
                 USING (FileID) 
-                WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=45 
+                WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=45 and (files_qcstatus.QCStatus=1 or files_qcstatus.QCStatus=2)
                 GROUP BY files.SessionID), '')
             WHEN '' THEN ''
             WHEN 1 THEN 'Passed'
@@ -178,6 +178,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         );
         $this->EqualityFilters = array('f.AcquisitionProtocolID');
         $this->searchKeyword    = array();
+        
+        $this->tpl_data['numTimepoints'] = 0;
     }
 
     /**

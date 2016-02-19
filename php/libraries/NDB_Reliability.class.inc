@@ -35,6 +35,31 @@ class NDB_Reliability extends NDB_Form
 
 
     /**
+     * Override the default page form to use HTML_QuickForm instead of
+     * LorisForm. Reliability instruments aren't yet ready to use LorisForm,
+     * as they depend on a type of QuickForm renderer that is not implemented
+     * by LorisForm. This should be removed once that is fixed..
+     *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
+     */
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    {
+        $this->form       = new HTML_QuickForm($formname);
+        $this->name       = $name;
+        $this->page       = $page;
+        $this->identifier = $identifier;
+        $this->commentID  = $commentID;
+        $this->defaults   = array();
+    }
+
+
+    /**
      * Generates a new form instance and runs the appropriate method
      *
      * @param string  $name                  Identifies the form

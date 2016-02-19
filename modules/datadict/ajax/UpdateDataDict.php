@@ -1,4 +1,11 @@
 <?php
+
+$user =& User::singleton();
+if (!$user->hasPermission('data_dict_edit')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 /* This is used by the data dictionary page to update the column descriptions on the fly */

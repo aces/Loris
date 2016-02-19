@@ -33,7 +33,7 @@ RootDir=`dirname $CWD`
 echo "LORIS Installation Script starting at $START"
 
 if [ ! -w $LOGDIR ] ; then
-        echo "The logs directory is not writeable. You will not have an automatically generated report of your installation."
+        echo "The logs directory is not writable. You will not have an automatically generated report of your installation."
         while true; do
                 read -p "Do you still want to continue? [yn] " yn
 		echo $yn | tee -a $LOGFILE > /dev/null
@@ -95,28 +95,42 @@ fi
 echo ""
 
 cat <<QUESTIONS
-Please answer the following questions. You'll be asked:
-  1) Your project directory name from section A) of the Installation Guide.
+This install script will ask you to provide inputs for different steps. 
+Please ensure you have the following information ready (if applicable):  
+
+  1) Your project directory name.   
      (Will be used to modify the paths for Imaging data in the generated
      config.xml file for LORIS, and may also be used to automatically
      create/install apache config files.)
-  2) A name for the MySQL Database. This should be
-     a simple identifier such as "LORIS" or "Abc_Def".
-     This database will be created later on so please make sure
-     a database with the same name does not already exist.
-  3) The hostname for the machine where the MySQL server will run on
-     (this is where we'll create the database).
-  4) The MySQL username that the LORIS system will use to connect
-     to this server and database; this MySQL account will be
-     created later on so please make sure a user with the same name
-     does not already exist.
-  5) The password for this username (it will be set later on).
-  6) Another password for the 'admin' account of the LORIS DB
-     (it will also be set later on).
-  7) Credentials of an existing root MySQL account to install the
-     default schema. This will only be used once, to create and
-     populate the default tables, and to grant privileges to the
-     newly created MySQL user in part 3).
+
+  2) MySQL Database name. 
+     If an empty database has not already been created for your project, 
+     choose a simple name such as "LORIS" or "Abc_Def"
+
+  3) Hostname for the machine running MySQL server where the database
+     is or will be located.
+
+  4) A new MySQL username that the LORIS system will use to connect
+     to this server and database to perform frontend-backend transactions.  
+     This script will ask to create this user. 
+     Recommended: "lorisuser"
+
+  5) Host address of this machine - from which LORIS system will be connecting 
+     (Where Apache is installed)
+
+  6) A new password for the "lorisuser" MySQL username
+
+  7) Another new password for the 'admin' frontend Loris user account.
+     This 'admin' account will be the superuser Loris' web-accessible platform.
+
+  8) Credentials of an existing MySQL account with root or superuser privileges, 
+     capable of creating the database, or installing the schema, 
+     or creating users on the given database. 
+     This will only be used to create the database, install the schema, 
+     and/or create and grant privileges to the "lorisuser" MySQL user. 
+
+Please also consult the Loris WIKI on GitHub for more information on these 
+Install Script input parameters.
 QUESTIONS
 
 echo ""
@@ -223,11 +237,11 @@ while [ "$mysqlhost" == "" ]; do
 done;
 
 while [ "$mysqluser" == "" ]; do
-        read -p "What MySQL user will LORIS connect as? " mysqluser
+        read -p "What MySQL user will LORIS connect as? (Recommended: lorisuser)" mysqluser
 	echo $mysqluser | tee -a $LOGFILE > /dev/null
        	case $mysqluser in
                	"" )
-                       	read -p "What MySQL user will LORIS connect as? " mysqluser
+                       	read -p "What MySQL user will LORIS connect as? (Recommended: lorisuser)" mysqluser
                        	continue;;
                 * )
        	                break;;
@@ -235,11 +249,11 @@ while [ "$mysqluser" == "" ]; do
 done;
 
 while [ "$mysqluserhost" == "" ]; do
-        read -p "What is the host for which MySQL user '$mysqluser' will connect from? " mysqluserhost
+        read -p "What is the host from which MySQL user '$mysqluser' will connect? (Where Loris' Apache is hosted)" mysqluserhost
         echo $mysqluserhost | tee -a $LOGFILE > /dev/null
         case $mysqluserhost in
                 "" )
-                        read -p "What is the host for which MySQL user '$mysqluser' will connect from? " mysqluserhost
+                        read -p "What is the host from which MySQL user '$mysqluser' will connect? (Where Loris' Apache is hosted)" mysqluserhost
                         continue;;
                 * )
                         break;;
@@ -249,7 +263,7 @@ done;
 stty -echo
 
 while true; do
-        read -p "What is the password for MySQL user '$mysqluser'? " mysqlpass
+        read -p "Choose a password for MySQL user '$mysqluser'? " mysqlpass
 	echo ""
         read -p "Re-enter the password to check for accuracy: " mysqlpass2
 	if [[ "$mysqlpass" == "$mysqlpass2" ]] ; then
@@ -263,7 +277,7 @@ stty echo ; echo ""
 stty -echo
 
 while true; do
-        read -p "Enter the front-end LORIS 'admin' user's password: " lorispass
+        read -p "Choose a different password for the front-end LORIS 'admin' user account: " lorispass
         echo ""
         read -p "Re-enter the password to check for accuracy: " lorispass2
         if [[ "$lorispass" == "$lorispass2" ]] ; then
@@ -276,7 +290,7 @@ done;
 stty echo ; echo ""
 
 while [ "$mysqlrootuser" == "" ]; do
-       	read -p "Existing root MySQL username: " mysqlrootuser
+       	read -p "Existing root or admin-level MySQL username: " mysqlrootuser
 	echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
        	case $mysqlrootuser in
                	"" )
@@ -313,7 +327,7 @@ while true; do
                 echo "Attempting to create the MySQL database '$mysqldb' ..."
                 result=$(echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1);
                 if [[ $result == *1044* ]] || [[ $result == *1045* ]]; then
-                    echo "Could not connect to database with the root user provided. Please try again.";
+                    echo "Could not connect to database with the credential provided for '$mysqlrootuser' - Please try again.";
                     read -p "Existing root MySQL username: " mysqlrootuser
                     echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
                     stty -echo
@@ -336,7 +350,7 @@ while true; do
                     echo "Could not create the database $mysqldb. A database with the name $mysqldb already exists.";
                     read -p "Choose a different database name: " mysqldb
                 elif [[ $result != '' ]]; then
-                    echo "Could not create the database with the root user provided.";
+                    echo "Could not create the database with the user '$mysqlrootuser' provided.";
                     exit 1;
                 else
                     break;
@@ -344,7 +358,7 @@ while true; do
             done;
             break;;
         [Nn]* )
-            echo "Not automatically creating MySQL database for LORIS."
+            echo "Not creating MySQL database for LORIS."
             break;;
          * ) echo "Please enter 'y' or 'n'."
     esac
@@ -361,12 +375,12 @@ while true; do
             echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'$mysqluserhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
             MySQLError=$?;
             if [ $MySQLError -ne 0 ] ; then
-                echo "Could not connect to database with the root user provided.";
+                echo "Could not connect to database with $mysqlrootuser user provided.";
                 exit 1;
             fi
             break;;
         [Nn]* )
-            echo "Not automatically creating and granting privileges to MySQL user '$mysqluser'@'$mysqluserhost'."
+            echo "Not creating and granting privileges to MySQL user '$mysqluser'@'$mysqluserhost'."
             break;;
          * ) echo "Please enter 'y' or 'n'."
     esac
@@ -379,7 +393,7 @@ while true; do
     case $yn in
         [Yy]* )
             echo ""
-            echo "Creating/populuating database tables from schema."
+            echo "Creating/populating database tables from schema."
             echo ""
             mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-00-schema.sql
             echo "Updating Loris admin user's password."
@@ -388,7 +402,7 @@ while true; do
             mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Password_expiry='$pw_expiry', Pending_approval='N' WHERE ID=1"
             break;;
         [Nn]* )
-            echo "Not automatically creating/populating database tables from schema."
+            echo "Not creating/populating database tables from schema."
             break;;
          * ) echo "Please enter 'y' or 'n'."
     esac
@@ -419,7 +433,7 @@ while true; do
             mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
             break;;
         [Nn]* )
-            echo "Not automatically populating database config."
+            echo "Not populating database config."
             break;;
          * ) echo "Please enter 'y' or 'n'."
     esac

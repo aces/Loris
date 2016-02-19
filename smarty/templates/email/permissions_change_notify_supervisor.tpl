@@ -1,4 +1,4 @@
-Subject: Permission Changes for {$realname} - {$study} - LORIS
+Subject: [LORIS Study {$study}] Permission Changes for {$realname}
 
 You are receiving this email because user {$current_user} has edited the permissions for {$realname} (username: {$username}).
 

@@ -114,7 +114,7 @@
                                 <input type="submit" name="filter" id="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12 submit-button" />
                             </div>
                             <div class="col-sm-4">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/main.php?test_name=mri_upload&reset=true'" />
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/main.php?test_name=imaging_uploader&reset=true'" />
                             </div>
                         </div>
                     </div>
@@ -144,6 +144,14 @@
 </table>
 *}
 
+<!--  title table with pagination -->
+<table border="0" valign="bottom" width="100%">
+<tr>
+    <!-- display pagination links -->
+    <td align="right">{$page_links}</td>
+</tr>
+</table>
+
 <div class="row">
     <table class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
         <thead>
@@ -153,7 +161,7 @@
                 </th>
                 {section name=header loop=$headers}
                     <th nowrap="nowrap">
-                        <a href="main.php?test_name=mri_upload&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                        <a href="main.php?test_name=imaging_uploader&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                             {$headers[header].displayName}
                         </a>
                     </th>

@@ -52,7 +52,7 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $this->query = " FROM mri_violations_log l JOIN mri_scan_type m
+        $this->query = " FROM mri_violations_log l LEFT JOIN mri_scan_type m
                          ON m.ID=l.Scan_type WHERE 1=1 ";
         $this->columns = array(
             'l.PatientName',

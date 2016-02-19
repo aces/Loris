@@ -355,11 +355,14 @@ BuildPane = React.createClass({displayName: "BuildPane",
 		// setting any values
 		this.setState(function(state){
 			var temp = state.Elements,
-				edit = state.amountEditing + 1;
+				edit = state.amountEditing + 1,
+				dbNames = state.elementDBNames;
+			delete dbNames[temp[state.currentPage].Elements[elementIndex].Name];
 			temp[state.currentPage].Elements[elementIndex].editing = true;
 			return {
 				Elements: temp,
-				amountEditing: edit
+				amountEditing: edit,
+				elementDBNames: dbNames
 			};
 		});
 	},

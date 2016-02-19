@@ -38,6 +38,8 @@ LORIS is a web-accessible database solution for neuroimaging, providing a secure
 
 3. Run installer script to install core code, libraries, and MySQL schema (see LORIS Setup Schematic). The script will prompt for information, including usernames and folders which it will create automatically.
 
+For more information, please read the [Install Script wiki page](https://github.com/aces/Loris/wiki/Install-Script).
+
     ```
     cd /var/www/$projectname/tools
     ./install.sh

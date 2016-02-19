@@ -528,7 +528,7 @@ AddElement = React.createClass({displayName: "AddElement",
 		return (
 			React.createElement("div", {className: "col-xs-12"}, 
 				header, 
-			    React.createElement("form", {className: "form-horizontal", role: "form"}, 
+			    React.createElement("div", {className: "form-horizontal", role: "form"}, 
 			    	React.createElement(ListElements, {updateState: this.updateState, value: this.state.selected.value}), 
 			    	questionInput, 
 			        React.createElement("div", {className: "form-group"}, 

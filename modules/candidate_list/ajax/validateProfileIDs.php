@@ -12,6 +12,15 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+$user =& User::singleton();
+$site =& Site::singleton($user->getData('CenterID'));
+if (!($user->hasPermission('access_all_profiles')
+    || ($site->isStudySite() && $user->hasPermission('data_entry')))
+) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 $found = Candidate::candidateExists($_GET['candID'], $_GET['PSCID']);
 
 if ($found) {

@@ -912,5 +912,18 @@ class Database
             );
         };
     }
+
+    /**
+     * Temporary stub function
+     *
+     * @param mixed $data    The variable to check
+     * @param mixed $msgcode Additional error message / error code to check
+     *
+     * @return boolean
+     */
+    function isError($data, $msgcode)
+    {
+        return false;
+    }
 }
 ?>

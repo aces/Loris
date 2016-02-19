@@ -198,7 +198,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             LEFT JOIN session s
             ON (mri_protocol_violated_scans.CandID = s.CandID)
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)"
+            ON (p.CenterID = c.CenterID)
+            WHERE Resolved is NULL"
             . " UNION " .
             "SELECT PatientName,
                 TimeRun,
@@ -223,7 +224,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             LEFT JOIN session s
             ON (mri_violations_log.CandID = s.CandID)
             LEFT JOIN psc p
-            ON (p.CenterID = c.CenterID)"
+            ON (p.CenterID = c.CenterID)
+            WHERE Resolved is NULL"
             . " UNION " .
             "SELECT PatientName,
                 TimeRun,
@@ -247,7 +249,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             ON (c.CandID = s.CandID)
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
-            ) as v WHERE 1=1";
+            WHERE Resolved is NULL)
+            as v WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
@@ -304,13 +307,15 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             'Could not identify scan type'
             => 'Could not identify scan type',
             'Protocol Violation'
-            => 'MRI Protocol Check violation'
+            => 'MRI Protocol Check violation',
+            'Visit label does not exist'
+            => 'Visit label does not exist'
         );
 
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
         $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
-        $this->addBasicText('Filename', 'File name');
+        $this->addBasicText('Filename', 'MincFile');
         $this->addBasicText('SeriesUID', 'Series UID');
         $this->addSelect("ProblemType", "Type of problem", $problemOptions);
 
@@ -410,10 +415,10 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     $this->form->form[$hash]['name'] = "resolvable[$hash]";
                 }
                 if ($key === 'Problem') {
-                    if($val="Could not identify scan type"){
+                    if($val === "Could not identify scan type"){
                         $this->tpl_data['join_tbl'] = "mri_protocol_violated_scans";
                     }
-                    elseif($val="Protocol Violation"){
+                    elseif($val === "Protocol Violation"){
                         $this->tpl_data['join_tbl'] = "mri_violations_log";
                     }
                     else{
@@ -421,7 +426,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     }
                 }
                 if ($key === 'SeriesUID') {
-                    $this->tpl_data['series'] = $val;
+                    $this->tpl_data['items'][$x]['series'] = $val;
                 }
                 else {
                     $this->tpl_data['items'][$x][$i]['name'] = $key;

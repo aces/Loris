@@ -20,7 +20,7 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testHelpEditorDoespageLoad()
+    function testHelpEditorDoesPageLoad()
     {
         $this->webDriver->get($this->url . "?test_name=help_editor");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
@@ -32,7 +32,7 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testHelpEditorEditHelpContentDoespageLoad()
+    function testHelpEditorEditHelpContentDoesPageLoad()
     {
         $this->webDriver->get($this->url . "?test_name=help_editor&subtest=edit_help_content");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();

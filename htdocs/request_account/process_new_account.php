@@ -75,30 +75,49 @@ try {
 $err = array();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     if (!checkLen('name')) {
-        $err[] = 'The First Name field is empty!';
+        $err[] = 'The minimum length for First Name field is 3 characters';
     }
     if (!checkLen('lastname')) {
-         $err[] = 'The Last Name field is empty!';
+        $err[] = 'The minimum length for Last Name field is 3 characters';
     }
     if (!checkLen('from')) {
-          $err[] = 'The Email Address field is empty!';
+        $err[] = 'Your email is not valid!';
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
-          $err[] = 'Your email is not valid!';
+        $err[] = 'Your email is not valid!';
     }
     if (isset($_SESSION['tntcon'])
         && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']
     ) {
         $err[] = 'The verification code is incorrect';
     }
+
+    $fields = array(
+               'name'     => 'First Name',
+               'lastname' => 'Last Name',
+               'from'     => 'Email',
+              );
+
+    // For each fields, check if quotes or if some HTML/PHP
+    // tags have been entered
+    foreach ($fields as $key => $field) {
+        $value = $_REQUEST[$key];
+        if (preg_match('/["]/', html_entity_decode($value))) {
+            $err[] = "You can't use quotes in $field";
+        }
+        if (strlen($value) > strlen(strip_tags($value))) {
+            $err[] = "You can't use tags in $field";
+        }
+    }
+
     if (count($err)) {
         $tpl_data['error_message'] = $err;
     }
 
     if (!count($err)) {
-        $name      = $_REQUEST["name"];
-        $lastname  = $_REQUEST["lastname"];
-        $from      = $_REQUEST["from"];
-        $verif_box = $_REQUEST["verif_box"];
+        $name      = htmlspecialchars($_REQUEST["name"], ENT_QUOTES);
+        $lastname  = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
+        $from      = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
+        $verif_box = htmlspecialchars($_REQUEST["verif_box"], ENT_QUOTES);
 
         // check to see if verificaton code was correct
         // if verification code was correct send the message and show this page

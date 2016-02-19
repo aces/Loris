@@ -48,9 +48,6 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         }
         $DB =& Database::singleton();
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         foreach ($values AS $key=>$val) {
             $hash = $key;
@@ -106,7 +103,6 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
                     array('hash' => $key)
                     );
-                //echo "ID[2] = ".$ID_mri_violations_log."\n";
                 if(!empty($ID_mri_violations_log)){
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
                     $newlyResolved['ExtID'] = $ID_mri_violations_log;
@@ -119,14 +115,11 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
                     array('hash' => $key)
                     );
-                //echo "ID[3] = ".$ID_MRICandidateErrors."\n";
                 if(!empty($ID_MRICandidateErrors)){
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                     $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
                 } 
-                //echo "DO INSERT NOW!\n";
-                var_dump($newlyResolved);
-                $DB->insert('violations_resolved', $newlyResolved);                
+                $DB->insert('violations_resolved', $newlyResolved);
             }
         }
         
@@ -281,10 +274,19 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
+        $config =& NDB_Config::singleton();
+        $study = $config->getSetting('study');
+        $dateOptions = array(
+            'language'        => 'en',
+            'format'          => 'YMd',
+            'addEmptyOption'  => true,
+            'minYear'         => $study['startYear'] - $study['ageMax'],
+            'maxYear'         => $study['endYear'] - $study['ageMin']
+        );
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
-        $this->addBasicText('TimeRun', 'Time Run');
-        $this->addBasicText('Filename', 'File name');
+        $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
+        $this->addBasicText('Filename', 'MincFile');
         $this->addBasicText('SeriesUID', 'Series UID');
         $this->addSelect(
             "ProblemType",
@@ -333,17 +335,11 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
-            if(Utility::isErrorX($sites)) {
-                return PEAR::raiseError("DB Error: ".$sites->getMessage());
-            }
             if(is_array($sites)) $sites = array('' => 'All') + $sites;
         }
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (Utility::isErrorX($site)) {
-                return PEAR::raiseError("DB Error: ".$site->getMessage());
-            }
             if ($site->isStudySite()) {
                 $sites = array($user->getData('CenterID') => $user->getData('Site'));
             }
@@ -414,10 +410,10 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     // do nothing
                 }
                 if ($key === 'Problem') {
-                    if($val="Could not identify scan type"){    
+                    if($val === "Could not identify scan type"){
                         $this->tpl_data['join_tbl'] = "mri_protocol_violated_scans";
                     }
-                    elseif($val="Protocol Violation"){
+                    elseif($val === "Protocol Violation"){
                         $this->tpl_data['join_tbl'] = "mri_violations_log";
                     }
                     else{
@@ -425,7 +421,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                     }
                 }
                 if ($key === 'SeriesUID') {
-                    $this->tpl_data['series'] = $val;
+                    $this->tpl_data['items'][$x]['series'] = $val;
                 } else {		 
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;

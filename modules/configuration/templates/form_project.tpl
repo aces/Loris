@@ -8,7 +8,7 @@
     {foreach from=$projects key=ProjectID item=project name=configContent}
     <li {if $smarty.foreach.configContent.first}class="active"{/if}><a href="#project{$ProjectID}" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>{$project.Name}</a></li>
     {/foreach}
-    <li {if $smarty.foreach.configContent.first}class="active"{/if}><a href="#projectnew" data-toggle="tab" {if $smarty.foreach.configContent.first}class="active"{/if}>New ProjectID</a></li>
+    <li {if count($projects) == 0}class="active"{/if}><a href="#projectnew" data-toggle="tab" {if count($projects) == 0}class="active"{/if}>New ProjectID</a></li>
 </ul>
 </div>
 
@@ -46,7 +46,7 @@
         </form>
     </div>
     {/foreach}
-    <div id="projectnew" class="tab-pane {if $smarty.foreach.tabContent.first} active{/if}">
+    <div id="projectnew" class="tab-pane {if count($projects) == 0}{count($projects)} active{/if}">
         <h2>New Project</h2>
         <br>
         <form class="form-horizontal" role="form" method="post" id="form{$ProjectID}">

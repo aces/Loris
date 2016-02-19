@@ -120,9 +120,9 @@
                 {section name=piece loop=$items[item]}
                 <td nowrap="nowrap">
                     {if  $items[item][piece].name == "Username"}
-                    <a href="main.php?test_name=user_accounts&subtest=edit_user&identifier={$items[item][piece].value}">{$items[item][piece].value}</a>
+                    <a href="main.php?test_name=user_accounts&subtest=edit_user&identifier={$items[item][piece].value|escape}">{$items[item][piece].value|escape}</a>
                     {else}
-                    {$items[item][piece].value}
+                    {$items[item][piece].value|escape}
                     {/if}
                 </td>
                 {/section}

@@ -72,6 +72,9 @@ class LorisForm
         if (isset($attribs['pattern'])) {
             $el['pattern'] = $attribs['pattern'];
         }
+        if (isset($attribs['required']) && $attribs['required'] === true) {
+            $el['required'] = true;
+        }
 
         return $el;
     }
@@ -1254,20 +1257,25 @@ class LorisForm
      * groups, or be called directly by getSubmitValues() with the
      * whole form as the "group".
      *
-     * @param array $groupElements The elements that need to have their
+     * @param array $submitKeys The elements that need to have their
      *                             values extracted.
-     * @param array $arr           A reference to an array to store the
+     * @param array $arr        A reference to an array to store the
      *                             extracted values into.
      *
      * @return none, but will modify &$arr parameter passed as a side-effect
      */
-    function getGroupValues($groupElements, &$arr)
+    function getGroupValues($submitKeys, &$arr)
     {
-        foreach ($groupElements as $el) {
+        foreach ($submitKeys as $key) {
+            if (!isset($this->form[$key])) {
+                $arr[$key] = $_REQUEST[$key];
+                continue;
+            }
+            $el = $this->form[$key];
             // If it's a group, recursively go through the elements
             // of that group.
             if ($el['type'] === 'group') {
-                $this->getGroupValues($el['elements'], $arr);
+                $this->getGroupValues(array_keys($el['elements']), $arr);
                 continue;
             }
 
@@ -1319,7 +1327,7 @@ class LorisForm
     function getSubmitValues()
     {
         $retVal = array();
-        $this->getGroupValues($this->form, $retVal);
+        $this->getGroupValues(array_keys($_REQUEST), $retVal);
         return $retVal;
     }
 

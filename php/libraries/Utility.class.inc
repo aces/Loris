@@ -290,15 +290,26 @@ class Utility extends PEAR
     /**
      * Returns a list of study Subprojects
      *
+     * @param integer $projectID The project for which you would like
+     *                           to get the subprojects
+     *
      * @return array       an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectList()
+    static function getSubprojectList($projectID = null)
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
         $config  = $factory->config();
 
-        $subprojects = $DB->pselect("SELECT * FROM subproject", array());
+        if (!is_null($projectID)) {
+            $subprojects = $DB->pselect(
+                "SELECT * FROM subproject " .
+                "JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID",
+                array('pID' => $projectID)
+            );
+        } else {
+            $subprojects = $DB->pselect("SELECT * FROM subproject", array());
+        }
 
         $subprojs = array();
         foreach ($subprojects as $row) {
@@ -317,34 +328,7 @@ class Utility extends PEAR
      */
     static function getSubprojectsForProject($projectID = null)
     {
-
-        $db     =& Database::singleton();
-        $config =& NDB_Config::singleton();
-        $subprojectSettings = $config->getSetting('subprojects');
-        foreach (Utility::toArray(
-            $subprojectSettings['subproject']
-        ) AS $subproject) {
-            $allSubprojects[$subproject['id']] =$subproject['title'];
-        }
-        if ($projectID != null) {
-            $query       = "SELECT SubprojectID
-                FROM project_rel
-                WHERE ProjectID=:pID";
-            $subprojList = $db->pselect($query, array('pID' => $projectID));
-
-            foreach ($subprojList as $row) {
-                $subList[] = $row['SubprojectID'];
-            }
-            $list = array();
-            foreach ($subList as $row) {
-                $list[$row] = $allSubprojects[$row];
-            }
-            return $list;
-        } else {
-            return $allSubprojects;
-
-        }
-
+        return self::getSubprojectList($projectID);
     }
 
     /**

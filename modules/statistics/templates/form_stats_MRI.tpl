@@ -92,7 +92,7 @@
           <tr class="info">
                 <th>No Parameter Form Completed</th>
                 <th>Nothing in Imaging Browser for Form</th>
-                <th>No tarchive Entry for Form</th>
+                {* <th>No tarchive Entry for Form</th> *}
                 <th>Breakdown of Problems</th>
           </tr>
         </thead>
@@ -101,7 +101,7 @@
           <tr>
                 <td>{$mri_errors[$center.NumericID].no_parameter}</td>
                 <td>{$mri_errors[$center.NumericID].no_browser}</td>
-                <td>{$mri_errors[$center.NumericID].no_tarchive}</td>
+                {* <td>{$mri_errors[$center.NumericID].no_tarchive}</td> *}
                 <td><a href="?test_name=statistics&submenu=statistics_mri_site&CenterID={$mri_center}&ProjectID={$mri_project}">Click Here for breakdown per participant</a></td>
           </tr>
           {/foreach}

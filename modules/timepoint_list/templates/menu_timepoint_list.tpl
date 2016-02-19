@@ -4,10 +4,8 @@
     <!-- </div> -->
     <!-- <div class="col-xs-4"> -->
         {$actions}
-        <a href="#" class="scanDoneLink" data-pscid="{$PSCID}">
-           <button class="btn btn-primary">
+           <button class="btn btn-primary timepoint_imaging_datasets" data-pscid="{$PSCID}">
               View Imaging datasets</button>
-        </a>
 
     <!-- </div> -->
 </div>

@@ -9,11 +9,21 @@
 
     <script id="overlay-ui-template" type="x-volume-ui-template">
         <div class="row">
-            <div class="form-group col-sm-8">
-                <div class="overlay-viewer-display" id="panel-size"></div>
+            <div class="overlay-viewer-display" id="panel-size"></div>
+            <div class="form-group col-sm-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+
+                        <div class="filename clickable"></div>
+                        <h3 class="panel-title filename clickable">Overlay</h3>
+
+                        <span class="arrow glyphicon glyphicon-chevron-down clickable"></span>
+
+                    </div>
+                </div>
+            
                 <div class="volume-viewer-controls volume-controls">
                     <div class="filename-overlay clickable"  style="display: block; margin:auto;"></div>
-                    <span class="arrow glyphicon glyphicon-chevron-down"></span>
 
 
                     <div class="blend-div" data-volume-id="{{VOLID}}">
@@ -56,7 +66,8 @@
 
     <script id="volume-ui-template4d" type="x-volume-ui-template">
         <div class="row">
-            <div class="form-group col-sm-12 col-md-8">
+        <div class="volume-viewer-display"></div>
+            <div class="form-group col-sm-3">
                 <div class="panel panel-default" id="subpanel-filename-{{VOLID}}">
                     <div class="panel-heading" id="mri-panel-filename-{{VOLID}}">
 
@@ -154,20 +165,17 @@
                 </div>
             </div>
         </div>
-
-        <div class="volume-viewer-display"></div>
-
     </script>
 
     <div id="brainbrowser-wrapper" style="display: inline-block">
         <div id="global-controls">
-            <span id="sync-volumes-wrapper" class="btn btn-sm btn-primary clickable">
+            <span id="sync-volumes-wrapper" class="clickable">
                 <input type="checkbox" class="button ui-helper-hidden-accessible" id="sync-volumes">
-                <label for="sync-volumes" id="sync-volumes" class="clickable">Sync Volumes</label>
+                <label for="sync-volumes" id="sync-volumes" class="clickable btn btn-sm btn-primary">Sync Volumes</label>
             </span>
 
             <div class="btn-group">
-                <select id="panel-size" class="form-control input-sm panel-size clickable">
+                <select id="panel-size" class="form-control panel-size clickable">
                     <option value="256" SELECTED>Choose Panel Size</option>
                     <option value="100">100 Pixels</option>
                     <option value="200">200 Pixels</option>
