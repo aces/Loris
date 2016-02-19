@@ -820,10 +820,11 @@ var_dump($vov);
             )
         );       
  
-        var_dump($this->webDriver->findElement(WebDriverBy::ID('image-1'))->getText());
+        //var_dump($this->webDriver->findElement(WebDriverBy::ID('image-1'))->getText());
 
-        $bob = $this->webDriver->getPageSource();
-        var_dump(strstr($bob,'<div id="image-1">'));
+        //$bob = $this->webDriver->getPageSource();
+        //var_dump(strstr($bob,'<div id="image-1">'));
+/*
 $this->webDriver->executeScript('
 "use strict";
 
@@ -864,7 +865,7 @@ sleep(2);
         $this->markTestIncomplete(
             "Our React components don't render on Travis"
         );
-
+*/
         $this->webDriver->findElement(
             WebDriverBy::Name('status[1]')
         )->sendKeys("Pass");
