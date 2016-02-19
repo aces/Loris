@@ -19,7 +19,7 @@ before_install:
     #- "export DISPLAY=:99.0"
     #- "sh -e /etc/init.d/xvfb start"
     - echo 'date.timezone = "America/Montreal"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-    - echo '<?php print_r(date_default_timezone_get()); ?>' |php
+    - echo '<?php print_r(date_default_timezone_get()); print_r(time());?>' |php
 
 install:
     # Install composer modules
