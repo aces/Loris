@@ -757,6 +757,16 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet(
             $this->url . "/imaging_browser/"
         );
+/*
+$vov = $this->webDriver->navigate()->refresh();
+var_dump(get_class($vov));
+var_dump(get_class_methods($vov));
+var_dump($vov);
+*/
+
+        $this->markTestSkipped(
+            'VOV'
+        );
 
         $NativeLink = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a')
@@ -847,7 +857,7 @@ var Timer = React.createClass({
 React.render(React.createElement(Timer, null), document.getElementById("image-1"));
 ', array());
 sleep(2);
-        var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText());
+        var_dump(strstr($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText(),'<div id="image-1">'));
         $this->webDriver->executeScript("$('body').html(navigator.userAgent + JSON.stringify(React))", array());
         var_dump($this->webDriver->findElement(WebDriverBy::xPath('//body'))->getText());
 
