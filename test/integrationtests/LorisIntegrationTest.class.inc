@@ -116,13 +116,14 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     protected function login($username, $password)
     {
-        $this->webDriver->get($this->url);
+        $this->safeGet($this->url);
+/*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::Name("username")
             )
         );
-
+*/
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
@@ -343,25 +344,27 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function safeGet($url)
     {
+        $newWebDriver = null;
+
         // keep a reference from the actual page
-        $elementFromOldPage = $this->webDriver->findElement(
+        $oldBody = $this->webDriver->findElement(
             WebDriverBy::xPath(
                 "
-                //div[@class='navbar-header']/a
+                //body
                 "
             )
         );
 
         try {
             // Load the new page
-            $this->webDriver->get($url);
+            $newWebDriver = $this->webDriver->get($url);
 
             // Use the old page reference util it detach from the DOM
             while (true) {
-                $elementFromOldPage->getText();
+                $oldBody->isDisplayed();
             }
         } catch (StaleElementReferenceException $e) {
-            return;
+            return $newWebDriver;
         }
     }
 }
