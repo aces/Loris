@@ -424,7 +424,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
 
         $breadcrumbText = $this->webDriver->findElement(
             WebDriverBy::xPath(
@@ -454,7 +454,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         // Without permissions
         $this->setupPermissions(array(''));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
         $errorText = $this->webDriver->findElement(
             WebDriverBy::xPath(
                 "
@@ -475,7 +475,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         // With permission genomic_browser_view_site
         $this->setupPermissions(array('genomic_browser_view_site'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
         $breadcrumbText = $this->webDriver->findElement(
             WebDriverBy::xPath(
                 "
@@ -491,7 +491,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         // With permission genomic_browser_view_allsites
         $this->setupPermissions(array('genomic_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
         $breadcrumbText = $this->webDriver->findElement(
             WebDriverBy::xPath(
                 "
@@ -549,7 +549,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserCNVBrowserDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
 
         $tabText = $this->webDriver->findElement(
             WebDriverBy::xPath(
@@ -575,7 +575,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserCNVEmptyDatatable()
     {
         $this->deleteData();
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
 
         $message = $this->webDriver->findElement(
             WebDriverBy::id("LogEntries")
@@ -604,7 +604,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserCNVDatatable()
     {
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
 
         $message = $this->webDriver->findElement(
             WebDriverBy::id("LogEntries")
@@ -649,7 +649,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                              'Common CNV',
                             );
 
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
 
         $headers = $this->webDriver->findElements(
             WebDriverBy::xPath(
@@ -700,7 +700,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserCNVSitePermission()
     {
         $this->setupPermissions(array('genomic_browser_view_site'));
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
 
         $message = $this->webDriver->findElement(
             WebDriverBy::id("LogEntries")
@@ -720,7 +720,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserCNVFilters()
     {
 
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
         $filters = $this->_getCNVFilters();
 
         foreach ($filters as $filter) {
@@ -777,7 +777,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                              'Validation Method',
                             );
 
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
 
         // Apply filter
         $this->webDriver->findElement(
@@ -795,7 +795,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->clickToLoadNewPage($button);
 
         // Check column count
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
         $headers = $this->webDriver->findElements(
             WebDriverBy::xPath(
                 "
@@ -826,7 +826,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserSNPBrowserDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/genomic_browser/?submenu=snp_browser");
+        $this->safeGet($this->url . "/genomic_browser/?submenu=snp_browser");
 
         $tabText = $this->webDriver->findElement(
             WebDriverBy::xPath(
@@ -852,7 +852,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserSNPEmptyDatatable()
     {
         $this->deleteData();
-        $this->webDriver->get($this->url . "/genomic_browser/?submenu=snp_browser");
+        $this->safeGet($this->url . "/genomic_browser/?submenu=snp_browser");
 
         $message = $this->webDriver->findElement(
             WebDriverBy::id("LogEntries")
@@ -881,7 +881,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testGenomicBrowserSNPDatatable()
     {
-        $this->webDriver->get($this->url . "/genomic_browser/");
+        $this->safeGet($this->url . "/genomic_browser/");
 
         $message = $this->webDriver->findElement(
             WebDriverBy::id("LogEntries")
@@ -911,7 +911,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserSNPSitePermission()
     {
         $this->setupPermissions(array('genomic_browser_view_site'));
-        $this->webDriver->get($this->url . "/genomic_browser/?submenu=snp_browser");
+        $this->safeGet($this->url . "/genomic_browser/?submenu=snp_browser");
 
         $message = $this->webDriver->findElement(
             WebDriverBy::id("LogEntries")
@@ -945,7 +945,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                              'Function Prediction',
                             );
 
-        $this->webDriver->get($this->url . "/genomic_browser/?submenu=snp_browser");
+        $this->safeGet($this->url . "/genomic_browser/?submenu=snp_browser");
         $headers = $this->webDriver->findElements(
             WebDriverBy::xPath(
                 "
@@ -992,7 +992,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserSNPFilters()
     {
 
-        $this->webDriver->get($this->url . "/genomic_browser/?submenu=snp_browser");
+        $this->safeGet($this->url . "/genomic_browser/?submenu=snp_browser");
         $filters = $this->_getSNPFilters();
 
         foreach ($filters as $filter) {
@@ -1050,7 +1050,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                              'Exonic Function',
                             );
 
-        $this->webDriver->get($this->url . "/genomic_browser/?submendu=snp_browser");
+        $this->safeGet($this->url . "/genomic_browser/?submendu=snp_browser");
 
         // Apply filter
         $this->webDriver->findElement(
@@ -1068,7 +1068,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->clickToLoadNewPage($button);
 
         // Check column count
-        $this->webDriver->get($this->url . "/genomic_browser/?submenu=snp_browser");
+        $this->safeGet($this->url . "/genomic_browser/?submenu=snp_browser");
         $headers = $this->webDriver->findElements(
             WebDriverBy::xPath(
                 "
