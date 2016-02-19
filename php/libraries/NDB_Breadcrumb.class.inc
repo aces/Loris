@@ -27,6 +27,7 @@ class NDB_Breadcrumb
 {
     /**
      * The breadcrumb
+     *
      * @var    array
      * @access private
      */
@@ -34,6 +35,7 @@ class NDB_Breadcrumb
 
     /**
      * The index of the last crumb
+     *
      * @var    int
      * @access private
      */
@@ -41,6 +43,7 @@ class NDB_Breadcrumb
 
     /**
      * The available parameters to build into the URL
+     *
      * @var    array
      * @access private
      */
@@ -48,6 +51,7 @@ class NDB_Breadcrumb
 
     /**
      * The user-friendly names for different forms or menus
+     *
      * @var    array
      * @access private
      */
