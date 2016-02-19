@@ -762,11 +762,11 @@ $vov = $this->webDriver->navigate()->refresh();
 var_dump(get_class($vov));
 var_dump(get_class_methods($vov));
 var_dump($vov);
-*/
 
         $this->markTestSkipped(
             'VOV'
         );
+*/
 
         $NativeLink = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a')
