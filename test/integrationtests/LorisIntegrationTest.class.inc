@@ -116,13 +116,14 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     protected function login($username, $password)
     {
-        $this->webDriver->get($this->url);
+        $this->safeGet($this->url);
+/*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::Name("username")
             )
         );
-
+*/
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
@@ -279,7 +280,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
     }
-    
+
     /**
      * Helper function to change the users Study Site
      *
@@ -333,5 +334,38 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         return count($configMenu) > 0;
     }
 
+    /**
+     * Helper function to decorate the webdriver->get function so it
+     * ensure that the new page is load before it returns.
+     *
+     * @param string $url The url to get.
+     *
+     * @return void
+     */
+    function safeGet($url)
+    {
+        $newWebDriver = null;
+
+        // keep a reference from the actual page
+        $oldBody = $this->webDriver->findElement(
+            WebDriverBy::xPath(
+                "
+                //body
+                "
+            )
+        );
+
+        try {
+            // Load the new page
+            $newWebDriver = $this->webDriver->get($url);
+
+            // Use the old page reference util it detach from the DOM
+            while (true) {
+                $oldBody->isDisplayed();
+            }
+        } catch (StaleElementReferenceException $e) {
+            return $newWebDriver;
+        }
+    }
 }
 ?>
