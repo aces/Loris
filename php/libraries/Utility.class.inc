@@ -1133,7 +1133,7 @@ class Utility
      *
      * @return string $prefixStr minus the largest common piece of $suffixStr
      */
-    function removeCommonAffix($suffixStr, $prefixStr)
+    static function removeCommonAffix($suffixStr, $prefixStr)
     {
         $lastFound = '';
         // Start from the end of $suffixStr and work backwords, to make sure
@@ -1182,6 +1182,35 @@ class Utility
 
         fclose($fp);
         return $csv_string;
+    }
+
+    /**
+     * QuickForm rule to check that a date is valid.
+     * This is used by create timepoint and start timepoint pages,
+     * so it probably shouldn't be in the instrument class.
+     *
+     * @param array $dateElement The date element in QuickForm array format.
+     *
+     * @return True if the date is invalid, false if it's valid.
+     */
+    function _checkDate($dateElement)
+    {
+        if (empty($dateElement['M'])
+            && empty($dateElement['d'])
+            && empty($dateElement['Y'])
+        ) {
+            // if all three elements are empty, return true b/c it'll
+            // save the NULL in date field
+            return true;
+        } elseif (empty($dateElement['M'])
+            || empty($dateElement['d'])
+            || empty($dateElement['Y'])
+        ) {
+            // otherwise, if any of the three elements are empty, return
+            // false b/c date entry has been attempted
+            return false;
+        }
+        return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
     }
 }
 ?>

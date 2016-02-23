@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once 'ConflictDetector.class.inc';
 
 /**
  * Behavioural instrument status class
@@ -100,6 +99,7 @@ class NDB_BVL_InstrumentStatus
 
     /**
      * Gets the SessionID of the current instrument
+     *
      * @return int
      * @access public
      */
@@ -120,6 +120,7 @@ class NDB_BVL_InstrumentStatus
 
     /**
      * Gets the current administration status of the instrument
+     *
      * @return string
      */
     function getAdministrationStatus()

@@ -11,7 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-require_once "NDB_Form.class.inc";
 
 /**
  * Training module: Allows examiners to undergo training in order

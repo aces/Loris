@@ -22,7 +22,7 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testSurveyAccountsDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=survey_accounts");
+        $this->safeGet($this->url . "/survey_accounts/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Survey Accounts", $bodyText);
     }
@@ -35,7 +35,7 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testSurveyAccountsAddSurveyDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=survey_accounts&subtest=add_survey");
+        $this->safeGet($this->url . "/survey_accounts/add_survey/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Add Survey", $bodyText);
     }

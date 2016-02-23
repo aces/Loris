@@ -12,8 +12,6 @@
  * @link       https://github.com/aces/Loris-Trunk
 */
 
-require_once 'NDB_Form.class.inc';
-
 /**
  * NDB_Form_Dicom_Archive Class
  *

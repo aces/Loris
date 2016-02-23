@@ -12,7 +12,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once "NDB_Form.class.inc";
 
 /**
  * Stub class for BrainBrowser module to load

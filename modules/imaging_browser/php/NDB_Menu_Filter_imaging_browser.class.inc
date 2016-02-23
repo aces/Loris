@@ -14,8 +14,7 @@
  *  @link       https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
+require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
 /**
  * Provides the PHP code for the menu filter for the imaging browser
  *

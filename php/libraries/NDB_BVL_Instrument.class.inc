@@ -11,9 +11,8 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'BVL_Feedback_Panel.class.inc';
-
 /**
+ * Base class for all NeuroDB behavioural instruments
  * Base class for all NeuroDB behavioural instruments
  *
  * Throws PEAR errors. Also requires PEAR HTML_Quickform.
@@ -72,18 +71,21 @@ class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * String to separate the group elements
+     *
      * @access private
      */
     var $_GUIDelimiter = "</td>\n<td>";
 
     /**
      * Commonly used level of indentation
+     *
      * @access private
      */
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
     /**
      * Array of required fields to check
+     *
      * @access private
      */
     var $_requiredElements = array();
@@ -120,6 +122,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
      * or not.
+     *
      * @access private
      */
     var $ValidityEnabled = true;
@@ -127,6 +130,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Whether the "Validity" field is required before flagging an instrument
      * as complete or not.
+     *
      * @access private
      */
     var $ValidityRequired = true;
@@ -2530,31 +2534,3 @@ function _checkDateTaken($dateElement)
     }
 }
 
-/**
- * QuickForm rule to check that a date is valid.
- * This is used by create timepoint and start timepoint pages,
- * so it probably shouldn't be in the instrument class.
- *
- * @param array $dateElement The date element in QuickForm array format.
- *
- * @return True if the date is invalid, false if it's valid.
- */
-function _checkDate($dateElement)
-{
-    if (empty($dateElement['M'])
-        && empty($dateElement['d'])
-        && empty($dateElement['Y'])
-    ) {
-        // if all three elements are empty, return true b/c it'll
-        // save the NULL in date field
-        return true;
-    } elseif (empty($dateElement['M'])
-        || empty($dateElement['d'])
-        || empty($dateElement['Y'])
-    ) {
-        // otherwise, if any of the three elements are empty, return
-        // false b/c date entry has been attempted
-        return false;
-    }
-    return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
-}

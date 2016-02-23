@@ -14,7 +14,6 @@
  *  Main page: CNV. Submenu: SNP
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
 /**
  * NDB_Menu_Filter_SNP_Browser Class
  *

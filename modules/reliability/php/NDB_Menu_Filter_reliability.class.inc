@@ -1,5 +1,4 @@
 <?php
-require_once 'NDB_Menu_Filter.class.inc';
 /**
  * The menu for the reliability checking
  * @package mri

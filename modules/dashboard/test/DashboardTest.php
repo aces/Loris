@@ -35,7 +35,7 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testDashboardPageLoads()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+        $this->safeGet($this->url . '/dashboard/');
 
         $welcomeText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();

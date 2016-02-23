@@ -22,7 +22,7 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentBuilderDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=instrument_builder");
+        $this->safeGet($this->url . "/instrument_builder/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Instrument Builder", $bodyText);
     }

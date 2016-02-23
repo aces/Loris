@@ -22,7 +22,7 @@ class dataTeamHelperTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataTeamHelperDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=data_team_helper");
+        $this->safeGet($this->url . "/data_team_helper/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Data Team Helper", $bodyText);
     }

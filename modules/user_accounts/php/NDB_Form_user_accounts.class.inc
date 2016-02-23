@@ -11,9 +11,6 @@
 * @link     https://www.github.com/aces/Loris/
 */
 
-require_once "NDB_Form.class.inc";
-require_once "Email.class.inc";
-
 /**
 * Implements the user account page
 *

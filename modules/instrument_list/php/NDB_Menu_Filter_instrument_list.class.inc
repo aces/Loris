@@ -1,7 +1,4 @@
 <?php
-require_once 'NDB_Menu_Filter.class.inc';
-require_once 'Instrument_List_ControlPanel.class.inc';
-
 /**
  * The timepoint details menu
  * @package behavioural
