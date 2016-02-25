@@ -231,6 +231,36 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
     }
 
+    public function tearDown() {
+
+        parent::tearDown();
+
+        // tear down test-specific dataset
+
+        $this->DB->run('SET foreign_key_checks =0');
+        $this->DB->delete("files", array('FileID' => '1'));
+        $this->DB->delete("files", array('FileID' => '2'));
+        $this->DB->delete("mri_processing_protocol", array('ProcessProtocolID' => '1'));
+        $this->DB->delete("mri_processing_protocol", array('ProcessProtocolID' => '2'));
+        $this->DB->delete("parameter_file", array('ParameterFileID' => '10'));
+        $this->DB->delete("parameter_file", array('ParameterFileID' => '11'));
+        $this->DB->delete("parameter_type", array('CurrentGUITable' => 'AnyTextToDeleteThisEntry'));
+        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999998'));
+        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999999'));
+        $this->DB->delete("files_qcstatus", array('FileID' => '1'));
+        $this->DB->delete("files_qcstatus", array('FileID' => '2'));
+        $this->DB->delete("session", array('ID' => '999997'));
+        $this->DB->delete("session", array('ID' => '999998'));
+        $this->DB->delete("session", array('ID' => '999999'));
+        $this->DB->delete("candidate", array('CandID' => '000001'));
+        $this->DB->delete("candidate", array('CandID' => '000002'));
+        $this->DB->delete("candidate", array('CandID' => '000003'));
+        $this->DB->delete("psc", array('CenterID' => '253'));
+        $this->DB->delete("psc", array('CenterID' => '254'));
+        $this->DB->run('SET foreign_key_checks =1');
+
+    }
+
     /**
      * Tests that, when loading the imaging_browser module, some
      * text appears in the body.
@@ -240,7 +270,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
     function testImagingBrowserDoespageLoad()
     {
-        $this->webDriver->get(
+        $this->safeGet(
 	    $this->url . "/imaging_browser/"
 	);
 
@@ -266,7 +296,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // Without permissions
         $this->setupPermissions(array(''));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
 	    $this->url . "/imaging_browser/");
 
         $errorText = $this->webDriver->findElement(
@@ -281,7 +311,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // With permission imaging_browser_view_site
         $this->setupPermissions(array('imaging_browser_view_site'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $breadcrumbText = $this->webDriver->findElement(
@@ -292,7 +322,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $breadcrumbText = $this->webDriver->findElement(
@@ -317,7 +347,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_site'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $ControlPanelText = $this->webDriver->findElement(
@@ -328,7 +358,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // With permission imaging_browser_view_allsites: 2 subjects with imaging data found
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $ControlPanelText = $this->webDriver->findElement(
@@ -352,7 +382,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $PSCIDOptions = $this->webDriver->findElement(
@@ -407,14 +437,12 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
 
-
     function testImagingBrowserSiteDependingOnPermissions()
     {
-
         // With permission imaging_browser_view_site
         $this->setupPermissions(array('imaging_browser_view_site'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $SiteTopMenuTextAll = $this->webDriver->findElement(
@@ -431,7 +459,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $SiteTopMenuTextAll = $this->webDriver->findElement(
@@ -458,7 +486,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
         $PSCIDHeader = $this->webDriver->findElement(
@@ -501,7 +529,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -530,7 +558,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * @return void
     **/
 
-
     function testViewSessionNavigationLinks()
     {
 	// Setting permissions to view all sites to view all datasets
@@ -542,7 +569,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// to view buttons: Back to List and Next, then we can check Prev
 
 	//Back to List Button
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -567,7 +594,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Selection Filter", $SelectionFilter);
 
 	//Next Button
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -606,16 +633,17 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Test Site AOL", $SiteText1);
     }
 
-
-/*
     function testViewSessionLinks()
     {
+        $this->markTestIncomplete(
+            'Forms should be added, AND/OR router.php updated with the correct path for instruments'
+        );
 	// LINKS NEXT //
-	// Forms should be added first, not sure how
+	// Forms should be added first, not sure how, and the router.php file updated 
 
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -643,7 +671,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("This page (mri_parameter_form) is under construction", $MRIFormHeader);
 
 	//Radiology review form
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -668,18 +696,19 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("This page (radiology_review) is under construction", $RadFormHeader);
 
     }
-*/
 
-/*
     function testViewSessionVolumeViewerLinks()
     {
+        $this->markTestSkipped(
+            'Currently awaiting redmine 9385'
+        );
 	// VOLUME VIEWER MENU NEXT //
 	// Currently awaiting redmine 9385 //
 	// select an image first then click on 3DOnly
 
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -710,7 +739,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("Brainbrowser", $BreadCrumbText);
     }
-*/
 
     /**
      * Steps 3 through 7
@@ -725,7 +753,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -744,7 +772,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
 
 //	ATEMTPTING TO CHANGE THE WINDOW HANDLES TO POPUP, NO SUCCESS
-//	$handles = $this->webDriver->get(
+//	$handles = $this->safeGet(
 //	    $this->window_handles()
 //	);
 //	$last_window = end($handles);
@@ -767,7 +795,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("QC Pending", $QCPending);
 
 
-	// Check that the QC status are editable with correct permission
+	// Check that the VISIT LEVEL QC status are editable with correct permission
         $this->setupPermissions(array('imaging_browser_view_allsites', 'imaging_browser_qc'));
         $this->webDriver->navigate()->refresh();
 
@@ -781,34 +809,31 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("Pass", $QCStatusPass);
 
-	// Test that we can edit the QC status by changing it from Blank to Pass
+	// Test that we can edit the IMAGE LEVEL QC status by changing it from Blank to Pass
 
 	// Send option Pass (second option) from dropdown menu,
 	// Click save,
 	// Check PASS green flag appears next to file name
+        $this->webDriver->findElement(
+            WebDriverBy::xPath('//select[contains(@name,"status[")]')
+        )->sendKeys("Pass");
 
-
-        $QCStatusSetPass = $this->webDriver->findElement(
-//            WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(1) > select:nth-child(2) > option:nth-child(2)")
-            WebDriverBy::cssSelector("select.user-success > option:nth-child(1)")
-        );
-        $QCStatusSetPass->click();
-
-	// Testing the button Save is viewable, clickable and works by watching the QC status set to Pass after removing permissions 
+	// Testing the button Save is viewable, clickable and works by watching the Image-level
+	// QC status is set to Pass after removing permissions 
         $QCSaveShow = $this->webDriver->findElement(
             WebDriverBy::xPath('//input[@accessKey="s"]')
         );
-        $QCSaveShow->click();
+        $this->clickToLoadNewPage($QCSaveShow);
 
 
 //        $this->setupPermissions(array('imaging_browser_view_allsites'));
 //        $this->webDriver->navigate()->refresh();
 	
 //	AT THIS POINT, I SEE THINGS WORKING, BUT A POP UP MESSAGE DUE TO POST FORM SUBMISSION PREVENTS ASSERTION
-//        $QCStatus = $this->webDriver->findElement(
-//            WebDriverBy::cssSelector("#image-200 > div > div > div.panel-heading > span.label.label-success")
-//        )->getText();
-//        $this->assertContains("Pass", $QCStatus);
+        $QCImageStatus = $this->webDriver->findElement(
+            WebDriverBy::xPath('//div[contains(@id, "image-")]//span[@class="label label-success"]')
+        )->getText();
+        $this->assertContains("Pass", $QCImageStatus);
     }
 
     /**
@@ -818,7 +843,6 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
     */
-
 
     function testViewSessionBreadCrumb()
     {
@@ -832,7 +856,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	// then perform the breadcrumb test
 
 	//Back to List Button
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -840,15 +864,13 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a')
         );
 
-	$NativeLink->click();
-	sleep(5);
+	$this->clickToLoadNewPage($NativeLink);
 
         $BreadCrumbLink = $this->webDriver->findElement(
 	    WebDriverBy::xPath('//*[@id="page-content-wrapper"]/div/div[1]/a[1]/label')
 	);
 
-        $BreadCrumbLink->click();
-	sleep(5);
+        $this->clickToLoadNewPage($BreadCrumbLink);
 
         $SelectionFilter = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[1]/div/div/div[1]')
@@ -874,15 +896,13 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
      * @return void
     **/
 
-
-
     function testScanLevelQCFlags()
     {
 	// Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -890,8 +910,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
         );
 
-	$SelectedLink->click();
-	sleep(5);
+	$this->clickToLoadNewPage($SelectedLink);
 
         $MainPanelText1 = $this->webDriver->findElement(
 	    WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(1) > label:nth-child(1)")
@@ -915,7 +934,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites', 'imaging_browser_qc'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -923,8 +942,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
         );
 
-	$SelectedLink->click();
-	sleep(5);
+	$this->clickToLoadNewPage($SelectedLink);
 
 	// Only with the correct persmissions would the options in the dropdown menu appear
         $QCStatusPass = $this->webDriver->findElement(
@@ -949,7 +967,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites', 'imaging_browser_qc','violated_scans_view_allsites'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -957,9 +975,11 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
         );
 
-	$SelectedLink->click();
-	sleep(5);
+	$this->clickToLoadNewPage($SelectedLink);
 
+        $this->markTestIncomplete(
+            'Missing test-specific dataset'
+        );
 //	DOES NOT EXIST IN MY TEST-SPECIFIC DATASET, I GOT THIS PATH FROM DEMO!
 //        $CaveatListLink = $this->webDriver->findElement(
 //	    WebDriverBy::xPath('//*[@id="panel-body-23"]/div[1]/div[2]/div/div[3]/a')
@@ -1009,7 +1029,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
 
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url . "/imaging_browser/"
         );
 
@@ -1017,51 +1037,30 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a')
         );
 
-	$SelectedLink->click();
-	sleep(5);
+	$this->clickToLoadNewPage($SelectedLink);
 
         $CommentsButton = $this->webDriver->findElement(
 	    WebDriverBy::cssSelector(".mri-second-row-panel > a:nth-child(1) > span:nth-child(1) > span:nth-child(2)")
 	);
 
+        $handleList = $this->webDriver->getWindowHandles();
 	$CommentsButton->click();
-	sleep(5);
 
 	// Should assert that a window is launched, but I don't know how to select a pop up window
+        $newHandleList = $this->webDriver->getWindowHandles();
+
+        $diff = array_diff($newHandleList, $handleList);
+        $this->assertCount(1, $diff);
+
+        $this->webDriver->switchTo()->window($diff[1]);
+        $newWindowText = $this->webDriver->findElement(
+            WebDriverBy::xPath('//body')
+        )->getText();
+        $this->assertContains("Click here to close this window", $newWindowText);
     }
 
 /******** D & E ********/
 	// Not tested because of the popup window issue... 
-
-    public function tearDown() {
-
-        parent::tearDown();
-
-        // tear down test-specific dataset
-
-        $this->DB->run('SET foreign_key_checks =0');
-        $this->DB->delete("files", array('FileID' => '1'));
-        $this->DB->delete("files", array('FileID' => '2'));
-        $this->DB->delete("mri_processing_protocol", array('ProcessProtocolID' => '1'));
-        $this->DB->delete("mri_processing_protocol", array('ProcessProtocolID' => '2'));
-        $this->DB->delete("parameter_file", array('ParameterFileID' => '10'));
-        $this->DB->delete("parameter_file", array('ParameterFileID' => '11'));
-        $this->DB->delete("parameter_type", array('CurrentGUITable' => 'AnyTextToDeleteThisEntry'));
-        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999998'));
-        $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999999'));
-        $this->DB->delete("files_qcstatus", array('FileID' => '1'));
-        $this->DB->delete("files_qcstatus", array('FileID' => '2'));
-        $this->DB->delete("session", array('ID' => '999997'));
-        $this->DB->delete("session", array('ID' => '999998'));
-        $this->DB->delete("session", array('ID' => '999999'));
-        $this->DB->delete("candidate", array('CandID' => '000001'));
-        $this->DB->delete("candidate", array('CandID' => '000002'));
-        $this->DB->delete("candidate", array('CandID' => '000003'));
-        $this->DB->delete("psc", array('CenterID' => '253'));
-        $this->DB->delete("psc", array('CenterID' => '254'));
-        $this->DB->run('SET foreign_key_checks =1');
-
-    }
 
 }
 ?>
