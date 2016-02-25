@@ -208,14 +208,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field->clear();
         $field->sendKeys('userid');
 
-        $wait = new WebDriverWait($this->webDriver);
-        $wait->until(
-            WebDriverExpectedCondition::elementToBeClickable(
-                WebDriverBy::Name('NA_Password')
-            )
-        );
+        // Click somehow does not work but this should be
+        // equivalent
         $element = $this->webDriver->findElement(WebDriverBy::Name('NA_Password'));
-        $element->click();
+        $element->sendKeys(WebDriverKeys::RETURN_KEY);
 
         $field = $this->webDriver->findElement(WebDriverBy::Name('First_name'));
         $field->clear();
