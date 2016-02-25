@@ -189,7 +189,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             'NewFirst'
         );
         $this->_verifyUserModification(
-            'user_accounts',
+            'user_accounts/my_preferences',
             'UnitTester',
             'Email',
             'newemail@gmail.com'
