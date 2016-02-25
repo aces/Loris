@@ -69,15 +69,18 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      * text appears in the body.
      *
      * @return void
-
+     */
     function testCreateTimepointSelectSubproject()
     {
-        $this->webDriver->get(
+        $this->markTestIncomplete("Create Timepoint Page Test not implemented");
+        
+        /*
+        $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
 
-        $h3 = $this->webDriver->findElement(WebDriverBy::cssSelector("h3"));
-        $this->assertContains("Create Time Point", $h3->getText());
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Create Time Point", $bodyText);
 
         $subPS = $this->webDriver->findElement(WebDriverBy::Name("subprojectID"));
         $subPS->sendKeys("subprojet 2\r");
@@ -92,7 +95,8 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             WebDriverBy::cssSelector(".col-sm-12~ .col-sm-12+ .col-sm-12 label")
         )->getText();
         $this->assertContains("Visit label", $visitlabel);
+         */
     }
-     */
+
 }
 ?>
