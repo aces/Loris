@@ -250,17 +250,27 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     private function _assertCandidateTableContents($tableName, $expectedRows)
     {
-        $dataTable = $this->webDriver->findElement(WebDriverBy::Id($tableName));
         if (is_null($expectedRows)) {
             $wait = new WebDriverWait($this->webDriver, 15);
             $wait->until(
-                WebDriverExpectedCondition::textToBePresentInElement(
-                    WebDriverBy::Id($tableName),
-                    'No result found'
+                WebDriverExpectedCondition::presenceOfElementLocated(
+                    WebDriverBy::ClassName('no-result-found-panel')
                 )
             );
-            $this->assertContains('No result found', $dataTable->getText());
+            $element = $this->webDriver->findElement(
+                WebDriverBy::ClassName('no-result-found-panel')
+            );
+            $this->assertContains('No result found', $element->getText());
         } else {
+            $wait = new WebDriverWait($this->webDriver, 15);
+            $wait->until(
+                WebDriverExpectedCondition::presenceOfElementLocated(
+                    WebDriverBy::Id('dynamictable')
+                )
+            );
+            $dataTable  = $this->webDriver->findElement(
+                WebDriverBy::Id('dynamictable')
+            );
             $actualRows = $dataTable->findElements(
                 WebDriverBy::xpath('.//tbody//tr')
             );
