@@ -22,7 +22,7 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorDoesPageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=help_editor");
+        $this->safeGet($this->url . "/help_editor/");
 
         $assertText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         
@@ -36,7 +36,7 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorEditHelpContentDoesPageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=help_editor&subtest=edit_help_content");
+        $this->safeGet($this->url . "/help_editor/?subtest=edit_help_content");
         $assertText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         
         $this->assertContains("Edit Help Content", $assertText);
@@ -51,7 +51,7 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
 
     public function testHelpEditor_SearchTopic()
     {
-        $this->webDriver->get($this->url . '?test_name=help_editor&help_editor/');
+        $this->safeGet($this->url . '/help_editor/');
          $searchbox = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(1) > div > input"));
         $searchbox->sendKeys("Hand Preference");
@@ -73,7 +73,7 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
 
     public function testHelpEditor_SearchKeyWord()
     {
-        $this->webDriver->get($this->url . '?test_name=help_editor&help_editor/');
+        $this->safeGet($this->url . '/help_editor/');
          $searchbox = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(2) > div > input"));
         $searchbox->sendKeys("Under Construction");
@@ -94,7 +94,7 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
 
     public function testHelpEditor_ClearForm()
     {
-        $this->webDriver->get($this->url . '?test_name=help_editor&help_editor/');
+        $this->safeGet($this->url . '/help_editor/');
          $searchbox = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(1) > div > input"));
         $searchbox->sendKeys("Hand Preference");
