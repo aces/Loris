@@ -260,7 +260,7 @@ class DashboardTest extends LorisIntegrationTest
 
     public function testDashboardMyTasks_DocumentRepository()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+         $this->safeGet($this->url . '/dashboard/');
 
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(2) > div > div.panel-body > a"));
@@ -283,8 +283,8 @@ class DashboardTest extends LorisIntegrationTest
   public function testDashboard_GetPermossion()
   {
         
-    $this->webDriver->get($this->url . '?test_name=dashboard');
-    $this->webDriver->get("https://wangshen-dev.loris.ca//configuration/");
+     $this->safeGet($this->url . '/dashboard/configuration/');
+    
    
  
 
