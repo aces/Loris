@@ -274,27 +274,7 @@ class DashboardTest extends LorisIntegrationTest
         
     }
 
-    /**
-     * Tests that, when loading the Dashboard as admin account, the submenu configuration should be appeared.
-     * author : Wang Shen 
-     * @return void
-     */
 
-  public function testDashboard_GetPermossion()
-  {
-        
-     $this->safeGet($this->url . '/dashboard/configuration/');
-    
-   
- 
-
-       $assertText1 = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#page > div > div.alert.alert-info.alert-sm > a > label"))->getText();
-           
-           
-        $this->assertContains("Configuration", $assertText1);  
-       
-  }
 
 
 
