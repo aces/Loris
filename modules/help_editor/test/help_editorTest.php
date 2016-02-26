@@ -36,7 +36,7 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorEditHelpContentDoesPageLoad()
     {
-        $this->safeGet($this->url . "/help_editor/?subtest=edit_help_content");
+        $this->safeGet($this->url . "/help_editor/edit_help_content/");
         $assertText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         
         $this->assertContains("Edit Help Content", $assertText);
