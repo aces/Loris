@@ -11,7 +11,7 @@ class StatisticsTest extends LorisIntegrationTest
     {
         
 
-            $this->webDriver->get($this->url . '/statistics/');
+            $this->safeGet($this->url . '/statistics/');
             
             $assertContent = $this->webDriver->findElement(WebDriverBy::cssSelector("#page > h2")).getText();
             
@@ -24,7 +24,7 @@ class StatisticsTest extends LorisIntegrationTest
     {
         
 
-            $this->webDriver->get($this->url . '/statistics/demographic/?dynamictabs=dynamictabs');
+            $this->safeGet($this->url . '/statistics/demographic/?dynamictabs=dynamictabs');
             
             $assertContent = $this->webDriver->findElement(WebDriverBy::cssSelector("#demographics > h2:nth-child(1)")).getText();
             
@@ -37,7 +37,7 @@ class StatisticsTest extends LorisIntegrationTest
     {
         
 
-            $this->webDriver->get($this->url . '/statistics/behavioural/?dynamictabs=dynamictabs');
+            $this->safeGet($this->url . '/statistics/behavioural/?dynamictabs=dynamictabs');
             
             $assertContent = $this->webDriver->findElement(WebDriverBy::cssSelector("#data_entry > h2:nth-child(1)")).getText();
             
@@ -51,7 +51,7 @@ class StatisticsTest extends LorisIntegrationTest
     {
         
 
-            $this->webDriver->get($this->url . '/statistics/reliability/?dynamictabs=dynamictabs');
+            $this->safeGet($this->url . '/statistics/reliability/?dynamictabs=dynamictabs');
             
             $assertContent = $this->webDriver->findElement(WebDriverBy::cssSelector("#reliability > h2")).getText();
             
@@ -64,7 +64,7 @@ class StatisticsTest extends LorisIntegrationTest
     {
         
 
-            $this->webDriver->get($this->url . '/statistics/MRI/?dynamictabs=dynamictabs');
+            $this->safeGet($this->url . '/statistics/MRI/?dynamictabs=dynamictabs');
             
             $assertContent = $this->webDriver->findElement(WebDriverBy::cssSelector("#mri > h2:nth-child(1)")).getText();
             
