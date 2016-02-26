@@ -35,7 +35,7 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testDashboardPageLoads()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+        $this->safeGet($this->url . '/dashboard/');
 
         $welcomeText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
@@ -51,7 +51,7 @@ class DashboardTest extends LorisIntegrationTest
 
     public function testDashboardLoris()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+        $this->safeGet($this->url . '/dashboard/');
 
         $loris = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#nav-left > div.navbar-header > a"));
@@ -60,24 +60,7 @@ class DashboardTest extends LorisIntegrationTest
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
         $this->assertContains("Welcome", $assertText);
     }
-  /**
-     * Tests that, when loading the Dashboard, click the Loris Website link, it relocate the http://mcin-cnim.ca/neuroimagingtechnologies/loris/
-     * the Loris should appear.
-     * author : Wang Shen 
-     * @return void
-     */
-
-    // public function testDashboardLorisWebsite()
-    // {
-    //     $this->webDriver->get($this->url . '?test_name=dashboard');
-
-    //     $lorisWebsite = $this->webDriver
-    //         ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(1) > div.panel-footer > a"));
-    //         $lorisWebsite->click();
-    //         $assertText = $this->webDriver
-    //         ->findElement(WebDriverBy::cssSelector("#post-58 > h2"))->getText();
-    //     $this->assertContains("LORIS", $assertText);
-    // }
+  
   /**
      * Tests that, when loading the Dashboard, click the Views button of Recruitment, the items "View overall recruitment" and "View site breakdown" appear
      * author : Wang Shen 
@@ -86,7 +69,7 @@ class DashboardTest extends LorisIntegrationTest
 
     public function testDashboardRecruitmentView()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+        $this->safeGet($this->url . '/dashboard/');
 
         $views = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(2) > div.panel-heading > div > div > button"));
@@ -108,7 +91,7 @@ class DashboardTest extends LorisIntegrationTest
 
     public function testDashboardRecruitmentView_ViewSiteBreakdown()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+        $this->safeGet($this->url . '/dashboard/');
 
         $views = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(2) > div.panel-heading > div > div > button"));
@@ -135,7 +118,7 @@ class DashboardTest extends LorisIntegrationTest
 
     public function testDashboardStudyProgressionView()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+        $this->safeGet($this->url . '/dashboard/');
 
         $views = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(3) > div.panel-heading > div > div > button"));
@@ -152,28 +135,7 @@ class DashboardTest extends LorisIntegrationTest
     }
 
 
-    /**
-     * Tests that, when loading the Dashboard, click the stie all button of DataEntryConflicts in the My tasks panel, it relocates to Conflict Resolver.
-     * author : Wang Shen 
-     * @return void
-     */
-
-    // public function testDashboardMyTasks_DataEntryConflicts()
-    // {
-    //     $this->webDriver->get($this->url . '?test_name=dashboard');
-
-    //     $siteAll = $this->webDriver
-    //         ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div > div.panel-body > div > a:nth-child(1) > div > div.col-xs-4.text-right.alert-chevron > span"));
-    //         $siteAll ->click();
-
-    //      $assertText1 = $this->webDriver
-    //         ->findElement(WebDriverBy::cssSelector("#page > div > div.alert.alert-info.alert-sm > a > label"))->getText();
-           
-            
-    //     $this->assertContains("Conflict Resolver", $assertText1);
-        
-        
-    // }
+    
 
 
 
@@ -185,7 +147,7 @@ class DashboardTest extends LorisIntegrationTest
 
     public function testDashboardMyTasks_IncompleteForms()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+        $this->safeGet($this->url . '/dashboard/');
 
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div > div.panel-body > div > a:nth-child(2) > div > div.col-xs-4.text-right.alert-chevron > p"));
@@ -207,7 +169,7 @@ class DashboardTest extends LorisIntegrationTest
 
     public function testDashboardMyTasks_NewPendingScans()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+        $this->safeGet($this->url . '/dashboard/');
 
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div > div.panel-body > div > a.list-group-item.new-scans > div > div.col-xs-4.text-right.alert-chevron > span"));
@@ -230,7 +192,7 @@ class DashboardTest extends LorisIntegrationTest
 
     public function testDashboardMyTasks_ViolatedScans()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+        $this->safeGet($this->url . '/dashboard/');
 
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div > div.panel-body > div > a:nth-child(4) > div > div.col-xs-4.text-right.alert-chevron > span"));
@@ -253,7 +215,7 @@ class DashboardTest extends LorisIntegrationTest
 
     public function testDashboardMyTasks_FinalRadiologicalReviews()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+        $this->safeGet($this->url . '/dashboard/');
 
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div > div.panel-body > div > a.list-group-item.radiological-review > div > div.col-xs-4.text-right.alert-chevron > span"));
@@ -276,7 +238,7 @@ class DashboardTest extends LorisIntegrationTest
 
     public function testDashboardMyTasks_AccountsPendingApproval()
     {
-        $this->webDriver->get($this->url . '?test_name=dashboard');
+        $this->safeGet($this->url . '/dashboard/');
 
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div > div.panel-body > div > a.list-group-item.pending-accounts > div > div.col-xs-4.text-right.alert-chevron > span"));
