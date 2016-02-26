@@ -10,6 +10,7 @@ class Statistics_Test extends LorisIntegrationTest
             // If this is the mobile view, we need to expand the dropdown
             // before the stats links are visible.
             //
+	    //			
             $expand = $this->webDriver->findElement(WebDriverBy::ID("down"));
             $expand->click();
         } catch(ElementNotVisibleException $e) {
