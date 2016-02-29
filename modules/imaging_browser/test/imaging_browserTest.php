@@ -831,7 +831,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
 	)->getText();
         $this->assertContains("Caveat", $ImagePanelText3);
 
-	// Setting permissions to view all sites and have qc persmissions
+	// Setting permissions to view all sites and have qc permissions
         $this->setupPermissions(array('imaging_browser_view_allsites', 'imaging_browser_qc'));
         $this->webDriver->navigate()->refresh();
         $this->safeGet(
@@ -842,7 +842,7 @@ class imagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 	$SelectedLink->click();
 
-	// Only with the correct persmissions would the options in the dropdown menu appear
+	// Only with the correct permissions would the options in the dropdown menu appear
         $QCStatusPass = $this->webDriver->findElement(
 	    WebDriverBy::cssSelector(".col-xs-3 > div:nth-child(1) > div:nth-child(1) > select:nth-child(2)")
 	)->getText();
