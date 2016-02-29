@@ -131,7 +131,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $passwordEl->sendKeys($password);
 
         $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
-        $login->click();
+	$this->clickToLoadNewPage($login);
 
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
@@ -371,6 +371,31 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
         return count($configMenu) > 0;
     }
+
+   /**
+      * Helper function to click on a element and wait for the new page to be loaded.
+      * When the DOM is reloaded, the elements of the previous page become stale.
+      * Selenium will raise an exception when a function (like getText) are called on
+      * those elements.
+      *
+      * Note: If the page don't reload, this will produce an infinite loop.
+      *
+      * @param webDriverElement $clickable The element to be clicked
+      *
+      * @return void Once the element is stale.
+      */
+     public function clickToLoadNewPage($clickable)
+     {
+         $clickable->click();
+         try {
+             while (true) {
+                 $clickable->getText();
+             }
+         } catch (StaleElementReferenceException $e) {
+             return;
+         }
+     }
+ 
 
     /**
      * Helper function to click on a element and wait for the new page to be loaded.
