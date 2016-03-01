@@ -1981,6 +1981,26 @@ CREATE TABLE `genomic_files` (
   CONSTRAINT `FK_genomic_files_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 
+CREATE TABLE `genomic_cpg` (
+  `CandID` int(6) NOT NULL DEFAULT '0',
+  `visit_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `tissue` varchar(255) DEFAULT NULL,
+  `date_collected` date DEFAULT NULL,
+  `cpg` varchar(45) DEFAULT NULL,
+  `beta_value` double DEFAULT NULL,
+  `cpg_loc` int(11) DEFAULT NULL,
+  `cpg_island_loc` text,
+  `cpg_context` text,
+  `gene` text,
+  `genes_accession_number` text,
+  `chromosome` varchar(2) DEFAULT NULL,
+  `strand` char(1) DEFAULT NULL,
+  `Assembly` varchar(6) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `chip_id` varchar(10) DEFAULT NULL,
+  `chip_position` varchar(6) DEFAULT NULL,
+  `platform` varchar(255) DEFAULT NULL,
+  `Methylation` enum('High-methylation','Low-methylation','Partially') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `certification_training` (
     `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
