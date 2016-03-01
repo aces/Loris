@@ -63,30 +63,30 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
     {
         // set the class variables
         $this->_displayBrief = !(isset($_REQUEST['format']));
-        $this->columns = array(
-                          'psc.Name AS PSC',
-                          'candidate.CandID AS DCCID',
-                          'candidate.PSCID',
-                          'candidate.Gender',
-                          'cohort.SubprojectID as Subproject',
-                          'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
-                          'candidate.ExternalID as externalID',
-                          'genomic_cpg.tissue as Tissue',
-                          'genomic_cpg.date_collected as DATE_Collected',
-                          'genomic_cpg.CpG as CpG',
-                          'genomic_cpg.cpg_context as Context',
-                          'genomic_cpg.beta_value as Beta_value',
-                          'genomic_cpg.methylation as Methylation',
-                          'genomic_cpg.gene as Gene',
-                          'genomic_cpg.genes_accession_number as Accession_number',
-                          'genomic_cpg.assembly as Assembly',
-                          'genomic_cpg.chromosome as Chromosome',
-                          'genomic_cpg.strand as Strand',
-                          'genomic_cpg.cpg_loc as StartLoc',
-                          'genomic_cpg.platform as Platform',
-                          'genomic_cpg.chip_id as Chip',
-                          'genomic_cpg.chip_position as Position',
-                         );
+        $this->columns       = array(
+                                'psc.Name AS PSC',
+                                'candidate.CandID AS DCCID',
+                                'candidate.PSCID',
+                                'candidate.Gender',
+                                'cohort.SubprojectID as Subproject',
+                                'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
+                                'candidate.ExternalID as externalID',
+                                'cpg.tissue as Tissue',
+                                'cpg.date_collected as DATE_Collected',
+                                'cpg.CpG as CpG',
+                                'cpg.cpg_context as Context',
+                                'cpg.beta_value as Beta_value',
+                                'cpg.methylation as Methylation',
+                                'cpg.gene as Gene',
+                                'cpg.genes_accession_number as Accession_number',
+                                'cpg.assembly as Assembly',
+                                'cpg.chromosome as Chromosome',
+                                'cpg.strand as Strand',
+                                'cpg.cpg_loc as StartLoc',
+                                'cpg.platform as Platform',
+                                'cpg.chip_id as Chip',
+                                'cpg.chip_position as Position',
+                               );
 
         $this->_briefFields = array(
                                'DCCID',
@@ -107,7 +107,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                     from session s GROUP BY s.CandID) AS cohort
             ON (cohort.CandID = candidate.CandID) 
             LEFT JOIN psc ON (psc.CenterID = candidate.CenterID)
-            JOIN genomic_cpg ON (candidate.CandID = genomic_cpg.CandID)
+            JOIN genomic_cpg cpg ON (candidate.CandID = cpg.CandID)
             WHERE 
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
@@ -149,25 +149,25 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                               );
 
         $this->formToFilter = array(
-                               'centerID'            => 'candidate.CenterID',
-                               'DCCID'               => 'candidate.CandID',
-                               'PSCID'               => 'candidate.PSCID',
-                               'gender'              => 'candidate.Gender',
-                               'SubprojectID'        => 'cohort.SubprojectID',
-                               'dob'                 => 'candidate.DoB',
-                               'External_ID'         => 'candidate.ExternalID',
-                               'Show_Brief_Results'  => 'show_brief_results',
-                               'CpG'                 => 'genomic_cpg.cpg',
-                               'Beta_value'          => 'genomic_cpg.beta_value',
-                               'Tissue'              => 'genomic_cpg.tissue',
-                               'Date_collected'      => 'genomic_cpg.date_collected',
-                               'Gene'                => 'genomic_cpg.gene',
-                               'AccNumber'           => 'genomic_cpg.genes_accession_number',
-                               'Context'             => 'genomic_cpg.Context',
-                               'Strand'              => 'genomic_cpg.Strand',
-                               'Methylation'         => 'genomic_cpg.methylation',
-                               'Chromosome'          => 'genomic_cpg.chromosome',
-                               'Platform'            => 'genomic_cpg.platform',
+                               'centerID'           => 'candidate.CenterID',
+                               'DCCID'              => 'candidate.CandID',
+                               'PSCID'              => 'candidate.PSCID',
+                               'gender'             => 'candidate.Gender',
+                               'SubprojectID'       => 'cohort.SubprojectID',
+                               'dob'                => 'candidate.DoB',
+                               'External_ID'        => 'candidate.ExternalID',
+                               'Show_Brief_Results' => 'show_brief_results',
+                               'CpG'                => 'cpg.cpg',
+                               'Beta_value'         => 'cpg.beta_value',
+                               'Tissue'             => 'cpg.tissue',
+                               'Date_collected'     => 'cpg.date_collected',
+                               'Gene'               => 'cpg.gene',
+                               'AccNumber'          => 'cpg.genes_accession_number',
+                               'Context'            => 'cpg.Context',
+                               'Strand'             => 'cpg.Strand',
+                               'Methylation'        => 'cpg.methylation',
+                               'Chromosome'         => 'cpg.chromosome',
+                               'Platform'           => 'cpg.platform',
                               );
 
         return true;
@@ -235,11 +235,11 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         // CpG
         $this->addBasicText('CpG', 'CpG:');
         $Base_options = array(
-                         null              => 'Any',
-                         'Island'          => 'Island',
-                         'N_Shore'         => 'North shore',
-                         'S_Shelf'         => 'South shelf',
-                         'S_Shore'         => 'South shore',
+                         null      => 'Any',
+                         'Island'  => 'Island',
+                         'N_Shore' => 'North shore',
+                         'S_Shelf' => 'South shelf',
+                         'S_Shore' => 'South shore',
                         );
         $this->addSelect('Context', 'Context:', $Base_options);
         $this->addBasicText('Date_collected', 'Date collected:');
@@ -357,13 +357,22 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                     }
                 }
                 if ($key=='Gene') {
-                    $this->tpl_data['items'][$x][$i]['value'] = '<a title="UCSC Genome Browser" href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&position=' . strtok($item["Accession_number"], ';') . '" target="_blank">' . strtok($val, ';' ) . '</a>';
+                    $this->tpl_data['items'][$x][$i]['value'] = '
+    <a title="UCSC Genome Browser" 
+       href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&position='
+                    . strtok($item["Accession_number"], ';') . '" 
+       target="_blank">' . strtok($val, ';') . '</a>';
                 }
                 if ($key=='CpG') {
                     $assembly = $item['Assembly'];
                     $startLoc = $item['StartLoc'] - 500;
-                    $endLoc = $item['StartLoc'] + 500;
-	            $this->tpl_data['items'][$x][$i]['value'] = '<a title="UCSC Genome Browser" href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=' . $assembly . '&position=Chr' . $item['Chromosome'] . ':' . $startLoc . '-' . $endLoc . '" target="_blank">' . $val . '</a>';
+                    $endLoc   = $item['StartLoc'] + 500;
+                    $this->tpl_data['items'][$x][$i]['value'] = '
+    <a title="UCSC Genome Browser"
+       href="https://genome.ucsc.edu/cgi-bin/hgTracks?db='
+                    . $assembly . '&position=Chr' . $item['Chromosome'] . ':'
+                    . $startLoc . '-' . $endLoc . '" target="_blank">'
+                    . $val . '</a>';
                 }
                 $i++;
             }
