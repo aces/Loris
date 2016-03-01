@@ -1,18 +1,18 @@
 <?php
-
 /**
- * For cnv_browser class file
+ * For cnv_browser class file, a subtab in the Genomic Browser
  * Displays CNV (Copy Number Variant) genomic data
  * Filterable by candidate, gene or variant fields.
  *
  * PHP version 5
  *
- *  @category Genomic
- *  @package  Main
- *  @author   Christine Rogers <christine.rogers@mcgill.ca>
+ *  @category Genomic 
+ *  @package    Main
+ *  @subpackage Genomic 
+ *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  *  @link     https://www.github.com/aces/Loris/
- *  Main page: Genomic home. Submenu: CNV
+ *  Subtab: CNV
  */
 
 require_once 'NDB_Menu_Filter.class.inc';
@@ -21,9 +21,9 @@ require_once 'NDB_Menu_Filter.class.inc';
  *
  * This class is cnv_browser Form
  *
- * @category Genomic
- * @package  Main
- * @author   Loris team <info-loris.mni@mcgill.ca>
+ * @category Genomic 
+ * @package  Genomic
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link     https://github.com/aces/Loris
 */

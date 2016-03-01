@@ -1,24 +1,26 @@
 <?php
 /**
-* Contains the GenomicFile class used for NeuroDB imaging
+* Contains the GenomicFile class used for LORIS Genomic data 
 *
 * PHP Version 5
 *
-* @category Genomics 
-* @package  Genomics
-* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
+* @category Genomic 
+* @package  Main
+* @subpackage  Genomic
+* @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
 * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
 * @link     https://www.github.com/aces/Loris/
 */
 
 /**
-* This object represents a genomic file in the genomic_files table.
-*
-* @category Genomics
-* @package  Genomics
-* @author   Loris Team <loris.mni@bic.mni.mcgill.ca>
-* @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
-* @link     https://www.github.com/aces/Loris/
+    * This object represents a genomic file in the genomic_files table.
+    *
+    * @category Genomic
+    * @package  Main
+    * @subpackage  Genomic
+    * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
+    * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+    * @link     https://www.github.com/aces/Loris/
 */
 class GenomicFile
 {

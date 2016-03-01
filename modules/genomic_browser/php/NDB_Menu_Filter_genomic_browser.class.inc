@@ -1,18 +1,19 @@
 <?php
-
 /**
  * For genomic_browser class file
- * Displays genomic variant data; Copy Number Variants in main tab.
- * Filterable by candidate, gene or variant fields.
+ * Main Genomic Browser tab
+ * Displays genomic profiles - genomic data available per candidate
+ * Filterable by candidate or genomic criteria.
  *
  * PHP version 5
  *
  *  @category Genomic
- *  @package  Main
- *  @author   Christine Rogers <christine.rogers@mcgill.ca>
+ *  @package  Main 
+ *  @subpackage  Genomic
+ *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  *  @link     https://www.github.com/aces/Loris/
- *  Main page: CNV. Submenu: SNP
+ *  Main tab: Profiles. Submenus: CNV,SNP,GWAS
  */
 
 require_once 'NDB_Menu_Filter.class.inc';
@@ -22,8 +23,9 @@ require_once 'NDB_Menu_Filter.class.inc';
  * This class is genomic_browser Form
  *
  * @category Genomic
- * @package  Main
- * @author   Loris team <info-loris.mni@mcgill.ca>
+ * @package  Main 
+ * @subpackage  Genomic
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link     https://github.com/aces/Loris
 */

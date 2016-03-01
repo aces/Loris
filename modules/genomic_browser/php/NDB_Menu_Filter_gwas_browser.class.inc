@@ -1,6 +1,6 @@
 <?php
 /**
- * For gwas_browser class file
+ * For gwas_browser class file, a subtab in the Genomic Browser
  * Displays GWAS analysis results 
  * Filterable by SNP and p-value, and other fields.
  *
@@ -8,10 +8,11 @@
  *
  *  @category Genomic
  *  @package  Main
- *  @author   Christine Rogers <christine.rogers@mcgill.ca>
+ *  @subpackage  Genomic
+ *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  *  @link     https://www.github.com/aces/Loris/
- *  Main page: CNV. Submenu: GWAS
+ *  Submenu: GWAS
  */
 
 require_once 'NDB_Menu_Filter.class.inc';
@@ -23,7 +24,8 @@ require_once 'NDB_Menu_Filter.class.inc';
  *
  * @category Genomic
  * @package  Main
- * @author   Christine Rogers <christine.rogers@mcgill.ca>
+ * @subpackage  Genomic
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link     https://github.com/aces/Loris
 */

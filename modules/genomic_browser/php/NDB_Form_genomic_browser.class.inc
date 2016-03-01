@@ -8,7 +8,7 @@
  * @category   Genomic
  * @package    Main
  * @subpackage Genomic 
- * @author     Loris team <info-loris.mni@mcgill.ca> 
+ * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license    @GPLv3
  * @link       https://github.com/aces/Loris
 */
@@ -24,7 +24,7 @@ require_once 'GenomicFile.class.inc';
  * @category   Genomic
  * @package    Main
  * @subpackage Genomic 
- * @author     Loris team <info-loris.mni@mcgill.ca>
+ * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license    @GPLv3
  * @link       https://github.com/aces/Loris
 */

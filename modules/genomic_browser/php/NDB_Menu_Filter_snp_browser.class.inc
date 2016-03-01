@@ -1,14 +1,15 @@
 <?php
 /**
- * For snp_browser class file
+ * For snp_browser class file, a subtab in the Genomic Browser
  * Displays SNP genomic variant data.
  * Filterable by candidate, gene or variant fields.
  *
  * PHP version 5
  *
- *  @category Genomic
+ *  @category Genomic 
  *  @package  Main
- *  @author   Christine Rogers <christine.rogers@mcgill.ca>
+ *  @subpackage  Genomic
+ *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  *  @link     https://www.github.com/aces/Loris/
  *  Main page: CNV. Submenu: SNP
@@ -21,9 +22,10 @@ require_once 'NDB_Menu_Filter.class.inc';
  * This class is snp_browser Form
  * SNP submenu tab for Genomic Browser
  *
- * @category Genomic
+ * @category Genomic 
  * @package  Main
- * @author   Loris team <info-loris.mni@mcgill.ca>
+ * @subpackage  Genomic
+ * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  * @link     https://github.com/aces/Loris
 */
