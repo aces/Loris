@@ -11,9 +11,6 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-require_once 'NDB_Form.class.inc';
-
 /**
  * Examiner module menu filter form
  *

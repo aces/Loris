@@ -894,6 +894,40 @@ class Utility
         $visitlabels = $db->pselect($query, array('tn' => $test_name));
         return $visitlabels;
     }
+
+    /**
+     * Looks up visit stage using candidate ID.
+     *
+     * @param string $Cand_id candidate ID
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getStageUsingCandID($Cand_id)
+    {
+        $db    =& Database::singleton();
+        $query = "select DISTINCT Current_stage from session where ".
+            "CandID = :Cand_id";
+        $stage = $db->pselect($query, array('Cand_id' => $Cand_id));
+        return $stage[0]['Current_stage'];
+    }
+
+    /**
+     * Looks up visit stage using candidate ID.
+     *
+     * @param string $Cand_id candidate ID
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getSubprojectIDUsingCandID($Cand_id)
+    {
+        $db    =& Database::singleton();
+        $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
+        $stage = $db->pselect($query, array('CandID' => $Cand_id));
+        return $stage[0]['SubprojectID'];
+    }
+
     /**
      * Looks up the test_name for the current full name
      *
@@ -1133,7 +1167,7 @@ class Utility
      *
      * @return string $prefixStr minus the largest common piece of $suffixStr
      */
-    function removeCommonAffix($suffixStr, $prefixStr)
+    static function removeCommonAffix($suffixStr, $prefixStr)
     {
         $lastFound = '';
         // Start from the end of $suffixStr and work backwords, to make sure
@@ -1182,6 +1216,35 @@ class Utility
 
         fclose($fp);
         return $csv_string;
+    }
+
+    /**
+     * QuickForm rule to check that a date is valid.
+     * This is used by create timepoint and start timepoint pages,
+     * so it probably shouldn't be in the instrument class.
+     *
+     * @param array $dateElement The date element in QuickForm array format.
+     *
+     * @return True if the date is invalid, false if it's valid.
+     */
+    function _checkDate($dateElement)
+    {
+        if (empty($dateElement['M'])
+            && empty($dateElement['d'])
+            && empty($dateElement['Y'])
+        ) {
+            // if all three elements are empty, return true b/c it'll
+            // save the NULL in date field
+            return true;
+        } elseif (empty($dateElement['M'])
+            || empty($dateElement['d'])
+            || empty($dateElement['Y'])
+        ) {
+            // otherwise, if any of the three elements are empty, return
+            // false b/c date entry has been attempted
+            return false;
+        }
+        return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
     }
 }
 ?>

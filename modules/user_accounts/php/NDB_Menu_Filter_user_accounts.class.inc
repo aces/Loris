@@ -1,6 +1,4 @@
 <?php
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * The menu for user accounts
  * @package main

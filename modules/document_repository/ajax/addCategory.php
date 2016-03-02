@@ -63,6 +63,7 @@ if ($user->hasPermission('document_repository_view') || $user->hasPermission('do
     $msg_data['newCategory'] = $www['url'] . 
                                "/main.php?test_name=document_repository";
     $msg_data['category']    = $category_name;
+    $msg_data['study']       = $config->getSetting('title');
 
     $Doc_Repo_Notification_Emails = $DB->pselect(
         "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid",

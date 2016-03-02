@@ -243,7 +243,7 @@
   </div> <!-- end row containing all filters-->
   <div class="row">
     <!-- title table with pagination -->
-    <table border="0" valign="bottom" width="100%"><tr>
+    <table id="LogEntries" border="0" valign="bottom" width="100%"><tr>
       <!-- title -->
       {if {$resultcount} != '' }
         <td class="controlpanelsection">Variants found: <strong>{$resultcount}</strong> total</td>

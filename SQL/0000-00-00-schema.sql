@@ -1306,9 +1306,9 @@ CREATE TABLE `conflicts_unresolved` (
       `ExtraKey2` varchar(255) NOT NULL,
       `FieldName` varchar(255) NOT NULL,
       `CommentId1` varchar(255) NOT NULL,
-      `Value1` varchar(255) DEFAULT NULL,
+      `Value1` text DEFAULT NULL,
       `CommentId2` varchar(255) NOT NULL,
-      `Value2` varchar(255) DEFAULT NULL,
+      `Value2` text DEFAULT NULL,
       PRIMARY KEY (`ConflictID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1325,9 +1325,9 @@ CREATE TABLE `conflicts_resolved` (
       `FieldName` varchar(255) NOT NULL,
       `CommentId1` varchar(255) NOT NULL,
       `CommentId2` varchar(255) NOT NULL,
-      `OldValue1` varchar(255) DEFAULT NULL,
-      `OldValue2` varchar(255) DEFAULT NULL,
-      `NewValue` varchar(255) DEFAULT NULL,
+      `OldValue1` text DEFAULT NULL,
+      `OldValue2` text DEFAULT NULL,
+      `NewValue` text DEFAULT NULL,
       `ConflictID` int(10) DEFAULT NULL,
       PRIMARY KEY (`ResolvedID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1613,7 +1613,7 @@ CREATE TABLE `mri_upload` (
   `number_of_mincCreated` int(11) DEFAULT NULL,
   `TarchiveID` int(11) DEFAULT NULL,
   `SessionID` int(10) unsigned DEFAULT NULL,
-  `IsValidated` tinyint(1) NOT NULL DEFAULT '0',
+  `IsCandidateInfoValidated` tinyint(1) DEFAULT NULL,
   `IsTarchiveValidated` tinyint(1) NOT NULL DEFAULT '0',
   `IsPhantom` enum('N','Y') NOT NULL DEFAULT 'N',
   PRIMARY KEY (`UploadID`)

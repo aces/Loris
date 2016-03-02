@@ -338,7 +338,10 @@ class Candidate
         if (is_null($var)) {
             return $this->candidateInfo;
         } else {
-            return $this->candidateInfo[$var];
+            if (isset($this->candidateInfo[$var])) {
+                return $this->candidateInfo[$var];
+            }
+            return null;
         }
     }
 

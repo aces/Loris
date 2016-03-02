@@ -1,7 +1,4 @@
 <?php
-require_once "Utility.class.inc";
-require_once 'NDB_Menu.class.inc';
-
 /**
  * The welcome menu
  * @package main

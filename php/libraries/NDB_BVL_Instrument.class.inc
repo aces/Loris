@@ -11,8 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'BVL_Feedback_Panel.class.inc';
-
 /**
  * Base class for all NeuroDB behavioural instruments
  *
@@ -72,18 +70,21 @@ class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * String to separate the group elements
+     *
      * @access private
      */
     var $_GUIDelimiter = "</td>\n<td>";
 
     /**
      * Commonly used level of indentation
+     *
      * @access private
      */
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
     /**
      * Array of required fields to check
+     *
      * @access private
      */
     var $_requiredElements = array();
@@ -120,6 +121,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
      * or not.
+     *
      * @access private
      */
     var $ValidityEnabled = true;
@@ -127,6 +129,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Whether the "Validity" field is required before flagging an instrument
      * as complete or not.
+     *
      * @access private
      */
     var $ValidityRequired = true;
@@ -599,60 +602,61 @@ class NDB_BVL_Instrument extends NDB_Page
         if (!empty($values['Date_taken'])) {
             $DB  = Database::singleton();
             $age = $this->getCandidateAge($values['Date_taken']);
-            if (!Utility::isErrorX($age)) {
-                $agedays   = $age['year']*365 + $age['mon']*30 + $age['day'];
-                $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
-                // 1 Decimal.
-                $agemonths = (round($agemonths*10) / 10.0);
-                if (!empty($age)) {
-                    $query_params = array(
-                                     'TN'  => $this->testName,
-                                     'CID' => $this->getCommentID(),
-                                    );
+            if (empty($age)) {
+                throw new LorisException("Candidate age could not be found.");
+            }
+            $agedays   = $age['year']*365 + $age['mon']*30 + $age['day'];
+            $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
+            // 1 Decimal.
+            $agemonths = (round($agemonths*10) / 10.0);
+            if (!empty($age)) {
+                $query_params = array(
+                                 'TN'  => $this->testName,
+                                 'CID' => $this->getCommentID(),
+                                );
 
-                    $validage = $DB->pselectOne(
-                        "SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays)
-                            FROM test_battery tb
-                                JOIN flag f USING(Test_name)
-                                JOIN session s ON (s.ID=f.SessionID)
-                            WHERE tb.Active='Y'
-                                AND tb.Test_name=:TN
-                                AND tb.SubprojectID=s.SubprojectID
-                                AND f.CommentID=:CID",
+                $validage = $DB->pselectOne(
+                    "SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays)
+                        FROM test_battery tb
+                            JOIN flag f USING(Test_name)
+                            JOIN session s ON (s.ID=f.SessionID)
+                        WHERE tb.Active='Y'
+                            AND tb.Test_name=:TN
+                            AND tb.SubprojectID=s.SubprojectID
+                            AND f.CommentID=:CID",
+                    $query_params
+                );
+                $values['Candidate_Age']     = $agemonths;
+                $values['Window_Difference'] = 0;
+
+                // Age isn't valid, so find out how far out it is
+
+                if ($validage == 0) {
+                    $Windows = $DB->pselect(
+                        "SELECT AgeMinDays, AgeMaxDays
+                        FROM test_battery tb
+                            JOIN flag f USING(Test_name)
+                            JOIN session s ON (s.ID=f.SessionID)
+                        WHERE tb.Active='Y' AND tb.Test_name=:TN
+                            AND tb.SubprojectID=s.SubprojectID
+                            AND f.CommentID=:CID",
                         $query_params
                     );
-                    $values['Candidate_Age']     = $agemonths;
-                    $values['Window_Difference'] = 0;
-
-                    // Age isn't valid, so find out how far out it is
-
-                    if ($validage == 0) {
-                        $Windows = $DB->pselect(
-                            "SELECT AgeMinDays, AgeMaxDays
-                            FROM test_battery tb
-                                JOIN flag f USING(Test_name)
-                                JOIN session s ON (s.ID=f.SessionID)
-                            WHERE tb.Active='Y' AND tb.Test_name=:TN
-                                AND tb.SubprojectID=s.SubprojectID
-                                AND f.CommentID=:CID",
-                            $query_params
-                        );
-                        foreach ($Windows as $window) {
-                            if ($agedays < $window['AgeMinDays']) {
-                                $delta = $window['AgeMinDays'] - $agedays;
-                                if (abs($delta) < abs($values['Window_Difference'])
-                                    || $values['Window_Difference'] == 0
-                                ) {
-                                    $values['Window_Difference'] = 0-abs($delta);
-                                }
+                    foreach ($Windows as $window) {
+                        if ($agedays < $window['AgeMinDays']) {
+                            $delta = $window['AgeMinDays'] - $agedays;
+                            if (abs($delta) < abs($values['Window_Difference'])
+                                || $values['Window_Difference'] == 0
+                            ) {
+                                $values['Window_Difference'] = 0-abs($delta);
                             }
-                            if ($agedays > $window['AgeMaxDays']) {
-                                $delta = $agedays - $window['AgeMaxDays'];
-                                if (abs($delta) < abs($values['Window_Difference'])
-                                    || $values['Window_Difference'] == 0
-                                ) {
-                                    $values['Window_Difference'] = abs($delta);
-                                }
+                        }
+                        if ($agedays > $window['AgeMaxDays']) {
+                            $delta = $agedays - $window['AgeMaxDays'];
+                            if (abs($delta) < abs($values['Window_Difference'])
+                                || $values['Window_Difference'] == 0
+                            ) {
+                                $values['Window_Difference'] = abs($delta);
                             }
                         }
                     }

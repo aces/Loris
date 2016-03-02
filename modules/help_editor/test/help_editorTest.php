@@ -22,7 +22,7 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorDoesPageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=help_editor");
+        $this->safeGet($this->url . "/help_editor/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Help Editor", $bodyText);
     }
@@ -34,7 +34,7 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpEditorEditHelpContentDoesPageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=help_editor&subtest=edit_help_content");
+        $this->safeGet($this->url . "/help_editor/edit_help_content/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Edit Help Content", $bodyText);
     }

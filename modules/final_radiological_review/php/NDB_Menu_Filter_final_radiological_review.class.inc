@@ -19,9 +19,6 @@
  *  @link       https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-require_once 'Candidate.class.inc';
-
 /**
  * Utility function to make things more human readable.
  *

@@ -22,7 +22,7 @@ class timepointListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testTimepointListDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=timepoint_list&candID=000000");
+        $this->safeGet($this->url . "/900000/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Candidate Profile", $bodyText);
     }

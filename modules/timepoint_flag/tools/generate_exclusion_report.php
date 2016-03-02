@@ -202,8 +202,8 @@ foreach ($result as $currentTimepoint) {
                          'd' => $dateArray[2],
                         );
         unset($dateArray);
-        if (_checkDate($dateOfIQTest) == false
-            || _checkDate($dateOfVisit) === false
+        if (Utility::_checkDate($dateOfIQTest) == false
+            || Utility::_checkDate($dateOfVisit) === false
         ) {
             $data['DB_Window'] = "Date Error";
         } else {

@@ -12,9 +12,6 @@
  * @link     https://github.com/aces/Loris-Trunk
 */
 
-require_once "NDB_BVL_Battery.class.inc";
-require_once 'NDB_Form.class.inc';
-require_once 'MRIFile.class.inc';
 /**
  * Imaging browser control panel class
  *
@@ -42,7 +39,7 @@ class Imaging_Session_ControlPanel
      *
      * @return NULL
      */
-    function Imaging_Session_ControlPanel($sessionID)
+    function __construct($sessionID)
     {
         $this->sessionID = $sessionID;
     }
@@ -172,7 +169,7 @@ class MRINavigation
     *
     * @return NULL
     */
-    function MRINavigation($sessionID = null)
+    function __construct($sessionID = null)
     {
         $this->sessionID           = $sessionID;
         $this->FilteredSessionList = $_SESSION['State']

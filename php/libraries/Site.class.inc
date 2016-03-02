@@ -41,7 +41,7 @@ class Site
                 $siteList[$centerID] = new Site();
                 $error = $siteList[$centerID]->select($centerID);
             } catch(Exception $e) {
-                $message = $error->getMessage();
+                $message = $e->getMessage();
                 unset($siteList[$centerID]);
                 throw new Exception("Could not select site ($message)", null, $e);
 

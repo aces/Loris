@@ -1,5 +1,4 @@
 <?php
-require_once "NDB_Form.class.inc";
 
 // Stub class.. all this does is check permissions, since everything else is
 // done in the template/javascript

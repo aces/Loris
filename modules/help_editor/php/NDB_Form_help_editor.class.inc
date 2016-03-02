@@ -11,10 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once "NDB_Form.class.inc";
-require_once "Utility.class.inc";
-require_once "HelpFile.class.inc";
-
 /**
  * A class for holding a set of functions to add/update content 
  * for all modules

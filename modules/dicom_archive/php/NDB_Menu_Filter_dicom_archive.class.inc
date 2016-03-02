@@ -14,8 +14,6 @@
  * @link       https://www.github.com/olgatsib/Loris-Trunk/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Provides the PHP code for the menu filter for the dicom archive
  *
@@ -56,8 +54,6 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             LEFT JOIN candidate c ON (c.CandID=s.CandID) WHERE 1=1";
 
         $colsFirst = array(
-            't.TarchiveID as TarchiveID',
-            's.ID as SessionID'
         );
         
         $TransferStatus = $this->_getTransferStatusFromQuery();
@@ -73,7 +69,10 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             't.DateAcquired as Acquisition',
             't.ArchiveLocation as Archive_Location',
             "'View Details' as Metadata",
-            "'View Images' as MRI_Browser"
+            "'View Images' as MRI_Browser",
+            // For constructing links, not in headers array
+            't.TarchiveID as TarchiveID',
+            's.ID as SessionID'
         );
 
         $this->columns = array_merge($colsFirst, $colsLast);
@@ -302,6 +301,47 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
         $this->tpl_data['numTimepoints'] = $this->TotalItems;
        
         return true;
+    }
+
+    function toArray() {
+        $unanonymized = parent::toArray();
+        $retVal = array(
+            'Headers' => $unanonymized['Headers'],
+        );
+        $data = array();
+
+        foreach ($unanonymized['Data'] as &$row) {
+            $val = $row[2];
+            if (!preg_match($this->dicomArchiveSettings['patientNameRegex'], $val) &&
+                !preg_match($this->dicomArchiveSettings['LegoPhantomRegex'], $val) &&
+                !preg_match($this->dicomArchiveSettings['LivingPhantomRegex'], $val)
+            ) {
+                $row[2] = "INVALID - HIDDEN";    
+            }
+
+            $val = $row[1];
+            if (! preg_match($this->dicomArchiveSettings['patientIDRegex'], $val)) {
+                $row[1] = 'INVALID - HIDDEN';
+            }
+
+            $data[] = $row;
+        }
+        return array(
+            'Headers' => $unanonymized['Headers'],
+            'Data' => $data,
+        );
+
+    }
+    function getJSDependencies() {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/dicom_archive/js/columnFormatter.js",
+            )   
+        );  
     }
 }
 ?>

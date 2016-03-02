@@ -8,7 +8,15 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
         // func(ColumnName, CellData, EntireRowData)
         getFormattedCell: React.PropTypes.func
     },
-
+    componentDidMount: function() {
+        if (jQuery.fn.DynamicTable) {
+            if(this.props.freezeColumn) {
+                $("#dynamictable").DynamicTable({"freezeColumn" : this.props.freezeColumn});
+            } else {
+                $("#dynamictable").DynamicTable();
+            }
+        }
+    },
     getInitialState: function() {
         return {
             'PageNumber' : 1,
@@ -87,7 +95,11 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
         var rowsPerPage = this.state.RowsPerPage;
         var headers = [React.createElement("th", {onClick: this.setSortColumn(-1)}, this.props.RowNumLabel)];
         for(var i = 0; i < this.props.Headers.length; i += 1) {
-            headers.push(React.createElement("th", {onClick: this.setSortColumn(i)}, this.props.Headers[i]));
+            if(this.props.Headers[i] == this.props.freezeColumn){
+                headers.push(React.createElement("th", {id: this.props.freezeColumn, onClick: this.setSortColumn(i)}, this.props.Headers[i]));
+            }else {
+                headers.push(React.createElement("th", {onClick: this.setSortColumn(i)}, this.props.Headers[i]));
+            }
         }
         var rows = [];
         var curRow = [];
@@ -180,7 +192,7 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
             );
         return (
             React.createElement("div", null, 
-                React.createElement("table", {className: "table table-hover table-primary table-bordered"}, 
+                React.createElement("table", {className: "table table-hover table-primary table-bordered", id: "dynamictable"}, 
                     React.createElement("thead", null, 
                         React.createElement("tr", {className: "info"}, headers)
                     ), 

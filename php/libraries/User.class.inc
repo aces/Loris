@@ -11,10 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'NDB_Factory.class.inc';
-require_once 'UserPermissions.class.inc';
-require_once 'CouchDB.class.inc';
-
 /**
  * User class. This deals with any User management except permissions,
  * which is contained in the UserPermissions base class.
@@ -29,6 +25,7 @@ class User extends UserPermissions
 {
     /**
      * Stores user information
+     *
      * @var    array
      * @access private
      */
