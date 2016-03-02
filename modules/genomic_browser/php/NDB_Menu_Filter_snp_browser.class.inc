@@ -278,7 +278,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             array(
              null => 'Any',
              'D'  => 'D',
-             'NA' => 'NA')); ,
+             'NA' => 'NA')); 
         $this->addBasicText('Genotype_Quality', 'Genotype Quality:');
         $this->addBasicText('Exonic_Function', 'Exonic Function:');
 
