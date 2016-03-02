@@ -25,6 +25,7 @@ class User extends UserPermissions
 {
     /**
      * Stores user information
+     *
      * @var    array
      * @access private
      */

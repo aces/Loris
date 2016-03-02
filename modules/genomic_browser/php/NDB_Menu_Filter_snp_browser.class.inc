@@ -308,8 +308,10 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addBasicText('Gene_Name', 'Name:');
 
         $DB = Database::singleton();
-        $platform_results
-            = $DB->select("SELECT distinct Name FROM genotyping_platform ");
+        $platform_results = $DB->pselect(
+            "SELECT distinct Name FROM genotyping_platform ",
+            array()
+        );
         $platform_options = array('' => 'Any');
         foreach ($platform_results as $row => $result ) {
             $name = $result['Name'];
@@ -382,7 +384,6 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             //print out data rows
             $i = 1;
             foreach ($item as $key => $val) {
-
                 if ($this->_displayBrief && !in_array($key, $this->_briefFields)) {
                     continue;  // no increment to $i
                 }

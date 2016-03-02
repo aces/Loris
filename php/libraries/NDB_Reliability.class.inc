@@ -27,6 +27,7 @@ class NDB_Reliability extends NDB_Form
 {
     /**
      * Class name
+     *
      * @var    string
      * @access private
      */

@@ -400,6 +400,12 @@ class NDB_Form_User_Accounts extends NDB_Form
         );
         unset($group);
 
+        // Add a confirm email text field only if creating a new user
+        // (to make sure that account creation email goes through)
+        if ($this->isCreatingNewUser()) {
+            $this->addBasicText('__ConfirmEmail', 'Confirm Email');
+        }
+
         //------------------------------------------------------------
 
         // get user permissions
@@ -760,6 +766,10 @@ class NDB_Form_User_Accounts extends NDB_Form
             $emailError = $this->_getEmailError($DB, $values['Email']);
             if (!is_null($emailError)) {
                 $errors['Email_Group'] = $emailError;
+            } elseif ($this->isCreatingNewUser()) {
+                if ($values['Email'] != $values['__ConfirmEmail']) {
+                    $errors['__ConfirmEmail'] = 'Email and confirmed email do not match'; 
+                }
             }
         } else {
             // No email entered: error
