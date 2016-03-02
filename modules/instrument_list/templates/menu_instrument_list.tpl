@@ -25,8 +25,8 @@
 	<tbody>
 	   	<tr{if $instruments[group][instrument].isDirectEntry} class="directentry"{/if}>
 	    	<td>
-                <a href="{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].commentID}">
-                    {$instruments[group][instrument].fullName}</a></td>
+                <a href="{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].commentID}&sessionID={$sessionID}&candID={$candID}">
+	            {$instruments[group][instrument].fullName}</a></td>
 	    	<td>{$instruments[group][instrument].dataEntryStatus}</td>
 	    	<td>{$instruments[group][instrument].administrationStatus}</td>
 	    	<td bgcolor="{$instruments[group][instrument].feedbackColor}">
