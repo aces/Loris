@@ -165,24 +165,25 @@ StaticDataTable = React.createClass({
             </select>
             );
         return (
-            <div>
-                <table className="table table-hover table-primary table-bordered" id="dynamictable">
-                    <thead>
-                        <tr className="info">{headers}</tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                        <td className="info" colSpan={headers.length}>{rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown}) 
+            <div className="panel panel-primary">
+                    <table className="table table-hover table-primary table-bordered" id="dynamictable">
+                        <thead>
+                            <tr className="info">{headers}</tr>
+                        </thead>
+                        <tbody>
+                            {rows}
+                        </tbody>
+                    </table>
+                <div className="panel-footer table-footer">
+                    <div className="row">
+                        <div className="col-xs-12">
+                            {rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown}) 
                             <div className="pull-right">
                                 <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
                             </div>
- </td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
