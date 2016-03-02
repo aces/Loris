@@ -6,13 +6,13 @@
  *
  * PHP version 5
  *
- *  @category Genomic
- *  @package  Main
- *  @subpackage  Genomic
- *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link     https://www.github.com/aces/Loris/
- *  Submenu: GWAS
+ *  @category   Genomic
+ *  @package    Main
+ *  @subpackage Genomic
+ *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
+ *  @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ *  @link       https://www.github.com/aces/Loris/
+ *  Submenu:    GWAS
  */
 
 require_once 'NDB_Menu_Filter.class.inc';
@@ -22,12 +22,12 @@ require_once 'NDB_Menu_Filter.class.inc';
  * This class is gwas_browser Form
  * GWAS submenu tab for Genomic Browser
  *
- * @category Genomic
- * @package  Main
- * @subpackage  Genomic
- * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- * @link     https://github.com/aces/Loris
+ * @category   Genomic
+ * @package    Main
+ * @subpackage Genomic
+ * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link       https://github.com/aces/Loris
 */
 class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
 {
@@ -67,8 +67,6 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                           'GWAS.rsID AS SNP_ID',
                           'genome_loc.Chromosome AS Chromosome',
                           'genome_loc.StartLoc AS Position_BP',
-#                           'GWAS.Chromosome AS Chromosome',
-#                          'GWAS.Position_BP AS Position_BP',
                           'GWAS.MajorAllele AS Major_Allele',
                           'GWAS.MinorAllele AS Minor_Allele',
                           'GWAS.MAF AS MAF',
@@ -134,11 +132,9 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
         $user = User::singleton();
 
         // add form elements
-        $show_results_options
-            = array(
+        $show_results_options = array(
                'brief' => 'Summary fields',
-               'full'  => 'All fields',
-              );
+               'full'  => 'All fields'); 
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         $this->addBasicText('SNP_ID', 'SNP ID:');
@@ -221,7 +217,8 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                 }
 
                 //Show the URL to the timepoint list on PSCID field
-                if ($key == 'SNP_ID' && $user->hasPermission('access_all_profiles')) {
+                if ($key == 'SNP_ID' && 
+                    $user->hasPermission('access_all_profiles')) {
                     $this->tpl_data['items'][$x][$i]['SNP_ID'] = $item['SNP_ID'];
                 }
                 $this->tpl_data['items'][$x][$i]['name']  = $key;

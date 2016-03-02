@@ -7,13 +7,13 @@
  *
  * PHP version 5
  *
- *  @category Genomic
- *  @package  Main 
- *  @subpackage  Genomic
- *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link     https://www.github.com/aces/Loris/
- *  Main tab: Profiles. Submenus: CNV,SNP,GWAS
+ *  @category   Genomic
+ *  @package    Main 
+ *  @subpackage Genomic
+ *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
+ *  @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ *  @link       https://www.github.com/aces/Loris/
+ *  Main tab: Genomic Profiles. Submenus: CNV,SNP,GWAS
  */
 
 require_once 'NDB_Menu_Filter.class.inc';
@@ -22,12 +22,12 @@ require_once 'NDB_Menu_Filter.class.inc';
  *
  * This class is genomic_browser Form
  *
- * @category Genomic
- * @package  Main 
- * @subpackage  Genomic
- * @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- * @link     https://github.com/aces/Loris
+ * @category   Genomic
+ * @package    Main 
+ * @subpackage Genomic
+ * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link       https://github.com/aces/Loris
 */
 class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
 {
@@ -98,9 +98,10 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 ON (cohort.CandID=candidate.CandID) 
             LEFT JOIN psc ON (psc.CenterID= candidate.CenterID)
 
-            LEFT JOIN  `genomic_files` AS gbf1 ON candidate.CandID = gbf1.CandID AND gbf1.Category='raw'
-
-            LEFT JOIN  `genomic_files` AS gbf2 ON candidate.CandID = gbf2.CandID AND gbf2.Category='cleaned'
+            LEFT JOIN  `genomic_files` AS gbf1 ON candidate.CandID = gbf1.CandID 
+                AND gbf1.Category='raw'
+            LEFT JOIN  `genomic_files` AS gbf2 ON candidate.CandID = gbf2.CandID 
+                AND gbf2.Category='cleaned'
             LEFT JOIN (select scr.CandID, count(scr.CandID) as SNPCount
                 from SNP_candidate_rel as scr GROUP BY scr.CandID) as S 
                  ON (candidate.CandID = S.CandID)
@@ -143,7 +144,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                                'External_ID'        => 'candidate.ExternalID',
                                'Show_Brief_Results' => 'show_brief_results',
                                'Raw_Filesets'       => 'rawfiles.rawFileCount',
-                               'Cleaned_Filesets'   => 'cleanedfiles.cleanedFileCount',
+                               'Cleaned_Filesets'   => 
+        'cleanedfiles.cleanedFileCount',
                                'SNP_Hits'           => 'S.SNPCount',
                                'CNV_Hits'           => 'C.CNVCount',
                               );
@@ -174,8 +176,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             // allow only to view own site data
             $site = Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
-                $list_of_sites
-                    = array($user->getData('CenterID') => $user->getData('Site'));
+                $list_of_sites = array($user->getData('CenterID') 
+                    => $user->getData('Site'));
             }
         }
 
@@ -187,31 +189,23 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         $this->addBasicText('DCCID', 'DCCID:');
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addBasicText('External_ID', 'External ID:');
-        $this->addSelect(
-            'gender',
-            'Gender:',
-            array(
-             ''       => 'All',
+        $this->addSelect('gender', 'Gender:', array(''       => 'All',
              'Male'   => 'Male',
              'Female' => 'Female',
-            )
-        );
-        $this->addSelect(
-            'SubprojectID',
-            'Subproject:',
-            array('' => 'Any') + $list_of_subprojects
-        );
+            ));
+        $this->addSelect('SubprojectID', 'Subproject:',
+            array('' => 'Any') + $list_of_subprojects);
         $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
 
-        $any_options = array('' => NULL, '1' => 'Any', '0' => 'None');  
+        $any_options = array('' => null, '1' => 'Any', '0' => 'None');  
         $this->addSelect('Raw_Filesets', 'Raw Filesets:', $any_options); 
         $this->addSelect('Cleaned_Filesets', 'Cleaned Filesets:', $any_options); 
-        $this->addSelect('GWAS_Results', 'GWAS top-100 p-value results:', $any_options); 
+        $this->addSelect('GWAS_Results', 'GWAS top-100 p-value results:', 
+            $any_options); 
         $this->addSelect('SNP_Hits', 'SNPs found:', $any_options); 
         $this->addSelect('CNV_Hits', 'CNVs found:', $any_options); 
 
-        $show_results_options
-            = array(
+        $show_results_options = array(
                'brief' => 'Summary fields',
                'full'  => 'All fields',
               );
@@ -241,10 +235,10 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         if ($this->_displayBrief) {
             $this->headers = array(); // re-initialize i.e. wipe
             foreach ($this->_briefFields as $col) {
-                 if ($col == "Top_Raw_File" || $col == "Top_Cleaned_File") {
-                     continue;
-                 }
-                 $this->headers[] = $col;
+                if ($col == "Top_Raw_File" || $col == "Top_Cleaned_File") {
+                    continue;
+                }
+                $this->headers[] = $col;
             }
             // Note this includes an extra column: Total Filesets
 
@@ -258,8 +252,9 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                     $headerArray = array( "name" => $header, 
                                           "displayName" => "All Filesets",
                                           "fieldOrder" => "ASC" ); 
+
                     $this->tpl_data['headers'][$colCount] = $headerArray; 
-                    $briefHeaders[] = $headerArray;
+                    $briefHeaders[]                       = $headerArray;
                     $colCount++; // increment and continue processing
                     continue; 
                 }
@@ -285,8 +280,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
 
             //print out data rows
-            $i = 1;
-            $rawFile = ""; // re-initialize for each row
+            $i           = 1;
+            $rawFile     = ""; // re-initialize for each row
             $cleanedFile = "";
             foreach ($item as $key => $val) {
                 if ($this->_displayBrief && !in_array($key, $this->_briefFields)) {
@@ -298,15 +293,15 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                     $this->tpl_data['items'][$x][$i]['DCCID'] = $item['DCCID'];
                 }
 
-                // don't store to tpl_data, just store col value in variable, and loop
-                if ($key=='Top_Raw_File'){
+                // don't store to tpl_data, just store col value 
+                // in $rawFile/$cleanedFile variable, and loop
+                if ($key=='Top_Raw_File') {
                     // value may be blank ?  
                     $rawFile = $val;
-                    // increment to leave a blank column in tpl_data for Total_Filesets
+                    // increment to leave Total_Filesets column blank in tpl_data
                     $i++; 
                     continue; 
-                }
-                elseif ($key=='Top_Cleaned_File'){
+                } elseif ($key=='Top_Cleaned_File') {
                     $cleanedFile = $val;
                     continue; 
                 }
@@ -314,13 +309,13 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 $this->tpl_data['items'][$x][$i]['name']  = $key;
                 $this->tpl_data['items'][$x][$i]['value'] = $val;
 
-                if ($key=='Raw_Filesets'){
+                if ($key=='Raw_Filesets') {
                     $this->tpl_data['items'][$x][$i]['file'] = $rawFile;
-                }
-                elseif ($key=='Cleaned_Filesets'){
+                } elseif ($key=='Cleaned_Filesets') {
                     $this->tpl_data['items'][$x][$i]['file'] = $cleanedFile;
 
-                    // back-calculate Total Count of Filesets from Raw and Cleaned cols
+                    // back-calculate Total Count of Filesets 
+                    // by adding Raw and Cleaned cols
                     $totalCol = $i - 2; // 2 columns prior to Cleaned_Filesets column
                     $totalVal = 0;  // initialize
                     // assumed raw is previous col, already processed
@@ -330,15 +325,16 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                     if (is_numeric($val)) { // Cleaned Val 
                         $totalVal = $val;
                     } 
-                    if (is_numeric($rawVal) ){
+                    if (is_numeric($rawVal)) {
                         $totalVal += $rawVal; 
                     }
 
                     if ($totalVal == '0') { //blank if none
                         $totalVal = ""; 
                     }
-                    $this->tpl_data['items'][$x][$totalCol]['value'] =$totalVal; 
-                    $this->tpl_data['items'][$x][$totalCol]['name'] = "Total_Filesets";
+                    $this->tpl_data['items'][$x][$totalCol]['value'] = $totalVal; 
+                    $this->tpl_data['items'][$x][$totalCol]['name']  =
+                        "Total_Filesets";
 
                 } // end if Cleaned 
 
@@ -354,8 +350,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                     if (is_null($val)) {
                         $this->tpl_data['items'][$x][$i]['value'] = null;
                     } else {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = $subprojectlist[$val];
+                        $this->tpl_data['items'][$x][$i]['value'] =
+                            $subprojectlist[$val];
                     }
                 }
                 $i++;
@@ -406,8 +402,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                       $field == "S.SNPCount" || $field == "C.CNVCount") {
                 if ($val == "1") {  // if ANY found i.e. >= 1  
                     $query .= " AND $field >= :v_$prepared_key";
-                }
-                elseif ($val == "0") { // if NONE found i.e. = 0
+                } elseif ($val == "0") { // if NONE found i.e. = 0
                     $query .= " AND $field = :v_$prepared_key";
                 }
             } else {

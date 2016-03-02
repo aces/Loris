@@ -6,12 +6,12 @@
  *
  * PHP version 5
  *
- *  @category Genomic 
+ *  @category   Genomic 
  *  @package    Main
  *  @subpackage Genomic 
- *  @author   Christine Rogers <rogers@bic.mni.mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link     https://www.github.com/aces/Loris/
+ *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
+ *  @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ *  @link       https://www.github.com/aces/Loris/
  *  Subtab: CNV
  */
 
@@ -202,8 +202,8 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
             // allow only to view own site data
             $site = Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
-                $list_of_sites
-                    = array($user->getData('CenterID') => $user->getData('Site'));
+                $list_of_sites = array($user->getData('CenterID') 
+                    => $user->getData('Site'));
             }
         }
 
@@ -215,24 +215,16 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addBasicText('DCCID', 'DCCID:');
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addBasicText('External_ID', 'External ID:');
-        $this->addSelect(
-            'gender',
-            'Gender:',
-            array(
+        $this->addSelect('gender', 'Gender:', array(
              ''       => 'All',
              'Male'   => 'Male',
              'Female' => 'Female',
-            )
-        );
-        $this->addSelect(
-            'SubprojectID',
-            'Subproject:',
-            array('' => 'Any') + $list_of_subprojects
-        );
+            ));
+        $this->addSelect('SubprojectID', 'Subproject:',
+            array('' => 'Any') + $list_of_subprojects);
         $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
 
-        $show_results_options
-            = array(
+        $show_results_options = array(
                'brief' => 'Summary fields',
                'full'  => 'All fields',
               );
@@ -256,26 +248,19 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                                'N'  => 'No',
                               );
         $this->addSelect('Common_CNV', 'Common:', $Common_CNV_options);
-        $Characteristics_options = array(
-                                    null         => 'Any',
+        $Characteristics_options = array(null         => 'Any',
                                     'Benign'     => 'Benign',
                                     'Pathogenic' => 'Pathogenic',
-                                    'Unknown'    => 'Unknown',
-                                   );
-        $this->addSelect(
-            'Characteristics',
-            'Characteristics:',
-            $Characteristics_options
-        );
-        $Inheritance_options = array(
-                                null           => 'Any',
+                                    'Unknown'    => 'Unknown');
+        $this->addSelect('Characteristics', 'Characteristics:',
+            $Characteristics_options);
+        $Inheritance_options = array(null           => 'Any',
                                 'de novo'      => 'de novo',
                                 'maternal'     => 'maternal',
                                 'paternal'     => 'paternal',
                                 'unclassified' => 'unclassified',
                                 'unknown'      => 'unknown',
-                                'NA'           => 'NA',
-                               );
+                                'NA'           => 'NA');
         $this->addSelect('Inheritance', 'Inheritance:', $Inheritance_options);
 
         $this->addBasicText('Chromosome', 'Chromosome:');
@@ -283,12 +268,13 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addBasicText('Gene_Symbol', 'Symbol:');
         $this->addBasicText('Gene_Name', 'Name:');
 
-        $DB = Database::singleton();
-        $platform_results
-            = $DB->select("SELECT distinct Name FROM genotyping_platform");
+        $DB               = Database::singleton();
+        $platform_results = $DB->select("SELECT distinct Name 
+            FROM genotyping_platform");
+
         $platform_options = array('' => 'Any');
         foreach ($platform_results as $row => $result) {
-            $name = $result['Name'];
+            $name                    = $result['Name'];
             $platform_options[$name] = $name;
         }
         $this->addSelect('Platform', 'Platform:', $platform_options);
@@ -373,8 +359,8 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                     if (is_null($val)) {
                         $this->tpl_data['items'][$x][$i]['value'] = null;
                     } else {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = $subprojectlist[$val];
+                        $this->tpl_data['items'][$x][$i]['value'] =
+                            $subprojectlist[$val];
                     }
                 }
                 $i++;
