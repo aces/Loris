@@ -2,10 +2,10 @@
   <div class="row">
     <div id="tabs">
       <ul class="nav nav-tabs">
-        <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=genomic_browser">Profiles</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/">Profiles</a></li>
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>GWAS</strong></a></li>
-        <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=genomic_browser&submenu=snp_browser">SNP</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="main.php?test_name=genomic_browser&submenu=cnv_browser">CNV</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
       </ul>
       <br>
     </div>
@@ -13,7 +13,7 @@
   <div class="row">
     <div class="tab-content">
       <div class="tab-pane active">
-        <form method="post" action="main.php?test_name=genomic_browser&submenu=gwas_browser">
+        <form method="post" action="{$baseurl}/genomic_browser/?submenu=gwas_browser">
           <div class="col-sm-12">
             <div class="row">
             <!-- GWAS section -->
@@ -116,7 +116,7 @@
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="col-sm-6 col-xs-12 col-md-5">
-                      <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=genomic_browser&submenu=gwas_browser&reset=true'" />
+                      <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/genomic_browser/?submenu=gwas_browser&reset=true'" />
                     </div>
                   </div>
                 </div>
@@ -153,7 +153,7 @@
           <!-- print out column headings - quick & dirty hack -->
           {section name=header loop=$headers}
             <th>
-               <a href="main.php?test_name=genomic_browser&submenu=gwas_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+               <a href="{$baseurl}/genomic_browser/?submenu=gwas_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                    {if $headers[header].displayName == "P Value"}
                        P-value Trend
                    {else}
@@ -176,7 +176,7 @@
             {/if}
             {if $items[item][piece].SNP_ID != "" AND $items[item][piece].name == "SNP_ID"}
               {assign var="SNP_ID" value=$items[item][piece].value}
-              <a href="main.php?test_name=genomic_browser&submenu=snp_browser&rsID={$items[item][piece].SNP_ID}">{$items[item][piece].value}</a>
+              <a href="{$baseurl}/genomic_browser/?submenu=snp_browser&rsID={$items[item][piece].SNP_ID}">{$items[item][piece].value}</a>
             {elseif $items[item][piece].name == "Chromosome"}
               {assign var="chromValue" value=$items[item][piece].value}
               {$chromValue} 
