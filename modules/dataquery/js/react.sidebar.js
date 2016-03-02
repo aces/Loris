@@ -43,7 +43,13 @@ FieldsSidebar = React.createClass({displayName: "FieldsSidebar",
         var fieldList = [];
         if(this.props.Fields) {
             for(var i = this.props.Fields.length - 1; i >= 0; i--) {
-                fieldList.push(React.createElement("li", {className: "list-group-item", key: this.props.Fields[i]}, this.props.Fields[i]));
+                var fieldInfo = this.props.Fields[i].split(",");
+                fieldList.push(
+                    React.createElement("div", {className: "list-group-item row", key: this.props.Fields[i]}, 
+                        React.createElement("h4", {className: "list-group-item-heading col-xs-12"}, fieldInfo[0]), 
+                        React.createElement("span", {className: "col-xs-12"}, fieldInfo[1])
+                    )
+                );
             }
         }
         return (
@@ -51,9 +57,7 @@ FieldsSidebar = React.createClass({displayName: "FieldsSidebar",
                 React.createElement("div", {className: "form-group"}, 
                     React.createElement("button", {className: "btn btn-primary", onClick: this.props.resetQuery}, "Clear Query")
                 ), 
-                React.createElement("ul", {className: "list-group"}, 
                     fieldList
-                )
             ));
     }
 });

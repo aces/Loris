@@ -43,7 +43,13 @@ FieldsSidebar = React.createClass({
         var fieldList = [];
         if(this.props.Fields) {
             for(var i = this.props.Fields.length - 1; i >= 0; i--) {
-                fieldList.push(<li className="list-group-item" key={this.props.Fields[i]}>{this.props.Fields[i]}</li>);
+                var fieldInfo = this.props.Fields[i].split(",");
+                fieldList.push(
+                    <div className="list-group-item row" key={this.props.Fields[i]}>
+                        <h4 className="list-group-item-heading col-xs-12">{fieldInfo[0]}</h4>
+                        <span className="col-xs-12">{fieldInfo[1]}</span>
+                    </div>
+                );
             }
         }
         return (
@@ -51,9 +57,7 @@ FieldsSidebar = React.createClass({
                 <div className="form-group">
                     <button className="btn btn-primary" onClick={this.props.resetQuery}>Clear Query</button>
                 </div>
-                <ul className="list-group">
                     {fieldList}
-                </ul>
             </Sidebar>);
     }
 });
