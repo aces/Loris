@@ -1798,21 +1798,23 @@ CREATE TABLE `final_radiological_review_history` (
 -- Table structure for table `gene`
 DROP TABLE IF EXISTS `gene`;
 CREATE TABLE `gene` (
-  `GeneID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `GeneID` int(20) NOT NULL AUTO_INCREMENT,
   `Symbol` varchar(255) DEFAULT NULL,
   `Name` varchar(255) DEFAULT NULL,
   `NCBIID` varchar(255) DEFAULT NULL,
   `OfficialSymbol` varchar(255) DEFAULT NULL,
   `OfficialName` text,
-  `GenomeLocID` bigint(20) DEFAULT NULL,
+  `GenomeLocID` int(20) DEFAULT NULL,
   PRIMARY KEY (`GeneID`),
   KEY `geneGenomeLocID` (`GenomeLocID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Genomic Browser tables : no data included
+--
 -- Table structure for table `genome_loc`
 DROP TABLE IF EXISTS `genome_loc`;
 CREATE TABLE `genome_loc` (
-  `GenomeLocID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `GenomeLocID` int(20) NOT NULL AUTO_INCREMENT,
   `Chromosome` varchar(255) DEFAULT NULL,
   `Strand` varchar(255) DEFAULT NULL,
   `EndLoc` int(11) DEFAULT NULL,
@@ -1824,7 +1826,7 @@ CREATE TABLE `genome_loc` (
 -- Table structure for table `genotyping_platform`
 DROP TABLE IF EXISTS `genotyping_platform`;
 CREATE TABLE `genotyping_platform` (
-  `PlatformID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `PlatformID` int(20) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) DEFAULT NULL,
   `Description` text,
   `TechnologyType` varchar(255) DEFAULT NULL,
@@ -1832,37 +1834,53 @@ CREATE TABLE `genotyping_platform` (
   PRIMARY KEY (`PlatformID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
 -- Table structure for table `SNP`
+-- used by Genomic Browser module
+--
 DROP TABLE IF EXISTS `SNP`;
 CREATE TABLE `SNP` (
-  `SNPID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) DEFAULT NULL,
-  `rsID` varchar(9) DEFAULT NULL,
+  `SNPID` int(20) NOT NULL AUTO_INCREMENT,
+  `rsID` varchar(20) DEFAULT NULL,
   `Description` text,
   `SNPExternalName` varchar(255) DEFAULT NULL,
   `SNPExternalSource` varchar(255) DEFAULT NULL,
-  `ObservedBase` enum('A','C','T','G') DEFAULT NULL,
   `ReferenceBase` enum('A','C','T','G') DEFAULT NULL,
-  `ArrayReport` enum('Normal','Pending','Uncertain') DEFAULT NULL,
   `Markers` varchar(255) DEFAULT NULL,
+  `FunctionPrediction` enum('exonic','ncRNAexonic','splicing','UTR3','UTR5') DEFAULT NULL,
+  `Damaging` enum('D','NA') DEFAULT NULL,
+  `ExonicFunction` enum('nonsynonymous','unknown') DEFAULT NULL,
+  `GenomeLocID` int(20) DEFAULT NULL,
+  PRIMARY KEY (`SNPID`),
+  FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`)
+) ENGINE=InnoDB AUTO_INCREMENT=154 DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `SNP_candidate_rel`
+-- used by Genomic Browser module
+--
+DROP TABLE IF EXISTS `SNP_candidate_rel`;
+CREATE TABLE `SNP_candidate_rel` (
+  `SNPID` int(20) NOT NULL DEFAULT '0',
+  `CandID` varchar(255) NOT NULL DEFAULT '0',
+  `ObservedBase` enum('A','C','T','G') DEFAULT NULL,
+  `ArrayReport` enum('Normal','Uncertain','Pending') DEFAULT NULL,
   `ArrayReportDetail` varchar(255) DEFAULT NULL,
   `ValidationMethod` varchar(50) DEFAULT NULL,
   `Validated` enum('0','1') DEFAULT NULL,
-  `FunctionPrediction` enum('exonic','ncRNAexonic','splicing','UTR3','UTR5') DEFAULT NULL,
-  `Damaging` enum('D','NA') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
-  `ExonicFunction` enum('nonsynonymous','unknown') DEFAULT NULL,
-  `PlatformID` bigint(20) DEFAULT NULL,
-  `GenomeLocID` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`SNPID`),
-  FOREIGN KEY (`PlatformID`) REFERENCES genotyping_platform(`PlatformID`),
-  FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`),
-  FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`)
+  `PlatformID` int(20) DEFAULT NULL
+  FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`),
+  FOREIGN KEY (`SNPID`) REFERENCES SNP(`SNPID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
 -- Table structure for table `CNV`
+-- used by Genomic Browser module
+--
+DROP TABLE IF EXISTS `CNV`;
 CREATE TABLE `CNV` (
-  `CNVID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `CNVID` int(20) NOT NULL AUTO_INCREMENT,
   `CandID` int(6) DEFAULT NULL,
   `Description` text,
   `Type` enum('gain','loss','unknown') DEFAULT NULL,
@@ -1875,13 +1893,66 @@ CREATE TABLE `CNV` (
   `Markers` varchar(255) DEFAULT NULL,
   `ArrayReportDetail` varchar(255) DEFAULT NULL,
   `ValidationMethod` varchar(50) DEFAULT NULL,
-  `PlatformID` bigint(20) DEFAULT NULL,
-  `GenomeLocID` bigint(20) DEFAULT NULL,
+  `PlatformID` int(20) DEFAULT NULL,
+  `GenomeLocID` int(20) DEFAULT NULL,
   PRIMARY KEY (`CNVID`),
   FOREIGN KEY (`PlatformID`) REFERENCES genotyping_platform(`PlatformID`),
   FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`),
   FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `GWAS`
+-- Genomic Browser module
+-- 
+DROP TABLE IF EXISTS `GWAS`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `GWAS` (
+  `GWASID` int(20) NOT NULL AUTO_INCREMENT,
+  `SNPID` int(20) NOT NULL,
+  `rsID` varchar(20) DEFAULT NULL,
+  `MajorAllele` enum('A','C','T','G') DEFAULT NULL,
+  `MinorAllele` enum('A','C','T','G') DEFAULT NULL,
+  `MAF` varchar(20) DEFAULT NULL,
+  `Estimate` varchar(20) DEFAULT NULL,
+  `StdErr` varchar(20) DEFAULT NULL,
+  `Pvalue` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`GWASID`),
+  FOREIGN KEY (`SNPID`) REFERENCES SNP(`SNPID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores results of Genome-Wide Analysis Study';
+
+--
+-- Table structure for table `genomic_files`
+--
+CREATE TABLE `genomic_files` (
+  `GenomicFileID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `CandID` int(6) NOT NULL DEFAULT '0',
+  `VisitLabel` varchar(255) DEFAULT NULL,
+  `FileName` varchar(255) NOT NULL,
+  `FilePackage` tinyint(1) DEFAULT NULL,
+  `Description` varchar(255) NOT NULL,
+  `FileType` varchar(255) NOT NULL,
+  `FileSize` int(20) NOT NULL,
+  `Platform` varchar(255) DEFAULT NULL,
+  `Batch` varchar(255) DEFAULT NULL,
+  `Source` varchar(255) DEFAULT NULL,
+  `Date_taken` date DEFAULT NULL,
+  `Category` enum('raw','cleaned','GWAS') DEFAULT NULL,
+  `Pipeline` varchar(255) DEFAULT NULL,
+  `Algorithm` varchar(255) DEFAULT NULL,
+  `Normalization` varchar(255) DEFAULT NULL,
+  `SampleID` varchar(255) DEFAULT NULL,
+  `AnalysisProtocol` varchar(255) DEFAULT NULL,
+  `InsertedByUserID` varchar(255) NOT NULL DEFAULT '',
+  `Date_inserted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `Caveat` tinyint(1) DEFAULT NULL,
+  `Notes` text,
+  PRIMARY KEY (`GenomicFileID`),
+  KEY `FK_genomic_files_1` (`CandID`),
+  CONSTRAINT `FK_genomic_files_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE `certification_training` (
     `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
