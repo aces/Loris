@@ -1,13 +1,13 @@
 <?php
 
 /**
- * form_genomic_browser class file
+ * Form_genomic_browser class file
  *
  * PHP version 5
- * 
+ *
  * @category   Genomic
  * @package    Main
- * @subpackage Genomic 
+ * @subpackage Genomic
  * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://github.com/aces/Loris
@@ -20,10 +20,10 @@ require_once 'GenomicFile.class.inc';
  * NDB_Form_Genomic_Browser Class
  *
  * This class is genomic_browser Form
- * 
+ *
  * @category   Genomic
  * @package    Main
- * @subpackage Genomic 
+ * @subpackage Genomic
  * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://github.com/aces/Loris
@@ -32,14 +32,14 @@ require_once 'GenomicFile.class.inc';
 class NDB_Form_Genomic_Browser extends NDB_Form
 {
     /**
-     * variables to store the DCCID, sessionID, genomic file ID
+     * Variables to store the DCCID, sessionID, genomic file ID
     */
     var $candID;
     var $sessionID;
     var $genomic_file_ID;
 
     /**
-    * Determine whether the user has permission to view this page 
+    * Determine whether the user has permission to view this page
     *
     * @return bool whether the user has access
     */
@@ -50,9 +50,9 @@ class NDB_Form_Genomic_Browser extends NDB_Form
             return PEAR::raiseError("User Error: " .$user->getMessage());
         }
 
-        // Add site control? See Imaging Browser example 
+        // Add site control? See Imaging Browser example
 
-        return ($user->hasPermission('genomic_browser_view_allsites') || 
+        return ($user->hasPermission('genomic_browser_view_allsites') ||
                 $user->hasPermission('genomic_browser_view_site'));
     }
 
@@ -62,7 +62,7 @@ class NDB_Form_Genomic_Browser extends NDB_Form
     *
     * @return NULL
     */
-    function viewGenomicFile() 
+    function viewGenomicFile()
     {
         $this->DB = Database::singleton();
         if (Utility::isErrorX($this->DB)) {
@@ -79,15 +79,15 @@ class NDB_Form_Genomic_Browser extends NDB_Form
             $this->category = $_REQUEST['Category'];
 
         if (!empty($this->candID) ) {
-                // If modifying to save any annotation changes, 
-                // see imaging browser View Session 
-        
-            // retrieve file data 
-            if (!empty($this->category) ) { 
+            // If modifying to save any annotation changes,
+            // see imaging browser View Session
+
+            // retrieve file data
+            if (!empty($this->category) ) {
                     // if category was specified (raw/clean)
-                    $this->_setFileData($this->category); 
-            } else { 
-                $this->_setFileData(); 
+                    $this->_setFileData($this->category);
+            } else {
+                $this->_setFileData();
             }
 
             $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
@@ -100,23 +100,23 @@ class NDB_Form_Genomic_Browser extends NDB_Form
     *
     * @return NULL
     */
-    function _setFileData($category = null)  
+    function _setFileData($category = null)
     {
         if (!empty($this->category) ) { // apply Category filter
-            $files = $this->DB->pselect("SELECT genomic_files.GenomicFileID 
-                FROM genomic_files 
-                WHERE CandID=:cid AND Category=:catid", 
+            $files = $this->DB->pselect(
+                "SELECT genomic_files.GenomicFileID
+                FROM genomic_files WHERE CandID=:cid AND Category=:catid ",
                 array(
-                'cid' => $this->candID,
-                'catid' => $this->category
-                ));
+                 'cid' => $this->candID,
+                 'catid' => $this->category
+                )
+            );
         } else {
-            $files = $this->DB->pselect("SELECT genomic_files.GenomicFileID 
-                FROM genomic_files 
-                WHERE CandID=:cid ", 
-                array(
-                'cid' => $this->candID
-                )); 
+            $files = $this->DB->pselect(
+                "SELECT genomic_files.GenomicFileID
+                FROM genomic_files WHERE CandID=:cid ",
+                array('cid' => $this->candID)
+            );
         }
 
         // Not dependent on session ID for now
@@ -124,38 +124,44 @@ class NDB_Form_Genomic_Browser extends NDB_Form
         foreach ($files as $fileRow) {
             $FileObj = new GenomicFile($fileRow['GenomicFileID']);
             $file    = array(
-                'FileID'   => $fileRow['GenomicFileID'],
-                'Filename' => basename($FileObj->getParameter('FileName')),
-                'FullFilename' => $FileObj->getParameter('FileName'),
-                'FilePackage' => $FileObj->getParameter('FilePackage'),
-                'FileType' => $FileObj->getParameter('FileType'),
-                'FileSize' => $FileObj->getParameter('FileSize'),
-                'Description' => $FileObj->getParameter('Description'),
-                'Category' => $FileObj->getParameter('Category'),
-                'Pipeline' => $FileObj->getParameter('Pipeline'),
-                'Algorithm' => $FileObj->getParameter('Algorithm'),
-                'Normalization' => $FileObj->getParameter('Normalization'),
-                'SampleID' => $FileObj->getParameter('SampleID'),
-                'Caveat' => $FileObj->getParameter('Caveat'),
-                'Notes' => $FileObj->getParameter('Notes'),
-                'AnalysisProtocol' => $FileObj->getParameter('AnalysisProtcol'),
-                'AnalysisDate' => $this->_getDate($FileObj, 'Date_taken', 
-                    $analysisDate), 
-                'SampleDate' => $this->_getDate($FileObj, 'Date_sample', 
-                    $sampleDate),
-                'FileInsertDate' => $FileObj->getParameter('Date_inserted'),
-                'Selected' => $FileObj->getParameter('Selected'),
-                'QCStatus' => $FileObj->getParameter('QCStatus'),
-                'QCDate' => $FileObj->getParameter('QCLastChangeTime'),
-            );
+                        'FileID'   => $fileRow['GenomicFileID'],
+                        'Filename' => basename($FileObj->getParameter('FileName')),
+                        'FullFilename' => $FileObj->getParameter('FileName'),
+                        'FilePackage' => $FileObj->getParameter('FilePackage'),
+                        'FileType' => $FileObj->getParameter('FileType'),
+                        'FileSize' => $FileObj->getParameter('FileSize'),
+                        'Description' => $FileObj->getParameter('Description'),
+                        'Category' => $FileObj->getParameter('Category'),
+                        'Pipeline' => $FileObj->getParameter('Pipeline'),
+                        'Algorithm' => $FileObj->getParameter('Algorithm'),
+                        'Normalization' => $FileObj->getParameter('Normalization'),
+                        'SampleID' => $FileObj->getParameter('SampleID'),
+                        'Caveat' => $FileObj->getParameter('Caveat'),
+                        'Notes' => $FileObj->getParameter('Notes'),
+                        'AnalysisProtocol' => $FileObj->getParameter('AnalysisProtocol'),
+                        'AnalysisDate' => $this->_getDate(
+                            $FileObj,
+                            'Date_taken',
+                            $analysisDate
+                        ),
+                        'SampleDate' => $this->_getDate(
+                            $FileObj,
+                            'Date_sample',
+                            $sampleDate
+                        ),
+                        'FileInsertDate' => $FileObj->getParameter('Date_inserted'),
+                        'Selected' => $FileObj->getParameter('Selected'),
+                        'QCStatus' => $FileObj->getParameter('QCStatus'),
+                        'QCDate' => $FileObj->getParameter('QCLastChangeTime'),
+                       );
 
             $this->tpl_data['files'][] = $file;
         }
     }
     /**
     * Gets the date according to the type
-    * 
-    * @param GenomicFile $file  file object 
+    *
+    * @param GenomicFile $file  file object
     * @param string      $type  type of the date
     * @param array       $array array containing the date
     *
@@ -163,12 +169,15 @@ class NDB_Form_Genomic_Browser extends NDB_Form
     */
     function _getDate($file, $type, $array)
     {
-        if (preg_match("/(\d{4})-?(\d{2})-?(\d{2})/", 
-            $file->getParameter($type), $array)) {
+        if (preg_match(
+            "/(\d{4})-?(\d{2})-?(\d{2})/",
+            $file->getParameter($type),
+            $array)
+           ) {
             return (mktime(12, 0, 0, $array[2], $array[3], $array[1]));
         } else {
             return "";
-        } 
+        }
     }
 
 }

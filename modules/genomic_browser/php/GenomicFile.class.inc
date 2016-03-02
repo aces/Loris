@@ -1,10 +1,10 @@
 <?php
 /**
-* Contains the GenomicFile class used for LORIS Genomic data 
+* Contains the GenomicFile class used for LORIS Genomic data
 *
 * PHP Version 5
 *
-* @category   Genomic 
+* @category   Genomic
 * @package    Main
 * @subpackage Genomic
 * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
@@ -37,13 +37,13 @@ class GenomicFile
     {
         $db     =& Database::singleton();
         $params = array('FID' => $fileID);
-    
+
         $query    = "SELECT * FROM genomic_files WHERE GenomicFileID=:FID";
         $fileData = $db->pselectRow($query, $params);
         foreach ($fileData AS $key=>$value) {
             $this->fileData[$key] = $value;
         }
-    
+
         $query  = "SELECT * FROM files_qcstatus WHERE FileID=:FID";
         $qcData = $db->pselectRow($query, $params);
         if (!empty($qcData)) {
@@ -91,7 +91,7 @@ class GenomicFile
         if (is_null($this->fileData['AnalysisProtocol'])) {
             return null;
         }
-        return $this->fileData['AnalysisProtocol']; 
+        return $this->fileData['AnalysisProtocol'];
     }
 
 }

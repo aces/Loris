@@ -1,7 +1,7 @@
 <?php
 /**
  * For gwas_browser class file, a subtab in the Genomic Browser
- * Displays GWAS analysis results 
+ * Displays GWAS analysis results
  * Filterable by SNP and p-value, and other fields.
  *
  * PHP version 5
@@ -72,25 +72,25 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                           'GWAS.MAF AS MAF',
                           'GWAS.Estimate AS Estimate',
                           'GWAS.StdErr AS StdErr',
-                          'GWAS.Pvalue AS P_value', 
+                          'GWAS.Pvalue AS P_value',
                          );
 
         $this->_briefFields = array(
-                          'SNP_ID',
-                          'Chromosome',
-                          'Position_BP',
-                          'Major_Allele',
-                          'Minor_Allele',
-                          'MAF',
-                          'Estimate',
-                          'StdErr',
-                          'P_value', 
-                         );
+                               'SNP_ID',
+                               'Chromosome',
+                               'Position_BP',
+                               'Major_Allele',
+                               'Minor_Allele',
+                               'MAF',
+                               'Estimate',
+                               'StdErr',
+                               'P_value',
+                              );
 
-        // $this->query = " FROM GWAS "; 
-        $this->query = " FROM GWAS 
+        // $this->query = " FROM GWAS ";
+        $this->query = " FROM GWAS
             JOIN SNP ON (GWAS.SNPID = SNP.SNPID)
-            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)"; 
+            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)";
 
         $this->order_by     = 'genome_loc.Chromosome, GWAS.Pvalue DESC';
         $this->validFilters = array(
@@ -114,7 +114,7 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                                'MAF'          => 'GWAS.MAF',
                                'Estimate'     => 'GWAS.Estimate',
                                'StdErr'       => 'GWAS.StdErr',
-                               'P_value'      => 'GWAS.P_value', 
+                               'P_value'      => 'GWAS.P_value',
                               );
 
         return true;
@@ -133,8 +133,9 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
 
         // add form elements
         $show_results_options = array(
-               'brief' => 'Summary fields',
-               'full'  => 'All fields'); 
+                                 'brief' => 'Summary fields',
+                                 'full'  => 'All fields'
+                                );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         $this->addBasicText('SNP_ID', 'SNP ID:');
@@ -143,14 +144,14 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
         $this->addBasicText('MAF', 'MAF:');
 
         $alleleArray = array(
-             ''  => 'Any',
-             'A' => 'A',
-             'C' => 'C',
-             'T' => 'T',
-             'G' => 'G',
-            );
-        $this->addSelect('Minor_Allele', 'Minor Allele:', $alleleArray); 
-        $this->addSelect('Major_Allele', 'Major Allele:', $alleleArray); 
+                        ''  => 'Any',
+                        'A' => 'A',
+                        'C' => 'C',
+                        'T' => 'T',
+                        'G' => 'G',
+                       );
+        $this->addSelect('Minor_Allele', 'Minor Allele:', $alleleArray);
+        $this->addSelect('Major_Allele', 'Major Allele:', $alleleArray);
 
         $this->addBasicText('Estimate', 'Estimate:');
         $this->addBasicText('StdErr', 'Std Err:');
@@ -217,8 +218,9 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                 }
 
                 //Show the URL to the timepoint list on PSCID field
-                if ($key == 'SNP_ID' && 
-                    $user->hasPermission('access_all_profiles')) {
+                if ($key == 'SNP_ID' &&
+                    $user->hasPermission('access_all_profiles')
+                   ) {
                     $this->tpl_data['items'][$x][$i]['SNP_ID'] = $item['SNP_ID'];
                 }
                 $this->tpl_data['items'][$x][$i]['name']  = $key;

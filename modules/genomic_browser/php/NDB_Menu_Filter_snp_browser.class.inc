@@ -6,7 +6,7 @@
  *
  * PHP version 5
  *
- *  @category   Genomic 
+ *  @category   Genomic
  *  @package    Main
  *  @subpackage Genomic
  *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
@@ -22,7 +22,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * This class is snp_browser Form
  * SNP submenu tab for Genomic Browser
  *
- * @category   Genomic 
+ * @category   Genomic
  * @package    Main
  * @subpackage Genomic
  * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
@@ -113,18 +113,18 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         // Chromosome from genome_loc table
         // INNER JOIN on SNP_candidate_rel table. //##
         // If a candidate has no SNP records, they will not appear.
-        $this->query = " FROM candidate 
-            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID 
+        $this->query = " FROM candidate
+            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
                     from session s GROUP BY s.CandID) AS cohort
-            ON (cohort.CandID = candidate.CandID) 
+            ON (cohort.CandID = candidate.CandID)
             LEFT JOIN psc ON (psc.CenterID = candidate.CenterID)
             JOIN SNP_candidate_rel ON (candidate.CandID = SNP_candidate_rel.CandID)
             LEFT JOIN SNP ON (SNP.SNPID = SNP_candidate_rel.SNPID)
-            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)  
+            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)
             LEFT JOIN gene ON (gene.GenomeLocID = SNP.GenomeLocID)
-            LEFT JOIN genotyping_platform ON 
+            LEFT JOIN genotyping_platform ON
               (SNP_candidate_rel.PlatformID = genotyping_platform.PlatformID)
-            WHERE 
+            WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
         $DB   = Database::singleton();
@@ -179,19 +179,17 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'SNP_Name'            => 'SNP.SNPExternalName',
                                'SNP_Description'     => 'SNP.Description',
                                'SNP_External_Source' => 'SNP.SNPExternalSource',
-                               'Observed_Base'       => 
-        'SNP_candidate_rel.ObservedBase',
+                               'Observed_Base'       => 'SNP_candidate_rel.ObservedBase',
                                'Reference_Base'      => 'SNP.ReferenceBase',
                                'Array_Report'        => 'SNP.ArrayReport',
                                'Markers'             => 'SNP.Markers',
-                               'Validation_Method'   => 
-        'SNP_candidate_rel.ValidationMethod',
-                               'Validated'           => 
-        'SNP_candidate_rel.Validated',
+                               'Validation_Method'   => 'SNP_candidate_rel.ValidationMethod',
+                               'Validated'
+                               => 'SNP_candidate_rel.Validated',
                                'Function_Prediction' => 'SNP.FunctionPrediction',
                                'Damaging'            => 'SNP.Damaging',
-                               'Genotype_Quality'    => 
-        'SNP_candidate_rel.GenotypeQuality',
+                               'Genotype_Quality'
+                                => 'SNP_candidate_rel.GenotypeQuality',
                                'Exonic_Function'     => 'SNP.ExonicFunction',
                                'Chromosome'          => 'genome_loc.Chromosome',
                                'Gene_Symbol'         => 'gene.OfficalSymbol',
@@ -224,8 +222,10 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             // allow only to view own site data
             $site = Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
-                $list_of_sites = array($user->getData('CenterID') 
-                    => $user->getData('Site'));
+                $list_of_sites = array(
+                                  $user->getData('CenterID')
+                                  => $user->getData('Site')
+                                 );
             }
         }
 
@@ -237,17 +237,22 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addBasicText('DCCID', 'DCCID:');
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addBasicText('External_ID', 'External ID:');
-        $this->addSelect('gender', 'Gender:', array(
-             ''       => 'All',
-             'Male'   => 'Male',
-             'Female' => 'Female'));
-        $this->addSelect('SubprojectID', 'Subproject:',
-            array('' => 'Any') + $list_of_subprojects);
+        $this->addSelect(
+             'gender',
+             'Gender:',
+             array('' => 'All', 'Male' => 'Male', 'Female' => 'Female')
+        );
+        $this->addSelect(
+            'SubprojectID',
+            'Subproject:',
+            array('' => 'Any') + $list_of_subprojects
+        );
         $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
 
         $show_results_options = array(
-               'brief' => 'Summary fields',
-               'full'  => 'All fields');
+                                 'brief' => 'Summary fields',
+                                 'full'  => 'All fields',
+                                );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // SNP
@@ -260,25 +265,33 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                          'A'  => 'A',
                          'C'  => 'C',
                          'T'  => 'T',
-                         'G'  => 'G');
+                         'G'  => 'G',
+                        );
         $this->addSelect('Observed_Base', 'Observed Base:', $Base_options);
         $this->addSelect('Reference_Base', 'Reference Base:', $Base_options);
 
-        $this->addSelect('Validated', 'Validated:', array(null => 'Any',
-             '0'  => '0', '1'  => '1'));
-        $this->addSelect('Function_Prediction', 'Function Prediction:',
+        $this->addSelect(
+             'Validated',
+             'Validated:',
+             array(null => 'Any', '0' => '0', '1'  => '1')
+        );
+        $this->addSelect(
+            'Function_Prediction',
+            'Function Prediction:',
             array(
              null          => 'Any',
              'exonic'      => 'exonic',
              'ncRNAexonic' => 'ncRNAexonic',
              'splicing'    => 'splicing',
              'UTR3'        => 'UTR3',
-             'UTR5'        => 'UTR5'));
-        $this->addSelect('Damaging', 'Damaging:',
-            array(
-             null => 'Any',
-             'D'  => 'D',
-             'NA' => 'NA')); 
+             'UTR5'        => 'UTR5',
+            )
+        );
+        $this->addSelect(
+            'Damaging',
+            'Damaging:',
+            array(null => 'Any', 'D' => 'D', 'NA' => 'NA')
+        );
         $this->addBasicText('Genotype_Quality', 'Genotype Quality:');
         $this->addBasicText('Exonic_Function', 'Exonic Function:');
 
@@ -287,13 +300,13 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addBasicText('Gene_Symbol', 'Symbol:');
         $this->addBasicText('Gene_Name', 'Name:');
 
-        $DB               = Database::singleton();
-        $platform_results =
-            $DB->select("SELECT distinct Name FROM genotyping_platform ");
+        $DB = Database::singleton();
+        $platform_results
+            = $DB->select("SELECT distinct Name FROM genotyping_platform ");
 
         $platform_options = array('' => 'Any');
         foreach ($platform_results as $row => $result ) {
-            $name                    = $result['Name'];
+            $name = $result['Name'];
             $platform_options[$name] = $name;
         }
         $this->addSelect('Platform', 'Platform:', $platform_options);
@@ -379,8 +392,8 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                     if (is_null($val)) {
                         $this->tpl_data['items'][$x][$i]['value'] = null;
                     } else {
-                        $this->tpl_data['items'][$x][$i]['value'] =
-                            $subprojectlist[$val];
+                        $this->tpl_data['items'][$x][$i]['value']
+                            = $subprojectlist[$val];
                     }
                 }
                 $i++;
