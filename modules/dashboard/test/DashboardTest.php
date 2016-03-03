@@ -50,8 +50,8 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $loris = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#nav-left > div.navbar-header > a"));
-            $loris->click();
-            $assertText = $this->webDriver
+        $loris->click();
+        $assertText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
         $this->assertContains("Welcome", $assertText);
     }
@@ -66,11 +66,11 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(2) > div.panel-heading > div > div > button"));
-            $views->click();
+        $views->click();
            
-            $assertText1 = $this->webDriver
+        $assertText1 = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(2) > div.panel-heading > div > div > ul > li.active > a"))->getText();
-            $assertText2 = $this->webDriver
+        $assertText2 = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(2) > div.panel-heading > div > div > ul > li:nth-child(2) > a"))->getText();
         $this->assertContains("View overall recruitment", $assertText1);
         $this->assertContains("View site breakdown", $assertText2);
@@ -85,7 +85,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(2) > div.panel-heading > div > div > button"));
-            $views->click();
+        $views->click();
         $ViewSiteBreakdown = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(2) > div.panel-heading > div > div > ul > li:nth-child(2) > a"));
         $ViewSiteBreakdown->click();
@@ -106,10 +106,10 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(3) > div.panel-heading > div > div > button"));
-            $views->click();
-         $assertText1 = $this->webDriver
+        $views->click();
+        $assertText1 = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(3) > div.panel-heading > div > div > ul > li:nth-child(1) > a"))->getText();
-            $assertText2 = $this->webDriver
+        $assertText2 = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-8 > div:nth-child(3) > div.panel-heading > div > div > ul > li:nth-child(2) > a"))->getText();
         $this->assertContains("View scans per site", $assertText1);
         $this->assertContains("View recruitment per site", $assertText2);
@@ -126,8 +126,8 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div > div.panel-body > div > a:nth-child(2) > div > div.col-xs-4.text-right.alert-chevron > p"));
-            $siteAll ->click();
-         $assertText1 = $this->webDriver
+        $siteAll ->click();
+        $assertText1 = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > h2"))->getText();
  
         $this->assertContains("All Completion Statistics", $assertText1);
@@ -144,8 +144,8 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div > div.panel-body > div > a.list-group-item.new-scans > div > div.col-xs-4.text-right.alert-chevron > span"));
-            $siteAll ->click();
-         $assertText1 = $this->webDriver
+        $siteAll ->click();
+        $assertText1 = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#page > div > div.alert.alert-info.alert-sm > a > label"))->getText();
       
         $this->assertContains("Imaging Browser", $assertText1);
@@ -162,8 +162,8 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div > div.panel-body > div > a:nth-child(4) > div > div.col-xs-4.text-right.alert-chevron > span"));
-            $siteAll ->click();
-         $assertText1 = $this->webDriver
+        $siteAll ->click();
+        $assertText1 = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#page > div > div.alert.alert-info.alert-sm > a > label"))->getText();
        
         $this->assertContains("Mri Violations", $assertText1);
@@ -180,8 +180,8 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div > div.panel-body > div > a.list-group-item.radiological-review > div > div.col-xs-4.text-right.alert-chevron > span"));
-            $siteAll ->click();
-         $assertText1 = $this->webDriver
+        $siteAll ->click();
+        $assertText1 = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#page > div > div.alert.alert-info.alert-sm > a > label"))->getText();
           
         $this->assertContains("Final Radiological Review", $assertText1);
@@ -199,7 +199,7 @@ class DashboardTest extends LorisIntegrationTest
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div > div.panel-body > div > a.list-group-item.pending-accounts > div > div.col-xs-4.text-right.alert-chevron > span"));
             $siteAll ->click();
-         $assertText1 = $this->webDriver
+        $assertText1 = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#page > div > div.alert.alert-info.alert-sm > a > label"))->getText();
            
         $this->assertContains("User Accounts", $assertText1);
@@ -213,11 +213,11 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testDashboardMyTasks_DocumentRepository()
     {
-         $this->safeGet($this->url . '/dashboard/');
+        $this->safeGet($this->url . '/dashboard/');
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#lorisworkspace > div > div.col-lg-4 > div:nth-child(2) > div > div.panel-body > a"));
             $siteAll ->click();
-         $assertText1 = $this->webDriver
+        $assertText1 = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#page > div > div.alert.alert-info.alert-sm > a > label"))->getText();
            
            
