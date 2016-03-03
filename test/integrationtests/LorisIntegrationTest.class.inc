@@ -131,7 +131,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $passwordEl->sendKeys($password);
 
         $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
-	$login->click();
+        $login->click();
 
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
