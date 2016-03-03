@@ -16,12 +16,12 @@
 
     <!-- database settings -->
     <database>
-        <host>%HOSTNAME%</host>
-        <username>%USERNAME%</username>
-        <password>%PASSWORD%</password>
-        <database>%DATABASE%</database>
-        <quatUser>%USERNAME%</quatUser>
-        <quatPassword>%PASSWORD%</quatPassword>
+        <host>ace-db-1.cbrain.mcgill.ca</host>
+        <username>rida_user</username>
+        <password>8OIst5m7Nu</password>
+        <database>rida_sandbox</database>
+        <quatUser>rida_admin</quatUser>
+        <quatPassword>8OIst5m7Nu</quatPassword>
         <name>Example database</name>
     </database>
 
