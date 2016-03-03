@@ -260,22 +260,22 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////////
             $candid      = trim($args['values']['CandID']);
             $pscid       = trim($args['values']['PSCID']);
-            $visit_label = trim($args['values']['Visit_label']);  
+            $visit_label = trim($args['values']['Visit_label']);
             if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
                 $errors[] ="Make sure the CandID, PSCID and Visit_label are ".
                 "filled out. <br>Please refresh this page to return to the Imaging
                 Uploader module.";
-            } 
-            
+            }
+
             ///////////////////////////////////////////////////////////////////////
             ////////////// Make sure the file name matches the format   ///////////
-            ///////////////////////////////////////////////////////////////////////            
-            if (($file_name != $pscid ."_". $candid ."_". $visit_label . ".zip") &&
-                ($file_name != $pscid ."_". $candid ."_". $visit_label . ".tgz") &&
-                ($file_name != $pscid ."_". $candid ."_". $visit_label . ".tar.gz"))
-            {
+            ///////////////////////////////////////////////////////////////////////
+            if (($file_name != $pscid."_". $candid ."_". $visit_label . ".zip")
+                && ($file_name != $pscid."_". $candid ."_". $visit_label . ".tgz")
+                && ($file_name != $pscid."_". $candid ."_". $visit_label . ".tar.gz")
+            ) {
                 $errors[] = "Make sure the file name matches this format:  " .
-                "\"". $pscid ."_". $candid ."_". $visit_label . 
+                "\"". $pscid ."_". $candid ."_". $visit_label .
                 ".(tgz or tar.gz or .zip)\"";
             }
 
