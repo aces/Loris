@@ -409,16 +409,13 @@ class NDB_Form_Examiner extends NDB_Form
                 $testID = "15_24_36";
             }
             else {
-                $testID = $DB->pselectOne(
+                $testID   = $DB->pselectOne(
                     "SELECT ID
-
-        $testID   = $DB->pselectOne(
-                "SELECT ID
                  FROM test_names
                  WHERE Test_name
                  LIKE CONCAT('%', :testName, '%')",
-                array('testName' => $testName)
-            );
+                    array('testName' => $testName)
+                );
             }
             $instruments[$testID] = $certificationInstrument['#'];
         }
