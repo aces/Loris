@@ -432,6 +432,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
                 //div[@id='breadcrumbs']
                 /div
                 /div
+                /div
                 /a[2]
                 /div
             "
