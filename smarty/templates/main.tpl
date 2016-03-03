@@ -30,7 +30,7 @@
 
         <!-- Module-specific CSS -->
         {if $test_name_css}
-            <link rel="stylesheet" href="{$test_name_css}" type="text/css" />
+            <link rel="stylesheet" href="{$baseurl}/{$test_name_css}" type="text/css" />
         {/if}
 
         <title>
