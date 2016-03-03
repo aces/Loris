@@ -429,10 +429,11 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $breadcrumbText = $this->webDriver->findElement(
             WebDriverBy::xPath(
                 "
-                //div[@class='page-content inset']
+                //div[@id='breadcrumbs']
                 /div
-                /a
-                /label
+                /div
+                /a[2]
+                /div
             "
             )
         )->getText();
