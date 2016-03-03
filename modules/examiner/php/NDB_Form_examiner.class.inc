@@ -111,6 +111,20 @@ class NDB_Form_Examiner extends NDB_Form
 
             $date_cert = $values['date_cert'][$testID];
             $comment   = trim($values['comment'][$testID]);
+            //The following If statement introduces special cases
+            //for mullen test
+            //author: Rida Abou-Haidar
+            $comment   = trim($values['comment'][$testID]);
+            $visit_label = "";
+            if ($testID  == "15_3_9" ) {
+                $visit_label = '3-9mo';
+            }
+            elseif ($testID == '15_12_15') {
+                $visit_label = '12-15mo';
+            }
+            elseif ($testID == '15_24_36') {
+                $visit_label = '24-36mo';
+            }
 
             // get the examinerID - edit_examiner passes the ID through
             // the identifier, training passes it as a value
@@ -142,6 +156,7 @@ class NDB_Form_Examiner extends NDB_Form
                      'testID'     => $testID,
                      'pass'       => $certStatus,
                      'comment'    => $comment,
+                     'visit_label' => $visit_label
                     )
                 );
                 $certID = $DB->pselectOne(
@@ -384,13 +399,27 @@ class NDB_Form_Examiner extends NDB_Form
 
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
             $testName = $certificationInstrument['@']['value'];
-            $testID   = $DB->pselectOne(
+            if ($testName == "mullen_3_9"){
+                $testID = "15_3_9";
+            }
+            else if ($testName == "mullen_12_15"){
+                $testID = "15_12_15";
+            }
+            else if ($testName == "mullen_24_36"){
+                $testID = "15_24_36";
+            }
+            else {
+                $testID = $DB->pselectOne(
+                    "SELECT ID
+
+        $testID   = $DB->pselectOne(
                 "SELECT ID
                  FROM test_names
                  WHERE Test_name
                  LIKE CONCAT('%', :testName, '%')",
                 array('testName' => $testName)
             );
+            }
             $instruments[$testID] = $certificationInstrument['#'];
         }
 
