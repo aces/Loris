@@ -694,7 +694,7 @@ CREATE TABLE `notification_spool` (
   `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
   `Error` enum('Y','N') default NULL,
-  `Verbose` enum('Y','N') DEFAULT NULL,
+  `Verbose` enum('Y','N') NOT NULL DEFAULT 'N',
   `Sent` enum('N','Y') NOT NULL default 'N',
   `CenterID` tinyint(2) unsigned default NULL,
   `Origin` varchar(255) DEFAULT NULL,
