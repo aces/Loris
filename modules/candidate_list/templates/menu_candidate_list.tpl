@@ -219,7 +219,8 @@
 <script>
 var table = RDynamicDataTable({
     "DataURL" : "{$baseurl}/candidate_list/?format=json",
-    "getFormattedCell" : formatColumn
+    "getFormattedCell" : formatColumn,
+    "freezeColumn" : "PSCID"
 });
 
 React.render(table, document.getElementById("datatable"));

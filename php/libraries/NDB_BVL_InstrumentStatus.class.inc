@@ -99,6 +99,7 @@ class NDB_BVL_InstrumentStatus
 
     /**
      * Gets the SessionID of the current instrument
+     *
      * @return int
      * @access public
      */
@@ -119,6 +120,7 @@ class NDB_BVL_InstrumentStatus
 
     /**
      * Gets the current administration status of the instrument
+     *
      * @return string
      */
     function getAdministrationStatus()
@@ -212,7 +214,7 @@ class NDB_BVL_InstrumentStatus
 
         // Remove conflicts for SDE & DDE form from the
         // Conflict Resolver if new status is 'In Progress'
-        if ($status == 'In Progress') {
+        if ($this->getDataEntryStatus() != null && $status == 'In Progress') {
             $deleteWhere1 = array('CommentId1' => $this->_commentID);
             $deleteWhere2 = array('CommentId2' => $this->_commentID);
             $GLOBALS['DB']->delete('conflicts_unresolved', $deleteWhere1);

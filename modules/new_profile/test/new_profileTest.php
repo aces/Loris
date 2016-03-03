@@ -25,7 +25,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->setUpConfigSetting("useEDC", "true");
         $this->setUpConfigSetting("useProjects", "true");
 
-        $this->webDriver->get($this->url . "/new_profile/");
+        $this->safeGet($this->url . "/new_profile/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("New Profile", $bodyText);
 
@@ -64,7 +64,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
     function testNewProfileLoadsWithoutProjects() {
         $this->setUpConfigSetting("useProjects", "false");
 
-        $this->webDriver->get($this->url . "/new_profile/");
+        $this->safeGet($this->url . "/new_profile/");
 
         try {
             $projectField = $this->webDriver->findElement(WebDriverBy::Name("ProjectID"));
@@ -85,7 +85,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
     function testNewProfileLoadsWithoutEDC() {
         $this->setUpConfigSetting("useEDC", "false");
 
-        $this->webDriver->get($this->url . "/new_profile/");
+        $this->safeGet($this->url . "/new_profile/");
 
         try {
             $edc1 = $this->webDriver->findElement(WebDriverBy::Name("edc1"));

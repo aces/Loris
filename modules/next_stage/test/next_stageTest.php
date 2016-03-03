@@ -24,7 +24,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
     {
         $this->markTestSkipped("Permissions not correctly set up for next_page test");
         /*
-        $this->webDriver->get($this->url . "?test_name=next_stage&identifier=999999");
+        $this->safeGet($this->url . "?test_name=next_stage&identifier=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Next Stage", $bodyText);
          */

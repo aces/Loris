@@ -28,6 +28,7 @@ class NDB_Menu_Filter extends NDB_Menu
     var $TotalItems;
     /**
      * The columns to SELECT
+     *
      * @var    array
      * @access private
      */
@@ -35,6 +36,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * The base select query, starts at FROM
+     *
      * @var    string
      * @access private
      */
@@ -42,6 +44,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * The default GROUP BY column
+     *
      * @var    string
      * @access private
      */
@@ -49,6 +52,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * The default ORDER BY column
+     *
      * @var    string
      * @access private
      */
@@ -56,6 +60,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * Items selected from the GUI selection form
+     *
      * @var    array
      * @access private
      */
@@ -63,6 +68,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * An array of all valid filters to use
+     *
      * @var    array
      * @access private
      */
@@ -81,6 +87,7 @@ class NDB_Menu_Filter extends NDB_Menu
     var $validHavingFilters = array();
     /**
      * Associates the form element to the appropriate filter
+     *
      * @var    array
      * @access private
      */
@@ -98,6 +105,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * The list of candidates, users, etc
+     *
      * @var    array
      * @access private
      */

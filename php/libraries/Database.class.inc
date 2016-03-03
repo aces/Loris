@@ -895,7 +895,7 @@ class Database
             $query = "SELECT * FROM $table WHERE $where";
 
             // select the database data
-            $this->select($query, $oldRows);
+            $oldRows = $this->pselect($query, array());
 
             // track history for all affected rows
             foreach ($oldRows AS $oldRow) {

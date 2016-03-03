@@ -584,6 +584,10 @@ h2.statsH2 {
    cursor: pointer;
 }
 
+.alert > a > label{
+   cursor: pointer;
+}
+
 .watermark{
     position:absolute;
     bottom:0;

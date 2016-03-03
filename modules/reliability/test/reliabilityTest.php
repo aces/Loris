@@ -22,7 +22,7 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
      */
     function testReliabilityDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/reliability/");
+        $this->safeGet($this->url . "/reliability/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("reliability", $bodyText);
     }
