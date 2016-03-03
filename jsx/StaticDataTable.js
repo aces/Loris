@@ -155,7 +155,7 @@ StaticDataTable = React.createClass({
             );
         }
 
-        var RowsPerPageDropdown = (<select onChange={this.changeRowsPerPage}>
+        var RowsPerPageDropdown = (<select className="input-sm rowsPerPage" onChange={this.changeRowsPerPage}>
                 <option>20</option>
                 <option>50</option>
                 <option>100</option>

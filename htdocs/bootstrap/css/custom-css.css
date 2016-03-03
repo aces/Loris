@@ -193,3 +193,6 @@ div.navbar div.container div.navbar-brand {
 #dynamictable {
     margin-bottom: 0px;
 }
+.rowsPerPage {
+    color: black;
+}
