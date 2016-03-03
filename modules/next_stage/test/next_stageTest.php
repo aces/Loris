@@ -23,7 +23,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testNextStageDoespageLoad()
     {
         // $this->markTestSkipped("Permissions not correctly set up for next_page test");
-        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Next Stage", $bodyText);
     }
@@ -36,7 +36,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testNextStageDoesPageLoadWithPermission()
     {
         $this->setupPermissions(array("data_entry"));
-        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Next Stage", $bodyText);
         $this->resetPermissions();
@@ -50,7 +50,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testNextStageDoesNotPageLoadWithoutPermission()
     {
         $this->setupPermissions(array());
-        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
@@ -68,14 +68,14 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
         // Check to make sure page doesn't load without permission
         $this->setupPermissions(array());
-        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
 
         // Check to make sure page doesn't load with permission
         $this->setupPermissions(array("data_entry"));
-        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
@@ -91,7 +91,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDateError()
     {
-        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
         error_log(print_r($dates));
@@ -118,7 +118,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageSuccess()
     {
-        $this->webDriver->get($this->url . "/next_stage/?candID=000000&sessionID=999999&identifier=999999");
+        $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
         $dates[0]->sendKeys("01/01/2015");
