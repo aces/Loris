@@ -113,7 +113,7 @@ class NDB_Form_Examiner extends NDB_Form
             $comment   = trim($values['comment'][$testID]);
 
             //addding special case for mullen to subdivide certification
-            $visit_label = "";
+            $visit_label = null;
             if ($testID  == "15_3_9" ) {
                 $visit_label = '3-9mo';
             }
