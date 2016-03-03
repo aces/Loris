@@ -476,7 +476,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("1 subject timepoint(s) selected", $ControlPanelText);
 
-        //  Now reset using clear button and confirm site
+        // Now reset using clear button and confirm site
         // set back to all and 2 subjects found
         $ClearForm = $this->webDriver->findElement(
             WebDriverBy::cssSelector(
@@ -566,7 +566,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 ".info > th:nth-child(3) > a:nth-child(1)"
             )
         );
-        $PSCIDHeader->click();
+        $this->clickToLoadNewPage($PSCIDHeader);
 
         $FirstEntry = $this->webDriver->findElement(
             WebDriverBy::cssSelector(
@@ -581,7 +581,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 ".info > th:nth-child(3) > a:nth-child(1)"
             )
         );
-        $PSCIDHeader->click();
+        $this->clickToLoadNewPage($PSCIDHeader);
 
         $FirstEntry = $this->webDriver->findElement(
             WebDriverBy::cssSelector(
@@ -611,7 +611,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
             )
         );
-        $NativeLink->click();
+        $this->clickToLoadNewPage($NativeLink);
 
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -649,7 +649,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
             )
         );
-        $SelectedLink->click();
+        $this->clickToLoadNewPage($SelectedLink);
 
         $BackToListButton = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[1]/li[1]/a/span/span')
@@ -671,7 +671,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
             )
         );
-        $NativeLink->click();
+        $this->clickToLoadNewPage($NativeLink);
 
         $NextButton = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[1]/li[2]/a/span/span')
@@ -719,7 +719,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
             )
         );
-        $SelectedLink->click();
+        $this->clickToLoadNewPage($SelectedLink);
 
         //MRI Parameter form
         $MRIParamForm = $this->webDriver->findElement(
@@ -747,7 +747,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
             )
         );
-        $SelectedLink->click();
+        $this->clickToLoadNewPage($SelectedLink);
 
         $RadiologyForm = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[2]/li[2]/a')
@@ -785,7 +785,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
             )
         );
-        $SelectedLink->click();
+        $this->clickToLoadNewPage($SelectedLink);
 
         $ImageCheckbox = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="image-1"]/div/div/div[1]/input')
@@ -822,7 +822,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
             )
         );
-        $NativeLink->click();
+        $this->clickToLoadNewPage($NativeLink);
 
         $VisitLevelFeedback = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="sidebar-content"]/div[1]/a/span/span[2]')
@@ -919,7 +919,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
             )
         );
-        $NativeLink->click();
+        $this->clickToLoadNewPage($NativeLink);
 
         $BreadCrumbLink = $this->webDriver->findElement(
             WebDriverBy::cssSelector(".alert > a:nth-child(1)")
@@ -965,7 +965,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
             )
         );
-        $SelectedLink->click();
+        $this->clickToLoadNewPage($SelectedLink);
 
         $ImagePanelText1 = $this->webDriver->findElement(
             WebDriverBy::cssSelector(
@@ -1007,7 +1007,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
             )
         );
-        $SelectedLink->click();
+        $this->clickToLoadNewPage($SelectedLink);
 
         // Only with the correct permissions would the options
         // in the dropdown menu appear
@@ -1085,7 +1085,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
             )
         );
-        $SelectedLink->click();
+        $this->clickToLoadNewPage($SelectedLink);
 
         $this->markTestSkipped(
             'React components can not be tested, but also awaiting Redmine 9528'
@@ -1144,7 +1144,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
             )
         );
-        $SelectedLink->click();
+        $this->clickToLoadNewPage($SelectedLink);
+
         $CommentsButton = $this->webDriver->findElement(
             WebDriverBy::cssSelector(
                 ".mri-second-row-panel > a:nth-child(1) > " .
@@ -1188,7 +1189,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
             )
         );
-        $NativeLink->click();
+        $this->clickToLoadNewPage($NativeLink);
 
         $VisitLevelFeedback = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="sidebar-content"]/div[1]/a/span/span[2]')
@@ -1256,7 +1257,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
             )
         );
-        $NativeLink->click();
+        $this->clickToLoadNewPage($NativeLink);
 
         $ImageQCFeedback = $this->webDriver->findElement(
             WebDriverBy::cssSelector(
