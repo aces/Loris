@@ -373,6 +373,32 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Helper function to click on a element and wait for the new page to be loaded.
+     * When the DOM is reloaded, the elements of the previous page become stale.
+     * Selenium will raise an exception when a function (like getText) are called on
+     * those elements.
+     *
+     * Note: If the page don't reload, this will produce an infinite loop.
+     *
+     * @param webDriverElement $clickable The element to be clicked
+     *
+     * @return void Once the element is stale.
+     */
+    public function clickToLoadNewPage($clickable)
+    {
+        $remoteWebElement = null; 
+
+        $clickable->click();
+        try {
+            while (true) {
+                $remoteWebElement = $clickable->isDisplayed();
+            }
+        } catch (StaleElementReferenceException $e) {
+            return $remoteWebElement;
+        }
+    }
+
+    /**
      * Helper function to decorate the webdriver->get function so it
      * ensure that the new page is load before it returns.
      *
