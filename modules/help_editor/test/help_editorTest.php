@@ -11,7 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class helpEditorTestIntegrationTest extends LorisIntegrationTest
+class help_editorTestIntegrationTest extends LorisIntegrationTest
 {
     /**
      * Tests that, when loading the help_editor module, some
