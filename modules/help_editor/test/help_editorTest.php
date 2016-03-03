@@ -47,13 +47,13 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
     public function testHelpEditor_SearchTopic()
     {
         $this->safeGet($this->url . '/help_editor/');
-         $searchbox = $this->webDriver
+        $searchbox = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(1) > div > input"));
         $searchbox->sendKeys("Hand Preference");
-         $showdata = $this->webDriver
+        $showdata = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(2) > div > div.col-sm-4.col-sm-offset-4 > input"));
-         $showdata->click();
-            $assertText = $this->webDriver
+        $showdata->click();
+        $assertText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#Topic > a"))->getText();
         $this->assertContains("Hand Preference", $assertText);
     }
@@ -65,13 +65,13 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
     public function testHelpEditor_SearchKeyWord()
     {
         $this->safeGet($this->url . '/help_editor/');
-         $searchbox = $this->webDriver
+        $searchbox = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(2) > div > input"));
         $searchbox->sendKeys("Under Construction");
-         $showdata = $this->webDriver
+        $showdata = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(2) > div > div.col-sm-4.col-sm-offset-4 > input"));
-         $showdata->click();
-            $assertText = $this->webDriver
+        $showdata->click();
+        $assertText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#Topic > a"))->getText();
         $this->assertContains("Hand Preference", $assertText);
     }
@@ -83,13 +83,13 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
     public function testHelpEditor_ClearForm()
     {
         $this->safeGet($this->url . '/help_editor/');
-         $searchbox = $this->webDriver
+        $searchbox = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(1) > div > input"));
         $searchbox->sendKeys("Hand Preference");
-         $clearform = $this->webDriver
+        $clearform = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(2) > div > div.col-sm-4.col-sm-offset-4 > input"));
-         $clearform->click();
-            $assertText = $this->webDriver
+        $clearform->click();
+        $assertText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(1) > div > input"))->getText();
         $this->assertSame('',$assertText);
     }
