@@ -63,7 +63,7 @@
                   <td class="static-col headcol pis">Per Instrument Stats</td>
                   {foreach from=$Centers item=center key=centername}
                       <td id='{$center.LongName}PIS' class="pis" colspan="3">
-                          <a href='{$baseurl}/statistics/?statistics_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
+                          <a href='{$baseurl}/statistics/?submenu=statistics_site&CenterID={$center.NumericID}&ProjectID={$CurrentProject.ID}'>Please Click Here</a>
                       </td>
                   {/foreach}
               </tr>
