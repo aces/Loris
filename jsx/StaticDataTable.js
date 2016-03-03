@@ -59,7 +59,7 @@ StaticDataTable = React.createClass({
     },
     downloadCSV: function() {
         var headers = this.props.Fields,
-            csvworker = new Worker('js/workers/savecsv.js');
+            csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
 
         csvworker.addEventListener('message', function (e) {
