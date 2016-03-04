@@ -268,7 +268,7 @@ FieldSelector = React.createClass({
         if(this.state.categoryFields[category]) {
         } else {
             // Retrieve the data dictionary
-            $.get("AjaxHelper.php?Module=dataquery&script=datadictionary.php", { category: category}, function(data) {
+            $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php", { category: category}, function(data) {
                 var cf = that.state.categoryFields;
                 cf[category] = data;
                 that.setState({

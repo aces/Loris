@@ -79,7 +79,7 @@ DataQueryApp = React.createClass({
             for (var i = 0; i < this.state.queryIDs[key].length; i += 1) {
                 var curRequest;
                 curRequest = Promise.resolve(
-                        $.ajax("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.state.queryIDs[key][i]), {
+                        $.ajax(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.state.queryIDs[key][i]), {
                             data: {
                                 DocID: that.state.queryIDs[key][i]
                             },
@@ -132,7 +132,7 @@ DataQueryApp = React.createClass({
         var that = this,
             filter = this.saveFilterGroup(this.state.filter);
 
-        $.post("AjaxHelper.php?Module=dataquery&script=saveQuery.php",
+        $.post(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=saveQuery.php",
             {
                 Fields: this.state.fields,
                 Filters: filter,
@@ -146,7 +146,7 @@ DataQueryApp = React.createClass({
                 } else {
                     queryIDs.User.push(id);
                 }
-                $.get("AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + id, function(value) {
+                $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + id, function(value) {
                         var queries = that.state.savedQueries;
 
                         queries[value._id] = value;
@@ -192,7 +192,7 @@ DataQueryApp = React.createClass({
             rule.type = "rule"
         }
         $.ajax({
-            url: "AjaxHelper.php?Module=dataquery&script=datadictionary.php",
+            url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php",
             success: function(data) {
                 rule.fields = data;
             },
@@ -229,7 +229,7 @@ DataQueryApp = React.createClass({
                 break;
         }
         $.ajax({
-            url: "AjaxHelper.php?Module=dataquery&script=" + script,
+            url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script,
             success: function(data) {
                 rule.session = data;
             },
@@ -366,7 +366,7 @@ DataQueryApp = React.createClass({
                 semaphore++;
                 $.ajax({
                     type: "POST",
-                    url: "AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
+                    url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
                     data: {
                         DocType: category,
                         Sessions: sessions

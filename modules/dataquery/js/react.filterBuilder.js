@@ -39,7 +39,7 @@ FilterRule = React.createClass({displayName: "FilterRule",
 			that = this;
 		if(event.target.value){
 			rule.instrument = event.target.value;
-			$.get("AjaxHelper.php?Module=dataquery&script=datadictionary.php", { category: rule.instrument}, function(data) {
+			$.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php", { category: rule.instrument}, function(data) {
                 rule.fields = data;
                 that.props.updateRule(that.props.index, rule);
             }, 'json');
@@ -76,7 +76,7 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		            that.props.updateSessions(rule);
 		        },
 				ajaxRetrieve = function(script) {
-		            $.get("AjaxHelper.php?Module=dataquery&script=" + script,
+		            $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script,
 		                  {
 		                    category: rule.instrument,
 		                    field: rule.field,
