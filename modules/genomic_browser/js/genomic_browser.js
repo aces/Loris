@@ -138,3 +138,9 @@ function toggle_mriPanel(file_id) {
             }
 }
 
+function hideFilterCpG() {
+    "use strict";
+    $("#panel-body-cpg").toggle();
+    $("#down-cpg").toggle();
+    $("#up-cpg").toggle();
+}

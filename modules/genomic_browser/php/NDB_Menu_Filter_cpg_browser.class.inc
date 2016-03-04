@@ -11,12 +11,11 @@
  *  @author   Xavier <xavierlb.mavan@gmail.com>
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  *  @link     https://www.github.com/aces/Loris/
- *  Main page: CNV. Submenu: SNP
  */
 
 require_once 'NDB_Menu_Filter.class.inc';
 /**
- * NDB_Menu_Filter_SNP_Browser Class
+ * NDB_Menu_Filter_CPG_Browser Class
  *
  * This class is cpg_browser Form
  * CpG submenu tab for Genomic Browser
@@ -100,8 +99,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                               );
 
         // Chromosome from genome_loc table
-        // INNER JOIN on SNP table.
-        // If a candidate has no SNP records, they will not appear.
+        // INNER JOIN on table.
+        // If a candidate has no CPG records, they will not appear.
         $this->query = " FROM candidate 
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID 
                     from session s GROUP BY s.CandID) AS cohort
@@ -425,5 +424,23 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         return $query;
     }
 
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/genomic_browser/js/genomic_browser.js",
+            )
+        );
+    }
 }
 ?>
