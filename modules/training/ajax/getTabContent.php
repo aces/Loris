@@ -67,8 +67,8 @@ if ($tabInformation['TrainingType'] == 'text') {
         $type
     );
 } else if ($tabInformation['TrainingType'] == 'vimeo') {
-    $oembed_endpoint = 'http://vimeo.com/api/oembed';
-    $video_url       = 'http://vimeo.com/' . $tabInformation['Content'];
+    $oembed_endpoint = 'https://vimeo.com/api/oembed';
+    $video_url       = 'https://vimeo.com/' . $tabInformation['Content'];
     //$json_url = $oembed_endpoint . '.json?url=' . rawurlencode($video_url);
     $video_options = '&portrait=0&autoplay=1&badge=0&byline=0&width=800';
     $xml_url       = $oembed_endpoint . '.xml?url='
