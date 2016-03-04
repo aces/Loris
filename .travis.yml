@@ -5,11 +5,13 @@ cache:
         - vendor
 
 php:
-    - 5.4
     - 5.6
     - '7'
 
 sudo: false
+
+addons:
+    firefox: "44.0"
 
 before_install:
     # Start Xvfb in a desktop screen size,
@@ -31,6 +33,11 @@ install:
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
 
     - PHP_INI_SCAN_DIR=":test/" php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null & 
+
+    # Extracting firefox and setting PATH variable...
+    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
+    - export PATH="/tmp/firefox:$PATH"
+    - echo "Using firefox version `firefox --version`"
 
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the

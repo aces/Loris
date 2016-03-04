@@ -320,4 +320,17 @@ div.navbar div.container div.navbar-brand {
     .btn-breadcrumb > * div:last-child {
         width: 100%;
     }
+
+/*
+ *  CSS for static table
+ */
+.table-footer {
+    background-color: #1c70b6;
+    color: white;
+}
+#dynamictable {
+    margin-bottom: 0px;
+}
+.rowsPerPage {
+    color: black;
 }
