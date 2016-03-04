@@ -19,7 +19,7 @@
                             {* <span class="pull-right clickable glyphicon arrow glyphicon-chevron-up" onclick="toggle_mriPanel('{$files[file].GenomicFileID}')"></span> *}
                             <div class="pull-right">
                                 <div class="btn-group views">
-                                    <a href="mri/jiv/get_file.php?file={$files[file].FullFilename}">
+                                    <a href="{$baseurl}/mri/jiv/get_file.php?file={$files[file].FullFilename}">
                                         <button type="button" 
                                         class="btn btn-default btn-xs ">
                                         <span class="hidden=xs">

@@ -1,6 +1,8 @@
+--
+-- Table structure for Genomic Browser table `GWAS`
+--
 DROP TABLE IF EXISTS `GWAS`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+
 CREATE TABLE `GWAS` (
   `GWASID` int(20) NOT NULL AUTO_INCREMENT,
   `SNPID` int(20) NOT NULL,
@@ -17,8 +19,8 @@ CREATE TABLE `GWAS` (
 --
 -- Table structure for table `genomic_files`
 --
-
 DROP TABLE IF EXISTS `genomic_files`;
+
 CREATE TABLE `genomic_files` (
   `GenomicFileID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
@@ -47,12 +49,11 @@ CREATE TABLE `genomic_files` (
   CONSTRAINT `FK_genomic_files_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 
-
 --
--- Table structure for table `SNP_candidate_rel`
+-- Table structure for Genomic Browser table `SNP_candidate_rel`
 --
-
 DROP TABLE IF EXISTS `SNP_candidate_rel`;
+
 CREATE TABLE `SNP_candidate_rel` (
   `SNPID` int(20) NOT NULL DEFAULT '0',
   `CandID` varchar(255) NOT NULL DEFAULT '0',

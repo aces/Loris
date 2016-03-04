@@ -202,31 +202,31 @@
               -
               {* just print a dash if no value available*}
             {elseif $items[item][piece].name eq "Total_Filesets" } 
-               <a href="{$baseurl}/genomic_browser&subtest=viewGenomicFile&candID={$CandID}">
+               <a href="{$baseurl}/genomic_browser/viewGenomicFile/?candID={$CandID}">
                    <b>({$items[item][piece].value})</b> &nbsp;&nbsp;View
                    <span class="glyphicon glyphicon-eye-open"></span>
                </a>
             {elseif $items[item][piece].name eq "Raw_Filesets" } 
                {if $items[item][piece].value neq "1" }
-                   <a href="{$baseurl}/genomic_browser&subtest=viewGenomicFile&candID={$CandID}&Category=raw">
+                   <a href="{$baseurl}/genomic_browser/viewGenomicFile/?candID={$CandID}&Category=raw">
                      ({$items[item][piece].value}) View
                      <span class="glyphicon glyphicon-eye-open"></span>
                      View Files
                    </a>
                {else}
-                 <a href="mri/jiv/get_file.php?file={$items[item][piece].file}">
+                 <a href="{$baseurl}/mri/jiv/get_file.php?file={$items[item][piece].file}">
                    ({$items[item][piece].value}) Download {*$items[item][piece].file*}
                    <span class="glyphicon glyphicon-download-alt"></span>
                  </a>
                {/if}
             {elseif $items[item][piece].name eq "Cleaned_Filesets" } 
                {if $items[item][piece].value neq "1" }
-                 <a href="{$baseurl}/genomic_browser&subtest=viewGenomicFile&candID={$CandID}&Category=cleaned">
+                 <a href="{$baseurl}/genomic_browser/viewGenomicFile/?candID={$CandID}&Category=cleaned">
                    ({$items[item][piece].value}) View
                    <span class="glyphicon glyphicon-eye-open"></span>
                  </a>
                {else}
-                   <a href="mri/jiv/get_file.php?file={$items[item][piece].file}">
+                   <a href="{$baseurl}/mri/jiv/get_file.php?file={$items[item][piece].file}">
                      ({$items[item][piece].value}) Download {*$items[item][piece].file*}
                      <span class="glyphicon glyphicon-download-alt"></span>
                    </a>

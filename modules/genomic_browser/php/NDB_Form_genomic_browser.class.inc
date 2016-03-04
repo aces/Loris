@@ -46,12 +46,8 @@ class NDB_Form_Genomic_Browser extends NDB_Form
     function _hasAccess()
     {
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
 
         // Add site control? See Imaging Browser example
-
         return ($user->hasPermission('genomic_browser_view_allsites') ||
                 $user->hasPermission('genomic_browser_view_site'));
     }
@@ -65,10 +61,6 @@ class NDB_Form_Genomic_Browser extends NDB_Form
     function viewGenomicFile()
     {
         $this->DB = Database::singleton();
-        if (Utility::isErrorX($this->DB)) {
-            print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-            die();
-        }
 
         $this->genomic_file_ID = $_REQUEST['GenomicFileID'];
 
