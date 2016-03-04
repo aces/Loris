@@ -190,7 +190,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
-            array(":configName" => $configName)
+            array("configName" => $configName)
         );
 
         if (is_array($configID) && empty($configID)) {
@@ -200,7 +200,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         }
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
-            array(":confID" => $configID)
+            array("confID" => $configID)
         );
 
         $this->_oldConfig[$configName] = array(
