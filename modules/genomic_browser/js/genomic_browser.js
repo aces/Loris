@@ -48,7 +48,7 @@ $(document).ready(function() {
             $(".cnv_link").click(function(e) {
                     e.preventDefault();
                     var form = $('<form />', {
-                            "action" : "main.php?test_name=genomic_browser&submenu=cnv_browser",
+                            "action" : "genomic_browser/?submenu=cnv_browser",
                             "method" : "post"
                         });
             
@@ -74,7 +74,7 @@ $(document).ready(function() {
             $(".snp_link").click(function(e) {
                     e.preventDefault();
                     var form = $('<form />', {
-                            "action" : "main.php?test_name=genomic_browser&submenu=snp_browser",
+                            "action" : "genomic_browser/?submenu=snp_browser",
                             "method" : "post"
                         });
             
@@ -111,7 +111,7 @@ $(document).ready(function() {
                     $(this).removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
                 }
            });
-//-- End inserted into ready function for viewGenomicFile (from imaging browser)
+//-- End inserted into ready function for viewGenomicFile (based on imaging browser)
 });
 
 // Elements called -mri for ViewGenomicFile page 

@@ -1870,8 +1870,6 @@ CREATE TABLE `SNP_candidate_rel` (
   `Validated` enum('0','1') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
   `PlatformID` int(20) DEFAULT NULL
-  FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`),
-  FOREIGN KEY (`SNPID`) REFERENCES SNP(`SNPID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1898,7 +1896,6 @@ CREATE TABLE `CNV` (
   PRIMARY KEY (`CNVID`),
   FOREIGN KEY (`PlatformID`) REFERENCES genotyping_platform(`PlatformID`),
   FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`),
-  FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
