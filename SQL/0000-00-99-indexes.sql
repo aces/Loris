@@ -5,4 +5,4 @@ CREATE INDEX CandidateActive ON candidate (Active);
 CREATE INDEX FeedbackCandidate ON feedback_bvl_thread (CandID);
 
 CREATE INDEX CandidateCenterID ON candidate (CenterID);
-CREATE INDEX SessionCenterID ON Session(CenterID);
+CREATE INDEX SessionCenterID ON session(CenterID);
