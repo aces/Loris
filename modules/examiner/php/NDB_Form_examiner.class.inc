@@ -149,12 +149,12 @@ class NDB_Form_Examiner extends NDB_Form
                 $DB->insert(
                     'certification',
                     array(
-                     'examinerID' => $examinerID,
-                     'date_cert'  => $date_cert,
-                     'testID'     => $testID,
-                     'pass'       => $certStatus,
-                     'comment'    => $comment,
-                     'visit_label' => $visit_label
+                     'examinerID'  => $examinerID,
+                     'date_cert'   => $date_cert,
+                     'testID'      => $testID,
+                     'pass'        => $certStatus,
+                     'comment'     => $comment,
+                     'visit_label' => $visit_label,
                     )
                 );
                 $certID = $DB->pselectOne(
@@ -398,17 +398,14 @@ class NDB_Form_Examiner extends NDB_Form
         foreach ($certificationInstruments['test'] as $certificationInstrument) {
             $testName = $certificationInstrument['@']['value'];
             //addding special case for mullen to subdivide certification
-            if ($testName == "mullen_3_9"){
+            if ($testName == "mullen_3_9") {
                 $testID = "15_3_9";
-            }
-            else if ($testName == "mullen_12_15"){
+            } else if ($testName == "mullen_12_15") {
                 $testID = "15_12_15";
-            }
-            else if ($testName == "mullen_24_36"){
+            } else if ($testName == "mullen_24_36") {
                 $testID = "15_24_36";
-            }
-            else {
-                $testID   = $DB->pselectOne(
+            } else {
+                $testID = $DB->pselectOne(
                     "SELECT ID
                  FROM test_names
                  WHERE Test_name
