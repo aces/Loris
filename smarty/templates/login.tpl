@@ -2,6 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" style="height:100%">
 <head>
 <meta charset="utf-8"/>
+  <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
+
 <!-- shortcut icon that displays on the browser window -->
 <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
@@ -118,11 +120,49 @@ string: navigator.platform,
 
 };
 BrowserDetect.init();
+{/literal}
 
+    /*
+$(document).ready(function() {
+    $("#loginAPI").click(function(e) {
+        var username = document.getElementById("username").value,
+            password = document.getElementById("password").value,
+            error = document.getElementById("error");
+
+        e.preventDefault();
+
+        error.textContent = '';
+        $.ajax("api/v0.0.1/login", {
+            method: 'POST',
+            data: {
+                "username" : username,
+                "password" : password
+            },
+            success: function(data) {
+                var data = JSON.parse(data);
+                var token = data.token;
+                $.ajax("", {
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
+                    },
+                    success: function() {
+                        window.location = "{$baseurl}/main.php";
+                    },
+                    error: function() {
+                        window.location = "{$baseurl}/main.php";
+                    }
+                });
+            },
+            error: function(data) {
+                error.textContent = JSON.parse(data.responseText).error;
+            }
+        });
+    });
+});
+    */
 // -->
 </script>
 
-{/literal}
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 </head>
@@ -159,25 +199,25 @@ BrowserDetect.init();
 		  			<br><br><br><br>
 		  		</div>
 		  		<div class="col-xs-12">
-		  			<font color="red" align="middle">
+		  			<font color="red" align="middle" id="error">
 		  				{$error_message}
 		  			</font>
 		  		</div>
 		  		<div class="row">
-			  		<div class="col-xs-12">
-				  		<form action="{$action}" method="post">
-				  			<div class="form-group">
-				  				<input name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
-				  			</div>
-				  			<div class="form-group">
-				  				<input name="password" class="form-control" type="password" placeholder="Password"/>
-				  			</div>
-				  			<input class="btn btn-primary col-xs-12" name="login" type="submit" value="login" />
-				  			<br><br><br>
-				  			<a href="lost_password.php"><center>Forgot your password?</center></a>
-				  			<a href="request_account/process_new_account.php"><center>Request Account</center></a>
-				  		</form>
-			  		</div>
+                    <form action="{$action}" method="post">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <input id="username" name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
+                            </div>
+                            <div class="form-group">
+                                <input id="password" name="password" class="form-control" type="password" placeholder="Password"/>
+                            </div>
+                                <input class="btn btn-primary col-xs-12" id="loginAPI" name="login" type="submit" value="Login" />
+                            <br><br><br>
+                            <a href="lost_password.php"><center>Forgot your password?</center></a>
+                            <a href="request_account/process_new_account.php"><center>Request Account</center></a>
+                        </div>
+                    </form>
 			  	</div>	
 		  		<div class="row">
 		  		<table class="LorisFooter" align="center">
