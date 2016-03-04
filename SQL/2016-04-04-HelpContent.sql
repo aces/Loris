@@ -18,7 +18,8 @@ click the Certification Status drop-down, select the correct Certification Date 
 Any modifications to an examiner\'s certification will appear in the Change Log. \n' WHERE topic='edit_examiner';
 
 UPDATE help SET content='The Training Module allows users to view training content in three columns: Certifications
-to Complete, Completed Certifications, and Online Training. \n Certifications to Complete consists of available existing training modules that the user has not yet completed. Completed Certifications allow the user to browse the training content for any of the instruments that the user has alrady been certified for. Online Training allows the user to access training for certain instruments online.\n' WHERE topic='training';
+to Complete, Completed Certifications, and Online Training. \n Certifications to Complete consists of available
+existing training modules that the user has not yet completed. Completed Certifications allow the user to browse the training content for any of the instruments that the user has already been certified for. Online Training allows the user to access training for certain instruments online.\n' WHERE topic='training';
 
 UPDATE help SET content='The Server Processes Manager has a Selection Filter function to allow users to search by
 Process ID (PID), UserId, or Type. By clicking the button Show Data after selecting certain search options, the search results will appear, organized by the blue headers Pid, Type, Stdout File, Stderr File, Exit Code File, Exit Code, Userid, Start Time, End Time, and Exit Text.\n' WHERE topic='server processes manager';
