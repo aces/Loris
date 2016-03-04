@@ -73,7 +73,8 @@ ALTER TABLE SNP DROP COLUMN ObservedBase, ArrayReport, ArrayReportDetail, Valida
 -- Remove any duplicate SNP records, given dropped columns   
 CREATE TABLE temp_unique_SNP_records SELECT DISTINCT * from SNP;
 DELETE FROM SNP WHERE 1=1; 
-INSERT INTO SNP VALUES (SELECT * FROM temp_unique_SNP_records); 
+INSERT INTO SNP SELECT * FROM temp_unique_SNP_records; 
+-- DROP TABLE temp_unique_SNP_records ; 
 -- # issue with SNP ID ????
 
 -- Add Config setting
