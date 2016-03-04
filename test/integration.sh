@@ -15,11 +15,11 @@
 #       *  Set sandbox mode to 1: <sandbox>1</sandbox>
 #       *  Set SyncAccounts to false: <SyncAccounts>false</SyncAccounts>
 
-host="132.206.37.46"
-database="wangshen_sandbox"
-username="wangshen"
-password="123456"
-url="https://wangshen-dev.loris.ca/"
+host="127.0.0.1"
+database="LorisTest"
+username="SQLTestUser"
+password="TestPassword"
+url="http://localhost:8000"
 
 # Custom DB variables specified by optional commandline arguments
 while getopts ":m:h:D:u:p:l:" opt; do
