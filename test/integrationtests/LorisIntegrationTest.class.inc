@@ -190,7 +190,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
-            array(":configName" => $configName)
+            array("configName" => $configName)
         );
 
         if (is_array($configID) && empty($configID)) {
@@ -200,7 +200,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         }
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
-            array(":confID" => $configID)
+            array("confID" => $configID)
         );
 
         $this->_oldConfig[$configName] = array(
@@ -304,6 +304,44 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Helper function to create a subproject
+     *
+     * @param string $title Name of the subproject
+     *
+     * @return none
+     */
+    function createSubproject($title)
+    {
+        $this->DB->insert(
+            "subproject",
+            array(
+             "title"             => $title,
+             "WindowDifference"  => "optimal",
+             "RecruitmentTarget" => "100",
+            )
+        );
+    }
+
+    /**
+     * Helper function to delete a subproject
+     *
+     * @param string $title Name of the subproject
+     *
+     * @return none
+     */
+    function deleteSubproject($title)
+    {
+        $this->DB->delete(
+            "subproject",
+            array(
+             "title"             => $title,
+             "WindowDifference"  => "optimal",
+             "RecruitmentTarget" => "100",
+            )
+        );
+    }
+
+    /**
      * Helper function to determine if a menu item is prensent
      * under a given category.
      *
@@ -332,6 +370,32 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             )
         );
         return count($configMenu) > 0;
+    }
+
+    /**
+     * Helper function to click on a element and wait for the new page to be loaded.
+     * When the DOM is reloaded, the elements of the previous page become stale.
+     * Selenium will raise an exception when a function (like getText) are called on
+     * those elements.
+     *
+     * Note: If the page don't reload, this will produce an infinite loop.
+     *
+     * @param webDriverElement $clickable The element to be clicked
+     *
+     * @return void Once the element is stale.
+     */
+    public function clickToLoadNewPage($clickable)
+    {
+        $remoteWebElement = null; 
+
+        $clickable->click();
+        try {
+            while (true) {
+                $remoteWebElement = $clickable->isDisplayed();
+            }
+        } catch (StaleElementReferenceException $e) {
+            return $remoteWebElement;
+        }
     }
 
     /**

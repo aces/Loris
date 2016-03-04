@@ -171,6 +171,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND (f.Test_name NOT LIKE '%parameter%' 
                     AND f.Test_name NOT LIKE '%radiological%' 
                     AND f.Test_name NOT LIKE '%vineland%')
+                $ExtraProject_Criteria
                 GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID;",
             $result);
         foreach($result as $row) {

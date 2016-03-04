@@ -23,19 +23,29 @@ require_once __DIR__
  */
 class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
 {
-    private static $_TEST_SESSION = array(
-                                     'Test',
-                                     '',
-                                     '',
-                                     '',
-                                     '',
-                                     '-',
-                                     '',
-                                     '-',
-                                     '',
-                                     '',
-                                     '',
-                                    );
+    /**
+     * Contents (columns) of the session table displayed when accessing
+     * the time point list page for candidate TST0001.
+     */
+    private static $_TST0001_SESSION = array(
+                                        'Test',
+                                        '',
+                                        '',
+                                        '',
+                                        '',
+                                        '-',
+                                        '',
+                                        '-',
+                                        '',
+                                        '',
+                                        '',
+                                       );
+
+    /**
+     * Candidate ID for candidate TST0001.
+     */
+    private static $_TST0001_CANDID = 900000;
+
     /**
      * Tests that, when loading the timepoint_list module, some
      * text appears in the body.
@@ -44,8 +54,11 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testTimepointListPageLoad()
     {
-        $this->safeGet($this->url . "/timepoint_list/?candID=000000");
-        $this->_validateSessionTableContents(array(self::$_TEST_SESSION));
+        $this->safeGet($this->url . "/" . self::$_TST0001_CANDID . "/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("Candidate Profile", $bodyText);
     }
     /**
      * Checks the contents of the session table and compares it against an expected
@@ -96,7 +109,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'      => '000001',
+             'CandID'      => '900001',
              'PSCID'       => 'TST0002',
              'CenterID'    => 1,
              'Active'      => 'Y',
@@ -104,33 +117,37 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
              'Entity_type' => 'Human',
             )
         );
+
         // Session for candidate TST0002: should not be listed on the page
         $this->DB->insert(
             'session',
             array(
              'ID'          => '999998',
-             'CandID'      => '000001',
+             'CandID'      => '900001',
              'Visit_label' => 'Test',
              'CenterID'    => 1,
             )
         );
+
         // Inactive session for candidate TST0001: should not appear
         // on the page
         $this->DB->insert(
             'session',
             array(
              'ID'          => '999997',
-             'CandID'      => '000000',
+             'CandID'      => self::$_TST0001_CANDID,
              'Visit_label' => 'Test2',
              'CenterID'    => 1,
              'Active'      => 'N',
             )
         );
-        $this->safeGet($this->url . "/timepoint_list/?candID=000000");
-        $this->_validateSessionTableContents(array(self::$_TEST_SESSION));
+        $this->safeGet(
+            $this->url . "/timepoint_list/?candID=" .  self::$_TST0001_CANDID
+        );
+        $this->_validateSessionTableContents(array(self::$_TST0001_SESSION));
         $this->DB->delete('session', array('ID' => '999997'));
         $this->DB->delete('session', array('ID' => '999998'));
-        $this->DB->delete('candidate', array('CandID' => 1));
+        $this->DB->delete('candidate', array('CandID' => 900001));
     }
 }
 ?>
