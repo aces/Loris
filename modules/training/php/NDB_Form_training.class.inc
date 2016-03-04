@@ -190,19 +190,5 @@ class NDB_Form_Training extends NDB_Form
             return true;
         }
     }
-
-    /**
-     * Include the column formatter required to display the feedback link colours
-     * in the training menu
-     *
-     * @return array of javascript to be inserted
-     */
-    function getJSDependencies()
-    {
-        $factory = NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return $deps;
-    }
 }
 ?>
