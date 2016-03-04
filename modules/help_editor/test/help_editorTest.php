@@ -48,13 +48,13 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/help_editor/');
         $searchbox = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(1) > div > input"));
+        ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(1) > div > input"));
         $searchbox->sendKeys("Hand Preference");
         $showdata = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(2) > div > div.col-sm-4.col-sm-offset-4 > input"));
+        ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(2) > div > div.col-sm-4.col-sm-offset-4 > input"));
         $showdata->click();
         $assertText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#Topic > a"))->getText();
+        ->findElement(WebDriverBy::cssSelector("#Topic > a"))->getText();
         $this->assertContains("Hand Preference", $assertText);
     }
 // /**
@@ -66,13 +66,13 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/help_editor/');
         $searchbox = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(2) > div > input"));
+        ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(2) > div > input"));
         $searchbox->sendKeys("Under Construction");
         $showdata = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(2) > div > div.col-sm-4.col-sm-offset-4 > input"));
+        ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(2) > div > div.col-sm-4.col-sm-offset-4 > input"));
         $showdata->click();
         $assertText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#Topic > a"))->getText();
+        ->findElement(WebDriverBy::cssSelector("#Topic > a"))->getText();
         $this->assertContains("Hand Preference", $assertText);
     }
 // /**
@@ -84,13 +84,13 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/help_editor/');
         $searchbox = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(1) > div > input"));
+        ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(1) > div > input"));
         $searchbox->sendKeys("Hand Preference");
         $clearform = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(2) > div > div.col-sm-4.col-sm-offset-4 > input"));
+        ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(2) > div > div.col-sm-4.col-sm-offset-4 > input"));
         $clearform->click();
         $assertText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(1) > div > input"))->getText();
+        ->findElement(WebDriverBy::cssSelector("#panel-body > form > div:nth-child(1) > div:nth-child(1) > div > input"))->getText();
         $this->assertSame('',$assertText);
     }
 }
