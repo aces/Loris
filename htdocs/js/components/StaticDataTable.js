@@ -71,8 +71,9 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
                 link.download = "data-" + dataDate + ".csv";
                 link.type = "text/csv";
                 link.href = dataURL;
+                document.body.appendChild(link);
                 $(link)[0].click();
-
+                document.body.removeChild(link);
             }
         });
         csvworker.postMessage({
