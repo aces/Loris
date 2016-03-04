@@ -16,10 +16,10 @@
 #       *  Set SyncAccounts to false: <SyncAccounts>false</SyncAccounts>
 
 host="127.0.0.1"
- database="LorisTest"
- username="SQLTestUser"
- password="TestPassword"
- url="http://localhost:8000"
+database="LorisTest"
+username="SQLTestUser"
+password="TestPassword"
+url="http://localhost:8000"
 
 # Custom DB variables specified by optional commandline arguments
 while getopts ":m:h:D:u:p:l:" opt; do
