@@ -1895,7 +1895,7 @@ CREATE TABLE `CNV` (
   `GenomeLocID` int(20) DEFAULT NULL,
   PRIMARY KEY (`CNVID`),
   FOREIGN KEY (`PlatformID`) REFERENCES genotyping_platform(`PlatformID`),
-  FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`),
+  FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
