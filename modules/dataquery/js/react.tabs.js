@@ -511,6 +511,63 @@ SaveQueryDialog = React.createClass({displayName: "SaveQueryDialog",
             );
     }
 });
+ManageSavedQueryFilter = React.createClass({displayName: "ManageSavedQueryFilter",
+    render: function() {
+        var filterItem,
+            filter = this.props.filterItem;
+        if(filter.activeOperator) {
+            var logicOp = "AND",
+                children = filter.children.map(function(element, key){
+                    return React.createElement(ManageSavedQueryFilter, {
+                                filterItem: element}
+                            )
+                });
+            if(filter.activeOperator === 1) {
+                logicOp = "OR"
+            }
+            return (
+                React.createElement("li", null, 
+                    React.createElement("span", null, logicOp), 
+                    React.createElement("ul", {className: "savedQueryTree"}, 
+                        children
+                    )
+                )
+            )
+        } else {
+            filter = this.props.filterItem;
+            if(filter.instrument) {
+                var operator;
+                switch(filter.operator) {
+                    case "equal":
+                        operator = "=";
+                        break;
+                    case "notEqual":
+                        operator = "!=";
+                        break;
+                    case "lessThanEqual":
+                        operator = "<=";
+                        break;
+                    case "greaterThanEqual":
+                        operator = ">=";
+                        break;
+                    default:
+                        operator = filter.operator;
+                        break;
+                }
+                filterItem = (
+                    React.createElement("span", null, filter.instrument, ",", filter.field, " ", operator, " ", filter.value)
+                )
+            } else {
+                filterItem = (
+                    React.createElement("span", null, filter.Field, " ", filter.Operator, " ", filter.Value)
+                )
+            }
+        }
+        return (
+            React.createElement("li", null, filterItem)
+        );
+    }
+});
 ManageSavedQueryRow = React.createClass({displayName: "ManageSavedQueryRow",
     getDefaultProps: function() {
         return {
@@ -522,7 +579,7 @@ ManageSavedQueryRow = React.createClass({displayName: "ManageSavedQueryRow",
     },
     render: function() {
         var fields = [];
-        var filters = [];
+        var filters;
         if(this.props.Query.Fields) {
             for(var i = 0; i < this.props.Query.Fields.length; i += 1) {
                 fields.push(React.createElement("li", null, this.props.Query.Fields[i]));
@@ -534,19 +591,42 @@ ManageSavedQueryRow = React.createClass({displayName: "ManageSavedQueryRow",
         }
 
         if(this.props.Query.Conditions) {
-            for(var i = 0; i < this.props.Query.Conditions.length; i += 1) {
-                var filter = this.props.Query.Conditions[i];
-                filters.push(React.createElement("li", null, filter.Field, " ", filter.Operator, " ", filter.Value));
+            var operator = (React.createElement("span", null, "AND")),
+                filter;
+            if(this.props.Query.Conditions.activeOperator) {
+                filter = this.props.Query.Conditions.children.map(function(element, key){
+                    return React.createElement(ManageSavedQueryFilter, {
+                                filterItem: element}
+                            )
+                });
+            } else {
+                filter = this.props.Query.Conditions.map(function(element, key){
+                    return React.createElement(ManageSavedQueryFilter, {
+                                filterItem: element}
+                            )
+                 });
             }
+            filters = (
+                React.createElement("div", {className: "tree"}, 
+                    React.createElement("ul", {className: "firstUL savedQueryTree"}, 
+                        React.createElement("li", null, 
+                            operator, 
+                            React.createElement("ul", {className: "savedQueryTree"}, 
+                                filter
+                            )
+                        )
+                    )
+                )
+            );
         }
-        if(filters.length === 0) {
-            filters.push(React.createElement("li", null, "No filters defined"));
+        if(!filters) {
+            filters = (React.createElement("strong", null, "No filters defined"));
         }
         return (
                     React.createElement("tr", null, 
                         React.createElement("td", null, this.props.Name), 
                         React.createElement("td", null, React.createElement("ul", null, fields)), 
-                        React.createElement("td", null, React.createElement("ul", null, filters))
+                        React.createElement("td", null, filters)
                     )
         );
     }

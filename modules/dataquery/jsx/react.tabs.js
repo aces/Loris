@@ -511,6 +511,63 @@ SaveQueryDialog = React.createClass({
             );
     }
 });
+ManageSavedQueryFilter = React.createClass({
+    render: function() {
+        var filterItem,
+            filter = this.props.filterItem;
+        if(filter.activeOperator) {
+            var logicOp = "AND",
+                children = filter.children.map(function(element, key){
+                    return <ManageSavedQueryFilter
+                                filterItem = {element}
+                            />
+                });
+            if(filter.activeOperator === 1) {
+                logicOp = "OR"
+            }
+            return (
+                <li>
+                    <span>{logicOp}</span>
+                    <ul className="savedQueryTree">
+                        {children}
+                    </ul>
+                </li>
+            )
+        } else {
+            filter = this.props.filterItem;
+            if(filter.instrument) {
+                var operator;
+                switch(filter.operator) {
+                    case "equal":
+                        operator = "=";
+                        break;
+                    case "notEqual":
+                        operator = "!=";
+                        break;
+                    case "lessThanEqual":
+                        operator = "<=";
+                        break;
+                    case "greaterThanEqual":
+                        operator = ">=";
+                        break;
+                    default:
+                        operator = filter.operator;
+                        break;
+                }
+                filterItem = (
+                    <span>{filter.instrument},{filter.field} {operator} {filter.value}</span>
+                )
+            } else {
+                filterItem = (
+                    <span>{filter.Field} {filter.Operator} {filter.Value}</span>
+                )
+            }
+        }
+        return (
+            <li>{filterItem}</li>
+        );
+    }
+});
 ManageSavedQueryRow = React.createClass({
     getDefaultProps: function() {
         return {
@@ -522,7 +579,7 @@ ManageSavedQueryRow = React.createClass({
     },
     render: function() {
         var fields = [];
-        var filters = [];
+        var filters;
         if(this.props.Query.Fields) {
             for(var i = 0; i < this.props.Query.Fields.length; i += 1) {
                 fields.push(<li>{this.props.Query.Fields[i]}</li>);
@@ -534,19 +591,42 @@ ManageSavedQueryRow = React.createClass({
         }
 
         if(this.props.Query.Conditions) {
-            for(var i = 0; i < this.props.Query.Conditions.length; i += 1) {
-                var filter = this.props.Query.Conditions[i];
-                filters.push(<li>{filter.Field} {filter.Operator} {filter.Value}</li>);
+            var operator = (<span>AND</span>),
+                filter;
+            if(this.props.Query.Conditions.activeOperator) {
+                filter = this.props.Query.Conditions.children.map(function(element, key){
+                    return <ManageSavedQueryFilter
+                                filterItem = {element}
+                            />
+                });
+            } else {
+                filter = this.props.Query.Conditions.map(function(element, key){
+                    return <ManageSavedQueryFilter
+                                filterItem = {element}
+                            />
+                 });
             }
+            filters = (
+                <div className="tree">
+                    <ul className="firstUL savedQueryTree">
+                        <li>
+                            {operator}
+                            <ul className="savedQueryTree">
+                                {filter}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            );
         }
-        if(filters.length === 0) {
-            filters.push(<li>No filters defined</li>);
+        if(!filters) {
+            filters = (<strong>No filters defined</strong>);
         }
         return (
                     <tr>
                         <td>{this.props.Name}</td>
                         <td><ul>{fields}</ul></td>
-                        <td><ul>{filters}</ul></td>
+                        <td>{filters}</td>
                     </tr>
         );
     }
