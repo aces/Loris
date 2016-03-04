@@ -155,7 +155,7 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
             );
         }
 
-        var RowsPerPageDropdown = (React.createElement("select", {onChange: this.changeRowsPerPage}, 
+        var RowsPerPageDropdown = (React.createElement("select", {className: "input-sm rowsPerPage", onChange: this.changeRowsPerPage}, 
                 React.createElement("option", null, "20"), 
                 React.createElement("option", null, "50"), 
                 React.createElement("option", null, "100"), 
@@ -165,21 +165,22 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
             )
             );
         return (
-            React.createElement("div", null, 
-                React.createElement("table", {className: "table table-hover table-primary table-bordered", id: "dynamictable"}, 
-                    React.createElement("thead", null, 
-                        React.createElement("tr", {className: "info"}, headers)
+            React.createElement("div", {className: "panel panel-primary"}, 
+                    React.createElement("table", {className: "table table-hover table-primary table-bordered", id: "dynamictable"}, 
+                        React.createElement("thead", null, 
+                            React.createElement("tr", {className: "info"}, headers)
+                        ), 
+                        React.createElement("tbody", null, 
+                            rows
+                        )
                     ), 
-                    React.createElement("tbody", null, 
-                        rows
-                    ), 
-                    React.createElement("tfoot", null, 
-                        React.createElement("tr", null, 
-                        React.createElement("td", {className: "info", colSpan: headers.length}, rows.length, " rows displayed of ", this.props.Data.length, ". (Maximum rows per page: ", RowsPerPageDropdown, ")",  
+                React.createElement("div", {className: "panel-footer table-footer"}, 
+                    React.createElement("div", {className: "row"}, 
+                        React.createElement("div", {className: "col-xs-12"}, 
+                            rows.length, " rows displayed of ", this.props.Data.length, ". (Maximum rows per page: ", RowsPerPageDropdown, ")",  
                             React.createElement("div", {className: "pull-right"}, 
                                 React.createElement(PaginationLinks, {Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber})
                             )
- )
                         )
                     )
                 )
