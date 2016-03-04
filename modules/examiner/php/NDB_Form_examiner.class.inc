@@ -116,11 +116,9 @@ class NDB_Form_Examiner extends NDB_Form
             $visit_label = null;
             if ($testID  == "15_3_9" ) {
                 $visit_label = '3-9mo';
-            }
-            elseif ($testID == '15_12_15') {
+            } else if ($testID == '15_12_15') {
                 $visit_label = '12-15mo';
-            }
-            elseif ($testID == '15_24_36') {
+            } else if ($testID == '15_24_36') {
                 $visit_label = '24-36mo';
             }
 
