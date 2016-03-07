@@ -1,4 +1,7 @@
 <?php
+
+require_once __DIR__ . "/LorisIntegrationTest.class.inc";
+
 /**
  * This contains an abstract class for Loris tests to extend.
  * It sets up the database handler, creates a user, creates a
@@ -54,6 +57,7 @@ abstract class LorisIntegrationTestWithCandidate extends LorisIntegrationTest
             'CandID' => '900000',
             'Visit_label' => 'Test',
             'CenterID' => 1,
+            'Current_stage'   => 'Not Started',
         ));
         // Set up database wrapper and config
     }

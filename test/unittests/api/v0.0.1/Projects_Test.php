@@ -64,9 +64,6 @@ class Projects_Test extends BaseTestCase
                     if($setting === "extLibs") {
                         return "";
                     }
-                    if($setting === "showPearErrors") {
-                        return "true";
-                    }
 
                     throw new \ConfigurationException("Unmocked config setting $setting");
                 }

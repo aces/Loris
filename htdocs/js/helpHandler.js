@@ -25,7 +25,7 @@ $(document).ready(function(){
                 text = document.createTextNode("Edit"),
                 button = document.createTextNode("Close");
 
-            pre.innerHTML = "<br><br><hr><h3>" + content.topic + "</h3>";
+            pre.innerHTML = "<hr id='help-seperator'><h3>" + content.topic + "</h3>";
             pre.innerHTML += content.content;
             pre.innerHTML =  pre.innerHTML + "<hr>Last updated: " + content.updated ;
             btn.appendChild(button);

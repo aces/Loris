@@ -686,6 +686,9 @@ tr.directentry {
     white-space: pre-wrap;
     word-break: normal;
 }
+#help-seperator {
+   margin-top: 50px;
+}
 #helpclose {
    position: absolute;
    right:    0;
