@@ -4,9 +4,52 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "61a6f53941a51ebf79b3b006b443f766",
-    "content-hash": "21473db769fdf77b7b4111b0f0efa6d5",
+    "hash": "c9926fa73f8d8761a8976f973a41708c",
+    "content-hash": "34e0b1c05ab4aa5471748883296f3dc3",
     "packages": [
+        {
+            "name": "firebase/php-jwt",
+            "version": "v3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1",
+                "reference": "fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Firebase\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+            "homepage": "https://github.com/firebase/php-jwt",
+            "time": "2015-07-22 18:31:08"
+        },
         {
             "name": "pear-pear.php.net/OLE",
             "version": "0.6.1",
@@ -68,16 +111,16 @@
         },
         {
             "name": "smarty/smarty",
-            "version": "v3.1.29",
+            "version": "v3.1.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/smarty-php/smarty.git",
-                "reference": "35480f10e7ce9b0fdaf23d3799d7b79463919b1e"
+                "reference": "d234f79203ca236093989c579c824a1a882d1153"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/35480f10e7ce9b0fdaf23d3799d7b79463919b1e",
-                "reference": "35480f10e7ce9b0fdaf23d3799d7b79463919b1e",
+                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/d234f79203ca236093989c579c824a1a882d1153",
+                "reference": "d234f79203ca236093989c579c824a1a882d1153",
                 "shasum": ""
             },
             "require": {
@@ -119,7 +162,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-12-21 01:57:06"
+            "time": "2015-12-13 14:19:58"
         }
     ],
     "packages-dev": [
@@ -1040,16 +1083,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.2",
+            "version": "v2.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "34c8a4b51e751e7ea869b8262f883d008a2b81b8"
+                "reference": "f79824187de95064a2f5038904c4d7f0227fedb5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/34c8a4b51e751e7ea869b8262f883d008a2b81b8",
-                "reference": "34c8a4b51e751e7ea869b8262f883d008a2b81b8",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/f79824187de95064a2f5038904c4d7f0227fedb5",
+                "reference": "f79824187de95064a2f5038904c4d7f0227fedb5",
                 "shasum": ""
             },
             "require": {
@@ -1085,7 +1128,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-01-13 10:28:07"
+            "time": "2015-11-30 12:35:10"
         }
     ],
     "aliases": [],
