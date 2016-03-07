@@ -12,7 +12,7 @@
  */
 
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
-class dashBoardTest extends LorisIntegrationTestWithCandidate
+class dashboardTest extends LorisIntegrationTestWithCandidate
 {
     /**
      * Tests that, when loading the Instrument list module, some
@@ -22,8 +22,6 @@ class dashBoardTest extends LorisIntegrationTestWithCandidate
      */
     function testInstrumentListDoespageLoad()
     {
-        $this->safeGet($this->url . "/instrument_list/");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("instrument_list", $bodyText);
+      
     }
 ?>
