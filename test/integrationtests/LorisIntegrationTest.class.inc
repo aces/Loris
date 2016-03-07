@@ -288,8 +288,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function changeStudySite()
     {
-        $this->DB->insert("psc", array("CenterID" => 999));
-        $this->DB->update("users", array("CenterID" => 999), array("ID" => 999990));
+        $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
+        $this->DB->update("users", array("CenterID" => 99), array("ID" => 999990));
     }
 
     /**
@@ -300,7 +300,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     function resetStudySite()
     {
         $this->DB->update("users", array("CenterID" => 1), array("ID" => 999990));
-        $this->DB->delete("psc", array("CenterID" => 999));
+        $this->DB->delete("psc", array("CenterID" => 99));
     }
 
     /**
@@ -373,6 +373,18 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Helper function to delete candidate
+     *
+     * @param string $pscid The PSCID of teh candiate to delete
+     *
+     * @return none
+     */
+    function deleteCandidate($pscid)
+    {
+        $this->DB->delete("candidate", array("PSCID" => $pscid));
+    }
+
+    /*
      * Helper function to click on a element and wait for the new page to be loaded.
      * When the DOM is reloaded, the elements of the previous page become stale.
      * Selenium will raise an exception when a function (like getText) are called on
