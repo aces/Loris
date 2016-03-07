@@ -30,9 +30,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
     private static $_TST0001_SESSION = array(
                                         'Test',
                                         '',
-                                        '',
-                                        '',
-                                        '',
+                                        'Not Started',
                                         '-',
                                         '',
                                         '-',
@@ -91,8 +89,8 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
                 $actualSession[] = $e->getText();
             }
             $this->assertEquals(
-                $actualSession,
                 $expectedSessions[$i],
+                $actualSession,
                 "Sessions at row $i differ"
             );
         }
