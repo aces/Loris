@@ -39,4 +39,8 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Edit Help Content", $bodyText);
     }
 }
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> 32fce9ef99e1e7d80320242c4acf9fa91e0eb2b3
