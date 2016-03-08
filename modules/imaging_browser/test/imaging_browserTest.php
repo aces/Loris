@@ -924,7 +924,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $BreadCrumbLink = $this->webDriver->findElement(
             WebDriverBy::cssSelector(".alert > a:nth-child(1)")
         );
-        $BreadCrumbLink->click();
+        $this->clickToLoadNewPage($BreadCrumbLink);
 
         $SelectionFilter = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[1]/div/div/div[1]')
