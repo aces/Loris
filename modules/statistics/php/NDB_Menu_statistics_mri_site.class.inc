@@ -61,8 +61,8 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
                         LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6) AND MID(t.PatientName, 16, 7)=s.Visit_label)
                         LEFT JOIN candidate c ON (s.CandID=c.CandID)
-                        where
-                             f.CommentID NOT LIKE 'DDE%'
+                        $where
+                            AND f.CommentID NOT LIKE 'DDE%'
                             AND f.Test_name='mri_parameter_form'
                             AND f.Administration <> 'None'
                             AND t.TarchiveID IS NULL
@@ -91,8 +91,8 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                     LEFT JOIN session s ON (s.ID=f.SessionID)
                     LEFT JOIN files fi ON (fi.SessionID=f.SessionID)
                     LEFT JOIN candidate c ON (c.CandID=s.CandID)
-                    where
-                            fi.FileID IS NULL
+                    $where
+                        AND fi.FileID IS NULL
                         AND f.Data_entry= 'Complete'
                         AND s.Active='Y'
                         AND s.CenterID <> '1'
