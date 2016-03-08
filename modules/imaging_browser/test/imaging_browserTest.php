@@ -922,7 +922,14 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->clickToLoadNewPage($NativeLink);
 
         $BreadCrumbLink = $this->webDriver->findElement(
-            WebDriverBy::xPath("//*div[@id='breadcrumbs']/div/div/div/a[2]")
+            WebDriverBy::xPath("
+                //div[@id='breadcrumbs']
+                /div
+                /div
+                /div
+                /a[2]
+                /div
+            ")
         );
         $BreadCrumbLink->click();
 
