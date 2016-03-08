@@ -179,17 +179,19 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'SNP_Name'            => 'SNP.SNPExternalName',
                                'SNP_Description'     => 'SNP.Description',
                                'SNP_External_Source' => 'SNP.SNPExternalSource',
-                               'Observed_Base'       => 'SNP_candidate_rel.ObservedBase',
+                               'Observed_Base'       =>
+                                 'SNP_candidate_rel.ObservedBase',
                                'Reference_Base'      => 'SNP.ReferenceBase',
                                'Array_Report'        => 'SNP.ArrayReport',
                                'Markers'             => 'SNP.Markers',
-                               'Validation_Method'   => 'SNP_candidate_rel.ValidationMethod',
-                               'Validated'
-                               => 'SNP_candidate_rel.Validated',
+                               'Validation_Method'   =>
+                                 'SNP_candidate_rel.ValidationMethod',
+                               'Validated'           =>
+                                 'SNP_candidate_rel.Validated',
                                'Function_Prediction' => 'SNP.FunctionPrediction',
                                'Damaging'            => 'SNP.Damaging',
-                               'Genotype_Quality'
-                                => 'SNP_candidate_rel.GenotypeQuality',
+                               'Genotype_Quality'    =>
+                                 'SNP_candidate_rel.GenotypeQuality',
                                'Exonic_Function'     => 'SNP.ExonicFunction',
                                'Chromosome'          => 'genome_loc.Chromosome',
                                'Gene_Symbol'         => 'gene.OfficalSymbol',
@@ -223,8 +225,8 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             $site = Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
                 $list_of_sites = array(
-                                  $user->getData('CenterID')
-                                  => $user->getData('Site')
+                                  $user->getData('CenterID') =>
+                                  $user->getData('Site')
                                  );
             }
         }
@@ -238,9 +240,12 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addBasicText('External_ID', 'External ID:');
         $this->addSelect(
-             'gender',
-             'Gender:',
-             array('' => 'All', 'Male' => 'Male', 'Female' => 'Female')
+            'gender',
+            'Gender:',
+            array('' => 'All',
+             'Male' => 'Male',
+             'Female' => 'Female'
+            )
         );
         $this->addSelect(
             'SubprojectID',
@@ -271,9 +276,9 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addSelect('Reference_Base', 'Reference Base:', $Base_options);
 
         $this->addSelect(
-             'Validated',
-             'Validated:',
-             array(null => 'Any', '0' => '0', '1'  => '1')
+            'Validated',
+            'Validated:',
+            array(null => 'Any', '0' => '0', '1' => '1')
         );
         $this->addSelect(
             'Function_Prediction',
@@ -290,7 +295,11 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addSelect(
             'Damaging',
             'Damaging:',
-            array(null => 'Any', 'D' => 'D', 'NA' => 'NA')
+            array(
+             null => 'Any',
+             'D' => 'D',
+             'NA' => 'NA'
+            )
         );
         $this->addBasicText('Genotype_Quality', 'Genotype Quality:');
         $this->addBasicText('Exonic_Function', 'Exonic Function:');

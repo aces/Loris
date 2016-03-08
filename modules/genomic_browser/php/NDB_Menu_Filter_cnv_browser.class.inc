@@ -203,8 +203,8 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
             $site = Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
                 $list_of_sites = array(
-                                  $user->getData('CenterID')
-                                  => $user->getData('Site')
+                                  $user->getData('CenterID') =>
+                                    $user->getData('Site')
                                  );
             }
         }
@@ -218,9 +218,12 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addBasicText('External_ID', 'External ID:');
         $this->addSelect(
-             'gender',
-             'Gender:',
-             array('' => 'All', 'Male' => 'Male', 'Female' => 'Female')
+            'gender',
+            'Gender:',
+            array('' => 'All',
+             'Male' => 'Male',
+             'Female' => 'Female',
+            )
         );
         $this->addSelect(
             'SubprojectID',
@@ -230,9 +233,9 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
 
         $show_results_options = array(
-                                'brief' => 'Summary fields',
-                                'full'  => 'All fields',
-                               );
+                                 'brief' => 'Summary fields',
+                                 'full'  => 'All fields',
+                                );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // CNV

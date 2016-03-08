@@ -80,16 +80,16 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                          );
 
         $this->_briefFields = array(
-                              'DCCID',
-                              'PSCID',
-                              'Total_Filesets',
-                              'Top_Raw_File',
-                              'Raw_Filesets',
-                              'Top_Cleaned_File',
-                              'Cleaned_Filesets',
-                              'SNPs',
-                              'CNVs',
-                             );
+                               'DCCID',
+                               'PSCID',
+                               'Total_Filesets',
+                               'Top_Raw_File',
+                               'Raw_Filesets',
+                               'Top_Cleaned_File',
+                               'Cleaned_Filesets',
+                               'SNPs',
+                               'CNVs',
+                              );
 
         $this->query = " FROM candidate
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
@@ -143,7 +143,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                                'External_ID'        => 'candidate.ExternalID',
                                'Show_Brief_Results' => 'show_brief_results',
                                'Raw_Filesets'       => 'rawfiles.rawFileCount',
-                               'Cleaned_Filesets'   => 'cleanedfiles.cleanedFileCount',
+                               'Cleaned_Filesets'   =>
+                                 'cleanedfiles.cleanedFileCount',
                                'SNP_Hits'           => 'S.SNPCount',
                                'CNV_Hits'           => 'C.CNVCount',
                               );
@@ -175,8 +176,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             $site = Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
                 $list_of_sites = array(
-                                  $user->getData('CenterID')
-                                  => $user->getData('Site')
+                                  $user->getData('CenterID') =>
+                                    $user->getData('Site')
                                  );
             }
         }
@@ -190,13 +191,13 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         $this->addBasicText('PSCID', 'PSCID:');
         $this->addBasicText('External_ID', 'External ID:');
         $this->addSelect(
-             'gender',
-             'Gender:',
-              array(
-               ''       => 'All',
-               'Male'   => 'Male',
-               'Female' => 'Female',
-              )
+            'gender',
+            'Gender:',
+            array(
+             ''       => 'All',
+             'Male'   => 'Male',
+             'Female' => 'Female',
+            )
         );
         $this->addSelect(
             'SubprojectID',
@@ -208,7 +209,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         $any_options = array(
                         '' => null,
                         '1' => 'Any',
-                        '0' => 'None'
+                        '0' => 'None',
                        );
         $this->addSelect('Raw_Filesets', 'Raw Filesets:', $any_options);
         $this->addSelect('Cleaned_Filesets', 'Cleaned Filesets:', $any_options);
@@ -265,9 +266,9 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 // special case: insert header for a derived column
                 if ($header == "Total_Filesets") {
                     $headerArray = array(
-                                    "name" => $header,
+                                    "name"        => $header,
                                     "displayName" => "All Filesets",
-                                    "fieldOrder" => "ASC"
+                                    "fieldOrder"  => "ASC",
                                    );
 
                     $this->tpl_data['headers'][$colCount] = $headerArray;
@@ -338,7 +339,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                     // assumed raw is previous col, already processed
                     $rawCol = $i - 1; // 1 column prior
                     $rawVal = $this->tpl_data['items'][$x][$rawCol]['value'];
- 
+
                     if (is_numeric($val)) { // Cleaned Val
                         $totalVal = $val;
                     }
@@ -351,14 +352,14 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                     }
                     $this->tpl_data['items'][$x][$totalCol]['value'] = $totalVal;
                     $this->tpl_data['items'][$x][$totalCol]['name']
-                        = "Total_Filesets";
+                         = "Total_Filesets";
 
                 } // end if Cleaned
 
                 // Print '' if no data
                 if ($key=='Raw_Filesets' || $key=='Cleaned_Filesets'
                     || $key == 'SNPs' || $key == 'CNVs'
-                   ) {
+                ) {
                     if (is_null($val) || $val === '0') {
                         $this->tpl_data['items'][$x][$i]['value'] = '';
                     }
@@ -418,7 +419,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             } elseif ($field == "rawfiles.rawFileCount"
                 || $field == "cleanedfiles.cleanedFileCount"
                 || $field == "S.SNPCount" || $field == "C.CNVCount"
-                     ) {
+            ) {
                 if ($val == "1") {  // if ANY found i.e. >= 1
                     $query .= " AND $field >= :v_$prepared_key";
                 } elseif ($val == "0") { // if NONE found i.e. = 0

@@ -134,7 +134,7 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
         // add form elements
         $show_results_options = array(
                                  'brief' => 'Summary fields',
-                                 'full'  => 'All fields'
+                                 'full'  => 'All fields',
                                 );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
@@ -218,9 +218,9 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                 }
 
                 //Show the URL to the timepoint list on PSCID field
-                if ($key == 'SNP_ID' &&
-                    $user->hasPermission('access_all_profiles')
-                   ) {
+                if ($key == 'SNP_ID'
+                    && $user->hasPermission('access_all_profiles')
+                ) {
                     $this->tpl_data['items'][$x][$i]['SNP_ID'] = $item['SNP_ID'];
                 }
                 $this->tpl_data['items'][$x][$i]['name']  = $key;
