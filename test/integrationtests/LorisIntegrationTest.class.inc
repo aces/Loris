@@ -57,10 +57,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $database = $this->config->getSetting('database');
 
         $this->DB  = Database::singleton(
-            $database['database'],
-            $database['username'],
-            $database['password'],
-            $database['host'],
+            $database['wangshen_sandbox'],
+            $database['wangshen'],
+            $database['123456'],
+            $database['132.206.37.12'],
             1
         );
         $this->url = $this->config->getSetting("url");
