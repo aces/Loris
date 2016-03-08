@@ -17,7 +17,7 @@
     <!-- database settings -->
     <database>
         <host>%HOSTNAME%</host>
-        <username>SQLTestUser</username>
+        <username>%USERNAME%</username>
         <password>TestPassword</password>
         <database>LorisTest</database>
         <quatUser>SQLTestUser</quatUser>
