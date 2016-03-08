@@ -831,7 +831,7 @@ class Database
         }
 
         // get the table description
-        $this->select("SHOW INDEX FROM $table", $description);
+        $description = $this->pselect("SHOW INDEX FROM $table", array());
 
         // find the primary key columns
         if (is_array($description)) {
