@@ -48,7 +48,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function testUserAccountsDoespageLoad()
     {
         $this->safeGet($this->url . "/user_accounts/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("User Accounts", $bodyText);
@@ -62,25 +62,25 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function testUserAccountsEditUserDoespageLoad()
     {
         $this->safeGet($this->url . "/user_accounts/edit_user/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("Edit User", $bodyText);
         $this->assertEquals(
             "password",
-            $this->webDriver->findElement(
+            $this->safeFindElement(
                 WebDriverBy::Name("Password_md5")
             )->getAttribute("type")
         );
         $this->assertEquals(
             "checkbox",
-            $this->webDriver->findElement(
+            $this->safeFindElement(
                 WebDriverBy::Name("NA_Password")
             )->getAttribute("type")
         );
         $this->assertEquals(
             "password",
-            $this->webDriver->findElement(
+            $this->safeFindElement(
                 WebDriverBy::Name("__Confirm")
             )->getAttribute("type")
         );
@@ -94,7 +94,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function testUserAccountsMyPreferencesDoespageLoad()
     {
         $this->safeGet($this->url . "/user_accounts/my_preferences/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("My Preferences", $bodyText);
@@ -107,7 +107,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function testSearchForUsers()
     {
         $this->safeGet($this->url . "/user_accounts/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         );
         $bodyText->getText();
@@ -203,45 +203,36 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function testAddNewUser()
     {
         $this->safeGet($this->url . "/user_accounts/");
-        $this->safeClick($this->webDriver, WebDriverBy::Name('button'));
-        $field = $this->webDriver->findElement(WebDriverBy::Name('UserID'));
+        $this->safeClick(WebDriverBy::Name('button'));
+        $field = $this->safeFindElement(WebDriverBy::Name('UserID'));
         $field->clear();
         $field->sendKeys('userid');
 
         // Click somehow does not work but this should be
         // equivalent
-        $element = $this->webDriver->findElement(WebDriverBy::Name('NA_Password'));
+        $element = $this->safeFindElement(WebDriverBy::Name('NA_Password'));
         $element->sendKeys(WebDriverKeys::RETURN_KEY);
 
-        $field = $this->webDriver->findElement(WebDriverBy::Name('First_name'));
+        $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $field->clear();
         $field->sendKeys('first');
-        $field = $this->webDriver->findElement(WebDriverBy::Name('Last_name'));
+        $field = $this->safeFindElement(WebDriverBy::Name('Last_name'));
         $field->clear();
         $field->sendKeys('last');
-        $field = $this->webDriver->findElement(WebDriverBy::Name('Email'));
+        $field = $this->safeFindElement(WebDriverBy::Name('Email'));
         $field->clear();
         $field->sendKeys('email@gmail.com');
-        $field = $this->webDriver->findElement(WebDriverBy::Name('__ConfirmEmail'));
+        $field = $this->safeFindElement(WebDriverBy::Name('__ConfirmEmail'));
         $field->clear();
         $field->sendKeys('email@gmail.com');
-        $this->safeClick($this->webDriver, WebDriverBy::Name('SendEmail'));
-        $this->safeClick($this->webDriver, WebDriverBy::Name('fire_away'));
+        $this->safeClick(WebDriverBy::Name('SendEmail'));
+        $this->safeClick(WebDriverBy::Name('fire_away'));
         $this->_accessUser('user_accounts', 'userid');
-        $field = $this->safeFindElement(
-            $this->webDriver,
-            WebDriverBy::Name('First_name')
-        );
+        $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $this->assertEquals($field->getAttribute('value'), 'first');
-        $field = $this->safeFindElement(
-            $this->webDriver,
-            WebDriverBy::Name('Last_name')
-        );
+        $field = $this->safeFindElement(WebDriverBy::Name('Last_name'));
         $this->assertEquals($field->getAttribute('value'), 'last');
-        $field = $this->safeFindElement(
-            $this->webDriver,
-            WebDriverBy::Name('Email')
-        );
+        $field = $this->safeFindElement(WebDriverBy::Name('Email'));
         $this->assertEquals($field->getAttribute('value'), 'email@gmail.com');
     }
 
@@ -261,7 +252,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function _verifyUserModification($page, $userId, $fieldName, $newValue)
     {
         $this->_accessUser($page, $userId);
-        $field = $this->webDriver->findElement(WebDriverBy::Name($fieldName));
+        $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
         if ($field->getTagName() == 'input') {
             $field->clear();
             $field->sendKeys($newValue);
@@ -269,9 +260,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $selectField = new WebDriverSelect($field);
             $selectField->selectByVisibleText($newValue);
         }
-        $this->safeClick($this->webDriver, WebDriverBy::Name('fire_away'));
+        $this->safeClick(WebDriverBy::Name('fire_away'));
         $this->_accessUser($page, $userId);
-        $field = $this->webDriver->findElement(WebDriverBy::Name($fieldName));
+        $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
         if ($field->getTagName() == 'input') {
             $this->assertEquals($field->getAttribute('value'), $newValue);
         } else {
@@ -297,7 +288,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/$page/");
         if ($page == 'user_accounts') {
-            $this->safeClick($this->webDriver, WebDriverBy::LinkText($userId));
+            $this->safeClick(WebDriverBy::LinkText($userId));
         }
     }
     /**
@@ -312,16 +303,13 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private function _assertSearchBy(array $criteria, $expectedResults)
     {
         foreach ($criteria as $elementName => $elementValue) {
-            $element = $this->webDriver->findElement(
+            $element = $this->safeFindElement(
                 WebDriverBy::Name($elementName)
             );
             $element->clear();
             $element->sendKeys($elementValue);
         }
-        $this->safeClick(
-            $this->webDriver,
-            WebDriverBy::Name("filter")
-        );
+        $this->safeClick(WebDriverBy::Name("filter"));
         $this->_assertUserTableContents('dynamictable', $expectedResults);
     }
     /**
@@ -334,7 +322,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     private function _assertUserTableContents($className, $expectedRows)
     {
-        $dataTable = $this->webDriver->findElement(
+        $dataTable = $this->safeFindElement(
             WebDriverBy::ClassName($className)
         );
         if (is_null($expectedRows)) {

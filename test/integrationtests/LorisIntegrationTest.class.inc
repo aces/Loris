@@ -449,7 +449,6 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      * is located on the page before issuing the actual finElement method
      * call.
      *
-     * @param WebDriver   $webDriver  The web driver used in the test.
      * @param WebDriverBy $by         Criteria used to find the element on the page.
      * @param int         $waitPeriod After this amount of seconds, the wait period
      *                                finishes and an exception is thrown.
@@ -459,23 +458,22 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return WebDriverElement the element found.
      */
-    function safeFindElement(WebDriver $webDriver, WebDriverBy $by, $waitPeriod=15)
+    function safeFindElement(WebDriverBy $by, $waitPeriod=15)
     {
-        $wait = new WebDriverWait($webDriver, $waitPeriod);
+        $wait = new WebDriverWait($this->webDriver, $waitPeriod);
         $wait->until(
             WebDriverExpectedCondition::presenceOfElementLocated($by)
         );
 
-        return $webDriver->findElement($by);
+        return $this->webDriver->findElement($by);
     }
 
     /**
      * Safely click on a page element, even if not yet visible. The click is done
      * by issuing a sendKeys method call on the element, passing as argument either
      * a SPACE or a RETURN key (HTML input field will receive a SPACE whereas all
-     * other will receive a RETURN).
+     * others will receive a RETURN).
      *
-     * @param WebDriver   $webDriver  The web driver used in the test.
      * @param WebDriverBy $by         Criteria used to find the element on the page.
      * @param int         $waitPeriod After this amount of seconds, the wait period
      *                                finishes and an exception is thrown.
@@ -485,9 +483,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return void.
      */
-    function safeClick(WebDriver $webDriver, WebDriverBy $by, $waitPeriod=15)
+    function safeClick(WebDriverBy $by, $waitPeriod=15)
     {
-        $webElement = $this->safeFindElement($webDriver, $by, $waitPeriod);
+        $webElement = $this->safeFindElement($by, $waitPeriod);
         $keys       = $webElement->getTagName() == 'input'
             ? WebDriverKeys::SPACE : WebDriverKeys::RETURN_KEY;
         $webElement->sendKeys($keys);
