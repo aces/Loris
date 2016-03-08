@@ -134,20 +134,21 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                                'S.SNPCount',
                               );
 
-        $this->formToFilter = array(
-                               'centerID'           => 'candidate.CenterID',
-                               'DCCID'              => 'candidate.CandID',
-                               'PSCID'              => 'candidate.PSCID',
-                               'gender'             => 'candidate.Gender',
-                               'SubprojectID'       => 'cohort.SubprojectID',
-                               'External_ID'        => 'candidate.ExternalID',
-                               'Show_Brief_Results' => 'show_brief_results',
-                               'Raw_Filesets'       => 'rawfiles.rawFileCount',
-                               'Cleaned_Filesets'   =>
-                                 'cleanedfiles.cleanedFileCount',
-                               'SNP_Hits'           => 'S.SNPCount',
-                               'CNV_Hits'           => 'C.CNVCount',
-                              );
+        $ftf = array(
+                'centerID'           => 'candidate.CenterID',
+                'DCCID'              => 'candidate.CandID',
+                'PSCID'              => 'candidate.PSCID',
+                'gender'             => 'candidate.Gender',
+                'SubprojectID'       => 'cohort.SubprojectID',
+                'External_ID'        => 'candidate.ExternalID',
+                'Show_Brief_Results' => 'show_brief_results',
+                'Raw_Filesets'       => 'rawfiles.rawFileCount',
+                'Cleaned_Filesets'   => 'cleanedfiles.cleanedFileCount',
+                'SNP_Hits'           => 'S.SNPCount',
+                'CNV_Hits'           => 'C.CNVCount',
+               );
+
+        $this->formToFilter = $ftf;
 
         return true;
     }
@@ -175,10 +176,9 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             // allow only to view own site data
             $site = Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
-                $list_of_sites = array(
-                                  $user->getData('CenterID') =>
-                                    $user->getData('Site')
-                                 );
+                $centerIDdata  = $user->getData('CenterID');
+                $siteData      = $user->getData('Site');
+                $list_of_sites = array($centerIDdata => $siteData);
             }
         }
 
@@ -207,7 +207,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
 
         $any_options = array(
-                        '' => null,
+                        ''  => null,
                         '1' => 'Any',
                         '0' => 'None',
                        );
@@ -351,8 +351,9 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                         $totalVal = "";
                     }
                     $this->tpl_data['items'][$x][$totalCol]['value'] = $totalVal;
+
                     $this->tpl_data['items'][$x][$totalCol]['name']
-                         = "Total_Filesets";
+                        = "Total_Filesets";
 
                 } // end if Cleaned
 

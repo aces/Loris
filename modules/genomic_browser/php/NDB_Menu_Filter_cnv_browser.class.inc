@@ -202,10 +202,9 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
             // allow only to view own site data
             $site = Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
-                $list_of_sites = array(
-                                  $user->getData('CenterID') =>
-                                    $user->getData('Site')
-                                 );
+                $centerIDdata  = $user->getData('CenterID');
+                $siteData      = $user->getData('Site');
+                $list_of_sites = array($centerIDdata => $siteData);
             }
         }
 
@@ -220,8 +219,9 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addSelect(
             'gender',
             'Gender:',
-            array('' => 'All',
-             'Male' => 'Male',
+            array(
+             ''       => 'All',
+             'Male'   => 'Male',
              'Female' => 'Female',
             )
         );

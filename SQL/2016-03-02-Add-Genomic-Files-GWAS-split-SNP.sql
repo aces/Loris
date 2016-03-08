@@ -4,7 +4,7 @@
 DROP TABLE IF EXISTS `GWAS`;
 
 CREATE TABLE `GWAS` (
-  `GWASID` int(20) NOT NULL AUTO_INCREMENT,
+  `GWASID` int unsigned NOT NULL AUTO_INCREMENT,
   `SNPID` int(20) NOT NULL,
   `rsID` varchar(20) DEFAULT NULL,
   `MajorAllele` enum('A','C','T','G') DEFAULT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE `GWAS` (
 DROP TABLE IF EXISTS `genomic_files`;
 
 CREATE TABLE `genomic_files` (
-  `GenomicFileID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `GenomicFileID` int unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
   `VisitLabel` varchar(255) DEFAULT NULL,
   `FileName` varchar(255) NOT NULL,
@@ -55,15 +55,15 @@ CREATE TABLE `genomic_files` (
 DROP TABLE IF EXISTS `SNP_candidate_rel`;
 
 CREATE TABLE `SNP_candidate_rel` (
-  `SNPID` int(20) NOT NULL DEFAULT '0',
-  `CandID` varchar(255) NOT NULL DEFAULT '0',
+  `SNPID` bigint(20) NOT NULL DEFAULT '0',
+  `CandID` int(6) NOT NULL DEFAULT '0',
   `ObservedBase` enum('A','C','T','G') DEFAULT NULL,
   `ArrayReport` enum('Normal','Uncertain','Pending') DEFAULT NULL,
   `ArrayReportDetail` varchar(255) DEFAULT NULL,
   `ValidationMethod` varchar(50) DEFAULT NULL,
   `Validated` enum('0','1') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
-  `PlatformID` int(20) DEFAULT NULL
+  `PlatformID` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO SNP_candidate_rel (SNPID, CandID, ObservedBase, ArrayReport, ArrayReportDetail, ValidationMethod, Validated, GenotypeQuality, PlatformID)  SELECT DISTINCT (SNPID, CandID, ObservedBase, ArrayReport, ArrayReportDetail, ValidationMethod, Validated, GenotypeQuality, PlatformID) FROM SNP;
@@ -75,13 +75,10 @@ CREATE TABLE temp_unique_SNP_records SELECT DISTINCT * from SNP;
 DELETE FROM SNP WHERE 1=1; 
 INSERT INTO SNP SELECT * FROM temp_unique_SNP_records; 
 -- DROP TABLE temp_unique_SNP_records ; 
--- # issue with SNP ID ????
 
 -- Add Config setting
 
-NSERT IGNORE INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'GenomicDataPath', 'Path to Genomic data files', 1, 0, 'text', ID, 'Genomic Data Path', 8 FROM ConfigSettings WHERE Name="paths";
+INSERT IGNORE INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'GenomicDataPath', 'Path to Genomic data files', 1, 0, 'text', ID, 'Genomic Data Path', 8 FROM ConfigSettings WHERE Name="paths";
 
 INSERT INTO Config (ConfigID, Value) SELECT ID, "/PATH/TO/Genomic-Data/" FROM ConfigSettings WHERE Name="GenomicDataPath";
-
-
 

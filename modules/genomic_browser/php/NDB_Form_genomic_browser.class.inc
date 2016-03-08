@@ -115,9 +115,18 @@ class NDB_Form_Genomic_Browser extends NDB_Form
         $this->tpl_data['files'] = array();
         foreach ($files as $fileRow) {
             $FileObj = new GenomicFile($fileRow['GenomicFileID']);
+
+            // Get a few parameters
+            $paramFilename         = basename($FileObj->getParameter('FileName'));
+            $paramNormalization    = $FileObj->getParameter('Normalization');
+            $paramAnalysisProtocol = $FileObj->getParameter('AnalysisProtocol');
+            $paramFileInsertDate   = $FileObj->getParameter('Date_inserted');
+            $paramQCDate           = $FileObj->getParameter('QCLastChangeTime');
+
+            // load $file array
             $file    = array(
                         'FileID'           => $fileRow['GenomicFileID'],
-                        'Filename'         => basename($FileObj->getParameter('FileName')),
+                        'Filename'         => $paramFileName,
                         'FullFilename'     => $FileObj->getParameter('FileName'),
                         'FilePackage'      => $FileObj->getParameter('FilePackage'),
                         'FileType'         => $FileObj->getParameter('FileType'),
@@ -126,12 +135,11 @@ class NDB_Form_Genomic_Browser extends NDB_Form
                         'Category'         => $FileObj->getParameter('Category'),
                         'Pipeline'         => $FileObj->getParameter('Pipeline'),
                         'Algorithm'        => $FileObj->getParameter('Algorithm'),
-                        'Normalization'    => $FileObj->getParameter('Normalization'),
+                        'Normalization'    => $paramNormalization,
                         'SampleID'         => $FileObj->getParameter('SampleID'),
                         'Caveat'           => $FileObj->getParameter('Caveat'),
                         'Notes'            => $FileObj->getParameter('Notes'),
-                        'AnalysisProtocol' =>
-                          $FileObj->getParameter('AnalysisProtocol'),
+                        'AnalysisProtocol' => $paramAnalysisProtocol,
                         'AnalysisDate'     => $this->_getDate(
                             $FileObj,
                             'Date_taken',
@@ -142,10 +150,10 @@ class NDB_Form_Genomic_Browser extends NDB_Form
                             'Date_sample',
                             $sampleDate
                         ),
-                        'FileInsertDate'   => $FileObj->getParameter('Date_inserted'),
+                        'FileInsertDate'   => $paramFileInsertDate,
                         'Selected'         => $FileObj->getParameter('Selected'),
                         'QCStatus'         => $FileObj->getParameter('QCStatus'),
-                        'QCDate'           => $FileObj->getParameter('QCLastChangeTime'),
+                        'QCDate'           => $paramQCDate,
                        );
 
             $this->tpl_data['files'][] = $file;
@@ -162,12 +170,9 @@ class NDB_Form_Genomic_Browser extends NDB_Form
     */
     function _getDate($file, $type, $array)
     {
-        if (preg_match(
-            "/(\d{4})-?(\d{2})-?(\d{2})/",
-            $file->getParameter($type),
-            $array
-           )
-        ) {
+        $pattern  = "/(\d{4})-?(\d{2})-?(\d{2})/";
+        $fileType = $file->getParameter($type);
+        if (preg_match($pattern, $fileType, $array)) {
             return (mktime(12, 0, 0, $array[2], $array[3], $array[1]));
         } else {
             return "";

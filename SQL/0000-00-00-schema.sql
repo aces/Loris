@@ -1798,13 +1798,13 @@ CREATE TABLE `final_radiological_review_history` (
 -- Table structure for table `gene`
 DROP TABLE IF EXISTS `gene`;
 CREATE TABLE `gene` (
-  `GeneID` int(20) NOT NULL AUTO_INCREMENT,
+  `GeneID` bigint(20) NOT NULL AUTO_INCREMENT,
   `Symbol` varchar(255) DEFAULT NULL,
   `Name` varchar(255) DEFAULT NULL,
   `NCBIID` varchar(255) DEFAULT NULL,
   `OfficialSymbol` varchar(255) DEFAULT NULL,
   `OfficialName` text,
-  `GenomeLocID` int(20) DEFAULT NULL,
+  `GenomeLocID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`GeneID`),
   KEY `geneGenomeLocID` (`GenomeLocID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1814,7 +1814,7 @@ CREATE TABLE `gene` (
 -- Table structure for table `genome_loc`
 DROP TABLE IF EXISTS `genome_loc`;
 CREATE TABLE `genome_loc` (
-  `GenomeLocID` int(20) NOT NULL AUTO_INCREMENT,
+  `GenomeLocID` bigint(20) NOT NULL AUTO_INCREMENT,
   `Chromosome` varchar(255) DEFAULT NULL,
   `Strand` varchar(255) DEFAULT NULL,
   `EndLoc` int(11) DEFAULT NULL,
@@ -1826,7 +1826,7 @@ CREATE TABLE `genome_loc` (
 -- Table structure for table `genotyping_platform`
 DROP TABLE IF EXISTS `genotyping_platform`;
 CREATE TABLE `genotyping_platform` (
-  `PlatformID` int(20) NOT NULL AUTO_INCREMENT,
+  `PlatformID` bigint(20) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) DEFAULT NULL,
   `Description` text,
   `TechnologyType` varchar(255) DEFAULT NULL,
@@ -1840,7 +1840,7 @@ CREATE TABLE `genotyping_platform` (
 --
 DROP TABLE IF EXISTS `SNP`;
 CREATE TABLE `SNP` (
-  `SNPID` int(20) NOT NULL AUTO_INCREMENT,
+  `SNPID` bigint(20) NOT NULL AUTO_INCREMENT,
   `rsID` varchar(20) DEFAULT NULL,
   `Description` text,
   `SNPExternalName` varchar(255) DEFAULT NULL,
@@ -1850,7 +1850,7 @@ CREATE TABLE `SNP` (
   `FunctionPrediction` enum('exonic','ncRNAexonic','splicing','UTR3','UTR5') DEFAULT NULL,
   `Damaging` enum('D','NA') DEFAULT NULL,
   `ExonicFunction` enum('nonsynonymous','unknown') DEFAULT NULL,
-  `GenomeLocID` int(20) DEFAULT NULL,
+  `GenomeLocID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`SNPID`),
   FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=154 DEFAULT CHARSET=utf8;
@@ -1861,15 +1861,15 @@ CREATE TABLE `SNP` (
 --
 DROP TABLE IF EXISTS `SNP_candidate_rel`;
 CREATE TABLE `SNP_candidate_rel` (
-  `SNPID` int(20) NOT NULL DEFAULT '0',
-  `CandID` varchar(255) NOT NULL DEFAULT '0',
+  `SNPID` bigint(20) NOT NULL DEFAULT '0',
+  `CandID` int(6) NOT NULL DEFAULT '0',
   `ObservedBase` enum('A','C','T','G') DEFAULT NULL,
   `ArrayReport` enum('Normal','Uncertain','Pending') DEFAULT NULL,
   `ArrayReportDetail` varchar(255) DEFAULT NULL,
   `ValidationMethod` varchar(50) DEFAULT NULL,
   `Validated` enum('0','1') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
-  `PlatformID` int(20) DEFAULT NULL
+  `PlatformID` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1878,7 +1878,7 @@ CREATE TABLE `SNP_candidate_rel` (
 --
 DROP TABLE IF EXISTS `CNV`;
 CREATE TABLE `CNV` (
-  `CNVID` int(20) NOT NULL AUTO_INCREMENT,
+  `CNVID` bigint(20) NOT NULL AUTO_INCREMENT,
   `CandID` int(6) DEFAULT NULL,
   `Description` text,
   `Type` enum('gain','loss','unknown') DEFAULT NULL,
@@ -1891,8 +1891,8 @@ CREATE TABLE `CNV` (
   `Markers` varchar(255) DEFAULT NULL,
   `ArrayReportDetail` varchar(255) DEFAULT NULL,
   `ValidationMethod` varchar(50) DEFAULT NULL,
-  `PlatformID` int(20) DEFAULT NULL,
-  `GenomeLocID` int(20) DEFAULT NULL,
+  `PlatformID` bigint(20) DEFAULT NULL,
+  `GenomeLocID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`CNVID`),
   FOREIGN KEY (`PlatformID`) REFERENCES genotyping_platform(`PlatformID`),
   FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`)
@@ -1906,8 +1906,8 @@ DROP TABLE IF EXISTS `GWAS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `GWAS` (
-  `GWASID` int(20) NOT NULL AUTO_INCREMENT,
-  `SNPID` int(20) NOT NULL,
+  `GWASID` int unsigned NOT NULL AUTO_INCREMENT,
+  `SNPID` bigint(20) NOT NULL,
   `rsID` varchar(20) DEFAULT NULL,
   `MajorAllele` enum('A','C','T','G') DEFAULT NULL,
   `MinorAllele` enum('A','C','T','G') DEFAULT NULL,
@@ -1923,7 +1923,7 @@ CREATE TABLE `GWAS` (
 -- Table structure for table `genomic_files`
 --
 CREATE TABLE `genomic_files` (
-  `GenomicFileID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `GenomicFileID` int unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
   `VisitLabel` varchar(255) DEFAULT NULL,
   `FileName` varchar(255) NOT NULL,

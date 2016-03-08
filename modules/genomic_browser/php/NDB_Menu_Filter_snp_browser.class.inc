@@ -166,37 +166,36 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'genotyping_platform.Name',
                               );
 
-        $this->formToFilter = array(
-                               'centerID'            => 'candidate.CenterID',
-                               'DCCID'               => 'candidate.CandID',
-                               'PSCID'               => 'candidate.PSCID',
-                               'gender'              => 'candidate.Gender',
-                               'SubprojectID'        => 'cohort.SubprojectID',
-                               'dob'                 => 'candidate.DoB',
-                               'External_ID'         => 'candidate.ExternalID',
-                               'Show_Brief_Results'  => 'show_brief_results',
-                               'rsID'                => 'SNP.rsID',
-                               'SNP_Name'            => 'SNP.SNPExternalName',
-                               'SNP_Description'     => 'SNP.Description',
-                               'SNP_External_Source' => 'SNP.SNPExternalSource',
-                               'Observed_Base'       =>
-                                 'SNP_candidate_rel.ObservedBase',
-                               'Reference_Base'      => 'SNP.ReferenceBase',
-                               'Array_Report'        => 'SNP.ArrayReport',
-                               'Markers'             => 'SNP.Markers',
-                               'Validation_Method'   =>
-                                 'SNP_candidate_rel.ValidationMethod',
-                               'Validated'           =>
-                                 'SNP_candidate_rel.Validated',
-                               'Function_Prediction' => 'SNP.FunctionPrediction',
-                               'Damaging'            => 'SNP.Damaging',
-                               'Genotype_Quality'    =>
-                                 'SNP_candidate_rel.GenotypeQuality',
-                               'Exonic_Function'     => 'SNP.ExonicFunction',
-                               'Chromosome'          => 'genome_loc.Chromosome',
-                               'Gene_Symbol'         => 'gene.OfficalSymbol',
-                               'Platform'            => 'genotyping_platform.Name',
-                              );
+
+        $ftf = array(
+                'centerID'            => 'candidate.CenterID',
+                'DCCID'               => 'candidate.CandID',
+                'PSCID'               => 'candidate.PSCID',
+                'gender'              => 'candidate.Gender',
+                'SubprojectID'        => 'cohort.SubprojectID',
+                'dob'                 => 'candidate.DoB',
+                'External_ID'         => 'candidate.ExternalID',
+                'Show_Brief_Results'  => 'show_brief_results',
+                'rsID'                => 'SNP.rsID',
+                'SNP_Name'            => 'SNP.SNPExternalName',
+                'SNP_Description'     => 'SNP.Description',
+                'SNP_External_Source' => 'SNP.SNPExternalSource',
+                'Observed_Base'       => 'SNP_candidate_rel.ObservedBase',
+                'Reference_Base'      => 'SNP.ReferenceBase',
+                'Array_Report'        => 'SNP.ArrayReport',
+                'Markers'             => 'SNP.Markers',
+                'Validation_Method'   => 'SNP_candidate_rel.ValidationMethod',
+                'Validated'           => 'SNP_candidate_rel.Validated',
+                'Function_Prediction' => 'SNP.FunctionPrediction',
+                'Damaging'            => 'SNP.Damaging',
+                'Genotype_Quality'    => 'SNP_candidate_rel.GenotypeQuality',
+                'Exonic_Function'     => 'SNP.ExonicFunction',
+                'Chromosome'          => 'genome_loc.Chromosome',
+                'Gene_Symbol'         => 'gene.OfficalSymbol',
+                'Platform'            => 'genotyping_platform.Name',
+               );
+
+        $this->formToFilter = $ftf;
 
         return true;
     }
@@ -224,10 +223,9 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             // allow only to view own site data
             $site = Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
-                $list_of_sites = array(
-                                  $user->getData('CenterID') =>
-                                  $user->getData('Site')
-                                 );
+                $centerIDdata  = $user->getData('CenterID');
+                $siteData      = $user->getData('Site');
+                $list_of_sites = array($centerIDdata => $siteData);
             }
         }
 
@@ -242,9 +240,10 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addSelect(
             'gender',
             'Gender:',
-            array('' => 'All',
-             'Male' => 'Male',
-             'Female' => 'Female'
+            array(
+             ''       => 'All',
+             'Male'   => 'Male',
+             'Female' => 'Female',
             )
         );
         $this->addSelect(
@@ -278,7 +277,11 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addSelect(
             'Validated',
             'Validated:',
-            array(null => 'Any', '0' => '0', '1' => '1')
+            array(
+             null => 'Any',
+             '0' => '0',
+             '1' => '1',
+            )
         );
         $this->addSelect(
             'Function_Prediction',
@@ -297,8 +300,8 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             'Damaging:',
             array(
              null => 'Any',
-             'D' => 'D',
-             'NA' => 'NA'
+             'D'  => 'D',
+             'NA' => 'NA',
             )
         );
         $this->addBasicText('Genotype_Quality', 'Genotype Quality:');
