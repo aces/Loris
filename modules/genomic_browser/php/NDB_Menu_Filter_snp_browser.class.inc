@@ -12,7 +12,7 @@
  *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
  *  @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
  *  @link       https://www.github.com/aces/Loris/
- *  Main page: CNV. Submenu: SNP
+ *  Main page: genomic_browser. Submenu: SNP
  */
 
 require_once 'NDB_Menu_Filter.class.inc';
@@ -166,7 +166,6 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'genotyping_platform.Name',
                               );
 
-
         $ftf = array(
                 'centerID'            => 'candidate.CenterID',
                 'DCCID'               => 'candidate.CandID',
@@ -279,8 +278,8 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             'Validated:',
             array(
              null => 'Any',
-             '0' => '0',
-             '1' => '1',
+             '0'  => '0',
+             '1'  => '1',
             )
         );
         $this->addSelect(

@@ -124,37 +124,37 @@ class NDB_Form_Genomic_Browser extends NDB_Form
             $paramQCDate           = $FileObj->getParameter('QCLastChangeTime');
 
             // load $file array
-            $file    = array(
-                        'FileID'           => $fileRow['GenomicFileID'],
-                        'Filename'         => $paramFileName,
-                        'FullFilename'     => $FileObj->getParameter('FileName'),
-                        'FilePackage'      => $FileObj->getParameter('FilePackage'),
-                        'FileType'         => $FileObj->getParameter('FileType'),
-                        'FileSize'         => $FileObj->getParameter('FileSize'),
-                        'Description'      => $FileObj->getParameter('Description'),
-                        'Category'         => $FileObj->getParameter('Category'),
-                        'Pipeline'         => $FileObj->getParameter('Pipeline'),
-                        'Algorithm'        => $FileObj->getParameter('Algorithm'),
-                        'Normalization'    => $paramNormalization,
-                        'SampleID'         => $FileObj->getParameter('SampleID'),
-                        'Caveat'           => $FileObj->getParameter('Caveat'),
-                        'Notes'            => $FileObj->getParameter('Notes'),
-                        'AnalysisProtocol' => $paramAnalysisProtocol,
-                        'AnalysisDate'     => $this->_getDate(
-                            $FileObj,
-                            'Date_taken',
-                            $analysisDate
-                        ),
-                        'SampleDate'       => $this->_getDate(
-                            $FileObj,
-                            'Date_sample',
-                            $sampleDate
-                        ),
-                        'FileInsertDate'   => $paramFileInsertDate,
-                        'Selected'         => $FileObj->getParameter('Selected'),
-                        'QCStatus'         => $FileObj->getParameter('QCStatus'),
-                        'QCDate'           => $paramQCDate,
-                       );
+            $file = array(
+                     'FileID'           => $fileRow['GenomicFileID'],
+                     'Filename'         => $paramFileName,
+                     'FullFilename'     => $FileObj->getParameter('FileName'),
+                     'FilePackage'      => $FileObj->getParameter('FilePackage'),
+                     'FileType'         => $FileObj->getParameter('FileType'),
+                     'FileSize'         => $FileObj->getParameter('FileSize'),
+                     'Description'      => $FileObj->getParameter('Description'),
+                     'Category'         => $FileObj->getParameter('Category'),
+                     'Pipeline'         => $FileObj->getParameter('Pipeline'),
+                     'Algorithm'        => $FileObj->getParameter('Algorithm'),
+                     'Normalization'    => $paramNormalization,
+                     'SampleID'         => $FileObj->getParameter('SampleID'),
+                     'Caveat'           => $FileObj->getParameter('Caveat'),
+                     'Notes'            => $FileObj->getParameter('Notes'),
+                     'AnalysisProtocol' => $paramAnalysisProtocol,
+                     'AnalysisDate'     => $this->_getDate(
+                         $FileObj,
+                         'Date_taken',
+                         $analysisDate
+                     ),
+                     'SampleDate'       => $this->_getDate(
+                         $FileObj,
+                         'Date_sample',
+                         $sampleDate
+                     ),
+                     'FileInsertDate'   => $paramFileInsertDate,
+                     'Selected'         => $FileObj->getParameter('Selected'),
+                     'QCStatus'         => $FileObj->getParameter('QCStatus'),
+                     'QCDate'           => $paramQCDate,
+                    );
 
             $this->tpl_data['files'][] = $file;
         }
