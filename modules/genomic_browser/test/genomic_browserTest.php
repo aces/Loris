@@ -426,7 +426,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserDoespageLoad()
     {
         $this->markTestIncomplete(
-            'Test should be updated for new tabs; main genomic browser tab is now called CNV tab.'
+            'Test should be updated for new main genomic browser tab.'
         );
 
         $this->safeGet($this->url . "/genomic_browser/");
@@ -520,7 +520,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     public function testConfigurationMenuDisplayWithPermissions()
     {
         $this->markTestIncomplete(
-            'Test should be updated for new tabs; main genomic browser tab is now called CNV tab.'
+            'Test should be updated for new main genomic browser tab.'
         );
 
         // Without permissions
@@ -559,7 +559,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserCNVBrowserDoespageLoad()
     {
         $this->markTestIncomplete(
-            'Test should be updated for new tabs; main genomic browser tab is now called CNV tab.'
+            'Test should be updated for new main genomic browser tab.'
         );
 
         $this->safeGet($this->url . "/genomic_browser/");
@@ -761,7 +761,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserCNVShowBriefFields()
     {
         $this->markTestIncomplete(
-            'Test should be updated for new tabs; main genomic browser tab is now called CNV tab.'
+            'Test should be updated for new main genomic browser tab.'
         );
 
         $expected_headers = array(
@@ -1033,7 +1033,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function testGenomicBrowserSNPShowBriefFields()
     {
         $this->markTestIncomplete(
-            'Test should be updated for new tabs; main genomic browser tab is now called CNV tab.'
+            'Test should be updated for new main genomic browser tab.'
         );
 
         $expected_headers = array(
