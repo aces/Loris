@@ -18,7 +18,7 @@
     <database>
         <host>%HOSTNAME%</host>
         <username>%USERNAME%</username>
-        <password>TestPassword</password>
+        <password>%PASSWORD%</password>
         <database>LorisTest</database>
         <quatUser>SQLTestUser</quatUser>
         <quatPassword>TestPassword</quatPassword>
