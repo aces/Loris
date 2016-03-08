@@ -38,5 +38,4 @@ class helpEditorTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Edit Help Content", $bodyText);
     }
-}
-?>
+}?>
