@@ -117,13 +117,13 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     protected function login($username, $password)
     {
         $this->safeGet($this->url);
-/*
+        /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::Name("username")
             )
         );
-*/
+        */
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
@@ -384,7 +384,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->DB->delete("candidate", array("PSCID" => $pscid));
     }
 
-    /*
+    /**
      * Helper function to click on a element and wait for the new page to be loaded.
      * When the DOM is reloaded, the elements of the previous page become stale.
      * Selenium will raise an exception when a function (like getText) are called on
@@ -398,7 +398,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     public function clickToLoadNewPage($clickable)
     {
-        $remoteWebElement = null; 
+        $remoteWebElement = null;
 
         $clickable->click();
         try {
@@ -435,13 +435,62 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             // Load the new page
             $newWebDriver = $this->webDriver->get($url);
 
-            // Use the old page reference util it detach from the DOM
+            // Use the old page reference until it detaches from the DOM
             while (true) {
                 $oldBody->isDisplayed();
             }
         } catch (StaleElementReferenceException $e) {
             return $newWebDriver;
         }
+    }
+
+    /**
+     * Wrapper method for WebDriver->findElement. It will wait until the element
+     * is located on the page before issuing the actual finElement method
+     * call.
+     *
+     * @param WebDriver   $webDriver  The web driver used in the test.
+     * @param WebDriverBy $by         Criteria used to find the element on the page.
+     * @param int         $waitPeriod After this amount of seconds, the wait period
+     *                                finishes and an exception is thrown.
+     *
+     * @throws NoSuchElementException if the element cannot be found after the
+     *                                wait period.
+     *
+     * @return WebDriverElement the element found.
+     */
+    function safeFindElement(WebDriver $webDriver, WebDriverBy $by, $waitPeriod=15)
+    {
+        $wait = new WebDriverWait($webDriver, $waitPeriod);
+        $wait->until(
+            WebDriverExpectedCondition::presenceOfElementLocated($by)
+        );
+
+        return $webDriver->findElement($by);
+    }
+
+    /**
+     * Safely click on a page element, even if not yet visible. The click is done
+     * by issuing a sendKeys method call on the element, passing as argument either
+     * a SPACE or a RETURN key (HTML input field will receive a SPACE whereas all
+     * other will receive a RETURN).
+     *
+     * @param WebDriver   $webDriver  The web driver used in the test.
+     * @param WebDriverBy $by         Criteria used to find the element on the page.
+     * @param int         $waitPeriod After this amount of seconds, the wait period
+     *                                finishes and an exception is thrown.
+     *
+     * @throws NoSuchElementException if the element cannot be found after the
+     *                                wait period.
+     *
+     * @return void.
+     */
+    function safeClick(WebDriver $webDriver, WebDriverBy $by, $waitPeriod=15)
+    {
+        $webElement = $this->safeFindElement($webDriver, $by, $waitPeriod);
+        $keys       = $webElement->getTagName() == 'input'
+            ? WebDriverKeys::SPACE : WebDriverKeys::RETURN_KEY;
+        $webElement->sendKeys($keys);
     }
 }
 ?>

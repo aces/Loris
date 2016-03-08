@@ -203,7 +203,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     function testAddNewUser()
     {
         $this->safeGet($this->url . "/user_accounts/");
-        $this->webDriver->findElement(WebDriverBy::Name('button'))->click();
+        $this->safeClick($this->webDriver, WebDriverBy::Name('button'));
         $field = $this->webDriver->findElement(WebDriverBy::Name('UserID'));
         $field->clear();
         $field->sendKeys('userid');
@@ -222,18 +222,29 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field = $this->webDriver->findElement(WebDriverBy::Name('Email'));
         $field->clear();
         $field->sendKeys('email@gmail.com');
-        $field = $this->webDriver->findElement(WebDriverBy::Name('SendEmail'));
-        $field->click();
-        $saveButton = $this->webDriver->findElement(WebDriverBy::Name('fire_away'));
-        $saveButton->click();
+        $field = $this->webDriver->findElement(WebDriverBy::Name('__ConfirmEmail'));
+        $field->clear();
+        $field->sendKeys('email@gmail.com');
+        $this->safeClick($this->webDriver, WebDriverBy::Name('SendEmail'));
+        $this->safeClick($this->webDriver, WebDriverBy::Name('fire_away'));
         $this->_accessUser('user_accounts', 'userid');
-        $field = $this->webDriver->findElement(WebDriverBy::Name('First_name'));
+        $field = $this->safeFindElement(
+            $this->webDriver,
+            WebDriverBy::Name('First_name')
+        );
         $this->assertEquals($field->getAttribute('value'), 'first');
-        $field = $this->webDriver->findElement(WebDriverBy::Name('Last_name'));
+        $field = $this->safeFindElement(
+            $this->webDriver,
+            WebDriverBy::Name('Last_name')
+        );
         $this->assertEquals($field->getAttribute('value'), 'last');
-        $field = $this->webDriver->findElement(WebDriverBy::Name('Email'));
+        $field = $this->safeFindElement(
+            $this->webDriver,
+            WebDriverBy::Name('Email')
+        );
         $this->assertEquals($field->getAttribute('value'), 'email@gmail.com');
     }
+
     /**
      * Modifies a field on either the user account or my preferences page
      * and checks that the modification was recorded in the database.
@@ -258,8 +269,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $selectField = new WebDriverSelect($field);
             $selectField->selectByVisibleText($newValue);
         }
-        $saveButton = $this->webDriver->findElement(WebDriverBy::Name('fire_away'));
-        $saveButton->click();
+        $this->safeClick($this->webDriver, WebDriverBy::Name('fire_away'));
         $this->_accessUser($page, $userId);
         $field = $this->webDriver->findElement(WebDriverBy::Name($fieldName));
         if ($field->getTagName() == 'input') {
@@ -287,10 +297,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/$page/");
         if ($page == 'user_accounts') {
-            $userLink = $this->webDriver->findElement(
-                WebDriverBy::LinkText($userId)
-            );
-            $userLink->click();
+            $this->safeClick($this->webDriver, WebDriverBy::LinkText($userId));
         }
     }
     /**
@@ -311,10 +318,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $element->clear();
             $element->sendKeys($elementValue);
         }
-        $showDataButton = $this->webDriver->findElement(
+        $this->safeClick(
+            $this->webDriver,
             WebDriverBy::Name("filter")
         );
-        $showDataButton->click();
         $this->_assertUserTableContents('dynamictable', $expectedResults);
     }
     /**
