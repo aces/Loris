@@ -92,7 +92,7 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                     LEFT JOIN files fi ON (fi.SessionID=f.SessionID)
                     LEFT JOIN candidate c ON (c.CandID=s.CandID)
                     where
-                            fi.FileID IS NULL
+                        AND fi.FileID IS NULL
                         AND f.Data_entry= 'Complete'
                         AND s.Active='Y'
                         AND s.CenterID <> '1'
