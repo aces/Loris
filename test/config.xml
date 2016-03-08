@@ -19,7 +19,7 @@
         <host>%HOSTNAME%</host>
         <username>%USERNAME%</username>
         <password>%PASSWORD%</password>
-        <database>LorisTest</database>
+        <database>%DATABASE%</database>
         <quatUser>SQLTestUser</quatUser>
         <quatPassword>TestPassword</quatPassword>
         <name>Test database</name>
