@@ -220,36 +220,36 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "SNP",
             array(
-             'SNPID'  => 9999999999,
-             'rsID'   => 'rs0000001',
+             'SNPID' => 9999999999,
+             'rsID'  => 'rs0000001',
             )
         );
         $this->DB->insert(
             "SNP",
             array(
-             'SNPID'  => 9999999998,
-             'rsID'   => 'rs0000002',
+             'SNPID' => 9999999998,
+             'rsID'  => 'rs0000002',
             )
         );
         $this->DB->insert(
             "SNP",
             array(
-             'SNPID'  => 9999999997,
-             'rsID'   => 'rs0000003',
+             'SNPID' => 9999999997,
+             'rsID'  => 'rs0000003',
             )
         );
         $this->DB->insert(
             "SNP",
             array(
-             'SNPID'  => 9999999996,
-             'rsID'   => 'rs0000001',
+             'SNPID' => 9999999996,
+             'rsID'  => 'rs0000001',
             )
         );
         $this->DB->insert(
             "SNP",
             array(
-             'SNPID'  => 9999999995,
-             'rsID'   => 'rs0000002',
+             'SNPID' => 9999999995,
+             'rsID'  => 'rs0000002',
             )
         );
 
@@ -450,7 +450,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         $this->clickToLoadNewPage($button);
 
-        // Updated: 
+        // Updated:
         $this->assertEquals("Profiles found: $count total", $message);
         // CNV tab: $this->assertEquals("Variants found: $count total", $message);
     }
