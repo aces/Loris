@@ -632,7 +632,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testViewSessionNavigation()
     {
-        $this->markTestIncomplete(
+        $this->markTestSkipped(
             'Links are broken, Redmine 9576'
         );
 
