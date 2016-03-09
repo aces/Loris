@@ -52,7 +52,7 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/dashboard/');
         $siteAll = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#overall-recruitment > h5"))
+            ->findElement(WebDriverBy::xpath("id('overall-recruitment')/x:h5"))
             ->getText();
 
         $this->assertContains("Overall Recuritment", $siteAll);
