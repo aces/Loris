@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Dashboard automated integration tests
@@ -40,25 +41,6 @@ class DashboardTest extends LorisIntegrationTest
         $this->assertContains("Welcome", $welcomeText);
     }
 
-     /**
-     * Tests that, when loading the Dashboard, click the loris icon,
-     * it relocate this dashboard the word "Welcome" appears
-     * in the welcome panel
-     * author : Wang Shen
-      *
-     * @return void
-     */
-    public function testDashboardLoris()
-    {
-        $this->safeGet($this->url . '/dashboard/');
-        $loris = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("#nav-left>div.navbar-header>a"));
-        $loris->click();
-        $assertText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
-        $this->assertContains("Welcome", $assertText);
-    }
-
     /**
      * Click the stie all button of
      * Accounts pending approval in the My tasks panel,
@@ -73,11 +55,11 @@ class DashboardTest extends LorisIntegrationTest
         $siteAll = $this->webDriver->findElement(
             WebDriverBy::cssSelector(
                 "#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div >".
-                " div.panel-body > div > a.list-group-item.pending-accounts > div".
-                " > div.col-xs-4.text-right.alert-chevron > span"
+                " div.panel-body > div > a.list-group-item.pending-accounts > div"
             )
         );
         $siteAll ->click();
+        
         $assertText1 = $this->webDriver->findElement(
             WebDriverBy::cssSelector(
                 "#page > div > div.alert.alert-info.alert-sm > a > label"
@@ -85,31 +67,6 @@ class DashboardTest extends LorisIntegrationTest
         )->getText();
 
         $this->assertContains("User Accounts", $assertText1);
-
-    }
-    /**
-     * Click Document Repository, it relocates to Document Repository.
-     * author : Wang Shen
-     *
-     * @return void
-     */
-    public function testDashboardMyTasksDocumentRepository()
-    {
-        $this->safeGet($this->url . '/dashboard/');
-        $siteAll = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div.col-lg-4 >".
-                " div:nth-child(2) > div > div.panel-body > a"
-            )
-        );
-        $siteAll ->click();
-        $assertText1 = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "#page > div > div.alert.alert-info.alert-sm > a > label"
-            )
-        )->getText();
-
-        $this->assertContains("Document Repository", $assertText1);
 
     }
 }
