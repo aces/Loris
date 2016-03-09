@@ -63,7 +63,8 @@ CREATE TABLE `SNP_candidate_rel` (
   `ValidationMethod` varchar(50) DEFAULT NULL,
   `Validated` enum('0','1') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
-  `PlatformID` bigint(20) DEFAULT NULL
+  `PlatformID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`SNPID`,`CandID`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO SNP_candidate_rel (SNPID, CandID, ObservedBase, ArrayReport, ArrayReportDetail, ValidationMethod, Validated, GenotypeQuality, PlatformID)  SELECT DISTINCT (SNPID, CandID, ObservedBase, ArrayReport, ArrayReportDetail, ValidationMethod, Validated, GenotypeQuality, PlatformID) FROM SNP;

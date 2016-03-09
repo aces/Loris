@@ -1869,7 +1869,8 @@ CREATE TABLE `SNP_candidate_rel` (
   `ValidationMethod` varchar(50) DEFAULT NULL,
   `Validated` enum('0','1') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
-  `PlatformID` bigint(20) DEFAULT NULL
+  `PlatformID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`SNPID`,`CandID`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
