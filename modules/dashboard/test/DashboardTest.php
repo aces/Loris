@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Dashboard automated integration tests
@@ -52,21 +51,11 @@ class DashboardTest extends LorisIntegrationTest
     public function testDashboardMyTasksAccountsPendingApproval()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $siteAll = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div.col-lg-4 > div:nth-child(1) > div >".
-                " div.panel-body > div > a.list-group-item.pending-accounts > div"
-            )
-        );
-        $siteAll ->click();
-        
-        $assertText1 = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "#page > div > div.alert.alert-info.alert-sm > a > label"
-            )
-        )->getText();
+        $siteAll = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("#overall-recruitment > h5"))
+            ->getText();
 
-        $this->assertContains("User Accounts", $assertText1);
+        $this->assertContains("Overall Recuritment", $siteAll);
 
     }
 }
