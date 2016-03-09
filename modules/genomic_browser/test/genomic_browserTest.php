@@ -103,8 +103,8 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'      => '000001',
-             'PSCID'       => 'TST9999',
+             'CandID'      => '000771',
+             'PSCID'       => 'TST9779',
              'CenterID'    => 1,
              'Active'      => 'Y',
              'UserID'      => 1,
@@ -117,8 +117,8 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'      => '000002',
-             'PSCID'       => 'TST9998',
+             'CandID'      => '000772',
+             'PSCID'       => 'TST9778',
              'CenterID'    => 92,
              'Active'      => 'Y',
              'UserID'      => 1,
@@ -130,7 +130,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "CNV",
             array(
              'CNVID'             => 9999999999,
-             'CandID'            => '000001',
+             'CandID'            => '000771',
              'Description'       => 'CNV 1',
              'Type'              => 'gain',
              'EventName'         => 'Event 1',
@@ -148,7 +148,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "CNV",
             array(
              'CNVID'             => 9999999998,
-             'CandID'            => '000001',
+             'CandID'            => '000771',
              'Description'       => 'CNV 2',
              'Type'              => 'gain',
              'EventName'         => 'Event 1',
@@ -166,7 +166,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "CNV",
             array(
              'CNVID'             => 9999999997,
-             'CandID'            => '000001',
+             'CandID'            => '000771',
              'Description'       => 'CNV 3',
              'Type'              => 'gain',
              'EventName'         => 'Event 1',
@@ -184,7 +184,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "CNV",
             array(
              'CNVID'             => 9999999996,
-             'CandID'            => '000002',
+             'CandID'            => '000772',
              'Description'       => 'CNV 4',
              'Type'              => 'gain',
              'EventName'         => 'Event 1',
@@ -202,7 +202,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "CNV",
             array(
              'CNVID'             => 9999999995,
-             'CandID'            => '000002',
+             'CandID'            => '000772',
              'Description'       => 'CNV 5',
              'Type'              => 'loss',
              'EventName'         => 'Event 1',
@@ -257,7 +257,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "SNP_candidate_rel",
             array(
              'SNPID'  => 9999999999,
-             'CandID' => '000001',
+             'CandID' => '000771',
             )
         );
 
@@ -265,7 +265,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "SNP_candidate_rel",
             array(
              'SNPID'  => 9999999998,
-             'CandID' => '000001',
+             'CandID' => '000771',
             )
         );
 
@@ -273,7 +273,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "SNP_candidate_rel",
             array(
              'SNPID'  => 9999999997,
-             'CandID' => '000001',
+             'CandID' => '000771',
             )
         );
 
@@ -281,7 +281,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "SNP_candidate_rel",
             array(
              'SNPID'  => 9999999999,
-             'CandID' => '000002',
+             'CandID' => '000772',
             )
         );
 
@@ -289,7 +289,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             "SNP_candidate_rel",
             array(
              'SNPID'  => 9999999998,
-             'CandID' => '000002',
+             'CandID' => '000772',
             )
         );
 
@@ -311,11 +311,13 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("SNP", array("SNPID" => '9999999999'));
         $this->DB->delete("SNP", array("SNPID" => '9999999998'));
         $this->DB->delete("SNP", array("SNPID" => '9999999997'));
+        $this->DB->delete("SNP", array("SNPID" => '9999999996'));
+        $this->DB->delete("SNP", array("SNPID" => '9999999995'));
         $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999999'));
         $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999998'));
         $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999997'));
-        $this->DB->delete("candidate", array('CandID' => '000001'));
-        $this->DB->delete("candidate", array('CandID' => '000002'));
+        $this->DB->delete("candidate", array('CandID' => '000771'));
+        $this->DB->delete("candidate", array('CandID' => '000772'));
         $this->DB->delete("psc", array('CenterID' => 92));
     }
 
@@ -726,10 +728,10 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             case 'No.':
                 break;
             case 'DCCID':
-                $this->assertColumnSorting($header, $index+1, '000001', '000002');
+                $this->assertColumnSorting($header, $index+1, '000771', '000772');
                 break;
             case 'PSCID':
-                $this->assertColumnSorting($header, $index+1, 'TST9998', 'TST9999');
+                $this->assertColumnSorting($header, $index+1, 'TST9778', 'TST9779');
                 break;
             case 'CNV Type':
                 $this->assertColumnSorting($header, $index+1, 'gain', 'loss');
@@ -1024,10 +1026,10 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             case 'No.':
                 break;
             case 'DCCID':
-                $this->assertColumnSorting($header, $i+1, '000001', '000002');
+                $this->assertColumnSorting($header, $i+1, '000771', '000772');
                 break;
             case 'PSCID':
-                $this->assertColumnSorting($header, $i+1, 'TST9998', 'TST9999');
+                $this->assertColumnSorting($header, $i+1, 'TST9778', 'TST9779');
                 break;
             case 'RsID':
                 $this->assertColumnSorting($header, $i+1, 'rs0000001', 'rs0000003');
