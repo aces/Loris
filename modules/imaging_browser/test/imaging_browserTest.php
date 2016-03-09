@@ -632,6 +632,10 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testViewSessionNavigation()
     {
+        $this->markTestIncomplete(
+            'Links are broken, Redmine 9576'
+        );
+
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
