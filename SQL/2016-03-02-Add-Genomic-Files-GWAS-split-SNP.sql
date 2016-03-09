@@ -1,8 +1,6 @@
 --
 -- Table structure for Genomic Browser table `GWAS`
 --
-DROP TABLE IF EXISTS `GWAS`;
-
 CREATE TABLE `GWAS` (
   `GWASID` int unsigned NOT NULL AUTO_INCREMENT,
   `SNPID` int(20) NOT NULL,
@@ -19,8 +17,6 @@ CREATE TABLE `GWAS` (
 --
 -- Table structure for table `genomic_files`
 --
-DROP TABLE IF EXISTS `genomic_files`;
-
 CREATE TABLE `genomic_files` (
   `GenomicFileID` int unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
@@ -52,8 +48,6 @@ CREATE TABLE `genomic_files` (
 --
 -- Table structure for Genomic Browser table `SNP_candidate_rel`
 --
-DROP TABLE IF EXISTS `SNP_candidate_rel`;
-
 CREATE TABLE `SNP_candidate_rel` (
   `SNPID` bigint(20) NOT NULL DEFAULT '0',
   `CandID` int(6) NOT NULL DEFAULT '0',
@@ -64,7 +58,7 @@ CREATE TABLE `SNP_candidate_rel` (
   `Validated` enum('0','1') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
   `PlatformID` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`SNPID`,`CandID`),
+  PRIMARY KEY (`SNPID`,`CandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO SNP_candidate_rel (SNPID, CandID, ObservedBase, ArrayReport, ArrayReportDetail, ValidationMethod, Validated, GenotypeQuality, PlatformID)  SELECT DISTINCT (SNPID, CandID, ObservedBase, ArrayReport, ArrayReportDetail, ValidationMethod, Validated, GenotypeQuality, PlatformID) FROM SNP;
@@ -75,6 +69,7 @@ ALTER TABLE SNP DROP COLUMN ObservedBase, ArrayReport, ArrayReportDetail, Valida
 CREATE TABLE temp_unique_SNP_records SELECT DISTINCT * from SNP;
 DELETE FROM SNP WHERE 1=1; 
 INSERT INTO SNP SELECT * FROM temp_unique_SNP_records; 
+-- RECOMMENDED: 
 -- DROP TABLE temp_unique_SNP_records ; 
 
 -- Add Config setting

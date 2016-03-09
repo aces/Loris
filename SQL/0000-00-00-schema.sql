@@ -1795,6 +1795,18 @@ CREATE TABLE `final_radiological_review_history` (
 
 -- Genomic Browser tables : no data included
 --
+-- Table structure for table `genome_loc`
+DROP TABLE IF EXISTS `genome_loc`;
+CREATE TABLE `genome_loc` (
+  `GenomeLocID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `Chromosome` varchar(255) DEFAULT NULL,
+  `Strand` varchar(255) DEFAULT NULL,
+  `EndLoc` int(11) DEFAULT NULL,
+  `Size` int(11) DEFAULT NULL,
+  `StartLoc` int(11) DEFAULT NULL,
+  PRIMARY KEY (`GenomeLocID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Table structure for table `gene`
 DROP TABLE IF EXISTS `gene`;
 CREATE TABLE `gene` (
@@ -1807,20 +1819,6 @@ CREATE TABLE `gene` (
   `GenomeLocID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`GeneID`),
   KEY `geneGenomeLocID` (`GenomeLocID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- Genomic Browser tables : no data included
---
--- Table structure for table `genome_loc`
-DROP TABLE IF EXISTS `genome_loc`;
-CREATE TABLE `genome_loc` (
-  `GenomeLocID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Chromosome` varchar(255) DEFAULT NULL,
-  `Strand` varchar(255) DEFAULT NULL,
-  `EndLoc` int(11) DEFAULT NULL,
-  `Size` int(11) DEFAULT NULL,
-  `StartLoc` int(11) DEFAULT NULL,
-  PRIMARY KEY (`GenomeLocID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure for table `genotyping_platform`
@@ -1870,7 +1868,7 @@ CREATE TABLE `SNP_candidate_rel` (
   `Validated` enum('0','1') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
   `PlatformID` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`SNPID`,`CandID`),
+  PRIMARY KEY (`SNPID`,`CandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1904,8 +1902,6 @@ CREATE TABLE `CNV` (
 -- Genomic Browser module
 -- 
 DROP TABLE IF EXISTS `GWAS`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `GWAS` (
   `GWASID` int unsigned NOT NULL AUTO_INCREMENT,
   `SNPID` bigint(20) NOT NULL,
@@ -1923,6 +1919,7 @@ CREATE TABLE `GWAS` (
 --
 -- Table structure for table `genomic_files`
 --
+DROP TABLE IF EXISTS `genomic_files`;
 CREATE TABLE `genomic_files` (
   `GenomicFileID` int unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
