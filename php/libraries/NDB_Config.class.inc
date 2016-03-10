@@ -388,6 +388,47 @@ class NDB_Config
     }
 
     /**
+     * Checks whether a config setting exists in the config.xml
+     *
+     * @param string $name The name of the XML node to check.
+     *
+     * @return boolean Whether or not the node exists in the xml
+     */
+    function settingExistsInXML($name)
+    {
+        if (class_exists("User") && isset($_SESSION['State'])) {
+            if (empty($this->_siteSettings)) {
+                // merge site and study settings
+                $this->mergeSettings();
+            }
+
+            // look at the merged site settings
+            $settingsArray =& $this->_siteSettings;
+        } else {
+            // by default, look at the raw settings
+            $settingsArray =& $this->_settings;
+        }
+
+        // loop over the settings, and find the node
+        foreach ($settingsArray AS $key=>$value) {
+            // see if they want the top level node
+            if ($key == $name) {
+                return true;
+            }
+
+            // Look inside the top level node
+            // is_array is called before the isset check. This is done to
+            // fix an undesirable feature of isset: it would sometimes
+            // return true is $value was not an array (see isset PHP doc)
+            // in PHP <= 5.3. This behavior was changed for PHP > 5.3.
+            if (is_array($value) && isset($value[$name])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
     * Gets a setting by name
     *
     * @param string $name The name of the setting to retrieve
