@@ -59,23 +59,5 @@ class DashboardTest extends LorisIntegrationTest
             )->getText();
         $this->assertContains("Document Repository", $welcomeText);
     }
-    /**
-     * Tests xpath, when loading Document Repository, the word "Document" appears
-     * in the Document Repository panel
-     *
-     * @return void
-     */
-    public function testDashboardByXpath()
-    {
-        $this->safeGet($this->url . '/document_repository/');
-
-        $welcomeText = $this->webDriver
-            ->findElement(
-                WebDriverBy::xpath(
-                    "//*[@id='page']/div/div[1]/a/label"
-                )
-            )->getText();
-        $this->assertContains("Document Repository", $welcomeText);
-    }
 }
 ?>
