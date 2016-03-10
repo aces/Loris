@@ -54,8 +54,7 @@ class DashboardTest extends LorisIntegrationTest
         $welcomeText = $this->webDriver
             ->findElement(
                 WebDriverBy::cssSelector(
-                    ".alert >".
-                    " a:nth-child(1) > label:nth-child(1)"
+                    ".alert.alert-info.alert-sm>a>label"
                 )
             )->getText();
         $this->assertContains("Document Repository", $welcomeText);
