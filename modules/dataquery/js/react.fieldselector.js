@@ -133,6 +133,7 @@ FieldList = React.createClass({displayName: "FieldList",
 
         var start = (this.state.PageNumber - 1) * rowsPerPage;
         var filter = this.props.Filter.toLowerCase();
+        var selectedFields;
         if(filter > 0) {
             start = 0;
         }
@@ -155,6 +156,12 @@ FieldList = React.createClass({displayName: "FieldList",
                 selected=true;
             }
 
+            if(this.props.selected && this.props.selected[fieldName]) {
+                selectedFields = this.props.selected[fieldName]
+            } else {
+                selectedFields = {}
+            }
+
             fields.push(React.createElement(FieldItem, {FieldName: fieldName, 
                 Category: this.props.category, 
                 Description: desc, 
@@ -163,7 +170,7 @@ FieldList = React.createClass({displayName: "FieldList",
                 selected: selected, 
                 downloadable: isFile, 
                 Visits: this.props.Visits, 
-                selectedVisits: this.props.selected[fieldName], 
+                selectedVisits: selectedFields, 
                 fieldVisitSelect: this.props.fieldVisitSelect}
                 ));
             if(fields.length > rowsPerPage) {

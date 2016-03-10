@@ -184,11 +184,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 ],
                 session: this.props.AllSessions
             },
-            selectedFields : {
-                "ACEFamilyMedicalHistory" : {
-                    "adhd_father" : {}
-                }
-            }
+            selectedFields : {}
         };
     },
     loadFilterRule: function(rule) {
@@ -324,16 +320,24 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
     fieldChange: function(fieldName, category) {
         var that = this;
         this.setState(function(state){
-            var temp = state.selectedFields;
-            if(!temp[category]){
-                temp[category] = {};
-                temp[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
-            } else if(temp[category][fieldName]){
-                delete temp[category][fieldName];
+            var selectedFields = state.selectedFields,
+                fields = state.fields.slice(0);
+            if(!selectedFields[category]){
+                selectedFields[category] = {};
+                selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+                fields.push(category + "," + fieldName);
+            } else if(selectedFields[category][fieldName]){
+                delete selectedFields[category][fieldName];
+                var idx = fields.indexOf(category + "," + fieldName);
+                fields.splice(idx, 1);
             } else {
-                temp[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+                selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+                fields.push(category + "," + fieldName);
             }
-            return temp;
+            return {
+                selectedFields: selectedFields,
+                fields: fields
+            };
         });
         //clone the fields array so that setState triggers a rerender
         // if we don't clone it and mutate it s etState thinks that the state has not changed
