@@ -56,7 +56,8 @@ class DashboardTest extends LorisIntegrationTest
                 WebDriverBy::cssSelector(
                     ".alert.alert-info.alert-sm>a>label"
                 )
-            )->getText();
+            );
+        error_log(print_r($welcomeText));
         $this->assertContains("Document Repository", $welcomeText);
     }
 }
