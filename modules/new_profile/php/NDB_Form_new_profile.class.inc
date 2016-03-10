@@ -1,6 +1,4 @@
 <?php
-require_once "NDB_Form.class.inc";
-
 /**
  * The forms for the new profile menu
  * @package main
@@ -13,7 +11,8 @@ class NDB_Form_new_profile extends NDB_Form
         $user =& User::singleton();
 
         $site =& Site::singleton($user->getData('CenterID'));
-        if ($site->isStudySite()) {
+        
+        if ($site->isStudySite() or ($site->getCenterName() == "DCC")) {
             return $user->hasPermission('data_entry');
         }
 
@@ -126,7 +125,7 @@ class NDB_Form_new_profile extends NDB_Form
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
         if($config->getSetting('useEDC') == "true") {
-            if (strlen(implode($values['edc1'])) > 2 && !_checkDate($values['edc1'])) {
+            if (strlen(implode($values['edc1'])) > 2 && !Utility::_checkDate($values['edc1'])) {
                 $errors['edc1'] = 'EDC is not a valid date';
             }
             if($values['edc1']['M'] != $values['edc2']['M'] ||

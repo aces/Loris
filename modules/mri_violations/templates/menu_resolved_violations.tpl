@@ -1,8 +1,8 @@
-<script src="js/filterControl.js" type="text/javascript"></script>
+<script src="{$baseurl}/js/filterControl.js" type="text/javascript"></script>
 <div class="row">
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="main.php?test_name=mri_violations&submenu=resolved_violations">
+        <form method="post" action="{$baseurl}/mri_violations/?submenu=resolved_violations">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -52,7 +52,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=resolved_violations&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/?submenu=resolved_violations&reset=true'">
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=resolved_violations&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/?submenu=resolved_violations&reset=true'">
                         </div>
                     </div>
                     <input type="hidden" name="test_name" value="mri_violations" />
@@ -73,8 +73,8 @@
 
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs">
-        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="main.php?test_name=mri_violations">Not Resolved</a></li>
-        <li class="statsTab active"><a class="statsTabLink" href="main.php?test_name=mri_violations&submenu=resolved_violations">Resolved</a></li>
+        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="{$baseurl}/mri_violations/">Not Resolved</a></li>
+        <li class="statsTab active"><a class="statsTabLink" href="{$baseurl}/mri_violations/?submenu=resolved_violations">Resolved</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active">
@@ -89,13 +89,13 @@
             <table id="violationsTable" class="table table-hover table-primary table-bordered" border="0">
                 <thead>
                     <tr class="info">
-                        <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&submenu=resolved_violations&filter[order][field]=Resolved&filter[order][fieldOrder]=ASC">Resolution status</a></th>
+                        <th nowrap="nowrap"><a href="{$baseurl}/mri_violations/?submenu=resolved_violations&filter[order][field]=Resolved&filter[order][fieldOrder]=ASC">Resolution status</a></th>
                         <th>No.</th>
                         {section name=header loop=$headers}
                             {if $headers[header].name eq 'PatientName'}
-                                <th nowrap="nowrap" id="PatientName"><a href="main.php?test_name=mri_violations&submenu=resolved_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                                <th nowrap="nowrap" id="PatientName"><a href="{$baseurl}/mri_violations/?submenu=resolved_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                             {elseif $headers[header].name ne 'SeriesUID' && $headers[header].name ne 'join_id' && $headers[header].name ne 'Resolved' && $headers[header].name ne 'hash'}
-                                <th nowrap="nowrap"><a href="main.php?test_name=mri_violations&submenu=resolved_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                                <th nowrap="nowrap"><a href="{$baseurl}/mri_violations/?submenu=resolved_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                             {/if}
                         {/section}
                     </tr>
@@ -166,7 +166,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=mri_violations&submenu=resolved_violations&pageID=" + pageNum
+        location.href="{$baseurl}/mri_violations/?submenu=resolved_violations&pageID=" + pageNum
     },
     Active: {$pageID}
 });

@@ -13,9 +13,7 @@
  * @link       https://github.com/aces/Loris-Trunk
 */
 
-require_once 'Imaging_Session_ControlPanel.class.inc';
-require_once 'Notify.class.inc';
-
+require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
 /**
  * NDB_Form_Imaging_Browser Class
  *
@@ -69,10 +67,10 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     }
 
     /**
-    * Sets up main parameters 
-    *
-    * @return NULL
-    */
+     * Sets up main parameters 
+     *
+     * @return NULL
+     */
     function viewSession() 
     {
         $this->DB = Database::singleton();
@@ -93,9 +91,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
 
             $file = $this->DB->pselectOne(
                 "SELECT File FROM files f 
-	         JOIN session s 
-	         ON (s.ID=f.SessionID) 
-	         WHERE s.ID=:sid AND FileType='obj'", 
+                JOIN session s 
+                ON (s.ID=f.SessionID) 
+                WHERE s.ID=:sid AND FileType='obj'", 
                 array('sid' =>$this->sessionID)
             );
             if (!empty($file)) {
@@ -111,13 +109,17 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $types[$type] = $type;
             }
             $this->tpl_data['selected_options'] = $types;
- 
+
             $this->tpl_data['status_options'] 
                 = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
             $this->tpl_data['caveat_options'] 
                 = array ('' => '&nbsp;', true => 'True', false => 'False');
             $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ? true : false;
+            if ($this->_hasQCPerm()) {
+                $this->FormAction = "/imaging_browser/viewSession/?sessionID=" . $this->sessionID;
+            }
+
         }
     }
     /**
@@ -153,7 +155,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL 
             OR AcquisitionProtocolID not in (1, 2, 3, 52)) 
             AND PendingStaging=0 $extra_where_string 
-            ORDER BY files.OutputType, sel.Value DESC, AcquisitionProtocolID",
+            ORDER BY files.OutputType, files.File",
             array(
                'SID' => $this->sessionID,
                'selectedTypeID' => $this->DB->selectOne(
@@ -581,6 +583,20 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     {
         $controlPanel = new Imaging_Session_ControlPanel($_REQUEST['sessionID']);
         return $controlPanel->display();
+    }
+
+    function getJSDependencies() {
+        $depends = parent::getJSDependencies();
+        if($this->page === 'viewSession') {
+            $factory = NDB_Factory::singleton();
+            $baseURL = $factory->settings()->getBaseURL();
+            $depends = array_merge($depends,
+                array(
+                    $baseurl . "/imaging_browser/js/ImagePanel.js"
+                ));
+
+        }
+        return $depends;
     }
 }
 

@@ -70,13 +70,7 @@ foreach ($allInstruments as $instrument=>$Full_name) {
                                            AND c.Active='Y'",
         array('testname' => $instrument)
     );
-    if (Utility::isErrorX($clear_conflicts)) {
-        return PEAR::raiseError(
-            "Error, failed to clear conflicts: ".
-            $clear_conflicts->getMessage()
-        );
-
-    }
+    
     foreach ($clear_conflicts as $conflict) {
         ConflictDetector::clearConflictsForInstance($conflict['CommentID']);
     }

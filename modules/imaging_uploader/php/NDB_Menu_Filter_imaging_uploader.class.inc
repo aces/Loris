@@ -11,10 +11,6 @@
  * @link     https://github.com/mohadesz/Loris-Trunk
 */
 
-require_once 'NDB_Menu_Filter_Form.class.inc';
-require_once 'Log.class.inc';
-require_once "File_Decompress.class.inc";
-require_once "Message.class.inc";
 require_once __DIR__
              . "/../../server_processes_manager/php/ServerProcessLauncher.class.inc";
 
@@ -272,6 +268,18 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             }
 
             ///////////////////////////////////////////////////////////////////////
+            ////////////// Make sure the file name matches the format   ///////////
+            ///////////////////////////////////////////////////////////////////////
+            if (($file_name != $pscid."_". $candid ."_". $visit_label . ".zip")
+                && ($file_name != $pscid."_". $candid ."_". $visit_label . ".tgz")
+                && ($file_name != $pscid."_". $candid ."_". $visit_label . ".tar.gz")
+            ) {
+                $errors[] = "Make sure the file name matches this format:  " .
+                "\"". $pscid ."_". $candid ."_". $visit_label .
+                ".(tgz or tar.gz or .zip)\"";
+            }
+
+            ///////////////////////////////////////////////////////////////////////
             //////check to see if candid/pscid and visit-label exist///////////////
             ///////////////////////////////////////////////////////////////////////
             if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
@@ -281,9 +289,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                      WHERE s.Visit_label = :vlabel
                      AND c.pscid = :pid AND c.candid = :cid",
                     array(
-                     'cid'    => $candid,
-                     'vlabel' => $visit_label,
-                     'pid'    => $pscid,
+                     ':cid'    => $candid,
+                     ':vlabel' => $visit_label,
+                     ':pid'    => $pscid,
                     )
                 )==0) {
                         $errors[] = "Make sure you enter the CandID: $candid ,".

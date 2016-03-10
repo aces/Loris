@@ -80,13 +80,19 @@ class SinglePointLogin
                                         );
         }
 
-        $study_title = $config->getSetting('title');
-        $tpl_data['study_title'] = $study_title;
+        $study_title       = $config->getSetting('title');
+        $study_description = $config->getSetting('StudyDescription');
+        $tpl_data['study_title']       = $study_title;
+        $tpl_data['study_description'] = $study_description;
         try {
             $tpl_data['study_logo'] = $config->getSetting('studylogo');
         } catch(ConfigurationException $e) {
             $tpl_data['study_logo'] = '';
         }
+
+        $www = $config->getSetting('www');
+        $tpl_data['baseurl'] = $www['url'];
+
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
@@ -113,14 +119,16 @@ class SinglePointLogin
         $tpl_data['title'] = $config->getSetting('title');
         $tpl_data['css']   = $config->getSetting('css');
         $study_title       = $config->getSetting('title');
+        $study_description = $config->getSetting('StudyDescription');
         try {
             $study_logo = $config->getSetting('studylogo');
         } catch(ConfigurationException $e) {
             $study_logo = '';
         }
 
-        $tpl_data['study_title'] = $study_title;
-        $tpl_data['study_logo']  = $study_logo;
+        $tpl_data['study_title']       = $study_title;
+        $tpl_data['study_description'] = $study_description;
+        $tpl_data['study_logo']        = $study_logo;
 
         $tpl_data['action'] = $_SERVER['PHP_SELF']
             .'?'
@@ -208,21 +216,86 @@ class SinglePointLogin
     }
 
     /**
-     * Checks whether a given username and password are valid
+     * Attempt to authenticate a user's credentials by any supported means.
      *
-     * @return bool
-     * @access public
+     * @return none, but may modified session state
      */
     function authenticate()
+    {
+        // First try JWT authentication, which is cheaper and
+        // doesn't involve database calls
+        $headers    = getallheaders();
+        $authHeader = $headers['Authorization'];
+        if (!empty($authHeader)) {
+            $token = explode(" ", $authHeader);
+            // Index 0 is "Bearer", 1 is the token
+            if ($this->JWTAuthenticate($token[1]) === true) {
+                return true;
+            }
+
+        }
+
+        // Now try password validation
+
+        // This wasn't a login form, so don't waste any time
+        if (empty($_POST['login'])) {
+            return false;
+        }
+        return $this->passwordAuthenticate($_POST['username'], $_POST['password']);
+    }
+
+    /**
+     * Attempts to authenticate a JWT token
+     *
+     * @param string $token The token extracted from the
+     *                      Authorization: Bearer header
+     *
+     * @return true if the session is valid, false otherwise
+     */
+    function JWTAuthenticate($token)
+    {
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $sharedKey = $config->getSetting("JWTKey");
+
+        //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
+        try {
+            $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, array("HS256"));
+        } catch(Exception $e) {
+            return false;
+        }
+
+        $decodedArray    = (array) $decoded;
+        $this->_username
+            = isset($decodedArray['user'])
+                ? $decodedArray['user'] : 'Unknown';
+        return isset($decodedArray['user']);
+    }
+
+    /**
+     * Checks whether a given username and password are valid
+     *
+     * @param string $username The username to validate
+     * @param string $password The username to validate
+     * @param bool   $redirect If this flag is true, this
+     *                         function may instead print
+     *                         out a login or password expiry
+     *                         page. when trying to authenticate.
+     *                         If false, it won't provide any output
+     *                         in those situation.
+     *
+     * @return bool true if the username and password are valid
+     * @access public
+     */
+    function passwordAuthenticate($username, $password, $redirect = true)
     {
         $this->_lastError = '';
 
          ///////////////////////////
          ///initialization/////
          //////////////////////////
-        $this->_username = isset($_POST['username'])
-            ? $_POST['username']
-            : 'Unknown';
+        $this->_username = isset($username) ? $username : 'Unknown';
 
         $setArray = array(
                      'userID'          => $this->_username,
@@ -242,16 +315,16 @@ class SinglePointLogin
             $success = $this->save();
 
             if ($success == false) {
-                $this->showPasswordExpiryScreen();
+                if ($redirect) {
+                    $this->showPasswordExpiryScreen();
+                }
+                return false;
             }
         }
 
         // don't waste execution time if no form was submitted
-        if (empty($_POST['login'])) {
-            return false;
-        }
 
-        if (empty($_POST['username'])) {
+        if (empty($username)) {
             $this->_lastError = 'Please enter a username';
             $this->insertFailedDetail(
                 $this->_lastError,
@@ -260,7 +333,7 @@ class SinglePointLogin
             return false;
         }
 
-        if (empty($_POST['password'])) {
+        if (empty($password)) {
             $this->_lastError = 'Please enter a password';
             $this->insertFailedDetail(
                 $this->_lastError,
@@ -270,7 +343,8 @@ class SinglePointLogin
         }
 
         // create DB object
-        $DB =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $DB      =& $factory->database();
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
@@ -282,7 +356,7 @@ class SinglePointLogin
                     FROM users
                   WHERE UserID = :username
                   GROUP BY UserID";
-        $row   = $DB->pselectRow($query, array('username' => $_POST['username']));
+        $row   = $DB->pselectRow($query, array('username' => $username));
 
         if ($row['User_count'] == 1) {
             // validate the user
@@ -301,15 +375,15 @@ class SinglePointLogin
             // PHP 5.5+ password hashing API.
             $oldhash = $row['Password_hash'];
             if (((!$php55 || empty($oldhash))
-                && User::MD5Unsalt($_POST['password'], $row['Password_md5']))
-                || ($php55 && password_verify($_POST['password'], $oldhash))
+                && User::MD5Unsalt($password, $row['Password_md5']))
+                || ($php55 && password_verify($password, $oldhash))
             ) {
                 if ($php55
                     && (empty($oldhash)
                     || password_needs_rehash($oldhash, PASSWORD_DEFAULT))
                 ) {
-                    $user =& User::factory($_POST['username']);
-                    $user->updatePassword($_POST['password']);
+                    $user =& User::factory($username);
+                    $user->updatePassword($password);
                 }
 
                 if ($row['Active'] == 'N') {
@@ -335,11 +409,14 @@ class SinglePointLogin
                 // check if the password expired
                 if (strcmp($row['Password_expiry'], date('Y-m-d', time())) < 1) {
                     // show password expiry screen
-                    $this->showPasswordExpiryScreen();
+                    if ($redirect) {
+                        $this->showPasswordExpiryScreen();
+                    }
+                    return false;
                 }
 
                 // user is valid
-                $this->_username = $_POST['username'];
+                $this->_username = $username;
 
                 $result =  $DB->insert('user_login_history', $setArray);
                 return true;

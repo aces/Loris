@@ -12,9 +12,6 @@
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "NDB_Form.class.inc";
-require_once "Email.class.inc";
-
 /**
  * The form which creates the add_survey page for the
  * Loris survey module

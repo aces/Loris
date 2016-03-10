@@ -37,7 +37,7 @@ function hideFilter(obj) {
     'use strict';
 
      var heading = $(obj);
-     var arrow = $(obj).children('.arrow');
+     var arrow   = $(obj).children('.arrow');
      if (heading.hasClass('panel-collapsed')) {
             // expand the panel
             heading.parents('.panel').find('.panel-body').slideDown();
@@ -59,11 +59,11 @@ function toggleMe() {
 
 
 $(function(){
-	$('input[name=dob]').datepicker({
-		dateFormat: 'yy-mm-dd',
-		changeMonth: true,
-		changeYear: true
-	});
+        $('input[name=dob]').datepicker({
+            dateFormat: 'yy-mm-dd',
+            changeMonth: true,
+            changeYear: true
+        });
 });
 
 
@@ -72,28 +72,11 @@ $(document).ready(function() {
     // on click we need to fake a form which posts
     // to the imaging_browser in order to get filters
     $(".scanDoneLink").click(function(e) {
-        e.preventDefault();
-        var form = $('<form />', {
-            "action" : "main.php?test_name=imaging_browser",
-            "method" : "post"
-        });
-        var values = {
-            "reset" : "true",
-            "pscid" : this.dataset.pscid,
-            "filter" : "Show Data"
-        };
-
-        $.each(values, function(name, value) {
-            $("<input />", {
-                type: 'hidden',
-                name: name,
-                value: value
-            }).appendTo(form);
-        });
-
-        form.appendTo('body').submit();
+        var pscid = this.dataset.pscid;
+        loris.loadFilteredMenuClickHandler('imaging_browser', {
+            "pscid" : pscid
+        })(e);
     });
-
     //validation for the accessProfileForm
     $( "#accessProfileForm" ).bind('submit.formValidation', function( event ) {
         event.preventDefault();

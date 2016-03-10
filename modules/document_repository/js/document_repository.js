@@ -10,7 +10,7 @@ function editCategory() {
         id = event.target.id;
         value = $("#" + id).text();
         id = id.replace("categorycomment", "");
-        $.get("AjaxHelper.php?Module=document_repository&script=categoryEdit.php&id=" + id + "&comments=" + value);
+        $.get(loris.BaseURL + "/document_repository/ajax/categoryEdit.php?id=" + id + "&comments=" + value);
     }).keypress(function (e) {
         if (e.which === 13) { // Determine if the user pressed the enter button
             $(this).blur();
@@ -54,7 +54,7 @@ function postDelete(id) {
     "use strict";
 
     $.ajax({
-        url: "AjaxHelper.php?Module=document_repository&script=documentDelete.php",
+        url: loris.BaseURL + "/document_repository/ajax/documentDelete.php",
         type: "POST",
         data: {id: id},
         success: function () {
@@ -88,7 +88,7 @@ function postCategory() {
     "use strict";
 
     $.ajax({
-        url: "AjaxHelper.php?Module=document_repository&script=addCategory.php",
+        url: loris.BaseURL + "/document_repository/ajax/addCategory.php",
         type: "POST",
         data: $("#addCategoryForm").serialize(),
         success: function () {
@@ -128,7 +128,7 @@ function postEdit(id) {
 
     $.ajax({
         type: "POST",
-        url: "AjaxHelper.php?Module=document_repository&script=documentEditUpload.php",
+        url: loris.BaseURL + "/document_repository/ajax/documentEditUpload.php",
         data: data,
         success: function() {
             $('.edit-success').show();
@@ -152,7 +152,7 @@ function editModal() {
 
     $.ajax({
         type: "GET",
-        url: "AjaxHelper.php?Module=document_repository&script=getFileData.php",
+        url: loris.BaseURL + "/document_repository/ajax/getFileData.php",
         data: {id: id},
         async: false,
         dataType: "json",

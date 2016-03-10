@@ -32,7 +32,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testConflictResolverDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=conflict_resolver");
+        $this->safeGet($this->url . "/conflict_resolver/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -47,9 +47,9 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testConflictResolverResolvedCoflictsDoespageLoad()
     {
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url
-            . "?test_name=conflict_resolver&submenu=resolved_conflicts"
+            . "/conflict_resolver/?submenu=resolved_conflicts"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")

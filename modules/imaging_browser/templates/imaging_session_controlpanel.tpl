@@ -1,4 +1,3 @@
-<!-- Control Panel -->
     {if $subject.backURL!=""}<h3>Navigation</h3>{/if}
     <ul>
        {if $subject.backURL != ""}
@@ -33,10 +32,10 @@
 
     <h3>Links</h3>
     <ul>
-        <li><a href="main.php?test_name=mri_parameter_form&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.ParameterFormCommentID}">MRI Parameter Form</a></li>
-        <li><a href="main.php?test_name=radiology_review&candID={$subject.candid}&sessionID={$subject.sessionID}&commentID={$subject.RadiologyReviewCommentID}">Radiology Review</a></li>
+        <li><a href="{$baseurl}/{$subject.candid}/{$subject.sessionID}/mri_parameter_form/?commentID={$subject.ParameterFormCommentID}">MRI Parameter Form</a></li>
+        <li><a href="{$baseurl}/{$subject.candid}/{$subject.sessionID}/radiology_review/?commentID={$subject.RadiologyReviewCommentID}">Radiology Review</a></li>
         {foreach from=$subject.tarchiveids item=tarchive}
-        <li><a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$tarchive.TarchiveID}&backURL={$backURL|escape:"url"}">DICOM Archive {$tarchive.TarchiveID}</a></li>{/foreach}
+        <li><a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$tarchive.TarchiveID}&backURL={$backURL|escape:"url"}">DICOM Archive {$tarchive.TarchiveID}</a></li>{/foreach}
         {if $mantis}
             <li><a target="mantis" href="{$mantis}">Report a Bug (Mantis)</a></li>
         {/if}
@@ -45,7 +44,7 @@
     <h3>Visit Level QC</h3>
     <div class="visit-level-feedback">
           <a class="btn btn-default" href="#"
-               onClick="javascript:open_popup('feedback_mri_popup.php?sessionID={$subject.sessionID}')">
+               onClick="javascript:open_popup('{$baseurl}/feedback_mri_popup.php?sessionID={$subject.sessionID}')">
                  <span class="text-default">
                      <span class="glyphicon glyphicon-pencil feedback-text"></span>
                      <span class="hidden-xs feedback-text"> Visit Level Feedback</span>
@@ -53,7 +52,6 @@
         </a>
      </div>
 
-    {if $subject.has_permission}<form action='' method='post'>{/if}
     <div class='div-controlpanel-bottom'>
         <div class="form-group">
             <label>QC Status</label>

@@ -106,15 +106,14 @@ color: #b94a48;
 }
 
 /*
- *  CSS for login footer
+ *  CSS for Loris footer
  */
-.LoginFooter {
+.LorisFooter {
     bottom:0;
     clear: both;
-    height: 3em;
     width: 100%;
     font-size: 0.9em;
-    color: gray;
+    color: black;
     text-align: center;
     vertical-align: bottom;
 }
@@ -176,3 +175,24 @@ div.navbar div.container div.navbar-brand {
     to { transform: scale(1) rotate(360deg);}
 }
 
+/*
+ *      CSS for alert div
+ */
+.no-result-found-panel {
+    color: #FFFFFF;
+    background-color: #1c70b6;
+}
+
+/*
+ *  CSS for static table
+ */
+.table-footer {
+    background-color: #1c70b6;
+    color: white;
+}
+#dynamictable {
+    margin-bottom: 0px;
+}
+.rowsPerPage {
+    color: black;
+}

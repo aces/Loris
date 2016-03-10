@@ -36,7 +36,7 @@ function getMessage() {
     "use strict";
     $.ajax({
         type: 'GET',
-        url: 'AjaxHelper.php?Module=imaging_uploader&script=read_log.php',
+        url: loris.BaseURL + '/imaging_uploader/ajax/read_log.php',
         success: function (data) {
             if (data.indexOf("completed") > -1 || data.indexOf("Error") > -1) {
                 if (data.indexOf("\n") > -1) {
@@ -102,7 +102,7 @@ function uploadFile() {
     formData.append("fire_away", "Upload");
     $.ajax({
         type: 'POST',
-        url: "main.php?test_name=imaging_uploader",
+        url: loris.BaseURL + "/imaging_uploader/",
         data: formData,
         cache: false,
         contentType: false,

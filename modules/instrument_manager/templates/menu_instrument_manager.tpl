@@ -2,7 +2,7 @@
 {if $writable}
 <div class="row">
     <div class="col-xs-4">
-        <form method="post" action="main.php?test_name=instrument_manager" enctype="multipart/form-data">
+        <form method="post" action="{$baseurl}/instrument_manager/" enctype="multipart/form-data">
             <div class="panel panel-primary">
                 <div class="panel-heading">Upload Instrument</div>
                 <div class="panel-body">
@@ -43,7 +43,7 @@ Automatic uploading of instruments has been disabled.
      <th nowrap="nowrap">No.</th>
         <!-- print out column headings - quick & dirty hack -->
         {section name=header loop=$headers}
-            <th nowrap="nowrap"><a href="main.php?test_name=instrument_manager&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+            <th nowrap="nowrap"><a href="{$baseurl}/instrument_manager/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
         {/section}
     </tr>
     </thead>
@@ -70,7 +70,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=instrument_manager&pageID=" + pageNum
+        location.href="{$baseurl}/instrument_manager/?pageID=" + pageNum
     },
     Active: {$pageID}
 });

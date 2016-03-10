@@ -1,4 +1,4 @@
-<script type="text/javascript" src="js/filterControl.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
 
 <div class="row">
     <div class="col-sm-12 col-md-7">
@@ -9,7 +9,7 @@
                 <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
             </div>
             <div class="panel-body" id="panel-body">
-                <form method="post" action="main.php?test_name=examiner">
+                <form method="post" action="{$baseurl}/examiner/">
                     <div class="row">
                         <div class="form-group col-sm-6">
                             <label class="col-sm-12 col-md-4">{$form.examiner.label}</label>
@@ -32,7 +32,7 @@
                                 <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
                             </div>
                             <div class="col-sm-6">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=examiner&reset=true'" />
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/examiner/?reset=true" />
                             </div>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
             <tr class="info">
              <th>No.</th>
                 {section name=header loop=$headers}
-                    <th><a href="main.php?test_name=examiner&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                    <th><a href="{$baseurl}/examiner/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                 {/section}
             </tr>
         </thead>
@@ -106,7 +106,7 @@
                 {section name=piece loop=$items[item]}
                     <td>
                         {if $items[item][piece].name == "Examiner" and $certification == "1"}
-                            <a href="main.php?test_name=examiner&subtest=editExaminer&identifier={$items[item][piece].ID}">{$items[item][piece].value}</a>
+                            <a href="{$baseurl}/examiner/editExaminer/?identifier={$items[item][piece].ID}">{$items[item][piece].value}</a>
                         {else}
                             {$items[item][piece].value}
                         {/if}
@@ -133,7 +133,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=examiner&pageID=" + pageNum
+        location.href="{$baseurl}/examiner/?pageID=" + pageNum
     },
     Active: {$pageID}
 });

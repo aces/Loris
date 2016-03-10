@@ -10,7 +10,7 @@ FilterTable = React.createClass({
         this.setState({ 'collapsed' : !this.state.collapsed });
     },
     render: function() {
-        var children, glyph, formURL = "main.php?test_name=" + this.props.Module;
+        var children, glyph, formURL = loris.BaseURL + "/" + this.props.Module + "/";
         if(this.state.collapsed === false) {
             children = <div className="panel-body">
                         <form method="post" action={formURL}>
@@ -89,7 +89,7 @@ FilterActions = React.createClass({
         'Module' : React.PropTypes.string.isRequired,
     },
     resetFilters: function() {
-        location.href = 'main.php?test_name=' + this.props.Module + "&reset=true";
+        location.href = loris.BaseURL + '/' + this.props.Module + "/?reset=true";
     },
     render: function() {
         return <div>

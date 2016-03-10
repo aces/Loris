@@ -8,12 +8,21 @@ StaticDataTable = React.createClass({
         // func(ColumnName, CellData, EntireRowData)
         getFormattedCell: React.PropTypes.func
     },
-
+    componentDidMount: function() {
+        if (jQuery.fn.DynamicTable) {
+            if(this.props.freezeColumn) {
+                $("#dynamictable").DynamicTable({"freezeColumn" : this.props.freezeColumn});
+            } else {
+                $("#dynamictable").DynamicTable();
+            }
+        }
+    },
     getInitialState: function() {
         return {
             'PageNumber' : 1,
             'SortColumn' : -1,
-            'SortOrder' : 'ASC'
+            'SortOrder' : 'ASC',
+            'RowsPerPage' : 20
         };
     },
     getDefaultProps: function() {
@@ -42,11 +51,30 @@ StaticDataTable = React.createClass({
             }
         }
     },
+    changeRowsPerPage: function(val) {
+       this.setState({
+           'RowsPerPage' : val.target.value,
+           'PageNumber' : 1
+       });
+    },
     render: function() {
-        var rowsPerPage = 20;
+        if (this.props.Data == null) {
+            return (
+                <div 
+                    className="alert alert-info no-result-found-panel"
+                >
+                    <strong>No result found.</strong>
+                </div>
+            );
+        }
+        var rowsPerPage = this.state.RowsPerPage;
         var headers = [<th onClick={this.setSortColumn(-1)}>{this.props.RowNumLabel}</th>];
         for(var i = 0; i < this.props.Headers.length; i += 1) {
-            headers.push(<th onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+            if(this.props.Headers[i] == this.props.freezeColumn){
+                headers.push(<th id={this.props.freezeColumn} onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+            }else {
+                headers.push(<th onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+            }
         }
         var rows = [];
         var curRow = [];
@@ -127,20 +155,35 @@ StaticDataTable = React.createClass({
             );
         }
 
+        var RowsPerPageDropdown = (<select className="input-sm rowsPerPage" onChange={this.changeRowsPerPage}>
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+                <option>1000</option>
+                <option>5000</option>
+                <option>10000</option>
+            </select>
+            );
         return (
-            <div>
-                <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
-                <table className="table table-hover table-primary table-bordered">
-                    <thead>
-                        <tr className="info">{headers}</tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                    <tfoot>
-                        <tr><td className="info" colSpan={headers.length}>{rows.length} rows displayed of {this.props.Data.length} </td></tr>
-                    </tfoot>
-                </table>
+            <div className="panel panel-primary">
+                    <table className="table table-hover table-primary table-bordered" id="dynamictable">
+                        <thead>
+                            <tr className="info">{headers}</tr>
+                        </thead>
+                        <tbody>
+                            {rows}
+                        </tbody>
+                    </table>
+                <div className="panel-footer table-footer">
+                    <div className="row">
+                        <div className="col-xs-12">
+                            {rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown}) 
+                            <div className="pull-right">
+                                <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

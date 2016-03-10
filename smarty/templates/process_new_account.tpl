@@ -75,7 +75,7 @@
             </div>
 </div>
 <div class="row">
-                <table class="LoginFooter" align="center" style="position: relative">
+                <table class="LorisFooter" align="center" style="position: relative">
                     <tr>
                     <hr width = 70%>
                     </tr>
@@ -83,16 +83,16 @@
                     <!--td align="center" colspan="1"><br><font color="#C40A29">A WebGL-compatible browser is required for full functionality.</font></td-->
                     </tr>       
                     <tr>
-                    <td align="center" colspan="1" style="color:#808080" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
+                    <td align="center" colspan="1">A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
                     </tr>   
                     <tr>
-                    <td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; {$currentyear}. All rights reserved.</td>
+                    <td align="center" colspan="1">Powered by LORIS &copy; {$currentyear}. All rights reserved.</td>
                     </tr>   
                     <tr>
-                    <td align="center" colspan="1"style="color: #808080">Created by <a href="http://mcin-cnim.ca" style="color: #064785" target="_blank">MCIN</a></td>
+                    <td align="center" colspan="1">Created by <a href="http://mcin-cnim.ca" style="color: #064785" target="_blank">MCIN</a></td>
                     </tr>
                     <tr>
-                    <td align="center" colspan="1" style="color: #808080"> Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>
+                    <td align="center" colspan="1">Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>
 
                     </tr>
                 </table>

@@ -8,12 +8,21 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
         // func(ColumnName, CellData, EntireRowData)
         getFormattedCell: React.PropTypes.func
     },
-
+    componentDidMount: function() {
+        if (jQuery.fn.DynamicTable) {
+            if(this.props.freezeColumn) {
+                $("#dynamictable").DynamicTable({"freezeColumn" : this.props.freezeColumn});
+            } else {
+                $("#dynamictable").DynamicTable();
+            }
+        }
+    },
     getInitialState: function() {
         return {
             'PageNumber' : 1,
             'SortColumn' : -1,
-            'SortOrder' : 'ASC'
+            'SortOrder' : 'ASC',
+            'RowsPerPage' : 20
         };
     },
     getDefaultProps: function() {
@@ -42,11 +51,30 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
             }
         }
     },
+    changeRowsPerPage: function(val) {
+       this.setState({
+           'RowsPerPage' : val.target.value,
+           'PageNumber' : 1
+       });
+    },
     render: function() {
-        var rowsPerPage = 20;
+        if (this.props.Data == null) {
+            return (
+                React.createElement("div", {
+                    className: "alert alert-info no-result-found-panel"
+                }, 
+                    React.createElement("strong", null, "No result found.")
+                )
+            );
+        }
+        var rowsPerPage = this.state.RowsPerPage;
         var headers = [React.createElement("th", {onClick: this.setSortColumn(-1)}, this.props.RowNumLabel)];
         for(var i = 0; i < this.props.Headers.length; i += 1) {
-            headers.push(React.createElement("th", {onClick: this.setSortColumn(i)}, this.props.Headers[i]));
+            if(this.props.Headers[i] == this.props.freezeColumn){
+                headers.push(React.createElement("th", {id: this.props.freezeColumn, onClick: this.setSortColumn(i)}, this.props.Headers[i]));
+            }else {
+                headers.push(React.createElement("th", {onClick: this.setSortColumn(i)}, this.props.Headers[i]));
+            }
         }
         var rows = [];
         var curRow = [];
@@ -127,18 +155,33 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
             );
         }
 
+        var RowsPerPageDropdown = (React.createElement("select", {className: "input-sm rowsPerPage", onChange: this.changeRowsPerPage}, 
+                React.createElement("option", null, "20"), 
+                React.createElement("option", null, "50"), 
+                React.createElement("option", null, "100"), 
+                React.createElement("option", null, "1000"), 
+                React.createElement("option", null, "5000"), 
+                React.createElement("option", null, "10000")
+            )
+            );
         return (
-            React.createElement("div", null, 
-                React.createElement(PaginationLinks, {Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber}), 
-                React.createElement("table", {className: "table table-hover table-primary table-bordered"}, 
-                    React.createElement("thead", null, 
-                        React.createElement("tr", {className: "info"}, headers)
+            React.createElement("div", {className: "panel panel-primary"}, 
+                    React.createElement("table", {className: "table table-hover table-primary table-bordered", id: "dynamictable"}, 
+                        React.createElement("thead", null, 
+                            React.createElement("tr", {className: "info"}, headers)
+                        ), 
+                        React.createElement("tbody", null, 
+                            rows
+                        )
                     ), 
-                    React.createElement("tbody", null, 
-                        rows
-                    ), 
-                    React.createElement("tfoot", null, 
-                        React.createElement("tr", null, React.createElement("td", {className: "info", colSpan: headers.length}, rows.length, " rows displayed of ", this.props.Data.length, " "))
+                React.createElement("div", {className: "panel-footer table-footer"}, 
+                    React.createElement("div", {className: "row"}, 
+                        React.createElement("div", {className: "col-xs-12"}, 
+                            rows.length, " rows displayed of ", this.props.Data.length, ". (Maximum rows per page: ", RowsPerPageDropdown, ")",  
+                            React.createElement("div", {className: "pull-right"}, 
+                                React.createElement(PaginationLinks, {Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber})
+                            )
+                        )
                     )
                 )
             )

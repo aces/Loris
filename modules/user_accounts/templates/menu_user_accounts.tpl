@@ -1,9 +1,9 @@
-<script type="text/javascript" src="js/filterControl.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
 
 <!-- start the selection table -->
 <div class="row">
     <div class="col-sm-9 col-lg-8">
-        <form method="post" action="main.php?test_name=user_accounts">
+        <form method="post" action="{$baseurl}/user_accounts/">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -77,13 +77,13 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-3 col-md-2 col-xs-12">
-                            <input type="button" name="button" value="Add User" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=user_accounts&subtest=edit_user'" />
+                            <input type="button" name="button" value="Add User" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/edit_user/'" />
                         </div>
                         <div class="form-group col-sm-3 col-md-2 col-xs-12 col-sm-offset-3 col-md-offset-6">
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
                         </div>
                         <div class="form-group col-sm-3 col-md-2 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=user_accounts&reset=true'" />
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/?reset=true'" />
                         </div>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                 <th nowrap="nowrap">No.</th>
                 <!-- print out column headings - quick & dirty hack -->
                 {section name=header loop=$headers}
-                    <th nowrap="nowrap"><a href="main.php?test_name=user_accounts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                    <th nowrap="nowrap"><a href="{$baseurl}/user_accounts/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                 {/section}
             </tr>
         </thead>
@@ -120,7 +120,7 @@
                 {section name=piece loop=$items[item]}
                 <td nowrap="nowrap">
                     {if  $items[item][piece].name == "Username"}
-                    <a href="main.php?test_name=user_accounts&subtest=edit_user&identifier={$items[item][piece].value|escape}">{$items[item][piece].value|escape}</a>
+                    <a href="{$baseurl}/user_accounts/edit_user/?identifier={$items[item][piece].value|escape}">{$items[item][piece].value|escape}</a>
                     {else}
                     {$items[item][piece].value|escape}
                     {/if}
@@ -141,7 +141,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=user_accounts&pageID=" + pageNum
+        location.href="{$baseurl}/user_accounts/?pageID=" + pageNum
     },
     Active: {$pageID}
 });

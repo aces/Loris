@@ -5,6 +5,14 @@
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
         <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
 
+        {* 
+        This can't be loaded from getJSDependencies(), because it's needs access to smarty
+           variables to be instantiated, so that other js files don't need access to smarty variables
+           and can access them through the loris global (ie. loris.BaseURL) *}
+        <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
+        <script language="javascript" type="text/javascript">
+        var loris = new LorisHelper({$jsonParams}, {$userPerms|json_encode});
+        </script>
         {section name=jsfile loop=$jsfiles}
             <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
         {/section}
@@ -22,121 +30,12 @@
 
         <!-- Module-specific CSS -->
         {if $test_name_css}
-            <link rel="stylesheet" href="{$test_name_css}" type="text/css" />
+            <link rel="stylesheet" href="{$baseurl}/{$test_name_css}" type="text/css" />
         {/if}
 
         <title>
             {$study_title}
         </title>
-
-        {literal}
-            <script language="javascript" type="text/javascript">
-
-                var FeedbackButtonBoolean;
-
-                function FeedbackButtonClicked() {
-                    document.cookie = "FeedbackButtonBoolean = true";
-                    {/literal}
-                    var thisUrl = "feedback_bvl_popup.php?test_name={$test_name}&candID={$candID}&sessionID={$sessionID}&commentID={$commentID}";
-                    {literal}
-                    w = window.open(thisUrl, "MyWindow", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
-                    w.focus();
-                }
-
-                function feedback_bvl_popup(features) {
-                    if (getCookie('FeedbackButtonBoolean')) {
-                    {/literal}
-                    var myUrl = "feedback_bvl_popup.php?test_name={$test_name}&candID={$candID}&sessionID={$sessionID}&commentID={$commentID}";
-                    {literal}
-                    w = window.open(myUrl, "MyWindow", "width=800, height=600, resizable=yes, scrollbars=yes, status=no, toolbar=no, location=no, menubar=no");
-                    w.focus();
-                    }
-                }
-
-                function getCookie(c_name) {
-                    "use strict";
-                    var cookies = document.cookie.split("; "),
-                        i,
-                        cookie;
-                    for (i = 0; i < cookies.length; i += 1) {
-                        cookie = cookies[i].split("=");
-                        if (cookie[0] === c_name) {
-                            return cookie[1];
-                        }
-                    }
-                    return undefined;
-                }
-                $(document).ready(function(){
-                    $("#menu-toggle").click(function(e) {
-                        e.preventDefault();
-                        $(".wrapper").toggleClass("active");
-                    });
-                    $(".dropdown").hover(function(){
-                        $(this).toggleClass('open');
-                    });
-                    $(".help-button").click(function(e) {
-                        var helpContent = $('div.help-content');
-                        if(helpContent.length) {
-                           helpContent.toggle();
-                           e.preventDefault();
-                           return;
-                        }
-                        var getParams = {};
-                        {/literal}
-                        {if $test_name}
-                            getParams.test_name = "{$test_name|escape:"javascript"}";
-                        {/if}
-                        {if $subtest}
-                            getParams.subtest = "{$subtest|escape:"javascript"}";
-                        {/if}
-                        {literal}
-                        document.cookie = 'LastUrl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-                        $.get("AjaxHelper.php?Module=help_editor&script=help.php", getParams, function (content) {
-                                var div = document.createElement("div"),
-                                    pre = document.createElement("pre"),
-                                    btn = document.createElement("BUTTON"),
-                                    edit = document.createElement("BUTTON"),
-                                    text = document.createTextNode("Edit"),
-                                    button = document.createTextNode("Close");
-
-                                pre.innerHTML = "<h3>" + content.topic + "</h3>";
-                                pre.innerHTML += content.content;
-                                pre.innerHTML =  pre.innerHTML + "<hr>Last updated: " + content.updated ;
-                                btn.appendChild(button);
-                                btn.className="btn btn-default";
-                                btn.setAttribute("id","helpclose");
-                                edit.appendChild(text);
-                                edit.className="btn btn-default";
-                                edit.setAttribute("id", "helpedit");
-                                div.appendChild(pre);
-                                div.appendChild(btn);
-                                {/literal}
-                                {if $hasHelpEditPermission}
-                                    div.appendChild(edit);
-                                {/if}
-                                {literal}
-                                document.getElementById('page').appendChild(div);
-                                div.setAttribute("class", "help-content");
-                                $(div).addClass('visible');
-                                btn.addEventListener("click", function(e) {
-                                    $(div).hide();
-                                    e.preventDefault();
-                                }) ;
-                                edit.addEventListener("click", function(e) {
-                                    document.cookie = "LastUrl = " + document.location.toString();
-                                    window.open("main.php?test_name=help_editor&subtest=edit_help_content&section="
-                                    +getParams.test_name+"&subsection="+getParams.subtest, "_self");
-                                    e.preventDefault();
-                                }) ;
-                        }, "json");
-                        e.preventDefault();
-                    });
-
-                    $(".dynamictable").DynamicTable();
-                    $(".fileUpload").FileUpload();
-                });
-            </script>
-        {/literal}
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
         <link href="{$baseurl}/css/simple-sidebar.css" rel="stylesheet">
 
@@ -144,6 +43,14 @@
     </head>
     {/if}
     <body>
+    {* Defining a FormAction variable will allow use to define
+       a form element which covers the scope of both the sidebar,
+       and the workspace. This let's us put controls for the main
+       page inside of the side panel.
+    *}
+        {if $FormAction} 
+        <form action="{$FormAction}" method="post">
+        {/if}
 	    
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
@@ -234,12 +141,12 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="main.php?test_name=user_accounts&subtest=my_preferences">
+                                    <a href="{$baseurl}/preferences/">
                                         My Preferences
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="main.php?logout=true">
+                                    <a href="{$baseurl}/main.php?logout=true">
                                         Log Out
                                     </a>
                                 </li>
@@ -314,7 +221,7 @@
                                         &gt; 
                                     {/if}
                                 {else}
-                                    <a href="main.php?{$crumbs[crumb].query}" style="color: white">
+                                    <a href="{$baseurl}{$crumbs[crumb].query}" style="color: white">
                                         <label>{$crumbs[crumb].text}</label>
                                     </a> 
                                     {if not $smarty.section.crumb.last}
@@ -578,7 +485,7 @@
                         </li>
                         {foreach from=$links item=link}
                                 <li>
-                                    <a href="{$link.url}" style="color: #2FA4E7" target="{$link.windowName}">
+                                    <a href="{$link.url}" target="{$link.windowName}">
                                         {$link.label}
                                     </a>
                                     |
@@ -586,15 +493,18 @@
                         {/foreach}
                     </ul>    
                 </center>
-                <div align="center" colspan="1" style="color:#808080" >
+                <div align="center" colspan="1">
                     Powered by LORIS &copy; {$currentyear}. All rights reserved.
                 </div>
-      		<div align="center" colspan="1" style="color:#808080">
-                    Created by <a href="http://mcin-cnim.ca/" style="color: #2FA4E7" target="_blank">
+      		<div align="center" colspan="1">
+                    Created by <a href="http://mcin-cnim.ca/" target="_blank">
                          MCIN
                     </a>
                 </div>
             </div>
+        {/if}
+        {if $FormAction} 
+        </form> 
         {/if}
     </body>
 </html>

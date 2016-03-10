@@ -63,14 +63,23 @@ if (strpos("..", $File) !== false) {
     exit(4);
 }
 
+if (is_dir($basePath . "project/modules/$Module")
+    || is_dir($basePath . "modules/$Module")
+) {
+        $ModuleDir = is_dir($basePath . "project/modules/$Module")
+            ? $basePath . "project/modules/$Module"
+            : $basePath . "modules/$Module";
+        set_include_path(
+            get_include_path() . ':' .
+            $ModuleDir . "/php"
+        );
+} else {
+    error_log("ERROR: Module does not exist");
+    header("HTTP/1.1 400 Bad Request");
+    exit(5);
+}
 // Also check the module directory for PHP files
-set_include_path(
-    get_include_path() . ":" .
-    __DIR__ . "/../project/libraries:" .
-    __DIR__ . "/../php/libraries:" .
-    __DIR__ . "/../modules/$Module/php"
-);
-$FullPath = $basePath . "/modules/$Module/ajax/$File";
+$FullPath = "$ModuleDir/ajax/$File";
 
 if (!file_exists($FullPath)) {
     error_log("ERROR: File $File does not exist");

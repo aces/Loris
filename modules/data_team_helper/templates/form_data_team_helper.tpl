@@ -1,9 +1,9 @@
-<script type ="text/javascript" src ="js/jquery/jquery.autocomplete.js"></script>
-<link rel="stylesheet" href="css/auto-complete.css">
-<link rel="stylesheet" href="css/c3.css">
+<script type ="text/javascript" src ="{$baseurl}/js/jquery/jquery.autocomplete.js"></script>
+<link rel="stylesheet" href="{$baseurl}/css/auto-complete.css">
+<link rel="stylesheet" href="{$baseurl}/css/c3.css">
 
-<script src="js/d3.min.js" charset="utf-8"></script>
-<script src="js/c3.min.js"></script>
+<script src="{$baseurl}/js/d3.min.js" charset="utf-8"></script>
+<script src="{$baseurl}/js/c3.min.js"></script>
 
 <div class="row">
 	<div class="col-sm-12 col-md-7">
@@ -97,7 +97,7 @@
   </div>
 
 
-<script type="text/javascript" src="GetJS.php?Module=data_team_helper&file=data_team_helper_react.js"></script>
+<script type="text/javascript" src="{$baseurl}/data_team_helper/js/behavioural_qc_module.js"></script>
 
 <script type="text/javascript">
 var incomplete = {$Incomplete_candidates|@json_encode};
@@ -106,7 +106,8 @@ incomplete = JSON.parse(incomplete);
 var CandiPanel = IncompleteCandidatesPanel({
 	title: "Incomplete Forms",
 	header: ["Visit", "DCCID", "Instrument"],
-	incomplete_candidates: incomplete
+	incomplete_candidates: incomplete,
+    BaseURL : loris.BaseURL
 });
 
 var conflicts = {$Conflicts|@json_encode};
@@ -115,7 +116,8 @@ conflicts = JSON.parse(conflicts);
 var ConflictsPanel = InstrumentConflictsPanel({
 	title: "Data Entry Conflicts",
 	header: ["Visit", "DCCID", "Instrument", "Field Name"],
-	conflicts: conflicts
+	conflicts: conflicts,
+    BaseURL : loris.BaseURL
 }); 
 
 var feedback = {$Bvl_Feedback|@json_encode};
@@ -124,7 +126,8 @@ feedback = JSON.parse(feedback);
 var FeedbackTab = BehaviouralFeedbackTab({
 	title: "Behvarioural Feedback",
 	header:["DCCID", "Feedback Level", "Field Name"],
-	feedback: feedback
+	feedback: feedback,
+    BaseURL : loris.BaseURL
 });
 
 var percentCompleted = {$percent_completed|@json_encode};

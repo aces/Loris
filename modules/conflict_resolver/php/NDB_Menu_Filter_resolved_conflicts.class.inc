@@ -12,8 +12,6 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Menu_Filter_Form_resolved_conflicts Class
  *
@@ -108,7 +106,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             array(
              'candidate.PSCID',
              'session.CandID',
-             'conflicts_unresolved.Fieldname',
+             'conflicts_resolved.Fieldname',
             )
         );
 
@@ -146,7 +144,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             array(
              'CandID'   => 'session.CandID',
              'PSCID'    => 'candidate.PSCID',
-             'Question' => 'conflicts_unresolved.Fieldname',
+             'Question' => 'conflicts_resolved.Fieldname',
             )
         );
         return true;

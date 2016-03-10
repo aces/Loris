@@ -11,8 +11,6 @@
  * @link     https://www.github.com/Jkat/Loris-Trunk/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Document Repository Class
  *

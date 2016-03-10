@@ -114,7 +114,7 @@
                                 <input type="submit" name="filter" id="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12 submit-button" />
                             </div>
                             <div class="col-sm-4">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/main.php?test_name=imaging_uploader&reset=true'" />
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/imaging_uploader/?reset=true'" />
                             </div>
                         </div>
                     </div>
@@ -161,7 +161,7 @@
                 </th>
                 {section name=header loop=$headers}
                     <th nowrap="nowrap">
-                        <a href="main.php?test_name=imaging_uploader&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                        <a href="{$baseurl}/imaging_uploader/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                             {$headers[header].displayName}
                         </a>
                     </th>
@@ -176,7 +176,7 @@
                         {if $items[item][piece].name eq 'Tarchive_Info'}
                             {if $items[item][piece].value}
                                 <td nowrap="nowrap">
-                                    <a href="main.php?test_name=dicom_archive&subtest=viewDetails&tarchiveID={$items[item][piece].value}">
+                                    <a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$items[item][piece].value}">
                                         View Details
                                     </a>
                                 </td>
@@ -186,7 +186,7 @@
                         {elseif $items[item][piece].name eq 'number_of_mincInserted'}
                             {if (!empty($items[item][piece].value)) and $items[item][piece].value >0}
                                 <td nowrap="nowrap">
-                                    <a href="main.php?test_name=imaging_browser&DCCID={$items[item][2].value}&filter=true">
+                                    <a href="{$baseurl}/imaging_browser/?DCCID={$items[item][2].value}&filter=true">
                                         {$items[item][piece].value}
                                     </a>
                                 </td>

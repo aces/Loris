@@ -9,7 +9,7 @@
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
         </div>
         <div class="panel-body" id="panel-body">
-            <form method="post" action="main.php?test_name=datadict">
+            <form method="post" action="{$baseurl}/datadict/">
                 <div class="row">
                     <div class="form-group col-sm-6">
                     <!-- {* <td>Objective:</td>
@@ -32,7 +32,7 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
                         </div>
                         <div class="col-sm-4">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=datadict&reset=true'" />
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/datadict/?reset=true'" />
                         </div>
                     </div>
                 </div>
@@ -45,73 +45,15 @@
 
 
 
+<div id="datatable" />
 
 
-<!--  title table with pagination -->
-<table border="0" valign="bottom" width="100%">
-<tr>
-    <!-- title -->
-    <td class="controlPanelSection">List of Profiles</td>
-    <!-- display pagination links -->
-    <td align="right" id="pageLinks"></td>
-</tr>
-</table>
-
-<br>
-<!-- start data table -->
-    <table  class="table table-hover table-primary table-bordered dynamictable" border="0" width="100%">
-        <thead>
-            <tr class="info">
-             <th>No.</th>
-                {section name=header loop=$headers}
-                {** if $headers[header].name != "Name"**}
-                    <th><a href="main.php?test_name=datadict&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
-                    
-                {**/if***}
-                {/section}
-                
-
-            </tr>
-        </thead>
-        <tbody>
-            {section name=item loop=$items}
-                <tr>
-                <!-- print out data rows -->
-                {section name=piece loop=$items[item]}
-                
-                	{if substr_count($items[item][piece].name, "___description")}
-                	
-                	    <td id ='{$items[item][piece].name}' class='description' contenteditable = "true" bgcolor="{$items[item][piece].bgcolor}">
-                	    	 {$items[item][piece].value}
-                	    </td>
-            		{else}
-            		 	{**if $items[item][piece].name != "Name"**}
-            	        	<td bgcolor="{$items[item][piece].bgcolor}"> 
-              		  		{$items[item][piece].value}
-            				</td>
-            		 	{**/if***}
-            			
-            		{/if}
-                {/section}
-                </tr>           
-            {sectionelse}
-
-            	<tr><td colspan="12">No data found</td></tr>
-            {/section}
-        </tbody>
-                        
-    <!-- end data table -->
-    </table>
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=datadict&pageID=" + pageNum
-    },
-    Active: {$pageID}
+var table = RDynamicDataTable({
+    "DataURL" : "{$baseurl}/datadict/?format=json",
+    "getFormattedCell" : formatDataDictColumn
+
 });
-React.render(pageLinks, document.getElementById("pageLinks"));
+React.render(table, document.getElementById("datatable"));
 </script>
 

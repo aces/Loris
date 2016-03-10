@@ -8,7 +8,7 @@
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
         </div>
         <div class="panel-body" id="panel-body">
-            <form method="post" action="main.php?test_name=reliability">
+            <form method="post" action="{$baseurl}/reliability/">
             <!-- start the selection table -->
                 {if $form.error}
                 <div class="error">{$form.error.label}</div>
@@ -18,7 +18,6 @@
                 {/if}
                 <div class="row">
                     <div class="form-group col-sm-6">
-                    {* OBJECTIVE IS NIHPD SPECIFIC - BUT WE ARE TOO LAZY TO CHANGE THIS TODAY *}
                         <label class="col-sm-12 col-md-4">Subproject:</label>{* Changin this to {$form.CommentID.label} changes the label *}
                         <div class="col-sm-12 col-md-8">{$form.SubprojectID.html}</div>
                     </div>
@@ -70,9 +69,6 @@
                     </div>
                 </div>
 
-                    <!-- <tr>
-                        <td colspan="12" align="right"><input type="submit" name="filter" value="Show Data" class="button" />&nbsp;<input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='main.php?test_name=reliability&reset=true'" /></td>
-                      </tr> -->
                 <div class="row">
                     <div class="col-sm-4 col-md-3 col-xs-12 col-md-offset-5 col-sm-offset-4">
                         <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
@@ -84,11 +80,9 @@
                     <div class="visible-xs col-xs-12"> </div>
                     
                     <div class="col-sm-4 col-md-3 col-xs-12">
-                        <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=reliability&reset=true'" />
+                        <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/reliability/?reset=true'" />
                     </div>
                 </div> 
-                <!--        <td><input type="button" name="button" value="Add Instrument" class="button" onclick="location.href='main.php?test_name=csbs_reliability&subtest=csbs_reliability'"/></td> -->
-               
             </form>
         </div>
     </div>
@@ -148,7 +142,7 @@
 </div>
 {/if}
 {if $EARLI_Reliability}
-<form method="post" action="main.php?test_name=reliability">
+<form method="post" action="{$baseurl}/reliability/">
     <table border="0" valign="top" class="hideable" id="addcandidate">
     <thead>
     <tr>
@@ -156,18 +150,12 @@
     </tr>
     </thead>
     <tbody>
-    <!--tr colspan="4">
-        <td>Candidate</td>
-    </tr-->
     <tr>
         <td>{$form.AddPSCID.label}</td>
         <td>{$form.AddPSCID.html}</td>
         <td>{$form.AddVisit_label.label}</td>
         <td>{$form.AddVisit_label.html}</td>
     </tr>
-    <!--tr colspan="4">
-        <td>Instrument</td>
-    </tr-->
     <tr>
         <td>{$form.AddInstrument.label}</td>
         <td>{$form.AddInstrument.html}</td>
@@ -204,7 +192,7 @@
                 {section name=header loop=$headers}
                     <th>
                       {if $headers[header].displayName != "Reliable"}
-                        <a href="main.php?test_name=reliability&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                        <a href="{$baseurl}/reliability/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                           {if $headers[header].displayName == "Reliability Center Id"}
                             Site of Reliability Test
                           {else}
@@ -232,7 +220,7 @@
          {elseif $items[item][piece].invalid == "yes"}
             {$items[item][piece].value} <font color="red">(Invalid)</font>
          {else}     
-              <a href="main.php?test_name={$items[item][piece].Instrument}_reliability&subtest={$items[item][piece].Instrument}_reliability&identifier={$items[item][piece].CommentID}&reliability_center_id={$items[item][piece].SiteID}">{$items[item][piece].value}</a> 
+              <a href="{$baseurl}/main.php?test_name={$items[item][piece].Instrument}_reliability&subtest={$items[item][piece].Instrument}_reliability&identifier={$items[item][piece].CommentID}&reliability_center_id={$items[item][piece].SiteID}">{$items[item][piece].value}</a> 
            {/if}
             {if $items[item][piece].manual == "yes"}
                 <font color="red">(Manual)</font>
@@ -274,7 +262,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/main.php?test_name=reliability&pageID=" + pageNum
+        location.href="{$baseurl}/reliability/?pageID=" + pageNum
     },
     Active: {$pageID}
 });

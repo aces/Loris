@@ -22,7 +22,7 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testdicomArchiveDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=dicom_archive");
+        $this->safeGet($this->url . "/dicom_archive/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Dicom Archive", $bodyText);
     }
@@ -35,7 +35,7 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testdicomArchiveViewDetailsDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=dicom_archive&subtest=viewDetails");
+        $this->safeGet($this->url . "/dicom_archive/viewDetails/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("View Details", $bodyText);
     }

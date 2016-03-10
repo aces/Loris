@@ -95,22 +95,23 @@ var IncompleteCandidatesRow = React.createClass({
         window.open(link, "Incomplete Candidate");
     },
     propTypes:{
-        'row' : React.PropTypes.object.isRequired
+        'row' : React.PropTypes.object.isRequired,
+        'BaseURL' : React.PropTypes.string.isRequired
 
     },
     render: function(){
         var row = this.props.row;
         return <tr key={row.id} onClick={this.handleClick}>
             <td>
-                <a href={"main.php?test_name=instrument_list&candID=" + row.candid + "&sessionID=" + row.SessionID}> {row.visit_label} </a>
+                <a href={this.props.BaseURL + "/" + row.candid + "/" + row.SessionID + "/"}> {row.visit_label} </a>
             </td>
             <td>
-                <a href={"main.php?test_name=timepoint_list&candID=" + row.candid}>
+                <a href={this.props.BaseURL + "/" + row.candid + "/"}>
 		      {row.candid}
                 </a>
             </td>
             <td>
-                <a href={"main.php?test_name=" + row.test_name + "&candID=" + row.candid + "&sessionID=" + row.SessionID + "&commentID=" + row.commentid} ref="incomplete">
+                <a href={this.props.BaseURL + "/" + row.candid + "/" + row.SessionID + "/" + row.test_name + "/?commentID=" + row.commentid} ref="incomplete">
 		      {row.Full_name}
                 </a>
             </td>
@@ -124,7 +125,7 @@ var InstrumentConflictsRow = React.createClass({
         event.preventDefault();
         var link = React.findDOMNode(this.refs.conflict);
         request = $.ajax({
-            url: "main.php?test_name=conflict_resolver",
+            url: this.props.BaseURL + "/conflict_resolver/",
             type : "post",
             data: {
                 "PSCID" : link.dataset.pscid,
@@ -150,19 +151,20 @@ var InstrumentConflictsRow = React.createClass({
         });
     },
     proptypes:{
-        'row' : React.PropTypes.object.isRequired
+        'row' : React.PropTypes.object.isRequired,
+        'BaseURL' : React.PropTypes.string.isRequired
     },
     render: function(){
         var row = this.props.row;
         return <tr key={row.CandID + row.visit_label + row.test_name_display + row.FieldName} onClick={this.handleClick}>
             <td>{row.visit_label}</td>
             <td>
-                <a href={"main.php?test_name=timepoint_list&candID=" + row.CandID}>
+                <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
 		      {row.CandID}
                 </a>
             </td>
             <td>
-                <a ref="conflict" onClick={this.handleClick} href="main.php?test_name=conflict_resolver" className="conflict_resolver_link" data-pscid = {row.PSCID} data-question = {row.FieldName} data-instrument = {row.TableName} data-visits = {row.visit_label}>
+                <a href="conflict" onClick={this.handleClick} href={this.props.BaseURL + "/conflict_resolver/"} className="conflict_resolver_link" data-pscid = {row.PSCID} data-question = {row.FieldName} data-instrument = {row.TableName} data-visits = {row.visit_label}>
 		      {row.test_name_display}
                 </a>
             </td>
@@ -178,7 +180,8 @@ var BehaviouralFeedbackRow = React.createClass({
         var feedbackwindow = window.open(link, "Behavioural Feedback");
     },
     propTypes:{
-        'row' : React.PropTypes.object.isRequired
+        'row' : React.PropTypes.object.isRequired,
+        'BaseURL' : React.PropTypes.string.isRequired
     },
     render: function(){
         var row = this.props.row;
@@ -186,33 +189,29 @@ var BehaviouralFeedbackRow = React.createClass({
         var bvl_level;
 
         if (row.Feedback_level == 'visit') {
-            bvl_link = "main.php?test_name=instrument_list&candID=" + row.CandID + "&sessionID=" + row.SessionID;
+            bvl_link = this.props.BaseURL + "/" + row.CandID + "/" + row.SessionID + "/";
             bvl_level = "Visit : " + row.Visit_label;
         }
 
         if (row.Feedback_level == 'instrument'){
-            bvl_link = "main.php?test_name=" + row.Test_name + "&candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID;
+            bvl_link = this.props.BaseURL + "/" + row.CandID + "/" + row.SessionID + "/" + row.Test_name + "/?commentID=" + row.CommentID;
             bvl_level = "Instrument : " + row.Full_name;
         }
 
         if (row.Feedback_level == 'profile'){
-            bvl_link = "main.php?test_name=timepoint_list&candID=" + row.CandID
+            bvl_link = this.props.BaseURl + "/" + row.CandID + "/";
             bvl_level = "Profile";
         }
 
         return <tr key = {row.FeedbackID} onClick={this.handleClick}>
             <td>
-                <a href={"main.php?test_name=timepoint_list&candID=" + row.CandID}>
-		      {row.CandID}
-                </a>
+                <a href={this.props.BaseURL + "/" + row.CandID + "/"}>{row.CandID}</a>
             </td>
             <td>
-                <a href={bvl_link} onClick={this.handleClick} ref="feedback">
-		      {bvl_level}
-                </a>
+                <a href={bvl_link} onClick={this.handleClick} ref="feedback">{bvl_level}</a>
             </td>
             <td>
-		    {row.FieldName}
+                {row.FieldName}
             </td>
         </tr>
     }
@@ -240,7 +239,7 @@ var IncompleteCandidates = React.createClass({
         return (
             <DefaultPanel title={this.props.title}>
                 <PagedTable table_rows={this.props.incomplete_candidates} table_headers={this.props.header}>
-                    <IncompleteCandidatesRow/>
+                    <IncompleteCandidatesRow BaseURL={this.props.BaseURL} />
                 </PagedTable>
             </DefaultPanel>
         );
@@ -252,7 +251,7 @@ var InstrumentConflicts = React.createClass({
         return(
             <DefaultPanel title={this.props.title}>
                 <PagedTable table_rows={this.props.conflicts} table_headers={this.props.header}>
-                    <InstrumentConflictsRow/>
+                    <InstrumentConflictsRow BaseURL={this.props.BaseURL} />
                 </PagedTable>
             </DefaultPanel>
         );
@@ -264,7 +263,7 @@ var BehaviouralFeedback = React.createClass({
         return(
             <DefaultPanel title={this.props.title}>
                 <PagedTable table_rows={this.props.feedback} table_headers={this.props.header}>
-                    <BehaviouralFeedbackRow/>
+                    <BehaviouralFeedbackRow BaseURL={this.props.BaseURL} />
                 </PagedTable>
             </DefaultPanel>
         );

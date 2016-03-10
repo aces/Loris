@@ -1,10 +1,10 @@
 <?php
-require_once 'NDB_Menu_Filter.class.inc';
 /**
  * @package main
 */
 class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
 {
+    var $AjaxModule = true;
 	/**
     * overloading this method to allow access to site users (their own site only) and users w/ multisite privs
     * @note   overloaded function
@@ -131,6 +131,25 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
         return $query; 
 
     }
+
+    /** 
+     * Include the column formatter required to make the content editable in
+     * the datadict menu
+     * 
+     * @return array of javascript to be inserted
+     **/
+    function getJSDependencies()
+    {   
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/datadict/js/columnFormatter.js",
+            )   
+        );  
+    }   
 
 
 }

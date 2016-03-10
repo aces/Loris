@@ -36,6 +36,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     protected $url;
     protected $factory;
 
+    private $_oldConfig = array();
+
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
@@ -61,7 +63,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             $database['host'],
             1
         );
-        $this->url = $this->config->getSetting("url") . "/main.php";
+        $this->url = $this->config->getSetting("url");
 
         $this->DB->insert(
             "users",
@@ -88,7 +90,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
         // Set up WebDriver implementation and login
-        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+        $capabilities = array(
+            WebDriverCapabilityType::BROWSER_NAME => 'firefox',
+            WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
+        );
 
         $this->webDriver = RemoteWebDriver::create(
             'http://localhost:4444/wd/hub',
@@ -96,6 +101,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
 
         $this->login("UnitTester", "4test4");
+
+        if (extension_loaded('xdebug')) {
+            xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+        }
 
     }
 
@@ -110,13 +119,14 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     protected function login($username, $password)
     {
-        $this->webDriver->get($this->url);
+        $this->safeGet($this->url);
+/*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::Name("username")
             )
         );
-
+*/
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
@@ -145,6 +155,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
+        if (extension_loaded('xdebug')) {
+            $data = xdebug_get_code_coverage();
+            xdebug_stop_code_coverage(false);
+        }
+
         // Delete the temporary user.
         $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
@@ -157,33 +172,44 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->factory->reset();
     }
 
-
-    private $_oldConfig = array();
-
-    function setupConfigSetting($configName, $value) {
-        if(isset($this->_oldConfig[$configName])) {
-            throw new LorisException("Attempted to change already changed config setting");
+    /**
+     * Set a config setting to a new value and store the previous value
+     * in the oldConfig instance variable.
+     *
+     * @param string $configName The config name
+     * @param mixed  $value      The new value for that config
+     *
+     * @throws LorisException
+     *
+     * @return none
+     */
+    function setupConfigSetting($configName, $value)
+    {
+        if (isset($this->_oldConfig[$configName])) {
+            throw new LorisException(
+                "Attempted to change already changed config setting"
+            );
         }
 
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
-            array(":configName" => $configName)
+            array("configName" => $configName)
         );
 
-        if(is_array($configID) && empty($configID)) {
-            // This likely just means the config is in config.xml
-            //throw new LorisException("Attempting to update Config setting not in database");
-            return;
+        if (is_array($configID) && empty($configID)) {
+            throw new LorisException(
+                "Attempting to update Config setting not in database"
+            );
         }
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
-            array(":confID" => $configID)
+            array("confID" => $configID)
         );
 
         $this->_oldConfig[$configName] = array(
-            'ConfigID' => $configID,
-            'OldValue' => $oldVal,
-        );
+                                          'ConfigID' => $configID,
+                                          'OldValue' => $oldVal,
+                                         );
 
         $this->DB->update(
             "Config",
@@ -192,16 +218,27 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    function restoreConfigSetting($configName) {
+
+    /**
+     * Restores a config to its saved (previous) value.
+     *
+     * @param string $configName The name of the config to restore
+     *
+     * @throws LorisException
+     *
+     * @return none
+     */
+    function restoreConfigSetting($configName)
+    {
         /*
         if(!isset($this->_oldConfig[$configName])) {
             throw new LorisException("Attempted to restore unsaved config setting");
         }
          */
-        if(isset($this->_oldConfig[$configName])) {
+        if (isset($this->_oldConfig[$configName])) {
             $this->DB->update(
                 "Config",
-                array("Value"    => $this->_oldConfig[$configName]['OldValue']),
+                array("Value" => $this->_oldConfig[$configName]['OldValue']),
                 array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
             );
         }
@@ -216,7 +253,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return none
      */
-    function setupPermissions($permissions) {
+    function setupPermissions($permissions)
+    {
         $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
         $prepare = $this->DB->prepare(
             "INSERT INTO user_perm_rel
@@ -225,7 +263,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
                     WHERE code=:perm"
         );
         foreach ($permissions as $value) {
-            $this->DB->execute($prepare, array("perm" => $value));
+            $this->DB->execute(
+                $prepare,
+                array("perm" => $value),
+                array('nofetch' => true)
+            );
         }
     }
 
@@ -235,11 +277,174 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return none
      */
-    function resetPermissions() {
+    function resetPermissions()
+    {
         $this->DB->run(
             "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
     }
 
+    /**
+     * Helper function to change the users Study Site
+     *
+     * @return none
+     */
+    function changeStudySite()
+    {
+        $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
+        $this->DB->update("users", array("CenterID" => 99), array("ID" => 999990));
+    }
+
+    /**
+     * Helper function to reset the users Study Site
+     *
+     * @return none
+     */
+    function resetStudySite()
+    {
+        $this->DB->update("users", array("CenterID" => 1), array("ID" => 999990));
+        $this->DB->delete("psc", array("CenterID" => 99));
+    }
+
+    /**
+     * Helper function to create a subproject
+     *
+     * @param string $title Name of the subproject
+     *
+     * @return none
+     */
+    function createSubproject($title)
+    {
+        $this->DB->insert(
+            "subproject",
+            array(
+             "title"             => $title,
+             "WindowDifference"  => "optimal",
+             "RecruitmentTarget" => "100",
+            )
+        );
+    }
+
+    /**
+     * Helper function to delete a subproject
+     *
+     * @param string $title Name of the subproject
+     *
+     * @return none
+     */
+    function deleteSubproject($title)
+    {
+        $this->DB->delete(
+            "subproject",
+            array(
+             "title"             => $title,
+             "WindowDifference"  => "optimal",
+             "RecruitmentTarget" => "100",
+            )
+        );
+    }
+
+    /**
+     * Helper function to determine if a menu item is prensent
+     * under a given category.
+     *
+     * Note: By giving and empty string in any parameter will act as a joker.
+     *   ex: assertMenuItemPresent('', 'Configuration') will return true if
+     *       one or more menu item 'Configuration' exist under any category.
+     *   ex: assertMenuItemPresent('Admin', '') will return true is any
+     *       category 'Admin' has at least one  menu item.
+     *
+     * @param string $category The parent Label of the menu item
+     * @param string $menu     The label of the menu item
+     *
+     * @return boolean true    If the menu item exists under the category.
+     */
+    function isMenuItemPresent($category, $menu)
+    {
+        $configMenu = $this->webDriver->findElements(
+            WebDriverBy::xPath(
+                "
+                //ul[@class='nav navbar-nav']
+                //a[contains(text(), '$category')]
+                /..
+                /ul[@class='dropdown-menu']
+                //a[contains(text(), '$menu')]
+                "
+            )
+        );
+        return count($configMenu) > 0;
+    }
+
+    /**
+     * Helper function to delete candidate
+     *
+     * @param string $pscid The PSCID of teh candiate to delete
+     *
+     * @return none
+     */
+    function deleteCandidate($pscid)
+    {
+        $this->DB->delete("candidate", array("PSCID" => $pscid));
+    }
+
+    /*
+     * Helper function to click on a element and wait for the new page to be loaded.
+     * When the DOM is reloaded, the elements of the previous page become stale.
+     * Selenium will raise an exception when a function (like getText) are called on
+     * those elements.
+     *
+     * Note: If the page don't reload, this will produce an infinite loop.
+     *
+     * @param webDriverElement $clickable The element to be clicked
+     *
+     * @return void Once the element is stale.
+     */
+    public function clickToLoadNewPage($clickable)
+    {
+        $remoteWebElement = null; 
+
+        $clickable->click();
+        try {
+            while (true) {
+                $remoteWebElement = $clickable->isDisplayed();
+            }
+        } catch (StaleElementReferenceException $e) {
+            return $remoteWebElement;
+        }
+    }
+
+    /**
+     * Helper function to decorate the webdriver->get function so it
+     * ensure that the new page is load before it returns.
+     *
+     * @param string $url The url to get.
+     *
+     * @return void
+     */
+    function safeGet($url)
+    {
+        $newWebDriver = null;
+
+        // keep a reference from the actual page
+        $oldBody = $this->webDriver->findElement(
+            WebDriverBy::xPath(
+                "
+                //body
+                "
+            )
+        );
+
+        try {
+            // Load the new page
+            $newWebDriver = $this->webDriver->get($url);
+
+            // Use the old page reference util it detach from the DOM
+            while (true) {
+                $oldBody->isDisplayed();
+            }
+        } catch (StaleElementReferenceException $e) {
+            return $newWebDriver;
+        }
+    }
 }
 ?>

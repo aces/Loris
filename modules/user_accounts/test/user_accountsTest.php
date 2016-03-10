@@ -22,7 +22,7 @@ class user_accountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testUserAccountsDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=user_accounts");
+        $this->safeGet($this->url . "/user_accounts/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("User Accounts", $bodyText);
     }
@@ -35,7 +35,7 @@ class user_accountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testUserAccountsEditUserDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=user_accounts&subtest=edit_user");
+        $this->safeGet($this->url . "/user_accounts/edit_user/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Edit User", $bodyText);
 
@@ -61,7 +61,7 @@ class user_accountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testUserAccountsMyPreferencesDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=user_accounts&subtest=my_preferences");
+        $this->safeGet($this->url . "/user_accounts/my_preferences/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("My Preferences", $bodyText);
     }

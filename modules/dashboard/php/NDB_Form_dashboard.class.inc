@@ -12,9 +12,6 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-require_once "NDB_Form.class.inc";
-require_once "Utility.class.inc";
-
 /**
  * Dashboard: displays recruitment and study progression charts,
  * user tasks and document repository notifications

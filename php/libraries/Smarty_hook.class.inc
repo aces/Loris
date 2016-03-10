@@ -45,13 +45,18 @@ class Smarty_NeuroDB extends Smarty
 
         $paths = $config->getSetting('paths');
 
+        $basePath = $paths['base'];
+
         // NeuroDB plugin is no longer needed now that Smarty3 supports
         // multiple template directories
         //$this->addPluginsDir($paths['base']."php/libraries/smarty/plugins");
 
-        $this->loristemplate_dir    = $paths['base']."smarty/templates/";
-        $this->project_template_dir = $paths['base']."project/templates/";
-        $this->modules_dir          = $paths['base'] . 'modules/' . $moduleName;
+        $this->loristemplate_dir    = $basePath . "smarty/templates/";
+        $this->project_template_dir = $basePath . "project/templates/";
+
+        $this->modules_dir = is_dir($basePath . "project/modules/$moduleName")
+            ? $basePath . "project/modules/$moduleName"
+            : $basePath . "modules/$moduleName" ;
 
         // These are probably not needed anymore and can use the smarty
         // defaults, but keep them for now to ensure that Loris doesn't
@@ -76,8 +81,8 @@ class Smarty_NeuroDB extends Smarty
         // Set the template directories. First check for project overrides,
         // then check for modules, then check for old Loris jumbled together
         // templates
-        $this->setTemplateDir($this->project_template_dir);
-        $this->addTemplateDir($this->modules_dir . "/templates");
+        $this->setTemplateDir($this->modules_dir . "/templates");
+        $this->addTemplateDir($this->project_template_dir);
         $this->addTemplateDir($this->loristemplate_dir);
 
         $currentDir = $this->getConfigDir();

@@ -11,8 +11,8 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class instrumentListTestIntegrationTest extends LorisIntegrationTest
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
+class instrumentListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
     /**
      * Tests that, when loading the Instrument list module, some
@@ -22,7 +22,7 @@ class instrumentListTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentListDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=instrument_list");
+        $this->safeGet($this->url . "/instrument_list/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("instrument_list", $bodyText);
     }

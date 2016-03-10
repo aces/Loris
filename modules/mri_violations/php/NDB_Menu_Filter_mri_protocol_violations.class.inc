@@ -15,7 +15,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  *
  */
-require_once 'NDB_Menu_Filter.class.inc';
 
 /**
  * Implements the menu filter for the mri protocol violation log table

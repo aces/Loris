@@ -25,7 +25,7 @@
 	<tbody>
 	   	<tr{if $instruments[group][instrument].isDirectEntry} class="directentry"{/if}>
 	    	<td>
-		    	<a href="main.php?test_name={$instruments[group][instrument].testName}&candID={$candID}&sessionID={$sessionID}&commentID={$instruments[group][instrument].commentID}">
+                <a href="{$baseurl}/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].commentID}&sessionID={$sessionID}&candID={$candID}">
 	            {$instruments[group][instrument].fullName}</a></td>
 	    	<td>{$instruments[group][instrument].dataEntryStatus}</td>
 	    	<td>{$instruments[group][instrument].administrationStatus}</td>
@@ -34,7 +34,7 @@
 	        </td>
 			<td>
 				{if $instruments[group][instrument].isDdeEnabled }
-				    	<a href="main.php?test_name={$instruments[group][instrument].testName}&candID={$candID}&sessionID={$sessionID}&commentID={$instruments[group][instrument].ddeCommentID}">Double Data Entry</a>
+				    	<a href="{$baseurl}/{$instruments[group][instrument].testName}/?commentID={$instruments[group][instrument].ddeCommentID}&sessionID={$sessionID}&candID={$candID}">Double Data Entry</a>
 			   {/if}&nbsp;
 			</td>
 			<td>{if $instruments[group][instrument].isDdeEnabled }{$instruments[group][instrument].ddeDataEntryStatus}{/if}&nbsp;</td>
@@ -48,6 +48,6 @@
   <div class="col-xs-12 row">
   </div>
   <div class="col-xs-12 row">
-    <button class="btn btn-primary" onclick="location.href='main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$sessionID}'">View Imaging data</button>
+    <button class="btn btn-primary" onclick="location.href='{$baseurl}/imaging_browser/viewSession/?sessionID={$sessionID}'">View Imaging data</button>
   </div>
 </div>

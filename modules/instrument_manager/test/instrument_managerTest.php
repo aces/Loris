@@ -22,7 +22,7 @@ class instrumentManagerTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentManagerDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=instrument_manager");
+        $this->safeGet($this->url . "/instrument_manager/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Instrument Manager", $bodyText);
     }
