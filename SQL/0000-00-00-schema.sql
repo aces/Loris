@@ -2063,16 +2063,16 @@ CREATE TABLE empty_queries (
 );
 
 DROP TABLE IF EXISTS `data_release`;
-CREATE TABLE data_release (
+CREATE TABLE `data_release` (
  id int(10) AUTO_INCREMENT,
  file_name varchar(255),
  version varchar(255),
  upload_date date,
- primary key (id)
+ PRIMARY KEY (id)
 );
 
 DROP TABLE IF EXISTS `data_release_permissions`;
-CREATE TABLE data_release_permissions (
+CREATE TABLE `data_release_permissions` (
  userid int(10) unsigned NOT NULL,
  data_release_id int(10) unsigned NOT NULL,
  PRIMARY KEY (userid,data_release_id),
