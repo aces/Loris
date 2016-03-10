@@ -2078,6 +2078,6 @@ CREATE TABLE `data_release_permissions` (
  PRIMARY KEY (userid,data_release_id),
  KEY FK_userid (userid),
  KEY FK_data_release_id (data_release_id),
- CONSTRAINT FK_userid FOREIGN KEY (userid) REFERENCES users (id),
- CONSTRAINT FK_data_release_id FOREIGN KEY (data_release_id) REFERENCES data_release (id)
+ CONSTRAINT FK_userid FOREIGN KEY (userid) REFERENCES `users` (id),
+ CONSTRAINT FK_data_release_id FOREIGN KEY (data_release_id) REFERENCES `data_release` (id)
 );
