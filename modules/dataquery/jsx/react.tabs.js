@@ -40,13 +40,14 @@ InfoTabPane = React.createClass({
 });
 
 FieldSelectTabPane = React.createClass({
-    mixins: [React.addons.PureRenderMixin],
     render: function() {
         return <TabPane TabId={this.props.TabId}>
                     <FieldSelector title="Fields"
                         items={this.props.categories}
                         onFieldChange={this.props.onFieldChange}
                         selectedFields={this.props.selectedFields}
+                        Visits={this.props.Visits}
+                        fieldVisitSelect = {this.props.fieldVisitSelect}
                     />
             </TabPane>
     }
@@ -69,6 +70,7 @@ FilterSelectTabPane = React.createClass({
                 <FilterBuilder items={this.props.categories}
                                updateFilter={this.props.updateFilter}
                                filter={this.props.filter}
+                               Visits={this.props.Visits}
                 />
             </TabPane>
         );

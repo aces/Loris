@@ -113,9 +113,22 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
+	toggleVisits: function() {
+		if(this.state.allSessions){
+			this.setState(function(state){
+				delete state.allSessions;
+				return state;
+			});
+		} else {
+			this.setState({
+				"allSessions": this.props.rule.session
+			});
+		}
+	},
 	render: function() {
 		var rule,
 			fieldIndex,
+			forVisits,
 			that = this;
 		if(this.props.rule.instrument) {
 			var fields = this.props.rule.fields.map(function(field, index){
@@ -176,6 +189,24 @@ FilterRule = React.createClass({
 							);
 							break;
 					}
+					if(this.state.allSessions){
+						forVisits = (
+							<button className="btn btn-primary btn-sm pull-right"
+								    onClick={this.toggleVisits}
+							>
+								All Visits
+							</button>
+						);
+					}
+					else {
+						forVisits = (
+							<button className="btn btn-primary btn-sm pull-right"
+								    onClick={this.toggleVisits}
+							>
+								For Visits
+							</button>
+						);
+					}
 				}
 			}
 			rule = (
@@ -216,6 +247,7 @@ FilterRule = React.createClass({
 						>
 							<span className="glyphicon glyphicon-remove"></span> Delete
 						</button>
+						{forVisits}
 					</div>
 				</div>
 			</div>
@@ -307,6 +339,7 @@ FilterGroup = React.createClass({
 		    							updateRule = {that.updateChild}
 		    							updateSessions = {that.updateSessions}
 		    							deleteRule = {that.deleteChild}
+		    							Visits={that.props.Visits}
 		    				/>
 		    			</li>
 		    		);
@@ -319,6 +352,7 @@ FilterGroup = React.createClass({
 		    							 updateGroup = {that.updateChild}
 		    							 updateSessions = {that.updateSessions}
 		    							 deleteGroup = {that.deleteChild}
+		    							 Visits={that.props.Visits}
 		    				/>
 		    			</li>
 		    		);
@@ -376,6 +410,7 @@ FilterBuilder = React.createClass({
 	        			<FilterGroup group={this.props.filter}
 	        						 items={this.props.items}
 	        						 updateFilter = {this.props.updateFilter}
+	        						 Visits={this.props.Visits}
 	        			/>
 					</div>
 				</div>

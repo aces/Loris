@@ -183,6 +183,11 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                     }
                 ],
                 session: this.props.AllSessions
+            },
+            selectedFields : {
+                "ACEFamilyMedicalHistory" : {
+                    "adhd_father" : {}
+                }
             }
         };
     },
@@ -305,23 +310,47 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
             }
         });
     },
-    fieldChange: function(changeType, fieldName) {
+    fieldVisitSelect: function(action, visit, field) {
+        this.setState(function(state){
+            var temp = state.selectedFields[field.instrument][field.field];
+            if(action === "check") {
+                temp[visit] = visit;
+            } else {
+                delete temp[visit]
+            }
+            return temp;
+        });
+    },
+    fieldChange: function(fieldName, category) {
+        var that = this;
+        this.setState(function(state){
+            var temp = state.selectedFields;
+            if(!temp[category]){
+                temp[category] = {};
+                temp[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+            } else if(temp[category][fieldName]){
+                delete temp[category][fieldName];
+            } else {
+                temp[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+            }
+            return temp;
+        });
         //clone the fields array so that setState triggers a rerender
         // if we don't clone it and mutate it s etState thinks that the state has not changed
-        this.setState(function(state){
-            var fields = state.fields.slice(0);
-            var idx = fields.indexOf(fieldName);
-            if (changeType === 'add') {
-                if(idx === -1) {
-                    fields.push(fieldName);
-                }
-            } else if (changeType === 'remove') {
-                if(idx > -1) {
-                    fields.splice(idx, 1);
-                }
-            }
-            return { fields: fields, loadedQuery: '' };
-        });
+        // this.setState(function(state){
+        //     var fields = state.fields.slice(0);
+        //     var idx = fields.indexOf(fieldName);
+        //     if (changeType === 'add') {
+        //         if(idx === -1) {
+        //             fields.push(fieldName);
+        //         }
+        //     } else if (changeType === 'remove') {
+        //         if(idx > -1) {
+        //             fields.splice(idx, 1);
+        //         }
+        //     }
+        //     return { fields: fields, loadedQuery: '' };
+        // });
     },
     criteriaFieldChange: function(changeType, fieldName) {
         var fields = this.state.criteria;
@@ -519,7 +548,9 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 TabId: "DefineFields", 
                 categories: this.props.categories, 
                 onFieldChange: this.fieldChange, 
-                selectedFields: this.state.fields}
+                selectedFields: this.state.selectedFields, 
+                Visits: this.props.Visits, 
+                fieldVisitSelect: this.fieldVisitSelect}
         ));
         // tabs.push(<FilterSelectTabPane
         //         TabId="DefineFilters"
@@ -533,7 +564,8 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 TabId: "DefineFilters", 
                 categories: this.props.categories, 
                 filter: this.state.filter, 
-                updateFilter: this.updateFilter}
+                updateFilter: this.updateFilter, 
+                Visits: this.props.Visits}
             )
         );
         var displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudial";

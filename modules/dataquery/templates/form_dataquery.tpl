@@ -32,7 +32,8 @@ var queryApp = RDataQueryApp(
             "User" : {$savedqueries.user|json_encode},
             "Shared" : {$savedqueries.shared|json_encode}
         },
-        AllSessions : {$sessions|json_encode}
+        AllSessions : {$sessions|json_encode},
+        Visits: {$visits|json_encode}
     });
 React.render(queryApp, document.getElementById("reactTest"));
 </script>

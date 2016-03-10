@@ -40,13 +40,14 @@ InfoTabPane = React.createClass({displayName: "InfoTabPane",
 });
 
 FieldSelectTabPane = React.createClass({displayName: "FieldSelectTabPane",
-    mixins: [React.addons.PureRenderMixin],
     render: function() {
         return React.createElement(TabPane, {TabId: this.props.TabId}, 
                     React.createElement(FieldSelector, {title: "Fields", 
                         items: this.props.categories, 
                         onFieldChange: this.props.onFieldChange, 
-                        selectedFields: this.props.selectedFields}
+                        selectedFields: this.props.selectedFields, 
+                        Visits: this.props.Visits, 
+                        fieldVisitSelect: this.props.fieldVisitSelect}
                     )
             )
     }
@@ -68,7 +69,8 @@ FilterSelectTabPane = React.createClass({displayName: "FilterSelectTabPane",
             React.createElement(TabPane, {TabId: this.props.TabId}, 
                 React.createElement(FilterBuilder, {items: this.props.categories, 
                                updateFilter: this.props.updateFilter, 
-                               filter: this.props.filter}
+                               filter: this.props.filter, 
+                               Visits: this.props.Visits}
                 )
             )
         );

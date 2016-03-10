@@ -113,9 +113,22 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
+	toggleVisits: function() {
+		if(this.state.allSessions){
+			this.setState(function(state){
+				delete state.allSessions;
+				return state;
+			});
+		} else {
+			this.setState({
+				"allSessions": this.props.rule.session
+			});
+		}
+	},
 	render: function() {
 		var rule,
 			fieldIndex,
+			forVisits,
 			that = this;
 		if(this.props.rule.instrument) {
 			var fields = this.props.rule.fields.map(function(field, index){
@@ -176,6 +189,24 @@ FilterRule = React.createClass({displayName: "FilterRule",
 							);
 							break;
 					}
+					if(this.state.allSessions){
+						forVisits = (
+							React.createElement("button", {className: "btn btn-primary btn-sm pull-right", 
+								    onClick: this.toggleVisits
+							}, 
+								"All Visits"
+							)
+						);
+					}
+					else {
+						forVisits = (
+							React.createElement("button", {className: "btn btn-primary btn-sm pull-right", 
+								    onClick: this.toggleVisits
+							}, 
+								"For Visits"
+							)
+						);
+					}
 				}
 			}
 			rule = (
@@ -215,7 +246,8 @@ FilterRule = React.createClass({displayName: "FilterRule",
 								onClick: this.props.deleteRule.bind(this, this.props.index)
 						}, 
 							React.createElement("span", {className: "glyphicon glyphicon-remove"}), " Delete"
-						)
+						), 
+						forVisits
 					)
 				)
 			)
@@ -306,7 +338,8 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		    							index: index, 
 		    							updateRule: that.updateChild, 
 		    							updateSessions: that.updateSessions, 
-		    							deleteRule: that.deleteChild}
+		    							deleteRule: that.deleteChild, 
+		    							Visits: that.props.Visits}
 		    				)
 		    			)
 		    		);
@@ -318,7 +351,8 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		    							 index: index, 
 		    							 updateGroup: that.updateChild, 
 		    							 updateSessions: that.updateSessions, 
-		    							 deleteGroup: that.deleteChild}
+		    							 deleteGroup: that.deleteChild, 
+		    							 Visits: that.props.Visits}
 		    				)
 		    			)
 		    		);
@@ -375,7 +409,8 @@ FilterBuilder = React.createClass({displayName: "FilterBuilder",
 	        		React.createElement("div", {className: "well well-primary"}, 
 	        			React.createElement(FilterGroup, {group: this.props.filter, 
 	        						 items: this.props.items, 
-	        						 updateFilter: this.props.updateFilter}
+	        						 updateFilter: this.props.updateFilter, 
+	        						 Visits: this.props.Visits}
 	        			)
 					)
 				)

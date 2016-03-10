@@ -57,98 +57,55 @@ CategoryList = React.createClass({
     }
 });
 
-OperatorValue = React.createClass({
-    preventDefault: function(evt) {
-        evt.preventDefault();
-        evt.stopPropagation();
-    },
-    render: function() {
-        if(this.props.Type.indexOf('enum') === 0) {
-            var optString = this.props.Type.substr(5, this.props.Type.length-6);
-            var optArray  = optString.split(",");
-
-            optArray = optArray.map(function (element) {
-                var eTrim = element.trim();
-                return eTrim.substr(1, eTrim.length-2);
-            });
-            optArray = optArray.map(function (str) {
-                return <option value={str}>{str}</option>;
-            });
-            return (
-                <select
-                    className="queryValue"
-                    defaultValue={this.props.Value}
-                    onClick={this.preventDefault}
-                    onChange={this.props.onChange}>
-                        <option value=""></option>
-                        {optArray}
-                </select>
-            );
-        }
-        return (<input
-                    type="text"
-                    className="queryValue"
-                    onClick={this.preventDefault}
-                    onChange={this.props.onChange}
-                    defaultValue={this.props.Value}
-                />);
-    }
-});
 FieldItem = React.createClass({
-    changeCriteria: function(evt) {
-        evt.preventDefault();
-        evt.stopPropagation();
-        var op = this.props.Criteria;
-        var state = this.state;
-        if(evt.target.classList.contains("queryOperator")) {
-            op.operator = evt.target.value;
-        }
-        if(evt.target.classList.contains("queryValue")) {
-            op.value = evt.target.value;
-        }
-
-        if(this.props.onCriteriaChange) {
-            this.props.onCriteriaChange(this.props.FieldName, op);
+    visitSelect: function(evt){
+        var field = {
+            instrument : this.props.Category,
+            field : this.props.FieldName
+        };
+        if(evt.target.checked){
+            this.props.fieldVisitSelect("check", evt.target.value, field);
+        } else {
+            this.props.fieldVisitSelect("uncheck", evt.target.value, field);
         }
     },
     render: function() {
-        var classList = "list-group-item row";
-        var downloadIcon = "";
-        var criteria;
+        var classList = "list-group-item row",
+            downloadIcon = "",
+            criteria,
+            multiselect,
+            that = this;
         if(this.props.selected) {
             classList += " active";
+            multiselect = Object.keys(this.props.Visits).map(function(visit){
+                var checked = false;
+                if(that.props.selectedVisits[visit]){
+                    checked = true;
+                }
+                return (
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" value={visit} checked={checked} onChange={that.visitSelect}/> {visit}
+                        </label>
+                    </div>
+                );
+            });
         }
         if(this.props.downloadable) {
             downloadIcon = <span className="glyphicon glyphicon-download-alt pull-right" title="Downloadable File"></span>
         }
         // Don't display the category in the field selector
-        var displayName = this.props.FieldName.substring(this.props.Category.length + 1);
-
-        if(this.props.type === "Criteria" && this.props.selected) {
-            criteria = <span>
-                    <select className="queryOperator" onClick={this.changeCriteria} defaultValue={this.props.Criteria.operator}>
-                        <option value="="> = </option>
-                        <option value="!=">!=</option>
-                        <option value="&lt;=">&lt;=</option>
-                        <option value="&gt;=">&gt;=</option>
-                        <option value="startsWith">startsWith</option>
-                        <option value="contains">contains</option>
-                    </select>
-                    <OperatorValue Type={this.props.ValueType} onChange={this.changeCriteria} Value={this.props.Criteria.value} />
-                </span>;
-            return (
-                <div className={classList} onClick={this.props.onClick}>
-                    <h4 className="list-group-item-heading col-sm-12 col-md-2">{displayName}</h4>
-                    <span className="col-sm-10 col-md-7">{this.props.Description}</span>
-                    <span className="col-sm-2 col-md-3">{criteria}</span>
-                </div>
-            );
-        }
+        var displayName = this.props.FieldName;
 
         return (
-            <div className={classList} onClick={this.props.onClick}>
-                <h4 className="list-group-item-heading col-xs-12">{displayName}{criteria}{downloadIcon}</h4>
-                <span className="col-xs-12">{this.props.Description}</span>
+            <div className={classList}>
+                <div className="col-xs-8" onClick={this.props.onClick}>
+                    <h4 className="list-group-item-heading col-xs-12">{displayName}{criteria}{downloadIcon}</h4>
+                    <span className="col-xs-12">{this.props.Description}</span>
+                </div>
+                <div className="col-xs-4">
+                    {multiselect}
+                </div>
             </div>
         );
     }
@@ -161,12 +118,7 @@ FieldList = React.createClass({
         };
     },
     onFieldClick: function(fieldName) {
-        var that = this;
-        return function(evt) {
-            if(that.props.onFieldSelect) {
-                that.props.onFieldSelect(fieldName);
-            }
-        }
+        this.props.onFieldSelect(fieldName, this.props.category);
     },
     changePage: function(i) {
         this.setState({
@@ -186,8 +138,7 @@ FieldList = React.createClass({
         }
 
         for(var i = start; i < items.length; i += 1) {
-            fieldName = items[i].key;
-            fieldName = fieldName.join(",");
+            fieldName = items[i].key[1];
             desc = items[i].value.Description;
             type = items[i].value.Type || "varchar(255)";
 
@@ -200,24 +151,20 @@ FieldList = React.createClass({
             }
 
             selected=false;
-            if(this.props.selected && this.props.selected.indexOf(fieldName) > -1) {
+            if(this.props.selected && this.props.selected[fieldName]) {
                 selected=true;
             }
 
-            var crit = undefined;
-            if(this.props.Criteria && this.props.Criteria[fieldName]) {
-                crit = this.props.Criteria[fieldName];
-            }
             fields.push(<FieldItem FieldName={fieldName}
                 Category={this.props.category}
                 Description={desc}
                 ValueType={type}
-                type={this.props.type}
-                onClick={this.onFieldClick(fieldName)}
-                Criteria={crit}
-                onCriteriaChange={this.props.onCriteriaChange}
+                onClick={this.onFieldClick.bind(this, fieldName)}
                 selected={selected}
                 downloadable={isFile}
+                Visits={this.props.Visits}
+                selectedVisits={this.props.selected[fieldName]}
+                fieldVisitSelect = {this.props.fieldVisitSelect}
                 />);
             if(fields.length > rowsPerPage) {
                 break;
@@ -245,21 +192,22 @@ FieldSelector = React.createClass({
             }
         };
     },
-    onFieldSelect: function(fieldName) {
-        var fields = this.props.selectedFields;
-        var idx = fields.indexOf(fieldName);
+    onFieldSelect: function(fieldName, category) {
+        this.props.onFieldChange(fieldName, category);
+        // var fields = this.props.selectedFields;
+        // var idx = fields.indexOf(fieldName);
 
-        if(idx > -1) {
-            //fields.splice(idx, 1);
-            if(this.props.onFieldChange) {
-                this.props.onFieldChange("remove", fieldName);
-            }
-        } else {
-            //fields.push(fieldName);
-            if(this.props.onFieldChange) {
-                this.props.onFieldChange("add", fieldName);
-            }
-        }
+        // if(idx > -1) {
+        //     //fields.splice(idx, 1);
+        //     if(this.props.onFieldChange) {
+        //         this.props.onFieldChange("remove", fieldName);
+        //     }
+        // } else {
+        //     //fields.push(fieldName);
+        //     if(this.props.onFieldChange) {
+        //         this.props.onFieldChange("add", fieldName);
+        //     }
+        // }
     },
     onCategorySelect: function(category) {
         var that=this;
@@ -328,14 +276,14 @@ FieldSelector = React.createClass({
                     />
                     <FieldList
                         items={this.state.categoryFields[this.state.selectedCategory]}
-                        type={this.props.type}
                         category={this.state.selectedCategory}
                         Criteria={this.props.Criteria}
                         onFieldSelect={this.onFieldSelect}
-                        onCriteriaChange={this.props.onCriteriaChange}
                         FieldsPerPage="15"
-                        selected={this.props.selectedFields || []}
+                        selected={this.props.selectedFields[this.state.selectedCategory]}
                         Filter={this.state.filter}
+                        Visits={this.props.Visits}
+                        fieldVisitSelect = {this.props.fieldVisitSelect}
                     />
                 </div>
             </div>
