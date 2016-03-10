@@ -2064,7 +2064,7 @@ CREATE TABLE empty_queries (
 
 DROP TABLE IF EXISTS `data_release`;
 CREATE TABLE `data_release` (
- id int(10) AUTO_INCREMENT,
+ id int(10) NOT NULL AUTO_INCREMENT,
  file_name varchar(255),
  version varchar(255),
  upload_date date,
