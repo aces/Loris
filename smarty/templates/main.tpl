@@ -36,6 +36,19 @@
         <title>
             {$study_title}
         </title>
+            <script language="javascript" type="text/javascript">
+                $(document).ready(function(){
+                    {if $crumbs != "" && empty($error_message)}
+                        var crumbs = {$crumbs|@json_encode},
+                            baseurl = "{$baseurl}",
+                            breadcrumbs = RBreadcrumbs({
+                                breadcrumbs: crumbs,
+                                baseURL: baseurl
+                            });
+                        React.render(breadcrumbs, document.getElementById("breadcrumbs"));
+                    {/if}
+                })
+            </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
         <link href="{$baseurl}/css/simple-sidebar.css" rel="stylesheet">
 
@@ -201,36 +214,9 @@
                     </div>
 
                 {/if}
-                <!-- <div class="panel panel-primary"> -->
-                    
-                    {if $crumbs != "" && empty($error_message)}
-                        <div class="alert alert-info alert-sm">
-                            {section name=crumb loop=$crumbs}
-                                {if $test_name == "conflicts_resolve"}
-                                    <a href="main.php/{$crumbs[crumb].query}" class="text-default" style="color: white">
-                                        <label>Conflicts Resolver</label>
-                                    </a> 
-                                    {if not $smarty.section.crumb.last}
-                                        &gt; 
-                                    {/if}
-                                {elseif $test_name == "statistics_dd_site"}
-                                    <a href="main.php/{$crumbs[crumb].query}" class="text-default">
-                                        <label>Double Data Entry Site Statistics</label>
-                                    </a> 
-                                    {if not $smarty.section.crumb.last}
-                                        &gt; 
-                                    {/if}
-                                {else}
-                                    <a href="{$baseurl}{$crumbs[crumb].query}" style="color: white">
-                                        <label>{$crumbs[crumb].text}</label>
-                                    </a> 
-                                    {if not $smarty.section.crumb.last}
-                                        &gt; 
-                                    {/if}
-                                {/if}
-                            {/section}
-                        </div>
-                    {/if}
+                {if $crumbs != "" && empty($error_message)}
+                    <div id="breadcrumbs"></div>
+                {/if}
                         <div>
                             {if $error_message != ""}
                                 <p>

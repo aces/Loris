@@ -90,7 +90,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
         // Set up WebDriver implementation and login
-        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+        $capabilities = array(
+            WebDriverCapabilityType::BROWSER_NAME => 'firefox',
+            WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
+        );
 
         $this->webDriver = RemoteWebDriver::create(
             'http://localhost:4444/wd/hub',

@@ -50,7 +50,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
     {
         $this->safeGet($this->url . "/candidate_parameters/update_participant_status/?candID=900000&identifier=900000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(" Update Participant Status", $bodyText);
+        $this->assertContains("Update Participant Status", $bodyText);
     }
 
     /**
