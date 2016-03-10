@@ -51,6 +51,7 @@ class DashboardTest extends LorisIntegrationTest
     public function testDashboardMyTasksAccountsPendingApproval()
     {
         $this->safeGet($this->url . '/dashboard/');
+        sleep(1);
         $siteAll = $this->webDriver
             ->findElement(WebDriverBy::xpath(".//*[@id='overall-recruitment']/h5"))
             ->getText();
