@@ -2075,7 +2075,7 @@ DROP TABLE IF EXISTS `data_release_permissions`;
 CREATE TABLE `data_release_permissions` (
  userid int(10) unsigned NOT NULL,
  data_release_id int(10) unsigned NOT NULL,
- PRIMARY KEY (userid,data_release_id),
+ PRIMARY KEY (userid, data_release_id),
  KEY FK_userid (userid),
  KEY FK_data_release_id (data_release_id),
  CONSTRAINT FK_userid FOREIGN KEY (userid) REFERENCES `users` (id),
