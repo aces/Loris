@@ -41,5 +41,14 @@ class DashboardTest extends LorisIntegrationTest
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
         $this->assertContains("Welcome", $welcomeText);
     }
+
+      public function testDashboard()
+    {
+        $this->safeGet($this->url . '/document_repository/');
+
+        $welcomeText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector(".alert > a:nth-child(1) > label:nth-child(1)"))->getText();
+        $this->assertContains("Document Repository", $welcomeText);
+    }
 }
 ?>
