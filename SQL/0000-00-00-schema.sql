@@ -1837,7 +1837,9 @@ CREATE TABLE `genome_loc` (
   `EndLoc` int(11) DEFAULT NULL,
   `Size` int(11) DEFAULT NULL,
   `StartLoc` int(11) DEFAULT NULL,
-  PRIMARY KEY (`GenomeLocID`)
+  PRIMARY KEY (`GenomeLocID`),
+  UNIQUE KEY (Chromosome, StartLoc, EndLoc),
+  INDEX (Chromosome, EndLoc)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure for table `gene`
@@ -1862,7 +1864,8 @@ CREATE TABLE `genotyping_platform` (
   `Description` text,
   `TechnologyType` varchar(255) DEFAULT NULL,
   `Provider` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`PlatformID`)
+  PRIMARY KEY (`PlatformID`),
+  UNIQUE KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1981,26 +1984,68 @@ CREATE TABLE `genomic_files` (
   CONSTRAINT `FK_genomic_files_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `genomic_sample_candidate_rel`;
+CREATE TABLE `genomic_sample_candidate_rel` (
+  `sample_label` varchar(100) NOT NULL,
+  `candidate_id` int unsigned NOT NULL,
+  PRIMARY KEY (sample_label, candidate_id),
+  FOREIGN KEY (candidate_id)
+    REFERENCES candidate(ID)
+    ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+COMMENT = '';
+
+DROP TABLE IF EXISTS `genomic_cpg_annotation`;
+CREATE TABLE `genomic_cpg_annotation` (
+  `cpg_name` varchar(100) NOT NULL,
+  `probe_id_a` varchar(45) NULL,
+  `location_id` bigint(20) NOT NULL,
+  `address_id_a` int unsigned NULL,
+  `peobe_seq_a` varchar(100) NULL, 
+  `probe_id_b` varchar(45) NULL,
+  `address_id_b` int unsigned NULL,
+  `probe_seq_b` varchar(100) NULL,
+  `design_type` varchar(20) NULL,
+  `color_channel` enum ('Red', 'Grn') NULL,
+  `genome_build` varchar(40) NULL,
+  `probe_snp_10` varchar(40) NULL,
+  `gene_name` text NULL,
+  `gene_acc_num` text NULL,
+  `gene_group` text NULL,
+  `island_loc` varchar(100) NULL,
+  `island_relation` enum ('island', 'n_shelf', 'n_shore', 's_shelf', 's_shore') NULL, 
+  `fantom_promoter_loc`varchar(100) NULL,
+  `dmr` enum ('CDMR', 'DMR', 'RDMR') NULL,
+  `enhancer` tinyint(1) NULL,
+  `hmm_island_loc` varchar(100) NULL,
+  `reg_feature_loc_id` varchar(100) NULL,
+  `reg_feature_group` varchar(100) NULL,
+  `dhs` tinyint(1) NULL,
+  `platform_id` bigint(20) NULL,
+  PRIMARY KEY (cpg_name),
+  FOREIGN KEY (location_id)
+    REFERENCES genome_loc(`GenomeLocID`)
+    ON DELETE RESTRICT,
+  FOREIGN KEY (platform_id)
+    REFERENCES genotyping_platform(`PlatformID`)
+    ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+COMMENT = '';
+
+DROP TABLE IF EXISTS `genomic_cpg`;
 CREATE TABLE `genomic_cpg` (
-  `CandID` int(6) NOT NULL DEFAULT '0',
-  `visit_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `tissue` varchar(255) DEFAULT NULL,
-  `date_collected` date DEFAULT NULL,
-  `cpg` varchar(45) DEFAULT NULL,
-  `beta_value` double DEFAULT NULL,
-  `cpg_loc` int(11) DEFAULT NULL,
-  `cpg_island_loc` text,
-  `cpg_context` text,
-  `gene` text,
-  `genes_accession_number` text,
-  `chromosome` varchar(2) DEFAULT NULL,
-  `strand` char(1) DEFAULT NULL,
-  `Assembly` varchar(6) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `chip_id` varchar(10) DEFAULT NULL,
-  `chip_position` varchar(6) DEFAULT NULL,
-  `platform` varchar(255) DEFAULT NULL,
-  `Methylation` enum('High-methylation','Low-methylation','Partially') DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `sample_label` varchar(100) NOT NULL,
+  `cpg_name` varchar(100) NOT NULL,
+  `beta_value` decimal(4,3) DEFAULT NULL,
+  PRIMARY KEY (sample_label, cpg_name),
+  FOREIGN KEY (sample_label)
+    REFERENCES genomic_sample_candidate_rel(sample_label)
+    ON DELETE RESTRICT,
+  FOREIGN KEY (cpg_name)
+    REFERENCES genomic_cpg_annotation(cpg_name)
+    ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+COMMENT = '';
 
 CREATE TABLE `certification_training` (
     `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,

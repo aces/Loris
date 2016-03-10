@@ -2,9 +2,11 @@
   <div class="row">
     <div id="tabs">
       <ul class="nav nav-tabs">
-        <li class="statsTab"><a class="statsTabLink" href="/genomic_browser/">CNV</a></li>
-        <li class="statsTab"><a class="statsTabLink" href="/genomic_browser/?submenu=snp_browser">SNP</a></li>
-        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>CpG</strong></a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/">Profiles</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=gwas_browser">GWAS</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
+        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Methylation</strong></a></li>
       </ul>
       <br>
     </div>
