@@ -43,7 +43,7 @@ CREATE TABLE `genomic_files` (
   PRIMARY KEY (`GenomicFileID`),
   KEY `FK_genomic_files_1` (`CandID`),
   CONSTRAINT `FK_genomic_files_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for Genomic Browser table `SNP_candidate_rel`
@@ -61,9 +61,9 @@ CREATE TABLE `SNP_candidate_rel` (
   PRIMARY KEY (`SNPID`,`CandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO SNP_candidate_rel (SNPID, CandID, ObservedBase, ArrayReport, ArrayReportDetail, ValidationMethod, Validated, GenotypeQuality, PlatformID)  SELECT DISTINCT (SNPID, CandID, ObservedBase, ArrayReport, ArrayReportDetail, ValidationMethod, Validated, GenotypeQuality, PlatformID) FROM SNP;
+INSERT IGNORE INTO SNP_candidate_rel (SNPID, CandID, ObservedBase, ArrayReport, ArrayReportDetail, ValidationMethod, Validated, GenotypeQuality, PlatformID)  SELECT SNPID, CandID, ObservedBase, ArrayReport, ArrayReportDetail, ValidationMethod, Validated, GenotypeQuality, PlatformID FROM SNP;
 
-ALTER TABLE SNP DROP COLUMN ObservedBase, ArrayReport, ArrayReportDetail, ValidationMethod, Validated, GenotypeQuality, PlatformID;
+ALTER TABLE SNP DROP COLUMN ObservedBase, DROP COLUMN ArrayReport, DROP COLUMN ArrayReportDetail, DROP COLUMN ValidationMethod, DROP COLUMN Validated, DROP COLUMN GenotypeQuality, DROP FOREIGN KEY SNP_ibfk_1, DROP COLUMN PlatformID, DROP FOREIGN KEY SNP_ibfk_3, DROP COLUMN CandID, MODIFY COLUMN rsID varchar(20) DEFAULT NULL;
 
 -- Remove any duplicate SNP records, given dropped columns   
 CREATE TABLE temp_unique_SNP_records SELECT DISTINCT * from SNP;
