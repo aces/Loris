@@ -4,6 +4,7 @@
  * The timepoint details menu
  * @package behavioural
  */
+require_once __DIR__ ."/Instrument_List_ControlPanel.class.inc";
 class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 {
     function _hasAccess()
