@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Controls access to data release files.
  *
@@ -11,6 +12,7 @@
  *  @link     https://github.com/aces/Loris
  *
  */
+
 $user =& User::singleton();
 // Load config file and ensure paths are correct
 set_include_path(
@@ -62,4 +64,5 @@ if (empty($permission)) {
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
 fclose($fp);
+
 ?>

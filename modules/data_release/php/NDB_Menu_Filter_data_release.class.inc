@@ -28,7 +28,7 @@ require_once 'NDB_Menu_Filter.class.inc';
 class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
 {
     /**
-     * setup variables
+     * Setup variables
      *
      * @return None
      */

@@ -37,4 +37,5 @@ if ($_POST['action'] == 'upload') {
 } else {
     echo "There was an error uploading the file";
 }
+
 ?>
