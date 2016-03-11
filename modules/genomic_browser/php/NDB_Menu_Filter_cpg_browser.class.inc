@@ -69,44 +69,60 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                 'candidate.Gender',
                                 'cohort.SubprojectID as Subproject',
                                 'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
-                                'candidate.ExternalID as externalID',
-                                'cpg.tissue as Tissue',
-                                'cpg.date_collected as DATE_Collected',
-                                'cpg.CpG as CpG',
-                                'cpg.cpg_context as Context',
+                                'gscr.sample_label as Sample',
+                                'cpg.cpg_name as CPG',
                                 'cpg.beta_value as Beta_value',
-                                'cpg.methylation as Methylation',
-                                'cpg.gene as Gene',
-                                'cpg.genes_accession_number as Accession_number',
-                                'cpg.assembly as Assembly',
-                                'cpg.chromosome as Chromosome',
-                                'cpg.strand as Strand',
-                                'cpg.cpg_loc as StartLoc',
-                                'cpg.platform as Platform',
-                                'cpg.chip_id as Chip',
-                                'cpg.chip_position as Position',
+                                'genome_loc.Chromosome as Chromosome',
+                                'genome_loc.Strand as Strand',
+                                'genome_loc.StartLoc as StartLoc',
+                                'gca.probe_id_a as Probe_A',
+                                'gca.address_id_a as Probe_Loc_A',
+                                'gca.probe_seq_a as Probe_Seq_A',
+                                'gca.probe_id_b as Probe_B',
+                                'gca.address_id_b as Probe_Loc_B',
+                                'gca.probe_seq_b as Probe_Seq_B',
+                                'gca.design_type as Design',
+                                'gca.color_channel as Color',
+                                'gca.genome_build as Assembly',
+                                'gca.probe_snp_10 as SNP_10',
+                                'gca.gene_name as Gene',
+                                'gca.gene_acc_num as Accession_number',
+                                'gca.gene_group as Gene_Grp',
+                                'gca.island_loc as Island_Loc',
+                                'gca.island_relation as Context',
+                                'gca.fantom_promoter_loc as Fantom_Prom',
+                                'gca.dmr as DMR',
+                                'gca.enhancer as Enhancer',
+                                'gca.hmm_island_loc as HMM_Island',
+                                'gca.reg_feature_loc as Reg_Feature_Loc',
+                                'gca.reg_feature_group as Reg_Feature_Grp',
+                                'gca.dhs as DHS',
+                                'platform.Name as Platform',
                                );
 
         $this->_briefFields = array(
                                'DCCID',
                                'PSCID',
                                'Subproject',
-                               'Tissue',
-                               'CpG',
+                               'CPG',
                                'Beta_value',
-                               'Methylation',
+                               'Chromosome',
                                'Gene',
                               );
 
         // Chromosome from genome_loc table
         // INNER JOIN on table.
         // If a candidate has no CPG records, they will not appear.
-        $this->query = " FROM candidate 
+        $this->query = " FROM candidate
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID 
                     from session s GROUP BY s.CandID) AS cohort
             ON (cohort.CandID = candidate.CandID) 
             LEFT JOIN psc ON (psc.CenterID = candidate.CenterID)
-            JOIN genomic_cpg cpg ON (candidate.CandID = cpg.CandID)
+            LEFT JOIN genomic_sample_candidate_rel gscr ON (gscr.candidate_id = candidate.ID)
+            LEFT JOIN genomic_cpg cpg ON (gscr.sample_label = cpg.sample_label)
+            LEFT JOIN genomic_cpg_annotation gca USING (cpg_name)
+            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = gca.location_id)
+            LEFT JOIN genotyping_platform platform ON (gca.platform_id = platform.PlatformID)
             WHERE 
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
@@ -121,53 +137,82 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 
         $this->order_by     = 'psc.Name, candidate.CandID DESC';
         $this->validFilters = array(
-                               'candidate.CenterID',
+                               'PSC',
                                'candidate.CandID',
                                'candidate.PSCID',
                                'candidate.Gender',
                                'cohort.SubprojectID',
-                               'candidate.DoB',
-                               'candidate.ExternalID',
+                               'DoB',
                                'show_brief_results',
-                               'genomic_cpg.chromosome',
-                               'genomic_cpg.strand',
-                               'genomic_cpg.platform',
-                               'genomic_cpg.cpg',
-                               'genomic_cpg.beta_value',
-                               'genomic_cpg.tissue',
-                               'genomic_cpg.date_collected',
-                               'genomic_cpg.gene',
-                               'genomic_cpg.assembly',
-                               'genomic_cpg.genes_accession_number',
-                               'genomic_cpg.cpg_context',
-                               'genomic_cpg.strand',
-                               'genomic_cpg.methylation',
-                               'genomic_cpg.chip_id',
-                               'genomic_cpg.chip_position',
-                               'genomic_cpg.beta_value',
+                               'Sample',
+                               'CPG',
+                               'Beta_value',
+                               'Chromosome',
+                               'Strand',
+                               'StartLoc',
+                               'Platform',
+                               'Gene',
+                               'Assembly',
+                               'Accession_number',
+                               'Context',
+                               'Beta_value',
+                               'Probe_A',
+                               'Probe_Loc_A',
+                               'Probe_Seq_A',
+                               'Probe_B',
+                               'Probe_Loc_B',
+                               'Probe_Seq_B',
+                               'Design',
+                               'Color',
+                               'SNP_10',
+                               'Gene_Grp',
+                               'Island_Loc',
+                               'Fantom_Prom',
+                               'DMR',
+                               'Enhancer',
+                               'HMM_Island',
+                               'Reg_Feature_Loc',
+                               'Reg_Feature_Grp',
+                               'DHS',
+                               'Platform',
                               );
 
         $this->formToFilter = array(
-                               'centerID'           => 'candidate.CenterID',
-                               'DCCID'              => 'candidate.CandID',
-                               'PSCID'              => 'candidate.PSCID',
-                               'gender'             => 'candidate.Gender',
-                               'SubprojectID'       => 'cohort.SubprojectID',
-                               'dob'                => 'candidate.DoB',
-                               'External_ID'        => 'candidate.ExternalID',
-                               'Show_Brief_Results' => 'show_brief_results',
-                               'CpG'                => 'cpg.cpg',
-                               'Beta_value'         => 'cpg.beta_value',
-                               'Tissue'             => 'cpg.tissue',
-                               'Date_collected'     => 'cpg.date_collected',
-                               'Gene'               => 'cpg.gene',
-                               'AccNumber'          => 'cpg.genes_accession_number',
-                               'Context'            => 'cpg.Context',
-                               'Strand'             => 'cpg.Strand',
-                               'Methylation'        => 'cpg.methylation',
-                               'Chromosome'         => 'cpg.chromosome',
-                               'Platform'           => 'cpg.platform',
-                              );
+                'centerID'            => 'PSC',
+                'DCCID'               => 'candidate.CandID',
+                'PSCID'               => 'candidate.PSCID',
+                'gender'              => 'candidate.Gender',
+                'SubprojectID'        => 'cohort.SubprojectID',
+                'dob'                 => 'DoB',
+                'Show_Brief_Results'  => 'show_brief_results',
+                'Chromosome'          => 'Chromosome',
+                'Gene_Symbol'         => 'Gene',
+                'Platform'            => 'Platform',
+                'Strand'              => 'Strand',
+                'StartLoc'            => 'StartLoc',
+                'Assembly'            => 'Assembly',
+                'Accession_number'    => 'Accession_number',
+                'Context'             => 'Context',
+                'Beta_value'          => 'Beta_value',
+                'Probe_A'             => 'Probe_A',
+                'Probe_Loc_A'         => 'Probe_Loc_A',
+                'Probe_Seq_A'         => 'Probe_Seq_A',
+                'Probe_B'             => 'Probe_B',
+                'Probe_Loc_B'         => 'Probe_Loc_B',
+                'Probe_Seq_B'         => 'Probe_Seq_B',
+                'Design'              => 'Design',
+                'Color'               => 'Color',
+                'SNP_10'              => 'SNP_10',
+                'Gene_Grp'            => 'Gene_Grp',
+                'Island_Loc'          => 'Island_Loc',
+                'Fantom_Prom'         => 'Fantom_Prom',
+                'DMR'                 => 'DMR',
+                'Enhancer'            => 'Enhancer',
+                'HMM_Island'          => 'HMM_Island',
+                'Reg_Feature_Loc'     => 'Reg_Feature_Loc',
+                'Reg_Feature_Grp'     => 'Reg_Feature_Grp',
+                'DHS'                 => 'DHS',
+               );
 
         return true;
     }
@@ -207,7 +252,6 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->addSelect('centerID', 'Site:', $list_of_sites);
         $this->addBasicText('DCCID', 'DCCID:');
         $this->addBasicText('PSCID', 'PSCID:');
-        $this->addBasicText('External_ID', 'External ID:');
         $this->addSelect(
             'gender',
             'Gender:',
@@ -240,6 +284,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                          'S_Shelf' => 'South shelf',
                          'S_Shore' => 'South shore',
                         );
+        $Base_options = $this->getDistinctValue('genomic_cpg_annotation', 'island_relation');
         $this->addSelect('Context', 'Context:', $Base_options);
         $this->addBasicText('Date_collected', 'Date collected:');
         $Base_options = array(
@@ -273,7 +318,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 
         $DB = Database::singleton();
         $platform_results
-            = $DB->select("SELECT distinct platform FROM genomic_cpg ");
+            = $DB->select("SELECT gp.Name FROM genotyping_platform gp where EXISTS (select gca.cpg_name from genomic_cpg_annotation gca WHERE gca.platform_id = gp.Name) ");
         $platform_options = array('' => 'Any');
         foreach ($platform_results as $row => $result ) {
             $name = $result['platform'];
@@ -441,6 +486,15 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
              $baseURL . "/genomic_browser/js/genomic_browser.js",
             )
         );
+    }
+
+    function getDistinctValue( $table, $column) 
+    {
+        $DB = Database::singleton();
+        $results = $DB->pselect("SELECT DISTINCT $column FROM $table ", array());
+        return array_map( function($e) {
+            return array_values($e)[0];
+        }, $results);
     }
 }
 ?>
