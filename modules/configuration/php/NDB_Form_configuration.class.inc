@@ -6,7 +6,7 @@
  *
  * @category Behavioural
  * @package  Main
- * @author   Olga Tsibulevskaya <olgatsib@gmail.com>
+ * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
@@ -18,7 +18,7 @@
  *
  * @category Behavioural
  * @package  Main
- * @author   Olga Tsibulevskaya <olgatsib@gmail.com>
+ * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
@@ -61,16 +61,6 @@ class NDB_Form_Configuration extends NDB_Form
             array()
         );
 
-        // Check whether any setting is overwritten in the config.xml
-        // Add this info to the array so form entries can be disabled in front end
-        foreach ($configs as &$setting) {
-            if ($config->settingExistsInXML($setting['Name'])) {
-                $setting['Disabled'] = 'Yes';
-            } else {
-                $setting['Disabled'] = 'No';
-            }
-        }
-
         // add values
         foreach ($configs as &$tag) {
             $value = $this->DB->pselect(
@@ -81,6 +71,24 @@ class NDB_Form_Configuration extends NDB_Form
                 foreach ($value as $subvalue) {
                     $tag['Value'][$subvalue['ID']] = $subvalue['Value'];
                 }
+            }
+        }
+
+        // Check whether any setting is overwritten in the config.xml
+        // Add this info to the array so form entries can be disabled in front end
+        // Update the value for the setting to the value from the config.xml
+        foreach ($configs as &$setting) {
+            try {
+                $valueFromXML = $config->getSettingFromXML($setting['Name']);
+                unset($setting['Value']);
+                if (!is_array($valueFromXML)) {
+                    $setting['Value'][0] = $valueFromXML;
+                } else {
+                    $setting['Value'] = $valueFromXML;
+                }
+                $setting['Disabled'] = 'Yes';
+            } catch (ConfigurationException $e) {
+                $setting['Disabled'] = 'No';
             }
         }
 
