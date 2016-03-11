@@ -62,14 +62,14 @@ class NDB_Form_Configuration extends NDB_Form
         );
 
         // add values
-        foreach ($configs as &$tag) {
+        foreach ($configs as &$setting) {
             $value = $this->DB->pselect(
                 "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
-                array('ID' => $tag{'ID'})
+                array('ID' => $setting{'ID'})
             );
             if ($value) {
                 foreach ($value as $subvalue) {
-                    $tag['Value'][$subvalue['ID']] = $subvalue['Value'];
+                    $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
                 }
             }
         }
@@ -79,14 +79,16 @@ class NDB_Form_Configuration extends NDB_Form
         // Update the value for the setting to the value from the config.xml
         foreach ($configs as &$setting) {
             try {
-                $valueFromXML = $config->getSettingFromXML($setting['Name']);
-                unset($setting['Value']);
-                if (!is_array($valueFromXML)) {
-                    $setting['Value'][0] = $valueFromXML;
-                } else {
-                    $setting['Value'] = $valueFromXML;
+                if ($setting['Parent'] != null) {
+                    $valueFromXML = $config->getSettingFromXML($setting['Name']);
+                    unset($setting['Value']);
+                    if (!is_array($valueFromXML)) {
+                        $setting['Value'][0] = $valueFromXML;
+                    } else {
+                        $setting['Value'] = $valueFromXML;
+                    }
+                    $setting['Disabled'] = 'Yes';
                 }
-                $setting['Disabled'] = 'Yes';
             } catch (ConfigurationException $e) {
                 $setting['Disabled'] = 'No';
             }
@@ -101,6 +103,8 @@ class NDB_Form_Configuration extends NDB_Form
         foreach ($configs as &$node) {
             $tree[$node['Parent']]['Children'][] = &$node;
         }
+
+
 
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => ''), $instruments);
