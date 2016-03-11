@@ -56,7 +56,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Server Processes Manager', '/server_processes_manager/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 6);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
-    ('Acknowledgements','main.php?test_name=acknowledgements', (SELECT ID FROM LorisMenu as L WHERE Label='Acknowledgements'), 1);
+    ('Acknowledgements','/acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Acknowledgements'), 1);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
