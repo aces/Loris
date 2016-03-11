@@ -125,7 +125,7 @@ if (!empty($TestName)) {
         if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
             && strcmp($_SERVER['REQUEST_URI'], '/') != 0
         ) {
-              $tpl_data['test_name_css'] = "$baseURL/$TestName/css/$TestName.css";
+              $tpl_data['test_name_css'] = "/$TestName/css/$TestName.css";
         } else {
               $tpl_data['test_name_css'] = "GetCSS.php?Module=$TestName";
         }
