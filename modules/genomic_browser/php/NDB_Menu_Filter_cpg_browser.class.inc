@@ -178,42 +178,71 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                               );
 
         $this->formToFilter = array(
-                'centerID'            => 'PSC',
+                'centerID'            => 'candidate.CenterID',
                 'DCCID'               => 'candidate.CandID',
                 'PSCID'               => 'candidate.PSCID',
                 'gender'              => 'candidate.Gender',
                 'SubprojectID'        => 'cohort.SubprojectID',
-                'dob'                 => 'DoB',
+                'dob'                 => 'candidate.DoB',
                 'Show_Brief_Results'  => 'show_brief_results',
-                'Chromosome'          => 'Chromosome',
-                'Gene_Symbol'         => 'Gene',
-                'Platform'            => 'Platform',
-                'Strand'              => 'Strand',
-                'StartLoc'            => 'StartLoc',
-                'Assembly'            => 'Assembly',
-                'Accession_number'    => 'Accession_number',
-                'Context'             => 'Context',
-                'Beta_value'          => 'Beta_value',
-                'Probe_A'             => 'Probe_A',
-                'Probe_Loc_A'         => 'Probe_Loc_A',
-                'Probe_Seq_A'         => 'Probe_Seq_A',
-                'Probe_B'             => 'Probe_B',
-                'Probe_Loc_B'         => 'Probe_Loc_B',
-                'Probe_Seq_B'         => 'Probe_Seq_B',
-                'Design'              => 'Design',
-                'Color'               => 'Color',
-                'SNP_10'              => 'SNP_10',
-                'Gene_Grp'            => 'Gene_Grp',
-                'Island_Loc'          => 'Island_Loc',
-                'Fantom_Prom'         => 'Fantom_Prom',
-                'DMR'                 => 'DMR',
-                'Enhancer'            => 'Enhancer',
-                'HMM_Island'          => 'HMM_Island',
-                'Reg_Feature_Loc'     => 'Reg_Feature_Loc',
-                'Reg_Feature_Grp'     => 'Reg_Feature_Grp',
-                'DHS'                 => 'DHS',
+                'Chromosome'          => 'genome_loc.Chromosome',
+                'Gene_Symbol'         => 'gca.gene_name',
+                'Platform'            => 'platform.Name',
+                'Strand'              => 'genome_loc.Strand',
+                'StartLoc'            => 'genome_loc.StartLoc',
+                'Assembly'            => 'gca.genome_build',
+                'Accession_number'    => 'gca.gene_acc_num',
+                'Context'             => 'gca.island_relation',
+                'Beta_value'          => 'cpg.beta_value',
+                'Probe_A'             => 'gca.probe_id_a',
+                'Probe_Loc_A'         => 'gca.address_id_a',
+                'Probe_Seq_A'         => 'gca.probe_seq_a',
+                'Probe_B'             => 'gca.probe_id_b',
+                'Probe_Loc_B'         => 'gca.address_id_b',
+                'Probe_Seq_B'         => 'gca.probe_seq_b',
+                'Design'              => 'gca.design_type',
+                'Color'               => 'gca.color_channel',
+                'SNP_10'              => 'gca.probe_snp_10',
+                'Gene_Grp'            => 'gca.gene_group',
+                'Island_Loc'          => 'gca.island_loc',
+                'Fantom_Prom'         => 'gca.fantom_promoter_loc',
+                'DMR'                 => 'gca.dmr',
+                'Enhancer'            => 'gca.enhancer',
+                'HMM_Island'          => 'gca.hmm_island_loc',
+                'Reg_Feature_Loc'     => 'gca.reg_feature_loc',
+                'Reg_Feature_Grp'     => 'gca.reg_feature_group',
+                'DHS'                 => 'gca.dhs',
                );
 
+/*
+                                'gscr.sample_label as Sample',
+                                'cpg.cpg_name as CPG',
+                                'cpg.beta_value as Beta_value',
+                                'genome_loc.Chromosome as Chromosome',
+                                'genome_loc.Strand as Strand',
+                                'genome_loc.StartLoc as StartLoc',
+                                'gca.probe_id_a as Probe_A',
+                                'gca.address_id_a as Probe_Loc_A',
+                                'gca.probe_seq_a as Probe_Seq_A',
+                                'gca.probe_id_b as Probe_B',
+                                'gca.address_id_b as Probe_Loc_B',
+                                'gca.probe_seq_b as Probe_Seq_B',
+                                'gca.design_type as Design',
+                                'gca.color_channel as Color',
+                                'gca.genome_build as Assembly',
+                                'gca.probe_snp_10 as SNP_10',
+                                'gca.gene_name as Gene',
+                                'gca.gene_acc_num as Accession_number',
+                                'gca.gene_group as Gene_Grp',
+                                'gca.island_loc as Island_Loc',
+                                'gca.island_relation as Context',
+                                'gca.fantom_promoter_loc as Fantom_Prom',
+                                'gca.dmr as DMR',
+                                'gca.enhancer as Enhancer',
+                                'gca.hmm_island_loc as HMM_Island',
+                                'gca.reg_feature_loc as Reg_Feature_Loc',
+                                'gca.reg_feature_group as Reg_Feature_Grp',
+*/
         return true;
     }
 
@@ -275,56 +304,79 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
               );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
-        // CpG
-        $this->addBasicText('CpG', 'CpG:');
-        $Base_options = array(
-                         null      => 'Any',
-                         'Island'  => 'Island',
-                         'N_Shore' => 'North shore',
-                         'S_Shelf' => 'South shelf',
-                         'S_Shore' => 'South shore',
-                        );
-        $Base_options = $this->getDistinctValue('genomic_cpg_annotation', 'island_relation');
-        $this->addSelect('Context', 'Context:', $Base_options);
-        $this->addBasicText('Date_collected', 'Date collected:');
-        $Base_options = array(
-                         null               => 'Any',
-                         'High-methylation' => 'High-methylation',
-                         'Partially'        => 'Partially',
-                         'Low-methylation'  => 'Low-methylation',
-                        );
-        $this->addSelect('Methylation', 'Methylation:', $Base_options);
-        $this->addBasicText('Beta_value', 'Beta-value:');
-        $Base_options = array(
-                         null     => 'Any',
-                         'Buccal' => 'Buccal',
-                        );
-        $this->addSelect('Tissue', 'Tissue:', $Base_options);
-
-        // Gene
+/*
+                'Assembly'            => 'Assembly',
+                'Accession_number'    => 'Accession_number',
+                'Beta_value'          => 'Beta_value',
+                'Probe_A'             => 'Probe_A',
+                'Probe_Loc_A'         => 'Probe_Loc_A',
+                'Probe_Seq_A'         => 'Probe_Seq_A',
+                'Probe_B'             => 'Probe_B',
+                'Probe_Loc_B'         => 'Probe_Loc_B',
+                'Probe_Seq_B'         => 'Probe_Seq_B',
+                'Design'              => 'Design',
+                'Color'               => 'Color',
+                'SNP_10'              => 'SNP_10',
+                'Gene_Grp'            => 'Gene_Grp',
+                'Island_Loc'          => 'Island_Loc',
+                'Fantom_Prom'         => 'Fantom_Prom',
+                'DMR'                 => 'DMR',
+                'Enhancer'            => 'Enhancer',
+                'HMM_Island'          => 'HMM_Island',
+                'Reg_Feature_Loc'     => 'Reg_Feature_Loc',
+                'Reg_Feature_Grp'     => 'Reg_Feature_Grp',
+                'DHS'                 => 'DHS',
+*/
         $this->addBasicText('Chromosome', 'Chromosome:');
-        $Base_options = array(
-                         null     => 'Any',
-                         'GRCh37' => 'GRCh37',
-                        );
-        $this->addSelect('Assembly', 'Build:', $Base_options);
+        $this->addBasicText('Gene_Symbol', 'Gene:');
+        $this->addBasicText('StartLoc', 'Location:');
+        $this->addBasicText('Beta_value', 'Beta-value:');
+
+        // Assembly
+        $distinct_values = $this->getDistinctValue('genomic_cpg_annotation', 'genome_build');
+        $Base_options = array();
+        foreach ($distinct_values as $option) {
+            if ($option == NULL) {
+                $Base_options[null] = 'Any';
+            } else {
+                $Base_options[$option] = $option;
+            }
+        }
+        $this->addSelect('Platform', 'Platform:', $Base_options);
+
+        // Strand
         $Base_options = array(
                          null => 'Any',
                          'F'  => 'Foward',
                          'R'  => 'Reverse',
                         );
         $this->addSelect('Strand', 'Strand:', $Base_options);
-        $this->addBasicText('Gene', 'Symbol:');
 
-        $DB = Database::singleton();
-        $platform_results
-            = $DB->select("SELECT gp.Name FROM genotyping_platform gp where EXISTS (select gca.cpg_name from genomic_cpg_annotation gca WHERE gca.platform_id = gp.Name) ");
-        $platform_options = array('' => 'Any');
-        foreach ($platform_results as $row => $result ) {
-            $name = $result['platform'];
-            $platform_options[$name] = $name;
+        // Platform
+        $distinct_values = $this->getDistinctValue('genotyping_platform', 'Name');
+        $Base_options = array();
+        foreach ($distinct_values as $option) {
+            if ($option == NULL) {
+                $Base_options[null] = 'Any';
+            } else {
+                $Base_options[$option] = $option;
+            }
         }
-        $this->addSelect('Platform', 'Platform:', $platform_options);
+        $this->addSelect('Platform', 'Platform:', $Base_options);
+
+        // Context
+        $distinct_values = $this->getDistinctValue('genomic_cpg_annotation', 'island_relation');
+        $Base_options = array();
+        foreach ($distinct_values as $option) {
+            if ($option == NULL) {
+                $Base_options[null] = 'Any';
+            } else {
+                $Base_options[$option] = $option;
+            }
+        }
+        $this->addSelect('Context', 'Context:', $Base_options);
+
+
 
         return true;
     }
