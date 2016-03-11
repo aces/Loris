@@ -213,45 +213,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $this->DB->insert(
-            'parameter_type',
-            array(
-             'ParameterTypeID' => 1000,
-             'Name'            => 'Selected',
-             'Type'            => null,
-             'Description'     => null,
-             'RangeMin'        => null,
-             'RangeMax'        => null,
-             'SourceField'     => null,
-             'SourceFrom'      => null,
-             'SourceCondition' => null,
-             'CurrentGUITable' => 'AnyTextToDeleteThisEntry',
-             'Queryable'       => 1,
-             'IsFile'          => 0,
-            )
-        );
-        $this->DB->insert(
-            'parameter_file',
-            array(
-             'ParameterFileID' => 10,
-             'FileID'          => 1,
-             'ParameterTypeID' => 1000,
-             'Value'           => 't2',
-             'InsertTime'      => 0,
-            )
-        );
-
-        $this->DB->insert(
-            'parameter_file',
-            array(
-             'ParameterFileID' => 11,
-             'FileID'          => 2,
-             'ParameterTypeID' => 1000,
-             'Value'           => 't1',
-             'InsertTime'      => 0,
-            )
-        );
-
-        $this->DB->insert(
             'mri_acquisition_dates',
             array(
              'SessionID'       => 999998,
@@ -278,6 +239,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'QCStatus'          => null,
              'QCFirstChangeTime' => 1455040145,
              'QCLastChangeTime'  => 1455040145,
+             'Selected'          => 't2'
             )
         );
 
@@ -292,6 +254,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'QCStatus'          => null,
              'QCFirstChangeTime' => 1455040145,
              'QCLastChangeTime'  => 1455040145,
+             'Selected'          => 't1'
             )
         );
 
@@ -316,12 +279,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete(
             "mri_processing_protocol",
             array('ProcessProtocolID' => '2')
-        );
-        $this->DB->delete("parameter_file", array('ParameterFileID' => '10'));
-        $this->DB->delete("parameter_file", array('ParameterFileID' => '11'));
-        $this->DB->delete(
-            "parameter_type",
-            array('CurrentGUITable' => 'AnyTextToDeleteThisEntry')
         );
         $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999998'));
         $this->DB->delete("mri_acquisition_dates", array('SessionID' => '999999'));
