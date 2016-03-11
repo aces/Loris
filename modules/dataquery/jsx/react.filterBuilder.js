@@ -51,6 +51,7 @@ FilterRule = React.createClass({
 		delete rule.fieldType;
 		delete rule.operator;
 		delete rule.value;
+		delete rule.visit;
 		if(event.target.value) {
 			rule.field = rule.fields[event.target.value].key[1];
 			rule.fieldType = rule.fields[event.target.value].value.Type;
@@ -61,8 +62,10 @@ FilterRule = React.createClass({
 		var rule = this.props.rule;
 		delete rule.operator;
 		delete rule.value;
+		delete rule.visit;
 		if(event.target.value) {
 			rule.operator = event.target.value;
+			rule.visit = "All";
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
@@ -113,22 +116,16 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
-	toggleVisits: function() {
-		if(this.state.allSessions){
-			this.setState(function(state){
-				delete state.allSessions;
-				return state;
-			});
-		} else {
-			this.setState({
-				"allSessions": this.props.rule.session
-			});
-		}
+	updateVisit: function(event) {
+		var rule = this.props.rule;
+		rule.visit = event.target.value;
+		this.props.updateRule(that.props.index, rule);
 	},
 	render: function() {
 		var rule,
 			fieldIndex,
 			forVisits,
+			visits,
 			that = this;
 		if(this.props.rule.instrument) {
 			var fields = this.props.rule.fields.map(function(field, index){
@@ -155,7 +152,7 @@ FilterRule = React.createClass({
 				}
 				value = (this.props.rule.operator) ? this.props.rule.operator : "";
 				operatorSelect = (
-					<select className="input-sm col-xs-4 " onChange={this.operatorSelect} value={value}>
+					<select className="input-sm col-xs-3 " onChange={this.operatorSelect} value={value}>
 						<option value=""></option>
 						{operators}
 					</select>
@@ -173,7 +170,7 @@ FilterRule = React.createClass({
 							});
 							value = (this.props.rule.value) ? this.props.rule.value : "";
 							input = (
-								<select className="input-sm col-xs-4" onChange={this.valueSet} value={value}>
+								<select className="input-sm col-xs-3" onChange={this.valueSet} value={value}>
 									<option value=""></option>
 									{options}
 								</select>
@@ -182,31 +179,26 @@ FilterRule = React.createClass({
 						default:
 							input = (
 								<input type="text"
-									   className="input-sm col-xs-4"
+									   className="input-sm col-xs-3"
 									   onChange={this.valueSet}
 									   value={this.props.rule.value}
 								/>
 							);
 							break;
 					}
-					if(this.state.allSessions){
-						forVisits = (
-							<button className="btn btn-primary btn-sm pull-right"
-								    onClick={this.toggleVisits}
-							>
-								All Visits
-							</button>
+					visits = Object.keys(this.props.Visits).map(function(visit){
+						return (
+							<option value={visit}>
+								{visit}
+							</option>
 						);
-					}
-					else {
-						forVisits = (
-							<button className="btn btn-primary btn-sm pull-right"
-								    onClick={this.toggleVisits}
-							>
-								For Visits
-							</button>
-						);
-					}
+					});
+					forVisits = (
+						<select className="input-sm col-xs-3" onChange={this.updateVisit} value={this.props.rule.visit}>
+							<option value="all">All Visits</option>
+							{visits}
+						</select>
+					);
 				}
 			}
 			rule = (
@@ -215,12 +207,13 @@ FilterRule = React.createClass({
 						<label className="instrumentLabel">{this.props.rule.instrument}</label>
 					</div>
 					<div className="col-xs-10">
-						<select className="input-sm col-xs-4" onChange={this.fieldSelect} value={fieldIndex}>
+						<select className="input-sm col-xs-3" onChange={this.fieldSelect} value={fieldIndex}>
 							<option value=""></option>
 							{fields}
 						</select>
 						{operatorSelect}
 						{input}
+						{forVisits}
 					</div>
 				</div>
 			);
@@ -247,7 +240,6 @@ FilterRule = React.createClass({
 						>
 							<span className="glyphicon glyphicon-remove"></span> Delete
 						</button>
-						{forVisits}
 					</div>
 				</div>
 			</div>
