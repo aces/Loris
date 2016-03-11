@@ -104,8 +104,6 @@ class NDB_Form_Configuration extends NDB_Form
             $tree[$node['Parent']]['Children'][] = &$node;
         }
 
-
-
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => ''), $instruments);
         $useProjects = $config->getSetting("useProjects");
