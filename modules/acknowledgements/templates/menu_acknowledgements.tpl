@@ -62,7 +62,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-4 col-md-3 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=acknowledgements&reset=true'" />
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/acknowledgements/?reset=true'" />
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
@@ -96,7 +96,7 @@
                             
                             <tr class="info">
                                     {section name=header loop=$headers}
-                                        <th><a href="/acknowledgements&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                                        <th><a href="{$baseurl}/acknowledgements/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                                             {$headers[header].displayName}
                                         </a></th>
                                     {/section}
