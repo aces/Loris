@@ -77,6 +77,21 @@
 <div id="tabs" style="background: white">
     <div class="tab-content">
         <div class="tab-pane active">
+            <table class="table table-hover table-primary table-bordered table-unresolved-conflicts dynamictable" border="0">
+                        <thead>
+                            <tr class="info">
+                                <th>Citation Policy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td nowrap="nowrap">
+                                    <div class="col-sm-12 col-md-12">To come from config file</div>
+                                </td>
+                            </tr>
+                        </tbody>
+            </table>
+
             <!--  title table with pagination -->
             <table id="LogEntries" border="0" valign="bottom" width="100%">
                 <tr>
