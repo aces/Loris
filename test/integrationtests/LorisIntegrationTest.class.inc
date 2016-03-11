@@ -426,7 +426,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $newWebDriver = null;
 
         // keep a reference from the actual page
-        $oldBody = $this->webDriver->findElement(
+        $oldBody = $this->safeFindElement(
             WebDriverBy::xPath(
                 "
                 //body
