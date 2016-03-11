@@ -6,7 +6,7 @@
         <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
     </div>
     <div class="panel-body">
-        <form method="post" action="main.php?test_name=acknowledgements">
+        <form method="post" action="/acknowledgements/">
             <div class="row">
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
@@ -84,7 +84,7 @@
                     <td align="right">{$page_links}</td>
                 </tr>
             </table>
-                <form method="post" action="main.php?test_name=acknowledgements" name="acknowledgements" id="acknowledgements">
+                <form method="post" action="/acknowledgements/" name="acknowledgements" id="acknowledgements">
                     <table class="table table-hover table-primary table-bordered table-unresolved-conflicts dynamictable" border="0">
                         <thead>
 
@@ -96,7 +96,7 @@
                             
                             <tr class="info">
                                     {section name=header loop=$headers}
-                                        <th><a href="main.php?test_name=&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                                        <th><a href="/acknowledgements&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                                             {$headers[header].displayName}
                                         </a></th>
                                     {/section}
