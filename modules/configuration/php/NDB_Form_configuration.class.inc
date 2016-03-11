@@ -62,7 +62,7 @@ class NDB_Form_Configuration extends NDB_Form
         );
 
         // Check whether any setting is overwritten in the config.xml
-        // Add this info to the array so form entries can be disabled in the front end
+        // Add this info to the array so form entries can be disabled in front end
         foreach ($configs as &$setting) {
             if ($config->settingExistsInXML($setting['Name'])) {
                 $setting['Disabled'] = 'Yes';
