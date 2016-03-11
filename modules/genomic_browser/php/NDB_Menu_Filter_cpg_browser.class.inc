@@ -64,7 +64,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->_displayBrief = !(isset($_REQUEST['format']));
         $this->columns       = array(
                                 'psc.Name AS PSC',
-                                'candidate.CandID AS DCCID',
+                                'LPAD(candidate.CandID, 6, "0") AS DCCID',
                                 'candidate.PSCID',
                                 'candidate.Gender',
                                 'cohort.SubprojectID as Subproject',
@@ -514,6 +514,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             ) {
 
                  $query .= " AND $field = :v_$prepared_key";
+            } elseif ($field == "candidate.CandID") {
+                $query .= " AND $field = " . ltrim($val, '0');
             } else {
                  $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
             }
