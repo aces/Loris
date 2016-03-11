@@ -59,5 +59,19 @@ class DashboardTest extends LorisIntegrationTest
             )->getText();
         $this->assertContains("Document Repository", $welcomeText);
     }
+    /**
+     * Tests logout, when logout this page, the login button appears
+     * in the login page.
+     *
+     * @return void
+     */
+    public function testLogout()
+    {
+        $this->safeGet($this->url . '/dashboard/');
+        $this->safeGet($this->url . '/main.php?logout=true');
+        $LoginBtn = $this->webDriver
+            ->findElement(WebDriverBy::Id("loginAPI"))->getAttribute("value");
+        $this->assertContains("Login", $LoginBtn);
+    }
 }
 ?>
