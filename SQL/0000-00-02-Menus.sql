@@ -16,7 +16,7 @@ INSERT INTO LorisMenu (Label, OrderNumber) VALUES
      ('Reports', 4), 
      ('Tools', 5), 
      ('Admin', 6),
-     ('Acknowledgements', 7);;
+     ('Acknowledgements', 7);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('New Profile', '/new_profile/', (SELECT ID FROM LorisMenu as L WHERE Label='Candidate'), 1),
