@@ -50,7 +50,7 @@
             {call name=printForm node=$node}
         {/if}
         {if $node['AllowMultiple'] == 1}
-            <button class="btn btn-success add" id="{$node['ID']}" type="button">
+            <button class="btn btn-success add" id="{$node['ID']}" type="button" {if $node['Disabled'] eq "Yes"}disabled{/if}>
                 <span class="glyphicon glyphicon-plus"></span> Add field
             </button>
         {/if}
@@ -75,7 +75,7 @@
         {/if}
         {if $node['AllowMultiple'] == 1}
             <div class="input-group-btn">
-                <button class="btn btn-danger btn-remove" type="button" name="remove-{$k}">
+                <button class="btn btn-danger btn-remove" type="button" name="remove-{$k}" {if $node['Disabled'] eq "Yes"}disabled{/if}>
                     <span class="glyphicon glyphicon-remove"></span>&nbsp;
                 </button>
             </div>
@@ -85,17 +85,17 @@
         {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
         {assign var=id value={"add-"|cat:$node['ID']} }
         {if $node['DataType'] eq 'instrument'}
-            {call createInstrument k=$id}
+            {call createInstrument k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
-            {call createEmail k=$id}
+            {call createEmail k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'textarea'}
-            {call createTextArea k=$id}
+            {call createTextArea k=$id d=$node['Disabled']}
         {else}
-            {call createText k=$id}
+            {call createText k=$id d=$node['Disabled']}
         {/if}
         {if $node['AllowMultiple'] == 1}
             <div class="input-group-btn">
-                <button class="btn btn-danger btn-remove remove-new" type="button">
+                <button class="btn btn-danger btn-remove remove-new" type="button" {if $node['Disabled'] eq "Yes"}disabled{/if}>
                     <span class="glyphicon glyphicon-remove"></span>&nbsp;
                 </button>
             </div>
