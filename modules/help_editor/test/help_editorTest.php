@@ -38,13 +38,13 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "help",
             array(
-             'helpID'         => '999999',
-             'parentID'       => '-1',
-             'hash'           => '7292dd87f9a200f21bf40ded779a58c2',
-             'topic'          => 'Test Topic',
-             'content'        => 'This is a test content.',
-             'created'        => '2013-04-05 00:00:00',
-             'updated'        => 'NULL',
+             'helpID'   => '999999',
+             'parentID' => '-1',
+             'hash'     => '7292dd87f9a200f21bf40ded779a58c2',
+             'topic'    => 'Test Topic',
+             'content'  => 'This is a test content.',
+             'created'  => '2013-04-05 00:00:00',
+             'updated'  => 'NULL',
             )
         );
     }
@@ -74,43 +74,26 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     function testHelpPageLoad()
     {
-<<<<<<< HEAD
         $this->safeGet($this->url . "/help_editor/");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Help Editor", $bodyText);
-    }
-=======
-        $this->safeGet($this->url."/help_editor/");
-        $assertText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();
-
-        $this->assertContains("Help Editor", $assertText);
-
+        $this->assertContains("Help Editor", $bodyText);
     }//end test_help_pageload()
->>>>>>> 91de51c9153a07af90c86cefb38027f4b736a4f1
     /**
      * Tests that, when loading the help_editor module > edit help submodule, some
      * text appears in the body.
      *
      * @return void
      */
-    function testPageLoad()
-    {
-<<<<<<< HEAD
-        $this->safeGet($this->url . "/help_editor/edit_help_content/");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Edit Help Content", $bodyText);
-    }
-}
-?>
-=======
-        $this->safeGet($this->url."/help_editor/edit_help_content/");
-        $assertText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
-            ->getText();
+function testPageLoad()
+{
+    $this->safeGet($this->url."/help_editor/edit_help_content/");
+    $assertText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+        ->getText();
 
-        $this->assertContains("Edit Help Content", $assertText);
+    $this->assertContains("Edit Help Content", $assertText);
 
-    }//end test_page_load()
+}//end test_page_load()
 
 
     /**
@@ -119,20 +102,20 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testSearchTopic()
-    {
-        $this->safeGet($this->url.'/help_editor/');
-        $searchbox = $this->webDriver
-            ->findElement(WebDriverBy::Name("topic"));
-        $searchbox->sendKeys("Test Topic");
-        $showdata = $this->webDriver
-            ->findElement(WebDriverBy::Name("filter"));
-        $showdata->click();
-        $assertText = $this->webDriver
-            ->findElement(WebDriverBy::Id("Topic"))->getText();
-        $this->assertContains("Test Topic", $assertText);
+public function testSearchTopic()
+{
+    $this->safeGet($this->url.'/help_editor/');
+    $searchbox = $this->webDriver
+        ->findElement(WebDriverBy::Name("topic"));
+    $searchbox->sendKeys("Test Topic");
+    $showdata = $this->webDriver
+        ->findElement(WebDriverBy::Name("filter"));
+    $showdata->click();
+    $assertText = $this->webDriver
+        ->findElement(WebDriverBy::Id("Topic"))->getText();
+    $this->assertContains("Test Topic", $assertText);
 
-    }//end test_search_topic()
+}//end test_search_topic()
 
     /**
      * Tests that, when loading the help editor, search the keywork with This is
@@ -141,20 +124,20 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testSearchKeyword()
-    {
-        $this->safeGet($this->url.'/help_editor/');
-        $searchbox = $this->webDriver
-            ->findElement(WebDriverBy::Name("keyword"));
-        $searchbox->sendKeys("This is a test content.");
-        $showdata = $this->webDriver
-            ->findElement(WebDriverBy::Name("filter"));
-        $showdata->click();
-        $assertText = $this->webDriver
-            ->findElement(WebDriverBy::Id("Topic"))->getText();
-        $this->assertContains("Test Topic", $assertText);
+public function testSearchKeyword()
+{
+    $this->safeGet($this->url.'/help_editor/');
+    $searchbox = $this->webDriver
+        ->findElement(WebDriverBy::Name("keyword"));
+    $searchbox->sendKeys("This is a test content.");
+    $showdata = $this->webDriver
+        ->findElement(WebDriverBy::Name("filter"));
+    $showdata->click();
+    $assertText = $this->webDriver
+        ->findElement(WebDriverBy::Id("Topic"))->getText();
+    $this->assertContains("Test Topic", $assertText);
 
-    }//end test_search_keyword()
+}//end test_search_keyword()
 
 
     /**
@@ -163,22 +146,21 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testClearForm()
-    {
-        $this->safeGet($this->url.'/help_editor/');
-        $searchbox = $this->webDriver
-            ->findElement(WebDriverBy::Name("topic"));
-        $searchbox->sendKeys("Hand Preference");
-        $clearform = $this->webDriver
-            ->findElement(WebDriverBy::Name("reset"));
-        $clearform->click();
-        $assertText = $this->webDriver
-            ->findElement(WebDriverBy::Name("topic"))->getText();
-        $this->assertEquals(null, $assertText);
+public function testClearForm()
+{
+    $this->safeGet($this->url.'/help_editor/');
+    $searchbox = $this->webDriver
+        ->findElement(WebDriverBy::Name("topic"));
+    $searchbox->sendKeys("Hand Preference");
+    $clearform = $this->webDriver
+        ->findElement(WebDriverBy::Name("reset"));
+    $clearform->click();
+    $assertText = $this->webDriver
+        ->findElement(WebDriverBy::Name("topic"))->getText();
+    $this->assertEquals(null, $assertText);
 
-    }//end test_clear_form()
+}//end test_clear_form()
 
 
 }//end class
-                                                                                                                                           169,0-1       Bot
->>>>>>> 91de51c9153a07af90c86cefb38027f4b736a4f1
+?>
