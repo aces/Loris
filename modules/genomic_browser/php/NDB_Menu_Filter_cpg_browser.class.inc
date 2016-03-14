@@ -116,13 +116,19 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->query = " FROM candidate
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID 
                     from session s GROUP BY s.CandID) AS cohort
-            ON (cohort.CandID = candidate.CandID) 
-            LEFT JOIN psc ON (psc.CenterID = candidate.CenterID)
-            LEFT JOIN genomic_sample_candidate_rel gscr ON (gscr.candidate_id = candidate.ID)
-            LEFT JOIN genomic_cpg cpg ON (gscr.sample_label = cpg.sample_label)
-            LEFT JOIN genomic_cpg_annotation gca USING (cpg_name)
-            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = gca.location_id)
-            LEFT JOIN genotyping_platform platform ON (gca.platform_id = platform.PlatformID)
+                ON (cohort.CandID = candidate.CandID) 
+            LEFT JOIN psc
+                ON (psc.CenterID = candidate.CenterID)
+            LEFT JOIN genomic_sample_candidate_rel gscr
+                ON (gscr.candidate_id = candidate.ID)
+            LEFT JOIN genomic_cpg cpg
+                ON (gscr.sample_label = cpg.sample_label)
+            LEFT JOIN genomic_cpg_annotation gca
+                USING (cpg_name)
+            LEFT JOIN genome_loc
+                ON (genome_loc.GenomeLocID = gca.location_id)
+            LEFT JOIN genotyping_platform platform
+                ON (gca.platform_id = platform.PlatformID)
             WHERE 
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
@@ -167,44 +173,44 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                               );
 
         $this->formToFilter = array(
-                'centerID'            => 'candidate.CenterID',
-                'DCCID'               => 'candidate.CandID',
-                'PSCID'               => 'candidate.PSCID',
-                'gender'              => 'candidate.Gender',
-                'SubprojectID'        => 'cohort.SubprojectID',
-                'dob'                 => 'candidate.DoB',
-                'Show_Brief_Results'  => 'show_brief_results',
-                'CPG'                 => 'cpg.cpg_name',
-                'Beta_value'          => 'cpg.beta_value',
-                'Chromosome'          => 'genome_loc.Chromosome',
-                'Gene_Symbol'         => 'gca.gene_name',
-                'Platform'            => 'platform.Name',
-                'Strand'              => 'genome_loc.Strand',
-                'StartLoc'            => 'genome_loc.StartLoc',
-                'Assembly'            => 'gca.genome_build',
-                'Context'             => 'gca.island_relation',
-                'Design'              => 'gca.design_type',
-                'Color'               => 'gca.color_channel',
-                'SNP_10'              => 'gca.probe_snp_10',
-                'Gene_Grp'            => 'gca.gene_group',
-                'Island_Loc'          => 'gca.island_loc',
-                'Fantom_Prom'         => 'gca.fantom_promoter_loc',
-                'DMR'                 => 'gca.dmr',
-                'Enhancer'            => 'gca.enhancer',
-                'HMM_Island'          => 'gca.hmm_island_loc',
-                'Reg_Feature_Loc'     => 'gca.reg_feature_loc',
-                'Reg_Feature_Grp'     => 'gca.reg_feature_group',
-                'DHS'                 => 'gca.dhs',
-               );
+                               'centerID'           => 'candidate.CenterID',
+                               'DCCID'              => 'candidate.CandID',
+                               'PSCID'              => 'candidate.PSCID',
+                               'gender'             => 'candidate.Gender',
+                               'SubprojectID'       => 'cohort.SubprojectID',
+                               'dob'                => 'candidate.DoB',
+                               'Show_Brief_Results' => 'show_brief_results',
+                               'CPG'                => 'cpg.cpg_name',
+                               'Beta_value'         => 'cpg.beta_value',
+                               'Chromosome'         => 'genome_loc.Chromosome',
+                               'Gene_Symbol'        => 'gca.gene_name',
+                               'Platform'           => 'platform.Name',
+                               'Strand'             => 'genome_loc.Strand',
+                               'StartLoc'           => 'genome_loc.StartLoc',
+                               'Assembly'           => 'gca.genome_build',
+                               'Context'            => 'gca.island_relation',
+                               'Design'             => 'gca.design_type',
+                               'Color'              => 'gca.color_channel',
+                               'SNP_10'             => 'gca.probe_snp_10',
+                               'Gene_Grp'           => 'gca.gene_group',
+                               'Island_Loc'         => 'gca.island_loc',
+                               'Fantom_Prom'        => 'gca.fantom_promoter_loc',
+                               'DMR'                => 'gca.dmr',
+                               'Enhancer'           => 'gca.enhancer',
+                               'HMM_Island'         => 'gca.hmm_island_loc',
+                               'Reg_Feature_Loc'    => 'gca.reg_feature_loc',
+                               'Reg_Feature_Grp'    => 'gca.reg_feature_group',
+                               'DHS'                => 'gca.dhs',
+                              );
 
         $this->EqualityFilters = array(
-           'candidate.Gender',
-           'cpg.cpg_name',
-           'gca.genome_build', 
-           'gca.design_type',
-           'genome_loc.Strand',
-           'gca.gene_name',
-        );
+                                  'candidate.Gender',
+                                  'cpg.cpg_name',
+                                  'gca.genome_build',
+                                  'gca.design_type',
+                                  'genome_loc.Strand',
+                                  'gca.gene_name',
+                                 );
 
         return true;
     }
@@ -240,7 +246,6 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         // SubprojectID
         $list_of_subprojects = Utility::getSubprojectList();
 
-
         // ------------------------------------------------------------
         // ----------------- Candidate Filters --------------------
         // ------------------------------------------------------------
@@ -271,7 +276,6 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
               );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
-
         // ------------------------------------------------------------
         // ----------------- Genomic Range Filters --------------------
         // ------------------------------------------------------------
@@ -279,8 +283,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->addBasicText('Gene_Symbol', 'Gene:');
         $this->addBasicText('Chromosome', 'Chromosome:');
         $Base_options = array(
-                         null  => 'Any',
-                         '37'  => 'GRCh37',
+                         null => 'Any',
+                         '37' => 'GRCh37',
                         );
         $this->addSelect('Assembly', 'Build:', $Base_options);
         $Base_options = array(
@@ -292,30 +296,33 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->addBasicText('StartLoc', 'From:');
         $this->addBasicText('EndLoc', 'To:');
 
-
         // ------------------------------------------------------------
         // ----------------- CPG Annotations Filters --------------------
         // ------------------------------------------------------------
 
         $this->addBasicText('CPG', 'CPG:');
-        
+
         // Context
-        $distinct_values = $this->getDistinctValue('genomic_cpg_annotation', 'island_relation');
-        $Base_options = array(
-                         null => 'Any'
+        $distinct_values = $this->getDistinctValue(
+            'genomic_cpg_annotation',
+            'island_relation'
         );
+        $Base_options    = array(null => 'Any');
         foreach ($distinct_values as $option) {
-            if ($option !== NULL) {
+            if ($option !== null) {
                 $Base_options[$option] = $option;
             }
         }
         $this->addSelect('Context', 'Context:', $Base_options);
 
         // Platform
-        $distinct_values = $this->getDistinctValue('genotyping_platform', 'Name');
-        $Base_options = array();
+        $distinct_values = $this->getDistinctValue(
+            'genotyping_platform',
+            'Name'
+        );
+        $Base_options    = array();
         foreach ($distinct_values as $option) {
-            if ($option == NULL) {
+            if ($option == null) {
                 $Base_options[null] = 'Any';
             } else {
                 $Base_options[$option] = $option;
@@ -337,9 +344,9 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 
         // Design
         $Base_options = array(
-                         null  => 'Any',
-                         'I'   => 'I',
-                         'II'  => 'II',
+                         null => 'Any',
+                         'I'  => 'I',
+                         'II' => 'II',
                         );
         $this->addSelect('Design', 'Infinium design:', $Base_options);
 
@@ -360,24 +367,24 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 
         // SNP_10
         $Base_options = array(
-                         null       => 'Any',
-                         'NULL'     => 'No',
-                         '_'     => 'Yes',
+                         null   => 'Any',
+                         'NULL' => 'No',
+                         '_'    => 'Yes',
                         );
         $this->addSelect('SNP_10', 'SNP:', $Base_options);
 
         // Reg_Feature_Grp
-        $distinct_values = $this->getDistinctValue('genomic_cpg_annotation', 'reg_feature_group');
-        $Base_options = array(
-                         null => 'Any'
+        $distinct_values = $this->getDistinctValue(
+            'genomic_cpg_annotation',
+            'reg_feature_group'
         );
+        $Base_options    = array(null => 'Any');
         foreach ($distinct_values as $option) {
-            if ($option !== NULL) {
+            if ($option !== null) {
                 $Base_options[$option] = $option;
             }
         }
         $this->addSelect('Reg_Feature_Grp', 'Regulatory feat.:', $Base_options);
-
 
         // Fantom_Prom
         $Base_options = array(
@@ -402,14 +409,11 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                         );
         $this->addSelect('DHS', 'DHS:', $Base_options);
 
-
         // DMR
         $distinct_values = $this->getDistinctValue('genomic_cpg_annotation', 'dmr');
-        $Base_options = array(
-                         null => 'Any'
-        );
+        $Base_options    = array(null => 'Any');
         foreach ($distinct_values as $option) {
-            if ($option !== NULL) {
+            if ($option !== null) {
                 $Base_options[$option] = $option;
             }
         }
@@ -578,13 +582,28 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         );
     }
 
-    function getDistinctValue( $table, $column) 
+    /**
+     * This needs to be rewrited to transforme the list
+     * Into an associative array.
+     *
+     * @param string $table  The tables name
+     * @param string $column The column name
+     *
+     * @return array of distinct values
+     */
+    function getDistinctValue( $table, $column)
     {
-        $DB = Database::singleton();
-        $results = $DB->pselect("SELECT DISTINCT $column FROM $table ", array());
-        return array_map( function($e) {
-            return array_values($e)[0];
-        }, $results);
+        $DB      = Database::singleton();
+        $results = $DB->pselect(
+            "SELECT DISTINCT $column FROM $table ",
+            array()
+        );
+        return array_map(
+            function ($e) {
+                    return array_values($e)[0];
+            },
+            $results
+        );
     }
 }
 ?>
