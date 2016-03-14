@@ -115,7 +115,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
                     "/form/div[2]/div/div[1]/input"
                 )
             );
-        $showdata->click();
+        $this->webDriver->action()->click($showdata)->perform();
         $assertText = $this->webDriver
             ->findElement(WebDriverBy::Id("Topic"))->getText();
         $this->assertContains("Test Topic", $assertText);
@@ -142,7 +142,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
                     "/form/div[2]/div/div[1]/input"
                 )
             );
-        $showdata->click();
+        $this->webDriver->action()->click($showdata)->perform();
         $assertText = $this->webDriver
             ->findElement(WebDriverBy::Id("Topic"))->getText();
         $this->assertContains("Test Topic", $assertText);
@@ -169,7 +169,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
                     "form/div[2]/div/div[2]/input"
                 )
             );
-        $clearform->click();
+        $this->webDriver->action()->click($clearform)->perform();
         $assertText = $this->webDriver
             ->findElement(WebDriverBy::Name("topic"))->getText();
         $this->assertEquals(null, $assertText);
