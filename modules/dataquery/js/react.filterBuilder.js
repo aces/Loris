@@ -52,6 +52,7 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		delete rule.operator;
 		delete rule.value;
 		delete rule.visit;
+		delete rule.candidates;
 		if(event.target.value) {
 			rule.field = rule.fields[event.target.value].key[1];
 			rule.fieldType = rule.fields[event.target.value].value.Type;
@@ -63,9 +64,9 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		delete rule.operator;
 		delete rule.value;
 		delete rule.visit;
+		delete rule.candidates;
 		if(event.target.value) {
 			rule.operator = event.target.value;
-			rule.visit = "All";
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
@@ -73,9 +74,29 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		var rule = this.props.rule,
 			that = this;
 		delete rule.value;
+		delete rule.visit;
+		delete rule.candidates;
 		if(event.target.value) {
 			var responseHandler = function(data) {
-		            rule.session = data;
+					var i,
+						allSessions = {},
+						allCandiates = {};
+					for(i = 0; i < data.length; i++){
+						if(!allSessions[data[i][1]]){
+							allSessions[data[i][1]] = [];
+						}
+						allSessions[data[i][1]].push(data[i][0]);
+						if(!allCandiates[data[i][0]]){
+							allCandiates[data[i][0]] = []
+						}
+						allCandiates[data[i][0]].push(data[i][1]);
+					}
+					rule.candidates = {
+						"allCandiates" : allCandiates,
+						"allSessions" : allSessions
+					};
+		            rule.session = Object.keys(allCandiates);
+		            rule.visit = "All";
 		            that.props.updateSessions(rule);
 		        },
 				ajaxRetrieve = function(script) {
@@ -119,6 +140,11 @@ FilterRule = React.createClass({displayName: "FilterRule",
 	updateVisit: function(event) {
 		var rule = this.props.rule;
 		rule.visit = event.target.value;
+		if(event.target.value === "all"){
+			rule.sessions = Object.keys(rule.candidates.allCandiates);
+		} else {
+			rule.sessions = rule.candidates.allSessions[event.target.value];
+		}
 		this.props.updateRule(that.props.index, rule);
 	},
 	render: function() {
@@ -186,6 +212,8 @@ FilterRule = React.createClass({displayName: "FilterRule",
 							);
 							break;
 					}
+				}
+				if(this.props.rule.visit){
 					visits = Object.keys(this.props.Visits).map(function(visit){
 						return (
 							React.createElement("option", {value: visit}, 
