@@ -75,40 +75,52 @@
               <div class="form-group col-sm-5">
                 <div class="panel panel-primary">
                   <div class="panel-heading" onclick="hideFilterGene();">
-                    Gene Filters
+                    Genomic range Filters
                     <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-gene"></span>
                     <span class="glyphicon glyphicon-chevron-up pull-right" id="up-gene"></span>
                   </div>
                   <div class="panel-body" id="panel-body-gene">
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="HUGO Gene Nomenclature Committee ID ex: PINK1">
-                          {$form.Gene.label}
+                        <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="HUGO Gene Nomenclature Committee ID ex: PINK1">
+                          {$form.Gene_Symbol.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
-                          {$form.Gene.html}
+                          {$form.Gene_Symbol.html}
                         </div>
-                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Genome Reference Consortium ID">
+                        <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="Genome Reference Consortium ID">
                           {$form.Assembly.label}
                         </label>
-                        <div class="col-sm-12 col-md-2">
+                        <div class="col-sm-12 col-md-3">
                           {$form.Assembly.html}
                         </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Chromosome number or symbole">
                           {$form.Chromosome.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
                           {$form.Chromosome.html}
                         </div>
-                        <label class="col-sm-12 col-md-2">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="form-group col-sm-12">
+                        <label class="col-sm-12 col-md-1">
                           {$form.Strand.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
                           {$form.Strand.html}
+                        </div>
+                        <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="Start location on the genome">
+                          {$form.StartLoc.label}
+                        </label>
+                        <div class="col-sm-12 col-md-3">
+                          {$form.StartLoc.html}
+                        </div>
+                        <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="End location on the genome">
+                          {$form.EndLoc.label}
+                        </label>
+                        <div class="col-sm-12 col-md-3">
+                          {$form.EndLoc.html}
                         </div>
                       </div>
                     </div>
@@ -128,57 +140,67 @@
                   <div class="panel-body" id="panel-body-cpg">
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="HAIB Methyl450 item ID ex: cg12045430">
-        		  {$form.CpG.label}
+                        <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="HAIB Methyl450 item ID ex: cg12045430">
+        		  {$form.CPG.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.CpG.html}
+        		  {$form.CPG.html}
 			</div>
-                        <label style="" class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="High-methylation : beta-value > 0.6
-Partially methylated : 0.2 < beta-value <= 0.6
-Low-methylation : beta-value <= 0.2">
-        		  {$form.Methylation.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Methylation.html}
-			</div>
-                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Relation to UCSC CpG island">
+                        <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="Relation to UCSC CpG island">
         		  {$form.Context.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
         		  {$form.Context.html}
 			</div>
+                        <label class="col-sm-12 col-md-1">
+                          {$form.Platform.label}
+                        </label>
+                        <div class="col-sm-12 col-md-3">
+                          {$form.Platform.html}
+                        </div>
 		      </div>
 		    </div>
 		    <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
-        		  {$form.Tissue.label}
+                        <label class="col-sm-12 col-md-1">
+                          {$form.Gene_Grp.label}
                         </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Tissue.html}
-			</div>
-                        <label class="col-sm-12 col-md-2">
-        		  {$form.Date_collected.label}
+                        <div class="col-sm-12 col-md-2">
+                          {$form.Gene_Grp.html}
+                        </div>
+                        <label class="col-sm-12 col-md-1">
+                          {$form.Design.label}
                         </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Date_collected.html}
-			</div>
-                        <label class="col-sm-12 col-md-2">
-        		  {$form.Beta_value.label}
+                        <div class="col-sm-12 col-md-2">
+                          {$form.Design.html}
+                        </div>
+                        <label class="col-sm-12 col-md-1">
+                          {$form.Color.label}
                         </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Beta_value.html}
-			</div>
+                        <div class="col-sm-12 col-md-2">
+                          {$form.Color.html}
+                        </div>
 		      </div>
 		    </div>
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
-                          {$form.Platform.label}
+                        <label class="col-sm-12 col-md-1">
+                          {$form.Enhancer.label}
                         </label>
-                        <div class="col-sm-12 col-md-4">
-                          {$form.Platform.html}
+                        <div class="col-sm-12 col-md-2">
+                          {$form.Enhancer.html}
+                        </div>
+                        <label class="col-sm-12 col-md-1">
+                          {$form.SNP_10.label}
+                        </label>
+                        <div class="col-sm-12 col-md-2">
+                          {$form.SNP_10.html}
+                        </div>
+                        <label class="col-sm-12 col-md-1">
+                          {$form.Reg_Feature_Grp.label}
+                        </label>
+                        <div class="col-sm-12 col-md-3">
+                          {$form.Reg_Feature_Grp.html}
                         </div>
                       </div>
                     </div>
