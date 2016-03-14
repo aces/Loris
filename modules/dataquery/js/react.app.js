@@ -421,6 +421,15 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
             var field_split = fields[i].split(",");
             var category = field_split[0];
             if(DocTypes.indexOf(category) === -1) {
+                var sessionInfo = [];
+                for(var j = 0; j < this.state.filter.session.length; j++){
+                    for(var key in this.state.selectedFields[category].allVisits){
+                        var temp = [];
+                        temp.push(this.state.filter.session[j]);
+                        temp.push(key);
+                        sessionInfo.push(temp);
+                    }
+                }
                 // Found a new type of doc, retrieve the data
                 DocTypes.push(category);
                 semaphore++;
@@ -429,7 +438,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                     url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
                     data: {
                         DocType: category,
-                        Sessions: sessions
+                        Sessions: sessionInfo
                     },
                     dataType: 'text',
                     success: function(data) {
