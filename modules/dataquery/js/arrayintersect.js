@@ -37,41 +37,27 @@ var arrayIntersect = function(arrays) {
         return arrays[0];
     }
 
-    // Start with the first array as a base.
-    var firstArray = arrays[0];
-    var otherArrays = arrays.slice(1);
+    var obj = {},
+        results = [];
 
-    // Filter the items that aren't in all other arrays
-    var results = firstArray.filter(function(item) {
-        // Go through all of the other arrays to make sure
-        // they contain this item at least once.
-        for(var i = 0; i < otherArrays.length; i += 1) {
-            // Assume that the current element is missing until
-            // we find it.
-            var missingInI = true;
-
-            var array2 = otherArrays[i];
-            for(var j = 0; j < array2.length; j += 1) {
-                // If it's found, flag that and stop going through the rest
-                // of this array.
-                if(arrayEquals(array2[j], item)) {
-                    missingInI = false;
-                    break;
+    for(var i = 0; i < arrays.length; i++){
+        for(var j = 0; j < arrays[i].length; j++){
+            if(i === 0) {
+                obj[arrays[i][j]] = 1;
+            } else {
+                if(obj[arrays[i][j]]){
+                    obj[arrays[i][j]]++;
                 }
             }
-
-            // We went through this whole array and didn't find it, so we know
-            // this item will get filtered and we can directly return false without
-            // bothering to check further arrays.
-            if(missingInI) {
-                return false;
-            }
         }
-        // We found this item in all the arrays that were passed,
-        // so it should remain.
-        return true;
+    }
 
-    });
+    for(var k in obj) {
+        if(obj[k] === arrays.length){
+            results.push(k);
+        }
+    }
+
     return results;
 };
 
@@ -92,7 +78,7 @@ var arrayUnion = function(arrays) {
         };
     for (var i = 0; i < arrays.length; i++){
         for(var j = 0; j < arrays[i].length; j++){
-            obj[getKey(arrays[i][j])] = arrays[i][j];
+            obj[arrays[i][j]] = arrays[i][j];
         }
     }
     for(var k in obj) {
