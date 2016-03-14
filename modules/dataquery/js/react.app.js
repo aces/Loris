@@ -308,11 +308,17 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
     },
     fieldVisitSelect: function(action, visit, field) {
         this.setState(function(state){
-            var temp = state.selectedFields[field.instrument][field.field];
+            var temp = state.selectedFields[field.instrument];
             if(action === "check") {
-                temp[visit] = visit;
+                temp[field.field][visit] = visit;
+                temp.allVisits[visit]++;
             } else {
-                delete temp[visit]
+                delete temp[field.field][visit];
+                if(temp.allVisits[visit] === 1){
+                    delete temp.allVisits[visit];
+                } else {
+                    temp.allVisits[visit]--;
+                }
             }
             return temp;
         });
@@ -325,13 +331,34 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
             if(!selectedFields[category]){
                 selectedFields[category] = {};
                 selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+                selectedFields[category].allVisits = {};
+                for(var key in that.props.Visits){
+                    selectedFields[category].allVisits[key] = 1;
+                }
                 fields.push(category + "," + fieldName);
             } else if(selectedFields[category][fieldName]){
+                for(var key in selectedFields[category][fieldName]){
+                    if(selectedFields[category].allVisits[key] === 1){
+                        delete selectedFields[category].allVisits[key];
+                    } else {
+                        selectedFields[category].allVisits[key]--;
+                    }
+                }
                 delete selectedFields[category][fieldName];
                 var idx = fields.indexOf(category + "," + fieldName);
                 fields.splice(idx, 1);
+                if(Object.keys(selectedFields[category]).length === 1){
+                    delete selectedFields[category];
+                }
             } else {
                 selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+                for(var key in that.props.Visits){
+                    if(selectedFields[category].allVisits[key]){
+                        selectedFields[category].allVisits[key]++;
+                    } else {
+                        selectedFields[category].allVisits[key] = 1;
+                    }
+                }
                 fields.push(category + "," + fieldName);
             }
             return {
