@@ -6,23 +6,6 @@
     {
         "type" : "pear",
         "url" : "https://pear.php.net"
-    },
-    {
-        "type": "package",
-        "package": {
-            "name": "PHPOffice/PHPExcel",
-            "version": "1.8.0",
-            "source": {
-                "url": "https://github.com/PHPOffice/PHPExcel.git",
-                "type": "git",
-                "reference": "1.8.0"
-            },
-            "autoload": {
-                "psr-0": {
-                    "PHPExcel": "Classes/"
-                }
-            }
-        }
     }
     ],
     "require" : {
