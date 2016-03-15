@@ -1,4 +1,9 @@
 #!/usr/bin/python3
+
+#
+# python3 HumanMethylation450k_annotations_to_sql.py <annotation_file> | tee output.sql | mysql -u <user> -p <database>
+#
+
 import csv
 import re
 import sys
@@ -20,13 +25,19 @@ with open(annotation_file, 'r') as f:
     # Read line until the [Assay] section starts. (Skip headers)
     for line in f:
        if re.search('^\[Assay\]', line) :
-          break;
+          break
 
     reader = csv.DictReader(f, delimiter=',')
     for line in reader:
+      
+        
+        if line["Name"] == '':
+            sys.stdout.write('-- Parser encoutered a line with an unexpected format.\n')
+            sys.stdout.write('-- Closing file.\n')
+            break
 
         if 0 == len(line["Name"]) or 0 == len(line["CHR"]) or 0 == len(line["MAPINFO"]):
-            continue;
+            continue
 
         sys.stdout.write("INSERT IGNORE INTO genome_loc (Chromosome, EndLoc, StartLoc, Strand) VALUES\n")
         sys.stdout.write("  ('" + line["CHR"] + "'," + line["MAPINFO"] + "," + line["MAPINFO"] + ",'" + line["Strand"] + "');\n")

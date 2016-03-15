@@ -561,13 +561,13 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 
     /**
      * Provide an array of distinct value from a column in
-     * the specified table. The first element has a null key and 
+     * the specified table. The first element has a null key and
      * its value is 'Any'.
      *
      * @param string $table  The tables name
      * @param string $column The column name
      *
-     * @return array An array where value are keys as well as values  
+     * @return array An array where value are keys as well as values
      */
     function getDistinctValues( $table, $column)
     {
@@ -576,13 +576,17 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             "SELECT DISTINCT $column FROM $table ",
             array()
         );
-        return array_reduce($results, function ($carry, $item) {
-            $value = array_values($item)[0];
-            if (!empty($value)) {
-                $carry[$value] = $value;
-            }
-            return $carry;
-        }, array(null => 'Any'));
+        return array_reduce(
+            $results,
+            function ($carry, $item) {
+                $value = array_values($item)[0];
+                if (!empty($value)) {
+                    $carry[$value] = $value;
+                }
+                return $carry;
+            },
+            array(null => 'Any')
+        );
 
     }
 }
