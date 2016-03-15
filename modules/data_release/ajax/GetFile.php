@@ -13,12 +13,7 @@
  */
 
 $user =& User::singleton();
-// Load config file and ensure paths are correct
-set_include_path(
-    get_include_path() . ":" .
-    __DIR__ . "/../project/libraries:" .
-    __DIR__ . "/../php/libraries"
-);
+
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
