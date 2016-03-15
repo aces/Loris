@@ -21,10 +21,10 @@ INSERT INTO help (parentID, hash, topic, content, updated) VALUES (-1, md5('inst
 ON DUPLICATE KEY UPDATE content='Once inside a time point, the user will see some general information about the candidate across the top of the screen, such as gender, visit label, and subproject. The status of each particular visit can be viewed in the far left panel, where status can be marked as “Pass”, “Failure”, “Withdrawal”, or “In Progress”. “Send Time Point” is selected by the user to “Send to DCC”, and is the final step in completing data entry for a visit. \r\nThe “BVL QC Type” is used to record whether the Behavioural quality control was done on an electronic device or as a hard copy, and the “BVL QC Status” records if quality control has been completed. When viewing a visit in a narrow browser window or mobile device, this panel is hidden. The visit panel contains the Actions Menu, the Visit Stage, the Send Time Point, and QC Information. This menu can be opened for viewing or hidden by selecting the list icon at the top lefthand menu. \r\n\r\nEach time point carries a unique set of tests, also known as instruments. In addition to seeing the names of the instruments contained within each behavioural battery, users can view Administration and Data Entry Status, as well as whether any feedback exists for that particular instrument. Information about Double Data Entry progress can also be found within the behavioural battery table.  Click on any instrument name to open the instrument form and perform data entry. Double data entry can be performed by clicking on the "Double Data Entry" link for a given instrument.';
 
 
-UPDATE help SET updated='2016-02-12 03:32:41' WHERE hash=md5('mri_violations');
-UPDATE help SET updated='2016-02-12 03:32:41' WHERE hash=md5('examiner');
-UPDATE help SET updated='2016-02-12 03:32:41' WHERE hash=md5('edit_examiner');
-UPDATE help SET updated='2016-02-12 03:32:41' WHERE hash=md5('training');
-UPDATE help SET updated='2016-02-12 03:32:41' WHERE hash=md5('server processes manager');
-UPDATE help SET updated='2016-02-12 03:32:41' WHERE hash=md5('survey');
-UPDATE help SET updated='2014-09-01 00:00:00' WHERE hash=md5('instrument_list');
+UPDATE help SET updated='2016-02-12 00:00:00' WHERE hash=md5('mri_violations');
+UPDATE help SET updated='2016-02-12 00:00:00' WHERE hash=md5('examiner');
+UPDATE help SET updated='2016-02-12 00:00:00' WHERE hash=md5('edit_examiner');
+UPDATE help SET updated='2016-02-12 00:00:00' WHERE hash=md5('training');
+UPDATE help SET updated='2016-02-12 00:00:00' WHERE hash=md5('server processes manager');
+UPDATE help SET updated='2016-02-12 00:00:00' WHERE hash=md5('survey_accounts');
+UPDATE help SET updated='2016-02-12 00:00:00' WHERE hash=md5('instrument_list');
