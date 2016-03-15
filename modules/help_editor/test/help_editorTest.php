@@ -105,18 +105,25 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     public function testSearchTopic()
     {
         $this->safeGet($this->url.'/help_editor/');
-        $searchbox = $this->webDriver
-            ->findElement(WebDriverBy::Name("topic"));
-        $searchbox->sendKeys("Test Topic");
-        $this->webDriver->manage()->timeouts()->implicitlyWait(10);
+        $this->webDriver->executeScript("window.moveTo(0, 0);
+window.resizeTo(screen.availWidth, screen.availHeight);");        
+        $this->webDriver->executeScript("window.scrollTo(0,0)");    
         $showdata = $this->webDriver
             ->findElement(
                 WebDriverBy::Xpath(
                     "//*[@id='panel-body']".
                     "/form/div[2]/div/div[1]/input"
                 )
-            );
-        $this->webDriver->action()->click($showdata)->perform();
+            );   
+        $searchbox = $this->webDriver
+            ->findElement(WebDriverBy::Name("topic"));
+        $searchbox->sendKeys("Test Topic");
+        $x = $showdata->getLocation()->getX();
+        $y = $showdata->getLocation()->getY();
+       // $this->webDriver->executeScript("alert('x==".$x."y==".$y."')");
+	$this->webDriver->executeScript("scroll(0,-1050)");	
+        $showdata->click();      
+ // $this->webDriver->action()->click($showdata)->build()->perform();
         $assertText = $this->webDriver
             ->findElement(WebDriverBy::Id("Topic"))->getText();
         $this->assertContains("Test Topic", $assertText);
@@ -143,7 +150,11 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
                     "/form/div[2]/div/div[1]/input"
                 )
             );
-        $this->webDriver->action()->click($showdata)->perform();
+        $x = $showdata->getLocation()->getX();
+        $y = $showdata->getLocation()->getY();
+       // $this->webDriver->executeScript("alert('x==".$x."y==".$y."')");
+        $this->webDriver->executeScript("window.scrollTo(0,-".$y.")"); 
+        $showdata->click();
         $assertText = $this->webDriver
             ->findElement(WebDriverBy::Id("Topic"))->getText();
         $this->assertContains("Test Topic", $assertText);
