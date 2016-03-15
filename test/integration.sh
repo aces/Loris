@@ -15,19 +15,6 @@
 #       *  Set sandbox mode to 1: <sandbox>1</sandbox>
 #       *  Set SyncAccounts to false: <SyncAccounts>false</SyncAccounts>
 
-#start PHP's built in webserver
-php -S localhost:8000 -t ../htdocs ../htdocs/router.php 2>1 > /dev/null &
-php_pid=$!
-
-# Start Selenium and redirect Selenium WebDriver
-# output to /dev/null so that it doesn't flood the
-# screen in the middle of our other tests
-# java -jar selenium-server-standalone-2.45.0.jar > /dev/null &
-echo "******************************************************************
-  REMINDER: Selenium needs to be running to run integration tests
-******************************************************************";
-
->>>>>>> Kill PHP web server at the end of integration.sh
 host="127.0.0.1"
 database="LorisTest"
 username="SQLTestUser"
