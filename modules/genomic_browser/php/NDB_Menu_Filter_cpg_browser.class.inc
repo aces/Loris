@@ -303,31 +303,17 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->addBasicText('CPG', 'CPG:');
 
         // Context
-        $distinct_values = $this->getDistinctValue(
+        $Base_options = $this->getDistinctValues(
             'genomic_cpg_annotation',
             'island_relation'
         );
-        $Base_options    = array(null => 'Any');
-        foreach ($distinct_values as $option) {
-            if ($option !== null) {
-                $Base_options[$option] = $option;
-            }
-        }
         $this->addSelect('Context', 'Context:', $Base_options);
 
         // Platform
-        $distinct_values = $this->getDistinctValue(
+        $Base_options = $this->getDistinctValues(
             'genotyping_platform',
             'Name'
         );
-        $Base_options    = array();
-        foreach ($distinct_values as $option) {
-            if ($option == null) {
-                $Base_options[null] = 'Any';
-            } else {
-                $Base_options[$option] = $option;
-            }
-        }
         $this->addSelect('Platform', 'Platform:', $Base_options);
 
         // Gene_Grp
@@ -374,16 +360,10 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->addSelect('SNP_10', 'SNP:', $Base_options);
 
         // Reg_Feature_Grp
-        $distinct_values = $this->getDistinctValue(
+        $Base_options = $this->getDistinctValues(
             'genomic_cpg_annotation',
             'reg_feature_group'
         );
-        $Base_options    = array(null => 'Any');
-        foreach ($distinct_values as $option) {
-            if ($option !== null) {
-                $Base_options[$option] = $option;
-            }
-        }
         $this->addSelect('Reg_Feature_Grp', 'Regulatory feat.:', $Base_options);
 
         // Fantom_Prom
@@ -410,13 +390,10 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->addSelect('DHS', 'DHS:', $Base_options);
 
         // DMR
-        $distinct_values = $this->getDistinctValue('genomic_cpg_annotation', 'dmr');
-        $Base_options    = array(null => 'Any');
-        foreach ($distinct_values as $option) {
-            if ($option !== null) {
-                $Base_options[$option] = $option;
-            }
-        }
+        $Base_options = $this->getDistinctValues(
+            'genomic_cpg_annotation',
+            'dmr'
+        );
         $this->addSelect('DMR', 'DMR:', $Base_options);
 
         return true;
@@ -583,27 +560,30 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
     }
 
     /**
-     * This needs to be rewrited to transforme the list
-     * Into an associative array.
+     * Provide an array of distinct value from a column in
+     * the specified table. The first element has a null key and 
+     * its value is 'Any'.
      *
      * @param string $table  The tables name
      * @param string $column The column name
      *
-     * @return array of distinct values
+     * @return array An array where value are keys as well as values  
      */
-    function getDistinctValue( $table, $column)
+    function getDistinctValues( $table, $column)
     {
         $DB      = Database::singleton();
         $results = $DB->pselect(
             "SELECT DISTINCT $column FROM $table ",
             array()
         );
-        return array_map(
-            function ($e) {
-                    return array_values($e)[0];
-            },
-            $results
-        );
+        return array_reduce($results, function ($carry, $item) {
+            $value = array_values($item)[0];
+            if (!empty($value)) {
+                $carry[$value] = $value;
+            }
+            return $carry;
+        }, array(null => 'Any'));
+
     }
 }
 ?>
