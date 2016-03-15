@@ -42,11 +42,11 @@ class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
                                'version',
                                'upload_date',
                               );
-        $this->query        = " FROM data_release WHERE id IN"
-                              . " (SELECT data_release_id FROM"
-                              . " data_release_permissions WHERE"
-                              . " userid=(SELECT ID FROM users WHERE"
-                              . " UserID='{$user->getUsername()}'))";
+        $this->query        = " FROM data_release dr JOIN"
+                               . " data_release_permissions drp"
+                               . " ON (dr.id=drp.data_release_id)"
+                               . " JOIN users u ON (u.ID=drp.userid)"
+                               . " WHERE u.UserID='{$user->getUsername()}'";
         $this->group_by     = '';
         $this->order_by     = 'upload_date';
         $this->headers      = array(
