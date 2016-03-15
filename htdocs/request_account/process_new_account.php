@@ -43,8 +43,9 @@ $DB     = Database::singleton();
 
 $res = $DB->select("SELECT Alias, Name FROM psc");
 $site_list = array();
-foreach ($res as $elt)
-    $site_list[$elt["Alias"]] = $elt["Name"];
+foreach ($res as $elt) {
+    $site_list[$elt["Alias"]] = $elt["Name"]; 
+}
 
 $tpl_data['baseurl']     = $config->getSetting('url');
 $tpl_data['css']         = $config->getSetting('css');
