@@ -431,7 +431,9 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                  $query .= " AND $field = :v_$prepared_key";
             } elseif ($field == "rawfiles.rawFileCount"
                 || $field == "cleanedfiles.cleanedFileCount"
-                || $field == "S.SNPCount" || $field == "C.CNVCount" || $field == "M.CPGCount"
+                || $field == "S.SNPCount"
+                || $field == "C.CNVCount"
+                || $field == "M.CPGCount"
             ) {
                 if ($val == "1") {  // if ANY found i.e. >= 1
                     $query .= " AND $field >= :v_$prepared_key";
