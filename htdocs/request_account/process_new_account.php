@@ -106,7 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                'name'     => 'First Name',
                'lastname' => 'Last Name',
                'from'     => 'Email',
-               'site'     => 'Site',
               );
 
     // For each fields, check if quotes or if some HTML/PHP
