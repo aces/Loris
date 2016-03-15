@@ -1,6 +1,4 @@
-<head>
-    <link rel="stylesheet" type="text/css" href="{$baseURL}/GetCSS.php?Module=brainbrowser&file=volume-viewer-demo.css">
-</head>
+<link rel="stylesheet" type="text/css" href="{$baseURL}/GetCSS.php?Module=brainbrowser&file=volume-viewer-demo.css">
 
 {literal}
     <script id="overlay-ui-template" type="x-volume-ui-template">
