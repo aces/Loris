@@ -63,6 +63,16 @@
      </div>
 </div>
 <div class="form-group">
+    <label class="col-sm-4 control-label">Your site: </label>
+    <div class="col-sm-6">
+        <select name="site" id="site" style="width:156px;">
+            {foreach from=$site_list item=site}
+            <option value="{$site}">{$site}</options>
+                {/foreach}
+        </select>
+    </div>
+</div>
+<div class="form-group">
 <label class="col-sm-4 control-label">Type verification code:</label>
  <div class="col-sm-6">
 <input name="verif_box" type="text" id="verif_box" />
