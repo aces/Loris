@@ -39,6 +39,12 @@ $tpl_data = array();
 
 // create an instance of the config object
 $config = NDB_Config::singleton();
+$DB     = Database::singleton();
+
+$res = $DB->select("SELECT Alias, Name FROM psc");
+$site_list = array();
+foreach ($res as $elt)
+    $site_list[$elt["Alias"]] = $elt["Name"];
 
 $tpl_data['baseurl']     = $config->getSetting('url');
 $tpl_data['css']         = $config->getSetting('css');
@@ -46,6 +52,8 @@ $tpl_data['rand']        = rand(0, 9999);
 $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['currentyear'] = date('Y');
+$tpl_data['site_list'] = $site_list;
+
 try {
     $tpl_data['study_logo'] = "../".$config->getSetting('studylogo');
 } catch(ConfigurationException $e) {
@@ -83,6 +91,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
         $err[] = 'Your email is not valid!';
     }
+    if (!checkLen('site')) {
+        $err[] = 'The Site field is empty!';
+    }
     if (isset($_SESSION['tntcon'])
         && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']
     ) {
@@ -93,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                'name'     => 'First Name',
                'lastname' => 'Last Name',
                'from'     => 'Email',
+               'site'     => 'Site',
               );
 
     // For each fields, check if quotes or if some HTML/PHP

@@ -46,6 +46,7 @@ $tpl_data['rand'] = rand(0, 9999);
 $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['currentyear'] = date('Y');
+//$tpl_data['site_list'] = array('aa'=>'aa','bb'=>'ds','cc'=>'rr','dd'=>'dd');
 try {
     $tpl_data['study_logo'] = "../".$config->getSetting('studylogo');
 } catch(ConfigurationException $e) {
