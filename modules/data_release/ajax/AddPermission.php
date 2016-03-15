@@ -26,6 +26,7 @@ if ($_POST['action'] == 'addpermission') {
     );
     header("Location: ../main.php?test_name=data_release&addpermissionSuccess=true");
 } else {
+    header("HTTP/1.1 400 Bad Request");
     echo "There was an error adding permissions";
 }
 
