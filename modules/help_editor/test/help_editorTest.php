@@ -108,6 +108,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $searchbox = $this->webDriver
             ->findElement(WebDriverBy::Name("topic"));
         $searchbox->sendKeys("Test Topic");
+        $this->webDriver->manage()->timeouts()->implicitlyWait(10);
         $showdata = $this->webDriver
             ->findElement(
                 WebDriverBy::Xpath(
