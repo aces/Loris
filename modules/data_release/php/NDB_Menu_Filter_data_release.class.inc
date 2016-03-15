@@ -11,8 +11,6 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Data Release Class
  *
