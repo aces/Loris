@@ -29,7 +29,8 @@ class ExaminerTest extends LorisIntegrationTest
 {
 
     /**
-     * Tests that the breadcrumb loads, which it should regardless of the user's permissions
+     * Tests that the breadcrumb loads, which it should regardless of the user's
+     * permissions
      *
      * @return void
      */
@@ -50,7 +51,7 @@ class ExaminerTest extends LorisIntegrationTest
     {
         $this->setupPermissions(array("examiner_view"));
         $this->safeGet($this->url . "/examiner/");
-        
+
         // Test that the selection filter appears
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::id("lorisworkspace")
@@ -99,7 +100,7 @@ class ExaminerTest extends LorisIntegrationTest
     {
         $this->setupPermissions(array("examiner_view"));
         $this->safeGet($this->url . "/examiner/");
-        
+
         // Test that the selection filter appears
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::id("lorisworkspace")
@@ -150,7 +151,8 @@ class ExaminerTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that the Examiner module loads with multisite functionality if the user has the correct permission
+     * Tests that the Examiner module loads with multisite functionality if the
+     * user has the correct permission
      *
      * @return void
      */
@@ -166,7 +168,8 @@ class ExaminerTest extends LorisIntegrationTest
     }*/
 
     /**
-     * Tests that the certification column loads if EnableCertification is set in the config
+     * Tests that the certification column loads if EnableCertification is set in
+     * the config
      *
      * @return void
      */
@@ -185,7 +188,8 @@ class ExaminerTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that the certification column does not load if EnableCertification is not set in the config
+     * Tests that the certification column does not load if EnableCertification
+     * is not set in the config
      *
      * @return void
      */
@@ -204,7 +208,8 @@ class ExaminerTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that examiner page does not load if the user does not have correct permissions
+     * Tests that examiner page does not load if the user does not have correct
+     * permissions
      *
      * @return void
      */
