@@ -97,8 +97,9 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'start_date',
                                'end_date',
                               );
-        $this->query        = " FROM acknowledgements WHERE 1=1";
+        $this->query        = " FROM acknowledgements WHERE 1=1 ";
         $this->group_by     = '';
+        $this->order_by     = " order ASC ";
         $this->validFilters = array(
                                'full_name',
                                'citation_name',
