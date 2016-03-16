@@ -59,9 +59,11 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
         $this->columns       = array(
                                 'file_id',
                                 'file_name',
+                                'absolute_path',
                                 'description',
                                 'genomic_file_type',
                                 'date_inserted',
+                                'user_inserted',
                                 'caveat',
                                 'notes',
                                );
