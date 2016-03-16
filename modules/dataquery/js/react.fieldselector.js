@@ -117,8 +117,8 @@ FieldList = React.createClass({displayName: "FieldList",
             PageNumber: 1
         };
     },
-    onFieldClick: function(fieldName) {
-        this.props.onFieldSelect(fieldName, this.props.category);
+    onFieldClick: function(fieldName, downloadable) {
+        this.props.onFieldSelect(fieldName, this.props.category, downloadable);
     },
     changePage: function(i) {
         this.setState({
@@ -166,7 +166,7 @@ FieldList = React.createClass({displayName: "FieldList",
                 Category: this.props.category, 
                 Description: desc, 
                 ValueType: type, 
-                onClick: this.onFieldClick.bind(this, fieldName), 
+                onClick: this.onFieldClick.bind(this, fieldName, isFile), 
                 selected: selected, 
                 downloadable: isFile, 
                 Visits: this.props.Visits, 
@@ -199,8 +199,8 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
             }
         };
     },
-    onFieldSelect: function(fieldName, category) {
-        this.props.onFieldChange(fieldName, category);
+    onFieldSelect: function(fieldName, category, downloadable) {
+        this.props.onFieldChange(fieldName, category, downloadable);
         // var fields = this.props.selectedFields;
         // var idx = fields.indexOf(fieldName);
 

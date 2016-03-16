@@ -184,7 +184,8 @@ DataQueryApp = React.createClass({
                 ],
                 session: this.props.AllSessions
             },
-            selectedFields : {}
+            selectedFields : {},
+            downloadableFields : {}
         };
     },
     loadFilterRule: function(rule) {
@@ -323,7 +324,7 @@ DataQueryApp = React.createClass({
             return temp;
         });
     },
-    fieldChange: function(fieldName, category) {
+    fieldChange: function(fieldName, category, downloadable) {
         var that = this;
         this.setState(function(state){
             var selectedFields = state.selectedFields,
@@ -336,6 +337,9 @@ DataQueryApp = React.createClass({
                     selectedFields[category].allVisits[key] = 1;
                 }
                 fields.push(category + "," + fieldName);
+                if(downloadable){
+                    state.downloadableFields[category + "," + fieldName] = true;
+                }
             } else if(selectedFields[category][fieldName]){
                 for(var key in selectedFields[category][fieldName]){
                     if(selectedFields[category].allVisits[key] === 1){
@@ -350,6 +354,9 @@ DataQueryApp = React.createClass({
                 if(Object.keys(selectedFields[category]).length === 1){
                     delete selectedFields[category];
                 }
+                if(downloadable){
+                    delete state.downloadableFields[category + "," + fieldName];
+                }
             } else {
                 selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
                 for(var key in that.props.Visits){
@@ -360,6 +367,9 @@ DataQueryApp = React.createClass({
                     }
                 }
                 fields.push(category + "," + fieldName);
+                if(downloadable){
+                    state.downloadableFields[category + "," + fieldName] = true;
+                }
             }
             return {
                 selectedFields: selectedFields,
@@ -484,11 +494,14 @@ DataQueryApp = React.createClass({
         var sessiondata = this.state.sessiondata;
         var sessions = this.getSessions();
         var fields = this.state.fields;
+        var downloadableFields = this.state.downloadableFields;
         var i, j;
         var rowdata = [];
         var currow = [];
         var Identifiers = [];
         var RowHeaders = [];
+        var fileData = [];
+        var href;
 
         if(displayID === 0) {
             for(i = 0; fields && i < fields.length; i += 1) {
@@ -500,10 +513,17 @@ DataQueryApp = React.createClass({
                     var fieldSplit = fields[i].split(",")
                         currow[i] = '.';
                     var sd = sessiondata[session];
-                    if(sd[fieldSplit[0]]) {
+                    if(sd[fieldSplit[0]].data[fieldSplit[1]] && downloadableFields[fields[i]]) {
+                        href = loris.BaseURL + "/mri/jiv/get_file.php?file=" + sd[fieldSplit[0]].data[fieldSplit[1]];
+                        currow[i] = (
+                            <a href={href}>
+                                {sd[fieldSplit[0]].data[fieldSplit[1]]}
+                            </a>
+                        );
+                        fileData.push("file/" + sd[fieldSplit[0]]._id + "/" + encodeURIComponent(sd[fieldSplit[0]].data[fieldSplit[1]]));
+                    } else if(sd[fieldSplit[0]]){
                         currow[i] = sd[fieldSplit[0]].data[fieldSplit[1]];
                     }
-
                 }
                 rowdata.push(currow);
                 Identifiers.push(session);
@@ -552,7 +572,7 @@ DataQueryApp = React.createClass({
                 rowdata.push(currow);
             }
         }
-        return {'rowdata': rowdata, 'Identifiers': Identifiers, 'RowHeaders': RowHeaders};
+        return {'rowdata': rowdata, 'Identifiers': Identifiers, 'RowHeaders': RowHeaders, 'fileData': fileData};
     },
     dismissAlert: function() {
         this.setState({
@@ -617,6 +637,7 @@ DataQueryApp = React.createClass({
                 Data={this.state.rowData.rowdata}
                 RowInfo={this.state.rowData.Identifiers}
                 RowHeaders={this.state.rowData.RowHeaders}
+                FileData={this.state.rowData.fileData}
                 onRunQueryClicked={this.runQuery}
                 displayType={displayType}
                 changeDataDisplay={this.changeDataDisplay}

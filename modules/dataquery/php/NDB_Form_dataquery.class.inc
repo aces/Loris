@@ -113,7 +113,8 @@ class NDB_Form_dataquery extends NDB_Form
              $baseURL . "/dataquery/js/jstat.js",
              $baseURL . "/js/components/StaticDataTable.js",
              $baseURL . "/js/flot/jquery.flot.min.js",
-             $baseurl . '/js/components/PaginationLinks.js'
+             $baseurl . '/js/components/PaginationLinks.js',
+             $baseURL . "/js/jszip/jszip.min.js",
             )
         );
     }

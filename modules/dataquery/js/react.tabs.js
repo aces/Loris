@@ -88,7 +88,7 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
     },
     downloadCSV: function() {
         var headers = this.props.Fields,
-            csvworker = new Worker('GetJS.php?Module=dataquery&file=workers/savecsv.js');
+            csvworker = new Worker(loris.BaseURL + '/GetJS.php?Module=dataquery&file=workers/savecsv.js');
 
 
         csvworker.addEventListener('message', function (e) {
@@ -114,11 +114,144 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
     changeDataDisplay: function(displayID) {
         this.props.changeDataDisplay(displayID);
     },
+    getOrCreateProgressElement: function(id) {
+        var element = document.getElementById(id),
+            progress;
+
+        if (element) {
+            return element;
+        }
+
+        progress = document.getElementById("progress");
+
+        element = document.createElement("div");
+        element.setAttribute("id", id);
+        progress.appendChild(element);
+        return element;
+    },
+    getOrCreateDownloadLink: function(fileName, type) {
+        var element = document.getElementById("DownloadLink" + fileName),
+            parentEl,
+            el2;
+
+        if (element) {
+            return element;
+        }
+
+
+        parentEl = document.getElementById("downloadlinksUL");
+
+        element = document.createElement("a");
+        element.download = fileName;
+        element.type = type;
+        element.textContent = "Zip file: " + fileName;
+        element.setAttribute("id", "DownloadLink" + fileName);
+        el2 = document.createElement("li");
+        el2.appendChild(element);
+        parentEl.appendChild(el2);
+        return element;
+    },
+    downloadData: function() {
+        var zip = new JSZip(),
+            i = 0,
+            FileList = this.props.FileData,
+            CompleteMask = new Array(FileList.length),
+            saveworker,
+            dataURLs = [],
+            that = this,
+            multiLinkHandler = function(buffer) { return function(ce) {
+                var downloadLink = document.getElementById("DownloadLink"),
+                    dv = new DataView(buffer),
+                    blb;
+
+                    ce.preventDefault();
+                    blb = new Blob([dv], { type : "application/zip" });
+
+                    downloadLink.href = window.URL.createObjectURL(blb);
+                    downloadLink.download = this.download;
+                    downloadLink.type = "application/zip";
+                    downloadLink.click();
+
+                    window.URL.revokeObjectURL(downloadLink.href);
+                }
+            };
+
+        // Does this work if we hold a global reference instead of a closure
+        // to the object URL?
+        window.dataBlobs = [];
+
+        if(FileList.length < 100 || confirm("You are trying to download more than 100 files. This may be slow or crash your web browser.\n\nYou may want to consider splitting your query into more, smaller queries by defining more restrictive filters.\n\nPress OK to continue with attempting to download current files or cancel to abort." )) {
+            saveworker = new Worker(loris.BaseURL + '/GetJS.php?Module=dataquery&file=workers/savezip.js');
+            saveworker.addEventListener('message', function (e) {
+                var link,
+                    progress,
+                    FileName,
+                    NewFileName,
+                    downloadLinks,
+                    i;
+                if (e.data.cmd === 'SaveFile') {
+                    progress = that.getOrCreateProgressElement("download_progress");
+                    //progress.textContent = "Downloaded files";
+                    //hold a reference to the blob so that chrome doesn't release it. This shouldn't
+                    //be required.
+                    window.dataBlobs[e.data.FileNo - 1] = new Blob([e.data.buffer], { type : "application/zip" });;
+                    dataURLs[e.data.FileNo - 1] = window.URL.createObjectURL(window.dataBlobs[e.data.FileNo - 1]);
+
+                    link = that.getOrCreateDownloadLink(e.data.Filename, "application/zip");
+                    link.href = dataURLs[e.data.FileNo - 1];
+                    //link.onclick = multiLinkHandler(e.data.buffer);
+                    //link.href = "#";
+                    progress = that.getOrCreateProgressElement("zip_progress");
+                    progress.textContent = "";
+
+                } else if (e.data.cmd === 'Progress') {
+                    progress = that.getOrCreateProgressElement("download_progress");
+                    progress.innerHTML = "Downloading files: <progress value=\"" + e.data.Complete + "\" max=\"" + e.data.Total + "\">" + e.data.Complete + " out of " + e.data.Total + "</progress>";
+                } else if (e.data.cmd === 'Finished') {
+                    if (dataURLs.length === 1) {
+                        $("#downloadlinksUL li a")[0].click();
+                    }
+
+                    if (dataURLs.length > 1) {
+                        progress = document.getElementById("downloadlinks");
+                        progress.style.display = "initial";
+
+                        downloadLinks = $("#downloadlinksUL li a");
+                        for (i = 0; i < dataURLs.length; i += 1) {
+                            FileName = downloadLinks[i].id.slice("DownloadLinkFiles-".length, -4);
+                            NewFileName = "files-" + FileName + "of" + e.data.NumFiles + ".zip";
+                            downloadLinks[i].download = NewFileName;
+                            downloadLinks[i].href = dataURLs[i];
+                            downloadLinks[i].textContent = "Zip file: " + NewFileName;
+                        }
+                    }
+                    progress = that.getOrCreateProgressElement("download_progress");
+                    progress.textContent = "Finished generating zip files";
+                    //this.terminate();
+
+                } else if (e.data.cmd === 'CreatingZip') {
+                    progress = that.getOrCreateProgressElement("zip_progress");
+                    progress.textContent = "Creating a zip file with current batch of downloaded files. Process may be slow before proceeding.";
+                }
+
+            });
+
+            saveworker.postMessage({ Files: FileList });
+        }
+    },
     render: function() {
+        var downloadData;
         var buttons = (
-            React.createElement("div", {className: "commands col-xs-12 form-group"}, 
-                React.createElement("button", {className: "btn btn-primary", onClick: this.runQuery}, "Run Query"), 
-                React.createElement("button", {className: "btn btn-primary", onClick: this.downloadCSV}, "Download Table as CSV")
+            React.createElement("div", {className: "row"}, 
+                React.createElement("div", {className: "commands col-xs-12 form-group"}, 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this.runQuery}, "Run Query"), 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this.downloadCSV}, "Download Table as CSV"), 
+                    React.createElement("button", {className: "btn btn-primary", onClick: this.downloadData}, "Download Data as ZIP")
+                ), 
+                React.createElement("div", {id: "progress", className: "col-xs-12"}), 
+                React.createElement("div", {id: "downloadlinks", className: "col-xs-12"}, 
+                    React.createElement("ul", {id: "downloadlinksUL"})
+                )
             )
             );
         var criteria = [];
