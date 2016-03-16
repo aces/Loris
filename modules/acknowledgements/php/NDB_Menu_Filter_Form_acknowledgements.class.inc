@@ -110,6 +110,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'full_name',
                                'citation_name',
                                'title',
+                               'degrees',
                                'start_date',
                                'end_date',
                               );

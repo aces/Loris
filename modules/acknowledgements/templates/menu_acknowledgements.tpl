@@ -128,6 +128,18 @@
                                     <div class="col-sm-12 col-md-12">{$form.title.html}</div>
                                 </td>
                                 <td nowrap="nowrap">
+                                    <div class="col-sm-12 col-md-12">
+                                        <select name="degrees[]" multiple>
+                                            <option value="bachelors">Bachelors</option>
+                                            <option value="masters">Masters</option>
+                                            <option value="phd">PhD</option>
+                                            <option value="postdoc">Postdoctoral</option>
+                                            <option value="md">MD</option>
+                                            <option value="registered_nurse">Registered Nurse</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td nowrap="nowrap">
                                     <div class="col-sm-12 col-md-12">{$form.start_date.html}</div>
                                 </td>
                                 <td nowrap="nowrap">
