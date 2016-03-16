@@ -107,6 +107,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'end_date',
                               );
         $this->headers      = array(
+                               'order',
                                'full_name',
                                'citation_name',
                                'title',
@@ -145,6 +146,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
 
         // add form elements
         $this->addSelect('title', 'Title:', $titles);
+        $this->addBasicText('order', 'Order:');
         $this->addBasicText('full_name', 'Full Name:');
         $this->addBasicText('citation_name', 'Citation Name:');
         $config      =& NDB_Config::singleton();
