@@ -62,8 +62,9 @@ class Smarty_NeuroDB extends Smarty
         // defaults, but keep them for now to ensure that Loris doesn't
         // change..
         $this->setCompileDir($paths['base']."smarty/templates_c/");
-        $this->config_dir  = $paths['base']."smarty/configs/";
-        $this->cache_dir   = $paths['base']."smarty/cache/";
+
+        $this->config_dir = $paths['base']."smarty/configs/";
+        $this->cache_dir  = $paths['base']."smarty/cache/";
 
         // Behave like smarty2 used to. This should be
         // removed after all the warnings/notices from the PHP
