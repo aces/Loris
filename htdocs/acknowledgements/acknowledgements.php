@@ -24,21 +24,21 @@ $db     = Database::singleton();
 $publication_date = $_GET["date"];
 
 $columns = array(
- full_name     => 'Full Name',
- citation_name => 'Citation Name',
- title         => 'Title',
- affiliations  => 'Affiliations',
- degrees       => 'Degrees',
- roles         => 'Roles',
- start_date    => 'Start Date',
- end_date      => 'End Date',
-);
+            full_name     => 'Full Name',
+            citation_name => 'Citation Name',
+            title         => 'Title',
+            affiliations  => 'Affiliations',
+            degrees       => 'Degrees',
+            roles         => 'Roles',
+            start_date    => 'Start Date',
+            end_date      => 'End Date',
+           );
 
-$keysAsString = implode(', ',array_keys($columns));
-$valuesAsString = implode('","',array_values($columns));
+$keysAsString             = implode(', ', array_keys($columns));
+$valuesAsString           = implode('","', array_values($columns));
 $valuesAsStringWithQuotes = '"' . $valuesAsString . '"';
 
-$results          = $db->pselect(
+$results = $db->pselect(
     "SELECT " . $keysAsString .
     " FROM acknowledgements
     WHERE start_date <= :publication_date
@@ -67,7 +67,7 @@ echo "<br>";
 echo $valuesAsStringWithQuotes;
 echo "<br>";
 foreach ($results as $k => $v) {
-    $result = implode('","',array_values($v));
+    $result = implode('","', array_values($v));
     echo '"' . $result . '"';
     echo "<br>";
 }
