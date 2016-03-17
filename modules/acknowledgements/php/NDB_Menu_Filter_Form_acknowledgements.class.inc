@@ -91,15 +91,16 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     {
         // set the class variables
         $this->columns      = array(
+                               'ordering',
                                'full_name',
                                'citation_name',
                                'title',
                                'start_date',
                                'end_date',
                               );
-        $this->query        = " FROM acknowledgements WHERE 1=1 ";
+        $this->query        = " FROM acknowledgements WHERE 1=1";
         $this->group_by     = '';
-        $this->order_by     = " order ASC ";
+        $this->order_by     = "ordering ASC";
         $this->validFilters = array(
                                'full_name',
                                'citation_name',
@@ -108,7 +109,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'end_date',
                               );
         $this->headers      = array(
-                               'order',
+                               'ordering',
                                'full_name',
                                'citation_name',
                                'title',
@@ -147,7 +148,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
 
         // add form elements
         $this->addSelect('title', 'Title:', $titles);
-        $this->addBasicText('order', 'Order:');
+        $this->addBasicText('ordering', 'Ordering:');
         $this->addBasicText('full_name', 'Full Name:');
         $this->addBasicText('citation_name', 'Citation Name:');
         $config      =& NDB_Config::singleton();
