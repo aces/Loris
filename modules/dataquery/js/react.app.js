@@ -436,7 +436,11 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 for(var j = 0; j < this.state.filter.session.length; j++){
                     for(var key in this.state.selectedFields[category].allVisits){
                         var temp = [];
-                        temp.push(this.state.filter.session[j]);
+                        if(Array.isArray(this.state.filter.session[j])){
+                            temp.push(this.state.filter.session[j][0]);
+                        } else {
+                            temp.push(this.state.filter.session[j]);
+                        }
                         temp.push(key);
                         sessionInfo.push(temp);
                     }
@@ -597,8 +601,12 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
         });
     },
     updateFilter: function(filter) {
-        this.setState({
-            filter: filter
+        var that = this;
+        this.setState(function(state){
+            if(filter.children.length === 0){
+                filter.session = that.props.AllSessions
+            }
+            return {'filter' : filter}
         });
     },
     render: function() {
