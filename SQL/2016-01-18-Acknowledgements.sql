@@ -1,9 +1,11 @@
 DROP TABLE IF EXISTS `acknowledgements`;
 CREATE TABLE `acknowledgements` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ordering` varchar(255) DEFAULT NULL,
   `full_name` varchar(255) DEFAULT NULL,
   `citation_name` varchar(255) DEFAULT NULL,
-  `title` enum('bachelors','masters','phd','postdoc','md','registered_nurse') DEFAULT NULL,
+  `title` enum(') DEFAULT NULL,
+  `degrees` varchar(255) DEFAULT NULL,
   `start_date` date,
   `end_date` date,
   PRIMARY KEY (`ID`)
