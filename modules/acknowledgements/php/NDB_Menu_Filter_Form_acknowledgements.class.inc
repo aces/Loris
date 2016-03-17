@@ -111,6 +111,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'roles',
                                'start_date',
                                'end_date',
+                               'present',
                               );
         $this->query        = " FROM acknowledgements WHERE 1=1";
         $this->group_by     = '';
@@ -121,6 +122,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'title',
                                'start_date',
                                'end_date',
+                               'present',
                               );
         $this->headers      = array(
                                'ordering',
@@ -132,6 +134,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'roles',
                                'start_date',
                                'end_date',
+                               'present',
                               );
         $this->formToFilter = array(
                                'full_name'     => 'full_name',
@@ -139,6 +142,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'title'         => 'title',
                                'start_date'    => 'start_date',
                                'end_date'      => 'end_date',
+                               'present'       => 'present',
                               );
 
         $this->tpl_data['citation_policy'] = $config->getSetting('citation_policy');
@@ -154,7 +158,12 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         // enums should match with acknowledgements table
-        $titles = array('' => '');
+        $titles  = array('' => '');
+        $present = array(
+                    ''    => ''
+                    'Yes' => 'Yes',
+                    'No'  => 'No',
+                   );
 
         // add filter elements
         $this->addSelect('title', 'Title:', $titles);
@@ -173,6 +182,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                        );
         $this->addBasicDate('start_date', 'Start Date:', $dateOptions);
         $this->addBasicDate('end_date', 'End Date:', $dateOptions);
+        $this->addSelect('present', 'Present?', $present);
 
         // add form elements
         $this->addSelect('addtitle', 'Title:', $titles);
@@ -191,6 +201,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                        );
         $this->addBasicDate('addstart_date', 'Start Date:', $dateOptions);
         $this->addBasicDate('addend_date', 'End Date:', $dateOptions);
+        $this->addSelect('addpresent', 'Present?', $present);
 
         return true;
     }

@@ -50,6 +50,14 @@
                         {$form.end_date.html}
                     </div>
                 </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.present.label}
+                    </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.present.html}
+                    </div>
+                </div>
             </div>
             <br class="visible-xs">
             <div id="advanced-buttons">
@@ -176,14 +184,17 @@
                                 <td nowrap="nowrap">
                                     <div class="col-sm-12 col-md-12">{$form.addend_date.html}</div>
                                 </td>
+                                <td nowrap="nowrap">
+                                    <div class="col-sm-12 col-md-12">{$form.addpresent.html}</div>
+                                </td>
                             </tr>
 
                             <tr>
-                                <td nowrap="nowrap" colspan="8" id="message-area">
+                                <td nowrap="nowrap" colspan="9" id="message-area">
                                     
                                 </td>
                                 <td nowrap="nowrap">
-                                    <input class="btn btn-sm btn-primary col-md-offset-4" name="fire_away" value="Save" type="submit" />
+                                    <input class="btn btn-sm btn-primary name="fire_away" value="Save" type="submit" />
                                     <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
                                 </td>
                             </tr>
