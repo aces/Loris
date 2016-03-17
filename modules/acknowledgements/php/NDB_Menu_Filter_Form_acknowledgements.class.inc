@@ -72,16 +72,16 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
 
         $DB =& Database::singleton();
         if (isset($_POST['fire_away'])) {
-            $values['start_date']     = sprintf(
+            $values['start_date'] = sprintf(
                 "%04d-%02d-%02d",
                 $values['start_date']['Y'],
                 $values['start_date']['M'],
                 $values['start_date']['d']
             );
             if ($values['present'] == 'Yes') {
-                $values['end_date']   = null;
+                $values['end_date'] = null;
             } else {
-                $values['end_date']   = sprintf(
+                $values['end_date'] = sprintf(
                     "%04d-%02d-%02d",
                     $values['end_date']['Y'],
                     $values['end_date']['M'],
