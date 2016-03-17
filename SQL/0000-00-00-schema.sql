@@ -27,7 +27,9 @@ CREATE TABLE `acknowledgements` (
   `full_name` varchar(255) DEFAULT NULL,
   `citation_name` varchar(255) DEFAULT NULL,
   `title` enum('') DEFAULT NULL,
+  `affiliations` varchar(255) DEFAULT NULL,
   `degrees` varchar(255) DEFAULT NULL,
+  `roles` varchar(255) DEFAULT NULL,
   `start_date` date,
   `end_date` date,
   PRIMARY KEY (`ID`)
