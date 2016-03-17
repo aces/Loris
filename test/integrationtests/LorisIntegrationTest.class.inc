@@ -89,11 +89,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
-        // Set up WebDriver implementation and login
+
         $capabilities = array(
-            WebDriverCapabilityType::BROWSER_NAME => 'firefox',
-            WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
-        );
+                         WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
+                         WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
+                        );
 
         $this->webDriver = RemoteWebDriver::create(
             'http://localhost:4444/wd/hub',
@@ -477,21 +477,42 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      * a SPACE or a RETURN key (HTML input field will receive a SPACE whereas all
      * others will receive a RETURN).
      *
-     * @param WebDriverBy $by         Criteria used to find the element on the page.
-     * @param int         $waitPeriod After this amount of seconds, the wait period
-     *                                finishes and an exception is thrown.
+     * @param WebDriverBy $by                   Criteria used to find the element
+     *                                          on the page.
+     * @param int         $waitPeriod           After this amount of seconds, the
+     *                                          wait period finishes and an
+     *                                          exception is thrown.
+     * @param boolean     $allowJavascriptClick true if a click on the element
+     *                                          should be done using a Javascript
+     *                                          method call when the element is not
+     *                                          visible. False otherwise.
      *
-     * @throws NoSuchElementException if the element cannot be found after the
-     *                                wait period.
+     * @throws NoSuchElementException     if the element cannot be found after the
+     *                                    wait period.
+     * @throws ElementNotVisibleException if $allowJavascriptClick is false and the
+     *                                    element cannot be clicked on because it is
+     *                                    not visible.
      *
      * @return void.
      */
-    function safeClick(WebDriverBy $by, $waitPeriod=15)
+    function safeClick(WebDriverBy $by, $waitPeriod=15, $allowJavascriptClick=true)
     {
         $webElement = $this->safeFindElement($by, $waitPeriod);
         $keys       = $webElement->getTagName() == 'input'
             ? WebDriverKeys::SPACE : WebDriverKeys::RETURN_KEY;
-        $webElement->sendKeys($keys);
+        try {
+            $webElement->sendKeys($keys);
+        } catch(ElementNotVisibleException $e)
+        {
+            if (!$allowJavascriptClick) {
+                throw $e;
+            }
+
+            $this->webDriver->executeScript(
+                "arguments[0].click();",
+                array($webElement)
+            );
+        }
     }
 }
 ?>
