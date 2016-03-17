@@ -13,8 +13,7 @@
  */
 
 require_once __DIR__ . "/../../vendor/autoload.php";
-require_once "../../php/libraries/NDB_Client.class.inc";
-require_once "../../php/libraries/NDB_Config.class.inc";
+
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
@@ -25,9 +24,11 @@ $db     = Database::singleton();
 $publication_date = $_GET["date"];
 $results          = $db->pselect(
     "SELECT full_name, citation_name,
-            title, start_date, end_date
+            title, affiliations, degrees, 
+            roles, start_date, end_date
      FROM acknowledgements
-     WHERE start_date <= :publication_date",
+     WHERE start_date <= :publication_date
+     ORDER BY ordering ASC",
     array('publication_date' => $publication_date)
 );
 echo "<html>";
@@ -36,6 +37,9 @@ echo "<tr>" .
          "<td>Full Name</td>" .
          "<td>Citation Name</td>" .
          "<td>Title</td>" .
+         "<td>Affiliations</td>" .
+         "<td>Degrees</td>" .
+         "<td>Roles</td>" .
          "<td>Start Date</td>" .
          "<td>End Date</td>" .
      "</tr>";
