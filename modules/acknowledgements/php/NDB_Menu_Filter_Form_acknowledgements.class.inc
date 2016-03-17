@@ -60,9 +60,9 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
             return true;
         }
 
-        $values['affiliations'] = implode("@",$values['affiliations']);
-        $values['degrees'] = implode("@",$values['degrees']);
-        $values['roles'] = implode("@",$values['roles']);
+        $values['affiliations'] = implode(",",$values['affiliations']);
+        $values['degrees'] = implode(",",$values['degrees']);
+        $values['roles'] = implode(",",$values['roles']);
 
         $DB =& Database::singleton();
         if (isset($_POST['fire_away'])) {
