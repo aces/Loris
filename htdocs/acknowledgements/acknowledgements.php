@@ -35,8 +35,8 @@ $columns = array(
             present       => 'Present?',
            );
 
-$keysAsString             = implode(', ', array_keys($columns));
-$valuesAsString           = implode('","', array_values($columns));
+$keysAsString   = implode(', ', array_keys($columns));
+$valuesAsString = implode('","', array_values($columns));
 $valuesAsStringWithQuotes = '"' . $valuesAsString . '"';
 
 $results = $db->pselect(
