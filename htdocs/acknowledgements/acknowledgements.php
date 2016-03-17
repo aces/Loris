@@ -32,6 +32,7 @@ $columns = array(
             roles         => 'Roles',
             start_date    => 'Start Date',
             end_date      => 'End Date',
+            present       => 'Present?',
            );
 
 $keysAsString             = implode(', ', array_keys($columns));
