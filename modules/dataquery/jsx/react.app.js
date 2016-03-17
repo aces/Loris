@@ -516,7 +516,7 @@ DataQueryApp = React.createClass({
                     var fieldSplit = fields[i].split(",")
                         currow[i] = '.';
                     var sd = sessiondata[session];
-                    if(sd[fieldSplit[0]].data[fieldSplit[1]] && downloadableFields[fields[i]]) {
+                    if(sd[fieldSplit[0]] && sd[fieldSplit[0]].data[fieldSplit[1]] && downloadableFields[fields[i]]) {
                         href = loris.BaseURL + "/mri/jiv/get_file.php?file=" + sd[fieldSplit[0]].data[fieldSplit[1]];
                         currow[i] = (
                             <a href={href}>
