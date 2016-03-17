@@ -6,6 +6,7 @@ CREATE TABLE `genomic_sample_candidate_rel` (
   `sample_label` varchar(100) NOT NULL,
   `candidate_id` int unsigned NOT NULL,
   PRIMARY KEY (sample_label, candidate_id),
+  UNIQUE KEY `sample_label` (`sample_label`),  
   FOREIGN KEY (candidate_id)
     REFERENCES candidate(ID)
     ON DELETE RESTRICT
