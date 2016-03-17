@@ -416,6 +416,7 @@ DataQueryApp = React.createClass({
         var DocTypes = [],
             that = this,
             semaphore = 0,
+            sectionedSessions,
             ajaxComplete = function(){
                 if(semaphore == 0){
                     var rowdata = that.getRowData(that.state.grouplevel);
@@ -442,51 +443,53 @@ DataQueryApp = React.createClass({
                 }
                 // Found a new type of doc, retrieve the data
                 DocTypes.push(category);
-                semaphore++;
-                $.ajax({
-                    type: "POST",
-                    url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
-                    data: {
-                        DocType: category,
-                        Sessions: sessionInfo
-                    },
-                    dataType: 'text',
-                    success: function(data) {
-                        if(data) {
-                            var i, row, rows, identifier,
-                                sessiondata = that.state.sessiondata;
-                            data = JSON.parse(data);
-                            rows = data.rows;
-                            for(i = 0; i < rows.length; i += 1) {
-                                /*
-                                 * each row is a JSON object of the
-                                 * form:
-                                 * {
-                                 *  "key" : [category, pscid, vl],
-                                 *  "value" : [pscid, vl],
-                                 *  "doc": {
-                                 *      Meta: { stuff }
-                                 *      data: { "FieldName" : "Value", .. }
-                                 * }
-                                 */
-                                row = rows[i];
-                                identifier = row.value;
-                                if(!sessiondata.hasOwnProperty(identifier)) {
-                                    sessiondata[identifier] = {
+                for(var j = 0; j < sessionInfo.length; j += 999){
+                    semaphore++;
+                    sectionedSessions = sessionInfo.slice(j, j+999);
+                    $.ajax({
+                        type: "POST",
+                        url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
+                        data: {
+                            DocType: category,
+                            Sessions: sectionedSessions
+                        },
+                        dataType: 'text',
+                        success: function(data) {
+                            if(data) {
+                                var i, row, rows, identifier,
+                                    sessiondata = that.state.sessiondata;
+                                data = JSON.parse(data);
+                                rows = data.rows;
+                                for(i = 0; i < rows.length; i += 1) {
+                                    /*
+                                     * each row is a JSON object of the
+                                     * form:
+                                     * {
+                                     *  "key" : [category, pscid, vl],
+                                     *  "value" : [pscid, vl],
+                                     *  "doc": {
+                                     *      Meta: { stuff }
+                                     *      data: { "FieldName" : "Value", .. }
+                                     * }
+                                     */
+                                    row = rows[i];
+                                    identifier = row.value;
+                                    if(!sessiondata.hasOwnProperty(identifier)) {
+                                        sessiondata[identifier] = {
+                                        }
                                     }
+
+                                    sessiondata[identifier][row.key[0]] = row.doc;
+
                                 }
-
-                                sessiondata[identifier][row.key[0]] = row.doc;
-
+                                that.setState({ 'sessiondata' : sessiondata});
                             }
-                            that.setState({ 'sessiondata' : sessiondata});
+                            console.log("Received data");
+                            semaphore--;
+                            ajaxComplete();
                         }
-                        console.log("Received data");
-                        semaphore--;
-                        ajaxComplete();
-                    }
-                });
-
+                    });
+                }
             }
         }
     },
