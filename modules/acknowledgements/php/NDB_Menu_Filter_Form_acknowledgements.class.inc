@@ -160,7 +160,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         // enums should match with acknowledgements table
         $titles  = array('' => '');
         $present = array(
-                    ''    => ''
+                    ''    => '',
                     'Yes' => 'Yes',
                     'No'  => 'No',
                    );
