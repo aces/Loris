@@ -241,12 +241,15 @@ FieldSelector = React.createClass({
         });
     },
     addAll: function() {
-        var i, index, fieldName;
+        var i, isFile, fieldName, category;
         for(i in this.state.categoryFields[this.state.selectedCategory]) {
-            fieldName = this.state.categoryFields[this.state.selectedCategory][i].key.join(',');
-            index = this.props.selectedFields.indexOf(fieldName);
-            if(index === -1) {
-                this.props.onFieldChange("add", fieldName);
+            fieldName = this.state.categoryFields[this.state.selectedCategory][i].key[1];
+            category = this.state.categoryFields[this.state.selectedCategory][i].key[0];
+            if(this.props.selectedFields[category] && this.props.selectedFields[category][fieldName]) {
+                // Do nothing, already added
+            } else {
+                isFile = (this.state.categoryFields[category][i].value.isFile) ? true : false;
+                this.props.onFieldChange(fieldName, category, isFile);
             }
         }
     },
