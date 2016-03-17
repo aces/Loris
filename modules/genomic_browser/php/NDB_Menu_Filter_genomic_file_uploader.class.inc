@@ -71,7 +71,7 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
         // Chromosome from genome_loc table
         // INNER JOIN on table.
         // If a candidate has no CPG records, they will not appear.
-        $this->query = " FROM genomic_file";
+        $this->query = " FROM genomic_file WHERE 1=1 ";
 
         $this->validFilters = array(
                                'file_id',
@@ -133,11 +133,6 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
         $this->addCheckbox('caveat', 'Caveat:', $Base_options);
 
         return true;
-    }
-
-    function _setDataTableRows($count)
-    {
-        var_dump($count);
     }
 
     /**
