@@ -22,27 +22,36 @@ $config = NDB_Config::singleton();
 $db     = Database::singleton();
 
 $publication_date = $_GET["date"];
+
+$columns = array(
+ full_name     => 'Full Name',
+ citation_name => 'Citation Name',
+ title         => 'Title',
+ affiliations  => 'Affiliations',
+ degrees       => 'Degrees',
+ roles         => 'Roles',
+ start_date    => 'Start Date',
+ end_date      => 'End Date',
+);
+
+$keysAsString = implode(', ',array_keys($columns));
+$valuesAsString = implode('","',array_values($columns));
+$valuesAsStringWithQuotes = '"' . $valuesAsString . '"';
+
 $results          = $db->pselect(
-    "SELECT full_name, citation_name,
-            title, affiliations, degrees, 
-            roles, start_date, end_date
-     FROM acknowledgements
-     WHERE start_date <= :publication_date
-     ORDER BY ordering ASC",
+    "SELECT " . $keysAsString .
+    " FROM acknowledgements
+    WHERE start_date <= :publication_date
+    ORDER BY ordering ASC",
     array('publication_date' => $publication_date)
 );
 echo "<html>";
 echo "<table border='1'>";
-echo "<tr>" .
-         "<td>Full Name</td>" .
-         "<td>Citation Name</td>" .
-         "<td>Title</td>" .
-         "<td>Affiliations</td>" .
-         "<td>Degrees</td>" .
-         "<td>Roles</td>" .
-         "<td>Start Date</td>" .
-         "<td>End Date</td>" .
-     "</tr>";
+echo "<tr>";
+foreach ($columns as $k => $v) {
+     echo "<td>" . $v . "</td>";
+}
+echo "</tr>";
 foreach ($results as $k => $v) {
     echo "<tr>";
     foreach ($v as $key => $value) {
@@ -51,6 +60,19 @@ foreach ($results as $k => $v) {
     echo "</tr>";
 }
 echo "</table>";
+
+echo "<br>";
+echo "CSV:";
+echo "<br>";
+echo $valuesAsStringWithQuotes;
+echo "<br>";
+foreach ($results as $k => $v) {
+    $result = implode('","',array_values($v));
+    echo '"' . $result . '"';
+    echo "<br>";
+}
+
+
 echo "</html>";
 
 ?>
