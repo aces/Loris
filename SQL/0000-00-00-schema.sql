@@ -30,8 +30,9 @@ CREATE TABLE `acknowledgements` (
   `affiliations` varchar(255) DEFAULT NULL,
   `degrees` varchar(255) DEFAULT NULL,
   `roles` varchar(255) DEFAULT NULL,
-  `start_date` date,
-  `end_date` date,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `present` enum('Yes', 'No') DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
