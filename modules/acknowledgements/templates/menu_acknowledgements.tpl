@@ -194,7 +194,7 @@
                                     
                                 </td>
                                 <td nowrap="nowrap">
-                                    <input class="btn btn-sm btn-primary name="fire_away" value="Save" type="submit" />
+                                    <input class="btn btn-sm btn-primary" name="fire_away" value="Save" type="submit" />
                                     <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
                                 </td>
                             </tr>
