@@ -256,10 +256,11 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
     deleteAll: function() {
         var i, index, fieldName;
         for(i in this.state.categoryFields[this.state.selectedCategory]) {
-            fieldName = this.state.categoryFields[this.state.selectedCategory][i].key.join(',');
-            index = this.props.selectedFields.indexOf(fieldName);
-            if(index >= 0) {
-                this.props.onFieldChange("remove", fieldName);
+            fieldName = this.state.categoryFields[this.state.selectedCategory][i].key[1];
+            category = this.state.categoryFields[this.state.selectedCategory][i].key[0];
+            if(this.props.selectedFields[category] && this.props.selectedFields[category][fieldName]) {
+                isFile = (this.state.categoryFields[category][i].value.isFile) ? true : false;
+                this.props.onFieldChange(fieldName, category, isFile);
             }
         }
     },
