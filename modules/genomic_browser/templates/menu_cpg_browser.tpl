@@ -141,10 +141,10 @@
                     <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="HAIB Methyl450 item ID ex: cg12045430">
-        		  {$form.CPG.label}
+        		  {$form.cpg_name.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.CPG.html}
+        		  {$form.cpg_name.html}
 			</div>
                         <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="Relation to UCSC CpG island">
         		  {$form.Context.label}

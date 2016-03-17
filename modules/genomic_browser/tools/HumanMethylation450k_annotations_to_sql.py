@@ -18,7 +18,7 @@ annotation_file = sys.argv[1]
 
 sys.stdout.write("SET @old_autocommit = @@autocommit, autocommit = 0;\n")
 sys.stdout.write("START TRANSACTION;\n")
-sys.stdout.write("INSERT IGNORE INTO genotyping_platform (Name, Description, TechnologyType, Provider) VALUES ( 'HumanMethylation450k', 'Infinium® HumanMethylation450 BeadChip','Bisulfite conversion', 'Illumina');\n")
+sys.stdout.write("INSERT IGNORE INTO genotyping_platform (Name, Description, TechnologyType, Provider) VALUES ( 'HumanMethylation450k', 'Infinium HumanMethylation450 BeadChip','Bisulfite conversion', 'Illumina');\n")
 platform_subquery = "(SELECT PlatformID FROM genotyping_platform WHERE Name = 'HumanMethylation450k')"
 
 with open(annotation_file, 'r') as f:

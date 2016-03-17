@@ -70,7 +70,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                 'cohort.SubprojectID as Subproject',
                                 'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
                                 'gscr.sample_label as Sample',
-                                'cpg.cpg_name as CPG',
+                                'cpg.cpg_name as cpg_name',
                                 'cpg.beta_value as Beta_value',
                                 'genome_loc.Chromosome as Chromosome',
                                 'genome_loc.Strand as Strand',
@@ -104,7 +104,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'DCCID',
                                'PSCID',
                                'Subproject',
-                               'CPG',
+                               'cpg_name',
                                'Beta_value',
                                'Chromosome',
                                'Gene',
@@ -180,7 +180,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'SubprojectID'       => 'cohort.SubprojectID',
                                'dob'                => 'candidate.DoB',
                                'Show_Brief_Results' => 'show_brief_results',
-                               'CPG'                => 'cpg.cpg_name',
+                               'cpg_name'           => 'cpg.cpg_name',
                                'Beta_value'         => 'cpg.beta_value',
                                'Chromosome'         => 'genome_loc.Chromosome',
                                'Gene_Symbol'        => 'gca.gene_name',
@@ -289,7 +289,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $this->addSelect('Assembly', 'Build:', $Base_options);
         $Base_options = array(
                          null => 'Any',
-                         'F'  => 'Foward',
+                         'F'  => 'Forward',
                          'R'  => 'Reverse',
                         );
         $this->addSelect('Strand', 'Strand:', $Base_options);
@@ -300,7 +300,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         // ----------------- CPG Annotations Filters --------------------
         // ------------------------------------------------------------
 
-        $this->addBasicText('CPG', 'CPG:');
+        $this->addBasicText('cpg_name', 'CPG name:');
 
         // Context
         $Base_options = $this->getDistinctValues(
@@ -384,8 +384,9 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 
         // DHS
         $Base_options = array(
-                         null => 'Any',
-                         '1'  => 'Yes',
+                         null   => 'Any',
+                         '1'    => 'Yes',
+                         'NULL' => 'No',
                         );
         $this->addSelect('DHS', 'DHS:', $Base_options);
 
@@ -531,7 +532,9 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                  $query .= " AND $field = :v_$prepared_key";
             } elseif ($field == "candidate.CandID") {
                 $query .= " AND $field = " . ltrim($val, '0');
-            } elseif ($field == "gca.probe_snp_10" && $val === 'NULL') {
+            } elseif ($field == "gca.probe_snp_10" && $val === 'NULL'
+                || $field == "gca.dhs" && $val === 'NULL'
+            ) {
                 $query .= " AND  $field IS NULL and 'NULL' = :v_$prepared_key" ;
             } else {
                 $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
