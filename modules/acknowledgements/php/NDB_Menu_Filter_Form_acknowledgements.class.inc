@@ -95,6 +95,9 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'full_name',
                                'citation_name',
                                'title',
+                               'affiliations',
+                               'degrees',
+                               'roles',
                                'start_date',
                                'end_date',
                               );
@@ -113,7 +116,9 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'full_name',
                                'citation_name',
                                'title',
+                               'affiliations',
                                'degrees',
+                               'roles',
                                'start_date',
                                'end_date',
                               );

@@ -132,6 +132,14 @@
                                 </td>
                                 <td nowrap="nowrap">
                                     <div class="col-sm-12 col-md-12">
+                                        <select name="affiliations[]" multiple>
+                                            <option value="douglas">Douglas</option>
+                                            <option value="mcgill">McGill</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td nowrap="nowrap">
+                                    <div class="col-sm-12 col-md-12">
                                         <select name="degrees[]" multiple>
                                             <option value="bachelors">Bachelors</option>
                                             <option value="masters">Masters</option>
@@ -139,6 +147,26 @@
                                             <option value="postdoc">Postdoctoral</option>
                                             <option value="md">MD</option>
                                             <option value="registered_nurse">Registered Nurse</option>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td nowrap="nowrap">
+                                    <div class="col-sm-12 col-md-12">
+                                        <select name="roles[]" multiple>
+                                            <option value="investigators">Investigators</option>
+                                            <option value="project_administration">Project Administration</option>
+                                            <option value="database_management">Database Management</option>
+                                            <option value="interview_data_collection">Interview Data Collection</option>
+                                            <option value="data_analyses">Data Analyses</option>
+                                            <option value="mri_acquisition">MRI Acquisition</option>
+                                            <option value="data_entry">Data Entry</option>
+                                            <option value="clinical_evaluation">Clinical Evaluation</option>
+                                            <option value="database_programming">Database Programming</option>
+                                            <option value="imaging_processing_and_evaluation">Imaging Processing and Evaluation</option>
+                                            <option value="genetic_analysis_and_biochemical_assays">Genetic Analysis and Biochemical Assays</option>
+                                            <option value="randomization_and_pharmacy_allocation">Randomization and Pharmacy Allocation</option>
+                                            <option value="consultants">Consultants</option>
+                                            <option value="lp_csf_collection">LP/CSF collection</option>
                                         </select>
                                     </div>
                                 </td>
@@ -151,11 +179,11 @@
                             </tr>
 
                             <tr>
-                                <td nowrap="nowrap" colspan="4" id="message-area">
+                                <td nowrap="nowrap" colspan="8" id="message-area">
                                     
                                 </td>
                                 <td nowrap="nowrap">
-                                    <input class="btn btn-sm btn-primary col-md-offset-6" name="fire_away" value="Save" type="submit" />
+                                    <input class="btn btn-sm btn-primary col-md-offset-4" name="fire_away" value="Save" type="submit" />
                                     <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
                                 </td>
                             </tr>
