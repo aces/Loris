@@ -135,15 +135,9 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        // gather titles, this should match enum in acknowledgements table
+        // enums should match with acknowledgements table
         $titles = array(
                    ''                 => '',
-                   'bachelors'        => 'Bachelors',
-                   'masters'          => 'Masters',
-                   'phd'              => 'PhD',
-                   'posdoc'           => 'Postdoctoral',
-                   'md'               => 'MD',
-                   'registered_nurse' => 'Registered Nurse',
                   );
 
         // add form elements
