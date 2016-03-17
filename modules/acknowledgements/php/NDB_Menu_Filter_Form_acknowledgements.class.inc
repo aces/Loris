@@ -93,7 +93,8 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        // set the class variables
+        $config = NDB_Config::singleton();
+
         $this->columns      = array(
                                'ordering',
                                'full_name',
@@ -133,6 +134,8 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'start_date'    => 'start_date',
                                'end_date'      => 'end_date',
                               );
+
+        $this->tpl_data['citation_policy'] = $config->getSetting('citation_policy');
 
         return true;
     }

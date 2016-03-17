@@ -86,7 +86,7 @@
                 <tbody>
                     <tr>
                         <td nowrap="nowrap">
-                            <div class="col-sm-12 col-md-12">To come from config file</div>
+                            <div class="col-sm-12 col-md-12">{$citation_policy}</div>
                         </td>
                     </tr>
                 </tbody>
