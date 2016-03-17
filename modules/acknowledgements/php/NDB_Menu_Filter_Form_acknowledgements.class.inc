@@ -66,9 +66,9 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         }
         $values = $results;
 
-        $values['affiliations'] = implode(",",$values['affiliations']);
-        $values['degrees'] = implode(",",$values['degrees']);
-        $values['roles'] = implode(",",$values['roles']);
+        $values['affiliations'] = implode(",", $values['affiliations']);
+        $values['degrees']      = implode(",", $values['degrees']);
+        $values['roles']        = implode(",", $values['roles']);
 
         $DB =& Database::singleton();
         if (isset($_POST['fire_away'])) {
@@ -154,9 +154,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         // enums should match with acknowledgements table
-        $titles = array(
-                   ''                 => '',
-                  );
+        $titles = array('' => '');
 
         // add filter elements
         $this->addSelect('title', 'Title:', $titles);
