@@ -60,6 +60,12 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
             return true;
         }
 
+        $results = array();
+        foreach ($values as $key => $value) {
+            $results[substr($key, 3)] = $value;
+        }
+        $values = $results;
+
         $values['affiliations'] = implode(",",$values['affiliations']);
         $values['degrees'] = implode(",",$values['degrees']);
         $values['roles'] = implode(",",$values['roles']);
@@ -152,7 +158,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                    ''                 => '',
                   );
 
-        // add form elements
+        // add filter elements
         $this->addSelect('title', 'Title:', $titles);
         $this->addBasicText('ordering', 'Ordering:');
         $this->addBasicText('full_name', 'Full Name:');
@@ -169,6 +175,24 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                        );
         $this->addBasicDate('start_date', 'Start Date:', $dateOptions);
         $this->addBasicDate('end_date', 'End Date:', $dateOptions);
+
+        // add form elements
+        $this->addSelect('addtitle', 'Title:', $titles);
+        $this->addBasicText('addordering', 'Ordering:');
+        $this->addBasicText('addfull_name', 'Full Name:');
+        $this->addBasicText('addcitation_name', 'Citation Name:');
+        $config      =& NDB_Config::singleton();
+        $startYear   = $config->getSetting('startYear');
+        $endYear     = $config->getSetting('endYear');
+        $dateOptions = array(
+                        'language'       => 'en',
+                        'format'         => 'YMd',
+                        'addEmptyOption' => true,
+                        'minYear'        => $startYear,
+                        'maxYear'        => $endYear,
+                       );
+        $this->addBasicDate('addstart_date', 'Start Date:', $dateOptions);
+        $this->addBasicDate('addend_date', 'End Date:', $dateOptions);
 
         return true;
     }

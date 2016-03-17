@@ -119,20 +119,20 @@
                         <tbody>
                             <tr>
                                 <td nowrap="nowrap">
-                                    <div class="col-sm-12 col-md-12">{$form.ordering.html}</div>
+                                    <div class="col-sm-12 col-md-12">{$form.addordering.html}</div>
                                 </td>
                                 <td nowrap="nowrap">
-                                    <div class="col-sm-12 col-md-12">{$form.full_name.html}</div>
+                                    <div class="col-sm-12 col-md-12">{$form.addfull_name.html}</div>
                                 </td>
                                 <td nowrap="nowrap">
-                                    <div class="col-sm-12 col-md-12">{$form.citation_name.html}</div>
+                                    <div class="col-sm-12 col-md-12">{$form.addcitation_name.html}</div>
                                 </td>
                                 <td nowrap="nowrap">
-                                    <div class="col-sm-12 col-md-12">{$form.title.html}</div>
+                                    <div class="col-sm-12 col-md-12">{$form.addtitle.html}</div>
                                 </td>
                                 <td nowrap="nowrap">
                                     <div class="col-sm-12 col-md-12">
-                                        <select name="affiliations[]" multiple>
+                                        <select name="addaffiliations[]" multiple>
                                             <option value="douglas">Douglas</option>
                                             <option value="mcgill">McGill</option>
                                         </select>
@@ -140,7 +140,7 @@
                                 </td>
                                 <td nowrap="nowrap">
                                     <div class="col-sm-12 col-md-12">
-                                        <select name="degrees[]" multiple>
+                                        <select name="adddegrees[]" multiple>
                                             <option value="bachelors">Bachelors</option>
                                             <option value="masters">Masters</option>
                                             <option value="phd">PhD</option>
@@ -152,7 +152,7 @@
                                 </td>
                                 <td nowrap="nowrap">
                                     <div class="col-sm-12 col-md-12">
-                                        <select name="roles[]" multiple>
+                                        <select name="addroles[]" multiple>
                                             <option value="investigators">Investigators</option>
                                             <option value="project_administration">Project Administration</option>
                                             <option value="database_management">Database Management</option>
@@ -171,10 +171,10 @@
                                     </div>
                                 </td>
                                 <td nowrap="nowrap">
-                                    <div class="col-sm-12 col-md-12">{$form.start_date.html}</div>
+                                    <div class="col-sm-12 col-md-12">{$form.addstart_date.html}</div>
                                 </td>
                                 <td nowrap="nowrap">
-                                    <div class="col-sm-12 col-md-12">{$form.end_date.html}</div>
+                                    <div class="col-sm-12 col-md-12">{$form.addend_date.html}</div>
                                 </td>
                             </tr>
 
