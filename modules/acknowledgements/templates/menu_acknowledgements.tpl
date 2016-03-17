@@ -119,7 +119,7 @@
                         <tbody>
                             <tr>
                                 <td nowrap="nowrap">
-                                    <div class="col-sm-12 col-md-12">{$form.order.html}</div>
+                                    <div class="col-sm-12 col-md-12">{$form.ordering.html}</div>
                                 </td>
                                 <td nowrap="nowrap">
                                     <div class="col-sm-12 col-md-12">{$form.full_name.html}</div>
