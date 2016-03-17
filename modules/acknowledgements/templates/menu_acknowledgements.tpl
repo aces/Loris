@@ -224,7 +224,7 @@
                             </tr>
                             {sectionelse}
                                 <tr>
-                                    <tr><td colspan="9">You're not alone.</td></tr>
+                                    <tr><td colspan="10">You're not alone.</td></tr>
                                 </tr>
                             {/section}
                         </tbody>
