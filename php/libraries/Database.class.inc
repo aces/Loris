@@ -533,9 +533,9 @@ class Database
      * be overwritten so make sure it's empty or garbage before
      * passing it in...)
      *
-     * @param string $query   the SQL string which defines the SELECT query.
-     * @param array  $result  an array into which the results of the select
-     *                        will be stored - this array gets overwritten completely
+     * @param string $query  the SQL string which defines the SELECT query.
+     * @param array  $result an array into which the results of the select
+     *                       will be stored - this array gets overwritten completely
      *
      * @return     none
      * @access     public
@@ -581,9 +581,9 @@ class Database
      * *** This should not be used as it does not support prepared statements.
      * *** It is left here for legacy reasons/instruments
      *
-     * @param string $query   the SQL string which defines the SELECT query.
-     * @param array  $result  an array into which the results of the select will
-     *                        be stored - this array gets overwritten completely
+     * @param string $query  the SQL string which defines the SELECT query.
+     * @param array  $result an array into which the results of the select will
+     *                       be stored - this array gets overwritten completely
      *
      * @return     none
      * @access     public
@@ -776,13 +776,13 @@ class Database
      * Helper function to generate the string for the WHERE part of an update
      * or delete query. Generates the string in a prepared statement format.
      *
-     * @param string $glue       The glue used to combine parts of the dataArray
-     *                           (ie " AND ")
-     * @param array  $dataArray  The array representing the WHERE condition to be
-     *                           glued together into a string
-     * @param array  $exec_vals  The values which are being bound to the query. Used
-     *                           to generate the prepared variable name.
-     * @param string $prefix     A prefix to apply to prepared variable names.
+     * @param string $glue      The glue used to combine parts of the dataArray
+     *                          (ie " AND ")
+     * @param array  $dataArray The array representing the WHERE condition to be
+     *                          glued together into a string
+     * @param array  $exec_vals The values which are being bound to the query. Used
+     *                          to generate the prepared variable name.
+     * @param string $prefix    A prefix to apply to prepared variable names.
      *
      * @return string A string that can be used to generate a prepared statement with
      *                appropriate variable names generated for data binding.
