@@ -196,7 +196,7 @@
               {$CandID}
             {elseif $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
               {assign var="PSCID" value=$items[item][piece].value}
-               <a href="{$baseurl}/timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
+               <a href="{$baseurl}{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
 
             {elseif $items[item][piece].value eq ""}
               -
