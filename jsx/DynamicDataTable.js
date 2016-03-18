@@ -44,6 +44,16 @@ DynamicDataTable = React.createClass({
     },
     render: function() {
         if (!this.state.isLoaded) {
+
+            if (this.state.error != undefined) {
+                console.log(this.state.error);
+                return <div className="alert alert-danger">
+                         <strong>
+                           {this.state.error}
+                         </strong>
+                       </div>;
+            } 
+
             return <button className="btn-info has-spinner">Loading <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></button>;
         }
 
