@@ -62,9 +62,7 @@
             {if $timePoints[timepoint].Scan_done != ""}
                     {if $timePoints[timepoint].Scan_done == 'Y'}
                         {assign var="scan_done" value="Yes"}
-                        <a href="#" class="timepoint_list" 
-                            data-visitlabel="{$timePoints[timepoint].Visit_label}"
-                            data-pscid="{$PSCID}">
+                        <a href="{$baseurl}/imaging_browser/?pscid={$PSCID}&VL={$timePoints[timepoint].Visit_label}">
                         {$scan_done}</a>
                     {else}
                         {assign var="scan_done" value="No"}
