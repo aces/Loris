@@ -151,29 +151,12 @@ class ExaminerTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that the Examiner module loads with multisite functionality if the
-     * user has the correct permission
-     *
-     * @return void
-     */
-    /*function testExaminerLoadsMultisiteWithPermission()
-    {
-        $this->setupPermissions(array("examiner_view", "examiner_multisite"));
-        $this->safeGet($this->url . "/examiner/");
-        $siteOptions = $this->webDriver->findElement(
-            WebDriverBy::Name("site")
-        )->getText();
-        // assert that the list of sites includes all sites
-        $this->resetPermissions();
-    }*/
-
-    /**
      * Tests that the certification column loads if EnableCertification is set in
      * the config
      *
      * @return void
      */
-    function testExaminerLoadsCertificationElements()
+    /*function testExaminerLoadsCertificationElements()
     {
         $this->setupConfigSetting('EnableCertification', '1');
         $this->safeGet($this->url . "/examiner/");
@@ -185,7 +168,7 @@ class ExaminerTest extends LorisIntegrationTest
         $this->assertContains("Certification", $tableText);
 
         $this->restoreConfigSetting("EnableCertification");
-    }
+    }*/
 
     /**
      * Tests that the certification column does not load if EnableCertification
@@ -193,7 +176,7 @@ class ExaminerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testExaminerDoesNotLoadCertificationElements()
+    /*function testExaminerDoesNotLoadCertificationElements()
     {
         $this->setupConfigSetting('EnableCertification', '0');
         $this->safeGet($this->url . "/examiner/");
@@ -205,7 +188,7 @@ class ExaminerTest extends LorisIntegrationTest
         $this->assertNotContains("Certification", $bodyText);
 
         $this->restoreConfigSetting("EnableCertification");
-    }
+    }*/
 
     /**
      * Tests that examiner page does not load if the user does not have correct
