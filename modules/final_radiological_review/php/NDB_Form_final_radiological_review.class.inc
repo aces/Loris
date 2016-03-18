@@ -23,6 +23,9 @@
  *   @license    @GPLv3
  *   @link       https://www.github.com/aces/Loris-Trunk/
  */
+
+require_once "NDB_Form.class.inc";
+require_once "NDB_Menu_Filter_final_radiological_review.class.inc";
 class NDB_Form_final_radiological_review extends NDB_Form
 {
     /**
