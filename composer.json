@@ -10,7 +10,7 @@
     ],
     "require" : {
         "smarty/smarty" : "~3.1",
-        "pear-pear.php.net/Spreadsheet_Excel_Writer" : "~0.9.3",
+        "PHPOffice/PHPExcel": "1.8.*",
         "firebase/php-jwt" : "~3.0"
     },
     "require-dev" : {

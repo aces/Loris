@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c9926fa73f8d8761a8976f973a41708c",
-    "content-hash": "34e0b1c05ab4aa5471748883296f3dc3",
+    "hash": "7bf7a584d5d478a7809b9eda8c51bc54",
+    "content-hash": "e7c43b589c6fd696aed1350613f573af",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -51,76 +51,74 @@
             "time": "2015-07-22 18:31:08"
         },
         {
-            "name": "pear-pear.php.net/OLE",
-            "version": "0.6.1",
-            "dist": {
-                "type": "file",
-                "url": "https://pear.php.net/get/OLE-0.6.1.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "php": ">=4.0.0.0"
-            },
-            "replace": {
-                "pear-pear/ole": "== 0.6.1.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "PHP"
-            ],
-            "description": "This package allows reading and writing of OLE (Object Linking and Embedding) compound documents. This format is used as container for Excel (.xls), Word (.doc) and other Microsoft file formats."
-        },
-        {
-            "name": "pear-pear.php.net/Spreadsheet_Excel_Writer",
-            "version": "0.9.3",
-            "dist": {
-                "type": "file",
-                "url": "https://pear.php.net/get/Spreadsheet_Excel_Writer-0.9.3.tgz",
-                "reference": null,
-                "shasum": null
-            },
-            "require": {
-                "pear-pear.php.net/ole": ">=0.5.0.0",
-                "php": ">=4.1.0.0"
-            },
-            "replace": {
-                "pear-pear/spreadsheet_excel_writer": "== 0.9.3.0"
-            },
-            "type": "pear-library",
-            "autoload": {
-                "classmap": [
-                    ""
-                ]
-            },
-            "include-path": [
-                "/"
-            ],
-            "license": [
-                "LGPL"
-            ],
-            "description": "Spreadsheet_Excel_Writer was born as a porting of the Spreadsheet::WriteExcel Perl module to PHP.\n  It allows writing of Excel spreadsheets without the need for COM objects.\n  It supports formulas, images (BMP) and all kinds of formatting for text and cells.\n  It currently supports the BIFF5 format (Excel 5.0), so functionality appeared in the latest Excel versions is not yet available."
-        },
-        {
-            "name": "smarty/smarty",
-            "version": "v3.1.28",
+            "name": "phpoffice/phpexcel",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/smarty-php/smarty.git",
-                "reference": "d234f79203ca236093989c579c824a1a882d1153"
+                "url": "https://github.com/PHPOffice/PHPExcel.git",
+                "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/d234f79203ca236093989c579c824a1a882d1153",
-                "reference": "d234f79203ca236093989c579c824a1a882d1153",
+                "url": "https://api.github.com/repos/PHPOffice/PHPExcel/zipball/372c7cbb695a6f6f1e62649381aeaa37e7e70b32",
+                "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xml": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHPExcel": "Classes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Maarten Balliauw",
+                    "homepage": "http://blog.maartenballiauw.be"
+                },
+                {
+                    "name": "Mark Baker"
+                },
+                {
+                    "name": "Franck Lefevre",
+                    "homepage": "http://blog.rootslabs.net"
+                },
+                {
+                    "name": "Erik Tilt"
+                }
+            ],
+            "description": "PHPExcel - OpenXML - Read, Create and Write Spreadsheet documents in PHP - Spreadsheet engine",
+            "homepage": "http://phpexcel.codeplex.com",
+            "keywords": [
+                "OpenXML",
+                "excel",
+                "php",
+                "spreadsheet",
+                "xls",
+                "xlsx"
+            ],
+            "time": "2015-05-01 07:00:55"
+        },
+        {
+            "name": "smarty/smarty",
+            "version": "v3.1.29",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/smarty-php/smarty.git",
+                "reference": "35480f10e7ce9b0fdaf23d3799d7b79463919b1e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/smarty-php/smarty/zipball/35480f10e7ce9b0fdaf23d3799d7b79463919b1e",
+                "reference": "35480f10e7ce9b0fdaf23d3799d7b79463919b1e",
                 "shasum": ""
             },
             "require": {
@@ -162,7 +160,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-12-13 14:19:58"
+            "time": "2015-12-21 01:57:06"
         }
     ],
     "packages-dev": [
@@ -802,16 +800,16 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "1.3.3",
+            "version": "1.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "6e7133793a8e5a5714a551a8324337374be209df"
+                "reference": "dc7a29032cf72b54f36dac15a1ca5b3a1b6029bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/6e7133793a8e5a5714a551a8324337374be209df",
-                "reference": "6e7133793a8e5a5714a551a8324337374be209df",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/dc7a29032cf72b54f36dac15a1ca5b3a1b6029bf",
+                "reference": "dc7a29032cf72b54f36dac15a1ca5b3a1b6029bf",
                 "shasum": ""
             },
             "require": {
@@ -848,7 +846,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2015-12-02 08:37:27"
+            "time": "2016-02-26 18:40:46"
         },
         {
             "name": "sebastian/exporter",
@@ -1006,16 +1004,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "2.5.0",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "e4fb41d5d0387d556e2c25534d630b3cce90ea67"
+                "reference": "6731851d6aaf1d0d6c58feff1065227b7fda3ba8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/e4fb41d5d0387d556e2c25534d630b3cce90ea67",
-                "reference": "e4fb41d5d0387d556e2c25534d630b3cce90ea67",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/6731851d6aaf1d0d6c58feff1065227b7fda3ba8",
+                "reference": "6731851d6aaf1d0d6c58feff1065227b7fda3ba8",
                 "shasum": ""
             },
             "require": {
@@ -1033,7 +1031,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0.x-dev"
+                    "dev-master": "2.x-dev"
                 }
             },
             "autoload": {
@@ -1079,20 +1077,20 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2015-12-11 00:12:46"
+            "time": "2016-01-19 23:39:10"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.0",
+            "version": "v2.8.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "f79824187de95064a2f5038904c4d7f0227fedb5"
+                "reference": "2a4ee40acb880c56f29fb1b8886e7ffe94f3b995"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/f79824187de95064a2f5038904c4d7f0227fedb5",
-                "reference": "f79824187de95064a2f5038904c4d7f0227fedb5",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/2a4ee40acb880c56f29fb1b8886e7ffe94f3b995",
+                "reference": "2a4ee40acb880c56f29fb1b8886e7ffe94f3b995",
                 "shasum": ""
             },
             "require": {
@@ -1128,7 +1126,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-11-30 12:35:10"
+            "time": "2016-02-23 07:41:20"
         }
     ],
     "aliases": [],
