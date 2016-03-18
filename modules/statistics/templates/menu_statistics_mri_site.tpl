@@ -30,7 +30,7 @@
             {if $Candidate.test_url == "PF_Missing"}
                 <a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$Candidate.SessionID}">
             {else}
-            <a href="{$baseurl}/statistics/?candID={$Candidate.CandID}&sessionID={$Candidate.SessionID}&commentID={$Candidate.CommentID}">
+            <a href="{$baseurl}/mri_parameter_form/?candID={$Candidate.CandID}&sessionID={$Candidate.SessionID}&commentID={$Candidate.CommentID}">
             {/if}
             {$Candidate.PSCID}</a>
           {/foreach}
