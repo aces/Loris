@@ -87,7 +87,7 @@ class TrainingTest extends LorisIntegrationTest
         $this->setupPermissions(array("training"));
         $this->safeGet($this->url . "/training/");
         $this->assertTrue(
-            $this->isMenuItemPresent('Clinical', 'Training'),
+            $this->isMenuItemPresent('Clinical', 'Training')
         );
         $this->resetPermissions();
     }
@@ -103,7 +103,7 @@ class TrainingTest extends LorisIntegrationTest
         $this->setupPermissions(array());
         $this->safeGet($this->url . "/training/");
         $this->assertFalse(
-            $this->isMenuItemPresent('Clinical', 'Training'),
+            $this->isMenuItemPresent('Clinical', 'Training')
         );
         $this->resetPermissions();
     }
