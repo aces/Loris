@@ -534,7 +534,7 @@ class Database
      * passing it in...)
      *
      * @param string $query   the SQL string which defines the SELECT query.
-     * @param array  &$result an array into which the results of the select
+     * @param array  $result  an array into which the results of the select
      *                        will be stored - this array gets overwritten completely
      *
      * @return     none
@@ -582,7 +582,7 @@ class Database
      * *** It is left here for legacy reasons/instruments
      *
      * @param string $query   the SQL string which defines the SELECT query.
-     * @param array  &$result an array into which the results of the select will
+     * @param array  $result  an array into which the results of the select will
      *                        be stored - this array gets overwritten completely
      *
      * @return     none
@@ -780,7 +780,7 @@ class Database
      *                           (ie " AND ")
      * @param array  $dataArray  The array representing the WHERE condition to be
      *                           glued together into a string
-     * @param array  &$exec_vals The values which are being bound to the query. Used
+     * @param array  $exec_vals  The values which are being bound to the query. Used
      *                           to generate the prepared variable name.
      * @param string $prefix     A prefix to apply to prepared variable names.
      *
