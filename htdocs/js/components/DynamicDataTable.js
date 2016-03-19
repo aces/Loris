@@ -39,8 +39,9 @@ DynamicDataTable = React.createClass({
                     'isLoaded': true
                 });
             },
-            error: function (data) {
-                that.setState({ "error": "Unknown error loading data" });
+            error: function (data, error_code, error_msg) {
+                console.error(error_code + ': ' + error_msg);
+                that.setState({ "error": "Error loading data" });
             }
         });
     },
@@ -48,7 +49,6 @@ DynamicDataTable = React.createClass({
         if (!this.state.isLoaded) {
 
             if (this.state.error != undefined) {
-                console.log(this.state.error);
                 return React.createElement(
                     'div',
                     { className: 'alert alert-danger' },
@@ -63,7 +63,7 @@ DynamicDataTable = React.createClass({
             return React.createElement(
                 'button',
                 { className: 'btn-info has-spinner' },
-                'Loading ',
+                'Loading',
                 React.createElement('span', { className: 'glyphicon glyphicon-refresh glyphicon-refresh-animate' })
             );
         }
