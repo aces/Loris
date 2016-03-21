@@ -42,7 +42,7 @@ $config = NDB_Config::singleton();
 $DB     = Database::singleton();
 
 $res = array();
-$DB->select("SELECT Name, CenterID FROM psc",$res);
+$DB->select("SELECT Name, CenterID FROM psc", $res);
 $site_list = array();
 foreach ($res as $elt) {
     $site_list[$elt["CenterID"]] = $elt["Name"];
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
         $err[] = 'Your email is not valid!';
     }
-    if (!checkLen('site',0)) {
+    if (!checkLen('site', 0)) {
         $err[] = 'The Site field is empty!';
     }
     if (isset($_SESSION['tntcon'])
