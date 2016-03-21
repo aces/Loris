@@ -4,7 +4,7 @@ CREATE TABLE `acknowledgements` (
   `ordering` varchar(255) DEFAULT NULL,
   `full_name` varchar(255) DEFAULT NULL,
   `citation_name` varchar(255) DEFAULT NULL,
-  `title` enum(') DEFAULT NULL,
+  `title` enum('') DEFAULT NULL,
   `affiliations` varchar(255) DEFAULT NULL,
   `degrees` varchar(255) DEFAULT NULL,
   `roles` varchar(255) DEFAULT NULL,
