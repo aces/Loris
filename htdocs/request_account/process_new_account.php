@@ -64,7 +64,7 @@ try {
     $tpl_data['study_logo'] = '';
 }
 try {
-    $study_links = $config->getSetting('Studylinks');// print_r($study_links);
+    $study_links = $config->getSetting('Studylinks');
     foreach (Utility::toArray($study_links['link']) AS $link) {
         $LinkArgs = '';
         $BaseURL  = $link['@']['url'];
@@ -131,8 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $lastname  = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
         $from      = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
         $verif_box = htmlspecialchars($_REQUEST["verif_box"], ENT_QUOTES);
-        $site      = $_REQUEST["site"]; //htmlspecialchars($_REQUEST["site"], ENT_QUOTES);
-        print_r($site);
+        $site      = htmlspecialchars($_REQUEST["site"], ENT_QUOTES);
+
         // check to see if verificaton code was correct
         // if verification code was correct send the message and show this page
         $fullname = $name." ".$lastname;
