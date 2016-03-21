@@ -156,9 +156,11 @@ class ExaminerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    /*function testExaminerLoadsCertificationElements()
+    function testExaminerLoadsCertificationElements()
     {
-        $this->setupConfigSetting('EnableCertification', '1');
+        $this->markTestIncomplete("Test not implemented!");
+        
+        /*$this->setupConfigSetting('EnableCertification', '1');
         $this->safeGet($this->url . "/examiner/");
 
         // Check that the certification column appears
@@ -167,8 +169,8 @@ class ExaminerTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("Certification", $tableText);
 
-        $this->restoreConfigSetting("EnableCertification");
-    }*/
+        $this->restoreConfigSetting("EnableCertification");*/
+    }
 
     /**
      * Tests that the certification column does not load if EnableCertification
@@ -176,9 +178,10 @@ class ExaminerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    /*function testExaminerDoesNotLoadCertificationElements()
+    function testExaminerDoesNotLoadCertificationElements()
     {
-        $this->setupConfigSetting('EnableCertification', '0');
+        $this->markTestIncomplete("Test not implemented!");
+        /*$this->setupConfigSetting('EnableCertification', '0');
         $this->safeGet($this->url . "/examiner/");
 
         // Check that the certification column does not appear
@@ -187,8 +190,8 @@ class ExaminerTest extends LorisIntegrationTest
         )->getText();
         $this->assertNotContains("Certification", $bodyText);
 
-        $this->restoreConfigSetting("EnableCertification");
-    }*/
+        $this->restoreConfigSetting("EnableCertification");*/
+    }
 
     /**
      * Tests that examiner page does not load if the user does not have correct
