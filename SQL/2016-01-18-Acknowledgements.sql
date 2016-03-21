@@ -15,7 +15,7 @@ CREATE TABLE `acknowledgements` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO LorisMenu (Label, OrderNumber) VALUES ('Acknowledgements', 7);
-INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Acknowledgements','main.php?test_name=acknowledgements', (SELECT ID FROM LorisMenu as L WHERE Label='Acknowledgements'), 1);
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Acknowledgements','/acknowledgements', (SELECT ID FROM LorisMenu as L WHERE Label='Acknowledgements'), 1);
 
 INSERT INTO permissions (permID,code,description,categoryID) VALUES (41,'acknowledgements_view','View Acknowledgements',2);
 INSERT INTO permissions (permID,code,description,categoryID) VALUES (42,'acknowledgements_edit','Edit Acknowledgements',2);
