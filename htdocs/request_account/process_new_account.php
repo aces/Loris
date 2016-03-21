@@ -41,10 +41,11 @@ $tpl_data = array();
 $config = NDB_Config::singleton();
 $DB     = Database::singleton();
 
-$res       = $DB->select("SELECT Alias, Name FROM psc");
+$res = array();
+$DB->select("SELECT Name, CenterID FROM psc",$res);
 $site_list = array();
 foreach ($res as $elt) {
-    $site_list[$elt["Alias"]] = $elt["Name"];
+    $site_list[$elt["CenterID"]] = $elt["Name"];
 }
 
 $tpl_data['baseurl']     = $config->getSetting('url');
@@ -92,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
         $err[] = 'Your email is not valid!';
     }
-    if (!checkLen('site')) {
+    if (!checkLen('site',0)) {
         $err[] = 'The Site field is empty!';
     }
     if (isset($_SESSION['tntcon'])
@@ -128,7 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $lastname  = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
         $from      = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
         $verif_box = htmlspecialchars($_REQUEST["verif_box"], ENT_QUOTES);
-
+        $site      = $_REQUEST["site"]; //htmlspecialchars($_REQUEST["site"], ENT_QUOTES);
+        print_r($site);
         // check to see if verificaton code was correct
         // if verification code was correct send the message and show this page
         $fullname = $name." ".$lastname;
@@ -139,6 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                      'Last_name'        => $lastname,
                      'Pending_approval' => 'Y',
                      'Email'            => $from,
+                     'CenterID'         => $site,
                     );
         // check email address' uniqueness
         $result = $DB->pselectOne(
