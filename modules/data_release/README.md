@@ -5,7 +5,7 @@ The Data Release Module can be used to easily distribute packaged data releases 
 ##Features:
 
 - Upload new releases through the front-end web interface
-- Differentiate releases using (optionally unique) version numbers
+- Differentiate releases using (optionally unique) versioning tag
 - Assign permissions for each release to any specific user
 
 ##Other notes:
