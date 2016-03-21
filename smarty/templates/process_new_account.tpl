@@ -66,6 +66,7 @@
     <label class="col-sm-4 control-label">Your site: </label>
     <div class="col-sm-6">
         <select name="site" id="site" style="width:156px;">
+            <option value=""></options>
             {foreach from=$site_list item=site key=idx}
             <option value="{$idx}">{$site}</options>
                 {/foreach}
