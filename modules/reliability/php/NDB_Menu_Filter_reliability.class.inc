@@ -457,7 +457,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 
         }
         $value = array('NewID'=>$newCommentID['NewID']);
-        $replacementCheck = $DB->pselectRow("SELECT CommentID FROM reliability WHERE CommentID=:NewID'",$value );
+        $replacementCheck = $DB->pselectRow("SELECT CommentID FROM reliability WHERE CommentID=:NewID",$value );
         if(!empty($replacementCheck)) {
             $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." already in reliability. Cannot swap".$params['pid']."/".$params['id_V']."for it";
             return array('error' => $error_msg);

@@ -134,6 +134,13 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     var $ValidityRequired = true;
 
+    /**
+     * True if the instrument page is being loaded by a script
+     * such as the quickform_parser where all elements should be added to form,
+     * ignoring age-dependent or other conditional display logic in the form.
+     * To be called from within individual instrument forms.
+     */
+    var $displayAllFields = false;
 
     /**
      * True if the page is being previewed from the instrument builder,
@@ -205,6 +212,11 @@ class NDB_BVL_Instrument extends NDB_Page
             // Now go ahead and instantiate it
             $obj = new $class;
             // Now go ahead and instantiate it
+        }
+
+        // if a script is loading this form without a commentID, display all fields
+        if (!isset($commentID)) {
+            $obj->displayAllFields = true;
         }
 
         // Sets up page variables such as $this->commentID and $this->form

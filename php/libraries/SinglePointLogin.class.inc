@@ -38,6 +38,11 @@ class SinglePointLogin
     var $_username = null;
 
     /**
+     * To carry the error messages
+     */
+    var $_lastError = null;
+
+    /**
      * Dumps the login form
      *
      * @return void

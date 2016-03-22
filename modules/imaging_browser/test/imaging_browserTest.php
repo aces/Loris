@@ -632,6 +632,10 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testViewSessionNavigation()
     {
+        $this->markTestSkipped(
+            'Links are broken, Redmine 9576'
+        );
+
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
         $this->webDriver->navigate()->refresh();
@@ -922,9 +926,16 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->clickToLoadNewPage($NativeLink);
 
         $BreadCrumbLink = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".alert > a:nth-child(1)")
+            WebDriverBy::xPath("
+                //div[@id='breadcrumbs']
+                /div
+                /div
+                /div
+                /a[2]
+                /div
+            ")
         );
-        $BreadCrumbLink->click();
+        $this->clickToLoadNewPage($BreadCrumbLink);
 
         $SelectionFilter = $this->webDriver->findElement(
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[1]/div/div/div[1]')

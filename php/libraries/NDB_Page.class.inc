@@ -566,6 +566,7 @@ class NDB_Page
                   $baseurl . '/js/jquery.fileupload.js',
                   $baseurl . '/js/polyfiller.js',
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
+                  $baseurl . '/js/components/react.breadcrumb.js',
                  );
         if (file_exists($paths['base'] . "modules/$TestName/js/$TestName.js")) {
             error_log(
