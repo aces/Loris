@@ -178,6 +178,11 @@
                 <label for="sync-volumes" id="sync-volumes" class="clickable btn btn-sm btn-primary">Sync Volumes</label>
             </span>
 
+            <span id="reset-wrapper" class="clickable">
+                <input type="button" class="button ui-helper-hidden-accessible" id="reset-view">
+                <label for="reset-view" id="reset-view" class="clickable btn btn-sm btn-primary">Reset View</label>
+            </span>
+
             <div class="btn-group">
                 <select id="panel-size" class="form-control panel-size clickable">
                     <option value="256" SELECTED>Choose Panel Size</option>

@@ -50,6 +50,12 @@ $(function() {
       viewer.synced = synced;
     });
 
+    // Reset button
+    $("#reset-view").click(function() {
+      viewer.resetDisplays();
+      viewer.redrawVolumes();
+    });
+
     // This will create an image of all the display panels
     // currently being shown in the viewer.
     $("#screenshot").click(function() {
