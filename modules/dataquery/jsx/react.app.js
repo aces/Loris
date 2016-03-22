@@ -500,7 +500,7 @@ DataQueryApp = React.createClass({
     getRowData: function(displayID) {
         var sessiondata = this.state.sessiondata;
         var sessions = this.getSessions();
-        var fields = this.state.fields;
+        var fields = this.state.fields.sort();
         var downloadableFields = this.state.downloadableFields;
         var i, j;
         var rowdata = [];
@@ -537,39 +537,69 @@ DataQueryApp = React.createClass({
             }
             console.log(rowdata);
         } else {
-            var Visits = [],
-                visit, identifier, temp, colHeader, index;
+            var Visits = {},
+                visit, identifier, temp, colHeader, index, instrument, fieldSplit;
             for(var session in sessiondata){
                 sessiondata[session.toUpperCase()] = sessiondata[session];
                 delete session[session];
                 temp = session.split(',')
                 visit = temp[1].toUpperCase();
-                if (Visits.indexOf(visit) === -1) {
-                    Visits.push(visit);
+                if (!Visits[visit]) {
+                    Visits[visit] = true;
                 }
                 identifier = temp[0].toUpperCase();
                 if (Identifiers.indexOf(identifier) === -1) {
                     Identifiers.push(identifier);
                 }
             }
-            Visits.sort();
-            for(visit in Visits){
-                for(i = 0; fields && i < fields.length; i += 1){
-                    RowHeaders.push(Visits[visit] + '_' + fields[i])
+            for(i = 0; fields && i < fields.length; i += 1) {
+                for(visit in Visits) {
+                    temp = fields[i].split(",");
+                    instrument = this.state.selectedFields[temp[0]]
+                    if(instrument && instrument[temp[1]] && instrument[temp[1]][visit]) {
+                        RowHeaders.push(visit + ' ' + fields[i])
+                    }
                 }
             }
+            // for(var instrument in this.state.selectedFields) {
+            //     for(visit in Visits){
+            //         for(var field in this.state.selectedFields[instrument]){
+            //             if(field === "allVisits") {
+            //                 continue;
+            //             } else {
+            //                 if(this.state.selectedFields[instrument][field][visit]) {
+
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
+            // for(visit in Visits){
+            //     for(i = 0; fields && i < fields.length; i += 1){
+            //         RowHeaders.push(Visits[visit] + '_' + fields[i])
+            //     }
+            // }
             for(identifier in Identifiers){
                 currow = [];
                 for(colHeader in RowHeaders){
-                    temp = Identifiers[identifier] +',' + RowHeaders[colHeader]
-                    .split('_')[0];
+                    temp = Identifiers[identifier] +',' + RowHeaders[colHeader].split(' ')[0];
                     index = sessiondata[temp];
                     if(!index){
                         currow.push(".");
                     } else {
-                        temp = index[RowHeaders[colHeader].split(',')[0].split('_')[1]];
+                        temp = index[RowHeaders[colHeader].split(',')[0].split(' ')[1]];
+                        fieldSplit = RowHeaders[colHeader].split(' ')[1].split(",")
                         if(temp){
-                            temp = temp.data[RowHeaders[colHeader].split(',')[1]];
+                            if(temp.data[RowHeaders[colHeader].split(',')[1]] && downloadableFields[fieldSplit[0] +',' + fieldSplit[1]]) {
+                                href = loris.BaseURL + "/mri/jiv/get_file.php?file=" + temp.data[RowHeaders[colHeader].split(',')[1]];
+                                temp = (
+                                    <a href={href}>
+                                        {temp.data[RowHeaders[colHeader].split(',')[1]]}
+                                    </a>
+                                );
+                            } else {
+                                temp = temp.data[RowHeaders[colHeader].split(',')[1]];
+                            }
                         } else {
                             temp = '.';
                         }
