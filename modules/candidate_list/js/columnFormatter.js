@@ -1,6 +1,6 @@
 function formatColumn(column, cell, rowData) {
     if (column === 'PSCID') {
-        var url = loris.BaseURL + "/" + rowData[1] + "/";
+        var url = loris.BaseURL + "timepoint_list/?candID=" + rowData[1] + "/";
         return React.createElement(
             "td",
             null,
