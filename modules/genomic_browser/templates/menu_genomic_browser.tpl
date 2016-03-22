@@ -3,6 +3,7 @@
     <div id="tabs"> 
       <ul class="nav nav-tabs">
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Profiles</strong></a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=genomic_file_uploader">Files</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=gwas_browser">GWAS</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>

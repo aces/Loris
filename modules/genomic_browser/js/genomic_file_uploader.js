@@ -1,3 +1,4 @@
+// This function is used by the React StaticDataTable componenet.
 function formatColumn(column, cell, rowData) {
     if (column === 'PSCID') {
         var url = loris.BaseURL + "/" + rowData[1] + "/";

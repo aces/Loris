@@ -126,6 +126,8 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
         );
         $this->addSelect('genomic_file_type', 'Type:', $Base_options);
 
+        $this->tpl_data['genomic_file_type'] = $Base_options; 
+
         $Base_options = $this->getDistinctValues(
             'genomic_file',
             'caveat'
