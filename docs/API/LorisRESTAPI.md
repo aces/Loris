@@ -1,4 +1,4 @@
-# Loris Instrument API - v0.0.2-dev
+# Loris API - v0.0.2
 
 ## 1.0 Overview
 
@@ -9,7 +9,7 @@ or no data. The Loris API uses standard HTTP error codes and the body of any res
 either be empty or contain only a JSON object for any request.
 
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.2-dev and it
+document. This document specifies $APIVERSION v0.0.2 and it
 MUST be included before the request in all requests.
 
 HTTP GET requests NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
@@ -496,7 +496,6 @@ the form:
 ```
 GET /candidates/$CandID/$Visit/qc/imaging
 PUT /candidates/$CandID/$Visit/qc/imaging
-PATCH /candidates/$CandID/$Visit/qc/imaging
 ```
 
 To retrieve the session level imaging QC data for a visit, a request can
@@ -531,7 +530,6 @@ support to insert new (or processed) data into LORIS.
 ```
 GET /candidates/$CandID/$VisitLabel/images/$Filename/qc
 PUT /candidates/$CandID/$VisitLabel/images/$Filename/qc
-PATCH /candidates/$CandID/$VisitLabel/images/$Filename/qc
 ```
 
 Returns file level QC information. It will return a JSON object of the form
