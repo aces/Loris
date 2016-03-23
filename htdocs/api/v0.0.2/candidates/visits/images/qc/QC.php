@@ -40,7 +40,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET', 'PUT', 'PATCH'];
+            $this->AllowedMethods = ['GET', 'PUT'];
         }
 
         parent::__construct($method, $CandID, $VisitLabel, $Filename);
@@ -73,9 +73,7 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                 'File' => $this->Filename,
                 ],
                 'QC' => $QCStatus['QCStatus'],
-                'Selected' => $QCStatus['Selected'],
-                'CaveatList' => 'Not yet implemented',
-                'Comments' => 'Not yet implemented',
+                'Selected' => $QCStatus['Selected']
             ];
     }
     public function calculateETag() {
@@ -84,10 +82,105 @@ class QC extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
 
     public function handlePUT()
     {
+        $fp   = fopen("php://input", "r");
+        $data = '';
+        while (!feof($fp)) {
+            $data .= fread($fp, 1024);
+        }
+        fclose($fp);
+
+        //parse_str(urldecode($data), $data);
+        $data = json_decode($data, true);
+        if (!isset($data['Meta']['CandID'])
+            || $data['Meta']['CandID'] != $this->CandID
+        ) {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->error("Candidate from URL does not match JSON metadata.");
+                $this->safeExit(0);
+        }
+        if (!isset($data['Meta']['Visit'])
+            || $data['Meta']['Visit'] != $this->VisitLabel
+        ) {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->error("Visit from URL does not match JSON metadata");
+                $this->safeExit(0);
+        }
+        if (!isset($data['Meta']['File'])
+            || $data['Meta']['File'] != $this->Filename
+        ) {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->error("File name from URL does not match JSON metadata");
+                $this->safeExit(0);
+        }
+
+        if (!isset($data['QCStatus']))
+        {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->error("Missing QCStatus to save.");
+                $this->safeExit(0);
+        }
+        if ($data['QCStatus'] != "Pass" && $data['QCStatus'] != "Fail") {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->error("Invalid value for QCStatus . Must be Pass or Fail.");
+                $this->safeExit(0);
+        }
+        if (!isset($data['Selected']))
+        {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->error("Missing Selected flag.");
+                $this->safeExit(0);
+        }
+
+        // We know that it's set to something, because we checked above, so verify that Pending is a valid value.
+        // true is equal to "true", but false is not equal to "false".
+        if ($data['Selected'] != "true" && $data['Selected'] != "false" && $data['Selected'] !== false) {
+                $this->header("HTTP/1.1 400 Bad Request");
+                $this->error("Invalid value for Selected. Must be true or false.");
+                $this->safeExit(0);
+        }
+
+        $selval = "";
+        // don't need to handle false, because $selval was initialized to the empty string (which is what
+        // false would save..
+        if ($data['Selected'] == "true") {
+            $factory = \NDB_Factory::singleton();
+            $DB = $factory->Database();
+            $selval = $DB->pselectOne("SELECT mst.Scan_type FROM files f LEFT JOIN mri_scan_type mst ON (f.AcquisitionProtocolID=mst.ID)
+                WHERE f.File LIKE CONCAT('%', :FName)", array('FName' => $this->Filename));
+
+        }
+        $this->saveFileQC($data['QCStatus'], $selval);
+        
+        $this->JSON = ['success' => 'Updated file QC information'];
+
     }
 
-    public function handlePATCH()
-    {
+    private function saveFileQC($qcval, $selval) {
+        $factory = \NDB_Factory::singleton();
+        $DB = $factory->Database();
+        $FileID = $DB->pselectOne("SELECT f.FileID FROM files f
+                WHERE f.File LIKE CONCAT('%', :FName)", array('FName' => $this->Filename));
+        $AlreadySavedQC = $DB->pselectOne("SELECT COUNT(*) FROM files_qcstatus WHERE FileID=:FID", 
+            array('FID' => $FileID));
+        if ($AlreadySavedQC > 0) {
+            $DB->update(
+                "files_qcstatus",
+                [
+                    'QCStatus' => $qcval,
+                    'Selected' => $selval
+                ],
+                ['FileID' => $FileID]
+            );
+        } else {
+            $DB->insert(
+                "files_qcstatus",
+                [
+                    'QCStatus' => $qcval,
+                    'Selected' => $selval,
+                    'FileID' => $FileID
+                ]
+            );
+        }
     }
 }
 
