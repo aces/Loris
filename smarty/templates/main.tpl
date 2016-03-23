@@ -35,6 +35,11 @@
 
         <title>
             {$study_title}
+            {if $crumbs != ""}
+                {section name=crumb loop=$crumbs}
+                    - {$crumbs[crumb].text}
+                {/section}
+            {/if}
         </title>
             <script language="javascript" type="text/javascript">
                 $(document).ready(function(){
