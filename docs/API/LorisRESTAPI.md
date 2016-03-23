@@ -510,11 +510,11 @@ of the form
         "Visit" : $VisitLabel
     },
    "QC" : "Pass|Fail"
-   "Pending" : boolean,
+   "Pending" : boolean
 }
 ```
 
-A PUT or PATCH to the same location will update the QC information. 
+A PUT to the same location will update the QC information. 
 
 ## 4.3 Image Level Data
 ```
@@ -544,13 +544,11 @@ Returns file level QC information. It will return a JSON object of the form
         "File" : $Filename
     },
     "QC" : "Pass|Fail",
-    "Selected" : boolean,
-    "CaveatList" : [{ reason1}, {reason2}..]
-    "Comments" : [define this format for things from popup]
+    "Selected" : boolean
 }
 ```
 
-`PUT` or `PATCH` requests to the same URL will update the QC information.
+`PUT` requests to the same URL will update the QC information.
 
 ## 4.4 Alternate formats
 
