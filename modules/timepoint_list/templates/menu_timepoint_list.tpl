@@ -39,7 +39,7 @@
     <tbody>
     {section name=timepoint loop=$timePoints}
         <tr>
-            <td><a href="{$baseurl}/{$candID}/{$timePoints[timepoint].SessionID}/">{$timePoints[timepoint].Visit_label}</a></td>
+            <td><a href="{$baseurl}instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}/">{$timePoints[timepoint].Visit_label}</a></td>
 
             <td>{$timePoints[timepoint].SubprojectTitle}</td>
 
