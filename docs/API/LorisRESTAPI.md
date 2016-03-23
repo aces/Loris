@@ -649,6 +649,7 @@ will return a JSON object of the form:
         }
     }
 }
+```
 
 All of the dimensions are optional and may not exist for any given
 file (for instance, a 3D image will not have a time dimension.)
