@@ -31,7 +31,6 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
      * @param string $VisitLabel The visit label to be serialized
-     * @param string $InputData  The data posted to this URL
      */
     public function __construct($method, $CandID, $VisitLabel)
     {
@@ -40,7 +39,10 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET', 'PUT'];
+            $this->AllowedMethods = [
+                                     'GET',
+                                     'PUT',
+                                    ];
         }
         $this->CandID     = $CandID;
         $this->VisitLabel = $VisitLabel;
@@ -62,34 +64,50 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
      */
     public function handleGET()
     {
-        $factory = \NDB_Factory::singleton();
-        $DB = $factory->database();
+        $factory   = \NDB_Factory::singleton();
+        $DB        = $factory->database();
          $qcstatus = $DB->pselectRow(
-         "SELECT MRIQCStatus, MRIQCPending 
-             FROM session s JOIN candidate c ON (c.CandID=s.CandID) WHERE c.Active='Y' AND s.Active='Y'
+             "SELECT MRIQCStatus, MRIQCPending 
+             FROM session s JOIN candidate c ON (c.CandID=s.CandID) 
+             WHERE c.Active='Y' AND s.Active='Y'
              AND s.Visit_label=:VL AND c.CandID=:CID",
-             array('VL' => $this->VisitLabel, 'CID' => $this->CandID)
+             array(
+              'VL'  => $this->VisitLabel,
+              'CID' => $this->CandID,
+             )
          );
-          
 
-        $this->JSON = [
-                       'Meta' => [
-                                    'CandID' => $this->CandID,
-                                    'Visit' => $this->VisitLabel
-                                 ]
-                      ];
+         $this->JSON = [
+                        'Meta' => [
+                                   'CandID' => $this->CandID,
+                                   'Visit'  => $this->VisitLabel,
+                                  ],
+                       ];
 
-        $this->JSON['SessionQC'] = $qcstatus['MRIQCStatus'];
-        $this->JSON['Pending'] = $qcstatus['MRIQCPending'] === 'N' ? false : true;
+         $this->JSON['SessionQC'] = $qcstatus['MRIQCStatus'];
+         $this->JSON['Pending']   = $qcstatus['MRIQCPending'] === 'N' ? false : true;
 
     }
 
-    public function calculateETag() {
+    /**
+     * Calculate the ETag for the current QC status
+     *
+     * @return string The JSON's entity tag
+     */
+    public function calculateETag()
+    {
         // mod_rewrite seems to be eatting the ETag for some reason that I won't
         // be able to figure out in time for the release.
-        // Return a null ETag so that PUT requests can be processed. 
+        // Return a null ETag so that PUT requests can be processed.
         return null;
     }
+
+    /**
+     * Handle a PUT request by validating the metadata matches the URL
+     * and updating the database
+     *
+     * @return none
+     */
     public function handlePUT()
     {
         $fp   = fopen("php://input", "r");
@@ -116,27 +134,35 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
                 $this->safeExit(0);
         }
 
-        if (!isset($data['SessionQC']))
-        {
+        if (!isset($data['SessionQC'])) {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->error("Missing SessionQC to save.");
                 $this->safeExit(0);
         }
-        if ($data['SessionQC'] != "Pass" && $data['SessionQC'] != "Fail" && !empty($data['SessionQC'])) {
+        if ($data['SessionQC'] != "Pass"
+            && $data['SessionQC'] != "Fail"
+            && !empty($data['SessionQC'])
+        ) {
                 $this->header("HTTP/1.1 400 Bad Request");
-                $this->error("Invalid value for SessionQC. Must be Pass, Fail, or the empty string.");
+                $this->error(
+                    "Invalid value for SessionQC."
+                    . " Must be Pass, Fail, or the empty string."
+                );
                 $this->safeExit(0);
         }
-        if (!isset($data['Pending']))
-        {
+        if (!isset($data['Pending'])) {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->error("Missing Pending flag.");
                 $this->safeExit(0);
         }
 
-        // We know that it's set to something, because we checked above, so verify that Pending is a valid value.
+        // We know that it's set to something, because we checked above,
+        // so verify that Pending is a valid value.
         // true is equal to "true", but false is not equal to "false".
-        if ($data['Pending'] != "true" && $data['Pending'] != "false" && $data['Pending'] !== false) {
+        if ($data['Pending'] != "true"
+            && $data['Pending'] != "false"
+            && $data['Pending'] !== false
+        ) {
                 $this->header("HTTP/1.1 400 Bad Request");
                 $this->error("Invalid value for Pending. Must be true or false.");
                 $this->safeExit(0);
@@ -154,23 +180,31 @@ class Imaging extends \Loris\API\Candidates\Candidate\Visit
             $savePending = null;
         }
 
-        // Manually extract the sessionID with a select statement, since the keys used to look it
-        // up are in different tables and we can't join in the update wrapper.
-        $factory = \NDB_Factory::singleton();
-        $DB = $factory->database();
-         $sessionID = $DB->pselectOne("SELECT s.ID
-             FROM session s JOIN candidate c ON (c.CandID=s.CandID) WHERE c.Active='Y' AND s.Active='Y'
-             AND s.Visit_label=:VL AND c.CandID=:CID",
-             array('VL' => $this->VisitLabel, 'CID' => $this->CandID)
+        // Manually extract the sessionID with a select statement,
+        // since the keys used to look it up are in different tables
+        // and we can't join in the update wrapper.
+        $factory     = \NDB_Factory::singleton();
+        $DB          = $factory->database();
+         $sessionID  = $DB->pselectOne(
+             "SELECT s.ID
+               FROM session s 
+                 JOIN candidate c ON (c.CandID=s.CandID) 
+               WHERE c.Active='Y' AND s.Active='Y'
+                 AND s.Visit_label=:VL AND c.CandID=:CID",
+             array(
+              'VL'  => $this->VisitLabel,
+              'CID' => $this->CandID,
+             )
          );
-        $qcstatus = $DB->update('session',
-            [
-             'MRIQCStatus' => $data['SessionQC'],
-             'MRIQCPending' => $savePending,
-            ],
-            ['ID' => $sessionID]
-        );
-        $this->JSON = ["success" => "Updated QC"];
+         $qcstatus   = $DB->update(
+             'session',
+             [
+              'MRIQCStatus'  => $data['SessionQC'],
+              'MRIQCPending' => $savePending,
+             ],
+             ['ID' => $sessionID]
+         );
+         $this->JSON = ["success" => "Updated QC"];
     }
 }
 

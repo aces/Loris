@@ -31,7 +31,7 @@ class Thumbnail extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
      * @param string $VisitLabel The visit label to be serialized
-     * @param string $InputData  The data posted to this URL
+     * @param string $Filename   The file whose thumbnail we want
      */
     public function __construct($method, $CandID, $VisitLabel, $Filename)
     {
@@ -59,7 +59,7 @@ class Thumbnail extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     public function handleGET()
     {
         $FullPath = $this->getFullPath();
-        $fp = fopen($FullPath, 'r');
+        $fp       = fopen($FullPath, 'r');
         if ($fp !== false) {
             $this->Header("Content-Type: image/jpeg");
             fpassthru($fp);
@@ -72,23 +72,36 @@ class Thumbnail extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         }
     }
 
-    public function calculateETag() {
+    /**
+     * Calculate the entity tag for this URL
+     *
+     * @return string
+     */
+    public function calculateETag()
+    {
         return null;
     }
 
-    public function handlePUT()
+    /**
+     * Get the root directory that images are stored under.
+     *
+     * @return string a directory on the server
+     */
+    protected function getAssemblyRoot()
     {
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->Config();
+        return $config->getSetting("imagePath") . "/pic/";
     }
 
-    public function handlePATCH()
+    /**
+     * Get the filename under the assemblyRoot that the image
+     * is stored at.
+     *
+     * @return string
+     */
+    protected function getDatabaseDir()
     {
-    }
-    protected function getAssemblyRoot() {
-        $factory = \NDB_Factory::singleton();
-        $config = $factory->Config();
-        return $config->getSetting("imagePath") . "/pic/";
-    }   
-    protected function getDatabaseDir() {
         return $this->getHeader("check_pic_filename");
     }
 

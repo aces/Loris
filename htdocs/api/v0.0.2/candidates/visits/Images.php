@@ -31,7 +31,6 @@ class Images extends \Loris\API\Candidates\Candidate\Visit
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
      * @param string $VisitLabel The visit label to be serialized
-     * @param string $InputData  The data posted to this URL
      */
     public function __construct($method, $CandID, $VisitLabel)
     {
@@ -63,20 +62,26 @@ class Images extends \Loris\API\Candidates\Candidate\Visit
      */
     public function handleGET()
     {
-        $this->JSON = [
-                       'Meta' => [
-                                    'CandID' => $this->CandID,
-                                    'Visit' => $this->VisitLabel
-                                 ]
-                      ];
+        $this->JSON          = [
+                                'Meta' => [
+                                           'CandID' => $this->CandID,
+                                           'Visit'  => $this->VisitLabel,
+                                          ],
+                               ];
         $this->JSON['Files'] = $this->GetVisitImages();
 
     }
 
-    function GetVisitImages() {
+    /**
+     * Gets a list of images for this visit. Filename only.
+     *
+     * @return an array of strings of filenames
+     */
+    function getVisitImages()
+    {
         $factory = \NDB_Factory::singleton();
-        $DB = $factory->database();
-        $rows = $DB->pselect(
+        $DB      = $factory->database();
+        $rows    = $DB->pselect(
             "SELECT OutputType,
                     SUBSTRING_INDEX(File, '/', -1) as Filename,
                     mst.Scan_type as AcquisitionType 
@@ -84,10 +89,11 @@ class Images extends \Loris\API\Candidates\Candidate\Visit
                     JOIN mri_scan_type mst ON (mst.ID=f.AcquisitionProtocolID)
                     JOIN session s ON (s.ID=f.SessionID)
                     JOIN candidate c ON (s.CandID=c.CandID)
-                WHERE s.Visit_label=:VL AND c.CandID=:CID AND c.Active='Y' AND s.Active='Y'",
+                WHERE s.Visit_label=:VL AND c.CandID=:CID 
+                    AND c.Active='Y' AND s.Active='Y'",
             [
-                'VL' => $this->VisitLabel,
-                'CID' => $this->CandID
+             'VL'  => $this->VisitLabel,
+             'CID' => $this->CandID,
             ]
         );
         return $rows;

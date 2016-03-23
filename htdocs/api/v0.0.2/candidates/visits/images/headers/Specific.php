@@ -31,7 +31,8 @@ class SpecificHeader extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
      * @param string $VisitLabel The visit label to be serialized
-     * @param string $InputData  The data posted to this URL
+     * @param string $Filename   The file to retrieve the header for
+     * @param string $Header     The header field to extract
      */
     public function __construct($method, $CandID, $VisitLabel, $Filename, $Header)
     {
@@ -65,25 +66,24 @@ class SpecificHeader extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
             $headers[$row['Header']] = $row['Value'];
         }
         $this->JSON = [
-            'Meta' => [
-                'CandID' => $this->CandID,
-                'Visit' => $this->VisitLabel,
-                'Filename' => $this->Filename,
-                "Header" => $this->Header
-            ],
-            "Value" => $this->getHeader($this->Header)
-        ];
+                       'Meta'  => [
+                                   'CandID'   => $this->CandID,
+                                   'Visit'    => $this->VisitLabel,
+                                   'Filename' => $this->Filename,
+                                   "Header"   => $this->Header,
+                                  ],
+                       "Value" => $this->getHeader($this->Header),
+                      ];
     }
-    public function calculateETag() {
+
+    /**
+     * Calculate the ETag for this header
+     *
+     * @return string
+     */
+    public function calculateETag()
+    {
         return null;
-    }
-
-    public function handlePUT()
-    {
-    }
-
-    public function handlePATCH()
-    {
     }
 }
 

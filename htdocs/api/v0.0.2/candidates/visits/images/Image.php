@@ -31,7 +31,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
      * @param string $VisitLabel The visit label to be serialized
-     * @param string $InputData  The data posted to this URL
+     * @param string $Filename   The file name to be retrieved
      */
     public function __construct($method, $CandID, $VisitLabel, $Filename)
     {
@@ -41,7 +41,10 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET', 'PUT'];
+            $this->AllowedMethods = [
+                                     'GET',
+                                     'PUT',
+                                    ];
         }
         $this->CandID     = $CandID;
         $this->VisitLabel = $VisitLabel;
@@ -53,7 +56,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
         parent::__construct($method, $CandID, $VisitLabel);
 
         $results =  $this->getDatabaseDir();
-        if(empty($results)) {
+        if (empty($results)) {
             $this->header("HTTP/1.1 404 Not Found");
             $this->error("File not found");
             $this->safeExit(0);
@@ -75,8 +78,8 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
         $fullDir = $this->getFullPath();
         ob_end_clean();
 
-        $fp = fopen($fullDir, "r") ;
-        if($fp === false) {
+        $fp = fopen($fullDir, "r");
+        if ($fp === false) {
             $this->header("HTTP/1.1 500 Internal Server Error", true, 500);
             error_log("Could not open $fullDir to send to client");
             $this->safeExit(1);
@@ -86,7 +89,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
 
         $mincHeader = $this->getHeader("header");
 
-        if(substr($mincHeader, 0, 4) === 'hdf5') {
+        if (substr($mincHeader, 0, 4) === 'hdf5') {
             $contentType = 'application/x.minc2';
         } else {
             $contentType = 'application/octet-stream';
@@ -95,67 +98,102 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
         $this->Header('Content-Length: '.filesize($fullDir));
         $this->Header('Content-Disposition: filename='.$this->Filename);
 
-        while(!feof($fp)) {
+        while (!feof($fp)) {
             print fread($fp, 1024);
         }
         $this->safeExit();
     }
-    protected function getHeader($headerName) {
-        $factory = \NDB_Factory::singleton();
-        $db = $factory->Database();
 
-        return $db->pselectOne("SELECT Value
+    /**
+     * Gets an image's header from the database.
+     *
+     * @param string $headerName The header to retrieve for the current
+     *                           file
+     *
+     * @return string of the header value
+     */
+    protected function getHeader($headerName)
+    {
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->Database();
+
+        return $db->pselectOne(
+            "SELECT Value
             FROM parameter_file pf 
             JOIN parameter_type pt USING (ParameterTypeID)
             JOIN files f USING (FileID)
             JOIN session s ON (f.SessionID=s.ID)
             JOIN candidate c ON (s.CandID=c.CandID)
-            WHERE c.Active='Y' AND s.Active='Y' AND c.CandID=:CID and s.Visit_label=:VL AND f.File LIKE CONCAT('%', :Fname) AND pt.Name = :Header",
-                array(
-                    'CID' => $this->CandID,
-                    'VL' => $this->VisitLabel,
-                    'Fname' => $this->Filename,
-                    'Header'=>$headerName
-                )   
-            );  
+            WHERE c.Active='Y' AND s.Active='Y' AND c.CandID=:CID 
+                AND s.Visit_label=:VL 
+                AND f.File LIKE CONCAT('%', :Fname) AND pt.Name = :Header",
+            array(
+             'CID'    => $this->CandID,
+             'VL'     => $this->VisitLabel,
+             'Fname'  => $this->Filename,
+             'Header' => $headerName,
+            )
+        );
 
-    }   
+    }
 
-    public function calculateETag() {
+    /**
+     * Calculate the entity tag for this image
+     *
+     * @return string
+     */
+    public function calculateETag()
+    {
         return null;
     }
 
-    public function handlePUT()
+    /**
+     * Gets the full path of this image on the filesystem, in order
+     * to be able to pass it to an fopen command (or similar)
+     *
+     * @return string
+     */
+    protected function getFullPath()
     {
-    }
-
-    public function handlePATCH()
-    {
-    }
-
-    protected function getFullPath() {
         return $this->getAssemblyRoot() . "/" . $this->getDatabaseDir();
     }
-    protected function getAssemblyRoot() {
+
+    /**
+     * Gets the root of the assembly directory, so that we know where
+     * to retrieve images relative to.
+     *
+     * @return string
+     */
+    protected function getAssemblyRoot()
+    {
         $factory = \NDB_Factory::singleton();
-        $config = $factory->Config();
+        $config  = $factory->Config();
         return $config->getSetting("mincPath");
     }
-    protected function getDatabaseDir() {
+
+    /**
+     * Gets the filename saved in the database for this file
+     *
+     * @return string
+     */
+    protected function getDatabaseDir()
+    {
         $factory = \NDB_Factory::singleton();
-        $db = $factory->Database();
+        $db      = $factory->Database();
         return $db->pselectOne(
             "SELECT File
                 FROM files f
                     JOIN session s ON (f.SessionID=s.ID)
                     JOIN candidate c ON (s.CandID=c.CandID)
-                WHERE c.Active='Y' AND s.Active='Y' AND c.CandID=:CID and s.Visit_label=:VL AND f.File LIKE CONCAT('%', :Fname)",
-                array(
-                    'CID' => $this->CandID,
-                    'VL' => $this->VisitLabel,
-                    'Fname' => $this->Filename
-                ) 
-            );
+                WHERE c.Active='Y' AND s.Active='Y' 
+                    AND c.CandID=:CID AND s.Visit_label=:VL
+                    AND f.File LIKE CONCAT('%', :Fname)",
+            array(
+             'CID'   => $this->CandID,
+             'VL'    => $this->VisitLabel,
+             'Fname' => $this->Filename,
+            )
+        );
     }
 }
 

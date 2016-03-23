@@ -31,7 +31,7 @@ class Full extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
      * @param string $VisitLabel The visit label to be serialized
-     * @param string $InputData  The data posted to this URL
+     * @param string $Filename   The filename being retrieved
      */
     public function __construct($method, $CandID, $VisitLabel, $Filename)
     {
@@ -40,7 +40,11 @@ class Full extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET', 'PUT', 'PATCH'];
+            $this->AllowedMethods = [
+                                     'GET',
+                                     'PUT',
+                                     'PATCH',
+                                    ];
         }
 
         parent::__construct($method, $CandID, $VisitLabel, $Filename);
@@ -65,20 +69,26 @@ class Full extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
             $headers[$row['Header']] = $row['Value'];
         }
         $this->JSON = [
-            'Meta' => [
-                'CandID' => $this->CandID,
-                'Visit' => $this->VisitLabel,
-                'Filename' => $this->Filename
-            ],
-            "Headers" => $headers
-        ];
+                       'Meta'    => [
+                                     'CandID'   => $this->CandID,
+                                     'Visit'    => $this->VisitLabel,
+                                     'Filename' => $this->Filename,
+                                    ],
+                       "Headers" => $headers,
+                      ];
     }
 
-    protected function getHeaders() {
+    /**
+     * Retrieves all headers for this file from the database.
+     *
+     * @return array
+     */
+    protected function getHeaders()
+    {
         $factory = \NDB_Factory::singleton();
-        $db = $factory->Database();
+        $db      = $factory->Database();
 
-        // Get all fields from parameter_type "magically created by 
+        // Get all fields from parameter_type "magically created by
         // neurodb", since those are the dicom headers.
         // There's a few headers that get magically created which
         // aren't header fields, so we manually exclude them.
@@ -86,7 +96,8 @@ class Full extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         //
         // md5hash, tarchiveMD5, image_comments, check_pic_filename,
         // jiv_path
-        return $db->pselect("SELECT pt.Name as Header, Value
+        return $db->pselect(
+            "SELECT pt.Name as Header, Value
             FROM parameter_file pf 
                 JOIN parameter_type pt USING (ParameterTypeID)
                 JOIN files f USING (FileID)
@@ -103,24 +114,23 @@ class Full extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
                     'jiv_path'
                 )
                 ",
-                array(
-                    'CID' => $this->CandID,
-                    'VL' => $this->VisitLabel,
-                    'Fname' => $this->Filename,
-                )
+            array(
+             'CID'   => $this->CandID,
+             'VL'    => $this->VisitLabel,
+             'Fname' => $this->Filename,
+            )
         );
 
     }
-    public function calculateETag() {
+
+    /**
+     * Calculate the entity tag for this URL
+     *
+     * @return string
+     */
+    public function calculateETag()
+    {
         return null;
-    }
-
-    public function handlePUT()
-    {
-    }
-
-    public function handlePATCH()
-    {
     }
 }
 

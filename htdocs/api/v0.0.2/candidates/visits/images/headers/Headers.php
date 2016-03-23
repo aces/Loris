@@ -31,7 +31,7 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      * @param string $method     The method of the HTTP request
      * @param string $CandID     The CandID to be serialized
      * @param string $VisitLabel The visit label to be serialized
-     * @param string $InputData  The data posted to this URL
+     * @param string $Filename   The filename whose headers we want
      */
     public function __construct($method, $CandID, $VisitLabel, $Filename)
     {
@@ -40,7 +40,11 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
         $this->AutoHandleRequestDelegation = false;
 
         if (empty($this->AllowedMethods)) {
-            $this->AllowedMethods = ['GET', 'PUT', 'PATCH'];
+            $this->AllowedMethods = [
+                                     'GET',
+                                     'PUT',
+                                     'PATCH',
+                                    ];
         }
 
         parent::__construct($method, $CandID, $VisitLabel, $Filename);
@@ -58,53 +62,64 @@ class Headers extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
      */
     public function handleGET()
     {
+        $TE = $this->getHeader('acquisition:echo_time');
+        $TR = $this->getHeader('acquisition:repetition_time');
+        $TI = $this->getHeader('acquisition:inversion_time');
+        $ST = $this->getHeader('acquisition:slice_thickness');
+
+        $SeriesName        =  $this->getHeader("acquisition:protocol");
+        $SeriesDescription = $this->getHeader("acquisition:series_description");
+
+        $XSpace     = [
+                       "Length"   => $this->getHeader("xspace:length"),
+                       "StepSize" => $this->getHeader("xspace:step"),
+                      ];
+        $YSpace     = [
+                       "Length"   => $this->getHeader("yspace:length"),
+                       "StepSize" => $this->getHeader("yspace:step"),
+                      ];
+        $ZSpace     = [
+                       "Length"   => $this->getHeader("zspace:length"),
+                       "StepSize" => $this->getHeader("zspace:step"),
+                      ];
+        $TimeD      = [
+                       "Length"   => $this->getHeader("time:length"),
+                       "StepSize" => $this->getHeader("time:step"),
+                      ];
         $this->JSON = [
-            'Meta' => [
-                'CandID' => $this->CandID,
-                'Visit' => $this->VisitLabel,
-                'Filename' => $this->Filename
-            ],
-            'Physical' => [
-                "TE" => $this->getHeader('acquisition:echo_time'),
-                "TR" => $this->getHeader('acquisition:repetition_time'),
-                "TI" => $this->getHeader('acquisition:inversion_time'), 
-                "SliceThickness" => $this->getHeader('acquisition:slice_thickness')
-            ],
-            'Description' => [
-                "SeriesName" => $this->getHeader("acquisition:protocol"),
-                "SeriesDescription" => $this->getHeader("acquisition:series_description")
-            ],
-            'Dimensions' => [
-                "XSpace" => [
-                    "Length" => $this->getHeader("xspace:length"),
-                    "StepSize" => $this->getHeader("xspace:step"),
-                ],
-                "YSpace" => [
-                    "Length" => $this->getHeader("yspace:length"),
-                    "StepSize" => $this->getHeader("yspace:step"),
-                ],
-                "ZSpace" => [
-                    "Length" => $this->getHeader("zspace:length"),
-                    "StepSize" => $this->getHeader("zspace:step"),
-                ],
-                "TimeDimension" => [
-                    "Length" => $this->getHeader("time:length"),
-                    "StepSize" => $this->getHeader("time:step"),
-                ],
-            ],
+                       'Meta'        => [
+                                         'CandID'   => $this->CandID,
+                                         'Visit'    => $this->VisitLabel,
+                                         'Filename' => $this->Filename,
+                                        ],
+                       'Physical'    => [
+                                         "TE"             => $TE,
+                                         "TR"             => $TR,
+                                         "TI"             => $TI,
+                                         "SliceThickness" => $ST,
+                                        ],
+                       'Description' => [
+                                         "SeriesName"        => $SeriesName,
+                                         "SeriesDescription" => $SeriesDescription,
+                                        ],
+                       'Dimensions'  => [
+                                         "XSpace"        => $XSpace,
+                                         "YSpace"        => $YSpace,
+                                         "ZSpace"        => $ZSpace,
+                                         "TimeDimension" => $TimeD,
+                                        ],
 
-        ];
+                      ];
     }
-    public function calculateETag() {
+
+    /**
+     * Calculate the entity tag for this URL
+     *
+     * @return string
+     */
+    public function calculateETag()
+    {
         return null;
-    }
-
-    public function handlePUT()
-    {
-    }
-
-    public function handlePATCH()
-    {
     }
 }
 
