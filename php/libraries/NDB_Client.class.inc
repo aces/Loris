@@ -118,6 +118,23 @@ class NDB_Client
             return true;
         }
 
+        // Content-Security policy for LORIS
+        // 1. By default, only allow things that are self-hosted
+        // 2. Allow inline CSS and JS (inline JS is required for
+        //    the Loris base class to load smarty variables
+        // 3. Allow unsafe-eval because jQuery requires it to load
+        //    our menus. It will be fixed in jQuery 3.0.0.
+        //    See: https://github.com/jquery/jquery/issues/2012
+        // 4. Allow data URLs for fonts, because our bootstrap theme
+        //    seems to load a font that way.
+        header(
+            "Content-Security-Policy: "
+            . "default-src 'self' 'unsafe-inline'; "
+            . "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+            . "frame-src https://player.vimeo.com/; "
+            . "font-src 'self' data:"
+        );
+        
         // start php session
         session_start();
 
