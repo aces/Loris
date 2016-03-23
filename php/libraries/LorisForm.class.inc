@@ -108,20 +108,20 @@ class LorisForm
      * @param array  $attribs An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
-     * @param bool $gethtml   Whether to return $el.
+     * @param bool   $gethtml Whether to return $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
     public function addSelect($name, $label, $options, $attribs = array(),
-                              $gethtml = null)
-    {
+        $gethtml = null
+    ) {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
         if (isset($attribs['multiple'])) {
             $el['multiple'] = $attribs['multiple'];
         }
-        if($gethtml){
+        if ($gethtml) {
             return $el;
         }
     }
@@ -131,9 +131,9 @@ class LorisForm
      *
      * Reimplementation of HTML_QuickForm's "addStatic" API.
      *
-     * @param string $name  The element name.
-     * @param string $label The label to attach to this element.
-     * @param bool $gethtml Whether to return $el.
+     * @param string $name    The element name.
+     * @param string $label   The label to attach to this element.
+     * @param bool   $gethtml Whether to return $el.
      *
      * @return none, but modifies $this->form as a side-effect
      */
@@ -141,7 +141,7 @@ class LorisForm
     {
         $el         =& $this->addBase($name, $label, array());
         $el['type'] = 'static';
-        if($gethtml){
+        if ($gethtml) {
             return $el;
         }
     }
@@ -154,7 +154,7 @@ class LorisForm
      * @param array  $options An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
-     * @param bool $gethtml   Whether to return $el.
+     * @param bool   $gethtml Whether to return $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
@@ -162,7 +162,7 @@ class LorisForm
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'password';
-        if($gethtml){
+        if ($gethtml) {
             return $el;
         }
     }
@@ -175,7 +175,7 @@ class LorisForm
      * @param array  $options An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
-     * @param bool $gethtml   Whether to return $el.
+     * @param bool   $gethtml Whether to return $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
@@ -183,7 +183,7 @@ class LorisForm
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'text';
-        if($gethtml){
+        if ($gethtml) {
             return $el;
         }
     }
@@ -197,7 +197,6 @@ class LorisForm
      *                        get added. Currently only the "class",
      *                        "rows", and "cols" attributes will get
      *                        added.
-     * @param bool $gethtml   Whether to return $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
@@ -226,17 +225,17 @@ class LorisForm
      * @param array  $attribs An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
-     * @param bool $gethtml   Whether to return $el.
+     * @param bool   $gethtml Whether to return $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
     public function addDate($name, $label, $options, $attribs = array(),
-                            $gethtml = null)
-    {
+        $gethtml = null
+    ) {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'date';
         $el['options'] = $options;
-        if($gethtml){
+        if ($gethtml) {
             return $el;
         }
     }
@@ -249,7 +248,7 @@ class LorisForm
      * @param array  $options An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
-     * @param bool $gethtml   Whether to return $el.
+     * @param bool   $gethtml Whether to return $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
@@ -257,7 +256,7 @@ class LorisForm
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'file';
-        if($gethtml){
+        if ($gethtml) {
             return $el;
         }
     }
@@ -270,7 +269,7 @@ class LorisForm
      * @param array  $options An array of other attributes that should
      *                        get added. Currently only the "value"
      *                        attribute gets added.
-     * @param bool $gethtml   Whether to return $el.
+     * @param bool   $gethtml Whether to return $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
@@ -278,7 +277,7 @@ class LorisForm
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'advcheckbox';
-        if($gethtml){
+        if ($gethtml) {
             return $el;
         }
     }
@@ -299,7 +298,7 @@ class LorisForm
 
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'header';
-        if($gethtml){
+        if ($gethtml) {
             return $el;
         }
     }
@@ -379,7 +378,7 @@ class LorisForm
             $el = $this->addText($name, $label, $options);
             break;
         }
-        if($gethtml){
+        if ($gethtml) {
             return $el;
         }
     }
