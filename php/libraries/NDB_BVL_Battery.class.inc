@@ -307,10 +307,10 @@ class NDB_BVL_Battery
                     f.CommentID,
                     CONCAT('DDE_', f.CommentID) AS DDECommentID,
                     ts.Subgroup_name as Sub_group,
-                    ts.group_order as Subgroup_order,
+                    ts.ID as Subgroup_order,
                     t.isDirectEntry";
         if (!is_null($stage)) {
-            $query .= ", b.instr_order as instrument_order";
+            $query .= ", b.ID as instrument_order";
         }
         $query  .= " FROM flag AS f, test_names as t, test_subgroups as ts ";
         $qparams = array('SID' => $this->sessionID);
