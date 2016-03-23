@@ -11,11 +11,11 @@
       <br>
     </div>
   </div>
-  <form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data"> 
+  <form method="post" name="genomic_upload" id="genomic_upload" enctype="multipart/form-data"> 
     <div class="row">
       <div class="col-sm-10 col-md-8">
         <div class="panel panel-primary">
-          <div class="panel-heading" onclick="hideFilter();">
+          <div class="panel-heading">
             Genomic File Filters
           </div>
           <div class="panel-body" id="panel-body">
@@ -117,16 +117,7 @@
       </div>
     </div>
   </form>
-<div id="datatable"></div>
-<script>
-    var table = RDynamicDataTable({
-        "DataURL" : "{$baseurl}/genomic_browser/?submenu=genomic_file_uploader&format=json",
-        "getFormattedCell" : formatColumn,
-        "freezeColumn" : "file_name"
-    });
- 
-    React.render(table, document.getElementById("datatable"));
-</script>
+  <div id="datatable"></div>
 </div>
 <!-- File upload modal dialog -->
 <div class="modal fade" id="fileUploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -140,8 +131,8 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-xs-12 form-group">
-                            <label for="fileType" class="col-xs-4">File Type<font color="red"><sup> *</sup></font></label>
-                            <div class="col-xs-8">
+                            <label for="fileType" class="col-xs-3">File Type :<font color="red"><sup> *</sup></font></label>
+                            <div class="col-xs-9">
                                 <select name="fileType" id="fileType" class="form-fields form-control input-sm">
                                     <option value=" "> </option>
                                     {foreach from = $genomic_file_type item=val key=k}
@@ -153,28 +144,67 @@
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="description">Description</label>
-                            <div class="col-xs-8">
+                            <label class="col-xs-3" for="description">Description : </label>
+                            <div class="col-xs-9">
                                 <textarea cols = "20" rows = "3" name="description" id="description" style = "border: 2px inset;" class="ui-corner-all form-fields form-control input-sm"> </textarea><p></p>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-4" for="file">File<font color="red"><sup> *</sup></font></label>
-                            <div class="col-xs-8">
-                                <input type="file" name="fileUpload" class="fileUpload" id="fileUpload" style = "margin-left: 1em;"/>
+                            <label class="col-xs-3" for="fileData">Data File :<font color="red"><sup> *</sup></font></label>
+                            <div class="col-xs-9">
+                                <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="{$max_file_size}" />
+                                <input type="file" name="fileData" class="fileUpload" id="fileData" style = "margin-left: 1em;"/>
                             </div>
                         </div>
-                        <input type="hidden" name = "user" id = "user" value = "{$User}">
-                        <input type="hidden" name = "action" id = "action" value = "upload">
-                        <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="100000000" />
+                        <div class="col-xs-12 form-group">
+                            <label class="col-xs-3" for="fileMapping">Mapping File :<font color="red"><sup> *</sup></font></label>
+                            <div class="col-xs-9">
+                                <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="{$max_file_size}" />
+                                <input type="file" name="fileMapping" class="fileUpload" id="fileMapping" style = "margin-left: 1em;"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label class="col-xs-3"></label>
+                            <div class="col-xs-9">
+                               <input class="user-success" name="pscidColumn" type="checkbox"> Use PSCID in column headers.
+                            </div>
+                        </div>
+                        <input type="hidden" name = "user" id = "user" value = "{$user}">
+                        <div class="form-group col-sm-12">
+                            <div id="progress" style='width: 100%'>
+                                <div id="progressBar" class="progress-bar progress-bar-female" role="progressbar" style="height: 20px">
+                                </div>
+                            </div>
+                            <p id="uploadStatus"></p>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" id="uploadButton" role="button" aria-disabled="false" disabled="disabled">Upload</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-default" id="cancelButton" data-dismiss="modal">Cancel</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+<style>
+.progress {
+    height: 40px;
+    margin-bottom: 0px;
+}
+.progress-bar-female {
+    background-color: #2FA4E7;
+}
+</style>
 <script>
+    var table = RDynamicDataTable({
+        "DataURL" : "{$baseurl}/genomic_browser/?submenu=genomic_file_uploader&format=json",
+        "getFormattedCell" : formatColumn,
+        "freezeColumn" : "file_name"
+    });
+ 
+    React.render(table, document.getElementById("datatable"));
+
 (function() {
 
     var fileSelected = false;
@@ -183,28 +213,65 @@
     function handleUploadSubmit(event) {
         event.preventDefault();
 
-        var formData = new FormData($(this)[0]); 
+        var formData = new FormData($(this)[0]);
 
-        $.ajax({
-            url: "{$baseurl}/AjaxHelper.php?Module=genomic_browser&script=genomic_file_upload.php",
-            type: 'POST',
-            data: formData,
-            async: true,
-            cache: false,
-            contentType: false,
-            enctype: 'multipart/form-data',
-            processData: false,
-            progress: function (data) {
-                console.info(data);
-            },
-            success: function (result,status,xhr) {
-                console.log(result);
-            },
-            error: function (xhr,status,error) {
-                console.log(error);
+        var xhr = new XMLHttpRequest(); 
+        xhr.previous_text = '';
+        xhr.onerror = function() { console.error("[XHR] Fatal Error."); };
+        xhr.onreadystatechange = function() {
+            try{
+                console.log(xhr.readyState);
+                if (xhr.readyState == 4){
+                    console.log('[XHR] Done')
+                } 
+                else if (xhr.readyState > 2){
+                    var new_response = xhr.responseText.substring(xhr.previous_text.length);
+                    var result = JSON.parse( new_response );
+                            
+                    document.getElementById("uploadStatus").innerHTML = result.message + '';
+                    document.getElementById('progressBar').style.width = result.progress + "%";
+                            
+                    xhr.previous_text = xhr.responseText;
+                }  
             }
-        });
+            catch (e){
+                alert("[XHR STATECHANGE] Exception: " + e);
+            }                     
+        };
+
+
+        xhr.addEventListener("progress", updateProgress);
+        xhr.addEventListener("load", transferComplete);
+        xhr.addEventListener("error", transferFailed);
+        xhr.addEventListener("abort", transferCanceled);
+        xhr.open("POST", "{$baseurl}/AjaxHelper.php?Module=genomic_browser&script=genomic_file_upload.php", true);
+        xhr.send(formData);
     }
+
+function updateProgress (oEvent) {
+  if (oEvent.lengthComputable) {
+    var percentComplete = oEvent.loaded / oEvent.total;
+    console.log(percentComplete);
+  } else {
+    console.error("Unable to compute progress information since the total size is unknown");
+    
+  }
+}
+
+function transferComplete(evt) {
+  console.log("The transfer is complete.");
+  //document.getElementById('cancelButton').click();
+  //location.reload();
+}
+
+function transferFailed(evt) {
+  console.log("An error occurred while transferring the file.");
+  document.getElementById('progressBar').style.backgroundColor = "red";
+}
+
+function transferCanceled(evt) {
+  console.log("The transfer has been canceled by the user.");
+}
 
     function resetValue() {
         this.value = null;
@@ -214,7 +281,7 @@
         'submit', handleUploadSubmit, true
     );
 
-    var input = document.getElementById('fileUpload');
+    var input = document.getElementById('fileData');
 
     input.onclick = function () {
         // Use to reset the value so onChange triggers.
@@ -230,7 +297,25 @@
         } else {
             $('#uploadButton').attr('disabled', 'disabled');
         }
-        
+
+    };
+
+    var input = document.getElementById('fileMapping');
+
+    input.onclick = function () {
+        // Use to reset the value so onChange triggers.
+        this.value = null;
+    };
+    input.onchange = function () {
+
+        fileSelected = this.value.trim().length > 0;
+
+        if (fileSelected && fileTypeSelected) {
+            $('#uploadButton').removeAttr("disabled");
+        } else {
+            $('#uploadButton').attr('disabled', 'disabled');
+        }
+
     };
 
     var input = document.getElementById('fileType');
@@ -248,6 +333,4 @@
 
 })();
 </script>
-        </div>
-    </div>
-</div>
+

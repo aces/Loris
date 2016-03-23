@@ -134,6 +134,11 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
         );
         $this->addCheckbox('caveat', 'Caveat:', $Base_options);
 
+        $this->tpl_data['max_file_size'] = Utility::getMaximumFileUploadSize();
+
+        $user = User::singleton();
+        $this->tpl_data['user'] = $user->getUsername();
+
         return true;
     }
 
@@ -151,6 +156,7 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
+             $baseURL . "/genomic_browser/js/genomic_browser.js",
              $baseURL . "/genomic_browser/js/genomic_file_uploader.js",
             )
         );
@@ -178,7 +184,7 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
             function ($carry, $item) {
                 $value = array_values($item)[0];
                 if (!empty($value)) {
-                    $carry[$value] = $value;
+                    $carry[str_replace(' ', '_', $value)] = $value;
                 }
                 return $carry;
             },
