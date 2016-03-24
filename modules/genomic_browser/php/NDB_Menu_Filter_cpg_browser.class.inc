@@ -469,23 +469,31 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                             = $subprojectlist[$val];
                     }
                 }
+
                 if ($key=='Gene') {
-                    $this->tpl_data['items'][$x][$i]['value'] = '
-    <a title="UCSC Genome Browser" 
-       href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&position='
-                    . strtok($item["Accession_number"], ';') . '" 
-       target="_blank">' . strtok($val, ';') . '</a>';
+
+                    $gene    = strtok($val, ';');
+                    $acc_num = strtok($item['Accession_number'], ';');
+
+                    $this->tpl_data['items'][$x][$i]['value']   = $gene
+                    $this->tpl_data['items'][$x][$i]['acc_num'] = $acc_num
                 }
-                if ($key=='CpG') {
-                    $assembly = $item['Assembly'];
+
+                if ($key=='Accession_number') {
+
+                    $acc_num = strtok($val, ';')
+
+                    $this->tpl_data['items'][$x][$i]['value'] = $acc_num;
+                }
+                if ($key=='cpg_name') {
+
                     $startLoc = $item['StartLoc'] - 500;
                     $endLoc   = $item['StartLoc'] + 500;
-                    $this->tpl_data['items'][$x][$i]['value'] = '
-    <a title="UCSC Genome Browser"
-       href="https://genome.ucsc.edu/cgi-bin/hgTracks?db='
-                    . $assembly . '&position=Chr' . $item['Chromosome'] . ':'
-                    . $startLoc . '-' . $endLoc . '" target="_blank">'
-                    . $val . '</a>';
+                    $position = 'Chr'.$item['Chromosome'].':'.$startLoc.'-'.$endLoc;
+
+                    $this->tpl_data['items'][$x][$i]['value']    = $val;
+                    $this->tpl_data['items'][$x][$i]['assembly'] = $item['Assembly'];
+                    $this->tpl_data['items'][$x][$i]['position'] = $position;
                 }
                 $i++;
             }

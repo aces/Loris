@@ -282,6 +282,10 @@
             {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
               {assign var="PSCID" value=$items[item][piece].value}
               <a href="/{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
+            {elseif $items[item][piece].value != "" AND $items[item][piece].name == "cpg_name"}
+              <a title="UCSC Genome Browser" href="http://genome.ucsc.edu/cgi-bin/hgTracks?db={$items[item][piece].assembly}&position={$items[item][piece].position}" target="_blank">{$items[item][piece].value}</a>
+            {elseif $items[item][piece].value != "" AND $items[item][piece].name == "Gene"}
+              <a title="UCSC Genome Browser" href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&position={$items[item][piece].acc_num}" target="_blank">{$items[item][piece].value}</a>
             {else}
               {$items[item][piece].value}
             {/if }
