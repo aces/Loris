@@ -1,14 +1,30 @@
+/**
+ *  The following file contains the components used for the filter builder tab
+ *
+ *  @author   Jordan Stirling <jstirling91@gmail.com>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ *  @link     https://github.com/mohadesz/Loris-Trunk
+ */
+
+/*
+ *  The following component is used for displaying operator for the group component
+ */
 LogicOperator = React.createClass({displayName: "LogicOperator",
 	changeOperator: function(op) {
+		// Wrapper function updating operator
 		this.props.updateGroupOperator(op);
 	},
 	render: function() {
+		// Renders the html for the component
+
 		var andClass = "btn btn-primary",
 			orClass = "btn btn-primary";
-		if(this.props.logicOperator === 0) {
-			andClass += " active";
-		} else {
+
+		// Set operator to OR if logicOperator is 1, AND otherwise
+		if(this.props.logicOperator === 1) {
 			orClass += " active";
+		} else {
+			andClass += " active";
 		}
 		return (
 			React.createElement("div", {className: "btn-group", role: "group"}, 
@@ -19,6 +35,9 @@ LogicOperator = React.createClass({displayName: "LogicOperator",
 	}
 });
 
+/*
+ *  The following component is used for displaying a filter rule
+ */
 FilterRule = React.createClass({displayName: "FilterRule",
 	getInitialState: function() {
 		return {
@@ -35,6 +54,7 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		}
 	},
 	selectInstrument: function(event){
+		// Update the rules instrument, getting the instruments avalible fields
 		var rule = this.props.rule,
 			that = this;
 		if(event.target.value){
@@ -46,6 +66,7 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		}
 	},
 	fieldSelect: function() {
+		// Update the rules desired field, setting the rules field and field type
 		var rule = this.props.rule;
 		delete rule.field;
 		delete rule.fieldType;
@@ -60,6 +81,7 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		this.props.updateRule(that.props.index, rule);
 	},
 	operatorSelect: function() {
+		// Update the desired rule operation for the selected field
 		var rule = this.props.rule;
 		delete rule.operator;
 		delete rule.value;
@@ -71,6 +93,7 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		this.props.updateRule(that.props.index, rule);
 	},
 	valueSet: function() {
+		// Update the value to filter for, and runs the query for the rules parameters
 		var rule = this.props.rule,
 			that = this;
 		delete rule.value;
@@ -81,6 +104,8 @@ FilterRule = React.createClass({displayName: "FilterRule",
 					var i,
 						allSessions = {},
 						allCandiates = {};
+					// Loop through data and divide into individual visits with unique PSCIDs
+					// storing a master list of unique PSCIDs
 					for(i = 0; i < data.length; i++){
 						if(!allSessions[data[i][1]]){
 							allSessions[data[i][1]] = [];
@@ -138,22 +163,29 @@ FilterRule = React.createClass({displayName: "FilterRule",
 		this.props.updateRule(that.props.index, rule);
 	},
 	updateVisit: function(event) {
+		// Update rule to filter for specified visit
 		var rule = this.props.rule;
 		rule.visit = event.target.value;
+
 		if(event.target.value === "all"){
+			// If all visits, use keys of master list
 			rule.sessions = Object.keys(rule.candidates.allCandiates);
 		} else {
+			// Else use list of PSCIDs for given vist
 			rule.sessions = rule.candidates.allSessions[event.target.value];
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
 	render: function() {
+		// Renders the html for the component
+
 		var rule,
 			fieldIndex,
 			forVisits,
 			visits,
 			that = this;
 		if(this.props.rule.instrument) {
+			// Only display field select and etc. if instrument is selected
 			var fields = this.props.rule.fields.map(function(field, index){
 					if(that.props.rule.field && field.key[1] === that.props.rule.field) {
 						fieldIndex = index
@@ -164,11 +196,11 @@ FilterRule = React.createClass({displayName: "FilterRule",
 				}),
 				operators = [],
 				inputOptions, input, operatorKey, operatorSelect, options, value;
+
 			if(this.props.rule.fieldType) {
+				// Only display operators if field is selected
 				inputType = this.props.rule.fieldType.split("(");
 				operatorKey = inputType[0]
-				// for(var key in this.state.operators[operatorKey]){
-				// {this.state.operators[operatorKey][key]}
 				for(var key in this.state.operators){
 					operators.push(
 						React.createElement("option", {value: key, onChange: this.operatorSelect}, 
@@ -184,6 +216,8 @@ FilterRule = React.createClass({displayName: "FilterRule",
 					)
 				);
 				if(this.props.rule.operator){
+					// Only display value input if operator is selected, displaying specific
+					// input type field data type
 					switch(operatorKey){
 						case "enum":
 							inputOptions = enumToArray(this.props.rule.fieldType);
@@ -214,6 +248,8 @@ FilterRule = React.createClass({displayName: "FilterRule",
 					}
 				}
 				if(this.props.rule.visit){
+					// Display dropdown for visit select. This only displays after a value
+					// has been inputed
 					visits = Object.keys(this.props.Visits).map(function(visit){
 						return (
 							React.createElement("option", {value: visit}, 
@@ -246,6 +282,7 @@ FilterRule = React.createClass({displayName: "FilterRule",
 				)
 			);
 		} else {
+			// Else display dropdown for instrument select
 			var options = this.props.items.map(function(item){
 				return (
 					React.createElement("option", {value: item.category}, item.category)
@@ -275,41 +312,63 @@ FilterRule = React.createClass({displayName: "FilterRule",
 	}
 });
 
+/*
+ *  The following component is used for displaying a filter group
+ */
 FilterGroup = React.createClass({displayName: "FilterGroup",
 	updateChild: function(index, child) {
+		// Update a specified child in the groups children
+
 		var group = this.props.group;
 		group.children[index] = child;
+
 		if(this.props.index) {
+			// If not base filter group, recursively call update child
 			this.props.updateGroup(this.props.index, group);
 		} else {
+			// Else base filter group, update the filter in the data query component
 			this.props.updateFilter(group);
 		}
 	},
 	updateGroupOperator: function(operator) {
+		// Update the group's operator
 		var group = this.props.group;
 		group.activeOperator = operator;
+
+		// Update the groups sessions by calling the arrayintersect.js functions
 		group.session = getSessions(group);
+
 		if(this.props.index) {
+			// If not base filter group, recursively call update child
 			this.props.updateGroup(this.props.index, group);
 		} else {
+			// Else base filter group, update the filter in the data query component
 			this.props.updateFilter(group);
 		}
 	},
 	updateSessions: function(index, child) {
+		// Computes the desired sessions of the current group
 		var group = this.props.group,
 		 	sessions = [],
 		 	session = [];
 		group.children[index] = child;
+
+		// Update the groups sessions by calling the arrayintersect.js functions
 		group.session = getSessions(group);
 		if(this.props.index) {
+			// If not base filter group, recursively call update parents session
 			this.props.updateSessions(this.props.index, group);
 		} else {
+			// Else base filter group, update the filter in the data query component
 			this.props.updateFilter(group)
 		}
 	},
 	addChild: function(type) {
+		// Add a child to the group
 		var child,
 			group = this.props.group;
+
+		// Define the child's base data structure depending on specifed type
 		if(type === "rule") {
 			child = {
 				type: "rule"
@@ -326,29 +385,44 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 			}
 		}
 		group.children.push(child);
+
 		if(this.props.index) {
+			// If not base filter group, recursively call update child
 			this.props.updateGroup(this.props.index, group);
 		} else {
+			// Else base filter group, update the filter in the data query component
 			this.props.updateFilter(group)
 		}
 	},
 	deleteChild: function(index) {
+		// Delete a child
+
 		var group = this.props.group;
 		group.children.splice(index, 1);
+
+		// Update the groups sessions by calling the arrayintersect.js functions
 		group.session = getSessions(group);
+
+
 		if(this.props.index) {
+			// If not base filter group, recursively call update child
 			this.props.updateGroup(this.props.index, group);
 		} else {
+			// Else base filter group, update the filter in the data query component
 			this.props.updateFilter(group);
 		}
 	},
 	render: function() {
+		// Renders the html for the component
+
 		var logicOperator = (
 				React.createElement(LogicOperator, {logicOperator: this.props.group.activeOperator, 
 							   updateGroupOperator: this.updateGroupOperator}
 				)
 			),
 			that = this,
+
+			// Render the children based on their type
 		    children = this.props.group.children.map(function(child, index){
 		    	if(child.type === "rule") {
 		    		return (
@@ -379,7 +453,9 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 		    	}
 		    }),
 			deleteButton;
+
 		if(this.props.deleteGroup){
+			// Can only delete a group that isn't the base group
 			deleteButton = (
 				React.createElement("button", {className: "btn btn-danger btn-sm pull-right", 
 										onClick: this.props.deleteGroup.bind(this, this.props.index)
@@ -420,6 +496,9 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 	}
 });
 
+/*
+ *  The following component is the base componenet for the filter builder
+ */
 FilterBuilder = React.createClass({displayName: "FilterBuilder",
     render: function() {
         return (
