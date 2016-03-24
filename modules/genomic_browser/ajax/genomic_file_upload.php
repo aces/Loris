@@ -20,6 +20,7 @@ ob_end_flush();
 // ----------------------------------------------------------------
 // ------------------------ Step 1 --------------------------------
 // ----------------------------------------------------------------
+// Validate inputs
 $p = 2;
 $response = array(  
     'message' => "Validating...",
@@ -29,7 +30,7 @@ echo json_encode($response);
 sleep(1);
 
 if ( ( empty($_POST['pscidColumn']) && empty($_POST['fileMapping']) ) || empty($_FILES['fileData'])) {
-    die(json_encode(array('message' => 'Validation failed', 'progress' => 100)));
+    die(json_encode(array('message' => 'Validation failed', 'progress' => 100, 'error' => true)));
 // This require some more work
 }
 
@@ -38,25 +39,14 @@ $fileType     = $_FILES["fileData"]["type"];
 $fileName     = $_FILES["fileData"]["name"];
 $temp_file    = $_FILES["fileData"]["tmp_name"];
 
-$mapfileType  = empty($_FILES["fileData"]["type"]) ? null : $_FILES["fileData"]["type"];
-$mapfileName  = $_FILES["fileData"]["name"];
-$maptemp_file = $_FILES["fileData"]["tmp_name"];
-
 $user         = empty($_POST['user']) ? null : $_POST['user'];
 $type         = empty($_POST['fileType']) ? null : str_replace('_', ' ', $_POST['fileType']);
 $pscidColumn  = empty($_POST['pscidColumn']) ? null : $_POST['pscidColumn'];
 $description  = $_POST['description'];
 
-
-// fileData and fileMapping
-//var_dump($_POST);
-// pscidColumn == "on" then ...
-
-// 1. Validate inputs
-// - pcsidColumn
-// - headers
-
-
+// ----------------------------------------------------------------
+// ------------------------ Step 2 --------------------------------
+// ----------------------------------------------------------------
 // 2. Copy files
 
 $config = NDB_Config::singleton();
@@ -71,6 +61,12 @@ $response = array(
 echo json_encode($response);
 sleep(1);
 
+// *************************************************************
+// *************************************************************
+// Release notes :  $genomic_data_dir . 'genomic_uploader/ needs i
+// to be created with www-data has a owner.
+// *************************************************************
+// *************************************************************
 if (move_uploaded_file($temp_file, $genomic_data_dir . 'genomic_uploader/' . $fileName)) {
 
     // Inserting file record into database.
@@ -92,9 +88,7 @@ if (move_uploaded_file($temp_file, $genomic_data_dir . 'genomic_uploader/' . $fi
     echo json_encode($response);
     sleep(1);
 } else {
-    header("HTTP/1.1 500 Server Error");
-    header('Content-Type: application/json; charset=UTF-8');
-    die(json_encode(array('message' => 'File copy failed', 'progress' => 100)));
+    die(json_encode(array('message' => 'File copy failed', 'progress' => 100, 'error' => true)));
 }
 
 
@@ -148,6 +142,10 @@ if (!empty($_POST['pscidColumn']) && $_POST['pscidColumn'] == "on") {
 } else {
     // Use the Mapping file to create the sample-candidate relations
 
+
+    $mapfileType  = empty($_FILES["fileMapping"]["type"]) ? null : $_FILES["fileMapping"]["type"];
+    $mapfileName  = $_FILES["fileMapping"]["name"];
+    $maptemp_file = $_FILES["fileMapping"]["tmp_name"];
 // TODO
 
     // Report number on relation created (candidate founded)

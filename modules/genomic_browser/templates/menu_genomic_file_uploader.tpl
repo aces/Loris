@@ -146,7 +146,7 @@
                         <div class="col-xs-12 form-group">
                             <label class="col-xs-3" for="description">Description : </label>
                             <div class="col-xs-9">
-                                <textarea cols = "20" rows = "3" name="description" id="description" style = "border: 2px inset;" class="ui-corner-all form-fields form-control input-sm"> </textarea><p></p>
+                                <textarea cols="20" rows="3" name="description" id="description" style="border: 2px inset;" class="ui-corner-all form-fields form-control input-sm"> </textarea>
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
@@ -157,7 +157,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12 form-group">
-                            <label class="col-xs-3" for="fileMapping">Mapping File :<font color="red"><sup> *</sup></font></label>
+                            <label class="col-xs-3" for="fileMapping">Mapping File :</label>
                             <div class="col-xs-9">
                                 <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="{$max_file_size}" />
                                 <input type="file" name="fileMapping" class="fileUpload" id="fileMapping" style = "margin-left: 1em;"/>
@@ -166,7 +166,7 @@
                         <div class="form-group col-sm-12">
                             <label class="col-xs-3"></label>
                             <div class="col-xs-9">
-                               <input class="user-success" name="pscidColumn" type="checkbox"> Use PSCID in column headers.
+                               <input class="user-success" id="pscidColumn" name="pscidColumn" type="checkbox"> Use PSCID in column headers.
                             </div>
                         </div>
                         <input type="hidden" name = "user" id = "user" value = "{$user}">
@@ -181,7 +181,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" id="uploadButton" role="button" aria-disabled="false" disabled="disabled">Upload</button>
-                    <button class="btn btn-default" id="cancelButton" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-default" id="cancelButton" role="reset" type="reset" data-dismiss="modal">Cancel</button>
                 </div>
             </form>
         </div>
@@ -221,57 +221,52 @@
         xhr.onreadystatechange = function() {
             try{
                 console.log(xhr.readyState);
-                if (xhr.readyState == 4){
-                    console.log('[XHR] Done')
-                } 
-                else if (xhr.readyState > 2){
-                    var new_response = xhr.responseText.substring(xhr.previous_text.length);
-                    var result = JSON.parse( new_response );
+                switch (xhr.readyState) {
+                    case 0:
+                        console.log('0: request not initialized');
+                        console.log(this);
+                        break;
+                    case 1:
+                        console.log('1: server connection established');
+                        console.log(this);
+                        break;
+                    case 2:
+                        console.log('2: request received');
+                        console.log(this);
+                        break;
+                    case 3:
+                        console.log('3: processing request');
+                        console.log(this);
+                    
+                        var new_response = xhr.responseText.substring(xhr.previous_text.length);
+                        var result = JSON.parse( new_response );
+                        console.log(result);
                             
-                    document.getElementById("uploadStatus").innerHTML = result.message + '';
-                    document.getElementById('progressBar').style.width = result.progress + "%";
+                        document.getElementById("uploadStatus").innerHTML = result.message + '';
+                        document.getElementById('progressBar').style.width = result.progress + "%";
+                        if (result.error != undefined) {
+                            document.getElementById('progressBar').style.backgroundColor = 'red';
+                        }
                             
-                    xhr.previous_text = xhr.responseText;
-                }  
+                        xhr.previous_text = xhr.responseText;
+                        break;
+                    case 4:
+                        console.log('4: request finished and response is ready');
+                        $('#uploadButton').attr('disabled', 'disabled');
+                        console.log(this);
+                        break;
+                    default:
+                        console.log('?');
+                        break;
+                }
             }
             catch (e){
-                alert("[XHR STATECHANGE] Exception: " + e);
+                console.error("[XHR STATECHANGE] Exception: " + e);
             }                     
         };
-
-
-        xhr.addEventListener("progress", updateProgress);
-        xhr.addEventListener("load", transferComplete);
-        xhr.addEventListener("error", transferFailed);
-        xhr.addEventListener("abort", transferCanceled);
         xhr.open("POST", "{$baseurl}/AjaxHelper.php?Module=genomic_browser&script=genomic_file_upload.php", true);
         xhr.send(formData);
     }
-
-function updateProgress (oEvent) {
-  if (oEvent.lengthComputable) {
-    var percentComplete = oEvent.loaded / oEvent.total;
-    console.log(percentComplete);
-  } else {
-    console.error("Unable to compute progress information since the total size is unknown");
-    
-  }
-}
-
-function transferComplete(evt) {
-  console.log("The transfer is complete.");
-  //document.getElementById('cancelButton').click();
-  //location.reload();
-}
-
-function transferFailed(evt) {
-  console.log("An error occurred while transferring the file.");
-  document.getElementById('progressBar').style.backgroundColor = "red";
-}
-
-function transferCanceled(evt) {
-  console.log("The transfer has been canceled by the user.");
-}
 
     function resetValue() {
         this.value = null;
@@ -329,6 +324,15 @@ function transferCanceled(evt) {
         } else {
             $('#uploadButton').attr('disabled', 'disabled');
         }
+    };
+
+    var input = document.getElementById('cancelButton');
+    input.onclick = function () {
+        document.getElementById('fileData').innerHTML = "";
+        document.getElementById('fileMapping').innerHTML = "";
+        document.getElementById('fileType').value = " ";
+        document.getElementById('description').value = "";
+        document.getElementById('pscidColumn').checked = false;
     };
 
 })();
