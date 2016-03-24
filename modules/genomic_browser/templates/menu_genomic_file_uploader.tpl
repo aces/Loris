@@ -173,6 +173,7 @@
                         <div class="form-group col-sm-12">
                             <div id="progress" style='width: 100%'>
                                 <div id="progressBar" class="progress-bar progress-bar-female" role="progressbar" style="height: 20px">
+                                <!--  TODO :: Use the progress bar from imaging uploader -->
                                 </div>
                             </div>
                             <p id="uploadStatus"></p>
@@ -220,23 +221,18 @@
         xhr.onerror = function() { console.error("[XHR] Fatal Error."); };
         xhr.onreadystatechange = function() {
             try{
-                console.log(xhr.readyState);
                 switch (xhr.readyState) {
                     case 0:
                         console.log('0: request not initialized');
-                        console.log(this);
                         break;
                     case 1:
                         console.log('1: server connection established');
-                        console.log(this);
                         break;
                     case 2:
                         console.log('2: request received');
-                        console.log(this);
                         break;
                     case 3:
                         console.log('3: processing request');
-                        console.log(this);
                     
                         var new_response = xhr.responseText.substring(xhr.previous_text.length);
                         var result = JSON.parse( new_response );
@@ -253,7 +249,6 @@
                     case 4:
                         console.log('4: request finished and response is ready');
                         $('#uploadButton').attr('disabled', 'disabled');
-                        console.log(this);
                         break;
                     default:
                         console.log('?');
@@ -333,6 +328,8 @@
         document.getElementById('fileType').value = " ";
         document.getElementById('description').value = "";
         document.getElementById('pscidColumn').checked = false;
+//empty progress bar and message.
+//disable Updatebnutton
     };
 
 })();

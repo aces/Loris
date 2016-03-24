@@ -36,6 +36,8 @@ with open(annotation_file, 'r') as f:
             sys.stdout.write('-- Parser encoutered a line with an unexpected format.\n')
             sys.stdout.write('-- Closing file.\n')
             break
+        if line['CHR'] != '14':
+            continue
 
         if 0 == len(line["Name"]) or 0 == len(line["CHR"]) or 0 == len(line["MAPINFO"]):
             continue

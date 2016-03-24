@@ -6,11 +6,8 @@ CREATE TABLE `genomic_file_type_enum` (
 COMMENT '';
 
 INSERT IGNORE INTO `genomic_file_type_enum` (genomic_file_type) VALUES
-('Other'),
-('sample-candidate mapping'),
-('rgSet'),
 ('Methylation beta-values'),
-('PLINK');
+('Other');
 
 DROP TABLE IF EXISTS `genomic_file`;
 CREATE TABLE `genomic_file` (
