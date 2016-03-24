@@ -1,6 +1,6 @@
 /**
- *  This following file contains the base element for the data query react app.
- *  It also contains the element for the saved queries dropdown.
+ *  The following file contains the base component for the data query react app.
+ *  It also contains the component for the saved queries dropdown.
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
@@ -10,7 +10,7 @@
 
 /*
  *  The following component is for saved queries dropdown which appears in the
- *  tab bar of the base element.
+ *  tab bar of the base component.
  */
 SavedQueriesList = React.createClass({
     getDefaultProps: function() {

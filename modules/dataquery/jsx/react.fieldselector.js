@@ -1,5 +1,5 @@
 /**
- *  This following file contains the components used for the field select tab
+ *  The following file contains the components used for the field select tab
  *
  *  @author   Jordan Stirling <jstirling91@gmail.com>
  *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
