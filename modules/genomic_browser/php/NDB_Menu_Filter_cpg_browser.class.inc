@@ -475,13 +475,13 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                     $gene    = strtok($val, ';');
                     $acc_num = strtok($item['Accession_number'], ';');
 
-                    $this->tpl_data['items'][$x][$i]['value']   = $gene
-                    $this->tpl_data['items'][$x][$i]['acc_num'] = $acc_num
+                    $this->tpl_data['items'][$x][$i]['value']   = $gene;
+                    $this->tpl_data['items'][$x][$i]['acc_num'] = $acc_num;
                 }
 
                 if ($key=='Accession_number') {
 
-                    $acc_num = strtok($val, ';')
+                    $acc_num = strtok($val, ';');
 
                     $this->tpl_data['items'][$x][$i]['value'] = $acc_num;
                 }
