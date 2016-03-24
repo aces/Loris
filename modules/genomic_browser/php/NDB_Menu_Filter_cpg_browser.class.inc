@@ -128,6 +128,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             LEFT JOIN genotyping_platform platform
                 ON (gca.platform_id = platform.PlatformID)
             WHERE 
+            cpg.beta_value IS NOT NULL AND 
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
         $DB   = Database::singleton();
