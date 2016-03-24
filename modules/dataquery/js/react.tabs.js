@@ -1,3 +1,15 @@
+/**
+ *  The following file contains the components used for displaying the tab content
+ *
+ *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ *  @author   Jordan Stirling <jstirling91@gmail.com>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ *  @link     https://github.com/mohadesz/Loris-Trunk
+ */
+
+/*
+ *  The following component is the base component for displaying the tab's contnet
+ */
 TabPane = React.createClass({displayName: "TabPane",
     mixins: [React.addons.PureRenderMixin],
     render: function() {
@@ -14,6 +26,9 @@ TabPane = React.createClass({displayName: "TabPane",
     }
 });
 
+/*
+ *  The following component is used for displaying the info tab content
+ */
 InfoTabPane = React.createClass({displayName: "InfoTabPane",
     mixins: [React.addons.PureRenderMixin],
     render: function() {
@@ -39,6 +54,9 @@ InfoTabPane = React.createClass({displayName: "InfoTabPane",
     }
 });
 
+/*
+ *  The following component is used for displaying the field select tab content
+ */
 FieldSelectTabPane = React.createClass({displayName: "FieldSelectTabPane",
     render: function() {
         return React.createElement(TabPane, {TabId: this.props.TabId}, 
@@ -54,17 +72,11 @@ FieldSelectTabPane = React.createClass({displayName: "FieldSelectTabPane",
 
 });
 
+/*
+ *  The following component is used for displaying the filter builder tab content
+ */
 FilterSelectTabPane = React.createClass({displayName: "FilterSelectTabPane",
     render: function() {
-        // return <TabPane TabId={this.props.TabId}>
-        //             <FieldSelector title="Filters"
-        //                 items={this.props.categories}
-        //                 type="Criteria"
-        //                 onFieldChange={this.props.onFieldChange}
-        //                 onCriteriaChange={this.props.onCriteriaChange}
-        //                 selectedFields={this.props.selectedFields} Criteria={this.props.Criteria}
-        //             />
-        //        </TabPane>
         return (
             React.createElement(TabPane, {TabId: this.props.TabId}, 
                 React.createElement(FilterBuilder, {items: this.props.categories, 
@@ -77,16 +89,22 @@ FilterSelectTabPane = React.createClass({displayName: "FilterSelectTabPane",
     }
 });
 
+/*
+ *  The following component is used for displaying the view data tab content
+ */
 ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
     getInitialState: function() {
         return { 'sessions' : [] }
     },
     runQuery: function() {
+        // Wrapper function to run the current query
         if(this.props.onRunQueryClicked) {
             this.props.onRunQueryClicked(this.props.Fields, this.props.Sessions);
         }
     },
     downloadCSV: function() {
+        // Downloads the current loaded data into a CSV formatted file.
+        // Makes use of a web worker to format and download the data
         var headers = this.props.Fields,
             csvworker = new Worker(loris.BaseURL + '/GetJS.php?Module=dataquery&file=workers/savecsv.js');
 
@@ -112,9 +130,12 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
         });
     },
     changeDataDisplay: function(displayID) {
+        // Wrapper function to change the data display type
         this.props.changeDataDisplay(displayID);
     },
     getOrCreateProgressElement: function(id) {
+        // Helper function to display the progress of downloading the downloadable
+        // fields into a ZIP folder
         var element = document.getElementById(id),
             progress;
 
@@ -130,6 +151,8 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
         return element;
     },
     getOrCreateDownloadLink: function(fileName, type) {
+        // Helper function to create and click a downloadable link to download the
+        // downloadable fields into a ZIP folder
         var element = document.getElementById("DownloadLink" + fileName),
             parentEl,
             el2;
@@ -152,6 +175,8 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
         return element;
     },
     downloadData: function() {
+        // Download the downloadable fields into a ZIP folder
+        // Makes use of a web worker to format and download the data
         var zip = new JSZip(),
             i = 0,
             FileList = this.props.FileData,
@@ -312,6 +337,11 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
     }
 });
 
+/*
+ *  The following component is used for displaying the scatterplot graph
+ *  in the stats tab using flot. The following code is a modification of
+ *  code used in the couchApp implementation of the DQT
+ */
 ScatterplotGraph = React.createClass({displayName: "ScatterplotGraph",
     lsFit: function (data) {
         var i = 0,
@@ -506,6 +536,10 @@ ScatterplotGraph = React.createClass({displayName: "ScatterplotGraph",
         );
     }
 });
+
+/*
+ *  The following component is used for displaying the stats tab content
+ */
 StatsVisualizationTabPane = React.createClass({displayName: "StatsVisualizationTabPane",
     getDefaultProps: function() {
         return {
@@ -594,6 +628,10 @@ StatsVisualizationTabPane = React.createClass({displayName: "StatsVisualizationT
     }
 });
 
+/*
+ *  The following component is used for displaying a popout dialog for saving the current
+ *  query
+ */
 SaveQueryDialog = React.createClass({displayName: "SaveQueryDialog",
     getInitialState: function() {
         return {
@@ -646,6 +684,11 @@ SaveQueryDialog = React.createClass({displayName: "SaveQueryDialog",
             );
     }
 });
+
+/*
+ *  The following component is used for displaying the filter of a individual query in a tree
+ *  like structure
+ */
 ManageSavedQueryFilter = React.createClass({displayName: "ManageSavedQueryFilter",
     render: function() {
         var filterItem,
@@ -703,6 +746,11 @@ ManageSavedQueryFilter = React.createClass({displayName: "ManageSavedQueryFilter
         );
     }
 });
+
+/*
+ *  The following component is used for displaying the individual saved queries in the
+ *  manage saved queries tab
+ */
 ManageSavedQueryRow = React.createClass({displayName: "ManageSavedQueryRow",
     getDefaultProps: function() {
         return {
@@ -766,6 +814,10 @@ ManageSavedQueryRow = React.createClass({displayName: "ManageSavedQueryRow",
         );
     }
 });
+
+/*
+ *  The following component is used for displaying the manage saved queries tab content
+ */
 ManageSavedQueriesTabPane = React.createClass({displayName: "ManageSavedQueriesTabPane",
     dismissDialog: function() {
         this.setState({ 'savePrompt' : false });
