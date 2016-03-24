@@ -1,3 +1,16 @@
+/**
+ *  This following file contains the components used for the field select tab
+ *
+ *  @author   Jordan Stirling <jstirling91@gmail.com>
+ *  @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ *  @link     https://github.com/mohadesz/Loris-Trunk
+ */
+
+/*
+ *  The following component is used for displaying individual categories in the
+ *  categories list
+ */
 CategoryItem = React.createClass({displayName: "CategoryItem",
     render: function() {
         var classList = "list-group-item",
@@ -17,6 +30,9 @@ CategoryItem = React.createClass({displayName: "CategoryItem",
     }
 });
 
+/*
+ *  The following component is used for displaying the list of availible categories
+ */
 CategoryList = React.createClass({displayName: "CategoryList",
     getInitialState: function () {
         return {
@@ -57,8 +73,13 @@ CategoryList = React.createClass({displayName: "CategoryList",
     }
 });
 
+/*
+ *  The following component is used for displaying individual fields
+ */
 FieldItem = React.createClass({displayName: "FieldItem",
     visitSelect: function(evt){
+        // Selects and deselects visits
+
         var field = {
             instrument : this.props.Category,
             field : this.props.FieldName
@@ -70,12 +91,15 @@ FieldItem = React.createClass({displayName: "FieldItem",
         }
     },
     render: function() {
+        // Renders the html for the component
+
         var classList = "list-group-item row",
             downloadIcon = "",
             criteria,
             multiselect,
             that = this;
         if(this.props.selected) {
+            // If field is selected, add active class and visits
             classList += " active";
             multiselect = Object.keys(this.props.Visits).map(function(visit){
                 var checked = false;
@@ -92,6 +116,7 @@ FieldItem = React.createClass({displayName: "FieldItem",
             });
         }
         if(this.props.downloadable) {
+            // Add download icon if field is downloadable
             downloadIcon = React.createElement("span", {className: "glyphicon glyphicon-download-alt pull-right", title: "Downloadable File"})
         }
         // Don't display the category in the field selector
@@ -111,6 +136,10 @@ FieldItem = React.createClass({displayName: "FieldItem",
     }
 });
 
+/*
+ *  The following component is used for displaying the list of availible fields for
+ *  the selected category
+ */
 FieldList = React.createClass({displayName: "FieldList",
     getInitialState: function() {
         return {
@@ -118,6 +147,7 @@ FieldList = React.createClass({displayName: "FieldList",
         };
     },
     onFieldClick: function(fieldName, downloadable) {
+        // Wrapper function used to update field
         this.props.onFieldSelect(fieldName, this.props.category, downloadable);
     },
     changePage: function(i) {
@@ -126,6 +156,8 @@ FieldList = React.createClass({displayName: "FieldList",
         });
     },
     render: function() {
+        // Renders the html for the component
+
         var fields = [];
         var items = this.props.items || [];
         var fieldName, desc, isFile;
@@ -138,6 +170,7 @@ FieldList = React.createClass({displayName: "FieldList",
             start = 0;
         }
 
+        // Display the fields using the FieldItem component
         for(var i = start; i < items.length; i += 1) {
             fieldName = items[i].key[1];
             desc = items[i].value.Description;
@@ -146,16 +179,20 @@ FieldList = React.createClass({displayName: "FieldList",
             if(fieldName.toLowerCase().indexOf(filter) == -1 && desc.toLowerCase().indexOf(filter) == -1) {
                 continue;
             }
+
+            // Check if field is a file, if so set flag to true
             isFile = false;
             if(items[i].value.IsFile) {
                 isFile = true;
             }
 
+            // Check if field is selected, if so set flag to true
             selected=false;
             if(this.props.selected && this.props.selected[fieldName]) {
                 selected=true;
             }
 
+            // Get the fields selected visits, set to empty object if none
             if(this.props.selected && this.props.selected[fieldName]) {
                 selectedFields = this.props.selected[fieldName]
             } else {
@@ -187,6 +224,9 @@ FieldList = React.createClass({displayName: "FieldList",
     }
 });
 
+/*
+ *  The following component is the base component for the field select tan
+ */
 FieldSelector = React.createClass({displayName: "FieldSelector",
     propTypes: {
         selectedFields: React.PropTypes.array
@@ -200,23 +240,12 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
         };
     },
     onFieldSelect: function(fieldName, category, downloadable) {
+        // Wrapper function for field changes
         this.props.onFieldChange(fieldName, category, downloadable);
-        // var fields = this.props.selectedFields;
-        // var idx = fields.indexOf(fieldName);
-
-        // if(idx > -1) {
-        //     //fields.splice(idx, 1);
-        //     if(this.props.onFieldChange) {
-        //         this.props.onFieldChange("remove", fieldName);
-        //     }
-        // } else {
-        //     //fields.push(fieldName);
-        //     if(this.props.onFieldChange) {
-        //         this.props.onFieldChange("add", fieldName);
-        //     }
-        // }
     },
     onCategorySelect: function(category) {
+        // Used for getting the fields of the given category
+
         var that=this;
 
         // Use the cached version if it exists
@@ -241,6 +270,7 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
         });
     },
     addAll: function() {
+        // Adds all fields the currently selected category
         var i, isFile, fieldName, category;
         for(i in this.state.categoryFields[this.state.selectedCategory]) {
             fieldName = this.state.categoryFields[this.state.selectedCategory][i].key[1];
@@ -254,6 +284,7 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
         }
     },
     deleteAll: function() {
+        // Deletes all fields the currently selected category
         var i, index, fieldName;
         for(i in this.state.categoryFields[this.state.selectedCategory]) {
             fieldName = this.state.categoryFields[this.state.selectedCategory][i].key[1];
@@ -265,6 +296,8 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
         }
     },
     render: function() {
+        // Renders the html for the component
+
         return (
             React.createElement("div", null, 
                 React.createElement("div", {className: "row"}, 
