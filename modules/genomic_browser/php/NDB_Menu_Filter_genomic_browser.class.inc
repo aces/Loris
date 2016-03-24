@@ -109,12 +109,12 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             LEFT JOIN (select CNV.CandID, count(CNV.CandID) as CNVCount
                 from CNV GROUP BY CNV.CandID) AS C
                 ON (C.CandID=candidate.CandID)
-            LEFT JOIN  (select gscr.candidate_id, COUNT(cpg_name) as CPGCount 
+            LEFT JOIN  (select gscr.CandID, COUNT(cpg_name) as CPGCount 
                 from genomic_cpg gc 
                 JOIN genomic_sample_candidate_rel gscr 
                     USING (sample_label) 
-                group by gscr.candidate_id) as M
-                ON (M.candidate_id = candidate.ID)
+                group by gscr.CandID) as M
+                ON (M.CandID = candidate.CandID)
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 

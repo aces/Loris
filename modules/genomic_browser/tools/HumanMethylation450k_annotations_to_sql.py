@@ -2,6 +2,7 @@
 
 #
 # python3 HumanMethylation450k_annotations_to_sql.py <annotation_file> | tee output.sql | mysql -u <user> -p <database>
+# timing : 7m36s
 #
 
 import csv

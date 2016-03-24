@@ -4,11 +4,11 @@ ALTER TABLE genotyping_platform ADD UNIQUE (Name);
 DROP TABLE IF EXISTS `genomic_sample_candidate_rel`;
 CREATE TABLE `genomic_sample_candidate_rel` (
   `sample_label` varchar(100) NOT NULL,
-  `candidate_id` int unsigned NOT NULL,
-  PRIMARY KEY (sample_label, candidate_id),
+  `CandID` int(6) NOT NULL,
+  PRIMARY KEY (sample_label, CandID),
   UNIQUE KEY `sample_label` (`sample_label`),  
-  FOREIGN KEY (candidate_id)
-    REFERENCES candidate(ID)
+  FOREIGN KEY (CandID)
+    REFERENCES candidate(CandID)
     ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 COMMENT = '';
@@ -17,10 +17,8 @@ DROP TABLE IF EXISTS `genomic_cpg_annotation`;
 CREATE TABLE `genomic_cpg_annotation` (
   `cpg_name` varchar(100) NOT NULL,
   `location_id` bigint(20) NOT NULL,
-  `probe_id_a` varchar(45) NULL,
   `address_id_a` int unsigned NULL,
   `probe_seq_a` varchar(100) NULL, 
-  `probe_id_b` varchar(45) NULL,
   `address_id_b` int unsigned NULL,
   `probe_seq_b` varchar(100) NULL,
   `design_type` varchar(20) NULL,
@@ -30,13 +28,13 @@ CREATE TABLE `genomic_cpg_annotation` (
   `gene_name` text NULL,
   `gene_acc_num` text NULL,
   `gene_group` text NULL,
-  `island_loc_id` bigint(20) NULL,
+  `island_loc` varchar(100) NULL,
   `island_relation` enum ('island', 'n_shelf', 'n_shore', 's_shelf', 's_shore') NULL, 
-  `fantom_promoter_loc_id` bigint(20) NULL,
+  `fantom_promoter_loc` varchar(100) NULL,
   `dmr` enum ('CDMR', 'DMR', 'RDMR') NULL,
   `enhancer` tinyint(1) NULL,
-  `hmm_island_loc_id` bigint(20) NULL,
-  `reg_feature_loc_id` bigint(20) NULL,
+  `hmm_island_loc` varchar(100) NULL,
+  `reg_feature_loc` varchar(100) NULL,
   `reg_feature_group` varchar(100) NULL,
   `dhs` tinyint(1) NULL,
   `platform_id` bigint(20) NULL,

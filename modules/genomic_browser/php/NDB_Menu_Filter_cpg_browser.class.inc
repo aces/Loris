@@ -75,10 +75,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                 'genome_loc.Chromosome as Chromosome',
                                 'genome_loc.Strand as Strand',
                                 'genome_loc.StartLoc as StartLoc',
-                                'gca.probe_id_a as Probe_A',
                                 'gca.address_id_a as Probe_Loc_A',
                                 'gca.probe_seq_a as Probe_Seq_A',
-                                'gca.probe_id_b as Probe_B',
                                 'gca.address_id_b as Probe_Loc_B',
                                 'gca.probe_seq_b as Probe_Seq_B',
                                 'gca.design_type as Design',
@@ -120,7 +118,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             LEFT JOIN psc
                 ON (psc.CenterID = candidate.CenterID)
             LEFT JOIN genomic_sample_candidate_rel gscr
-                ON (gscr.candidate_id = candidate.ID)
+                ON (gscr.CandID = candidate.CandID)
             LEFT JOIN genomic_cpg cpg
                 ON (gscr.sample_label = cpg.sample_label)
             LEFT JOIN genomic_cpg_annotation gca
