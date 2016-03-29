@@ -43,13 +43,13 @@ $fileID     = $db->pselectOne(
 );
 $uid        = $db->pselectOne(
     "SELECT ID FROM users WHERE "
-    . "UserID='{$user->getUsername()}'",
-    array()
+    . "UserID=:userid",
+    array('userid' => $user->getUsername())
 );
 $permission = $db->pselectOne(
     "SELECT 'X' FROM data_release_permissions WHERE "
-    . "userid=$uid AND data_release_id=$fileID",
-    array()
+    . "userid=:uid AND data_release_id=:fileID",
+    array('uid' => $uid, 'fileID' => $fileID)
 );
 if (empty($permission)) {
     header("HTTP/1.1 403 Forbidden");
