@@ -1,0 +1,1 @@
+UPDATE Config SET Value = LEFT(Value , LENGTH(Value)-1) WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url') AND RIGHT(Value,1) = "/";
