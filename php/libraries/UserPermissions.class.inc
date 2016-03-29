@@ -24,6 +24,7 @@ class UserPermissions
 {
     /**
      * User's ID
+     *
      * @var    int
      * @access private
      */
@@ -31,6 +32,7 @@ class UserPermissions
 
     /**
      * Stores the permissions
+     *
      * @var    array
      * @access private
      */

@@ -15,7 +15,8 @@ INSERT INTO LorisMenu (Label, OrderNumber) VALUES
      ('Imaging', 3), 
      ('Reports', 4), 
      ('Tools', 5), 
-     ('Admin', 6);
+     ('Admin', 6),
+     ('Acknowledgements', 7);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('New Profile', '/new_profile/', (SELECT ID FROM LorisMenu as L WHERE Label='Candidate'), 1),
@@ -53,6 +54,9 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Instrument Manager', '/instrument_manager/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 4),
     ('Configuration', '/configuration/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 5),
     ('Server Processes Manager', '/server_processes_manager/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 6);
+
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
+    ('Acknowledgements','/acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Acknowledgements'), 1);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
@@ -170,3 +174,9 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 -- Server Processes Manager
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='server_processes_manager' AND m.Label='Server Processes Manager';
+
+-- Acknowledgement Generator
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='acknowledgements_view' AND m.Label='Acknowledgements';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='acknowledgements_edit' AND m.Label='Acknowledgements';

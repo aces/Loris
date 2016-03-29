@@ -109,12 +109,22 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
+        $config =& NDB_Config::singleton();
+        $study = $config->getSetting('study');
+        $dateOptions = array(
+            'language'        => 'en',
+            'format'          => 'YMd',
+            'addEmptyOption'  => true,
+            'minYear'         => $study['startYear'] - $study['ageMax'],
+            'maxYear'         => $study['endYear'] - $study['ageMin']
+        );
+
         $this->addBasicText('CandID', 'DCC-ID:');
         $this->addBasicText('PSCID', 'PSC-ID:');
         $this->addBasicText('PatientName', 'Patient-Name:');
         $this->addBasicText('SeriesUID', 'SeriesUID:');
         $this->addBasicText('SeriesDescription', 'Series Description:');
-        $this->addBasicText('TimeRun', 'Time Run');
+        $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
         return true;
     }
 

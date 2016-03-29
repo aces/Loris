@@ -1,8 +1,10 @@
 <?php
+
 /**
  * The timepoint details menu
  * @package behavioural
  */
+require_once __DIR__ ."/Instrument_List_ControlPanel.class.inc";
 class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 {
     function _hasAccess()
@@ -43,8 +45,11 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $battery = new NDB_BVL_Battery;
         $success = $battery->selectBattery($_REQUEST['sessionID']);
 
+        $this->tpl_data['stage'] = Utility::getStageUsingCandID($this->tpl_data['candID']);
+        $this->tpl_data['subprojectID'] = Utility::getSubprojectIDUsingCandID($this->tpl_data['candID']);
+
         // get the list of instruments
-        $listOfInstruments = $battery->getBatteryVerbose();
+        $listOfInstruments = $battery->getBatteryVerbose($this->tpl_data['stage'], $this->tpl_data['subprojectID']);
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
@@ -73,7 +78,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 
                 $ddeStatus = new NDB_BVL_InstrumentStatus;
                 $success = $ddeStatus->select($instrument['DDECommentID']);
-		
+
                 $this->tpl_data['instruments'][$x][$i]['fullName'] = $instrument['Full_name'];
                 $this->tpl_data['instruments'][$x][$i]['dataEntryStatus'] = $status->getDataEntryStatus();
                 $this->tpl_data['instruments'][$x][$i]['administrationStatus'] = $status->getAdministrationStatus();
@@ -83,7 +88,8 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
                 $this->tpl_data['instruments'][$x][$i]['ddeCommentID'] = $instrument['DDECommentID'];
                 $this->tpl_data['instruments'][$x][$i]['ddeDataEntryStatus'] = $ddeStatus->getDataEntryStatus();
                 $this->tpl_data['instruments'][$x][$i]['isDirectEntry'] = $instrument['isDirectEntry'];
-                		
+                $this->tpl_data['instruments'][$x][$i]['instrumentOrder'] = $instrument['instrument_order'];
+
                 // create feedback object for the time point
                 $feedback = NDB_BVL_Feedback::singleton($username, null, null, $instrument['CommentID']);
 		

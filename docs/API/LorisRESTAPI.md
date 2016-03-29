@@ -32,9 +32,6 @@ DELETE is not supported on any resource defined in this API.
 
 # 1.1 Authentication
 
-(Note in the current Loris implementation token-based authentication is not yet implemented
- and the user must be logged in to Loris via main.php to use the API.)
-
 If a user is logged in to Loris and can be authenticated using the standard session mechanism,
 no further authentication is required. Requests will be evaluated as requests from that user,
 so that standard Loris modules can simply use the API.

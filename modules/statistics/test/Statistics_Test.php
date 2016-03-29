@@ -4,7 +4,7 @@ class Statistics_Test extends LorisIntegrationTest
 {
     public function testTabsFrameworkLoads()
     {
-        $this->webDriver->get($this->url . '/statistics/');
+        $this->safeGet($this->url . '/statistics/');
 
         try {
             // If this is the mobile view, we need to expand the dropdown
@@ -30,7 +30,7 @@ class Statistics_Test extends LorisIntegrationTest
     }
 
     public function testGeneralDescriptionTabLoads() {
-        $this->webDriver->get($this->url . '/statistics/stats_general/?dynamictabs=dynamictabs');
+        $this->safeGet($this->url . '/statistics/stats_general/?dynamictabs=dynamictabs');
         $header = $this->webDriver->findElement(WebDriverBy::XPath("//div[@id = 'page']/h2"));
         $this->assertContains("Welcome to the statistics page", $header->getText());
 

@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" href="{$baseURL}/GetCSS.php?Module=brainbrowser&file=volume-viewer-demo.css">
+
 {literal}
     <script id="overlay-ui-template" type="x-volume-ui-template">
         <div class="row">
@@ -201,3 +203,4 @@
 
     <div id="loading" style="display: block; color: #064785; font-size: 40px; font-weight: bold; text-align: center; margin: auto;">LOADING...</div>
 {/literal}
+

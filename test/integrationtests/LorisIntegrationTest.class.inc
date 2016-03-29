@@ -90,7 +90,10 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
         // Set up WebDriver implementation and login
-        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
+        $capabilities = array(
+            WebDriverCapabilityType::BROWSER_NAME => 'firefox',
+            WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
+        );
 
         $this->webDriver = RemoteWebDriver::create(
             'http://localhost:4444/wd/hub',
@@ -116,13 +119,14 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     protected function login($username, $password)
     {
-        $this->webDriver->get($this->url);
+        $this->safeGet($this->url);
+        /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::Name("username")
             )
         );
-
+        */
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
@@ -189,7 +193,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
-            array(":configName" => $configName)
+            array("configName" => $configName)
         );
 
         if (is_array($configID) && empty($configID)) {
@@ -199,7 +203,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         }
         $oldVal = $this->DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
-            array(":confID" => $configID)
+            array("confID" => $configID)
         );
 
         $this->_oldConfig[$configName] = array(
@@ -279,7 +283,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
     }
-    
+
     /**
      * Helper function to change the users Study Site
      *
@@ -287,8 +291,8 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function changeStudySite()
     {
-        $this->DB->insert("psc", array("CenterID" => 999));
-        $this->DB->update("users", array("CenterID" => 999), array("ID" => 999990));
+        $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
+        $this->DB->update("users", array("CenterID" => 99), array("ID" => 999990));
     }
 
     /**
@@ -299,7 +303,45 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     function resetStudySite()
     {
         $this->DB->update("users", array("CenterID" => 1), array("ID" => 999990));
-        $this->DB->delete("psc", array("CenterID" => 999));
+        $this->DB->delete("psc", array("CenterID" => 99));
+    }
+
+    /**
+     * Helper function to create a subproject
+     *
+     * @param string $title Name of the subproject
+     *
+     * @return none
+     */
+    function createSubproject($title)
+    {
+        $this->DB->insert(
+            "subproject",
+            array(
+             "title"             => $title,
+             "WindowDifference"  => "optimal",
+             "RecruitmentTarget" => "100",
+            )
+        );
+    }
+
+    /**
+     * Helper function to delete a subproject
+     *
+     * @param string $title Name of the subproject
+     *
+     * @return none
+     */
+    function deleteSubproject($title)
+    {
+        $this->DB->delete(
+            "subproject",
+            array(
+             "title"             => $title,
+             "WindowDifference"  => "optimal",
+             "RecruitmentTarget" => "100",
+            )
+        );
     }
 
     /**
@@ -333,5 +375,123 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         return count($configMenu) > 0;
     }
 
+    /**
+     * Helper function to delete candidate
+     *
+     * @param string $pscid The PSCID of teh candiate to delete
+     *
+     * @return none
+     */
+    function deleteCandidate($pscid)
+    {
+        $this->DB->delete("candidate", array("PSCID" => $pscid));
+    }
+
+    /**
+     * Helper function to click on a element and wait for the new page to be loaded.
+     * When the DOM is reloaded, the elements of the previous page become stale.
+     * Selenium will raise an exception when a function (like getText) are called on
+     * those elements.
+     *
+     * Note: If the page don't reload, this will produce an infinite loop.
+     *
+     * @param webDriverElement $clickable The element to be clicked
+     *
+     * @return void Once the element is stale.
+     */
+    public function clickToLoadNewPage($clickable)
+    {
+        $remoteWebElement = null;
+
+        $clickable->click();
+        try {
+            while (true) {
+                $remoteWebElement = $clickable->isDisplayed();
+            }
+        } catch (StaleElementReferenceException $e) {
+            return $remoteWebElement;
+        }
+    }
+
+    /**
+     * Helper function to decorate the webdriver->get function so it
+     * ensure that the new page is load before it returns.
+     *
+     * @param string $url The url to get.
+     *
+     * @return void
+     */
+    function safeGet($url)
+    {
+        $newWebDriver = null;
+
+        // keep a reference from the actual page
+        $oldBody = $this->safeFindElement(
+            WebDriverBy::xPath(
+                "
+                //body
+                "
+            )
+        );
+
+        try {
+            // Load the new page
+            $newWebDriver = $this->webDriver->get($url);
+
+            // Use the old page reference until it detaches from the DOM
+            while (true) {
+                $oldBody->isDisplayed();
+            }
+        } catch (StaleElementReferenceException $e) {
+            return $newWebDriver;
+        }
+    }
+
+    /**
+     * Wrapper method for WebDriver->findElement. It will wait until the element
+     * is located on the page before issuing the actual finElement method
+     * call.
+     *
+     * @param WebDriverBy $by         Criteria used to find the element on the page.
+     * @param int         $waitPeriod After this amount of seconds, the wait period
+     *                                finishes and an exception is thrown.
+     *
+     * @throws NoSuchElementException if the element cannot be found after the
+     *                                wait period.
+     *
+     * @return WebDriverElement the element found.
+     */
+    function safeFindElement(WebDriverBy $by, $waitPeriod=15)
+    {
+        $wait = new WebDriverWait($this->webDriver, $waitPeriod);
+        $wait->until(
+            WebDriverExpectedCondition::presenceOfElementLocated($by)
+        );
+
+        return $this->webDriver->findElement($by);
+    }
+
+    /**
+     * Safely click on a page element, even if not yet visible. The click is done
+     * by issuing a sendKeys method call on the element, passing as argument either
+     * a SPACE or a RETURN key (HTML input field will receive a SPACE whereas all
+     * others will receive a RETURN).
+     *
+     * @param WebDriverBy $by         Criteria used to find the element on the page.
+     * @param int         $waitPeriod After this amount of seconds, the wait period
+     *                                finishes and an exception is thrown.
+     *
+     * @throws NoSuchElementException if the element cannot be found after the
+     *                                wait period.
+     *
+     * @return void.
+     */
+    function safeClick(WebDriverBy $by, $waitPeriod=15)
+    {
+        $webElement = $this->safeFindElement($by, $waitPeriod);
+        $keys       = $webElement->getTagName() == 'input'
+            ? WebDriverKeys::SPACE : WebDriverKeys::RETURN_KEY;
+        $webElement->sendKeys($keys);
+    }
 }
 ?>
