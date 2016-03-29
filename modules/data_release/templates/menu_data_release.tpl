@@ -107,7 +107,7 @@
             {if $items[item][piece].name != ""}
                 <td>
                     {if $items[item][piece].name == 'file_name'}
-                        <a href="AjaxHelper.php?Module=data_release&script=GetFile.php&File={$items[item][piece].value}" target="_blank" download="{$items[item][piece].value}">
+                        <a href="{$baseurl}/data_release/ajax/GetFile.php?File={$items[item][piece].value}" target="_blank" download="{$items[item][piece].value}">
                         {$items[item][piece].value}
                         </a>
                     {else}
