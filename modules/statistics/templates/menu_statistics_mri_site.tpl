@@ -28,9 +28,9 @@
       {foreach from=$AllVisits item=visit name=VisitLoop}
       <td>{foreach from=$data[item].incompletes[$visit] item=Candidate name=CandLoop}
             {if $Candidate.test_url == "PF_Missing"}
-                <a href="main.php?test_name=imaging_browser&subtest=viewSession&sessionID={$Candidate.SessionID}">
+                <a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$Candidate.SessionID}">
             {else}
-            <a href="main.php?test_name=mri_parameter_form&candID={$Candidate.CandID}&sessionID={$Candidate.SessionID}&commentID={$Candidate.CommentID}">
+            <a href="{$baseurl}/mri_parameter_form/?candID={$Candidate.CandID}&sessionID={$Candidate.SessionID}&commentID={$Candidate.CommentID}">
             {/if}
             {$Candidate.PSCID}</a>
           {/foreach}
