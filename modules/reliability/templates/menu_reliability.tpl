@@ -99,7 +99,7 @@
                 <span class="glyphicon glyphicon-chevron-up pull-right" style="display:none" id="swapUp"></span>
             </div>
             <div class="panel-body" style="display:none" id="swap-body">
-                <form method="post" action="main.php?test_name=reliability">
+                <form method="post" action="{$baseurl}/reliability/">
                     <input type="hidden" name="swap" value="swap"/>
                     <h5>Original Candidate</h5>
                     <div class="row">
