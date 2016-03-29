@@ -67,14 +67,14 @@ class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
         $DB      = $Factory->Database();
 
         $user_ID   = $DB->pselectOne(
-            "SELECT ID FROM users WHERE userid='{$user->getUsername()}'",
-            array()
+            "SELECT ID FROM users WHERE userid=:UserID",
+            array('UserID' => $user->getUsername())
         );
         $superuser = $DB->pselectOne(
             "SELECT true FROM users WHERE ID IN "
             . "(SELECT userid FROM user_perm_rel WHERE "
-            . "userid='{$user_ID}' AND permid=1)",
-            array()
+            . "permid=1 AND userid=:UserID)",
+            array('UserID' => $user_ID)
         );
 
         $results = $DB->pselect(
