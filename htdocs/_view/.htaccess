@@ -1,7 +1,0 @@
-RewriteEngine on
-
-# These shouldn't be required, they should be relative to
-# the root, which should be a config option. (Or possibly
-# detected by main.php, but for subpages we need to 
-# make sure css/images load correctly..)
-RewriteRule ^(.*)$ CouchDBPassThrough.php?view=$1 [QSA]
