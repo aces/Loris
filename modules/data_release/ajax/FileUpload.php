@@ -32,7 +32,7 @@ if ($_POST['action'] == 'upload') {
             )
         );
     }
-    header("Location: ../main.php?test_name=data_release&uploadSuccess=true");
+    header("Location: {$baseURL}/data_release/?uploadSuccess=true");
 } else {
     header("HTTP/1.1 400 Bad Request");
     echo "There was an error uploading the file";
