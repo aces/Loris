@@ -6,7 +6,11 @@ class NDB_Form_dataquery extends NDB_Form
 {
     function _hasAccess()
     {
-        return true;
+        // create user object
+        $user =& User::singleton();
+
+        // check user permissions
+        return $user->hasPermission('dataquery_view');
     }
 
     function dataquery()
