@@ -394,7 +394,8 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
 
                 //Show the URL to the timepoint list on PSCID field
                 if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
-                    $this->tpl_data['items'][$x][$i]['DCCID'] = $item['DCCID'];
+                    $this->tpl_data['items'][$x][$i]['DCCID']
+                        = str_pad($item['DCCID'], 6, '0', STR_PAD_LEFT);
                 }
                 $this->tpl_data['items'][$x][$i]['name']  = $key;
                 $this->tpl_data['items'][$x][$i]['value'] = $val;

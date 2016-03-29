@@ -308,7 +308,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
 
                 //Show the URL to the timepoint list on PSCID field
                 if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
-                    $this->tpl_data['items'][$x][$i]['DCCID'] = $item['DCCID'];
+                    $this->tpl_data['items'][$x][$i]['DCCID']
+                        = str_pad($item['DCCID'], 6, '0', STR_PAD_LEFT);
                 }
 
                 // don't store to tpl_data, just store col value
