@@ -96,6 +96,12 @@ DropdownOptions = React.createClass({
 			temp.Values[key] = this.state.option;
 			this.props.updateState({Options: temp});
 	},
+	// Reset the dropdown options
+	resetOptions: function(){
+		temp = this.props.element.Options;
+		temp.Values = {};
+		this.props.updateState({Options: temp});
+	},
 	// Render the HTML
 	render: function () {
 		var multi = '',
@@ -113,7 +119,7 @@ DropdownOptions = React.createClass({
                         <input className="form-control" type="text" id="newSelectOption" onChange={this.onChange} />
                     </div>
                     <input className="btn btn-default" type="button" value="Add option" onClick={this.addOption.bind(this, false)} />
-                    <input className="btn btn-default" type="button" value="Reset" /*onClick={this.resetOptions}*/ />
+                    <input className="btn btn-default" type="button" value="Reset" onClick={this.resetOptions} />
                 </div>
                 <div className="form-group">
                     <label className="col-sm-2 control-label">Preview: </label>
