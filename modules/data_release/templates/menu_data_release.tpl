@@ -93,7 +93,7 @@
     <thead>
         {section name=header loop=$headers}
             <th class="info" nowrap="nowrap">
-                    <a href="main.php?test_name=data_release&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}" class = "sortHeaders">
+                    <a href="{$baseurl}/data_release/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}" class = "sortHeaders">
                         {$headers[header].displayName}
                     </a>
             </th>
