@@ -156,7 +156,7 @@
 	        <tr>
 		        <td nowrap="nowrap" valign="top">{$elements_array[$element].visit_label}</td>
 		        <td nowrap="nowrap" valign="top">
-		          <a href="main.php?visit_label={$elements_array[$element].visit_label}&instrument={$elements_array[$element].full_name}
+		          <a href="{$baseurl}/data_integrity_flag/?visit_label={$elements_array[$element].visit_label}&instrument={$elements_array[$element].full_name}
 &filter=Show+Data&test_name=data_team_helper">{$elements_array[$element].instrument}
 		          </a>
 		        </td>
