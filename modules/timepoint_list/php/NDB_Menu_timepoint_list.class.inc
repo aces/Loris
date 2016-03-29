@@ -155,5 +155,23 @@ class NDB_Menu_timepoint_list extends NDB_Menu
         $controlPanel = new TimePoint_List_ControlPanel($_REQUEST['candID']);
         return $controlPanel->display();
     }
+
+    /**
+     * Get dependencies to timepoint_list for image browsing link
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/timepoint_list/js/timepoint_list.js",
+            )
+        );
+    }
 }
 ?>
