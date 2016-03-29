@@ -1,31 +1,24 @@
-DROP TABLE IF EXISTS `genomic_file_type_enum`;
 CREATE TABLE `genomic_file_type_enum` (
   `genomic_file_type` varchar(100),
   PRIMARY KEY (`genomic_file_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 COMMENT '';
 
 INSERT IGNORE INTO `genomic_file_type_enum` (genomic_file_type) VALUES
 ('Methylation beta-values'),
 ('Other');
 
-DROP TABLE IF EXISTS `genomic_file`;
-CREATE TABLE `genomic_file` (
-  `file_id` int unsigned NOT NULL AUTO_INCREMENT,
-  `file_name` varchar(255) NOT NULL,
-  `absolute_path` varchar(255) NOT NULL,
-  `description` text NULL,
-  `genomic_file_type` varchar(100) NOT NULL,
-  `date_inserted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `user_inserted` varchar(255)  NOT NULL,
-  `caveat` tinyint(1) NOT NULL DEFAULT 0,
-  `notes` text NULL,
-  PRIMARY KEY (`file_id`),
-  FOREIGN KEY (genomic_file_type) 
-    REFERENCES genomic_file_type_enum (genomic_file_type)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-  FOREIGN KEY (user_inserted) 
-    REFERENCES users (UserID)
-    ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-COMMENT = '';
+CREATE TABLE `genomic_candidate_files_rel` (
+    `CandID` int(6) NOT NULL,
+    `GenomicFileID` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`CandID`,`GenomicFileID`),
+    FOREIGN KEY (CandID) 
+        REFERENCES candidate (CandID),
+    FOREIGN KEY (GenomicFileID)
+        REFERENCES genomic_files (GenomicFileID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO genomic_candidate_files_rel (CandID, GenomicFileID) select CandID, GenomicFileID FROM genomic_files;
+
+ALTER TABLE genomic_files DROP FOREIGN KEY `FK_genomic_files_1`;
+ALTER TABLE genomic_files DROP COLUMN `CandID`;

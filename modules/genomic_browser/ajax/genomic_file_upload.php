@@ -34,7 +34,7 @@ $fileType     = $_FILES["fileData"]["type"];
 $fileName     = $_FILES["fileData"]["name"];
 $temp_file    = $_FILES["fileData"]["tmp_name"];
 
-$user         = empty($_POST['user']) ? null : $_POST['user'];
+$user         = $userSingleton->getData('UserID');
 $type         = empty($_POST['fileType']) ? null : str_replace('_', ' ', $_POST['fileType']);
 $pscidColumn  = empty($_POST['pscidColumn']) ? null : $_POST['pscidColumn'];
 $description  = $_POST['description'];
@@ -61,14 +61,13 @@ if (move_uploaded_file($temp_file, $genomic_data_dir . 'genomic_uploader/' . $fi
 
     // Inserting file record into database.
     $values = array(
-        'file_name' => $fileName, 
-        'absolute_path' => $genomic_data_dir . 'genomic_uploader/',
-        'description' => $description, 
-        'genomic_file_type' => $type, 
-        'date_inserted' => date("y:m:d h:i:s", time()),
-        'user_inserted' => $user, 
+        'FileName' => $fileName, 
+        'Description' => $description, 
+        'FileType' => $type, 
+        'Date_inserted' => date("y:m:d h:i:s", time()),
+        'InsertedByUserID' => $user, 
     );
-    $DB->replace('genomic_file', $values);
+    $DB->replace('genomic_files', $values);
   
     reportProgress(15,"File copied");
     sleep(1);

@@ -57,44 +57,44 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
         // set the class variables
         $this->_displayBrief = !(isset($_REQUEST['format']));
         $this->columns       = array(
-                                'file_id',
-                                'file_name',
-                                'absolute_path',
-                                'description',
-                                'genomic_file_type',
-                                'date_inserted',
-                                'user_inserted',
-                                'caveat',
-                                'notes',
+                                'GenomicFileID',
+                                'FileName',
+                                'Description',
+                                'FileType',
+                                'Date_inserted',
+                                'InsertedByUserID',
+                                'Caveat',
+                                'Notes',
                                );
 
         // Chromosome from genome_loc table
         // INNER JOIN on table.
         // If a candidate has no CPG records, they will not appear.
-        $this->query = " FROM genomic_file WHERE 1=1 ";
+        $this->query = " FROM genomic_files WHERE 1=1 ";
 
         $this->validFilters = array(
-                               'file_id',
-                               'file_name',
-                               'description',
-                               'genomic_file_type',
-                               'date_inserted',
-                               'caveat',
-                               'notes',
+                               'GenomicFileID',
+                                'FileName',
+                                'Description',
+                                'FileType',
+                                'Date_inserted',
+                                'InsertedByUserID',
+                                'Caveat',
+                                'Notes',
                               );
 
         $this->formToFilter = array(
-                               'file_name'      => 'file_name',
-                               'description'   => 'description',
-                               'genomic_file_type'      => 'genomic_file_type',
-                               'date_inserted' => 'date_inserted',
-                               'caveat'        => 'caveat',
-                               'notes'         => 'notes',
+                               'file_name'         => 'FileName',
+                               'description'       => 'Description',
+                               'genomic_file_type' => 'FileType',
+                               'date_inserted'     => 'Date_inserted',
+                               'caveat'            => 'Caveat',
+                               'notes'             => 'Notes',
                               );
 
         $this->EqualityFilters = array(
-                                  'genomic_file_type',
-                                  'caveat',
+                                  'FileType',
+                                  'Caveat',
                                  );
 
         return true;
@@ -120,17 +120,11 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
 
         $this->addBasicText('notes', 'Notes:');
 
-        $Base_options = $this->getDistinctValues(
-            'genomic_file_type_enum',
-            'genomic_file_type'
-        );
-        $this->addSelect('genomic_file_type', 'Type:', $Base_options);
-
-        $this->tpl_data['genomic_file_type'] = $Base_options; 
+        $this->addBasicText('genomic_file_type', 'Type:');
 
         $Base_options = $this->getDistinctValues(
-            'genomic_file',
-            'caveat'
+            'genomic_files',
+            'Caveat'
         );
         $this->addCheckbox('caveat', 'Caveat:', $Base_options);
 
@@ -157,6 +151,7 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
             $deps,
             array(
              $baseURL . "/genomic_browser/js/genomic_browser.js",
+             $baseURL . "/genomic_browser/js/FileUploadModal.js",
              $baseURL . "/genomic_browser/js/genomic_file_uploader.js",
             )
         );

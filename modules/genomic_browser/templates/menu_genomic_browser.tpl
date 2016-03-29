@@ -103,17 +103,29 @@
                     </div>
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-3 col-lg-3">
+                        <label class="col-sm-6 col-md-2">
+                          {$form.FileCount.label} 
+                        </label>
+                        <div class="col-sm-6 col-md-1">
+                          {$form.FileCount.html}
+                        </div>
+                        <label class="col-sm-6 col-md-2">
                           {$form.SNP_Hits.label} 
                         </label>
-                        <div class="col-sm-12 col-md-3 col-lg-2">
+                        <div class="col-sm-6 col-md-1">
                           {$form.SNP_Hits.html}
                         </div>
-                        <label class="col-sm-12 col-md-3">
+                        <label class="col-sm-6 col-md-2">
                           {$form.CNV_Hits.label} 
                         </label>
-                        <div class="col-sm-12 col-md-3 pull-left">
+                        <div class="col-sm-6 col-md-1">
                           {$form.CNV_Hits.html} 
+                        </div>
+                        <label class="col-sm-6 col-md-2">
+                          {$form.CPG_Hits.label} 
+                        </label>
+                        <div class="col-sm-6 col-md-1">
+                          {$form.CPG_Hits.html} 
                         </div>
                       </div>
                     </div> 
@@ -203,7 +215,7 @@
             {elseif $items[item][piece].value eq ""}
               -
               {* just print a dash if no value available*}
-            {elseif $items[item][piece].name eq "Total_Filesets" } 
+            {elseif $items[item][piece].name eq "Files" } 
                <a href="{$baseurl}/genomic_browser/viewGenomicFile/?candID={$CandID}">
                    <b>({$items[item][piece].value})</b> &nbsp;&nbsp;View
                    <span class="glyphicon glyphicon-eye-open"></span>
