@@ -32,7 +32,7 @@
                                 <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
                             </div>
                             <div class="col-sm-6">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/examiner/?reset=true" />
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/examiner/?reset=true'" />
                             </div>
                         </div>
                     </div>
