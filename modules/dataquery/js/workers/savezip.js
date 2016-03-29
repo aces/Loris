@@ -1,5 +1,5 @@
 /*global self: false, Blob: false */
-importScripts("/js/jszip/jszip.min.js");
+importScripts(Loris.BaseURL + "/js/jszip/jszip.min.js");
 self.addEventListener('message', function (e) {
     "use strict";
     var i = 0,

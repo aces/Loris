@@ -1,5 +1,5 @@
 /*global self: false, importScripts: false, jStat: false*/
-importScripts("GetJS.php?Module=dataquery&file=jstat.js");
+importScripts(Loris.BaseURL + "/GetJS.php?Module=dataquery&file=jstat.js");
 self.addEventListener("message", function (e) {
     "use strict";
     var data = e.data,

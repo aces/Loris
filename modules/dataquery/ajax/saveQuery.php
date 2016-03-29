@@ -38,8 +38,6 @@ $cond = $_REQUEST['Filters'];
 $baseDocument['Conditions'] = $cond;
 $baseDocument['Fields'] = $fields;
 
-error_log(print_r($baseDocument, true));
-
 $cdb = CouchDB::singleton();
 print $cdb->postDoc($baseDocument);
 ?>
