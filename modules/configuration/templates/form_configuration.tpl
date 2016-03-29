@@ -1,23 +1,23 @@
 {function name=createRadio}
     {if $v eq "1" || $v eq "0"}
     <label class="radio-inline">
-        <input type="radio" name="{$k}" value="1" {if $v eq "1"}checked{/if}>Yes
+        <input type="radio" name="{$k}" value="1" {if $v eq "1"}checked{/if} {if $d eq "Yes"}disabled{/if}>Yes
     </label>
     <label class="radio-inline">
-        <input type="radio" name="{$k}" value="0" {if $v eq "0"}checked{/if}>No
+        <input type="radio" name="{$k}" value="0" {if $v eq "0"}checked{/if} {if $d eq "Yes"}disabled{/if}>No
     </label>
     {else if $v eq "true" || $v eq "false"}
     <label class="radio-inline">
-        <input type="radio" name="{$k}" value="true" {if $v eq "true"}checked{/if}>Yes
+        <input type="radio" name="{$k}" value="true" {if $v eq "true"}checked{/if} {if $d eq "Yes"}disabled{/if}>Yes
     </label>
     <label class="radio-inline">
-        <input type="radio" name="{$k}" value="false" {if $v eq "false"}checked{/if}>No
+        <input type="radio" name="{$k}" value="false" {if $v eq "false"}checked{/if} {if $d eq "Yes"}disabled{/if}>No
     </label>
     {/if}
 {/function}
 
 {function name=createInstrument}
-    <select class="form-control" name="{$k}">
+    <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
         {foreach from=$instruments key=name item=label}
             <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
         {/foreach}
@@ -25,15 +25,15 @@
 {/function}
 
 {function name=createEmail}
-    <input class="form-control" type="email" name="{$k}" value="{$v}">
+    <input class="form-control" type="email" name="{$k}" value="{$v}" {if $d eq "Yes"}disabled{/if}>
 {/function}
 
 {function name=createTextArea}
-    <textarea class="form-control" rows="4" name="{$k}">{$v}</textarea>
+    <textarea class="form-control" rows="4" name="{$k}" {if $d eq "Yes"}disabled{/if}>{$v}</textarea>
 {/function}
 
 {function name=createText}
-    <input type="text" class="form-control" name="{$k}" value="{$v}">
+    <input type="text" class="form-control" name="{$k}" value="{$v}" {if $d eq "Yes"}disabled{/if}>
 {/function}
 
 {function name=printConfigItem}
@@ -50,7 +50,7 @@
             {call name=printForm node=$node}
         {/if}
         {if $node['AllowMultiple'] == 1}
-            <button class="btn btn-success add" id="{$node['ID']}" type="button">
+            <button class="btn btn-success add" id="{$node['ID']}" type="button" {if $node['Disabled'] eq "Yes"}disabled{/if}>
                 <span class="glyphicon glyphicon-plus"></span> Add field
             </button>
         {/if}
@@ -63,19 +63,19 @@
     {foreach from=$node['Value'] key=k item=v}
         {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
         {if $node['DataType'] eq 'boolean'}
-            {call createRadio k=$k v=$v}
+            {call createRadio k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'instrument'}
-            {call createInstrument k=$k v=$v}
+            {call createInstrument k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
-            {call createEmail k=$k v=$v}
+            {call createEmail k=$k v=$v d=$node['Disabled']}
         {elseif $node['DataType'] eq 'textarea'}
-            {call createTextArea k=$k v=$v}
+            {call createTextArea k=$k v=$v d=$node['Disabled']}
         {else}
-            {call createText k=$k v=$v}
+            {call createText k=$k v=$v d=$node['Disabled']}
         {/if}
         {if $node['AllowMultiple'] == 1}
             <div class="input-group-btn">
-                <button class="btn btn-danger btn-remove" type="button" name="remove-{$k}">
+                <button class="btn btn-danger btn-remove" type="button" name="remove-{$k}" {if $node['Disabled'] eq "Yes"}disabled{/if}>
                     <span class="glyphicon glyphicon-remove"></span>&nbsp;
                 </button>
             </div>
@@ -85,17 +85,17 @@
         {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
         {assign var=id value={"add-"|cat:$node['ID']} }
         {if $node['DataType'] eq 'instrument'}
-            {call createInstrument k=$id}
+            {call createInstrument k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'email'}
-            {call createEmail k=$id}
+            {call createEmail k=$id d=$node['Disabled']}
         {elseif $node['DataType'] eq 'textarea'}
-            {call createTextArea k=$id}
+            {call createTextArea k=$id d=$node['Disabled']}
         {else}
-            {call createText k=$id}
+            {call createText k=$id d=$node['Disabled']}
         {/if}
         {if $node['AllowMultiple'] == 1}
             <div class="input-group-btn">
-                <button class="btn btn-danger btn-remove remove-new" type="button">
+                <button class="btn btn-danger btn-remove remove-new" type="button" {if $node['Disabled'] eq "Yes"}disabled{/if}>
                     <span class="glyphicon glyphicon-remove"></span>&nbsp;
                 </button>
             </div>

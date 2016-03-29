@@ -6,7 +6,7 @@
  *
  * @category Behavioural
  * @package  Main
- * @author   Olga Tsibulevskaya <olgatsib@gmail.com>
+ * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
@@ -18,7 +18,7 @@
  *
  * @category Behavioural
  * @package  Main
- * @author   Olga Tsibulevskaya <olgatsib@gmail.com>
+ * @author   Tara Campbell <tara.campbell@mail.mcill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
@@ -44,32 +44,88 @@ class NDB_Form_Configuration extends NDB_Form
      */
     function configuration()
     {
-
         $config =& NDB_Config::singleton();
 
+        $instruments = Utility::getAllInstruments();
+        $instruments = array_merge(array('' => ''), $instruments);
+
+        $this->tpl_data['useProjects']     = $config->getSetting("useProjects");
+        $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
+        $this->tpl_data['config']          = $this->_getConfigSettingTree();
+        $this->tpl_data['instruments']     = $instruments;
+        $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
+
+    }
+
+    /**
+     * Gets an array of the top level configuration items
+     * This is used to create the configuration setting category menu
+     *
+     * @return array of parent config items
+     */
+    function _getParentConfigLabels()
+    {
         $this->DB = Database::singleton();
 
-        $parentMenuItems = $this->DB->pselect(
+        $parentConfigItems = $this->DB->pselect(
             "SELECT Label, Name 
              FROM ConfigSettings 
              WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
             array()
         );
 
+        return $parentConfigItems;
+    }
+
+    /**
+     * Returns an array of configuration settings in a tree format.
+     * The array contains all of the settings that are in config table
+     * in the database. However, if the value if overridden in the config.xml,
+     * the value for that setting is replaced with the value from the config.xml
+     *
+     * @return array of config settings
+     */
+    function _getConfigSettingTree()
+    {
+        $config =& NDB_Config::singleton();
+
+        // Get the names and meta-information for the config settings in the database
         $configs = $this->DB->pselect(
             "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
             array()
         );
 
-        // add values
-        foreach ($configs as &$tag) {
-            $value = $this->DB->pselect(
-                "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
-                array('ID' => $tag{'ID'})
-            );
-            if ($value) {
-                foreach ($value as $subvalue) {
-                    $tag['Value'][$subvalue['ID']] = $subvalue['Value'];
+        // Check whether any setting is overwritten in the config.xml
+        // Add this info to the array so form entries can be disabled in front end
+        // Update the value for the setting to the value from the config.xml
+        foreach ($configs as &$setting) {
+            try {
+                $setting['Disabled'] = 'Yes';
+                if ($setting['Parent'] != null) {
+                    $valueFromXML = $config->getSettingFromXML($setting['Name']);
+                    if (!is_array($valueFromXML)) {
+                        $setting['Value'][0] = $valueFromXML;
+                    } else {
+                        $setting['Value'] = $valueFromXML;
+                    }
+                }
+            } catch (ConfigurationException $e) {
+                $setting['Disabled'] = 'No';
+            }
+        }
+
+        // Now check for config settings from the database for the fields not
+        // overridden in the config.xml
+        foreach ($configs as &$setting) {
+            if ($setting['Disabled'] == 'No') {
+                $value = $this->DB->pselect(
+                    "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
+                    array('ID' => $setting{'ID'})
+                );
+                if ($value) {
+                    foreach ($value as $subvalue) {
+                        $setting['Value'][$subvalue['ID']] = $subvalue['Value'];
+                    }
                 }
             }
         }
@@ -84,16 +140,7 @@ class NDB_Form_Configuration extends NDB_Form
             $tree[$node['Parent']]['Children'][] = &$node;
         }
 
-        $instruments = Utility::getAllInstruments();
-        $instruments = array_merge(array('' => ''), $instruments);
-        $useProjects = $config->getSetting("useProjects");
-
-        $this->tpl_data['useProjects']     = $useProjects;
-        $this->tpl_data['parentMenuItems'] = $parentMenuItems;
-        $this->tpl_data['config']          = $configs;
-        $this->tpl_data['instruments']     = $instruments;
-        $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
-
+        return $configs;
     }
 
     /**
