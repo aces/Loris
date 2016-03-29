@@ -9,7 +9,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h3 class="modal-title" id="myModalLabel">Upload File</h3>
             </div>
-            <form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="AjaxHelper.php?Module=data_release&script=FileUpload.php">
+            <form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="{$baseurl}/data_release/ajax/FileUpload.php">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-xs-12 form-group">
@@ -47,7 +47,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h3 class="modal-title" id="myModalLabel">Add Permission</h3>
             </div>
-            <form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="AjaxHelper.php?Module=data_release&script=AddPermission.php">
+            <form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="{$baseurl}/data_release/ajax/AddPermission.php>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-xs-12 form-group">
