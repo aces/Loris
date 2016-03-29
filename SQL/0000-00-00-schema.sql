@@ -2055,3 +2055,9 @@ INSERT INTO ExternalLinks (LinkTypeID, LinkText, LinkURL) VALUES
     (2,  'GitHub', 'https://github.com/aces'),
     (3,  'Loris Website', 'http://www.loris.ca');
 
+DROP TABLE IF EXISTS empty_queries;
+CREATE TABLE empty_queries (
+ ID int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ query text NOT NULL,
+ timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
