@@ -25,7 +25,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="col-sm-2 col-xs-3 col-sm-offset-2">
-                <img src="images/LORISlogo-01.svg" class="img-responsive" alt="Responsive image" align="left">
+                <img src="images/LORIS_logo_2016.svg" class="img-responsive" alt="Responsive image" align="left">
             </div>
             <div class="col-sm-6 col-xs-9">
                 <strong>

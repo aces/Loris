@@ -191,7 +191,7 @@ $(document).ready(function() {
 		  <div class="panel-body">
 		  		<div class="col-xs-12">
 		  			<center>
-		  				<img src="{$baseurl}/images/LORISlogo-01.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORISlogo-01.svg'" align="middle" width="85%"> 
+		  				<img src="{$baseurl}/images/LORIS_logo_2016.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORISlogo-01.svg'" align="middle" width="85%"> 
 		  			</center>
 					<br>
 		  		</div>
