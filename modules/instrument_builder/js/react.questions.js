@@ -96,6 +96,12 @@ DropdownOptions = React.createClass({displayName: "DropdownOptions",
 			temp.Values[key] = this.state.option;
 			this.props.updateState({Options: temp});
 	},
+	// Reset the dropdown options
+	resetOptions: function(){
+		temp = this.props.element.Options;
+		temp.Values = {};
+		this.props.updateState({Options: temp});
+	},
 	// Render the HTML
 	render: function () {
 		var multi = '',
@@ -113,7 +119,7 @@ DropdownOptions = React.createClass({displayName: "DropdownOptions",
                         React.createElement("input", {className: "form-control", type: "text", id: "newSelectOption", onChange: this.onChange})
                     ), 
                     React.createElement("input", {className: "btn btn-default", type: "button", value: "Add option", onClick: this.addOption.bind(this, false)}), 
-                    React.createElement("input", {className: "btn btn-default", type: "button", value: "Reset"}/*onClick={this.resetOptions}*/ )
+                    React.createElement("input", {className: "btn btn-default", type: "button", value: "Reset", onClick: this.resetOptions})
                 ), 
                 React.createElement("div", {className: "form-group"}, 
                     React.createElement("label", {className: "col-sm-2 control-label"}, "Preview: "), 

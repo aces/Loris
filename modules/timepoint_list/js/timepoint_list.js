@@ -5,7 +5,7 @@ $(document).ready(function() {
     $(".timepoint_list").click(function(e) {
         e.preventDefault();
         var form = $('<form />', {
-            "action" : "main.php?test_name=imaging_browser",
+            "action" : loris.BaseURL + "/imaging_browser/",
             "method" : "post"
         });
         var values = {
@@ -29,7 +29,7 @@ $(document).ready(function() {
     $(".timepoint_imaging_datasets").click(function(e) {
         e.preventDefault();
         var form = $('<form />', {
-            "action" : "main.php?test_name=imaging_browser",
+            "action" : loris.BaseURL + "/imaging_browser/",
             "method" : "post"
         });
         var values = {
