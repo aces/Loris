@@ -2,7 +2,7 @@
 UPDATE LorisMenu SET Link='/dataquery/' WHERE Label='Data Query Tool';
 
 -- Add Dataquery permission
-INSERT INTO `permissions` VALUES (43,'dataquery_view','View Data Query Tool','2');
+INSERT INTO permissions (code, description, categoryID) VALUES ('dataquery_view','View Data Query Tool','2');
 
 -- Add menu permission
 -- Data Query Tool
