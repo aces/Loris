@@ -12,7 +12,7 @@
  */
 
 require_once __DIR__ .
-    "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+    "/../../../test/integrationtests/LorisIntegrationTestDashboardWithPermission.class.inc";
 
 /**
  * Dashboard module automated integration tests
@@ -35,6 +35,7 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testDashboardPageLoads()
     {
+	$this->removePermissionFrom('4');
         $this->safeGet($this->url . '/dashboard/');
 
         $welcomeText = $this->webDriver
