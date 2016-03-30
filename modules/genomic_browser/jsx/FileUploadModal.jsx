@@ -18,8 +18,9 @@ GenomicFileUploadModal = React.createClass({
                nextProps.id !== this.props.id;
     },
 
-    validateForm: function (requiredInputs = []) {
+    validateForm: function (requiredInputs) {
         // this is always returning true... for now
+        requiredInputs = requiredInputs || [];
         this.setState({ readyForUpload : requiredInputs.reduce(function(previousValue, currentValue, currentIndex, array) {
             var input = document.getElementById(currentValue);
             return previousValue;

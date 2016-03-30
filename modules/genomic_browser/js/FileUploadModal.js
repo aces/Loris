@@ -1,7 +1,6 @@
 GenomicFileUploadModal = React.createClass({
     displayName: 'GenomicFileUploadModal',
 
-
     propTypes: {
         baseURL: React.PropTypes.string.isRequired
     },
@@ -18,12 +17,11 @@ GenomicFileUploadModal = React.createClass({
         return nextState.readyForUpload !== this.state.readyForUpload || nextState.submited !== this.state.submited || nextProps.id !== this.props.id;
     },
 
-    validateForm: function (requiredInputs = []) {
+    validateForm: function (requiredInputs) {
         // this is always returning true... for now
+        requiredInputs = requiredInputs || [];
         this.setState({ readyForUpload: requiredInputs.reduce(function (previousValue, currentValue, currentIndex, array) {
-                console.log(currentValue);
                 var input = document.getElementById(currentValue);
-                console.log(input.value);
                 return previousValue;
             }, true) });
     },
@@ -37,9 +35,6 @@ GenomicFileUploadModal = React.createClass({
         event.preventDefault();
         var self = this;
         var formData = new FormData(document.getElementById('uploadForm'));
-
-        console.log('formData');
-        console.log(formData);
 
         var xhr = new XMLHttpRequest();
         xhr.previous_text = '';
@@ -168,7 +163,6 @@ RGenomicFileUploadModal = React.createFactory(GenomicFileUploadModal);
 UploadForm = React.createClass({
     displayName: 'UploadForm',
 
-
     getInitialState: function () {
         return {
             baseURL: '',
@@ -195,7 +189,6 @@ UploadForm = React.createClass({
     },
 
     componentWillUpdate: function (prevProps, prevState) {
-        console.log('UploadForm :: componentDidUpdate');
         this.props.validate();
     },
 
@@ -336,14 +329,9 @@ FileTypeSelect = React.createClass({
 FileInput = React.createClass({
     displayName: 'FileInput',
 
-
     propTypes: {
         name: React.PropTypes.string,
         label: React.PropTypes.string
-    },
-
-    handleChange: function (event) {
-        console.log(event.target.value);
     },
 
     render: function () {
@@ -375,9 +363,7 @@ TextAreaInput = React.createClass({
         name: React.PropTypes.string,
         label: React.PropTypes.string
     },
-    handleChange: function (event) {
-        console.log(event.target.value);
-    },
+
     render: function () {
         return React.createElement(
             'div',

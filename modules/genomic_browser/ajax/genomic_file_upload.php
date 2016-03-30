@@ -38,6 +38,7 @@ $fileToUpload
                 'file_type'         => $_FILES["fileData"]["type"],
                 'file_name'         => $_FILES["fileData"]["name"],
                 'tmp_name'          => $_FILES["fileData"]["tmp_name"],
+                'size'              => $_FILES["fileData"]['size'],
                 'inserted_by'       => $userSingleton->getData('UserID'),
                 'genomic_file_type' => empty($_POST['fileType']) ?
                     null : str_replace('_', ' ', $_POST['fileType']),
@@ -117,7 +118,6 @@ function moveFileToFS(&$fileToUpload)
 
     reportProgress(5, "Copying file to $genomic_data_dir ");
     if (move_uploaded_file(
-        o
         $fileToUpload->tmp_name,
         $genomic_data_dir . 'genomic_uploader/' . $fileToUpload->file_name
     )) {
@@ -151,12 +151,13 @@ function registerFile(&$fileToUpload)
                'FileName'         => $fileToUpload->file_name,
                'Description'      => $fileToUpload->description,
                'FileType'         => $fileToUpload->genomic_file_type,
-               'Date_inserted'    => date("y:m:d h:i:s", time()),
+               'FileSize'         => $fileToUpload->size,
+               'Date_inserted'    => date("Y-m-d h:i:s", time()),
                'InsertedByUserID' => $fileToUpload->inserted_by,
               );
     try {
 
-        $DB->replace('genomic_files', $values);
+        $result = $DB->replace('genomic_files', $values);
         $fileToUpload->date_inserted = $values['Date_inserted'];
 
     } catch (DatabaseException $e) {
@@ -209,7 +210,7 @@ function createSampleCandidateRelations(&$fileToUpload)
     $headers = explode(',', $line);
     array_shift($headers);
 
-    $sample_label_prefix = $fileToUpload->date_inserted;
+    $sample_label_prefix = date('U', strtotime($fileToUpload->date_inserted));
     array_walk(
         $headers,
         function (&$item, $key, $prefix) {
@@ -284,7 +285,7 @@ function insertBetaValues(&$fileToUpload)
         $headers = explode(',', $line);
         array_shift($headers);
 
-        $sample_label_prefix = $fileToUpload->date_inserted;
+        $sample_label_prefix = date('U', strtotime($fileToUpload->date_inserted));
         array_walk(
             $headers,
             function (&$item, $key, $prefix) {
