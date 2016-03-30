@@ -1248,7 +1248,12 @@ class Utility
     }
 
     /**
-     *This function transforms the php.ini notation for numbers (like '2M') to an integer (2*1024*1024 in this case)
+     * This function transforms the php.ini notation for numbers (like '2M')
+     * to an integer (2*1024*1024 in this case)
+     *
+     * @param string $sSize PHP notation for memory size.
+     *
+     * @return integer Number of bytes.
      */
     function convertPHPSizeToBytes($sSize)
     {
@@ -1274,11 +1279,17 @@ class Utility
     }
 
     /**
-     * This function return the maximum file size that the server can accept.
+     * This function return the maximum file size that the server can
+     * accept.
+     *
+     * @return integer The minimum between the two settings.
      */
     function getMaximumFileUploadSize()
     {
-        return min(Utility::convertPHPSizeToBytes(ini_get('post_max_size')), Utility::convertPHPSizeToBytes(ini_get('upload_max_filesize')));
+        return min(
+            Utility::convertPHPSizeToBytes(ini_get('post_max_size')),
+            Utility::convertPHPSizeToBytes(ini_get('upload_max_filesize'))
+        );
     }
 }
 ?>

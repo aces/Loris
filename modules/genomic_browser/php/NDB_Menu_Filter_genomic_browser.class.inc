@@ -92,7 +92,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 ON (cohort.CandID=candidate.CandID)
             LEFT JOIN psc ON (psc.CenterID= candidate.CenterID)
             LEFT JOIN (select gcfr.CandID, count(gcfr.GenomicFileID) as FileCount 
-                from `genomic_candidate_files_rel` gcfr GROUP BY gcfr.GenomicFileID ) AS F 
+                from `genomic_candidate_files_rel` gcfr GROUP BY gcfr.GenomicFileID )
+                AS F 
                 ON candidate.CandID = F.CandID
             LEFT JOIN (select scr.CandID, count(scr.CandID) as SNPCount
                 from SNP_candidate_rel as scr GROUP BY scr.CandID) as S
@@ -298,7 +299,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 $this->tpl_data['items'][$x][$i]['value'] = $val;
 
                 // Print '' if no data
-                if ( $key == 'SNPs' || $key == 'CNVs' || $key == 'CPGs'
+                if ($key == 'SNPs' || $key == 'CNVs' || $key == 'CPGs'
                 ) {
                     if (is_null($val) || $val === '0') {
                         $this->tpl_data['items'][$x][$i]['value'] = '';

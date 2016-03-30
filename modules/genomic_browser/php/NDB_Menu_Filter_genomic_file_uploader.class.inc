@@ -1,14 +1,13 @@
 <?php
 /**
- *
  * PHP version 5
  *
- * @category Genomic
- * @package  Main
+ * @category    Genomic
+ * @package     Main
  * @author      Loris team <info-loris.mni@mcgill.ca>
  * @contributor Xavier <xavier.lecoursboucher@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @license     http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link        https://www.github.com/aces/Loris/
  */
 
 require_once 'NDB_Menu_Filter.class.inc';
@@ -74,13 +73,13 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
 
         $this->validFilters = array(
                                'GenomicFileID',
-                                'FileName',
-                                'Description',
-                                'FileType',
-                                'Date_inserted',
-                                'InsertedByUserID',
-                                'Caveat',
-                                'Notes',
+                               'FileName',
+                               'Description',
+                               'FileType',
+                               'Date_inserted',
+                               'InsertedByUserID',
+                               'Caveat',
+                               'Notes',
                               );
 
         $this->formToFilter = array(
