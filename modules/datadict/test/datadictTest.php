@@ -82,6 +82,7 @@ class datadictTestIntegrationTest extends LorisIntegrationTest
 
         $searchButton->click();
 
+        $this->markTestSkipped("Data Dict test not yet updated for React");
         /*
 		try {
             while (true) {
