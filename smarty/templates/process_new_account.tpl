@@ -27,7 +27,7 @@
 <div class="col-xs-12">
 <div class="col-xs-12">
     <center>
-    <img src="{$baseurl}/images/LORIS_logo_2016.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_Logo_141007.png'" align="middle" width="92%">
+    <img src="{$baseurl}/images/LORIS_logo.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_logo.png'" align="middle" width="92%">
     </center>
     <br>
 </div>
@@ -66,7 +66,7 @@
 <label class="col-sm-4 control-label">Type verification code:</label>
  <div class="col-sm-6">
 <input name="verif_box" type="text" id="verif_box" />
-<img src="verificationimage.php?num={$rand}" alt="verification image, type it in the box" width="50" height="24" align="absbottom" /><br />
+<img src="request_account/verificationimage.php?num={$rand}" alt="verification image, type it in the box" width="50" height="24" align="absbottom" /><br />
 </div>
 </div>
 <div class="form-group">
