@@ -1315,7 +1315,6 @@ class NDB_BVL_Instrument extends NDB_Page
             $el          = $rules['group'] != "" ? $rules['group'] : $elname;
             $errors[$el] = $rules['message'];
         }
-        print_r($errors);
         return $errors;
     }
 
