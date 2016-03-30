@@ -51,7 +51,7 @@ $permission = $db->pselectOne(
     . "userid=:uid AND data_release_id=:fileID",
     array(
      'uid'    => $uid,
-     'fileID' => $fileID
+     'fileID' => $fileID,
     )
 );
 if (empty($permission)) {
