@@ -37,7 +37,7 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('Statistics', '/statistics/', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 1),
-    ('Data Query Tool', '/dqt/', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 2);
+    ('Data Query Tool', '/dataquery/', (SELECT ID FROM LorisMenu as L WHERE Label='Reports'), 2);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Data Dictionary', '/datadict/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 1),
@@ -180,3 +180,7 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='acknowledgements_view' AND m.Label='Acknowledgements';
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='acknowledgements_edit' AND m.Label='Acknowledgements';
+
+-- Data Query Tool
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='dataquery_view' AND m.Label='Data Query Tool';
