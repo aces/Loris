@@ -6,19 +6,27 @@ GenomicFileUploadModal = React.createClass({
 
     getInitialState: function () {
         return {
-            fileType : "",
+            readyForUpload : false,
             submited : false,
             uploadSummary : {}
         };
     },
 
-    readyForUpload: function () {
-        return true;
+    shouldComponentUpdate: function (nextProps, nextState) {
+        return nextState.readyForUpload !== this.state.readyForUpload || 
+               nextState.submited !== this.state.submited ||
+               nextProps.id !== this.props.id;
+    },
+
+    validateForm: function (requiredInputs = []) {
+        // this is always returning true... for now
+        this.setState({ readyForUpload : requiredInputs.reduce(function(previousValue, currentValue, currentIndex, array) {
+            var input = document.getElementById(currentValue);
+            return previousValue;
+        } , true)});
     },
 
     reloadPage: function () {
-       var bob = window.location;
-       console.info(bob);
        $('#modalContainer').modal('hide');
        $('#showdata').click(); 
     },
@@ -83,7 +91,7 @@ GenomicFileUploadModal = React.createClass({
             footerButtons.push(<button className="btn btn-default" onClick={this.reloadPage} data-dismiss="modal">Ok</button>);
         } else {
 
-            if (this.readyForUpload()) {
+            if (this.state.readyForUpload) {
                 footerButtons.push(<button className="btn btn-primary" onClick={this.handleUploadSubmit} role="button" aria-disabled="false">Upload</button>);
             }
 
@@ -98,7 +106,7 @@ GenomicFileUploadModal = React.createClass({
                             <h3 className="modal-title" id="myModalLabel">Upload File</h3>
                         </div>
                         <div className="modal-body">
-                            <UploadForm baseURL={this.props.baseURL}/>
+                            <UploadForm baseURL={this.props.baseURL} validate={this.validateForm}/>
                         </div>
                         <div className="modal-footer">
                             {footerButtons}
@@ -118,8 +126,14 @@ UploadForm = React.createClass({
         return {
             baseURL: '',
             fileType: "",
-            useColumnHeaders: false
+            useColumnHeaders: true, // Change this to false when we are ready to use Mapping files
         };
+    },
+
+    getDeafaultProps: function () {
+        return {
+            validate: null
+        }
     },
 
     handleFileTypeChange: function (event) {
@@ -133,11 +147,15 @@ UploadForm = React.createClass({
         }
     },
 
+    componentWillUpdate: function (prevProps, prevState) {
+        this.props.validate();
+    },
+
     render: function () {
         var instructions = [];
         var inputs = [];
 
-        inputs.push(<FileTypeSelect baseURL={this.props.baseURL} multiple={false} onFileTypeChange={this.handleFileTypeChange}/>);
+        inputs.push(<FileTypeSelect baseURL={this.props.baseURL} multiple={false} onFileTypeChange={this.handleFileTypeChange} name="fileType" label="File type:"/>);
 
         switch (this.state.fileType) {
             case 'Methylation beta-values':
@@ -149,7 +167,8 @@ UploadForm = React.createClass({
                 inputs.push(<CheckboxInput handleChange={this.handleCheckboxChange} checked={this.state.useColumnHeaders} name='pscidColumn' />);
                 break;
             case 'Other':
-                inputs.push(<FileInput/>);
+                inputs.push(<FileInput name='fileData' label='File :'/>);
+                inputs.push(<TextAreaInput name='description' label='Description :' />);
                 break;
         }
 
@@ -207,7 +226,6 @@ FileTypeSelect = React.createClass({
                     case 4:
                         console.log('4: request finished and response is ready');
                         var fileType = [{genomic_file_type: ''}].concat(JSON.parse( xhr.responseText ));
-                        console.log(fileType);
                         self.setState({availableFileType: fileType});
                         break;
                     default:
@@ -216,7 +234,7 @@ FileTypeSelect = React.createClass({
                 }
             }
             catch (e){
-                console.error("[XHR STATECHANGE] Exception: " + e);
+                console.error("Exception: " + e);
             }
         };
         var url = this.props.baseURL + "/AjaxHelper.php?Module=genomic_browser&script=get_genomic_file_type.php";
@@ -227,16 +245,15 @@ FileTypeSelect = React.createClass({
     render: function () {
 
         var options = this.state.availableFileType.map( function (e) {
-                console.log(e);
                 return (<option value={e.genomic_file_type}>{e.genomic_file_type}</option>);
             }
         );
 
         return (
             <div className="col-xs-12 form-group">
-                <label for="fileType" className="col-xs-3">File Type :<font color="red"><sup> *</sup></font></label>
+                <label for={this.props.name} className="col-xs-3">{this.props.label}<font color="red"><sup> *</sup></font></label>
                 <div className="col-xs-9">
-                    <select name="fileType" id="fileType" className="form-fields form-control input-sm" onChange={this.props.onFileTypeChange}>
+                    <select name={this.props.name} id={this.props.name} className="form-fields form-control input-sm" onChange={this.props.onFileTypeChange}>
                         {options}
                     </select>
                 </div>
@@ -252,10 +269,6 @@ FileInput = React.createClass({
         label: React.PropTypes.string
     },
 
-    handleChange: function (event) {
-        console.log(event.target.value);
-    },
-
     render: function () {
 
         var max_file_size = "1000";
@@ -265,7 +278,7 @@ FileInput = React.createClass({
                 <label className="col-xs-3" for={this.props.name}>{this.props.label}</label>
                 <div className="col-xs-9">
                     <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value={max_file_size} />
-                    <input type="file" name={this.props.name} onChange={this.handleChange} className="fileUpload"/>
+                    <input type="file" name={this.props.name} id={this.props.name} onChange={this.handleChange} className="fileUpload"/>
                 </div>
             </div>
         );
@@ -273,19 +286,18 @@ FileInput = React.createClass({
 });
 
 TextAreaInput = React.createClass({
+
     propTypes: {
         name: React.PropTypes.string,
         label: React.PropTypes.string
     },
-    handleChange: function (event) {
-        console.log(event.target.value);
-    },
+
     render: function () {
         return (
             <div className="col-xs-12 form-group">
                 <label className="col-xs-3" for={this.props.name}>{this.props.label}</label>
                 <div className="col-xs-9">
-                    <textarea cols="20" rows="3" name={this.props.name} onChange={this.handleChange} id="description" style={{'border': '2px inset'}} className="ui-corner-all form-fields form-control input-sm" />
+                    <textarea cols="20" rows="3" name={this.props.name} onChange={this.handleChange} id={this.props.name} style={{'border': '2px inset'}} className="ui-corner-all form-fields form-control input-sm" />
                 </div>
             </div>
         );
@@ -302,12 +314,14 @@ CheckboxInput = React.createClass({
         };
     },
     render: function () {
+        // Add onClick={this.props.handleChange}  and checked={this.state.checked} when we support Mapping files
         return (
             <div className="form-group col-sm-12">
                 <label className="col-xs-3"></label>
                 <div className="col-xs-9">
-                    <input className="user-success" name={this.props.name} type="checkbox" onClick={this.props.handleChange} checked={this.state.checked} style={{'margin-right': '1em'}}>
+                    <input className="user-success" name={this.props.name} id={this.props.name} type="checkbox" checked="true" style={{'margin-right': '1em'}}>
                         Use PSCID in column headers
+                        {this.props.label}
                     </input>
                 </div>
             </div>

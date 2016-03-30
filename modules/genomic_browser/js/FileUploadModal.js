@@ -8,19 +8,27 @@ GenomicFileUploadModal = React.createClass({
 
     getInitialState: function () {
         return {
-            fileType: "",
+            readyForUpload: false,
             submited: false,
             uploadSummary: {}
         };
     },
 
-    readyForUpload: function () {
-        return true;
+    shouldComponentUpdate: function (nextProps, nextState) {
+        return nextState.readyForUpload !== this.state.readyForUpload || nextState.submited !== this.state.submited || nextProps.id !== this.props.id;
+    },
+
+    validateForm: function (requiredInputs = []) {
+        // this is always returning true... for now
+        this.setState({ readyForUpload: requiredInputs.reduce(function (previousValue, currentValue, currentIndex, array) {
+                console.log(currentValue);
+                var input = document.getElementById(currentValue);
+                console.log(input.value);
+                return previousValue;
+            }, true) });
     },
 
     reloadPage: function () {
-        var bob = window.location;
-        console.info(bob);
         $('#modalContainer').modal('hide');
         $('#showdata').click();
     },
@@ -29,6 +37,9 @@ GenomicFileUploadModal = React.createClass({
         event.preventDefault();
         var self = this;
         var formData = new FormData(document.getElementById('uploadForm'));
+
+        console.log('formData');
+        console.log(formData);
 
         var xhr = new XMLHttpRequest();
         xhr.previous_text = '';
@@ -90,7 +101,7 @@ GenomicFileUploadModal = React.createClass({
             ));
         } else {
 
-            if (this.readyForUpload()) {
+            if (this.state.readyForUpload) {
                 footerButtons.push(React.createElement(
                     'button',
                     { className: 'btn btn-primary', onClick: this.handleUploadSubmit, role: 'button', 'aria-disabled': 'false' },
@@ -139,7 +150,7 @@ GenomicFileUploadModal = React.createClass({
                     React.createElement(
                         'div',
                         { className: 'modal-body' },
-                        React.createElement(UploadForm, { baseURL: this.props.baseURL })
+                        React.createElement(UploadForm, { baseURL: this.props.baseURL, validate: this.validateForm })
                     ),
                     React.createElement(
                         'div',
@@ -162,7 +173,13 @@ UploadForm = React.createClass({
         return {
             baseURL: '',
             fileType: "",
-            useColumnHeaders: false
+            useColumnHeaders: true };
+    },
+
+    // Change this to false when we are ready to use Mapping files
+    getDeafaultProps: function () {
+        return {
+            validate: null
         };
     },
 
@@ -177,11 +194,16 @@ UploadForm = React.createClass({
         }
     },
 
+    componentWillUpdate: function (prevProps, prevState) {
+        console.log('UploadForm :: componentDidUpdate');
+        this.props.validate();
+    },
+
     render: function () {
         var instructions = [];
         var inputs = [];
 
-        inputs.push(React.createElement(FileTypeSelect, { baseURL: this.props.baseURL, multiple: false, onFileTypeChange: this.handleFileTypeChange }));
+        inputs.push(React.createElement(FileTypeSelect, { baseURL: this.props.baseURL, multiple: false, onFileTypeChange: this.handleFileTypeChange, name: 'fileType', label: 'File type:' }));
 
         switch (this.state.fileType) {
             case 'Methylation beta-values':
@@ -193,7 +215,8 @@ UploadForm = React.createClass({
                 inputs.push(React.createElement(CheckboxInput, { handleChange: this.handleCheckboxChange, checked: this.state.useColumnHeaders, name: 'pscidColumn' }));
                 break;
             case 'Other':
-                inputs.push(React.createElement(FileInput, null));
+                inputs.push(React.createElement(FileInput, { name: 'fileData', label: 'File :' }));
+                inputs.push(React.createElement(TextAreaInput, { name: 'description', label: 'Description :' }));
                 break;
         }
 
@@ -255,7 +278,6 @@ FileTypeSelect = React.createClass({
                     case 4:
                         console.log('4: request finished and response is ready');
                         var fileType = [{ genomic_file_type: '' }].concat(JSON.parse(xhr.responseText));
-                        console.log(fileType);
                         self.setState({ availableFileType: fileType });
                         break;
                     default:
@@ -263,7 +285,7 @@ FileTypeSelect = React.createClass({
                         break;
                 }
             } catch (e) {
-                console.error("[XHR STATECHANGE] Exception: " + e);
+                console.error("Exception: " + e);
             }
         };
         var url = this.props.baseURL + "/AjaxHelper.php?Module=genomic_browser&script=get_genomic_file_type.php";
@@ -274,7 +296,6 @@ FileTypeSelect = React.createClass({
     render: function () {
 
         var options = this.state.availableFileType.map(function (e) {
-            console.log(e);
             return React.createElement(
                 'option',
                 { value: e.genomic_file_type },
@@ -287,8 +308,8 @@ FileTypeSelect = React.createClass({
             { className: 'col-xs-12 form-group' },
             React.createElement(
                 'label',
-                { 'for': 'fileType', className: 'col-xs-3' },
-                'File Type :',
+                { 'for': this.props.name, className: 'col-xs-3' },
+                this.props.label,
                 React.createElement(
                     'font',
                     { color: 'red' },
@@ -304,7 +325,7 @@ FileTypeSelect = React.createClass({
                 { className: 'col-xs-9' },
                 React.createElement(
                     'select',
-                    { name: 'fileType', id: 'fileType', className: 'form-fields form-control input-sm', onChange: this.props.onFileTypeChange },
+                    { name: this.props.name, id: this.props.name, className: 'form-fields form-control input-sm', onChange: this.props.onFileTypeChange },
                     options
                 )
             )
@@ -341,7 +362,7 @@ FileInput = React.createClass({
                 'div',
                 { className: 'col-xs-9' },
                 React.createElement('input', { type: 'hidden', id: 'MAX_FILE_SIZE', name: 'MAX_FILE_SIZE', value: max_file_size }),
-                React.createElement('input', { type: 'file', name: this.props.name, onChange: this.handleChange, className: 'fileUpload' })
+                React.createElement('input', { type: 'file', name: this.props.name, id: this.props.name, onChange: this.handleChange, className: 'fileUpload' })
             )
         );
     }
@@ -369,7 +390,7 @@ TextAreaInput = React.createClass({
             React.createElement(
                 'div',
                 { className: 'col-xs-9' },
-                React.createElement('textarea', { cols: '20', rows: '3', name: this.props.name, onChange: this.handleChange, id: 'description', style: { 'border': '2px inset' }, className: 'ui-corner-all form-fields form-control input-sm' })
+                React.createElement('textarea', { cols: '20', rows: '3', name: this.props.name, onChange: this.handleChange, id: this.props.name, style: { 'border': '2px inset' }, className: 'ui-corner-all form-fields form-control input-sm' })
             )
         );
     }
@@ -387,6 +408,7 @@ CheckboxInput = React.createClass({
         };
     },
     render: function () {
+        // Add onClick={this.props.handleChange}  and checked={this.state.checked} when we support Mapping files
         return React.createElement(
             'div',
             { className: 'form-group col-sm-12' },
@@ -396,8 +418,9 @@ CheckboxInput = React.createClass({
                 { className: 'col-xs-9' },
                 React.createElement(
                     'input',
-                    { className: 'user-success', name: this.props.name, type: 'checkbox', onClick: this.props.handleChange, checked: this.state.checked, style: { 'margin-right': '1em' } },
-                    'Use PSCID in column headers'
+                    { className: 'user-success', name: this.props.name, id: this.props.name, type: 'checkbox', checked: 'true', style: { 'margin-right': '1em' } },
+                    'Use PSCID in column headers',
+                    this.props.label
                 )
             )
         );
