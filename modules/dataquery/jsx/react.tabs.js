@@ -304,7 +304,7 @@ ViewDataTabPane = React.createClass({
         }
         return <TabPane TabId={this.props.TabId}>
                     <h2>Query Criteria</h2>{criteria} {buttons}
-                    <div className='form-group form-horizontal col-xs-12'>
+                    <div className='form-group form-horizontal row'>
                         <label for="selected-input" className="col-sm-1 control-label">Data</label>
                         <div className="col-sm-4">
                             <div className="btn-group">

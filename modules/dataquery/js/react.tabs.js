@@ -304,7 +304,7 @@ ViewDataTabPane = React.createClass({displayName: "ViewDataTabPane",
         }
         return React.createElement(TabPane, {TabId: this.props.TabId}, 
                     React.createElement("h2", null, "Query Criteria"), criteria, " ", buttons, 
-                    React.createElement("div", {className: "form-group form-horizontal col-xs-12"}, 
+                    React.createElement("div", {className: "form-group form-horizontal row"}, 
                         React.createElement("label", {for: "selected-input", className: "col-sm-1 control-label"}, "Data"), 
                         React.createElement("div", {className: "col-sm-4"}, 
                             React.createElement("div", {className: "btn-group"}, 
