@@ -1269,7 +1269,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
 
             //Loop through the rules (will only be one rule if this is not an OR)
-            $or_conditions = array();
+            $or_conditions = false;
             for ($i = 0; $i < count($rules_array); $i++) {
                 $rule = explode("{@}", $rules_array[$i]);
                 //Some rules compare against multiple values, handle this here.
@@ -1292,7 +1292,6 @@ class NDB_BVL_Instrument extends NDB_Page
                     $elements[$rule[0]] = array($elements[$rule[0]]);
                 }
                 //Foreach controller value run the rule.
-                $or_conditions = false;
                 foreach ($elements[$rule[0]] as $controller_value) {
                     $ElementResult = $this->XINRunRuleFunction(
                         $controller_value,
@@ -1316,6 +1315,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $el          = $rules['group'] != "" ? $rules['group'] : $elname;
             $errors[$el] = $rules['message'];
         }
+        print_r($errors);
         return $errors;
     }
 
