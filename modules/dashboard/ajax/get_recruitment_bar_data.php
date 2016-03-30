@@ -39,6 +39,6 @@ foreach ($list_of_sites as $siteID => $siteName) {
 
 print json_encode($genderData);
 
-exit();
+return 0;
 
 ?>
