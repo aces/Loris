@@ -10,6 +10,6 @@ The Data Release Module can be used to easily distribute packaged data releases 
 
 ##Other notes:
 
-- Uploads are stored under the modules/data_release/user_uploads directory which can easily be symlinked to another location if necessary
+- Uploads are stored under the modules/data_release/user_uploads directory which can easily be symlinked to another location if necessary, but please create and make sure it is writable by your web server
 - Only superusers have permission to upload files and grant permissions
 - Upload date will automatically be added during file upload

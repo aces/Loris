@@ -24,7 +24,7 @@ if ($_POST['action'] == 'addpermission') {
          'data_release_id' => $data_release_id,
         )
     );
-    header("Location: {$baseURL}/data_release/?addpermissionSuccess=true");
+    header("Location: /data_release/?addpermissionSuccess=true");
 } else {
     header("HTTP/1.1 400 Bad Request");
     echo "There was an error adding permissions";
