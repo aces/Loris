@@ -1,5 +1,5 @@
--- ALTER TABLE genome_loc ADD Description text, MODIFY Strand enum ('forward', 'reverse');
 ALTER TABLE genotyping_platform ADD UNIQUE (Name);
+ALTER TABLE genome_loc ADD UNIQUE (GenomeLocID);
 
 DROP TABLE IF EXISTS `genomic_sample_candidate_rel`;
 CREATE TABLE `genomic_sample_candidate_rel` (
