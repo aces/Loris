@@ -508,7 +508,7 @@ of the form
         "CandID" : $CandID,
         "Visit" : $VisitLabel
     },
-   "QC" : "Pass|Fail"
+   "SessionQC" : "Pass|Fail"
    "Pending" : boolean
 }
 ```
