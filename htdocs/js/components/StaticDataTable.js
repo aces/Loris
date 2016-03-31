@@ -8,7 +8,7 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
         // func(ColumnName, CellData, EntireRowData)
         getFormattedCell: React.PropTypes.func
     },
-    componentDidMount: function() {
+    componentDidUpdate: function() {
         if (jQuery.fn.DynamicTable) {
             if(this.props.freezeColumn) {
                 $("#dynamictable").DynamicTable({"freezeColumn" : this.props.freezeColumn});
