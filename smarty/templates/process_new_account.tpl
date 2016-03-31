@@ -66,7 +66,7 @@
 <label class="col-sm-4 control-label">Type verification code:</label>
  <div class="col-sm-6">
 <input name="verif_box" type="text" id="verif_box" />
-<img src="request_account/verificationimage.php?num={$rand}" alt="verification image, type it in the box" width="50" height="24" align="absbottom" /><br />
+<img src="verificationimage.php?num={$rand}" alt="verification image, type it in the box" width="50" height="24" align="absbottom" /><br />
 </div>
 </div>
 <div class="form-group">
