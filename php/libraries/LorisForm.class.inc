@@ -111,7 +111,7 @@ class LorisForm
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addSelect($name, $label, $options, $attribs = array()) 
+    public function addSelect($name, $label, $options, $attribs = array())
     {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
@@ -215,7 +215,7 @@ class LorisForm
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addDate($name, $label, $options, $attribs = array()) 
+    public function addDate($name, $label, $options, $attribs = array())
     {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'date';
