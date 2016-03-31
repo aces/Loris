@@ -116,7 +116,17 @@
 
         // Add links for carousel
         $(table).after('<a class="left leftScrollBar carousel-control" href="#"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" href="#" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
-    }, freezeColm = function (tableID, colm_static) {
+    }, unwrapTable = function (table) {
+        // Delete links for carousel
+        $(table).nextAll().remove();
+        // Remove wrapper necessary for dynamictable code
+        $(table).unwrap();
+        // Remove wrapper code necessary for bootstrap carousel
+        $(table).unwrap();
+        // Remove row wrapper
+        $(table).unwrap();
+    },
+    freezeColm = function (tableID, colm_static) {
         var statColPos = $("." + tableID + "FrozenColumn").offset().left,
             statColWid = $("." + tableID + "FrozenColumn").outerWidth(),
             leftScrollPos = $(".leftScrollBar").offset().left,
@@ -157,6 +167,11 @@
                 column,
                 columnNumber,
                 child1;
+
+            // check if table is already scollable, if so delete scroll components
+            if($(this).parent(".dynamicContentWrapper").length === 1){
+                unwrapTable(this);
+            }
             // set up table for scrollable side bars
             wrapTable(this);
             // Get references to links to pass to Setup and checkOverflow
