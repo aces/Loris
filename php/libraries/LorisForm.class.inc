@@ -112,8 +112,7 @@ class LorisForm
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addSelect($name, $label, $options, $attribs = array(),
-        $getHTML = null
+    public function addSelect($name, $label, $options, $attribs = array()
     ) {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
@@ -121,9 +120,7 @@ class LorisForm
         if (isset($attribs['multiple'])) {
             $el['multiple'] = $attribs['multiple'];
         }
-        if ($getHTML) {
-            return $el;
-        }
+        return $el;
     }
 
     /**
@@ -137,13 +134,11 @@ class LorisForm
      *
      * @return none, but modifies $this->form as a side-effect
      */
-    public function addStatic($name, $label, $getHTML = null)
+    public function addStatic($name, $label)
     {
         $el         =& $this->addBase($name, $label, array());
         $el['type'] = 'static';
-        if ($getHTML) {
-            return $el;
-        }
+        return $el;
     }
 
     /**
@@ -158,13 +153,11 @@ class LorisForm
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addPassword($name, $label, $options=array(), $getHTML = null)
+    public function addPassword($name, $label, $options=array())
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'password';
-        if ($getHTML) {
-            return $el;
-        }
+        return $el;
     }
 
     /**
@@ -179,13 +172,11 @@ class LorisForm
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addText($name, $label, $options=array(), $getHTML = null)
+    public function addText($name, $label, $options=array())
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'text';
-        if ($getHTML) {
-            return $el;
-        }
+        return $el;
     }
 
     /**
@@ -235,9 +226,7 @@ class LorisForm
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'date';
         $el['options'] = $options;
-        if ($getHTML) {
-            return $el;
-        }
+        return $el;
     }
 
     /**
@@ -252,13 +241,11 @@ class LorisForm
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    function addFile($name, $label, $options, $getHTML = null)
+    function addFile($name, $label, $options)
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'file';
-        if ($getHTML) {
-            return $el;
-        }
+        return $el;
     }
 
     /**
@@ -273,13 +260,11 @@ class LorisForm
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    function addCheckbox($name, $label, $options = array(), $getHTML = null)
+    function addCheckbox($name, $label, $options = array())
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'advcheckbox';
-        if ($getHTML) {
-            return $el;
-        }
+        return $el;
     }
 
     /**
@@ -292,15 +277,13 @@ class LorisForm
      *
      * @return none
      */
-    function addHeader($name, $label, $options = array(), $getHTML = null)
+    function addHeader($name, $label, $options = array())
     {
         $name = $this->_generateName($name);
 
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'header';
-        if ($getHTML) {
-            return $el;
-        }
+        return $el;
     }
     /**
      * Generates a unique element name for anonymous elements to use
