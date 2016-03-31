@@ -12,7 +12,7 @@
  */
 
 require_once __DIR__ .
-    "/../../../test/integrationtests/LorisIntegrationTestDashboardWithPermission.class.inc";
+    "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
 /**
  * Dashboard module automated integration tests
@@ -49,25 +49,35 @@ class DashboardTest extends LorisIntegrationTest
      
 
 
-/** to test that, when loading the Dashboard, click the Views button of Recruitment, the items "View overall recruitment" and "View site breakdown" appear
-     * author : Wang Shen
-   *
-     * @return void
-     */
+     /** 
+      * To test that, when loading the Dashboard, click the Views button of
+      * Recruitment, the items "View overall recruitment" and "View site breakdown"
+      * appear
+      * author : Wang Shen
+      * @return void
+      */
     public function testDashboardRecruitmentView()
     {
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->webDriver
-            ->findElement(WebDriverBy::Xpath("//*[@id='lorisworkspace']/div/div[1]/div[2]/div[1]/div/div/button"));
+            ->findElement(WebDriverBy::Xpath("//*[@id='lorisworkspace']/div/di".
+                    "v[1]/div[2]/div[1]/div/div/button"));
         $views->click();
 
         $assertText1 = $this->webDriver
-            ->findElement(WebDriverBy::XPath("//*[@id='lorisworkspace']/div/div[1]/div[2]/div[1]/div/div/ul/li[1]/a"))->getText();
+            ->findElement(WebDriverBy::XPath("//*[@id='lorisworkspace']/div/div[1]".
+                    "/div[2]/div[1]/div/div/ul/li[1]/a"))->getText();
         $assertText2 = $this->webDriver
-            ->findElement(WebDriverBy::XPath("//*[@id='lorisworkspace']/div/div[1]/div[2]/div[1]/div/div/ul/li[2]/a"))->getText();
+            ->findElement(WebDriverBy::XPath("//*[@id='lorisworkspace']/div/div[1]".
+                    "/div[2]/div[1]/div/div/ul/li[2]/a"))->getText();
         $this->assertContains("View overall recruitment", $assertText1);
         $this->assertContains("View site breakdown", $assertText2);
     }
+     /** 
+      * To test that, when loading the Dashboard with different permission.
+      * author : Wang Shen
+      * @return void
+      */
     public function testDashboardWithoutPermission()
     {
         $this->setupPermissions(array('imaging_browser_view_site'));
