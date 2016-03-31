@@ -26,7 +26,7 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="col-sm-2 col-xs-3 col-sm-offset-2">
-				<img src="images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" align="left">
+				<img src="{$baseurl}/images/LORIS_logo.svg" class="img-responsive" alt="Responsive image" align="left" onerror="this.src='{$baseurl}/images/LORIS_logo.png'">
 			</div>
 			<div class="col-sm-6 col-xs-9">
 				{if $error_message}
@@ -65,7 +65,7 @@
 				<br>Created by <a href="http://mcin-cnim.ca" target="_blank">MCIN</a>
 			</div>
 			<div class="col-xs-4 col-xs-offset-4  ">
-				Developed at <a href="www.mni.mcgill.ca" target="_blank">Montreal Neurological Institute and Hospital</a>
+				Developed at <a href="http://www.mni.mcgill.ca" target="_blank">Montreal Neurological Institute and Hospital</a>
 	  		</div>
 		</div>
 	</div>
