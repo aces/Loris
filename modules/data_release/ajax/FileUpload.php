@@ -55,7 +55,13 @@ if ($_POST['action'] == 'upload') {
             )
         );
     }
-    header("Location: /data_release/?uploadSuccess=true");
+
+    $factory  = NDB_Factory::singleton();
+    $settings = $factory->settings();
+
+    $baseURL = $settings->getBaseURL();
+
+    header("Location: {$baseURL}/data_release/?uploadSuccess=true");
 } else {
     header("HTTP/1.1 400 Bad Request");
     echo "There was an error uploading the file";
