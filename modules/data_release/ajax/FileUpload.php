@@ -48,11 +48,11 @@ if ($_POST['action'] == 'upload') {
             )
         );
         $success = $DB->insert(
-         'data_release_permissions',
-         array(
-          'userid'          => $user_ID,
-          'data_release_id' => $ID,
-         )
+            'data_release_permissions',
+            array(
+             'userid'          => $user_ID,
+             'data_release_id' => $ID,
+            )
         );
     }
     header("Location: /data_release/?uploadSuccess=true");
