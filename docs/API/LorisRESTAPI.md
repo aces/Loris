@@ -607,7 +607,7 @@ The following methods are defined:
 
 ### 4.5.1 Header Summary
 ```
-GET /candidates/$CandID/$VisitLabel/images/$Filename/headers/
+GET /candidates/$CandID/$VisitLabel/images/$Filename/headers
 ```
 
 This will return a JSON summary of the important headers for this filename. It
