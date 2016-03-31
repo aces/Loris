@@ -1,5 +1,5 @@
 ALTER TABLE genotyping_platform ADD UNIQUE (Name);
-ALTER TABLE genome_loc ADD UNIQUE (GenomeLocID);
+ALTER TABLE genome_loc ADD UNIQUE KEY (Chromosome, StartLoc, EndLoc);
 
 DROP TABLE IF EXISTS `genomic_sample_candidate_rel`;
 CREATE TABLE `genomic_sample_candidate_rel` (
