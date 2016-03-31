@@ -127,8 +127,8 @@ class LorisForm
      *
      * Reimplementation of HTML_QuickForm's "addStatic" API.
      *
-     * @param string $name    The element name.
-     * @param string $label   The label to attach to this element.
+     * @param string $name  The element name.
+     * @param string $label The label to attach to this element.
      *
      * @return none, but modifies $this->form as a side-effect
      */
@@ -215,7 +215,8 @@ class LorisForm
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addDate($name, $label, $options, $attribs = array()) {
+    public function addDate($name, $label, $options, $attribs = array()) 
+    {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'date';
         $el['options'] = $options;
