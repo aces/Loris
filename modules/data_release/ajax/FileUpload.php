@@ -32,11 +32,11 @@ if ($_POST['action'] == 'upload') {
             )
         );
 
-        $user_ID         = $DB->pselectOne(
+        $user_ID = $DB->pselectOne(
             "SELECT ID FROM users WHERE userid=:UserID",
             array('UserID' => $user->getUsername())
         );
-        $ID = $DB->pselectOne(
+        $ID      = $DB->pselectOne(
             "SELECT id FROM data_release WHERE "
             . "file_name=:file_name AND "
             . "version=:version AND "
@@ -47,7 +47,7 @@ if ($_POST['action'] == 'upload') {
              'upload_date' => $upload_date,
             )
         );
-        $success         = $DB->insert(
+        $success = $DB->insert(
          'data_release_permissions',
          array(
           'userid'          => $user_ID,
