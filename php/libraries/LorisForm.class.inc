@@ -111,8 +111,7 @@ class LorisForm
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addSelect($name, $label, $options, $attribs = array()
-    ) {
+    public function addSelect($name, $label, $options, $attribs = array()) {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
@@ -252,7 +251,7 @@ class LorisForm
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    function addCheckbox($name, $label, $options = array())
+    function addCheckbox($name, $label, $options)
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'advcheckbox';
