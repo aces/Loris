@@ -108,7 +108,6 @@ class LorisForm
      * @param array  $attribs An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
-     * @param bool   $getHTML Flag to return copy of $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
@@ -130,7 +129,6 @@ class LorisForm
      *
      * @param string $name    The element name.
      * @param string $label   The label to attach to this element.
-     * @param bool   $getHTML Flag to return copy of $el.
      *
      * @return none, but modifies $this->form as a side-effect
      */
@@ -149,7 +147,6 @@ class LorisForm
      * @param array  $options An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
-     * @param bool   $getHTML Flag to return copy of $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
@@ -168,7 +165,6 @@ class LorisForm
      * @param array  $options An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
-     * @param bool   $getHTML Flag to return copy of $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
@@ -216,13 +212,10 @@ class LorisForm
      * @param array  $attribs An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
-     * @param bool   $getHTML Flag to return copy of $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
-    public function addDate($name, $label, $options, $attribs = array(),
-        $getHTML = null
-    ) {
+    public function addDate($name, $label, $options, $attribs = array()) {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'date';
         $el['options'] = $options;
@@ -237,7 +230,6 @@ class LorisForm
      * @param array  $options An array of other attributes that should
      *                        get added. Currently only the "class"
      *                        attribute gets added.
-     * @param bool   $getHTML Flag to return copy of $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
@@ -256,7 +248,6 @@ class LorisForm
      * @param array  $options An array of other attributes that should
      *                        get added. Currently only the "value"
      *                        attribute gets added.
-     * @param bool   $getHTML Flag to return copy of $el.
      *
      * @return none, modifies $this->form as a side-effect.
      */
@@ -273,7 +264,6 @@ class LorisForm
      * @param string $name    The name of the header element, may be null
      * @param string $label   The description for the header
      * @param array  $options Other options for this header element
-     * @param bool   $getHTML Flag to return copy of $el.
      *
      * @return none
      */
