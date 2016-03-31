@@ -32,10 +32,11 @@
     var setupScrolling = function (wrapper, rightLink, leftLink) {
         var scrolling = false,
             step = 100,
+            scrollAmount = 0,
             scrollContent = function (direction, elem) {
                 var amount = (direction === "left" ? -3 : 3);
                 $(elem).animate({
-                    scrollLeft: $(elem).scrollLeft() + amount
+                    scrollLeft: $(elem).scrollLeft() + scrollAmount
                 }, 1, function () {
                     if (scrolling) {
                         scrollContent(direction, elem);
@@ -50,11 +51,13 @@
             $(wrapper).animate({
                 scrollLeft: $(wrapper).scrollLeft() + step
             });
-        }).bind("mouseover", function (event) {
+        }).bind("mousemove", function (event) {
             event.preventDefault();
-            scrolling = true;
-            scrollContent("right", wrapper);
-        }).bind("mouseout", function (event) {
+            scrollAmount = (event.clientX - $(this).offset().left) / 5;
+            if (!scrolling) {
+                scrolling = true;
+                scrollContent("right", wrapper);
+            }
             event.preventDefault();
             scrolling = false;
         });
