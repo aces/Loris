@@ -24,7 +24,7 @@ if ($_POST['action'] == 'addpermission') {
          'data_release_id' => $data_release_id,
         )
     );
-    
+
     $factory  = NDB_Factory::singleton();
     $settings = $factory->settings();
 
