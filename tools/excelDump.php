@@ -101,25 +101,11 @@ foreach ($instruments as $instrument) {
 } //end foreach instrument
 
 /*
-* Special figs_year3_relatives query
-*/
-//check if figs table exists
-$query = "SHOW TABLES LIKE 'figs_year3_relatives'";
-$DB->select($query,$result);
-if (count($result) > 0) {
-	$Test_name = "figs_year3_relatives";
-	$query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, fyr.* from candidate c, session s, flag f, figs_year3_relatives fyr where c.PSCID not like 'dcc%' and fyr.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = fyr.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
-	$DB->select($query, $instrument_table);
-	MapSubprojectID($instrument_table);
-	writeExcel($Test_name, $instrument_table, $dataDir);
-}
-
-/*
 * Candidate Information query
 */
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
-$query = "select distinct c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID from candidate c, session s where c.CandID = s.CandID and substring(c.PSCID, 1, 3) in ('PHI', 'STL', 'SEA', 'UNC') and c.Active='Y' order by c.PSCID";
+$query = "select distinct c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID from candidate c, session s where c.CandID = s.CandID and c.Active='Y' and s.CenterID <> 1 and s.CenterID in (select CenterID from psc where Study_site='Y') order by c.PSCID";
 $DB->select($query, $results);
 
 MapSubprojectID($results);
