@@ -1,17 +1,14 @@
 #!/usr/bin/python3
-
 #
-# python3 HumanMethylation450k_annotations_to_sql.py <annotation_file> | tee output.sql | mysql -u <user> -p <database>
-# timing : 7m36s
+# Usage :
+# python3 HumanMethylation450k_annotations_to_sql.py <annotation_file> | mysql -u <user> -p <database>
 #
 
 import csv
 import re
 import sys
 
-# TODO Chack why there is only 485512 on 485577 annotation inserted 
-# TODO Make this script work using the Illumina ftp available file
-# TODO Benchmark for index creation after commit
+# TODO Check why there is only 485512 on 485577 annotation inserted 
 
 def to_mysql_string(string):
     return "'" + string.replace("'","`") + "'" if 0 < len(string) else 'null'

@@ -229,7 +229,7 @@
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="col-sm-6 col-xs-12 col-md-5">
-                      <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='/genomic_browser/?submenu=cpg_browser&reset=true'" />
+                      <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/genomic_browser/?submenu=cpg_browser&reset=true'" />
                     </div>
                   </div>
                 </div>
@@ -263,7 +263,7 @@
           <th>No.</th>
           <!-- print out column headings - quick & dirty hack -->
           {section name=header loop=$headers}
-            <th><a href="/genomic_browser/?submenu=cpg_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+            <th><a href="{$baseurl}/genomic_browser/?submenu=cpg_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
           {/section}
         </tr>
       </thead>
@@ -281,7 +281,7 @@
             {/if}
             {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
               {assign var="PSCID" value=$items[item][piece].value}
-              <a href="/{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
+              <a href="{$baseurl}/{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
             {elseif $items[item][piece].value != "" AND $items[item][piece].name == "cpg_name"}
               <a title="UCSC Genome Browser" href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position={$items[item][piece].position}" target="_blank">{$items[item][piece].value}</a>
             {elseif $items[item][piece].value != "" AND $items[item][piece].name == "Gene"}
