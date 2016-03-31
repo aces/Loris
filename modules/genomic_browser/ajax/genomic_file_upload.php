@@ -157,7 +157,17 @@ function registerFile(&$fileToUpload)
               );
     try {
 
-        $result = $DB->replace('genomic_files', $values);
+        $DB->replace('genomic_files', $values);
+
+        //TODO :: This should select using date_insert and
+        //        validate if a record is found.
+        $last_id = $DB->pselectOne(
+            'SELECT MAX(GenomicFileID) AS last_id
+           FROM genomic_files',
+            array()
+        );
+        $fileToUpload->GenomicFileID = $last_id;
+
         $fileToUpload->date_inserted = $values['Date_inserted'];
 
     } catch (DatabaseException $e) {
@@ -343,6 +353,81 @@ function insertBetaValues(&$fileToUpload)
 }
 
 /**
+ * This create the relations between the file and the candidates
+ * that have values inserted.
+ *
+ * @param object $fileToUpload The object containing the $_FILES
+ *               and the $_POST values.
+ *
+ * @return void
+ */
+function createCandidateFileRelations(&$fileToUpload)
+{
+    $config           = NDB_Config::singleton();
+    $genomic_data_dir = $config->getSetting('GenomicDataPath');
+    $DB =& Database::singleton();
+
+    $f = fopen(
+        $genomic_data_dir . 'genomic_uploader/' . $fileToUpload->file_name,
+        "r"
+    );
+
+    if ($f) {
+
+        $stmt_prefix = 'INSERT INTO genomic_candidate_files_rel
+            (CandID, GenomicFileID) VALUES ';
+        $stmt        = '';
+
+        $line = fgets($f);
+        fclose($f);
+
+        $headers = explode(',', $line);
+        array_shift($headers);
+
+        $rows = array();
+        foreach ($headers as $pscid) {
+            $pscid = trim($pscid);
+            $row   = "(
+               (select CandID from candidate where PSCID = '$pscid'),
+               $fileToUpload->GenomicFileID
+            )";
+            array_push($rows, $row);
+        }
+        error_log(print_r($rows, true));
+        $stmt .= join(',', $rows);
+
+        try {
+
+            $prep   = $DB->prepare($stmt_prefix . $stmt);
+            $result = $DB->execute($prep, array(), array('nofetch' => true));
+
+        } catch (DatabaseException $e) {
+            die(
+                json_encode(
+                    array(
+                     'message'  => 'File registration failed',
+                     'progress' => 100,
+                     'error'    => true,
+                    )
+                )
+            );
+        }
+    } else {
+        die(
+            json_encode(
+                array(
+                 'message'  => 'Beta value file can`t be opened',
+                 'progress' => 100,
+                 'error'    => true,
+                )
+            )
+        );
+    }
+    reportProgress(50, "Creating file-candidate relations");
+
+}
+
+/**
  * This coordinate the Methylation beta-values insertions.
  *
  * @param object $fileToUpload The object containing the $_FILES
@@ -354,6 +439,7 @@ function insertMethylationData(&$fileToUpload)
 {
     createSampleCandidateRelations($fileToUpload);
     insertBetaValues($fileToUpload);
+    createCandidateFileRelations($fileToUpload);
 }
 
 /**
