@@ -215,7 +215,7 @@
                      View Files
                    </a>
                {else}
-                 <a href="{$baseurl}/mri/jiv/get_file.php?file={$items[item][piece].file}">
+                 <a href="{$baseurl}/mri/jiv/get_file.php?file={$genomicDataPath}{$items[item][piece].file}">
                    ({$items[item][piece].value}) Download {*$items[item][piece].file*}
                    <span class="glyphicon glyphicon-download-alt"></span>
                  </a>

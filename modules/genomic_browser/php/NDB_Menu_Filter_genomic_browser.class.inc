@@ -255,6 +255,9 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         $user           = User::singleton();
         $subprojectlist = Utility::getSubprojectList();
 
+        $config           = NDB_Config::singleton();
+        $this->tpl_data['genomicDataPath'] = $config->getSetting('GenomicDataPath');
+
         $this->tpl_data['resultcount']  = $this->TotalItems;
         $this->tpl_data['displayBrief'] = $this->_displayBrief;
 
