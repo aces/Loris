@@ -129,9 +129,10 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         //      $button2 = $this->webDriver->findElement(
         //        WebDriverBy::XPath("//*[@id='panel-body']/div[5]/div/div[6]/input")
         //         )->click();
-        $elementForShowResult = $this->safeFindElement(
+        $elementForShowResult     = $this->safeFindElement(
             WebDriverBy::cssSelector("body"),
-            $waitPeriod=15, $allowJavascriptClick=true
+            $waitPeriod           = 15,
+            $allowJavascriptClick = true
         )->getText();
         $this->assertContains("", $elementForShowResult);
     }
