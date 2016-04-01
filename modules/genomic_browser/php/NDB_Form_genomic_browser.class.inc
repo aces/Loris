@@ -64,26 +64,9 @@ class NDB_Form_Genomic_Browser extends NDB_Form
 
         $this->genomic_file_ID = $_REQUEST['GenomicFileID'];
 
-        // add check? if (!empty($this->genomic_file_ID) &&
-        // is_numeric($this->genomic_file_ID)) {
+        $this->_setFileData();
 
-            $this->candID   = $_REQUEST['candID'];
-            $this->category = $_REQUEST['Category'];
-
-        if (!empty($this->candID) ) {
-            // If modifying to save any annotation changes,
-            // see imaging browser View Session
-
-            // retrieve file data
-            if (!empty($this->category) ) {
-                    // if category was specified (raw/clean)
-                    $this->_setFileData($this->category);
-            } else {
-                $this->_setFileData();
-            }
-
-            $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
-        }
+        $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
     }
     /**
     * Sets values for Genomic data files
@@ -94,27 +77,7 @@ class NDB_Form_Genomic_Browser extends NDB_Form
     */
     function _setFileData($category = null)
     {
-        if (!empty($this->category) ) { // apply Category filter
-            $files = $this->DB->pselect(
-                "SELECT genomic_files.GenomicFileID
-                FROM genomic_files WHERE CandID=:cid AND Category=:catid ",
-                array(
-                 'cid'   => $this->candID,
-                 'catid' => $this->category,
-                )
-            );
-        } else {
-            $files = $this->DB->pselect(
-                "SELECT genomic_files.GenomicFileID
-                FROM genomic_files WHERE CandID=:cid ",
-                array('cid' => $this->candID)
-            );
-        }
-
-        // Not dependent on session ID for now
-        $this->tpl_data['files'] = array();
-        foreach ($files as $fileRow) {
-            $FileObj = new GenomicFile($fileRow['GenomicFileID']);
+            $FileObj = new GenomicFile($this->genomic_file_ID);
 
             // Get a few parameters
             $paramFilename         = basename($FileObj->getParameter('FileName'));
@@ -157,7 +120,6 @@ class NDB_Form_Genomic_Browser extends NDB_Form
                     );
 
             $this->tpl_data['files'][] = $file;
-        }
     }
     /**
     * Gets the date according to the type

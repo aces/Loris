@@ -3,9 +3,11 @@
     <div id="tabs"> 
       <ul class="nav nav-tabs">
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Profiles</strong></a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=genomic_file_uploader">Files</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=gwas_browser">GWAS</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cpg_browser">Methylation</a></li>
       </ul>
       <br>
     </div>
@@ -101,17 +103,29 @@
                     </div>
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-3 col-lg-3">
+                        <label class="col-sm-6 col-md-2">
+                          {$form.FileCount.label} 
+                        </label>
+                        <div class="col-sm-6 col-md-1">
+                          {$form.FileCount.html}
+                        </div>
+                        <label class="col-sm-6 col-md-2">
                           {$form.SNP_Hits.label} 
                         </label>
-                        <div class="col-sm-12 col-md-3 col-lg-2">
+                        <div class="col-sm-6 col-md-1">
                           {$form.SNP_Hits.html}
                         </div>
-                        <label class="col-sm-12 col-md-3">
+                        <label class="col-sm-6 col-md-2">
                           {$form.CNV_Hits.label} 
                         </label>
-                        <div class="col-sm-12 col-md-3 pull-left">
+                        <div class="col-sm-6 col-md-1">
                           {$form.CNV_Hits.html} 
+                        </div>
+                        <label class="col-sm-6 col-md-2">
+                          {$form.CPG_Hits.label} 
+                        </label>
+                        <div class="col-sm-6 col-md-1">
+                          {$form.CPG_Hits.html} 
                         </div>
                       </div>
                     </div> 
@@ -177,7 +191,7 @@
           <th>No.</th>
           <!-- print out column headings - quick & dirty hack -->
           {section name=header loop=$headers}
-            <th><a href="{$baseurl}/genomic_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+            <th><a href="{$baseurl}/genomic_browser/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
           {/section}
         </tr>
       </thead>
@@ -201,7 +215,7 @@
             {elseif $items[item][piece].value eq ""}
               -
               {* just print a dash if no value available*}
-            {elseif $items[item][piece].name eq "Total_Filesets" } 
+            {elseif $items[item][piece].name eq "Files" } 
                <a href="{$baseurl}/genomic_browser/viewGenomicFile/?candID={$CandID}">
                    <b>({$items[item][piece].value})</b> &nbsp;&nbsp;View
                    <span class="glyphicon glyphicon-eye-open"></span>
