@@ -1,9 +1,0 @@
-ALTER TABLE users add column  `Degree` varchar(255) default NULL;
-ALTER TABLE users add column  `Position_title` varchar(255) default NULL;
-ALTER TABLE users add column  `Institution` varchar(255) default NULL;
-ALTER TABLE users add column  `Department` varchar(255) default NULL;
-ALTER TABLE users add column  `City` varchar(255) default NULL;
-ALTER TABLE users add column  `State` varchar(255) default NULL;
-ALTER TABLE users add column  `Zip_code` varchar(255) default NULL;
-ALTER TABLE users add column  `Country` varchar(255) default NULL;
-ALTER TABLE users add column  `Fax` varchar(255) default NULL;
