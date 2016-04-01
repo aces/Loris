@@ -56,7 +56,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet(
             $this->url
             ."/conflict_resolver/?reset=true"
-        ); 
+        );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -115,24 +115,25 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Tests that conflict unresolver show data button 
+     * Tests that conflict unresolver show data button
      *
      * @return void
      */
-        function testConflictResolverShowData()
+    function testConflictResolverShowData()
     {
-         $this->safeGet($this->url . "/conflict_resolver/?submenu=resolved_conflicts");
-         
-//         $button1 = $this->safeFindElement(
-//             WebDriverBy::XPath("//*[@id='panel-body']/div[5]/div/div[1]/input"),5
-//         )->click();
-//         $button2 = $this->webDriver->findElement(
-//             WebDriverBy::XPath("//*[@id='panel-body']/div[5]/div/div[6]/input")
-//         )->click();	
-         $elementForShowResult = $this->safeFindElement(
-             WebDriverBy::cssSelector("body"),5
-         )->getText();
-          $this->assertNotContains("No unreso:lved conflicts found.", $elementForShowResult);
+        $this->safeGet($this->url."/conflict_resolver/?submenu=resolved_conflicts");
+
+        //         $button1 = $this->safeFindElement(
+          //   WebDriverBy::XPath("//*[@id='panel-body']/div[5]/div/div[1]/input"),5
+        //        )->click();
+        //      $button2 = $this->webDriver->findElement(
+        //        WebDriverBy::XPath("//*[@id='panel-body']/div[5]/div/div[6]/input")
+        //         )->click();
+        $elementForShowResult = $this->safeFindElement(
+            WebDriverBy::cssSelector("body"),
+            5
+        )->getText();
+        $this->assertNotContains("No", $elementForShowResult);
     }
 
 
