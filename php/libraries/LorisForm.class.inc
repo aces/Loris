@@ -109,7 +109,7 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addSelect($name, $label, $options, $attribs = array())
     {
@@ -130,7 +130,7 @@ class LorisForm
      * @param string $name  The element name.
      * @param string $label The label to attach to this element.
      *
-     * @return none, but modifies $this->form as a side-effect
+     * @return &array
      */
     public function addStatic($name, $label)
     {
@@ -148,7 +148,7 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addPassword($name, $label, $options=array())
     {
@@ -166,7 +166,7 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addText($name, $label, $options=array())
     {
@@ -185,7 +185,7 @@ class LorisForm
      *                        "rows", and "cols" attributes will get
      *                        added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addTextArea($elname, $label, $options=array())
     {
@@ -213,7 +213,7 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addDate($name, $label, $options, $attribs = array())
     {
@@ -232,7 +232,7 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     function addFile($name, $label, $options)
     {
@@ -250,7 +250,7 @@ class LorisForm
      *                        get added. Currently only the "value"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     function addCheckbox($name, $label, $options)
     {
@@ -266,7 +266,7 @@ class LorisForm
      * @param string $label   The description for the header
      * @param array  $options Other options for this header element
      *
-     * @return none
+     * @return &array
      */
     function addHeader($name, $label, $options = array())
     {
