@@ -34,6 +34,9 @@ class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
     {
         $user =& User::singleton();
 
+        $Factory = NDB_Factory::singleton();
+        $DB      = $Factory->Database();
+
         // set the class variables
         $this->columns      = array(
                                'file_name',
@@ -44,7 +47,8 @@ class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
                                . " data_release_permissions drp"
                                . " ON (dr.id=drp.data_release_id)"
                                . " JOIN users u ON (u.ID=drp.userid)"
-                               . " WHERE u.UserID='{$user->getUsername()}'";
+                               . " WHERE u.UserID="
+                               . $DB->quote($user->getUsername());
         $this->group_by     = '';
         $this->order_by     = 'upload_date';
         $this->headers      = array(
@@ -62,9 +66,6 @@ class NDB_Menu_Filter_Data_Release extends NDB_Menu_Filter
                                'version'     => 'version',
                                'upload_date' => 'upload_date',
                               );
-
-        $Factory = NDB_Factory::singleton();
-        $DB      = $Factory->Database();
 
         $user_ID   = $DB->pselectOne(
             "SELECT ID FROM users WHERE userid=:UserID",
