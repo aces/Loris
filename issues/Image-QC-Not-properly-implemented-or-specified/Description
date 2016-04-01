@@ -1,5 +1,0 @@
-The image QC doesn't properly implement the CaveatList, Selected,
-or Comments fields.
-
-In fact, the API document doesn't do a very good job of defining them
-either. 
