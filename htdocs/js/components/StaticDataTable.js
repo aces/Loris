@@ -8,6 +8,15 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
         // func(ColumnName, CellData, EntireRowData)
         getFormattedCell: React.PropTypes.func
     },
+    componentDidMount: function() {
+        if (jQuery.fn.DynamicTable) {
+            if(this.props.freezeColumn) {
+                $("#dynamictable").DynamicTable({"freezeColumn" : this.props.freezeColumn});
+            } else {
+                $("#dynamictable").DynamicTable();
+            }
+        }
+    },
     componentDidUpdate: function() {
         if (jQuery.fn.DynamicTable) {
             if(this.props.freezeColumn) {
@@ -165,7 +174,17 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
             )
             );
         return (
-            React.createElement("div", {className: "panel panel-primary"}, 
+            React.createElement("div", {className: "panel panel-default"}, 
+                React.createElement("div", {className: "table-header panel-heading"}, 
+                    React.createElement("div", {className: "row"}, 
+                        React.createElement("div", {className: "col-xs-12"}, 
+                            rows.length, " rows displayed of ", this.props.Data.length, ". (Maximum rows per page: ", RowsPerPageDropdown, ")",  
+                            React.createElement("div", {className: "pull-right"}, 
+                                React.createElement(PaginationLinks, {Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber})
+                            )
+                        )
+                    )
+                ), 
                     React.createElement("table", {className: "table table-hover table-primary table-bordered", id: "dynamictable"}, 
                         React.createElement("thead", null, 
                             React.createElement("tr", {className: "info"}, headers)
@@ -177,7 +196,6 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
                 React.createElement("div", {className: "panel-footer table-footer"}, 
                     React.createElement("div", {className: "row"}, 
                         React.createElement("div", {className: "col-xs-12"}, 
-                            rows.length, " rows displayed of ", this.props.Data.length, ". (Maximum rows per page: ", RowsPerPageDropdown, ")",  
                             React.createElement("div", {className: "pull-right"}, 
                                 React.createElement(PaginationLinks, {Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber})
                             )

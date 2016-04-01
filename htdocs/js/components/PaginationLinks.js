@@ -1,6 +1,6 @@
 //var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
-PaginationLinks = React.createClass({displayName: 'PaginationLinks',
+PaginationLinks = React.createClass({displayName: "PaginationLinks",
     mixins: [React.addons.PureRenderMixin],
     propTypes: {
         onChangePage: React.PropTypes.func,
@@ -68,7 +68,7 @@ PaginationLinks = React.createClass({displayName: 'PaginationLinks',
         pageLinks.push(React.createElement("li", {onClick: this.changePage(lastPage)}, React.createElement("a", {href: "#"}, "»")));
         }
         return (
-            React.createElement("ul", {className: "pagination"}, 
+            React.createElement("ul", {className: "pagination pagination-table"}, 
                 pageLinks
             )
         );

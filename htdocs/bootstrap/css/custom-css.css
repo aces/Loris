@@ -320,17 +320,23 @@ div.navbar div.container div.navbar-brand {
     .btn-breadcrumb > * div:last-child {
         width: 100%;
     }
+}
 
 /*
  *  CSS for static table
  */
+.panel>.table-header {
+    background-color: #DCDCDC;
+}
 .table-footer {
-    background-color: #1c70b6;
-    color: white;
+    background-color: #DCDCDC;
 }
 #dynamictable {
     margin-bottom: 0px;
 }
 .rowsPerPage {
     color: black;
+}
+.pagination-table {
+  margin: 0px;
 }
