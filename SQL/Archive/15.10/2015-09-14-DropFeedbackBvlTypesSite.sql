@@ -1,1 +1,0 @@
-DROP TABLE IF EXISTS `feedback_bvl_types_site`;
