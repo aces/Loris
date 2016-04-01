@@ -65,7 +65,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         // set the class variables
         $this->columns = array(
                           'psc.Name AS PSC',
-                          'candidate.CandID AS DCCID',
+                          'LPAD(candidate.CandID, 6, "0") AS DCCID',
                           'candidate.PSCID',
                           'candidate.Gender',
                           'cohort.SubprojectID as Subproject',
@@ -77,6 +77,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                           'count(DISTINCT gbf2.FileName) as Cleaned_Filesets',
                           'S.SNPCount as SNPs',
                           'C.CNVCount as CNVs',
+                          'M.CPGCount as CPGs',
                          );
 
         $this->_briefFields = array(
@@ -89,6 +90,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                                'Cleaned_Filesets',
                                'SNPs',
                                'CNVs',
+                               'CPGs',
                               );
 
         $this->query = " FROM candidate
@@ -107,6 +109,12 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             LEFT JOIN (select CNV.CandID, count(CNV.CandID) as CNVCount
                 from CNV GROUP BY CNV.CandID) AS C
                 ON (C.CandID=candidate.CandID)
+            LEFT JOIN  (select gscr.CandID, COUNT(cpg_name) as CPGCount 
+                from genomic_cpg gc 
+                JOIN genomic_sample_candidate_rel gscr 
+                    USING (sample_label) 
+                group by gscr.CandID) as M
+                ON (M.CandID = candidate.CandID)
             WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
@@ -132,6 +140,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                                'cleanedfiles.cleanedFileCount',
                                'C.CNVCount',
                                'S.SNPCount',
+                               'M.CPGCount',
                               );
 
         $ftf = array(
@@ -146,6 +155,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 'Cleaned_Filesets'   => 'cleanedfiles.cleanedFileCount',
                 'SNP_Hits'           => 'S.SNPCount',
                 'CNV_Hits'           => 'C.CNVCount',
+                'CPG'                => 'M.CPGCount',
                );
 
         $this->formToFilter = $ftf;
@@ -220,6 +230,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         );
         $this->addSelect('SNP_Hits', 'SNPs found:', $any_options);
         $this->addSelect('CNV_Hits', 'CNVs found:', $any_options);
+        $this->addSelect('CPG', 'CPGs found:', $any_options);
 
         $show_results_options = array(
                                  'brief' => 'Summary fields',
@@ -360,7 +371,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
 
                 // Print '' if no data
                 if ($key=='Raw_Filesets' || $key=='Cleaned_Filesets'
-                    || $key == 'SNPs' || $key == 'CNVs'
+                    || $key == 'SNPs' || $key == 'CNVs' || $key == 'CPGs'
                 ) {
                     if (is_null($val) || $val === '0') {
                         $this->tpl_data['items'][$x][$i]['value'] = '';
@@ -420,13 +431,17 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                  $query .= " AND $field = :v_$prepared_key";
             } elseif ($field == "rawfiles.rawFileCount"
                 || $field == "cleanedfiles.cleanedFileCount"
-                || $field == "S.SNPCount" || $field == "C.CNVCount"
+                || $field == "S.SNPCount"
+                || $field == "C.CNVCount"
+                || $field == "M.CPGCount"
             ) {
                 if ($val == "1") {  // if ANY found i.e. >= 1
                     $query .= " AND $field >= :v_$prepared_key";
                 } elseif ($val == "0") { // if NONE found i.e. = 0
                     $query .= " AND $field = :v_$prepared_key";
                 }
+            } elseif ($field == "candidate.CandID") {
+                $query .= " AND $field = " . ltrim($val, '0');
             } else {
                  $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
             }
