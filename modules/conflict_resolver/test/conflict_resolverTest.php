@@ -131,7 +131,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         //         )->click();
         $elementForShowResult = $this->safeFindElement(
             WebDriverBy::cssSelector("body"),
-            5
+            $waitPeriod=15, $allowJavascriptClick=true
         )->getText();
         $this->assertContains("", $elementForShowResult);
     }
