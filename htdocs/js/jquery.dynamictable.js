@@ -58,6 +58,7 @@
                 scrolling = true;
                 scrollContent("right", wrapper);
             }
+        }).bind("mouseout", function (event) {
             event.preventDefault();
             scrolling = false;
         });
@@ -69,10 +70,13 @@
             $(wrapper).animate({
                 scrollLeft: $(wrapper).scrollLeft() - step
             });
-        }).bind("mouseover", function (event) {
+        }).bind("mousemove", function (event) {
             event.preventDefault();
-            scrolling = true;
-            scrollContent("left", wrapper);
+            scrollAmount = (-1 * ($(this).offset().left + $(this).outerWidth()) + event.clientX) / 5;
+            if (!scrolling) {
+                scrolling = true;
+                scrollContent("left", wrapper);
+            }
         }).bind("mouseout", function (event) {
             event.preventDefault();
             scrolling = false;
