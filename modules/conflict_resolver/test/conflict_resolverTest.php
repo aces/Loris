@@ -121,7 +121,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
         function testConflictResolverShowData()
     {
-         $this->safeGet($this->url . "/conflict_resolver/");
+         $this->safeGet($this->url . "/conflict_resolver/?submenu=resolved_conflicts");
          
 //         $button1 = $this->safeFindElement(
 //             WebDriverBy::XPath("//*[@id='panel-body']/div[5]/div/div[1]/input"),5
