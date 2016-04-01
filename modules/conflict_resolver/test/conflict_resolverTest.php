@@ -134,7 +134,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             $waitPeriod           = 15,
             $allowJavascriptClick = true
         )->getText();
-        $this->assertContains("", $elementForShowResult);
+        $this->assertContains("Conflict Resolver", $elementForShowResult);
     }
 
 
