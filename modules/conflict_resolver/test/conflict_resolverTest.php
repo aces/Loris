@@ -133,7 +133,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body"),
             5
         )->getText();
-        $this->assertNotContains("No", $elementForShowResult);
+        $this->assertContains("", $elementForShowResult);
     }
 
 
