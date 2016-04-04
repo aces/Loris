@@ -118,6 +118,7 @@ class NDB_Form_Genomic_Browser extends NDB_Form
                      'Caveat'           => $FileObj->getParameter('Caveat'),
                      'Notes'            => $FileObj->getParameter('Notes'),
                      'AnalysisProtocol' => $paramAnalysisProtocol,
+                     'AnalysisModality' => $FileObj->getParameter('AnalysisModality'),
                      'AnalysisDate'     => $this->_getDate(
                          $FileObj,
                          'Date_taken',

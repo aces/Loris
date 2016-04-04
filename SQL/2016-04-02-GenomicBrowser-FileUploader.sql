@@ -1,10 +1,10 @@
-CREATE TABLE `genomic_file_type_enum` (
-  `genomic_file_type` varchar(100),
-  PRIMARY KEY (`genomic_file_type`)
+CREATE TABLE `genomic_analysis_modality_enum` (
+  `analysis_modality` varchar(100),
+  PRIMARY KEY (`analysis_modality`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 COMMENT '';
 
-INSERT IGNORE INTO `genomic_file_type_enum` (genomic_file_type) VALUES
+INSERT IGNORE INTO `genomic_analysis_modality_enum` (analysis_modality) VALUES
 ('Methylation beta-values'),
 ('Other');
 
@@ -22,3 +22,8 @@ INSERT INTO genomic_candidate_files_rel (CandID, GenomicFileID) select CandID, G
 
 ALTER TABLE genomic_files DROP FOREIGN KEY `FK_genomic_files_1`;
 ALTER TABLE genomic_files DROP COLUMN `CandID`;
+ALTER TABLE genomic_files DROP COLUMN `VisitLabel`;
+
+ALTER TABLE genomic_files 
+    ADD COLUMN AnalysisModality varchar(100),
+    ADD FOREIGN KEY (AnalysisModality) REFERENCES genomic_analysis_modality_enum (analysis_modality);
