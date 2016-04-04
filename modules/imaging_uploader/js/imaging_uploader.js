@@ -241,8 +241,7 @@ function UploadProgress() {
         }
         
         // Pipeline finshed running: failed or succeeded ?
-        var statusText;
-        if() = 'Upload is finished and ' + (this.isInsertionComplete() ? 'was successful' : 'failed');
+        var statusText = 'Upload is finished and ' + (this.isInsertionComplete() ? 'was successful' : 'failed');
                 
         return progressHeader + notificationText + statusText;
     };
