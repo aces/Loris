@@ -397,7 +397,6 @@ function createCandidateFileRelations(&$fileToUpload)
             )";
             array_push($rows, $row);
         }
-        error_log(print_r($rows, true));
         $stmt .= join(',', $rows);
 
         try {
@@ -461,7 +460,6 @@ function reportProgress($progress, $message)
                  'message'  => $message,
                  'progress' => $progress,
                 );
-    error_log(print_r(JSON_encode($response), true));
     echo json_encode($response);
     sleep(1);
 }
