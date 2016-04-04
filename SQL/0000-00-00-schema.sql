@@ -1968,7 +1968,7 @@ CREATE TABLE `genomic_files` (
   `Batch` varchar(255) DEFAULT NULL,
   `Source` varchar(255) DEFAULT NULL,
   `Date_taken` date DEFAULT NULL,
-  `Category` enum('raw','cleaned','GWAS') DEFAULT NULL,
+  `Category` enum('raw','cleaned') DEFAULT NULL,
   `Pipeline` varchar(255) DEFAULT NULL,
   `Algorithm` varchar(255) DEFAULT NULL,
   `Normalization` varchar(255) DEFAULT NULL,

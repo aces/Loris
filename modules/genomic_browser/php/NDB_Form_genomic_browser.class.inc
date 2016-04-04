@@ -62,9 +62,9 @@ class NDB_Form_Genomic_Browser extends NDB_Form
         $this->DB = Database::singleton();
 
         $this->genomic_file_id = $_REQUEST['GenomicFileID'];
-        $this->candID   = $_REQUEST['candID'];
+        $this->candID          = $_REQUEST['candID'];
 
-        if ( !empty($this->candID) || !empty($this->genomic_file_id) ) {
+        if (!empty($this->candID) || !empty($this->genomic_file_id) ) {
             $this->_setFileData();
             $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
         }
@@ -87,8 +87,8 @@ class NDB_Form_Genomic_Browser extends NDB_Form
             );
         } else {
             $files = array(
-                array('GenomicFileID' => $this->genomic_file_id)
-            );
+                      array('GenomicFileID' => $this->genomic_file_id),
+                     );
         }
         $this->tpl_data['files'] = array();
         foreach ($files as $fileRow) {
@@ -118,7 +118,9 @@ class NDB_Form_Genomic_Browser extends NDB_Form
                      'Caveat'           => $FileObj->getParameter('Caveat'),
                      'Notes'            => $FileObj->getParameter('Notes'),
                      'AnalysisProtocol' => $paramAnalysisProtocol,
-                     'AnalysisModality' => $FileObj->getParameter('AnalysisModality'),
+                     'AnalysisModality' => $FileObj->getParameter(
+                         'AnalysisModality'
+                     ),
                      'AnalysisDate'     => $this->_getDate(
                          $FileObj,
                          'Date_taken',

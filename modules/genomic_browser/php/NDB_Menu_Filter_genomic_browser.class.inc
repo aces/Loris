@@ -238,7 +238,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         $user           = User::singleton();
         $subprojectlist = Utility::getSubprojectList();
 
-        $config           = NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $this->tpl_data['genomicDataPath'] = $config->getSetting('GenomicDataPath');
 
         $this->tpl_data['resultcount']  = $this->TotalItems;
@@ -292,7 +292,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
 
             //print out data rows
-            $i           = 1;
+            $i = 1;
             foreach ($item as $key => $val) {
                 if ($this->_displayBrief && !in_array($key, $this->_briefFields)) {
                     continue;  // loop without incrementing $i
@@ -308,7 +308,8 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 $this->tpl_data['items'][$x][$i]['value'] = $val;
 
                 // Print '' if no data
-                if ($key=='Files' || $key == 'SNPs' || $key == 'CNVs' || $key == 'CPGs'
+                if ($key=='Files' || $key == 'SNPs'
+                    || $key == 'CNVs' || $key == 'CPGs'
                 ) {
                     if (is_null($val) || $val === '0') {
                         $this->tpl_data['items'][$x][$i]['value'] = '';
