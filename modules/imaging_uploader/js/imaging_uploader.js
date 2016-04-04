@@ -218,7 +218,7 @@ function UploadProgress() {
             pscid      = $.trim($(columns).eq(4).text()),
             visitLabel = $.trim($(columns).eq(5).text())
 
-        var progressType = $('select[name=LogType] option:selected').text();
+        var progressType = $('select[name=LogType] option:selected').text() == 'Summary' ? 'Summary' : 'Details';
 
         // All the messages in the notification_spool table
         var notificationText = '';        
@@ -229,17 +229,23 @@ function UploadProgress() {
         }
                 
         // If pipeline is still running
-        if(this.isInserting()) {
-            return progressType + ' of upload ' + uploadId + ' for ' + pscid + ' at ' + visitLabel + "\n"
+        if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_RUNNING) {
+            return progressType + ' of upload ' + uploadId + ' for ' + pscid + ' at ' + visitLabel + ":\n\n"
             + notificationText
             + this._dots
             + ['|', '/', '-', '\\', '|', '/', '-', '\\'][this._animatedCharIndex % 8] + "\n";
         }
         
-        // Pipeline finshed running: failed or succeeded ?
-        var statusText = 'Upload is finished and ' + (this.isInsertionComplete() ? 'was successful' : 'failed');
+        var statusText;
+        if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_FINISHED) {
+            statusText = 'Upload is finished and ' + (this.isInsertionComplete() ? 'was successful' : 'failed');
+        } else if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_NOT_STARTED) {
+            statusText = 'MRI pipeline not yet executed for this upload.';
+        } else if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_UNKNOWN) {
+            statusText = 'Communication with the server failed: progress information is not available at this time.';
+        }
                 
-        return progressType + ' of upload ' + uploadId + ' for ' + pscid + ' at ' + visitLabel + "\n"
+        return progressType + ' of upload ' + uploadId + ' for ' + pscid + ' at ' + visitLabel + ":\n\n"
             + notificationText
             + statusText;
     };
@@ -261,8 +267,24 @@ function UploadProgress() {
     /**
      * Determines whether the pipeline is currently running or not.
      */
-    this.isInserting = function() {
-        return this._progressFromServer != null && this._progressFromServer.inserting == 1;
+    this.getPipelineStatus = function() {
+        if(this._progressFromServer == null) {
+            return UploadProgress.PIPELINE_STATUS_UNKNOWN;
+        } 
+        
+        if(this._progressFromServer.inserting == null) {
+            return UploadProgress.PIPELINE_STATUS_NOT_STARTED;
+        }
+         
+        if(this._progressFromServer.inserting == 0) {
+            return UploadProgress.PIPELINE_STATUS_FINISHED;
+        }
+        
+        if(this._progressFromServer.inserting == 1) {
+            return UploadProgress.PIPELINE_STATUS_RUNNING;
+        }  
+        
+        throw "Unknown value for Inserting field: " + this._progressFromServer.inserting;
     }
     
     /**
@@ -306,6 +328,10 @@ function UploadProgress() {
     };
     
 }
+UploadProgress.PIPELINE_STATUS_FINISHED    = 0;
+UploadProgress.PIPELINE_STATUS_RUNNING     = 1;
+UploadProgress.PIPELINE_STATUS_NOT_STARTED = 2;
+UploadProgress.PIPELINE_STATUS_UNKNOWN     = 3; 
 
 var uploadProgress;
 var ignoreClickOnSameRow = true;
@@ -346,7 +372,7 @@ function monitorProgress() {
             uploadProgress.setProgressFromServer(data);
             // If the pipeline is still running, start polling
             // If the pipeline is not running, end the polling (if any was started)
-            setServerPolling(uploadProgress.isInserting());
+            setServerPolling(uploadProgress.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_RUNNING);
             $('textarea[name=UploadLogs]').val(uploadProgress.getProgressText());
         }    
     );  // post call
