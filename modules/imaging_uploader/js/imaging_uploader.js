@@ -215,6 +215,7 @@ function UploadProgress() {
     this.getProgressText = function() {
         var columns    = $(this._uploadRow).find('td'),
             uploadId   = $.trim($(columns).eq(1).text()),
+            candid     = $.trim($(columns).eq(3).text()),
             pscid      = $.trim($(columns).eq(4).text()),
             visitLabel = $.trim($(columns).eq(5).text())
 
@@ -228,20 +229,22 @@ function UploadProgress() {
             }
         }
                 
+        // Display pSCID, CandID and VisitLabel for the selected upload
+        var progressHeader = progressType + ' of upload ' + uploadId + ' for ' + pscid + ' (CandID ' + candid + ') at ' + visitLabel + "\n";
+        
         // If pipeline is still running
         if(this.isInserting()) {
-            return progressType + ' of upload ' + uploadId + ' for ' + pscid + ' at ' + visitLabel + "\n"
+            return progressHeader
             + notificationText
             + this._dots
             + ['|', '/', '-', '\\', '|', '/', '-', '\\'][this._animatedCharIndex % 8] + "\n";
         }
         
         // Pipeline finshed running: failed or succeeded ?
-        var statusText = 'Upload is finished and ' + (this.isInsertionComplete() ? 'was successful' : 'failed');
+        var statusText;
+        if() = 'Upload is finished and ' + (this.isInsertionComplete() ? 'was successful' : 'failed');
                 
-        return progressType + ' of upload ' + uploadId + ' for ' + pscid + ' at ' + visitLabel + "\n"
-            + notificationText
-            + statusText;
+        return progressHeader + notificationText + statusText;
     };
 
     /**
