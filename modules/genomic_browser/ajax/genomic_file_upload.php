@@ -69,7 +69,6 @@ default:
 }
 
 //TODO :: Creating file-candidate relations
-reportProgress(50, "Creating file-candidate relations");
 reportProgress(100, "Complete");
 exit;
 
@@ -146,9 +145,11 @@ function moveFileToFS(&$fileToUpload)
 function registerFile(&$fileToUpload)
 {
     $DB =& Database::singleton();
+    $config           = NDB_Config::singleton();
+    $genomic_data_dir = $config->getSetting('GenomicDataPath');
 
     $values = array(
-               'FileName'         => $fileToUpload->file_name,
+               'FileName'         => $genomic_data_dir . 'genomic_uploader/' . $fileToUpload->file_name,
                'Description'      => $fileToUpload->description,
                'FileType'         => $fileToUpload->genomic_file_type,
                'FileSize'         => $fileToUpload->size,
