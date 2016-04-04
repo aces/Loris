@@ -164,7 +164,7 @@ function UploadProgress() {
     /**
      * Row (i.e. <tr> element) in the MRI upload table associated to this progress element.
      */ 
-    this. _uploadRow         = null;
+    this._uploadRow         = null;
     /**
      * Series of dots used in the text used to describe the progress object
      * to indicate that the MRI pipeline is currently running.
