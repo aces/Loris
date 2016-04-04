@@ -7,6 +7,7 @@
  * @category Test
  * @package  Loris
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Justin Kat <justin.kat@mail.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -18,14 +19,16 @@ require_once __DIR__
  *
  * @category Test
  * @package  Loris
+ * @author   Justin Kat <justin.kat@mail.mcgill.ca>
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
 {
-        /**
+    /**
      * Insert testing data into the database
+     * author: Wang Shen
      *
      * @return none
      */
@@ -35,26 +38,27 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "conflicts_resolved",
             array(
-             'ResolvedID'         => '999999',
-             'UserID'       => 'demo',
-             'ResolutionTimestamp'           => '2015-11-03 16:21:49',
-             'User1'          => 'Null',
-             'User2'        => 'Null',
-             'TableName'        => 'Test',
-             'ExtraKey1'        => 'NULL',
-             'ExtraKey2'        => 'NULL',
-             'FieldName'        => 'TestTestTest',
-             'CommentId1'        => '589569DCC000012291366553230',
-             'CommentId2'        => 'DDE_589569DCC000012291366653254',
-             'OldValue1'        => 'Mother',
-             'OldValue2'        => 'Father',
-             'NewValue'        => 'NULL',
-             'ConflictID'        => 'NULL',
+             'ResolvedID'          => '999999',
+             'UserID'              => 'demo',
+             'ResolutionTimestamp' => '2015-11-03 16:21:49',
+             'User1'               => 'Null',
+             'User2'               => 'Null',
+             'TableName'           => 'Test',
+             'ExtraKey1'           => 'NULL',
+             'ExtraKey2'           => 'NULL',
+             'FieldName'           => 'TestTestTest',
+             'CommentId1'          => '589569DCC000012291366553230',
+             'CommentId2'          => 'DDE_589569DCC000012291366653254',
+             'OldValue1'           => 'Mother',
+             'OldValue2'           => 'Father',
+             'NewValue'            => 'NULL',
+             'ConflictID'          => 'NULL',
             )
         );
     }
     /**
      * Delete testing data from database
+     * author: Wang Shen
      *
      * @return none
      */
@@ -63,7 +67,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
         $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
     }
-
     /**
      * Tests that, when loading the conflict_resolver module, some
      * text appears in the body.
@@ -72,11 +75,11 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testConflictResolverDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/conflict_resolver/");
+        $this->safeGet($this->url . "/conflict_resolver/");
         $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
+            WebDriverBy::id("onLoad")
         )->getText();
-        $this->assertContains("Conflict Resolver", $bodyText);
+        $this->assertContains("Unresolved Conflicts", $bodyText);
     }
 
     /**
@@ -87,14 +90,71 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testConflictResolverResolvedCoflictsDoespageLoad()
     {
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url
             . "/conflict_resolver/?submenu=resolved_conflicts"
+        );
+        $this->safeGet(
+            $this->url
+            ."/conflict_resolver/?reset=true"
         );
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("Resolved Conflicts", $bodyText);
     }
+     
+    /**
+     * Tests that conflict resolver loads with the permission
+     *
+     * @return void
+     */
+    function testConflictResolverPermission()
+    {
+         $this->setupPermissions(array("conflict_resolver"));
+         $this->safeGet($this->url . "/conflict_resolver/");
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::id("onLoad")
+         )->getText();
+         $this->assertContains("Unresolved Conflicts", $bodyText);
+         $this->resetPermissions();
+    }
+    
+    /**
+     * Tests that resolved conflicts loads with the permission
+     *
+     * @return void
+     */
+    function testConflictResolverResolvedConflictsPermission()
+    {
+         $this->setupPermissions(array("conflict_resolver"));
+         $this->safeGet(
+             $this->url
+             . "/conflict_resolver/?submenu=resolved_conflicts"
+         );
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertContains("Resolved Conflicts", $bodyText);
+         $this->resetPermissions();
+    }
+
+    /**
+     * Tests that conflict resolver does not load with the permission
+     *
+     * @return void
+     */
+    function testConflictResolverWithoutPermission()
+    {
+         $this->setupPermissions(array());
+         $this->safeGet($this->url . "/conflict_resolver/");
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertContains("You do not have access to this page.", $bodyText);
+         $this->resetPermissions();
+    }
+  
+
 }
 ?>
