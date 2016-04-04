@@ -308,7 +308,7 @@ function UploadProgress() {
 }
 
 var uploadProgress;
-var ignoreClickOnSameRow = true;
+var clickOnSameRowDeselects = true;
 
 /**
  * Invoked when the user changes the log type form Summary to Detailed and
@@ -321,11 +321,11 @@ function onUploadTypeChange() {
     // This will enlarge/shrink the logs table
     $('textarea[name=UploadLogs]').attr("class", logTableClass);
                 
-    // If a is currently selected, fetch the appropriate logs
+    // If an upload is currently selected, fetch the appropriate logs
     if(uploadProgress.getUploadRow() != null) {
-        ignoreClickOnSameRow = false;
+        clickOnSameRowDeselects = false;
         $(uploadProgress.getUploadRow()).trigger('click');
-        ignoreClickOnSameRow = true;
+        clickOnSameRowDeselects = true;
     }
 }
 
@@ -430,7 +430,7 @@ $(document).ready(
         // Define behavior when MRI upload row is clicked
         $('#mri_upload_table tbody tr').click(
             function(event) {
-                // Stop any monitor if any was taking place
+                // Stop server polling if any was taking place
                 if(uploadProgress.getUploadRow() != null) {
                     $(uploadProgress.getUploadRow()).css('background-color', 'white'); 
                     setServerPolling(false);  
@@ -438,10 +438,12 @@ $(document).ready(
                 
                 // If user clicked on the same row, it is interpreted as a de-selection:
                 // deselect row and set log text to 'nothing selected'
-                if(event.delegateTarget == uploadProgress.getUploadRow() && ignoreClickOnSameRow) {
+                if(event.delegateTarget == uploadProgress.getUploadRow() && clickOnSameRowDeselects) {
                     $('textarea[name=UploadLogs]').val(
                         '<select a row in the table below to view the upload logs>'
                     );
+                    uploadProgress.setUploadRow(null);
+                    uploadProgress.setProgressFromServer(null);
                     return;
                 }
                 
