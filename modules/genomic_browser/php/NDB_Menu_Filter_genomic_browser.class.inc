@@ -71,10 +71,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
                           'candidate.ExternalID as externalID',
-                          'gbf1.`FileName` as Top_Raw_File',
-                          'count(DISTINCT gbf1.`FileName`) as Raw_Filesets',
-                          'gbf2.FileName as Top_Cleaned_File',
-                          'count(DISTINCT gbf2.FileName) as Cleaned_Filesets',
+                          'F.FileCount as Files',
                           'S.SNPCount as SNPs',
                           'C.CNVCount as CNVs',
                           'M.CPGCount as CPGs',
@@ -83,11 +80,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         $this->_briefFields = array(
                                'DCCID',
                                'PSCID',
-                               'Total_Filesets',
-                               'Top_Raw_File',
-                               'Raw_Filesets',
-                               'Top_Cleaned_File',
-                               'Cleaned_Filesets',
+                               'Files',
                                'SNPs',
                                'CNVs',
                                'CPGs',
@@ -98,11 +91,9 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 from session s GROUP BY s.CandID) AS cohort
                 ON (cohort.CandID=candidate.CandID)
             LEFT JOIN psc ON (psc.CenterID= candidate.CenterID)
-
-            LEFT JOIN  `genomic_files` AS gbf1 ON candidate.CandID = gbf1.CandID
-                AND gbf1.Category='raw'
-            LEFT JOIN  `genomic_files` AS gbf2 ON candidate.CandID = gbf2.CandID
-                AND gbf2.Category='cleaned'
+            LEFT JOIN (SELECT gcfr.CandID, count(gcfr.GenomicFileID) as FileCount 
+                from genomic_candidate_files_rel gcfr group by gcfr.CandID) F 
+                ON candidate.CandID = F.CandID
             LEFT JOIN (select scr.CandID, count(scr.CandID) as SNPCount
                 from SNP_candidate_rel as scr GROUP BY scr.CandID) as S
                  ON (candidate.CandID = S.CandID)
@@ -136,8 +127,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                                'candidate.DoB',
                                'candidate.ExternalID',
                                'show_brief_results',
-                               'rawfiles.rawFileCount',
-                               'cleanedfiles.cleanedFileCount',
+                               'F.FileCount',
                                'C.CNVCount',
                                'S.SNPCount',
                                'M.CPGCount',
@@ -151,11 +141,10 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 'SubprojectID'       => 'cohort.SubprojectID',
                 'External_ID'        => 'candidate.ExternalID',
                 'Show_Brief_Results' => 'show_brief_results',
-                'Raw_Filesets'       => 'rawfiles.rawFileCount',
-                'Cleaned_Filesets'   => 'cleanedfiles.cleanedFileCount',
-                'SNP_Hits'           => 'S.SNPCount',
-                'CNV_Hits'           => 'C.CNVCount',
-                'CPG'                => 'M.CPGCount',
+                'Files'              => 'F.FileCount',
+                'SNPs'               => 'S.SNPCount',
+                'CNVs'               => 'C.CNVCount',
+                'CPGs'               => 'M.CPGCount',
                );
 
         $this->formToFilter = $ftf;
@@ -221,16 +210,10 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                         '1' => 'Any',
                         '0' => 'None',
                        );
-        $this->addSelect('Raw_Filesets', 'Raw Filesets:', $any_options);
-        $this->addSelect('Cleaned_Filesets', 'Cleaned Filesets:', $any_options);
-        $this->addSelect(
-            'GWAS_Results',
-            'GWAS top-100 p-value results:',
-            $any_options
-        );
-        $this->addSelect('SNP_Hits', 'SNPs found:', $any_options);
-        $this->addSelect('CNV_Hits', 'CNVs found:', $any_options);
-        $this->addSelect('CPG', 'CPGs found:', $any_options);
+        $this->addSelect('Files', 'Files:', $any_options);
+        $this->addSelect('SNPs', 'SNPs found:', $any_options);
+        $this->addSelect('CNVs', 'CNVs found:', $any_options);
+        $this->addSelect('CPGs', 'CPGs found:', $any_options);
 
         $show_results_options = array(
                                  'brief' => 'Summary fields',
@@ -265,9 +248,6 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         if ($this->_displayBrief) {
             $this->headers = array(); // re-initialize i.e. wipe
             foreach ($this->_briefFields as $col) {
-                if ($col == "Top_Raw_File" || $col == "Top_Cleaned_File") {
-                    continue;
-                }
                 $this->headers[] = $col;
             }
             // Note this includes an extra column: Total Filesets
@@ -313,8 +293,6 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
 
             //print out data rows
             $i           = 1;
-            $rawFile     = ""; // re-initialize for each row
-            $cleanedFile = "";
             foreach ($item as $key => $val) {
                 if ($this->_displayBrief && !in_array($key, $this->_briefFields)) {
                     continue;  // loop without incrementing $i
@@ -326,55 +304,11 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                         = str_pad($item['DCCID'], 6, '0', STR_PAD_LEFT);
                 }
 
-                // don't store to tpl_data, just store col value
-                // in $rawFile/$cleanedFile variable, and loop
-                if ($key=='Top_Raw_File') {
-                    // value may be blank ?
-                    $rawFile = $val;
-                    // increment to leave Total_Filesets column blank in tpl_data
-                    $i++;
-                    continue;
-                } elseif ($key=='Top_Cleaned_File') {
-                    $cleanedFile = $val;
-                    continue;
-                }
-
                 $this->tpl_data['items'][$x][$i]['name']  = $key;
                 $this->tpl_data['items'][$x][$i]['value'] = $val;
 
-                if ($key=='Raw_Filesets') {
-                    $this->tpl_data['items'][$x][$i]['file'] = $rawFile;
-                } elseif ($key=='Cleaned_Filesets') {
-                    $this->tpl_data['items'][$x][$i]['file'] = $cleanedFile;
-
-                    // back-calculate Total Count of Filesets
-                    // by adding Raw and Cleaned cols
-                    $totalCol = $i - 2; // 2 columns prior to Cleaned_Filesets column
-                    $totalVal = 0;  // initialize
-                    // assumed raw is previous col, already processed
-                    $rawCol = $i - 1; // 1 column prior
-                    $rawVal = $this->tpl_data['items'][$x][$rawCol]['value'];
-
-                    if (is_numeric($val)) { // Cleaned Val
-                        $totalVal = $val;
-                    }
-                    if (is_numeric($rawVal)) {
-                        $totalVal += $rawVal;
-                    }
-
-                    if ($totalVal == '0') { //blank if none
-                        $totalVal = "";
-                    }
-                    $this->tpl_data['items'][$x][$totalCol]['value'] = $totalVal;
-
-                    $this->tpl_data['items'][$x][$totalCol]['name']
-                        = "Total_Filesets";
-
-                } // end if Cleaned
-
                 // Print '' if no data
-                if ($key=='Raw_Filesets' || $key=='Cleaned_Filesets'
-                    || $key == 'SNPs' || $key == 'CNVs' || $key == 'CPGs'
+                if ($key=='Files' || $key == 'SNPs' || $key == 'CNVs' || $key == 'CPGs'
                 ) {
                     if (is_null($val) || $val === '0') {
                         $this->tpl_data['items'][$x][$i]['value'] = '';

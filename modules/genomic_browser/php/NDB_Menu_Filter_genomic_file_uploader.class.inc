@@ -151,6 +151,7 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
             array(
              $baseURL . "/genomic_browser/js/genomic_browser.js",
              $baseURL . "/genomic_browser/js/genomic_file_uploader.js",
+             $baseURL . "/genomic_browser/js/FileUploadModal.js",
             )
         );
     }

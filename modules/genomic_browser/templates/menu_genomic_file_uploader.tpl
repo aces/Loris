@@ -2,11 +2,11 @@
     <div id="tabs">
       <ul class="nav nav-tabs">
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/">Profiles</a></li>
-        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Files</strong></a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=gwas_browser">GWAS</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cpg_browser">Methylation</a></li>
+        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Files</strong></a></li>
       </ul>
       <br>
     </div>
@@ -93,10 +93,18 @@
             </div>
           </div>
         </div>
+
         <div class="row">
           <div class="form-group col-sm-12">
             <div class="col-sm-6 col-xs-12 col-md-6">
               <input type="submit" name="filter" value="Show data" id="showdata" class="btn btn-sm btn-primary col-xs-12"/>
+            </div>
+            <div class="visible-xs col-xs-12"> </div>
+              <div class="visible-xs col-xs-12"> </div>
+                <div class="col-sm-6 col-xs-12 col-md-6">
+                  <button type="button" name = "upload" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#fileUploadModal">Upload File</button>
+                </div>
+              </div>
             </div>
             <div class="form-group col-sm-12">
               <div class="row">
@@ -107,6 +115,9 @@
             </div>
           </div>
         </div>
+
+
+
       </div>
     </div>
   </form>
@@ -130,5 +141,11 @@
     });
  
     React.render(table, document.getElementById("datatable"));
+
+
+    var uploadModal = RGenomicFileUploadModal({
+            baseURL : "{$baseurl}"
+    });
+    React.render(uploadModal, document.getElementById("modalContainer"));
 </script>
 
