@@ -21,9 +21,9 @@ CREATE TABLE `genomic_candidate_files_rel` (
 INSERT INTO genomic_candidate_files_rel (CandID, GenomicFileID) select CandID, GenomicFileID FROM genomic_files;
 
 ALTER TABLE genomic_files 
-    ADD COLUMN AnalysisModality varchar(100),
-    ADD FOREIGN KEY (AnalysisModality) REFERENCES genomic_analysis_modality_enum (analysis_modality),
     DROP FOREIGN KEY `FK_genomic_files_1`,
     DROP COLUMN `CandID`,
     DROP COLUMN `VisitLabel`,
+    ADD COLUMN AnalysisModality varchar(100),
+    ADD FOREIGN KEY (AnalysisModality) REFERENCES genomic_analysis_modality_enum (analysis_modality),
     MODIFY `Category` enum('raw','cleaned') DEFAULT NULL;
