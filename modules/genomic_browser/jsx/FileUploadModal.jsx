@@ -131,7 +131,7 @@ UploadForm = React.createClass({
         };
     },
 
-    getDeafaultProps: function () {
+    getDefaultProps: function () {
         return {
             validate: null
         }

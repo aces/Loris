@@ -1,6 +1,7 @@
 GenomicFileUploadModal = React.createClass({
     displayName: 'GenomicFileUploadModal',
 
+
     propTypes: {
         baseURL: React.PropTypes.string.isRequired
     },
@@ -163,6 +164,7 @@ RGenomicFileUploadModal = React.createFactory(GenomicFileUploadModal);
 UploadForm = React.createClass({
     displayName: 'UploadForm',
 
+
     getInitialState: function () {
         return {
             baseURL: '',
@@ -171,7 +173,7 @@ UploadForm = React.createClass({
     },
 
     // Change this to false when we are ready to use Mapping files
-    getDeafaultProps: function () {
+    getDefaultProps: function () {
         return {
             validate: null
         };
@@ -329,6 +331,7 @@ FileTypeSelect = React.createClass({
 FileInput = React.createClass({
     displayName: 'FileInput',
 
+
     propTypes: {
         name: React.PropTypes.string,
         label: React.PropTypes.string
@@ -358,6 +361,7 @@ FileInput = React.createClass({
 
 TextAreaInput = React.createClass({
     displayName: 'TextAreaInput',
+
 
     propTypes: {
         name: React.PropTypes.string,

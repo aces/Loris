@@ -1,6 +1,6 @@
 <?php
 /**
- * This allow to upload file for the genomic module.
+ * This allows uploading of files for the genomic module.
  *
  * NOTE : This require a genomic_uploader directory under the
  * GenomicDataPath directory specified in the cconfigSettings.
