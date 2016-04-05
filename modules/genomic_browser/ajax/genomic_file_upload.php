@@ -24,13 +24,20 @@ if (!$userSingleton->hasPermission('genomic_browser_view_site')
     exit;
 }
 
-header('Content-Type: application/json; charset=UTF-8');
-
 // Set output mode to allow XHR request progress
+
+$config   = NDB_Config::singleton();
+$base_dir = $config->getSetting('base');
+if (empty($base_dir)) {
+    error_log('Security problem : base ConfigSettings not set or empty.');
+    header("HTTP/1.1 412 Precondition Failed");
+    exit;
+}
+
 set_time_limit(0);
 ob_implicit_flush(true);
 ob_end_flush();
-
+header('Content-Type: application/json; charset=UTF-8');
 reportProgress(1, 'Validating...');
 
 $fileToUpload
@@ -226,6 +233,11 @@ function createSampleCandidateRelations(&$fileToUpload)
     $headers = explode(',', $line);
     array_shift($headers);
 
+    $headers = array_filter(
+        $headers,
+        'candidateExists'
+    );
+
     $sample_label_prefix = date('U', strtotime($fileToUpload->date_inserted));
     array_walk(
         $headers,
@@ -302,6 +314,11 @@ function insertBetaValues(&$fileToUpload)
         $line    = fgets($f);
         $headers = explode(',', $line);
         array_shift($headers);
+
+        $headers = array_filter(
+            $headers,
+            'candidateExists'
+        );
 
         $sample_label_prefix = date('U', strtotime($fileToUpload->date_inserted));
         array_walk(
@@ -468,5 +485,27 @@ function reportProgress($progress, $message)
                 );
     echo json_encode($response);
     sleep(1);
+}
+
+/**
+ * This function checks if a PSCID is associated with a candidate
+ * in the database.
+ *
+ * @param string $pscid The PSCID to check
+ *
+ * @return boolean True if the candidate exists
+ */
+function candidateExists($pscid)
+{
+
+    $DB    =& Database::singleton();
+    $pscid = $DB->quote(trim($pscid));
+
+    $CandID = $DB->pselectOne(
+        "SELECT CandID from candidate WHERE PSCID = $pscid",
+        array()
+    );
+
+    return !empty($CandID);
 }
 ?>

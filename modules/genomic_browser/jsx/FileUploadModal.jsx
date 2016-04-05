@@ -272,13 +272,10 @@ FileInput = React.createClass({
 
     render: function () {
 
-        var max_file_size = "1000";
-
         return (
             <div className="col-xs-12 form-group">
                 <label className="col-xs-3" for={this.props.name}>{this.props.label}</label>
                 <div className="col-xs-9">
-                    <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value={max_file_size} />
                     <input type="file" name={this.props.name} id={this.props.name} onChange={this.handleChange} className="fileUpload"/>
                 </div>
             </div>

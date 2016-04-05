@@ -127,8 +127,6 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
         );
         $this->addCheckbox('caveat', 'Caveat:', $Base_options);
 
-        $this->tpl_data['max_file_size'] = Utility::getMaximumFileUploadSize();
-
         $user = User::singleton();
         $this->tpl_data['user'] = $user->getUsername();
 
