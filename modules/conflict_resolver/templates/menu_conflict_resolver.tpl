@@ -57,7 +57,7 @@
                     </div>
                     <div class="row visible-sm">
                         <div class="col-sm-6">
-                            <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
+                            <input type="submit" id="testShowData" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
                             <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/conflict_resolver/?reset=true'">
