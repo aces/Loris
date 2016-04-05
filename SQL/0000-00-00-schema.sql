@@ -1968,8 +1968,6 @@ INSERT IGNORE INTO `genomic_analysis_modality_enum` (analysis_modality) VALUES
 DROP TABLE IF EXISTS `genomic_files`;
 CREATE TABLE `genomic_files` (
   `GenomicFileID` int unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) NOT NULL DEFAULT '0',
-  `VisitLabel` varchar(255) DEFAULT NULL,
   `FileName` varchar(255) NOT NULL,
   `FilePackage` tinyint(1) DEFAULT NULL,
   `Description` varchar(255) NOT NULL,
