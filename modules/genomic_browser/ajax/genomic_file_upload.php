@@ -153,6 +153,7 @@ function registerFile(&$fileToUpload)
                'FileName'         => $genomic_data_dir
                    . 'genomic_uploader/' . $fileToUpload->file_name,
                'Description'      => $fileToUpload->description,
+               'FileType'         => $fileToUpload->file_type,
                'AnalysisModality' => $fileToUpload->genomic_file_type,
                'FileSize'         => $fileToUpload->size,
                'Date_inserted'    => date("Y-m-d h:i:s", time()),

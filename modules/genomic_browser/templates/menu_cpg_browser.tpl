@@ -15,7 +15,7 @@
   <div class="row">
     <div class="tab-content">
       <div class="tab-pane active">
-        <form method="post" action="/genomic_browser/?submenu=cpg_browser">
+        <form method="post" action="{$baseurl}/genomic_browser/?submenu=cpg_browser">
           <div class="col-sm-12">
             <div class="row">
               <div class="form-group col-sm-7">
