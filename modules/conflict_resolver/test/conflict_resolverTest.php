@@ -67,8 +67,8 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
         $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
     }
- 
-   /**
+
+    /**
      * Tests that, when loading the conflict_resolver module, some
      * text appears in the body.
      *
