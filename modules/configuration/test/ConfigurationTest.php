@@ -41,5 +41,36 @@ class ConfigurationTest extends LorisIntegrationTest
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Configuration", $bodyText);
     }
+    /**
+     * Tests that configration loads with the permission
+     *
+     * @return void
+     */
+    function testConfigPermission()
+    {
+         $this->setupPermissions(array("config"));
+         $this->safeGet($this->url . "/configuration/");
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertContains("Configuration", $bodyText);
+         $this->resetPermissions();
+    }
+    /**
+     * Tests that conflict resolver does not load with the permission
+     *
+     * @return void
+     */
+    function testConfigWithoutPermission()
+    {
+         $this->setupPermissions(array());
+         $this->safeGet($this->url . "/configuration/");
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertContains("You do not have access to this page.", $bodyText);
+         $this->resetPermissions();
+    }
+
 }
 ?>
