@@ -64,8 +64,8 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function tearDown()
     {
-        parent::tearDown();
         $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
+        parent::tearDown();
     }
 
     /**
@@ -150,6 +150,24 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          )->getText();
          $this->assertContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
+    }
+    /**
+     * Tests research function in conflict resolver
+     * author: Wang Shen
+     * @return void
+     */
+    function testResearch()
+    {
+         $this->safeGet($this->url . "/conflict_resolver/?submenu=resolved_conflicts");
+         $keywordElement = $this->webDriver->findElement(
+             WebDriverBy::Name("Qestions");
+         $keywordElement->sendkeys('TestTestTest');
+         //click show data button
+         $this->webDriver->findElement(WebDriverBy::ID("testShowData"))->click();
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::XPath("//*[@id='tabs']/div/div/div/div/div/table/tbody/tr[1]/td[6]")
+         )->getText();
+         $this->assertContains("TestTestTest", $bodyText);
     }
 
 }
