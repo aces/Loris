@@ -81,7 +81,7 @@ GenomicFileUploadModal = React.createClass({
                 console.error("[XHR STATECHANGE] Exception: " + e);
             }
         };
-        var url = this.props.baseURL + "/AjaxHelper.php?Module=genomic_browser&script=genomic_file_upload.php";
+        var url = this.props.baseURL + "/genomic_browser/ajax/genomic_file_upload.php";
         xhr.open("POST", url, true);
         xhr.send(formData);
     },
@@ -339,8 +339,6 @@ FileInput = React.createClass({
 
     render: function () {
 
-        var max_file_size = "1000";
-
         return React.createElement(
             'div',
             { className: 'col-xs-12 form-group' },
@@ -352,7 +350,6 @@ FileInput = React.createClass({
             React.createElement(
                 'div',
                 { className: 'col-xs-9' },
-                React.createElement('input', { type: 'hidden', id: 'MAX_FILE_SIZE', name: 'MAX_FILE_SIZE', value: max_file_size }),
                 React.createElement('input', { type: 'file', name: this.props.name, id: this.props.name, onChange: this.handleChange, className: 'fileUpload' })
             )
         );

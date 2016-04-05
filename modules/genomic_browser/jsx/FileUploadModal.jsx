@@ -80,7 +80,7 @@ GenomicFileUploadModal = React.createClass({
                 console.error("[XHR STATECHANGE] Exception: " + e);
             }
         };
-        var url = this.props.baseURL + "/AjaxHelper.php?Module=genomic_browser&script=genomic_file_upload.php";
+        var url = this.props.baseURL + "/genomic_browser/ajax/genomic_file_upload.php";
         xhr.open("POST", url, true);
         xhr.send(formData);
     },
