@@ -144,6 +144,32 @@
 </table>
 *}
 
+<div class="row">
+    <div class="col-sm-10 col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading" onclick="hideFilter();">
+                Upload process logs
+            </div>
+            <div class="panel-body" id="panel-body">
+
+                    <div class="row">
+                        <div class="form-group col-sm-5">
+                            <label class="col-sm-4 col-md-4">
+                                Logs to display:
+                            </label>
+                            <div class="col-sm-4 col-md-4">
+                                {$form.LogType.html}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        {$form.UploadLogs.html}
+                    </div>
+             </div>
+        </div>
+   </div>
+</div>
+        
 <!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
 <tr>
@@ -153,7 +179,7 @@
 </table>
 
 <div class="row">
-    <table class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
+    <table id="mri_upload_table" class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
         <thead>
             <tr class="info">
                 <th nowrap="nowrap">

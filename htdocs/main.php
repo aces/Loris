@@ -26,7 +26,9 @@ ob_start();
 
 // load the client
 $client = new NDB_Client;
-$client->initialize();
+if ($client->initialize() == false) {
+    return false;
+}
 
 // require additional libraries
 

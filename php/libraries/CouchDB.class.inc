@@ -262,13 +262,26 @@ class CouchDB
 
         $handler->write("\r\n");
 
-        $response = '';
+        $response        = '';
+        $finishedHeaders = false;
+        $lastLine        = '';
+        $curLine         = '';
         while (!$handler->eof()) {
-            $response .= $handler->gets();
+            $curLine = $handler->gets();
+
+            if ($finishedHeaders === false) {
+                if ($curLine == "\r\n") {
+                    $finishedHeaders = true;
+                }
+            } else { // headers are finished
+                $response .= $curLine;
+            }
+
+            $lastLine = $curLine;
         }
         $handler->close();
-        $response_split = explode("\r\n\r\n", $response, 2);
-        return trim($response_split[1]);
+
+        return $response;
     }
 
     /**
@@ -277,15 +290,19 @@ class CouchDB
      * for posting to other CouchDB databases on the same server (ie. the users
      * database.)
      *
-     * @param string $url     The URL relative to the server to make a POST
-     *                        request to.
-     * @param array  $data    Associative array representing the JSON document
-     *                        to POST.
-     * @param array  $headers The extra HTTP headers to send with the request
+     * @param string  $url        The URL relative to the server to make a POST
+     *                            request to.
+     * @param array   $data       Associative array representing the JSON document
+     *                            to POST.
+     * @param array   $headers    The extra HTTP headers to send with the request
+     * @param boolean $printValue If true the return from CouchDB will be printed
+     *                            instead of returned. This avoids the overhead of
+     *                            having to parse it server-side if the request is
+     *                            expected to be directly interpreted by javascript.
      *
      * @return string A string representation of the JSON return value from CouchDB
      */
-    function _postURL($url, $data, $headers = array())
+    function _postURL($url, $data, $headers = array(), $printValue = false)
     {
         $config      = NDB_Config::singleton();
         $couchconfig = $config->getSetting('CouchDB');
@@ -314,29 +331,52 @@ class CouchDB
         }
         $handler->write("\r\n");
         $handler->write($data);
-        $response = '';
+        $response        = '';
+        $finishedHeaders = false;
         while (!$handler->eof()) {
-            $response .= $handler->gets();
+            $line = $handler->gets();
+            if ($finishedHeaders === false) {
+                if ($line == "\r\n") {
+                    $finishedHeaders = true;
+                }
+            } else {
+                if ($printValue) {
+                    print $line;
+                } else {
+                    $response .= $line;
+                }
+            }
         }
         $handler->close();
-        $response_split = explode("\r\n\r\n", $response, 2);
-        return trim($response_split[1]);
+        if ($printValue) {
+            return null;
+        }
+        return $response;
     }
 
     /**
      * Posts a URL relative to the CouchDB database URL.
      *
-     * @param string $url  The name of the document to be posted
-     * @param string $data The content to be written to the URL
-     *                     as the HTTP payload.
-     * @param string $op   The HTTP operation to use. Default POST.
+     * @param string  $url        The name of the document to be posted
+     * @param string  $data       The content to be written to the URL
+     *                            as the HTTP payload.
+     * @param string  $op         The HTTP operation to use. Default POST.
+     * @param boolean $printValue If true the return from CouchDB will be printed
+     *                            instead of returned. This avoids the overhead of
+     *                            having to parse it server-side if the request is
+     *                            expected to be directly interpreted by javascript.
      *
      * @return The page content (Without headers) returned by the
      *         CouchDB web server.
      */
-    function _postRelativeURL($url, $data, $op = 'POST')
+    function _postRelativeURL($url, $data, $op = 'POST', $printValue = false)
     {
-        return $this->_postURL($this->_constructURL($op, $url), $data);
+        return $this->_postURL(
+            $this->_constructURL($op, $url),
+            $data,
+            array(),
+            $printValue
+        );
     }
 
     /**
@@ -499,20 +539,42 @@ class CouchDB
      * Function to query a CouchDB view and return an array of
      * the results parsed into a PHP array.
      *
-     * @param string $designdoc Design Doc containing the view
-     * @param string $viewname  View to be queried
-     * @param array  $params    Any additional parameters to be passed to the
-     *                          CouchDB view
+     * @param string  $designdoc Design Doc containing the view
+     * @param string  $viewname  View to be queried
+     * @param array   $params    Any additional parameters to be passed to the
+     *                           CouchDB view
+     * @param boolean $full_json If true will include the full json returned,
+     *                           and not just the parsed rows.
      *
      * @return array An array of the rows returned by the view
      */
-    function queryView($designdoc, $viewname, $params)
+    function queryView($designdoc, $viewname, $params, $full_json=false)
     {
-        $query = $this->_getRelativeURL(
-            "_design/" . $designdoc . "/_view/" . $viewname
-            . "?" . http_build_query($params)
-        );
+        $keys = null;
+        if (isset($params['keys'])) {
 
+            $keys = $params['keys'];
+            unset($params['keys']);
+
+            $url = "_design/" . $designdoc . "/_view/" . $viewname
+                . "?" . http_build_query($params);
+
+            $query = $this->_postRelativeURL(
+                $url,
+                json_encode(array('keys' => $keys)),
+                'POST',
+                $full_json
+            );
+
+        } else {
+            $url   = "_design/" . $designdoc . "/_view/" . $viewname
+                     . "?" . http_build_query($params);
+            $query = $this->_getRelativeUrl($url);
+        }
+
+        if ($full_json) {
+            return $query;
+        }
         $data = json_decode($query, true);
 
         if (isset($data['error']) && $data['error'] == 'not_found') {

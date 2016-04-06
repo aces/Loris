@@ -37,7 +37,7 @@
                       <div class="mri-righttable col-xs-12" id="mri-righttable-{$files[file].GenomicFileID}">
                       <table class="table table-hover table-bordered header-info col-xs-12 dynamictable">
                         <tr>
-                            <th class="col-xs-2 info">VisitLabel</th><td class="col-xs-2">{$files[file].VisitLabel}</td>
+                            <th class="col-xs-2 info">Analysis Modality</th><td class="col-xs-2">{$files[file].AnalysisModality}</td>
                             <th class="col-xs-2 info">Date Inserted</th>
                             <td class="col-xs-2">
                                 {if $files[file].FileInsertDate>0}

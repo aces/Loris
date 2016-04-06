@@ -27,6 +27,7 @@ require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
  */
 class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 {
+    var $AjaxModule = true;
     /**
      * Determine whether the user has permission to view this page
      *
@@ -125,11 +126,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             's.visit_label as Visit_Label',
             "$PendingFailSubquery as QC_Status",
             'MIN(md.AcquisitionDate) as First_Acq_Date',
-            'MAX(fqc.QCLastChangeTime) as Last_QC',
+            'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
             "$NewDataSubquery as New_Data",
             "$T1PassSubquery as T1_Passed",
             "$T2PassSubquery as T2_Passed",
-            "'links' as Links",
+            "GROUP_CONCAT(DISTINCT OutputType) as Links",
             's.ID as sessionID'
         );
         $this->order_by = 'c.PSCID, s.Visit_label';
@@ -350,5 +351,16 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             }
         }
         return $query;
+    }
+
+    function getJSDependencies() {
+        $factory = NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        return array_merge(
+            parent::getJSDependencies(),
+            array(
+                $baseurl . "/imaging_browser/js/columnFormatter.js"
+            )
+        );
     }
 }

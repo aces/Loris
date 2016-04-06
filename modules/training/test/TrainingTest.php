@@ -29,17 +29,83 @@ class TrainingTest extends LorisIntegrationTest
 {
 
     /**
-     * Tests that, when loading the training module, the word "Training" appears
-     * somewhere in the body
+     * Tests that the breadcrumb loads, which it should regardless of the user's
+     * permissions
      *
      * @return void
      */
-    public function testTrainingPageLoads()
+    public function testBreadcrumbLoads()
     {
         $this->safeGet($this->url . "/training/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Training", $bodyText);
+        $breadcrumbText = $this->webDriver
+            ->findElement(WebDriverBy::id("breadcrumbs"))->getText();
+        $this->assertContains("Training", $breadcrumbText);
+    }
+
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testLoadsWithPermission()
+    {
+        $this->setupPermissions(array("training"));
+        $this->safeGet($this->url . "/training/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::id("training-options")
+        )->getText();
+        $this->assertContains("training", $bodyText);
+        $this->resetPermissions();
+    }
+
+    /**
+     * Tests that the page does not load if the user does not have correct
+     * permissions
+     *
+     * @return void
+     */
+    function testDoesNotLoadWithoutPermission()
+    {
+        $this->setupPermissions(array());
+        $this->safeGet($this->url . "/training/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
+    }
+
+    /**
+     * Tests that the training menu item loads if the user has correct
+     * permissions
+     *
+     * @return void
+     */
+    function testMenuItemPresentWithPermission()
+    {
+        $this->setupPermissions(array("training"));
+        $this->safeGet($this->url . "/training/");
+        $this->assertTrue(
+            $this->isMenuItemPresent('Clinical', 'Training')
+        );
+        $this->resetPermissions();
+    }
+
+    /**
+     * Tests that the training menu item does not load if the user does not have
+     * the correct permissions
+     *
+     * @return void
+     */
+    function testMenuItemNotPresentWithoutPermission()
+    {
+        $this->setupPermissions(array());
+        $this->safeGet($this->url . "/training/");
+        $this->assertFalse(
+            $this->isMenuItemPresent('Clinical', 'Training')
+        );
+        $this->resetPermissions();
     }
 }
 ?>

@@ -1,4 +1,4 @@
-# Loris Instrument API - v0.0.1
+# Loris API - v0.0.2
 
 ## 1.0 Overview
 
@@ -9,7 +9,7 @@ or no data. The Loris API uses standard HTTP error codes and the body of any res
 either be empty or contain only a JSON object for any request.
 
 For brevity, the `$LorisRoot/api/$APIVERSION` is omitted from the definitions in this
-document. This document specifies $APIVERSION v0.0.1 and it
+document. This document specifies $APIVERSION v0.0.2 and it
 MUST be included before the request in all requests.
 
 HTTP GET requests NEVER modify data. PUT, POST or PATCH requests MUST be used to modify
@@ -464,3 +464,235 @@ The format of the JSON object for these URLS is:
 }
 ```
 
+# 4.0 Imaging Data
+
+The imaging data mostly lives in the `/candidates/$CandID/$Visit` portion of the REST API
+namespaces, but is defined in a separate section of this document for clarity purposes.
+
+## 4.1 Candidate Images
+```
+GET /candidates/$CandID/$Visit/images
+```
+
+A GET request to `/candidates/$CandID/$Visit/images` will return a JSON object of
+all the images which have been acquired for that visit. It will return an object of
+the form:
+
+```js
+{
+    "Meta" : {
+        "CandID" : $CandID,
+        "Visit" : $VisitLabel,
+    },
+    "Files" : [{
+        "OutputType" : "native",
+        "Filename" : "abc.mnc",
+        "AcquisitionType" : "t1w/t2w/etc",
+    }, /* More files */]
+}
+```
+
+## 4.2 Session Imaging QC
+```
+GET /candidates/$CandID/$Visit/qc/imaging
+PUT /candidates/$CandID/$Visit/qc/imaging
+```
+
+To retrieve the session level imaging QC data for a visit, a request can
+be made `/candidates/$CandID/$Visit/qc/imaging`. It will return a JSON object
+of the form
+
+```js
+{
+    "Meta" : {
+        "CandID" : $CandID,
+        "Visit" : $VisitLabel
+    },
+   "SessionQC" : "Pass|Fail"
+   "Pending" : boolean
+}
+```
+
+A PUT to the same location will update the QC information. 
+
+## 4.3 Image Level Data
+```
+GET /candidates/$CandID/$VisitLabel/images/$Filename
+```
+
+Returns raw file with the appropriate MimeType headers for each Filename retrieved from
+`/candidates/$CandID/$Visit/images`.
+
+Only `GET` is currently supported, but future versions of this API may include `PUT`
+support to insert new (or processed) data into LORIS.
+
+## 4.3.1 Image Level QC Data
+```
+GET /candidates/$CandID/$VisitLabel/images/$Filename/qc
+PUT /candidates/$CandID/$VisitLabel/images/$Filename/qc
+```
+
+Returns file level QC information. It will return a JSON object of the form
+
+```js
+{
+    "Meta" : {
+        "CandID" : $CandID,
+        "Visit" : $VisitLabel,
+        "File" : $Filename
+    },
+    "QC" : "Pass|Fail",
+    "Selected" : boolean
+}
+```
+
+`PUT` requests to the same URL will update the QC information.
+
+## 4.4 Alternate formats
+
+There are occasions where you may want to retrieve a file in a different format
+than it is stored in LORIS. This can be achieved by adding `/format/$FormatType`
+to the URL in the API. Currently supported other formats are below. Other formats
+may be added in a future version of this API.
+
+An attempt to convert an image to an unsupported format may result in a
+ `415 Unsupported Media Type` HTTP error.
+
+### 4.4.1 Raw Format
+```
+GET /candidates/$CandID/$VisitLabel/images/$Filename/format/raw
+```
+
+This will return the data in raw format (ie. the output of mnc2raw)
+
+### 4.4.2 BrainBrowser Format
+```
+GET /candidates/$CandID/$VisitLabel/images/$Filename/format/brainbrowser
+```
+
+This (in combination with raw) will let you extract the headers in a JSON
+format that BrainBrowser can load. It will return a JSON object of the format
+
+```js
+{
+    "xspace": {
+        "start":"",
+        "space_length":"",
+        "step":""},
+    "yspace": {
+        "start":"",
+        "space_length":"",
+        "step":""
+    },
+    "zspace": {
+        "start":"",
+        "space_length":"",
+        "step":""
+    },
+    "order":["xspace","zspace","yspace"]
+}
+```
+
+### 4.4.3 Thumbnail Format
+```
+GET /candidates/$CandID/$VisitLabel/images/$Filename/format/thumbnail
+```
+
+This will return a JPEG image that can be used as a thumbnail to represent this
+imaging acquisition statically (such as in the LORIS imaging browser.)
+
+### 4.5 Image Headers
+The LORIS API allows you to extract headers from the images in a RESTful manner.
+The following methods are defined:
+
+### 4.5.1 Header Summary
+```
+GET /candidates/$CandID/$VisitLabel/images/$Filename/headers
+```
+
+This will return a JSON summary of the important headers for this filename. It
+will return a JSON object of the form:
+
+```js
+{
+    "Meta" : {
+        "CandID" : $CandID,
+        "Visit" : $VisitLabel,
+        "File" : $Filename
+    },
+    "Physical" : {
+        "TE" : "",
+        "TR" : "",
+        "TI" : "",
+        "SliceThickness" : "",
+    },
+    "Description" : {
+        "SeriesName" : "",
+        "SeriesDescription"  : ""
+    }
+    "Dimensions" : {
+        "XSpace" : {
+            "Length" : "",
+            "StepSize" : ""
+        },
+        "YSpace" : {
+            "Length" : "",
+            "StepSize" : ""
+        },
+        "ZSpace" : {
+            "Length" : "",
+            "StepSize" : ""
+        },
+        "TimeDimension" : {
+            "Length" : "",
+            "StepSize" : ""
+        }
+    }
+}
+```
+
+All of the dimensions are optional and may not exist for any given
+file (for instance, a 3D image will not have a time dimension.)
+
+### 4.5.2 Complete Headers
+```
+GET /candidates/$CandID/$VisitLabel/images/$Filename/headers/full
+```
+
+This will return a JSON object with ALL headers for this acquisition. 
+
+The JSON will be of the form:
+
+```js
+{
+    "Meta" : {
+        "CandID" : $CandID,
+        "Visit" : $VisitLabel,
+        "File" : $Filename
+    },
+    "Headers" : {
+        "dicomheader" : "value",
+        /* more headers ... */
+    }
+}
+```
+
+### 4.5.3 Specific Header
+```
+GET /candidates/$CandID/$VisitLabel/images/$Filename/headers/$HeaderName
+```
+
+This will return a JSON object that extracts one specific header from $Filename.
+
+The JSON object is of the form:
+```js
+{
+    "Meta" : {
+        "CandID" : $CandID,
+        "Visit" : $VisitLabel,
+        "File" : $Filename,
+        "Header" : $HeaderName
+    },
+    "Value" : string
+}
+```

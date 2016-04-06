@@ -32,10 +32,9 @@ require_once 'GenomicFile.class.inc';
 class NDB_Form_Genomic_Browser extends NDB_Form
 {
     /**
-     * Variables to store the DCCID, sessionID, genomic file ID
+     * Variables to store the DCCID, genomic file ID
     */
     var $candID;
-    var $sessionID;
     var $genomic_file_ID;
 
     /**
@@ -62,29 +61,15 @@ class NDB_Form_Genomic_Browser extends NDB_Form
     {
         $this->DB = Database::singleton();
 
-        $this->genomic_file_ID = $_REQUEST['GenomicFileID'];
+        $this->genomic_file_id = $_REQUEST['GenomicFileID'];
+        $this->candID          = $_REQUEST['candID'];
 
-        // add check? if (!empty($this->genomic_file_ID) &&
-        // is_numeric($this->genomic_file_ID)) {
-
-            $this->candID   = $_REQUEST['candID'];
-            $this->category = $_REQUEST['Category'];
-
-        if (!empty($this->candID) ) {
-            // If modifying to save any annotation changes,
-            // see imaging browser View Session
-
-            // retrieve file data
-            if (!empty($this->category) ) {
-                    // if category was specified (raw/clean)
-                    $this->_setFileData($this->category);
-            } else {
-                $this->_setFileData();
-            }
-
+        if (!empty($this->candID) || !empty($this->genomic_file_id) ) {
+            $this->_setFileData();
             $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
         }
     }
+
     /**
     * Sets values for Genomic data files
     *
@@ -94,24 +79,17 @@ class NDB_Form_Genomic_Browser extends NDB_Form
     */
     function _setFileData($category = null)
     {
-        if (!empty($this->category) ) { // apply Category filter
+        if (empty($this->genomic_file_id)) {
             $files = $this->DB->pselect(
-                "SELECT genomic_files.GenomicFileID
-                FROM genomic_files WHERE CandID=:cid AND Category=:catid ",
-                array(
-                 'cid'   => $this->candID,
-                 'catid' => $this->category,
-                )
-            );
-        } else {
-            $files = $this->DB->pselect(
-                "SELECT genomic_files.GenomicFileID
-                FROM genomic_files WHERE CandID=:cid ",
+                "SELECT g.GenomicFileID
+                FROM genomic_candidate_files_rel g WHERE g.CandID=:cid ",
                 array('cid' => $this->candID)
             );
+        } else {
+            $files = array(
+                      array('GenomicFileID' => $this->genomic_file_id),
+                     );
         }
-
-        // Not dependent on session ID for now
         $this->tpl_data['files'] = array();
         foreach ($files as $fileRow) {
             $FileObj = new GenomicFile($fileRow['GenomicFileID']);
@@ -140,6 +118,9 @@ class NDB_Form_Genomic_Browser extends NDB_Form
                      'Caveat'           => $FileObj->getParameter('Caveat'),
                      'Notes'            => $FileObj->getParameter('Notes'),
                      'AnalysisProtocol' => $paramAnalysisProtocol,
+                     'AnalysisModality' => $FileObj->getParameter(
+                         'AnalysisModality'
+                     ),
                      'AnalysisDate'     => $this->_getDate(
                          $FileObj,
                          'Date_taken',
