@@ -7,6 +7,7 @@
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cpg_browser">Methylation</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=genomic_file_uploader">Files</a></li>
       </ul>
       <br>
     </div>
@@ -87,32 +88,28 @@
                     <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-3 col-lg-3">
-                          {$form.Raw_Filesets.label}
+                          {$form.Files.label}
                         </label>
                         <div class="col-sm-12 col-md-3 col-lg-2">
-                          {$form.Raw_Filesets.html}
+                          {$form.Files.html}
                         </div>
                         <label class="col-sm-12 col-md-3">
-                          {$form.Cleaned_Filesets.label}
+                          {$form.CPGs.label}
                         </label>
                         <div class="col-sm-12 col-md-3">
-                          {$form.Cleaned_Filesets.html}
+                          {$form.CPGs.html}
                         </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-3 col-lg-3">
-                          {$form.SNP_Hits.label} 
+                          {$form.SNPs.label} 
                         </label>
                         <div class="col-sm-12 col-md-3 col-lg-2">
-                          {$form.SNP_Hits.html}
+                          {$form.SNPs.html}
                         </div>
                         <label class="col-sm-12 col-md-3">
-                          {$form.CNV_Hits.label} 
+                          {$form.CNVs.label} 
                         </label>
                         <div class="col-sm-12 col-md-3 pull-left">
-                          {$form.CNV_Hits.html} 
+                          {$form.CNVs.html} 
                         </div>
                       </div>
                     </div> 
@@ -202,41 +199,17 @@
             {elseif $items[item][piece].value eq ""}
               -
               {* just print a dash if no value available*}
-            {elseif $items[item][piece].name eq "Total_Filesets" } 
+            {elseif $items[item][piece].name eq "Files" } 
                <a href="{$baseurl}/genomic_browser/viewGenomicFile/?candID={$CandID}">
                    <b>({$items[item][piece].value})</b> &nbsp;&nbsp;View
                    <span class="glyphicon glyphicon-eye-open"></span>
                </a>
-            {elseif $items[item][piece].name eq "Raw_Filesets" } 
-               {if $items[item][piece].value neq "1" }
-                   <a href="{$baseurl}/genomic_browser/viewGenomicFile/?candID={$CandID}&Category=raw">
-                     ({$items[item][piece].value}) View
-                     <span class="glyphicon glyphicon-eye-open"></span>
-                     View Files
-                   </a>
-               {else}
-                 <a href="{$baseurl}/mri/jiv/get_file.php?file={$items[item][piece].file}">
-                   ({$items[item][piece].value}) Download {*$items[item][piece].file*}
-                   <span class="glyphicon glyphicon-download-alt"></span>
-                 </a>
-               {/if}
-            {elseif $items[item][piece].name eq "Cleaned_Filesets" } 
-               {if $items[item][piece].value neq "1" }
-                 <a href="{$baseurl}/genomic_browser/viewGenomicFile/?candID={$CandID}&Category=cleaned">
-                   ({$items[item][piece].value}) View
-                   <span class="glyphicon glyphicon-eye-open"></span>
-                 </a>
-               {else}
-                   <a href="{$baseurl}/mri/jiv/get_file.php?file={$items[item][piece].file}">
-                     ({$items[item][piece].value}) Download {*$items[item][piece].file*}
-                     <span class="glyphicon glyphicon-download-alt"></span>
-                   </a>
-               {/if}
-
             {elseif $items[item][piece].name eq "SNPs" }
-                 <a href="#" class="snp_link" data-pscid="{$PSCID}" >{$items[item][piece].value}</a>
+                 <a href="{$baseurl}/genomic_browser/?submenu=snp_browser" class="snp_link" data-pscid="{$PSCID}" >{$items[item][piece].value}</a>
             {elseif $items[item][piece].name eq "CNVs" }
                  <a href="#" class="cnv_link" data-pscid="{$PSCID}" >{$items[item][piece].value}</a>
+            {elseif $items[item][piece].name eq "CPGs" }
+                 <a href="#" class="cpg_link" data-pscid="{$PSCID}" >{$items[item][piece].value}</a>
             {else}
               {$items[item][piece].value}
             {/if}

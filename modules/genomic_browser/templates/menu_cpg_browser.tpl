@@ -7,6 +7,7 @@
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Methylation</strong></a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=genomic_file_uploader">Files</a></li>
       </ul>
       <br>
     </div>
@@ -14,7 +15,7 @@
   <div class="row">
     <div class="tab-content">
       <div class="tab-pane active">
-        <form method="post" action="/genomic_browser/?submenu=cpg_browser">
+        <form method="post" action="{$baseurl}/genomic_browser/?submenu=cpg_browser">
           <div class="col-sm-12">
             <div class="row">
               <div class="form-group col-sm-7">

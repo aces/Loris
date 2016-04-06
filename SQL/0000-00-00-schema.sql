@@ -1951,14 +1951,23 @@ CREATE TABLE `GWAS` (
   FOREIGN KEY (`SNPID`) REFERENCES SNP(`SNPID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores results of Genome-Wide Analysis Study';
 
+DROP TABLE IF EXISTS `genomic_analysis_modality_enum`;
+CREATE TABLE `genomic_analysis_modality_enum` (
+  `analysis_modality` varchar(100),
+  PRIMARY KEY (`analysis_modality`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+COMMENT '';
+
+INSERT IGNORE INTO `genomic_analysis_modality_enum` (analysis_modality) VALUES
+('Methylation beta-values'),
+('Other');
+
 --
 -- Table structure for table `genomic_files`
 --
 DROP TABLE IF EXISTS `genomic_files`;
 CREATE TABLE `genomic_files` (
   `GenomicFileID` int unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) NOT NULL DEFAULT '0',
-  `VisitLabel` varchar(255) DEFAULT NULL,
   `FileName` varchar(255) NOT NULL,
   `FilePackage` tinyint(1) DEFAULT NULL,
   `Description` varchar(255) NOT NULL,
@@ -1968,7 +1977,7 @@ CREATE TABLE `genomic_files` (
   `Batch` varchar(255) DEFAULT NULL,
   `Source` varchar(255) DEFAULT NULL,
   `Date_taken` date DEFAULT NULL,
-  `Category` enum('raw','cleaned','GWAS') DEFAULT NULL,
+  `Category` enum('raw','cleaned') DEFAULT NULL,
   `Pipeline` varchar(255) DEFAULT NULL,
   `Algorithm` varchar(255) DEFAULT NULL,
   `Normalization` varchar(255) DEFAULT NULL,
@@ -1978,10 +1987,22 @@ CREATE TABLE `genomic_files` (
   `Date_inserted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `Caveat` tinyint(1) DEFAULT NULL,
   `Notes` text,
+  `AnalysisModality` varchar(100),
   PRIMARY KEY (`GenomicFileID`),
-  KEY `FK_genomic_files_1` (`CandID`),
-  CONSTRAINT `FK_genomic_files_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
+  KEY `AnalysisModality` (`AnalysisModality`),
+  CONSTRAINT `genomic_files_ibfk_1` FOREIGN KEY (`AnalysisModality`) REFERENCES `genomic_analysis_modality_enum` (`analysis_modality`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `genomic_candidate_files_rel`;
+CREATE TABLE `genomic_candidate_files_rel` (
+    `CandID` int(6) NOT NULL,
+    `GenomicFileID` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`CandID`,`GenomicFileID`),
+    FOREIGN KEY (CandID)
+        REFERENCES candidate (CandID),
+    FOREIGN KEY (GenomicFileID)
+        REFERENCES genomic_files (GenomicFileID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `genomic_sample_candidate_rel`;
 CREATE TABLE `genomic_sample_candidate_rel` (
