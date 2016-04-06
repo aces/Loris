@@ -35,6 +35,8 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
+        $window = new WebDriverWindow($this->webDriver);
+        $window->maximize();
         $this->DB->insert(
             "conflicts_resolved",
             array(
@@ -55,6 +57,20 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
              'ConflictID'          => 'NULL',
             )
         );
+        $this->DB->insert(
+            "conflicts_unresolved",
+            array(
+             'TableName'      => 'TestTestTest',
+             'ExtraKeyColumn' => 'Test',
+             'ExtraKey1'      => 'Null',
+             'ExtraKey2'      => 'Null',
+             'FieldName'      => 'TestTestTest',
+             'CommentId1'     => '963443000111271151398976899',
+             'Value1'         => 'no',
+             'CommentId2'     => 'DDE_963443000111271151398976899',
+             'Value2'         => 'no',
+            )
+        );
     }
     /**
      * Delete testing data from database
@@ -65,6 +81,10 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
+        $this->DB->delete(
+            "conflicts_unresolved",
+            array('TableName' => 'TestTestTest')
+        );
         parent::tearDown();
     }
 
@@ -152,23 +172,92 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->resetPermissions();
     }
     /**
-     * Tests research function in conflict resolver
+     * Tests research function in resolved conflicts
      * author: Wang Shen
+     *
      * @return void
      */
-    function testResearch()
+    function testSearchConflictResolved()
     {
-         $this->safeGet($this->url . "/conflict_resolver/?submenu=resolved_conflicts");
+         $this->safeGet($this->url."/conflict_resolver/?submenu=resolved_conflicts");
          $keywordElement = $this->webDriver->findElement(
-             WebDriverBy::Name("Qestions");
+             WebDriverBy::Name("Question")
+         );
          $keywordElement->sendkeys('TestTestTest');
          //click show data button
-         $this->webDriver->findElement(WebDriverBy::ID("testShowData"))->click();
+         $this->webDriver->findElement(WebDriverBy::ID("testShowData1"))->click();
          $bodyText = $this->webDriver->findElement(
-             WebDriverBy::XPath("//*[@id='tabs']/div/div/div/div/div/table/tbody/tr[1]/td[6]")
+             WebDriverBy::XPath(
+                 "//*[@id='tabs']/div/div/div/div/div/".
+                 "table/tbody/tr[1]/td[6]"
+             )
          )->getText();
          $this->assertContains("TestTestTest", $bodyText);
     }
+    /**
+     * Tests research function in unresolved conflicts
+     * author: Wang Shen
+     *
+     * @return void
+     */
+    function testSearchUnresolvedConflicts()
+    {
+         $this->safeGet($this->url . "/conflict_resolver/");
+         $keywordElement = $this->webDriver->findElement(
+             WebDriverBy::Name("Question")
+         );
+         $keywordElement->sendkeys('TestTestTest');
+         //click show data button
+         $this->webDriver->findElement(WebDriverBy::ID("testShowData1"))->click();
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::XPath(
+                 "//*[@id='conflict_resolver']/div/div/div/".
+                 "table/tbody/tr[1]/td[6]"
+             )
+         )->getText();
+         $this->assertContains("TestTestTest", $bodyText);
+    }
+    /**
+     * Tests Clear Form function in unresolved conflicts
+     * author: Wang Shen
+     *
+     * @return void
+     */
+    function testClearFormUnresolvedConflicts()
+    {
+         $this->safeGet($this->url . "/conflict_resolver/");
+         $keywordElement = $this->webDriver->findElement(
+             WebDriverBy::Name("Question")
+         );
+         $keywordElement->sendkeys('TestTestTest');
+         //click clear form button
+         $this->webDriver->findElement(WebDriverBy::ID("testClearForm1"))->click();
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertNotContains("TestTestTest", $bodyText);
+    }
+    /**
+     * Tests Clear Form function in resolved conflicts
+     * author: Wang Shen
+    *
+     * @return void
+     */
+    function testClearFormResolvedConflicts()
+    {
+         $this->safeGet($this->url."/conflict_resolver/?submenu=resolved_conflicts");
+         $keywordElement = $this->webDriver->findElement(
+             WebDriverBy::Name("Question")
+         );
+         $keywordElement->sendkeys('TestTestTest');
+         //click clear form button
+         $this->webDriver->findElement(WebDriverBy::ID("testClearForm1"))->click();
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertNotContains("TestTestTest", $bodyText);
+    }
+
 
 }
 ?>
