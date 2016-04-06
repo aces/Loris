@@ -233,7 +233,9 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $keywordElement->sendkeys('TestTestTest');
          //click clear form button
          $this->webDriver->findElement(WebDriverBy::ID("testClearForm1"))->click();
-         $bodyText =$keywordElement->getText();
+         $bodyText =$this->webDriver->findElement(
+             WebDriverBy::Name("Question")
+         )->getText();
          $this->assertNotContains("TestTestTest", $bodyText);
     }
     /**
@@ -251,7 +253,9 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $keywordElement->sendkeys('TestTestTest');
          //click clear form button
          $this->webDriver->findElement(WebDriverBy::ID("testClearForm1"))->click();
-         $bodyText = $keywordElement->getText();
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::Name("Question")
+         )->getText();
          $this->assertNotContains("TestTestTest", $bodyText);
     }
 
