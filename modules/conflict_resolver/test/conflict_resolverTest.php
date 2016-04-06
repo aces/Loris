@@ -8,6 +8,7 @@
  * @package  Loris
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @author   Justin Kat <justin.kat@mail.mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -81,10 +82,8 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
-        $this->DB->delete(
-            "conflicts_unresolved",
-            array('TableName' => 'TestTestTest')
-        );
+        $this->DB->delete("conflicts_unresolved", 
+                          array('TableName' => 'TestTestTest'));
         parent::tearDown();
     }
 
