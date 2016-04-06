@@ -82,8 +82,10 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
-        $this->DB->delete("conflicts_unresolved", 
-                          array('TableName' => 'TestTestTest'));
+        $this->DB->delete(
+            "conflicts_unresolved",
+            array('TableName' => 'TestTestTest')
+        );
         parent::tearDown();
     }
 
