@@ -59,9 +59,6 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
         parent::tearDown();
         $this->DB->delete("help", array('helpID' => '999999'));
-        $window = new WebDriverWindow($this->webDriver);
-        $size = new WebDriverDimension(1024,1768);
-        $window->setSize($size);
     }
 
     /**
