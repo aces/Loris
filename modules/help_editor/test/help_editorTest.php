@@ -107,8 +107,14 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     public function testSearchTopic()
     {
-
+        $window = new WebDriverWindow($this->webDriver);
+        $size = new WebDriverDimension(1024,768);
+	$point = new WebDriverPoint(0,0);
+        $window->setSize($size);
+        $window->maximize();
+        $window->setPosition($point);
         $this->safeGet($this->url.'/help_editor/');
+        
         sleep(2);
         $showdata  = $this->safeFindElement(
                 WebDriverBy::Xpath(
@@ -136,6 +142,10 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
 
         $this->safeGet($this->url.'/help_editor/');
+        $window = new WebDriverWindow($this->webDriver);
+        $size = new WebDriverDimension(1024,768);
+        $window->setSize($size);
+        $window->maximize();
         $searchbox = $this->safeFindElement(WebDriverBy::Name("keyword"));
         $searchbox->sendKeys("This is a test content.");
         $showdata = $this->webDriver
@@ -160,6 +170,12 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
 
         $this->safeGet($this->url.'/help_editor/');
+        $window = new WebDriverWindow($this->webDriver);
+        $size = new WebDriverDimension(1024,768);
+        $point = new WebDriverPoint(0,0);
+        $window->setSize($size);
+        $window->maximize();
+        $window->setPosition($point);
         $searchbox = $this->safeFindElement(WebDriverBy::Name("keyword"));
         $searchbox->sendKeys("This is a test content.");
         $showdata = $this->webDriver
