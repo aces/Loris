@@ -35,7 +35,10 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $window = new WebDriverWindow($this->webDriver);
-        $window->maximize();
+        $size = new WebDriverDimension(1024,768);
+        $window->setSize($size);
+        $point = new WebDriverPoint(0,0);
+        $window->setPosition($point);
         $this->DB->insert(
             "help",
             array(
