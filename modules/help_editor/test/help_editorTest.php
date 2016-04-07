@@ -109,14 +109,17 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
 
         $this->safeGet($this->url.'/help_editor/');
+        sleep(2);
         $showdata  = $this->safeFindElement(
                 WebDriverBy::Xpath(
                     "//*[@id='panel-body']".
                     "/form/div[2]/div/div[1]/input"
                 )
             );
+        sleep(2);
         $searchbox = $this->safeFindElement(WebDriverBy::Name("topic"));
         $searchbox->sendKeys("Test Topic");
+        sleep(2);
         $showdata->click();
         $assertText = $this->safeFindElement(WebDriverBy::Id("Topic"))->getText();
         $this->assertContains("Test Topic", $assertText);
