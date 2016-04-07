@@ -120,7 +120,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
             );
         $assertText = $this->safeFindElement(WebDriverBy::Id("Topic"))->getText();
         $this->assertContains("Test Topic", $assertText);
-        }catch (WebDriverException ex){}
+        }catch (WebDriverException $ex){}
     }//end test_search_topic()
 
     /**
