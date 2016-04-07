@@ -76,7 +76,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     function testHelpPageLoad()
     {
         $this->safeGet($this->url . "/help_editor/");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertContains("Help Editor", $bodyText);
     }//end test_help_pageload()
@@ -89,7 +89,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     function testPageLoad()
     {
         $this->safeGet($this->url."/help_editor/edit_help_content/");
-        $assertText = $this->webDriver->findElement(
+        $assertText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )
             ->getText();
@@ -109,19 +109,16 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
 
         $this->safeGet($this->url.'/help_editor/');
-        $showdata  = $this->webDriver
-            ->findElement(
+        $showdata  = $this->safeFindElement(
                 WebDriverBy::Xpath(
                     "//*[@id='panel-body']".
                     "/form/div[2]/div/div[1]/input"
                 )
             );
-        $searchbox = $this->webDriver
-            ->findElement(WebDriverBy::Name("topic"));
+        $searchbox = $this->safeFindElement(WebDriverBy::Name("topic"));
         $searchbox->sendKeys("Test Topic");
         $showdata->click();
-        $assertText = $this->webDriver
-            ->findElement(WebDriverBy::Id("Topic"))->getText();
+        $assertText = $this->safeFindElement(WebDriverBy::Id("Topic"))->getText();
         $this->assertContains("Test Topic", $assertText);
 
     }//end test_search_topic()
@@ -136,8 +133,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
 
         $this->safeGet($this->url.'/help_editor/');
-        $searchbox = $this->webDriver
-            ->findElement(WebDriverBy::Name("keyword"));
+        $searchbox = $this->safeFindElement(WebDriverBy::Name("keyword"));
         $searchbox->sendKeys("This is a test content.");
         $showdata = $this->webDriver
             ->findElement(
@@ -147,8 +143,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
                 )
             );
         $showdata->click();
-        $assertText = $this->webDriver
-            ->findElement(WebDriverBy::Id("Topic"))->getText();
+        $assertText = $this->safeFindElement(WebDriverBy::Id("Topic"))->getText();
         $this->assertContains("Test Topic", $assertText);
 
     }//end test_search_keyword()
@@ -162,8 +157,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
 
         $this->safeGet($this->url.'/help_editor/');
-        $searchbox = $this->webDriver
-            ->findElement(WebDriverBy::Name("keyword"));
+        $searchbox = $this->safeFindElement(WebDriverBy::Name("keyword"));
         $searchbox->sendKeys("This is a test content.");
         $showdata = $this->webDriver
             ->findElement(
@@ -173,7 +167,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
                 )
             );
         $showdata->click();
-        $linkDetail = $this->webDriver->findElement(
+        $linkDetail = $this->safeFindElement(
             WebDriverBy::Xpath("//*[@id='Topic']/a")
         )->click();
         $assertText = $this->safeFindElement(
@@ -197,19 +191,16 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
 
         $this->safeGet($this->url.'/help_editor/');
-        $searchbox = $this->webDriver
-            ->findElement(WebDriverBy::Name("topic"));
+        $searchbox = $this->safeFindElement(WebDriverBy::Name("topic"));
         $searchbox->sendKeys("Hand Preference");
-        $clearform = $this->webDriver
-            ->findElement(
+        $clearform = $this->safeFindElement(
                 WebDriverBy::Xpath(
                     "//*[@id='panel-body']/".
                     "form/div[2]/div/div[2]/input"
                 )
             );
         $clearform->click();
-        $assertText = $this->webDriver
-            ->findElement(WebDriverBy::Name("topic"))->getText();
+        $assertText = $this->safeFindElement(WebDriverBy::Name("topic"))->getText();
         $this->assertEquals(null, $assertText);
 
     }//end test_clear_form()
@@ -223,7 +214,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array("context_help"));
          $this->safeGet($this->url . "/help_editor/");
-         $bodyText = $this->webDriver->findElement(
+         $bodyText = $this->safeFindElement(
              WebDriverBy::XPath("//*[@id='lorisworkspace']/table/tbody/tr/td[1]")
          )->getText();
          $this->assertContains("List of Topics", $bodyText);
@@ -238,7 +229,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/help_editor/");
-         $bodyText = $this->webDriver->findElement(
+         $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")
          )->getText();
          $this->assertContains("You do not have access to this page.", $bodyText);
