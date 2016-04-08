@@ -108,9 +108,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     public function testSearchTopic()
     {
         $this->safeGet($this->url.'/help_editor/');
-        $this->webDriver->takeScreenshot('/takeScreenshotimage.png');
       try{
-        // $this->webDriver->executeScript("window.scrollTo(0,10000);");
         $searchbox = $this->safeFindElement(WebDriverBy::Name("topic"));
         $searchbox->sendKeys("Test Topic");
         $showdata  = $this->safeClick(
