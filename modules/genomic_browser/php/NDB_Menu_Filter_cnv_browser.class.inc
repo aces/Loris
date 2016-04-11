@@ -449,10 +449,11 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                     $temp_array = explode('-', $temp_array[1]);
                     $from       = $temp_array[0];
                     $to         = $temp_array[1];
-                    $query     .= " AND genome_loc.Chromosome = '$chr'";
                     $query     .= " AND genome_loc.StartLoc < $to";
                     $query     .= " AND genome_loc.EndLoc > $from";
                 }
+                $query .= " AND :v_$prepared_key IS NOT NULL";
+
             } else {
                  $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
             }

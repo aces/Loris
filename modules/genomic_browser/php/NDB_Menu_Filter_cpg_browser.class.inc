@@ -212,7 +212,6 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                   'gca.genome_build',
                                   'gca.design_type',
                                   'genome_loc.Strand',
-                                  'gca.gene_name',
                                  );
 
         return true;
@@ -552,10 +551,11 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                     $temp_array = explode('-', $temp_array[1]);
                     $from       = $temp_array[0];
                     $to         = $temp_array[1];
-                    $query     .= " AND genome_loc.Chromosome = '$chr'";
                     $query     .= " AND genome_loc.StartLoc < $to";
                     $query     .= " AND genome_loc.EndLoc > $from";
                 }
+
+                $query .= " AND :v_$prepared_key IS NOT NULL";
 
             } elseif ($field == "gca.probe_snp_10" && $val === 'NULL'
                 || $field == "gca.dhs" && $val === 'NULL'
