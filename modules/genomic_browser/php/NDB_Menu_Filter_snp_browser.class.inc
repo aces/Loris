@@ -161,6 +161,9 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'SNP.ExonicFunction',
                                'genome_loc.Chromosome',
                                'genome_loc.Strand',
+                               'genome_loc.StartLoc',
+                               'genome_loc.EndLoc',
+                               'genome_loc.Strand',
                                'gene.OfficialSymbol',
                                'gene.OfficialName',
                                'genotyping_platform.Name',
@@ -191,6 +194,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                 'Exonic_Function'     => 'SNP.ExonicFunction',
                 'Chromosome'          => 'genome_loc.Chromosome',
                 'Gene_Symbol'         => 'gene.OfficalSymbol',
+                'genomic_range'       => 'genomic_range',
                 'Platform'            => 'genotyping_platform.Name',
                );
 
@@ -259,6 +263,13 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // SNP
+
+        $Base_options = array(
+                         null => 'Any',
+                         '37' => 'GRCh37',
+                        );
+        $this->addSelect('Assembly', 'Build:', $Base_options);
+
         $this->addBasicText('rsID', 'rsID:');
         $this->addBasicText('SNP_Name', 'Name:');
         $this->addBasicText('SNP_Description', 'Description:');
@@ -306,9 +317,15 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addBasicText('Genotype_Quality', 'Genotype Quality:');
         $this->addBasicText('Exonic_Function', 'Exonic Function:');
 
-        $this->addBasicText('Chromosome', 'Chromosome:');
-        $this->addBasicText('Strand', 'Strand:');
-        $this->addBasicText('Gene_Symbol', 'Symbol:');
+        $Base_options = array(
+                         null => 'Any',
+                         'F'  => 'Forward',
+                         'R'  => 'Reverse',
+                        );
+        $this->addSelect('Strand', 'Strand:', $Base_options);
+
+        $this->addBasicText('genomic_range', 'Genomic Range:');
+        $this->addBasicText('Gene_Symbol', 'Gene:');
         $this->addBasicText('Gene_Name', 'Name:');
 
         $DB = Database::singleton();
@@ -454,6 +471,20 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                  $query .= " AND $field = :v_$prepared_key";
             } elseif ($field == "candidate.CandID") {
                 $query .= " AND $field = " . ltrim($val, '0');
+            } elseif ($field == "genomic_range") {
+                $temp_array = explode(':', $val);
+                $chr        = str_replace('chr', '', $temp_array[0]);
+                $query     .= " AND genome_loc.Chromosome = '$chr'";
+
+                if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
+                    $temp_array = explode('-', $temp_array[1]);
+                    $from       = $temp_array[0];
+                    $to         = $temp_array[1];
+                    $query     .= " AND genome_loc.Chromosome = '$chr'";
+                    $query     .= " AND genome_loc.StartLoc < $to";
+                    $query     .= " AND genome_loc.EndLoc > $from";
+                }
+
             } else {
                  $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
             }

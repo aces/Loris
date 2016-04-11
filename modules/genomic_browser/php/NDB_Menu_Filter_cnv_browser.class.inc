@@ -241,6 +241,13 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // CNV
+
+        $Base_options = array(
+                         null => 'Any',
+                         '37' => 'GRCh37',
+                        );
+        $this->addSelect('Assembly', 'Build:', $Base_options);
+
         $CNV_Type_options = array(
                              null      => 'All',
                              'gain'    => 'gain',
@@ -281,10 +288,16 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addSelect('Inheritance', 'Inheritance:', $Inheritance_options);
 
         $this->addBasicText('Chromosome', 'Chromosome:');
-        $this->addBasicText('Strand', 'Strand:');
+
+        $Base_options = array(
+                         null => 'Any',
+                         'F'  => 'Forward',
+                         'R'  => 'Reverse',
+                        );
+        $this->addSelect('Strand', 'Strand:', $Base_options);
+
         $this->addBasicText('genomic_range', 'Genomic Range:');
-        $this->addBasicText('Gene_Symbol', 'Symbol:');
-        $this->addBasicText('Gene_Name', 'Name:');
+        $this->addBasicText('Gene_Symbol', 'Gene:');
 
         $DB = Database::singleton();
         $platform_results = $DB->select(

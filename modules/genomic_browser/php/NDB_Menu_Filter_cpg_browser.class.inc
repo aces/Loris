@@ -545,7 +545,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 
             } elseif ($field == "genomic_range") {
                 $temp_array = explode(':', $val);
-                $chr        = str_replace('chr', '', $temp_array[0]);
+                $chr        = $temp_array[0];
                 $query     .= " AND genome_loc.Chromosome = '$chr'";
 
                 if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
