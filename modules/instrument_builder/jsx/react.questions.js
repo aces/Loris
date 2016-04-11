@@ -458,7 +458,7 @@ AddElement = React.createClass({
 	    	// Error, element name already exists. Set the element error flag
 	    	// for the questionName with message.
 	    	this.setState(function(state){
-        		var temp = (this.state.error) ? this.state.error : {};
+        		var temp = (state.error) ? state.error : {};
         		temp.questionName = "Duplicate question name";
 				return {
 					error: temp
