@@ -154,6 +154,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'genome_loc.Chromosome',
                                'genome_loc.Strand',
                                'genome_loc.StartLoc',
+                               'genome_loc.EndLoc',
+                               'genomic_range',
                                'gca.gene_name',
                                'gca.genome_build',
                                'gca.design_type',
@@ -186,6 +188,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'Platform'           => 'platform.Name',
                                'Strand'             => 'genome_loc.Strand',
                                'StartLoc'           => 'genome_loc.StartLoc',
+                               'EndLoc'             => 'genome_loc.EndLoc',
+                               'genomic_range'      => 'genomic_range',
                                'Assembly'           => 'gca.genome_build',
                                'Context'            => 'gca.island_relation',
                                'Design'             => 'gca.design_type',
@@ -280,7 +284,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         // ------------------------------------------------------------
 
         $this->addBasicText('Gene_Symbol', 'Gene:');
-        $this->addBasicText('Chromosome', 'Chromosome:');
+        $this->addBasicText('genomic_range', 'Genomic Range:');
         $Base_options = array(
                          null => 'Any',
                          '37' => 'GRCh37',
@@ -292,8 +296,6 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                          'R'  => 'Reverse',
                         );
         $this->addSelect('Strand', 'Strand:', $Base_options);
-        $this->addBasicText('StartLoc', 'From:');
-        $this->addBasicText('EndLoc', 'To:');
 
         // ------------------------------------------------------------
         // ----------------- CPG Annotations Filters --------------------
@@ -530,21 +532,39 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if (in_array($field, $this->CheckboxFilters) && $val) {
                  $query .= " AND $field";
+
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))
             ) {
-
                  $query .= " AND $field = :v_$prepared_key";
+
             } elseif ($field == "candidate.CandID") {
                 $query .= " AND $field = " . ltrim($val, '0');
+
+            } elseif ($field == "genomic_range") {
+                $temp_array = explode(':', $val);
+                $chr        = str_replace('chr', '', $temp_array[0]);
+                $query     .= " AND genome_loc.Chromosome = '$chr'";
+
+                if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
+                    $temp_array = explode('-', $temp_array[1]);
+                    $from       = $temp_array[0];
+                    $to         = $temp_array[1];
+                    $query     .= " AND genome_loc.Chromosome = '$chr'";
+                    $query     .= " AND genome_loc.StartLoc < $to";
+                    $query     .= " AND genome_loc.EndLoc > $from";
+                }
+
             } elseif ($field == "gca.probe_snp_10" && $val === 'NULL'
                 || $field == "gca.dhs" && $val === 'NULL'
             ) {
                 $query .= " AND  $field IS NULL and 'NULL' = :v_$prepared_key" ;
+
             } else {
                 $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
+
             }
         }
         return $query;
