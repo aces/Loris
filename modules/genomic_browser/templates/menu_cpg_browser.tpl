@@ -76,7 +76,7 @@
               <div class="form-group col-sm-5">
                 <div class="panel panel-primary">
                   <div class="panel-heading" onclick="hideFilterGene();">
-                    Genomic range Filters
+                    Genomic Range Filters
                     <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-gene"></span>
                     <span class="glyphicon glyphicon-chevron-up pull-right" id="up-gene"></span>
                   </div>

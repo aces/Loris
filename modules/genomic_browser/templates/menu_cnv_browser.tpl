@@ -76,40 +76,40 @@
               <div class="form-group col-sm-5">
                 <div class="panel panel-primary">
                   <div class="panel-heading" onclick="hideFilterGene();">
-                    Gene Filters
+                    Genomic Range Filters 
                     <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-gene"></span>
                     <span class="glyphicon glyphicon-chevron-up pull-right" id="up-gene"></span>
                   </div>
                   <div class="panel-body" id="panel-body-gene">
 	            <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
+                        <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="HUGO Gene Nomenclature Committee ID ex: PINK1">
         		  {$form.Gene_Symbol.label}
                         </label>
                         <div class="col-sm-12 col-md-3">
         	          {$form.Gene_Symbol.html}
 		        </div>
-                        <label class="col-sm-12 col-md-2">
-        	          {$form.Gene_Name.label}
+                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Genome Reference Consortium ID">
+        	          {$form.Assembly.label}
                         </label>
-                        <div class="col-sm-12 col-md-5">
-        	          {$form.Gene_Name.html}
+                        <div class="col-sm-12 col-md-3">
+        	          {$form.Assembly.html}
 		        </div>
 		      </div>
 	            </div>
 	            <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-3">
-      		          {$form.Chromosome.label}
+                        <label class="col-sm-12 col-md-1">
+      		          {$form.Strand.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
-        	          {$form.Chromosome.html}
+        	          {$form.Strand.html}
 		        </div>
                         <label class="col-sm-12 col-md-3">
-        	          {$form.Platform.label}
+        	          {$form.genomic_range.label}
                         </label>
-                        <div class="col-sm-12 col-md-4">
-        	          {$form.Platform.html}
+                        <div class="col-sm-12 col-md-6">
+        	          {$form.genomic_range.html}
 		        </div>
 		      </div>
 	            </div>
