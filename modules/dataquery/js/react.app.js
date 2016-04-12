@@ -314,7 +314,9 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
     loadSavedQuery: function (fields, criteria) {
         // Used to load a saved query
 
-        var filterState = {};
+        var filterState = {},
+            selectedFields = {},
+            fieldsList = [];
         if(Array.isArray(criteria)){
             // This is used to load a query that is saved in the old format
             // so translate it into the new format, grouping the given critiras
@@ -355,6 +357,16 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
         } else {
             // Query was saved in the new format
             filterState = criteria;
+            selectedFields = fields;
+            for(var instrument in fields){
+                for(var field in fields[instrument]){
+                    if(field === "allVisits"){
+                        continue;
+                    } else {
+                        fieldsList.push(instrument + "," + field);
+                    }
+                }
+            }
         }
         if(filterState.children){
             filterState = this.loadFilterGroup(filterState);
@@ -368,7 +380,8 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
         }
         this.setState(function(state) {
            return  {
-                fields: fields,
+                fields: fieldsList,
+                selectedFields: selectedFields,
                 filter: filterState,
                 alertLoaded: true,
                 alertSaved: false
