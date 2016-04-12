@@ -169,7 +169,7 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
 
         $.post(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=saveQuery.php",
             {
-                Fields: this.state.fields,
+                Fields: this.state.selectedFields,
                 Filters: filter,
                 QueryName: name,
                 SharedQuery: shared,
