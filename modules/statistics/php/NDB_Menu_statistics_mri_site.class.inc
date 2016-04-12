@@ -43,6 +43,7 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
 
         $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type");
         $where = "WHERE (";
+        $counter = 1;
         foreach ($scan_types as $index=>$scan) {
             foreach ($scan as $type=>$label) {
                 if ($counter < sizeof($scan_types))
