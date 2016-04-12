@@ -777,11 +777,13 @@ ManageSavedQueryRow = React.createClass({
             var operator = (<span>AND</span>),
                 filter;
             if(this.props.Query.Conditions.activeOperator) {
-                filter = this.props.Query.Conditions.children.map(function(element, key){
-                    return <ManageSavedQueryFilter
-                                filterItem = {element}
-                            />
-                });
+                if(this.props.Query.Conditions.children) {
+                    filter = this.props.Query.Conditions.children.map(function(element, key){
+                        return <ManageSavedQueryFilter
+                                    filterItem = {element}
+                                />
+                    });
+                }
             } else {
                 filter = this.props.Query.Conditions.map(function(element, key){
                     return <ManageSavedQueryFilter
