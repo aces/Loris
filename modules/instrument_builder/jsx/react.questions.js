@@ -147,9 +147,9 @@ DateOptions = React.createClass({
     // Keep track of the inputed years
     onChange: function(e){
         var options = this.props.element.Options;
-        if(e.target.id === 'datemin'){
+        if(e.target.id === 'datemin' && e.target.value.length > 0){
             options.MinDate = e.target.value + "-01-01";
-        } else if (e.target.id === 'datemax'){
+        } else if (e.target.id === 'datemax' && e.target.value.length > 0){
             options.MaxDate = e.target.value + "-12-31";
         }
         this.props.updateState({Options: options});
@@ -389,7 +389,7 @@ AddElement = React.createClass({
                 var minDate = Date.parse(min),
                     maxDate = Date.parse(max);
 
-                if (isNaN(minDate) || isNaN(maxDate)) {
+                if ( (isNaN(minDate) && min != '') || (isNaN(maxDate) && max != '') ) {
                     var temp = (this.state.error) ? this.state.error : {};
                     
                     temp.dateOption = "Invalid date provided";
@@ -399,7 +399,7 @@ AddElement = React.createClass({
                     hasError = true;
                 }
 
-                if (minDate > maxDate) {
+                if (minDate > maxDate && min != '' && max != '') {
                     var temp = (this.state.error) ? this.state.error : {}; 
     
                     temp.dateOption = "End year append befor start year";
