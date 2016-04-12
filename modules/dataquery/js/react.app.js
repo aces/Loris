@@ -354,6 +354,27 @@ DataQueryApp = React.createClass({displayName: "DataQueryApp",
                 }
                 return rule;
             });
+
+            var fieldSplit;
+            fieldsList = fields;
+            for(var i = 0; i < fields.length; i++){
+                fieldSplit = fields[i].split(",");
+                if(!selectedFields[fieldSplit[0]]){
+                    selectedFields[fieldSplit[0]] = {};
+                    selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
+                    selectedFields[fieldSplit[0]].allVisits = {};
+                    for(var key in this.props.Visits){
+                        selectedFields[fieldSplit[0]].allVisits[key] = 1;
+                        selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+                    }
+                } else {
+                    selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
+                    for(var key in this.props.Visits){
+                        selectedFields[fieldSplit[0]].allVisits[key]++;
+                        selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+                    }
+                }
+            }
         } else {
             // Query was saved in the new format
             filterState = criteria;
