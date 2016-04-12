@@ -77,7 +77,7 @@ class CouchDBDemographicsImporter {
         ),
         'Study_consent' => array(
             'Description' => 'Study Consent',
-            'Type' => "int(10)",
+            'Type' => "enum('yes','no','not_answered')",
         ),
         'Study_consent_withdrawal' => array(
             'Description' => 'Study Consent Withdrawal Date',
