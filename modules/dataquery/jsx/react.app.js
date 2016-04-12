@@ -356,7 +356,16 @@ DataQueryApp = React.createClass({
             // Query was saved in the new format
             filterState = criteria;
         }
-        filterState = this.loadFilterGroup(filterState);
+        if(filterState.children){
+            filterState = this.loadFilterGroup(filterState);
+        } else {
+            filterState.children = [
+                    {
+                        type: "rule"
+                    }
+            ];
+            filterState.session = this.props.AllSessions;
+        }
         this.setState(function(state) {
            return  {
                 fields: fields,
