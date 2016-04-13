@@ -247,7 +247,7 @@
       <!-- title -->
       {if {$resultcount} != '' }
         <td class="controlpanelsection">Results found: <strong>{$resultcount}</strong> total</td>
-          <a href="{$csvUrl}" download="{$csvFile}.csv">Download all fields as CSV</a>
+          <a href="{$baseurl}/{$csvUrl}" download="{$csvFile}.csv">Download all fields as CSV</a>
       {else}
         <td>No variants found. </td>
       {/if} 

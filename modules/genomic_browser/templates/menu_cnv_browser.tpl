@@ -225,7 +225,7 @@
       <!-- title -->
         {if {$resultcount} != '' }
           <td class="controlpanelsection">Variants found: <strong>{$resultcount}</strong> total</td>
-                    <a href="{$csvUrl}" download="{$csvFile}_CNV.csv">
+                    <a href="{$baseurl}/{$csvUrl}" download="{$csvFile}.csv">
                       [ Download as CSV ]
                     </a><br>
         {else}
