@@ -31,6 +31,7 @@ require_once 'NDB_Menu_Filter.class.inc';
 */
 class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
 {
+    var $AjaxModule = false;
     /**
      * Variables to enable special filter behaviour -
      * Show brief results or show full results (all available fields)
@@ -387,5 +388,23 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         return $query;
     }
 
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/genomic_browser/js/profileColumnFormatter.js",
+            )
+        );
+    }
 }
 ?>

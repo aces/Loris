@@ -29,7 +29,7 @@ require_once 'NDB_Menu_Filter.class.inc';
 class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 {
 
-    var $AjaxModule = true;
+    var $AjaxModule = false;
 
     /**
      * Variables to enable special filter behaviour -
@@ -404,113 +404,6 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
     }
 
     /**
-     * Function _setDataTableRows
-     *
-     * @param string $count number of data
-     *
-     * @note   overloaded function
-     * @return bool
-     */
-    function _setDataTableRows($count)
-    {
-        // create user object
-        $user           = User::singleton();
-        $subprojectlist = Utility::getSubprojectList();
-
-        $this->tpl_data['resultcount']  = $this->TotalItems;
-        $this->tpl_data['displayBrief'] = $this->_displayBrief;
-        // re-set headers if Brief; if full, gets set by _setDataTable()
-        if ($this->_displayBrief) {
-            $this->headers = array(); // re-initialize i.e. wipe
-            foreach ($this->_briefFields as $col) {
-                $this->headers[] = $col;
-            }
-
-            // copy column headings to new array, then replace
-            $colCount     = 0; // column counter
-            $maxCols      = sizeof($this->tpl_data['headers']); //limit
-            $briefHeaders = array();  // reset
-            foreach ($this->headers as $header) {
-                $found = false;
-                while ($colCount < $maxCols && !$found ) {
-                    // copy entire tpl_data element
-                    // including displayName and fieldOrder
-                    if ($this->tpl_data['headers'][$colCount]['name'] == $header) {
-                        $found          = true;
-                        $briefHeaders[] = $this->tpl_data['headers'][$colCount];
-                    }
-                    $colCount++;
-                } // iterate to check for next elt, starting from here
-            }
-            // When done, replace tpl_data headers
-            $this->tpl_data['headers'] = $briefHeaders;
-        }
-
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-
-                if ($this->_displayBrief && !in_array($key, $this->_briefFields)) {
-                    continue;  // no increment to $i
-                }
-
-                //Show the URL to the timepoint list on PSCID field
-                if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
-                    $this->tpl_data['items'][$x][$i]['DCCID'] = $item['DCCID'];
-                }
-                $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-
-                if ($key=='Subproject') {
-                    if (is_null($val)) {
-                        $this->tpl_data['items'][$x][$i]['value'] = null;
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = $subprojectlist[$val];
-                    }
-                }
-
-                if ($key=='Gene') {
-
-                    $gene    = strtok($val, ';');
-                    $acc_num = strtok($item['Accession_number'], ';');
-
-                    $this->tpl_data['items'][$x][$i]['value']   = $gene;
-                    $this->tpl_data['items'][$x][$i]['acc_num'] = $acc_num;
-                }
-
-                if ($key=='Accession_number') {
-
-                    $acc_num = strtok($val, ';');
-
-                    $this->tpl_data['items'][$x][$i]['value'] = $acc_num;
-                }
-                if ($key=='cpg_name') {
-
-                    $startLoc = $item['StartLoc'] - 500;
-                    $endLoc   = $item['StartLoc'] + 500;
-                    $position = 'Chr'.$item['Chromosome'].':'.$startLoc.'-'.$endLoc;
-
-                    $this->tpl_data['items'][$x][$i]['value']    = $val;
-                    $this->tpl_data['items'][$x][$i]['assembly'] = $item['Assembly'];
-                    $this->tpl_data['items'][$x][$i]['position'] = $position;
-                }
-                $i++;
-            }
-            $x++;
-        }
-        $this->tpl_data['resultcount']   = $this->TotalItems;
-        $this->tpl_data['displayFilter'] = $this->_displayBrief;
-
-        return true;
-    }
-
-    /**
      * Adds filters
      * This function overrides filters to enable display of brief/full results
      *
@@ -588,6 +481,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             $deps,
             array(
              $baseURL . "/genomic_browser/js/genomic_browser.js",
+             $baseURL . "/genomic_browser/js/cpgColumnFormatter.js",
             )
         );
     }

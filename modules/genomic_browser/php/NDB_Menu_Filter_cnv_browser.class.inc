@@ -325,88 +325,6 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
     }
 
     /**
-     * Function _setDataTableRows
-     *
-     * @param string $count number of data
-     *
-     * @note   overloaded function
-     * @return bool
-     */
-    function _setDataTableRows($count)
-    {
-        // create user object
-        $user           = User::singleton();
-        $subprojectlist = Utility::getSubprojectList();
-
-        $this->tpl_data['resultcount']  = $this->TotalItems;
-        $this->tpl_data['displayBrief'] = $this->_displayBrief;
-
-        // re-set headers if Brief; if full, gets set by _setDataTable()
-        if ($this->_displayBrief) {
-            $this->headers = array(); // re-initialize i.e. wipe
-            foreach ($this->_briefFields as $col) {
-                 $this->headers[] = $col;
-            }
-
-            // copy column headings to new array, then replace
-            $colCount     = 0; //  column counter
-            $maxCols      = sizeof($this->tpl_data['headers']); //limit
-            $briefHeaders = array();  // reset
-            foreach ($this->headers as $header) {
-                $found = false;
-                while ($colCount < $maxCols && !$found ) {
-                    // copy entire tpl_data element
-                    // including displayName and fieldOrder
-                    if ($this->tpl_data['headers'][$colCount]['name'] == $header) {
-                        $found          = true;
-                        $briefHeaders[] = $this->tpl_data['headers'][$colCount];
-                    }
-                    $colCount++;
-                } // iterate to check for next elt, starting from here
-            }
-            // When done, replace tpl_data headers
-            $this->tpl_data['headers'] = $briefHeaders;
-        }
-
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                if ($this->_displayBrief && !in_array($key, $this->_briefFields)) {
-                    continue;  // loop without incrementing $i
-                }
-
-                //Show the URL to the timepoint list on PSCID field
-                if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
-                    $this->tpl_data['items'][$x][$i]['DCCID']
-                        = str_pad($item['DCCID'], 6, '0', STR_PAD_LEFT);
-                }
-                $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-
-                if ($key=='Subproject' ) {
-                    if (is_null($val)) {
-                        $this->tpl_data['items'][$x][$i]['value'] = null;
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = $subprojectlist[$val];
-                    }
-                }
-                $i++;
-            }
-            $x++;
-        }
-        $this->tpl_data['resultcount']   = $this->TotalItems;
-        $this->tpl_data['displayFilter'] = $this->_displayBrief;
-
-        return true;
-    }
-
-    /**
      * Adds filters
      * This function overrides filters to enable display of brief/full results
      *
@@ -459,6 +377,26 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
             }
         }
         return $query;
+    }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/genomic_browser/js/genomic_browser.js",
+             $baseURL . "/genomic_browser/js/cnvColumnFormatter.js",
+            )
+        );
     }
 
 }

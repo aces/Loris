@@ -229,62 +229,20 @@
       </div>
     </div>
   </div> <!-- end row containing all filters-->
-  <div class="row">
-    <!-- title table with pagination -->
-    <table border="0" valign="bottom" width="100%"><tr>
-      <!-- title -->
-      {if {$resultcount} != '' }
-        <td class="controlpanelsection">Results found: <strong>{$resultcount}</strong> total</td>
-          <a href="{$baseurl}/{$csvUrl}" download="{$csvFile}.csv">Download all fields as CSV</a>
-      {else}
-        <td>No variants found. </td>
-      {/if} 
+  <table border="0" valign="bottom" width="100%">
+    <tr>
       <!-- display pagination links -->
-      {if {$resultcount} != '' && $resultcount > 25}  
-        <td align="right">Pages:&nbsp;&nbsp;&nbsp; {$page_links}</td>
-      {/if}
+      <td align="left" id="pageLinks"></td>
     </tr>
-    </table>
-<!-- start data table -->
-    <table  class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
-      <thead>
-        <tr class="info">
-          <th>No.</th>
-          <!-- print out column headings - quick & dirty hack -->
-          {section name=header loop=$headers}
-            <th><a href="{$baseurl}/genomic_browser/?submenu=cpg_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-          {/section}
-        </tr>
-      </thead>
-      <tbody>
-        {section name=item loop=$items}
-          <tr>
-        <!-- print out data rows -->
-          {section name=piece loop=$items[item]}
-            {if $items[item][piece].bgcolor != ''}
-              <td style="background-color:{$items[item][piece].bgcolor}">
-            {elseif $items[item][piece].name == "Date_of_Birth" OR $items[item][piece].name == "Date_Collected"}
-              <td style="white-space: nowrap">
-            {else}
-              <td>
-            {/if}
-            {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-              {assign var="PSCID" value=$items[item][piece].value}
-              <a href="{$baseurl}/{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
-            {elseif $items[item][piece].value != "" AND $items[item][piece].name == "cpg_name"}
-              <a title="UCSC Genome Browser" href="http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position={$items[item][piece].position}" target="_blank">{$items[item][piece].value}</a>
-            {elseif $items[item][piece].value != "" AND $items[item][piece].name == "Gene"}
-              <a title="UCSC Genome Browser" href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&position={$items[item][piece].acc_num}" target="_blank">{$items[item][piece].value}</a>
-            {else}
-              {$items[item][piece].value}
-            {/if }
-            </td>
-          {/section}
-        </tr>
-        {/section}
-      </tbody>
-      <!-- end data table -->
-    </table>
-  </div>
+  </table>
+  <div id="datatable"></div>
 </div>
-<br>
+<script>
+
+var table = RDynamicDataTable({
+    "DataURL" : "{$baseurl}/genomic_browser/?submenu=cpg_browser&format=json",
+    "getFormattedCell" : formatColumn,
+});
+
+React.render(table, document.getElementById("datatable"));
+</script>
