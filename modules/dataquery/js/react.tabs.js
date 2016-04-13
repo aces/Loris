@@ -763,9 +763,19 @@ ManageSavedQueryRow = React.createClass({displayName: "ManageSavedQueryRow",
     render: function() {
         var fields = [];
         var filters;
-        if(this.props.Query.Fields) {
+        if(this.props.Query.Fields && Array.isArray(this.props.Query.Fields)) {
             for(var i = 0; i < this.props.Query.Fields.length; i += 1) {
                 fields.push(React.createElement("li", null, this.props.Query.Fields[i]));
+            }
+        } else if(this.props.Query.Fields) {
+            for(var instrument in this.props.Query.Fields){
+                for(var field in this.props.Query.Fields[instrument]){
+                    if(field === "allVisits"){
+                        continue;
+                    } else {
+                        fields.push(React.createElement("li", null, instrument, ",", field));
+                    }
+                }
             }
         }
 
