@@ -784,22 +784,34 @@ ManageSavedQueryRow = React.createClass({
         }
 
         if(this.props.Query.Conditions) {
-            var operator = (<span>AND</span>),
+            var operator,
                 filter;
             if(this.props.Query.Conditions.activeOperator) {
                 if(this.props.Query.Conditions.children) {
+                    if(this.props.Query.Conditions.activeOperator === 0){
+                        operator = (<span>AND</span>)
+                    } else {
+                        operator = (<span>OR</span>)
+                    }
                     filter = this.props.Query.Conditions.children.map(function(element, key){
                         return <ManageSavedQueryFilter
                                     filterItem = {element}
                                 />
                     });
+                } else {
+                    operator = (<span>No filters defined</span>);
                 }
             } else {
-                filter = this.props.Query.Conditions.map(function(element, key){
-                    return <ManageSavedQueryFilter
-                                filterItem = {element}
-                            />
-                 });
+                if(this.props.Query.Conditions.length === 0){
+                    operator = (<span>No filters defined</span>);
+                } else {
+                    operator = (<span>AND</span>);
+                    filter = this.props.Query.Conditions.map(function(element, key){
+                        return <ManageSavedQueryFilter
+                                    filterItem = {element}
+                                />
+                    });
+                }
             }
             filters = (
                 <div className="tree">
