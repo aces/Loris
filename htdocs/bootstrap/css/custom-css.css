@@ -287,6 +287,9 @@ div.navbar div.container div.navbar-brand {
     #bc2 > a:last-child > div {
         max-width: 100%
     }
+    #bc2 > a > div:hover {
+        max-width: 100%
+    }
 }
 
 /* For tablets */
@@ -298,6 +301,9 @@ div.navbar div.container div.navbar-brand {
         max-width: 100px;
     }
     #bc2 > a:last-child > div {
+        max-width: 100%
+    }
+    #bc2 > a > div:hover {
         max-width: 100%
     }
 }
@@ -313,6 +319,9 @@ div.navbar div.container div.navbar-brand {
     #bc2 > a:last-child > div {
         max-width: 100%
     }
+    #bc2 > a > div:hover {
+        max-width: 100%
+    }
 }
 
 /* For desktops */
@@ -326,6 +335,7 @@ div.navbar div.container div.navbar-brand {
     .btn-breadcrumb > * div:last-child {
         width: 100%;
     }
+}
 
 /*
  *  CSS for static table
