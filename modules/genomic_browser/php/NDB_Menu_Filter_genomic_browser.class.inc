@@ -38,7 +38,6 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
      * used in (overridden) _addValidFilters function below
      */
     var $_displayBrief = true;  // default: display only Brief results
-    var $_briefFields  = array(); // which fields to display
 
     /**
      * Overloading this method to allow access to site users (own site only)
@@ -78,17 +77,16 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                           'M.CPGCount as CPGs',
                          );
 
-        $this->_briefFields = array(
-                               'DCCID',
-                               'PSCID',
-                               'Files',
-                               'SNPs',
-                               'CNVs',
-                               'CPGs',
-                              );
-
-        // This variable will be used by the collumnFormatter javascript.
-        $this->tpl_data['briefHeaders'] = json_encode($this->_briefFields);
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array(
+             'PSC',
+             'DCCID',
+             'Subproject',
+             'DoB',
+            )
+        );
 
         $this->query = " FROM candidate
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID

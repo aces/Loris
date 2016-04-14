@@ -1,8 +1,7 @@
 
 function formatColumn(column, cell, rowData) {
     reactElement = null;
-    if ( !(loris.brief && -1 == loris.briefHeaders.indexOf(column)) ) {
-
+    if (-1 == loris.hiddenHeaders.indexOf(column)) {
         switch (column) {
             case 'PSCID':
                 var url = loris.BaseURL + "/" + rowData[1] + "/";
@@ -25,6 +24,5 @@ function formatColumn(column, cell, rowData) {
                 break;
         }
     }
-
     return reactElement;
 }

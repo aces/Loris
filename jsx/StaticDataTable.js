@@ -97,7 +97,7 @@ StaticDataTable = React.createClass({
         var headers = [<th onClick={this.setSortColumn(-1)}>{this.props.RowNumLabel}</th>];
         for(var i = 0; i < this.props.Headers.length; i += 1) {
  
-            if ( typeof loris.briefHeaders === "undefined" || !(loris.brief && -1 == loris.briefHeaders.indexOf(this.props.Headers[i])) ) {
+            if ( typeof loris.hiddenHeaders === "undefined" || -1 == loris.hiddenHeaders.indexOf(this.props.Headers[i]) ) {
                 if(this.props.Headers[i] == this.props.freezeColumn){
                     headers.push(<th id={this.props.freezeColumn} onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
                 }else {
