@@ -1,4 +1,3 @@
-
 function formatColumn(column, cell, rowData) {
     reactElement = null;
     if (-1 == loris.hiddenHeaders.indexOf(column)) {
