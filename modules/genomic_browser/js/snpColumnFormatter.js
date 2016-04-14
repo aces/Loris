@@ -1,8 +1,6 @@
 
 function formatColumn(column, cell, rowData) {
     reactElement = null;
-console.log(column);
-console.log(loris.hiddenHeaders.indexOf(column));
     if (-1 == loris.hiddenHeaders.indexOf(column)) {
         switch (column) {
             case 'PSCID':
