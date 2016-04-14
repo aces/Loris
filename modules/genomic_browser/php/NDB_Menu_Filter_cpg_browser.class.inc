@@ -34,10 +34,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
     /**
      * Variables to enable special filter behaviour -
      * Show brief results or show full results (all available fields)
-     * used in (overridden) _addValidFilters function below
      */
     var $_displayBrief = true;  // default: display only Brief results
-    var $_briefFields  = array(); // which fields to display
 
     /**
      * Overloading this method to allow access to site users (own site only)
@@ -101,18 +99,44 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                 'platform.Name as Platform',
                                );
 
-        $this->_briefFields = array(
-                               'DCCID',
-                               'PSCID',
-                               'Subproject',
-                               'cpg_name',
-                               'Beta_value',
-                               'Chromosome',
-                               'Gene',
-                              );
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array(
+                 'PSC',
+                 'DCCID',
+                 'Subproject',
+                 'DoB',
+                 'Sample',
+                 'StartLoc',
+                 'Probe_Loc_A',
+                 'Probe_Seq_A',
+                 'Probe_Loc_B',
+                 'Probe_Seq_B',
+                 'Design',
+                 'Color',
+                 'Assembly',
+                 'SNP_10',
+                 'Accession_number',
+                 'Gene_Grp',
+                 'Island_Loc',
+                 'Context',
+                 'Fantom_Prom',
+                 'DMR',
+                 'Enhancer',
+                 'HMM_Island',
+                 'Reg_Feature_Loc',
+                 'Reg_Feature_Grp',
+                 'DHS',
+                 'Platform',
+                )
+            )
+        );
 
-        // Chromosome from genome_loc table
-        // INNER JOIN on table.
         // If a candidate has no CPG records, they will not appear.
         $this->query = " FROM candidate
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID 

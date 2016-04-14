@@ -34,10 +34,8 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
     /**
      * Variables to enable special filter behaviour -
      * Show brief results or show full results (all available fields)
-     * used in (overridden) _addValidFilters function below
      */
     var $_displayBrief = true;  // default: display only Brief results
-    var $_briefFields  = array(); // which fields to display
 
     /**
      * Overloading this method to allow access to site users (own site only)
@@ -75,17 +73,16 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                           'GWAS.Pvalue AS P_value',
                          );
 
-        $this->_briefFields = array(
-                               'SNP_ID',
-                               'Chromosome',
-                               'Position_BP',
-                               'Major_Allele',
-                               'Minor_Allele',
-                               'MAF',
-                               'Estimate',
-                               'StdErr',
-                               'P_value',
-                              );
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array()
+            )
+        );
 
         // $this->query = " FROM GWAS ";
         $this->query = " FROM GWAS

@@ -32,10 +32,8 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
     /**
      * Variables to enable special filter behaviour -
      * Show brief results or show full results (all available fields)
-     * used in (overridden) _addValidFilters function below
      */
     var $_displayBrief = true;  // default: display only Brief results
-    var $_briefFields  = array(); // which fields to display
 
     /**
      * Overloading this method to allow access to site users (own site only)
@@ -68,17 +66,23 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                           'candidate.Gender',
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
-                          'candidate.ExternalID as externalID',
+                          'candidate.ExternalID as ExternalID',
                           'genome_loc.Chromosome as Chromosome',
                           'genome_loc.Strand as Strand',
                           'genome_loc.StartLoc as StartLoc',
                           'genome_loc.EndLoc as EndLoc',
                           'genome_loc.Size as Size',
+                          'CONCAT(
+                              genome_loc.Chromosome, 
+                              ":",
+                              genome_loc.StartLoc,
+                              "-",
+                              genome_loc.EndLoc
+                           ) as Location',
                           'gene.OfficialSymbol as Gene_Symbol',
                           'gene.OfficialName as Gene_Name',
-                          'genotyping_platform.Name as Platform',
-                          'CNV.Type as CNV_Type',
                           'CNV.Description as CNV_Description',
+                          'CNV.Type as CNV_Type',
                           'CNV.CopyNumChange as Copy_Num_Change',
                           'CNV.EventName as Event_Name',
                           'CNV.Common_CNV as Common_CNV',
@@ -87,22 +91,37 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                           'CNV.ArrayReport as Array_Report',
                           'CNV.Markers as Markers',
                           'CNV.ValidationMethod as Validation_Method',
+                          'genotyping_platform.Name as Platform',
                          );
 
-        $this->_briefFields = array(
-                               'DCCID',
-                               'PSCID',
-                               'Subproject',
-                               'Chromosome',
-                               'StartLoc',
-                               'Size',
-                               'Gene_Name',
-                               'Platform',
-                               'CNV_Type',
-                               'CNV_Description',
-                               'Copy_Num_Change',
-                               'Common_CNV',
-                              );
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array(
+                 'PSC',
+                 'DCCID',
+                 'Subproject',
+                 'DoB',
+                 'ExternalID',
+                 'Chromosome',
+                 'Strand',
+                 'StartLoc',
+                 'EndLoc',
+                 'Size',
+                 'Event_Name',
+                 'Gene_Symbol',
+                 'Gene_Name',
+                 'Platform',
+                 'Array_Report',
+                 'Markers',
+                 'Validation_Method',
+                )
+            )
+        );
 
         $this->query = " FROM candidate
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID

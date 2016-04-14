@@ -1,20 +1,30 @@
-function formatColumn(column, cell, rowData) {
-    if (column === 'PSCID') {
-        var url = loris.BaseURL + "/" + rowData[1] + "/";
-        return React.createElement(
-            "td",
-            null,
-            React.createElement(
-                "a",
-                { href: url },
-                cell
-            )
-        );
-    }
-    return React.createElement(
-        "td",
-        null,
-        cell
-    );
-}
 
+function formatColumn(column, cell, rowData) {
+    reactElement = null;
+console.log(column);
+console.log(loris.hiddenHeaders.indexOf(column));
+    if (-1 == loris.hiddenHeaders.indexOf(column)) {
+        switch (column) {
+            case 'PSCID':
+                var url = loris.BaseURL + "/" + rowData[1] + "/";
+                reactElement = React.createElement(
+                    "td",
+                    null,
+                    React.createElement(
+                        "a",
+                        { href: url },
+                        cell
+                    )
+                );
+                break;
+            default:
+                reactElement = React.createElement(
+                    "td",
+                    null,
+                    cell
+                );
+                break;
+        }
+    }
+    return reactElement;
+}

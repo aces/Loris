@@ -1,3 +1,6 @@
+<script>
+    loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+</script>
 <div class="col-sm-12">
   <div class="row">
     <div id="tabs">
@@ -260,6 +263,9 @@
   <div id="datatable"></div>
 </div>
 <script>
+if (document.getElementsByName('Show_Brief_Results')[0].value != "brief") {
+    loris.hiddenHeaders = [];
+}
 
 var table = RDynamicDataTable({
     "DataURL" : "{$baseurl}/genomic_browser/?submenu=snp_browser&format=json",

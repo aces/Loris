@@ -80,11 +80,16 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         // This variable will be used by the columnFormatter javascript
         // to set the default hidden columns in the data table.
         $this->tpl_data['hiddenHeaders'] = json_encode(
-            array(
-             'PSC',
-             'DCCID',
-             'Subproject',
-             'DoB',
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array(
+                 'PSC',
+                 'DCCID',
+                 'externalID',
+                 'DoB',
+                )
             )
         );
 
