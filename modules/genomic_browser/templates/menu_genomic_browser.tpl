@@ -158,6 +158,9 @@
   <div id="datatable"></div>
 </div>
 <script>
+loris.brief = document.getElementsByName('Show_Brief_Results')[0].value == "brief";
+
+loris.briefHeaders = {(empty($briefHeaders))? [] : $briefHeaders };
 
 var table = RDynamicDataTable({
     "DataURL" : "{$baseurl}/genomic_browser/?format=json",

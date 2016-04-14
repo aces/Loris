@@ -1,4 +1,6 @@
-StaticDataTable = React.createClass({displayName: "StaticDataTable",
+StaticDataTable = React.createClass({
+    displayName: "StaticDataTable",
+
     mixins: [React.addons.PureRenderMixin],
     propTypes: {
         Headers: React.PropTypes.array.isRequired,
@@ -8,54 +10,54 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
         // func(ColumnName, CellData, EntireRowData)
         getFormattedCell: React.PropTypes.func
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         if (jQuery.fn.DynamicTable) {
-            if(this.props.freezeColumn) {
-                $("#dynamictable").DynamicTable({"freezeColumn" : this.props.freezeColumn});
+            if (this.props.freezeColumn) {
+                $("#dynamictable").DynamicTable({ "freezeColumn": this.props.freezeColumn });
             } else {
                 $("#dynamictable").DynamicTable();
             }
         }
     },
-    getInitialState: function() {
+    getInitialState: function () {
         return {
-            'PageNumber' : 1,
-            'SortColumn' : -1,
-            'SortOrder' : 'ASC',
-            'RowsPerPage' : 20
+            'PageNumber': 1,
+            'SortColumn': -1,
+            'SortOrder': 'ASC',
+            'RowsPerPage': 20
         };
     },
-    getDefaultProps: function() {
+    getDefaultProps: function () {
         return {
             Headers: [],
             Data: {},
             RowNumLabel: 'No.'
         };
     },
-    changePage: function(pageNo) {
+    changePage: function (pageNo) {
         this.setState({
             PageNumber: pageNo
         });
     },
-    setSortColumn: function(colNumber) {
+    setSortColumn: function (colNumber) {
         that = this;
-        return function(e) {
-            if(that.state.SortColumn === colNumber) {
+        return function (e) {
+            if (that.state.SortColumn === colNumber) {
                 that.setState({
-                    'SortOrder' : that.state.SortOrder === 'ASC' ? 'DESC' : 'ASC'
+                    'SortOrder': that.state.SortOrder === 'ASC' ? 'DESC' : 'ASC'
                 });
             } else {
                 that.setState({
                     SortColumn: colNumber
                 });
             }
-        }
+        };
     },
-    changeRowsPerPage: function(val) {
-       this.setState({
-           'RowsPerPage' : val.target.value,
-           'PageNumber' : 1
-       });
+    changeRowsPerPage: function (val) {
+        this.setState({
+            'RowsPerPage': val.target.value,
+            'PageNumber': 1
+        });
     },
     downloadCSV: function() {
         var headers = this.props.Fields,
@@ -83,31 +85,51 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
             identifiers: this.props.RowNameMap
         });
     },
-    render: function() {
+    render: function () {
         if (this.props.Data == null) {
-            return (
-                React.createElement("div", {
+            return React.createElement(
+                "div",
+                {
                     className: "alert alert-info no-result-found-panel"
-                }, 
-                    React.createElement("strong", null, "No result found.")
+                },
+                React.createElement(
+                    "strong",
+                    null,
+                    "No result found."
                 )
             );
         }
         var rowsPerPage = this.state.RowsPerPage;
-        var headers = [React.createElement("th", {onClick: this.setSortColumn(-1)}, this.props.RowNumLabel)];
-        for(var i = 0; i < this.props.Headers.length; i += 1) {
-            if(this.props.Headers[i] == this.props.freezeColumn){
-                headers.push(React.createElement("th", {id: this.props.freezeColumn, onClick: this.setSortColumn(i)}, this.props.Headers[i]));
-            }else {
-                headers.push(React.createElement("th", {onClick: this.setSortColumn(i)}, this.props.Headers[i]));
+        var headers = [React.createElement(
+            "th",
+            { onClick: this.setSortColumn(-1) },
+            this.props.RowNumLabel
+        )];
+        for (var i = 0; i < this.props.Headers.length; i += 1) {
+
+            if (typeof loris.briefHeaders === "undefined" || !(loris.brief && -1 == loris.briefHeaders.indexOf(this.props.Headers[i]))) {
+                if (this.props.Headers[i] == this.props.freezeColumn) {
+                    headers.push(React.createElement(
+                        "th",
+                        { id: this.props.freezeColumn, onClick: this.setSortColumn(i) },
+                        this.props.Headers[i]
+                    ));
+                } else {
+                    headers.push(React.createElement(
+                        "th",
+                        { onClick: this.setSortColumn(i) },
+                        this.props.Headers[i]
+                    ));
+                }
             }
         }
         var rows = [];
         var curRow = [];
-        var index = [], that = this;
+        var index = [],
+            that = this;
 
-        if(this.state.SortColumn >= 0) {
-            for(var i = 0; i < this.props.Data.length; i += 1) {
+        if (this.state.SortColumn >= 0) {
+            for (var i = 0; i < this.props.Data.length; i += 1) {
                 var val = this.props.Data[i][this.state.SortColumn];
 
                 if (parseInt(val, 10) == val) {
@@ -119,68 +141,82 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
                 }
 
                 if (this.props.RowNameMap) {
-                    index.push({ RowIdx: i, Value: val, Content: this.props.RowNameMap[i]});
+                    index.push({ RowIdx: i, Value: val, Content: this.props.RowNameMap[i] });
                 } else {
-                    index.push({ RowIdx: i, Value: val, Content: i+1 });
+                    index.push({ RowIdx: i, Value: val, Content: i + 1 });
                 }
             }
-            index.sort(function(a, b) {
-                if(that.state.SortOrder === 'ASC') {
+            index.sort(function (a, b) {
+                if (that.state.SortOrder === 'ASC') {
                     // Sort by value
-                    if(a.Value < b.Value) return -1;
-                    if(a.Value > b.Value) return 1;
+                    if (a.Value < b.Value) return -1;
+                    if (a.Value > b.Value) return 1;
 
                     // If all values are equal, sort by rownum
-                    if(a.RowIdx < b.RowIdx) { return -1; }
-                    if(a.RowIdx > b.RowIdx) { return 1; }
+                    if (a.RowIdx < b.RowIdx) {
+                        return -1;
+                    }
+                    if (a.RowIdx > b.RowIdx) {
+                        return 1;
+                    }
                 } else {
                     // Sort by value
-                    if(a.Value < b.Value) return 1;
-                    if(a.Value > b.Value) return -1;
+                    if (a.Value < b.Value) return 1;
+                    if (a.Value > b.Value) return -1;
 
                     // If all values are equal, sort by rownum
-                    if(a.RowIdx < b.RowIdx) { return 1; }
-                    if(a.RowIdx > b.RowIdx) { return -1; }
+                    if (a.RowIdx < b.RowIdx) {
+                        return 1;
+                    }
+                    if (a.RowIdx > b.RowIdx) {
+                        return -1;
+                    }
                 }
                 // They're equal..
                 return 0;
-
             });
         } else {
-            for(var i = 0; i < this.props.Data.length; i += 1) {
+            for (var i = 0; i < this.props.Data.length; i += 1) {
                 if (this.props.RowNameMap) {
-                    index.push({ RowIdx: i, Content: this.props.RowNameMap[i]});
+                    index.push({ RowIdx: i, Content: this.props.RowNameMap[i] });
                 } else {
-                    index.push({ RowIdx: i, Content: i+1});
+                    index.push({ RowIdx: i, Content: i + 1 });
                 }
             }
         }
-        for(var i = (rowsPerPage*(this.state.PageNumber-1));
-                (i < this.props.Data.length) && (rows.length < rowsPerPage);
-                i += 1) {
+        for (var i = rowsPerPage * (this.state.PageNumber - 1); i < this.props.Data.length && rows.length < rowsPerPage; i += 1) {
             curRow = [];
 
-            for(var j = 0; j < this.props.Headers.length; j += 1) {
-                if(this.props.Data[index[i].RowIdx]) {
+            for (var j = 0; j < this.props.Headers.length; j += 1) {
+                if (this.props.Data[index[i].RowIdx]) {
                     data = this.props.Data[index[i].RowIdx][j];
                 } else {
                     data = "Unknown";
                 }
                 if (this.props.getFormattedCell) {
                     data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[i].RowIdx]);
-                    curRow.push({data});
+                    curRow.push({ data });
                 } else {
-                    curRow.push(React.createElement("td", null, data));
+                    curRow.push(React.createElement(
+                        "td",
+                        null,
+                        data
+                    ));
                 }
             }
-            rows.push(
-                React.createElement("tr", {colSpan: headers.length}, 
-                    React.createElement("td", null, index[i].Content), 
-                    curRow
-                )
-            );
+            rows.push(React.createElement(
+                "tr",
+                { colSpan: headers.length },
+                React.createElement(
+                    "td",
+                    null,
+                    index[i].Content
+                ),
+                curRow
+            ));
         }
 
+<<<<<<< HEAD
         var RowsPerPageDropdown = (
             React.createElement("select", {className: "input-sm perPage", onChange: this.changeRowsPerPage}, 
                 React.createElement("option", null, "20"), 
