@@ -338,8 +338,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                     $query .= " AND s.MRIQCPending='Y'"; 
                     break;
                 case "N":
-                    $query .= " AND (s.MRIQCStatus='' 
-                        OR fqc.QCFirstChangeTime IS NULL)"; 
+                    $query .= " AND fqc.QCFirstChangeTime IS NULL"; 
                     break;
                 case "PN":
                     $query .= " AND (s.MRIQCPending='Y' 
