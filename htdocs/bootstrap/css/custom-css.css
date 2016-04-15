@@ -334,3 +334,11 @@ div.navbar div.container div.navbar-brand {
 .rowsPerPage {
     color: black;
 }
+
+.left.carousel-control {
+    margin-left: 15px;
+}
+
+.right.carousel-control {
+    margin-right: 15px;
+}
