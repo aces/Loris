@@ -15,6 +15,25 @@ function formatColumn(column, cell, rowData) {
                     )
                 );
                 break;
+            case 'Subproject':
+                reactElement = React.createElement(
+                    "td",
+                    null,
+                    loris.subprojectList[cell]
+                );
+                break;
+            case 'Files':
+                var url = loris.BaseURL + "/genomic_browser/viewGenomicFile/?candID=" + rowData[1] + "/";
+                reactElement = React.createElement(
+                    "td",
+                    null,
+                    React.createElement(
+                        "span",
+                        {onClick: loris.loadFilteredMenuClickHandler('genomic_browser&submenu=viewGenomicFile', {'candID': rowData[1]}) },
+                        cell
+                    )
+                );
+                break;
             default:
                 reactElement = React.createElement(
                     "td",

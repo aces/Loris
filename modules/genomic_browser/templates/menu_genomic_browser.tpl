@@ -161,9 +161,21 @@
   <div id="datatable"></div>
 </div>
 <script>
+
 if (document.getElementsByName('Show_Brief_Results')[0].value != "brief") {
     loris.hiddenHeaders = [];
 }
+
+{literal}
+loris.subprojectList = {};
+Array.from(document.getElementsByName('SubprojectID')[0].children).forEach(
+    function (o) {
+        if (o.value !== "") {
+            loris.subprojectList[o.value] = o.label;
+        }
+    }
+);
+{/literal}
 
 var table = RDynamicDataTable({
     "DataURL" : "{$baseurl}/genomic_browser/?format=json",
