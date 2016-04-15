@@ -135,7 +135,7 @@
       <!-- title -->
       {if {$resultcount} != '' }
         <td class="controlpanelsection">Results found: <strong>{$resultcount}</strong> total</td>
-                            <a href="{$csvUrl}" download="{$csvFile}_GWAS.csv">
+                            <a href="{$baseurl}/{$csvUrl}" download="{$csvFile}.csv">
                                                   [ Download as CSV ]
                                                                       </a><br><br>
       {else}

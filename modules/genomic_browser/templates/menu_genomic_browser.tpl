@@ -156,7 +156,7 @@
       <!-- title -->
         {if {$resultcount} != '' }
           <td class="controlpanelsection">Profiles found: <strong>{$resultcount}</strong> total</td>
-                              <a href="{$csvUrl}" download="{$csvFile}_profiles.csv">
+                              <a href="{$baseurl}/{$csvUrl}" download="{$csvFile}.csv">
                                                     [ Download as CSV ]
                                                                         </a><br>
         {else}
