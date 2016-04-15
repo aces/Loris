@@ -12,7 +12,7 @@
 5. Check coordinates
     - Enter world coordinates and check that the cursor moves across the volume.
     - Enter voxel coordinates and check that the cursor moves across the volume.
-    - Enter 0, 0, 0 as voxel coordinates (should bring the cursor to the bottom left of each view).
+    - Enter 0, 0, 0 as voxel coordinates should bring you close to a corner of the volume, but it could be any of the eight corners. It depends on the orientation.
 6. Check all color maps
     - Gray (should be that color by default)
     - Spectral
