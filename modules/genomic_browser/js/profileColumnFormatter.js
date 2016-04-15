@@ -3,7 +3,6 @@ function formatColumn(column, cell, rowData) {
     reactElement = null;
     if (-1 == loris.hiddenHeaders.indexOf(column)) {
         var params = [];
-        console.log(column)
         switch (column) {
             case 'PSCID':
                 var url = loris.BaseURL + "/" + rowData[1] + "/";
@@ -43,7 +42,6 @@ function formatColumn(column, cell, rowData) {
 		if (0 == params.length) {
                     params = ['genomic_browser&submenu=cpg_browser', {'DCCID': rowData[1], 'filter': "Show Data"}];
                 }
-                console.log(params);
                 reactElement = React.createElement(
                     "td",
                     null,
