@@ -373,7 +373,7 @@ AddElement = React.createClass({
 	    if(questionText == '' && selected != 'line') {
 	    	// Error, question text is required. Set the element error flag
 	    	// for the questionText with message. Set the hasError flag
-	    	var temp = (state.error) ? state.error : {};
+	    	var temp = (this.state.error) ? this.state.error : {};
 	        if(selected == 'page-break') {
 	        	temp.questionText = "Must use question text as page header";
 	        } else {
@@ -396,7 +396,7 @@ AddElement = React.createClass({
 	    if(questionName == '' && selected != "header" && selected != "label" && selected != 'line' && selected != 'page-break') {
 	    	// Error, question name is needed for the desired type. Set the element error flag
 	    	// for the questionName with message. Set the hasError flag
-	    	var temp = (state.error) ? state.error : {};
+	    	var temp = (this.state.error) ? this.state.error : {};
         	temp.questionName = "Must specifiy name for database to save value into";
 	    	this.setState({
 				error: temp
