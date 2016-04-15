@@ -144,38 +144,49 @@ DropdownOptions = React.createClass({
  *	This is the React class for the date options
  */
 DateOptions = React.createClass({
-	// Keep track of the inputed years
-	onChange: function(e){
-		var options = this.props.element.Options;
-		if(e.target.id === 'datemin'){
-			options.MinDate = e.target.value + "-01-01";
-		} else if (e.target.id === 'datemax'){
-			options.MaxDate = e.target.value + "-12-31";
-		}
-		this.props.updateState({Options: options});
-	},
-	// Render the HTML
-	render: function () {
-		// Truncate off the month and day from the date to only have the
-		// year.
-		var minYear = this.props.element.Options.MinDate.split('-')[0],
-			maxYear = this.props.element.Options.MaxDate.split('-')[0];
-		return (
-			<div>
-				<BasicOptions updateState={this.props.updateState} element={this.props.element} />
-                <div id="dateoptions" className="options form-group">
-	                <label className="col-sm-2 control-label">Start year: </label>
-	                <div className="col-sm-2">
-	                    <input className="form-control" type="number" id="datemin" min="1900" max="2100" value={minYear} onChange={this.onChange} />
-	                </div>
-	                <label className="col-sm-2 control-label">End year: </label>
-	                <div className="col-sm-2">
-	                    <input className="form-control" type="number" id="datemax" min="1900" max="2100" onChange={this.onChange} value={maxYear} />
-	                </div>
-	            </div>
-			</div>
-		)
-	}
+    // Keep track of the inputed years
+    onChange: function(e){
+        var options = this.props.element.Options;
+        if(e.target.id === 'datemin' && e.target.value.length > 0){
+            options.MinDate = e.target.value + "-01-01";
+        } else if (e.target.id === 'datemax' && e.target.value.length > 0){
+            options.MaxDate = e.target.value + "-12-31";
+        }
+        this.props.updateState({Options: options});
+    },
+    // Render the HTML
+    render: function () {
+        // Truncate off the month and day from the date to only have the
+        // year.
+        var minYear = this.props.element.Options.MinDate.split('-')[0],
+            maxYear = this.props.element.Options.MaxDate.split('-')[0];
+
+        var errorClass = 'options form-group',
+            errorMessage = '';
+
+        if (this.props.element.error && this.props.element.error.dateOption) {
+            // If an error is present, display the error
+            errorMessage = (<font className="form-error">{this.props.element.error.dateOption}</font>);
+            errorClass += " has-error";
+        }
+
+        return (
+            <div>
+                <BasicOptions updateState={this.props.updateState} element={this.props.element} />
+                <div id="dateoptions" className={errorClass}>
+                    <label className="col-sm-2 control-label">Start year: </label>
+                    <div className="col-sm-2">
+                        <input className="form-control" type="number" id="datemin" min="1900" max="2100" value={minYear} onChange={this.onChange} />
+                        {errorMessage}
+                    </div>
+                    <label className="col-sm-2 control-label">End year: </label>
+                    <div className="col-sm-2">
+                        <input className="form-control" type="number" id="datemax" min="1900" max="2100" onChange={this.onChange} value={maxYear} />
+                    </div>
+                </div>
+            </div>
+        )
+    }
 });
 
 /*
@@ -358,17 +369,54 @@ AddElement = React.createClass({
 		this.setState(newState);
 	},
 	// Add a question to the buildPane
-	addQuestion: function () {
-		var selected = this.state.selected.id,
-			questionText = this.state.Description,
-			questionName = this.state.Name,
-			hasError = false,
-			element;
-	    if(!selected) {
-	    	// Error, no element selected, alert the user and return
-	        alert("No element type selected");
-	        return;
-	    }
+        addQuestion: function () {
+            var selected = this.state.selected.id,
+                questionText = this.state.Description,
+                questionName = this.state.Name,
+                hasError = false,
+                element;
+
+            if(!selected) {
+                // Error, no element selected, alert the user and return
+                alert("No element type selected");
+                return;
+            }
+
+            if (selected == 'date') {
+                var min = this.state.Options.MinDate,
+                    max = this.state.Options.MaxDate;
+
+                var minDate = Date.parse(min),
+                    maxDate = Date.parse(max);
+
+                if ( (isNaN(minDate) && min != '') || (isNaN(maxDate) && max != '') ) {
+                    var temp = (this.state.error) ? this.state.error : {};
+                    
+                    temp.dateOption = "Invalid date provided";
+                    this.setState({
+                        error: temp
+                    });
+                    hasError = true;
+                }
+
+                if (minDate > maxDate && min != '' && max != '') {
+                    var temp = (this.state.error) ? this.state.error : {}; 
+    
+                    temp.dateOption = "End year append befor start year";
+                    this.setState({
+                        error: temp
+                    }); 
+                    hasError = true;
+                }
+                
+                if(!hasError && this.state.error) {
+                     var temp = this.state.error;
+                     delete temp.dateOption;
+                     this.setState({
+                         error: temp
+                     });
+                }
+            }
 
 	    if(questionText == '' && selected != 'line') {
 	    	// Error, question text is required. Set the element error flag
