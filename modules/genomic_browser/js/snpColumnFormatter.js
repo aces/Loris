@@ -15,6 +15,18 @@ function formatColumn(column, cell, rowData) {
                     )
                 );
                 break;
+            case 'RsID':
+                var url = "http://www.ncbi.nlm.nih.gov/SNP/snp_ref.cgi?rs=" + cell;
+                reactElement = React.createElement(
+                    "td",
+                    null,
+                    React.createElement(
+                        "a",
+                        { href: url, target: '_blank' },
+                        cell
+                    )
+                );
+                break;
             default:
                 reactElement = React.createElement(
                     "td",
