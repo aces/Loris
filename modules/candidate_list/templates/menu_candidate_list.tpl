@@ -219,9 +219,7 @@
 <script>
 var table = RDynamicDataTable({
     "DataURL" : "{$baseurl}/candidate_list/?format=json",
-    {if $access_all_profiles}
     "getFormattedCell" : formatColumn,
-    {/if}
     "freezeColumn" : "PSCID"
 });
 
