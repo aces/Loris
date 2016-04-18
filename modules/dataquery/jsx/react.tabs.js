@@ -320,7 +320,7 @@ ViewDataTabPane = React.createClass({
                                     </li>
                                     <li onClick={this.changeDataDisplay.bind(this, 1)}>
                                         <div className="col-sm-12">
-                                            <h5 className="">Longitudial</h5>
+                                            <h5 className="">Longitudinal</h5>
                                         </div>
                                     </li>
                                 </ul>

@@ -462,7 +462,7 @@ FilterGroup = React.createClass({
 				<button className="btn btn-danger btn-sm pull-right"
 										onClick={this.props.deleteGroup.bind(this, this.props.index)}
 				>
-					<span className="glyphicon glyphicon-remove"></span> Add Rule
+					<span className="glyphicon glyphicon-remove"></span> Delete Group
 				</button>
 			)
 		}

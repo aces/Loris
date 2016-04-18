@@ -462,7 +462,7 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 				React.createElement("button", {className: "btn btn-danger btn-sm pull-right", 
 										onClick: this.props.deleteGroup.bind(this, this.props.index)
 				}, 
-					React.createElement("span", {className: "glyphicon glyphicon-remove"}), " Add Rule"
+					React.createElement("span", {className: "glyphicon glyphicon-remove"}), " Delete Group"
 				)
 			)
 		}
