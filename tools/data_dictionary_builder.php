@@ -58,6 +58,9 @@ $client->makeCommandLine();
 $client->initialize($configFile);
 $DB = Database::singleton();
 
+//Setting trackchanges to false because getting error messages
+$DB->_trackChanges = false;
+
 // define which configuration file we're using for this installation
 //Get the entries we already have in the DB
 getColumns(
