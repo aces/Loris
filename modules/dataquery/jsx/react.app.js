@@ -140,7 +140,8 @@ DataQueryApp = React.createClass({
             "field"      : rule.field,
             "operator"   : rule.operator,
             "value"      : rule.value,
-            "instrument" : rule.instrument
+            "instrument" : rule.instrument,
+            "visit"      : rule.visit
         }
         return savedRule;
     },
@@ -281,7 +282,34 @@ DataQueryApp = React.createClass({
         $.ajax({
             url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script,
             success: function(data) {
-                rule.session = data;
+                var i,
+                    allSessions = {},
+                    allCandiates = {};
+                // Loop through data and divide into individual visits with unique PSCIDs
+                // storing a master list of unique PSCIDs
+                for(i = 0; i < data.length; i++){
+                    if(!allSessions[data[i][1]]){
+                        allSessions[data[i][1]] = [];
+                    }
+                    allSessions[data[i][1]].push(data[i][0]);
+                    if(!allCandiates[data[i][0]]){
+                        allCandiates[data[i][0]] = []
+                    }
+                    allCandiates[data[i][0]].push(data[i][1]);
+                }
+                rule.candidates = {
+                    "allCandiates" : allCandiates,
+                    "allSessions" : allSessions
+                };
+                if (rule.visit == "All") {
+                    rule.session = Object.keys(allCandiates);
+                } else {
+                    if (allSessions[rule.visit]) {
+                        rule.session = allSessions[rule.visit];
+                    } else {
+                        rule.session = [];
+                    }
+                }
             },
             async: false,
             data: {
@@ -333,7 +361,8 @@ DataQueryApp = React.createClass({
                         "instrument" : fieldInfo[0],
                         "field"      : fieldInfo[1],
                         "value"      : item.Value,
-                        "type"       : "rule"
+                        "type"       : "rule",
+                        "visit"      : "All"
                     };
                 switch(item.Operator) {
                     case "=":
