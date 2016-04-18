@@ -17,14 +17,16 @@ LogicOperator = React.createClass({displayName: "LogicOperator",
 	render: function() {
 		// Renders the html for the component
 
-		var andClass = "btn btn-primary",
-			orClass = "btn btn-primary";
+		var andClass = "btn",
+			orClass = "btn";
 
 		// Set operator to OR if logicOperator is 1, AND otherwise
 		if(this.props.logicOperator === 1) {
-			orClass += " active";
+			orClass += " btn-primary";
+			andClass += " switch"
 		} else {
-			andClass += " active";
+			andClass += " btn-primary";
+			orClass += " switch"
 		}
 		return (
 			React.createElement("div", {className: "btn-group", role: "group"}, 
