@@ -11,6 +11,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+require_once __DIR__ . "/HelpFile.class.inc";
 /**
  * A class for holding a set of functions to add/update content 
  * for all modules

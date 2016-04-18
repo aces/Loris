@@ -89,11 +89,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
 
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
-        // Set up WebDriver implementation and login
+
         $capabilities = array(
-            WebDriverCapabilityType::BROWSER_NAME => 'firefox',
-            WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
-        );
+                         WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
+                         WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
+                        );
 
         $this->webDriver = RemoteWebDriver::create(
             'http://localhost:4444/wd/hub',
@@ -120,13 +120,13 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     protected function login($username, $password)
     {
         $this->safeGet($this->url);
-/*
+        /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::Name("username")
             )
         );
-*/
+        */
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
@@ -387,7 +387,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $this->DB->delete("candidate", array("PSCID" => $pscid));
     }
 
-    /*
+    /**
      * Helper function to click on a element and wait for the new page to be loaded.
      * When the DOM is reloaded, the elements of the previous page become stale.
      * Selenium will raise an exception when a function (like getText) are called on
@@ -401,7 +401,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     public function clickToLoadNewPage($clickable)
     {
-        $remoteWebElement = null; 
+        $remoteWebElement = null;
 
         $clickable->click();
         try {
@@ -426,7 +426,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $newWebDriver = null;
 
         // keep a reference from the actual page
-        $oldBody = $this->webDriver->findElement(
+        $oldBody = $this->safeFindElement(
             WebDriverBy::xPath(
                 "
                 //body
@@ -438,12 +438,89 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             // Load the new page
             $newWebDriver = $this->webDriver->get($url);
 
-            // Use the old page reference util it detach from the DOM
+            // Use the old page reference until it detaches from the DOM
             while (true) {
                 $oldBody->isDisplayed();
             }
         } catch (StaleElementReferenceException $e) {
             return $newWebDriver;
+        }
+    }
+
+    /**
+     * Wrapper method for WebDriver->findElement. It will wait until the element
+     * is located on the page before issuing the actual finElement method
+     * call.
+     *
+     * @param WebDriverBy $by         Criteria used to find the element on the page.
+     * @param int         $waitPeriod After this amount of seconds, the wait period
+     *                                finishes and an exception is thrown.
+     *
+     * @throws NoSuchElementException if the element cannot be found after the
+     *                                wait period.
+     *
+     * @return WebDriverElement the element found.
+     */
+    function safeFindElement(WebDriverBy $by, $waitPeriod=15)
+    {
+        $wait = new WebDriverWait($this->webDriver, $waitPeriod);
+        $wait->until(
+            WebDriverExpectedCondition::presenceOfElementLocated($by)
+        );
+
+        return $this->webDriver->findElement($by);
+    }
+
+    /**
+     * Safely click on a page element, even if not yet visible. The click is done
+     * by issuing a sendKeys method call on the element, passing as argument either
+     * a SPACE or a RETURN key (HTML input field will receive a SPACE whereas all
+     * others will receive a RETURN).
+     *
+     * @param WebDriverBy $by                   Criteria used to find the element
+     *                                          on the page.
+     * @param int         $waitPeriod           After this amount of seconds, the
+     *                                          wait period finishes and an
+     *                                          exception is thrown.
+     * @param boolean     $allowJavascriptClick true if a click on the element
+     *                                          should be done using a Javascript
+     *                                          method call when the element is not
+     *                                          visible. False otherwise.
+     *
+     * @throws NoSuchElementException     if the element cannot be found after the
+     *                                    wait period.
+     * @throws ElementNotVisibleException if $allowJavascriptClick is false and the
+     *                                    element cannot be clicked on because it is
+     *                                    not visible.
+     * @throws StaleElementReferenceExceptoin if $allowJavascriptClick is false and
+     *                                        the element cannot be clicked on
+     *                                        because the DOM was updated since the
+     *                                        element was found.
+     *
+     * @return void.
+     */
+    function safeClick(WebDriverBy $by, $waitPeriod=15, $allowJavascriptClick=true)
+    {
+        $webElement = $this->safeFindElement($by, $waitPeriod);
+
+        try {
+            $webElement->click();
+            $clickException = null;
+        } catch(ElementNotVisibleException $e) {
+            $clickException = $e;
+        } catch(StaleElementReferenceExceptoin $e) {
+            $clickException = $e;
+        }
+
+        if (!is_null($clickException)) {
+            if (!$allowJavascriptClick) {
+                throw $e;
+            }
+
+            $this->webDriver->executeScript(
+                "arguments[0].click();",
+                array($webElement)
+            );
         }
     }
 }

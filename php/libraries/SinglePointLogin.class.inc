@@ -38,6 +38,16 @@ class SinglePointLogin
     var $_username = null;
 
     /**
+     * To carry the error messages
+     */
+    var $_lastError = null;
+
+    /**
+     * Defines whether a user's password has expired
+     */
+    var $_passwordExpired = false;
+
+    /**
      * Dumps the login form
      *
      * @return void
@@ -108,6 +118,9 @@ class SinglePointLogin
      */
     function showPasswordExpiryScreen()
     {
+        // Set passwordExpired flag
+        $this->_passwordExpired = true;
+
         $tpl_data['username'] = $_POST['username'];
 
         // remove logout from request
@@ -140,7 +153,7 @@ class SinglePointLogin
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
         $smarty->display('password_expiry.tpl');
-        die();
+        return false;
     }
 
 
@@ -153,6 +166,17 @@ class SinglePointLogin
     function isLoggedIn()
     {
         return $this->_isLoggedIn;
+    }
+
+    /**
+     * Checks whether users password is expired
+     *
+     * @return bool
+     * @access public
+     */
+    function passwordExpired()
+    {
+        return $this->_passwordExpired;
     }
 
 
@@ -211,6 +235,8 @@ class SinglePointLogin
             return false;
         }
 
+        // Reset passwordExpired flag
+        $this->_passwordExpired = false;
         $user->updatePassword($_POST['password']);
         return true;
     }
@@ -222,6 +248,9 @@ class SinglePointLogin
      */
     function authenticate()
     {
+        // Reset passwordExpired flag
+        $this->_passwordExpired = false;
+
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
         $headers    = getallheaders();

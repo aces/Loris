@@ -27,7 +27,7 @@
 <div class="col-xs-12">
 <div class="col-xs-12">
     <center>
-    <img src="{$baseurl}/images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_Logo_141007.png'" align="middle" width="92%">
+    <img src="{$baseurl}/images/LORIS_logo.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_logo.png'" align="middle" width="92%">
     </center>
     <br>
 </div>

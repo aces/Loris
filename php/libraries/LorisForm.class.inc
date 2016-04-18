@@ -109,7 +109,7 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addSelect($name, $label, $options, $attribs = array())
     {
@@ -119,7 +119,7 @@ class LorisForm
         if (isset($attribs['multiple'])) {
             $el['multiple'] = $attribs['multiple'];
         }
-
+        return $el;
     }
 
     /**
@@ -130,12 +130,13 @@ class LorisForm
      * @param string $name  The element name.
      * @param string $label The label to attach to this element.
      *
-     * @return none, but modifies $this->form as a side-effect
+     * @return &array
      */
     public function addStatic($name, $label)
     {
         $el         =& $this->addBase($name, $label, array());
         $el['type'] = 'static';
+        return $el;
     }
 
     /**
@@ -147,12 +148,13 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addPassword($name, $label, $options=array())
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'password';
+        return $el;
     }
 
     /**
@@ -164,12 +166,13 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addText($name, $label, $options=array())
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'text';
+        return $el;
     }
 
     /**
@@ -182,7 +185,7 @@ class LorisForm
      *                        "rows", and "cols" attributes will get
      *                        added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addTextArea($elname, $label, $options=array())
     {
@@ -210,13 +213,14 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addDate($name, $label, $options, $attribs = array())
     {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'date';
         $el['options'] = $options;
+        return $el;
     }
 
     /**
@@ -228,12 +232,13 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     function addFile($name, $label, $options)
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'file';
+        return $el;
     }
 
     /**
@@ -245,12 +250,13 @@ class LorisForm
      *                        get added. Currently only the "value"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     function addCheckbox($name, $label, $options)
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'advcheckbox';
+        return $el;
     }
 
     /**
@@ -260,7 +266,7 @@ class LorisForm
      * @param string $label   The description for the header
      * @param array  $options Other options for this header element
      *
-     * @return none
+     * @return &array
      */
     function addHeader($name, $label, $options = array())
     {
@@ -268,6 +274,7 @@ class LorisForm
 
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'header';
+        return $el;
     }
     /**
      * Generates a unique element name for anonymous elements to use

@@ -1,35 +1,38 @@
 <?php
 /**
- * For snp_browser class file
+ * For snp_browser class file, a subtab in the Genomic Browser
  * Displays SNP genomic variant data.
  * Filterable by candidate, gene or variant fields.
  *
  * PHP version 5
  *
- *  @category Genomic
- *  @package  Main
- *  @author   Christine Rogers <christine.rogers@mcgill.ca>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- *  @link     https://www.github.com/aces/Loris/
- *  Main page: CNV. Submenu: SNP
+ *  @category   Genomic
+ *  @package    Main
+ *  @subpackage Genomic
+ *  @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
+ *  @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ *  @link       https://www.github.com/aces/Loris/
+ *  Main page: genomic_browser. Submenu: SNP
  */
 
+require_once 'NDB_Menu_Filter.class.inc';
 /**
  * NDB_Menu_Filter_SNP_Browser Class
  *
  * This class is snp_browser Form
  * SNP submenu tab for Genomic Browser
  *
- * @category Genomic
- * @package  Main
- * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
- * @link     https://github.com/aces/Loris
+ * @category   Genomic
+ * @package    Main
+ * @subpackage Genomic
+ * @author     Christine Rogers <rogers@bic.mni.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt @GPLv3
+ * @link       https://github.com/aces/Loris
 */
 class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
 {
     /**
- * Variables to enable special filter behaviour -
+     * Variables to enable special filter behaviour -
      * Show brief results or show full results (all available fields)
      * used in (overridden) _addValidFilters function below
      */
@@ -61,11 +64,9 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->_displayBrief = !(isset($_REQUEST['format']));
-
         $this->columns = array(
                           'psc.Name AS PSC',
-                          'candidate.CandID AS DCCID',
+                          'LPAD(candidate.CandID, 6, "0") AS DCCID',
                           'candidate.PSCID',
                           'candidate.Gender',
                           'cohort.SubprojectID as Subproject',
@@ -83,15 +84,15 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                           'SNP.SNPExternalName as SNP_Name',
                           'SNP.Description as SNP_Description',
                           'SNP.SNPExternalSource as External_Source',
-                          'SNP.ObservedBase as Observed_Base',
+                          'SNP_candidate_rel.ObservedBase as Observed_Base',
                           'SNP.ReferenceBase as Reference_Base',
-                          'SNP.ArrayReport as Array_Report',
+                          'SNP_candidate_rel.ArrayReport as Array_Report',
                           'SNP.Markers as Markers',
-                          'SNP.ValidationMethod as Validation_Method',
-                          'SNP.Validated as Validated',
+                          'SNP_candidate_rel.ValidationMethod as Validation_Method',
+                          'SNP_candidate_rel.Validated as Validated',
                           'SNP.FunctionPrediction as Function_Prediction',
                           'SNP.Damaging as Damaging',
-                          'SNP.GenotypeQuality as Genotype_Quality',
+                          'SNP_candidate_rel.GenotypeQuality as Genotype_Quality',
                           'SNP.ExonicFunction as Exonic_Function',
                          );
 
@@ -110,19 +111,20 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                               );
 
         // Chromosome from genome_loc table
-        // INNER JOIN on SNP table.
+        // INNER JOIN on SNP_candidate_rel table. //##
         // If a candidate has no SNP records, they will not appear.
-        $this->query = " FROM candidate 
-            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID 
+        $this->query = " FROM candidate
+            LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
                     from session s GROUP BY s.CandID) AS cohort
-            ON (cohort.CandID = candidate.CandID) 
+            ON (cohort.CandID = candidate.CandID)
             LEFT JOIN psc ON (psc.CenterID = candidate.CenterID)
-            JOIN SNP ON (candidate.CandID = SNP.CandID)
-            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)  
+            JOIN SNP_candidate_rel ON (candidate.CandID = SNP_candidate_rel.CandID)
+            LEFT JOIN SNP ON (SNP.SNPID = SNP_candidate_rel.SNPID)
+            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)
             LEFT JOIN gene ON (gene.GenomeLocID = SNP.GenomeLocID)
-            LEFT JOIN genotyping_platform ON 
-              (SNP.PlatformID = genotyping_platform.PlatformID)
-            WHERE 
+            LEFT JOIN genotyping_platform ON
+              (SNP_candidate_rel.PlatformID = genotyping_platform.PlatformID)
+            WHERE
             candidate.Entity_type = 'Human' AND candidate.Active = 'Y' ";
 
         $DB   = Database::singleton();
@@ -148,14 +150,14 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'SNP.Description',
                                'SNP.SNPExternalSource',
                                'SNP.ObservedBase',
-                               'SNP.ReferenceBase',
-                               'SNP.ArrayReport',
+                               'SNP_candidate_rel.ReferenceBase',
+                               'SNP_candidate_rel.ArrayReport',
                                'SNP.Markers',
-                               'SNP.ValidationMethod',
-                               'SNP.Validated as Validated',
+                               'SNP_candidate_rel.ValidationMethod',
+                               'SNP_candidate_rel.Validated as Validated',
                                'SNP.FunctionPrediction',
                                'SNP.Damaging',
-                               'SNP.GenotypeQuality',
+                               'SNP_candidate_rel.GenotypeQuality',
                                'SNP.ExonicFunction',
                                'genome_loc.Chromosome',
                                'genome_loc.Strand',
@@ -164,33 +166,35 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'genotyping_platform.Name',
                               );
 
-        $this->formToFilter = array(
-                               'centerID'            => 'candidate.CenterID',
-                               'DCCID'               => 'candidate.CandID',
-                               'PSCID'               => 'candidate.PSCID',
-                               'gender'              => 'candidate.Gender',
-                               'SubprojectID'        => 'cohort.SubprojectID',
-                               'dob'                 => 'candidate.DoB',
-                               'External_ID'         => 'candidate.ExternalID',
-                               'Show_Brief_Results'  => 'show_brief_results',
-                               'rsID'                => 'SNP.rsID',
-                               'SNP_Name'            => 'SNP.SNPExternalName',
-                               'SNP_Description'     => 'SNP.Description',
-                               'SNP_External_Source' => 'SNP.SNPExternalSource',
-                               'Observed_Base'       => 'SNP.ObservedBase',
-                               'Reference_Base'      => 'SNP.ReferenceBase',
-                               'Array_Report'        => 'SNP.ArrayReport',
-                               'Markers'             => 'SNP.Markers',
-                               'Validation_Method'   => 'SNP.ValidationMethod',
-                               'Validated'           => 'SNP.Validated',
-                               'Function_Prediction' => 'SNP.FunctionPrediction',
-                               'Damaging'            => 'SNP.Damaging',
-                               'Genotype_Quality'    => 'SNP.GenotypeQuality',
-                               'Exonic_Function'     => 'SNP.ExonicFunction',
-                               'Chromosome'          => 'genome_loc.Chromosome',
-                               'Gene_Symbol'         => 'gene.OfficalSymbol',
-                               'Platform'            => 'genotyping_platform.Name',
-                              );
+        $ftf = array(
+                'centerID'            => 'candidate.CenterID',
+                'DCCID'               => 'candidate.CandID',
+                'PSCID'               => 'candidate.PSCID',
+                'gender'              => 'candidate.Gender',
+                'SubprojectID'        => 'cohort.SubprojectID',
+                'dob'                 => 'candidate.DoB',
+                'External_ID'         => 'candidate.ExternalID',
+                'Show_Brief_Results'  => 'show_brief_results',
+                'rsID'                => 'SNP.rsID',
+                'SNP_Name'            => 'SNP.SNPExternalName',
+                'SNP_Description'     => 'SNP.Description',
+                'SNP_External_Source' => 'SNP.SNPExternalSource',
+                'Observed_Base'       => 'SNP_candidate_rel.ObservedBase',
+                'Reference_Base'      => 'SNP.ReferenceBase',
+                'Array_Report'        => 'SNP.ArrayReport',
+                'Markers'             => 'SNP.Markers',
+                'Validation_Method'   => 'SNP_candidate_rel.ValidationMethod',
+                'Validated'           => 'SNP_candidate_rel.Validated',
+                'Function_Prediction' => 'SNP.FunctionPrediction',
+                'Damaging'            => 'SNP.Damaging',
+                'Genotype_Quality'    => 'SNP_candidate_rel.GenotypeQuality',
+                'Exonic_Function'     => 'SNP.ExonicFunction',
+                'Chromosome'          => 'genome_loc.Chromosome',
+                'Gene_Symbol'         => 'gene.OfficalSymbol',
+                'Platform'            => 'genotyping_platform.Name',
+               );
+
+        $this->formToFilter = $ftf;
 
         return true;
     }
@@ -218,8 +222,9 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             // allow only to view own site data
             $site = Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
-                $list_of_sites
-                    = array($user->getData('CenterID') => $user->getData('Site'));
+                $centerIDdata  = $user->getData('CenterID');
+                $siteData      = $user->getData('Site');
+                $list_of_sites = array($centerIDdata => $siteData);
             }
         }
 
@@ -247,11 +252,10 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         );
         $this->addBasicText('dob', 'Date of Birth:', array('maxlength' => 10));
 
-        $show_results_options
-            = array(
-               'brief' => 'Summary fields',
-               'full'  => 'All fields',
-              );
+        $show_results_options = array(
+                                 'brief' => 'Summary fields',
+                                 'full'  => 'All fields',
+                                );
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // SNP
@@ -308,10 +312,9 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addBasicText('Gene_Name', 'Name:');
 
         $DB = Database::singleton();
-        $platform_results = $DB->pselect(
-            "SELECT distinct Name FROM genotyping_platform ",
-            array()
-        );
+        $platform_results
+            = $DB->select("SELECT distinct Name FROM genotyping_platform ");
+
         $platform_options = array('' => 'Any');
         foreach ($platform_results as $row => $result ) {
             $name = $result['Name'];
@@ -384,13 +387,15 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             //print out data rows
             $i = 1;
             foreach ($item as $key => $val) {
+
                 if ($this->_displayBrief && !in_array($key, $this->_briefFields)) {
                     continue;  // no increment to $i
                 }
 
                 //Show the URL to the timepoint list on PSCID field
                 if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
-                    $this->tpl_data['items'][$x][$i]['DCCID'] = $item['DCCID'];
+                    $this->tpl_data['items'][$x][$i]['DCCID']
+                        = str_pad($item['DCCID'], 6, '0', STR_PAD_LEFT);
                 }
                 $this->tpl_data['items'][$x][$i]['name']  = $key;
                 $this->tpl_data['items'][$x][$i]['value'] = $val;
@@ -447,6 +452,8 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             ) {
 
                  $query .= " AND $field = :v_$prepared_key";
+            } elseif ($field == "candidate.CandID") {
+                $query .= " AND $field = " . ltrim($val, '0');
             } else {
                  $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
             }

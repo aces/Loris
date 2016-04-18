@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" href="{$baseURL}/GetCSS.php?Module=brainbrowser&file=volume-viewer-demo.css">
+
 {literal}
     <script id="overlay-ui-template" type="x-volume-ui-template">
         <div class="row">
@@ -176,6 +178,11 @@
                 <label for="sync-volumes" id="sync-volumes" class="clickable btn btn-sm btn-primary">Sync Volumes</label>
             </span>
 
+            <span id="reset-wrapper" class="clickable">
+                <input type="button" class="button ui-helper-hidden-accessible" id="reset-view">
+                <label for="reset-view" id="reset-view" class="clickable btn btn-sm btn-primary">Reset View</label>
+            </span>
+
             <div class="btn-group">
                 <select id="panel-size" class="form-control panel-size clickable">
                     <option value="256" SELECTED>Choose Panel Size</option>
@@ -201,3 +208,4 @@
 
     <div id="loading" style="display: block; color: #064785; font-size: 40px; font-weight: bold; text-align: center; margin: auto;">LOADING...</div>
 {/literal}
+

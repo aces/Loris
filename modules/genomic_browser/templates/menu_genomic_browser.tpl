@@ -2,8 +2,12 @@
   <div class="row">
     <div id="tabs"> 
       <ul class="nav nav-tabs">
-        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>CNV</strong></a></li>
+        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Profiles</strong></a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=gwas_browser">GWAS</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cpg_browser">Methylation</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=genomic_file_uploader">Files</a></li>
       </ul>
       <br>
     </div>
@@ -14,7 +18,7 @@
         <form method="post" action="{$baseurl}/genomic_browser/">
           <div class="col-sm-12">
             <div class="row">
-              <div class="form-group col-sm-7">
+              <div class="form-group col-sm-8">
                 <div class="panel panel-primary">
                   <div class="panel-heading" onclick="hideFilterCandidate();">
                     Candidate Filters
@@ -69,132 +73,63 @@
                   </div> 
                 </div> 
               </div> 
-              <div class="form-group col-sm-5">
-                <div class="panel panel-primary">
-                  <div class="panel-heading" onclick="hideFilterGene();">
-                    Gene Filters
-                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-gene"></span>
-                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up-gene"></span>
-                  </div>
-                  <div class="panel-body" id="panel-body-gene">
-	            <div class="row">
-                      <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
-        		  {$form.Gene_Symbol.label}
-                        </label>
-                        <div class="col-sm-12 col-md-3">
-        	          {$form.Gene_Symbol.html}
-		        </div>
-                        <label class="col-sm-12 col-md-2">
-        	          {$form.Gene_Name.label}
-                        </label>
-                        <div class="col-sm-12 col-md-5">
-        	          {$form.Gene_Name.html}
-		        </div>
-		      </div>
-	            </div>
-	            <div class="row">
-                      <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-3">
-      		          {$form.Chromosome.label}
-                        </label>
-                        <div class="col-sm-12 col-md-2">
-        	          {$form.Chromosome.html}
-		        </div>
-                        <label class="col-sm-12 col-md-3">
-        	          {$form.Platform.label}
-                        </label>
-                        <div class="col-sm-12 col-md-4">
-        	          {$form.Platform.html}
-		        </div>
-		      </div>
-	            </div>
-	          </div>
-                </div>
-              </div> 
-            </div> <!-- end of Gene/Demographic filters row-->
+            </div>
+          </div>
+          <div class="col-sm-12">
             <div class="row">
-              <!-- CNV section -->
               <div class="form-group col-sm-8">
                 <div class="panel panel-primary">
-                  <div class="panel-heading" onclick="hideFilterCNV();">
-                    CNV Filters
-                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-cnv"></span>
-                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up-cnv"></span>
+                  <div class="panel-heading" onclick="hideFilterGenomic();">
+                    Genomic Filters
+                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-genomic"></span>
+                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up-genomic"></span>
                   </div>
-                  <div class="panel-body" id="panel-body-cnv">
+                  <div class="panel-body" id="panel-body-genomic">
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-1 col-lg-1">
-                          {$form.CNV_Type.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-2 col-lg-2">
-                          {$form.CNV_Type.html}
-                        </div>
-                        <label class="col-sm-12 col-md-3">
-		          {$form.Event_Name.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-2 ">
-        		  {$form.Event_Name.html}
-			</div>
-                        <label class="col-sm-12 col-md-3">
-        		  {$form.Characteristics.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-1">
-        		  {$form.Characteristics.html}
-			</div>
-		      </div>
-		    </div>
-                    <div class="row">
-                      <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2 col-lg-1">
-        		  {$form.Common_CNV.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-1 col-lg-2">
-        		  {$form.Common_CNV.html}
-			</div>
                         <label class="col-sm-12 col-md-3 col-lg-3">
-        		  {$form.Copy_Num_Change.label}
+                          {$form.Files.label}
                         </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Copy_Num_Change.html}
+                        <div class="col-sm-12 col-md-3 col-lg-2">
+                          {$form.Files.html}
                         </div>
-                        <label class="col-sm-12 col-md-2">
-		          {$form.Inheritance.label}
+                        <label class="col-sm-12 col-md-3">
+                          {$form.CPGs.label}
                         </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Inheritance.html}
-			</div>
-		      </div>
-		    </div>
-		    <div class="row">
-                      <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
-        	          {$form.CNV_Description.label}
+                        <div class="col-sm-12 col-md-3">
+                          {$form.CPGs.html}
+                        </div>
+                        <label class="col-sm-12 col-md-3 col-lg-3">
+                          {$form.SNPs.label} 
                         </label>
-                    	<div class="col-sm-12 col-md-4">
-        		  {$form.CNV_Description.html}
-			</div>
-		      </div>
-		    </div>
-	          </div>
+                        <div class="col-sm-12 col-md-3 col-lg-2">
+                          {$form.SNPs.html}
+                        </div>
+                        <label class="col-sm-12 col-md-3">
+                          {$form.CNVs.label} 
+                        </label>
+                        <div class="col-sm-12 col-md-3 pull-left">
+                          {$form.CNVs.html} 
+                        </div>
+                      </div>
+                    </div> 
+                  </div> 
                 </div> 
-                <!-- end of CNV section -->
               </div> 
               <div class="form-group col-sm-4">
                 <div class="row"><!-- fixed vertical spacing-->
-		  <br><br><br><br><br><br>
-	        </div>
+		          <br><br><br><br>
+	            </div>
                 <div class="row">
                   <div class="form-group col-sm-12">
                     <label class="col-sm-4 col-md-3">
                       {$form.Show_Brief_Results.label} 
                     </label>
                     <div class="col-sm-8 col-md-8">
-	              {$form.Show_Brief_Results.html}
-		    </div>
-	          </div>
-	        </div>
+	                  {$form.Show_Brief_Results.html}
+		            </div>
+	              </div>
+	            </div>
                 <div class="row">
                   <div class="form-group col-sm-12">
                     <div class="col-sm-6 col-xs-12 col-md-6">
@@ -220,16 +155,16 @@
       <tr>
       <!-- title -->
         {if {$resultcount} != '' }
-          <td class="controlpanelsection">Variants found: <strong>{$resultcount}</strong> total</td>
-          <a href="{$csvUrl}" download="{$csvFile}.csv">
-            Download all fields as CSV
-          </a>
+          <td class="controlpanelsection">Profiles found: <strong>{$resultcount}</strong> total</td>
+                              <a href="{$baseurl}/{$csvUrl}" download="{$csvFile}.csv">
+                                                    [ Download as CSV ]
+                                                                        </a><br>
         {else}
-          <td>No variants found. </td>
+          <td>No results found. </td>
         {/if}
         <!-- display pagination links -->
         {if $resultcount != '' && $resultcount > 25 }
-	  <td align="right" id="pageLinks"></td>
+	  <td align="right">Pages:&nbsp;&nbsp;&nbsp; {$page_links}</td>
         {/if}
       </tr>
     </table>
@@ -254,9 +189,27 @@
             {else}
               <td>
             {/if}
-            {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
+            {if $items[item][piece].name == "DCCID"}
+              {assign var="CandID" value=$items[item][piece].value}
+              {$CandID}
+            {elseif $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
               {assign var="PSCID" value=$items[item][piece].value}
                <a href="{$baseurl}/{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
+
+            {elseif $items[item][piece].value eq ""}
+              -
+              {* just print a dash if no value available*}
+            {elseif $items[item][piece].name eq "Files" } 
+               <a href="{$baseurl}/genomic_browser/viewGenomicFile/?candID={$CandID}">
+                   <b>({$items[item][piece].value})</b> &nbsp;&nbsp;View
+                   <span class="glyphicon glyphicon-eye-open"></span>
+               </a>
+            {elseif $items[item][piece].name eq "SNPs" }
+                 <a href="{$baseurl}/genomic_browser/?submenu=snp_browser" class="snp_link" data-pscid="{$PSCID}" >{$items[item][piece].value}</a>
+            {elseif $items[item][piece].name eq "CNVs" }
+                 <a href="#" class="cnv_link" data-pscid="{$PSCID}" >{$items[item][piece].value}</a>
+            {elseif $items[item][piece].name eq "CPGs" }
+                 <a href="#" class="cpg_link" data-pscid="{$PSCID}" >{$items[item][piece].value}</a>
             {else}
               {$items[item][piece].value}
             {/if}
@@ -270,17 +223,3 @@
   </div>
 </div>
 <br>
-
-<script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/genomic_browser/?pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
-</script>
-

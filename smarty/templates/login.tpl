@@ -5,9 +5,9 @@
   <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
 
 <!-- shortcut icon that displays on the browser window -->
-<link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
-<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="bootstrap/css/custom-css.css">
+<link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
+<link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="{$baseurl}/bootstrap/css/custom-css.css">
 <!-- page title -->
 <title>{$title}</title>
 
@@ -175,7 +175,7 @@ $(document).ready(function() {
  		<div class="container">
 	 		<div class="navbar-brand">
                 {if $study_logo}
-		 		<img src="{$study_logo}" border="0" width="64" height="57" />
+		 		<img src="{$baseurl}/{$study_logo}" border="0" width="64" height="57" />
                 {/if}
 		 		{$study_title}
 	 		</div>
@@ -191,7 +191,7 @@ $(document).ready(function() {
 		  <div class="panel-body">
 		  		<div class="col-xs-12">
 		  			<center>
-		  				<img src="images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" onerror="this.src='images/LORIS_Logo_141007.png'" align="middle" width="85%"> 
+		  				<img src="{$baseurl}/images/LORIS_logo.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_logo.png'" align="middle" width="85%"> 
 		  			</center>
 					<br>
 		  		</div>

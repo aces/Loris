@@ -2,8 +2,12 @@
   <div class="row">
     <div id="tabs">
       <ul class="nav nav-tabs">
-        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/">CNV</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/">Profiles</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=gwas_browser">GWAS</a></li>
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>SNP</strong></a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cpg_browser">Methylation</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=genomic_file_uploader">Files</a></li>
       </ul>
       <br>
     </div>
@@ -230,7 +234,7 @@
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="col-sm-6 col-xs-12 col-md-5">
-                      <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/genomic_browser/?reset=true'" />
+                      <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/genomic_browser/?submenu=snp_browser&reset=true'" />
                     </div>
                   </div>
                 </div>
@@ -243,19 +247,19 @@
   </div> <!-- end row containing all filters-->
   <div class="row">
     <!-- title table with pagination -->
-    <table id="LogEntries" border="0" valign="bottom" width="100%"><tr>
+    <table border="0" valign="bottom" width="100%"><tr>
       <!-- title -->
       {if {$resultcount} != '' }
         <td class="controlpanelsection">Variants found: <strong>{$resultcount}</strong> total</td>
-        <a href="{$csvUrl}" download="{$csvFile}.csv">
-          Download all fields as CSV
-        </a>
+                            <a href="{$baseurl}/{$csvUrl}" download="{$csvFile}.csv">
+                                                  [ Download as CSV ]
+                                                                      </a><br><br>
       {else}
         <td>No variants found. </td>
       {/if} 
       <!-- display pagination links -->
       {if {$resultcount} != '' && $resultcount > 25}  
-        <td align="right" id="pageLinks"></td>
+        <td align="right">Pages:&nbsp;&nbsp;&nbsp; {$page_links}</td>
       {/if}
     </tr>
     </table>
@@ -283,6 +287,12 @@
             {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
               {assign var="PSCID" value=$items[item][piece].value}
               <a href="{$baseurl}/{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
+            {elseif $items[item][piece].name == "Chromosome"}
+              {assign var="chromValue" value=$items[item][piece].value}
+              {$chromValue} 
+            {elseif $items[item][piece].name == "StartLoc"}
+              {assign var="startLocValue" value=$items[item][piece].value}
+              <a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=chr{$chromValue}%3A{$startLocValue}-{$startLocValue}" target="_blank">{$startLocValue}</a>
             {else}
               {$items[item][piece].value}
             {/if }
@@ -296,17 +306,3 @@
   </div>
 </div>
 <br>
-
-<script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/genomic_browser/?submenu=snp_browser&pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
-</script>
-

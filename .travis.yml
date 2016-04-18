@@ -97,6 +97,8 @@ script:
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/training
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/brainbrowser
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/configuration
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/acknowledgements
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/data_release
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js

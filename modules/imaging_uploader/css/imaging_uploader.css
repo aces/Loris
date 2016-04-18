@@ -46,3 +46,21 @@ progress[aria-valuenow]:before  {
   text-align: center;
   padding-top: 4px;
 }
+
+.upload-logs-table-summary {
+  width: 95%;
+  height:130px;
+  background: #E8E8E8;
+  resize: vertical;
+  margin-left:30px;
+  padding: 5px;
+}
+
+.upload-logs-table-detailed {
+  width: 95%;
+  height:400px;
+  background: #E8E8E8;
+  resize: vertical;
+  margin-left:30px;
+  padding: 5px;
+}

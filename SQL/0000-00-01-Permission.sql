@@ -57,7 +57,11 @@ INSERT INTO `permissions` VALUES
     (37,'document_repository_view','View and upload files in Document Repository','2'),
     (38,'document_repository_delete','Delete files in Document Repository','2'),
     (39,'server_processes_manager','View and manage server processes','2'),
-    (40,'imaging_uploader','Imaging Uploader','2');
+    (40,'imaging_uploader','Imaging Uploader','2'),
+    (41,'acknowledgements_view','View Acknowledgements','2'),
+    (42,'acknowledgements_edit','Edit Acknowledgements','2'),
+    (43,'dataquery_view','View Data Query Tool','2');
+
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 

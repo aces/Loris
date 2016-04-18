@@ -138,6 +138,12 @@ ImageQCDropdown = React.createClass({
                     {options}
                 </select>
                 );
+        } else {
+            dropdown = (
+                <div className="col-xs-12">
+                    {this.props.defaultValue}
+                </div>
+            );
         }
         return (
             <div className="row">

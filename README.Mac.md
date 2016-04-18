@@ -261,6 +261,24 @@ Once in the text editor, ensure that the file looks similar to the following:
 </Directory>
 ```
 
+**NOTE FOR OSX10/Apache 2.4 users:** 
+
+If the Order and Allow directives are not working then check if the module mod_access_compat is included in your apache configuration file. You can either include that module ( from usr/libexec/apache2 ) and continue to use the above configuration or include the new access control module mod_authz_host and use the following instead:
+
+```
+<Directory "/Users/$username/Sites/">
+    Options Indexes MultiViews FollowSymLinks
+    AllowOverride None
+    Require all granted
+</Directory>
+
+```   
+
+The mod_access_compat module has been **deprecated** therefore it is suggested to use the new module and directives. 
+
+**END OF NOTE**
+
+
 Restart your apache server:
 ```
 sudo apachectl restart
