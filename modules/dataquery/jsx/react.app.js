@@ -772,10 +772,10 @@ DataQueryApp = React.createClass({
     },
     resetQuery: function(){
         // Used to reset the current query
-// TODO: reset values of new format
         this.setState({
             fields: [],
-            criteria: {}
+            criteria: {},
+            selectedFields : {}
         });
     },
     changeDataDisplay: function(displayID){
