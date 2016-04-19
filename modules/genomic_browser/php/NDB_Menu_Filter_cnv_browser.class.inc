@@ -146,6 +146,7 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                                'CNV.ValidationMethod',
                                'genome_loc.Chromosome',
                                'genome_loc.Strand',
+                               'genomic_range',
                                'gene.OfficialSymbol',
                                'gene.OfficialName',
                                'genotyping_platform.Name',
@@ -171,6 +172,7 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                                'Validation_Method'  => 'CNV.ValidationMethod',
                                'Chromosome'         => 'genome_loc.Chromosome',
                                'Strand'             => 'genome_loc.Strand',
+                               'genomic_range'      => 'genomic_range',
                                'Gene_Symbol'        => 'gene.OfficialSymbol',
                                'Gene_Name'          => 'gene.OfficialName',
                                'Platform'           => 'genotyping_platform.Name',
@@ -239,6 +241,13 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // CNV
+
+        $Base_options = array(
+                         null => 'Any',
+                         '37' => 'GRCh37',
+                        );
+        $this->addSelect('Assembly', 'Build:', $Base_options);
+
         $CNV_Type_options = array(
                              null      => 'All',
                              'gain'    => 'gain',
@@ -279,9 +288,16 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addSelect('Inheritance', 'Inheritance:', $Inheritance_options);
 
         $this->addBasicText('Chromosome', 'Chromosome:');
-        $this->addBasicText('Strand', 'Strand:');
-        $this->addBasicText('Gene_Symbol', 'Symbol:');
-        $this->addBasicText('Gene_Name', 'Name:');
+
+        $Base_options = array(
+                         null => 'Any',
+                         'F'  => 'Forward',
+                         'R'  => 'Reverse',
+                        );
+        $this->addSelect('Strand', 'Strand:', $Base_options);
+
+        $this->addBasicText('genomic_range', 'Genomic Range:');
+        $this->addBasicText('Gene_Symbol', 'Gene:');
 
         $DB = Database::singleton();
         $platform_results = $DB->select(
@@ -418,14 +434,26 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
                 || strtolower(substr($field, -6)) == 'gender'
-                || strtolower(substr($field, -10)) == 'chromosome'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))
             ) {
-
                  $query .= " AND $field = :v_$prepared_key";
             } elseif ($field == "candidate.CandID") {
                 $query .= " AND $field = " . ltrim($val, '0');
+            } elseif ($field == "genomic_range") {
+                $temp_array = explode(':', $val);
+                $chr        = $temp_array[0];
+                $query     .= " AND genome_loc.Chromosome = '$chr'";
+
+                if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
+                    $temp_array = explode('-', $temp_array[1]);
+                    $from       = $temp_array[0];
+                    $to         = $temp_array[1];
+                    $query     .= " AND genome_loc.StartLoc < $to";
+                    $query     .= " AND genome_loc.EndLoc > $from";
+                }
+                $query .= " AND :v_$prepared_key IS NOT NULL";
+
             } else {
                  $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
             }

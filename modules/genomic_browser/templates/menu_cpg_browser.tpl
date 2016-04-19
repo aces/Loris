@@ -76,7 +76,7 @@
               <div class="form-group col-sm-5">
                 <div class="panel panel-primary">
                   <div class="panel-heading" onclick="hideFilterGene();">
-                    Genomic range Filters
+                    Genomic Range Filters
                     <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-gene"></span>
                     <span class="glyphicon glyphicon-chevron-up pull-right" id="up-gene"></span>
                   </div>
@@ -86,20 +86,14 @@
                         <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="HUGO Gene Nomenclature Committee ID ex: PINK1">
                           {$form.Gene_Symbol.label}
                         </label>
-                        <div class="col-sm-12 col-md-2">
+                        <div class="col-sm-12 col-md-3">
                           {$form.Gene_Symbol.html}
                         </div>
-                        <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="Genome Reference Consortium ID">
+                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Genome Reference Consortium ID">
                           {$form.Assembly.label}
                         </label>
                         <div class="col-sm-12 col-md-3">
                           {$form.Assembly.html}
-                        </div>
-                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Chromosome number or symbole">
-                          {$form.Chromosome.label}
-                        </label>
-                        <div class="col-sm-12 col-md-2">
-                          {$form.Chromosome.html}
                         </div>
                       </div>
                     </div>
@@ -111,17 +105,11 @@
                         <div class="col-sm-12 col-md-2">
                           {$form.Strand.html}
                         </div>
-                        <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="Start location on the genome">
-                          {$form.StartLoc.label}
+                        <label class="col-sm-12 col-md-3" data-toggle="tooltip" data-placement="top" title="ex: chr14:68341139-69341267">
+                          {$form.genomic_range.label}
                         </label>
-                        <div class="col-sm-12 col-md-3">
-                          {$form.StartLoc.html}
-                        </div>
-                        <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="End location on the genome">
-                          {$form.EndLoc.label}
-                        </label>
-                        <div class="col-sm-12 col-md-3">
-                          {$form.EndLoc.html}
+                        <div class="col-sm-12 col-md-6">
+                          {$form.genomic_range.html}
                         </div>
                       </div>
                     </div>
