@@ -96,10 +96,13 @@ StaticDataTable = React.createClass({
         var rowsPerPage = this.state.RowsPerPage;
         var headers = [<th onClick={this.setSortColumn(-1)}>{this.props.RowNumLabel}</th>];
         for(var i = 0; i < this.props.Headers.length; i += 1) {
-            if(this.props.Headers[i] == this.props.freezeColumn){
-                headers.push(<th id={this.props.freezeColumn} onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
-            }else {
-                headers.push(<th onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+ 
+            if ( typeof loris.hiddenHeaders === "undefined" || -1 == loris.hiddenHeaders.indexOf(this.props.Headers[i]) ) {
+                if(this.props.Headers[i] == this.props.freezeColumn){
+                    headers.push(<th id={this.props.freezeColumn} onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+                }else {
+                    headers.push(<th onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+                }
             }
         }
         var rows = [];

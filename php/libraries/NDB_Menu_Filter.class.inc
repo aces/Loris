@@ -734,9 +734,12 @@ class NDB_Menu_Filter extends NDB_Menu
             },
             $this->headers
         );
+
+        $MappedData = array();
         foreach ($data as $row) {
             $MappedData[] = array_values($row);
         }
+
         return array(
                 'Headers' => $headers,
                 'Data'    => $MappedData,
