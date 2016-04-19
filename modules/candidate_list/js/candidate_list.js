@@ -68,15 +68,6 @@ $(function(){
 
 
 $(document).ready(function() {
-    // Filters will only get applied on a POST, so
-    // on click we need to fake a form which posts
-    // to the imaging_browser in order to get filters
-    $(".scanDoneLink").click(function(e) {
-        var pscid = this.dataset.pscid;
-        loris.loadFilteredMenuClickHandler('imaging_browser', {
-            "pscid" : pscid
-        })(e);
-    });
     //validation for the accessProfileForm
     $( "#accessProfileForm" ).bind('submit.formValidation', function( event ) {
         event.preventDefault();
