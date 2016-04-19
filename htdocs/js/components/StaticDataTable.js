@@ -59,10 +59,9 @@ StaticDataTable = React.createClass({
             'PageNumber': 1
         });
     },
-    downloadCSV: function() {
+    downloadCSV: function () {
         var headers = this.props.Fields,
             csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
-
 
         csvworker.addEventListener('message', function (e) {
             var dataURL, dataDate, link;
@@ -216,39 +215,93 @@ StaticDataTable = React.createClass({
             ));
         }
 
-<<<<<<< HEAD
-        var RowsPerPageDropdown = (
-            React.createElement("select", {className: "input-sm perPage", onChange: this.changeRowsPerPage}, 
-                React.createElement("option", null, "20"), 
-                React.createElement("option", null, "50"), 
-                React.createElement("option", null, "100"), 
-                React.createElement("option", null, "1000"), 
-                React.createElement("option", null, "5000"), 
-                React.createElement("option", null, "10000")
+        var RowsPerPageDropdown = React.createElement(
+            "select",
+            { className: "input-sm perPage", onChange: this.changeRowsPerPage },
+            React.createElement(
+                "option",
+                null,
+                "20"
+            ),
+            React.createElement(
+                "option",
+                null,
+                "50"
+            ),
+            React.createElement(
+                "option",
+                null,
+                "100"
+            ),
+            React.createElement(
+                "option",
+                null,
+                "1000"
+            ),
+            React.createElement(
+                "option",
+                null,
+                "5000"
+            ),
+            React.createElement(
+                "option",
+                null,
+                "10000"
             )
-            );
-        return (
-            React.createElement("div", {className: "panel panel-primary"}, 
-                    React.createElement("table", {className: "table table-hover table-primary table-bordered", id: "dynamictable"}, 
-                        React.createElement("thead", null, 
-                            React.createElement("tr", {className: "info"}, headers)
-                        ), 
-                        React.createElement("tbody", null, 
-                            rows
-                        )
-                    ), 
-                React.createElement("div", {className: "panel-footer table-footer"}, 
-                    React.createElement("div", {className: "row"}, 
-                        React.createElement("div", {className: "col-xs-12"}, 
-                            React.createElement("div", {className: "col-xs-12 footerText"}, 
-                                rows.length, " rows displayed of ", this.props.Data.length, ". (Maximum rows per page: ", RowsPerPageDropdown, ")"
-                            ), 
-                            React.createElement("div", {className: "col-xs-6"}, 
-                                React.createElement("button", {className: "btn btn-primary downloadCSV", onClick: this.downloadCSV}, "Download Table as CSV")
-                            ), 
-                            React.createElement("div", {className: "pull-right"}, 
-                                React.createElement(PaginationLinks, {Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber})
+        );
+        return React.createElement(
+            "div",
+            { className: "panel panel-primary" },
+            React.createElement(
+                "table",
+                { className: "table table-hover table-primary table-bordered", id: "dynamictable" },
+                React.createElement(
+                    "thead",
+                    null,
+                    React.createElement(
+                        "tr",
+                        { className: "info" },
+                        headers
+                    )
+                ),
+                React.createElement(
+                    "tbody",
+                    null,
+                    rows
+                )
+            ),
+            React.createElement(
+                "div",
+                { className: "panel-footer table-footer" },
+                React.createElement(
+                    "div",
+                    { className: "row" },
+                    React.createElement(
+                        "div",
+                        { className: "col-xs-12" },
+                        React.createElement(
+                            "div",
+                            { className: "col-xs-12 footerText" },
+                            rows.length,
+                            " rows displayed of ",
+                            this.props.Data.length,
+                            ". (Maximum rows per page: ",
+                            RowsPerPageDropdown,
+                            ")"
+                        ),
+                        React.createElement(
+                            "div",
+                            { className: "col-xs-6" },
+                            React.createElement(
+                                "button",
+                                { className: "btn btn-primary downloadCSV", onClick: this.downloadCSV },
+                                "Download Table as CSV"
                             )
+                        ),
+                        React.createElement(
+                            "div",
+                            { className: "pull-right" },
+                            React.createElement(PaginationLinks, { Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber })
                         )
                     )
                 )
