@@ -339,7 +339,15 @@ div.navbar div.container div.navbar-brand {
 
 /*
  *  CSS for static table
+ *  Styling for the staticTable component
  */
+.downloadCSV {
+    margin: 20px 0px;
+}
+.perPage {
+    width: 75px;
+    color: black;
+}
 .table-footer {
     background-color: #1c70b6;
     color: white;

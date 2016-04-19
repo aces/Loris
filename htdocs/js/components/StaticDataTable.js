@@ -57,6 +57,32 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
            'PageNumber' : 1
        });
     },
+    downloadCSV: function() {
+        var headers = this.props.Fields,
+            csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
+
+
+        csvworker.addEventListener('message', function (e) {
+            var dataURL, dataDate, link;
+            if (e.data.cmd === 'SaveCSV') {
+                dataDate = new Date().toISOString();
+                dataURL = window.URL.createObjectURL(e.data.message);
+                link = document.createElement("a");
+                link.download = "data-" + dataDate + ".csv";
+                link.type = "text/csv";
+                link.href = dataURL;
+                document.body.appendChild(link);
+                $(link)[0].click();
+                document.body.removeChild(link);
+            }
+        });
+        csvworker.postMessage({
+            cmd: 'SaveFile',
+            data: this.props.Data,
+            headers: this.props.Headers,
+            identifiers: this.props.RowNameMap
+        });
+    },
     render: function() {
         if (this.props.Data == null) {
             return (
@@ -155,7 +181,8 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
             );
         }
 
-        var RowsPerPageDropdown = (React.createElement("select", {className: "input-sm rowsPerPage", onChange: this.changeRowsPerPage}, 
+        var RowsPerPageDropdown = (
+            React.createElement("select", {className: "input-sm perPage", onChange: this.changeRowsPerPage}, 
                 React.createElement("option", null, "20"), 
                 React.createElement("option", null, "50"), 
                 React.createElement("option", null, "100"), 
@@ -177,7 +204,12 @@ StaticDataTable = React.createClass({displayName: "StaticDataTable",
                 React.createElement("div", {className: "panel-footer table-footer"}, 
                     React.createElement("div", {className: "row"}, 
                         React.createElement("div", {className: "col-xs-12"}, 
-                            rows.length, " rows displayed of ", this.props.Data.length, ". (Maximum rows per page: ", RowsPerPageDropdown, ")",  
+                            React.createElement("div", {className: "col-xs-12 footerText"}, 
+                                rows.length, " rows displayed of ", this.props.Data.length, ". (Maximum rows per page: ", RowsPerPageDropdown, ")"
+                            ), 
+                            React.createElement("div", {className: "col-xs-6"}, 
+                                React.createElement("button", {className: "btn btn-primary downloadCSV", onClick: this.downloadCSV}, "Download Table as CSV")
+                            ), 
                             React.createElement("div", {className: "pull-right"}, 
                                 React.createElement(PaginationLinks, {Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber})
                             )
