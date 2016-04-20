@@ -93,9 +93,6 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             )
         );
 
-        // This variable will be used by the collumnFormatter javascript.
-        $this->tpl_data['briefHeaders'] = json_encode($this->_briefFields);
-
         $this->query = " FROM candidate
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
                 from session s GROUP BY s.CandID) AS cohort
