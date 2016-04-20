@@ -342,7 +342,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                     break;
                 case "PN":
                     $query .= " AND (s.MRIQCPending='Y' 
-                        OR s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; 
+                        OR fqc.QCFirstChangeTime IS NULL)"; 
                     break;
                 }
             } else if ($field == 'AcquisitionProtocolID') {
