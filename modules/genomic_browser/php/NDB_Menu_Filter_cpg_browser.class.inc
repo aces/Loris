@@ -460,7 +460,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                  $query .= " AND $field = :v_$prepared_key";
 
             } elseif ($field == "candidate.CandID") {
-                $query .= " AND $field = " . ltrim($val, '0');
+                $query .= " AND $field = FORMAT(:v_$prepared_key,0) ";
 
             } elseif ($field == "genomic_range") {
                 $temp_array = explode(':', $val);

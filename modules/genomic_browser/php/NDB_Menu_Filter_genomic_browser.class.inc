@@ -276,7 +276,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                     $query .= " AND $field = :v_$prepared_key";
                 }
             } elseif ($field == "candidate.CandID") {
-                $query .= " AND $field = " . ltrim($val, '0');
+                $query .= " AND $field = FORMAT(:v_$prepared_key,0) ";
             } else {
                  $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
             }
