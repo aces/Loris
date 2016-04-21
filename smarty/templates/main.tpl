@@ -352,7 +352,7 @@
                                                                 {$timePoint.SubprojectTitle}
                                                             </td>
                                                             <td>
-                                                                {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"images/help2.gif\" width=\"12\" height=\"12\" />"}
+                                                                {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"$baseurl/images/help2.gif\" width=\"12\" height=\"12\" />"}
                                                             </td>
                                                             {* 
                                                                 <td>
