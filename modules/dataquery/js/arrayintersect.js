@@ -95,7 +95,7 @@ var getSessions = function(group) {
             sessions.push(group.children[i].session);
         }
     }
-    if(group.activeOperator === 0) {
+    if(group.activeOperator == 0) {
         session = arrayIntersect(sessions);
     } else {
         session = arrayUnion(sessions);
