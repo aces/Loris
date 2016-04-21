@@ -29,6 +29,21 @@
    margin-left: 2px;
    margin-top: 7px;
    margin-bottom: 7px;
-
 }
 
+/* 
+  Color coding Methylation-tab aacording to the display convention of 
+  the wgEncodeHaibMethyl450 track at the UCSC Genome-Browser
+*/
+td.cpgOrange, td.cpgOrange a {
+  color: orange;
+}
+td.cpgPurple, td.cpgPurple a {
+  color: purple;
+}
+td.cpgBlue, td.cpgBlue a{
+  color: blue;
+}
+td.cpgBlack, td.cpgBlack a {
+  color: black;
+}
