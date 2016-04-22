@@ -84,7 +84,7 @@ StaticDataTable = React.createClass({
         });
     },
     render: function() {
-        if (this.props.Data == null) {
+        if (this.props.Data == null || this.props.Data.length == 0) {
             return (
                 <div 
                     className="alert alert-info no-result-found-panel"
