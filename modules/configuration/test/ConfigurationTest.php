@@ -48,21 +48,31 @@ class ConfigurationTest extends LorisIntegrationTestConfiguration
      *
      * @return void
      */
-    public function testConfigurationPageLoads()
+    public function testAllLinks()
     {     
         $this->safeGet($this->url . "/configuration/");
         $contentArea = WebDriverBy::cssSelector("body");  
         $this->linkTest(WebDriverBy::linkText("Study"),$contentArea,
            "Settings related to details of the study");
         $this->linkTest(WebDriverBy::linkText("Paths"),$contentArea,
-           "pecify directories where LORIS-related files are stored or created.")
-
-
-
-
-
-
-    }       
+           "pecify directories where LORIS-related files are stored or created.");
+        $this->linkTest(WebDriverBy::linkText("GUI"),$contentArea,
+           "Settings related to the overall display of LORIS");
+        $this->linkTest(WebDriverBy::linkText("WWW"),$contentArea,
+           "Web address settings");
+        $this->linkTest(WebDriverBy::linkText("Dashboard"),$contentArea,
+           "Settings that affect the appearance of the dashboard and its charts");
+        $this->linkTest(WebDriverBy::linkText("DICOM Archive"),$contentArea,
+           "DICOM Archive settings");
+        $this->linkTest(WebDriverBy::linkText("Statistics"),$contentArea,
+           "Statistics module settings");
+        $this->linkTest(WebDriverBy::linkText("Email"),$contentArea,
+           "LORIS email settings");
+        $this->linkTest(WebDriverBy::linkText("Uploads"),$contentArea,
+           "Settings related to file uploading");
+        $this->linkTest(WebDriverBy::linkText("API Keys"),$contentArea,
+           "Specify any API keys required for LORIS");
+    }              
    /**
      * Tests that configration loads with the permission
      *
