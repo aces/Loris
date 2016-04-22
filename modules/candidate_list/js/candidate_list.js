@@ -14,7 +14,7 @@ function checkAccessProfileForm() {
         return false;
     }
 
-    $.get("AjaxHelper.php?Module=candidate_list&script=validateProfileIDs.php&candID=" + form.candID.value + "&PSCID=" + form.PSCID.value ,
+    $.get(loris.BaseURL + "/AjaxHelper.php?Module=candidate_list&script=validateProfileIDs.php&candID=" + form.candID.value + "&PSCID=" + form.PSCID.value ,
         function(data)
         {
             //ids are valid, submit accessProfileForm form
