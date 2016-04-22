@@ -4,13 +4,13 @@
 <meta charset="utf-8"/>
 <link rel="stylesheet" href="direct.css" type="text/css" />
 <link rel="stylesheet" href="{$css}" type="text/css" />
-<link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
+<link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
 
-<link type="text/css" href="css/jquery-ui-1.10.4.custom.css" rel="Stylesheet" />	
-<script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
-<script type="text/javascript" src="js/modules/direct_entry.js"></script>
+<link type="text/css" href="{$baseurl}/css/jquery-ui-1.10.4.custom.css" rel="Stylesheet" />
+<script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/modules/direct_entry.js"></script>
 
 {if $test_name_js}
 <script type="text/javascript" src="{$test_name_js}"></script>
