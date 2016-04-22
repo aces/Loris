@@ -252,20 +252,17 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             }
             return $query;
         }
-
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if (in_array($field, $this->CheckboxFilters) && $val) {
                 $query .= " AND $field";
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
                 || strtolower(substr($field, -6)) == 'gender'
-                || strtolower(substr($field, -10)) == 'chromosome'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))
             ) {
                  $query .= " AND $field = :v_$prepared_key";
-            } elseif ($field == "rawfiles.rawFileCount"
-                || $field == "cleanedfiles.cleanedFileCount"
+            } elseif ($field == "F.FileCount"
                 || $field == "S.SNPCount"
                 || $field == "C.CNVCount"
                 || $field == "M.CPGCount"
@@ -273,12 +270,12 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 if ($val == "1") {  // if ANY found i.e. >= 1
                     $query .= " AND $field >= :v_$prepared_key";
                 } elseif ($val == "0") { // if NONE found i.e. = 0
-                    $query .= " AND $field = :v_$prepared_key";
+                    $query .= " AND ($field = :v_$prepared_key || $field IS NULL)";
                 }
             } elseif ($field == "candidate.CandID") {
-                $query .= " AND $field = " . ltrim($val, '0');
+                $query .= " AND $field = CONVERT( :v_$prepared_key, DECIMAL) ";
             } else {
-                 $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
+                $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
             }
         }
         return $query;
