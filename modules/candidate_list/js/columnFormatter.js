@@ -1,6 +1,6 @@
 function formatColumn(column, cell, rowData) {
     if (column === 'PSCID') {
-        if (access_all_profiles) {
+        if (loris.userHasPermission('access_all_profiles')) {
             var url = loris.BaseURL + "/" + rowData[1] + "/";
             return React.createElement(
                 "td",
