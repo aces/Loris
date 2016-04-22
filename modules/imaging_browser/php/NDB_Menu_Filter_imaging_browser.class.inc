@@ -379,15 +379,15 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
      */
     function toArray()
     {
-        $bob   = parent::toArray();
-        $index = array_search('SessionID', $bob['Headers']);
+        $data   = parent::toArray();
+        $index = array_search('SessionID', $data['Headers']);
         if ($index !== false) {
             $_SESSION['State']->setProperty(
                 'mriSessionsListed',
-                array_column($bob['Data'], $index)
+                array_column($data['Data'], $index)
             );
         }
-        return $bob;
+        return $data;
     }
 
     function getJSDependencies() {
