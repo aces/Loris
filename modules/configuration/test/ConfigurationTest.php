@@ -7,12 +7,13 @@
  * @category Test
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 
 require_once __DIR__
-    . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+    . "/../../../test/integrationtests/LorisIntegrationTestConfiguration.class.inc"
 
 /**
  * Configuration module automated integration tests
@@ -25,7 +26,7 @@ require_once __DIR__
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class ConfigurationTest extends LorisIntegrationTest
+class ConfigurationTest extends LorisIntegrationTestConfiguration
 {
     /**
      * Tests that, when loading the Configuration module, the word
@@ -41,5 +42,57 @@ class ConfigurationTest extends LorisIntegrationTest
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Configuration", $bodyText);
     }
+
+    /**
+     * Tests links, click each link, the particular content shows on the page.
+     *
+     * @return void
+     */
+    public function testConfigurationPageLoads()
+    {     
+        $this->safeGet($this->url . "/configuration/");
+        $contentArea = WebDriverBy::cssSelector("body");  
+        $this->linkTest(WebDriverBy::linkText("Study"),$contentArea,
+           "Settings related to details of the study");
+        $this->linkTest(WebDriverBy::linkText("Paths"),$contentArea,
+           "pecify directories where LORIS-related files are stored or created.")
+
+
+
+
+
+
+    }       
+   /**
+     * Tests that configration loads with the permission
+     *
+     * @return void
+     */
+    function testConfigPermission()
+    {
+         $this->setupPermissions(array("config"));
+         $this->safeGet($this->url . "/configuration/");
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertNotContains("You do not have access to this page.", $bodyText);
+         $this->resetPermissions();
+    }
+    /**
+     * Tests that conflict resolver does not load with the permission
+     *
+     * @return void
+     */
+    function testConfigWithoutPermission()
+    {
+         $this->setupPermissions(array());
+         $this->safeGet($this->url . "/configuration/");
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertContains("You do not have access to this page.", $bodyText);
+         $this->resetPermissions();
+    }
+
 }
 ?>
