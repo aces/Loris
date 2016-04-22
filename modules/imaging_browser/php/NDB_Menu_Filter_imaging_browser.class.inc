@@ -146,7 +146,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'New_Data',
             'T1_Passed',
             'T2_Passed',
-            'Links'
+            'Links',
+            'sessionID'
         );
        
         $this->validFilters = array(
@@ -174,6 +175,17 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->searchKeyword    = array();
         
         $this->tpl_data['numTimepoints'] = 0;
+
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array('sessionID')
+            )
+        );
     }
 
     /**
@@ -350,6 +362,32 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             }
         }
         return $query;
+    }
+
+    /**
+     * Converts this menu filter to an array of the form
+     *
+     * Headers => (string array)
+     * Data => (array of arrays of row data)
+     *
+     * @note overloaded function
+     *         Overloading this method to create a list of sessionID that
+     *         will be used for the Navigation Links in  the viewSession
+     *         page.
+     *
+     * @return associative array
+     */
+    function toArray()
+    {
+        $bob   = parent::toArray();
+        $index = array_search('SessionID', $bob['Headers']);
+        if ($index !== false) {
+            $_SESSION['State']->setProperty(
+                'mriSessionsListed',
+                array_column($bob['Data'], $index)
+            );
+        }
+        return $bob;
     }
 
     function getJSDependencies() {
