@@ -57,7 +57,7 @@
 	  			</div>
 	  			<br>
 	  			<div class="col-xs-10 col-xs-offset-2">
-	  				<a href="main.php">Return to login screen</a>
+	  				<a href="{$baseurl}/main.php">Return to login screen</a>
 	  			</div>
 	  			
 			</div>

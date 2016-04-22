@@ -21,7 +21,7 @@
 {if $dynamictabs neq "dynamictabs"}
 <table border="0" cellpadding="3" cellspacing="2" width="100%" class="mainlayout">
     <tr>
-        <th align="left" background="images/title_background.jpg" class="banner" colspan="2">
+        <th align="left" background="{$baseurl}/images/title_background.jpg" class="banner" colspan="2">
             {$study_title}
         </th>
     </tr>

@@ -71,7 +71,7 @@ function mailThisPage()
 <th align="left" id="jsheader">
 <div id="slidemenu" class="jqueryslidemenu">
 <ul>
-<li><a href="context_help_popup.php"><img src="images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Front Page</a></li>
+<li><a href="context_help_popup.php"><img src="{$baseurl}/images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Front Page</a></li>
 <li><a href="#">Actions</a>
 <ul>
 <a href="context_help_popup.php?mode=Index"><img src="{$baseurl}/images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Manual Index</a>
