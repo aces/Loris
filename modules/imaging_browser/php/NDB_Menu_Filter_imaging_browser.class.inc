@@ -281,42 +281,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     }
 
     /**
-     * Setup table rows for the template
-     *
-     * @param int $count number
-     *
-     * @return null
-     */
-
-    function _setDataTableRows($count)
-    {
-        // print out
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                if ($key == 'sessionID') {
-                    $this->tpl_data['items'][$x]['sessionID'] = $val;
-                    $filtered_sessionIDs[] = $val;
-                    continue;
-                }
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-                $i++;
-            }
-            $x++;
-        }
-        $this->tpl_data['numTimepoints'] = $this->TotalItems; //$x;
-        $_SESSION['State']->setProperty(
-	    'mriSessionsListed', $filtered_sessionIDs
-        );
-        return true;
-    }
-    /**
      * Overwrites the function to add a customized filter
      * for Pending and New
      *
