@@ -52,7 +52,7 @@ class ConfigurationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/configuration/");
         $contentArea = WebDriverBy::cssSelector("body");
-       
+
         $this->linkTest(
             WebDriverBy::linkText("Study"),
             $contentArea,
