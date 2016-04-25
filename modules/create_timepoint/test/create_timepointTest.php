@@ -74,7 +74,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         $this->markTestIncomplete("Create Timepoint Page Test not implemented");
         
-        /*
+        
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
@@ -95,7 +95,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             WebDriverBy::cssSelector(".col-sm-12~ .col-sm-12+ .col-sm-12 label")
         )->getText();
         $this->assertContains("Visit label", $visitlabel);
-         */
+         
     }
 
 }
