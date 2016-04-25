@@ -53,16 +53,6 @@ class ConfigurationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/configuration/");
         $contentArea = WebDriverBy::cssSelector("body");
        
-     function linkTest(WebDriverBy $by, WebDriverBy $byForContent, $testContent)
-    {
-        $webElement = $this->safeFindElement($by)->click();
-       
-        $bodyText = $this->safeFindElement(
-             $byForContent
-         )->getText();
-        $this->assertContains($testContent, $bodyText);
-    }
-
         $this->linkTest(
             WebDriverBy::linkText("Study"),
             $contentArea,
