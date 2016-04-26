@@ -376,7 +376,7 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
             ) {
                  $query .= " AND $field = :v_$prepared_key";
             } elseif ($field == "candidate.CandID") {
-                $query .= " AND $field = " . ltrim($val, '0');
+                $query .= " AND $field = CONVERT( :v_$prepared_key, DECIMAL) ";
             } elseif ($field == "genomic_range") {
                 $temp_array = explode(':', $val);
                 $chr        = $temp_array[0];
