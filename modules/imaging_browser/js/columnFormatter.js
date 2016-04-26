@@ -20,20 +20,20 @@ function formatColumn(column, cell, rowData) {
             for (var i = 0; i < cellTypes.length; i += 1) {
                 cellLinks.push(React.createElement(
                     'a',
-                    { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&outputType=" + cellTypes[i] + "&backURL=" + loris.BaseURL + "/imaging_browser/" },
+                    { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&outputType=" + cellTypes[i] + "&backURL=/imaging_browser/" },
                     cellTypes[i]
                 ));
                 cellLinks.push(" | ");
             }
             cellLinks.push(React.createElement(
                 'a',
-                { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&selectedOnly=1" + "&backURL=" + loris.BaseURL + "/imaging_browser/" },
+                { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&selectedOnly=1" + "&backURL=/imaging_browser/" },
                 'selected'
             ));
             cellLinks.push(" | ");
             cellLinks.push(React.createElement(
                 'a',
-                { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&backURL=" + loris.BaseURL + "/imaging_browser/" },
+                { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&backURL=/imaging_browser/" },
                 'all types'
             ));
             return React.createElement(
