@@ -67,15 +67,21 @@ class Imaging_Session_ControlPanel
 
         $subjectData['sessionID'] = $_REQUEST['sessionID'];
         $subjectData['candid']    = $timePoint->getCandID();
-        $subjectData['ParameterFormCommentID']   = $DB->pselectOne(
+
+        $qresult = $DB->pselectOne(
             "SELECT CommentID FROM flag 
-            WHERE Test_name='mri_parameter_form' AND SessionID=$this->sessionID"
+            WHERE Test_name='mri_parameter_form' AND SessionID = :v_sessions_id",
+            array('v_sessions_id' => $this->sessionID)
         );
-        $subjectData['RadiologyReviewCommentID'] = $DB->pselectOne(
+        $subjectData['ParameterFormCommentID'] = (empty($qresult)) ? "" : $qresult;
+
+        $qresult = $DB->pselectOne(
             "SELECT CommentID 
             FROM flag WHERE Test_name='radiology_review' 
-            AND SessionID=$this->sessionID"
+            AND SessionID = :v_sessions_id",
+            array('v_sessions_id' => $this->sessionID)
         );
+        $subjectData['RadiologyReviewCommentID'] = (empty($qresult)) ? "" : $qresult;
 
         $candidate =& Candidate::singleton($timePoint->getCandID());
 

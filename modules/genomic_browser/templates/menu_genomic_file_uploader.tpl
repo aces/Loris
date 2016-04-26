@@ -99,19 +99,17 @@
             <div class="col-sm-6 col-xs-12 col-md-6">
               <input type="submit" name="filter" value="Show data" id="showdata" class="btn btn-sm btn-primary col-xs-12"/>
             </div>
-            <div class="visible-xs col-xs-12"> </div>
-              <div class="visible-xs col-xs-12"> </div>
-                <div class="col-sm-6 col-xs-12 col-md-6">
-                  <button type="button" name = "upload" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#fileUploadModal">Upload File</button>
-                </div>
-              </div>
+{if $upload_allowed}
+            <div class="col-sm-6 col-xs-12 col-md-6">
+              <button type="button" name = "upload" class = "btn btn-sm btn-primary col-xs-12" data-toggle="modal" data-target="#fileUploadModal">Upload File</button>
             </div>
-            <div class="form-group col-sm-12">
-              <div class="row">
-                <div class="col-sm-6">
-                  <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='/genomic_browser/?submenu=genomic_file_uploader&reset=true'" />
-                </div>
-              </div>
+{/if}
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-sm-12">
+            <div class="col-sm-6">
+              <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='/genomic_browser/?submenu=genomic_file_uploader&reset=true'" />
             </div>
           </div>
         </div>
@@ -139,10 +137,11 @@
  
     React.render(table, document.getElementById("datatable"));
 
-
+{if $upload_allowed}
     var uploadModal = RGenomicFileUploadModal({
             baseURL : "{$baseurl}"
     });
     React.render(uploadModal, document.getElementById("modalContainer"));
+{/if}
 </script>
 

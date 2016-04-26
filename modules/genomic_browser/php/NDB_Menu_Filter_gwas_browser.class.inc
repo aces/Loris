@@ -70,7 +70,7 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
                           'GWAS.MAF AS MAF',
                           'GWAS.Estimate AS Estimate',
                           'GWAS.StdErr AS StdErr',
-                          'GWAS.Pvalue AS P_value',
+                          'GWAS.Pvalue AS Pvalue',
                          );
 
         // This variable will be used by the columnFormatter javascript
@@ -87,7 +87,7 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
         // $this->query = " FROM GWAS ";
         $this->query = " FROM GWAS
             JOIN SNP ON (GWAS.SNPID = SNP.SNPID)
-            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)";
+            JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)";
 
         $this->order_by     = 'genome_loc.Chromosome, GWAS.Pvalue DESC';
         $this->validFilters = array(
@@ -105,13 +105,13 @@ class NDB_Menu_Filter_GWAS_Browser extends NDB_Menu_Filter
         $this->formToFilter = array(
                                'SNP_ID'       => 'GWAS.rsID',
                                'Chromosome'   => 'genome_loc.Chromosome',
-                               'Position_BP'  => 'genome_loc.StartLoc',
-                               'Major_Allele' => 'GWAS.Major_Allele',
-                               'Minor_Allele' => 'GWAS.Minor_Allele',
+                               'BP_Position'  => 'genome_loc.StartLoc',
+                               'Major_Allele' => 'GWAS.MajorAllele',
+                               'Minor_Allele' => 'GWAS.MinorAllele',
                                'MAF'          => 'GWAS.MAF',
                                'Estimate'     => 'GWAS.Estimate',
                                'StdErr'       => 'GWAS.StdErr',
-                               'P_value'      => 'GWAS.P_value',
+                               'Pvalue'       => 'GWAS.Pvalue',
                               );
 
         return true;
