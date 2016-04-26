@@ -86,12 +86,15 @@
                   <div class="panel-body" id="panel-body-gene">
                     <div class="row">
                       <div class="form-group col-sm-12">
+<!--
                         <label class="col-sm-12 col-md-1">
                           {$form.Gene_Symbol.label}
                         </label>
                         <div class="col-sm-12 col-md-3">
                           {$form.Gene_Symbol.html}
                         </div>
+-->
+                        <div class="col-sm-12 col-md-4"></div>
                         <label class="col-sm-12 col-md-2">
                           {$form.Assembly.label}
                         </label>
