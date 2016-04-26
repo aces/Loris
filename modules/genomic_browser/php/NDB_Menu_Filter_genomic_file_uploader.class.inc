@@ -135,7 +135,10 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
         $this->addCheckbox('caveat', 'Caveat:', $Base_options);
 
         $user = User::singleton();
-        $this->tpl_data['user'] = $user->getUsername();
+        $this->tpl_data['user']           = $user->getUsername();
+        $this->tpl_data['upload_allowed'] = $user->hasPermission(
+            'genomic_data_manager'
+        );
 
         return true;
     }

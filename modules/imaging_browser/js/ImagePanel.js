@@ -309,12 +309,18 @@ ImageDownloadButtons = React.createClass({displayName: "ImageDownloadButtons",
 });
 ImagePanelBody = React.createClass({displayName: "ImagePanelBody",
     mixins: [React.addons.PureRenderMixin],
+    openWindowHandler: function (e) {
+        e.preventDefault();
+        window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.FileID + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
+    },
     render: function() {
         return (
                 React.createElement("div", {className: "panel-body"}, 
                     React.createElement("div", {className: "row"}, 
                         React.createElement("div", {className: "col-xs-9 imaging_browser_pic"}, 
-                            React.createElement("img", {className: "img-checkpic img-responsive", src: this.props.Checkpic})
+                            React.createElement("a", {href: "#noID", onClick: this.openWindowHandler}, 
+                                React.createElement("img", {className: "img-checkpic img-responsive", src: this.props.Checkpic})
+                            )
                         ), 
                         React.createElement("div", {className: "col-xs-3 mri-right-panel"}, 
                             React.createElement(ImagePanelQCPanel, {
