@@ -1,45 +1,53 @@
 function formatColumn(column, cell, rowData) {
-    if (column === 'New Data') {
-        if (cell === 'new') {
-            return React.createElement(
-                'td',
-                { className: 'newdata' },
-                'NEW'
-            );
-        }
-        return React.createElement('td', null);
-    }
-    if (column === 'Links') {
-        var cellTypes = cell.split(",");
-        var cellLinks = [];
-        for (var i = 0; i < cellTypes.length; i += 1) {
+    switch (column) {
+        case 'SessionID':
+            // hide this column
+            return null;
+            break;
+        case 'New Data':
+            if (cell === 'new') {
+                return React.createElement(
+                    'td',
+                    { className: 'newdata' },
+                    'NEW'
+                );
+            }
+            return React.createElement('td', null);
+            break;
+        case 'Links':
+            var cellTypes = cell.split(",");
+            var cellLinks = [];
+            for (var i = 0; i < cellTypes.length; i += 1) {
+                cellLinks.push(React.createElement(
+                    'a',
+                    { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&outputType=" + cellTypes[i] + "&backURL=/imaging_browser/" },
+                    cellTypes[i]
+                ));
+                cellLinks.push(" | ");
+            }
             cellLinks.push(React.createElement(
                 'a',
-                { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&outputType=" + cellTypes[i] },
-                cellTypes[i]
+                { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&selectedOnly=1" + "&backURL=/imaging_browser/" },
+                'selected'
             ));
             cellLinks.push(" | ");
-        }
-        cellLinks.push(React.createElement(
-            'a',
-            { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&selectedOnly=1" },
-            'selected'
-        ));
-        cellLinks.push(" | ");
-        cellLinks.push(React.createElement(
-            'a',
-            { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] },
-            'all types'
-        ));
-        return React.createElement(
-            'td',
-            null,
-            cellLinks
-        );
+            cellLinks.push(React.createElement(
+                'a',
+                { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&backURL=/imaging_browser/" },
+                'all types'
+            ));
+            return React.createElement(
+                'td',
+                null,
+                cellLinks
+            );
+            break;
+        default:
+            return React.createElement(
+                'td',
+                null,
+                cell
+            );
+            break;
     }
-    return React.createElement(
-        'td',
-        null,
-        cell
-    );
 }
