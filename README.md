@@ -69,7 +69,12 @@ ConfigSettings table by running the following SQL commands from a MySQL prompt:
 
     Make sure that `$yourURL` above contains the "http://" or "https://" and `$yourHostname` does not. If your server is only being accessed from localhost, you can skip this step.
 
-6. Notes for LORIS post-installation setup are contained in the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup).
+6. LORIS rewrites its URLs using Apache's mod_rewrite so please enable this module
+    ```
+    sudo a2enmod rewrite
+    ```
+
+7. Notes for LORIS post-installation setup are contained in the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup).
 
 # Community
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions.
