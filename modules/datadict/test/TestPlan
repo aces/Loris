@@ -16,6 +16,6 @@
    saved.
 7. Make sure that search keywords are not case-sensitive and that when you specify more than one keyword, the search 
    returns entries that match the whole string.
-8. Check that you can navigate through the search result pages (both by clicking in the numbers and arrows in the
+8. Check that you can navigate through the search result pages (both by clicking on the numbers and arrows in the
    bottom right corner of the table).
 9. Check that the maximum rows displayed dropdown works, also check that the download table as CSV works as well.
