@@ -21,7 +21,7 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
- /**
+    /**
      * Insert testing data into the database
      *
      * @return none
@@ -32,18 +32,18 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "data_integrity_flag",
             array(
-             'dataflag_id'             => '9999999',
-             'dataflag_visitlabel'     => 'V_test',
-              'dataflag_instrument'    => 'test_instrument',
-              'dataflag_date'          => '2015-12-03',
-              'dataflag_status'        => '4',
-              'dataflag_comment'       => '33',
-              'latest_entry'           => '1',
-              'dataflag_fbcreated'     => '0',
-              'dataflag_fbclosed'      => '0',
-              'dataflag_fbcomment'     => '0',
-              'dataflag_fbdeleted'     => '0',
-              'dataflag_userid'        => 'test_user'
+             'dataflag_id'         => '9999999',
+             'dataflag_visitlabel' => 'V_test',
+             'dataflag_instrument' => 'test_instrument',
+             'dataflag_date'       => '2015-12-03',
+             'dataflag_status'     => '4',
+             'dataflag_comment'    => '33',
+             'latest_entry'        => '1',
+             'dataflag_fbcreated'  => '0',
+             'dataflag_fbclosed'   => '0',
+             'dataflag_fbcomment'  => '0',
+             'dataflag_fbdeleted'  => '0',
+             'dataflag_userid'     => 'test_user',
             )
         );
     }
@@ -55,20 +55,23 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
-        $this->DB->delete("data_integrity_flag",
-                  array('dataflag_id' => '9999999'));
+        $this->DB->delete(
+            "data_integrity_flag",
+            array('dataflag_id' => '9999999')
+        );
     }
     /**
      * testing load this page
      *
      * @return none
-     */      
-    
+     */
+
     function testDataIntegrityFlagDoespageLoad()
     {
         $this->safeGet($this->url . "/data_integrity_flag/");
         $bodyText = $this->webDriver->findElement(
-              WebDriverBy::cssSelector("body"))->getText();
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("Data Integrity Flag", $bodyText);
     }
     /**
@@ -78,10 +81,13 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataIntegrityFlagFilterVisitlabel()
     {
-        $this->safeGet($this->url . "/data_integrity_flag/"
-            ."?visit_label=V_test");
+        $this->safeGet(
+            $this->url . "/data_integrity_flag/"
+            ."?visit_label=V_test"
+        );
         $bodyText = $this->webDriver->findElement(
-              WebDriverBy::cssSelector("body"))->getText();
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("test_user", $bodyText);
     }
     /**
@@ -91,10 +97,13 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataIntegrityFlagFilterUser()
     {
-        $this->safeGet($this->url . "/data_integrity_flag/".
-                   "?users=test_user");
+        $this->safeGet(
+            $this->url . "/data_integrity_flag/".
+            "?users=test_user"
+        );
         $bodyText = $this->webDriver->findElement(
-                WebDriverBy::cssSelector("body"))->getText();
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("test_instrument", $bodyText);
     }
     /**
@@ -104,10 +113,13 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataIntegrityFlagFilterInstrument()
     {
-        $this->safeGet($this->url . "/data_integrity_flag/".
-                        "?instrument=test_instrument");
+        $this->safeGet(
+            $this->url . "/data_integrity_flag/".
+            "?instrument=test_instrument"
+        );
         $bodyText = $this->webDriver->findElement(
-              WebDriverBy::cssSelector("body"))->getText();
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("test_user", $bodyText);
     }
     /**
@@ -123,8 +135,10 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
           $bodyText = $this->webDriver->findElement(
               WebDriverBy::cssSelector("body")
           )->getText();
-          $this->assertContains("You do not have access to this page.",
-          $bodyText);
+          $this->assertContains(
+              "You do not have access to this page.",
+              $bodyText
+          );
           $this->resetPermissions();
     }
     /**
@@ -140,8 +154,10 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
           $bodyText = $this->webDriver->findElement(
               WebDriverBy::cssSelector("body")
           )->getText();
-          $this->assertNotContains("You do not have access to this page.",
-          $bodyText);
+          $this->assertNotContains(
+              "You do not have access to this page.",
+              $bodyText
+          );
           $this->resetPermissions();
     }
 
