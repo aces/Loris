@@ -14,7 +14,8 @@
 6. Check that if (and only if) you have the 'data_dict_edit' permission you can edit the Description field. Edit a 
    description, access the Candidate Profile page and access the Data Dictionary page again. Make sure the edit was 
    saved.
-7. Check that you can navigate through the search result pages (both by clicking in the numbers and arrows in the 
-   upper right corner of the table).
-8. Make sure that search keywords are not case-sensitive and that when you specify more than one keyword, the search 
+7. Make sure that search keywords are not case-sensitive and that when you specify more than one keyword, the search 
    returns entries that match the whole string.
+8. Check that you can navigate through the search result pages (both by clicking in the numbers and arrows in the
+   bottom right corner of the table).
+9. Check that the maximum rows displayed dropdown works, also check that the download table as CSV works as well.
