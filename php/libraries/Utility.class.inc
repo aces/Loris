@@ -873,7 +873,7 @@ class Utility
      * @param string $table_name The table to check for a column.
      * @param string $column     The column name to check the table for.
      *
-     * @return  boolean true if the table has at least one NULL in the column
+     * @return boolean true if the table has at least one NULL in the column
      */
     static function columnsHasNull($table_name,$column)
     {
