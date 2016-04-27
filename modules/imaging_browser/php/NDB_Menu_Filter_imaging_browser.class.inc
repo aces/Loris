@@ -354,6 +354,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         return $data;
     }
 
+    /**
+     * Include the column formatter
+     *
+     * @return array of javascript to be inserted
+     */
     function getJSDependencies() {
         $factory = NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
