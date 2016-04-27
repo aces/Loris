@@ -336,8 +336,12 @@ class NDB_BVL_Battery
                 $qparams['SubprojID'] = $SubprojectID;
             }
         }
-
-        $query .= " ORDER BY Subgroup_order";
+        if(Utility::columnsHasNull('test_subgroups','group_order')){
+            $query .= " ORDER BY Subgroup_name";
+        }
+        else {
+            $query .= " ORDER BY Subgroup_order";
+        }
         if (!is_null($stage)) {
             $query .= ", instrument_order";
         } else {

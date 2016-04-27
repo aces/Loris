@@ -868,6 +868,32 @@ class Utility
     }
 
     /**
+     * Checks to see if a table contains a specified column
+     *
+     * @param string $table_name The table to check for a column.
+     * @param string $column     The column name to check the table for.
+     *
+     * @return  boolean true if the table has at least one NULL in the column
+     */
+    static function columnsHasNull($table_name,$column)
+    {
+        //$config   =& NDB_Config::singleton();
+        //$database = $config->getSetting('database');
+        $query    = "SELECT count(*)
+            FROM {$table_name}
+            WHERE {$column} is NULL;";
+        $DB       =& Database::singleton();
+        $num_null = $DB->pselectOne(
+            $query,
+            array()
+        );
+        if ($num_null > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns the visit labels that a given test_name exists in
      *
      * @param string $test_name The instrument that we want to know
