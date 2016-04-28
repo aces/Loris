@@ -2,7 +2,8 @@
 
 LORIS is a web-accessible database solution for neuroimaging, providing a secure infrastructure to automate the flow of clinical data for complex multi-site neuroimaging studies.
 
-This Readme covers installation of the 16.0 LORIS release.
+This Readme covers installation of the <b>16.0</b> LORIS release on <b>Ubuntu</b> systems.
+([CentOS Readme also available](https://github.com/aces/Loris/blob/16.04-dev/README.CentOS6.md)
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) page about this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme and further documentation.  The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
 
