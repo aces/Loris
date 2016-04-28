@@ -1,11 +1,18 @@
 #LORIS Neuroimaging Platform
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
-Note: Your default credentials after deployment will be 'admin' as the username and your password will be the uniquely generated password used by ClearDB.
-
 LORIS is a web-accessible database solution for neuroimaging, providing a secure infrastructure to automate the flow of clinical data for complex multi-site neuroimaging studies.
 
-# Prerequisites
+This Readme covers installation of the 16.0 LORIS release.
+
+Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) page about this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme and further documentation.  The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
+
+    ```
+    As an alternative to installing LORIS on your system (per instructions below), LORIS can now be deployed on Heroku.  
+    [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+    Note: Your default credentials after deployment will be 'admin' as the username and your password will be the uniquely generated password used by ClearDB.
+    ```
+
+# Prerequisites for Installation
 
  * LINUX (supported on Ubuntu 14.04 and CentOS 6.5) or Mac OS X (tested for Mavericks - OS X 10.9)
  * Apache2 (libapache2-mod-php5)
@@ -15,6 +22,9 @@ LORIS is a web-accessible database solution for neuroimaging, providing a secure
  * php5-json (for Debian/Ubuntu distributions)
  * Package manager (for LINUX distributions)
  * Composer
+
+Composer should be installed with the --no-dev option.  
+Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) page about this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme. 
 
 # Installation
 
@@ -46,19 +56,27 @@ LORIS is a web-accessible database solution for neuroimaging, providing a secure
     ```
     cd /var/www/$projectname/tools
     ./install.sh
+    ```
+
+4. Apache configuration and restart 
+LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this module, then restart Apache: 
+
+    ```
+    sudo a2enmod rewrite
     sudo service apache2 reload
     ```
 
-4. Go to http://localhost to verify that the LORIS core database has been successfully installed. Congratulations!
+5. Go to http://localhost to verify that the LORIS core database has been successfully installed. Congratulations!
 Log in with the username “admin” and the password you supplied for this user while running the Install script.
 
-    _Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. Rename these if running earlier version.
+    _Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. If running an earlier version of Ubuntu, rename these files, then run the following commands. After, restart Apache.
+
 
     ```
     sudo a2dissite default
     sudo a2ensite $projectname
     ```
-5. Note that the default Loris setup assumes that Loris is running on localhost. If this
+6. Note that the default Loris setup assumes that Loris is running on localhost. If this
 is not the case, you'll have to manually update the URL and Host config variables in the
 ConfigSettings table by running the following SQL commands from a MySQL prompt:
 
@@ -69,7 +87,7 @@ ConfigSettings table by running the following SQL commands from a MySQL prompt:
 
     Make sure that `$yourURL` above contains the "http://" or "https://" and `$yourHostname` does not. If your server is only being accessed from localhost, you can skip this step.
 
-6. Notes for LORIS post-installation setup are contained in the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup).
+7. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
 
 # Community
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions.
