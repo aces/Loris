@@ -87,7 +87,7 @@ class NDB_Form_dataquery extends NDB_Form
                 "group" => "true",
             )
         );
-        $this->tpl_data['visits'] = Utility::getVisitList();
+        $this->tpl_data['visits'] = Utility::getExistingVisitLabels();
 
         $sessions = array_map(function($element) { return $element['key']; }, $sessionResults);
 
