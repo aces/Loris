@@ -8,8 +8,9 @@ This Readme covers installation of the <b>16.0</b> LORIS release on <b>Ubuntu</b
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
 
 <b>⇾  Deploy on Heroku</b>
-As an alternative to installing LORIS on your system (per instructions below), LORIS can now be deployed on Heroku. [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+As an alternative to installing LORIS on your system (per instructions below), LORIS can now be deployed on Heroku.
 Note: Your default credentials after deployment will be 'admin' as the username and your password will be the uniquely generated password used by ClearDB.
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 # Prerequisites for Installation
 
