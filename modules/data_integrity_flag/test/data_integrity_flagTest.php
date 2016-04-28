@@ -75,6 +75,24 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Data Integrity Flag", $bodyText);
     }
     /**
+     * testing filter with Instrument
+     *
+     * @return none
+     */
+    function testDataIntegrityFlagFilterInstrument()
+    {
+        $this->safeGet(
+            $this->url . "/data_integrity_flag/".
+            "?instrument=test_instrument"
+        );
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("test_user", $bodyText);
+    }
+
+
+    /**
      * login this page without permissions "data_integrity_flag"
      *
      * @return none
@@ -93,6 +111,22 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
           );
           $this->resetPermissions();
     }
+   /** testing filter with user
+     *
+     * @return none
+     */
+    function testDataIntegrityFlagFilterUser()
+    {
+        $this->safeGet(
+            $this->url . "/data_integrity_flag/".
+            "?users=test_user"
+        );
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("test_instrument", $bodyText);
+    }
+
     /**
      * login this page with permissions "data_integrity_flag"
      *
@@ -111,38 +145,6 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
               $bodyText
           );
           $this->resetPermissions();
-    }
-    /**
-     * testing filter with Instrument
-     *
-     * @return none
-     */
-    function testDataIntegrityFlagFilterInstrument()
-    {
-        $this->safeGet(
-            $this->url . "/data_integrity_flag/".
-            "?instrument=test_instrument"
-        );
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("test_user", $bodyText);
-    }
-
-   /** testing filter with user
-     *
-     * @return none
-     */
-    function testDataIntegrityFlagFilterUser()
-    {
-        $this->safeGet(
-            $this->url . "/data_integrity_flag/".
-            "?users=test_user"
-        );
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("test_instrument", $bodyText);
     }
    /**
      * testing filter with visit label
