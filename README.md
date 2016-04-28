@@ -2,16 +2,15 @@
 
 LORIS is a web-accessible database solution for neuroimaging, providing a secure infrastructure to automate the flow of clinical data for complex multi-site neuroimaging studies.
 
-This Readme covers installation of the <b>16.0</b> LORIS release on <b>Ubuntu</b> systems.
+This Readme covers installation of the <b>16.0</b> LORIS release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/16.04-dev/README.CentOS6.md))
 
-Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) page about this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme and further documentation.  The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
+Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
 
-    ```
-    As an alternative to installing LORIS on your system (per instructions below), LORIS can now be deployed on Heroku.  
-    [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
-    Note: Your default credentials after deployment will be 'admin' as the username and your password will be the uniquely generated password used by ClearDB.
-    ```
+<b>Deploy on Heroku</b>
+As an alternative to installing LORIS on your system (per instructions below), LORIS can now be deployed on Heroku.  
+Note: Your default credentials after deployment will be 'admin' as the username and your password will be the uniquely generated password used by ClearDB.
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 # Prerequisites for Installation
 
@@ -24,8 +23,8 @@ Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/S
  * Package manager (for LINUX distributions)
  * Composer
 
-Composer should be installed with the --no-dev option.  
-Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) page about this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme. 
+Composer should be installed with --no-dev option.  
+Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) for more information on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) not included in this Readme. 
 
 # Installation
 
