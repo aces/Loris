@@ -23,8 +23,8 @@ Note: Your default credentials after deployment will be 'admin' as the username 
  * Package manager (for LINUX distributions)
  * Composer
 
-Composer should be installed with --no-dev option.  
-Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) for more information on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) not included in this Readme. 
+<b>Important:</b> Composer should be installed with --no-dev option.  
+Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information.
 
 # Installation
 
