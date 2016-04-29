@@ -413,8 +413,8 @@ var FeedbackSummaryPanel = React.createClass({
 	    var summary_rows = this.props.summary_data.map(function(row){
 		return <tr>
 		<td>{row.QC_Class}</td>
-		<td><a href={"main.php?test_name=" + row.Instrument + "&candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID}>{row.Instrument}</a></td>
-		<td><a href={"main.php?test_name=instrument_list&candID=" + row.CandID + "&sessionID="
+		<td><a href={loris.BaseURL + "/" + row.Instrument + "/?candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID}>{row.Instrument}</a></td>
+		<td><a href={loris.BaseURL + "/instrument_list/?candID=" + row.CandID + "&sessionID="
 		+ row.SessionID}>{row.Visit}</a></td>
 		<td>{row.No_Threads}</td>
 		</tr>
