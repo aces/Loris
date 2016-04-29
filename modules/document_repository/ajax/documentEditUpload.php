@@ -66,7 +66,7 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
             foreach ($Doc_Repo_Notification_Emails as $email) {
                 Email::send($email['Email'], 'document_repository.tpl', $msg_data);
             }
-            header("Location: ../" . $baseURL . "/document_repository&uploadSuccess=true");
+            header("Location: ../" . $baseURL . "/document_repository/?uploadSuccess=true");
         } else {
             echo "There was an error uploading the file";
         }
