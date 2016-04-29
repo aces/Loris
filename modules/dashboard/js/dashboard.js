@@ -78,7 +78,7 @@ $(document).ready(function () {
 
 function applyFilter(test_name, filters) {
     var form = $('<form />', {
-        "action" : "main.php?test_name=" + test_name,
+        "action" : loris.BaseURL + "/" + test_name + "/",
         "method" : "post"
     });
 
