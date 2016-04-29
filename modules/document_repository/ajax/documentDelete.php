@@ -12,6 +12,8 @@ require_once "NDB_Config.class.inc";
 require_once "Email.class.inc";
 $client = new NDB_Client();
 $client->initialize("../../project/config.xml");
+$factory = NDB_Factory::singleton();
+$baseURL = $factory->settings()->getBaseURL();
 
 $config = NDB_Config::singleton();
 
@@ -33,7 +35,7 @@ $user =& User::singleton();
 if ($user->hasPermission('document_repository_delete')) {
     $DB->delete("document_repository", array("record_id" => $rid));
     $www = $config->getSetting('www');
-    $msg_data['deleteDocument'] = $www['url'] . "/main.php?test_name=document_repository";
+    $msg_data['deleteDocument'] = $www['url'] . $baseURL. "/document_repository/";
     $msg_data['document'] = $fileName;
     $msg_data['study'] = $config->getSetting('title');
     $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid";
