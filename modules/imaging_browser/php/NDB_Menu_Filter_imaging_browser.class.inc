@@ -146,7 +146,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'New_Data',
             'T1_Passed',
             'T2_Passed',
-            'Links'
+            'Links',
+            'sessionID'
         );
        
         $this->validFilters = array(
@@ -174,6 +175,17 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->searchKeyword    = array();
         
         $this->tpl_data['numTimepoints'] = 0;
+
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array('sessionID')
+            )
+        );
     }
 
     /**
@@ -269,42 +281,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     }
 
     /**
-     * Setup table rows for the template
-     *
-     * @param int $count number
-     *
-     * @return null
-     */
-
-    function _setDataTableRows($count)
-    {
-        // print out
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                if ($key == 'sessionID') {
-                    $this->tpl_data['items'][$x]['sessionID'] = $val;
-                    $filtered_sessionIDs[] = $val;
-                    continue;
-                }
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-                $i++;
-            }
-            $x++;
-        }
-        $this->tpl_data['numTimepoints'] = $this->TotalItems; //$x;
-        $_SESSION['State']->setProperty(
-	    'mriSessionsListed', $filtered_sessionIDs
-        );
-        return true;
-    }
-    /**
      * Overwrites the function to add a customized filter
      * for Pending and New
      *
@@ -352,6 +328,37 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         return $query;
     }
 
+    /**
+     * Converts this menu filter to an array of the form
+     *
+     * Headers => (string array)
+     * Data => (array of arrays of row data)
+     *
+     * @note overloaded function
+     *         Overloading this method to create a list of sessionID that
+     *         will be used for the Navigation Links in  the viewSession
+     *         page.
+     *
+     * @return associative array
+     */
+    function toArray()
+    {
+        $data   = parent::toArray();
+        $index = array_search('SessionID', $data['Headers']);
+        if ($index !== false) {
+            $_SESSION['State']->setProperty(
+                'mriSessionsListed',
+                array_column($data['Data'], $index)
+            );
+        }
+        return $data;
+    }
+
+    /**
+     * Include the column formatter
+     *
+     * @return array of javascript to be inserted
+     */
     function getJSDependencies() {
         $factory = NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();

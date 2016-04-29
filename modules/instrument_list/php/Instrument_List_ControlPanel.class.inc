@@ -21,6 +21,9 @@ Class Instrument_List_ControlPanel extends TimePoint
      */
     function display()
     {
+        $factory = NDB_Factory::singleton();
+        $this->tpl_data['baseurl'] = $factory->settings()->getBaseURL();
+
         $this->tpl_data['candID'] = $this->getData('CandID');
         $this->tpl_data['sessionID'] = $this->getData('SessionID');
 
