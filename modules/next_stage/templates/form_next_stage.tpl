@@ -1,6 +1,6 @@
 {if $success}
 
-<p>Next stage started. <a href="main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}">Click here to continue</a>.</p>
+<p>Next stage started. <a href="{$baseURL}/main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}">Click here to continue</a>.</p>
 
 {else}
 

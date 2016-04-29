@@ -7,7 +7,7 @@
         <th colspan="2">
             DCC-ID: {$candID} / Timepoint:{$timepointLabel}
             &nbsp;
-            <input class="button" onclick="location.href='main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}'" value="Return to profile" type="button" />
+            <input class="button" onclick="location.href='{$baseurl?}/instrument_list&candID={$candID}&sessionID={$sessionID}'" value="Return to profile" type="button" />
         </th>
         <tr>
            <td nowrap="nowrap" colspan="2">&nbsp;</td>
@@ -76,7 +76,7 @@
                     <th nowrap="nowrap" colspan="2">
                             Please return to the profile and complete or correct data entry errors.
                         &nbsp;
-                        <input class="button" onclick="location.href='main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}'" value="Return to profile" type="button" />
+                        <input class="button" onclick="location.href='{$baseurl?}/instrument_list&candID={$candID}&sessionID={$sessionID}'" value="Return to profile" type="button" />
                     </th>
                  </tr>
     	{else}
@@ -90,7 +90,7 @@
         	{/if}
                  <tr>
                     <td nowrap="nowrap" colspan="2">
-                    <input class="button" onclick="location.href='main.php?test_name=instrument_list&candID={$candID}&sessionID={$sessionID}&setSubmitted=Y'" value="Send To DCC (Confirm)" type="button" />
+                    <input class="button" onclick="location.href='{$baseurl?}/instrument_list&candID={$candID}&sessionID={$sessionID}&setSubmitted=Y'" value="Send To DCC (Confirm)" type="button" />
                     </td>
                  </tr>
     	{/if}
