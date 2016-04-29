@@ -1,8 +1,9 @@
 # Candidate Parameters Test Plan
 
 1. Check Permissions. Try removing each of these permissions/conditions one at a time. You should not be able to access the page
-	* data_entry
-	* unsend_to_dcc
+    * Edit Candidate Parameters
+	* data_entry ("Data Entry", in front-end)
+	* unsend_to_dcc ("Reverse Send to DCC", in front-end) - may not be necessary
 	* having the same site as the candidate you are accessing	
 2. Make sure that the candidate date of birth and gender, shown in the table at the top of the page, match what is stored in the candidate table for this given candidate.
 3. Click on the Return to Timepoint List button and ensure it goes to the correct timepoint list page.
@@ -61,8 +62,8 @@ Note: Is there no way to edit/remove a family member from the front-end?
 34. Try editing the Comments field and saving
 
 ### Participation Consent Status Panel
-35. Add a new consent type following the Developer's guide. Does it show up in this panel when you refresh the page?
-36. Does the consent info shown in this table match what is stroed in the participant_status table?
+35. Add a new consent type following [the guide](https://github.com/aces/Loris/wiki/Candidate-Information-Page) on the LORIS Wiki. Does it show up in this panel when you refresh the page?
+36. Does the consent info shown in this table match what is stored in the participant_status table?
 
 ### Update Consent Info
 37. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?
