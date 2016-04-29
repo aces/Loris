@@ -1,4 +1,4 @@
-<form method="post" name="parameterTimepointFilterForm" action="{$baseurl}/timepoint_flag&mode={$mode}&pageID={$pageID}">
+<form method="post" name="parameterTimepointFilterForm" action="{$baseurl}/timepoint_flag/?mode={$mode}&pageID={$pageID}">
 <table border="0" valign="top" class="std">
     <tr>
         <th nowrap="nowrap" colspan="2">Selection Filter</th>
@@ -40,7 +40,7 @@
     <tr>
         <td colspan="2" align="right">
             <input type="submit" name="filter" value="Show Data" class="button" />&nbsp;
-            <input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='{$baseurl}/timepoint_flag&reset=true'" />
+            <input type="button" name="reset" value="Clear Form" class="button" onclick="location.href='{$baseurl}/timepoint_flag/?reset=true'" />
         </td>
     </tr> 
     <tr>
@@ -61,7 +61,7 @@
             <td class="controlPanelItem">
             <img src="images/{$timepoint_flag_evaluate[item].icon|default:'locked'}.gif" alt="" border="0" width="12" height="12" />
     	{if $timepoint_flag_evaluate[item].showlink}
-            <a href="{$baseurl}/timepoint_flag&mode={$mode}&pageID={$pageID}&setBVLQCExclusionFlag_SessionID={$timepoint_flag_evaluate_ID}&setBVLQCExclusionFlag={$timepoint_flag_evaluate[item].value}">
+            <a href="{$baseurl}/timepoint_flag/?mode={$mode}&pageID={$pageID}&setBVLQCExclusionFlag_SessionID={$timepoint_flag_evaluate_ID}&setBVLQCExclusionFlag={$timepoint_flag_evaluate[item].value}">
         {/if}
             {$timepoint_flag_evaluate[item].label}</a></td>
         </tr>
@@ -79,7 +79,7 @@
 </table>
 
 <table border="0" width="100%" class="listColorCoded">
-<FORM method="post" action="{$baseurl}/timepoint_flag&mode={$mode}&pageID={$pageID}">
+<FORM method="post" action="{$baseurl}/timepoint_flag/?mode={$mode}&pageID={$pageID}">
     <tr>
         <th nowrap="nowrap">No.</th>
         {section name=header loop=$headers}
