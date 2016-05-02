@@ -58,52 +58,5 @@ class dataTeamHelperTestIntegrationTest extends LorisIntegrationTest
           $this->resetPermissions();
      }
 
-    /**
-     * Tests data conflicts, click each link, the particular content shows on the page.
-     *
-     * @return void
-     */
-    function testlinksDC()
-     {
-         $this->safeGet($this->url."/data_team_helper/");
-         $webElement = $this->safeFindElement(
-              WebDriverBy::XPath("//*[@id='lorisworkspace']/ul/li[2]/a"))->click();
-         $bodyText = $this->safeFindElement(
-              WebDriverBy::XPath("//*[@id='incomplete']/div/div[1]")
-          )->getText();
-          $this->assertContains("Data Entry Conflicts", $bodyText);
-
-     }
-    /**
-     * Tests behavioural feedback, click each link, the particular content shows on the page.
-     *
-     * @return void
-     */
-    function testlinkBF()
-     {
-         $this->safeGet($this->url."/data_team_helper/");
-         $webElement = $this->safeFindElement(
-              WebDriverBy::XPath("//*[@id='lorisworkspace']/ul/li[3]/a"))->click();
-         $bodyText = $this->safeFindElement(
-              WebDriverBy::XPath("//*[@id='feedback']/div/div[1]")
-          )->getText();
-          $this->assertContains("Behvarioural Feedback", $bodyText);
-
-     }
-   /**
-     * Tests that, when loading the data team helper,the chart shows.
-     *
-     * @return void
-     */
-    function testChart()
-    {
-        $this->safeGet($this->url."/data_team_helper/");
-        $assertText = $this->webDriver->findElement(WebDriverBy::cssSelector("#graphics > div > div > div.panel-heading"))
-            ->getText();
-
-        $this->assertContains("At A Glance: All Candidates", $assertText);
-
-    }
-
 }
 ?>
