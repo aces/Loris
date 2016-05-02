@@ -98,7 +98,7 @@ class dataTeamHelperTestIntegrationTest extends LorisIntegrationTest
     function testChart()
     {
         $this->safeGet($this->url."/data_team_helper/");
-        $assertText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+        $assertText = $this->webDriver->findElement(WebDriverBy::cssSelector("#graphics > div > div > div.panel-heading"))
             ->getText();
 
         $this->assertContains("At A Glance: All Candidates", $assertText);
