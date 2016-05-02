@@ -171,6 +171,9 @@ class NDB_Form_User_Accounts extends NDB_Form
         if (!empty($values['NA_UserID'])) {
             $values['UserID'] = $values['Email'];
         }
+        if ($this->isCreatingNewUser()) {
+            $values['UserID'] = trim($values['UserID']);
+        }
         unset($values['NA_UserID']);
 
         // generate new password
@@ -677,6 +680,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                 // with a non-empty email
                 $effectiveUID = empty($values['UserID'])
                     ? $values['Email'] : $values['UserID'];
+
+                $effectiveUID = trim($effectiveUID);
 
                 // check username's uniqueness
                 $result = $DB->pselectOne(
