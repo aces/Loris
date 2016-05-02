@@ -12,4 +12,4 @@ Modules should be entirely self-contained into a subdirectory with the following
         tools/        - This contains any helper tools used either manually or by cron for this module
 
 All of these directories are optional, and after a Menu_Filter is set up your module can
-be accessed in a standard Loris fashion at main.php?test_name=ModuleName[&subtest=...]
+be accessed in a standard Loris fashion at {$baseurl}/ModuleName/[subtestName/][?param1=value1&param2=value2]
