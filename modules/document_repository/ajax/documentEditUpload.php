@@ -57,8 +57,7 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
                                   'comments'=>$comments, 'version'=>$version, 'File_name'=>$fileName,
                                   'File_size'=>$fileSize, 'Data_dir'=>$fileBase, 'uploaded_by'=>$user,
                                   'Instrument'=>$instrument, 'PSCID'=>$pscid, 'visitLabel'=>$visit));
-            $www = $config->getSetting('www');
-            $msg_data['newDocument'] = $www['url'] . $baseURL . "/document_repository/";
+            $msg_data['newDocument'] = $baseURL . "/document_repository/";
             $msg_data['document'] = $fileName;
             $msg_data['study'] = $config->getSetting('title');
             $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid";
@@ -91,8 +90,7 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
 
         $fileName = $DB->pselectOne("select File_name from document_repository where record_id=:record_id",
                                      array('record_id'=>$id));
-        $www = $config->getSetting('www');
-        $msg_data['updatedDocument'] = $www['url'] . $baseURL . "/document_repository/";
+        $msg_data['updatedDocument'] = $baseURL . "/document_repository/";
         $msg_data['document'] = $fileName;
         $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid";
         $Doc_Repo_Notification_Emails = $DB->pselect($query_Doc_Repo_Notification_Emails, array("uid"=>$userSingleton->getUsername()));
