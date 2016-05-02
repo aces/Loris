@@ -34,8 +34,7 @@ $user =& User::singleton();
 //if user has document repository delete permission
 if ($user->hasPermission('document_repository_delete')) {
     $DB->delete("document_repository", array("record_id" => $rid));
-    $www = $config->getSetting('www');
-    $msg_data['deleteDocument'] = $www['url'] . $baseURL. "/document_repository/";
+    $msg_data['deleteDocument'] = $baseURL. "/document_repository/";
     $msg_data['document'] = $fileName;
     $msg_data['study'] = $config->getSetting('title');
     $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid";
