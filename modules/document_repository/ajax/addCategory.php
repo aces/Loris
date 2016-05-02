@@ -60,10 +60,8 @@ if ($user->hasPermission('document_repository_view') || $user->hasPermission('do
               "comments"      => $comments)
     );
 
-    $www = $config->getSetting('www');
 
-    $msg_data['newCategory'] = $www['url'] . 
-                              $baseURL . "/document_repository/";
+    $msg_data['newCategory'] = $baseURL . "/document_repository/";
     $msg_data['category']    = $category_name;
     $msg_data['study']       = $config->getSetting('title');
 
