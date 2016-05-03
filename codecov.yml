@@ -1,15 +1,15 @@
 coverage:
   precision: 2
   round: down
-  range: "70...100"
+  range: "30...100"
 
   status:
     project:
-      target: auto
+      target: "15%"
       if_no_uploads: error
 
     patch:
-      target: "80%"
+      target: "15%"
       if_no_uploads: error
 
 comment:
