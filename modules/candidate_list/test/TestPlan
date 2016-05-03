@@ -29,5 +29,5 @@ Access Profile Test Plan:
 15. Ensure that the Open Profile panel only appears when not access_all_profiles permissions.
 16. Enter wrong PSCID/DCCID combination and click Open Profile. Ensure that you get an error.
 17. Enter correct PSCID/DCCID combination and ensure that it loads correct timepoint_list page
-18. Remove  access_all_profiles permission  and ensure that PSCID links are *not* clickable.
+18. Remove access_all_profiles permission and ensure that PSCID links are still clickable.
 19. Change useEDC and useProjects config variables to false and ensure filters are removed from menu.
