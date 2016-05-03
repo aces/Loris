@@ -53,7 +53,7 @@
                 {{ /first }}
             {{ /depth }}
             <div {{ ^filtered }}class="fileDDD"{{ /filtered }}><div style="padding-top: 8px">
-                <a href="{$baseurl}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
+                <a href="{/literal}{$baseurl}{literal}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
                         {{ File_name }}
                 </a>({{ File_size }})
             </div></div>
