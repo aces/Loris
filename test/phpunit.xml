@@ -4,7 +4,7 @@
         verbose="true"
         colors="true">
     <testsuites>
-        <testsuite name='LorisUnitTests for php/libraries'>
+<!--        <testsuite name='LorisUnitTests for php/libraries'>
             <directory>./unittests/</directory>
             <directory>./unittests/api</directory>
         </testsuite>
@@ -12,9 +12,10 @@
         <testsuite name='Loris Core Integration Tests'>
             <directory>./integrationtests/</directory>
         </testsuite>
-
+-->
         <testsuite name='Loris Module Integration Tests'>
-            <directory>../modules/candidate_list/test/</directory>
+            <directory>../modules/dashboard/test/</directory>
+<!--            <directory>../modules/candidate_list/test/</directory>
             <directory>../modules/candidate_parameters/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
             <directory>../modules/candidate_list/test/</directory>
@@ -46,7 +47,7 @@
             <directory>../modules/timepoint_flag/test/</directory>
             <directory>../modules/timepoint_list/test/</directory>
             <directory>../modules/training/test/</directory>
-            <directory>../modules/user_accounts/test/</directory>
+            <directory>../modules/user_accounts/test/</directory> -->
         </testsuite>
 
     </testsuites>
