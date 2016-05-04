@@ -124,13 +124,6 @@ class DashboardTest extends LorisIntegrationTest
     {
         // check the element which shows on the My tasks panel
          $this->setupPermissions(array("conflict_resolver"));
-         $this->safeGet($this->url . "/dashboard/");
-         $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector(
-                 "body"
-             )
-         )->getText();
-             $this->assertContains("Data entry conflicts", $bodyText);
              // check the link
              $this->safeGet($this->url . "/conflict_resolver/");
              $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
