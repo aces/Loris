@@ -92,7 +92,8 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
 
         $dashboardNum = $this->safeFindElement(
-            WebDriverBy::cssSelector(".target"))
+            WebDriverBy::cssSelector(".target")
+        )
             ->getText();
 
         $this->safeGet($this->url . '/configuration/');
@@ -124,7 +125,7 @@ class DashboardTest extends LorisIntegrationTest
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
+                 "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
              )
          )->getText();
          $this->assertContains("Data entry conflicts", $bodyText);
@@ -170,7 +171,7 @@ class DashboardTest extends LorisIntegrationTest
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::Xpath(
-                  "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
+                 "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
              )
          )->getText();
          $this->assertContains("Violated scans", $bodyText);
@@ -196,7 +197,8 @@ class DashboardTest extends LorisIntegrationTest
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::Xpath(
-             "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]")
+                 "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
+             )
          )
              ->getText();
          $this->assertContains("Accounts pending approval", $bodyText);
@@ -226,8 +228,9 @@ class DashboardTest extends LorisIntegrationTest
          );
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
-             WebDriverBy::Xpath( 
-             "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]")
+             WebDriverBy::Xpath(
+                 "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
+             )
          )
              ->getText();
          $this->assertContains("Final radiological reviews", $bodyText);
