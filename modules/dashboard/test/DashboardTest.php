@@ -91,27 +91,27 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/dashboard/');
         try{
-        $dashboardNum = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )
-            ->getText();
-
-        $this->safeGet($this->url . '/configuration/');
-
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
+            $dashboardNum = $this->safeFindElement(
+                WebDriverBy::cssSelector("body")
             )
-        )
-            ->click();
-        $configNum =  $this->safeFindElement(
-            WebDriverBy::Xpath("//*[@id='41']/input")
-        )
-            ->getAttribute('value');
+                ->getText();
 
-        $this->assertEquals($dashboardNum, "Target: ".$configNum);
-        }catch()
-        { }
+            $this->safeGet($this->url . '/configuration/');
+
+            $this->safeFindElement(
+                WebDriverBy::Xpath(
+                    "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
+                )
+            )
+                ->click();
+            $configNum =  $this->safeFindElement(
+                WebDriverBy::Xpath("//*[@id='41']/input")
+            )
+                ->getAttribute('value');
+
+            $this->assertEquals($dashboardNum, "Target: ".$configNum);
+        }catch(WebDriverException $ex){
+        }
     }
     /**
   * Verify that for a user with 'conflict_resolver' permission,
@@ -128,8 +128,8 @@ class DashboardTest extends LorisIntegrationTest
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector(
                  "body"
-                 )
-             )->getText();
+             )
+         )->getText();
              $this->assertContains("Data entry conflicts", $bodyText);
              // check the link
              $this->safeGet($this->url . "/conflict_resolver/");
@@ -143,7 +143,7 @@ class DashboardTest extends LorisIntegrationTest
              $this->resetPermissions();
 
     }
-  /**  
+    /**
    * Verify that for a user with 'Violated Scans: View all-sites' permissions,
    * Check that site displayed is always 'All'.
    *
