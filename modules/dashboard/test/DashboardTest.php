@@ -170,8 +170,9 @@ class DashboardTest extends LorisIntegrationTest
          $this->setupPermissions(array("violated_scans_view_allsites"));
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
-             WebDriverBy::Xpath(
-                 "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
+             WebDriverBy::cssSelector(
+                 "#lorisworkspace > div > div.col-lg-4 > div > div >".
+                 " div.panel-body > div > a > div > div.col-xs-8.text-left"
              )
          )->getText();
          $this->assertContains("Violated scans", $bodyText);
@@ -228,8 +229,8 @@ class DashboardTest extends LorisIntegrationTest
          );
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
-             WebDriverBy::cssSelector(
-                 ".tasks"
+             WebDriverBy::CssSelector(
+                 ".radiological-review"
              )
          )
              ->getText();
