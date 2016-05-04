@@ -92,8 +92,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
 
         $dashboardNum = $this->safeFindElement(
-            WebDriverBy::Xpath("//*[@id='overall-recruitment']/div/p")
-        )
+            WebDriverBy::cssSelector(".target"))
             ->getText();
 
         $this->safeGet($this->url . '/configuration/');
@@ -125,8 +124,7 @@ class DashboardTest extends LorisIntegrationTest
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::Xpath(
-                 "//*[@id='lorisworkspace']".
-                 "/div/div[2]/div[1]"
+                "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
              )
          )->getText();
          $this->assertContains("Data entry conflicts", $bodyText);
@@ -152,8 +150,7 @@ class DashboardTest extends LorisIntegrationTest
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::Xpath(
-                 "//*[@id='lorisworkspace']".
-                 "/div/div[2]/div[1]"
+                 "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
              )
          )->getText();
          $this->assertContains("Incomplete forms", $bodyText);
@@ -173,8 +170,7 @@ class DashboardTest extends LorisIntegrationTest
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::Xpath(
-                 "//*[@id='lorisworkspace']".
-                 "/div/div[2]/div[1]"
+                  "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
              )
          )->getText();
          $this->assertContains("Violated scans", $bodyText);
@@ -199,7 +195,8 @@ class DashboardTest extends LorisIntegrationTest
          $this->setupPermissions(array("user_accounts_multisite", "user_accounts"));
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
-             WebDriverBy::Xpath("//*[@id='lorisworkspace']/div/div[2]/div[1]")
+             WebDriverBy::Xpath(
+             "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]")
          )
              ->getText();
          $this->assertContains("Accounts pending approval", $bodyText);
@@ -229,10 +226,11 @@ class DashboardTest extends LorisIntegrationTest
          );
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
-             WebDriverBy::Xpath("//*[@id='lorisworkspace']/div/div[2]/div[1]")
+             WebDriverBy::Xpath( 
+             "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]")
          )
              ->getText();
-         $this->assertContains("Accounts pending approval", $bodyText);
+         $this->assertContains("Final radiological reviews", $bodyText);
          // check the link
          $this->safeGet($this->url . "/final_radiological_review/");
          $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
