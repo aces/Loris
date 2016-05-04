@@ -90,7 +90,7 @@ class DashboardTest extends LorisIntegrationTest
     public function testTargetNumberOfParticipants()
     {
         $this->safeGet($this->url . '/dashboard/');
-        try{
+        
             $dashboardNum = $this->safeFindElement(
                 WebDriverBy::cssSelector("body")
             )
@@ -110,7 +110,7 @@ class DashboardTest extends LorisIntegrationTest
                 ->getAttribute('value');
 
             $this->assertEquals($dashboardNum, "Target: ".$configNum);
-        }catch(WebDriverException $ex){
+       // }catch(WebDriverException $ex){
         }
     }
     /**
