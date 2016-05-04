@@ -125,7 +125,7 @@ class DashboardTest extends LorisIntegrationTest
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector(
-                 "body"(
+                 "body"
                  )
              )->getText();
              $this->assertContains("Data entry conflicts", $bodyText);
