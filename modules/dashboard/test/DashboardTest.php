@@ -229,8 +229,9 @@ class DashboardTest extends LorisIntegrationTest
          );
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
-             WebDriverBy::CssSelector(
-                 ".radiological-review"
+             WebDriverBy::Xpath(
+                 "//*[@id='lorisworkspace']/div/div[2]/div/div/".
+                 "div[2]/div/a/div/div[1]/text()"
              )
          )
              ->getText();
