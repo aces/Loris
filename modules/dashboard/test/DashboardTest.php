@@ -196,8 +196,8 @@ class DashboardTest extends LorisIntegrationTest
          $this->setupPermissions(array("user_accounts_multisite", "user_accounts"));
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
-             WebDriverBy::Xpath(
-                 "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
+             WebDriverBy::cssSelector(
+                 ".pending-accounts"
              )
          )
              ->getText();
@@ -228,8 +228,8 @@ class DashboardTest extends LorisIntegrationTest
          );
          $this->safeGet($this->url . "/dashboard/");
          $bodyText = $this->safeFindElement(
-             WebDriverBy::Xpath(
-                 "//*[@id='lorisworkspace']/div/div[2]/div[1]/div/div[2]"
+             WebDriverBy::cssSelector(
+                 ".tasks"
              )
          )
              ->getText();
