@@ -81,40 +81,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->assertContains("View overall recruitment", $assertText1);
         $this->assertContains("View site breakdown", $assertText2);
     }
-    /**
-     * Tests that, when loading the Dashboard and Config,the number of the Target
-     * number of participants should be same.
-     *
-     * @return void
-     */
-    public function testTargetNumberOfParticipants()
-    {
-        try{
-            $this->safeGet($this->url . '/dashboard/');
-
-            $dashboardNum = $this->safeFindElement(
-                WebDriverBy::cssSelector("body")
-            )
-                ->getText();
-
-            $this->safeGet($this->url . '/configuration/');
-
-            $this->safeFindElement(
-                WebDriverBy::Xpath(
-                    "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
-                )
-            )
-                ->click();
-            $configNum =  $this->safeFindElement(
-                WebDriverBy::Xpath("//*[@id='41']/input")
-            )
-                ->getAttribute('value');
-
-            $this->assertEquals($dashboardNum, "Target: ".$configNum);
-        }catch(WebDriverException $ex){
-        }
-    }
-    /**
+ /**
   * Verify that for a user with 'conflict_resolver' permission,
   * Check that site displayed is always 'All'.
   * Click on this task and verify that you go to the conflict_resolver page.
