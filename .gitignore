@@ -23,3 +23,5 @@ tools/logs/*.log
 modules/*/js/.module-cache/
 htdocs/js/components/.module-cache/
 node_modules/
+modules/*/js/*.map
+htdocs/js/components/*.map
