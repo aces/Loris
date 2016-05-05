@@ -81,7 +81,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->assertContains("View overall recruitment", $assertText1);
         $this->assertContains("View site breakdown", $assertText2);
     }
- /**
+    /**
   * Verify that for a user with 'conflict_resolver' permission,
   * Check that site displayed is always 'All'.
   * Click on this task and verify that you go to the conflict_resolver page.
