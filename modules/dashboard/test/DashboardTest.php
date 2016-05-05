@@ -162,4 +162,30 @@ class DashboardTest extends LorisIntegrationTest
          $this->resetPermissions();
 
     }
+/**
+     * Tests that, when loading the Dashboard and Config,the number of the Target
+     * number of participants should be same.
+     *
+     * @return void
+     */
+    public function testTargetNumberOfParticipants()
+    {
+        $this->safeGet($this->url . '/dashboard/');
+
+        $dashboardNum = $this->safeFindElement(
+            WebDriverBy::Xpath("//*[@id='overall-recruitment']/div/p"))
+            ->getText();
+
+        $this->safeGet($this->url . '/configuration/');
+
+        $this->safeFindElement
+           (WebDriverBy::Xpath("//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"))
+            ->click();
+        $configNum =  $this->safeFindElement
+           (WebDriverBy::Xpath("//*[@id='41']/input"))
+            ->getAttribute('value');
+
+
+        $this->assertEquals($dashboardNum,"Target: ".$configNum);;
+    }
 }
