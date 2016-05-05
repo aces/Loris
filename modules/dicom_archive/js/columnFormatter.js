@@ -1,3 +1,5 @@
+'use strict';
+
 function formatColumn(column, cell, rowData) {
     if (column === 'Metadata') {
         var url = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" + rowData[9];
@@ -43,3 +45,4 @@ function formatColumn(column, cell, rowData) {
         cell
     );
 }
+//# sourceMappingURL=columnFormatter.js.map

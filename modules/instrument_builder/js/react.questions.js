@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  *	This file contains the React classes for instrument builder
  * 	module. It is used to add and edit questions in the instrument
@@ -11,11 +13,11 @@ QuestionText = React.createClass({
 	displayName: 'QuestionText',
 
 	// Keep track of the current input
-	onChange: function (e) {
+	onChange: function onChange(e) {
 		this.props.updateState({ Description: e.target.value });
 	},
 	// Render the HTML
-	render: function () {
+	render: function render() {
 		var errorMessage = '',
 		    errorClass = 'form-group';
 		if (this.props.element.error && this.props.element.error.questionText) {
@@ -57,11 +59,11 @@ BasicOptions = React.createClass({
 	displayName: 'BasicOptions',
 
 	// Keep track of the current input
-	onChange: function (e) {
+	onChange: function onChange(e) {
 		this.props.updateState({ Name: e.target.value });
 	},
 	// Render the HTML
-	render: function () {
+	render: function render() {
 		var errorMessage = '',
 		    errorClass = 'form-group';
 		if (this.props.element.error && this.props.element.error.questionName) {
@@ -107,31 +109,31 @@ DropdownOptions = React.createClass({
 	displayName: 'DropdownOptions',
 
 	// Keep track the current option input
-	getInitialState: function () {
+	getInitialState: function getInitialState() {
 		return {
 			option: ''
 		};
 	},
-	onChange: function (e) {
+	onChange: function onChange(e) {
 		this.setState({
 			option: e.target.value
 		});
 	},
 	// Add an option to the element
-	addOption: function () {
+	addOption: function addOption() {
 		var temp = this.props.element.Options,
 		    key = Instrument.Enumize(this.state.option);
 		temp.Values[key] = this.state.option;
 		this.props.updateState({ Options: temp });
 	},
 	// Reset the dropdown options
-	resetOptions: function () {
+	resetOptions: function resetOptions() {
 		temp = this.props.element.Options;
 		temp.Values = {};
 		this.props.updateState({ Options: temp });
 	},
 	// Render the HTML
-	render: function () {
+	render: function render() {
 		var multi = '',
 		    options = this.props.element.Options.Values;
 		// Set the select option type
@@ -193,7 +195,7 @@ DateOptions = React.createClass({
 	displayName: 'DateOptions',
 
 	// Keep track of the inputed years
-	onChange: function (e) {
+	onChange: function onChange(e) {
 		var options = this.props.element.Options;
 		if (e.target.id === 'datemin' && e.target.value.length > 0) {
 			options.MinDate = e.target.value + "-01-01";
@@ -203,7 +205,7 @@ DateOptions = React.createClass({
 		this.props.updateState({ Options: options });
 	},
 	// Render the HTML
-	render: function () {
+	render: function render() {
 		// Truncate off the month and day from the date to only have the
 		// year.
 		var minYear = this.props.element.Options.MinDate.split('-')[0],
@@ -263,7 +265,7 @@ NumericOptions = React.createClass({
 
 	// Keep track of the inputed numbers, casting them to
 	// interger values.
-	onChange: function (e) {
+	onChange: function onChange(e) {
 		var options = this.props.element.Options;
 		if (e.target.id === 'numericmin') {
 			options.MinValue = parseInt(e.target.value);
@@ -273,7 +275,7 @@ NumericOptions = React.createClass({
 		this.props.updateState({ Options: options });
 	},
 	// Render the HTML
-	render: function () {
+	render: function render() {
 		return React.createElement(
 			'div',
 			null,
@@ -314,7 +316,7 @@ ListElements = React.createClass({
 	displayName: 'ListElements',
 
 	// Set the desired question type
-	selectType: function (newId, newValue) {
+	selectType: function selectType(newId, newValue) {
 		var newState = {
 			selected: {
 				id: newId,
@@ -356,7 +358,7 @@ ListElements = React.createClass({
 		this.props.updateState(newState);
 	},
 	// Render the HTML
-	render: function () {
+	render: function render() {
 		return React.createElement(
 			'div',
 			{ className: 'form-group' },
@@ -540,7 +542,7 @@ AddElement = React.createClass({
 	displayName: 'AddElement',
 
 	// Keep track of the current element state
-	getInitialState: function () {
+	getInitialState: function getInitialState() {
 		var state;
 		if (this.props.element) {
 			// Editing an element, set to elements state
@@ -564,11 +566,11 @@ AddElement = React.createClass({
 		return state;
 	},
 	// Update element state
-	updateState: function (newState) {
+	updateState: function updateState(newState) {
 		this.setState(newState);
 	},
 	// Add a question to the buildPane
-	addQuestion: function () {
+	addQuestion: function addQuestion() {
 		var selected = this.state.selected.id,
 		    questionText = this.state.Description,
 		    questionName = this.state.Name,
@@ -714,7 +716,7 @@ AddElement = React.createClass({
 		}
 	},
 	// Add an option to the options array
-	addOption: function (multi) {
+	addOption: function addOption(multi) {
 		// Use a function to update the state to enqueue an atomic
 		// update that consults the previous value of state before
 		// setting any values
@@ -728,13 +730,13 @@ AddElement = React.createClass({
 		});
 	},
 	// Reset the options array
-	resetOptions: function () {
+	resetOptions: function resetOptions() {
 		this.setState({
 			options: []
 		});
 	},
 	// Render the HTML
-	render: function () {
+	render: function render() {
 		var questionInput,
 		    multi = false,
 		    options,
@@ -798,3 +800,4 @@ AddElement = React.createClass({
 		);
 	}
 });
+//# sourceMappingURL=react.questions.js.map

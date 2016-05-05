@@ -1,3 +1,5 @@
+"use strict";
+
 function formatColumn(column, cell, rowData) {
     if (column === 'PSCID') {
         var url = loris.BaseURL + "/" + rowData[1] + "/";
@@ -45,32 +47,10 @@ function formatColumn(column, cell, rowData) {
                 );
         }
     }
-    
-    // For those candidates who had their scans done
-    // make the 'Scan Done' value in the column a link
-    // to the imaging browser with the filter's PSCID
-    // set to the PSCID of the candidate
-    if (column === 'Scan Done' && cell === 'Y') {
-        return React.createElement(
-            "td",
-            { className: "scanDoneLink" },
-            React.createElement(
-                "a",
-                { 
-                  onClick: function(e) {
-                      loris.loadFilteredMenuClickHandler(
-                          'imaging_browser', {"pscid" : rowData[2]}
-                      )(e);
-                  }
-                },
-                cell
-            )
-        );
-    }
-
     return React.createElement(
         "td",
         null,
         cell
     );
 }
+//# sourceMappingURL=columnFormatter.js.map

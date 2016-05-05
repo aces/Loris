@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  *  The following file contains the components used for the field select tab
  *
@@ -11,21 +13,27 @@
  *  The following component is used for displaying individual categories in the
  *  categories list
  */
-CategoryItem = React.createClass({displayName: "CategoryItem",
-    render: function() {
+CategoryItem = React.createClass({
+    displayName: "CategoryItem",
+
+    render: function render() {
         var classList = "list-group-item",
             badge = '';
-        if(this.props.selected) {
+        if (this.props.selected) {
             classList += " active";
         }
-        if(this.props.count >= 0) {
-            badge = React.createElement("span", {className: "badge"}, this.props.count)
+        if (this.props.count >= 0) {
+            badge = React.createElement(
+                "span",
+                { className: "badge" },
+                this.props.count
+            );
         }
-        return (
-            React.createElement("a", {href: "#", className: classList, onClick: this.props.onClick}, 
-                this.props.name, 
-                badge
-            )
+        return React.createElement(
+            "a",
+            { href: "#", className: classList, onClick: this.props.onClick },
+            this.props.name,
+            badge
         );
     }
 });
@@ -33,16 +41,18 @@ CategoryItem = React.createClass({displayName: "CategoryItem",
 /*
  *  The following component is used for displaying the list of availible categories
  */
-CategoryList = React.createClass({displayName: "CategoryList",
-    getInitialState: function () {
+CategoryList = React.createClass({
+    displayName: "CategoryList",
+
+    getInitialState: function getInitialState() {
         return {
             selectedCategory: ""
         };
     },
-    selectCategoryHandler: function(category) {
+    selectCategoryHandler: function selectCategoryHandler(category) {
         var that = this;
-        return function(evt) {
-            if(that.props.onCategorySelect) {
+        return function (evt) {
+            if (that.props.onCategorySelect) {
                 that.props.onCategorySelect(category);
             }
             that.setState({
@@ -50,47 +60,51 @@ CategoryList = React.createClass({displayName: "CategoryList",
             });
         };
     },
-    render: function() {
+    render: function render() {
         var items = [],
-             selectClosure = function(name) {
-                 return this.selectCategory(name);
-             };
-        for(i = 0; i < this.props.items.length; i += 1) {
+            selectClosure = function selectClosure(name) {
+            return this.selectCategory(name);
+        };
+        for (i = 0; i < this.props.items.length; i += 1) {
             selected = false;
-            if(this.props.items[i].category == this.state.selectedCategory) {
-                selected=true;
+            if (this.props.items[i].category == this.state.selectedCategory) {
+                selected = true;
             }
             items.push(React.createElement(CategoryItem, {
-                key: this.props.items[i].category, 
-                name: this.props.items[i].category, 
-                count: this.props.items[i].numFields, 
-                selected: selected, 
-                onClick: this.selectCategoryHandler(this.props.items[i].category)}));
+                key: this.props.items[i].category,
+                name: this.props.items[i].category,
+                count: this.props.items[i].numFields,
+                selected: selected,
+                onClick: this.selectCategoryHandler(this.props.items[i].category) }));
         }
-        return (
-            React.createElement("div", {className: "list-group col-md-3 col-sm-12"}, items)
-            );
+        return React.createElement(
+            "div",
+            { className: "list-group col-md-3 col-sm-12" },
+            items
+        );
     }
 });
 
 /*
  *  The following component is used for displaying individual fields
  */
-FieldItem = React.createClass({displayName: "FieldItem",
-    visitSelect: function(evt){
+FieldItem = React.createClass({
+    displayName: "FieldItem",
+
+    visitSelect: function visitSelect(evt) {
         // Selects and deselects visits
 
         var field = {
-            instrument : this.props.Category,
-            field : this.props.FieldName
+            instrument: this.props.Category,
+            field: this.props.FieldName
         };
-        if(evt.target.checked){
+        if (evt.target.checked) {
             this.props.fieldVisitSelect("check", evt.target.value, field);
         } else {
             this.props.fieldVisitSelect("uncheck", evt.target.value, field);
         }
     },
-    render: function() {
+    render: function render() {
         // Renders the html for the component
 
         var classList = "list-group-item row",
@@ -98,39 +112,57 @@ FieldItem = React.createClass({displayName: "FieldItem",
             criteria,
             multiselect,
             that = this;
-        if(this.props.selected) {
+        if (this.props.selected) {
             // If field is selected, add active class and visits
             classList += " active";
-            multiselect = Object.keys(this.props.Visits).map(function(visit){
+            multiselect = Object.keys(this.props.Visits).map(function (visit) {
                 var checked = false;
-                if(that.props.selectedVisits[visit]){
+                if (that.props.selectedVisits[visit]) {
                     checked = true;
                 }
-                return (
-                    React.createElement("div", {class: "checkbox"}, 
-                        React.createElement("label", null, 
-                            React.createElement("input", {type: "checkbox", value: visit, checked: checked, onChange: that.visitSelect}), " ", visit
-                        )
+                return React.createElement(
+                    "div",
+                    { "class": "checkbox" },
+                    React.createElement(
+                        "label",
+                        null,
+                        React.createElement("input", { type: "checkbox", value: visit, checked: checked, onChange: that.visitSelect }),
+                        " ",
+                        visit
                     )
                 );
             });
         }
-        if(this.props.downloadable) {
+        if (this.props.downloadable) {
             // Add download icon if field is downloadable
-            downloadIcon = React.createElement("span", {className: "glyphicon glyphicon-download-alt pull-right", title: "Downloadable File"})
+            downloadIcon = React.createElement("span", { className: "glyphicon glyphicon-download-alt pull-right", title: "Downloadable File" });
         }
         // Don't display the category in the field selector
         var displayName = this.props.FieldName;
 
-        return (
-            React.createElement("div", {className: classList}, 
-                React.createElement("div", {className: "col-xs-8", onClick: this.props.onClick}, 
-                    React.createElement("h4", {className: "list-group-item-heading col-xs-12"}, displayName, criteria, downloadIcon), 
-                    React.createElement("span", {className: "col-xs-12"}, this.props.Description)
-                ), 
-                React.createElement("div", {className: "col-xs-4"}, 
-                    multiselect
+        return React.createElement(
+            "div",
+            { className: classList },
+            React.createElement(
+                "div",
+                { className: "col-xs-8", onClick: this.props.onClick },
+                React.createElement(
+                    "h4",
+                    { className: "list-group-item-heading col-xs-12" },
+                    displayName,
+                    criteria,
+                    downloadIcon
+                ),
+                React.createElement(
+                    "span",
+                    { className: "col-xs-12" },
+                    this.props.Description
                 )
+            ),
+            React.createElement(
+                "div",
+                { className: "col-xs-4" },
+                multiselect
             )
         );
     }
@@ -140,22 +172,24 @@ FieldItem = React.createClass({displayName: "FieldItem",
  *  The following component is used for displaying the list of availible fields for
  *  the selected category
  */
-FieldList = React.createClass({displayName: "FieldList",
-    getInitialState: function() {
+FieldList = React.createClass({
+    displayName: "FieldList",
+
+    getInitialState: function getInitialState() {
         return {
             PageNumber: 1
         };
     },
-    onFieldClick: function(fieldName, downloadable) {
+    onFieldClick: function onFieldClick(fieldName, downloadable) {
         // Wrapper function used to update field
         this.props.onFieldSelect(fieldName, this.props.category, downloadable);
     },
-    changePage: function(i) {
+    changePage: function changePage(i) {
         this.setState({
             PageNumber: i
         });
     },
-    render: function() {
+    render: function render() {
         // Renders the html for the component
 
         var fields = [];
@@ -166,93 +200,93 @@ FieldList = React.createClass({displayName: "FieldList",
         var start = (this.state.PageNumber - 1) * rowsPerPage;
         var filter = this.props.Filter.toLowerCase();
         var selectedFields;
-        if(filter > 0) {
+        if (filter > 0) {
             start = 0;
         }
 
         // Display the fields using the FieldItem component
-        for(var i = start; i < items.length; i += 1) {
+        for (var i = start; i < items.length; i += 1) {
             fieldName = items[i].key[1];
             desc = items[i].value.Description;
             type = items[i].value.Type || "varchar(255)";
 
-            if(fieldName.toLowerCase().indexOf(filter) == -1 && desc.toLowerCase().indexOf(filter) == -1) {
+            if (fieldName.toLowerCase().indexOf(filter) == -1 && desc.toLowerCase().indexOf(filter) == -1) {
                 continue;
             }
 
             // Check if field is a file, if so set flag to true
             isFile = false;
-            if(items[i].value.IsFile) {
+            if (items[i].value.IsFile) {
                 isFile = true;
             }
 
             // Check if field is selected, if so set flag to true
-            selected=false;
-            if(this.props.selected && this.props.selected[fieldName]) {
-                selected=true;
+            selected = false;
+            if (this.props.selected && this.props.selected[fieldName]) {
+                selected = true;
             }
 
             // Get the fields selected visits, set to empty object if none
-            if(this.props.selected && this.props.selected[fieldName]) {
-                selectedFields = this.props.selected[fieldName]
+            if (this.props.selected && this.props.selected[fieldName]) {
+                selectedFields = this.props.selected[fieldName];
             } else {
-                selectedFields = {}
+                selectedFields = {};
             }
 
-            fields.push(React.createElement(FieldItem, {FieldName: fieldName, 
-                Category: this.props.category, 
-                Description: desc, 
-                ValueType: type, 
-                onClick: this.onFieldClick.bind(this, fieldName, isFile), 
-                selected: selected, 
-                downloadable: isFile, 
-                Visits: this.props.Visits, 
-                selectedVisits: selectedFields, 
-                fieldVisitSelect: this.props.fieldVisitSelect}
-                ));
-            if(fields.length > rowsPerPage) {
+            fields.push(React.createElement(FieldItem, { FieldName: fieldName,
+                Category: this.props.category,
+                Description: desc,
+                ValueType: type,
+                onClick: this.onFieldClick.bind(this, fieldName, isFile),
+                selected: selected,
+                downloadable: isFile,
+                Visits: this.props.Visits,
+                selectedVisits: selectedFields,
+                fieldVisitSelect: this.props.fieldVisitSelect
+            }));
+            if (fields.length > rowsPerPage) {
                 break;
             }
         }
 
-        return (
-            React.createElement("div", {className: "list-group col-md-9 col-sm-12"}, 
-                fields, 
-                React.createElement(PaginationLinks, {Total: items.length, Active: this.state.PageNumber, onChangePage: this.changePage, RowsPerPage: rowsPerPage})
-            )
-            );
+        return React.createElement(
+            "div",
+            { className: "list-group col-md-9 col-sm-12" },
+            fields,
+            React.createElement(PaginationLinks, { Total: items.length, Active: this.state.PageNumber, onChangePage: this.changePage, RowsPerPage: rowsPerPage })
+        );
     }
 });
 
 /*
  *  The following component is the base component for the field select tan
  */
-FieldSelector = React.createClass({displayName: "FieldSelector",
+FieldSelector = React.createClass({
+    displayName: "FieldSelector",
+
     propTypes: {
         selectedFields: React.PropTypes.array
     },
-    getInitialState: function() {
+    getInitialState: function getInitialState() {
         return {
             filter: "",
             selectedCategory: "",
-            categoryFields: {
-            }
+            categoryFields: {}
         };
     },
-    onFieldSelect: function(fieldName, category, downloadable) {
+    onFieldSelect: function onFieldSelect(fieldName, category, downloadable) {
         // Wrapper function for field changes
         this.props.onFieldChange(fieldName, category, downloadable);
     },
-    onCategorySelect: function(category) {
+    onCategorySelect: function onCategorySelect(category) {
         // Used for getting the fields of the given category
 
-        var that=this;
+        var that = this;
 
         // Use the cached version if it exists
-        if(this.state.categoryFields[category]) {
-        } else {
+        if (this.state.categoryFields[category]) {} else {
             // Retrieve the data dictionary
-            $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php", { category: category}, function(data) {
+            $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php", { category: category }, function (data) {
                 var cf = that.state.categoryFields;
                 cf[category] = data;
                 that.setState({
@@ -264,73 +298,100 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
             selectedCategory: category
         });
     },
-    filterChange: function(evt) {
+    filterChange: function filterChange(evt) {
         this.setState({
             filter: evt.currentTarget.value
         });
     },
-    addAll: function() {
+    addAll: function addAll() {
         // Adds all fields the currently selected category
         var i, isFile, fieldName, category;
-        for(i in this.state.categoryFields[this.state.selectedCategory]) {
+        for (i in this.state.categoryFields[this.state.selectedCategory]) {
             fieldName = this.state.categoryFields[this.state.selectedCategory][i].key[1];
             category = this.state.categoryFields[this.state.selectedCategory][i].key[0];
-            if(this.props.selectedFields[category] && this.props.selectedFields[category][fieldName]) {
+            if (this.props.selectedFields[category] && this.props.selectedFields[category][fieldName]) {
                 // Do nothing, already added
             } else {
-                isFile = (this.state.categoryFields[category][i].value.isFile) ? true : false;
-                this.props.onFieldChange(fieldName, category, isFile);
-            }
+                    isFile = this.state.categoryFields[category][i].value.isFile ? true : false;
+                    this.props.onFieldChange(fieldName, category, isFile);
+                }
         }
     },
-    deleteAll: function() {
+    deleteAll: function deleteAll() {
         // Deletes all fields the currently selected category
         var i, index, fieldName;
-        for(i in this.state.categoryFields[this.state.selectedCategory]) {
+        for (i in this.state.categoryFields[this.state.selectedCategory]) {
             fieldName = this.state.categoryFields[this.state.selectedCategory][i].key[1];
             category = this.state.categoryFields[this.state.selectedCategory][i].key[0];
-            if(this.props.selectedFields[category] && this.props.selectedFields[category][fieldName]) {
-                isFile = (this.state.categoryFields[category][i].value.isFile) ? true : false;
+            if (this.props.selectedFields[category] && this.props.selectedFields[category][fieldName]) {
+                isFile = this.state.categoryFields[category][i].value.isFile ? true : false;
                 this.props.onFieldChange(fieldName, category, isFile);
             }
         }
     },
-    render: function() {
+    render: function render() {
         // Renders the html for the component
 
-        return (
-            React.createElement("div", null, 
-                React.createElement("div", {className: "row"}, 
-                    React.createElement("h1", {className: "col-md-8"}, this.props.title), 
-                    React.createElement("div", {className: "form-group col-sm-4 search"}, 
-                        React.createElement("label", {className: "col-sm-12 col-md-4"}, "Search within instrument:"), 
-                        React.createElement("div", {className: "col-sm-12 col-md-8"}, 
-                            React.createElement("input", {type: "text", onChange: this.filterChange, className: "form-control input-sm"})
-                        )
-                    )
-                ), 
-                React.createElement("div", {className: "row form-group"}, 
-                    React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this.addAll}, "Add All"), 
-                    React.createElement("button", {type: "button", className: "btn btn-primary", onClick: this.deleteAll}, "Remove All")
-                ), 
-                React.createElement("div", {className: "row"}, 
-                    React.createElement(CategoryList, {
-                        items: this.props.items, 
-                        onCategorySelect: this.onCategorySelect}
-                    ), 
-                    React.createElement(FieldList, {
-                        items: this.state.categoryFields[this.state.selectedCategory], 
-                        category: this.state.selectedCategory, 
-                        Criteria: this.props.Criteria, 
-                        onFieldSelect: this.onFieldSelect, 
-                        FieldsPerPage: "15", 
-                        selected: this.props.selectedFields[this.state.selectedCategory], 
-                        Filter: this.state.filter, 
-                        Visits: this.props.Visits, 
-                        fieldVisitSelect: this.props.fieldVisitSelect}
+        return React.createElement(
+            "div",
+            null,
+            React.createElement(
+                "div",
+                { className: "row" },
+                React.createElement(
+                    "h1",
+                    { className: "col-md-8" },
+                    this.props.title
+                ),
+                React.createElement(
+                    "div",
+                    { className: "form-group col-sm-4 search" },
+                    React.createElement(
+                        "label",
+                        { className: "col-sm-12 col-md-4" },
+                        "Search within instrument:"
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "col-sm-12 col-md-8" },
+                        React.createElement("input", { type: "text", onChange: this.filterChange, className: "form-control input-sm" })
                     )
                 )
+            ),
+            React.createElement(
+                "div",
+                { className: "row form-group" },
+                React.createElement(
+                    "button",
+                    { type: "button", className: "btn btn-primary", onClick: this.addAll },
+                    "Add All"
+                ),
+                React.createElement(
+                    "button",
+                    { type: "button", className: "btn btn-primary", onClick: this.deleteAll },
+                    "Remove All"
+                )
+            ),
+            React.createElement(
+                "div",
+                { className: "row" },
+                React.createElement(CategoryList, {
+                    items: this.props.items,
+                    onCategorySelect: this.onCategorySelect
+                }),
+                React.createElement(FieldList, {
+                    items: this.state.categoryFields[this.state.selectedCategory],
+                    category: this.state.selectedCategory,
+                    Criteria: this.props.Criteria,
+                    onFieldSelect: this.onFieldSelect,
+                    FieldsPerPage: "15",
+                    selected: this.props.selectedFields[this.state.selectedCategory],
+                    Filter: this.state.filter,
+                    Visits: this.props.Visits,
+                    fieldVisitSelect: this.props.fieldVisitSelect
+                })
             )
         );
     }
 });
+//# sourceMappingURL=react.fieldselector.js.map

@@ -1,3 +1,5 @@
+'use strict';
+
 FilterTable = React.createClass({
     displayName: 'FilterTable',
 
@@ -5,13 +7,13 @@ FilterTable = React.createClass({
     propTypes: {
         'Module': React.PropTypes.string.isRequired
     },
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         return { 'collapsed': false };
     },
-    toggleCollapsed: function () {
+    toggleCollapsed: function toggleCollapsed() {
         this.setState({ 'collapsed': !this.state.collapsed });
     },
-    render: function () {
+    render: function render() {
         var children,
             glyph,
             formURL = loris.BaseURL + "/" + this.props.Module + "/";
@@ -59,12 +61,12 @@ FilterField = React.createClass({
         'FormName': React.PropTypes.string.isRequired,
         'Type': React.PropTypes.oneOf(['Dropdown', 'Text'])
     },
-    getDefaultProps: function () {
+    getDefaultProps: function getDefaultProps() {
         return {
             'Type': "Text"
         };
     },
-    render: function () {
+    render: function render() {
         var item = React.createElement('div', null);
         if (this.props.Type === 'Text') {
             item = React.createElement(
@@ -125,10 +127,10 @@ FilterActions = React.createClass({
     propTypes: {
         'Module': React.PropTypes.string.isRequired
     },
-    resetFilters: function () {
+    resetFilters: function resetFilters() {
         location.href = loris.BaseURL + '/' + this.props.Module + "/?reset=true";
     },
-    render: function () {
+    render: function render() {
         return React.createElement(
             'div',
             null,
@@ -147,3 +149,4 @@ FilterActions = React.createClass({
 });
 
 RFilterTable = React.createFactory(FilterTable);
+//# sourceMappingURL=FilterTable.js.map
