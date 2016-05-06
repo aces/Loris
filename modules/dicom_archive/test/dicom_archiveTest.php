@@ -113,13 +113,14 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
           $this->resetPermissions();
      }
     /**
-     * Tests that, when loading the dicom_archive module > viewDetails subtest, some
-     * text appears in the body.
-     * @author   Wang Shen <wangshen.mcin@gmail.ca>
+     * Tests clear button in the form
+     * The form should refreash and the data should be gone.
      * @return void
      */
     function testdicomArchivFilterClearBtn()
     {
+        try{
+        //it doesn't work on Travis, it only works on local machine
         //testing the Patient Name
         $this->safeGet($this->url . "/dicom_archive/");
         $nameElement =  $this->safeFindElement(WebDriverBy::Name("PatientName"));
@@ -151,6 +152,9 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $gender = new WebDriverSelect($genderElement);
         $value = $gender->getFirstSelectedOption()->getAttribute('value');
         $this->assertEquals("",$value);
+        }catch(WebDriverException $ex){
+           $this->fail("This functon doesn't work on Travis, it works on local");
+         }
 
     }
     /**
@@ -160,13 +164,17 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
         function testdicomArchiveFileterByName()
     {
- //testing the Patient Name
+        try{
+       //testing the Patient Name
         $this->safeGet($this->url . "/dicom_archive/");
         $nameElement =  $this->safeFindElement(WebDriverBy::Name("PatientName"));
         $nameElement->sendKeys("TestTestTest");
         $this->safeClick(WebDriverBy::Name("filter"));
         $name =$this->safeFindElement(WebDriverBy::cssSelector("tbody"))->getText();
         $this->assertContains('TestTestTest',$name);
+        }catch(WebDriverException $ex){
+           $this->fail("This functon doesn't work on Travis, it works on local");
+         }
     }
     /**
      * Tests that filter with the date of birth
@@ -175,6 +183,7 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
      function testdicomArchiveFileterByDateOfBirth()
     {
+        try{
       //testing the Patient Name
         $this->safeGet($this->url . "/dicom_archive/");
         $DoBElement =  $this->safeFindElement(WebDriverBy::Name("DoB"));
@@ -182,6 +191,9 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->safeClick(WebDriverBy::Name("filter"));
         $DoB = $this->safeFindElement(WebDriverBy::cssSelector("tbody"))->getText();
         $this->assertContains('1900-01-01',$DoB);
+        }catch(WebDriverException $ex){
+           $this->fail("This functon doesn't work on Travis, it works on local");
+         }
     }
 
 
