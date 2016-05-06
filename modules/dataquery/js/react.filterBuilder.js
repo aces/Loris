@@ -17,14 +17,16 @@ LogicOperator = React.createClass({displayName: "LogicOperator",
 	render: function() {
 		// Renders the html for the component
 
-		var andClass = "btn btn-primary",
-			orClass = "btn btn-primary";
+		var andClass = "btn",
+			orClass = "btn";
 
 		// Set operator to OR if logicOperator is 1, AND otherwise
 		if(this.props.logicOperator === 1) {
-			orClass += " active";
+			orClass += " btn-primary";
+			andClass += " switch"
 		} else {
-			andClass += " active";
+			andClass += " btn-primary";
+			orClass += " switch"
 		}
 		return (
 			React.createElement("div", {className: "btn-group", role: "group"}, 
@@ -460,7 +462,7 @@ FilterGroup = React.createClass({displayName: "FilterGroup",
 				React.createElement("button", {className: "btn btn-danger btn-sm pull-right", 
 										onClick: this.props.deleteGroup.bind(this, this.props.index)
 				}, 
-					React.createElement("span", {className: "glyphicon glyphicon-remove"}), " Add Rule"
+					React.createElement("span", {className: "glyphicon glyphicon-remove"}), " Delete Group"
 				)
 			)
 		}

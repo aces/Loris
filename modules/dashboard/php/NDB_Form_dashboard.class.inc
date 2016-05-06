@@ -36,6 +36,7 @@ class NDB_Form_Dashboard extends NDB_Form
         $DB     = Database::singleton();
         $user   = User::singleton();
         $config = NDB_Config::singleton();
+        $site   = $user->getSiteName();
 
         $userID     = $user->getUsername();
         $last_login = $DB->pselectOne(
@@ -154,7 +155,9 @@ class NDB_Form_Dashboard extends NDB_Form
         }
 
         // Final radiological review
-        if ($user->hasPermission('edit_final_radiological_review')) {
+        if ($user->hasPermission('edit_final_radiological_review')
+            && $user->hasPermission('view_final_radiological_review')
+        ) {
             $this->tpl_data['radiology_review']      = $DB->pselectOne(
                 "SELECT COUNT(*) FROM final_radiological_review f 
                 WHERE Review_Done IS NULL",

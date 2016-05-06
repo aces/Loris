@@ -182,7 +182,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         // create Database object
         $DB = Database::singleton();
 
-        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments' &&  $_REQUEST[$Filter] !=='All Visits') {
+        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments' && $_REQUEST[$Filter] !=='No instruments for this visit' &&  $_REQUEST[$Filter] !=='All Visits') {
 
             if ($Filter =='instrument'){
                 $test_name = $this->getTestNameusingMappedName($_REQUEST[$Filter]); //get actual test_name

@@ -17,8 +17,8 @@ CREATE TABLE `acknowledgements` (
 INSERT INTO LorisMenu (Label, OrderNumber) VALUES ('Acknowledgements', 7);
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Acknowledgements','/acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Acknowledgements'), 1);
 
-INSERT INTO permissions (permID,code,description,categoryID) VALUES (41,'acknowledgements_view','View Acknowledgements',2);
-INSERT INTO permissions (permID,code,description,categoryID) VALUES (42,'acknowledgements_edit','Edit Acknowledgements',2);
+INSERT INTO permissions (code,description,categoryID) VALUES ('acknowledgements_view','View Acknowledgements',2);
+INSERT INTO permissions (code,description,categoryID) VALUES ('acknowledgements_edit','Edit Acknowledgements',2);
 
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='acknowledgements_view' AND m.Label='Acknowledgements';

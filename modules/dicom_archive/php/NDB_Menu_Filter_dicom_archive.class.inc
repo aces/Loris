@@ -324,6 +324,11 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
                 $row[1] = 'INVALID - HIDDEN';
             }
 
+            // remove Transfer_Status column if showTransferStatus is false
+            if ($this->dicomArchiveSettings['showTransferStatus'] == 'false') {
+                array_shift($row);
+            }
+
             $data[] = $row;
         }
         return array(

@@ -138,6 +138,12 @@ ImageQCDropdown = React.createClass({
                     {options}
                 </select>
                 );
+        } else {
+            dropdown = (
+                <div className="col-xs-12">
+                    {this.props.defaultValue}
+                </div>
+            );
         }
         return (
             <div className="row">
@@ -303,12 +309,18 @@ ImageDownloadButtons = React.createClass({
 });
 ImagePanelBody = React.createClass({
     mixins: [React.addons.PureRenderMixin],
+    openWindowHandler: function (e) {
+        e.preventDefault();
+        window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.FileID + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
+    },
     render: function() {
         return (
                 <div className="panel-body">
                     <div className="row">
                         <div className="col-xs-9 imaging_browser_pic">
-                            <img className="img-checkpic img-responsive" src={this.props.Checkpic} />
+                            <a href="#noID" onClick={this.openWindowHandler}>
+                                <img className="img-checkpic img-responsive" src={this.props.Checkpic} />
+                            </a>
                         </div>
                         <div className="col-xs-3 mri-right-panel">
                             <ImagePanelQCPanel

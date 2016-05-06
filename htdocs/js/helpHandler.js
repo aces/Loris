@@ -14,8 +14,10 @@ $(document).ready(function(){
             return;
         }
         var getParams = {};
-        getParams.test_name = loris.TestName; 
-        getParams.subtest = loris.Subtest; 
+        getParams.test_name = loris.TestName;
+        if(loris.Subtest != "") {
+            getParams.subtest = loris.Subtest;
+        }
         document.cookie = 'LastUrl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
         $.get(loris.BaseURL + "/help_editor/ajax/help.php", getParams, function (content) {
             var div = document.createElement("div"),

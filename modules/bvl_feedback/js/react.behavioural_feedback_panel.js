@@ -95,7 +95,7 @@ var FeedbackPanelContent = React.createClass({
       var currentEntryToggled = this.state.currentEntryToggled;
 
       var that = this;
-      var feedbackRows = this.props.threads.map((function (row, index) {
+      var feedbackRows = this.props.threads.map(function (row, index) {
         if (currentEntryToggled == index) {
           var thisRowCommentToggled = true;
         } else {
@@ -116,7 +116,7 @@ var FeedbackPanelContent = React.createClass({
           onClickClose: this.closeThread.bind(this, index),
           onClickOpen: that.props.open_thread.bind(this, index)
         });
-      }).bind(this));
+      }.bind(this));
 
       var table = React.createElement(
         "table",
@@ -583,7 +583,7 @@ var FeedbackSummaryPanel = React.createClass({
             null,
             React.createElement(
               "a",
-              { href: "main.php?test_name=" + row.Instrument + "&candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID },
+              { href: loris.BaseURL + "/" + row.Instrument + "/?candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID },
               row.Instrument
             )
           ),
@@ -592,7 +592,7 @@ var FeedbackSummaryPanel = React.createClass({
             null,
             React.createElement(
               "a",
-              { href: "main.php?test_name=instrument_list&candID=" + row.CandID + "&sessionID=" + row.SessionID },
+              { href: loris.BaseURL + "/instrument_list/?candID=" + row.CandID + "&sessionID=" + row.SessionID },
               row.Visit
             )
           ),
