@@ -112,7 +112,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         return $defaults;
     }
-   
+
     /**
      * Processes the data entered in the form.
      *
@@ -148,6 +148,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         ////Get the current permissions/////
         $current_permissionids = $user->getPermissionIDs();
 
+        $permIDs = array();
         // store the permission IDs
         if (!empty($values['permID'])) {
             $permIDs = $values['permID'];
@@ -169,6 +170,9 @@ class NDB_Form_User_Accounts extends NDB_Form
         // make user name match email address
         if (!empty($values['NA_UserID'])) {
             $values['UserID'] = $values['Email'];
+        }
+        if ($this->isCreatingNewUser()) {
+            $values['UserID'] = trim($values['UserID']);
         }
         unset($values['NA_UserID']);
 
@@ -211,54 +215,60 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // update the user permissions if applicable
+
+        // First remove all permissions
+        $success = $user->removePermissions();
+
+        // Check for new permissions
         if (!empty($permIDs)) {
-            $success = $user->removePermissions();
             foreach ($permIDs as $key => $value) {
-                if ($value == 'on') {
-                    /* if the user didn't have the permission
-                       and the permission is now assigned then insert
-                       insert into the user_account_history as 'I'
-                    */
-                    if (!(in_array($key, $current_permissionids))) {
-                        $user->insertIntoUserAccountHistory($key, 'I');
-                        $permissionsAdded[]
-                            = $this->getDescriptionUsingPermID($key);
-                    }
-                } else {
-                    //if the permission existed before and it's removed now///
-                    ///Then insert into the user_account_history as 'D'
-                    if (in_array($key, $current_permissionids)) {
-                        $user->insertIntoUserAccountHistory($key, 'D');
-                        $permissionsRemoved[]
-                            = $this->getDescriptionUsingPermID($key);
-                    }
-                    unset($permIDs[$key]);
+                /* if the user didn't have the permission
+                   and the permission is now assigned then insert
+                   insert into the user_account_history as 'I'
+                 */
+                if (!(in_array($key, $current_permissionids))) {
+                    $user->insertIntoUserAccountHistory($key, 'I');
+                    $permissionsAdded[] = $this->getDescriptionUsingPermID($key);
                 }
             }
+        }
 
-            // send the selected supervisors an email
-            // (only if permissions have changed for the user)
-            if (isset($supervisorEmails)) {
-                foreach ($supervisorEmails as $email => $checkValue) {
-                    if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
-                        if ($checkValue == 'on') {
-                            $msg_data['current_user'] = $editor->getFullname();
-                            $msg_data['study']        = $config->getSetting('title');
-                            $msg_data['realname']     = $values['Real_name'];
-                            $msg_data['username']     = $user->getUsername();
-                            $msg_data['permissions_added']   = $permissionsAdded;
-                            $msg_data['permissions_removed'] = $permissionsRemoved;
-                            Email::send(
-                                $email,
-                                'permissions_change_notify_supervisor.tpl',
-                                $msg_data
-                            );
-                        }
+        if (!empty($current_permissionids)) {
+            // Check for permissions that are to be deleted
+            foreach ($current_permissionids as $key) {
+                //if the permission existed before and it's removed now///
+                ///Then insert into the user_account_history as 'D'
+                if (!in_array($key, array_keys($permIDs))) {
+                    $user->insertIntoUserAccountHistory($key, 'D');
+                    $permissionsRemoved[] = $this->getDescriptionUsingPermID($key);
+                }
+            }
+        }
+
+        // send the selected supervisors an email
+        // (only if permissions have changed for the user)
+        if (isset($supervisorEmails)) {
+            foreach ($supervisorEmails as $email => $checkValue) {
+                if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
+                    if ($checkValue == 'on') {
+                        $msg_data['current_user'] = $editor->getFullname();
+                        $msg_data['study']        = $config->getSetting('title');
+                        $msg_data['realname']     = $values['Real_name'];
+                        $msg_data['username']     = $user->getUsername();
+                        $msg_data['permissions_added']   = $permissionsAdded;
+                        $msg_data['permissions_removed'] = $permissionsRemoved;
+                        Email::send(
+                            $email,
+                            'permissions_change_notify_supervisor.tpl',
+                            $msg_data
+                        );
                     }
                 }
             }
+        }
 
-            $success = $user->addPermissions(array_keys($permIDs));
+        if (!empty($permIDs)) {
+            $user->addPermissions(array_keys($permIDs));
         }
 
         // send the user an email
@@ -291,7 +301,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     // @codingStandardsIgnoreStart
     function edit_user()
     {
-        // @codingStandardsIgnoreEnd
+    // @codingStandardsIgnoreEnd
         $this->redirect = "test_name=$this->name";
 
         ///get the value for additional_user_info flag
@@ -527,6 +537,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     // @codingStandardsIgnoreStart
     function my_preferences()
     {
+    // @codingStandardsIgnoreEnd
         $this->identifier = $_SESSION['State']->getUsername();
 
         ///get the value for additional_user_info flag
@@ -543,11 +554,13 @@ class NDB_Form_User_Accounts extends NDB_Form
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
+        $fistNameInvalidMsg = "First name is required and "
+            . "should not exceed 120 characters";
         $this->addBasicText(
             'First_name',
             'First name',
             array(
-             'oninvalid' => "this.setCustomValidity('First name is required and should not exceed 120 characters')",
+             'oninvalid' => "this.setCustomValidity('$firstNameInvalidMsg')",
              'onchange'  => "this.setCustomValidity('')",
              'pattern'   => '^\s*\S.{0,119}\s*$',
              'required'  => true,
@@ -557,11 +570,13 @@ class NDB_Form_User_Accounts extends NDB_Form
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
+        $lastNameInvalidMsg = "Last name is required and "
+            . "should not exceed 120 characters";
         $this->addBasicText(
             'Last_name',
             'Last name',
             array(
-             'oninvalid' => "this.setCustomValidity('Last name is required and should not exceed 120 characters')",
+             'oninvalid' => "this.setCustomValidity('$lastNameInvalidMsg')",
              'onchange'  => "this.setCustomValidity('')",
              'pattern'   => '^\s*\S.{0,119}\s*$',
              'required'  => true,
@@ -634,6 +649,8 @@ class NDB_Form_User_Accounts extends NDB_Form
     /**
      * Validates the data entered in the edit user form.
      *
+     * @param array $values what the user entered on the form.
+     *
      * @return array $errors all the errors found.
      */
     function _validateEditUser($values)
@@ -663,6 +680,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                 // with a non-empty email
                 $effectiveUID = empty($values['UserID'])
                     ? $values['Email'] : $values['UserID'];
+
+                $effectiveUID = trim($effectiveUID);
 
                 // check username's uniqueness
                 $result = $DB->pselectOne(
@@ -726,14 +745,10 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $errors['Password_Group']
                     = 'The password is weak, or the passwords do not match';
             } else {
-                $currentPass = $DB->pselectOne(
-                    "SELECT COALESCE(Password_hash, Password_md5) "
-                    . "as Current_password FROM users WHERE UserID = :UID",
-                    array('UID' => $this->identifier)
-                );
-                if (User::MD5Unsalt($values['Password_md5'], $currentPass)) {
-                    $errors['Password_Group']
-                        = 'New and old passwords are identical: choose another one';
+                // New password must be different than current one
+                if (!$this->_passwordChanged($DB, $values['Password_md5'])) {
+                    $errors['Password_Group'] = 'New and old passwords '
+                        . 'are identical: please choose another one';
                 }
             }
         }
@@ -768,7 +783,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $errors['Email_Group'] = $emailError;
             } elseif ($this->isCreatingNewUser()) {
                 if ($values['Email'] != $values['__ConfirmEmail']) {
-                    $errors['__ConfirmEmail'] = 'Email and confirmed email do not match'; 
+                    $errors['__ConfirmEmail'] = 'Email and confirmed email '
+                        . ' do not match';
                 }
             }
         } else {
@@ -780,9 +796,50 @@ class NDB_Form_User_Accounts extends NDB_Form
     }
 
     /**
+     * Determines if the new password that the user entered is different
+     * than its current password (the one stored in the database).
+     *
+     * @param Database $db          database object.
+     * @param string   $newPassword the new password the user entered.
+     *
+     * @return bool  true if the password changed, false otherwise.
+     */
+    function _passwordChanged($db, $newPassword)
+    {
+        //--- Get current password stored in database
+        $passwordQuery
+            = "SELECT Password_hash, Password_md5
+               FROM users 
+               WHERE UserID = :UID";
+
+        $passwords = $db->pselectRow(
+            $passwordQuery,
+            array('UID' => $this->identifier)
+        );
+
+        // If we are using PHP5.5+ and entry Password_has in the DB is not null
+        // use method password_verify to check if the password changed
+        if (function_exists('password_verify')
+            && !is_null($passwords['Password_hash'])
+        ) {
+            return !password_verify($newPassword, $passwords['Password_hash']);
+        } elseif (!function_exists('password_verify')
+            && !is_null($passwords['Password_md5'])
+        ) {
+            // If PHP version < 5.5, use old MD5Unsalt method to check for
+            // password change
+            return !User::MD5Unsalt($newPassword, $passwords['Password_md5']);
+        }
+
+        return true;
+    }
+
+    /**
      * Validates the data entered in the form when editing one's preferences.
      *
-     * @return array $errors all the errors found
+     * @param array $values values the user entered in the form.
+     *
+     * @return array $errors all the errors found.
      */
     function _validateMyPreferences($values)
     {
@@ -809,15 +866,11 @@ class NDB_Form_User_Accounts extends NDB_Form
             if (!$isPasswordStrong) {
                 $errors['Password_md5']
                     = 'The password is weak, or the passwords do not match';
-            }  else {
-                $currentPass = $DB->pselectOne(
-                    "SELECT COALESCE(Password_hash, Password_md5) "
-                    . "as Current_password FROM users WHERE UserID = :UID",
-                    array('UID' => $this->identifier)
-                );
-                if (User::MD5Unsalt($values['Password_md5'], $currentPass)) {
-                    $errors['Password_Group']
-                        = 'New and old passwords are identical: choose another one';
+            } else {
+                // New password must be different than current one
+                if (!$this->_passwordChanged($DB, $values['Password_md5'])) {
+                    $errors['Password_Group'] = 'New and old passwords '
+                        . 'are identical: please choose another one';
                 }
             }
         }
@@ -834,6 +887,9 @@ class NDB_Form_User_Accounts extends NDB_Form
     /**
      * Validates that en email address entered for a given user
      * (either new or existing) is valid and unique.
+     *
+     * @param Database $DB    database object.
+     * @param string   $email user's email.
      *
      * @return string error message if email is invalid, null otherwise.
      */
@@ -859,6 +915,13 @@ class NDB_Form_User_Accounts extends NDB_Form
         return null;
     }
 
+    /**
+     * Gets the complete description for a permission.
+     *
+     * @param int $permID permission ID.
+     *
+     * @return string the description.
+     */
     function getDescriptionUsingPermID($permID)
     {
         $db_factory =& NDB_Factory::singleton();

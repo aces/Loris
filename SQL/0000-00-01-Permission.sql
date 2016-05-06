@@ -62,6 +62,9 @@ INSERT INTO `permissions` VALUES
     (42,'acknowledgements_edit','Edit Acknowledgements','2'),
     (43,'dataquery_view','View Data Query Tool','2');
 
+INSERT INTO `permissions` (code, description, categoryID) VALUES
+    ('genomic_data_manager', 'Manage the genomic files', 2);
+
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 

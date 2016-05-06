@@ -190,7 +190,7 @@
         <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
     </div>
     <div class="panel-body" id="panel-body">
-    <form class="form-horizontal" id="accessProfileForm" name="accessProfileForm" method="get" action="main.php">
+    <form class="form-horizontal" id="accessProfileForm" name="accessProfileForm" method="get" action="#">
         <input type="hidden" name="test_name" value="timepoint_list">
         <div class="form-group col-sm-12">
             <label class="col-sm-12 col-md-4">

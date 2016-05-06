@@ -129,7 +129,7 @@
                     <div class="panel-body">
                         <div class="list-group tasks">
                             {if $conflicts neq "" and $conflicts neq 0}
-                            <a href="main.php?test_name=conflict_resolver" class="list-group-item">
+                            <a href="{$baseURL}/conflict_resolver/" class="list-group-item">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$conflicts}</div>
@@ -144,9 +144,9 @@
                             {/if}
                             {if $incomplete_forms neq "" and $incomplete_forms neq 0}
                                 {if $incomplete_forms_site eq "Site: all"}
-                                <a href="main.php?test_name=statistics&submenu=statistics_site" class="list-group-item">
+                                <a href="{$baseURL}/statistics/statistics_site/" class="list-group-item">
                                 {else}
-                                <a href="main.php?test_name=statistics&submenu=statistics_site&CenterID={$user_site}" class="list-group-item">
+                                <a href="{$baseURL}/statistics/statistics_site/?CenterID={$user_site}" class="list-group-item">
                                 {/if}
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
@@ -161,7 +161,7 @@
                                 </a>
                             {/if}
                             {if $new_scans neq "" and $new_scans neq 0}
-                                <a href="main.php?test_name=imaging_browser" class="list-group-item new-scans">
+                                <a href="{$baseURL}/imaging_browser/" class="list-group-item new-scans">
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
                                             <div class="huge">{$new_scans}</div>
@@ -175,7 +175,7 @@
                                 </a>
                             {/if}
                             {if $violated_scans neq "" and $violated_scans neq 0}
-                                <a href="main.php?test_name=mri_violations" class="list-group-item">
+                                <a href="{$baseURL}/mri_violations/" class="list-group-item">
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
                                             <div class="huge">{$violated_scans}</div>
@@ -189,7 +189,7 @@
                                 </a>
                             {/if}
                             {if $radiology_review neq "" and $radiology_review neq 0}
-                            <a href="main.php?test_name=final_radiological_review" class="list-group-item radiological-review">
+                            <a href="{$baseURL}/final_radiological_review/" class="list-group-item radiological-review">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$radiology_review}</div>
@@ -203,7 +203,7 @@
                             </a>
                             {/if}
                             {if $pending_users neq "" and $pending_users neq 0}
-                            <a href="main.php?test_name=user_accounts" class="list-group-item pending-accounts">
+                            <a href="{$baseURL}/user_accounts/" class="list-group-item pending-accounts">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$pending_users}</div>
@@ -246,7 +246,7 @@
                             {/foreach}
                         </div>
                         <!-- /.list-group -->
-                        <a href="main.php?test_name=document_repository" class="btn btn-default btn-block">Document Repository <span class="glyphicon glyphicon-chevron-right"></span></a>
+                        <a href="{$baseURL}/document_repository/" class="btn btn-default btn-block">Document Repository <span class="glyphicon glyphicon-chevron-right"></span></a>
                     </div>
                     <!-- /.panel-body -->
                 </div>

@@ -12,7 +12,7 @@
 5. Check coordinates
     - Enter world coordinates and check that the cursor moves across the volume.
     - Enter voxel coordinates and check that the cursor moves across the volume.
-    - Enter 0, 0, 0 as voxel coordinates (should bring the cursor to the bottom left of each view).
+    - Enter 0, 0, 0 as voxel coordinates should bring you close to a corner of the volume, but it could be any of the eight corners. It depends on the orientation.
 6. Check all color maps
     - Gray (should be that color by default)
     - Spectral
@@ -27,7 +27,7 @@
         - Check that the intensity changes.
         - Check that the values are updated in the text box.
 8. Click on the “Sync Volumes” button (top of the page)
-    Should update coordinates for all volumes.
+    Should update coordinates for all volumes, but not reset the view.
 9. Select a different panel size from the `Choose Panel Size` drop-down.
     Should change the size of the three displayed volumes.
 10. Test `View slices` buttons (Sagittal, Coronal and Axial).
@@ -40,6 +40,7 @@
     - Should display the selected images plus the overlay.
     - Repeat 2 to 9 steps on each displayed volume.
     - Check that it updates only the appropriate image.
+    - Check that the Reset View Button works. 
 13. Test the “Blend” option (text box and slider) on the overlay.
     - Check that it switches display between the different volumes
     - Check that it updates the slider and text box respectively.

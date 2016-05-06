@@ -237,7 +237,7 @@ class NDB_Form_Examiner extends NDB_Form
                 }
             }
         }
-        $url = "main.php?test_name=examiner&subtest=editExaminer&identifier="
+        $url = "{$baseurl}/examiner/editExaminer/?identifier="
                . $examinerID;
         header("Location: " . $url, true, 303);
     }
