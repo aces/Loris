@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class Statistics_Test extends LorisIntegrationTest
 {
+/**
     public function testTabsFrameworkLoads()
     {
         $this->safeGet($this->url . '/statistics/');
@@ -28,7 +29,7 @@ class Statistics_Test extends LorisIntegrationTest
             $this->fail("Could not find demographic tab link");
         }
     }
-
+**/
     public function testGeneralDescriptionTabLoads() {
         $this->safeGet($this->url . '/statistics/stats_general/?dynamictabs=dynamictabs');
         $header = $this->webDriver->findElement(WebDriverBy::XPath("//div[@id = 'page']/h2"));
