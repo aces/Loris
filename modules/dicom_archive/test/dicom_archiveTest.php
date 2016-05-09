@@ -24,9 +24,9 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1024, 1768);
-        $window->setSize($size);
+//        $window = new WebDriverWindow($this->webDriver);
+  //      $size   = new WebDriverDimension(1600,1200);
+    //    $window->setSize($size);
         $this->DB->insert(
             "tarchive",
             array(
@@ -81,6 +81,9 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testdicomArchiveDoespageLoad()
     {
+        $window = new WebDriverWindow($this->webDriver);
+        $size   = new WebDriverDimension(1600,1200);
+        $window->setSize($size);
         $this->safeGet($this->url . "/dicom_archive/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
             ->getText();
@@ -126,6 +129,9 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testdicomArchivFilterClearBtn()
     {
+        $window = new WebDriverWindow($this->webDriver);
+        $size   = new WebDriverDimension(1600,1200);
+        $window->setSize($size);     
         //testing the Patient Name
         $this->safeGet($this->url . "/dicom_archive/");
         $nameElement =  $this->safeFindElement(WebDriverBy::Name("PatientName"));
@@ -167,7 +173,10 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testdicomArchiveFileterByName()
     {
-        //testing the Patient Name
+        $window = new WebDriverWindow($this->webDriver);
+        $size   = new WebDriverDimension(1600,1200);
+        $window->setSize($size); 
+       //testing the Patient Name
         $this->safeGet($this->url . "/dicom_archive/");
         $nameElement =  $this->safeFindElement(WebDriverBy::Name("PatientName"));
         $nameElement->sendKeys("TestTestTest");
@@ -184,6 +193,9 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testdicomArchiveFileterByDateOfBirth()
     {
+        $window = new WebDriverWindow($this->webDriver);
+        $size   = new WebDriverDimension(1600,1200);
+        $window->setSize($size);
         //testing the Patient Name
         $this->safeGet($this->url . "/dicom_archive/");
         $DoBElement =  $this->safeFindElement(WebDriverBy::Name("DoB"));
