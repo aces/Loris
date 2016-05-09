@@ -26,13 +26,12 @@ $client->initialize($configFile);
 $DB =& Database::singleton();
 
 // Query as it is in the mri violation module
-$query  = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun, v.MincFile, v.MincFileViolated, v.Series_Description as Series_Description_Or_Scan_Type, v.Problem, v.SeriesUID, v.hash, v.join_id, v.Resolved FROM (
+$query  = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun, v.MincFile, v.Series_Description as Series_Description_Or_Scan_Type, v.Problem, v.SeriesUID, v.hash, v.join_id, v.Resolved FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
-		CONCAT_WS('','/export-01/pinch/data/ibis/data/','trashbin/',SUBSTRING_INDEX(minc_location, '/', -2)) as MincFileViolated,
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem,
                 SeriesUID,
@@ -55,7 +54,6 @@ $query  = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun, v.M
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
-                CONCAT_WS('','/export-01/pinch/data/ibis/data/','trashbin/',SUBSTRING_INDEX(MincFile, '/', -2)) as MincFileViolated,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
                 SeriesUID,
@@ -80,7 +78,6 @@ $query  = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun, v.M
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
-                CONCAT_WS('','/export-01/pinch/data/ibis/data/','trashbin/',SUBSTRING_INDEX(MincFile, '/', -2)) as MincFileViolated,
                 null,
                 Reason,
                 SeriesUID,
