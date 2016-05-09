@@ -47,7 +47,7 @@ class DashboardTest extends LorisIntegrationTest
             $this->safeGet($this->url . '/dashboard/');
 
             $dashboardNum = $this->safeFindElement(
-                WebDriverBy::Xpath("//*[@id='overall-recruitment']/div/p")
+                WebDriverBy::cssSelector("#overall-recruitment > div > p")
             )
                 ->getText();
 
@@ -66,8 +66,7 @@ class DashboardTest extends LorisIntegrationTest
             )
                 ->getAttribute('value');
 
-            $this->assertEquals($dashboardNum, "Target: ".$configNum);
-     
+            $this->assertEquals($dashboardNum, "Target: ".$configNum);     
      
     }
 }
