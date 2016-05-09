@@ -41,5 +41,33 @@ class DashboardTest extends LorisIntegrationTest
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
         $this->assertContains("Welcome", $welcomeText);
     }
+
+    public function testTargetNumberOfParticipants()
+    {
+            $this->safeGet($this->url . '/dashboard/');
+
+            $dashboardNum = $this->safeFindElement(
+                WebDriverBy::cssSelector("#overall-recruitment > div > p"),20
+            )
+                ->getText();
+
+            $this->safeGet($this->url . '/configuration/');
+
+            $this->safeFindElement(
+                WebDriverBy::Xpath(
+                    "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
+                )
+            )
+                ->click();
+            $configNum =  $this->safeFindElement(
+                WebDriverBy::Xpath(
+                    "//*[@id='41']/input"
+                )
+            )
+                ->getAttribute('value');
+
+            $this->assertEquals($dashboardNum, "Target: ".$configNum);     
+     
+    }
 }
 ?>
