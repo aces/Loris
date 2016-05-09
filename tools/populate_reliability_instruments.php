@@ -47,6 +47,16 @@ class ReliabilityInstrumentsPopulator
     {
         $this->DB = Database::singleton();
         $this->Config = NDB_Config::singleton();
+
+        print "This tool will populate the reliability_instruments table with ".
+            "threshold and table information from project/config.xml and will ".
+            "set all other values to either NULL or a default value\n ".
+            "Default values used are:\n".
+            "Target_scope = Within\n".
+            "Reliability_ratio = 0.1\n".
+            "ProjectID = NULL\n".
+            "Visit_label = NULL\n";
+        //print "These values can be changed from the Config module in LORIS\n ";
     }
 
     /**
