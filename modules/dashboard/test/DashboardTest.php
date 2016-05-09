@@ -47,7 +47,7 @@ class DashboardTest extends LorisIntegrationTest
             $this->safeGet($this->url . '/dashboard/');
 
             $dashboardNum = $this->safeFindElement(
-                WebDriverBy::cssSelector("#overall-recruitment > div > p")
+                WebDriverBy::cssSelector("#overall-recruitment > div > p"),20
             )
                 ->getText();
 
