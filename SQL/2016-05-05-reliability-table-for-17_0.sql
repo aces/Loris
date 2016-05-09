@@ -5,7 +5,7 @@ CREATE TABLE `reliability_instruments` (
   `Target_scope` enum('Cross','Within') NOT NULL,
   `Target_siteID` int(11) DEFAULT NULL,
   `Threshold` float(4,2) NOT NULL,
-  `Reliability_portion` float (2,2) NOT NULL,
+  `Reliability_ratio` float (2,2) NOT NULL,
   `ProjectID`  int(11) DEFAULT NULL,
   PRIMARY KEY (`rel_instID`)
 );
