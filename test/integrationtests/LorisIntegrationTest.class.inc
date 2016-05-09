@@ -119,6 +119,9 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     protected function login($username, $password)
     {
+        $window = new WebDriverWindow($this->webDriver);
+        $size   = new WebDriverDimension(1600,1200);
+        $window->setSize($size);
         $this->safeGet($this->url);
         /*
         $this->webDriver->wait(120, 1000)->until(
