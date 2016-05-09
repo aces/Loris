@@ -358,6 +358,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $threshold   = $this->getThresholds();
         // print out
         $x = 0;
+        //TODO what is this doing??
         foreach ($this->list as $item) {
             //count column
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
