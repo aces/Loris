@@ -318,8 +318,8 @@ class NDB_Menu_Filter extends NDB_Menu
         // 2. After resetting filters (if applicable), set the new
         // filters using the appropriate method.
         if ($_SERVER['REQUEST_METHOD'] === 'GET'
-            || ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['filter'])))
-        {
+            || ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['filter']))
+        ) {
             // If it's a GET request (ie just reloading the page with
             // previous filters or clicking on a sort column, use
             // the filters that were saved into the session.
@@ -338,7 +338,8 @@ class NDB_Menu_Filter extends NDB_Menu
                 $this->_setDefaults($defaults);
             }
         } else if ($_SERVER['REQUEST_METHOD'] === 'POST'
-                    && isset($_POST['filter'])) {
+            && isset($_POST['filter'])
+        ) {
             // If it's a POST, set the filters based on the
             // request and save them into the session so that future
             // GET requests have access to them.
