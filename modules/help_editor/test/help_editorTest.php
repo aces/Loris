@@ -151,13 +151,8 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
      */
     public function testSearchKeywordLinkToDetail()
     {
-      //try{
-        $window = new WebDriverWindow($this->webDriver);
-        $size = new WebDriverDimension(1600,1200);
-        $window->setSize($size);
-        sleep(5);
+        try{
         $this->safeGet($this->url.'/help_editor/');
-        sleep(5);
         $searchbox = $this->safeFindElement(WebDriverBy::Name("keyword"));
         $searchbox->sendKeys("This is a test content.");
         $showdata = $this->safeClick(
@@ -175,7 +170,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
             )
         )->getText();
         $this->assertContains("This is a test content.", $assertText);
-      //  }catch (WebDriverException $ex){}
+        }catch (WebDriverException $ex){}
     }//end test_search_keyword_to_detail()
 
 
