@@ -42,14 +42,14 @@
                     <div class="row">
                         <div class="form-group col-sm-6 col-sm-offset-6 hidden-sm">
                             <div class="col-sm-5 col-xs-12">
-                                <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
+                                <input type="submit" name="filter" id="testShowData1"  value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-5 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/conflict_resolver/?submenu=resolved_conflicts&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" id="testClearForm1" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/conflict_resolver/?submenu=resolved_conflicts&reset=true'">
                             </div>
                         </div>
                     </div>

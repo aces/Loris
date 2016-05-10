@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Automated integration tests for conflict resolver module
  *
@@ -8,6 +8,7 @@
  * @package  Loris
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @author   Justin Kat <justin.kat@mail.mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -26,6 +27,68 @@ require_once __DIR__
  */
 class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
 {
+    /**
+     * Insert testing data into the database
+     * author: Wang Shen
+     *
+     * @return none
+     */
+    function setUp()
+    {
+        parent::setUp();
+        $window = new WebDriverWindow($this->webDriver);
+        $window->maximize();
+        $this->DB->insert(
+            "conflicts_resolved",
+            array(
+             'ResolvedID'          => '999999',
+             'UserID'              => 'demo',
+             'ResolutionTimestamp' => '2015-11-03 16:21:49',
+             'User1'               => 'Null',
+             'User2'               => 'Null',
+             'TableName'           => 'Test',
+             'ExtraKey1'           => 'NULL',
+             'ExtraKey2'           => 'NULL',
+             'FieldName'           => 'TestTestTest',
+             'CommentId1'          => '589569DCC000012291366553230',
+             'CommentId2'          => 'DDE_589569DCC000012291366653254',
+             'OldValue1'           => 'Mother',
+             'OldValue2'           => 'Father',
+             'NewValue'            => 'NULL',
+             'ConflictID'          => 'NULL',
+            )
+        );
+        $this->DB->insert(
+            "conflicts_unresolved",
+            array(
+             'TableName'      => 'TestTestTest',
+             'ExtraKeyColumn' => 'Test',
+             'ExtraKey1'      => 'Null',
+             'ExtraKey2'      => 'Null',
+             'FieldName'      => 'TestTestTest',
+             'CommentId1'     => '963443000111271151398976899',
+             'Value1'         => 'no',
+             'CommentId2'     => 'DDE_963443000111271151398976899',
+             'Value2'         => 'no',
+            )
+        );
+    }
+    /**
+     * Delete testing data from database
+     * author: Wang Shen
+     *
+     * @return none
+     */
+    function tearDown()
+    {
+        $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
+        $this->DB->delete(
+            "conflicts_unresolved",
+            array('TableName' => 'TestTestTest')
+        );
+        parent::tearDown();
+    }
+
     /**
      * Tests that, when loading the conflict_resolver module, some
      * text appears in the body.
@@ -109,6 +172,93 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->assertContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
+    /**
+     * Tests research function in resolved conflicts
+     * author: Wang Shen
+     *
+     * @return void
+     */
+    function testSearchConflictResolved()
+    {
+         $this->safeGet($this->url."/conflict_resolver/?submenu=resolved_conflicts");
+         $keywordElement = $this->webDriver->findElement(
+             WebDriverBy::Name("Question")
+         );
+         $keywordElement->sendkeys('TestTestTest');
+         //click show data button
+         $this->webDriver->findElement(WebDriverBy::ID("testShowData1"))->click();
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::XPath(
+                 "//*[@id='tabs']/div/div/div/div/div/".
+                 "table/tbody/tr[1]/td[6]"
+             )
+         )->getText();
+         $this->assertContains("TestTestTest", $bodyText);
+    }
+    /**
+     * Tests research function in unresolved conflicts
+     * author: Wang Shen
+     *
+     * @return void
+     */
+    function testSearchUnresolvedConflicts()
+    {
+         $this->safeGet($this->url . "/conflict_resolver/");
+         $keywordElement = $this->webDriver->findElement(
+             WebDriverBy::Name("Question")
+         );
+         $keywordElement->sendkeys('TestTestTest');
+         //click show data button
+         $this->webDriver->findElement(WebDriverBy::ID("testShowData1"))->click();
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::XPath(
+                 "//*[@id='conflict_resolver']/div/div/div/".
+                 "table/tbody/tr[1]/td[6]"
+             )
+         )->getText();
+         $this->assertContains("TestTestTest", $bodyText);
+    }
+    /**
+     * Tests Clear Form function in unresolved conflicts
+     * author: Wang Shen
+     *
+     * @return void
+     */
+    function testClearFormUnresolvedConflicts()
+    {
+         $this->safeGet($this->url . "/conflict_resolver/");
+         $keywordElement = $this->webDriver->findElement(
+             WebDriverBy::Name("Question")
+         );
+         $keywordElement->sendkeys('TestTestTest');
+         //click clear form button
+         $this->webDriver->findElement(WebDriverBy::ID("testClearForm1"))->click();
+         $bodyText =$this->webDriver->findElement(
+             WebDriverBy::Name("Question")
+         )->getText();
+         $this->assertNotContains("TestTestTest", $bodyText);
+    }
+    /**
+     * Tests Clear Form function in resolved conflicts
+     * author: Wang Shen
+    *
+     * @return void
+     */
+    function testClearFormResolvedConflicts()
+    {
+         $this->safeGet($this->url."/conflict_resolver/?submenu=resolved_conflicts");
+         $keywordElement = $this->webDriver->findElement(
+             WebDriverBy::Name("Question")
+         );
+         $keywordElement->sendkeys('TestTestTest');
+         //click clear form button
+         $this->webDriver->findElement(WebDriverBy::ID("testClearForm1"))->click();
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::Name("Question")
+         )->getText();
+         $this->assertNotContains("TestTestTest", $bodyText);
+    }
+
 
 }
 ?>
