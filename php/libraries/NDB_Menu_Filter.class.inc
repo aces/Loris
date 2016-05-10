@@ -317,7 +317,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // 2. After resetting filters (if applicable), set the new
         // filters using the appropriate method.
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' ) {
             // If it's a GET request (ie just reloading the page with
             // previous filters or clicking on a sort column, use
             // the filters that were saved into the session.
@@ -333,15 +333,33 @@ class NDB_Menu_Filter extends NDB_Menu
             } else {
                 $this->_setDefaults($defaults);
             }
-        } else if ($_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['filter'])
-        ) {
+        } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // If it's a POST, set the filters based on the
             // request and save them into the session so that future
             // GET requests have access to them.
-            $newFilters = $this->_setFilters($_POST);
-            if (!empty($newFilters)) {
-                $_SESSION['State']->setProperty('filter', $newFilters);
+
+            if(isset($_POST['filter'])) {
+                $newFilters = $this->_setFilters($_POST);
+                if (!empty($newFilters)) {
+                    $_SESSION['State']->setProperty('filter', $newFilters);
+                }
+            }
+            else {
+                // If it's a POST request With no new filters ie, saving a
+                // form that is not the filter form. This allows us to reload
+                //the old filters
+                $savedFilters = $_SESSION['State']->getProperty('filter');
+                $this->_setFilters($savedFilters);
+
+                // Also set the form defaults based on the saved query, so that
+                // the filters values remain populated correctly in the front-end,
+                // not just in the query..
+                $defaults = $this->_getDefaults();
+                if (is_array($savedFilters)) {
+                    $this->_setDefaults(array_merge($defaults, $savedFilters));
+                } else {
+                    $this->_setDefaults($defaults);
+                }
             }
         }
 
