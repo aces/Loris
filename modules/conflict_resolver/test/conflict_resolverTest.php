@@ -1,5 +1,5 @@
- <?php
-/**
+<?php
+ /**
  * Automated integration tests for conflict resolver module
  *
  * PHP Version 5
@@ -13,9 +13,9 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__
+ require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-/**
+ /**
  * Implements tests for conflict resolver
  *
  * @category Test
@@ -58,22 +58,22 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
              'ConflictID'          => 'NULL',
             )
         );
-        $this->DB->insert(
-            "conflicts_unresolved",
-            array(
-             'TableName'      => 'TestTestTest',
-             'ExtraKeyColumn' => 'Test',
-             'ExtraKey1'      => 'Null',
-             'ExtraKey2'      => 'Null',
-             'FieldName'      => 'TestTestTest',
-             'CommentId1'     => '963443000111271151398976899',
-             'Value1'         => 'no',
-             'CommentId2'     => 'DDE_963443000111271151398976899',
-             'Value2'         => 'no',
-            )
-        );
+         $this->DB->insert(
+             "conflicts_unresolved",
+             array(
+              'TableName'      => 'TestTestTest',
+              'ExtraKeyColumn' => 'Test',
+              'ExtraKey1'      => 'Null',
+              'ExtraKey2'      => 'Null',
+              'FieldName'      => 'TestTestTest',
+              'CommentId1'     => '963443000111271151398976899',
+              'Value1'         => 'no',
+              'CommentId2'     => 'DDE_963443000111271151398976899',
+              'Value2'         => 'no',
+             )
+         );
     }
-    /**
+     /**
      * Delete testing data from database
      * author: Wang Shen
      *
@@ -89,7 +89,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         parent::tearDown();
     }
 
-    /**
+     /**
      * Tests that, when loading the conflict_resolver module, some
      * text appears in the body.
      *
@@ -104,7 +104,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Unresolved Conflicts", $bodyText);
     }
 
-    /**
+     /**
      * Tests that, when loading the resolved_conflicts submodule, some
      * text appears in the body.
      *
@@ -122,7 +122,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Resolved Conflicts", $bodyText);
     }
 
-    /**
+     /**
      * Tests that conflict resolver loads with the permission
      *
      * @return void
@@ -138,7 +138,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->resetPermissions();
     }
 
-    /**
+     /**
      * Tests that resolved conflicts loads with the permission
      *
      * @return void
@@ -157,7 +157,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->resetPermissions();
     }
 
-    /**
+     /**
      * Tests that conflict resolver does not load with the permission
      *
      * @return void
@@ -172,7 +172,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $this->assertContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
-    /**
+     /**
      * Tests research function in resolved conflicts
      * author: Wang Shen
      *
@@ -195,7 +195,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          )->getText();
          $this->assertContains("TestTestTest", $bodyText);
     }
-    /**
+     /**
      * Tests research function in unresolved conflicts
      * author: Wang Shen
      *
@@ -218,7 +218,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          )->getText();
          $this->assertContains("TestTestTest", $bodyText);
     }
-    /**
+     /**
      * Tests Clear Form function in unresolved conflicts
      * author: Wang Shen
      *
@@ -238,7 +238,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          )->getText();
          $this->assertNotContains("TestTestTest", $bodyText);
     }
-    /**
+     /**
      * Tests Clear Form function in resolved conflicts
      * author: Wang Shen
     *
