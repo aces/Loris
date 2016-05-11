@@ -120,8 +120,7 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
     function testdicomArchivFilterClearBtn()
     {   
         $this->markTestSkipped("This method isn't working properly on travis.");
-        try{
-        //it doesn't work on Travis, it only works on local machine
+        
         //testing the Patient Name
         $this->safeGet($this->url . "/dicom_archive/");
         $nameElement =  $this->safeFindElement(WebDriverBy::Name("PatientName"));
@@ -130,6 +129,7 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $name =  $this->safeFindElement(WebDriverBy::Name("PatientName"))
                  ->getAttribute('value');
         $this->assertEquals('',$name);
+        
         //testing the Archive Location
         $locationElement =  $this->safeFindElement(WebDriverBy::Name("Location"));
         $locationElement->sendKeys("TestLocation");
@@ -137,6 +137,7 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $location =  $this->safeFindElement(WebDriverBy::Name("Location"))
                 ->getAttribute('value');
         $this->assertEquals('',$location);
+        
         //testing the Patient ID
         $idElement =  $this->safeFindElement(WebDriverBy::Name("PatientID"));
         $idElement->sendKeys("TestID");
@@ -144,6 +145,7 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $idText =  $this->safeFindElement(WebDriverBy::Name("PatientID"))
               ->getAttribute('value');
         $this->assertEquals('',$idText);
+        
         //testing the Gender
         $genderElement =  $this->safeFindElement(WebDriverBy::Name("Gender"));
         $gender = new WebDriverSelect($genderElement);
@@ -153,9 +155,6 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $gender = new WebDriverSelect($genderElement);
         $value = $gender->getFirstSelectedOption()->getAttribute('value');
         $this->assertEquals("",$value);
-        }catch(WebDriverException $ex){
-          // $this->fail("This functon doesn't work on Travis, it works on local");
-         }
 
     }
     /**
@@ -166,16 +165,14 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
         function testdicomArchiveFileterByName()
     {   
         $this->markTestSkipped("This method isn't working properly on travis.");
-        try{
-       //testing the Patient Name
+       
+        //testing the Patient Name
         $this->safeGet($this->url . "/dicom_archive/");
         $nameElement =  $this->safeFindElement(WebDriverBy::Name("PatientName"));
         $nameElement->sendKeys("TestTestTest");
         $this->safeClick(WebDriverBy::Name("filter"));
         $name =$this->safeFindElement(WebDriverBy::cssSelector("tbody"))->getText();
         $this->assertContains('TestTestTest',$name);
-        }catch(WebDriverException $ex){
-          // $this->fail("This functon doesn't work on Travis, it works on local");
          }
     }
     /**
@@ -186,17 +183,14 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      function testdicomArchiveFileterByDateOfBirth()
     {
         $this->markTestSkipped("This method isn't working properly on travis.");
-      //  try{
-      //testing the Patient Name
+    
+         //testing the Patient's date of birth
         $this->safeGet($this->url . "/dicom_archive/");
         $DoBElement =  $this->safeFindElement(WebDriverBy::Name("DoB"));
         $DoBElement->sendKeys("1900-01-01");
         $this->safeClick(WebDriverBy::Name("filter"));
         $DoB = $this->safeFindElement(WebDriverBy::cssSelector("tbody"))->getText();
         $this->assertContains('1900-01-01',$DoB);
-      //  }catch(WebDriverException $ex){
-          // $this->fail("This functon doesn't work on Travis, it works on local");
-       //  }
     }
 
 
