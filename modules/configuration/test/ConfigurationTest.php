@@ -132,7 +132,7 @@ class ConfigurationTest extends LorisIntegrationTestForConfiguration
             $contentArea,
             "Specify any API keys required for LORIS"
         );
-    }    
-    
+    }
+
 }
 ?>
