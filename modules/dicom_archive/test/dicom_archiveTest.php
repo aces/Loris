@@ -173,7 +173,7 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->safeClick(WebDriverBy::Name("filter"));
         $name =$this->safeFindElement(WebDriverBy::cssSelector("tbody"))->getText();
         $this->assertContains('TestTestTest',$name);
-         }
+  
     }
     /**
      * Tests that filter with the date of birth
