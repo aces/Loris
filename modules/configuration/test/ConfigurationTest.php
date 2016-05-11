@@ -26,7 +26,7 @@ require_once __DIR__
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class ConfigurationTestIntegrationTest extends LorisIntegrationTest
+class ConfigurationTest extends LorisIntegrationTest
 {
     /**
      * Tests that, when loading the Configuration module, the word
@@ -109,7 +109,7 @@ class ConfigurationTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testConfigPermission()
+    public function testConfigPermission()
     {
          $this->setupPermissions(array("config"));
          $this->safeGet($this->url . "/configuration/");
@@ -124,7 +124,7 @@ class ConfigurationTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testConfigWithoutPermission()
+    public function testConfigWithoutPermission()
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/configuration/");
