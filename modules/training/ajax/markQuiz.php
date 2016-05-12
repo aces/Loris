@@ -29,41 +29,36 @@ $instrumentID = $_REQUEST['instrument'];
 
 $quizCorrect = markQuiz($instrumentID);
 
-if ($quizCorrect == false) {
-    print "incorrect";
-    exit();
-} else {
-    $user = User::singleton();
 
-    $userFullName = $user->getFullname();
-    $userCenter   = $user->getCenterID();
-    $examinerID   = $DB->pselectOne(
-        "SELECT examinerID 
-         FROM examiners
-         WHERE full_name=:FN AND centerID=:CID",
-        array(
-         'FN'  => $userFullName,
-         'CID' => $userCenter,
-        )
-    );
+$user = User::singleton();
 
-    $dateArray = array(
-                  'Y' => date('Y'),
-                  'M' => date('m'),
-                  'd' => date('d'),
-                 );
+$userFullName = $user->getFullname();
+$userCenter   = $user->getCenterID();
+$examinerID   = $DB->pselectOne(
+    "SELECT examinerID 
+     FROM examiners
+     WHERE full_name=:FN AND centerID=:CID",
+    array(
+     'FN'  => $userFullName,
+     'CID' => $userCenter,
+    )
+);
 
-    $values = array(
-               'pass'      => array($instrumentID => 'certified'),
-               'date_cert' => array($instrumentID => $dateArray),
-               'examiner'  => $examinerID,
-              );
+$dateArray = array(
+              'Y' => date('Y'),
+              'M' => date('m'),
+              'd' => date('d'),
+             );
 
-    process($values);
+$values = array(
+           'pass'      => array($instrumentID => 'certified'),
+           'date_cert' => array($instrumentID => $dateArray),
+           'examiner'  => $examinerID,
+          );
 
-    print "correct";
-    exit();
-}
+process($values);
+print json_encode($quizCorrect);
+exit();
 
 /**
  * Determines if an answer is correct for a question from the training quiz
@@ -89,9 +84,33 @@ function correct($instrumentID, $question, $answer)
         )
     );
     if ($correctAnswer == $answer) {
-        return true;
+        $answer = array(
+            'correct' => true,
+            'correctNumber' => $correctAnswer,
+            'Popup' => 'This is the correct answer.'
+        );
+        return $answer;
     } else {
-        return false;
+        $popup = $DB->pselectOne(
+            "SELECT p.Popup as Popup
+             FROM certification_training_quiz_popups p
+             LEFT JOIN certification_training_quiz_answers a
+             ON (a.QuestionID=p.QuestionID)
+             LEFT JOIN certification_training_quiz_questions q
+             ON (q.ID=a.QuestionID)
+             WHERE q.TestID=:TID AND q.OrderNumber=:QNO AND a.OrderNumber=:ANO",
+            array(
+             'TID' => $instrumentID,
+             'QNO' => $question,
+             'ANO' => $answer,
+            )
+        );
+        $answer = array(
+            'correct' => false,
+            'correctNumber' => $correctAnswer,
+            'Popup' => $popup
+        );
+        return $answer;
     }
 }
 
@@ -105,15 +124,24 @@ function correct($instrumentID, $question, $answer)
 function markQuiz($instrumentID)
 {
     $correct = true;
+    $corrections = array();
     foreach ($_POST as $question => $answer) {
         if ($question != 'instrument') {
-            if (correct($instrumentID, $question, $answer) == false) {
+            $correction = correct($instrumentID, $question, $answer);
+            if ($correction['correct'] === false) {
                 $correct = false;
-                break;
             }
+            $correction = array(
+                $question => correct($instrumentID, $question, $answer)
+            );
+            $corrections = array_merge($corrections, $correction);
         }
     }
-    return $correct;
+    $returnInfo = array(
+        'correct' => $correct,
+        'corrections' => $corrections,
+    );
+    return $returnInfo;
 }
 
 /**
