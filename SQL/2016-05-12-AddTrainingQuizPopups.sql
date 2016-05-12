@@ -9,3 +9,4 @@ CREATE TABLE `certification_training_quiz_popups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE certification_training_quiz_answers ADD PopupID int(2) unsigned;
+ALTER TABLE certification_training_quiz_answers ADD CONSTRAINT `FK_certification_training_quiz_answers_2` FOREIGN KEY (`PopupID`) REFERENCES `certification_training_quiz_popups` (`ID`);
