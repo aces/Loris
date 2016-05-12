@@ -2091,10 +2091,22 @@ CREATE TABLE `certification_training_quiz_answers` (
     `QuestionID` INTEGER UNSIGNED NOT NULL,
     `Answer` varchar(255) NOT NULL,
     `Correct` boolean NOT NULL,
+    `PopupID` int(2) unsigned
     `OrderNumber` INTEGER UNSIGNED NOT NULL,
     PRIMARY KEY (`ID`),
     CONSTRAINT `FK_certification_training_quiz_answers` FOREIGN KEY (`QuestionID`) REFERENCES `certification_training_quiz_questions` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `certification_training_quiz_popups` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `QuestionID` int(10) unsigned NOT NULL,
+  `PopupID` int(2) unsigned NOT NULL,
+  `Popup` text NOT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `FK_certification_training_quiz_popups` (`QuestionID`),
+  CONSTRAINT `FK_certification_training_quiz_popups` FOREIGN KEY (`QuestionID`) REFERENCES `certification_training_quiz_questions` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Table structure for table `server_processes`
 DROP TABLE IF EXISTS `server_processes`;
 CREATE TABLE `server_processes` (
