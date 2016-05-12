@@ -95,7 +95,7 @@ function correct($instrumentID, $question, $answer)
             "SELECT p.Popup as Popup
              FROM certification_training_quiz_popups p
              LEFT JOIN certification_training_quiz_answers a
-             ON (a.QuestionID=p.QuestionID)
+             ON (a.PopupID=p.ID)
              LEFT JOIN certification_training_quiz_questions q
              ON (q.ID=a.QuestionID)
              WHERE q.TestID=:TID AND q.OrderNumber=:QNO AND a.OrderNumber=:ANO",
