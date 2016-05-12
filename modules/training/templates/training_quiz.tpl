@@ -2,6 +2,17 @@
 <div class="radio">
     <label>
         <input type="radio" name="{$questionNumber}" id="q{$questionNumber}-{$answerNumber}" value="{$answerNumber}">
+        <strong>
+        {if $answerNumber eq 1}
+        A.
+        {elseif $answerNumber eq 2}
+        B.
+        {elseif $answerNumber eq 3}
+        C.
+        {elseif $answerNumber eq 4}
+        D.
+        {/if}
+        </strong>
         {$answer}
     </label>
 </div>
