@@ -1255,7 +1255,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $errors = array();
 
         foreach ($rules['rules'] AS $rule) {
-            //Conditions for the rule to be true, and thus the element to be required.
+            //Conditions for the rule to be true, thus the element to be required.
             $rule_outcomes = array();
             //Loop through the assigned rules (which is the array of formatted
             //statements passed in XINRegisterRule)
@@ -1305,8 +1305,7 @@ class NDB_BVL_Instrument extends NDB_Page
             //If NONE of the or_conditions were true the field is NOT required.
             if ($or_conditions == false) {
                 $rule_outcomes[] = false;
-            }
-            else {
+            } else {
                 $rule_outcomes[] = true;
             }
         }
