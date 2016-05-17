@@ -338,7 +338,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 . count($expectedRows) . ", not " . count($actualRows)
             );
             for ($i=1; $i<=count($actualRows); $i++) {
-                $elements      = $actualRows[$i]->findElements(
+                $elements      = $actualRows[$i-1]->findElements(
                     WebDriverBy::xpath('.//td')
                 );
                 $actualColumns = array();
