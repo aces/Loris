@@ -345,7 +345,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 foreach ($elements as $e) {
                     $actualColumns[] = $e->getText();
                 }
-                $expectedColumns = $expectedRows[$i];
+                $expectedColumns = $expectedRows[$i-1];
                 array_unshift($expectedColumns, "$i");
                 $this->assertEquals(
                     $actualColumns,
