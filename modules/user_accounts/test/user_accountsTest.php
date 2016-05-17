@@ -337,7 +337,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 "Number of users returned should be "
                 . count($expectedRows) . ", not " . count($actualRows)
             );
-            for ($i=0; $i<count($actualRows); $i++) {
+            for ($i=1; $i<=count($actualRows); $i++) {
                 $elements      = $actualRows[$i]->findElements(
                     WebDriverBy::xpath('.//td')
                 );
