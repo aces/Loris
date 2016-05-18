@@ -737,7 +737,11 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $active_family[] = $relative['CandID'];    
         }
         if (in_array($cand, $active_family)){
-            $errors['FamilyMemberID'] = 'CandID already entered as Sibling';    
+            $errors['FamilyMemberID'] = 'CandID already entered as sibling';
+        }
+        $CandID = $this->identifier;
+        if ($CandID == $cand) {
+            $errors['FamilyMemberID'] = 'Cannot enter candidate as own sibling';
         }
         if (empty($values['relation_type'])) {
             $errors['relation_type'] = 'Please specify relationship type';    
