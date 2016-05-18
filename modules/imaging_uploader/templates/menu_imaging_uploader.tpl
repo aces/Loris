@@ -199,7 +199,15 @@
                 <tr>
                     <!-- print out data rows -->
                     {section name=piece loop=$items[item]}
-                        {if $items[item][piece].name eq 'Tarchive_Info'}
+                        {if $items[item][piece].name eq 'Progress'}
+                            {if $items[item][piece].value}
+                                <td nowrap="nowrap">
+                                        {$items[item][piece].value} ({$items[item][10].value} of {$items[item][11].value})
+                                </td>
+                            {else}
+                                <td nowrap="nowrap"> </td>
+                            {/if}
+                        {elseif $items[item][piece].name eq 'Tarchive_Info'}
                             {if $items[item][piece].value}
                                 <td nowrap="nowrap">
                                     <a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$items[item][piece].value}">
