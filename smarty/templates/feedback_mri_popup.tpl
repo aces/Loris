@@ -29,11 +29,8 @@
     </tr>
 {/section}
 </table>
-
-{if $has_permission}
+    
 <form method="post">
-<input type="submit" name="fire_away" value="Save">
-{/if}
 
 {foreach from=$comment item=curr_comment}
 <h3>
