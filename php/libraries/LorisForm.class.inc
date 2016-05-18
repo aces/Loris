@@ -676,7 +676,7 @@ class LorisForm
         } else {
             $format = 'date';
         }
-        $elmnt    = "<input name=\"$el[name]\" type=\"$format\" $cls "
+        $elmnt = "<input name=\"$el[name]\" type=\"$format\" $cls "
             . "$minYear $maxYear "
             . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
