@@ -319,10 +319,12 @@ class NDB_Form_candidate_parameters extends NDB_Form
                $success = $DB->insert("participant_status",$participant_vals);
            }
 
-           $current_status = $DB->pselectOne("SELECT participant_status FROM participant_status_history
+           $current_status = $DB->pselectRow("SELECT * FROM participant_status_history
                                               WHERE CandID = :cid ORDER BY data_entry_date DESC", 
                                               array("cid"=>$values['CandID']) );
-           if($current_status != $participant_vals['participant_status']) {
+           if($current_status['participant_status'] != $participant_vals['participant_status'] ||
+               $current_status['entry_staff'] != $participant_vals['entry_staff'] ||
+               $current_status['reason_specify'] != $participant_vals['reason_specify']) {
                $success = $DB->insert("participant_status_history", 
                           array('participant_status'=>$participant_vals['participant_status'], 
                                 'participant_suboptions'=>$participant_vals['participant_suboptions'],
