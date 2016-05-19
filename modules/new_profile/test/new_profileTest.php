@@ -114,8 +114,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
 
         $this->webDriver->get($this->url . "/new_profile/");
 
-        //$dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
-        $dates = $this->webDriver->findElements(By.xpath("//input[@type='date']|//input[@type='month']"));
+        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
         $dates[0]->sendKeys("01/01/2015");
         $dates[1]->sendKeys("01/01/2015");
         $dates[2]->sendKeys("01/01/2015");
@@ -170,8 +169,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
     function testNewProfileDoBDateError() {
         $this->webDriver->get($this->url . "/new_profile/");
 
-        //$dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
-        $dates = $this->webDriver->findElements(By.xpath("//input[@type='date']|//input[@type='month']"));
+        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
         $dates[0]->sendKeys("01/01/2015");
         $dates[1]->sendKeys("01/02/2015");
 
@@ -199,8 +197,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
 
-        //$dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
-        $dates = $this->webDriver->findElements(By.xpath("//input[@type='date']|//input[@type='month']"));
+        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
         $dates[0]->sendKeys("01/01/2015");
         $dates[1]->sendKeys("01/01/2015");
 
@@ -227,8 +224,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
 
-        //$dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
-        $dates = $this->webDriver->findElements(By.xpath("//input[@type='date']|//input[@type='month']"));
+        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
         $dates[0]->sendKeys("01/01/2015");
         $dates[1]->sendKeys("01/01/2015");
 
