@@ -91,7 +91,26 @@ function correct($instrumentID, $question, $answer)
     if ($correctAnswer == $answer) {
         return true;
     } else {
-        return false;
+        $popup = $DB->pselectOne(
+            "SELECT p.Popup as Popup
+             FROM certification_training_quiz_popups p
+             LEFT JOIN certification_training_quiz_answers a
+             ON (a.PopupID=p.ID)
+             LEFT JOIN certification_training_quiz_questions q
+             ON (q.ID=a.QuestionID)
+             WHERE q.TestID=:TID AND q.OrderNumber=:QNO AND a.OrderNumber=:ANO",
+            array(
+             'TID' => $instrumentID,
+             'QNO' => $question,
+             'ANO' => $answer,
+            )
+        );
+        $answer = array(
+            'correct' => false,
+            'correctNumber' => $correctAnswer,
+            'Popup' => $popup
+        );
+        return $answer;
     }
 }
 
