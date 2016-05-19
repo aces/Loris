@@ -202,7 +202,11 @@
                         {if $items[item][piece].name eq 'Progress'}
                             {if $items[item][piece].value}
                                 <td nowrap="nowrap">
-                                        {$items[item][piece].value} ({$items[item][10].value} of {$items[item][11].value})
+                                        {if {$items[item][piece].value} eq 'Success'}
+                                            {$items[item][piece].value} ({$items[item][10].value} out of {$items[item][11].value})
+                                        {else} 
+                                            {$items[item][piece].value}
+					{/if}
                                 </td>
                             {else}
                                 <td nowrap="nowrap"> </td>
