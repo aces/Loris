@@ -159,6 +159,12 @@ class NDB_Form_statistics extends NDB_Form
             }
         }
         // DDE STATS
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        if ($ddeInstruments != null) {
+            $ddeInstrumentCriteria = implode("' OR f.Test_name='", $ddeInstruments);
+            $ddeInstrumentCriteria = "AND (f.Test_name ='" . $ddeInstrumentCriteria . "') ";
+        }
+
         $DB->select("SELECT s.CenterID, 
                 f.Data_Entry as Data_Entry, 
                 s.visit_label as VLabel,
@@ -168,9 +174,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.CommentID LIKE 'DDE%' 
                 AND c.Active='Y' 
-                AND (f.Test_name NOT LIKE '%parameter%' 
-                    AND f.Test_name NOT LIKE '%radiological%' 
-                    AND f.Test_name NOT LIKE '%vineland%')
+                AND $ddeInstrumentCriteria
                 $ExtraProject_Criteria
                 GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID;",
             $result);
