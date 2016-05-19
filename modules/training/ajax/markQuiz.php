@@ -29,40 +29,33 @@ $instrumentID = $_REQUEST['instrument'];
 
 $quizCorrect = markQuiz($instrumentID);
 
-if ($quizCorrect == false) {
-    print "incorrect";
-    exit();
-} else {
-    $user = User::singleton();
+$userFullName = $user->getFullname();
+$userCenter   = $user->getCenterID();
+$examinerID   = $DB->pselectOne(
+    "SELECT examinerID 
+     FROM examiners
+     WHERE full_name=:FN AND centerID=:CID",
+    array(
+     'FN'  => $userFullName,
+     'CID' => $userCenter,
+    )
+);
 
-    $userFullName = $user->getFullname();
-    $userCenter   = $user->getCenterID();
-    $examinerID   = $DB->pselectOne(
-        "SELECT examinerID 
-         FROM examiners
-         WHERE full_name=:FN AND centerID=:CID",
-        array(
-         'FN'  => $userFullName,
-         'CID' => $userCenter,
-        )
-    );
+$dateArray = array(
+              'Y' => date('Y'),
+              'M' => date('m'),
+              'd' => date('d'),
+             );
 
-    $dateArray = array(
-                  'Y' => date('Y'),
-                  'M' => date('m'),
-                  'd' => date('d'),
-                 );
+$values = array(
+           'pass'      => array($instrumentID => 'certified'),
+           'date_cert' => array($instrumentID => $dateArray),
+           'examiner'  => $examinerID,
+          );
 
-    $values = array(
-               'pass'      => array($instrumentID => 'certified'),
-               'date_cert' => array($instrumentID => $dateArray),
-               'examiner'  => $examinerID,
-              );
-
-    process($values);
-
-    print "correct";
-    exit();
+process($values);
+print json_encode($quizCorrect);
+exit();
 }
 
 /**
