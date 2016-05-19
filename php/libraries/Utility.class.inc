@@ -42,9 +42,9 @@ class Utility
      */
     static function isErrorX($data, $code=null)
     {
-//        throw new LorisException(
-//            "Utility::isErrorX has been deprecated. Use PHP5 exceptions instead."
-//        );
+        throw new LorisException(
+            "Utility::isErrorX has been deprecated. Use PHP5 exceptions instead."
+        );
     }
 
     /**
@@ -749,14 +749,16 @@ class Utility
     {
         $Factory       = NDB_Factory::singleton();
         $DB            = $Factory->Database();
-        $config =& NDB_Config::singleton();
+        $config        =& NDB_Config::singleton();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
             array()
         );
-        $doubleDataEntryInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        $doubleDataEntryInstruments = $config->getSetting(
+            'DoubleDataEntryInstruments'
+        );
 
-        $instruments   = array();
+        $instruments = array();
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
                 if (in_array($row['Test_name'], $doubleDataEntryInstruments)) {
