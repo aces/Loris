@@ -55,6 +55,32 @@ function loadTabs(type) {
     });
 }
 
+function loadCorrections(corrections) {
+    for (var i = 0; i < corrections.length; i++) {
+        
+        var questionPanel = "#q" + (i+1);
+        
+        // highlight correct answer
+        var correctAnswer = "#q" + (i+1) + "-" + corrections[i].correctNumber;
+        $(correctAnswer).parent().addClass('text-success');
+
+        if (corrections[i].correct) {
+            // change green
+            $(questionPanel).switchClass("panel-default", "panel-success");
+
+        } else {
+            // highlight incorrect answer
+            $(questionPanel + ' input[type=radio]:checked').parent().addClass('text-danger');
+            
+            // change red
+            $(questionPanel).switchClass("panel-default", "panel-danger");
+        }
+        // add bottom panel
+        var popupHTML = '<div class="panel-footer">' + corrections[i].Popup + '</div>';
+        $(questionPanel).append(popupHTML);
+    }
+}
+
 $(document).ready(function () {
 
     $(".panel-not-certified").click(function () {
@@ -104,7 +130,7 @@ $(document).ready(function () {
             requestString = form + '&instrument=' + instrumentID;
 
             $.post(loris.BaseURL + "/AjaxHelper.php?Module=training&script=markQuiz.php", requestString, function (data) {
-                if (data === 'correct') {
+                if (data.correct === true) {
                     $('#correct').modal({
                         keyboard: false,
                         backdrop: 'static'
@@ -115,7 +141,9 @@ $(document).ready(function () {
                         backdrop: 'static'
                     });
                 }
-            });
+                loadCorrections(data.corrections)
+            }, 'json');
+
         } else {
             $('#incomplete').modal();
         }
