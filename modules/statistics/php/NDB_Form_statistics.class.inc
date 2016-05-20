@@ -160,6 +160,7 @@ class NDB_Form_statistics extends NDB_Form
         }
         // DDE STATS
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        $ddeInstrumentCriteria = "";
         if ($ddeInstruments != null) {
             $ddeInstrumentCriteria = implode("' OR f.Test_name='", $ddeInstruments);
             $ddeInstrumentCriteria = "AND (f.Test_name ='" . $ddeInstrumentCriteria . "') ";
