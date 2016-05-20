@@ -122,7 +122,7 @@ $(document).ready(function () {
         e.preventDefault();
 
         // Disable quiz button submit
-        $(this).prop('disabled', true);
+        $('#quizSubmit').prop('disabled', true);
 
         // Check that all answers have been filled out
         if (validateQuiz(this) === 1) {
