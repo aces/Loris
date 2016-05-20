@@ -1,6 +1,6 @@
 #LORIS CentOS 6.x Notes
 
-Note that the README in LORIS assumes that LORIS is being run on Ubuntu.
+Note that the main README in LORIS assumes that LORIS is being run on Ubuntu.
 
 This document contains details on how to manually perform a basic CentOS 6.x
 install of LORIS without using the install script (as the install script
@@ -33,10 +33,9 @@ curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
 
-Note that the version of PHP installed by CentOS 6.x is approximately 600 years
-old, and doesn't meet the minimum requirements of many development dependencies.
-As a result, you need to either upgrade your version of PHP or run composer
-with the `--no-dev` option. (Upgrading PHP is preferred, but for now we'll
+Note that the version of PHP installed by CentOS 6.x doesn't meet the minimum requirements of many development dependencies.
+As a result, you need to either upgrade your version of PHP to 5.6 for LORIS 16.0
+Or run composer with the `--no-dev` option. (Upgrading PHP is preferred, but for now we'll
 assume you just want to get it running, so we'll run it with `--no-dev`.)
 
 ```bash
