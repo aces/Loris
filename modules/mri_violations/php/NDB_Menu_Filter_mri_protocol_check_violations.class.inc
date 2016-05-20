@@ -166,7 +166,6 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
     }
 
     function getJSDependencies() {
-        error_log("IN HEREEREREROEJFOEJOJEFOIJEF");
         $factory = NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
         $depends = parent::getJSDependencies();
