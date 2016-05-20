@@ -69,9 +69,9 @@ function extractDimension($dimension, $minc_file)
 function initialize($minc_file)
 {
     $headers = array(
-                'xspace' => extractDimension("xspace", $minc_file),
-                'yspace' => extractDimension("yspace", $minc_file),
-                'zspace' => extractDimension("zspace", $minc_file),
+                'xspace'   => extractDimension("xspace", $minc_file),
+                'yspace'   => extractDimension("yspace", $minc_file),
+                'zspace'   => extractDimension("zspace", $minc_file),
                 'datatype' => 'float64',
                );
 
