@@ -6,7 +6,7 @@
  * quickform_parser.php and outputs an sql build file for the table of each
  * instrument it finds in the ip_output.txt file.  These sql files are output
  * to the tables_sql/ subdirectory.
- * 
+ *
  * ex cmd:  php generate_tables_sql.php
  *
  * @package behavioural
@@ -52,7 +52,8 @@ foreach($instruments AS $instrument){
             //generate the CREATE TABLE syntax
             case "table":
                 $filename="../project/tables_sql/".$bits[1].".sql";
-                $output="CREATE TABLE `$bits[1]` (\n";
+                $output="DROP TABLE IF EXISTS `$bits[1]`;\n";
+                $output.="CREATE TABLE `$bits[1]` (\n";
                 $output.="`CommentID` varchar(255) NOT NULL default '',\n
                           `UserID` varchar(255) default NULL,\n
                           `Examiner` varchar(255) default NULL,\n
