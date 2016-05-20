@@ -38,7 +38,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $this->tpl_data['access_all_profiles'] = $aap;
         return (
             $user->hasPermission('access_all_profiles')
-            || ($site->isStudySite() && $user->hasPermission('data_entry') || ($site->getCenterName() == "DCC"))
+            || (($site->isStudySite() && $user->hasPermission('data_entry'))
+                || ($site->getCenterName() == "DCC"))
         );
     }
 
