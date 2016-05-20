@@ -341,7 +341,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                $current_status['participant_subOptions'] != $sub_reasonID) {
                $success = $DB->insert("participant_status_history", 
                           array('participant_status'=>$participant_vals['participant_status'], 
-                                'participant_subOptions'=>$values['participant_suboptions'],
+                                'participant_subOptions'=>$participant_vals['participant_suboptions'],
                                 'entry_staff'=>$participant_vals['entry_staff'],
                                 'CandID' => $participant_vals['CandID'],
                                 'reason_specify'=>$participant_vals['reason_specify'],
