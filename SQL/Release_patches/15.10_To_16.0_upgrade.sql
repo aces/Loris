@@ -36,6 +36,10 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 -- Candidate Menu
 update LorisMenu SET Link='/candidate_list/' WHERE Link='main.php?test_name=candidate_list';
 update LorisMenu SET Link='/new_profile/' WHERE Link='main.php?test_name=new_profile';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='access_all_profiles' AND m.Label='New Profile';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='access_all_profiles' AND m.Label='Access Profile';
 
 -- Clinical Menu
 update LorisMenu SET Link='/reliability/' WHERE Link="main.php?test_name=reliability";
