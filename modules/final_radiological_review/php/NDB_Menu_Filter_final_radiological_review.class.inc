@@ -122,7 +122,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
 
         $conflict_condition1 = "(CASE
             WHEN orig.review_results <> r.final_review_results THEN 'true'
-            WHEN orig.abnormal_atypical_exculsionary <> r.final_exclusionary
+            WHEN orig.abnormal_atypical_exclusionary <> r.final_exclusionary
                THEN 'true'
             WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN 'true'
             WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'true'
