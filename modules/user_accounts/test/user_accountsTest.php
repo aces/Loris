@@ -337,16 +337,16 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 "Number of users returned should be "
                 . count($expectedRows) . ", not " . count($actualRows)
             );
-            for ($i=1; $i<=count($actualRows); $i++) {
-                $elements      = $actualRows[$i-1]->findElements(
+            for ($i=0; $i<=count($actualRows); $i++) {
+                $elements      = $actualRows[$i]->findElements(
                     WebDriverBy::xpath('.//td')
                 );
                 $actualColumns = array();
                 foreach ($elements as $e) {
                     $actualColumns[] = $e->getText();
                 }
-                $expectedColumns = $expectedRows[$i-1];
-                array_unshift($expectedColumns, "$i");
+                $expectedColumns = $expectedRows[$i];
+                array_unshift($expectedColumns, $i+1);
                 $this->assertEquals(
                     $actualColumns,
                     $expectedColumns,
