@@ -29,8 +29,10 @@
     </tr>
 {/section}
 </table>
-    
+
+{if $has_permission}
 <form method="post">
+{/if}
 
 {foreach from=$comment item=curr_comment}
 <h3>
