@@ -53,7 +53,7 @@ $values = array(
            'examiner'  => $examinerID,
           );
 
-process($values);
+//process($values);
 print json_encode($quizCorrect);
 exit();
 
@@ -81,13 +81,16 @@ function correct($instrumentID, $question, $answer)
         )
     );
     if ($correctAnswer == $answer) {
+
         $answer = array(
-            'correct' => true,
-            'correctNumber' => $correctAnswer,
-            'Popup' => 'This is the correct answer.'
-        );
+                   'correct'       => true,
+                   'correctNumber' => $correctAnswer,
+                   'Popup'         => 'This is the correct answer.',
+                  );
         return $answer;
+
     } else {
+
         $popup = $DB->pselectOne(
             "SELECT p.Popup as Popup
              FROM certification_training_quiz_popups p
@@ -102,12 +105,15 @@ function correct($instrumentID, $question, $answer)
              'ANO' => $answer,
             )
         );
+
         $answer = array(
-            'correct' => false,
-            'correctNumber' => $correctAnswer,
-            'Popup' => $popup
-        );
+                   'correct'       => false,
+                   'correctNumber' => $correctAnswer,
+                   'Popup'         => $popup,
+                  );
+
         return $answer;
+
     }
 }
 
@@ -120,24 +126,31 @@ function correct($instrumentID, $question, $answer)
  */
 function markQuiz($instrumentID)
 {
-    $correct = true;
+    $correct     = true;
     $corrections = array();
+
     foreach ($_POST as $question => $answer) {
         if ($question != 'instrument') {
+
             $correction = correct($instrumentID, $question, $answer);
+
             if ($correction['correct'] === false) {
                 $correct = false;
             }
+
             $correction = array(
-                $question => correct($instrumentID, $question, $answer)
-            );
+                           $question => correct($instrumentID, $question, $answer),
+                          );
+
             $corrections = array_merge($corrections, $correction);
         }
     }
+
     $returnInfo = array(
-        'correct' => $correct,
-        'corrections' => $corrections,
-    );
+                   'correct'     => $correct,
+                   'corrections' => $corrections,
+                  );
+
     return $returnInfo;
 }
 
