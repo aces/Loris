@@ -1,0 +1,5 @@
+UPDATE help set content = "The Genomic Browser houses analyzed genetic results and facilitates exploration of these datasets, cross-linked with behavioural and imaging subject data.  Within each tab, all fields or only a selection of Summary fields can be viewed by toggling the Display select box.  One-click download of the current dataview is also available. 
+The Profiles tab displays all genetic data and files stored in Loris per candidate, and enables application of filters. 
+The GWAS, SNP, CNV and Methylation tabs enable filtering and exploration of analysis-specific datasets performed on a candidate population.
+The Files tab displays all genetic filesets available for download, and provides upload functionality for Methylation data (LORIS 16.0). Clicking on a fileset name will load a subpage displaying the metadata available for this file, as well enabling its download. " WHERE topic = 'Genomic Browser';
+

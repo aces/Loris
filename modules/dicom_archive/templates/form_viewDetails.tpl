@@ -1,5 +1,5 @@
-<script src="{$baseurl}/dicom_archive/js/view_details.js"></script>
-<script src="{$baseurl}/dicom_archive/js/view_details_link.js"></script>
+<script type="text/javascript" src="{$baseurl}/dicom_archive/js/view_details.js"></script>
+<script type="text/javascript" src="{$baseurl}/dicom_archive/js/view_details_link.js"></script>
 <table class="details-outer-table">
 	<tr><th width="11%">Acquisition ID</th><td width="89%"><a href="{$baseurl}/mri_violations/?PatientName={$archive.PatientName}&filter=true">{$archive.DicomArchiveID}</a></td></tr>
 	<tr><th>Patient ID</th><td{if $archive.patientIDValid == 0} class="error"{/if}>{$archive.PatientID}</td></tr>

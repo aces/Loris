@@ -53,7 +53,7 @@
                 {{ /first }}
             {{ /depth }}
             <div {{ ^filtered }}class="fileDDD"{{ /filtered }}><div style="padding-top: 8px">
-                <a href="{$baseurl}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
+                <a href="{/literal}{$baseurl}{literal}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
                         {{ File_name }}
                 </a>({{ File_size }})
             </div></div>
@@ -128,7 +128,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-2">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=document_repository&reset=true'" />
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseURL}/document_repository/?reset=true'" />
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>

@@ -588,7 +588,7 @@ var FeedbackSummaryPanel = React.createClass({
             null,
             React.createElement(
               "a",
-              { href: "main.php?test_name=" + row.Instrument + "&candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID },
+              { href: loris.BaseURL + "/" + row.Instrument + "/?candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID },
               row.Instrument
             )
           ),
@@ -597,7 +597,7 @@ var FeedbackSummaryPanel = React.createClass({
             null,
             React.createElement(
               "a",
-              { href: "main.php?test_name=instrument_list&candID=" + row.CandID + "&sessionID=" + row.SessionID },
+              { href: loris.BaseURL + "/instrument_list/?candID=" + row.CandID + "&sessionID=" + row.SessionID },
               row.Visit
             )
           ),
