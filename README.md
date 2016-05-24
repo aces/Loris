@@ -1,6 +1,6 @@
 #LORIS Neuroimaging Platform
 
-LORIS is a web-accessible database solution for neuroimaging, providing a secure infrastructure to automate the flow of clinical data for complex multi-site neuroimaging studies.
+LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
 This Readme covers installation of the <b>16.0</b> LORIS release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/16.04-dev/README.CentOS6.md))
@@ -14,16 +14,16 @@ Note: Your default credentials after deployment will be 'admin' as the username 
 
 # Prerequisites for Installation
 
- * LINUX (supported on Ubuntu 14.04 and CentOS 6.5) or Mac OS X (tested for Mavericks - OS X 10.9)
+ * LINUX (supported on Ubuntu 14.04 and [CentOS 6.5](https://github.com/aces/Loris/blob/16.04-dev/README.CentOS6.md)) 
  * Apache2 (libapache2-mod-php5)
  * MySQL (libmysqlclient15-dev mysql-client mysql-server)
- * PHP 5.3+ (php5 php5-mysql php5-gd php5-sqlite)
- * PEAR (php-pear)
+ * PHP <b>5.6</b> (php5 php5-mysql php5-gd php5-sqlite)
  * php5-json (for Debian/Ubuntu distributions)
  * Package manager (for LINUX distributions)
- * Composer
+ * Composer : should be run with --no-dev option
 
-<b>Important:</b> Composer should be installed with --no-dev option.  
+<b>Important:</b>Only PHP 5.6 is supported for LORIS 16.0  Composer should be run with --no-dev option unless you are an active LORIS developer. 
+
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information.
 
 # Installation
