@@ -13,14 +13,14 @@
  *
  * Usage: php assign_missing_instrument.php [Test_name] [confirm]
  *
- * Example: php .php tsi
- * (Will use regular mode and print the deprecated conflicts)
+ * Example: php delete_ignored_conflicts.php tsi
+ * (Will use regular mode and print the obsolete conflicts)
  *
- * Example: php .php tsi confirm
- * (Will use confirm mode and remove deprecated tsi conflicts)
+ * Example: php delete_ignored_conflicts.php tsi confirm
+ * (Will use confirm mode and remove obsolete tsi conflicts)
  *
- * Example: php .php confirm
- * (Will use confirm mode and remove all deprecated conflicts)
+ * Example: php delete_ignored_conflicts.php confirm
+ * (Will use confirm mode and remove all obsolete conflicts)
  *
  */
 
@@ -35,6 +35,7 @@ $client->makeCommandLine();
 $client->initialize('../project/config.xml');
 $config        =& NDB_Config::singleton();
 
+// Meta fields that should be removed
 $defaultFields = array(
     'CommentID', 'UserID', 'Testdate', 'Window_Difference',
     'Candidate_Age', 'Data_entry_completion_status'
@@ -68,6 +69,12 @@ if ($confirm === false) {
         "perform the changes\n\n";
 }
 
+/**
+ * Populates the DDE ignore fields for each instrument and runs
+ * the ignoreColumn function on the instrument for the given fields
+ * @param $instruments
+ * @throws Exception
+ */
 function detectIgnoreColumns($instruments)
 {
     $instrumentFields = array();
@@ -94,7 +101,10 @@ function detectIgnoreColumns($instruments)
     }
 }
 
-
+/*
+ * Prints the default ignore columns to be removed
+ * Removes the fields if confirmation is set
+ */
 function defaultIgnoreColumns() {
     $db =& Database::singleton();
 
@@ -116,6 +126,10 @@ function defaultIgnoreColumns() {
     }
 }
 
+/*
+ * Prints the instrument-specific ignore columns to be removed
+ * Removes the fields if confirmation is set
+ */
 function ignoreColumn($instrument, $instrumentFields) {
     $db =& Database::singleton();
 
