@@ -86,7 +86,7 @@
                 <td align="right" id="pageLinks"></td>
             </tr>
         </table>
-            <table id="violationsTable" class="table table-hover table-primary table-bordered" border="0">
+            <table id="violationsTable" class="table table-hover table-primary table-bordered dynamictable" border="0">
                 <thead>
                     <tr class="info">
                         <th nowrap="nowrap"><a href="{$baseurl}/mri_violations/?submenu=resolved_violations&filter[order][field]=Resolved&filter[order][fieldOrder]=ASC">Resolution status</a></th>
