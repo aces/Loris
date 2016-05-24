@@ -38,8 +38,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $this->tpl_data['access_all_profiles'] = $aap;
         return (
             $user->hasPermission('access_all_profiles')
-            || (($site->isStudySite() && $user->hasPermission('data_entry'))
-                || ($site->getCenterName() == "DCC"))
+            || ($site->isStudySite() && $user->hasPermission('data_entry'))
+                || ($site->getCenterName() == "DCC" && $user->hasPermission('data_entry'))
         );
     }
 
@@ -216,7 +216,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         } else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
+            if ($site->isStudySite() || $site->getCenterName() == "DCC") {
                 $list_of_sites = array();
                 $list_of_sites[$user->getData('CenterID')] = $user->getData('Site');
             }
