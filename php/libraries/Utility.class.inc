@@ -740,7 +740,7 @@ class Utility
     }
 
     /**
-     * Get a list of instruments installed in Loris.
+     * Get a list of DDE instruments installed in Loris.
      *
      * @return Associative array of the form Test_name => Full Description
      * @note   Arguably, this should be a static function in NDB_BVL_Instrument
