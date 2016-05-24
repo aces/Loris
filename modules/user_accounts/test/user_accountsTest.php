@@ -346,7 +346,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                     $actualColumns[] = $e->getText();
                 }
                 $expectedColumns = $expectedRows[$i];
-                array_unshift($expectedColumns, $i+1);
+                $lineNum=$i+1;
+                array_unshift($expectedColumns, "$lineNum");
                 $this->assertEquals(
                     $actualColumns,
                     $expectedColumns,
