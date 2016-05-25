@@ -95,24 +95,6 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
          $this->resetPermissions();
     }
 
-    /**
-      * Tests that document_repository loads with the permission
-      *
-      * @return void
-      */
-    public function testSuperUserPermission()
-    {
-         $this->setupPermissions(array("superuser"));
-         $this->safeGet($this->url . "/document_repository/");
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
-         $this->assertNotContains(
-             "You do not have access to this page.",
-             $bodyText
-         );
-         $this->resetPermissions();
-    }
 
 
     /**
