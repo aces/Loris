@@ -72,6 +72,9 @@ class LorisForm
         if (isset($attribs['pattern'])) {
             $el['pattern'] = $attribs['pattern'];
         }
+        if (isset($attribs['disabled'])) {
+            $el['disabled'] = true;
+        }
         if (isset($attribs['required']) && $attribs['required'] === true) {
             $el['required'] = true;
         }
@@ -584,13 +587,18 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
+        $disabled = '';
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
+        }
         if (isset($el['onchange'])) {
             $changehandler = "onchange=\"$el[onchange]\"";
         }
         if (isset($el['multiple'])) {
             $multiple = "multiple=\"multiple\"";
         }
-        $retVal = "<select name=\"$el[name]\" $cls $changehandler $multiple";
+        $retVal = "<select name=\"$el[name]\" $cls $changehandler $multiple "
+            . $disabled;
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if ($el['requireMsg']) {
@@ -632,11 +640,15 @@ class LorisForm
      */
     function dateHTML($el)
     {
-        $cls     = '';
-        $minYear = '';
-        $maxYear = '';
+        $cls      = '';
+        $minYear  = '';
+        $maxYear  = '';
+        $disabled = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
         }
         if (isset($el['options']['minYear'])) {
             $minYear = "min=\"" . $el['options']['minYear'] . "-01-01\"";
@@ -647,8 +659,9 @@ class LorisForm
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
         $value    = $this->getValue($el['name']);
-        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear"
-            . "onChange=\"this.setCustomValidity($required)\""
+        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear "
+            . $disabled
+            . " onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
             !empty($value)
@@ -697,9 +710,13 @@ class LorisForm
      */
     function textHTML($el, $type='text')
     {
-        $cls = '';
+        $cls      = '';
+        $disabled = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
         }
         $value = $this->getValue($el['name']);
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
@@ -724,6 +741,7 @@ class LorisForm
                 ? ' value="' . $this->getValue($el['name']) . '"'
                 : ''
               )
+            . $disabled
             .">";
     }
 
@@ -737,10 +755,14 @@ class LorisForm
      */
     function fileHTML($el)
     {
-        $cls = '';
-        $val = $this->getValue($el['name']);
+        $cls      = '';
+        $disabled = '';
+        $val      = $this->getValue($el['name']);
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"file\" $cls"
             . (
@@ -748,6 +770,7 @@ class LorisForm
                 ? ' value="' . $val . '"'
                 : ''
               )
+            . $disabled
             .">";
     }
 
@@ -761,12 +784,15 @@ class LorisForm
      */
     function textareaHTML($el)
     {
-        $cls  = '';
-        $dims = '';
+        $cls      = '';
+        $dims     = '';
+        $disabled = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
+        }
         if (isset($el['rows'])) {
             $dims .= " rows=\"$el[rows]\"";
         }
@@ -774,7 +800,7 @@ class LorisForm
             $dims .= " cols=\"$el[cols]\"";
         }
         $value = $this->getValue($el['name']);
-        return "<textarea name=\"$el[name]\" $cls $dims>"
+        return "<textarea name=\"$el[name]\" $cls $dims $disabled>"
             . (
                 !empty($value)
                 ? $this->getValue($el['name']) : ''
@@ -973,16 +999,22 @@ class LorisForm
      */
     function checkboxHTML($el)
     {
-        $val     = $this->getValue($el['name']);
-        $checked = '';
-        $value   = '';
+        $val      = $this->getValue($el['name']);
+        $checked  = '';
+        $value    = '';
+        $disabled = '';
         if (!empty($val)) {
             $checked = 'checked="checked"';
         }
         if (isset($el['value'])) {
             $value = "value=\"$el[value]\"";
         }
-        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value/>"
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
+        }
+
+        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value "
+            . "$disabled/>"
             . " $el[label]";
     }
     /**
