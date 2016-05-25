@@ -95,21 +95,6 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
          $this->resetPermissions();
     }
 
-
-    /**
-     * Tests that, when loading the document_repository module, some
-     * text appears in the body.
-     *
-     * @return void
-     */
-    function testDocumentRepositoryDoespageLoad()
-    {
-        $this->safeGet($this->url . "/document_repository/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("Document Repository", $bodyText);
-    }
     /**
       * Tests that document_repository loads with the permission
       *
