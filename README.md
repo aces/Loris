@@ -43,7 +43,7 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
     sudo chown lorisadmin.lorisadmin /var/www/$projectname
     ```
 
-    <i>$projectname ⇾ “loris” or one-word project name</i>
+    <i>$projectname ⇾ "loris" or one-word project name</i>
 
 2. Get code:
     Download the latest release from the [releases page](https://github.com/aces/Loris/releases) and
@@ -67,7 +67,7 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
     ```
 
 5. Go to http://localhost to verify that the LORIS core database has been successfully installed. Congratulations!
-Log in with the username “admin” and the password you supplied for this user while running the Install script.
+Log in with the username "admin" and the password you supplied for this user while running the Install script.
 
     _Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. If running an earlier version of Ubuntu, rename these files, then run the following commands. After, restart Apache.
 
