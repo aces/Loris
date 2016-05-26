@@ -513,4 +513,15 @@ else
     exit 1
 fi
 
+echo ""
+# Add MINC tools path
+echo "Adding the following MINC tools path:"
+MINC_TOOLKIT_DIR=`which mincheader|sed s#bin/mincheader##`
+
+sed -e "s#%MINCTOOLSPATH%#$MINC_TOOLKIT_DIR#g" \
+    < ../docs/config/config.xml > ../project/config.xml
+
+echo "$MINC_TOOLKIT_DIR"
+
+echo ""
 echo "Installation complete."
