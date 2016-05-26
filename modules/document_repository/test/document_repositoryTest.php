@@ -26,6 +26,9 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
+         $window = new WebDriverWindow($this->webDriver);
+         $size = new WebDriverDimension(1024,1768);
+         $window->setSize($size);
         $this->DB->insert(
             "document_repository_categories",
             array(
@@ -124,11 +127,11 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("addCategory"),
             3000
         )->click();
+        sleep(10);
         $this->safeFindElement(
             WebDriverBy::Name(
                 "category_name"
-            ),
-            3000
+            )
         )->sendKeys("TestTestTest");
         $this->safeFindElement(WebDriverBy::Id("postCategory"))->click();
         sleep(10);
@@ -150,7 +153,7 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(WebDriverBy::Id("postCategory"))->click();
         sleep(10);
         $this->safeFindElement(
-            WebDriverBy::Xpath("//*[@id='TestTestTesta']/td/span"),2000
+            WebDriverBy::Xpath("//*[@id='TestTestTesta']/td/span"),3000
         )
             ->click();
         $test = $this->safeFindElement(WebDriverBy::Id("testa"))
@@ -168,7 +171,7 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
         //check a upload file under TestTestTest category
         $this->safeGet($this->url . "/document_repository/");
         $this->safeFindElement(
-            WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span")
+            WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span"),3000
         )
             ->click();
         $test = $this->safeFindElement(WebDriverBy::linkText("README.md"))
