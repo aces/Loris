@@ -150,7 +150,7 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(WebDriverBy::Id("postCategory"))->click();
         sleep(10);
         $this->safeFindElement(
-            WebDriverBy::Xpath("//*[@id='TestTestTesta']/td/span")
+            WebDriverBy::Xpath("//*[@id='TestTestTesta']/td/span"),2000
         )
             ->click();
         $test = $this->safeFindElement(WebDriverBy::Id("testa"))
