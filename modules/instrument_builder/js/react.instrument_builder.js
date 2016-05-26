@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  *	This file contains the React classes for instrument builder
  * 	module.
@@ -11,7 +9,7 @@
 TabPane = React.createClass({
 	displayName: "TabPane",
 
-	render: function render() {
+	render: function () {
 		var classList = "tab-pane";
 		if (this.props.Active) {
 			classList += " active";
@@ -37,7 +35,7 @@ TabPane = React.createClass({
 LoadPane = React.createClass({
 	displayName: "LoadPane",
 
-	getInitialState: function getInitialState() {
+	getInitialState: function () {
 		return {
 			// This is used to alert the user if the file was
 			// loaded successfully or there was an error with
@@ -46,7 +44,7 @@ LoadPane = React.createClass({
 		};
 	},
 	// Indicates to the state which file has been choosen
-	chooseFile: function chooseFile(e) {
+	chooseFile: function (e) {
 		var value = e.target.files[0];
 		this.setState({
 			file: value,
@@ -54,19 +52,19 @@ LoadPane = React.createClass({
 		});
 	},
 	// Sets the alert to the specified type.
-	setAlert: function setAlert(type) {
+	setAlert: function (type) {
 		this.setState({
 			alert: type
 		});
 	},
 	// Reset the alert to empty.
-	resetAlert: function resetAlert() {
+	resetAlert: function () {
 		this.setState({
 			alert: ''
 		});
 	},
 	// Loads the specified file into builder tab.
-	loadFile: function loadFile() {
+	loadFile: function () {
 		// Declare the success and error callbacks
 		var callback = {
 			success: this.props.loadCallback,
@@ -75,7 +73,7 @@ LoadPane = React.createClass({
 		Instrument.load(this.state.file, callback);
 	},
 	// Render the HTML
-	render: function render() {
+	render: function () {
 		var alert = '';
 		// Set up declared alerts, if there is any.
 		switch (this.state.alert) {
@@ -150,7 +148,7 @@ LoadPane = React.createClass({
 SavePane = React.createClass({
 	displayName: "SavePane",
 
-	getInitialState: function getInitialState() {
+	getInitialState: function () {
 		return {
 			fileName: '',
 			instrumentName: ''
@@ -158,28 +156,28 @@ SavePane = React.createClass({
 	},
 	// Used to set the state when a file is loaded
 	// using the load tab.
-	loadState: function loadState(newState) {
+	loadState: function (newState) {
 		this.setState({
 			fileName: newState.fileName,
 			instrumentName: newState.instrumentName
 		});
 	},
 	// Keep track of the file name, saving it in the state
-	onChangeFile: function onChangeFile(e) {
+	onChangeFile: function (e) {
 		var value = e.target.value;
 		this.setState({
 			fileName: value
 		});
 	},
 	// Keep track of the instrument name, saving it in the state
-	onChangeInst: function onChangeInst(e) {
+	onChangeInst: function (e) {
 		var value = e.target.value;
 		this.setState({
 			instrumentName: value
 		});
 	},
 	// Render the HTML
-	render: function render() {
+	render: function () {
 		var value = this.state.fileName;
 		return React.createElement(
 			TabPane,
@@ -249,7 +247,7 @@ DisplayElements = React.createClass({
 	displayName: "DisplayElements",
 
 	// Used for the drag and drop rows
-	getPlaceholder: function getPlaceholder() {
+	getPlaceholder: function () {
 		if (!this.placeholder) {
 			var tr = document.createElement('tr');
 			tr.className = "placeholder";
@@ -262,7 +260,7 @@ DisplayElements = React.createClass({
 		return this.placeholder;
 	},
 	// Used for the drag and drop rows
-	getTableRow: function getTableRow(element) {
+	getTableRow: function (element) {
 		if (element.tagName !== 'tr') {
 			return $(element).closest('tr')[0];
 		} else {
@@ -270,14 +268,14 @@ DisplayElements = React.createClass({
 		}
 	},
 	// Used for the drag and drop rows
-	dragStart: function dragStart(e) {
+	dragStart: function (e) {
 		this.dragged = this.getTableRow(e.currentTarget);
 		e.dataTransfer.effectAllowed = 'move';
 		// Firefox requires dataTransfer data to be set
 		e.dataTransfer.setData("text/html", e.currentTarget);
 	},
 	// Used for the drag and drop rows
-	dragEnd: function dragEnd(e) {
+	dragEnd: function (e) {
 		this.dragged.style.display = "table-row";
 		this.dragged.parentNode.removeChild(this.getPlaceholder());
 
@@ -293,7 +291,7 @@ DisplayElements = React.createClass({
 		});
 	},
 	// Used for the drag and drop rows
-	dragOver: function dragOver(e) {
+	dragOver: function (e) {
 		e.preventDefault();
 		var targetRow = this.getTableRow(e.target);
 
@@ -315,7 +313,7 @@ DisplayElements = React.createClass({
 		}
 	},
 	// Render the HTML
-	render: function render() {
+	render: function () {
 		var temp = this.props.elements.map(function (element, i) {
 			var row;
 			if (element.editing) {
@@ -368,7 +366,7 @@ DisplayElements = React.createClass({
 					)
 				);
 			}
-			return { row: row };
+			return { row };
 		}.bind(this));
 		return React.createElement(
 			"table",
@@ -411,7 +409,7 @@ DisplayElements = React.createClass({
 BuildPane = React.createClass({
 	displayName: "BuildPane",
 
-	getInitialState: function getInitialState() {
+	getInitialState: function () {
 		return {
 			// Keep track of the page groups
 			Elements: [{
@@ -434,7 +432,7 @@ BuildPane = React.createClass({
 	},
 	// Load in a group of elements, replacing any that
 	// were already present
-	loadElements: function loadElements(elements) {
+	loadElements: function (elements) {
 		this.setState({
 			Elements: elements
 		});
@@ -442,7 +440,7 @@ BuildPane = React.createClass({
 	// Set the element editing flag to true to render the element
 	// as an AddQuestion object. Increase the number of editing to
 	// disable drag and drop
-	editElement: function editElement(elementIndex) {
+	editElement: function (elementIndex) {
 		// Use a function to update the state to enqueue an atomic
 		// update that consults the previous value of state before
 		// setting any values
@@ -460,7 +458,7 @@ BuildPane = React.createClass({
 		});
 	},
 	// Remove an element from the current page's elements.
-	deleteElement: function deleteElement(elementIndex) {
+	deleteElement: function (elementIndex) {
 		// Use a function to update the state to enqueue an atomic
 		// update that consults the previous value of state before
 		// setting any values
@@ -473,7 +471,7 @@ BuildPane = React.createClass({
 		});
 	},
 	// Update an element. Returns true on success, false otherwise
-	updateElement: function updateElement(element, index) {
+	updateElement: function (element, index) {
 		if (element.Name && element.Name in this.state.elementDBNames) {
 			// If the DB name already exists return false.
 			return false;
@@ -501,7 +499,7 @@ BuildPane = React.createClass({
 		return true;
 	},
 	// Add a new question to the page's elements
-	addQuestion: function addQuestion(element) {
+	addQuestion: function (element) {
 		if (element.Name && element.Name in this.state.elementDBNames) {
 			// If the DB name already exists return false.
 			return false;
@@ -525,7 +523,7 @@ BuildPane = React.createClass({
 		return true;
 	},
 	// Add a new page
-	addPage: function addPage(pageName) {
+	addPage: function (pageName) {
 		// Use a function to update the state to enqueue an atomic
 		// update that consults the previous value of state before
 		// setting any values
@@ -547,13 +545,13 @@ BuildPane = React.createClass({
 		});
 	},
 	// Change to a page
-	selectPage: function selectPage(index) {
+	selectPage: function (index) {
 		this.setState({
 			currentPage: index
 		});
 	},
 	// Render the HTML
-	render: function render() {
+	render: function () {
 		var draggable = this.state.amountEditing === 0 ? true : false,
 		    that = this,
 
@@ -628,13 +626,13 @@ InstrumentBuilderApp = React.createClass({
 	displayName: "InstrumentBuilderApp",
 
 	// Save the instrument
-	saveInstrument: function saveInstrument() {
+	saveInstrument: function () {
 		// Call to external function, passing it the save information and the elements
 		// to save
 		Instrument.save(this.refs.savePane.state, this.refs.buildPane.state.Elements);
 	},
 	// Load an instrument
-	loadCallback: function loadCallback(elements, info) {
+	loadCallback: function (elements, info) {
 		// Set the savePane state to that extracted from the file
 		this.refs.savePane.loadState(info);
 		// Set the buildPane elements to the rendered elements
@@ -643,7 +641,7 @@ InstrumentBuilderApp = React.createClass({
 		this.refs.loadPane.setAlert('success');
 	},
 	// Render the HTML
-	render: function render() {
+	render: function () {
 		var tabs = [];
 		tabs.push(React.createElement(LoadPane, {
 			TabId: "Load",
@@ -703,4 +701,3 @@ InstrumentBuilderApp = React.createClass({
 });
 
 RInstrumentBuilderApp = React.createFactory(InstrumentBuilderApp);
-//# sourceMappingURL=react.instrument_builder.js.map

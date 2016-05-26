@@ -1,16 +1,14 @@
-'use strict';
-
 DICOMFilterTable = React.createClass({
     displayName: 'DICOMFilterTable',
 
     mixins: [React.addons.PureRenderMixin],
-    getFormValue: function getFormValue(Name) {
+    getFormValue: function (Name) {
         if (this.props.FilterValues && this.props.FilterValues[Name]) {
             return this.props.FilterValues[Name];
         }
         return undefined;
     },
-    render: function render() {
+    render: function () {
         var Genders = {
             M: 'Male',
             F: 'Female',
@@ -85,4 +83,3 @@ DICOMFilterTable = React.createClass({
 
 });
 RDICOMFilterTable = React.createFactory(DICOMFilterTable);
-//# sourceMappingURL=dicom_archive.js.map

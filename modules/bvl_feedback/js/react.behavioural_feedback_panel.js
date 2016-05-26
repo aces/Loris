@@ -1,11 +1,7 @@
-"use strict";
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var SliderPanel = React.createClass({
   displayName: "SliderPanel",
 
-  render: function render() {
+  render: function () {
     return React.createElement(
       "div",
       { className: "panel-group", id: "bvl_feedback_menu" },
@@ -31,12 +27,12 @@ var FeedbackPanelContent = React.createClass({
     feedback_level: React.PropTypes.string.isRequired,
     feedback_values: React.PropTypes.array
   },
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       currentEntryToggled: null
     };
   },
-  markCommentToggle: function markCommentToggle(index) {
+  markCommentToggle: function (index) {
     if (index == this.state.currentEntryToggled) {
       this.setState({
         currentEntryToggled: null
@@ -47,17 +43,16 @@ var FeedbackPanelContent = React.createClass({
       });
     }
   },
-  openThread: function openThread(index) {
+  openThread(index) {
     this.props.open_thread(index);
   },
-  closeThread: function closeThread(index) {
+  closeThread(index) {
     this.props.close_thread(index);
     this.setState({
       currentEntryToggled: null
     });
   },
-
-  render: function render() {
+  render: function () {
     var table_headers = '';
     if (this.props.feedback_level == "instrument") {
       table_headers = React.createElement(
@@ -156,17 +151,17 @@ var FeedbackPanelContent = React.createClass({
 var FeedbackPanelRow = React.createClass({
   displayName: "FeedbackPanelRow",
 
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       thread_entries_toggled: false,
       thread_entries_loaded: [],
       thread_comment_toggled: false
     };
   },
-  componentDidMount: function componentDidMount() {
+  componentDidMount: function () {
     this.loadServerState();
   },
-  loadServerState: function loadServerState() {
+  loadServerState: function () {
     var that = this;
 
     request = $.ajax({
@@ -175,16 +170,16 @@ var FeedbackPanelRow = React.createClass({
       data: {
         "feedbackID": this.props.feedbackID
       },
-      success: function success(data) {
+      success: function (data) {
         that.setState({ thread_entries_loaded: data });
       },
-      error: function error(xhr, desc, err) {
+      error: function (xhr, desc, err) {
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
       }
     });
   },
-  toggle_entries: function toggle_entries(newComment) {
+  toggle_entries: function (newComment) {
     var toggle = false;
     if (newComment) {
       toggle = true;
@@ -193,11 +188,11 @@ var FeedbackPanelRow = React.createClass({
     }
     this.setState({ thread_entries_toggled: toggle });
   },
-  toggle_thread_comment: function toggle_thread_comment() {
+  toggle_thread_comment: function () {
 
     this.setState({ thread_comment_toggled: !this.state.thread_comment_toggled });
   },
-  new_thread_entry: function new_thread_entry(comment) {
+  new_thread_entry: function (comment) {
 
     var that = this;
     var feedbackID = this.props.feedbackID;
@@ -210,16 +205,16 @@ var FeedbackPanelRow = React.createClass({
       data: { "comment": comment,
         "feedbackID": feedbackID,
         "candID": candID },
-      success: function success(response) {
+      success: function (response) {
         that.loadServerState();
       }, //end of success function
-      error: function error(xhr, desc, err) {
+      error: function (xhr, desc, err) {
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
       }
     });
   },
-  render: function render() {
+  render: function () {
     var d = new Date();
     var feedbackID = this.props.feedbackID;
     if (this.state.thread_entries_toggled) {
@@ -328,22 +323,22 @@ var FeedbackPanelRow = React.createClass({
 var CommentEntryForm = React.createClass({
   displayName: "CommentEntryForm",
 
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       value: null
     };
   },
-  sendComment: function sendComment() {
+  sendComment: function () {
     this.props.onCommentSend(this.state.value);
     this.setState({
       value: "Comment added!"
     });
     this.props.toggleThisThread();
   },
-  handleChange: function handleChange(event) {
+  handleChange: function (event) {
     this.setState({ value: event.target.value });
   },
-  render: function render() {
+  render: function () {
     var value = this.state.value;
     return React.createElement(
       "tr",
@@ -371,17 +366,17 @@ var CommentEntryForm = React.createClass({
 var AccordionPanel = React.createClass({
   displayName: "AccordionPanel",
 
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       toggled: false
     };
   },
-  toggleChange: function toggleChange() {
+  toggleChange: function () {
     this.setState({
       toggled: !this.state.toggled
     });
   },
-  render: function render() {
+  render: function () {
     if (this.state.toggled) {
       var panel_body_class = "panel-collapse collapse";
       var arrow_class = "collapsed";
@@ -424,23 +419,23 @@ var NewThreadPanel = React.createClass({
   propTypes: {
     select_options: React.PropTypes.array
   },
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       text_value: '',
       select_value: 'Across All Fields',
       input_value: 1
     };
   },
-  handleSelectChange: function handleSelectChange(event) {
+  handleSelectChange: function (event) {
     this.setState({ select_value: event.target.value });
   },
-  handleTextChange: function handleTextChange(event) {
+  handleTextChange: function (event) {
     this.setState({ text_value: event.target.value });
   },
-  handleInputChange: function handleInputChange(event) {
+  handleInputChange: function (event) {
     this.setState({ input_value: event.target.value });
   },
-  createNewThread: function createNewThread() {
+  createNewThread: function () {
 
     var that = this;
     if (this.state.text_value.length) {
@@ -456,7 +451,7 @@ var NewThreadPanel = React.createClass({
           "commentID": this.props.commentID,
           "user": this.props.commentID
         },
-        success: function success(data) {
+        success: function (data) {
           that.setState({
             text_value: "The new thread has been submitted!"
           });
@@ -464,14 +459,14 @@ var NewThreadPanel = React.createClass({
           that.props.addThread(data);
           that.props.updateSummaryThread();
         },
-        error: function error(xhr, desc, err) {
+        error: function (xhr, desc, err) {
           console.log(xhr);
           console.log("Details: " + desc + "\nError:" + err);
         }
       });
     }
   },
-  render: function render() {
+  render: function () {
     var options = [];
     for (var key in this.props.select_options) {
       if (this.props.select_options.hasOwnProperty(key)) {
@@ -500,7 +495,7 @@ var NewThreadPanel = React.createClass({
             { className: "col-xs-8" },
             React.createElement(
               "select",
-              _defineProperty({ className: "form-control input-sm", name: "input_type", selected: this.state.select_value, onChange: this.handleSelectChange }, "className", "form-control"),
+              { className: "form-control input-sm", name: "input_type", selected: this.state.select_value, onChange: this.handleSelectChange, className: "form-control" },
               options
             )
           )
@@ -545,7 +540,7 @@ var NewThreadPanel = React.createClass({
             { className: "col-xs-8" },
             React.createElement(
               "select",
-              _defineProperty({ className: "form-control input-sm", name: "input", selected: this.state.input_value, onChange: this.handleInputChange }, "className", "form-control"),
+              { className: "form-control input-sm", name: "input", selected: this.state.input_value, onChange: this.handleInputChange, className: "form-control" },
               input
             )
           )
@@ -567,12 +562,12 @@ var NewThreadPanel = React.createClass({
 var FeedbackSummaryPanel = React.createClass({
   displayName: "FeedbackSummaryPanel",
 
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       summary: null
     };
   },
-  render: function render() {
+  render: function () {
     if (this.props.summary_data) {
       var summary_rows = this.props.summary_data.map(function (row) {
         return React.createElement(
@@ -665,13 +660,13 @@ var FeedbackSummaryPanel = React.createClass({
 var FeedbackPanel = React.createClass({
   displayName: "FeedbackPanel",
 
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       threads: '',
       summary: null
     };
   },
-  componentDidMount: function componentDidMount() {
+  componentDidMount: function () {
     this.loadSummaryServerData();
 
     var that = this;
@@ -684,19 +679,19 @@ var FeedbackPanel = React.createClass({
         "commentID": this.props.commentID,
         "user": this.props.commentID
       },
-      success: function success(data) {
+      success: function (data) {
         state = data;
         that.setState({
           threads: state
         });
       },
-      error: function error(xhr, desc, err) {
+      error: function (xhr, desc, err) {
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
       }
     });
   },
-  loadSummaryServerData: function loadSummaryServerData() {
+  loadSummaryServerData: function () {
     var that = this;
 
     request = $.ajax({
@@ -707,18 +702,18 @@ var FeedbackPanel = React.createClass({
         "sessionID": this.props.sessionID,
         "commentID": this.props.commentID
       },
-      success: function success(data) {
+      success: function (data) {
         that.setState({
           summary: data
         });
       },
-      error: function error(xhr, desc, err) {
+      error: function (xhr, desc, err) {
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
       }
     });
   },
-  loadThreadServerState: function loadThreadServerState() {
+  loadThreadServerState: function () {
     var that = this;
     request = $.ajax({
       type: "POST",
@@ -729,23 +724,23 @@ var FeedbackPanel = React.createClass({
         "commentID": this.props.commentID,
         "user": this.props.commentID
       },
-      success: function success(data) {
+      success: function (data) {
         state = data;
         that.setState({
           threads: state
         });
         that.loadSummaryServerData();
       },
-      error: function error(xhr, desc, err) {
+      error: function (xhr, desc, err) {
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
       }
     });
   },
-  addThread: function addThread(data) {
+  addThread: function (data) {
     this.loadThreadServerState();
   },
-  markThreadClosed: function markThreadClosed(index) {
+  markThreadClosed: function (index) {
     var threads = this.state.threads;
     var entry = this.state.threads[index];
     threads.splice(index, 1);
@@ -763,19 +758,19 @@ var FeedbackPanel = React.createClass({
         "candID": this.props.candID,
         "feedbackID": feedbackID
       },
-      success: function success(data) {
+      success: function (data) {
         that.setState({
           threads: threads
         });
         that.loadSummaryServerData();
       },
-      error: function error(xhr, desc, err) {
+      error: function (xhr, desc, err) {
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
       }
     });
   },
-  markThreadOpened: function markThreadOpened(index) {
+  markThreadOpened: function (index) {
     var threads = this.state.threads;
     var entry = this.state.threads[index];
     threads.splice(index, 1);
@@ -794,19 +789,19 @@ var FeedbackPanel = React.createClass({
         "candID": this.props.candID,
         "feedbackID": feedbackID
       },
-      success: function success(data) {
+      success: function (data) {
         that.setState({
           threads: threads
         });
         that.loadSummaryServerData();
       },
-      error: function error(xhr, desc, err) {
+      error: function (xhr, desc, err) {
         console.log(xhr);
         console.log("Details: " + desc + "\nError:" + err);
       }
     });
   },
-  render: function render() {
+  render: function () {
     title = "New " + this.props.feedback_level + " level feedback";
     return React.createElement(
       SliderPanel,
@@ -835,4 +830,3 @@ var FeedbackPanel = React.createClass({
 });
 
 RBehaviouralFeedbackPanel = React.createFactory(FeedbackPanel);
-//# sourceMappingURL=react.behavioural_feedback_panel.js.map

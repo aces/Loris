@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  *  The following file contains the components used for the field select tab
  *
@@ -16,7 +14,7 @@
 CategoryItem = React.createClass({
     displayName: "CategoryItem",
 
-    render: function render() {
+    render: function () {
         var classList = "list-group-item",
             badge = '';
         if (this.props.selected) {
@@ -44,12 +42,12 @@ CategoryItem = React.createClass({
 CategoryList = React.createClass({
     displayName: "CategoryList",
 
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             selectedCategory: ""
         };
     },
-    selectCategoryHandler: function selectCategoryHandler(category) {
+    selectCategoryHandler: function (category) {
         var that = this;
         return function (evt) {
             if (that.props.onCategorySelect) {
@@ -60,9 +58,9 @@ CategoryList = React.createClass({
             });
         };
     },
-    render: function render() {
+    render: function () {
         var items = [],
-            selectClosure = function selectClosure(name) {
+            selectClosure = function (name) {
             return this.selectCategory(name);
         };
         for (i = 0; i < this.props.items.length; i += 1) {
@@ -91,7 +89,7 @@ CategoryList = React.createClass({
 FieldItem = React.createClass({
     displayName: "FieldItem",
 
-    visitSelect: function visitSelect(evt) {
+    visitSelect: function (evt) {
         // Selects and deselects visits
 
         var field = {
@@ -104,7 +102,7 @@ FieldItem = React.createClass({
             this.props.fieldVisitSelect("uncheck", evt.target.value, field);
         }
     },
-    render: function render() {
+    render: function () {
         // Renders the html for the component
 
         var classList = "list-group-item row",
@@ -175,21 +173,21 @@ FieldItem = React.createClass({
 FieldList = React.createClass({
     displayName: "FieldList",
 
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             PageNumber: 1
         };
     },
-    onFieldClick: function onFieldClick(fieldName, downloadable) {
+    onFieldClick: function (fieldName, downloadable) {
         // Wrapper function used to update field
         this.props.onFieldSelect(fieldName, this.props.category, downloadable);
     },
-    changePage: function changePage(i) {
+    changePage: function (i) {
         this.setState({
             PageNumber: i
         });
     },
-    render: function render() {
+    render: function () {
         // Renders the html for the component
 
         var fields = [];
@@ -267,18 +265,18 @@ FieldSelector = React.createClass({
     propTypes: {
         selectedFields: React.PropTypes.array
     },
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             filter: "",
             selectedCategory: "",
             categoryFields: {}
         };
     },
-    onFieldSelect: function onFieldSelect(fieldName, category, downloadable) {
+    onFieldSelect: function (fieldName, category, downloadable) {
         // Wrapper function for field changes
         this.props.onFieldChange(fieldName, category, downloadable);
     },
-    onCategorySelect: function onCategorySelect(category) {
+    onCategorySelect: function (category) {
         // Used for getting the fields of the given category
 
         var that = this;
@@ -298,12 +296,12 @@ FieldSelector = React.createClass({
             selectedCategory: category
         });
     },
-    filterChange: function filterChange(evt) {
+    filterChange: function (evt) {
         this.setState({
             filter: evt.currentTarget.value
         });
     },
-    addAll: function addAll() {
+    addAll: function () {
         // Adds all fields the currently selected category
         var i, isFile, fieldName, category;
         for (i in this.state.categoryFields[this.state.selectedCategory]) {
@@ -317,7 +315,7 @@ FieldSelector = React.createClass({
                 }
         }
     },
-    deleteAll: function deleteAll() {
+    deleteAll: function () {
         // Deletes all fields the currently selected category
         var i, index, fieldName;
         for (i in this.state.categoryFields[this.state.selectedCategory]) {
@@ -329,7 +327,7 @@ FieldSelector = React.createClass({
             }
         }
     },
-    render: function render() {
+    render: function () {
         // Renders the html for the component
 
         return React.createElement(
@@ -394,4 +392,3 @@ FieldSelector = React.createClass({
         );
     }
 });
-//# sourceMappingURL=react.fieldselector.js.map

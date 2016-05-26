@@ -1,8 +1,6 @@
-"use strict";
-
 function formatDataDictColumn(column, cell, rowData) {
     if (column === 'Description') {
-        var updateDict = function updateDict(name) {
+        var updateDict = function (name) {
             return function (e) {
                 e.stopPropagation();
 
@@ -22,4 +20,3 @@ function formatDataDictColumn(column, cell, rowData) {
         cell
     );
 }
-//# sourceMappingURL=columnFormatter.js.map

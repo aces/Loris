@@ -1,5 +1,3 @@
-'use strict';
-
 function formatColumn(column, cell, rowData) {
     if (column === 'SessionID') {
         return null;
@@ -48,4 +46,3 @@ function formatColumn(column, cell, rowData) {
         cell
     );
 }
-//# sourceMappingURL=columnFormatter.js.map

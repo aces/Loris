@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  *  The following file contains the base component for the data query react app.
  *  It also contains the component for the saved queries dropdown.
@@ -17,16 +15,16 @@
 SavedQueriesList = React.createClass({
     displayName: "SavedQueriesList",
 
-    getDefaultProps: function getDefaultProps() {
+    getDefaultProps: function () {
         queriesLoaded: false;
     },
-    componentDidMount: function componentDidMount() {},
-    loadQuery: function loadQuery(queryName) {
+    componentDidMount: function () {},
+    loadQuery: function (queryName) {
         // Loads in the selected query
 
         this.props.onSelectQuery(this.props.queryDetails[queryName].Fields, this.props.queryDetails[queryName].Conditions);
     },
-    render: function render() {
+    render: function () {
         // Renders the html for the component
 
         var userSaved = [];
@@ -123,7 +121,7 @@ SavedQueriesList = React.createClass({
 DataQueryApp = React.createClass({
     displayName: "DataQueryApp",
 
-    componentDidMount: function componentDidMount() {
+    componentDidMount: function () {
         // Before the dataquery is loaded into the window, this function is called to gather
         // any data that was not passed in the initial load.
 
@@ -174,7 +172,7 @@ DataQueryApp = React.createClass({
             });
         });
     },
-    saveFilterRule: function saveFilterRule(rule) {
+    saveFilterRule: function (rule) {
         // Used to build a filter rule for saving query
 
         var savedRule = {
@@ -186,7 +184,7 @@ DataQueryApp = React.createClass({
         };
         return savedRule;
     },
-    saveFilterGroup: function saveFilterGroup(group) {
+    saveFilterGroup: function (group) {
         // Used to build a filter group for saving query
 
         var savedFilter = {
@@ -203,7 +201,7 @@ DataQueryApp = React.createClass({
         }
         return savedFilter;
     },
-    saveCurrentQuery: function saveCurrentQuery(name, shared) {
+    saveCurrentQuery: function (name, shared) {
         // Used to save the current query
 
         var that = this,
@@ -236,7 +234,7 @@ DataQueryApp = React.createClass({
             });
         });
     },
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         // Initialize the base state of the dataquery app
 
         return {
@@ -264,7 +262,7 @@ DataQueryApp = React.createClass({
             downloadableFields: {}
         };
     },
-    loadFilterRule: function loadFilterRule(rule) {
+    loadFilterRule: function (rule) {
         // Used to load in a filter rule
 
         var script;
@@ -276,7 +274,7 @@ DataQueryApp = React.createClass({
         // This call is made synchronously
         $.ajax({
             url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php",
-            success: function success(data) {
+            success: function (data) {
                 rule.fields = data;
             },
             async: false,
@@ -318,7 +316,7 @@ DataQueryApp = React.createClass({
         }
         $.ajax({
             url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script,
-            success: function success(data) {
+            success: function (data) {
                 var i,
                     allSessions = {},
                     allCandiates = {};
@@ -359,7 +357,7 @@ DataQueryApp = React.createClass({
 
         return rule;
     },
-    loadFilterGroup: function loadFilterGroup(group) {
+    loadFilterGroup: function (group) {
         // Used to load in a filter group
 
         // Recursively load the children on the group
@@ -376,7 +374,7 @@ DataQueryApp = React.createClass({
         group.session = getSessions(group);
         return group;
     },
-    loadSavedQuery: function loadSavedQuery(fields, criteria) {
+    loadSavedQuery: function (fields, criteria) {
         // Used to load a saved query
 
         var filterState = {},
@@ -473,7 +471,7 @@ DataQueryApp = React.createClass({
             };
         });
     },
-    fieldVisitSelect: function fieldVisitSelect(action, visit, field) {
+    fieldVisitSelect: function (action, visit, field) {
         // Used to select visits for a given field
 
         this.setState(function (state) {
@@ -498,7 +496,7 @@ DataQueryApp = React.createClass({
             return temp;
         });
     },
-    fieldChange: function fieldChange(fieldName, category, downloadable) {
+    fieldChange: function (fieldName, category, downloadable) {
         // Used to add and remove fields from the current query being built
 
         var that = this;
@@ -573,7 +571,7 @@ DataQueryApp = React.createClass({
             };
         });
     },
-    getSessions: function getSessions() {
+    getSessions: function () {
         // Get the sessions to be selected
 
         if (this.state.filter.children.length > 0) {
@@ -584,14 +582,14 @@ DataQueryApp = React.createClass({
             return this.props.AllSessions;
         }
     },
-    runQuery: function runQuery(fields, sessions) {
+    runQuery: function (fields, sessions) {
         // Run the current query
 
         var DocTypes = [],
             that = this,
             semaphore = 0,
             sectionedSessions,
-            ajaxComplete = function ajaxComplete() {
+            ajaxComplete = function () {
             // Wait until all ajax calls have completed before computing the rowdata
             if (semaphore == 0) {
                 var rowdata = that.getRowData(that.state.grouplevel);
@@ -645,7 +643,7 @@ DataQueryApp = React.createClass({
                             Sessions: sectionedSessions
                         },
                         dataType: 'text',
-                        success: function success(data) {
+                        success: function (data) {
                             if (data) {
                                 var i,
                                     row,
@@ -685,7 +683,7 @@ DataQueryApp = React.createClass({
             }
         }
     },
-    getRowData: function getRowData(displayID) {
+    getRowData: function (displayID) {
         // Build the queried data to be displayed in the data table
 
         var sessiondata = this.state.sessiondata;
@@ -805,14 +803,14 @@ DataQueryApp = React.createClass({
         }
         return { 'rowdata': rowdata, 'Identifiers': Identifiers, 'RowHeaders': RowHeaders, 'fileData': fileData };
     },
-    dismissAlert: function dismissAlert() {
+    dismissAlert: function () {
         // Used to dismiss alerts
         this.setState({
             alertLoaded: false,
             alertSaved: false
         });
     },
-    resetQuery: function resetQuery() {
+    resetQuery: function () {
         // Used to reset the current query
         this.setState({
             fields: [],
@@ -820,7 +818,7 @@ DataQueryApp = React.createClass({
             selectedFields: {}
         });
     },
-    changeDataDisplay: function changeDataDisplay(displayID) {
+    changeDataDisplay: function (displayID) {
         // Change the display format of the data table
         var rowdata = this.getRowData(displayID);
         this.setState({
@@ -828,7 +826,7 @@ DataQueryApp = React.createClass({
             rowData: rowdata
         });
     },
-    updateFilter: function updateFilter(filter) {
+    updateFilter: function (filter) {
         // Update the filter
         var that = this;
         this.setState(function (state) {
@@ -838,7 +836,7 @@ DataQueryApp = React.createClass({
             return { 'filter': filter };
         });
     },
-    render: function render() {
+    render: function () {
         // Renders the html for the component
 
         var tabs = [],
@@ -1041,4 +1039,3 @@ DataQueryApp = React.createClass({
 });
 
 RDataQueryApp = React.createFactory(DataQueryApp);
-//# sourceMappingURL=react.app.js.map

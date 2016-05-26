@@ -1,14 +1,12 @@
-"use strict";
-
 var SubprojectRelations = React.createClass({
     displayName: "SubprojectRelations",
 
-    getDefaultProps: function getDefaultProps() {
+    getDefaultProps: function () {
         return {
             "Relations": {}
         };
     },
-    render: function render() {
+    render: function () {
         var subprojectIDs = Object.keys(this.props.Relations);
         var that = this;
         var subprojectList = subprojectIDs.map(function (key) {
@@ -36,4 +34,3 @@ var SubprojectRelations = React.createClass({
     }
 });
 RSubprojectRelations = React.createFactory(SubprojectRelations);
-//# sourceMappingURL=SubprojectRelations.js.map

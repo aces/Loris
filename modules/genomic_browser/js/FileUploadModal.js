@@ -1,5 +1,3 @@
-'use strict';
-
 GenomicFileUploadModal = React.createClass({
     displayName: 'GenomicFileUploadModal',
 
@@ -8,7 +6,7 @@ GenomicFileUploadModal = React.createClass({
         baseURL: React.PropTypes.string.isRequired
     },
 
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             readyForUpload: false,
             submited: false,
@@ -16,11 +14,11 @@ GenomicFileUploadModal = React.createClass({
         };
     },
 
-    shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate: function (nextProps, nextState) {
         return nextState.readyForUpload !== this.state.readyForUpload || nextState.submited !== this.state.submited || nextProps.id !== this.props.id;
     },
 
-    validateForm: function validateForm(requiredInputs) {
+    validateForm: function (requiredInputs) {
         // this is always returning true... for now
         requiredInputs = requiredInputs || [];
         this.setState({ readyForUpload: requiredInputs.reduce(function (previousValue, currentValue, currentIndex, array) {
@@ -29,12 +27,12 @@ GenomicFileUploadModal = React.createClass({
             }, true) });
     },
 
-    reloadPage: function reloadPage() {
+    reloadPage: function () {
         $('#modalContainer').modal('hide');
         $('#showdata').click();
     },
 
-    handleUploadSubmit: function handleUploadSubmit(event) {
+    handleUploadSubmit: function (event) {
         event.preventDefault();
         var self = this;
         var formData = new FormData(document.getElementById('uploadForm'));
@@ -88,7 +86,7 @@ GenomicFileUploadModal = React.createClass({
         xhr.send(formData);
     },
 
-    render: function render() {
+    render: function () {
         var footerButtons = [];
 
         if (this.state.submited) {
@@ -167,7 +165,7 @@ UploadForm = React.createClass({
     displayName: 'UploadForm',
 
 
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             baseURL: '',
             fileType: "",
@@ -175,28 +173,28 @@ UploadForm = React.createClass({
     },
 
     // Change this to false when we are ready to use Mapping files
-    getDefaultProps: function getDefaultProps() {
+    getDefaultProps: function () {
         return {
             validate: null
         };
     },
 
-    handleFileTypeChange: function handleFileTypeChange(event) {
+    handleFileTypeChange: function (event) {
         event.preventDefault();
         this.setState({ 'fileType': event.target.value });
     },
 
-    handleCheckboxChange: function handleCheckboxChange(event) {
+    handleCheckboxChange: function (event) {
         if (event.target.name == 'pscidColumn') {
             this.setState({ 'useColumnHeaders': !this.state.useColumnHeaders });
         }
     },
 
-    componentWillUpdate: function componentWillUpdate(prevProps, prevState) {
+    componentWillUpdate: function (prevProps, prevState) {
         this.props.validate();
     },
 
-    render: function render() {
+    render: function () {
         var instructions = [];
         var inputs = [];
 
@@ -233,7 +231,7 @@ UploadForm = React.createClass({
 FileTypeSelect = React.createClass({
     displayName: 'FileTypeSelect',
 
-    getDefaultProps: function getDefaultProps() {
+    getDefaultProps: function () {
         return {
             baseURL: '',
             onFileTypeChange: null,
@@ -241,17 +239,17 @@ FileTypeSelect = React.createClass({
         };
     },
 
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             availableFileType: []
         };
     },
 
-    componentDidMount: function componentDidMount() {
+    componentDidMount: function () {
         this.getGenomicFileType();
     },
 
-    getGenomicFileType: function getGenomicFileType() {
+    getGenomicFileType: function () {
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
@@ -290,7 +288,7 @@ FileTypeSelect = React.createClass({
         xhr.send();
     },
 
-    render: function render() {
+    render: function () {
 
         var options = this.state.availableFileType.map(function (e) {
             return React.createElement(
@@ -339,7 +337,7 @@ FileInput = React.createClass({
         label: React.PropTypes.string
     },
 
-    render: function render() {
+    render: function () {
 
         return React.createElement(
             'div',
@@ -367,7 +365,7 @@ TextAreaInput = React.createClass({
         label: React.PropTypes.string
     },
 
-    render: function render() {
+    render: function () {
         return React.createElement(
             'div',
             { className: 'col-xs-12 form-group' },
@@ -391,12 +389,12 @@ CheckboxInput = React.createClass({
     propTypes: {
         name: React.PropTypes.string
     },
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             checked: this.props.checked || false
         };
     },
-    render: function render() {
+    render: function () {
         // Add onClick={this.props.handleChange}  and checked={this.state.checked} when we support Mapping files
         return React.createElement(
             'div',
@@ -415,4 +413,3 @@ CheckboxInput = React.createClass({
         );
     }
 });
-//# sourceMappingURL=FileUploadModal.js.map

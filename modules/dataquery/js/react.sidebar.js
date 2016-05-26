@@ -1,23 +1,21 @@
-'use strict';
-
 Sidebar = React.createClass({
     displayName: 'Sidebar',
 
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             'hidden': false
         };
     },
-    toggleHidden: function toggleHidden() {
+    toggleHidden: function () {
         this.setState({ 'hidden': !this.state.hidden });
     },
-    hide: function hide() {
+    hide: function () {
         this.setState({ 'hidden': true });
     },
-    show: function show() {
+    show: function () {
         this.setState({ 'hidden': false });
     },
-    render: function render() {
+    render: function () {
         if (this.state.hidden) {
             return React.createElement('div', null);
         }
@@ -36,13 +34,13 @@ Sidebar = React.createClass({
 FieldsSidebar = React.createClass({
     displayName: 'FieldsSidebar',
 
-    getDefaultProps: function getDefaultProps() {
+    getDefaultProps: function () {
         return {
             Fields: [],
             Criteria: {}
         };
     },
-    render: function render() {
+    render: function () {
         if ((!this.props.Fields || this.props.Fields.length === 0) && (!this.props.Criteria || Object.keys(this.props.Criteria).length === 0)) {
             return React.createElement('div', null);
         }
@@ -84,4 +82,3 @@ FieldsSidebar = React.createClass({
         );
     }
 });
-//# sourceMappingURL=react.sidebar.js.map

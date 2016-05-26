@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  *  The following file contains the components used for displaying the tab content
  *
@@ -16,7 +14,7 @@ TabPane = React.createClass({
     displayName: "TabPane",
 
     mixins: [React.addons.PureRenderMixin],
-    render: function render() {
+    render: function () {
         var classList = "tab-pane";
         if (this.props.Active) {
             classList += " active";
@@ -41,7 +39,7 @@ InfoTabPane = React.createClass({
     displayName: "InfoTabPane",
 
     mixins: [React.addons.PureRenderMixin],
-    render: function render() {
+    render: function () {
         return React.createElement(
             TabPane,
             { Title: "Welcome to the Data Query Tool",
@@ -132,7 +130,7 @@ InfoTabPane = React.createClass({
 FieldSelectTabPane = React.createClass({
     displayName: "FieldSelectTabPane",
 
-    render: function render() {
+    render: function () {
         return React.createElement(
             TabPane,
             { TabId: this.props.TabId },
@@ -154,7 +152,7 @@ FieldSelectTabPane = React.createClass({
 FilterSelectTabPane = React.createClass({
     displayName: "FilterSelectTabPane",
 
-    render: function render() {
+    render: function () {
         return React.createElement(
             TabPane,
             { TabId: this.props.TabId },
@@ -173,16 +171,16 @@ FilterSelectTabPane = React.createClass({
 ViewDataTabPane = React.createClass({
     displayName: "ViewDataTabPane",
 
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return { 'sessions': [] };
     },
-    runQuery: function runQuery() {
+    runQuery: function () {
         // Wrapper function to run the current query
         if (this.props.onRunQueryClicked) {
             this.props.onRunQueryClicked(this.props.Fields, this.props.Sessions);
         }
     },
-    downloadCSV: function downloadCSV() {
+    downloadCSV: function () {
         // Downloads the current loaded data into a CSV formatted file.
         // Makes use of a web worker to format and download the data
         var headers = this.props.Fields,
@@ -207,11 +205,11 @@ ViewDataTabPane = React.createClass({
             identifiers: this.props.Sessions
         });
     },
-    changeDataDisplay: function changeDataDisplay(displayID) {
+    changeDataDisplay: function (displayID) {
         // Wrapper function to change the data display type
         this.props.changeDataDisplay(displayID);
     },
-    getOrCreateProgressElement: function getOrCreateProgressElement(id) {
+    getOrCreateProgressElement: function (id) {
         // Helper function to display the progress of downloading the downloadable
         // fields into a ZIP folder
         var element = document.getElementById(id),
@@ -228,7 +226,7 @@ ViewDataTabPane = React.createClass({
         progress.appendChild(element);
         return element;
     },
-    getOrCreateDownloadLink: function getOrCreateDownloadLink(fileName, type) {
+    getOrCreateDownloadLink: function (fileName, type) {
         // Helper function to create and click a downloadable link to download the
         // downloadable fields into a ZIP folder
         var element = document.getElementById("DownloadLink" + fileName),
@@ -251,7 +249,7 @@ ViewDataTabPane = React.createClass({
         parentEl.appendChild(el2);
         return element;
     },
-    downloadData: function downloadData() {
+    downloadData: function () {
         // Download the downloadable fields into a ZIP folder
         // Makes use of a web worker to format and download the data
         var zip = new JSZip(),
@@ -261,7 +259,7 @@ ViewDataTabPane = React.createClass({
             saveworker,
             dataURLs = [],
             that = this,
-            multiLinkHandler = function multiLinkHandler(buffer) {
+            multiLinkHandler = function (buffer) {
             return function (ce) {
                 var downloadLink = document.getElementById("DownloadLink"),
                     dv = new DataView(buffer),
@@ -334,7 +332,7 @@ ViewDataTabPane = React.createClass({
             saveworker.postMessage({ Files: FileList });
         }
     },
-    render: function render() {
+    render: function () {
         var downloadData;
         var buttons = React.createElement(
             "div",
@@ -486,7 +484,7 @@ ViewDataTabPane = React.createClass({
 ScatterplotGraph = React.createClass({
     displayName: "ScatterplotGraph",
 
-    lsFit: function lsFit(data) {
+    lsFit: function (data) {
         var i = 0,
             means = jStat(data).mean(),
             xmean = means[0],
@@ -509,7 +507,7 @@ ScatterplotGraph = React.createClass({
 
         return [ymean - slope * xmean, slope];
     },
-    minmaxx: function minmaxx(arr) {
+    minmaxx: function (arr) {
         var i, min, max;
 
         for (i = 0; i < arr.length; i += 1) {
@@ -526,7 +524,7 @@ ScatterplotGraph = React.createClass({
         }
         return [min, max];
     },
-    updateScatterplot: function updateScatterplot() {
+    updateScatterplot: function () {
         var xaxis = document.getElementById("scatter-xaxis").value,
             yaxis = document.getElementById("scatter-yaxis").value,
             grouping = document.getElementById("scatter-group").value,
@@ -545,7 +543,7 @@ ScatterplotGraph = React.createClass({
             start,
             plots = [],
             label,
-            plotY = function plotY(x) {
+            plotY = function (x) {
             return [x, start + slope * x];
         },
             dataset;
@@ -616,7 +614,7 @@ ScatterplotGraph = React.createClass({
         $("#correlationtbl tbody").children().remove();
         $("#correlationtbl tbody").append("<tr><td>" + jStat.covariance(field1, field2) + "</td><td>" + jStat.corrcoeff(field1, field2) + "</td></tr>");
     },
-    render: function render() {
+    render: function () {
         var options = this.props.Fields.map(function (element, key) {
             console.log(element);
             return React.createElement(
@@ -738,17 +736,17 @@ ScatterplotGraph = React.createClass({
 StatsVisualizationTabPane = React.createClass({
     displayName: "StatsVisualizationTabPane",
 
-    getDefaultProps: function getDefaultProps() {
+    getDefaultProps: function () {
         return {
             'Data': []
         };
     },
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             'displayed': false
         };
     },
-    render: function render() {
+    render: function () {
         // if(this.state.displayed === false) {
         //     var content = <div>Statistics not yet calculated.</div>;
         //     // return <TabPane content={content} TabId={this.props.TabId} />;
@@ -926,31 +924,31 @@ StatsVisualizationTabPane = React.createClass({
 SaveQueryDialog = React.createClass({
     displayName: "SaveQueryDialog",
 
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             'queryName': '',
             'shared': false
         };
     },
-    editName: function editName(e) {
+    editName: function (e) {
         this.setState({ queryName: e.target.value });
     },
-    editPublic: function editPublic(e) {
+    editPublic: function (e) {
         this.setState({ shared: e.target.checked });
     },
-    onSaveClicked: function onSaveClicked() {
+    onSaveClicked: function () {
         // Should do validation before doing anything here.. ie query name is entered, doesn't already
         // exist, there are fields selected..
         if (this.props.onSaveClicked) {
             this.props.onSaveClicked(this.state.queryName, this.state.shared);
         }
     },
-    onDismissClicked: function onDismissClicked() {
+    onDismissClicked: function () {
         if (this.props.onDismissClicked) {
             this.props.onDismissClicked();
         }
     },
-    render: function render() {
+    render: function () {
         return React.createElement(
             "div",
             { className: "modal show" },
@@ -1026,7 +1024,7 @@ SaveQueryDialog = React.createClass({
 ManageSavedQueryFilter = React.createClass({
     displayName: "ManageSavedQueryFilter",
 
-    render: function render() {
+    render: function () {
         var filterItem,
             filter = this.props.filterItem;
         if (filter.activeOperator) {
@@ -1112,7 +1110,7 @@ ManageSavedQueryFilter = React.createClass({
 ManageSavedQueryRow = React.createClass({
     displayName: "ManageSavedQueryRow",
 
-    getDefaultProps: function getDefaultProps() {
+    getDefaultProps: function () {
         return {
             'Name': 'Unknown',
             'Query': {
@@ -1120,7 +1118,7 @@ ManageSavedQueryRow = React.createClass({
             }
         };
     },
-    render: function render() {
+    render: function () {
         var fields = [];
         var filters;
         if (this.props.Query.Fields && Array.isArray(this.props.Query.Fields)) {
@@ -1264,26 +1262,26 @@ ManageSavedQueryRow = React.createClass({
 ManageSavedQueriesTabPane = React.createClass({
     displayName: "ManageSavedQueriesTabPane",
 
-    dismissDialog: function dismissDialog() {
+    dismissDialog: function () {
         this.setState({ 'savePrompt': false });
     },
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             'savePrompt': false,
             'queriesLoaded': false,
             'queries': {}
         };
     },
-    saveQuery: function saveQuery() {
+    saveQuery: function () {
         this.setState({ 'savePrompt': true });
     },
-    savedQuery: function savedQuery(name, shared) {
+    savedQuery: function (name, shared) {
         if (this.props.onSaveQuery) {
             this.props.onSaveQuery(name, shared);
         }
         this.setState({ 'savePrompt': false });
     },
-    getDefaultProps: function getDefaultProps() {
+    getDefaultProps: function () {
         return {
             userQueries: [],
             globalQueries: [],
@@ -1291,7 +1289,7 @@ ManageSavedQueriesTabPane = React.createClass({
             queryDetails: {}
         };
     },
-    render: function render() {
+    render: function () {
         var queryRows = [];
         if (this.props.queriesLoaded) {
             for (var i = 0; i < this.props.userQueries.length; i += 1) {
@@ -1373,4 +1371,3 @@ ManageSavedQueriesTabPane = React.createClass({
         );
     }
 });
-//# sourceMappingURL=react.tabs.js.map

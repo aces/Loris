@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  *  The following file contains the components used for the filter builder tab
  *
@@ -14,11 +12,11 @@
 LogicOperator = React.createClass({
 	displayName: "LogicOperator",
 
-	changeOperator: function changeOperator(op) {
+	changeOperator: function (op) {
 		// Wrapper function updating operator
 		this.props.updateGroupOperator(op);
 	},
-	render: function render() {
+	render: function () {
 		// Renders the html for the component
 
 		var andClass = "btn",
@@ -55,7 +53,7 @@ LogicOperator = React.createClass({
 FilterRule = React.createClass({
 	displayName: "FilterRule",
 
-	getInitialState: function getInitialState() {
+	getInitialState: function () {
 		return {
 			operators: {
 				// "enum" : {
@@ -69,7 +67,7 @@ FilterRule = React.createClass({
 			}
 		};
 	},
-	selectInstrument: function selectInstrument(event) {
+	selectInstrument: function (event) {
 		// Update the rules instrument, getting the instruments avalible fields
 		var rule = this.props.rule,
 		    that = this;
@@ -81,7 +79,7 @@ FilterRule = React.createClass({
 			}, 'json');
 		}
 	},
-	fieldSelect: function fieldSelect() {
+	fieldSelect: function () {
 		// Update the rules desired field, setting the rules field and field type
 		var rule = this.props.rule;
 		delete rule.field;
@@ -96,7 +94,7 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
-	operatorSelect: function operatorSelect() {
+	operatorSelect: function () {
 		// Update the desired rule operation for the selected field
 		var rule = this.props.rule;
 		delete rule.operator;
@@ -108,7 +106,7 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
-	valueSet: function valueSet() {
+	valueSet: function () {
 		// Update the value to filter for, and runs the query for the rules parameters
 		var rule = this.props.rule,
 		    that = this;
@@ -116,7 +114,7 @@ FilterRule = React.createClass({
 		delete rule.visit;
 		delete rule.candidates;
 		if (event.target.value) {
-			var responseHandler = function responseHandler(data) {
+			var responseHandler = function (data) {
 				var i,
 				    allSessions = {},
 				    allCandiates = {};
@@ -140,7 +138,7 @@ FilterRule = React.createClass({
 				rule.visit = "All";
 				that.props.updateSessions(rule);
 			},
-			    ajaxRetrieve = function ajaxRetrieve(script) {
+			    ajaxRetrieve = function (script) {
 				$.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script, {
 					category: rule.instrument,
 					field: rule.field,
@@ -174,7 +172,7 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
-	updateVisit: function updateVisit(event) {
+	updateVisit: function (event) {
 		// Update rule to filter for specified visit
 		var rule = this.props.rule;
 		rule.visit = event.target.value;
@@ -188,7 +186,7 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
-	render: function render() {
+	render: function () {
 		// Renders the html for the component
 
 		var rule,
@@ -358,7 +356,7 @@ FilterRule = React.createClass({
 FilterGroup = React.createClass({
 	displayName: "FilterGroup",
 
-	updateChild: function updateChild(index, child) {
+	updateChild: function (index, child) {
 		// Update a specified child in the groups children
 
 		var group = this.props.group;
@@ -372,7 +370,7 @@ FilterGroup = React.createClass({
 			this.props.updateFilter(group);
 		}
 	},
-	updateGroupOperator: function updateGroupOperator(operator) {
+	updateGroupOperator: function (operator) {
 		// Update the group's operator
 		var group = this.props.group;
 		group.activeOperator = operator;
@@ -388,7 +386,7 @@ FilterGroup = React.createClass({
 			this.props.updateFilter(group);
 		}
 	},
-	updateSessions: function updateSessions(index, child) {
+	updateSessions: function (index, child) {
 		// Computes the desired sessions of the current group
 		var group = this.props.group,
 		    sessions = [],
@@ -405,7 +403,7 @@ FilterGroup = React.createClass({
 			this.props.updateFilter(group);
 		}
 	},
-	addChild: function addChild(type) {
+	addChild: function (type) {
 		// Add a child to the group
 		var child,
 		    group = this.props.group;
@@ -434,7 +432,7 @@ FilterGroup = React.createClass({
 			this.props.updateFilter(group);
 		}
 	},
-	deleteChild: function deleteChild(index) {
+	deleteChild: function (index) {
 		// Delete a child
 
 		var group = this.props.group;
@@ -451,7 +449,7 @@ FilterGroup = React.createClass({
 			this.props.updateFilter(group);
 		}
 	},
-	render: function render() {
+	render: function () {
 		// Renders the html for the component
 
 		var logicOperator = React.createElement(LogicOperator, { logicOperator: this.props.group.activeOperator,
@@ -559,7 +557,7 @@ FilterGroup = React.createClass({
 FilterBuilder = React.createClass({
 	displayName: "FilterBuilder",
 
-	render: function render() {
+	render: function () {
 		return React.createElement(
 			"div",
 			null,
@@ -584,4 +582,3 @@ FilterBuilder = React.createClass({
 		);
 	}
 });
-//# sourceMappingURL=react.filterBuilder.js.map

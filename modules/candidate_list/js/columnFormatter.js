@@ -1,5 +1,3 @@
-"use strict";
-
 function formatColumn(column, cell, rowData) {
     if (column === 'PSCID') {
         var url = loris.BaseURL + "/" + rowData[1] + "/";
@@ -53,4 +51,3 @@ function formatColumn(column, cell, rowData) {
         cell
     );
 }
-//# sourceMappingURL=columnFormatter.js.map

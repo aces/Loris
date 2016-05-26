@@ -1,5 +1,3 @@
-'use strict';
-
 DynamicDataTable = React.createClass({
     displayName: 'DynamicDataTable',
 
@@ -7,7 +5,7 @@ DynamicDataTable = React.createClass({
         DataURL: React.PropTypes.string.isRequired
     },
 
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             'Headers': [],
             'Data': [],
@@ -15,16 +13,16 @@ DynamicDataTable = React.createClass({
             'loadedData': 0
         };
     },
-    getDefaultProps: function getDefaultProps() {
+    getDefaultProps: function () {
         return {
             'DataURL': ''
         };
     },
-    componentDidMount: function componentDidMount() {
+    componentDidMount: function () {
         var that = this;
         $.ajax(this.props.DataURL, {
             dataType: 'json',
-            xhr: function xhr() {
+            xhr: function () {
                 var xhr = new window.XMLHttpRequest();
                 xhr.addEventListener("progress", function (evt) {
                     console.log(evt);
@@ -34,20 +32,20 @@ DynamicDataTable = React.createClass({
                 });
                 return xhr;
             },
-            success: function success(data) {
+            success: function (data) {
                 that.setState({
                     'Headers': data.Headers,
                     'Data': data.Data,
                     'isLoaded': true
                 });
             },
-            error: function error(data, error_code, error_msg) {
+            error: function (data, error_code, error_msg) {
                 console.error(error_code + ': ' + error_msg);
                 that.setState({ "error": "Error loading data" });
             }
         });
     },
-    render: function render() {
+    render: function () {
         if (!this.state.isLoaded) {
 
             if (this.state.error != undefined) {
@@ -79,4 +77,3 @@ DynamicDataTable = React.createClass({
 });
 
 RDynamicDataTable = React.createFactory(DynamicDataTable);
-//# sourceMappingURL=DynamicDataTable.js.map

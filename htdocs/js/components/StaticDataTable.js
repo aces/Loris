@@ -1,5 +1,3 @@
-"use strict";
-
 StaticDataTable = React.createClass({
     displayName: "StaticDataTable",
 
@@ -12,7 +10,7 @@ StaticDataTable = React.createClass({
         // func(ColumnName, CellData, EntireRowData)
         getFormattedCell: React.PropTypes.func
     },
-    componentDidMount: function componentDidMount() {
+    componentDidMount: function () {
         if (jQuery.fn.DynamicTable) {
             if (this.props.freezeColumn) {
                 $("#dynamictable").DynamicTable({ "freezeColumn": this.props.freezeColumn });
@@ -21,7 +19,7 @@ StaticDataTable = React.createClass({
             }
         }
     },
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             'PageNumber': 1,
             'SortColumn': -1,
@@ -29,19 +27,19 @@ StaticDataTable = React.createClass({
             'RowsPerPage': 20
         };
     },
-    getDefaultProps: function getDefaultProps() {
+    getDefaultProps: function () {
         return {
             Headers: [],
             Data: {},
             RowNumLabel: 'No.'
         };
     },
-    changePage: function changePage(pageNo) {
+    changePage: function (pageNo) {
         this.setState({
             PageNumber: pageNo
         });
     },
-    setSortColumn: function setSortColumn(colNumber) {
+    setSortColumn: function (colNumber) {
         that = this;
         return function (e) {
             if (that.state.SortColumn === colNumber) {
@@ -55,13 +53,13 @@ StaticDataTable = React.createClass({
             }
         };
     },
-    changeRowsPerPage: function changeRowsPerPage(val) {
+    changeRowsPerPage: function (val) {
         this.setState({
             'RowsPerPage': val.target.value,
             'PageNumber': 1
         });
     },
-    downloadCSV: function downloadCSV() {
+    downloadCSV: function () {
         var headers = this.props.Fields,
             csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
@@ -86,7 +84,7 @@ StaticDataTable = React.createClass({
             identifiers: this.props.RowNameMap
         });
     },
-    render: function render() {
+    render: function () {
         if (this.props.Data == null || this.props.Data.length == 0) {
             return React.createElement(
                 "div",
@@ -196,7 +194,7 @@ StaticDataTable = React.createClass({
                 }
                 if (this.props.getFormattedCell) {
                     data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[i].RowIdx]);
-                    curRow.push({ data: data });
+                    curRow.push({ data });
                 } else {
                     curRow.push(React.createElement(
                         "td",
@@ -313,4 +311,3 @@ StaticDataTable = React.createClass({
 });
 
 RStaticDataTable = React.createFactory(StaticDataTable);
-//# sourceMappingURL=StaticDataTable.js.map

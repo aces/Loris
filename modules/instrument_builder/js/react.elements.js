@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  *	This file contains the React classes the LORIS form
  *	elements.
@@ -11,7 +9,7 @@
 HeaderElement = React.createClass({
 	displayName: "HeaderElement",
 
-	render: function render() {
+	render: function () {
 		return React.createElement(
 			"h2",
 			null,
@@ -26,7 +24,7 @@ HeaderElement = React.createClass({
 LabelElement = React.createClass({
 	displayName: "LabelElement",
 
-	render: function render() {
+	render: function () {
 		return React.createElement(
 			"p",
 			null,
@@ -41,7 +39,7 @@ LabelElement = React.createClass({
 ScoredElement = React.createClass({
 	displayName: "ScoredElement",
 
-	render: function render() {
+	render: function () {
 		var score = this.props.score ? this.props.score : 0;
 		return React.createElement(
 			"div",
@@ -70,7 +68,7 @@ ScoredElement = React.createClass({
 TextboxElement = React.createClass({
 	displayName: "TextboxElement",
 
-	render: function render() {
+	render: function () {
 		return React.createElement(
 			"div",
 			null,
@@ -98,7 +96,7 @@ TextboxElement = React.createClass({
 TextareaElement = React.createClass({
 	displayName: "TextareaElement",
 
-	render: function render() {
+	render: function () {
 		return React.createElement(
 			"div",
 			null,
@@ -126,7 +124,7 @@ TextareaElement = React.createClass({
 SelectElement = React.createClass({
 	displayName: "SelectElement",
 
-	render: function render() {
+	render: function () {
 		var multiple = '';
 		if (this.props.multiple) {
 			// Set select type as mutiple
@@ -169,7 +167,7 @@ SelectElement = React.createClass({
 DateElement = React.createClass({
 	displayName: "DateElement",
 
-	render: function render() {
+	render: function () {
 		return React.createElement(
 			"div",
 			null,
@@ -201,7 +199,7 @@ DateElement = React.createClass({
 NumericElement = React.createClass({
 	displayName: "NumericElement",
 
-	render: function render() {
+	render: function () {
 		return React.createElement(
 			"div",
 			null,
@@ -234,7 +232,7 @@ NumericElement = React.createClass({
 LorisElement = React.createClass({
 	displayName: "LorisElement",
 
-	render: function render() {
+	render: function () {
 		var element = this.props.element,
 		    elementHtml = '';
 		switch (element.Type) {
@@ -284,4 +282,3 @@ LorisElement = React.createClass({
 		);
 	}
 });
-//# sourceMappingURL=react.elements.js.map

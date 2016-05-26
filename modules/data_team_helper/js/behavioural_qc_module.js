@@ -1,14 +1,10 @@
-'use strict';
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var PagedRowHeader = React.createClass({
     displayName: 'PagedRowHeader',
 
     propType: {
         'header_row': React.PropTypes.array.isRequired
     },
-    render: function render() {
+    render: function () {
         return React.createElement(
             'thead',
             null,
@@ -34,18 +30,18 @@ var PagedTable = React.createClass({
         'table_headers': React.PropTypes.array,
         'table_rows': React.PropTypes.array
     },
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             pageSize: 10,
             currentPage: 1
         };
     },
-    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps: function (nextProps) {
         this.setState({
             currentPage: 1
         });
     },
-    getPage: function getPage() {
+    getPage: function () {
         var start = this.state.pageSize * (this.state.currentPage - 1);
         var end = start + this.state.pageSize;
 
@@ -60,17 +56,17 @@ var PagedTable = React.createClass({
             }.bind(this)
         };
     },
-    getNumPages: function getNumPages() {
+    getNumPages: function () {
         var numPages = Math.floor(this.props.table_rows.length / this.state.pageSize);
         if (this.props.table_rows.length % this.state.pageSize > 0) {
             numPages++;
         }
         return numPages;
     },
-    handlePageChange: function handlePageChange(pageNum) {
+    handlePageChange: function (pageNum) {
         this.setState({ currentPage: pageNum });
     },
-    render: function render() {
+    render: function () {
         var page = this.getPage();
         var rows_to_map = page.table_rows;
         var children_to_map = this.props.children;
@@ -112,7 +108,7 @@ var PagedTable = React.createClass({
 var IncompleteCandidatesRow = React.createClass({
     displayName: 'IncompleteCandidatesRow',
 
-    handleClick: function handleClick(event) {
+    handleClick: function (event) {
         event.preventDefault();
         var link = React.findDOMNode(this.refs.incomplete);
         window.open(link, "Incomplete Candidate");
@@ -122,7 +118,7 @@ var IncompleteCandidatesRow = React.createClass({
         'BaseURL': React.PropTypes.string.isRequired
 
     },
-    render: function render() {
+    render: function () {
         var row = this.props.row;
         return React.createElement(
             'tr',
@@ -163,7 +159,7 @@ var IncompleteCandidatesRow = React.createClass({
 var InstrumentConflictsRow = React.createClass({
     displayName: 'InstrumentConflictsRow',
 
-    handleClick: function handleClick(event) {
+    handleClick: function (event) {
         //faking a form which posts to conflict_resolver
         event.preventDefault();
         var link = React.findDOMNode(this.refs.conflict);
@@ -179,14 +175,14 @@ var InstrumentConflictsRow = React.createClass({
                 "filter": "Show Data"
 
             },
-            success: function success(data) {
+            success: function (data) {
                 if (data != "") {
                     var wnd = window.open("data:text/html," + encodeURIComponent(data), "newStuff");
                     window.focus();
                     //window.open(link,'newStuff'); //open's link in newly opened tab!
                 }
             },
-            error: function error(xhr, desc, err) {
+            error: function (xhr, desc, err) {
                 console.log(xhr);
                 console.log("Details: " + desc + "\nError:" + err);
             }
@@ -196,9 +192,7 @@ var InstrumentConflictsRow = React.createClass({
         'row': React.PropTypes.object.isRequired,
         'BaseURL': React.PropTypes.string.isRequired
     },
-    render: function render() {
-        var _React$createElement;
-
+    render: function () {
         var row = this.props.row;
         return React.createElement(
             'tr',
@@ -222,7 +216,7 @@ var InstrumentConflictsRow = React.createClass({
                 null,
                 React.createElement(
                     'a',
-                    (_React$createElement = { href: 'conflict', onClick: this.handleClick }, _defineProperty(_React$createElement, 'href', this.props.BaseURL + "/conflict_resolver/"), _defineProperty(_React$createElement, 'className', 'conflict_resolver_link'), _defineProperty(_React$createElement, 'data-pscid', row.PSCID), _defineProperty(_React$createElement, 'data-question', row.FieldName), _defineProperty(_React$createElement, 'data-instrument', row.TableName), _defineProperty(_React$createElement, 'data-visits', row.visit_label), _React$createElement),
+                    { href: 'conflict', onClick: this.handleClick, href: this.props.BaseURL + "/conflict_resolver/", className: 'conflict_resolver_link', 'data-pscid': row.PSCID, 'data-question': row.FieldName, 'data-instrument': row.TableName, 'data-visits': row.visit_label },
                     row.test_name_display
                 )
             ),
@@ -238,7 +232,7 @@ var InstrumentConflictsRow = React.createClass({
 var BehaviouralFeedbackRow = React.createClass({
     displayName: 'BehaviouralFeedbackRow',
 
-    handleClick: function handleClick(event) {
+    handleClick: function (event) {
         event.preventDefault();
         var link = React.findDOMNode(this.refs.feedback).href;
         var feedbackwindow = window.open(link, "Behavioural Feedback");
@@ -247,7 +241,7 @@ var BehaviouralFeedbackRow = React.createClass({
         'row': React.PropTypes.object.isRequired,
         'BaseURL': React.PropTypes.string.isRequired
     },
-    render: function render() {
+    render: function () {
         var row = this.props.row;
         var bvl_link;
         var bvl_level;
@@ -301,7 +295,7 @@ var DefaultPanel = React.createClass({ displayName: 'CandidatesPanelTable',
     propTypes: {
         'title': React.PropTypes.string
     },
-    render: function render() {
+    render: function () {
         return React.createElement(
             'div',
             { className: 'panel panel-primary' },
@@ -322,7 +316,7 @@ var DefaultPanel = React.createClass({ displayName: 'CandidatesPanelTable',
 var IncompleteCandidates = React.createClass({
     displayName: 'IncompleteCandidates',
 
-    render: function render() {
+    render: function () {
         return React.createElement(
             DefaultPanel,
             { title: this.props.title },
@@ -338,7 +332,7 @@ var IncompleteCandidates = React.createClass({
 var InstrumentConflicts = React.createClass({
     displayName: 'InstrumentConflicts',
 
-    render: function render() {
+    render: function () {
         return React.createElement(
             DefaultPanel,
             { title: this.props.title },
@@ -354,7 +348,7 @@ var InstrumentConflicts = React.createClass({
 var BehaviouralFeedback = React.createClass({
     displayName: 'BehaviouralFeedback',
 
-    render: function render() {
+    render: function () {
         return React.createElement(
             DefaultPanel,
             { title: this.props.title },
@@ -370,7 +364,7 @@ var BehaviouralFeedback = React.createClass({
 var BVLPager = React.createClass({
     displayName: 'BVLPager',
 
-    render: function render() {
+    render: function () {
         var page = this.props.page;
         var pageLinks = [];
         if (page.currentPage > 1) {
@@ -488,7 +482,7 @@ var BVLPager = React.createClass({
 var dataTeamGraphics = React.createClass({
     displayName: 'dataTeamGraphics',
 
-    componentDidMount: function componentDidMount() {
+    componentDidMount: function () {
         var chart = c3.generate({
             bindto: '#completedChart',
             data: {
@@ -505,7 +499,7 @@ var dataTeamGraphics = React.createClass({
             }
         });
     },
-    render: function render() {
+    render: function () {
         if (this.props.pscid) {
             var pscid_status = "Candidate " + this.props.pscid;
         } else {
@@ -551,4 +545,3 @@ GraphicsPanel = React.createFactory(dataTeamGraphics);
 BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
 IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
 InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
-//# sourceMappingURL=behavioural_qc_module.js.map

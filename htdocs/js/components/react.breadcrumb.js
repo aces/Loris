@@ -1,9 +1,7 @@
-"use strict";
-
 Breadcrumbs = React.createClass({
 	displayName: "Breadcrumbs",
 
-	render: function render() {
+	render: function () {
 		var baseurl = this.props.baseURL,
 		    breadcrumbs = this.props.breadcrumbs.map(function (element, i) {
 			var url = baseurl + element.query;
@@ -40,4 +38,3 @@ Breadcrumbs = React.createClass({
 });
 
 RBreadcrumbs = React.createFactory(Breadcrumbs);
-//# sourceMappingURL=react.breadcrumb.js.map
