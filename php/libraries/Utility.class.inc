@@ -881,7 +881,7 @@ class Utility
         //$database = $config->getSetting('database');
         $query    = "SELECT count(*)
             FROM {$table_name}
-            WHERE {$column} is NULL;";
+            WHERE {$column} is NULL";
         $DB       =& Database::singleton();
         $num_null = $DB->pselectOne(
             $query,
