@@ -174,7 +174,7 @@
 <table border="0" valign="bottom" width="100%">
 <tr>
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
 
@@ -234,3 +234,15 @@
         </tbody>
     </table>
 </div>
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$numUploads},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/imaging_uploader/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
