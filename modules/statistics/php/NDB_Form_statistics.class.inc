@@ -160,12 +160,17 @@ class NDB_Form_statistics extends NDB_Form
         }
         // DDE STATS
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
-        $ddeInstrumentCriteria = "";
-        if ($ddeInstruments != null) {
-            $ddeInstrumentCriteria = implode("' OR f.Test_name='", $ddeInstruments);
-            $ddeInstrumentCriteria = "AND (f.Test_name ='" . $ddeInstrumentCriteria . "') ";
+        $ddeInstrumentsQuoted = array();
+        foreach ($ddeInstruments as $ddeInstrument) {
+            array_push($ddeInstrumentsQuoted, $DB->quote($ddeInstrument));
         }
 
+        $ddeInstrumentCriteria = "";
+        if ($ddeInstruments != null) {
+            $ddeInstrumentCriteria = implode(" OR f.Test_name=", $ddeInstrumentsQuoted);
+            $ddeInstrumentCriteria = "AND (f.Test_name =" . $ddeInstrumentCriteria . ") ";
+        }
+        
         $DB->select("SELECT s.CenterID, 
                 f.Data_Entry as Data_Entry, 
                 s.visit_label as VLabel,
