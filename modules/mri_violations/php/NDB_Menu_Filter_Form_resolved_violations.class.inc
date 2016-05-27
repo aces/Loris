@@ -373,10 +373,10 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             'unresolved'=>'label-danger',
 	        'reran'=>'label-success',
 	        'emailed'=>'label-info',
-	        'inserted'=>'label-default',
 	        'rejected'=>'label-danger',
 	        'inserted'=>'label-warning',
-	        'other'=>'label-primary'
+	        'other'=>'label-primary',
+            'inserted_flag'=>'label-default'
         );
         $this->tpl_data['resolved_styles'] = $resolved_styles;
 
