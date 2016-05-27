@@ -638,7 +638,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the template data for the table rows
         if (is_array($this->list) && !empty($this->list)) {
             // print out data rows
-            $this->_setDataTableRows($rowsPerPage*($pageID-1));
+            $this->_setDataTableRows($rowsPerPage*($pageID-1)+1);
         }
     }
 
