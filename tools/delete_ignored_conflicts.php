@@ -94,8 +94,8 @@ function detectIgnoreColumns($instruments)
 
         $file = "../project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
         if (file_exists($file)) {
-        include $file;
-        $instance =& NDB_BVL_Instrument::factory($instrument, null, null);
+            include $file;
+            $instance =& NDB_BVL_Instrument::factory($instrument, null, null);
 
             $DDEIgnoreFields = $instance->_doubleDataEntryDiffIgnoreColumns;
 
