@@ -98,7 +98,7 @@ CREATE TABLE `acknowledgements` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO LorisMenu (Label, OrderNumber) VALUES ('Acknowledgements', 7);
-INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Acknowledgements','acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Acknowledgements'), 1);
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Acknowledgements','/acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Acknowledgements'), 1);
 
 INSERT INTO permissions (code,description,categoryID) VALUES ('acknowledgements_view','View Acknowledgements',2);
 INSERT INTO permissions (code,description,categoryID) VALUES ('acknowledgements_edit','Edit Acknowledgements',2);
@@ -249,7 +249,7 @@ UPDATE help SET updated='2016-02-12 00:00:00' WHERE hash=md5('training');
 UPDATE help SET updated='2016-02-12 00:00:00' WHERE hash=md5('server processes manager');
 UPDATE help SET updated='2016-02-12 00:00:00' WHERE hash=md5('survey_accounts');
 UPDATE help SET updated='2016-02-12 00:00:00' WHERE hash=md5('instrument_list');
-INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Data Release', 'data_release/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 7);
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Data Release', '/data_release/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 7);
 
 DROP TABLE IF EXISTS `data_release`;
 CREATE TABLE `data_release` (
