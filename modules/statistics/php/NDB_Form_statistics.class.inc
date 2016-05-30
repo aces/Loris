@@ -88,8 +88,7 @@ class NDB_Form_statistics extends NDB_Form
     {
         $DB =& Database::singleton();
         $DB->select(
-            "
-              SELECT  CONCAT('C', CenterID) as ID,
+            "SELECT CONCAT('C', CenterID) as ID,
                       CenterID as NumericID,
                       PSCArea as LongName,
                       Name as ShortName
@@ -266,8 +265,7 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Projects']    = $projects;
 
         $DB->select(
-            "
-              SELECT CONCAT('C', CenterID) as ID,
+            "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     PSCArea as LongName,
                     Name as ShortName
@@ -276,6 +274,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND Study_site = 'Y'",
             $centers
         );
+
         $this->tpl_data['Centers'] = $centers;
         $this->tpl_data['Sites']   = array('' => 'All Sites');
         foreach ($centers as $row) {
@@ -379,8 +378,7 @@ class NDB_Form_statistics extends NDB_Form
             $currentProject
         );
 
-        $DB->select(
-            "SELECT s.SubprojectID,
+        $DB->select("SELECT s.SubprojectID,
                             c.CenterID, 
                             CASE s.visit_label
                             WHEN '6mo' THEN 'v06'
@@ -442,8 +440,7 @@ class NDB_Form_statistics extends NDB_Form
          */
 
         // MRI parameter form completed, but nothing in browser
-        $DB->select(
-            "SELECT s.CenterID as CenterID,
+        $DB->select("SELECT s.CenterID as CenterID,
                             COUNT(distinct f.CommentID) as val
                             FROM mri_parameter_form m LEFT
                             JOIN flag f ON (f.CommentID=m.CommentID)
@@ -465,8 +462,7 @@ class NDB_Form_statistics extends NDB_Form
         }
 
         // MRI Browser populated, but no MRI parameter form completed.
-        $DB->select(
-            "SELECT s.CenterID as CenterID, COUNT(distinct s.ID) as val
+        $DB->select("SELECT s.CenterID as CenterID, COUNT(distinct s.ID) as val
                             FROM files LEFT JOIN session s ON (files.SessionID=s.ID)
                             LEFT JOIN flag f on (f.SessionID=s.ID
                                 AND f.Test_name='mri_parameter_form' 
@@ -492,9 +488,7 @@ class NDB_Form_statistics extends NDB_Form
             $id   = $center['NumericID'];
             $name = $center['LongName'];
             // -------- MRI STATS---------------
-            $DB->select(
-                "
-                      SELECT COUNT(distinct s.CandID, s.Visit_label)
+            $DB->select("SELECT COUNT(distinct s.CandID, s.Visit_label)
                       FROM tarchive as t,
                           session as s
                       WHERE MID(t.PatientName,9,6)=s.CandID
@@ -502,12 +496,11 @@ class NDB_Form_statistics extends NDB_Form
                           AND s.CenterID={$center['NumericID']};",
                 $result23
             );
+
             list(,$result23)    =each($result23[0]);
             $work_station_count = $result23;
 
-            $DB->select(
-                "
-                      SELECT COUNT(s.CandID)
+            $DB->select("SELECT COUNT(s.CandID)
                       FROM session as s,
                           psc as p,
                           candidate as c
@@ -525,9 +518,7 @@ class NDB_Form_statistics extends NDB_Form
             list(,$result24) =each($result24[0]);
             $claimed_count   = $result24;
 
-            $DB->select(
-                "
-                      SELECT COUNT(s.CandID)
+            $DB->select("SELECT COUNT(s.CandID)
                       FROM mri_parameter_form as pf,
                           session as s,
                           flag as f,
@@ -549,7 +540,7 @@ class NDB_Form_statistics extends NDB_Form
             list(,$result25)        =each($result25[0]);
             $forms_count            = $result25;
             $three_scans            = $DB->selectOne(
-                " SELECT count(distinct CandID)
+                "SELECT count(distinct CandID)
                   FROM session v06
                       JOIN flag f06 ON (f06.SessionID=v06.ID
                                         AND Test_name='mri_parameter_form'
@@ -672,19 +663,25 @@ class NDB_Form_statistics extends NDB_Form
     function stats_demographic()
     {
         $DB =& Database::singleton();
-
+        $ExtraProject_Criteria="";
+        $subprojList="";
         $projects[null] = 'All Projects';
         foreach(Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
-        if(isset($_REQUEST['DemographicSite']) && $_REQUEST['DemographicSite'] != '') {
-            $ExtraSite_Criteria = 'AND (c.CenterID IS NULL OR c.CenterID=' . $_REQUEST['DemographicSite'] . ')';
+        if(isset($_REQUEST['DemographicSite'])
+            && $_REQUEST['DemographicSite'] != '') {
+            $ExtraSite_Criteria = 'AND (c.CenterID IS NULL OR c.CenterID=' .
+                $_REQUEST['DemographicSite'] .
+                ')';
         }
         else {
             $ExtraSite_Criteria = '';
         }
-        if(isset($_REQUEST['DemographicProject']) && $_REQUEST['DemographicProject'] != '') {
-            $ExtraProject_Criteria .= ' AND c.ProjectID=' . $_REQUEST['DemographicProject'];
+        if(isset($_REQUEST['DemographicProject'])
+            && $_REQUEST['DemographicProject'] != '') {
+            $ExtraProject_Criteria .= ' AND c.ProjectID=' .
+                $_REQUEST['DemographicProject'];
             $currentProject         = $_REQUEST['DemographicProject'];
             $this->tpl_data['CurrentProject'] = array(
                                                  'ID'   => $currentProject,
@@ -700,8 +697,7 @@ class NDB_Form_statistics extends NDB_Form
         $demographics_project_name     = $projects["{$_REQUEST['DemographicProject']}"];
         $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['Projects']    = $projects;
-        $DB->select(
-            "SELECT s.subprojectid as rowid, 
+        $result = $DB->pselect("SELECT s.subprojectid as rowid,
             COUNT(DISTINCT(c.PSCID)) as val 
             FROM candidate as c LEFT JOIN session s ON (s.CandID=c.CandID) 
             WHERE s.active='Y' AND s.CenterID <> '1'        
@@ -709,23 +705,49 @@ class NDB_Form_statistics extends NDB_Form
             AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')) 
             AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
             AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-            $ExtraSite_Criteria $ExtraProject_Criteria
+            $ExtraSite_Criteria
+            $ExtraProject_Criteria
             GROUP BY s.subprojectid",
-            $result
+            array()
         );
         foreach($result as $row) {
             $this->tpl_data['registered'][$row['rowid']]['visit'] = $row['val'];
             $this->tpl_data['registered']['visittotal']          += $row['val'];
 
-            // Total, explicitly calculated instead of added in the loop to ensure there's no one double registered in 2 different cohorts
-            $DB->select("SELECT count(distinct(c.PSCID)) from candidate as c WHERE c.PSCID<>'scanner' AND c.CenterID<>'1' AND c.Active='Y' $ExtraSite_Criteria $ExtraProject_Criteria", $total);
+            // Total, explicitly calculated instead of added in the loop to
+            // ensure there's no one double registered in 2 different cohorts
+            $total= $DB->pselect("SELECT count(distinct(c.PSCID))
+                          FROM candidate as c
+                          WHERE c.PSCID<>'scanner'
+                              AND c.CenterID<>'1'
+                              AND c.Active='Y'
+                              $ExtraSite_Criteria
+                              $ExtraProject_Criteria",
+                array()
+            );
+
             list(,$total)     =each($total[0]);
             $Total_candidates = $total;
             $this->tpl_data['Total_candidates'] = $Total_candidates;
 
         }
         // Total for 'registered candidates' row.
-        $DB->select("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left JOIN session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' AND c.PSCID <> 'scanner' AND coalesce(s.visit_label, 'v06') in ('v06', 'v12', 'v18', 'v24', 'v36') AND c.Active='Y' $ExtraSite_Criteria $ExtraProject_Criteria group by s.subprojectid", $result);
+        $result = $DB->pselect("SELECT s.subprojectid as rowid,
+                            count(DISTINCT(c.PSCID)) as val
+                      FROM candidate as c
+                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      WHERE coalesce(s.active, 'Y')='Y'
+                          AND c.CenterID <> '1'
+                          AND c.PSCID <> 'scanner'
+                          AND coalesce(s.visit_label, 'v06') in
+                                    ('v06', 'v12', 'v18', 'v24', 'v36')
+                          AND c.Active='Y'
+                          $ExtraSite_Criteria
+                          $ExtraProject_Criteria
+                      GROUP BY s.subprojectid",
+            array()
+        );
+
         foreach($result as $row) {
             $this->tpl_data['registered'][$row['rowid']]['total'] = $row['val'];
             $this->tpl_data['registered']['total'] += $row['val'];
@@ -734,18 +756,25 @@ class NDB_Form_statistics extends NDB_Form
         // Number of visits.
         // This is based on the EDI completion status, since the EDI
         // is done by every cohort at every visit
-        $DB->select(
-            "SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM flag f JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID)  where f.Test_name IN
-                ('edi', 'mri_parameter_form', 'vineland_subject')
-                AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
-                AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-                AND s.Active='Y'
-                AND c.Active='Y'
-                AND (f.Administration = 'All' OR f.Administration='Partial')
-                AND s.Current_stage <> 'Recycling Bin'
-                $ExtraSite_Criteria $ExtraProject_Criteria
-                GROUP BY s.SubprojectID",
-            $result
+        $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val,
+                            s.SubprojectID as rowid
+                      FROM flag f
+                          JOIN session s ON (s.ID=f.SessionID)
+                          JOIN candidate c ON (c.CandID=s.CandID)
+                      WHERE f.Test_name IN
+                                ('edi', 'mri_parameter_form', 'vineland_subject')
+                          AND COALESCE(s.Screening,'') NOT IN
+                                ('Failure', 'Withdrawal')
+                          AND COALESCE(s.Visit,'') NOT IN
+                                ('Failure', 'Withdrawal')
+                          AND s.Active='Y'
+                          AND c.Active='Y'
+                          AND (f.Administration = 'All' OR f.Administration='Partial')
+                          AND s.Current_stage <> 'Recycling Bin'
+                          $ExtraSite_Criteria
+                          $ExtraProject_Criteria
+                      GROUP BY s.SubprojectID",
+            array()
         );
         foreach($result as $row) {
             $this->tpl_data['edi'][$row['rowid']]['complete'] = $row['val'];
@@ -753,18 +782,24 @@ class NDB_Form_statistics extends NDB_Form
         }
 
         // Number of T1 candidates scanned
-        $DB->select(
-            "SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM flag f JOIN mri_parameter_form mp USING(CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) WHERE f.Test_name='mri_parameter_form'
-                AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
-                AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-                AND s.Active='Y'
-                AND c.Active='Y'
-                AND f.Administration <> 'None'
-                AND mp.T1_Scan_done='Complete'
-                AND s.Current_stage <> 'Recycling Bin'
-                $ExtraSite_Criteria $ExtraProject_Criteria
-                GROUP BY s.SubprojectID",
-            $result
+        $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val,
+                            s.SubprojectID as rowid
+                      FROM flag f
+                          JOIN mri_parameter_form mp USING(CommentID)
+                          JOIN session s ON (s.ID=f.SessionID)
+                          JOIN candidate c ON (c.CandID=s.CandID)
+                      WHERE f.Test_name='mri_parameter_form'
+                          AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
+                          AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
+                          AND s.Active='Y'
+                          AND c.Active='Y'
+                          AND f.Administration <> 'None'
+                          AND mp.T1_Scan_done='Complete'
+                          AND s.Current_stage <> 'Recycling Bin'
+                          $ExtraSite_Criteria
+                          $ExtraProject_Criteria
+                      GROUP BY s.SubprojectID",
+            array()
         );
         foreach($result as $row) {
             $this->tpl_data['scanned'][$row['rowid']]['complete'] = $row['val'];
@@ -773,7 +808,16 @@ class NDB_Form_statistics extends NDB_Form
 
         // Adds a C to the start of the centerid, because that's how the
         // template is looking for it. Exclude DCC
-        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1' AND Study_site = 'Y'", $centers);
+        $centers = $DB->pselect("SELECT CONCAT('C', CenterID) as ID,
+                          CenterID as NumericID,
+                          PSCArea as LongName,
+                          Name as ShortName
+                      FROM psc
+                      WHERE CenterID <> '1'
+                          AND Study_site = 'Y'",
+            array()
+        );
+
         $this->tpl_data['Centers'] = $centers;
         $this->tpl_data['Sites']   = array('' => 'All Sites');
         foreach ($centers as $row) {
@@ -800,59 +844,80 @@ class NDB_Form_statistics extends NDB_Form
                               'Complete',
                               'Incomplete',
                              );
-            $DB->select(
+            $result = $DB->pselect(
                 "SELECT count(*) as val, 
-                f.Data_entry as Subcat, 
-                c.CenterID as CenterID, 
-                s.SubprojectID as SubprojectID,
-                s.visit_label as VLabel
+                    f.Data_entry as Subcat,
+                    c.CenterID as CenterID,
+                    s.SubprojectID as SubprojectID,
+                    s.visit_label as VLabel
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
-                JOIN flag f ON (f.SessionID=s.ID)
-                JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
-                WHERE s.Active='Y' AND
-                c.CenterID <> '1' AND f.Data_entry='Complete' AND
-                f.Administration='All' AND
-                f.CommentID NOT LIKE 'DDE%'
-                $ExtraProject_Criteria
+                    JOIN flag f ON (f.SessionID=s.ID)
+                    JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
+                WHERE s.Active='Y'
+                    AND c.CenterID <> '1'
+                    AND f.Data_entry='Complete'
+                    AND f.Administration='All'
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    $ExtraProject_Criteria
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
                 UNION
                 SELECT count(*) as val, 'Incomplete' as Subcat, 
-                c.CenterID as CenterID, 
-                s.SubprojectID as SubprojectID,
-                s.visit_label as VLabel
+                    c.CenterID as CenterID,
+                    s.SubprojectID as SubprojectID,
+                    s.visit_label as VLabel
                 FROM session s JOIN candidate c USING(CandID) 
-                JOIN flag f ON (f.SessionID=s.ID) 
-                JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
+                    JOIN flag f ON (f.SessionID=s.ID)
+                    JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
                 WHERE s.Active='Y' AND s.CenterID <> 1
-                $ExtraProject_Criteria
-                AND f.CommentID NOT LIKE 'DDE%' AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
+                    $ExtraProject_Criteria
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
                 ",
-                $result
+                array()
             );
-            $this->tpl_data['RecruitsTable'] = $this->render_stats_table("Data Entry Completion Status for $_REQUEST[DemographicInstrument]", $Subcategories, $Visits, "DemographicInstrument", $instruments, $_REQUEST['DemographicInstrument'], $centers, $result, "demographics", $currentProject);
+            $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
+                "Data Entry Completion Status for $_REQUEST[DemographicInstrument]",
+                $Subcategories, $Visits,
+                "DemographicInstrument",
+                $instruments,
+                $_REQUEST['DemographicInstrument'],
+                $centers,
+                $result,
+                "demographics",
+                $currentProject
+            );
         } else {
             $Subcategories = array(
                               'Male',
                               'Female',
                              );
-            $DB->select(
+            $result = $DB->pselect(
                 "SELECT c.CenterID as CenterID, 
-                s.SubprojectID as SubprojectID, 
-                s.visit_label as VLabel,
-                c.gender as Subcat,
-                count(s.CandID) as val
+                    s.SubprojectID as SubprojectID,
+                    s.visit_label as VLabel,
+                    c.gender as Subcat,
+                    count(s.CandID) as val
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID) 
                 WHERE s.active='Y' AND s.CenterID <> '1'
-                AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
-                AND s.SubprojectID IN ($subprojList))  
-                AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
-                AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
+                    AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
+                    AND s.SubprojectID IN ($subprojList))
+                    AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
+                    AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat",
-                $result
+                array()
             );
-            $this->tpl_data['RecruitsTable'] = $this->render_stats_table("Breakdown of Registered Candidates", $Subcategories, $Visits, "DemographicInstrument", $instruments, '', $centers, $result, "demographics", $currentProject);
-
+            $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
+                "Breakdown of Registered Candidates",
+                $Subcategories, $Visits,
+                "DemographicInstrument",
+                $instruments,
+                '',
+                $centers,
+                $result,
+                "demographics",
+                $currentProject
+            );
         }
     }
 
