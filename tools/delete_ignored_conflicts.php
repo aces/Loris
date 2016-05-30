@@ -11,7 +11,7 @@
  *
  *     confirm mode -> Actually removes the conflicts.
  *
- * Usage: php assign_missing_instrument.php [Test_name] [confirm]
+ * Usage: php delete_ignored_conflicts.php [Test_name] [confirm]
  *
  * Example: php delete_ignored_conflicts.php tsi
  * (Will use regular mode and print the obsolete conflicts)
@@ -35,13 +35,9 @@ $client->makeCommandLine();
 $client->initialize('../project/config.xml');
 $config        =& NDB_Config::singleton();
 
-// Meta fields that should be removed
-$defaultFields = array(
-    'CommentID', 'UserID', 'Testdate', 'Window_Difference',
-    'Candidate_Age', 'Data_entry_completion_status'
-);
-
+// Holds instruments to remove "ignored" conflicts from
 $instruments = array();
+// Whether or not a specific instrument was specified
 $instrumentSpecified = false;
 
 $confirm = false;
@@ -50,6 +46,7 @@ if ((isset($argv[1]) && $argv[1] === "confirm")
     $confirm = true;
 }
 
+// If an instrument was not specified, check all DDE instruments
 if (!empty($argv[1]) && $argv[1]!="confirm") {
     $instruments[0] = $argv[1];
     $instrumentSpecified = true;
@@ -58,7 +55,7 @@ if (!empty($argv[1]) && $argv[1]!="confirm") {
 }
 
 if (isset($instruments)) {
-    detectIgnoreColumns($instruments);
+    detectIgnoreColumns($instruments, $instrumentSpecified, $confirm);
 }
 else {
     echo "No instruments found";
@@ -67,6 +64,9 @@ else {
 if ($confirm === false) {
     echo "\n\nRun this tool again with the argument 'confirm' to ".
         "perform the changes\n\n";
+}
+else {
+    echo "Finished.\n\n";
 }
 
 /**
@@ -113,31 +113,26 @@ function getCommentIDs($test_name, $visit_label=null, $candid=null)
  * @param $instruments
  * @throws Exception
  */
-function detectIgnoreColumns($instruments)
+function detectIgnoreColumns($instruments, $instrumentSpecified, $confirm)
 {
     $instrumentFields = array();
 
     foreach ($instruments as $instrument) {
         $file = "../project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
         if (file_exists($file)) {
-            include $file;
+            include_once $file;
             $commentids = getCommentIDs($instrument, null);
             $instance =& NDB_BVL_Instrument::factory($instrument, $commentids[0]['CommentID'], null);
             $DDEIgnoreFields = $instance->_doubleDataEntryDiffIgnoreColumns;
 
             if ($DDEIgnoreFields != null) {
                 foreach ($DDEIgnoreFields as $key => $DDEField) {
-                    if (!in_array($DDEField, $this->defaultFields)) {
-                        $instrumentFields = array_merge($instrumentFields, array($DDEField => $instrument));
-                    }
+                    $instrumentFields = array_merge($instrumentFields, array($DDEField => $instrument));
                 }
             } else {
                 echo "No DDE ignore fields found for " . $instrument;
             }
-            if (!$this->instrumentSpecified) {
-                defaultIgnoreColumns();
-            }
-            ignoreColumn($instrument, $instrumentFields);
+            ignoreColumn($instrument, $instrumentFields, $confirm);
         }
         else {
             echo $file . " was not found.\n";
@@ -145,54 +140,32 @@ function detectIgnoreColumns($instruments)
     }
 }
 
-/*
- * Prints the default ignore columns to be removed
- * Removes the fields if confirmation is set
- */
-function defaultIgnoreColumns() {
-    $db =& Database::singleton();
-
-    if ($this->confirm) {
-        foreach ($this->defaultFields as $field) {
-            $defaultQuery = "DELETE FROM conflicts_unresolved WHERE FieldName = '$field'";
-            $changes = $db->run($defaultQuery);
-            echo $changes;
-        }
-    }
-    else {
-        foreach ($this->defaultFields as $field) {
-            $defaultQuery = "SELECT TableName, FieldName, Value1, Value2 
-          FROM conflicts_unresolved WHERE FieldName = '$field'";
-            $defaultColumn = $db->pselectOne($defaultQuery, array());
-            echo "TableName, FieldName, Value1, Value2: ";
-            print_r($defaultColumn);
-        }
-    }
-}
 
 /*
  * Prints the instrument-specific ignore columns to be removed
  * Removes the fields if confirmation is set
  */
-function ignoreColumn($instrument, $instrumentFields) {
+function ignoreColumn($instrument, $instrumentFields, $confirm) {
     $db =& Database::singleton();
 
-    if ($this->confirm) {
-        foreach ($instrumentFields as $field => $instr) {
-            $query = "DELETE FROM conflicts_unresolved WHERE TableName = '$instrument' AND FieldName = '$field'";
-            $changes = $db->run($query);
-            echo $changes;
-        }
-    }
-    else {
-        foreach ($instrumentFields as $field => $instr) {
-            $query = "SELECT TableName, FieldName, Value1, Value2 FROM conflicts_unresolved 
-          WHERE TableName = '$instrument' AND FieldName = '$field'";
-            $ignoreColumn = $db->pselectOne($query, array());
-            echo "TableName, FieldName, Value1, Value2: ";
-            print_r($ignoreColumn);
-        }
-    }
-}
+    echo "Instrument: $instrument \n";
 
-?>
+    foreach ($instrumentFields as $field => $instr) {
+
+
+        $query = "SELECT TableName, FieldName, Value1, Value2 FROM conflicts_unresolved 
+          WHERE TableName = '$instrument' AND FieldName = '$field'";
+        $ignoreColumn = $db->pselectOne($query, array());
+
+        if (!empty($ignoreColumn)) {
+            echo " - " . $field;
+            if ($confirm) {
+                $query = "DELETE FROM conflicts_unresolved WHERE TableName = '$instrument' AND FieldName = '$field'";
+                $db->run($query);
+                echo " removed";
+            }
+            echo  "\n";
+        }
+    }
+    echo "\n";
+}
