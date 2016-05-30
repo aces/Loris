@@ -29,7 +29,7 @@ $client = new NDB_Client();
 $client->initialize();
 
 
-list($name,$extra) = split("___", $_REQUEST['fieldname']);
+list($name,$extra) = explode("___", $_REQUEST['fieldname']);
 
 if (get_magic_quotes_gpc()) {
     // Magic quotes adds \ to description, get rid of it.
