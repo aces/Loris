@@ -1118,7 +1118,6 @@ class NDB_BVL_Instrument extends NDB_Page
 
                 $databaseValue = $yearString . "-" . $monthString . "-" . $dayString;
 
-
             } elseif (array_key_exists("H", $formDateValue)
                 || array_key_exists("i", $formDateValue)
             ) {
@@ -1127,7 +1126,6 @@ class NDB_BVL_Instrument extends NDB_Page
                 } else {
                     $hourString = "00";
                 }
-
                 if (array_key_exists("i", $formDateValue)) {
                     $minuteString = $formDateValue[i];
                 } else {
