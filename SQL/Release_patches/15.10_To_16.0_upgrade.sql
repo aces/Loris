@@ -34,44 +34,44 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='document_repository_view' AND m.Label='Document Repository';
 -- Candidate Menu
-update LorisMenu SET Link='candidate_list/' WHERE Link='main.php?test_name=candidate_list';
-update LorisMenu SET Link='new_profile/' WHERE Link='main.php?test_name=new_profile';
+update LorisMenu SET Link='/candidate_list/' WHERE Link='main.php?test_name=candidate_list';
+update LorisMenu SET Link='/new_profile/' WHERE Link='main.php?test_name=new_profile';
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='access_all_profiles' AND m.Label='New Profile';
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='access_all_profiles' AND m.Label='Access Profile';
 
 -- Clinical Menu
-update LorisMenu SET Link='reliability/' WHERE Link="main.php?test_name=reliability";
-update LorisMenu SET Link='conflict_resolver/' WHERE Link="main.php?test_name=conflict_resolver";
-update LorisMenu SET Link='examiner/' WHERE Link="main.php?test_name=examiner";
-update LorisMenu SET Link='training/' WHERE Link="main.php?test_name=training";
+update LorisMenu SET Link='/reliability/' WHERE Link="main.php?test_name=reliability";
+update LorisMenu SET Link='/conflict_resolver/' WHERE Link="main.php?test_name=conflict_resolver";
+update LorisMenu SET Link='/examiner/' WHERE Link="main.php?test_name=examiner";
+update LorisMenu SET Link='/training/' WHERE Link="main.php?test_name=training";
 
 -- Imaging Menu
-update LorisMenu SET Link='final_radiological_review/' WHERE Link="main.php?test_name=final_radiological_review";
-update LorisMenu SET Link='dicom_archive/' WHERE Link="main.php?test_name=dicom_archive";
-update LorisMenu SET Link='imaging_browser/' WHERE Link="main.php?test_name=imaging_browser";
-update LorisMenu SET Link='mri_violations/' WHERE Link="main.php?test_name=mri_violations";
-update LorisMenu SET Link='imaging_uploader/' WHERE Link="main.php?test_name=imaging_uploader";
+update LorisMenu SET Link='/final_radiological_review/' WHERE Link="main.php?test_name=final_radiological_review";
+update LorisMenu SET Link='/dicom_archive/' WHERE Link="main.php?test_name=dicom_archive";
+update LorisMenu SET Link='/imaging_browser/' WHERE Link="main.php?test_name=imaging_browser";
+update LorisMenu SET Link='/mri_violations/' WHERE Link="main.php?test_name=mri_violations";
+update LorisMenu SET Link='/imaging_uploader/' WHERE Link="main.php?test_name=imaging_uploader";
 
 -- Reports menu
-update LorisMenu SET Link='statistics/' WHERE Link="main.php?test_name=statistics";
+update LorisMenu SET Link='/statistics/' WHERE Link="main.php?test_name=statistics";
 
 -- Tools menu
-update LorisMenu SET Link='datadict/' WHERE Link="main.php?test_name=datadict";
-update LorisMenu SET Link='document_repository/' WHERE Link="main.php?test_name=document_repository";
-update LorisMenu SET Link='data_integrity_flag/' WHERE Link="main.php?test_name=data_integrity_flag";
-update LorisMenu SET Link='data_team_helper/' WHERE Link="main.php?test_name=data_team_helper";
-update LorisMenu SET Link='instrument_builder/' WHERE Link="main.php?test_name=instrument_builder";
-update LorisMenu SET Link='genomic_browser/' WHERE Link="main.php?test_name=genomic_browser";
+update LorisMenu SET Link='/datadict/' WHERE Link="main.php?test_name=datadict";
+update LorisMenu SET Link='/document_repository/' WHERE Link="main.php?test_name=document_repository";
+update LorisMenu SET Link='/data_integrity_flag/' WHERE Link="main.php?test_name=data_integrity_flag";
+update LorisMenu SET Link='/data_team_helper/' WHERE Link="main.php?test_name=data_team_helper";
+update LorisMenu SET Link='/instrument_builder/' WHERE Link="main.php?test_name=instrument_builder";
+update LorisMenu SET Link='/genomic_browser/' WHERE Link="main.php?test_name=genomic_browser";
 
 -- Admin menu
-update LorisMenu SET Link='user_accounts/' WHERE Link="main.php?test_name=user_accounts";
-update LorisMenu SET Link='survey_accounts/' WHERE Link="main.php?test_name=survey_accounts";
-update LorisMenu SET Link='help_editor/' WHERE Link="main.php?test_name=help_editor";
-update LorisMenu SET Link='instrument_manager/' WHERE Link="main.php?test_name=instrument_manager";
-update LorisMenu SET Link='configuration/' WHERE Link="main.php?test_name=configuration";
-update LorisMenu SET Link='server_process_manager/' WHERE Link="main.php?test_name=server_process_manager";
+update LorisMenu SET Link='/user_accounts/' WHERE Link="main.php?test_name=user_accounts";
+update LorisMenu SET Link='/survey_accounts/' WHERE Link="main.php?test_name=survey_accounts";
+update LorisMenu SET Link='/help_editor/' WHERE Link="main.php?test_name=help_editor";
+update LorisMenu SET Link='/instrument_manager/' WHERE Link="main.php?test_name=instrument_manager";
+update LorisMenu SET Link='/configuration/' WHERE Link="main.php?test_name=configuration";
+update LorisMenu SET Link='/server_process_manager/' WHERE Link="main.php?test_name=server_process_manager";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('APIKeys', 'Specify any API keys required for LORIS', 1, 0, 'API Keys', 10);
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'JWTKey', 'Secret key for signing JWT tokens on this server. This should be unique and never shared with anyone. ', 1, 0, 'text', ID, 'JWT Secret Key', 9 FROM ConfigSettings WHERE Name="APIKeys";
 
@@ -281,11 +281,10 @@ UPDATE files_qcstatus AS fq, parameter_file AS pf, parameter_type AS pt SET fq.S
 -- Remove all Selected values from parameter_file
 -- DELETE FROM parameter_file WHERE ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='Selected');
 -- DELETE FROM parameter_type WHERE Name="Selected";
-UPDATE Config SET Value = LEFT(Value , LENGTH(Value)-1) WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url') AND RIGHT(Value,1) = "/";
-UPDATE LorisMenu SET Link = RIGHT(Link, LENGTH(Link)-1) WHERE LEFT(Link,1) = "/";ALTER TABLE test_battery ADD instr_order tinyint after firstVisit;
+ALTER TABLE test_battery ADD instr_order tinyint after firstVisit;
 ALTER TABLE test_subgroups ADD group_order tinyint after Subgroup_name;
 -- Update the Dataquery Menu Link
-UPDATE LorisMenu SET Link='dataquery/' WHERE Label='Data Query Tool';
+UPDATE LorisMenu SET Link='/dataquery/' WHERE Label='Data Query Tool';
 
 -- Add Dataquery permission
 INSERT INTO permissions (code, description, categoryID) VALUES ('dataquery_view','View Data Query Tool','2');
@@ -389,7 +388,7 @@ ALTER TABLE genomic_files
     ADD FOREIGN KEY (AnalysisModality) REFERENCES genomic_analysis_modality_enum (analysis_modality),
     MODIFY `Category` enum('raw','cleaned') DEFAULT NULL;
 -- Admin menu
-update LorisMenu SET Link='server_processes_manager/' WHERE Link="main.php?test_name=server_processes_manager";
+update LorisMenu SET Link='/server_processes_manager/' WHERE Link="main.php?test_name=server_processes_manager";
 ALTER TABLE mri_upload CHANGE `Inserting` `Inserting` tinyint(1) DEFAULT NULL;
 INSERT INTO help (parentID, hash, topic, content, updated) VALUES (-1, md5('genomic_browser'), 'Genomic Browser', 'The Genomic Browser houses analyzed genetic results and facilitates exploration of these datasets, cross-linked with behavioural and imaging subject data.  Within each tab, all fields or only a selection of Summary fields can be viewed by toggling the Display select box.  One-click download of the current dataview is also available. \r\nThe Profiles tab displays all genetic data stored in Loris per candidate, and enables application of filters including phenotypes. \r\nThe GWAS, SNP, CNV and Methylation tabs enable filtering and exploration of analysis-specific datasets performed on a candidate population.\r\nThe Files tab displays all genetic filesets available for download, and provides upload functionality for Methylation data (16.0). Clicking on a fileset name will load a subpage displaying the metadata available for this file, as well enabling its download. \r\n', '2016-04-07 00:00:00');
 -- Create a permission for Genomic file upload
@@ -408,3 +407,5 @@ ON DUPLICATE KEY UPDATE content='The Imaging Uploader allows users to upload ima
 
 REPLACE INTO help (parentID, hash, topic, content, updated) VALUES(IFNULL((SELECT h.helpID FROM help as h WHERE h.topic LIKE 'Configuration%'),-1), md5('project'), 'Project', 'You then click on &quot;New ProjectID&quot;, fill in the fields on the right, click save.  Immediately refresh the page to view your new project.  Clicking save more than once will register a duplicate project ID.  If you create an extra ID, you have to delete it from the database manually with an sql command.\n\nDefine all projectID-subprojectID relationships by populating the project_rel table, e.g.\n\nINSERT INTO `project_rel` VALUES (1,1),(1,2),(2,3);', '2016-04-01 00:00:00');
 REPLACE INTO help (parentID, hash, topic, content, updated) VALUES(IFNULL((SELECT h.helpID FROM help as h WHERE h.topic LIKE 'Configuration%'),-1), md5('subproject'), 'Subproject', 'You then click on &quot;New SubprojectID&quot;, fill in the fields on the right, click save.  Immediately refresh the page to view your new subproject.  Clicking save more than once will register a duplicate subproject ID.  If you create an extra ID, you have to delete it from the database manually with an sql command.\n\nDefine all projectID-subprojectID relationships by populating the project_rel table, e.g.\n\nINSERT INTO `project_rel` VALUES (1,1),(1,2),(2,3);', '2016-04-01 00:00:00');
+UPDATE Config SET Value = LEFT(Value , LENGTH(Value)-1) WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url') AND RIGHT(Value,1) = "/";
+UPDATE LorisMenu SET Link = RIGHT(Link, LENGTH(Link)-1) WHERE LEFT(Link,1) = "/";
