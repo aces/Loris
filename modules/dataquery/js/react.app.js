@@ -480,7 +480,11 @@ DataQueryApp = React.createClass({
                 // Adding a new visit for field, add visit to field and
                 // increase count of visit in allVisits
                 temp[field.field][visit] = visit;
-                temp.allVisits[visit]++;
+                if (temp.allVisits[visit]) {
+                    temp.allVisits[visit]++;
+                } else {
+                    temp.allVisits[visit] = 1;
+                }
             } else {
                 // Removing visit, delete visit from field
                 delete temp[field.field][visit];
@@ -549,15 +553,19 @@ DataQueryApp = React.createClass({
                 }
             } else {
                 // The category already has fields but not the desired one, add it
-                selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+                // var selectedVisits = Object.keys(selectedFields[category].allVisits);
+                if (!selectedFields[category][fieldName]) {
+                    selectedFields[category][fieldName] = {};
+                }
+                // selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
 
                 // Increment the visit count for the visit, setting it to 1 if doesn't exist
-                for (var key in that.props.Visits) {
-                    if (selectedFields[category].allVisits[key]) {
-                        selectedFields[category].allVisits[key]++;
-                    } else {
-                        selectedFields[category].allVisits[key] = 1;
+                for (var key in selectedFields[category].allVisits) {
+                    if (key == "allVisits") {
+                        continue;
                     }
+                    selectedFields[category].allVisits[key]++;
+                    selectedFields[category][fieldName][key] = key;
                 }
                 fields.push(category + "," + fieldName);
                 if (downloadable) {
