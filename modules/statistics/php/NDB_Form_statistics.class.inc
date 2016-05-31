@@ -232,7 +232,7 @@ class NDB_Form_statistics extends NDB_Form
     function stats_MRI()
     {
         $DB =& Database::singleton();
-
+        $subprojList="";
         $projects[null] = 'All Projects';
         foreach(Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
@@ -784,8 +784,11 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['edi']['complete'] += $row['val'];
         }
 
-        // Number of T1 candidates scanned
-        $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val,
+        $mri_table_exists = true;
+
+        if (Database::tableExists('mri_parameter_form')) {
+            // Number of T1 candidates scanned
+            $result = $DB->pselect("SELECT count(DISTINCT c.PSCID) as val,
                             s.SubprojectID as rowid
                       FROM flag f
                           JOIN mri_parameter_form mp USING(CommentID)
@@ -802,12 +805,18 @@ class NDB_Form_statistics extends NDB_Form
                           $ExtraSite_Criteria
                           $ExtraProject_Criteria
                       GROUP BY s.SubprojectID",
-            array()
-        );
-        foreach($result as $row) {
-            $this->tpl_data['scanned'][$row['rowid']]['complete'] = $row['val'];
-            $this->tpl_data['scanned']['complete'] += $row['val'];
+                array()
+            );
+            foreach ($result as $row) {
+                $this->tpl_data['scanned'][$row['rowid']]['complete'] = $row['val'];
+                $this->tpl_data['scanned']['complete'] += $row['val'];
+            }
+
+        } else {
+            $mri_table_exists = false;
         }
+        $this->tpl_data['mri_table_exists'] = $mri_table_exists;
+
 
         // Adds a C to the start of the centerid, because that's how the
         // template is looking for it. Exclude DCC
