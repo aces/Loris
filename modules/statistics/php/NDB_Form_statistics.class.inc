@@ -234,6 +234,12 @@ class NDB_Form_statistics extends NDB_Form
         $DB =& Database::singleton();
         $subprojList="";
         $projects[null] = 'All Projects';
+        $this->tpl_data['mri_table_exists'] = true;
+        //if table is not in database handle by displaying error message
+        if (!Database::tableExists('mri_parameter_form')){
+            $this->tpl_data['mri_table_exists'] = false;
+            return;
+        }
         foreach(Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
@@ -424,7 +430,8 @@ class NDB_Form_statistics extends NDB_Form
                             FROM flag f JOIN session s ON (f.SessionID=s.ID)
                             LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
                             -- LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6))
-                            LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6) AND MID(t.PatientName, 16, 3)=s.Visit_label)
+                            LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6)
+                                AND MID(t.PatientName, 16, 3)=s.Visit_label)
                             LEFT JOIN candidate c ON (s.CandID=c.CandID)
                             WHERE f.CommentID NOT LIKE 'DDE%'
                             AND f.Test_name='mri_parameter_form'
