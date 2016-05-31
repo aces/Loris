@@ -1050,6 +1050,34 @@ class Database
             "Database class no longer extends PEAR"
         );
     }
+    /**
+     * Checks to see if a table exists in the Database
+     *
+     * @param string $test_name The table to check for.
+     *
+     * @return  boolean true if the table exists
+     */
+    static function tableExists($test_name)
+    {
+        $config   =& NDB_Config::singleton();
+        $database = $config->getSetting('database');
+        $query    = "SELECT DISTINCT table_name
+            FROM information_schema.tables
+            WHERE table_name = :tn
+            AND TABLE_SCHEMA = :db";
+        $DB       =& Database::singleton();
+        $effected = $DB->pselectOne(
+            $query,
+            array(
+                'tn' => $test_name,
+                'db' => $database,
+            )
+        );
+        if ($effected) {
+            return true;
+        }
+        return false;
+    }
 
 }
 ?>
