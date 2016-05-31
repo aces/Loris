@@ -231,12 +231,16 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
     propTypes: {
         selectedFields: React.PropTypes.array
     },
-    getInitialState: function() {
+    getInitialState: function () {
+        var instruments = {};
+        for (var i = 0; i < this.props.items.length; i++) {
+            instruments[this.props.items[i].category] = this.props.items[i].category;
+        }
         return {
             filter: "",
             selectedCategory: "",
-            categoryFields: {
-            }
+            categoryFields: {},
+            instruments: instruments
         };
     },
     onFieldSelect: function(fieldName, category, downloadable) {
@@ -295,8 +299,40 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
             }
         }
     },
+<<<<<<< HEAD
     render: function() {
+=======
+    modifyCategoryFieldVists: function (visit, action) {
+        if (this.state.selectedCategory && this.props.selectedFields[this.state.selectedCategory]) {
+            for (var field in this.props.selectedFields[this.state.selectedCategory]) {
+                if (field == "allVisits") {
+                    continue;
+                }
+                if (action == "check" && !this.props.selectedFields[this.state.selectedCategory][field][visit]) {
+                    this.props.fieldVisitSelect(action, visit, { "instrument": this.state.selectedCategory, "field": field });
+                } else if (action == "uncheck" && this.props.selectedFields[this.state.selectedCategory][field][visit]) {
+                    this.props.fieldVisitSelect(action, visit, { "instrument": this.state.selectedCategory, "field": field });
+                }
+            }
+        }
+    },
+    render: function () {
+>>>>>>> ae7e0d2... create selectdropdown for dataquery tool
         // Renders the html for the component
+        var categoryVisits = {},
+            selectedFieldsCount;
+        if (this.state.selectedCategory != "") {
+            if (this.props.selectedFields[this.state.selectedCategory]) {
+                selectedFieldsCount = Object.keys(this.props.selectedFields[this.state.selectedCategory]).length - 1;
+            }
+            for (var key in this.props.Visits) {
+                if (this.props.selectedFields[this.state.selectedCategory] && this.props.selectedFields[this.state.selectedCategory].allVisits[key] && this.props.selectedFields[this.state.selectedCategory].allVisits[key] == selectedFieldsCount) {
+                    categoryVisits[key] = true;
+                } else {
+                    categoryVisits[key] = false;
+                }
+            }
+        }
 
         return (
             React.createElement("div", null, 
@@ -330,6 +366,83 @@ FieldSelector = React.createClass({displayName: "FieldSelector",
                         fieldVisitSelect: this.props.fieldVisitSelect}
                     )
                 )
+<<<<<<< HEAD
+=======
+            ),
+            React.createElement(
+                "div",
+                { className: "row form-group" },
+                React.createElement(
+                    "div",
+                    { className: "col-md-8" },
+                    React.createElement(
+                        "button",
+                        { type: "button", className: "btn btn-primary", onClick: this.addAll },
+                        "Add All"
+                    ),
+                    React.createElement(
+                        "button",
+                        { type: "button", className: "btn btn-primary", onClick: this.deleteAll },
+                        "Remove All"
+                    )
+                )
+            ),
+            React.createElement(
+                "div",
+                { className: "row form-group" },
+                React.createElement(
+                    "div",
+                    { className: "form-group col-sm-8 search" },
+                    React.createElement(
+                        "label",
+                        { className: "col-sm-12 col-md-2" },
+                        "Instrument:"
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "col-sm-12 col-md-8" },
+                        React.createElement(SelectDropdown, {
+                            multi: false,
+                            options: this.state.instruments,
+                            onFieldClick: this.onCategorySelect,
+                            selectedCategory: this.state.selectedCategory
+                        })
+                    )
+                ),
+                React.createElement(
+                    "div",
+                    { className: "form-group col-sm-4 search" },
+                    React.createElement(
+                        "label",
+                        { className: "col-sm-12 col-md-4" },
+                        "Visits:"
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "col-sm-12 col-md-8" },
+                        React.createElement(SelectDropdown, {
+                            multi: true,
+                            options: categoryVisits,
+                            onFieldClick: this.modifyCategoryFieldVists
+                        })
+                    )
+                )
+            ),
+            React.createElement(
+                "div",
+                { className: "row" },
+                React.createElement(FieldList, {
+                    items: this.state.categoryFields[this.state.selectedCategory],
+                    category: this.state.selectedCategory,
+                    Criteria: this.props.Criteria,
+                    onFieldSelect: this.onFieldSelect,
+                    FieldsPerPage: "15",
+                    selected: this.props.selectedFields[this.state.selectedCategory],
+                    Filter: this.state.filter,
+                    Visits: this.props.Visits,
+                    fieldVisitSelect: this.props.fieldVisitSelect
+                })
+>>>>>>> ae7e0d2... create selectdropdown for dataquery tool
             )
         );
     }
