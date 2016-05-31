@@ -2,12 +2,14 @@
 function updateDemographicInstrument() {
     var DemographicSite = document.getElementById("DemographicSite");
     var DemographicInstrument = document.getElementById("DemographicInstrument");
+
     var request = $.ajax({
         url: loris.BaseURL + '/statistics/stats_demographic/?dynamictabs=dynamictabs&DemographicSite=' + DemographicSite.value + '&DemographicInstrument=' + DemographicInstrument.value,
         type: 'GET',
         data: 'html',
         success: function(page){
             $('#demographics').html(page);
+            $(".dynamictable").DynamicTable();
         }
     });
 }

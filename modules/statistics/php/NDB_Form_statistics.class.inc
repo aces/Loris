@@ -87,15 +87,18 @@ class NDB_Form_statistics extends NDB_Form
     function stats_behavioural()
     {
         $DB =& Database::singleton();
-        $DB->select(
+
+        $subprojList="";
+
+        $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
-                      CenterID as NumericID,
-                      PSCArea as LongName,
-                      Name as ShortName
+                    CenterID as NumericID,
+                    PSCArea as LongName,
+                    Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
                     AND Study_site = 'Y'",
-            $centers
+            array()
         );
 
         $this->tpl_data['Centers'] = $centers;
@@ -144,21 +147,21 @@ class NDB_Form_statistics extends NDB_Form
 
         //---- BEHAVIORAL STATS -----
         $mri_data = array();
-        $DB->select(
+        $result = $DB->pselect(
             "SELECT s.CenterID,
-                f.Data_Entry as Data_Entry,
-                s.visit_label as VLabel,
-                COUNT(s.CandID) as val
+                    f.Data_Entry as Data_Entry,
+                    s.visit_label as VLabel,
+                    COUNT(s.CandID) as val
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
-                JOIN flag f ON (f.SessionID=s.ID)
+                    JOIN flag f ON (f.SessionID=s.ID)
                 WHERE 
-                s.Active='Y' AND c.Active='Y' 
-                AND s.Current_stage <> 'Recycling Bin'
-                AND f.CommentID NOT LIKE 'DDE%' 
-                AND s.SubprojectID IN ($subprojList)
-                $ExtraProject_Criteria
-                GROUP by s.CenterID, VLabel, f.Data_Entry",
-            $result
+                    s.Active='Y' AND c.Active='Y'
+                    AND s.Current_stage <> 'Recycling Bin'
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    AND s.SubprojectID IN ($subprojList)
+                    $ExtraProject_Criteria
+                GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
+            array()
         );
 
         foreach($result as $row) {
@@ -185,7 +188,7 @@ class NDB_Form_statistics extends NDB_Form
             }
         }
         // DDE STATS
-        $DB->select(
+        $result = $DB->pselect(
             "SELECT s.CenterID, 
                 f.Data_Entry as Data_Entry, 
                 s.visit_label as VLabel,
@@ -202,7 +205,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND f.Test_name NOT LIKE '%vineland%')
                 $ExtraProject_Criteria
                 GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID;",
-            $result
+            array()
         );
         foreach($result as $row) {
             $center = $row['CenterID'];
@@ -698,15 +701,15 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['Projects']    = $projects;
         $result = $DB->pselect("SELECT s.subprojectid as rowid,
-            COUNT(DISTINCT(c.PSCID)) as val 
-            FROM candidate as c LEFT JOIN session s ON (s.CandID=c.CandID) 
+                COUNT(DISTINCT(c.PSCID)) as val
+            FROM candidate as c LEFT JOIN session s ON (s.CandID=c.CandID)
             WHERE s.active='Y' AND s.CenterID <> '1'        
-            AND c.Active='Y'
-            AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')) 
-            AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
-            AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-            $ExtraSite_Criteria
-            $ExtraProject_Criteria
+                AND c.Active='Y'
+                AND (s.Current_stage IN ('Visit', 'Screening', 'Approval'))
+                AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
+                AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
+                $ExtraSite_Criteria
+                $ExtraProject_Criteria
             GROUP BY s.subprojectid",
             array()
         );
@@ -909,7 +912,8 @@ class NDB_Form_statistics extends NDB_Form
             );
             $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
                 "Breakdown of Registered Candidates",
-                $Subcategories, $Visits,
+                $Subcategories,
+                $Visits,
                 "DemographicInstrument",
                 $instruments,
                 '',
@@ -1420,6 +1424,30 @@ class NDB_Form_statistics extends NDB_Form
         return $ret;
     }
 
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/statistics/js/table_statistics.js",
+                $baseURL . "/statistics/js/statistics.js",
+                $baseURL . "/statistics/js/form_stats_behavioural.js",
+                $baseURL . "/statistics/js/form_stats_reliability.js",
+                $baseURL . "/statistics/js/form_stats_MRI.js",
+                $baseURL . "/statistics/js/form_stats_demographic.js",
+                $baseURL . "/statistics/js/form_stats_enrollment.js",
+            )
+        );
+    }
 
 } // End class
 ?>

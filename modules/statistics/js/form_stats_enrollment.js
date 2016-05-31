@@ -7,7 +7,7 @@ function updateEnrollmentTab() {
         type: 'GET',
         data: 'html',
         success: function(response) {
-            $('#enroll').html(response);
+            $('#enrollment').html(response);
         }
    });
 }

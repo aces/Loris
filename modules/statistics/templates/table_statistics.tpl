@@ -21,7 +21,7 @@
     <div class="col-sm-4">
         {html_options id="DemographicInstrument" options=$DropdownOptions name="$DropdownName" selected=$DropdownSelected class="form-control"}
     </div>
-    <button onClick="updateDemographicTab()" class="btn btn-primary btn-small">Submit Query</button>
+    <button onClick="updateDemographicInstrument()" class="btn btn-primary btn-small">Submit Query</button>
 {/if}
 
 {if $Subsection==mri }
@@ -42,7 +42,7 @@
 <br>
 <table class="data table table-primary table-bordered  dynamictable">
     <tr>
-        <th rowspan="2">Timepoint</th>
+        <th rowspan="2" id="tpcol">Timepoint</th>
             {foreach key=proj item=name from=$Subprojects}
             {assign var='colspan' value=count($Subcategories)+1}
             <th colspan="{$colspan}">{$name|capitalize}</th>
@@ -95,7 +95,7 @@
                 {/foreach}
                 <td class="subtotal">
                     {assign var="Numerator" value=$data[$proj][$center.ID][$visit][$Subcategories.0]}
-                    {if $subtotal > 0}
+                    {if $subtotal > 0 and $Numerator >0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$subtotal format="%.0f"}}
                     {else}
                         {assign var="percent" value='0'}
@@ -109,7 +109,7 @@
                 {/foreach}
                 <td class="total">
                     {assign var="Numerator" value=$data[$center.ID][$visit][$Subcategories.0]}
-                    {if $rowtotal > 0}
+                    {if $rowtotal > 0 and $Numerator > 0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$rowtotal format="%.0f"}}
                     {else}
                         {assign var="percent" value='0'}
@@ -132,7 +132,7 @@
                 <td class="subtotal">
                     {assign var="totalsitetotal" value=$totalsitetotal+$sitetotal }
                     {assign var="Numerator" value=$data[$proj][$center.ID][$Subcategories.0]}
-                    {if $sitetotal > 0}
+                    {if $subtotal > 0 and $Numerator >0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$sitetotal format="%.0f"}}
                     {else}
                         {assign var="percent" value='0'}
@@ -147,7 +147,7 @@
             {/foreach}
             <td class="total">
                 {assign var="Numerator" value=$data[$center.ID][$Subcategories.0]}
-                {if $totalsitetotal > 0}
+                {if $totalsitetotal > 0 and $Numerator > 0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$totalsitetotal format="%.0f"}}
                     {else}
                         {assign var="percent" value='0'}
@@ -181,7 +181,7 @@
                 {/foreach}
                 <td class="subtotal">
                     {assign var="Numerator" value=$data[$proj][$visit][$Subcategories.0]}
-                    {if $subtotal > 0}
+                    {if $subtotal > 0 and $Numerator > 0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$subtotal format="%.0f"}}
                     {else}
                         {assign var="percent" value='0'}
@@ -196,7 +196,7 @@
             {/foreach}
             <td class="total">
                 {assign var="Numerator" value=$data[$visit][$Subcategories.0]}
-                {if $finaltotal > 0}
+                {if $finaltotal > 0 and $Numerator > 0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$finaltotal format="%.0f"}}
                     {else}
                         {assign var="percent" value='0'}
@@ -218,10 +218,10 @@
                 {/foreach}
                 <td class="total" nowrap="nowrap">
                     {assign var="Numerator" value=$data[$proj][$Subcategories.0]}
-                    {if $total > 0}
+                    {if $total > 0 and $Numerator > 0}
                         {assign var="percent" value={math equation="x*y/z" x=$Numerator y=100 z=$total format="%.0f"}}
                     {else}
-                        {assign var="percent" value='0%'}
+                        {assign var="percent" value='0'}
                     {/if}
                     {$percent}%<br>(Total: {$total})
                 </td>
