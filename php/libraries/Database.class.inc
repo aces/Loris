@@ -1061,19 +1061,21 @@ class Database
     {
         $config   =& NDB_Config::singleton();
         $database = $config->getSetting('database');
-        $query    = "SELECT DISTINCT table_name
+        $query    = "SELECT table_name
             FROM information_schema.tables
-            WHERE table_name = :tn
-            AND TABLE_SCHEMA = :db";
+            WHERE TABLE_SCHEMA=:db
+            AND table_name=:tn";
+
         $DB       =& Database::singleton();
-        $effected = $DB->pselectOne(
+        $result = $DB->pselectOne(
             $query,
             array(
                 'tn' => $test_name,
-                'db' => $database,
+                'db' => $database['database'],
             )
         );
-        if ($effected) {
+
+        if (!empty($result)) {
             return true;
         }
         return false;
