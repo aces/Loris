@@ -113,9 +113,9 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if($_REQUEST['site'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
             }
 
         }
@@ -127,9 +127,9 @@ class NDB_Form_statistics extends NDB_Form
                 . $_REQUEST['BehaviouralProject'] . ')';
             $currentProject        = $_REQUEST['BehaviouralProject'];
             $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $currentProject,
-                                                 'Name' => $projects[$currentProject],
-                                                );
+                'ID'   => $currentProject,
+                'Name' => $projects[$currentProject],
+            );
         } else {
             $ExtraProject_Criteria = '';
         }
@@ -256,9 +256,9 @@ class NDB_Form_statistics extends NDB_Form
                 $_REQUEST['MRIProject'] . ')';
             $currentProject        = $_REQUEST['MRIProject'];
             $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $currentProject,
-                                                 'Name' => $projects[$currentProject],
-                                                );
+                'ID'   => $currentProject,
+                'Name' => $projects[$currentProject],
+            );
         } else {
             $ExtraProject_Criteria = '';
         }
@@ -290,9 +290,9 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if($_REQUEST['site'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
             }
 
         }
@@ -302,18 +302,18 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Visits'] = $Visits;
 
         $MRISubcategories = array(
-                             'Complete',
-                             'Partial Run',
-                             'No Scan',
-                            );
+            'Complete',
+            'Partial Run',
+            'No Scan',
+        );
         $MRIOptions       = array(
-                             'T1'           => 'T1',
-                             'T2'           => 'T2',
-                             'T1T2'         => 'T1 and T2',
-                             'DTI'          => 'DTI',
-                             'BOLD'         => 'BOLD',
-                             'Spectroscopy' => 'Spectroscopy',
-                            );
+            'T1'           => 'T1',
+            'T2'           => 'T2',
+            'T1T2'         => 'T1 and T2',
+            'DTI'          => 'DTI',
+            'BOLD'         => 'BOLD',
+            'Spectroscopy' => 'Spectroscopy',
+        );
         if($_REQUEST['mri_type']) {
             $MRI_Type       = $_REQUEST['mri_type'];
             $MRI_Type_Field = $_REQUEST['mri_type'] . "_Scan_Done";
@@ -329,9 +329,9 @@ class NDB_Form_statistics extends NDB_Form
                                 ELSE 'Incomplete'
                                 END";
                 $MRISubcategories = array(
-                                     'Complete',
-                                     'Incomplete',
-                                    );
+                    'Complete',
+                    'Incomplete',
+                );
             } else {
                 $CaseStatement = "
                                 CASE($MRI_Type_Field)
@@ -594,87 +594,149 @@ class NDB_Form_statistics extends NDB_Form
                       $ExtraProject_Criteria",
                 array()
             );
-                        $mri_data[] = array(
-                                       'name'               => $name,
-                                       'work_station_count' => $work_station_count,
-                                       'claimed_count'      => $claimed_count,
-                                       'forms_count'        => $forms_count,
-                                       'all_three_scans'    => $three_scans,
-                                      );
+            $mri_data[] = array(
+                'name'               => $name,
+                'work_station_count' => $work_station_count,
+                'claimed_count'      => $claimed_count,
+                'forms_count'        => $forms_count,
+                'all_three_scans'    => $three_scans,
+            );
 
         }
-                    $subprojectList = "'" .
-                        implode("','", Utility::getSubprojectList()) .
-                        "'";
+        $subprojectList = "'" .
+            implode("','", Utility::getSubprojectList()) .
+            "'";
 
-                    $MultiTimepoint = $DB->pselect(
-                        "SELECT psc.PSCArea as Center,
+        $MultiTimepoint = $DB->pselect(
+            "SELECT psc.PSCArea as Center,
                                 SUM(Three_done) as T1,
                                 SUM(Three_T2_Done) as T2 ,
                                 SUM(Three_DTI_Done) as DTI,
                                 SUM(Three_All_done) as Three_All_done
                           FROM (SELECT c.CenterID, COUNT(DISTINCT c.CandID)," .
-                        /* This essentially does COUNT(T1_Scan_done='Complete'), but because of the way COUNT(expr) works,
-                        * we need to make sure that anything that isn't 'Complete' is evaluated as NULL (not false), hence
-                        * the crazy CASE statement. The different count statements Do v06, v06+v12, v06+v12+v24, all 3 for T2, all
-                        * three for DTI, and all three for T1+T2+DTI. The outer select statement sums up all the groupings, to get
-                        * a final scalar value.
-                        */
+            /* This essentially does COUNT(T1_Scan_done='Complete'), but because of the way COUNT(expr) works,
+            * we need to make sure that anything that isn't 'Complete' is evaluated as NULL (not false), hence
+            * the crazy CASE statement. The different count statements Do v06, v06+v12, v06+v12+v24, all 3 for T2, all
+            * three for DTI, and all three for T1+T2+DTI. The outer select statement sums up all the groupings, to get
+            * a final scalar value.
+            */
 
-                         "COUNT(DISTINCT CASE (COALESCE(mpf06.T1_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as v06_Done,
-                          COUNT(DISTINCT CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T1_Scan_done, 'No')='Complete' ) WHEN true THEN c.CandID ELSE null END) as Two_Done,
-                          COUNT(DISTINCT CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T1_Scan_done, 'No')='Complete'
-                                     AND COALESCE(mpf24.T1_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as Three_done, 
-                          COUNT(DISTINCT CASE (COALESCE(mpf12.T2_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T2_Scan_done, 'No')='Complete'
-                                     AND COALESCE(mpf24.T2_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as Three_T2_done, 
-                          COUNT(DISTINCT CASE (COALESCE(mpf12.DTI_Scan_done, 'No')='Complete' AND COALESCE(mpf06.DTI_Scan_done, 'No')='Complete'
-                                     AND COALESCE(mpf24.DTI_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as Three_DTI_done,
-                          COUNT(DISTINCT
-                                 CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T1_Scan_done, 'No')='Complete' 
-                                     AND COALESCE(mpf24.T1_Scan_done, 'No')='Complete' 
-                                     AND COALESCE(mpf12.T2_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T2_Scan_done, 'No')='Complete' 
-                                     AND COALESCE(mpf24.T2_Scan_done, 'No')='Complete' 
-                                     AND COALESCE(mpf12.DTI_Scan_done, 'No')='Complete' AND COALESCE(mpf06.DTI_Scan_done, 'No')='Complete' 
-                                     AND COALESCE(mpf24.DTI_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as Three_All_done
-                                 FROM candidate c JOIN session v06 ON (c.CandID=v06.CandID AND v06.Visit_label='v06' AND v06.Active='Y' AND v06.Current_stage <> 'Recycling Bin' AND v06.SubprojectID IN ($subprojectList))
-                                 JOIN flag f06 ON (f06.SessionID=v06.ID AND f06.Test_name='mri_parameter_form' AND f06.CommentID NOT LIKE 'DDE%')
-                                 JOIN mri_parameter_form mpf06 ON (f06.CommentID=mpf06.CommentID) 
-                                 LEFT JOIN session v12 ON (c.CandID=v12.CandID AND v12.Visit_label='v12' AND v12.Current_stage <> 'Recycling Bin' )
-                                 LEFT JOIN flag f12 ON (f12.SessionID=v12.ID AND f12.Test_name='mri_parameter_form' AND f12.CommentID NOT LIKE 'DDE%') 
-                                 LEFT JOIN mri_parameter_form mpf12 ON (mpf12.CommentID=f12.CommentID) 
-                                 LEFT JOIN session v24 ON (v24.CandID=c.CandID AND v24.Visit_label='v24' AND v24.Current_stage <> 'Recycling Bin' AND v24.Active='Y' AND v24.SubprojectID IN ($subprojectList))
-                                 LEFT JOIN flag f24 ON (f24.SessionID=v24.ID AND f24.Test_name='mri_parameter_form' AND f24.CommentID NOT LIKE 'DDE%') 
-                                 LEFT JOIN mri_parameter_form mpf24 ON (mpf24.CommentID=f24.CommentID) WHERE 
-                                 c.Active='Y' AND c.PSCID  not like 'dcc%'  AND c.PSCID <> 'scanner'
-                                 GROUP BY c.CenterID) breakdown JOIN psc ON (breakdown.CenterID=psc.CenterID) WHERE psc.CenterID <> 1 GROUP BY psc.Name ORDER BY psc.CenterID",
-                        array()
-                    );
+            "COUNT(DISTINCT CASE (COALESCE(mpf06.T1_Scan_done, 'No')='Complete')
+                                  WHEN true THEN c.CandID
+                                  ELSE null
+                                  END) as v06_Done,
+            COUNT(DISTINCT CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf06.T1_Scan_done, 'No')='Complete')
+                                WHEN true THEN c.CandID
+                                ELSE null
+                                END) as Two_Done,
+            COUNT(DISTINCT CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf06.T1_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf24.T1_Scan_done, 'No')='Complete')
+                                WHEN true THEN c.CandID
+                                ELSE null
+                                END) as Three_done,
+            COUNT(DISTINCT CASE (COALESCE(mpf12.T2_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf06.T2_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf24.T2_Scan_done, 'No')='Complete')
+                                WHEN true THEN c.CandID
+                                ELSE null
+                                END) as Three_T2_done,
+            COUNT(DISTINCT CASE (COALESCE(mpf12.DTI_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf06.DTI_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf24.DTI_Scan_done, 'No')='Complete')
+                                  WHEN true THEN c.CandID
+                                  ELSE null
+                                  END) as Three_DTI_done,
+            COUNT(DISTINCT CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf06.T1_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf24.T1_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf12.T2_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf06.T2_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf24.T2_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf12.DTI_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf06.DTI_Scan_done, 'No')='Complete'
+                                  AND
+                                  COALESCE(mpf24.DTI_Scan_done, 'No')='Complete')
+                                  WHEN true THEN c.CandID
+                                  ELSE null
+                                  END) as Three_All_done
+            FROM candidate c
+                    JOIN session v06 ON (c.CandID=v06.CandID
+                            AND v06.Visit_label='v06'
+                            AND v06.Active='Y'
+                            AND v06.Current_stage <> 'Recycling Bin'
+                            AND v06.SubprojectID IN ($subprojectList))
+                    JOIN flag f06 ON (f06.SessionID=v06.ID
+                            AND f06.Test_name='mri_parameter_form'
+                            AND f06.CommentID NOT LIKE 'DDE%')
+                    JOIN mri_parameter_form mpf06 ON (f06.CommentID=mpf06.CommentID)
+                    LEFT JOIN session v12 ON (c.CandID=v12.CandID
+                            AND v12.Visit_label='v12'
+                            AND v12.Current_stage <> 'Recycling Bin' )
+                    LEFT JOIN flag f12 ON (f12.SessionID=v12.ID
+                            AND f12.Test_name='mri_parameter_form'
+                            AND f12.CommentID NOT LIKE 'DDE%')
+                    LEFT JOIN mri_parameter_form mpf12 ON (mpf12.CommentID=f12.CommentID)
+                    LEFT JOIN session v24 ON (v24.CandID=c.CandID
+                            AND v24.Visit_label='v24'
+                            AND v24.Current_stage <> 'Recycling Bin'
+                            AND v24.Active='Y'
+                            AND v24.SubprojectID IN ($subprojectList))
+                    LEFT JOIN flag f24 ON (f24.SessionID=v24.ID
+                            AND f24.Test_name='mri_parameter_form'
+                            AND f24.CommentID NOT LIKE 'DDE%')
+                    LEFT JOIN mri_parameter_form mpf24 ON (mpf24.CommentID=f24.CommentID)
+            WHERE c.Active='Y'
+                    AND c.PSCID  not like 'dcc%'
+                    AND c.PSCID <> 'scanner'
+            GROUP BY c.CenterID) breakdown
+          JOIN psc ON (breakdown.CenterID=psc.CenterID)
+        WHERE psc.CenterID <> 1
+        GROUP BY psc.Name
+        ORDER BY psc.CenterID",
+            array()
+        );
 
-                    $total = array(
-                              'Name' => 'Total',
-                              'T1'   => 0,
-                              'T2'   => 0,
-                              'DTI'  => 0,
-                              'All'  => 0,
-                             );
+        $total = array(
+            'Name' => 'Total',
+            'T1'   => 0,
+            'T2'   => 0,
+            'DTI'  => 0,
+            'All'  => 0,
+        );
 
-                    foreach ($MultiTimepoint as $row) {
-                        $this->tpl_data['mri_all_scans_done'][] = array(
-                                                                   'Name' => $row['Center'],
-                                                                   'T1'   => $row['T1'],
-                                                                   'T2'   => $row['T2'],
-                                                                   'DTI'  => $row['DTI'],
-                                                                   'All'  => $row['Three_All_done'],
-                                                                  );
-                        $total['T1']  += $row['T1'];
-                        $total['T2']  += $row['T2'];
-                        $total['DTI'] += $row['DTI'];
-                        $total['All'] += $row['Three_All_done'];
-                    }
-                    $this->tpl_data['mri_all_scans_done'][] = $total;
+        foreach ($MultiTimepoint as $row) {
+            $this->tpl_data['mri_all_scans_done'][] = array(
+                'Name' => $row['Center'],
+                'T1'   => $row['T1'],
+                'T2'   => $row['T2'],
+                'DTI'  => $row['DTI'],
+                'All'  => $row['Three_All_done'],
+            );
+            $total['T1']  += $row['T1'];
+            $total['T2']  += $row['T2'];
+            $total['DTI'] += $row['DTI'];
+            $total['All'] += $row['Three_All_done'];
+        }
+        $this->tpl_data['mri_all_scans_done'][] = $total;
 
-                    $this->tpl_data['mri_data'] = $mri_data;
-                    $this->tpl_data['reliability_completion'] = $this->getReliabilityData();
+        $this->tpl_data['mri_data'] = $mri_data;
+        $this->tpl_data['reliability_completion'] = $this->getReliabilityData();
 
     } // End function
 
@@ -704,9 +766,9 @@ class NDB_Form_statistics extends NDB_Form
                 $_REQUEST['DemographicProject'];
             $currentProject         = $_REQUEST['DemographicProject'];
             $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $currentProject,
-                                                 'Name' => $projects[$currentProject],
-                                                );
+                'ID'   => $currentProject,
+                'Name' => $projects[$currentProject],
+            );
         }
         $subprojects = Utility::getSubprojectsForProject($currentProject);
         foreach($subprojects as $key=>$val) {
@@ -756,7 +818,7 @@ class NDB_Form_statistics extends NDB_Form
         // Total for 'registered candidates' row.
         $result = $DB->pselect(
             "SELECT s.subprojectid as rowid,
-                            count(DISTINCT(c.PSCID)) as val
+                          count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
@@ -859,9 +921,9 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if($_REQUEST['DemographicSite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
             }
 
         }
@@ -876,9 +938,9 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
         if(isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
             $Subcategories = array(
-                              'Complete',
-                              'Incomplete',
-                             );
+                'Complete',
+                'Incomplete',
+            );
             $result        = $DB->pselect(
                 "SELECT count(*) as val, 
                     f.Data_entry as Subcat,
@@ -925,9 +987,9 @@ class NDB_Form_statistics extends NDB_Form
             );
         } else {
             $Subcategories = array(
-                              'Male',
-                              'Female',
-                             );
+                'Male',
+                'Female',
+            );
             $result        = $DB->pselect(
                 "SELECT c.CenterID as CenterID, 
                     s.SubprojectID as SubprojectID,
@@ -985,25 +1047,25 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if($_REQUEST['EnrollmentSite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
             }
         }
         if(isset($_REQUEST['EnrollmentProject']) && $_REQUEST['EnrollmentProject'] != '') {
 
             $currentProject = $_REQUEST['EnrollmentProject'];
             $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $currentProject,
-                                                 'Name' => $projects[$currentProject],
-                                                );
+                'ID'   => $currentProject,
+                'Name' => $projects[$currentProject],
+            );
         }
 
         if($_REQUEST['EnrollmentProject'] == $row['NumericID']) {
             $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $row['NumericID'],
-                                                 'Name' => $row['LongName'],
-                                                );
+                'ID'   => $row['NumericID'],
+                'Name' => $row['LongName'],
+            );
         }
         $this->tpl_data['enrollment_completion'] = $this->getEnrollmentData(
             $_REQUEST['EnrollmentSite'],
@@ -1026,27 +1088,27 @@ class NDB_Form_statistics extends NDB_Form
             $params['project'] = $projID;
         }
         $ethnic_categories = array(
-                              "hispanic",
-                              "non_hispanic",
-                              "not_answered",
-                             );
+            "hispanic",
+            "non_hispanic",
+            "not_answered",
+        );
         $ethnic_name       = array(
-                              "Hispanic or Latino",
-                              "Not Hispanic or Latino",
-                              "Unknown (individuals not reporting ethnicity",
-                             );
+            "Hispanic or Latino",
+            "Not Hispanic or Latino",
+            "Unknown (individuals not reporting ethnicity",
+        );
         $cat_count         = 0;
         $cat_total         = array(
-                              'Female'  => 0,
-                              'Male'    => 0,
-                              'Unknown' => 0,
-                             );
+            'Female'  => 0,
+            'Male'    => 0,
+            'Unknown' => 0,
+        );
         foreach($ethnic_categories as $ethnic_cat){
             $gender  = array(
-                        'Female'  => 0,
-                        'Male'    => 0,
-                        'Unknown' => 0,
-                       );
+                'Female'  => 0,
+                'Male'    => 0,
+                'Unknown' => 0,
+            );
             $results = $DB->pselect(
                 "SELECT ProjectID,
                     COALESCE(Gender, 'Unknown') as Gender,
@@ -1082,61 +1144,61 @@ class NDB_Form_statistics extends NDB_Form
                 }
             }
             $enroll_data[] = array(
-                              'ethnic_cat'    => $ethnic_name[$cat_count],
-                              'female_count'  => $gender['Female'],
-                              'male_count'    => $gender['Male'],
-                              'unknown_count' => $gender['Unknown'],
-                              'total_count'   => array_sum($gender),
-                             );
+                'ethnic_cat'    => $ethnic_name[$cat_count],
+                'female_count'  => $gender['Female'],
+                'male_count'    => $gender['Male'],
+                'unknown_count' => $gender['Unknown'],
+                'total_count'   => array_sum($gender),
+            );
             $cat_count++;
         }
         $enroll_data_total[] = array(
-                                'total_name'    => " Ethnic Category: ".
-                                    "Total of All Subjects",
-                                'total_female'  => $cat_total['Female'],
-                                'total_male'    => $cat_total['Male'],
-                                'total_unknown' => $cat_total['Unknown'],
-                                'total_total'   => array_sum($cat_total),
-                               );
+            'total_name'    => " Ethnic Category: ".
+                "Total of All Subjects",
+            'total_female'  => $cat_total['Female'],
+            'total_male'    => $cat_total['Male'],
+            'total_unknown' => $cat_total['Unknown'],
+            'total_total'   => array_sum($cat_total),
+        );
 
         $enroll_data_race = array();
 
         $race_categories = array(
-                            "american_indian_alaska_native",
-                            "asian",
-                            "native_hawaiian_pacific_islander",
-                            "black_african_american",
-                            "white",
-                            "more_than_one_race",
-                            "unknown_not_reported",
-                           );
+            "american_indian_alaska_native",
+            "asian",
+            "native_hawaiian_pacific_islander",
+            "black_african_american",
+            "white",
+            "more_than_one_race",
+            "unknown_not_reported",
+        );
         $race_name       = array(
-                            "American Indian/Alaska Native",
-                            "Asian",
-                            "Native Hawaiian or Other Pacific Islander",
-                            "Black or African American",
-                            "White",
-                            " More Than One Race",
-                            "Unknown or Not Reported",
-                           );
+            "American Indian/Alaska Native",
+            "Asian",
+            "Native Hawaiian or Other Pacific Islander",
+            "Black or African American",
+            "White",
+            " More Than One Race",
+            "Unknown or Not Reported",
+        );
         $race_count      = 0;
         $race_total      = array(
-                            'Female'  => 0,
-                            'Male'    => 0,
-                            'Unknown' => 0,
-                           );
+            'Female'  => 0,
+            'Male'    => 0,
+            'Unknown' => 0,
+        );
         $gender          = array(
-                            'Female'  => 0,
-                            'Male'    => 0,
-                            'Unknown' => 0,
-                           );
+            'Female'  => 0,
+            'Male'    => 0,
+            'Unknown' => 0,
+        );
 
         foreach($race_categories as $race_cat){
             $gender = array(
-                       'Female'  => 0,
-                       'Male'    => 0,
-                       'Unknown' => 0,
-                      );
+                'Female'  => 0,
+                'Male'    => 0,
+                'Unknown' => 0,
+            );
 
             if($race_cat === "more_than_one_race") {
                 $race_cat = '%'.$race_cat.'%';
@@ -1224,43 +1286,43 @@ class NDB_Form_statistics extends NDB_Form
             }
 
             $enroll_data_race[] = array(
-                                   'race_cat'      => $race_name[$race_count],
-                                   'female_count'  => $gender['Female'],
-                                   'male_count'    => $gender['Male'],
-                                   'unknown_count' => $gender['Unknown'],
-                                   'total_count'   => array_sum($gender),
-                                  );
+                'race_cat'      => $race_name[$race_count],
+                'female_count'  => $gender['Female'],
+                'male_count'    => $gender['Male'],
+                'unknown_count' => $gender['Unknown'],
+                'total_count'   => array_sum($gender),
+            );
             $race_count++;
 
         }
         $enroll_data_racetotal[] = array(
-                                    'total_name'    => " Racial Categories: ".
-                                        "Total of All Subjects",
-                                    'total_female'  => $race_total['Female'],
-                                    'total_male'    => $race_total['Male'],
-                                    'total_unknown' => $race_total['Unknown'],
-                                    'total_total'   => array_sum($race_total),
-                                   );
+            'total_name'    => " Racial Categories: ".
+                "Total of All Subjects",
+            'total_female'  => $race_total['Female'],
+            'total_male'    => $race_total['Male'],
+            'total_unknown' => $race_total['Unknown'],
+            'total_total'   => array_sum($race_total),
+        );
 
         $enroll_data_hispanic = array();
         $hispanic_race_count  = 0;
         $hispanic_total       = array(
-                                 'Female'  => 0,
-                                 'Male'    => 0,
-                                 'Unknown' => 0,
-                                );
+            'Female'  => 0,
+            'Male'    => 0,
+            'Unknown' => 0,
+        );
         $gender = array(
-                   'Female'  => 0,
-                   'Male'    => 0,
-                   'Unknown' => 0,
-                  );
+            'Female'  => 0,
+            'Male'    => 0,
+            'Unknown' => 0,
+        );
 
         foreach($race_categories as $race_cat){
             $gender = array(
-                       'Female'  => 0,
-                       'Male'    => 0,
-                       'Unknown' => 0,
-                      );
+                'Female'  => 0,
+                'Male'    => 0,
+                'Unknown' => 0,
+            );
             if($race_cat === "more_than_one_race") {
                 $race_cat = '%'.$race_cat.'%';
                 $results  = $DB->pselect(
@@ -1343,23 +1405,23 @@ class NDB_Form_statistics extends NDB_Form
             }
 
             $enroll_data_hispanic[] = array(
-                                       'race_cat'      => $race_name[$hispanic_race_count],
-                                       'female_count'  => $gender['Female'],
-                                       'male_count'    => $gender['Male'],
-                                       'unknown_count' => $gender['Unknown'],
-                                       'total_count'   => array_sum($gender),
-                                      );
+                'race_cat'      => $race_name[$hispanic_race_count],
+                'female_count'  => $gender['Female'],
+                'male_count'    => $gender['Male'],
+                'unknown_count' => $gender['Unknown'],
+                'total_count'   => array_sum($gender),
+            );
             $hispanic_race_count++;
 
         }
         $enroll_data_hispanictotal[] = array(
-                                        'total_name'    => " Racial Categories: Total of ".
-                                            "Hispanic or Latinos",
-                                        'total_female'  => $hispanic_total['Female'],
-                                        'total_male'    => $hispanic_total['Male'],
-                                        'total_unknown' => $hispanic_total['Unknown'],
-                                        'total_total'   => array_sum($hispanic_total),
-                                       );
+            'total_name'    => " Racial Categories: Total of ".
+                "Hispanic or Latinos",
+            'total_female'  => $hispanic_total['Female'],
+            'total_male'    => $hispanic_total['Male'],
+            'total_unknown' => $hispanic_total['Unknown'],
+            'total_total'   => array_sum($hispanic_total),
+        );
 
         $withdraw = $DB->pselectOne(
             "SELECT COUNT( DISTINCT cad.CandID) as val
@@ -1380,14 +1442,14 @@ class NDB_Form_statistics extends NDB_Form
         );
 
         $enroll_results = array(
-                           'enroll_data'               => $enroll_data,
-                           'enroll_data_total'         => $enroll_data_total,
-                           'enroll_data_race'          => $enroll_data_race,
-                           'enroll_data_racetotal'     => $enroll_data_racetotal,
-                           'enroll_data_hispanic'      => $enroll_data_hispanic,
-                           'enroll_data_hispanictotal' => $enroll_data_hispanictotal,
-                           'withdraw'                  => $withdraw,
-                          );
+            'enroll_data'               => $enroll_data,
+            'enroll_data_total'         => $enroll_data_total,
+            'enroll_data_race'          => $enroll_data_race,
+            'enroll_data_racetotal'     => $enroll_data_racetotal,
+            'enroll_data_hispanic'      => $enroll_data_hispanic,
+            'enroll_data_hispanictotal' => $enroll_data_hispanictotal,
+            'withdraw'                  => $withdraw,
+        );
 
         return $enroll_results;
 
@@ -1419,27 +1481,27 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if($_REQUEST['ReliabilitySite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
             }
         }
         if(isset($_REQUEST['ReliabilityProject']) && $_REQUEST['ReliabilityProject'] != '') {
             $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $_REQUEST['ReliabilityProject'] . ')';
             $currentProject        = $_REQUEST['ReliabilityProject'];
             $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $currentProject,
-                                                 'Name' => $projects[$currentProject],
-                                                );
+                'ID'   => $currentProject,
+                'Name' => $projects[$currentProject],
+            );
         } else {
             $ExtraProject_Criteria = '';
         }
 
         if($_REQUEST['ReliabilityProject'] == $row['NumericID']) {
             $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $row['NumericID'],
-                                                 'Name' => $row['LongName'],
-                                                );
+                'ID'   => $row['NumericID'],
+                'Name' => $row['LongName'],
+            );
         }
         $this->tpl_data['reliability_completion'] = $this->getReliabilityData();
     }
@@ -1456,21 +1518,21 @@ class NDB_Form_statistics extends NDB_Form
         $thresholds = NDB_Menu_Filter_Reliability::getThreshholds();
 
         $tests = array(
-                  'adi_r_proband' => 'ADI-R (Proband)',
-                  'adi_r_subject' => 'ADI-R (Subject)',
-                  'aosi'          => 'AOSI',
-                  'ados_module1'  => 'ADOS (Module 1)',
-                  'ados_module2'  => 'ADOS (Module 2)',
-                  'csbs'          => 'CSBS',
+            'adi_r_proband' => 'ADI-R (Proband)',
+            'adi_r_subject' => 'ADI-R (Subject)',
+            'aosi'          => 'AOSI',
+            'ados_module1'  => 'ADOS (Module 1)',
+            'ados_module2'  => 'ADOS (Module 2)',
+            'csbs'          => 'CSBS',
 
-                 );
+        );
         $within_cross = array(
-                         'adi_r_subject',
-                         'ados_module1',
-                         'ados_module2',
-                         'aosi',
-                         'csbs',
-                        );
+            'adi_r_subject',
+            'ados_module1',
+            'ados_module2',
+            'aosi',
+            'csbs',
+        );
 
         $reliable        = array();
         $within_reliable = array();
@@ -1647,13 +1709,13 @@ class NDB_Form_statistics extends NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/statistics/js/table_statistics.js",
-             $baseURL . "/statistics/js/statistics.js",
-             $baseURL . "/statistics/js/form_stats_behavioural.js",
-             $baseURL . "/statistics/js/form_stats_reliability.js",
-             $baseURL . "/statistics/js/form_stats_MRI.js",
-             $baseURL . "/statistics/js/form_stats_demographic.js",
-             $baseURL . "/statistics/js/form_stats_enrollment.js",
+                $baseURL . "/statistics/js/table_statistics.js",
+                $baseURL . "/statistics/js/statistics.js",
+                $baseURL . "/statistics/js/form_stats_behavioural.js",
+                $baseURL . "/statistics/js/form_stats_reliability.js",
+                $baseURL . "/statistics/js/form_stats_MRI.js",
+                $baseURL . "/statistics/js/form_stats_demographic.js",
+                $baseURL . "/statistics/js/form_stats_enrollment.js",
             )
         );
     }
