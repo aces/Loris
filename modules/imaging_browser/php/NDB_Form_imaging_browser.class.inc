@@ -585,7 +585,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     $baseurl . "/imaging_browser/js/ImagePanel.js"
                 ));
 
-            }
+        }
         return $depends;
     }
 }
