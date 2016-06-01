@@ -578,13 +578,14 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         $depends = parent::getJSDependencies();
         if($this->page === 'viewSession') {
             $factory = NDB_Factory::singleton();
-            $baseURL = $factory->settings()->getBaseURL();
+            $baseurl = $factory->settings()->getBaseURL();
             $depends = array_merge($depends,
                 array(
+                    $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
                     $baseurl . "/imaging_browser/js/ImagePanel.js"
                 ));
 
-        }
+            }
         return $depends;
     }
 }
