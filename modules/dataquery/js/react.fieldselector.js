@@ -89,18 +89,14 @@ CategoryList = React.createClass({
 FieldItem = React.createClass({
     displayName: "FieldItem",
 
-    visitSelect: function (evt) {
+    visitSelect: function (visit, action) {
         // Selects and deselects visits
 
         var field = {
             instrument: this.props.Category,
             field: this.props.FieldName
         };
-        if (evt.target.checked) {
-            this.props.fieldVisitSelect("check", evt.target.value, field);
-        } else {
-            this.props.fieldVisitSelect("uncheck", evt.target.value, field);
-        }
+        this.props.fieldVisitSelect(action, visit, field);
     },
     render: function () {
         // Renders the html for the component
@@ -113,22 +109,18 @@ FieldItem = React.createClass({
         if (this.props.selected) {
             // If field is selected, add active class and visits
             classList += " active";
-            multiselect = Object.keys(this.props.Visits).map(function (visit) {
-                var checked = false;
+            var categoryVisits = {};
+            for (var visit in this.props.Visits) {
                 if (that.props.selectedVisits[visit]) {
-                    checked = true;
+                    categoryVisits[visit] = true;
+                } else {
+                    categoryVisits[visit] = false;
                 }
-                return React.createElement(
-                    "div",
-                    { "class": "checkbox" },
-                    React.createElement(
-                        "label",
-                        null,
-                        React.createElement("input", { type: "checkbox", value: visit, checked: checked, onChange: that.visitSelect }),
-                        " ",
-                        visit
-                    )
-                );
+            }
+            multiselect = React.createElement(SelectDropdown, {
+                multi: true,
+                options: categoryVisits,
+                onFieldClick: this.visitSelect
             });
         }
         if (this.props.downloadable) {
@@ -137,6 +129,7 @@ FieldItem = React.createClass({
         }
         // Don't display the category in the field selector
         var displayName = this.props.FieldName;
+        classList += " fieldItem";
 
         return React.createElement(
             "div",

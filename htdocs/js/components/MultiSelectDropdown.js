@@ -21,7 +21,7 @@ SelectField = React.createClass({
 				{ className: "col-xs-12" },
 				React.createElement(
 					"label",
-					{ onClick: this.toggleCheckbox },
+					{ className: "selectFieldLabel", onClick: this.toggleCheckbox },
 					input,
 					" ",
 					this.props.label
@@ -81,18 +81,11 @@ SelectDropdown = React.createClass({
 			}
 		};
 	},
-	toggleDropdown: function () {
-		this.setState(function (state) {
-			return {
-				open: !state.open
-			};
-		});
-	},
 	toggleCheckbox: function (key) {
 		if (!this.props.multi) {
 			//this.deselectAll();
 			this.props.onFieldClick(key);
-			this.toggleDropdown();
+			this.mouseOut();
 		} else {
 			var action = this.props.options[key] ? "uncheck" : "check";
 			this.props.onFieldClick(key, action);
@@ -118,6 +111,12 @@ SelectDropdown = React.createClass({
 				filter: filter
 			};
 		});
+	},
+	mouseOver: function () {
+		this.setState({ open: true });
+	},
+	mouseOut: function () {
+		this.setState({ open: false });
 	},
 	render: function () {
 		var parentDivClass = "btn-group col-xs-12",
@@ -182,10 +181,13 @@ SelectDropdown = React.createClass({
 		}
 		return React.createElement(
 			"div",
-			{ className: parentDivClass },
+			{ className: parentDivClass,
+				onMouseOver: this.mouseOver,
+				onMouseOut: this.mouseOut
+			},
 			React.createElement(
 				"button",
-				{ type: "button", className: "btn btn-default dropdown-toggle col-xs-12", onClick: this.toggleDropdown },
+				{ type: "button", className: "btn btn-default dropdown-toggle col-xs-12 selectDropdown" },
 				React.createElement(
 					"div",
 					{ className: "col-xs-10" },

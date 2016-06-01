@@ -373,3 +373,6 @@ div.navbar div.container div.navbar-brand {
 .dropdownSearch {
   padding: 10px;
 }
+.selectFieldLabel {
+  color: black;
+}
