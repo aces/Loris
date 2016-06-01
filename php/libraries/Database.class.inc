@@ -1055,7 +1055,7 @@ class Database
      *
      * @param string $test_name The table to check for.
      *
-     * @return  boolean true if the table exists
+     * @return boolean true if the table exists
      */
     static function tableExists($test_name)
     {
@@ -1066,12 +1066,12 @@ class Database
             WHERE TABLE_SCHEMA=:db
             AND table_name=:tn";
 
-        $DB       =& Database::singleton();
+        $DB     =& Database::singleton();
         $result = $DB->pselectOne(
             $query,
             array(
-                'tn' => $test_name,
-                'db' => $database['database'],
+             'tn' => $test_name,
+             'db' => $database['database'],
             )
         );
 
