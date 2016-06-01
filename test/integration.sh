@@ -15,10 +15,10 @@
 #       *  Set sandbox mode to 1: <sandbox>1</sandbox>
 #       *  Set SyncAccounts to false: <SyncAccounts>false</SyncAccounts>
 
-host="127.0.0.1"
-database="LorisTest"
-username="SQLTestUser"
-password="TestPassword"
+host="ace-db-1.cbrain.mcgill.ca"
+database="wangshen_sandbox"
+username="wangshen"
+password="123456"
 url="http://localhost:8000"
 
 # Custom DB variables specified by optional commandline arguments
