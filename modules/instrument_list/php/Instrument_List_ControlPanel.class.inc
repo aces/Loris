@@ -335,6 +335,8 @@ Class Instrument_List_ControlPanel extends TimePoint
     {
     	// get the current bvlqc type
     	$qcStatus = $this->getBVLQCStatus();
+        $complete = $this->getVisitStatus()=='Pass' || $this->getVisitStatus()=='Fail';
+
 		foreach($this->bvlQcTypes as $type){
 			$isSelected=$type == $this->getBVLQCType();
 			$type=strtolower($type);
@@ -343,7 +345,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             	$this->tpl_data['bvl_qc_type_'.$type]['icon'] = 'selected';
             }
             //If a BVLQC status is not selected, and this type is not already chosen, show the link.
-            if(!$isSelected && empty($qcStatus) && $this->tpl_data['access']['bvl_qc']){
+            if(!$isSelected && empty($qcStatus) && $this->tpl_data['access']['bvl_qc'] && $complete){
             	$this->tpl_data['bvl_qc_type_'.$type]['showlink']=true;
             }
         }
@@ -358,6 +360,7 @@ Class Instrument_List_ControlPanel extends TimePoint
     {
     	// get the current bvlqc type
     	$qcType = $this->getBVLQCType();
+        $complete = $this->getVisitStatus()=='Pass' || $this->getVisitStatus()=='Fail';
     	
 		foreach($this->bvlQcStatuses as $status){
 			$isSelected=$status == $this->getBVLQCStatus();
@@ -367,7 +370,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             	$this->tpl_data['bvl_qc_status_'.$status]['icon'] = 'selected';
             }
             //If a BVLQC type is selected, and this status is not already chosen, show the link.
-            if(!empty($qcType) && !$isSelected && $this->tpl_data['access']['bvl_qc']){
+            if(!empty($qcType) && !$isSelected && $this->tpl_data['access']['bvl_qc'] && $complete){
             	$this->tpl_data['bvl_qc_status_'.$status]['showlink']=true;
             }
         }
