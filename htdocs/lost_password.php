@@ -64,7 +64,7 @@ if (isset($_POST['username'])) {
             $msg_data['realname'] = $user->getData('Real_name');
             $msg_data['password'] = $password;
             Email::send($email, 'lost_password.tpl', $msg_data);
-            
+
             $tpl_data['confirm'] = $user->getData('Real_name')
                 .', you should receive an email within a few minutes.';
         } else {
