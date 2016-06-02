@@ -1,4 +1,5 @@
 <?php
+require_once "NDB_BVL_Instrument.class.inc";
 /**
  * This file contains the base class for creating reliability tests.
  * Reliability instruments extend this in a way that is analogous to
