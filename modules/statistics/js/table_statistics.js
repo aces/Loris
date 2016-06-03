@@ -24,6 +24,7 @@ function updateBehaviouralInstrument() {
         data: 'html',
         success: function(page) {
             $('#data_entry').html(page);
+            $(".dynamictable").DynamicTable();
         }
     });
 }
@@ -37,6 +38,8 @@ function updateMRITable() {
         data: 'html',
         success: function(page) {
             $('#mri').html(page);
+            $(".dynamictable").DynamicTable();
+
         }
     });
 }

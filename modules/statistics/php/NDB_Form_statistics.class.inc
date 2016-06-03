@@ -1517,15 +1517,17 @@ class NDB_Form_statistics extends NDB_Form
         include_once __DIR__ . "/../../reliability/php/NDB_Menu_Filter_reliability.class.inc";
         $thresholds = NDB_Menu_Filter_Reliability::getThreshholds();
 
-        $tests = array(
-            'adi_r_proband' => 'ADI-R (Proband)',
-            'adi_r_subject' => 'ADI-R (Subject)',
-            'aosi'          => 'AOSI',
-            'ados_module1'  => 'ADOS (Module 1)',
-            'ados_module2'  => 'ADOS (Module 2)',
-            'csbs'          => 'CSBS',
+        $config      = NDB_Config::singleton();
+        $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
+        $tests = array();
 
-        );
+        foreach(Utility::toArray($reliabilityConfig) AS $reliabilityInstrument){
+            $instrument_list = $reliabilityInstrument['Instrument'];
+            foreach($instrument_list AS $instrument){
+                $tests[$instrument['Testname']] = $instrument['Displayname'];
+            }
+        }
+
         $within_cross = array(
             'adi_r_subject',
             'ados_module1',
@@ -1535,95 +1537,18 @@ class NDB_Form_statistics extends NDB_Form
         );
 
         $reliable        = array();
-        $within_reliable = array();
-        $across_reliable = array();
+        //$within_reliable = array();
+        //$across_reliable = array();
         foreach($tests as $inst => $name) {
-            if(in_array($inst, $within_cross)) {
-                if($inst == 'aosi') {
-                    $within_reliable[] = $this->_getWithinSiteReliabilityData(
-                        $name . " v06",
-                        $inst,
-                        $thresholds[$inst],
-                        " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON ".
-                        "(s.ID=f.SessionID) WHERE f.CommentID=r.CommentID AND ".
-                        "lower(s.Visit_label)='v06')"
-                    );
-                    $across_reliable[] = $this->_getCrossSiteReliabilityData(
-                        $name . " v06",
-                        $inst,
-                        $thresholds[$inst],
-                        " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON ".
-                        "(s.ID=f.SessionID) WHERE f.CommentID=r.CommentID AND ".
-                        "lower(s.Visit_label)='v06')"
-                    );
-                    $within_reliable[] = $this->_getWithinSiteReliabilityData(
-                        $name . " v12",
-                        $inst,
-                        $thresholds[$inst],
-                        " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON ".
-                        "(s.ID=f.SessionID) WHERE f.CommentID=r.CommentID AND ".
-                        "lower(s.Visit_label)='v12')"
-                    );
-                    $across_reliable[] = $this->_getCrossSiteReliabilityData(
-                        $name . " v12",
-                        $inst,
-                        $thresholds[$inst],
-                        " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON ".
-                        "(s.ID=f.SessionID) WHERE f.CommentID=r.CommentID AND ".
-                        "lower(s.Visit_label)='v12')"
-                    );
-                } else {
-                    $within_reliable[] = $this->_getWithinSiteReliabilityData(
-                        $name,
-                        $inst,
-                        $thresholds[$inst]
-                    );
-                    $across_reliable[] = $this->_getCrossSiteReliabilityData(
-                        $name,
-                        $inst,
-                        $thresholds[$inst]
-                    );
-                }
-            } else {
-                $within_reliable[] = $this->_getSingleReliabilityData(
-                    $name,
-                    $inst,
-                    $thresholds[$inst]
-                );
-            }
+            $reliable[] = $this->_getSingleReliabilityData(
+                $name,
+                $inst,
+                $thresholds[$inst]
+            );
         }
 
-        return array_merge($across_reliable, $within_reliable);
-    }
-
-
-    function _getCrossSiteReliabilityData($name, $inst_name, $cutoff, $extra_where="")
-    {
-        $data         = $this->_getSingleReliabilityData(
-            $name,
-            $inst_name,
-            $cutoff,
-            " $extra_where AND CommentID NOT LIKE CONCAT('%', CASE ".
-            "reliability_center_id WHEN 1 THEN 'dcc' WHEN 2 THEN 'SEA' ".
-            "WHEN 3 THEN 'PHI' WHEN 4 THEN 'STL' WHEN 5 THEN 'UNC' ".
-            "WHEN 6 THEN 'UofA' END, '%')"
-        );
-        $data['name'] = $name . ' (Cross Site)';
-        return $data;
-    }
-    function _getWithinSiteReliabilityData($name, $inst_name, $cutoff, $extra_where = "")
-    {
-        $data         = $this->_getSingleReliabilityData(
-            $name,
-            $inst_name,
-            $cutoff,
-            " $extra_where AND CommentID like CONCAT('%', CASE ".
-            "reliability_center_id WHEN 1 THEN 'dcc' WHEN 2 THEN 'SEA' ".
-            "WHEN 3 THEN 'PHI' WHEN 4 THEN 'STL' WHEN 5 THEN 'UNC' ".
-            "WHEN 6 THEN 'UofA' END, '%')"
-        );
-        $data['name'] = $name . ' (Within Site)';
-        return $data;
+        //return array_merge($across_reliable, $within_reliable);
+        return array_merge($reliable);
     }
     function _getSingleReliabilityData($name, $inst_name, $cutoff, $extra_where = '')
     {
