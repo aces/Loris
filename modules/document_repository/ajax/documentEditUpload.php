@@ -25,7 +25,7 @@ $action = $_POST['action'];
 //if user has document repository permission
 if ($userSingleton->hasPermission('document_repository_view') || $userSingleton->hasPermission('document_repository_delete')) {
     if ($action == 'upload') {
-        $user = $_POST['user'];
+        $puser = $_POST['user'];
         $category = $_POST['category'];
         $site = $_POST['site'];
         $instrument = $_POST['instrument'];
@@ -42,10 +42,10 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
         // document_repository module directory, and use a
         // user_uploads directory as a base for user uploads
         $base_path = __DIR__ . "/../user_uploads/";
-        $fileBase = $user . "/" . $fileName;
+        $fileBase = $puser . "/" . $fileName;
 
-        if (!file_exists($base_path . $user)) {
-            mkdir($base_path . $user, 0777);
+        if (!file_exists($base_path . $puser)) {
+            mkdir($base_path . $puser, 0777);
         }
 
 
@@ -55,7 +55,7 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
             $success = $DB->insert('document_repository',
                             array('File_category'=>$category, 'For_site'=>$site,
                                   'comments'=>$comments, 'version'=>$version, 'File_name'=>$fileName,
-                                  'File_size'=>$fileSize, 'Data_dir'=>$fileBase, 'uploaded_by'=>$user,
+                                  'File_size'=>$fileSize, 'Data_dir'=>$fileBase, 'uploaded_by'=>$puser,
                                   'Instrument'=>$instrument, 'PSCID'=>$pscid, 'visitLabel'=>$visit));
             $msg_data['newDocument'] = $baseURL . "/document_repository/";
             $msg_data['document'] = $fileName;
