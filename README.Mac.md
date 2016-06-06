@@ -114,8 +114,8 @@ If already installed continue to section 1.6 else continue
 
 ### 1.5.2 Obtaining MySQL
 
-Download the latest DMG Archive for you current Mac setup (either 32-bit or 64-bit) from the following link [dev.mysql.com/downloads/mysql]
-(dev.mysql.com/downloads/mysql) and install the necessary files.
+Download the latest DMG Archive for you current Mac setup (either 32-bit or 64-bit) from the following link [http://dev.mysql.com/downloads/mysql]
+(http://dev.mysql.com/downloads/mysql) and install the necessary files.
 
 ### 1.5.3 Starting MySQL
 
