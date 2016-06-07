@@ -173,7 +173,7 @@ function ignoreColumn($instrument, $instrumentFields) {
         $ignoreColumn = $db->pselectOne($query, array());
 
         if (!empty($ignoreColumn)) {
-            $query = "SELECT TableName, CommentId1, Value1, CommentId2, Value2 FROM conflicts_unresolved WHERE TableName = '$instrument' AND FieldName = '$field'";
+            $query = "SELECT TableName, FieldName, CommentId1, Value1, CommentId2, Value2 FROM conflicts_unresolved WHERE TableName = '$instrument' AND FieldName = '$field'";
             $conflictsToRemove = $db->pselect($query, array());
             print_r($conflictsToRemove);
 
