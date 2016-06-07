@@ -136,7 +136,6 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-       location.href="{$baseurl}/conflict_resolver/?submenu=resolved_conflicts&pageID=" + pageNum
        location.href="{$baseurl}/conflict_resolver/?submenu=resolved_conflicts&filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
     },
     Active: {$pageID}
