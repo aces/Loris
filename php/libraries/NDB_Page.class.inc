@@ -568,20 +568,6 @@ class NDB_Page
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
                   $baseurl . '/js/components/react.breadcrumb.js',
                  );
-        if (file_exists($paths['base'] . "modules/$TestName/js/$TestName.js")) {
-            error_log(
-                "WARNING: Relying on $TestName.js getting automatically loaded will"
-                . " soon be removed. "
-                . "Override getJSDependencies() instead"
-            );
-
-            if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
-            ) {
-                $files[] = $baseurl . "/$TestName/js/$TestName.js";
-            } else {
-                $files[] = $baseurl . "/GetJS.php?Module=$TestName";
-            }
-        }
         return $files;
     }
 }
