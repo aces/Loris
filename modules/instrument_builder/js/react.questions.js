@@ -119,10 +119,35 @@ DropdownOptions = React.createClass({
 	},
 	// Add an option to the element
 	addOption: function () {
-		var temp = this.props.element.Options,
-		    key = Instrument.Enumize(this.state.option);
+		var option = this.state.option.trim();
+
+		// Check for empty options
+		if (option == "") {
+			var temp = this.state.error ? this.state.error : {};
+			temp.newSelectOption = "Dropdown options cannot be empty!";
+			this.setState({
+				error: temp
+			});
+			return;
+		}
+
+		// Remove error if corrected
+		if (this.state.error) {
+			var temp = this.state.error;
+			delete temp.newSelectOption;
+			this.setState({
+				error: temp
+			});
+		}
+
+		// add to option list
+		var temp = this.props.element.Options;
+		var key = Instrument.Enumize(this.state.option);
 		temp.Values[key] = this.state.option;
 		this.props.updateState({ Options: temp });
+
+		// clear input field
+		this.state.option = "";
 	},
 	// Reset the dropdown options
 	resetOptions: function () {
@@ -132,19 +157,34 @@ DropdownOptions = React.createClass({
 	},
 	// Render the HTML
 	render: function () {
-		var multi = '',
-		    options = this.props.element.Options.Values;
+
+		var multi = '';
+		var options = this.props.element.Options.Values;
+		var errorMessage = '';
+		var dropdownClass = 'form-group';
+
 		// Set the select option type
 		if (this.props.element.Options.AllowMultiple) {
 			multi = "multiple";
 		}
+
+		// If an error is present, display the error
+		if (this.state.error && this.state.error.newSelectOption) {
+			errorMessage = React.createElement(
+				'span',
+				{ className: 'form-error' },
+				this.state.error.newSelectOption
+			);
+			dropdownClass += " has-error";
+		}
+
 		return React.createElement(
 			'div',
 			null,
 			React.createElement(BasicOptions, { updateState: this.props.updateState, element: this.props.element }),
 			React.createElement(
 				'div',
-				{ className: 'form-group' },
+				{ className: dropdownClass },
 				React.createElement(
 					'label',
 					{ className: 'col-sm-2 control-label' },
@@ -153,10 +193,15 @@ DropdownOptions = React.createClass({
 				React.createElement(
 					'div',
 					{ className: 'col-sm-3' },
-					React.createElement('input', { className: 'form-control', type: 'text', id: 'newSelectOption', onChange: this.onChange })
+					React.createElement('input', { className: 'form-control', type: 'text', id: 'newSelectOption', value: this.state.option, onChange: this.onChange })
 				),
 				React.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Add option', onClick: this.addOption.bind(this, false) }),
-				React.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Reset', onClick: this.resetOptions })
+				React.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Reset', onClick: this.resetOptions }),
+				React.createElement(
+					'div',
+					{ className: 'col-sm-6 col-sm-offset-2' },
+					errorMessage
+				)
 			),
 			React.createElement(
 				'div',
@@ -798,3 +843,4 @@ AddElement = React.createClass({
 		);
 	}
 });
+//# sourceMappingURL=react.questions.js.map

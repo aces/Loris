@@ -90,11 +90,37 @@ DropdownOptions = React.createClass({
 		});
 	},
 	// Add an option to the element
-	addOption: function(){
-		var temp = this.props.element.Options,
-			key = Instrument.Enumize(this.state.option);
-			temp.Values[key] = this.state.option;
-			this.props.updateState({Options: temp});
+	addOption: function() {
+		var option = this.state.option.trim();
+
+		// Check for empty options
+		if (option == "") {
+			var temp = (this.state.error) ? this.state.error : {};
+			temp.newSelectOption = "Dropdown options cannot be empty!";
+			this.setState({
+				error: temp
+			});
+			return;
+		}
+
+		// Remove error if corrected
+		if (this.state.error) {
+			var temp = this.state.error;
+			delete temp.newSelectOption;
+			this.setState({
+				error: temp
+			});
+        }
+
+		// add to option list
+		var temp = this.props.element.Options;
+		var key = Instrument.Enumize(this.state.option);
+		temp.Values[key] = this.state.option;
+		this.props.updateState({ Options: temp });
+
+		// clear input field
+		this.state.option = "";
+
 	},
 	// Reset the dropdown options
 	resetOptions: function(){
@@ -104,37 +130,51 @@ DropdownOptions = React.createClass({
 	},
 	// Render the HTML
 	render: function () {
-		var multi = '',
-			options = this.props.element.Options.Values;
+
+		var multi = '';
+		var options = this.props.element.Options.Values;
+		var errorMessage = '';
+		var dropdownClass = 'form-group';
+
 		// Set the select option type
-		if(this.props.element.Options.AllowMultiple){
+		if (this.props.element.Options.AllowMultiple) {
 			multi = "multiple";
 		}
+
+		// If an error is present, display the error
+		if (this.state.error && this.state.error.newSelectOption) {
+			errorMessage = (<span className="form-error">{this.state.error.newSelectOption}</span>);
+			dropdownClass += " has-error";
+		}
+
 		return (
 			<div>
 				<BasicOptions updateState={this.props.updateState} element={this.props.element} />
-				<div className="form-group">
+				<div className={dropdownClass}>
                     <label className="col-sm-2 control-label">Dropdown Option: </label>
                     <div className="col-sm-3">
-                        <input className="form-control" type="text" id="newSelectOption" onChange={this.onChange} />
+                        <input className="form-control" type="text" id="newSelectOption" value={this.state.option} onChange={this.onChange} />
                     </div>
-                    <input className="btn btn-default" type="button" value="Add option" onClick={this.addOption.bind(this, false)} />
+                    <input className="btn btn-default" type="button" value="Add option" onClick={this.addOption.bind(this, false) } />
                     <input className="btn btn-default" type="button" value="Reset" onClick={this.resetOptions} />
+					<div className="col-sm-6 col-sm-offset-2">
+						{errorMessage}
+					</div>
                 </div>
                 <div className="form-group">
                     <label className="col-sm-2 control-label">Preview: </label>
                     <div className="col-sm-2">
                         <select multiple={multi} id="selectOptions" className="form-control">
-                        	{Object.keys(options).map(function(option){
-                        		return (
-                        			<option>
-                        				{options[option]}
-                        			</option>
-                        		)
-                        	})}
+							{Object.keys(options).map(function (option) {
+								return (
+									<option>
+										{options[option]}
+									</option>
+								)
+							}) }
                         </select>
-                	</div>
-			    </div>
+					</div>
+				</div>
 			</div>
 		)
 	}
