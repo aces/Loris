@@ -8,6 +8,33 @@
  */
 
 /*
+ *  The following componet is used to indicate to users that their data is currently
+ *  loading
+ */
+Loading = React.createClass({
+    displayName: "Loading",
+
+    render: function () {
+        return React.createElement(
+            "div",
+            { className: "row" },
+            React.createElement(
+                "h3",
+                { className: "text-center loading-header" },
+                "We are currently working hard to load your data. Please be patient."
+            ),
+            React.createElement(
+                "div",
+                { className: "spinner" },
+                React.createElement("div", { className: "bounce1" }),
+                React.createElement("div", { className: "bounce2" }),
+                React.createElement("div", { className: "bounce3" })
+            )
+        );
+    }
+});
+
+/*
  *  The following component is the base component for displaying the tab's contnet
  */
 TabPane = React.createClass({
@@ -18,6 +45,13 @@ TabPane = React.createClass({
         var classList = "tab-pane";
         if (this.props.Active) {
             classList += " active";
+        }
+        if (this.props.Loading) {
+            return React.createElement(
+                "div",
+                { className: classList, id: this.props.TabId },
+                React.createElement(Loading, null)
+            );
         }
         return React.createElement(
             "div",
@@ -43,7 +77,7 @@ InfoTabPane = React.createClass({
         return React.createElement(
             TabPane,
             { Title: "Welcome to the Data Query Tool",
-                TabId: this.props.TabId, Active: true },
+                TabId: this.props.TabId, Active: true, Loading: this.props.Loading },
             React.createElement(
                 "p",
                 null,
@@ -133,7 +167,7 @@ FieldSelectTabPane = React.createClass({
     render: function () {
         return React.createElement(
             TabPane,
-            { TabId: this.props.TabId },
+            { TabId: this.props.TabId, Loading: this.props.Loading },
             React.createElement(FieldSelector, { title: "Fields",
                 items: this.props.categories,
                 onFieldChange: this.props.onFieldChange,
@@ -155,7 +189,7 @@ FilterSelectTabPane = React.createClass({
     render: function () {
         return React.createElement(
             TabPane,
-            { TabId: this.props.TabId },
+            { TabId: this.props.TabId, Loading: this.props.Loading },
             React.createElement(FilterBuilder, { items: this.props.categories,
                 updateFilter: this.props.updateFilter,
                 filter: this.props.filter,
@@ -370,7 +404,7 @@ ViewDataTabPane = React.createClass({
         }
         return React.createElement(
             TabPane,
-            { TabId: this.props.TabId },
+            { TabId: this.props.TabId, Loading: this.props.Loading },
             React.createElement(
                 "h2",
                 null,
@@ -881,7 +915,7 @@ StatsVisualizationTabPane = React.createClass({
             }
         return React.createElement(
             TabPane,
-            { TabId: this.props.TabId },
+            { TabId: this.props.TabId, Loading: this.props.Loading },
             content
         );
     }
@@ -1336,7 +1370,7 @@ ManageSavedQueriesTabPane = React.createClass({
         );
         return React.createElement(
             TabPane,
-            { TabId: this.props.TabId },
+            { TabId: this.props.TabId, Loading: this.props.Loading },
             content
         );
     }
