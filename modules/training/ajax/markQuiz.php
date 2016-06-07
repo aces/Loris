@@ -53,7 +53,7 @@ $values = array(
            'examiner'  => $examinerID,
           );
 
-//process($values);
+process($values);
 print json_encode($quizCorrect);
 exit();
 
