@@ -775,10 +775,36 @@ class NDB_Form_statistics extends NDB_Form
             $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
+        //$vlabels = Utility::getVisitList();
+        //error_log(print_r($vlabels));
 
         $demographics_project_name     = $projects["{$_REQUEST['DemographicProject']}"];
         $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['Projects']    = $projects;
+
+        //REGISTERED CANDIDATES ROW
+        //TODO confirm that visit labels are no longuer needed
+        $result = $DB->pselect(
+            "SELECT s.subprojectid as rowid,
+                          count(DISTINCT(c.PSCID)) as val
+                      FROM candidate as c
+                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      WHERE coalesce(s.active, 'Y')='Y'
+                          AND c.CenterID <> '1'
+                          AND c.PSCID <> 'scanner'
+                          AND c.Active='Y'
+                          $ExtraSite_Criteria
+                          $ExtraProject_Criteria
+                      GROUP BY s.subprojectid",
+            array()
+        );
+
+        foreach($result as $row) {
+            $this->tpl_data['registered'][$row['rowid']]['total'] = $row['val'];
+            $this->tpl_data['registered']['total'] += $row['val'];
+        }
+
+        //Registered candidates currently in or passed screening
         $result = $DB->pselect(
             "SELECT s.subprojectid as rowid,
                 COUNT(DISTINCT(c.PSCID)) as val
@@ -815,29 +841,8 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['Total_candidates'] = $Total_candidates;
 
         }
-        // Total for 'registered candidates' row.
-        $result = $DB->pselect(
-            "SELECT s.subprojectid as rowid,
-                          count(DISTINCT(c.PSCID)) as val
-                      FROM candidate as c
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
-                      WHERE coalesce(s.active, 'Y')='Y'
-                          AND c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
-                          AND coalesce(s.visit_label, 'v06') in
-                                    ('v06', 'v12', 'v18', 'v24', 'v36')
-                          AND c.Active='Y'
-                          $ExtraSite_Criteria
-                          $ExtraProject_Criteria
-                      GROUP BY s.subprojectid",
-            array()
-        );
 
-        foreach($result as $row) {
-            $this->tpl_data['registered'][$row['rowid']]['total'] = $row['val'];
-            $this->tpl_data['registered']['total'] += $row['val'];
-        }
-
+        //IBIS
         // Number of visits.
         // This is based on the EDI completion status, since the EDI
         // is done by every cohort at every visit

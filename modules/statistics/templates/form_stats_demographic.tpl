@@ -1,5 +1,5 @@
 <div id="demographics">
-    <h2 class="statsH2">General statistics{if $CurrentSite} for {$CurrentSite.Name}{/if}
+    <h2 class="statsH2">General Demographic Statistics{if $CurrentSite} for {$CurrentSite.Name}{/if}
         {if $CurrentProject} for {$CurrentProject.Name} {/if}</h2>
 
     <div class="col-sm-2">
@@ -15,20 +15,20 @@
     <table class="data generalStats table table-primary table-bordered">
         <thead>
         <tr>
-            <th></th>
-            <th>Undefined Yet</th>
+            <th><h1>Leigh</h1></th>
+            <th>Undefined</th>
             {foreach from=$Subprojects item=name key=proj}
                 <th>{$name}</th>
             {/foreach}
             <th class="data">Total</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody align="right">
         <tr>
             <td>Registered candidates</td>
-            <td>{$registered[NULL].total}</td>
+            <td><b>{$registered[NULL].total}</b></td>
             {foreach from=$Subprojects item=proj key=keyid}
-                <td>{$registered[$keyid].total}</td>
+                <td><b>{$registered[$keyid].total}</b></td>
             {/foreach}
             {*
                 <td class="total">{$registered.total}{if $registered.total-$Total_candidates neq 0} ({$Total_candidates -$registered.total} require DCC review){/if}</td>*}
@@ -36,24 +36,39 @@
             <td class="total">{$registered.total}</td>
         </tr>
         <tr>
-            <td colspan="2">Registered candidates currently in or passed screening</td>
+            <td>Registered candidates currently in or passed screening</td>
+            <td>N/A</td>
             {foreach from=$Subprojects item=proj key=keyid}
-                <td>{$registered[$keyid].visit}</td>
+                {if {$registered[$keyid].visit}>0}
+                    <td>{$registered[$keyid].visit}<font size="1"><b>/{$registered[$keyid].total}</b></font></td>
+                {else}
+                    <td>0<font size="1"><b>/{$registered[$keyid].total}</b></font></td>
+                {/if}
             {/foreach}
             <td class="total">{$registered.visittotal}</td>
         </tr>
         <tr>
-            <td colspan="2">Registered candidates who have come in for a visit</td>
+            <td>Registered candidates who have come in for a visit</td>
+            <td>N/A</td>
             {foreach from=$Subprojects item=proj key=keyid}
-                <td>{$edi[$keyid].complete}</td>
+                {if {$edi[$keyid].complete}>0}
+                    <td>{$edi[$keyid].complete}<font size="1"><b>/{$registered[$keyid].total}</b></font></td>
+                {else}
+                    <td>0<font size="1"><b>/{$registered[$keyid].total}</b></font></td>
+                {/if}
             {/foreach}
             <td class="total">{$edi.complete}</td>
         </tr>
         {if $mri_table_exists}
             <tr>
-                <td colspan="2">Registered candidates with T1 acquired</td>
+                <td>Registered candidates with T1 acquired</td>
+                <td>N/A</td>
                 {foreach from=$Subprojects item=proj key=keyid}
-                    <td>{$scanned[$keyid].complete}</td>
+                    {if {$scanned[$keyid].complete}>0}
+                        <td>{$scanned[$keyid].complete}<font size="1"><b>/{$registered[$keyid].total}</b></font></td>
+                    {else}
+                        <td>0<font size="1"><b>/{$registered[$keyid].total}</b></font></td>
+                    {/if}
                 {/foreach}
                 <td class="total">{$scanned.complete}</td>
             </tr>
