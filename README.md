@@ -22,7 +22,9 @@ Note: Your default credentials after deployment will be 'admin' as the username 
  * Package manager (for LINUX distributions)
  * Composer : should be run with --no-dev option
 
-<b>Important:</b>Only PHP 5.6 is supported for LORIS 16.0  Composer should be run with --no-dev option unless you are an active LORIS developer. 
+<b>Important:</b>
+ * Only PHP <b>5.6</b> is supported for LORIS 16.0. We recommend installing/upgrading PHP using this (deprecated) PPA repository: <i>ppa:ondrej/php5-5.6 </i>
+ * Composer should be run with --no-dev option unless you are an active LORIS developer. 
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information.
 
