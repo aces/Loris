@@ -50,8 +50,10 @@ composer install --no-dev
 This details how to manual populate the MySQL database which is assumed
 to already exist (if not, create one before proceeding)
 
-Connect to MySQL, use your database and source the 
-`SQL/0000-00-00-schema.sql` file into it.
+Connect to MySQL, use your database and source all the files in the
+SQL/ directory of LORIS which are prefixed with `0000-00-` into it
+(ie `SQL/0000-00-00-schema.sql`, `SQL/0000-00-01-Permission.sql`, 
+`SQL/0000-00-02-Menus.sql`, etc.)
 
 There are a few settings in the Config module that LORIS currently depends
 on being updated to load correctly that must be set manually from MySQL as
