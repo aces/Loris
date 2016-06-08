@@ -67,7 +67,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           'c.CandID AS DCCID',
                           'c.PSCID',
                           'c.Gender',
-                          "COALESCE(pso.Description,'\"Active\"') "
+                          "COALESCE(pso.Description,'Active') "
                           . " AS Participant_Status",
                          );
         if ($useProjects) {
