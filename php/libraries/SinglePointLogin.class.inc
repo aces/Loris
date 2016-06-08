@@ -213,21 +213,8 @@ class SinglePointLogin
                . ' the passwords do not match';
         }
 
-        // Keeping the same password is not allowed
-        // 1. If we are using PHP >= 5.5 and user has a value in column
-        // Password_hash then use function password_verify to make sure that the
-        // password changed
-        // 2. If we are using PHP < 5.5 or if there is no value in column
-        // Password_hash for the user, use "old" MD5Unsalt to make sure password
-        // changed
-        if (function_exists('password_verify') && !empty($data['Password_hash'])) {
-            if (password_verify($_POST['password'], $data['Password_hash'])) {
-                $this->_lastError = 'You cannot keep the same password';
-            }
-        } else {
-            if (User::MD5Unsalt($_POST['password'], $data['Password_md5'])) {
-                $this->_lastError = 'You cannot keep the same password';
-            }
+        if (password_verify($_POST['password'], $data['Password_hash'])) {
+            $this->_lastError = 'You cannot keep the same password';
         }
 
         // if errors
@@ -411,7 +398,6 @@ class SinglePointLogin
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
-                        Password_md5,
                         Password_expiry,
                         Active,
                         Pending_approval,
@@ -422,29 +408,10 @@ class SinglePointLogin
         $row   = $DB->pselectRow($query, array('username' => $username));
 
         if ($row['User_count'] == 1) {
-            // validate the user
-
-            // Check if the PHP 5.5 password hashing API is available.
-            $php55 = false;
-            if (function_exists("password_verify")) {
-                $php55 = true;
-            }
-
-            // If either the password hashing isn't available, or the
-            // Password_hash column is empty, we check using Loris's old
-            // MD5Unsalt method that the passwords are equal.
-            //
-            // If there is a saved Password_hash, then we verify using the
-            // PHP 5.5+ password hashing API.
+            // validate passsword
             $oldhash = $row['Password_hash'];
-            if (((!$php55 || empty($oldhash))
-                && User::MD5Unsalt($password, $row['Password_md5']))
-                || ($php55 && password_verify($password, $oldhash))
-            ) {
-                if ($php55
-                    && (empty($oldhash)
-                    || password_needs_rehash($oldhash, PASSWORD_DEFAULT))
-                ) {
+            if (password_verify($password, $oldhash)) {
+                if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
                     $user =& User::factory($username);
                     $user->updatePassword($password);
                 }

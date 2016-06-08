@@ -256,46 +256,6 @@ class User extends UserPermissions
         return true;
     }
 
-
-    /**
-     * Makes an md5 hash with a salt
-     *
-     * @param string $word The word to hash
-     *
-     * @return string
-     * @access public
-     * @static
-     */
-    static function MD5Salt($word)
-    {
-        // get a two-character hexadecimal salt from 10 to ff
-        $salt = dechex(rand(16, 255));
-
-        // return the salted md5 hash
-        return $salt . md5($salt . $word);
-    }
-
-
-    /**
-     * Checks an md5 salt
-     *
-     * @param string $word The word to compare to the hash
-     * @param string $hash The hash
-     *
-     * @return boolean
-     * @access public
-     * @static
-     */
-    static function MD5Unsalt($word, $hash)
-    {
-        // get the first two characters of the hash
-        $salt = substr($hash, 0, 2);
-
-        // return whether the hash matches the word
-        return ($salt . md5($salt . $word) == $hash);
-    }
-
-
     /**
      * Generates a random alphanumeric password
      *
@@ -425,12 +385,6 @@ class User extends UserPermissions
      */
     function updatePassword($password, $expiry = null)
     {
-        // Check if the PHP 5.5 password hashing API is available.
-        $php55 = false;
-        if (function_exists("password_verify")) {
-            $php55 = true;
-        }
-
         if (is_null($expiry)) {
             $expiry = date(
                 'Y-m-d',
@@ -440,18 +394,11 @@ class User extends UserPermissions
 
         $updateArray = array('Password_expiry' => $expiry);
 
-        // Update the appropriate password field, null the other one
-        // for security.
-        if ($php55) {
-            $updateArray['Password_hash'] = password_hash(
-                $password,
-                PASSWORD_DEFAULT
-            );
-            $updateArray['Password_MD5']  = null;
-        } else {
-            $updateArray['Password_hash'] = null;
-            $updateArray['Password_MD5']  = User::MD5Salt($password);
-        }
+        $updateArray['Password_hash'] = password_hash(
+            $password,
+            PASSWORD_DEFAULT
+        );
+        
 
         $this->update($updateArray);
 
