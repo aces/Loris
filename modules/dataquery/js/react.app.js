@@ -24,6 +24,9 @@ SavedQueriesList = React.createClass({
 
         this.props.onSelectQuery(this.props.queryDetails[queryName].Fields, this.props.queryDetails[queryName].Conditions);
     },
+    toggleTabs: function () {
+        $(".navbar-left>.active").removeClass("active");
+    },
     render: function () {
         // Renders the html for the component
 
@@ -103,7 +106,7 @@ SavedQueriesList = React.createClass({
             ),
             React.createElement(
                 "li",
-                { role: "presentation" },
+                { role: "presentation", onClick: this.toggleTabs },
                 React.createElement(
                     "a",
                     { href: "#SavedQueriesTab", "data-toggle": "tab" },

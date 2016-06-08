@@ -26,6 +26,9 @@ SavedQueriesList = React.createClass({
             this.props.queryDetails[queryName].Conditions
         );
     },
+    toggleTabs: function() {
+        $(".navbar-left>.active").removeClass("active");
+    },
     render: function() {
         // Renders the html for the component
 
@@ -69,7 +72,7 @@ SavedQueriesList = React.createClass({
                         {globalSaved}
                      </ul>
                  </li>
-                 <li role="presentation"><a href="#SavedQueriesTab" data-toggle="tab">Manage Saved Queries</a></li>
+                 <li role="presentation" onClick={this.toggleTabs}><a href="#SavedQueriesTab" data-toggle="tab">Manage Saved Queries</a></li>
              </ul>
             );
     }
