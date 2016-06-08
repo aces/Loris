@@ -14,6 +14,125 @@
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
 {
+
+    public function setUp()
+    {
+
+        parent::setUp();
+   /**
+    * Insert testing data
+    *
+    * @return void
+    */
+        $this->DB->insert(
+            'test_names',
+            array(
+             'Test_name'         => 'testname99',
+             'Full_name'         => 'testname99'
+            )
+        );
+
+        $this->DB->insert(
+            'psc',
+            array(
+             'CenterID'          => '99',
+             'Name'              => 'DAC',
+             'PSCArea'           => 'DAC',
+             'StateID'           =>  0,
+             'Alias'             => 'DAC',
+             'MRI_alias'         => 'DAC'
+            )
+        );
+        $this->DB->insert(
+            'candidate',
+            array(
+             'CandID'            => '111222',
+             'PSCID'             => '111222',
+             'CenterID'          => '99',
+             'DoB'               => '2005-08-16'
+            )
+        );
+        $this->DB->insert(
+            'session',
+            array(
+             'ID'                => '7777',
+             'CandID'            => '111222',
+             'CenterID'          => '99'
+            )
+        );
+        $this->DB->insert(
+            'flag',
+            array(
+             'SessionID'         => '7777',
+             'Test_name'         => 'testname99',
+             'CommentID'         => 'testcid',
+             'Administration'    => 'All',
+             'Data_entry'        => 'Complete'
+            )
+        );
+        $this->DB->insert(
+            'final_radiological_review',
+            array(
+             'CommentID'         => 'testcid',
+       'Final_Review_Results'    => 'normal',
+         'Final_Exclusionary'    => 'non_exclusionary',
+             'SAS'               => '1',
+             'PVS'               => '1'
+            )
+        );
+        $this->DB->insert(
+            'radiology_review',
+            array(
+             'CommentID'         => 'testcid'
+            )
+        );
+        
+    }
+   /**
+    * Delete testing data
+    *
+    * @return void
+    */
+    public function tearDown()
+    {
+        $this->DB->delete(
+            "radiology_review",
+            array('CommentID' => 'testcid')
+        );
+
+        $this->DB->delete(
+            "final_radiological_review",
+            array('CommentID' => 'testcid')
+        );
+        $this->DB->delete(
+            "flag",
+            array('CommentID' => '111222')
+        );
+        $this->DB->delete(
+            "session",
+            array('ID' => '7777')
+        );
+        $this->DB->delete(
+            "candidate",
+            array('CandID' => '111222')
+        );
+        $this->DB->delete(
+            "psc",
+            array('CenterID' => '99')
+        );
+        $this->DB->delete(
+            "test_names",
+            array('Test_name' => 'testname99')
+        );
+
+
+
+
+
+
+         parent::tearDown();
+    }
+
     /**
      * Tests that the final Radiological Review loads if the user has the correct
      * permissions (edit_final_radiological_review or view_final_radiological_review)
@@ -62,10 +181,16 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/final_radiological_review/");
 
     // Test that the Imaging menu appears in the first row
-        $bodyText = $this->webDriver->findElement(
+        $this->webDriver->findElement(
+            WebDriverBy::Name("keyword")
+        )->sendKeys("hello test");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        )->click();
+        $bodyText =  $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("Selection Filter", $bodyText);
+        )->getText();         
+        $this->assertContains("Nothing found", $bodyText);
 
         $this->resetPermissions();
     }
