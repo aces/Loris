@@ -1192,7 +1192,7 @@ class NDB_Form_statistics extends NDB_Form
 
     /**
      * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
+     * in the statistics menu
      *
      * @return array of javascript to be inserted
      */
@@ -1210,7 +1210,6 @@ class NDB_Form_statistics extends NDB_Form
                 $baseURL . "/statistics/js/form_stats_reliability.js",
                 $baseURL . "/statistics/js/form_stats_MRI.js",
                 $baseURL . "/statistics/js/form_stats_demographic.js",
-                $baseURL . "/statistics/js/form_stats_enrollment.js",
             )
         );
     }
