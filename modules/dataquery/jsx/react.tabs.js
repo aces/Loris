@@ -122,7 +122,10 @@ FilterSelectTabPane = React.createClass({
  */
 ViewDataTabPane = React.createClass({
     getInitialState: function() {
-        return { 'sessions' : [] }
+        return {
+            'sessions' : [],
+            'savePrompt': false
+        }
     },
     runQuery: function() {
         // Wrapper function to run the current query
@@ -292,6 +295,18 @@ ViewDataTabPane = React.createClass({
             saveworker.postMessage({ Files: FileList });
         }
     },
+    saveQuery: function() {
+        this.setState({ 'savePrompt' : true });
+    },
+    dismissDialog: function() {
+        this.setState({ 'savePrompt' : false });
+    },
+    savedQuery: function(name, shared) {
+        if(this.props.onSaveQuery) {
+            this.props.onSaveQuery(name, shared);
+        }
+        this.setState({ 'savePrompt' : false });
+    },
     render: function() {
         var downloadData;
         var buttons = (
@@ -300,6 +315,7 @@ ViewDataTabPane = React.createClass({
                     <button className="btn btn-primary" onClick={this.runQuery}>Run Query</button>
                     <button className="btn btn-primary" onClick={this.downloadCSV}>Download Table as CSV</button>
                     <button className="btn btn-primary" onClick={this.downloadData}>Download Data as ZIP</button>
+                    <button className="btn btn-primary" onClick={this.saveQuery}>Save Query</button>
                 </div>
                 <div id="progress" className="col-xs-12"></div>
                 <div id="downloadlinks" className="col-xs-12">
@@ -308,6 +324,10 @@ ViewDataTabPane = React.createClass({
             </div>
             );
         var criteria = [];
+        var savePrompt = '';
+        if(this.state.savePrompt) {
+            savePrompt = <SaveQueryDialog onDismissClicked={this.dismissDialog} onSaveClicked={this.savedQuery}/>;
+        }
         for (var el in  this.props.Criteria) {
             if(!this.props.Criteria.hasOwnProperty(el)) {
                 continue;
@@ -361,6 +381,7 @@ ViewDataTabPane = React.createClass({
                         Data={this.props.Data}
                         RowNameMap={this.props.RowInfo}
                     />
+                    {savePrompt}
                </TabPane>
     }
 });
@@ -929,7 +950,7 @@ ManageSavedQueriesTabPane = React.createClass({
         var content = (
             <div>
                 <h2>Your currently saved queries</h2>
-                <button onClick={this.saveQuery}>Save Current Query</button>
+                <button className="btn btn-primary" onClick={this.saveQuery}>Save Current Query</button>
                 <table className="table table-hover table-primary table-bordered colm-freeze">
                     <thead>
                         <tr className="info">

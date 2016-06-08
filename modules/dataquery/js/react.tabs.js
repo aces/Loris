@@ -206,7 +206,10 @@ ViewDataTabPane = React.createClass({
     displayName: "ViewDataTabPane",
 
     getInitialState: function () {
-        return { 'sessions': [] };
+        return {
+            'sessions': [],
+            'savePrompt': false
+        };
     },
     runQuery: function () {
         // Wrapper function to run the current query
@@ -366,6 +369,18 @@ ViewDataTabPane = React.createClass({
             saveworker.postMessage({ Files: FileList });
         }
     },
+    saveQuery: function () {
+        this.setState({ 'savePrompt': true });
+    },
+    dismissDialog: function () {
+        this.setState({ 'savePrompt': false });
+    },
+    savedQuery: function (name, shared) {
+        if (this.props.onSaveQuery) {
+            this.props.onSaveQuery(name, shared);
+        }
+        this.setState({ 'savePrompt': false });
+    },
     render: function () {
         var downloadData;
         var buttons = React.createElement(
@@ -388,6 +403,11 @@ ViewDataTabPane = React.createClass({
                     "button",
                     { className: "btn btn-primary", onClick: this.downloadData },
                     "Download Data as ZIP"
+                ),
+                React.createElement(
+                    "button",
+                    { className: "btn btn-primary", onClick: this.saveQuery },
+                    "Save Query"
                 )
             ),
             React.createElement("div", { id: "progress", className: "col-xs-12" }),
@@ -398,6 +418,10 @@ ViewDataTabPane = React.createClass({
             )
         );
         var criteria = [];
+        var savePrompt = '';
+        if (this.state.savePrompt) {
+            savePrompt = React.createElement(SaveQueryDialog, { onDismissClicked: this.dismissDialog, onSaveClicked: this.savedQuery });
+        }
         for (var el in this.props.Criteria) {
             if (!this.props.Criteria.hasOwnProperty(el)) {
                 continue;
@@ -505,7 +529,8 @@ ViewDataTabPane = React.createClass({
                 RowNumLabel: "Identifiers",
                 Data: this.props.Data,
                 RowNameMap: this.props.RowInfo
-            })
+            }),
+            savePrompt
         );
     }
 });
@@ -1361,7 +1386,7 @@ ManageSavedQueriesTabPane = React.createClass({
             ),
             React.createElement(
                 "button",
-                { onClick: this.saveQuery },
+                { className: "btn btn-primary", onClick: this.saveQuery },
                 "Save Current Query"
             ),
             React.createElement(

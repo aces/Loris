@@ -861,6 +861,7 @@ DataQueryApp = React.createClass({
                 displayType={displayType}
                 changeDataDisplay={this.changeDataDisplay}
                 Loading={this.state.loading}
+                onSaveQuery={this.saveCurrentQuery}
         />);
 
         // Add the stats tab
