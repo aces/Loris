@@ -113,10 +113,12 @@ var Instrument = {
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
                         break;
                     case "date":
+                        console.log(element);
                         content += 'date{@}';
                         content += element.Name + "{@}" + element.Description ;
                         content += "{@}" + element.Options.MinDate.split('-')[0];
-                        content += "{@}" + element.Options.MaxDate.split('-')[0] + "\n";
+                        content += "{@}" + element.Options.MaxDate.split('-')[0];
+                        content += "{@}" + element.Options.dateFormat + "\n";
                         content += "select{@}" + element.Name + "_status" +
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
                         break;

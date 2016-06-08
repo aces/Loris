@@ -192,6 +192,19 @@ DropdownOptions = React.createClass({
 DateOptions = React.createClass({
 	displayName: 'DateOptions',
 
+	// Initilize
+	getInitialState: function () {
+		return {
+			dateFormat: {
+				"Date": "Standard Date",
+				"BasicDate": "Basic Date (does not include 'Not Answered' option)",
+				"MonthYear": "Month Year (does not include day of the month)"
+			}
+		};
+	},
+	componentDidMount: function () {
+		this.props.element.Options.dateFormat = "";
+	},
 	// Keep track of the inputed years
 	onChange: function (e) {
 		var options = this.props.element.Options;
@@ -199,27 +212,30 @@ DateOptions = React.createClass({
 			options.MinDate = e.target.value + "-01-01";
 		} else if (e.target.id === 'datemax' && e.target.value.length > 0) {
 			options.MaxDate = e.target.value + "-12-31";
+		} else if (e.target.id === 'dateFormat') {
+			options.dateFormat = e.target.value;
 		}
 		this.props.updateState({ Options: options });
 	},
 	// Render the HTML
 	render: function () {
-		// Truncate off the month and day from the date to only have the
-		// year.
+		// Truncate off the month and day from the date to only have the year.
 		var minYear = this.props.element.Options.MinDate.split('-')[0],
 		    maxYear = this.props.element.Options.MaxDate.split('-')[0];
 
-		var errorClass = 'options form-group',
+		var dateOptionsClass = 'options form-group',
 		    errorMessage = '';
+
+		var dateFormatOptions = this.state.dateFormat;
 
 		if (this.props.element.error && this.props.element.error.dateOption) {
 			// If an error is present, display the error
 			errorMessage = React.createElement(
-				'font',
+				'span',
 				{ className: 'form-error' },
 				this.props.element.error.dateOption
 			);
-			errorClass += " has-error";
+			dateOptionsClass += " has-error";
 		}
 
 		return React.createElement(
@@ -228,7 +244,7 @@ DateOptions = React.createClass({
 			React.createElement(BasicOptions, { updateState: this.props.updateState, element: this.props.element }),
 			React.createElement(
 				'div',
-				{ id: 'dateoptions', className: errorClass },
+				{ id: 'dateoptions', className: dateOptionsClass },
 				React.createElement(
 					'label',
 					{ className: 'col-sm-2 control-label' },
@@ -249,6 +265,30 @@ DateOptions = React.createClass({
 					'div',
 					{ className: 'col-sm-2' },
 					React.createElement('input', { className: 'form-control', type: 'number', id: 'datemax', min: '1900', max: '2100', onChange: this.onChange, value: maxYear })
+				)
+			),
+			React.createElement(
+				'div',
+				{ className: 'form-group' },
+				React.createElement(
+					'label',
+					{ className: 'col-sm-2 control-label' },
+					'Date Format: '
+				),
+				React.createElement(
+					'div',
+					{ className: 'col-sm-6' },
+					React.createElement(
+						'select',
+						{ id: 'dateFormat', className: 'form-control', onChange: this.onChange },
+						Object.keys(dateFormatOptions).map(function (option) {
+							return React.createElement(
+								'option',
+								{ value: option },
+								dateFormatOptions[option]
+							);
+						})
+					)
 				)
 			)
 		);
@@ -584,6 +624,7 @@ AddElement = React.createClass({
 		if (selected == 'date') {
 			var min = this.state.Options.MinDate,
 			    max = this.state.Options.MaxDate;
+			console.log(this.state.Options);
 
 			var minDate = Date.parse(min),
 			    maxDate = Date.parse(max);
@@ -798,3 +839,4 @@ AddElement = React.createClass({
 		);
 	}
 });
+//# sourceMappingURL=react.questions.js.map

@@ -585,34 +585,48 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         );
                     }
                     if ($addElements) {
+
+                        // Set date options
                         if ($pieces[3] == 1900 && $pieces[4] == 2100) {
                             $dateOptions = null;
                         } else {
-                            $dateOptions = array(
-                                            'language'         => 'en',
-                                            'format'           => 'YMd',
-                                            'minYear'          => $pieces[3],
-                                            'maxYear'          => $pieces[4],
-                                            'addEmptyOption'   => true,
-                                            'emptyOptionValue' => null,
-                                           );
+                            $dateOptions = [
+                                'language'         => 'en',
+                                'format'           => 'YMd',
+                                'minYear'          => $pieces[3],
+                                'maxYear'          => $pieces[4],
+                                'addEmptyOption'   => true,
+                                'emptyOptionValue' => null,
+                            ];
                         }
 
-                        if (isset($pieces[5])) {
-                            $pieces[5] = trim($pieces[5]);
-                            if ($pieces[5] === 'MonthYear') {
+                        // Set date format
+                        $dateFormat = trim($pieces[5]);
+                        
+                        if (isset($dateFormat) && $dateFormat != "") {
+                            var_dump($dateFormat);    
+                            if ($dateFormat === 'MonthYear') {
+                                // Shows date without day of month
                                 $this->addMonthYear(
                                     $pieces[1],
                                     $pieces[2],
                                     $dateOptions
                                 );
                             } else {
-                                $this->addDateElement(
-                                    $pieces[1],
-                                    $pieces[2],
+                                // Shows date without not answered dropdown
+                                $this->addBasicDate(
+                                    $pieces[1], 
+                                    $pieces[2], 
                                     $dateOptions
                                 );
-                            }
+                            }                            
+                        } else {
+                            // Shows standard date
+                            $this->addDateElement(
+                                $pieces[1],
+                                $pieces[2],
+                                $dateOptions
+                            );
                         }
                     }
                     $this->LinstQuestions[$pieces[1]] = array('type' => 'date');

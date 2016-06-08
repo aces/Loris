@@ -107,7 +107,7 @@ DropdownOptions = React.createClass({
 		var multi = '',
 			options = this.props.element.Options.Values;
 		// Set the select option type
-		if(this.props.element.Options.AllowMultiple){
+		if (this.props.element.Options.AllowMultiple){
 			multi = "multiple";
 		}
 		return (
@@ -144,36 +144,52 @@ DropdownOptions = React.createClass({
  *	This is the React class for the date options
  */
 DateOptions = React.createClass({
+	// Initilize
+	getInitialState: function() {
+		return {
+			dateFormat: {
+				"Date" : "Standard Date",
+				"BasicDate" : "Basic Date (does not include 'Not Answered' option)",
+				"MonthYear" : "Month Year (does not include day of the month)" 
+			}
+		}
+	},
+	componentDidMount: function() {
+		this.props.element.Options.dateFormat = "";
+	},
     // Keep track of the inputed years
-    onChange: function(e){
+    onChange: function(e) {
         var options = this.props.element.Options;
-        if(e.target.id === 'datemin' && e.target.value.length > 0){
+        if (e.target.id === 'datemin' && e.target.value.length > 0) {
             options.MinDate = e.target.value + "-01-01";
-        } else if (e.target.id === 'datemax' && e.target.value.length > 0){
+        } else if (e.target.id === 'datemax' && e.target.value.length > 0) {
             options.MaxDate = e.target.value + "-12-31";
-        }
+        } else if (e.target.id === 'dateFormat') {
+			options.dateFormat = e.target.value;
+		}
         this.props.updateState({Options: options});
     },
     // Render the HTML
-    render: function () {
-        // Truncate off the month and day from the date to only have the
-        // year.
+    render: function() {
+        // Truncate off the month and day from the date to only have the year.
         var minYear = this.props.element.Options.MinDate.split('-')[0],
             maxYear = this.props.element.Options.MaxDate.split('-')[0];
 
-        var errorClass = 'options form-group',
+        var dateOptionsClass = 'options form-group',
             errorMessage = '';
+		
+		var dateFormatOptions = this.state.dateFormat;
 
         if (this.props.element.error && this.props.element.error.dateOption) {
             // If an error is present, display the error
-            errorMessage = (<font className="form-error">{this.props.element.error.dateOption}</font>);
-            errorClass += " has-error";
+            errorMessage = (<span className="form-error">{this.props.element.error.dateOption}</span>);
+            dateOptionsClass += " has-error";
         }
 
         return (
             <div>
-                <BasicOptions updateState={this.props.updateState} element={this.props.element} />
-                <div id="dateoptions" className={errorClass}>
+                <BasicOptions updateState={this.props.updateState} element={this.props.element} />				
+                <div id="dateoptions" className={dateOptionsClass}>
                     <label className="col-sm-2 control-label">Start year: </label>
                     <div className="col-sm-2">
                         <input className="form-control" type="number" id="datemin" min="1900" max="2100" value={minYear} onChange={this.onChange} />
@@ -182,8 +198,18 @@ DateOptions = React.createClass({
                     <label className="col-sm-2 control-label">End year: </label>
                     <div className="col-sm-2">
                         <input className="form-control" type="number" id="datemax" min="1900" max="2100" onChange={this.onChange} value={maxYear} />
-                    </div>
+                    </div>					
                 </div>
+				<div className="form-group">
+					<label className="col-sm-2 control-label">Date Format: </label>
+                    <div className="col-sm-6">
+                    	<select id="dateFormat" className="form-control" onChange={this.onChange}>
+							{Object.keys(dateFormatOptions).map(function(option){
+                        		return (<option value={option}>{dateFormatOptions[option]}</option>)
+                        	})}                       	
+                        </select>
+                    </div>
+				</div>
             </div>
         )
     }
@@ -385,6 +411,7 @@ AddElement = React.createClass({
             if (selected == 'date') {
                 var min = this.state.Options.MinDate,
                     max = this.state.Options.MaxDate;
+					console.log(this.state.Options);
 
                 var minDate = Date.parse(min),
                     maxDate = Date.parse(max);
