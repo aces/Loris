@@ -304,5 +304,8 @@ var Instrument = {
         enum_option = enum_option.replace(/\./, "");
         enum_option = enum_option.toLowerCase();
         return enum_option;
+    },
+    clone: function(obj) {
+        return JSON.parse(JSON.stringify(obj))
     }
 }

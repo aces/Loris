@@ -119,21 +119,21 @@ DropdownOptions = React.createClass({
 	},
 	// Add an option to the element
 	addOption: function () {
-		var temp = this.props.element.Options,
+		var temp = Instrument.clone(this.props.element.Options),
 		    key = Instrument.Enumize(this.state.option);
 		temp.Values[key] = this.state.option;
 		this.props.updateState({ Options: temp });
 	},
 	// Reset the dropdown options
 	resetOptions: function () {
-		temp = this.props.element.Options;
+		temp = Instrument.clone(this.props.element.Options);
 		temp.Values = {};
 		this.props.updateState({ Options: temp });
 	},
 	// Render the HTML
 	render: function () {
 		var multi = '',
-		    options = this.props.element.Options.Values;
+		    options = Instrument.clone(this.props.element.Options.Values);
 		// Set the select option type
 		if (this.props.element.Options.AllowMultiple) {
 			multi = "multiple";
@@ -207,7 +207,7 @@ DateOptions = React.createClass({
 	},
 	// Keep track of the inputed years
 	onChange: function (e) {
-		var options = this.props.element.Options;
+		var options = Instrument.clone(this.props.element.Options);
 		if (e.target.id === 'datemin' && e.target.value.length > 0) {
 			options.MinDate = e.target.value + "-01-01";
 		} else if (e.target.id === 'datemax' && e.target.value.length > 0) {
@@ -304,7 +304,7 @@ NumericOptions = React.createClass({
 	// Keep track of the inputed numbers, casting them to
 	// interger values.
 	onChange: function (e) {
-		var options = this.props.element.Options;
+		var options = Instrument.clone(this.props.element.Options);
 		if (e.target.id === 'numericmin') {
 			options.MinValue = parseInt(e.target.value);
 		} else if (e.target.id === 'numericmax') {
@@ -585,10 +585,10 @@ AddElement = React.createClass({
 		if (this.props.element) {
 			// Editing an element, set to elements state
 			state = {
-				Options: this.props.element.Options,
-				Description: this.props.element.Description,
-				Name: this.props.element.Name,
-				selected: this.props.element.selected
+				Options: Instrument.clone(this.props.element.Options),
+				Description: Instrument.clone(this.props.element.Description),
+				Name: Instrument.clone(this.props.element.Name),
+				selected: Instrument.clone(this.props.element.selected)
 			};
 		} else {
 			state = {
@@ -624,7 +624,6 @@ AddElement = React.createClass({
 		if (selected == 'date') {
 			var min = this.state.Options.MinDate,
 			    max = this.state.Options.MaxDate;
-			console.log(this.state.Options);
 
 			var minDate = Date.parse(min),
 			    maxDate = Date.parse(max);
@@ -672,6 +671,7 @@ AddElement = React.createClass({
 			});
 			hasError = true;
 		}
+
 		if (!hasError && this.state.error) {
 			// No error, remove the elememt's questionText error flag
 			// if set
@@ -681,6 +681,7 @@ AddElement = React.createClass({
 				error: temp
 			});
 		}
+
 		if (questionName == '' && selected != "header" && selected != "label" && selected != 'line' && selected != 'page-break') {
 			// Error, question name is needed for the desired type. Set the element error flag
 			// for the questionName with message. Set the hasError flag
