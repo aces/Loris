@@ -809,6 +809,15 @@ ManageSavedQueryRow = React.createClass({
             }
         }
     },
+    deleteQuery: function() {
+        $.ajax({
+            url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=deleteSavedQuery.php&DocID=" + this.props.Query._id,
+            success: function(data) {
+                console.log(data);
+            },
+            dataType: 'json'
+        });
+    },
     render: function() {
         var fields = [];
         var filters;
@@ -880,7 +889,10 @@ ManageSavedQueryRow = React.createClass({
         }
         return (
                     <tr>
-                        <td>{this.props.Name}</td>
+                        <td>
+                            <div className="col-xs-12">{this.props.Name}</div>
+                            <button className="btn btn-primary" onClick={this.deleteQuery}>Delete Query</button>
+                        </td>
                         <td><ul>{fields}</ul></td>
                         <td>{filters}</td>
                     </tr>
