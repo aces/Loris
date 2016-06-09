@@ -125,11 +125,6 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
             array('Test_name' => 'testname99')
         );
 
-
-
-
-
-
          parent::tearDown();
     }
 
@@ -180,7 +175,7 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/final_radiological_review/");
 
-    // Test that the Imaging menu appears in the first row
+    // search a null data, get nothing found.
         $this->webDriver->findElement(
             WebDriverBy::Name("keyword")
         )->sendKeys("hello test");
@@ -192,7 +187,63 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
         )->getText();         
         $this->assertContains("Nothing found", $bodyText);
 
-        $this->resetPermissions();
     }
+
+    /**
+     * Tests filter section, input data which database exists
+     * and search it, it shows the data.
+     * @return void
+     */
+    function testFinalRadiologicalReviewFilterWithResult()
+    {
+        $this->safeGet($this->url . "/final_radiological_review/");
+
+    // search a testing data by PSCID, get the result.
+        $this->webDriver->findElement(
+            WebDriverBy::Name("pscid")
+        )->sendKeys("111222");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        )->click();
+        $bodyText =  $this->webDriver->findElement(
+            WebDriverBy::cssSelector("#datatable > div > div > div > table > tbody > tr > td:nth-child(3)")
+        )->getText();
+        $this->assertContains("111222", $bodyText);
+    
+ // search a testing data by DCCID, get the result.
+        $this->webDriver->findElement(
+            WebDriverBy::Name("dccid")
+        )->sendKeys("111222");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        )->click();
+        $bodyText =  $this->webDriver->findElement(
+            WebDriverBy::cssSelector("#datatable > div > div > div > table > tbody > tr > td:nth-child(3)")
+        )->getText();
+        $this->assertContains("111222", $bodyText);     
+       
+    }
+
+    /**
+     * Tests filter section,clear button.
+     * @return void
+     */
+    function testFinalRadiologicalReviewFilterClearBtn()
+    {
+        $this->safeGet($this->url . "/final_radiological_review/");
+
+        $this->webDriver->findElement(
+            WebDriverBy::Name("pscid")
+        )->sendKeys("111222");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("reset")
+        )->click();
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::Name("pscid"))->getText();
+        $this->assertEquals("", $bodyText);
+
+
+    }
+
 }
 ?>
