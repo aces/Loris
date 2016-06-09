@@ -32,10 +32,8 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
     /**
      * Variables to enable special filter behaviour -
      * Show brief results or show full results (all available fields)
-     * used in (overridden) _addValidFilters function below
      */
     var $_displayBrief = true;  // default: display only Brief results
-    var $_briefFields  = array(); // which fields to display
 
     /**
      * Overloading this method to allow access to site users (own site only)
@@ -68,17 +66,23 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                           'candidate.Gender',
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
-                          'candidate.ExternalID as externalID',
+                          'candidate.ExternalID as ExternalID',
                           'genome_loc.Chromosome as Chromosome',
                           'genome_loc.Strand as Strand',
                           'genome_loc.StartLoc as StartLoc',
                           'genome_loc.EndLoc as EndLoc',
                           'genome_loc.Size as Size',
+                          'CONCAT(
+                              genome_loc.Chromosome, 
+                              ":",
+                              genome_loc.StartLoc,
+                              "-",
+                              genome_loc.EndLoc
+                           ) as Location',
                           'gene.OfficialSymbol as Gene_Symbol',
                           'gene.OfficialName as Gene_Name',
-                          'genotyping_platform.Name as Platform',
-                          'CNV.Type as CNV_Type',
                           'CNV.Description as CNV_Description',
+                          'CNV.Type as CNV_Type',
                           'CNV.CopyNumChange as Copy_Num_Change',
                           'CNV.EventName as Event_Name',
                           'CNV.Common_CNV as Common_CNV',
@@ -87,22 +91,37 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                           'CNV.ArrayReport as Array_Report',
                           'CNV.Markers as Markers',
                           'CNV.ValidationMethod as Validation_Method',
+                          'genotyping_platform.Name as Platform',
                          );
 
-        $this->_briefFields = array(
-                               'DCCID',
-                               'PSCID',
-                               'Subproject',
-                               'Chromosome',
-                               'StartLoc',
-                               'Size',
-                               'Gene_Name',
-                               'Platform',
-                               'CNV_Type',
-                               'CNV_Description',
-                               'Copy_Num_Change',
-                               'Common_CNV',
-                              );
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array(
+                 'PSC',
+                 'DCCID',
+                 'Subproject',
+                 'DoB',
+                 'ExternalID',
+                 'Chromosome',
+                 'Strand',
+                 'StartLoc',
+                 'EndLoc',
+                 'Size',
+                 'Event_Name',
+                 'Gene_Symbol',
+                 'Gene_Name',
+                 'Platform',
+                 'Array_Report',
+                 'Markers',
+                 'Validation_Method',
+                )
+            )
+        );
 
         $this->query = " FROM candidate
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
@@ -146,6 +165,7 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                                'CNV.ValidationMethod',
                                'genome_loc.Chromosome',
                                'genome_loc.Strand',
+                               'genomic_range',
                                'gene.OfficialSymbol',
                                'gene.OfficialName',
                                'genotyping_platform.Name',
@@ -171,6 +191,7 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
                                'Validation_Method'  => 'CNV.ValidationMethod',
                                'Chromosome'         => 'genome_loc.Chromosome',
                                'Strand'             => 'genome_loc.Strand',
+                               'genomic_range'      => 'genomic_range',
                                'Gene_Symbol'        => 'gene.OfficialSymbol',
                                'Gene_Name'          => 'gene.OfficialName',
                                'Platform'           => 'genotyping_platform.Name',
@@ -239,6 +260,13 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // CNV
+
+        $Base_options = array(
+                         null => 'Any',
+                         '37' => 'GRCh37',
+                        );
+        $this->addSelect('Assembly', 'Build:', $Base_options);
+
         $CNV_Type_options = array(
                              null      => 'All',
                              'gain'    => 'gain',
@@ -279,9 +307,16 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addSelect('Inheritance', 'Inheritance:', $Inheritance_options);
 
         $this->addBasicText('Chromosome', 'Chromosome:');
-        $this->addBasicText('Strand', 'Strand:');
-        $this->addBasicText('Gene_Symbol', 'Symbol:');
-        $this->addBasicText('Gene_Name', 'Name:');
+
+        $Base_options = array(
+                         null => 'Any',
+                         'F'  => 'Forward',
+                         'R'  => 'Reverse',
+                        );
+        $this->addSelect('Strand', 'Strand:', $Base_options);
+
+        $this->addBasicText('genomic_range', 'Genomic Range:');
+        $this->addBasicText('Gene_Symbol', 'Gene:');
 
         $DB = Database::singleton();
         $platform_results = $DB->select(
@@ -304,88 +339,6 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
         $this->addSelect('Array_Report', 'Array Report:', $Array_Report_options);
         $this->addBasicText('Markers', 'Markers:');
         $this->addBasicText('Validation_Method', 'Validation Method:');
-
-        return true;
-    }
-
-    /**
-     * Function _setDataTableRows
-     *
-     * @param string $count number of data
-     *
-     * @note   overloaded function
-     * @return bool
-     */
-    function _setDataTableRows($count)
-    {
-        // create user object
-        $user           = User::singleton();
-        $subprojectlist = Utility::getSubprojectList();
-
-        $this->tpl_data['resultcount']  = $this->TotalItems;
-        $this->tpl_data['displayBrief'] = $this->_displayBrief;
-
-        // re-set headers if Brief; if full, gets set by _setDataTable()
-        if ($this->_displayBrief) {
-            $this->headers = array(); // re-initialize i.e. wipe
-            foreach ($this->_briefFields as $col) {
-                 $this->headers[] = $col;
-            }
-
-            // copy column headings to new array, then replace
-            $colCount     = 0; //  column counter
-            $maxCols      = sizeof($this->tpl_data['headers']); //limit
-            $briefHeaders = array();  // reset
-            foreach ($this->headers as $header) {
-                $found = false;
-                while ($colCount < $maxCols && !$found ) {
-                    // copy entire tpl_data element
-                    // including displayName and fieldOrder
-                    if ($this->tpl_data['headers'][$colCount]['name'] == $header) {
-                        $found          = true;
-                        $briefHeaders[] = $this->tpl_data['headers'][$colCount];
-                    }
-                    $colCount++;
-                } // iterate to check for next elt, starting from here
-            }
-            // When done, replace tpl_data headers
-            $this->tpl_data['headers'] = $briefHeaders;
-        }
-
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                if ($this->_displayBrief && !in_array($key, $this->_briefFields)) {
-                    continue;  // loop without incrementing $i
-                }
-
-                //Show the URL to the timepoint list on PSCID field
-                if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
-                    $this->tpl_data['items'][$x][$i]['DCCID']
-                        = str_pad($item['DCCID'], 6, '0', STR_PAD_LEFT);
-                }
-                $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-
-                if ($key=='Subproject' ) {
-                    if (is_null($val)) {
-                        $this->tpl_data['items'][$x][$i]['value'] = null;
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = $subprojectlist[$val];
-                    }
-                }
-                $i++;
-            }
-            $x++;
-        }
-        $this->tpl_data['resultcount']   = $this->TotalItems;
-        $this->tpl_data['displayFilter'] = $this->_displayBrief;
 
         return true;
     }
@@ -418,19 +371,51 @@ class NDB_Menu_Filter_CNV_Browser extends NDB_Menu_Filter
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
                 || strtolower(substr($field, -6)) == 'gender'
-                || strtolower(substr($field, -10)) == 'chromosome'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))
             ) {
-
                  $query .= " AND $field = :v_$prepared_key";
             } elseif ($field == "candidate.CandID") {
-                $query .= " AND $field = " . ltrim($val, '0');
+                $query .= " AND $field = CONVERT( :v_$prepared_key, DECIMAL) ";
+            } elseif ($field == "genomic_range") {
+                $temp_array = explode(':', $val);
+                $chr        = $temp_array[0];
+                $query     .= " AND genome_loc.Chromosome = '$chr'";
+
+                if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
+                    $temp_array = explode('-', $temp_array[1]);
+                    $from       = $temp_array[0];
+                    $to         = $temp_array[1];
+                    $query     .= " AND genome_loc.StartLoc < $to";
+                    $query     .= " AND genome_loc.EndLoc > $from";
+                }
+                $query .= " AND :v_$prepared_key IS NOT NULL";
+
             } else {
                  $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
             }
         }
         return $query;
+    }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/genomic_browser/js/genomic_browser.js",
+             $baseURL . "/genomic_browser/js/cnvColumnFormatter.js",
+            )
+        );
     }
 
 }

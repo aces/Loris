@@ -214,8 +214,8 @@ $(document).ready(function() {
                             </div>
                                 <input class="btn btn-primary col-xs-12" id="loginAPI" name="login" type="submit" value="Login" />
                             <br><br><br>
-                            <a href="lost_password.php"><center>Forgot your password?</center></a>
-                            <a href="request_account/process_new_account.php"><center>Request Account</center></a>
+                            <a href="{$baseurl}/lost_password.php"><center>Forgot your password?</center></a>
+                            <a href="{$baseurl}/request_account/process_new_account.php"><center>Request Account</center></a>
                         </div>
                     </form>
 			  	</div>	

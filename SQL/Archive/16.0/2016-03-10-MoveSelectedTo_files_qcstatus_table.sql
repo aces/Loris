@@ -7,4 +7,4 @@ UPDATE files_qcstatus AS fq, parameter_file AS pf, parameter_type AS pt SET fq.S
 -- WARNING: be sure the two queries above worked before running the delete statement 
 -- Remove all Selected values from parameter_file
 -- DELETE FROM parameter_file WHERE ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='Selected');
-
+-- DELETE FROM parameter_type WHERE Name="Selected";

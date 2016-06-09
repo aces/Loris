@@ -31,13 +31,13 @@ require_once 'NDB_Menu_Filter.class.inc';
 */
 class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
 {
+    var $AjaxModule = false;
     /**
      * Variables to enable special filter behaviour -
      * Show brief results or show full results (all available fields)
      * used in (overridden) _addValidFilters function below
      */
     var $_displayBrief = true;  // default: display only Brief results
-    var $_briefFields  = array(); // which fields to display
 
     /**
      * Overloading this method to allow access to site users (own site only)
@@ -77,14 +77,21 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                           'M.CPGCount as CPGs',
                          );
 
-        $this->_briefFields = array(
-                               'DCCID',
-                               'PSCID',
-                               'Files',
-                               'SNPs',
-                               'CNVs',
-                               'CPGs',
-                              );
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array(
+                 'PSC',
+                 'DCCID',
+                 'externalID',
+                 'DoB',
+                )
+            )
+        );
 
         $this->query = " FROM candidate
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID
@@ -225,116 +232,6 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
     }
 
     /**
-     * Function _setDataTableRows
-     *
-     * @param string $count number of data
-     *
-     * @note   overloaded function
-     * @return bool
-     */
-    function _setDataTableRows($count)
-    {
-        // create user object
-        $user           = User::singleton();
-        $subprojectlist = Utility::getSubprojectList();
-
-        $config = NDB_Config::singleton();
-        $this->tpl_data['genomicDataPath'] = $config->getSetting('GenomicDataPath');
-
-        $this->tpl_data['resultcount']  = $this->TotalItems;
-        $this->tpl_data['displayBrief'] = $this->_displayBrief;
-
-        // re-set headers if Brief; if full, gets set by _setDataTable()
-        if ($this->_displayBrief) {
-            $this->headers = array(); // re-initialize i.e. wipe
-            foreach ($this->_briefFields as $col) {
-                $this->headers[] = $col;
-            }
-            // Note this includes an extra column: Total Filesets
-
-            // copy column headings to new array, then replace
-            $colCount     = 0; //  column counter
-            $maxCols      = sizeof($this->tpl_data['headers']); //limit
-            $briefHeaders = array();  // reset
-            foreach ($this->headers as $header) {
-                // special case: insert header for a derived column
-                if ($header == "Total_Filesets") {
-                    $headerArray = array(
-                                    "name"        => $header,
-                                    "displayName" => "All Filesets",
-                                    "fieldOrder"  => "ASC",
-                                   );
-
-                    $this->tpl_data['headers'][$colCount] = $headerArray;
-                    $briefHeaders[] = $headerArray;
-                    $colCount++; // increment and continue processing
-                    continue;
-                }
-
-                $found = false;
-                while ($colCount < $maxCols && !$found ) {
-                    // copy entire tpl_data element
-                    // including displayName and fieldOrder
-                    if ($this->tpl_data['headers'][$colCount]['name'] == $header) {
-                        $found          = true;
-                        $briefHeaders[] = $this->tpl_data['headers'][$colCount];
-                    }
-                    $colCount++;
-                } // iterate to check for next elt, starting from here
-            }
-            // When done, replace tpl_data headers
-            $this->tpl_data['headers'] = $briefHeaders;
-        }
-
-        $x = 0;
-        foreach ($this->list as $item) {
-            //calculate row number
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                if ($this->_displayBrief && !in_array($key, $this->_briefFields)) {
-                    continue;  // loop without incrementing $i
-                }
-
-                //Show the URL to the timepoint list on PSCID field
-                if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
-                    $this->tpl_data['items'][$x][$i]['DCCID']
-                        = str_pad($item['DCCID'], 6, '0', STR_PAD_LEFT);
-                }
-
-                $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-
-                // Print '' if no data
-                if ($key=='Files' || $key == 'SNPs'
-                    || $key == 'CNVs' || $key == 'CPGs'
-                ) {
-                    if (is_null($val) || $val === '0') {
-                        $this->tpl_data['items'][$x][$i]['value'] = '';
-                    }
-                }  // if is_numeric, set = $val
-
-                if ($key=='Subproject' ) {
-                    if (is_null($val)) {
-                        $this->tpl_data['items'][$x][$i]['value'] = null;
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = $subprojectlist[$val];
-                    }
-                }
-                $i++;
-            }
-            $x++;
-        }
-        $this->tpl_data['resultcount']   = $this->TotalItems;
-        $this->tpl_data['displayFilter'] = $this->_displayBrief;
-
-        return true;
-    }
-
-    /**
      * Adds filters
      * This function overrides filters to enable display of brief/full results
      *
@@ -355,20 +252,17 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             }
             return $query;
         }
-
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if (in_array($field, $this->CheckboxFilters) && $val) {
                 $query .= " AND $field";
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
                 || strtolower(substr($field, -6)) == 'gender'
-                || strtolower(substr($field, -10)) == 'chromosome'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))
             ) {
                  $query .= " AND $field = :v_$prepared_key";
-            } elseif ($field == "rawfiles.rawFileCount"
-                || $field == "cleanedfiles.cleanedFileCount"
+            } elseif ($field == "F.FileCount"
                 || $field == "S.SNPCount"
                 || $field == "C.CNVCount"
                 || $field == "M.CPGCount"
@@ -376,16 +270,34 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                 if ($val == "1") {  // if ANY found i.e. >= 1
                     $query .= " AND $field >= :v_$prepared_key";
                 } elseif ($val == "0") { // if NONE found i.e. = 0
-                    $query .= " AND $field = :v_$prepared_key";
+                    $query .= " AND ($field = :v_$prepared_key || $field IS NULL)";
                 }
             } elseif ($field == "candidate.CandID") {
-                $query .= " AND $field = " . ltrim($val, '0');
+                $query .= " AND $field = CONVERT( :v_$prepared_key, DECIMAL) ";
             } else {
-                 $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
+                $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
             }
         }
         return $query;
     }
 
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/genomic_browser/js/profileColumnFormatter.js",
+            )
+        );
+    }
 }
 ?>

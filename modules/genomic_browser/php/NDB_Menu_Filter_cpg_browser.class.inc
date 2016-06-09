@@ -28,13 +28,14 @@ require_once 'NDB_Menu_Filter.class.inc';
 */
 class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 {
+
+    var $AjaxModule = false;
+
     /**
- * Variables to enable special filter behaviour -
+     * Variables to enable special filter behaviour -
      * Show brief results or show full results (all available fields)
-     * used in (overridden) _addValidFilters function below
      */
     var $_displayBrief = true;  // default: display only Brief results
-    var $_briefFields  = array(); // which fields to display
 
     /**
      * Overloading this method to allow access to site users (own site only)
@@ -98,18 +99,44 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                 'platform.Name as Platform',
                                );
 
-        $this->_briefFields = array(
-                               'DCCID',
-                               'PSCID',
-                               'Subproject',
-                               'cpg_name',
-                               'Beta_value',
-                               'Chromosome',
-                               'Gene',
-                              );
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array(
+                 'PSC',
+                 'DCCID',
+                 'Subproject',
+                 'DoB',
+                 'Sample',
+                 'StartLoc',
+                 'Probe_Loc_A',
+                 'Probe_Seq_A',
+                 'Probe_Loc_B',
+                 'Probe_Seq_B',
+                 'Design',
+                 'Color',
+                 'Assembly',
+                 'SNP_10',
+                 'Accession_number',
+                 'Gene_Grp',
+                 'Island_Loc',
+                 'Context',
+                 'Fantom_Prom',
+                 'DMR',
+                 'Enhancer',
+                 'HMM_Island',
+                 'Reg_Feature_Loc',
+                 'Reg_Feature_Grp',
+                 'DHS',
+                 'Platform',
+                )
+            )
+        );
 
-        // Chromosome from genome_loc table
-        // INNER JOIN on table.
         // If a candidate has no CPG records, they will not appear.
         $this->query = " FROM candidate
             LEFT JOIN (select s.CandID, min(s.subprojectID) as SubprojectID 
@@ -154,6 +181,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'genome_loc.Chromosome',
                                'genome_loc.Strand',
                                'genome_loc.StartLoc',
+                               'genome_loc.EndLoc',
+                               'genomic_range',
                                'gca.gene_name',
                                'gca.genome_build',
                                'gca.design_type',
@@ -186,6 +215,8 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                'Platform'           => 'platform.Name',
                                'Strand'             => 'genome_loc.Strand',
                                'StartLoc'           => 'genome_loc.StartLoc',
+                               'EndLoc'             => 'genome_loc.EndLoc',
+                               'genomic_range'      => 'genomic_range',
                                'Assembly'           => 'gca.genome_build',
                                'Context'            => 'gca.island_relation',
                                'Design'             => 'gca.design_type',
@@ -208,7 +239,6 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                                   'gca.genome_build',
                                   'gca.design_type',
                                   'genome_loc.Strand',
-                                  'gca.gene_name',
                                  );
 
         return true;
@@ -280,7 +310,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         // ------------------------------------------------------------
 
         $this->addBasicText('Gene_Symbol', 'Gene:');
-        $this->addBasicText('Chromosome', 'Chromosome:');
+        $this->addBasicText('genomic_range', 'Genomic Range:');
         $Base_options = array(
                          null => 'Any',
                          '37' => 'GRCh37',
@@ -292,8 +322,6 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                          'R'  => 'Reverse',
                         );
         $this->addSelect('Strand', 'Strand:', $Base_options);
-        $this->addBasicText('StartLoc', 'From:');
-        $this->addBasicText('EndLoc', 'To:');
 
         // ------------------------------------------------------------
         // ----------------- CPG Annotations Filters --------------------
@@ -400,113 +428,6 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
     }
 
     /**
-     * Function _setDataTableRows
-     *
-     * @param string $count number of data
-     *
-     * @note   overloaded function
-     * @return bool
-     */
-    function _setDataTableRows($count)
-    {
-        // create user object
-        $user           = User::singleton();
-        $subprojectlist = Utility::getSubprojectList();
-
-        $this->tpl_data['resultcount']  = $this->TotalItems;
-        $this->tpl_data['displayBrief'] = $this->_displayBrief;
-        // re-set headers if Brief; if full, gets set by _setDataTable()
-        if ($this->_displayBrief) {
-            $this->headers = array(); // re-initialize i.e. wipe
-            foreach ($this->_briefFields as $col) {
-                $this->headers[] = $col;
-            }
-
-            // copy column headings to new array, then replace
-            $colCount     = 0; // column counter
-            $maxCols      = sizeof($this->tpl_data['headers']); //limit
-            $briefHeaders = array();  // reset
-            foreach ($this->headers as $header) {
-                $found = false;
-                while ($colCount < $maxCols && !$found ) {
-                    // copy entire tpl_data element
-                    // including displayName and fieldOrder
-                    if ($this->tpl_data['headers'][$colCount]['name'] == $header) {
-                        $found          = true;
-                        $briefHeaders[] = $this->tpl_data['headers'][$colCount];
-                    }
-                    $colCount++;
-                } // iterate to check for next elt, starting from here
-            }
-            // When done, replace tpl_data headers
-            $this->tpl_data['headers'] = $briefHeaders;
-        }
-
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-
-                if ($this->_displayBrief && !in_array($key, $this->_briefFields)) {
-                    continue;  // no increment to $i
-                }
-
-                //Show the URL to the timepoint list on PSCID field
-                if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
-                    $this->tpl_data['items'][$x][$i]['DCCID'] = $item['DCCID'];
-                }
-                $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-
-                if ($key=='Subproject') {
-                    if (is_null($val)) {
-                        $this->tpl_data['items'][$x][$i]['value'] = null;
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = $subprojectlist[$val];
-                    }
-                }
-
-                if ($key=='Gene') {
-
-                    $gene    = strtok($val, ';');
-                    $acc_num = strtok($item['Accession_number'], ';');
-
-                    $this->tpl_data['items'][$x][$i]['value']   = $gene;
-                    $this->tpl_data['items'][$x][$i]['acc_num'] = $acc_num;
-                }
-
-                if ($key=='Accession_number') {
-
-                    $acc_num = strtok($val, ';');
-
-                    $this->tpl_data['items'][$x][$i]['value'] = $acc_num;
-                }
-                if ($key=='cpg_name') {
-
-                    $startLoc = $item['StartLoc'] - 500;
-                    $endLoc   = $item['StartLoc'] + 500;
-                    $position = 'Chr'.$item['Chromosome'].':'.$startLoc.'-'.$endLoc;
-
-                    $this->tpl_data['items'][$x][$i]['value']    = $val;
-                    $this->tpl_data['items'][$x][$i]['assembly'] = $item['Assembly'];
-                    $this->tpl_data['items'][$x][$i]['position'] = $position;
-                }
-                $i++;
-            }
-            $x++;
-        }
-        $this->tpl_data['resultcount']   = $this->TotalItems;
-        $this->tpl_data['displayFilter'] = $this->_displayBrief;
-
-        return true;
-    }
-
-    /**
      * Adds filters
      * This function overrides filters to enable display of brief/full results
      *
@@ -530,21 +451,40 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if (in_array($field, $this->CheckboxFilters) && $val) {
                  $query .= " AND $field";
+
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))
             ) {
-
                  $query .= " AND $field = :v_$prepared_key";
+
             } elseif ($field == "candidate.CandID") {
-                $query .= " AND $field = " . ltrim($val, '0');
+                $query .= " AND $field = CONVERT( :v_$prepared_key, DECIMAL) ";
+
+            } elseif ($field == "genomic_range") {
+                $temp_array = explode(':', $val);
+                $chr        = $temp_array[0];
+                $query     .= " AND genome_loc.Chromosome = '$chr'";
+
+                if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
+                    $temp_array = explode('-', $temp_array[1]);
+                    $from       = $temp_array[0];
+                    $to         = $temp_array[1];
+                    $query     .= " AND genome_loc.StartLoc < $to";
+                    $query     .= " AND genome_loc.EndLoc > $from";
+                }
+
+                $query .= " AND :v_$prepared_key IS NOT NULL";
+
             } elseif ($field == "gca.probe_snp_10" && $val === 'NULL'
                 || $field == "gca.dhs" && $val === 'NULL'
             ) {
                 $query .= " AND  $field IS NULL and 'NULL' = :v_$prepared_key" ;
+
             } else {
                 $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
+
             }
         }
         return $query;
@@ -565,6 +505,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             $deps,
             array(
              $baseURL . "/genomic_browser/js/genomic_browser.js",
+             $baseURL . "/genomic_browser/js/cpgColumnFormatter.js",
             )
         );
     }

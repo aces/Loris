@@ -58,12 +58,12 @@ if (preg_match(
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
-    '#^([0-9]{6,6})/([0-9]+)/([a-zA-Z_]+)/$#',
+    '#^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/$#',
     $url
 )) {
     // Redirect /CandID/Visit/Instrument/ to the instrument
     // RewriteRule
-    //      ^([0-9]{6,6})/([0-9]+)/([a-zA-Z_]+)/$
+    //      ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/$
     //      /main.php?test_name=$3&candID=$1&sessionID=$2 [QSA]
 
     $getParams = explode("/", $url);
@@ -74,12 +74,12 @@ if (preg_match(
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
-    '#^([0-9]{6,6})/([0-9]+)/([a-zA-Z_]+)/([a-zA-Z0-9_]+)/$#',
+    '#^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$#',
     $url
 )) {
     // Redirect /CandID/Visit/Instrument/subtest/ to the instrument
     // RewriteRule
-    //      ^([0-9]{6,6})/([0-9]+)/([a-zA-Z_]+)/([a-zA-Z0-9_]+)/$
+    //      ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$
     //      /main.php?test_name=$3&candID=$1&sessionID=$2&subtest=$4 [QSA]
 
     $getParams = explode("/", $url);
@@ -91,11 +91,11 @@ if (preg_match(
 
     include_once __DIR__ . "/main.php";
 } else if (preg_match(
-    '#^([a-zA-Z_-]+)/(\?|$)#',
+    '#^([a-zA-Z0-9_-]+)/(\?|$)#',
     $url
 )) {
     // RewriteRule
-    //      ^([a-zA-Z_-]+)/$
+    //      ^([a-zA-Z0-9_-]+)/$
     //      /main.php?test_name=$1 [QSA]
 
     $getParams = explode("/", $url);
@@ -164,11 +164,11 @@ if (preg_match(
 
     include_once __DIR__ . "/AjaxHelper.php";
 } else if (preg_match(
-    '#^([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)/(\?|$)#',
+    '#^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)/(\?|$)#',
     $url
 )) {
     // RewriteRule
-    //      ^([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)/$
+    //      ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)/$
     //      /main.php?test_name=$1&subtest=$2 [QSA]
 
     $getParams = explode("/", $url);
