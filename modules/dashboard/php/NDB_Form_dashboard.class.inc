@@ -155,7 +155,8 @@ class NDB_Form_Dashboard extends NDB_Form
                     "SELECT COUNT(*) FROM flag
 			LEFT JOIN session s ON (s.ID=flag.SessionID)
 			LEFT JOIN candidate c ON (s.CandID=c.CandID)
-		     WHERE flag.Data_entry='In Progress' AND s.Active='Y' AND c.Active='Y' AND s.CenterID <> 1",
+		     WHERE flag.Data_entry='In Progress'
+			AND s.Active='Y' AND c.Active='Y' AND s.CenterID <> 1",
                     array()
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Site: all';
@@ -194,7 +195,8 @@ class NDB_Form_Dashboard extends NDB_Form
             && $user->hasPermission('user_accounts')
         ) {
             $this->tpl_data['pending_users']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM users WHERE Pending_approval='Y' AND CenterID <> 1",
+                "SELECT COUNT(*) FROM users
+		WHERE Pending_approval='Y' AND CenterID <> 1",
                 array()
             );
             $this->tpl_data['pending_users_site'] = 'Site: all';
@@ -209,11 +211,12 @@ class NDB_Form_Dashboard extends NDB_Form
 
         // Violated scans
         if ($user->hasPermission('violated_scans_view_allsites')) {
-            $this->tpl_data['violated_scans']      = $DB->pselectOne(
+            $this->tpl_data['violated_scans'] = $DB->pselectOne(
                 "SELECT COUNT(*) FROM mri_protocol_violated_scans
 			LEFT JOIN candidate c USING (CandID)
-		WHERE COALESCE(c.CenterID, 0) <> 1", /* include null CenterIDs so we don't accidentally
-						    filter things out */
+		WHERE COALESCE(c.CenterID, 0) <> 1",
+                /* include null CenterIDs so we don't accidentally
+                filter things out */
                 array()
             );
             $this->tpl_data['violated_scans_site'] = 'Site: all';
