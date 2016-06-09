@@ -113,7 +113,6 @@ var Instrument = {
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
                         break;
                     case "date":
-                        console.log(element);
                         content += 'date{@}';
                         content += element.Name + "{@}" + element.Description ;
                         content += "{@}" + element.Options.MinDate.split('-')[0];

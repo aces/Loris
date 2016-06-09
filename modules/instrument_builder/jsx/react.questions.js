@@ -188,7 +188,7 @@ DateOptions = React.createClass({
 
         return (
             <div>
-                <BasicOptions updateState={this.props.updateState} element={this.props.element} />				
+                <BasicOptions updateState={this.props.updateState} element={this.props.element} />
                 <div id="dateoptions" className={dateOptionsClass}>
                     <label className="col-sm-2 control-label">Start year: </label>
                     <div className="col-sm-2">
@@ -198,15 +198,15 @@ DateOptions = React.createClass({
                     <label className="col-sm-2 control-label">End year: </label>
                     <div className="col-sm-2">
                         <input className="form-control" type="number" id="datemax" min="1900" max="2100" onChange={this.onChange} value={maxYear} />
-                    </div>					
+                    </div>
                 </div>
 				<div className="form-group">
 					<label className="col-sm-2 control-label">Date Format: </label>
                     <div className="col-sm-6">
-                    	<select id="dateFormat" className="form-control" onChange={this.onChange}>
-							{Object.keys(dateFormatOptions).map(function(option){
-                        		return (<option value={option}>{dateFormatOptions[option]}</option>)
-                        	})}                       	
+						<select id="dateFormat" className="form-control" onChange={this.onChange}>
+							{Object.keys(dateFormatOptions).map(function (option) {
+								return (<option value={option}>{dateFormatOptions[option]}</option>)
+							}) }
                         </select>
                     </div>
 				</div>
