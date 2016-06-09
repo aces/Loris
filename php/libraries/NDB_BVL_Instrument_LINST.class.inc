@@ -591,20 +591,19 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             $dateOptions = null;
                         } else {
                             $dateOptions = [
-                                'language'         => 'en',
-                                'format'           => 'YMd',
-                                'minYear'          => $pieces[3],
-                                'maxYear'          => $pieces[4],
-                                'addEmptyOption'   => true,
-                                'emptyOptionValue' => null,
-                            ];
+                                            'language'         => 'en',
+                                            'format'           => 'YMd',
+                                            'minYear'          => $pieces[3],
+                                            'maxYear'          => $pieces[4],
+                                            'addEmptyOption'   => true,
+                                            'emptyOptionValue' => null,
+                                           ];
                         }
 
                         // Set date format
                         $dateFormat = trim($pieces[5]);
                         
                         if (isset($dateFormat) && $dateFormat != "") {
-                            var_dump($dateFormat);    
                             if ($dateFormat === 'MonthYear') {
                                 // Shows date without day of month
                                 $this->addMonthYear(
