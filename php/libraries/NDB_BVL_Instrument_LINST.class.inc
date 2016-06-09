@@ -602,7 +602,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
                         // Set date format
                         $dateFormat = trim($pieces[5]);
-                        
+
                         if (isset($dateFormat) && $dateFormat != "") {
                             if ($dateFormat === 'MonthYear') {
                                 // Shows date without day of month
@@ -614,11 +614,11 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                             } else {
                                 // Shows date without not answered dropdown
                                 $this->addBasicDate(
-                                    $pieces[1], 
-                                    $pieces[2], 
+                                    $pieces[1],
+                                    $pieces[2],
                                     $dateOptions
                                 );
-                            }                            
+                            }
                         } else {
                             // Shows standard date
                             $this->addDateElement(
