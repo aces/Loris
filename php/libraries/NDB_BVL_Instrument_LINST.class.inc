@@ -601,7 +601,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         }
 
                         // Set date format
-                        $dateFormat = trim($pieces[5]);
+                        $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
 
                         if (isset($dateFormat) && $dateFormat != "") {
                             if ($dateFormat === 'MonthYear') {
