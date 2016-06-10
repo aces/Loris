@@ -224,12 +224,12 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             return false;
         } else {
             $seriesRangeTrimmed = (float)trim($seriesRange);
-            $protocolRanges = split(",", $protocolRange);
+            $protocolRanges = explode(",", $protocolRange);
             
             foreach ($protocolRanges as $range) {
                 $rangeTrimmed = trim($range);
                 if (strpos($rangeTrimmed, "-")) { // range X-Y
-                    $array = split("-", $rangeTrimmed);
+                    $array = explode("-", $rangeTrimmed);
                     $left = (float)trim($array[0]);
                     $right = (float)trim($array[1]);
                     if ($left <= $seriesRangeTrimmed 
