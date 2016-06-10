@@ -1057,7 +1057,7 @@ class Database
      *
      * @return boolean true if the table exists
      */
-    static function tableExists($test_name)
+    function tableExists($test_name)
     {
         $config   =& NDB_Config::singleton();
         $database = $config->getSetting('database');
