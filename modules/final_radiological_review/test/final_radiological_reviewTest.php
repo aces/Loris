@@ -291,7 +291,7 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
         )
             ->click();
         $bodyText = $this->safeFindElement(
-            WebDriverBy::ID("final_review")
+            WebDriverBy::Xpath("//*[@id='final_review']/div[1]/div[1]/div"),3000
         )->getText();
         $this->assertContains("111222", $bodyText);
 
