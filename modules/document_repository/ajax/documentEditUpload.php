@@ -36,6 +36,7 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
 
         $fileSize = $_FILES["file"]["size"];
         $fileName = $_FILES["file"]["name"];
+        $fileType = end((explode(".", $fileName)));
 
         // __DIR__ is the document_repository ajax directory
         // when this script is executing. Go up a level to the
@@ -56,7 +57,8 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
                             array('File_category'=>$category, 'For_site'=>$site,
                                   'comments'=>$comments, 'version'=>$version, 'File_name'=>$fileName,
                                   'File_size'=>$fileSize, 'Data_dir'=>$fileBase, 'uploaded_by'=>$puser,
-                                  'Instrument'=>$instrument, 'PSCID'=>$pscid, 'visitLabel'=>$visit));
+                                  'Instrument'=>$instrument, 'PSCID'=>$pscid, 'visitLabel'=>$visit,
+                                  'File_type'=>$fileType));
             $msg_data['newDocument'] = $baseURL . "/document_repository/";
             $msg_data['document'] = $fileName;
             $msg_data['study'] = $config->getSetting('title');
