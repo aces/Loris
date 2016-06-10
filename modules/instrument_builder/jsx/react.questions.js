@@ -91,23 +91,23 @@ DropdownOptions = React.createClass({
 	},
 	// Add an option to the element
 	addOption: function(){
-		var temp = this.props.element.Options,
+		var temp = Instrument.clone(this.props.element.Options),
 			key = Instrument.Enumize(this.state.option);
 			temp.Values[key] = this.state.option;
 			this.props.updateState({Options: temp});
 	},
 	// Reset the dropdown options
 	resetOptions: function(){
-		temp = this.props.element.Options;
+		temp = Instrument.clone(this.props.element.Options);
 		temp.Values = {};
 		this.props.updateState({Options: temp});
 	},
 	// Render the HTML
 	render: function () {
 		var multi = '',
-			options = this.props.element.Options.Values;
+			options = Instrument.clone(this.props.element.Options.Values);
 		// Set the select option type
-		if(this.props.element.Options.AllowMultiple){
+		if (this.props.element.Options.AllowMultiple){
 			multi = "multiple";
 		}
 		return (
@@ -144,36 +144,52 @@ DropdownOptions = React.createClass({
  *	This is the React class for the date options
  */
 DateOptions = React.createClass({
+	// Initilize
+	getInitialState: function() {
+		return {
+			dateFormat: {
+				"Date" : "Standard Date",
+				"BasicDate" : "Basic Date (does not include 'Not Answered' option)",
+				"MonthYear" : "Month Year (does not include day of the month)" 
+			}
+		}
+	},
+	componentDidMount: function() {
+		this.props.element.Options.dateFormat = "";
+	},
     // Keep track of the inputed years
-    onChange: function(e){
-        var options = this.props.element.Options;
-        if(e.target.id === 'datemin' && e.target.value.length > 0){
+    onChange: function(e) {
+        var options = Instrument.clone(this.props.element.Options);
+        if (e.target.id === 'datemin' && e.target.value.length > 0) {
             options.MinDate = e.target.value + "-01-01";
-        } else if (e.target.id === 'datemax' && e.target.value.length > 0){
+        } else if (e.target.id === 'datemax' && e.target.value.length > 0) {
             options.MaxDate = e.target.value + "-12-31";
-        }
+        } else if (e.target.id === 'dateFormat') {
+			options.dateFormat = e.target.value;
+		}
         this.props.updateState({Options: options});
     },
     // Render the HTML
-    render: function () {
-        // Truncate off the month and day from the date to only have the
-        // year.
+    render: function() {
+        // Truncate off the month and day from the date to only have the year.
         var minYear = this.props.element.Options.MinDate.split('-')[0],
             maxYear = this.props.element.Options.MaxDate.split('-')[0];
 
-        var errorClass = 'options form-group',
+        var dateOptionsClass = 'options form-group',
             errorMessage = '';
+		
+		var dateFormatOptions = this.state.dateFormat;
 
         if (this.props.element.error && this.props.element.error.dateOption) {
             // If an error is present, display the error
-            errorMessage = (<font className="form-error">{this.props.element.error.dateOption}</font>);
-            errorClass += " has-error";
+            errorMessage = (<span className="form-error">{this.props.element.error.dateOption}</span>);
+            dateOptionsClass += " has-error";
         }
 
         return (
             <div>
                 <BasicOptions updateState={this.props.updateState} element={this.props.element} />
-                <div id="dateoptions" className={errorClass}>
+                <div id="dateoptions" className={dateOptionsClass}>
                     <label className="col-sm-2 control-label">Start year: </label>
                     <div className="col-sm-2">
                         <input className="form-control" type="number" id="datemin" min="1900" max="2100" value={minYear} onChange={this.onChange} />
@@ -184,6 +200,16 @@ DateOptions = React.createClass({
                         <input className="form-control" type="number" id="datemax" min="1900" max="2100" onChange={this.onChange} value={maxYear} />
                     </div>
                 </div>
+				<div className="form-group">
+					<label className="col-sm-2 control-label">Date Format: </label>
+                    <div className="col-sm-6">
+						<select id="dateFormat" className="form-control" onChange={this.onChange}>
+							{Object.keys(dateFormatOptions).map(function (option) {
+								return (<option value={option}>{dateFormatOptions[option]}</option>)
+							}) }
+                        </select>
+                    </div>
+				</div>
             </div>
         )
     }
@@ -196,7 +222,7 @@ NumericOptions = React.createClass({
 	// Keep track of the inputed numbers, casting them to
 	// interger values.
 	onChange: function(e){
-		var options = this.props.element.Options;
+		var options = Instrument.clone(this.props.element.Options);
 		if(e.target.id === 'numericmin'){
 			options.MinValue = parseInt(e.target.value);
 		} else if (e.target.id === 'numericmax'){
@@ -346,10 +372,10 @@ AddElement = React.createClass({
 		if(this.props.element){
 			// Editing an element, set to elements state
 			state = {
-				Options: this.props.element.Options,
-		 		Description: this.props.element.Description,
-		 		Name: this.props.element.Name,
-		 		selected: this.props.element.selected
+				Options: Instrument.clone(this.props.element.Options),
+		 		Description: Instrument.clone(this.props.element.Description),
+		 		Name: Instrument.clone(this.props.element.Name),
+		 		selected: Instrument.clone(this.props.element.selected)
 			}
 		} else {
 			state = {
@@ -369,54 +395,54 @@ AddElement = React.createClass({
 		this.setState(newState);
 	},
 	// Add a question to the buildPane
-        addQuestion: function () {
-            var selected = this.state.selected.id,
-                questionText = this.state.Description,
-                questionName = this.state.Name,
-                hasError = false,
-                element;
+    addQuestion: function () {
+		var selected = this.state.selected.id,
+			questionText = this.state.Description,
+			questionName = this.state.Name,
+			hasError = false,
+			element;
 
-            if(!selected) {
-                // Error, no element selected, alert the user and return
-                alert("No element type selected");
-                return;
-            }
+		if (!selected) {
+			// Error, no element selected, alert the user and return
+			alert("No element type selected");
+			return;
+		}
 
-            if (selected == 'date') {
-                var min = this.state.Options.MinDate,
-                    max = this.state.Options.MaxDate;
+		if (selected == 'date') {
+			var min = this.state.Options.MinDate,
+				max = this.state.Options.MaxDate;
 
-                var minDate = Date.parse(min),
-                    maxDate = Date.parse(max);
+			var minDate = Date.parse(min),
+				maxDate = Date.parse(max);
 
-                if ( (isNaN(minDate) && min != '') || (isNaN(maxDate) && max != '') ) {
-                    var temp = (this.state.error) ? this.state.error : {};
-                    
-                    temp.dateOption = "Invalid date provided";
-                    this.setState({
-                        error: temp
-                    });
-                    hasError = true;
-                }
+			if ( (isNaN(minDate) && min != '') || (isNaN(maxDate) && max != '') ) {
+				var temp = (this.state.error) ? this.state.error : {};
+				
+				temp.dateOption = "Invalid date provided";
+				this.setState({
+					error: temp
+				});
+				hasError = true;
+			}
 
-                if (minDate > maxDate && min != '' && max != '') {
-                    var temp = (this.state.error) ? this.state.error : {}; 
-    
-                    temp.dateOption = "End year append befor start year";
-                    this.setState({
-                        error: temp
-                    }); 
-                    hasError = true;
-                }
-                
-                if(!hasError && this.state.error) {
-                     var temp = this.state.error;
-                     delete temp.dateOption;
-                     this.setState({
-                         error: temp
-                     });
-                }
-            }
+			if (minDate > maxDate && min != '' && max != '') {
+				var temp = (this.state.error) ? this.state.error : {}; 
+
+				temp.dateOption = "End year append befor start year";
+				this.setState({
+					error: temp
+				}); 
+				hasError = true;
+			}
+			
+			if(!hasError && this.state.error) {
+					var temp = this.state.error;
+					delete temp.dateOption;
+					this.setState({
+						error: temp
+					});
+			}
+		}
 
 	    if(questionText == '' && selected != 'line') {
 	    	// Error, question text is required. Set the element error flag
@@ -432,6 +458,7 @@ AddElement = React.createClass({
 			});
 			hasError = true;
 	    }
+
 	    if (!hasError && this.state.error) {
 	    	// No error, remove the elememt's questionText error flag
 	    	// if set
@@ -441,6 +468,7 @@ AddElement = React.createClass({
 				error: temp
 			});
 	    }
+
 	    if(questionName == '' && selected != "header" && selected != "label" && selected != 'line' && selected != 'page-break') {
 	    	// Error, question name is needed for the desired type. Set the element error flag
 	    	// for the questionName with message. Set the hasError flag
