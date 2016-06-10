@@ -290,11 +290,10 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
             )
         )
             ->click();
-        $this->safeGet($this->url . 
-        "/final_radiological_review/final_radiological_review/?identifier=testcid");
         $bodyText = $this->safeFindElement(
-            WebDriverBy::Xpath("//*[@id='final_review']/div[1]/div[1]/div"),3000
+            WebDriverBy::cssSelector("body")
         )->getText();
+        print $bodyText;
         $this->assertContains("111222", $bodyText);
 
         // $this->assertEquals("", $bodyText);
