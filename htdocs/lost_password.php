@@ -55,7 +55,8 @@ if (isset($_POST['username'])) {
             $password = User::newPassword();
 
             // reset the password in the database
-            $success = $user->updatePassword($password);
+            // expire password so user must change it upon login
+            $success = $user->updatePassword($password, '0000-00-00');
 
             // send the user an email
             $msg_data['study']    = $config->getSetting('title');

@@ -28,6 +28,8 @@ Access Profile Test Plan:
 14. Ensure that for candidates with feedback, feedback column is displayed and in the correct colour.
 15. Ensure that the Open Profile panel only appears when not access_all_profiles permissions.
 16. Enter wrong PSCID/DCCID combination and click Open Profile. Ensure that you get an error.
+Incorrect PSCID/DCCID combinations in the filter form should not give such an error.
+It should return that no results were found.
 17. Enter correct PSCID/DCCID combination and ensure that it loads correct timepoint_list page
 18. Remove access_all_profiles permission and ensure that PSCID links are still clickable.
 19. Change useEDC and useProjects config variables to false and ensure filters are removed from menu.
