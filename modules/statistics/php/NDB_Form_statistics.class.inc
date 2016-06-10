@@ -232,25 +232,22 @@ class NDB_Form_statistics extends NDB_Form
     function stats_MRI()
     {
         $DB          =& Database::singleton();
-        $subprojList ="";
-        $projects[null] = 'All Projects';
-        $this->tpl_data['mri_table_exists'] = true;
+
         //if table is not in database handle by displaying error message
+        $this->tpl_data['mri_table_exists'] = true;
         if (!Database::tableExists('mri_parameter_form')) {
             $this->tpl_data['mri_table_exists'] = false;
             return;
         }
+
+        $this->tpl_data['showTable'] = true;
+
+        //PROJECTS
+        $projects[null] = 'All Projects';
         foreach(Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
-        if(isset($_REQUEST['site']) && $_REQUEST['site'] != '') {
-            $ExtraSite_Criteria = 'AND (c.CenterID IS NULL OR c.CenterID=' .
-                $_REQUEST['site'] . ')';
-        } else {
-            $ExtraSite_Criteria = '';
-        }
         $currentProject = null;
-        $this->tpl_data['showTable'] = true;
         if(isset($_REQUEST['MRIProject']) && $_REQUEST['MRIProject'] != '') {
             $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' .
                 $_REQUEST['MRIProject'] . ')';
@@ -262,17 +259,22 @@ class NDB_Form_statistics extends NDB_Form
         } else {
             $ExtraProject_Criteria = '';
         }
+
+        //SUBPROJECTS
+        $subprojList ="";
         $subprojects = Utility::getSubprojectsForProject($currentProject);
-        $this->tpl_data['Subprojects'] = $subprojects;
         foreach($subprojects as $key=>$val) {
             $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
-        $this->tpl_data['Projects'] = $projects;
 
-        $this->tpl_data['Subprojects'] = $subprojects;
-        $this->tpl_data['Projects']    = $projects;
-
+        //SITES
+        if(isset($_REQUEST['MRIsite']) && $_REQUEST['MRIsite'] != '') {
+            $ExtraSite_Criteria = 'AND (c.CenterID=' .
+                $_REQUEST['MRIsite'] . ')';
+        } else {
+            $ExtraSite_Criteria = '';
+        }
         $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
@@ -283,29 +285,64 @@ class NDB_Form_statistics extends NDB_Form
                 AND Study_site = 'Y'",
             array()
         );
-
-        $this->tpl_data['Centers'] = $centers;
-        $this->tpl_data['Sites']   = array('' => 'All Sites');
+        $sites[null]="All sites";
         foreach ($centers as $row) {
-            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if($_REQUEST['site'] == $row['NumericID']) {
+            $sites[$row['NumericID']] = $row['ShortName'];
+            if($_REQUEST['MRIsite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
                     'ID'   => $row['NumericID'],
                     'Name' => $row['LongName'],
                 );
             }
-
         }
-        $this->tpl_data['Subprojects'] = Utility::getSubprojectList();
-        //array('1' => '6 Month Recruit', '2' => '12 Month Recruit', '3' => 'Control');
+
+        //GET SCAN TYPES
+        $Scan_type_results = $DB->pselect(
+            "SELECT mst.ID, mst.Scan_type
+              FROM mri_scan_type mst
+                JOIN mri_protocol mp ON (mst.ID=mp.Scan_type)",
+            array()
+        );
+        //$scan_types[0]='All Scan Types';
+        foreach ($Scan_type_results as $row) {
+            $scan_types[$row['ID']] = $row['Scan_type'];
+        }
+        //print_r($_REQUEST['Scans']);
+        $scan_types       = array(
+            //'0'           => 'All Scan Types',
+            'T1'           => 'T1',
+            'T2'           => 'T2',
+            'DTI'          => 'DTI',
+            'BOLD'         => 'BOLD',
+            'Spectroscopy' => 'Spectroscopy',
+        );
+        $scans_selected=array();
+        if(isset($_REQUEST['Scans']) && $_REQUEST['Scans'] != '')
+        {
+            $scans_selected = explode(",",$_REQUEST['Scans']);
+        }
+        if (empty($scans_selected))
+        {
+            $scans_selected=$scan_types;
+        }
+
         $Visits = Utility::getExistingVisitLabels($currentProject);
+        $this->tpl_data['scan_types'] = $scan_types;
+        $this->tpl_data['Scans_selected'] = $scans_selected;
+        $this->tpl_data['Centers'] = $centers;
+        $this->tpl_data['Sites']   = $sites;
+        $this->tpl_data['Projects'] = $projects;
+        $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['Visits'] = $Visits;
 
+        //START BIG TABLE
         $MRISubcategories = array(
             'Complete',
             'Partial Run',
             'No Scan',
         );
+
+        //TODO: IBIS
         $MRIOptions       = array(
             'T1'           => 'T1',
             'T2'           => 'T2',
@@ -314,6 +351,8 @@ class NDB_Form_statistics extends NDB_Form
             'BOLD'         => 'BOLD',
             'Spectroscopy' => 'Spectroscopy',
         );
+
+        //TODO: IBIS
         if($_REQUEST['mri_type']) {
             $MRI_Type       = $_REQUEST['mri_type'];
             $MRI_Type_Field = $_REQUEST['mri_type'] . "_Scan_Done";
@@ -351,13 +390,15 @@ class NDB_Form_statistics extends NDB_Form
                             ELSE $MRI_Type_Field
                             END";
         }
+
         $result   = $DB->pselect(
             "SELECT s.SubprojectID,
                             c.CenterID, 
                             s.Visit_label as VLabel,
                             $CaseStatement as Subcat,
                             COUNT(*) as val 
-                            FROM mri_parameter_form m JOIN flag f USING (CommentID) 
+                            FROM mri_parameter_form m
+                            JOIN flag f USING (CommentID)
                             JOIN session s ON (f.SessionID=s.ID) 
                             JOIN candidate c ON (c.CandID=s.CandID) 
                             WHERE s.Current_stage <> 'Recycling Bin' 
@@ -373,6 +414,7 @@ class NDB_Form_statistics extends NDB_Form
                                     s.Visit_label",
             array()
         );
+
         $M_Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['MRI_Done_Table'] = $this->render_stats_table(
             $MRIHeader,
@@ -386,6 +428,142 @@ class NDB_Form_statistics extends NDB_Form
             "mri",
             $currentProject
         );
+        //END BIGTABLE
+
+
+        //considers the naming convention of mri_parameter_form is "scanType_scan_done"
+        //Does not work for ibis
+        $Scan_data_results=array();
+        foreach ($scans_selected as $key => $scan) {
+            $col_name = $scan . '_Scan_done';
+            //Compute total for Scan Completed row
+            $Scan_data_results[$key]['scan_complete']['total'] = $DB->pselectOne(
+                "SELECT COUNT(*)
+                FROM mri_parameter_form m
+                    JOIN flag f USING (CommentID)
+                    JOIN session s ON (f.SessionID=s.ID)
+                    JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                    AND f.Administration <> 'None'
+                    AND s.Active='Y'
+                    AND c.Active='Y'
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    AND $col_name ='Complete'
+                    AND s.SubprojectID IN ($subprojList)
+                    $ExtraProject_Criteria
+                    $ExtraSite_Criteria
+                ",
+                array()
+            );
+            //Compute values for Scan completed row
+            $count_data = $DB->pselect(
+            "SELECT s.SubprojectID as subID, COUNT(*) as cnt
+                FROM mri_parameter_form m
+                    JOIN flag f USING (CommentID)
+                    JOIN session s ON (f.SessionID=s.ID)
+                    JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                    AND f.Administration <> 'None'
+                    AND s.Active='Y'
+                    AND c.Active='Y'
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    AND $col_name ='Complete'
+                    AND s.SubprojectID IN ($subprojList)
+                    $ExtraProject_Criteria
+                    $ExtraSite_Criteria
+                GROUP BY s.SubprojectID",
+                array()
+            );
+            foreach ($count_data as $row){
+                $Scan_data_results[$key]['scan_complete'][$row['subID']] = $row['cnt'];
+            }
+
+            $Scan_data_results[$key]['scan_all']['total'] = $DB->pselectOne(
+                    "SELECT COUNT(*)
+                FROM mri_parameter_form m
+                    JOIN flag f USING (CommentID)
+                    JOIN session s ON (f.SessionID=s.ID)
+                    JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                    AND f.Administration <> 'None'
+                    AND s.Active='Y'
+                    AND c.Active='Y'
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    AND s.SubprojectID IN ($subprojList)
+                    $ExtraProject_Criteria
+                    $ExtraSite_Criteria
+                ",
+                    array()
+                );
+            //Compute values for Scan completed row
+            $count_data = $DB->pselect(
+                "SELECT s.SubprojectID as subID, COUNT(*) as cnt
+                FROM mri_parameter_form m
+                    JOIN flag f USING (CommentID)
+                    JOIN session s ON (f.SessionID=s.ID)
+                    JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                    AND f.Administration <> 'None'
+                    AND s.Active='Y'
+                    AND c.Active='Y'
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    AND s.SubprojectID IN ($subprojList)
+                    $ExtraProject_Criteria
+                    $ExtraSite_Criteria
+                GROUP BY s.SubprojectID",
+                array()
+            );
+            foreach ($count_data as $row){
+                $Scan_data_results[$key]['scan_all'][$row['subID']] = $row['cnt'];
+            }
+
+            $Scan_data_results[$key]['insert_count']['total'] = $DB->pselectOne(
+                "SELECT COUNT(*)
+                FROM mri_parameter_form m
+                    JOIN flag f USING (CommentID)
+                    JOIN session s ON (f.SessionID=s.ID)
+                    JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                    AND f.Administration <> 'None'
+                    AND s.Active='Y'
+                    AND c.Active='Y'
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    AND s.SubprojectID IN ($subprojList)
+                    $ExtraProject_Criteria
+                    $ExtraSite_Criteria
+                ",
+                array()
+            );
+            //Compute values for Scan completed row
+            $count_data = $DB->pselect(
+                "SELECT s.SubprojectID as subID, COUNT(*) as cnt
+                FROM mri_parameter_form m
+                    JOIN flag f USING (CommentID)
+                    JOIN session s ON (f.SessionID=s.ID)
+                    JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE s.Current_stage <> 'Recycling Bin'
+                    AND f.Administration <> 'None'
+                    AND s.Active='Y'
+                    AND c.Active='Y'
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    AND s.SubprojectID IN ($subprojList)
+                    $ExtraProject_Criteria
+                    $ExtraSite_Criteria
+                GROUP BY s.SubprojectID",
+                array()
+            );
+            foreach ($count_data as $row){
+                $Scan_data_results[$key]['insert_count'][$row['subID']] = $row['cnt'];
+            }
+
+            /*$Scan_data_results[$key]['insert_count'] = $DB->pselectOne(
+             * $Scan_data_results[$key]['qc_count'] = $DB->pselectOne(
+                "SELECT "
+            );*/
+
+        }
+        $this->tpl_data['scan_data_results'] = $Scan_data_results;
+        /*
 
         $result = $DB->pselect(
             "SELECT s.SubprojectID,
@@ -423,32 +601,6 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['mri_total']['total'] += $row['val'];
 
         }
-        // MRI INTEGRITY STATS
-        // MRI parameter form is completed, but nothing in tarchive
-        /*
-        $DB->select("SELECT COUNT(distinct f.CommentID) as val,
-                            s.CenterID as CenterID
-                            FROM flag f JOIN session s ON (f.SessionID=s.ID)
-                            LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
-                            -- LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6))
-                            LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6)
-                                AND MID(t.PatientName, 16, 3)=s.Visit_label)
-                            LEFT JOIN candidate c ON (s.CandID=c.CandID)
-                            WHERE f.CommentID NOT LIKE 'DDE%'
-                            AND f.Test_name='mri_parameter_form'
-                            and f.Administration <> 'None'
-                            and t.TarchiveID IS NULL
-                            AND s.Active='Y'
-                            AND t.TarchiveID IS NULL
-                            AND f.Data_entry='Complete'
-                            AND f.CommentID NOT LIKE 'DDE%'
-                            AND (m.T1_Scan_done IS NULL OR m.T1_Scan_done <> 'No')
-                            AND s.SubprojectID IN ($subprojList)
-                            GROUP BY s.CenterID;", $result);
-        foreach($result as $row) {
-            $this->tpl_data['mri_errors'][$row['CenterID']]['no_tarchive'] = $row['val'];
-        }
-         */
 
         // MRI parameter form completed, but nothing in browser
         $result = $DB->pselect(
@@ -591,7 +743,7 @@ class NDB_Form_statistics extends NDB_Form
                                   )
                       AND v06.CenterID='{$id}'
                       AND v06.SubprojectID IN ($subprojList)
-                      $ExtraProject_Criteria",
+                      ",
                 array()
             );
             $mri_data[] = array(
@@ -603,6 +755,7 @@ class NDB_Form_statistics extends NDB_Form
             );
 
         }
+
         $subprojectList = "'" .
             implode("','", Utility::getSubprojectList()) .
             "'";
@@ -614,13 +767,14 @@ class NDB_Form_statistics extends NDB_Form
                                 SUM(Three_DTI_Done) as DTI,
                                 SUM(Three_All_done) as Three_All_done
                           FROM (SELECT c.CenterID, COUNT(DISTINCT c.CandID)," .
+        */
             /* This essentially does COUNT(T1_Scan_done='Complete'), but because of the way COUNT(expr) works,
             * we need to make sure that anything that isn't 'Complete' is evaluated as NULL (not false), hence
             * the crazy CASE statement. The different count statements Do v06, v06+v12, v06+v12+v24, all 3 for T2, all
             * three for DTI, and all three for T1+T2+DTI. The outer select statement sums up all the groupings, to get
             * a final scalar value.
             */
-
+        /*
             "COUNT(DISTINCT CASE (COALESCE(mpf06.T1_Scan_done, 'No')='Complete')
                                   WHEN true THEN c.CandID
                                   ELSE null
@@ -736,7 +890,7 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['mri_all_scans_done'][] = $total;
 
         $this->tpl_data['mri_data'] = $mri_data;
-        $this->tpl_data['reliability_completion'] = $this->getReliabilityData();
+        */
 
     } // End function
 

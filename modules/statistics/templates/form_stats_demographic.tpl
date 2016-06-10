@@ -15,7 +15,7 @@
     <table class="data generalStats table table-primary table-bordered">
         <thead>
         <tr>
-            <th><h1>Leigh</h1></th>
+            <th>Registration Status</th>
             <th>Undefined</th>
             {foreach from=$Subprojects item=name key=proj}
                 <th>{$name}</th>
@@ -25,7 +25,7 @@
         </thead>
         <tbody align="right">
         <tr>
-            <td>Registered candidates</td>
+            <td align="left">Registered candidates</td>
             <td><b>{$registered[NULL].total}</b></td>
             {foreach from=$Subprojects item=proj key=keyid}
                 <td><b>{$registered[$keyid].total}</b></td>
@@ -36,7 +36,7 @@
             <td class="total">{$registered.total}</td>
         </tr>
         <tr>
-            <td>Registered candidates currently in or passed screening</td>
+            <td align="left">Registered candidates currently in or passed screening</td>
             <td>N/A</td>
             {foreach from=$Subprojects item=proj key=keyid}
                 {if {$registered[$keyid].visit}>0}
@@ -48,7 +48,7 @@
             <td class="total">{$registered.visittotal}</td>
         </tr>
         <tr>
-            <td>Registered candidates who have come in for a visit</td>
+            <td align="left">Registered candidates who have come in for a visit</td>
             <td>N/A</td>
             {foreach from=$Subprojects item=proj key=keyid}
                 {if {$edi[$keyid].complete}>0}
@@ -61,7 +61,7 @@
         </tr>
         {if $mri_table_exists}
             <tr>
-                <td>Registered candidates with T1 acquired</td>
+                <td align="left">Registered candidates with T1 acquired</td>
                 <td>N/A</td>
                 {foreach from=$Subprojects item=proj key=keyid}
                     {if {$scanned[$keyid].complete}>0}
