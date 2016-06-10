@@ -274,7 +274,10 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
     function testFinalRadiologicalReviewPscidLink()
     {
         $this->safeGet($this->url . "/final_radiological_review/");
-
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        print $bodyText;        
         $this->webDriver->findElement(
             WebDriverBy::Name("pscid")
         )->sendKeys("111222");
