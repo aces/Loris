@@ -16,18 +16,10 @@ require_once "../tools/generic_includes.php";
 require_once "Database.class.inc";
 $CommentID = $argv[1];
 $db        =& Database::singleton();
-if (Utility::isErrorX($db)) {
-        print "Could not connect to database: " . $db->getMessage();
-            exit(1);
-}
 $query         = "SELECT * from bmi WHERE CommentID = :CommentID";
 $WhereCriteria = array('CommentID'=>$CommentID);
 $record        = array();
 $record        = $db->pselectRow($query, $WhereCriteria);
-if (Utility::isErrorX($record)) {
-        print "Query has failed to select: ".$record->getMessage();
-            exit(2);
-}
 $scores = array();
 $bmi = '';
 if($record['unit_classification'] == 'metric') {
