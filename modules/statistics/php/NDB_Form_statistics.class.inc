@@ -84,6 +84,274 @@ class NDB_Form_statistics extends NDB_Form
         //$DB =& Database::singleton();
     }
 
+    function stats_demographic()
+    {
+        $DB =& Database::singleton();
+
+        //if table is not in database handle by displaying error message
+        $this->tpl_data['mri_table_exists'] = true;
+        if (!$DB->tableExists('mri_parameter_form')) {
+            $this->tpl_data['mri_table_exists'] = false;
+            return;
+        }
+
+        $this->tpl_data['showTable'] = true;
+
+        //PROJECTS
+        $projects[null] = 'All Projects';
+        foreach(Utility::getProjectList() as $key => $value) {
+            $projects[$key] = $value;
+        }
+        $currentProject = null;
+        if(isset($_REQUEST['DemographicProject']) && $_REQUEST['DemographicProject'] != '') {
+            $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' .
+                $_REQUEST['DemographicProject'] . ')';
+            $currentProject        = $_REQUEST['DemographicProject'];
+            $this->tpl_data['CurrentProject'] = array(
+                'ID'   => $currentProject,
+                'Name' => $projects[$currentProject],
+            );
+        } else {
+            $ExtraProject_Criteria = '';
+        }
+
+        //SUBPROJECTS
+        $subprojList ="";
+        $subprojects = Utility::getSubprojectsForProject($currentProject);
+        foreach($subprojects as $key=>$val) {
+            $subprojList .= $key.",";
+        }
+        $subprojList = substr($subprojList, 0, -1);
+
+        //SITES
+        if(isset($_REQUEST['DemographicSite']) && $_REQUEST['DemographicSite'] != '') {
+            $ExtraSite_Criteria = 'AND (c.CenterID=' .
+                $_REQUEST['DemographicSite'] . ')';
+        } else {
+            $ExtraSite_Criteria = '';
+        }
+        $centers = $DB->pselect(
+            "SELECT CONCAT('C', CenterID) as ID,
+                    CenterID as NumericID,
+                    PSCArea as LongName,
+                    Name as ShortName
+              FROM psc
+              WHERE CenterID <> '1'
+                AND Study_site = 'Y'",
+            array()
+        );
+        $sites[null]="All sites";
+        foreach ($centers as $row) {
+            $sites[$row['NumericID']] = $row['ShortName'];
+            if($_REQUEST['DemographicSite'] == $row['NumericID']) {
+                $this->tpl_data['CurrentSite'] = array(
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
+            }
+        }
+
+        $Visits = Utility::getExistingVisitLabels($currentProject);
+
+        $this->tpl_data['Sites']   = $sites;
+        $this->tpl_data['Projects'] = $projects;
+        $this->tpl_data['Subprojects'] = $subprojects;
+        $this->tpl_data['Visits'] = $Visits;
+
+
+        //REGISTERED CANDIDATES ROW
+        $result = $DB->pselect(
+            "SELECT s.subprojectid as rowid,
+                          count(DISTINCT(c.PSCID)) as val
+                      FROM candidate as c
+                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      WHERE c.CenterID <> '1'
+                          AND c.PSCID <> 'scanner'
+                          $ExtraSite_Criteria
+                          $ExtraProject_Criteria
+                      GROUP BY s.subprojectid",
+            array()
+        );
+
+        foreach($result as $row) {
+            $this->tpl_data['registered'][$row['rowid']] = $row['val'];
+            $this->tpl_data['registered']['total'] += $row['val'];
+        }
+
+        //PARTICIPANT STATUS ACTIVE
+        $result = $DB->pselect(
+            "SELECT s.subprojectid as rowid,
+                          count(DISTINCT(c.PSCID)) as val
+                      FROM candidate as c
+                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      WHERE c.CenterID <> '1'
+                          AND c.PSCID <> 'scanner'
+                          AND c.Active='Y'
+                          $ExtraSite_Criteria
+                          $ExtraProject_Criteria
+                      GROUP BY s.subprojectid",
+            array()
+        );
+
+        foreach($result as $row) {
+            $this->tpl_data['ps_active'][$row['rowid']] = $row['val'];
+            $this->tpl_data['ps_active']['total'] += $row['val'];
+        }
+
+        //PARTICIPANT STATUS INACTIVE
+        $result = $DB->pselect(
+            "SELECT s.subprojectid as rowid,
+                          count(DISTINCT(c.PSCID)) as val
+                      FROM candidate as c
+                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      WHERE c.CenterID <> '1'
+                          AND c.PSCID <> 'scanner'
+                          AND c.Active<>'Y'
+                          $ExtraSite_Criteria
+                          $ExtraProject_Criteria
+                      GROUP BY s.subprojectid",
+            array()
+        );
+
+        foreach($result as $row) {
+            $this->tpl_data['ps_inactive'][$row['rowid']] = $row['val'];
+            $this->tpl_data['ps_inactive']['total'] += $row['val'];
+        }
+
+        //MALE
+        $result = $DB->pselect(
+            "SELECT s.subprojectid as rowid,
+                          count(DISTINCT(c.PSCID)) as val
+                      FROM candidate as c
+                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      WHERE coalesce(s.active, 'Y')='Y'
+                          AND c.CenterID <> '1'
+                          AND c.PSCID <> 'scanner'
+                          AND c.Active='Y'
+                          AND c.Gender='Male'
+                          $ExtraSite_Criteria
+                          $ExtraProject_Criteria
+                      GROUP BY s.subprojectid",
+            array()
+        );
+
+        foreach($result as $row) {
+            $this->tpl_data['gender_male'][$row['rowid']] = $row['val'];
+            $this->tpl_data['gender_male']['total'] += $row['val'];
+        }
+        //FEMALE
+        $result = $DB->pselect(
+            "SELECT s.subprojectid as rowid,
+                          count(DISTINCT(c.PSCID)) as val
+                      FROM candidate as c
+                          LEFT JOIN session s ON (s.CandID=c.CandID)
+                      WHERE coalesce(s.active, 'Y')='Y'
+                          AND c.CenterID <> '1'
+                          AND c.PSCID <> 'scanner'
+                          AND c.Active='Y'
+                          AND c.Gender='Female'
+                          $ExtraSite_Criteria
+                          $ExtraProject_Criteria
+                      GROUP BY s.subprojectid",
+            array()
+        );
+
+        foreach($result as $row) {
+            $this->tpl_data['gender_female'][$row['rowid']] = $row['val'];
+            $this->tpl_data['gender_female']['total'] += $row['val'];
+        }
+
+        //START BIG TABLE
+        $instruments = array_merge(
+            array( '' => 'Recruit Gender Breakdown'),
+            Utility::getAllInstruments()
+        );
+
+        $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
+        if(isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
+            $Subcategories = array(
+                'Complete',
+                'Incomplete',
+            );
+            $result        = $DB->pselect(
+                "SELECT count(*) as val,
+                    f.Data_entry as Subcat,
+                    c.CenterID as CenterID,
+                    s.SubprojectID as SubprojectID,
+                    s.visit_label as VLabel
+                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+                    JOIN flag f ON (f.SessionID=s.ID)
+                    JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
+                WHERE s.Active='Y'
+                    AND c.CenterID <> '1'
+                    AND f.Data_entry='Complete'
+                    AND f.Administration='All'
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    $ExtraProject_Criteria
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
+                UNION
+                SELECT count(*) as val, 'Incomplete' as Subcat,
+                    c.CenterID as CenterID,
+                    s.SubprojectID as SubprojectID,
+                    s.visit_label as VLabel
+                FROM session s JOIN candidate c USING(CandID)
+                    JOIN flag f ON (f.SessionID=s.ID)
+                    JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
+                WHERE s.Active='Y' AND s.CenterID <> 1
+                    $ExtraProject_Criteria
+                    AND f.CommentID NOT LIKE 'DDE%'
+                    AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
+                ",
+                array()
+            );
+            $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
+                "Data Entry Completion Status for $_REQUEST[DemographicInstrument]",
+                $Subcategories,
+                $Visits,
+                "DemographicInstrument",
+                $instruments,
+                $_REQUEST['DemographicInstrument'],
+                $centers,
+                $result,
+                "demographics",
+                $currentProject
+            );
+        } else {
+            $Subcategories = array(
+                'Male',
+                'Female',
+            );
+            $result        = $DB->pselect(
+                "SELECT c.CenterID as CenterID,
+                    s.SubprojectID as SubprojectID,
+                    s.visit_label as VLabel,
+                    c.gender as Subcat,
+                    count(s.CandID) as val
+                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+                WHERE s.active='Y' AND s.CenterID <> '1'
+                    AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
+                    AND s.SubprojectID IN ($subprojList))
+                    AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
+                    AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
+                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat",
+                array()
+            );
+            $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
+                "Breakdown of Registered Candidates",
+                $Subcategories,
+                $Visits,
+                "DemographicInstrument",
+                $instruments,
+                '',
+                $centers,
+                $result,
+                "demographics",
+                $currentProject
+            );
+        }
+    }
+
     function stats_behavioural()
     {
         $DB =& Database::singleton();
@@ -307,7 +575,7 @@ class NDB_Form_statistics extends NDB_Form
         foreach ($Scan_type_results as $row) {
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
-
+        //TODO: IBIS
         $scan_types       = array(
             'T1'           => 'T1',
             'T2'           => 'T2',
@@ -328,7 +596,6 @@ class NDB_Form_statistics extends NDB_Form
         $Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['scan_types'] = $scan_types;
         $this->tpl_data['Scans_selected'] = $scans_selected;
-        $this->tpl_data['Centers'] = $centers;
         $this->tpl_data['Sites']   = $sites;
         $this->tpl_data['Projects'] = $projects;
         $this->tpl_data['Subprojects'] = $subprojects;
@@ -536,290 +803,7 @@ class NDB_Form_statistics extends NDB_Form
 
     } // End function
 
-    function stats_demographic()
-    {
-        $DB =& Database::singleton();
-        $ExtraProject_Criteria ="";
-        $subprojList           ="";
-        $projects[null]        = 'All Projects';
-        foreach(Utility::getProjectList() as $key => $value) {
-            $projects[$key] = $value;
-        }
-        if(isset($_REQUEST['DemographicSite'])
-            && $_REQUEST['DemographicSite'] != ''
-        ) {
-            $ExtraSite_Criteria = 'AND (c.CenterID IS NULL OR c.CenterID=' .
-                $_REQUEST['DemographicSite'] .
-                ')';
-        }
-        else {
-            $ExtraSite_Criteria = '';
-        }
-        if(isset($_REQUEST['DemographicProject'])
-            && $_REQUEST['DemographicProject'] != ''
-        ) {
-            $ExtraProject_Criteria .= ' AND c.ProjectID=' .
-                $_REQUEST['DemographicProject'];
-            $currentProject         = $_REQUEST['DemographicProject'];
-            $this->tpl_data['CurrentProject'] = array(
-                'ID'   => $currentProject,
-                'Name' => $projects[$currentProject],
-            );
-        }
-        $subprojects = Utility::getSubprojectsForProject($currentProject);
-        foreach($subprojects as $key=>$val) {
-            $subprojList .= $key.",";
-        }
-        $subprojList = substr($subprojList, 0, -1);
-        //$vlabels = Utility::getVisitList();
-        //error_log(print_r($vlabels));
 
-        $demographics_project_name     = $projects["{$_REQUEST['DemographicProject']}"];
-        $this->tpl_data['Subprojects'] = $subprojects;
-        $this->tpl_data['Projects']    = $projects;
-
-        //REGISTERED CANDIDATES ROW
-        //TODO confirm that visit labels are no longuer needed
-        $result = $DB->pselect(
-            "SELECT s.subprojectid as rowid,
-                          count(DISTINCT(c.PSCID)) as val
-                      FROM candidate as c
-                          LEFT JOIN session s ON (s.CandID=c.CandID)
-                      WHERE coalesce(s.active, 'Y')='Y'
-                          AND c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
-                          AND c.Active='Y'
-                          $ExtraSite_Criteria
-                          $ExtraProject_Criteria
-                      GROUP BY s.subprojectid",
-            array()
-        );
-
-        foreach($result as $row) {
-            $this->tpl_data['registered'][$row['rowid']]['total'] = $row['val'];
-            $this->tpl_data['registered']['total'] += $row['val'];
-        }
-
-        //Registered candidates currently in or passed screening
-        $result = $DB->pselect(
-            "SELECT s.subprojectid as rowid,
-                COUNT(DISTINCT(c.PSCID)) as val
-            FROM candidate as c LEFT JOIN session s ON (s.CandID=c.CandID)
-            WHERE s.active='Y' AND s.CenterID <> '1'        
-                AND c.Active='Y'
-                AND (s.Current_stage IN ('Visit', 'Screening', 'Approval'))
-                AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
-                AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-                $ExtraSite_Criteria
-                $ExtraProject_Criteria
-            GROUP BY s.subprojectid",
-            array()
-        );
-        foreach($result as $row) {
-            $this->tpl_data['registered'][$row['rowid']]['visit'] = $row['val'];
-            $this->tpl_data['registered']['visittotal']          += $row['val'];
-
-            // Total, explicitly calculated instead of added in the loop to
-            // ensure there's no one double registered in 2 different cohorts
-            $total = $DB->pselect(
-                "SELECT count(distinct(c.PSCID))
-                          FROM candidate as c
-                          WHERE c.PSCID<>'scanner'
-                              AND c.CenterID<>'1'
-                              AND c.Active='Y'
-                              $ExtraSite_Criteria
-                              $ExtraProject_Criteria",
-                array()
-            );
-
-            list(,$total)     =each($total[0]);
-            $Total_candidates = $total;
-            $this->tpl_data['Total_candidates'] = $Total_candidates;
-
-        }
-
-        //IBIS
-        // Number of visits.
-        // This is based on the EDI completion status, since the EDI
-        // is done by every cohort at every visit
-        $result = $DB->pselect(
-            "SELECT count(DISTINCT c.PSCID) as val,
-                            s.SubprojectID as rowid
-                      FROM flag f
-                          JOIN session s ON (s.ID=f.SessionID)
-                          JOIN candidate c ON (c.CandID=s.CandID)
-                      WHERE f.Test_name IN
-                                ('edi', 'mri_parameter_form', 'vineland_subject')
-                          AND COALESCE(s.Screening,'') NOT IN
-                                ('Failure', 'Withdrawal')
-                          AND COALESCE(s.Visit,'') NOT IN
-                                ('Failure', 'Withdrawal')
-                          AND s.Active='Y'
-                          AND c.Active='Y'
-                          AND (f.Administration = 'All'
-                              OR f.Administration='Partial')
-                          AND s.Current_stage <> 'Recycling Bin'
-                          $ExtraSite_Criteria
-                          $ExtraProject_Criteria
-                      GROUP BY s.SubprojectID",
-            array()
-        );
-        foreach($result as $row) {
-            $this->tpl_data['edi'][$row['rowid']]['complete'] = $row['val'];
-            $this->tpl_data['edi']['complete'] += $row['val'];
-        }
-
-        $mri_table_exists = true;
-
-        if (Database::tableExists('mri_parameter_form')) {
-            // Number of T1 candidates scanned
-            $result = $DB->pselect(
-                "SELECT count(DISTINCT c.PSCID) as val,
-                            s.SubprojectID as rowid
-                      FROM flag f
-                          JOIN mri_parameter_form mp USING(CommentID)
-                          JOIN session s ON (s.ID=f.SessionID)
-                          JOIN candidate c ON (c.CandID=s.CandID)
-                      WHERE f.Test_name='mri_parameter_form'
-                          AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
-                          AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-                          AND s.Active='Y'
-                          AND c.Active='Y'
-                          AND f.Administration <> 'None'
-                          AND mp.T1_Scan_done='Complete'
-                          AND s.Current_stage <> 'Recycling Bin'
-                          $ExtraSite_Criteria
-                          $ExtraProject_Criteria
-                      GROUP BY s.SubprojectID",
-                array()
-            );
-            foreach ($result as $row) {
-                $this->tpl_data['scanned'][$row['rowid']]['complete'] = $row['val'];
-                $this->tpl_data['scanned']['complete'] += $row['val'];
-            }
-
-        } else {
-            $mri_table_exists = false;
-        }
-        $this->tpl_data['mri_table_exists'] = $mri_table_exists;
-
-        // Adds a C to the start of the centerid, because that's how the
-        // template is looking for it. Exclude DCC
-        $centers = $DB->pselect(
-            "SELECT CONCAT('C', CenterID) as ID,
-                          CenterID as NumericID,
-                          PSCArea as LongName,
-                          Name as ShortName
-                      FROM psc
-                      WHERE CenterID <> '1'
-                          AND Study_site = 'Y'",
-            array()
-        );
-
-        $this->tpl_data['Centers'] = $centers;
-        $this->tpl_data['Sites']   = array('' => 'All Sites');
-        foreach ($centers as $row) {
-            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-            if($_REQUEST['DemographicSite'] == $row['NumericID']) {
-                $this->tpl_data['CurrentSite'] = array(
-                    'ID'   => $row['NumericID'],
-                    'Name' => $row['LongName'],
-                );
-            }
-
-        }
-        $Visits = Utility::getExistingVisitLabels($currentProject);
-        $this->tpl_data['Visits'] = $Visits;
-
-        $instruments = array_merge(
-            array( '' => 'Recruit Gender Breakdown'),
-            Utility::getAllInstruments()
-        );
-        //$this->tpl_data['scored_instruments'] = Utility::getScoredInstruments();
-        $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
-        if(isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
-            $Subcategories = array(
-                'Complete',
-                'Incomplete',
-            );
-            $result        = $DB->pselect(
-                "SELECT count(*) as val, 
-                    f.Data_entry as Subcat,
-                    c.CenterID as CenterID,
-                    s.SubprojectID as SubprojectID,
-                    s.visit_label as VLabel
-                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
-                    JOIN flag f ON (f.SessionID=s.ID)
-                    JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
-                WHERE s.Active='Y'
-                    AND c.CenterID <> '1'
-                    AND f.Data_entry='Complete'
-                    AND f.Administration='All'
-                    AND f.CommentID NOT LIKE 'DDE%'
-                    $ExtraProject_Criteria
-                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
-                UNION
-                SELECT count(*) as val, 'Incomplete' as Subcat, 
-                    c.CenterID as CenterID,
-                    s.SubprojectID as SubprojectID,
-                    s.visit_label as VLabel
-                FROM session s JOIN candidate c USING(CandID) 
-                    JOIN flag f ON (f.SessionID=s.ID)
-                    JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
-                WHERE s.Active='Y' AND s.CenterID <> 1
-                    $ExtraProject_Criteria
-                    AND f.CommentID NOT LIKE 'DDE%'
-                    AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
-                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
-                ",
-                array()
-            );
-            $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
-                "Data Entry Completion Status for $_REQUEST[DemographicInstrument]",
-                $Subcategories,
-                $Visits,
-                "DemographicInstrument",
-                $instruments,
-                $_REQUEST['DemographicInstrument'],
-                $centers,
-                $result,
-                "demographics",
-                $currentProject
-            );
-        } else {
-            $Subcategories = array(
-                'Male',
-                'Female',
-            );
-            $result        = $DB->pselect(
-                "SELECT c.CenterID as CenterID, 
-                    s.SubprojectID as SubprojectID,
-                    s.visit_label as VLabel,
-                    c.gender as Subcat,
-                    count(s.CandID) as val
-                FROM session s JOIN candidate c ON (s.CandID=c.CandID) 
-                WHERE s.active='Y' AND s.CenterID <> '1'
-                    AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
-                    AND s.SubprojectID IN ($subprojList))
-                    AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
-                    AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat",
-                array()
-            );
-            $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
-                "Breakdown of Registered Candidates",
-                $Subcategories,
-                $Visits,
-                "DemographicInstrument",
-                $instruments,
-                '',
-                $centers,
-                $result,
-                "demographics",
-                $currentProject
-            );
-        }
-    }
 
     //RELIABILITY
     function stats_reliability()

@@ -33,21 +33,6 @@
             </thead>
             <tbody>
             {foreach item=scan key=scanid from=$Scans_selected}
-                {*<tr>
-                    <td>Scans Completed</td>
-                    {foreach from=$Subprojects item=name key=proj}
-                        {if $scan_data_results[$scanid].scan_all[$proj] > 0}
-                            {if $scan_data_results[$scanid].scan_complete[$proj] > 0}
-                                <td>{$scan_data_results[$scanid].scan_complete[$proj]}<font size="1"><b>/{$scan_data_results[$scanid].scan_all[$proj]}</b></font></td>
-                            {else}
-                                <td>0<font size="1"><b>/{$scan_data_results[$scanid].scan_all[$proj]}</b></font></td>
-                            {/if}
-                        {else}
-                            <td>0<font size="1"><b>/0</b></font></td>
-                        {/if}
-                    {/foreach}
-                    <td>{$scan_data_results[$scanid].scan_complete.total}<font size="1"><b>/{$scan_data_results[$scanid].scan_all.total}</b></font></td>
-                </tr>*}
                 <tr>
                     <td rowspan="4" style="vertical-align:middle">{$scan}</td>
                     <td colspan="2">Scans Inserted</td>
