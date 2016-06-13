@@ -113,13 +113,23 @@ var Instrument = {
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
                         break;
                     case "date":
+                        var elName = element.Name.replace(/\s/g, "").toLowerCase();
+                        var dropdown = "";
+
+                        // Add dropdown and special naming when no date format is set
+                        // (i.e when addDateElement() is used)
+                        if (element.Options.dateFormat === "") {
+                            elName = elName + "_date";                            
+                            dropdown = "select{@}" + elName + "_status" +
+                            "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+                        }
+
                         content += 'date{@}';
-                        content += element.Name + "{@}" + element.Description ;
+                        content += elName + "{@}" + element.Description;
                         content += "{@}" + element.Options.MinDate.split('-')[0];
                         content += "{@}" + element.Options.MaxDate.split('-')[0];
                         content += "{@}" + element.Options.dateFormat + "\n";
-                        content += "select{@}" + element.Name + "_status" +
-                            "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+                        content += dropdown;
                         break;
                     case "numeric":
                         content += 'numeric{@}';
