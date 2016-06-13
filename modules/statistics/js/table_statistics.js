@@ -1,4 +1,16 @@
 /*global document, $*/
+    $('#showVL').click(function(event) {
+        if(this.checked) {
+            $('tr[id=visitrow]').each(function() {
+                this.style.display = ''
+            });
+        }else{
+            $('tr[id=visitrow]').each(function() {
+                this.style.display = 'none'
+            });
+        }
+    });
+
 function updateDemographicInstrument() {
     var DemographicSite = document.getElementById("DemographicSite");
     var DemographicInstrument = document.getElementById("DemographicInstrument");

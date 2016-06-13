@@ -49,14 +49,18 @@ class NDB_Form_statistics extends NDB_Form
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$subcat]      += $row['val'];
+                $tpl_data['data'][$subproj]['total']      += $row['val'];
                 $tpl_data['data'][$vl][$subcat]           += $row['val'];
                 $tpl_data['data'][$vl]['total']           += $row['val'];
                 $tpl_data['data'][$subproj]['C' . $center][$vl][$subcat] = $row['val'];
-                $tpl_data['data']['Cat' . $subcat] += $row['val'];
+                $tpl_data['data'][$subproj]['C' . $center][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj]['C' . $center][$subcat] += $row['val'];
+                $tpl_data['data'][$subproj]['C' . $center]['total'] += $row['val'];
                 $tpl_data['data']['C' . $center][$vl][$subcat]      += $row['val'];
-                $tpl_data['data'][$subproj]['total']      += $row['val'];
+                $tpl_data['data']['C' . $center][$vl]['total']      += $row['val'];
                 $tpl_data['data']['C' . $center][$subcat] += $row['val'];
+                $tpl_data['data']['C' . $center]['total'] += $row['val'];
+                $tpl_data['data'][$subcat] += $row['val'];
                 $tpl_data['data']['total'] += $row['val'];
             }
 
