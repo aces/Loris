@@ -17,3 +17,23 @@
     display:inline-block;
     overflow:hidden
 }
+
+td {
+    white-space: nowrap;
+}
+
+table.fancytable th {
+    background-color: #1c70b6;
+    color: white;
+    padding: 0.3em;
+    border-right:2px groove silver;
+    border-bottom:1px groove #999999;
+    text-align: center;
+}
+
+table.fancytable th:hover, table.listColorCoded th:hover {
+    /*background: #efefef; */
+    background: #1c70b6;
+    color: white;
+    text-align: center;
+}

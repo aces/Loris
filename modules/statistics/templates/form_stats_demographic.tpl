@@ -114,23 +114,6 @@
             {/foreach}
             <td class="total">N/A</td>
         </tr>
-        {*{if $mri_table_exists}
-            <tr>
-                <td align="left">Registered candidates with T1 acquired</td>
-                <td>N/A</td>
-                {foreach from=$Subprojects item=proj key=keyid}
-                    {if {$scanned[$keyid].complete}>0}
-                        <td>{$scanned[$keyid].complete}<font size="1"><b>/{$registered[$keyid].total}</b></font></td>
-                    {else}
-                        <td>0<font size="1"><b>/{$registered[$keyid].total}</b></font></td>
-                    {/if}
-                {/foreach}
-                <td class="total">{$scanned.complete}</td>
-            </tr>
-        {/if}*}
-
-
-
         </tbody>
     </table>
 
