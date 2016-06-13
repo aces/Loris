@@ -111,6 +111,7 @@ StaticDataTable = React.createClass({
 
         for (var i = 0; i < this.props.Data.length; i += 1) {
             var val = this.props.Data[i][this.state.SortColumn];
+            
             if (parseInt(val, 10) == val) {
                 val = parseInt(val, 10);
             } else if (parseFloat(val, 10) == val) {
@@ -118,6 +119,9 @@ StaticDataTable = React.createClass({
             } else if (val == '.') {
                 val = null;
             }
+
+            // convert to lowercase to make sort algorithm work
+            if (val != undefined) val = val.toLowerCase();
 
             if (this.props.RowNameMap) {
                 index.push({ RowIdx: i, Value: val, Content: this.props.RowNameMap[i]});
