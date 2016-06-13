@@ -90,10 +90,10 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
              'PVS'                  => '1',
             )
         );
-//        $this->DB->insert(
-//            'radiology_review',
-//            array('CommentID' => 'testcid')
-//        );
+        $this->DB->insert(
+            'radiology_review',
+            array('CommentID' => 'testcid')
+        );
 
     }
     /**
@@ -103,10 +103,10 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
     */
     public function tearDown()
     {
- //       $this->DB->delete(
- //           "radiology_review",
-//            array('CommentID' => 'testcid')
-//        );
+       $this->DB->delete(
+           "radiology_review",
+            array('CommentID' => 'testcid')
+        );
 
         $this->DB->delete(
             "final_radiological_review",
@@ -264,36 +264,6 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("pscid")
         )->getText();
         $this->assertEquals("", $bodyText);
-
-    }
-    /**
-     * Tests that PSCID column should be hyperlinks.
-     *
-     * @return void
-     */
-    function testFinalRadiologicalReviewPscidLink()
-    {
-        $this->safeGet($this->url . "/final_radiological_review/");      
-        $this->webDriver->findElement(
-            WebDriverBy::Name("pscid")
-        )->sendKeys("111222");
-        $this->webDriver->findElement(
-            WebDriverBy::Name("filter")
-        )->click();
-
-        $this->webDriver->findElement(
-            WebDriverBy::cssSelector(
-                "
-                    #datatable > div > div > div > table > tbody >".
-                " tr:nth-child(1) > td:nth-child(2) > a"
-            )
-        )->click();
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::ID("final_review")
-        )->getText();
-        $this->assertContains("111222", $bodyText);
-
-        // $this->assertEquals("", $bodyText);
 
     }
 
