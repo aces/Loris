@@ -90,10 +90,10 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
              'PVS'                  => '1',
             )
         );
-        $this->DB->insert(
-            'radiology_review',
-            array('CommentID' => 'testcid')
-        );
+//        $this->DB->insert(
+//            'radiology_review',
+//            array('CommentID' => 'testcid')
+//        );
 
     }
     /**
@@ -103,10 +103,10 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
     */
     public function tearDown()
     {
-        $this->DB->delete(
-            "radiology_review",
-            array('CommentID' => 'testcid')
-        );
+ //       $this->DB->delete(
+ //           "radiology_review",
+//            array('CommentID' => 'testcid')
+//        );
 
         $this->DB->delete(
             "final_radiological_review",
