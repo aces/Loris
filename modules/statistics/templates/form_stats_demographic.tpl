@@ -98,6 +98,22 @@
             {/foreach}
             <td class="total">{$gender_female.total}<font size="1"><b>/{$ps_active.total}</b></font></td>
         </tr>
+        <tr>
+            <td colspan="2" align="left" style="vertical-align:middle">Age Range</td>
+            {if {$age_avg[$NULL]}>0}
+                <td>{$age_avg[$NULL]}</td>
+            {else}
+                <td>0</td>
+            {/if}
+            {foreach from=$Subprojects item=proj key=keyid}
+                {if {$age_avg[$keyid]}>0}
+                    <td>{$age_avg[$keyid]}</td>
+                {else}
+                    <td>0</td>
+                {/if}
+            {/foreach}
+            <td class="total">N/A</td>
+        </tr>
         {*{if $mri_table_exists}
             <tr>
                 <td align="left">Registered candidates with T1 acquired</td>

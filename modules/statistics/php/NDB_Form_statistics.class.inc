@@ -261,6 +261,26 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['gender_female']['total'] += $row['val'];
         }
 
+        $result = $DB->pselect(
+            "SELECT DISTINCT
+                          s.subprojectid as rowid,
+                          AVG(DATEDIFF(c.Date_registered,c.DoB)) as age
+                      FROM candidate as c
+                          JOIN session s ON (s.CandID=c.CandID)
+                      WHERE coalesce(s.active, 'Y')='Y'
+                          AND c.CenterID <> '1'
+                          AND c.PSCID <> 'scanner'
+                          AND c.Active='Y'
+                          $ExtraSite_Criteria
+                          $ExtraProject_Criteria
+                      GROUP BY s.subprojectid",
+            array()
+        );
+
+        foreach($result as $row) {
+            $this->tpl_data['age_avg'][$row['rowid']] = $row['age'];
+        }
+
         //START BIG TABLE
         $instruments = array_merge(
             array( '' => 'Recruit Gender Breakdown'),
