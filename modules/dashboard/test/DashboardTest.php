@@ -40,10 +40,42 @@ class DashboardTest extends LorisIntegrationTest
         $window = new WebDriverWindow($this->webDriver);
         $size   = new WebDriverDimension(1280, 1024);
         $window->setSize($size);
-    }
+        
+        $this->DB->insert(
+            "conflicts_unresolved",
+            array(
+             'TableName'        => 'tsi',
+             'FieldName'        => 'ForTestOnly',
+             'CommentId1'       => '963443000111271151398976826',
+             'Value1'           => 'yes',
+             'CommentId2'       => 'DDE_963443000111271151398976826',
+             'Value2'           => 'No'
+            )
+        );    
 
+        $this->DB->insert(
+            "flag",
+            array(
+             'CommentID'        => '963443000111271151398976826',
+             'SessionID'        => '222222'
+            )
+        );
+        $this->DB->insert(
+            "session",
+            array(
+             'ID'               => '222222',
+             'CandID'           => '333333',
+            )
+        );       
+        $this->DB->insert(
+            "candidate",
+            array(
+             'CandID'           => '333333'
+            )
+        );
 
-
+     }
+ 
     /**
      * Tests that, when loading the Dashboard, the word "Welcome" appears
      * in the welcome panel
