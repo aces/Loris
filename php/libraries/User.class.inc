@@ -416,7 +416,6 @@ class User extends UserPermissions
             $password,
             PASSWORD_DEFAULT
         );
-        
 
         $this->update($updateArray);
 
