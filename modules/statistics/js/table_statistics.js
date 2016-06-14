@@ -1,13 +1,32 @@
 /*global document, $*/
+$('#showVL').click(function(event) {
+    if(this.checked) {
+        $('tr[id=visitrow]').each(function() {
+            this.style.display = ''
+        });
+    }else{
+        $('tr[id=visitrow]').each(function() {
+            this.style.display = 'none'
+        });
+    }
+});
+
+$(document).ready(function(){
+    $("#bigtable").DynamicTable({ "freezeColumn" : "tpcol" });
+});
+
+
 function updateDemographicInstrument() {
     var DemographicSite = document.getElementById("DemographicSite");
     var DemographicInstrument = document.getElementById("DemographicInstrument");
+
     var request = $.ajax({
         url: loris.BaseURL + '/statistics/stats_demographic/?dynamictabs=dynamictabs&DemographicSite=' + DemographicSite.value + '&DemographicInstrument=' + DemographicInstrument.value,
         type: 'GET',
         data: 'html',
         success: function(page){
             $('#demographics').html(page);
+            $(".dynamictable").DynamicTable();
         }
     });
 }
@@ -22,6 +41,7 @@ function updateBehaviouralInstrument() {
         data: 'html',
         success: function(page) {
             $('#data_entry').html(page);
+            $(".dynamictable").DynamicTable();
         }
     });
 }
@@ -30,11 +50,13 @@ function updateMRITable() {
     var MRIProject = document.getElementById("MRIProject");
     var request = $.ajax({
         url: loris.BaseURL + '/statistics/stats_MRI/?dynamictabs=dynamictabs&mri_type=' + selectedMRI_TYPE.value +
-             '&MRIProject=' + MRIProject.value,
+        '&MRIProject=' + MRIProject.value,
         type: 'GET',
         data: 'html',
         success: function(page) {
             $('#mri').html(page);
+            $(".dynamictable").DynamicTable();
+
         }
     });
 }

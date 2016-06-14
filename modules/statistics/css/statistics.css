@@ -1,0 +1,39 @@
+.no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+.se-pre-con {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url(images/loader-64x/Preloader_2.gif) center no-repeat #fff;
+}
+
+.timesheet-daily-checkbox {
+    margin-left: 10px !important;
+    margin-right: 5px !important;
+    padding: 2px;
+    display:inline-block;
+    overflow:hidden
+}
+
+td {
+    white-space: nowrap;
+}
+
+table.fancytable th {
+    background-color: #1c70b6;
+    color: white;
+    padding: 0.3em;
+    border-right:2px groove silver;
+    border-bottom:1px groove #999999;
+    text-align: center;
+}
+
+table.fancytable th:hover, table.listColorCoded th:hover {
+    /*background: #efefef; */
+    background: #1c70b6;
+    color: white;
+    text-align: center;
+}
