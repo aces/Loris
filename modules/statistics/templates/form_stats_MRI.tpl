@@ -20,10 +20,10 @@
     <button onClick="updateMRITab()" class="btn btn-primary btn-small">Submit Query</button>
     <br><br>
     <div class="table-responsive">
-        <table class="table table-primary table-bordered">
+        <table id="scandata" class="table table-primary table-bordered dynamictable">
             <thead>
             <tr class="info">
-                <th>Scan Type</th>
+                <th id="scantype">Scan Type</th>
                 <th colspan="2">????????</th>
                 {foreach from=$Subprojects item=name key=proj}
                     <th>{$name}</th>
@@ -34,7 +34,7 @@
             <tbody>
             {foreach item=scan key=scanid from=$Scans_selected}
                 <tr>
-                    <td rowspan="4" style="vertical-align:middle">{$scan}</td>
+                    <td rowspan="4" style="vertical-align:middle" >{$scan}</td>
                     <td colspan="2">Scans Inserted</td>
                     {foreach from=$Subprojects item=name key=proj}
                         {if $scan_data_results[$scanid].insert_count[$proj] > 0}

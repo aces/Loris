@@ -12,10 +12,10 @@
     <script type="text/javascript" src="{$baseurl}/statistics/js/form_stats_demographic.js"></script>
     <button  onClick="updateDemographicTab()" class="btn btn-primary btn-small">Submit Query</button>
     <br><br>
-    <table class="data generalStats table table-primary table-bordered">
+    <table id="generalDemographics" class="data generalStats table table-primary table-bordered dynamictable">
         <thead>
         <tr>
-            <th colspan="2">Demographics</th>
+            <th colspan="2" id="demog">Demographics</th>
             <th>Undefined</th>
             {foreach from=$Subprojects item=name key=proj}
                 <th>{$name}</th>

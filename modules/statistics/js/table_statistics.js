@@ -1,15 +1,21 @@
 /*global document, $*/
-    $('#showVL').click(function(event) {
-        if(this.checked) {
-            $('tr[id=visitrow]').each(function() {
-                this.style.display = ''
-            });
-        }else{
-            $('tr[id=visitrow]').each(function() {
-                this.style.display = 'none'
-            });
-        }
-    });
+$('#showVL').click(function(event) {
+    if(this.checked) {
+        $('tr[id=visitrow]').each(function() {
+            this.style.display = ''
+        });
+    }else{
+        $('tr[id=visitrow]').each(function() {
+            this.style.display = 'none'
+        });
+    }
+});
+
+//freezecolumn not sufficient for complex tables
+//$(document).ready(function(){
+//    $("#scandata").DynamicTable({ "freezeColumn" : "scantype" });
+//});
+
 
 function updateDemographicInstrument() {
     var DemographicSite = document.getElementById("DemographicSite");
@@ -45,7 +51,7 @@ function updateMRITable() {
     var MRIProject = document.getElementById("MRIProject");
     var request = $.ajax({
         url: loris.BaseURL + '/statistics/stats_MRI/?dynamictabs=dynamictabs&mri_type=' + selectedMRI_TYPE.value +
-             '&MRIProject=' + MRIProject.value,
+        '&MRIProject=' + MRIProject.value,
         type: 'GET',
         data: 'html',
         success: function(page) {

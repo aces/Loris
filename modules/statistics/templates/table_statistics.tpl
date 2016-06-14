@@ -13,7 +13,6 @@
      - Data (the data that populates the table)
  *}
 <script type="text/javascript" src="{$baseurl}/statistics/js/table_statistics.js"></script>
-
 <h2 class="statsH2">{$Header}</h2>
 
 <div class="row">
@@ -43,9 +42,9 @@
 </div>
 
 <br>
-<table class="data table table-primary table-bordered  dynamictable">
+<table id="bigtable" class="data table table-primary table-bordered">
     <tr>
-        <th rowspan="2" id="tpcol">Timepoint</th>
+        <th rowspan="1" id="tpcol">Timepoint</th>
         {foreach key=proj item=name from=$Subprojects}
             {assign var='colspan' value=count($Subcategories)}
             <th colspan="{$colspan}">{$name|capitalize}</th>
@@ -53,6 +52,7 @@
         <th colspan="{$colspan}">Total</th>
     </tr>
     <tr>
+        <th>Categories</th>
         {foreach key=proj item=name from=$Subprojects}
             {* Go through each category once, and add the total
                for each cohort *}

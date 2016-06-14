@@ -13,6 +13,9 @@ function updateCheckboxes() {
     });
 
 }
+$(document).ready(function(){
+    $("#bigtable").DynamicTable({ "freezeColumn" : "tpcol" });
+});
 
 function updateMRITab() {
     var MRIProject = document.getElementById("MRIProject");
