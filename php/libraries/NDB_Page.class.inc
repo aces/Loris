@@ -81,18 +81,20 @@ class NDB_Page
     /**
      * Wrapper to create a file element and add it to the current page
      *
-     * @param string $name  The name of this file element
-     * @param string $label The label to attach to this element
+     * @param string $name    The name of this file element
+     * @param string $label   The label to attach to this element
+     * @param array  $options Options to pass to the form for this
+     *                        file chooser.
      *
      * @return none
      */
-    function addFile($name, $label)
+    function addFile($name, $label, $options=array())
     {
         $this->form->addElement(
             'file',
             $name,
             $label,
-            array('class' => 'fileUpload')
+            array_merge(array('class' => 'fileUpload'), $options)
         );
     }
 
