@@ -4,7 +4,7 @@
     <script id="overlay-ui-template" type="x-volume-ui-template">
         <div class="row">
             <div class="overlay-viewer-display" id="panel-size"></div>
-            <div class="form-group col-sm-3">
+            <div class="form-group col-sm-3 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
 
@@ -61,7 +61,7 @@
     <script id="volume-ui-template4d" type="x-volume-ui-template">
         <div class="row">
         <div class="volume-viewer-display"></div>
-            <div class="form-group col-sm-3">
+            <div class="form-group col-sm-3 col-xs-12">
                 <div class="panel panel-default" id="subpanel-filename-{{VOLID}}">
                     <div class="panel-heading" id="mri-panel-filename-{{VOLID}}">
 
