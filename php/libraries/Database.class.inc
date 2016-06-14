@@ -1070,8 +1070,8 @@ class Database
         $result = $DB->pselectOne(
             $query,
             array(
-                'tn' => $test_name,
-                'db' => $database['database'],
+             'tn' => $test_name,
+             'db' => $database['database'],
             )
         );
 
