@@ -52,12 +52,12 @@ class NDB_Form_statistics extends NDB_Form
                 $tpl_data['data'][$subproj]['total']      += $row['val'];
                 $tpl_data['data'][$vl][$subcat]           += $row['val'];
                 $tpl_data['data'][$vl]['total']           += $row['val'];
-                $tpl_data['data'][$subproj]['C' . $center][$vl][$subcat] = $row['val'];
+                $tpl_data['data'][$subproj]['C' . $center][$vl][$subcat]  = $row['val'];
                 $tpl_data['data'][$subproj]['C' . $center][$vl]['total'] += $row['val'];
-                $tpl_data['data'][$subproj]['C' . $center][$subcat] += $row['val'];
-                $tpl_data['data'][$subproj]['C' . $center]['total'] += $row['val'];
-                $tpl_data['data']['C' . $center][$vl][$subcat]      += $row['val'];
-                $tpl_data['data']['C' . $center][$vl]['total']      += $row['val'];
+                $tpl_data['data'][$subproj]['C' . $center][$subcat]      += $row['val'];
+                $tpl_data['data'][$subproj]['C' . $center]['total']      += $row['val'];
+                $tpl_data['data']['C' . $center][$vl][$subcat]           += $row['val'];
+                $tpl_data['data']['C' . $center][$vl]['total']           += $row['val'];
                 $tpl_data['data']['C' . $center][$subcat] += $row['val'];
                 $tpl_data['data']['C' . $center]['total'] += $row['val'];
                 $tpl_data['data'][$subcat] += $row['val'];
@@ -112,9 +112,9 @@ class NDB_Form_statistics extends NDB_Form
                 $_REQUEST['DemographicProject'] . ')';
             $currentProject        = $_REQUEST['DemographicProject'];
             $this->tpl_data['CurrentProject'] = array(
-                'ID'   => $currentProject,
-                'Name' => $projects[$currentProject],
-            );
+                                                 'ID'   => $currentProject,
+                                                 'Name' => $projects[$currentProject],
+                                                );
         } else {
             $ExtraProject_Criteria = '';
         }
@@ -134,7 +134,7 @@ class NDB_Form_statistics extends NDB_Form
         } else {
             $ExtraSite_Criteria = '';
         }
-        $centers = $DB->pselect(
+        $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     PSCArea as LongName,
@@ -144,24 +144,23 @@ class NDB_Form_statistics extends NDB_Form
                 AND Study_site = 'Y'",
             array()
         );
-        $sites[null]="All sites";
+        $sites[null] ="All sites";
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
             if($_REQUEST['DemographicSite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                    'ID'   => $row['NumericID'],
-                    'Name' => $row['LongName'],
-                );
+                                                  'ID'   => $row['NumericID'],
+                                                  'Name' => $row['LongName'],
+                                                 );
             }
         }
 
         $Visits = Utility::getExistingVisitLabels($currentProject);
 
-        $this->tpl_data['Sites']   = $sites;
-        $this->tpl_data['Projects'] = $projects;
+        $this->tpl_data['Sites']       = $sites;
+        $this->tpl_data['Projects']    = $projects;
         $this->tpl_data['Subprojects'] = $subprojects;
-        $this->tpl_data['Visits'] = $Visits;
-
+        $this->tpl_data['Visits']      = $Visits;
 
         //REGISTERED CANDIDATES ROW
         $result = $DB->pselect(
@@ -179,7 +178,7 @@ class NDB_Form_statistics extends NDB_Form
 
         foreach($result as $row) {
             $this->tpl_data['registered'][$row['rowid']] = $row['val'];
-            $this->tpl_data['registered']['total'] += $row['val'];
+            $this->tpl_data['registered']['total']      += $row['val'];
         }
 
         //PARTICIPANT STATUS ACTIVE
@@ -199,7 +198,7 @@ class NDB_Form_statistics extends NDB_Form
 
         foreach($result as $row) {
             $this->tpl_data['ps_active'][$row['rowid']] = $row['val'];
-            $this->tpl_data['ps_active']['total'] += $row['val'];
+            $this->tpl_data['ps_active']['total']      += $row['val'];
         }
 
         //PARTICIPANT STATUS INACTIVE
@@ -219,7 +218,7 @@ class NDB_Form_statistics extends NDB_Form
 
         foreach($result as $row) {
             $this->tpl_data['ps_inactive'][$row['rowid']] = $row['val'];
-            $this->tpl_data['ps_inactive']['total'] += $row['val'];
+            $this->tpl_data['ps_inactive']['total']      += $row['val'];
         }
 
         //MALE
@@ -241,7 +240,7 @@ class NDB_Form_statistics extends NDB_Form
 
         foreach($result as $row) {
             $this->tpl_data['gender_male'][$row['rowid']] = $row['val'];
-            $this->tpl_data['gender_male']['total'] += $row['val'];
+            $this->tpl_data['gender_male']['total']      += $row['val'];
         }
         //FEMALE
         $result = $DB->pselect(
@@ -262,7 +261,7 @@ class NDB_Form_statistics extends NDB_Form
 
         foreach($result as $row) {
             $this->tpl_data['gender_female'][$row['rowid']] = $row['val'];
-            $this->tpl_data['gender_female']['total'] += $row['val'];
+            $this->tpl_data['gender_female']['total']      += $row['val'];
         }
 
         $result = $DB->pselect(
@@ -294,9 +293,9 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
         if(isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
             $Subcategories = array(
-                'Complete',
-                'Incomplete',
-            );
+                              'Complete',
+                              'Incomplete',
+                             );
             $result        = $DB->pselect(
                 "SELECT count(*) as val,
                     f.Data_entry as Subcat,
@@ -343,9 +342,9 @@ class NDB_Form_statistics extends NDB_Form
             );
         } else {
             $Subcategories = array(
-                'Male',
-                'Female',
-            );
+                              'Male',
+                              'Female',
+                             );
             $result        = $DB->pselect(
                 "SELECT c.CenterID as CenterID,
                     s.SubprojectID as SubprojectID,
@@ -405,9 +404,9 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if($_REQUEST['site'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                    'ID'   => $row['NumericID'],
-                    'Name' => $row['LongName'],
-                );
+                                                  'ID'   => $row['NumericID'],
+                                                  'Name' => $row['LongName'],
+                                                 );
             }
 
         }
@@ -419,9 +418,9 @@ class NDB_Form_statistics extends NDB_Form
                 . $_REQUEST['BehaviouralProject'] . ')';
             $currentProject        = $_REQUEST['BehaviouralProject'];
             $this->tpl_data['CurrentProject'] = array(
-                'ID'   => $currentProject,
-                'Name' => $projects[$currentProject],
-            );
+                                                 'ID'   => $currentProject,
+                                                 'Name' => $projects[$currentProject],
+                                                );
         } else {
             $ExtraProject_Criteria = '';
         }
@@ -545,9 +544,9 @@ class NDB_Form_statistics extends NDB_Form
                 $_REQUEST['MRIProject'] . ')';
             $currentProject        = $_REQUEST['MRIProject'];
             $this->tpl_data['CurrentProject'] = array(
-                'ID'   => $currentProject,
-                'Name' => $projects[$currentProject],
-            );
+                                                 'ID'   => $currentProject,
+                                                 'Name' => $projects[$currentProject],
+                                                );
         } else {
             $ExtraProject_Criteria = '';
         }
@@ -567,7 +566,7 @@ class NDB_Form_statistics extends NDB_Form
         } else {
             $ExtraSite_Criteria = '';
         }
-        $centers = $DB->pselect(
+        $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
                     PSCArea as LongName,
@@ -577,14 +576,14 @@ class NDB_Form_statistics extends NDB_Form
                 AND Study_site = 'Y'",
             array()
         );
-        $sites[null]="All sites";
+        $sites[null] ="All sites";
         foreach ($centers as $row) {
             $sites[$row['NumericID']] = $row['ShortName'];
             if($_REQUEST['MRIsite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                    'ID'   => $row['NumericID'],
-                    'Name' => $row['LongName'],
-                );
+                                                  'ID'   => $row['NumericID'],
+                                                  'Name' => $row['LongName'],
+                                                 );
             }
         }
 
@@ -600,37 +599,35 @@ class NDB_Form_statistics extends NDB_Form
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
         //TODO: IBIS
-        $scan_types       = array(
-            'T1'           => 'T1',
-            'T2'           => 'T2',
-            'DTI'          => 'DTI',
-            'BOLD'         => 'BOLD',
-            'Spectroscopy' => 'Spectroscopy',
-        );
-        $scans_selected=array();
-        if(isset($_REQUEST['Scans']) && $_REQUEST['Scans'] != '')
-        {
-            $scans_selected = explode(",",$_REQUEST['Scans']);
+        $scan_types     = array(
+                           'T1'           => 'T1',
+                           'T2'           => 'T2',
+                           'DTI'          => 'DTI',
+                           'BOLD'         => 'BOLD',
+                           'Spectroscopy' => 'Spectroscopy',
+                          );
+        $scans_selected =array();
+        if(isset($_REQUEST['Scans']) && $_REQUEST['Scans'] != '') {
+            $scans_selected = explode(",", $_REQUEST['Scans']);
         }
-        if (empty($scans_selected))
-        {
-            $scans_selected=$scan_types;
+        if (empty($scans_selected)) {
+            $scans_selected =$scan_types;
         }
 
         $Visits = Utility::getExistingVisitLabels($currentProject);
-        $this->tpl_data['scan_types'] = $scan_types;
+        $this->tpl_data['scan_types']     = $scan_types;
         $this->tpl_data['Scans_selected'] = $scans_selected;
-        $this->tpl_data['Sites']   = $sites;
-        $this->tpl_data['Projects'] = $projects;
-        $this->tpl_data['Subprojects'] = $subprojects;
-        $this->tpl_data['Visits'] = $Visits;
+        $this->tpl_data['Sites']          = $sites;
+        $this->tpl_data['Projects']       = $projects;
+        $this->tpl_data['Subprojects']    = $subprojects;
+        $this->tpl_data['Visits']         = $Visits;
 
         //START BIG TABLE
         $MRISubcategories = array(
-            'Complete',
-            'Partial Run',
-            'No Scan',
-        );
+                             'Complete',
+                             'Partial Run',
+                             'No Scan',
+                            );
 
         //Check if a specific scan is requested otherwise display first
         //available scan
@@ -641,14 +638,14 @@ class NDB_Form_statistics extends NDB_Form
         $MRI_Type       = $_REQUEST['mri_type'];
         $MRI_Type_Field = $_REQUEST['mri_type'] . "_Scan_Done";
         $MRIHeader      = "$MRI_Type Breakdown";
-        $CaseStatement = "
+        $CaseStatement  = "
                           CASE($MRI_Type_Field)
                           WHEN 'Partial' THEN 'Partial Run'
                           WHEN 'No' THEN 'No Scan'
                           ELSE $MRI_Type_Field
                           END";
 
-        $result   = $DB->pselect(
+        $result = $DB->pselect(
             "SELECT s.SubprojectID,
                     c.CenterID,
                     s.Visit_label as VLabel,
@@ -687,9 +684,8 @@ class NDB_Form_statistics extends NDB_Form
         );
         //END BIGTABLE
 
-
         //considers the naming convention of mri_parameter_form is "scanType_scan_done"
-        $Scan_data_results=array();
+        $Scan_data_results =array();
         foreach ($scans_selected as $key => $scan) {
             //INSERT COUNT TOTAL
             $Scan_data_results[$key]['insert_count']['total'] = $DB->pselectOne(
@@ -855,27 +851,27 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if($_REQUEST['ReliabilitySite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                    'ID'   => $row['NumericID'],
-                    'Name' => $row['LongName'],
-                );
+                                                  'ID'   => $row['NumericID'],
+                                                  'Name' => $row['LongName'],
+                                                 );
             }
         }
         if(isset($_REQUEST['ReliabilityProject']) && $_REQUEST['ReliabilityProject'] != '') {
             $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $_REQUEST['ReliabilityProject'] . ')';
             $currentProject        = $_REQUEST['ReliabilityProject'];
             $this->tpl_data['CurrentProject'] = array(
-                'ID'   => $currentProject,
-                'Name' => $projects[$currentProject],
-            );
+                                                 'ID'   => $currentProject,
+                                                 'Name' => $projects[$currentProject],
+                                                );
         } else {
             $ExtraProject_Criteria = '';
         }
 
         if($_REQUEST['ReliabilityProject'] == $row['NumericID']) {
             $this->tpl_data['CurrentProject'] = array(
-                'ID'   => $row['NumericID'],
-                'Name' => $row['LongName'],
-            );
+                                                 'ID'   => $row['NumericID'],
+                                                 'Name' => $row['LongName'],
+                                                );
         }
         $this->tpl_data['reliability_completion'] = $this->getReliabilityData();
     }
@@ -891,7 +887,7 @@ class NDB_Form_statistics extends NDB_Form
         include_once __DIR__ . "/../../reliability/php/NDB_Menu_Filter_reliability.class.inc";
         $thresholds = NDB_Menu_Filter_Reliability::getThreshholds();
 
-        $config      = NDB_Config::singleton();
+        $config            = NDB_Config::singleton();
         $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
         $tests = array();
 
@@ -903,14 +899,14 @@ class NDB_Form_statistics extends NDB_Form
         }
 
         $within_cross = array(
-            'adi_r_subject',
-            'ados_module1',
-            'ados_module2',
-            'aosi',
-            'csbs',
-        );
+                         'adi_r_subject',
+                         'ados_module1',
+                         'ados_module2',
+                         'aosi',
+                         'csbs',
+                        );
 
-        $reliable        = array();
+        $reliable = array();
         //$within_reliable = array();
         //$across_reliable = array();
         foreach($tests as $inst => $name) {
@@ -1008,12 +1004,12 @@ class NDB_Form_statistics extends NDB_Form
         return array_merge(
             $deps,
             array(
-                $baseURL . "/statistics/js/table_statistics.js",
-                $baseURL . "/statistics/js/statistics.js",
-                $baseURL . "/statistics/js/form_stats_behavioural.js",
-                $baseURL . "/statistics/js/form_stats_reliability.js",
-                $baseURL . "/statistics/js/form_stats_MRI.js",
-                $baseURL . "/statistics/js/form_stats_demographic.js",
+             $baseURL . "/statistics/js/table_statistics.js",
+             $baseURL . "/statistics/js/statistics.js",
+             $baseURL . "/statistics/js/form_stats_behavioural.js",
+             $baseURL . "/statistics/js/form_stats_reliability.js",
+             $baseURL . "/statistics/js/form_stats_MRI.js",
+             $baseURL . "/statistics/js/form_stats_demographic.js",
             )
         );
     }
