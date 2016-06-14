@@ -13,9 +13,12 @@ function updateCheckboxes() {
     });
 
 }
-$(document).ready(function(){
-    $("#bigtable").DynamicTable({ "freezeColumn" : "tpcol" });
-});
+
+//freezecolumn not sufficient for complex tables
+//$(document).ready(function(){
+//    $("#scandata").DynamicTable({ "freezeColumn" : "scantype" });
+//});
+
 
 function updateMRITab() {
     var MRIProject = document.getElementById("MRIProject");

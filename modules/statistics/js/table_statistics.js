@@ -11,10 +11,9 @@ $('#showVL').click(function(event) {
     }
 });
 
-//freezecolumn not sufficient for complex tables
-//$(document).ready(function(){
-//    $("#scandata").DynamicTable({ "freezeColumn" : "scantype" });
-//});
+$(document).ready(function(){
+    $("#bigtable").DynamicTable({ "freezeColumn" : "tpcol" });
+});
 
 
 function updateDemographicInstrument() {
