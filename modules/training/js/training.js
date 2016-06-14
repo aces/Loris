@@ -23,7 +23,7 @@ function loadTabContent(tabNumber, type) {
     "use strict";
 
     var tabID = '#' + tabNumber;
-    $.post("AjaxHelper.php?Module=training&script=getTabContent.php", {instrument: instrumentID, tabNumber: tabNumber, type: type}, function (data) {
+    $.post(loris.BaseURL + "/AjaxHelper.php?Module=training&script=getTabContent.php", {instrument: instrumentID, tabNumber: tabNumber, type: type}, function (data) {
         var tabPane = $(tabID).children().attr('data-target');
         $(tabPane).html(data);
     });
@@ -42,7 +42,7 @@ function activateTab(tabNumber) {
 function loadTabs(type) {
     "use strict";
 
-    $.post("AjaxHelper.php?Module=training&script=getTabs.php", {instrument: instrumentID, instrumentName: instrumentName, type: type}, function (data) {
+    $.post(loris.BaseURL + "/AjaxHelper.php?Module=training&script=getTabs.php", {instrument: instrumentID, instrumentName: instrumentName, type: type}, function (data) {
         $('#tabs').html(data);
         if (type == 'training') {
             loadTabContent(1, type);
@@ -103,7 +103,7 @@ $(document).ready(function () {
             var form          = $(this).serialize(),
             requestString = form + '&instrument=' + instrumentID;
 
-            $.post("AjaxHelper.php?Module=training&script=markQuiz.php", requestString, function (data) {
+            $.post(loris.BaseURL + "/AjaxHelper.php?Module=training&script=markQuiz.php", requestString, function (data) {
                 if (data === 'correct') {
                     $('#correct').modal({
                         keyboard: false,
