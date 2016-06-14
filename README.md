@@ -1,6 +1,6 @@
 #LORIS Neuroimaging Platform
 
-LORIS is a web-accessible database solution for neuroimaging, providing a secure infrastructure to automate the flow of clinical data for complex multi-site neuroimaging studies.
+LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
 This Readme covers installation of the <b>16.1</b> LORIS development branch on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/16.1-dev/README.CentOS6.md)).
@@ -21,9 +21,12 @@ Note: Your default credentials after deployment will be 'admin' as the username 
  * PHP <b>5.6</b> (php5 php5-mysql php5-gd php5-sqlite)
  * php5-json (for Debian/Ubuntu distributions)
  * Package manager (for LINUX distributions)
- * Composer should be run with --no-dev option
+ * Composer : should be run with --no-dev option
 
-<b>Important:</b> Only PHP 5.6 is supported for LORIS 16.1. Composer should be run with --no-dev option unless you are an active LORIS developer.
+<b>Important:</b>
+ * Only PHP <b>5.6</b> is supported for LORIS 16.0. We recommend installing/upgrading PHP using this (deprecated) PPA repository: <i>ppa:ondrej/php5-5.6 </i>
+ * Composer should be run with --no-dev option unless you are an active LORIS developer. 
+
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information.
 
 # Installation
@@ -43,7 +46,7 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
     sudo chown lorisadmin.lorisadmin /var/www/$projectname
     ```
 
-    <i>$projectname ⇾ “loris” or one-word project name</i>
+    <i>$projectname ⇾ "loris" or one-word project name</i>
 
 2. Get code:
     Download the latest release from the [releases page](https://github.com/aces/Loris/releases) and
@@ -67,7 +70,7 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
     ```
 
 5. Go to http://localhost to verify that the LORIS core database has been successfully installed. Congratulations!
-Log in with the username “admin” and the password you supplied for this user while running the Install script.
+Log in with the username "admin" and the password you supplied for this user while running the Install script.
 
     _Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. If running an earlier version of Ubuntu, rename these files, then run the following commands. After, restart Apache.
 

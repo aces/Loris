@@ -163,4 +163,8 @@
             <permission>sampleInstrument2PermissionName</permission>
         </instrument>
     </instrumentPermissions>
+
+    <!-- MINC TOOLS PATH -->
+    <MINCToolsPath>%MINCTOOLSPATH%</MINCToolsPath>
+
 </config>
