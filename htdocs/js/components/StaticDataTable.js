@@ -138,8 +138,11 @@ StaticDataTable = React.createClass({
                 val = null;
             }
 
-            // convert to lowercase to make sort algorithm work
-            if (val != undefined) val = val.toLowerCase();
+            // if string - convert to lowercase to make sort algorithm work
+            var isString = typeof val === 'string' || val instanceof String;
+            if (val != undefined && isString) {
+                val = val.toLowerCase();
+            }
 
             if (this.props.RowNameMap) {
                 index.push({ RowIdx: i, Value: val, Content: this.props.RowNameMap[i] });
@@ -306,4 +309,5 @@ StaticDataTable = React.createClass({
 });
 
 RStaticDataTable = React.createFactory(StaticDataTable);
+
 //# sourceMappingURL=StaticDataTable.js.map
