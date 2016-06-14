@@ -1,13 +1,13 @@
 /*global document, $, window, scrollContent*/
 function updateBehaviouralTab() {
-    'use strict';
-    var BehaviouralProject = document.getElementById("BehaviouralProject"),
-        request = $.ajax({
+    var BehaviouralProject = document.getElementById("BehaviouralProject");
+    var request = $.ajax({
             url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' + BehaviouralProject.value,
             type: 'GET',
             data: 'html',
             success: function (response) {
                 $('#data_entry').html(response);
+                $(".dynamictable").DynamicTable();
             }
         });
 }
@@ -42,8 +42,8 @@ function showStats(clicked) {
     'use strict';
     var id = clicked.id;
     $('.' + id).show();
-    $('#' + id).attr('colspan', '3');
-    $('#' + id + "PIS").attr('colspan', '3');
+    $('#' + id).attr('colspan', '2');
+    $('#' + id + "PIS").attr('colspan', '2');
     $('#' + id).attr('onClick', 'hideStats(this)');
     $('#' + id).addClass('stats-active');
     $('#' + id).attr('data-original-title', 'Click to minimize');
