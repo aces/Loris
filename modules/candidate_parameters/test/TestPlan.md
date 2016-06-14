@@ -3,7 +3,6 @@
 1. Check Permissions. Try removing each of these permissions/conditions one at a time. You should not be able to access the page
     * Edit Candidate Parameters
 	* data_entry ("Data Entry", in front-end)
-	* unsend_to_dcc ("Reverse Send to DCC", in front-end) - may not be necessary
 	* having the same site as the candidate you are accessing	
 2. Make sure that the candidate date of birth and gender, shown in the table at the top of the page, match what is stored in the candidate table for this given candidate.
 3. Click on the Return to Timepoint List button and ensure it goes to the correct timepoint list page.
