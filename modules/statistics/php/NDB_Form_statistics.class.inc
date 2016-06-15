@@ -112,15 +112,15 @@ class NDB_Form_statistics extends NDB_Form
         }
         $currentProject = null;
         if(isset($_REQUEST['DemographicProject']) && $_REQUEST['DemographicProject'] != '') {
-            $currentProject        = $_REQUEST['DemographicProject'];
+            $currentProject = $_REQUEST['DemographicProject'];
             $this->tpl_data['CurrentProject'] = array(
                                                  'ID'   => $currentProject,
                                                  'Name' => $projects[$currentProject],
                                                 );
-            $Param_Project='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid']=$_REQUEST['DemographicProject'];
+            $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $this->params['pid'] =$_REQUEST['DemographicProject'];
         } else {
-            $Param_Project='';
+            $Param_Project ='';
         }
 
         //SUBPROJECTS
@@ -133,8 +133,8 @@ class NDB_Form_statistics extends NDB_Form
 
         //SITES
         if(isset($_REQUEST['DemographicSite']) && $_REQUEST['DemographicSite'] != '') {
-            $Param_Site='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid']=$_REQUEST['DemographicSite'];
+            $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+            $this->params['sid'] =$_REQUEST['DemographicSite'];
         } else {
             $Param_Site = '';
         }
@@ -417,13 +417,13 @@ class NDB_Form_statistics extends NDB_Form
         if(isset($_REQUEST['BehaviouralProject'])
             && $_REQUEST['BehaviouralProject'] != ''
         ) {
-            $currentProject        = $_REQUEST['BehaviouralProject'];
+            $currentProject = $_REQUEST['BehaviouralProject'];
             $this->tpl_data['CurrentProject'] = array(
                                                  'ID'   => $currentProject,
                                                  'Name' => $projects[$currentProject],
                                                 );
-            $Param_Project='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid']=$_REQUEST['BehaviouralProject'];
+            $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $this->params['pid'] =$_REQUEST['BehaviouralProject'];
         } else {
             $Param_Project = '';
         }
@@ -439,7 +439,7 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Visits'] = $Visits;
 
         //---- BEHAVIORAL STATS -----
-        $result   = $DB->pselect(
+        $result = $DB->pselect(
             "SELECT s.CenterID,
                     f.Data_Entry as Data_Entry,
                     s.visit_label as VLabel,
@@ -523,7 +523,7 @@ class NDB_Form_statistics extends NDB_Form
     function stats_MRI()
     {
         $DB =& Database::singleton();
-        $bigTable_params=array();
+        $bigTable_params =array();
         //if table is not in database handle by displaying error message
         $this->tpl_data['mri_table_exists'] = true;
         if (!$DB->tableExists('mri_parameter_form')) {
@@ -540,14 +540,14 @@ class NDB_Form_statistics extends NDB_Form
         }
         $currentProject = null;
         if(isset($_REQUEST['MRIProject']) && $_REQUEST['MRIProject'] != '') {
-            $currentProject        = $_REQUEST['MRIProject'];
+            $currentProject = $_REQUEST['MRIProject'];
             $this->tpl_data['CurrentProject'] = array(
                                                  'ID'   => $currentProject,
                                                  'Name' => $projects[$currentProject],
                                                 );
-            $Param_Project='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid']=$_REQUEST['MRIProject'];
-            $bigTable_params['pid']=$_REQUEST['MRIProject'];
+            $Param_Project          ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $this->params['pid']    =$_REQUEST['MRIProject'];
+            $bigTable_params['pid'] =$_REQUEST['MRIProject'];
         } else {
             $Param_Project = '';
         }
@@ -562,8 +562,8 @@ class NDB_Form_statistics extends NDB_Form
 
         //SITES
         if(isset($_REQUEST['MRIsite']) && $_REQUEST['MRIsite'] != '') {
-            $Param_Site='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid']=$_REQUEST['MRIsite'];
+            $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+            $this->params['sid'] =$_REQUEST['MRIsite'];
         } else {
             $Param_Site = '';
         }
@@ -829,30 +829,30 @@ class NDB_Form_statistics extends NDB_Form
     //RELIABILITY
     function stats_reliability()
     {
-        $DB      =& Database::singleton();
+        $DB =& Database::singleton();
 
         //PROJECTS
-        $projects[null]            = 'All Projects';
+        $projects[null] = 'All Projects';
         foreach(Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
 
         if(isset($_REQUEST['ReliabilityProject']) && $_REQUEST['ReliabilityProject'] != '') {
-            $currentProject        = $_REQUEST['ReliabilityProject'];
+            $currentProject = $_REQUEST['ReliabilityProject'];
             $this->tpl_data['CurrentProject'] = array(
-                'ID'   => $currentProject,
-                'Name' => $projects[$currentProject],
-            );
-            $Param_Project='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
-            $this->params['pid']=$_REQUEST['ReliabilityProject'];
+                                                 'ID'   => $currentProject,
+                                                 'Name' => $projects[$currentProject],
+                                                );
+            $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
+            $this->params['pid'] =$_REQUEST['ReliabilityProject'];
         } else {
-            $Param_Project='';
+            $Param_Project ='';
         }
 
         //SITES
         if(isset($_REQUEST['ReliabilitySite']) && $_REQUEST['ReliabilitySite'] != '') {
-            $Param_Site='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
-            $this->params['sid']=$_REQUEST['ReliabilitySite'];
+            $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+            $this->params['sid'] =$_REQUEST['ReliabilitySite'];
         } else {
             $Param_Site = '';
         }
@@ -871,15 +871,15 @@ class NDB_Form_statistics extends NDB_Form
             $sites[$row['NumericID']] = $row['ShortName'];
             if($_REQUEST['ReliabilitySite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                    'ID'   => $row['NumericID'],
-                    'Name' => $row['LongName'],
-                );
+                                                  'ID'   => $row['NumericID'],
+                                                  'Name' => $row['LongName'],
+                                                 );
             }
         }
 
-        $this->tpl_data['Centers'] = $centers;
+        $this->tpl_data['Centers']  = $centers;
         $this->tpl_data['Projects'] = $projects;
-        $this->tpl_data['Sites']          = $sites;
+        $this->tpl_data['Sites']    = $sites;
 
         $this->tpl_data['reliability_completion'] = $this->getReliabilityData($Param_Project, $Param_Site);
     }
