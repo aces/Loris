@@ -271,7 +271,7 @@ class Database
     {
         $retVal = array();
         foreach ($set as $key => $val) {
-            $retVal[$key] = htmlspecialchars($val);
+            $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
         }
         return $retVal;
     }
