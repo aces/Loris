@@ -174,7 +174,7 @@ if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
 fi
 
 # Create some subdirectories, if needed.
-mkdir -p ../project ../project/data ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
+mkdir -p ../project ../project/data ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../project/modules ../smarty/templates_c
 
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c

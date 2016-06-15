@@ -739,6 +739,35 @@ class Utility
         return $instruments;
     }
 
+    /**
+     * Get a list of DDE instruments installed in Loris.
+     *
+     * @return Associative array of the form Test_name => Full Description
+     * @note   Arguably, this should be a static function in NDB_BVL_Instrument
+     */
+    static function getAllDDEInstruments()
+    {
+        $Factory       = NDB_Factory::singleton();
+        $DB            = $Factory->Database();
+        $config        =& NDB_Config::singleton();
+        $instruments_q = $DB->pselect(
+            "SELECT Test_name,Full_name FROM test_names",
+            array()
+        );
+        $doubleDataEntryInstruments = $config->getSetting(
+            'DoubleDataEntryInstruments'
+        );
+
+        $instruments = array();
+        foreach ($instruments_q as $row) {
+            if (isset($row['Test_name']) && isset($row['Full_name'])) {
+                if (in_array($row['Test_name'], $doubleDataEntryInstruments)) {
+                    $instruments[$row['Test_name']] = $row['Full_name'];
+                }
+            }
+        }
+        return $instruments;
+    }
 
     /**
      * Gets a list of all instruments where are administered as direct data
@@ -881,7 +910,7 @@ class Utility
         //$database = $config->getSetting('database');
         $query    = "SELECT count(*)
             FROM {$table_name}
-            WHERE {$column} is NULL;";
+            WHERE {$column} is NULL";
         $DB       =& Database::singleton();
         $num_null = $DB->pselectOne(
             $query,
