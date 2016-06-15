@@ -1066,8 +1066,7 @@ class Database
             WHERE TABLE_SCHEMA=:db
             AND table_name=:tn";
 
-        $DB     =& Database::singleton();
-        $result = $DB->pselectOne(
+        $result = $this->pselectOne(
             $query,
             array(
              'tn' => $test_name,
