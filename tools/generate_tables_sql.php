@@ -7,7 +7,9 @@
  * instrument it finds in the ip_output.txt file.  These sql files are output
  * to the tables_sql/ subdirectory.
  *
- * ex cmd:  php generate_tables_sql.php
+ * Usage: php generate_tables_sql.php [-D]
+ * Options:
+ *          [-D]: Adds DROP TABLE statement to output query
  *
  * @package behavioural
  */
@@ -30,6 +32,8 @@ require_once "../php/libraries/Database.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
 require_once "../php/libraries/NDB_BVL_Instrument.class.inc";
 
+// Get command line options
+$opts = getopt("D");
 
 $fp=fopen("ip_output.txt","r");
 $data=fread($fp, filesize("ip_output.txt"));
@@ -51,14 +55,17 @@ foreach($instruments AS $instrument){
         switch($bits[0]){
             //generate the CREATE TABLE syntax
             case "table":
-                $filename="../project/tables_sql/".$bits[1].".sql";
-                $output="DROP TABLE IF EXISTS `$bits[1]`;\n";
-                $output.="CREATE TABLE `$bits[1]` (\n";
-                $output.="`CommentID` varchar(255) NOT NULL default '',\n
-                          `UserID` varchar(255) default NULL,\n
-                          `Examiner` varchar(255) default NULL,\n
-                          `Testdate` timestamp NOT NULL,\n
-                          `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',\n";
+                $filename = "../project/tables_sql/".$bits[1].".sql";
+                $output = "";
+                if (isset($opts["D"])) {
+                    $output = "DROP TABLE IF EXISTS `$bits[1]`;\n";
+                }
+                $output .= "CREATE TABLE `$bits[1]` (\n";
+                $output .= "`CommentID` varchar(255) NOT NULL default '',\n
+                            `UserID` varchar(255) default NULL,\n
+                            `Examiner` varchar(255) default NULL,\n
+                            `Testdate` timestamp NOT NULL,\n
+                            `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',\n";
             break;
 
             //no SQL need be generated.
