@@ -251,7 +251,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                  JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
                  array()
         );
-        $scan_types[''] = '';
+        $scan_types = $allAr;
         foreach ($types_q as $row) {
             $type                   = $row['Scan_type'];
             $scan_types[$row['ID']] = $type;

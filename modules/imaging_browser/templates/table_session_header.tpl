@@ -2,6 +2,7 @@
      <thead>
         <tr class="info">
             <th>QC Status</th>
+            <th>Patient Name</th>
             <th>PSCID</th>
             <th>DCCID</th>
             <th>Visit Label</th>
@@ -20,6 +21,7 @@
     <tbody>
         <tr>
             <td>{$subject.mriqcstatus}</td>
+            <td>{$subject.pscid}_{$subject.candid}_{$subject.visitLabel}</td>
             <td>{$subject.pscid}</td>
             <td>{$subject.candid}</td>
             <td>{$subject.visitLabel}</td>

@@ -70,7 +70,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/instrument_manager/?pageID=" + pageNum
+        location.href="{$baseurl}/instrument_manager/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
     },
     Active: {$pageID}
 });
