@@ -15,8 +15,7 @@ INSERT INTO LorisMenu (Label, OrderNumber) VALUES
      ('Imaging', 3), 
      ('Reports', 4), 
      ('Tools', 5), 
-     ('Admin', 6),
-     ('Acknowledgements', 7);
+     ('Admin', 6);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('New Profile', 'new_profile/', (SELECT ID FROM LorisMenu as L WHERE Label='Candidate'), 1),
@@ -46,7 +45,8 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Data Team Helper', 'data_team_helper/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 4),
     ('Instrument Builder', 'instrument_builder/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 5),
     ('Genomic Browser', 'genomic_browser/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 6),
-    ('Data Release', 'data_release/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 7);
+    ('Data Release', 'data_release/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 7),
+    ('Acknowledgements', 'acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 8);
 
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
     ('User Accounts', 'user_accounts/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 1),
@@ -56,8 +56,6 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Configuration', 'configuration/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 5),
     ('Server Processes Manager', 'server_processes_manager/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 6);
 
-INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES 
-    ('Acknowledgements','acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Acknowledgements'), 1);
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
@@ -67,10 +65,14 @@ CREATE TABLE LorisMenuPermissions (
 -- New Profile permission
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='New Profile';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='access_all_profiles' AND m.Label='New Profile';
 
 -- Access Profile 
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='data_entry' AND m.Label='Access Profile';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='access_all_profiles' AND m.Label='Access Profile';
 
 -- Reliability
 INSERT INTO LorisMenuPermissions (MenuID, PermID) 

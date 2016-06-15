@@ -38,7 +38,7 @@ $(document).ready(function(){
             edit.setAttribute("id", "helpedit");
             div.appendChild(pre);
             div.appendChild(btn);
-            if(loris.userHasPermission("help_edit")) {
+            if(loris.userHasPermission("context_help")) {
                 div.appendChild(edit);
                 edit.addEventListener("click", function(e) {
                     e.preventDefault();

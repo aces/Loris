@@ -13,7 +13,18 @@ $(window).resize(function(){
 });
 
 $(document).ready(function () {
-    $('#email_survey').attr('disabled','disabled');
+    // Handles cases where there was an error on the page and we're resubmitting
+    var email2 = $("input[name=Email2]").val();
+    var email  = $("input[name=Email]").val();
+    if (email.length > 0 && email2.length > 0 && email == email2)
+    {
+            $('#email_survey').removeAttr('disabled');
+    } else {
+            $('#email_survey').attr('disabled','disabled');
+    }
+    // Reset Test_name so that the template can be loaded by ajax below
+    $("select[name=Test_name]").val("");
+
     $('#Email2').change (function() {
             var email2 = $("input[name=Email2]").val();
             var email  = $("input[name=Email]").val();
@@ -55,7 +66,7 @@ $(document).ready(function () {
     $("select[name=Test_name]").change(function (e) {
         var testname = $(this).val();
 
-        $.get(loris.BaseURl + "/survey_accounts/ajax/GetEmailContent.php", {
+        $.get(loris.BaseURL + "/survey_accounts/ajax/GetEmailContent.php", {
             test_name: testname
         },
         function(content) {
