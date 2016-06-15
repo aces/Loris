@@ -340,7 +340,7 @@ ImagePanelBody = React.createClass({
                             Fullname={this.props.Fullname}
                             XMLProtocol={this.props.XMLProtocol}
                             XMLReport={this.props.XMLReport}
-                            XMLReport={this.props.NrrdFile}
+                            NrrdFile={this.props.NrrdFile}
                         />
                     {this.props.HeadersExpanded ? <ImagePanelHeadersTable HeaderInfo={this.props.HeaderInfo} /> : ''}
                 </div>

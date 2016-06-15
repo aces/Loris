@@ -114,6 +114,18 @@ class NDB_Form_User_Accounts extends NDB_Form
     }
 
     /**
+     * Determines if the user is currently editing his/her own account.
+     *
+     * @return true if the user is editing his/her own account, false otherwise.
+     */
+    function _isEditingOwnAccount()
+    {
+        $editor = &User::singleton();
+        return !$this->isCreatingNewUser()
+            && ($editor->getUsername() == $this->identifier);
+    }
+
+    /**
      * Processes the data entered in the form.
      *
      * @param array $values values entered in the form.
@@ -215,60 +227,65 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // update the user permissions if applicable
+        // If the user is editing his/her own account, skip the part where
+        // changes to the permissions are handled (there should not be any
+        // change to the user's permission set since all the checkboxes are
+        // disabled)
+        if (!$this->_isEditingOwnAccount()) {
+            $success = $user->removePermissions();
 
-        // First remove all permissions
-        $success = $user->removePermissions();
-
-        // Check for new permissions
-        if (!empty($permIDs)) {
-            foreach ($permIDs as $key => $value) {
-                /* if the user didn't have the permission
-                   and the permission is now assigned then insert
-                   insert into the user_account_history as 'I'
-                 */
-                if (!(in_array($key, $current_permissionids))) {
-                    $user->insertIntoUserAccountHistory($key, 'I');
-                    $permissionsAdded[] = $this->getDescriptionUsingPermID($key);
-                }
-            }
-        }
-
-        if (!empty($current_permissionids)) {
-            // Check for permissions that are to be deleted
-            foreach ($current_permissionids as $key) {
-                //if the permission existed before and it's removed now///
-                ///Then insert into the user_account_history as 'D'
-                if (!in_array($key, array_keys($permIDs))) {
-                    $user->insertIntoUserAccountHistory($key, 'D');
-                    $permissionsRemoved[] = $this->getDescriptionUsingPermID($key);
-                }
-            }
-        }
-
-        // send the selected supervisors an email
-        // (only if permissions have changed for the user)
-        if (isset($supervisorEmails)) {
-            foreach ($supervisorEmails as $email => $checkValue) {
-                if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
-                    if ($checkValue == 'on') {
-                        $msg_data['current_user'] = $editor->getFullname();
-                        $msg_data['study']        = $config->getSetting('title');
-                        $msg_data['realname']     = $values['Real_name'];
-                        $msg_data['username']     = $user->getUsername();
-                        $msg_data['permissions_added']   = $permissionsAdded;
-                        $msg_data['permissions_removed'] = $permissionsRemoved;
-                        Email::send(
-                            $email,
-                            'permissions_change_notify_supervisor.tpl',
-                            $msg_data
-                        );
+            // Check for new permissions
+            if (!empty($permIDs)) {
+                foreach ($permIDs as $key => $value) {
+                    /* if the user didn't have the permission
+                       and the permission is now assigned then insert
+                       insert into the user_account_history as 'I'
+                     */
+                    if (!(in_array($key, $current_permissionids))) {
+                        $user->insertIntoUserAccountHistory($key, 'I');
+                        $permissionsAdded[] = $this->getDescriptionUsingPermID($key);
                     }
                 }
             }
-        }
 
-        if (!empty($permIDs)) {
-            $user->addPermissions(array_keys($permIDs));
+            if (!empty($current_permissionids)) {
+                // Check for permissions that are to be deleted
+                foreach ($current_permissionids as $key) {
+                    //if the permission existed before and it's removed now///
+                    ///Then insert into the user_account_history as 'D'
+                    if (!in_array($key, array_keys($permIDs))) {
+                        $user->insertIntoUserAccountHistory($key, 'D');
+                        $permissionsRemoved[]
+                            = $this->getDescriptionUsingPermID($key);
+                    }
+                }
+            }
+
+            // send the selected supervisors an email
+            // (only if permissions have changed for the user)
+            if (isset($supervisorEmails)) {
+                foreach ($supervisorEmails as $email => $checkValue) {
+                    if (!empty($permissionsAdded) || !empty($permissionsRemoved)) {
+                        if ($checkValue == 'on') {
+                            $msg_data['current_user'] = $editor->getFullname();
+                            $msg_data['study']        = $config->getSetting('title');
+                            $msg_data['realname']     = $values['Real_name'];
+                            $msg_data['username']     = $user->getUsername();
+                            $msg_data['permissions_added']   = $permissionsAdded;
+                            $msg_data['permissions_removed'] = $permissionsRemoved;
+                            Email::send(
+                                $email,
+                                'permissions_change_notify_supervisor.tpl',
+                                $msg_data
+                            );
+                        }
+                    }
+                }
+            }
+
+            if (!empty($permIDs)) {
+                $user->addPermissions(array_keys($permIDs));
+            }
         }
 
         // send the user an email
@@ -466,10 +483,18 @@ class NDB_Form_User_Accounts extends NDB_Form
                     . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
                 );
             }
+
+            // If the user is editing his/her own account, disable all permission
+            // checkboxes. Note that they will not be submitted when the form is
+            // saved
+            $attribs = array("class" => "perm_$lastRole");
+            if ($this->_isEditingOwnAccount()) {
+                $attribs['disabled'] = true;
+            }
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
                 htmlspecialchars($row['description']) . "<br>",
-                array("class" => "perm_$lastRole")
+                $attribs
             );
         }
         $this->addGroup($group, 'PermID_Group', 'Permissions', "", false);
@@ -498,10 +523,12 @@ class NDB_Form_User_Accounts extends NDB_Form
             . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">"
         );
 
+        $attribs = $this->_isEditingOwnAccount() ? array('disabled' => true) : null;
         foreach ($results as $row) {
             $group[] = $this->createCheckbox(
                 'supervisorEmail[' . $row['email'] .']',
-                htmlspecialchars($row['Real_Name']) . "<br>"
+                htmlspecialchars($row['Real_Name']) . "<br>",
+                $attribs
             );
         }
 

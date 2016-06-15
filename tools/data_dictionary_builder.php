@@ -82,17 +82,19 @@ $instrumentParameterTypeCategoryIDString = implode(
     $instrumentParameterTypeCategoryIDs
 );
 
-//get all 'Instrument' ParameterTypeIDs
-getColumn(
-    "SELECT ParameterTypeID
-        FROM parameter_type_category_rel
-        WHERE ParameterTypeCategoryID
-        IN ($instrumentParameterTypeCategoryIDString)",
-    $DB,
-    $instrumentParameterTypeIDs
-);
+if (!empty($instrumentParameterTypeCategoryIDString)) {
+    //get all 'Instrument' ParameterTypeIDs
+    getColumn(
+        "SELECT ParameterTypeID
+            FROM parameter_type_category_rel
+            WHERE ParameterTypeCategoryID
+            IN ($instrumentParameterTypeCategoryIDString)",
+        $DB,
+        $instrumentParameterTypeIDs
+    );
 
-$instrumentParameterTypeIDString = implode(', ', $instrumentParameterTypeIDs);
+    $instrumentParameterTypeIDString = implode(', ', $instrumentParameterTypeIDs);
+}
 
 if (!empty($instrumentParameterTypeIDString)) {
     //delete all 'Instrument' entries from parameter_type_category_rel
@@ -205,6 +207,11 @@ foreach ($instruments AS $instrument) {
                 $bits[0] ="varchar(255)";
             } else if ($bits[0]=="static") {
                 $bits[0] ="varchar(255)";
+            }
+
+            // Skip lines that containts only label or notes where bit[1] is empty.
+            if (empty($bits[1])) {
+                continue;
             }
 
             print "Inserting $table $bits[1]\n";
