@@ -206,7 +206,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
 
             $x++;
         }
-
+        $this->tpl_data['numUploads'] = $this->TotalItems;
         return true;
     }
 

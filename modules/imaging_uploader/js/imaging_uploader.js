@@ -370,7 +370,7 @@ function monitorProgress() {
     var uploadId = uploadProgress.getUploadId();
     
     $.post(
-        "/AjaxHelper.php?Module=imaging_uploader&script=getUploadSummary.php",
+        loris.BaseURL + "/imaging_uploader/ajax/getUploadSummary.php",
         {uploadId: uploadId, summary: summary},
         function (data) {
             uploadProgress.setProgressFromServer(data);
