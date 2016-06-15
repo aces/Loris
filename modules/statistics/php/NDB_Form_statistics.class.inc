@@ -83,7 +83,6 @@ class NDB_Form_statistics extends NDB_Form
                  ORDER BY OrderNo",
             array()
         );
-        print_r($this->params);
     }
 
     function stats_general()
@@ -600,7 +599,7 @@ class NDB_Form_statistics extends NDB_Form
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
         //TODO: IBIS
-        $scan_types     = array(
+        $scan_types_ibis     = array(
                            'T1'           => 'T1',
                            'T2'           => 'T2',
                            'DTI'          => 'DTI',
@@ -609,14 +608,20 @@ class NDB_Form_statistics extends NDB_Form
                           );
         $scans_selected =array();
         if(isset($_REQUEST['Scans']) && $_REQUEST['Scans'] != '') {
-            $scans_selected = explode(",", $_REQUEST['Scans']);
+            $scans_selected_input = explode(",", $_REQUEST['Scans']);
         }
-        if (empty($scans_selected)) {
+        if (empty($scans_selected_input)) {
             $scans_selected =$scan_types;
+        } else {
+            foreach($scans_selected_input as $key => $scid)
+            {
+                $scans_selected[$scid]=$scan_types[$scid];
+            }
         }
 
         $Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['scan_types']     = $scan_types;
+        $this->tpl_data['Scans_sel_box'] = array_keys($scans_selected);
         $this->tpl_data['Scans_selected'] = $scans_selected;
         $this->tpl_data['Sites']          = $sites;
         $this->tpl_data['Projects']       = $projects;
@@ -633,7 +638,7 @@ class NDB_Form_statistics extends NDB_Form
         //Check if a specific scan is requested otherwise display first
         //available scan
         if(!$_REQUEST['mri_type']) {
-            $_REQUEST['mri_type'] = current($scan_types);
+            $_REQUEST['mri_type'] = current($scan_types_ibis);
         }
 
         $MRI_Type       = $_REQUEST['mri_type'];
@@ -685,9 +690,17 @@ class NDB_Form_statistics extends NDB_Form
         );
         //END BIGTABLE
 
+        //TODO add logic for scan identification
+//        //TODO remove following loop, just for ibis testing
+//        unset($scan_types);
+//        foreach ($Scan_type_results as $row) {
+//            $scan_types[$row['ID']] = $row['Scan_type'];
+//        }
         //considers the naming convention of mri_parameter_form is "scanType_scan_done"
         $Scan_data_results =array();
         foreach ($scans_selected as $key => $scan) {
+            $scan_params= array_merge(array('scan' => $scan),$this->params);
+
             //INSERT COUNT TOTAL
             $Scan_data_results[$key]['insert_count']['total'] = $DB->pselectOne(
                 "SELECT COUNT(*)
@@ -698,11 +711,12 @@ class NDB_Form_statistics extends NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND fi.FileType='mnc'
+                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     AND s.SubprojectID IN ($subprojList)
                     $Param_Project
                     $Param_Site
                 ",
-                $this->params
+                $scan_params
             );
             //INSERT COUNT Values
             $count_data = $DB->pselect(
@@ -714,11 +728,12 @@ class NDB_Form_statistics extends NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND fi.FileType='mnc'
+                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     AND s.SubprojectID IN ($subprojList)
                     $Param_Project
                     $Param_Site
                 GROUP BY s.SubprojectID",
-                $this->params
+                $scan_params
             );
             foreach ($count_data as $row){
                 $Scan_data_results[$key]['insert_count'][$row['subID']] = $row['cnt'];
@@ -739,11 +754,12 @@ class NDB_Form_statistics extends NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND fqc.QCStatus='Pass'
+                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     AND s.SubprojectID IN ($subprojList)
                     $Param_Project
                     $Param_Site
                 ",
-                $this->params
+                $scan_params
             );
             //QC STATUS: PASSED values
             $count_data = $DB->pselect(
@@ -757,11 +773,12 @@ class NDB_Form_statistics extends NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND fqc.QCStatus='Pass'
+                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     AND s.SubprojectID IN ($subprojList)
                     $Param_Project
                     $Param_Site
                 GROUP BY s.SubprojectID",
-                $this->params
+                $scan_params
             );
             foreach ($count_data as $row){
                 $Scan_data_results[$key]['qc_pass_count'][$row['subID']] = $row['cnt'];
@@ -783,11 +800,12 @@ class NDB_Form_statistics extends NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND fqc.QCStatus='Fail'
+                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     AND s.SubprojectID IN ($subprojList)
                     $Param_Project
                     $Param_Site
                 ",
-                $this->params
+                $scan_params
             );
             //QC STATUS: FAILED values
             $count_data = $DB->pselect(
@@ -801,11 +819,12 @@ class NDB_Form_statistics extends NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND fqc.QCStatus='Fail'
+                    AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     AND s.SubprojectID IN ($subprojList)
                     $Param_Project
                     $Param_Site
                 GROUP BY s.SubprojectID",
-                $this->params
+                $scan_params
             );
             foreach ($count_data as $row){
                 $Scan_data_results[$key]['qc_fail_count'][$row['subID']] = $row['cnt'];
