@@ -543,6 +543,11 @@ class Database
      */
     function select($query, &$result)
     {
+        error_log(
+            "LORIS's Database::select() wrappers are deprecated and will be "
+            . "removed in a future version of LORIS. Please use prepared statements "
+            . " in the Database::pselect() variety instead."
+        );
         $result = array();
 
         if (strpos(strtoupper($query), 'SELECT') !== 0
