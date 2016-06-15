@@ -60,6 +60,9 @@ class LorisForm
         if (isset($attribs['class'])) {
             $el['class'] = $attribs['class'];
         }
+        if (isset($attribs['id'])) {
+            $el['id'] = $attribs['id'];
+        }
         if (isset($attribs['onchange'])) {
             $el['onchange'] = $attribs['onchange'];
         }
@@ -559,6 +562,7 @@ class LorisForm
         $cls           = '';
         $changehandler = '';
         $multiple      = '';
+        $id            = '';
 
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
@@ -584,13 +588,16 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
+        if (isset($el['id'])) {
+            $id = "id=\"$el[id]\"";
+        }
         if (isset($el['onchange'])) {
             $changehandler = "onchange=\"$el[onchange]\"";
         }
         if (isset($el['multiple'])) {
             $multiple = "multiple=\"multiple\"";
         }
-        $retVal = "<select name=\"$el[name]\" $cls $changehandler $multiple";
+        $retVal = "<select name=\"$el[name]\" $cls $id $changehandler $multiple";
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if ($el['requireMsg']) {
