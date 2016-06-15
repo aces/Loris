@@ -22,6 +22,13 @@ td {
     white-space: nowrap;
 }
 
+
+td.total {
+    background-color: #F6F6F6;
+    font-weight: bold;
+}
+
+/*BEHAVIOURAL subtests tables*/
 table.fancytable th {
     background-color: #1c70b6;
     color: white;
@@ -37,3 +44,30 @@ table.fancytable th:hover, table.listColorCoded th:hover {
     color: white;
     text-align: center;
 }
+
+/*MRI scan table*/
+.pass {
+    background-color: #E5FFCC;
+}
+.fail {
+    background-color: #FFCCCC;
+}
+.noqc {
+    background-color: #FFFFCC;
+}
+
+
+/*MRI big table*/
+.data tr td.complete, .data tr td.complete.total
+{
+    background-color: #E5FFCC;
+}
+.data tr td.partial_run, .data tr td.partial_run.total
+{
+    background-color: #FFFFCC;
+}
+.data tr td.incomplete, .data tr td.no_scan, .data tr td.incomplete.total, .data tr td.no_scan.total
+{
+    background-color: #FFCCCC;
+}
+
