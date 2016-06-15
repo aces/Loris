@@ -594,7 +594,7 @@ class LorisForm
         }
         if (isset($el['id'])) {
             $id = "id=\"$el[id]\"";
-        }        
+        }
         if (isset($el['disabled'])) {
             $disabled = 'disabled';
         }
