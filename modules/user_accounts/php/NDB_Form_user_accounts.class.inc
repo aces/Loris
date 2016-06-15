@@ -114,6 +114,18 @@ class NDB_Form_User_Accounts extends NDB_Form
     }
 
     /**
+     * Determines if the user is currently editing his/her own account.
+     *
+     * @return true if the user is editing his/her own account, false otherwise.
+     */
+    function _isEditingOwnAccount()
+    {
+        $editor = &User::singleton();
+        return !$this->isCreatingNewUser()
+            && ($editor->getUsername() == $this->identifier);
+    }
+
+    /**
      * Processes the data entered in the form.
      *
      * @param array $values values entered in the form.
@@ -214,11 +226,12 @@ class NDB_Form_User_Accounts extends NDB_Form
             $user->updatePassword($set['Password_md5'], $expiry);
         }
 
-        // Update the user permissions if applicable
-        // This part is skipped if the current page is my_preferences
-
-        // First remove all permissions
-        if ($this->page != 'my_preferences') {
+        // update the user permissions if applicable
+        // If the user is editing his/her own account, skip the part where
+        // changes to the permissions are handled (there should not be any
+        // change to the user's permission set since all the checkboxes are
+        // disabled)
+        if (!$this->_isEditingOwnAccount()) {
             $success = $user->removePermissions();
 
             // Check for new permissions
@@ -470,10 +483,18 @@ class NDB_Form_User_Accounts extends NDB_Form
                     . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
                 );
             }
+
+            // If the user is editing his/her own account, disable all permission
+            // checkboxes. Note that they will not be submitted when the form is
+            // saved
+            $attribs = array("class" => "perm_$lastRole");
+            if ($this->_isEditingOwnAccount()) {
+                $attribs['disabled'] = true;
+            }
             $group[] = $this->createCheckbox(
                 'permID['.$row['permID'].']',
                 htmlspecialchars($row['description']) . "<br>",
-                array("class" => "perm_$lastRole")
+                $attribs
             );
         }
         $this->addGroup($group, 'PermID_Group', 'Permissions', "", false);
@@ -502,10 +523,12 @@ class NDB_Form_User_Accounts extends NDB_Form
             . "<div id=\"perms_supervisors\" style=\"margin-top: 5px;\">"
         );
 
+        $attribs = $this->_isEditingOwnAccount() ? array('disabled' => true) : null;
         foreach ($results as $row) {
             $group[] = $this->createCheckbox(
                 'supervisorEmail[' . $row['email'] .']',
-                htmlspecialchars($row['Real_Name']) . "<br>"
+                htmlspecialchars($row['Real_Name']) . "<br>",
+                $attribs
             );
         }
 
