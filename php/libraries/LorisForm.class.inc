@@ -605,8 +605,8 @@ class LorisForm
             $multiple = "multiple=\"multiple\"";
         }
 
-        $retVal = "<select name=\"$el[name]\" $cls $id $disabled $changehandler " . 
-        $multiple;
+        $retVal = "<select name=\"$el[name]\" $cls $id $changehandler $multiple "
+            . $disabled;
 
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
