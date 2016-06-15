@@ -16,6 +16,93 @@ require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.cla
 class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 {
     /**
+     * Insert testing data
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+         $window = new WebDriverWindow($this->webDriver);
+         $size = new WebDriverDimension(1024,768);
+         $window->setSize($size);
+        $this->DB->insert(
+            "psc",
+            array(
+             'CenterID' => '55', 
+             'Name' => 'TESTinPSC',
+             'Alias' => 'test',
+             'MRI_alias' => 'test'
+            )
+
+        );
+        $this->DB->insert(
+            "candidate",
+            array(
+             'CandID'        => '999888',
+             'CenterID'      => '55',
+             'UserID'        => '1',
+             'PSCID'         => '8888'
+            )
+        );
+        $this->DB->insert(
+            "session",
+            array(
+             'CandID'        => '999888',
+             'CenterID'      => '55',
+             'UserID'        => '1',
+             'MRIQCStatus'   => 'Pass'
+            )
+        );
+        $this->DB->insert(
+            "mri_protocol_violated_scans",
+            array(
+             'ID'            => '1001',
+             'CandID'        => '999888'
+            )
+        );
+        $this->DB->insert(
+            "violations_resolved",
+            array(
+             'ExtID'         => '1001',
+             'TypeTable'     => 'mri_protocol_violated_scans'
+            )
+        );
+
+    }
+
+    public function tearDown()
+    {
+
+        $this->DB->delete(
+            "session",
+            array('CandID' => '999888','CenterID' => '55')
+        );     
+        $this->DB->delete(
+            "candidate",
+            array('CandID' => '999888','CenterID' => '55')
+        );
+        $this->DB->delete(
+            "mri_protocol_violated_scans",        
+           array(
+             'ID'            => '1001',
+             'CandID'        => '999888'
+            )
+        );
+        $this->DB->delete(
+            "violations_resolved",
+            array(
+             'ExtID'         => '1001',
+             'TypeTable'     => 'mri_protocol_violated_scans'
+            )
+        );
+        $this->DB->delete(
+            "psc",
+            array('CenterID' => '55', 'Name' => 'TESTinPSC')
+        );
+        parent::tearDown();
+    }
+    /**
      * Tests that, when loading the Mri_violations module, some
      * text appears in the body.
      *
