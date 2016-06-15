@@ -2,7 +2,7 @@
     <script type="text/javascript" src="{$baseurl}/statistics/js/form_stats_MRI.js"></script>
     <h2 class="statsH2">General Statistics with QC Status</h2>
     <div class="col-sm-2">
-        {html_options id="MRIsite" options=$Sites name="MRIsite" selected=$mri_center class="form-control"}
+        {html_options id="MRIsite" options=$Sites name="MRIsite" selected=$CurrentSite.ID class="form-control"}
     </div>
     <div class="col-sm-2">
         {html_options id="MRIProject" options=$Projects name="MRIProject" selected=$CurrentProject.ID class="form-control"}
