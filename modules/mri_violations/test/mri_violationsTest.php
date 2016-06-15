@@ -7,6 +7,7 @@
  * @category Test
  * @package  Loris
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -52,7 +53,42 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Mri Violations", $bodyText);
     }
+//violated_scans_view_allsites
+//violated_scans_edit 
+
+   /**
+     *Tests that help editor loads with the permission
+     *
+     * @return void
+     */
+    function testLoginWithPermission()
+    {
+         $this->setupPermissions(array("violated_scans_view_allsites"));
+         $this->safeGet($this->url . "/mri_violations/");
+         $bodyText = $this->safeFindElement(
+              WebDriverBy::cssSelector("body")
+          )->getText();
+          $this->assertNotContains("You do not have access to this page.", $bodyText);
+          $this->resetPermissions();
+     }
+   /**
+     *Tests that help editor loads with the permission
+     *
+     * @return void
+     */
+    function testLoginWithoutPermission()
+    {
+         $this->setupPermissions(array(""));
+         $this->safeGet($this->url . "/mri_violations/");
+         $bodyText = $this->safeFindElement(
+              WebDriverBy::cssSelector("body")
+          )->getText();
+          $this->assertContains("You do not have access to this page.", $bodyText);
+          $this->resetPermissions();
+    }
+   
+
+
+
 }
-
-
 ?>
