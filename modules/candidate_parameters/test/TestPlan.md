@@ -18,7 +18,9 @@
 5. Click on update Candidate Info and make sure it takes you to the correct form for that candidate
 
 ### Update Candidate Info
-6. For each field, change it and make sure that it saves when the "Save" button is clicked. Do each field one at a time. Should you be able to save the Caveat Emptor Reason without the Caveat Emptor flag set?
+6. For each field, change it and make sure that it saves when the "Save" button is clicked. Do each field one at a
+time. You should still be able to save the Caveat Emptor Reason without the Caveat Emptor flag set because
+abnormalities may be deemed satisfactory and the reason may be logged.
 7. If you set the Caveat Emptor flag to Yes, check that a reason must be specified. If the reason is set to other, check that an explanation must be provided.
 8. Check that the return candidate info button is working.
 9. Check if your changes are displayed in the Candidate Information panel
