@@ -28,18 +28,18 @@
         <tbody>
         {foreach from=$Visits item=visit}
             <tr>
-                <td class="  ">{$visit|upper}</td>
+                <td class=" ">{$visit|upper}</td>
                 {foreach from=$Centers item=center key=centername}
-                    <td class='{$center.LongName}'>{$behaviour[$center.ID][$visit].complete|default:"0"} ({$behaviour[$center.ID][$visit].percent|default:"0"}%)</td>
+                    <td class='{$center.LongName} complete'>{$behaviour[$center.ID][$visit].complete|default:"0"} ({$behaviour[$center.ID][$visit].percent|default:"0"}%)</td>
                     <td class='{$center.LongName}'>{$behaviour[$center.ID][$visit].total|default:"0"}</td>
                 {/foreach}
             </tr>
         {/foreach}
         <tr>
-            <td class="  ">Total</td>
+            <td class="total">Total</td>
             {foreach from=$Centers item=center key=centername}
-                <td class='{$center.LongName}'>{$behaviour[$center.ID].all.complete|default:"0"} ({$behaviour[$center.ID].all.percent|default:"0"}%)</td>
-                <td class='{$center.LongName}'>{$behaviour[$center.ID].all.total|default:"0"}</td>
+                <td class='{$center.LongName} complete total'>{$behaviour[$center.ID].all.complete|default:"0"} ({$behaviour[$center.ID].all.percent|default:"0"}%)</td>
+                <td class='{$center.LongName} total '>{$behaviour[$center.ID].all.total|default:"0"}</td>
             {/foreach}
         </tr>
         <tr>
@@ -84,16 +84,16 @@
         <tr>
             <td class="  DD">{$visit|upper}</td>
             {foreach from=$Centers item=center key=centername}
-                <td class='{$center.LongName}DD'>{$dde[$center.ID][$visit].complete|default:"0"} ({$dde[$center.ID][$visit].percent|default:"0"}%)</td>
+                <td class='{$center.LongName}DD complete'>{$dde[$center.ID][$visit].complete|default:"0"} ({$dde[$center.ID][$visit].percent|default:"0"}%)</td>
                 <td class='{$center.LongName}DD'>{$dde[$center.ID][$visit].total|default:"0"}</td>
             {/foreach}
 
             {/foreach}
         <tr>
-            <td class="">Total</td>
+            <td class="total">Total</td>
             {foreach from=$Centers item=center key=centername}
-                <td class='{$center.LongName}DD'>{$dde[$center.ID].all.complete|default:"0"} ({$dde[$center.ID].all.percent|default:"0"}%)</td>
-                <td class='{$center.LongName}DD'>{$dde[$center.ID].all.total|default:"0"}</td>
+                <td class='{$center.LongName}DD total complete'>{$dde[$center.ID].all.complete|default:"0"} ({$dde[$center.ID].all.percent|default:"0"}%)</td>
+                <td class='{$center.LongName}DD total'>{$dde[$center.ID].all.total|default:"0"}</td>
             {/foreach}
         </tr>
         <tr>

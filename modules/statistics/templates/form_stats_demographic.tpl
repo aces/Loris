@@ -176,7 +176,7 @@
 
         </tr>
         <tr>
-            <td colspan="2" align="left" style="vertical-align:middle">Age Range</td>
+            <td colspan="2" align="left" style="vertical-align:middle">Age Range (months)</td>
             {if {$age_avg[$NULL]}>0}
                 <td>{$age_avg[$NULL]}</td>
             {else}

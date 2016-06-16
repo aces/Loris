@@ -1,6 +1,6 @@
 <script type="text/javascript" src="{$baseurl}/statistics/js/form_stats_reliability.js"></script>
 <div id="reliability">
-    <h2 class="statsH2">Reliability Statistics{if $CurrentSite} for {$CurrentSite.Name}{/if}</h2>
+    <h2 class="statsH2">Reliability Statistics{if $CurrentProject} for {$CurrentProject.Name}{/if}{if $CurrentSite} for {$CurrentSite.Name} {else} for All Sites{/if}</h2>
         <div class="col-sm-2 col-xs-12 form-group">
             {html_options id="ReliabilitySite" options=$Sites name="ReliabilitySite" selected=$CurrentSite.ID class="form-control"}   
         </div>
