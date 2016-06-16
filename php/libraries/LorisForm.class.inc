@@ -668,9 +668,17 @@ class LorisForm
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
         $value    = $this->getValue($el['name']);
-        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear "
-            . $disabled
-            . " onChange=\"this.setCustomValidity($required)\""
+        if (array_key_exists('options', $el)
+            && ((strtolower($el['options']['format']) == 'my')
+            || (strtolower($el['options']['format']) == 'ym'))
+        ) {
+            $format = 'month';
+        } else {
+            $format = 'date';
+        }
+        $elmnt    = "<input name=\"$el[name]\" type=\"$format\" $cls "
+            . "$minYear $maxYear "
+            . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
             !empty($value)
