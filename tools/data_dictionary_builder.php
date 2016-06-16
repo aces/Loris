@@ -85,9 +85,10 @@ getColumn(
     array('in' => 'Instrument')
 );
 
-$prepIn = prepareIn($instrumentParameterTypeCategoryIDs);
+if (!empty($instrumentParameterTypeCategoryIDs)) {
+    // Prepare for the IN () SQL quandary
+    $prepIn = prepareIn($instrumentParameterTypeCategoryIDs);
 
-if (!empty($instrumentPTypeCategoryIDString)) {
     //get all 'Instrument' ParameterTypeIDs
     getColumn(
         "SELECT ParameterTypeID
