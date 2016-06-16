@@ -13,7 +13,9 @@
      - Data (the data that populates the table)
  *}
 <script type="text/javascript" src="{$baseurl}/statistics/js/table_statistics.js"></script>
-<h2 class="statsH2">{$Header}</h2>
+<h2 class="statsH3">{$SectionHeader}</h2>
+<h3 class="statsH3">{$TableHeader}</h3>
+<p>{$Disclamer}</p>
 
 <div class="row">
     {if $Subsection=="demographics" }
@@ -117,7 +119,7 @@
         </tr>
     {/foreach}
     <tr>
-        <td>Site Total</td>
+        <td class="subtotal">Site Total Across All Visits</td>
         {assign var="totalsitetotal" value="0"}
         {foreach key=proj item=value from=$Subprojects}
             {assign var="sitetotal" value="0"}
@@ -145,9 +147,9 @@
                 {else}
                     {assign var="percent" value='0'}
                 {/if}
-                <td class="{$subcat|lower|regex_replace:"/ /":"_"} total">{$data[$center.ID][$subcat]|default:"0"} ({$percent}%)</td>
+                <td class="{$subcat|lower|regex_replace:"/ /":"_"} total subtotal">{$data[$center.ID][$subcat]|default:"0"} ({$percent}%)</td>
             {else}
-                <td class="{$subcat|lower|regex_replace:"/ /":"_"} total">{$data[$center.ID][$subcat]|default:"0"}</td>
+                <td class="{$subcat|lower|regex_replace:"/ /":"_"} total subtotal">{$data[$center.ID][$subcat]|default:"0"}</td>
             {/if}
         {/foreach}
     </tr>
@@ -231,9 +233,9 @@
                 {else}
                     {assign var="percent" value='0'}
                 {/if}
-                <td class="{$subcat|lower|regex_replace:"/ /":"_"} total">{$data[$subcat]|default:"0"} ({$percent}%)</td>
+                <td class="{$subcat|lower|regex_replace:"/ /":"_"} total subtotal">{$data[$subcat]|default:"0"} ({$percent}%)</td>
             {else}
-                <td class="{$subcat|lower|regex_replace:"/ /":"_"} total">{$data[$subcat]|default:"0"}</td>
+                <td class="{$subcat|lower|regex_replace:"/ /":"_"} total subtotal">{$data[$subcat]|default:"0"}</td>
             {/if}
         {/foreach}
     </tr>
