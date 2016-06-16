@@ -131,11 +131,10 @@ class NDB_Form_statistics extends NDB_Form
             $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
-        if(!empty($subprojList))
-        {
-            $suproject_query="AND s.SubprojectID IN ($subprojList)";
+        if(!empty($subprojList)) {
+            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
         } else {
-          $suproject_query='';
+            $suproject_query ='';
         }
 
         //SITES
@@ -293,7 +292,7 @@ class NDB_Form_statistics extends NDB_Form
         );
 
         foreach($result as $row) {
-            $this->tpl_data['age_avg'][$row['rowid']] = round($row['age']*12/365,2);
+            $this->tpl_data['age_avg'][$row['rowid']] = round($row['age']*12/365, 2);
         }
 
         //START BIG TABLE
@@ -446,11 +445,10 @@ class NDB_Form_statistics extends NDB_Form
             $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
-        if(!empty($subprojList))
-        {
-            $suproject_query="AND s.SubprojectID IN ($subprojList)";
+        if(!empty($subprojList)) {
+            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
         } else {
-            $suproject_query='';
+            $suproject_query ='';
         }
 
         $Visits = Utility::getExistingVisitLabels($currentProject);
@@ -576,11 +574,10 @@ class NDB_Form_statistics extends NDB_Form
             $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
-        if(!empty($subprojList))
-        {
-            $suproject_query="AND s.SubprojectID IN ($subprojList)";
+        if(!empty($subprojList)) {
+            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
         } else {
-            $suproject_query='';
+            $suproject_query ='';
         }
         //SITES
         if(isset($_REQUEST['MRIsite']) && $_REQUEST['MRIsite'] != '') {
@@ -660,7 +657,6 @@ class NDB_Form_statistics extends NDB_Form
 
         //Check if a specific scan is requested otherwise display first
         //available scan
-        //TODO IBIS
         if(!$_REQUEST['mri_type']) {
             $MRI_Type = current($scan_types);
         } else {
