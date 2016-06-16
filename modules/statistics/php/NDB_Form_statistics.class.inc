@@ -269,6 +269,7 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['gender_female']['total']      += $row['val'];
         }
 
+        //AGE AVERAGE
         $result = $DB->pselect(
             "SELECT DISTINCT
                           s.subprojectid as rowid,
@@ -286,7 +287,7 @@ class NDB_Form_statistics extends NDB_Form
         );
 
         foreach($result as $row) {
-            $this->tpl_data['age_avg'][$row['rowid']] = $row['age'];
+            $this->tpl_data['age_avg'][$row['rowid']] = round($row['age']*12/365,2);
         }
 
         //START BIG TABLE
