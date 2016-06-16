@@ -31,9 +31,9 @@ class NDB_Form_statistics extends NDB_Form
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new Smarty_neurodb("statistics");
-        $tpl_data['SectionHeader']           = $sectionHeader;
-        $tpl_data['TableHeader']           = $tableHeader;
-        $tpl_data['Disclamer']           = $disclamer;
+        $tpl_data['SectionHeader']    = $sectionHeader;
+        $tpl_data['TableHeader']      = $tableHeader;
+        $tpl_data['Disclamer']        = $disclamer;
         $tpl_data['Subcategories']    = $subcats;
         $tpl_data['Subprojects']      = Utility::getSubprojectsForProject($projectID);
         $tpl_data['DropdownName']     = $dropdown_name;
@@ -290,7 +290,7 @@ class NDB_Form_statistics extends NDB_Form
         }
 
         //START BIG TABLE
-        $inst_dropdown = array_merge(
+        $inst_dropdown   = array_merge(
             array( '' => 'Recruit Gender Breakdown'),
             Utility::getAllInstruments()
         );
@@ -485,7 +485,6 @@ class NDB_Form_statistics extends NDB_Form
             }
         }
         // DDE STATS
-        //TODO IBIS
         $result = $DB->pselect(
             "SELECT s.CenterID, 
                 f.Data_Entry as Data_Entry, 
@@ -605,14 +604,14 @@ class NDB_Form_statistics extends NDB_Form
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
         //TODO: IBIS
-        $scan_types_ibis     = array(
-                           'T1'           => 'T1',
-                           'T2'           => 'T2',
-                           'DTI'          => 'DTI',
-                           'BOLD'         => 'BOLD',
-                           'Spectroscopy' => 'Spectroscopy',
-                          );
-        $scans_selected =array();
+        $scan_types_ibis = array(
+                            'T1'           => 'T1',
+                            'T2'           => 'T2',
+                            'DTI'          => 'DTI',
+                            'BOLD'         => 'BOLD',
+                            'Spectroscopy' => 'Spectroscopy',
+                           );
+        $scans_selected  =array();
         if(isset($_REQUEST['Scans']) && $_REQUEST['Scans'] != '') {
             $scans_selected_input = explode(",", $_REQUEST['Scans']);
         }
@@ -621,13 +620,13 @@ class NDB_Form_statistics extends NDB_Form
         } else {
             foreach($scans_selected_input as $key => $scid)
             {
-                $scans_selected[$scid]=$scan_types[$scid];
+                $scans_selected[$scid] =$scan_types[$scid];
             }
         }
 
         $Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['scan_types']     = $scan_types;
-        $this->tpl_data['Scans_sel_box'] = array_keys($scans_selected);
+        $this->tpl_data['Scans_sel_box']  = array_keys($scans_selected);
         $this->tpl_data['Scans_selected'] = $scans_selected;
         $this->tpl_data['Sites']          = $sites;
         $this->tpl_data['Projects']       = $projects;
@@ -643,6 +642,7 @@ class NDB_Form_statistics extends NDB_Form
 
         //Check if a specific scan is requested otherwise display first
         //available scan
+        //TODO IBIS
         if(!$_REQUEST['mri_type']) {
             $_REQUEST['mri_type'] = current($scan_types_ibis);
         }
@@ -698,16 +698,10 @@ class NDB_Form_statistics extends NDB_Form
         );
         //END BIGTABLE
 
-        //TODO add logic for scan identification
-//        //TODO remove following loop, just for ibis testing
-//        unset($scan_types);
-//        foreach ($Scan_type_results as $row) {
-//            $scan_types[$row['ID']] = $row['Scan_type'];
-//        }
         //considers the naming convention of mri_parameter_form is "scanType_scan_done"
         $Scan_data_results =array();
         foreach ($scans_selected as $key => $scan) {
-            $scan_params= array_merge(array('scan' => $scan),$this->params);
+            $scan_params = array_merge(array('scan' => $scan), $this->params);
 
             //INSERT COUNT TOTAL
             $Scan_data_results[$key]['insert_count']['total'] = $DB->pselectOne(
