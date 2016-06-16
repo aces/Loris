@@ -66,6 +66,12 @@ table.fancytable th:hover, table.listColorCoded th:hover {
 .noqc {
     background-color: #FFFFCC !important;
 }
+.gender_male{
+    background-color: #CCFFFF !important;
+}
+.gender_female{
+    background-color: #FFCCE5 !important;
+}
 
 
 /*MRI big table*/
@@ -84,4 +90,11 @@ table.fancytable th:hover, table.listColorCoded th:hover {
 {
     background-color: #FFCCCC;
 }
-
+.data tr td.male
+{
+    background-color: #CCFFFF;
+}
+.data tr td.female
+{
+    background-color: #FFCCE5;
+}
