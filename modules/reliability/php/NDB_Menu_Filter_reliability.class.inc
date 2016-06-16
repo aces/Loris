@@ -511,5 +511,24 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         );
         return array("message" => "Inserted new reliability candidate".$params['PSCID']."/".$params['Visit_label'] );
     }
+    
+     /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/reliability/js/reliability_helper.js",
+            )
+        );
+    }
 }
 ?>
