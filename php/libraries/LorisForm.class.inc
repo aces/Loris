@@ -671,7 +671,7 @@ class LorisForm
         if (array_key_exists('options', $el)
             && ((strtolower($el['options']['format']) == 'my')
             || (strtolower($el['options']['format']) == 'ym'))
-        {
+        ) {
             $format = 'month';
         } else {
             $format = 'date';
