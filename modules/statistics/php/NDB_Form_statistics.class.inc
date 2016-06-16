@@ -131,6 +131,12 @@ class NDB_Form_statistics extends NDB_Form
             $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
+        if(!empty($subprojList))
+        {
+            $suproject_query="AND s.SubprojectID IN ($subprojList)";
+        } else {
+          $suproject_query='';
+        }
 
         //SITES
         if(isset($_REQUEST['DemographicSite']) && $_REQUEST['DemographicSite'] != '') {
@@ -362,7 +368,7 @@ class NDB_Form_statistics extends NDB_Form
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                 WHERE s.active='Y' AND s.CenterID <> '1'
                     AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
-                    AND s.SubprojectID IN ($subprojList))
+                    $suproject_query)
                     AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                     AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat",
@@ -440,6 +446,12 @@ class NDB_Form_statistics extends NDB_Form
             $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
+        if(!empty($subprojList))
+        {
+            $suproject_query="AND s.SubprojectID IN ($subprojList)";
+        } else {
+            $suproject_query='';
+        }
 
         $Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['Visits'] = $Visits;
@@ -456,7 +468,7 @@ class NDB_Form_statistics extends NDB_Form
                     s.Active='Y' AND c.Active='Y'
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
-                    AND s.SubprojectID IN ($subprojList)
+                    $suproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
             $this->params
@@ -498,7 +510,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.CommentID LIKE 'DDE%' 
                 AND c.Active='Y'
-                AND s.SubprojectID IN ($subprojList)
+                $suproject_query
                 $Param_Project
                 GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID;",
             $this->params
@@ -564,7 +576,12 @@ class NDB_Form_statistics extends NDB_Form
             $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
-
+        if(!empty($subprojList))
+        {
+            $suproject_query="AND s.SubprojectID IN ($subprojList)";
+        } else {
+            $suproject_query='';
+        }
         //SITES
         if(isset($_REQUEST['MRIsite']) && $_REQUEST['MRIsite'] != '') {
             $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
@@ -645,11 +662,12 @@ class NDB_Form_statistics extends NDB_Form
         //available scan
         //TODO IBIS
         if(!$_REQUEST['mri_type']) {
-            $_REQUEST['mri_type'] = current($scan_types_ibis);
+            $MRI_Type = current($scan_types);
+        } else {
+            $MRI_Type = $scan_types[$_REQUEST['mri_type']];
         }
 
-        $MRI_Type       = $_REQUEST['mri_type'];
-        $MRI_Type_Field = $_REQUEST['mri_type'] . "_Scan_Done";
+        $MRI_Type_Field = $MRI_Type . "_Scan_Done";
         $MRIHeader      = "$MRI_Type Breakdown";
         $CaseStatement  = "
                           CASE($MRI_Type_Field)
@@ -673,7 +691,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND f.CommentID NOT LIKE 'DDE%'
-                    AND s.SubprojectID IN ($subprojList)
+                    $suproject_query
                     $Param_Project
               GROUP BY Subcat,
                     s.SubprojectID,
@@ -691,7 +709,7 @@ class NDB_Form_statistics extends NDB_Form
             $M_Visits,
             "mri_type",
             $scan_types,
-            $MRI_Type,
+            $_REQUEST['mri_type'],
             $centers,
             $result,
             "mri",
@@ -715,7 +733,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND c.Active='Y'
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    AND s.SubprojectID IN ($subprojList)
+                    $suproject_query
                     $Param_Project
                     $Param_Site
                 ",
@@ -732,7 +750,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND c.Active='Y'
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    AND s.SubprojectID IN ($subprojList)
+                    $suproject_query
                     $Param_Project
                     $Param_Site
                 GROUP BY s.SubprojectID",
@@ -758,7 +776,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND c.Active='Y'
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    AND s.SubprojectID IN ($subprojList)
+                    $suproject_query
                     $Param_Project
                     $Param_Site
                 ",
@@ -777,7 +795,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND c.Active='Y'
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    AND s.SubprojectID IN ($subprojList)
+                    $suproject_query
                     $Param_Project
                     $Param_Site
                 GROUP BY s.SubprojectID",
@@ -804,7 +822,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND c.Active='Y'
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    AND s.SubprojectID IN ($subprojList)
+                    $suproject_query
                     $Param_Project
                     $Param_Site
                 ",
@@ -823,7 +841,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND c.Active='Y'
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
-                    AND s.SubprojectID IN ($subprojList)
+                    $suproject_query
                     $Param_Project
                     $Param_Site
                 GROUP BY s.SubprojectID",

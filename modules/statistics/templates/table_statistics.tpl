@@ -47,8 +47,8 @@
 <table id="bigtable" class="data table table-primary table-bordered">
     <tr>
         <th rowspan="1" id="tpcol">Subproject</th>
+        {assign var='colspan' value=count($Subcategories)}
         {foreach key=proj item=name from=$Subprojects}
-            {assign var='colspan' value=count($Subcategories)}
             <th colspan="{$colspan}">{$name|capitalize}</th>
         {/foreach}
         <th colspan="{$colspan}">Total Across Subprojects</th>
