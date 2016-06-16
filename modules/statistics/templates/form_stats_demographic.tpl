@@ -26,77 +26,154 @@
         <tbody align="right">
         <tr>
             <td colspan="2" align="left">Registered candidates</td>
-            <td><b>{$registered[NULL]}</b></td>
+            {if {$registered[$keyid]}>0}
+                <td><b>{$registered[NULL]}</b></td>
+            {else}
+                <td><b>0</b></td>
+            {/if}
             {foreach from=$Subprojects item=proj key=keyid}
-                <td><b>{$registered[$keyid]}</b></td>
+                {if {$registered[$keyid]}>0}
+                    <td><b>{$registered[$keyid]}</b></td>
+                {else}
+                    <td><b>0</b></td>
+                {/if}
             {/foreach}
             <td class="total">{$registered.total}</td>
         </tr>
-        <tr>
-            <td rowspan="2" align="left" style="vertical-align:middle">Participant Status</td>
-            <td align="left">Active</td>
-            {if {$ps_active[$NULL]}>0}
-                <td>{$ps_active[$NULL]}<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+        <tr >
+            <td rowspan="2" align="left" style="vertical-align:middle;background-color: #FFFFFF;">Participant Status</td>
+            <td align="left" class="status_active">Active</td>
+            {if {$registered[$NULL]}>0}
+                {if {$ps_active[$NULL]}>0}
+                    <td class="status_active">{$ps_active[$NULL]}<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                {else}
+                    <td class="status_active">0<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                {/if}
             {else}
-                <td>0<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                <td class="status_active">0<font size="1"><b>/0</b></font></td>
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
-                {if {$ps_active[$keyid]}>0}
-                    <td>{$ps_active[$keyid]}<font size="1"><b>/{$registered[$keyid]}</b></font></td>
+                {if {$registered[$keyid]}>0}
+                    {if {$ps_active[$keyid]}>0}
+                        <td class="status_active">{$ps_active[$keyid]}<font size="1"><b>/{$registered[$keyid]}</b></font></td>
+                    {else}
+                        <td class="status_active">0<font size="1"><b>/{$registered[$keyid]}</b></font></td>
+                    {/if}
                 {else}
-                    <td>0<font size="1"><b>/{$registered[$keyid]}</b></font></td>
+                <td class="status_active">0<font size="1"><b>/0</b></font></td>
                 {/if}
             {/foreach}
-            <td class="total">{$ps_active.total}<font size="1"><b>/{$registered.total}</b></font></td>
+            {if {$registered.total}>0}
+                {if {$ps_active.total}>0}
+                    <td class="total">{$ps_active.total}<font size="1"><b>/{$registered.total}</b></font></td>
+                {else}
+                    <td class="total">0<font size="1"><b>/{$registered.total}</b></font></td>
+                {/if}
+            {else}
+                <td class="total">0<font size="1"><b>/0</b></font></td>
+            {/if}
         </tr>
-        <tr>
-            <td align="left">Inactive</td>
-            {if {$ps_inactive[$NULL]}>0}
-                <td>{$ps_inactive[$NULL]}<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+        <tr class="status_inactive">
+            <td align="left" class="status_inactive">Inactive</td>
+            {if {$registered[$NULL]}>0}
+                {if {$ps_inactive[$NULL]}>0}
+                    <td class="status_inactive">{$ps_inactive[$NULL]}<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                {else}
+                    <td class="status_inactive">0<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                {/if}
             {else}
-                <td>0<font size="1"><b>/{$registered[$NULL]}</b></font></td>
+                <td class="status_inactive">0<font size="1"><b>/0</b></font></td>
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
-                {if {$ps_inactive[$keyid]}>0}
-                    <td>{$ps_inactive[$keyid]}<font size="1"><b>/{$registered[$keyid]}</b></font></td>
+                {if {$registered[$keyid]}>0}
+                    {if {$ps_inactive[$keyid]}>0}
+                        <td class="status_inactive">{$ps_inactive[$keyid]}<font size="1"><b>/{$registered[$keyid]}</b></font></td>
+                    {else}
+                        <td class="status_inactive">0<font size="1"><b>/{$registered[$keyid]}</b></font></td>
+                    {/if}
                 {else}
-                    <td>0<font size="1"><b>/{$registered[$keyid]}</b></font></td>
+                    <td class="status_inactive">0<font size="1"><b>/0</b></font></td>
                 {/if}
             {/foreach}
-            <td class="total">{$ps_inactive.total}<font size="1"><b>/{$registered.total}</b></font></td>
+            {if {$registered.total}>0}
+                {if {$ps_inactive.total}>0}
+                    <td class="total">{$ps_inactive.total}<font size="1"><b>/{$registered.total}</b></font></td>
+                {else}
+                    <td class="total">0<font size="1"><b>/{$registered.total}</b></font></td>
+                {/if}
+            {else}
+                <td class="total">0<font size="1"><b>/0</b></font></td>
+            {/if}
+
+
         </tr>
         <tr>
             <td rowspan="2" align="left" style="vertical-align:middle">Gender</td>
             <td align="left">Male</td>
-            {if {$gender_male[$NULL]}>0}
-                <td>{$gender_male[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+            {if {$ps_active[$NULL]}>0}
+                {if {$gender_male[$NULL]}>0}
+                    <td>{$gender_male[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                {else}
+                    <td>0<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                {/if}
             {else}
-                <td>0<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                <td>0<font size="1"><b>/0</b></font></td>
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
-                {if {$gender_male[$keyid]}>0}
-                    <td>{$gender_male[$keyid]}<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
+                {if {$ps_active[$keyid]}>0}
+                    {if {$gender_male[$keyid]}>0}
+                        <td>{$gender_male[$keyid]}<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
+                    {else}
+                        <td>0<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
+                    {/if}
                 {else}
-                    <td>0<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
+                    <td>0<font size="1"><b>/0</b></font></td>
                 {/if}
             {/foreach}
-            <td class="total">{$gender_male.total}<font size="1"><b>/{$ps_active.total}</b></font></td>
+            {if {$ps_active.total}>0}
+                {if {$gender_male.total}>0}
+                    <td class="total">{$gender_male.total}<font size="1"><b>/{$ps_active.total}</b></font></td>
+                {else}
+                    <td class="total">0<font size="1"><b>/{$ps_active.total}</b></font></td>
+                {/if}
+            {else}
+                <td class="total">0<font size="1"><b>/0</b></font></td>
+            {/if}
+
         </tr>
         <tr>
             <td align="left">Female</td>
-            {if {$gender_female[$NULL]}>0}
-                <td>{$gender_female[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+            {if {$ps_active[$NULL]}>0}
+                {if {$gender_female[$NULL]}>0}
+                    <td>{$gender_female[$NULL]}<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                {else}
+                    <td>0<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                {/if}
             {else}
-                <td>0<font size="1"><b>/{$ps_active[$NULL]}</b></font></td>
+                <td>0<font size="1"><b>/0</b></font></td>
             {/if}
             {foreach from=$Subprojects item=proj key=keyid}
-                {if {$gender_female[$keyid]}>0}
-                    <td>{$gender_female[$keyid]}<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
+                {if {$ps_active[$keyid]}>0}
+                    {if {$gender_female[$keyid]}>0}
+                        <td>{$gender_female[$keyid]}<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
+                    {else}
+                        <td>0<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
+                    {/if}
                 {else}
-                    <td>0<font size="1"><b>/{$ps_active[$keyid]}</b></font></td>
+                    <td>0<font size="1"><b>/0</b></font></td>
                 {/if}
+
             {/foreach}
-            <td class="total">{$gender_female.total}<font size="1"><b>/{$ps_active.total}</b></font></td>
+            {if {$ps_active.total}>0}
+                {if {$gender_female.total}>0}
+                    <td class="total">{$gender_female.total}<font size="1"><b>/{$ps_active.total}</b></font></td>
+                {else}
+                    <td class="total">0<font size="1"><b>/{$ps_active.total}</b></font></td>
+                {/if}
+            {else}
+                <td class="total">0<font size="1"><b>/0</b></font></td>
+            {/if}
+
         </tr>
         <tr>
             <td colspan="2" align="left" style="vertical-align:middle">Age Range</td>

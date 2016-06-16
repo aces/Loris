@@ -24,14 +24,16 @@ class NDB_Form_statistics extends NDB_Form
         return false;
     }
 
-    function render_stats_table($header, $subcats, $visits, $dropdown_name, $dropdown_opt, $dropdown_selected, $centres, $data, $Subsection="",$projectID=null)
+    function render_stats_table($sectionHeader, $tableHeader, $disclamer='', $subcats, $visits, $dropdown_name, $dropdown_opt, $dropdown_selected, $centres, $data, $Subsection="",$projectID=null)
     {
         $tpl_data = array();
         $tpl_data['test_name']  = $_REQUEST['test_name'];
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new Smarty_neurodb("statistics");
-        $tpl_data['Header']           = $header;
+        $tpl_data['SectionHeader']           = $sectionHeader;
+        $tpl_data['TableHeader']           = $tableHeader;
+        $tpl_data['Disclamer']           = $disclamer;
         $tpl_data['Subcategories']    = $subcats;
         $tpl_data['Subprojects']      = Utility::getSubprojectsForProject($projectID);
         $tpl_data['DropdownName']     = $dropdown_name;
@@ -288,12 +290,12 @@ class NDB_Form_statistics extends NDB_Form
         }
 
         //START BIG TABLE
-        $instruments = array_merge(
+        $inst_dropdown = array_merge(
             array( '' => 'Recruit Gender Breakdown'),
             Utility::getAllInstruments()
         );
-
-        $this->tpl_data['all_instruments'] = Utility::getAllInstruments();
+        $instrument_list = Utility::getAllInstruments();
+        $this->tpl_data['all_instruments'] = $instrument_list;
         if(isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
             $Subcategories = array(
                               'Complete',
@@ -332,11 +334,13 @@ class NDB_Form_statistics extends NDB_Form
                 $this->params
             );
             $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
-                "Data Entry Completion Status for $_REQUEST[DemographicInstrument]",
+                "Breakdown of Registered Candidates",
+                "Data Entry Completion Status for ". $instrument_list[$_REQUEST['DemographicInstrument']],
+                '',
                 $Subcategories,
                 $Visits,
                 "DemographicInstrument",
-                $instruments,
+                $inst_dropdown,
                 $_REQUEST['DemographicInstrument'],
                 $centers,
                 $result,
@@ -365,10 +369,12 @@ class NDB_Form_statistics extends NDB_Form
             );
             $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
                 "Breakdown of Registered Candidates",
+                "Gender Breakdown",
+                '',
                 $Subcategories,
                 $Visits,
                 "DemographicInstrument",
-                $instruments,
+                $inst_dropdown,
                 '',
                 $centers,
                 $result,
@@ -677,7 +683,9 @@ class NDB_Form_statistics extends NDB_Form
 
         $M_Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['MRI_Done_Table'] = $this->render_stats_table(
+            "Breakdown By Scan Type",
             $MRIHeader,
+            "",
             $MRISubcategories,
             $M_Visits,
             "mri_type",

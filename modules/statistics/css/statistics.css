@@ -24,7 +24,17 @@ td {
 
 
 td.total {
-    background-color: #F6F6F6;
+    background-color: #F0F0F0 ;
+    font-weight: bold;
+}
+
+td.subtotal {
+    background-color: #F0F0F0 !important;
+    font-weight: bold;
+}
+
+td.total.subtotal {
+    background-color: #F0F0F0 !important;
     font-weight: bold;
 }
 
@@ -45,19 +55,23 @@ table.fancytable th:hover, table.listColorCoded th:hover {
     text-align: center;
 }
 
-/*MRI scan table*/
-.pass {
-    background-color: #E5FFCC;
+/*MRI general scan table*/
+/*DEMOGRAPHICS general table*/
+.pass, .status_active{
+    background-color: #E5FFCC !important;
 }
-.fail {
-    background-color: #FFCCCC;
+.fail, .status_inactive{
+    background-color: #FFCCCC !important;
 }
 .noqc {
-    background-color: #FFFFCC;
+    background-color: #FFFFCC !important;
 }
 
 
 /*MRI big table*/
+.data tr td.total {
+    background-color: #F0F0F0
+}
 .data tr td.complete, .data tr td.complete.total
 {
     background-color: #E5FFCC;
