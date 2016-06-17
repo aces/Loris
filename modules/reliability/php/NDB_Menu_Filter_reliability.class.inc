@@ -65,7 +65,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         // create the centerID map
         $db =& Database::singleton();
         $pscRows = array();
-        $pscRows = $db->pselect("SELECT CenterID, Name FROM psc");
+        $pscRows = $db->pselect("SELECT CenterID, Name FROM psc", array());
         foreach($pscRows AS $row) {
             $this->centerIDMap[$row['CenterID']] = $row['Name'];
         }
@@ -310,7 +310,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     function _populate_reliability_table()
     { 
        $db =& Database::singleton();
-       $this->reliability_table= $db->pselect("SELECT CommentID, reliability_center_id FROM reliability");
+       $this->reliability_table= $db->pselect("SELECT CommentID, reliability_center_id FROM reliability", array());
        
        
        $this->reliability_table = map_cIDs($this->reliability_table);
