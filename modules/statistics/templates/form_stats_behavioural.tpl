@@ -38,7 +38,7 @@
         <tr>
             <td class="total">Total</td>
             {foreach from=$Centers item=center key=centername}
-                <td class='{$center.LongName} complete total'>{$behaviour[$center.ID].all.complete|default:"0"} ({$behaviour[$center.ID].all.percent|default:"0"}%)</td>
+                <td class='{$center.LongName} visit_complete total'>{$behaviour[$center.ID].all.complete|default:"0"} ({$behaviour[$center.ID].all.percent|default:"0"}%)</td>
                 <td class='{$center.LongName} total '>{$behaviour[$center.ID].all.total|default:"0"}</td>
             {/foreach}
         </tr>
@@ -92,7 +92,7 @@
         <tr>
             <td class="total">Total</td>
             {foreach from=$Centers item=center key=centername}
-                <td class='{$center.LongName}DD total complete'>{$dde[$center.ID].all.complete|default:"0"} ({$dde[$center.ID].all.percent|default:"0"}%)</td>
+                <td class='{$center.LongName}DD visit_complete total'>{$dde[$center.ID].all.complete|default:"0"} ({$dde[$center.ID].all.percent|default:"0"}%)</td>
                 <td class='{$center.LongName}DD total'>{$dde[$center.ID].all.total|default:"0"}</td>
             {/foreach}
         </tr>

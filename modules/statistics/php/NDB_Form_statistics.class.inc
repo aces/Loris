@@ -297,7 +297,7 @@ class NDB_Form_statistics extends NDB_Form
 
         //START BIG TABLE
         $inst_dropdown   = array_merge(
-            array( '' => 'Recruit Gender Breakdown'),
+            array( '' => 'Recruit Breakdown by Sex'),
             Utility::getAllInstruments()
         );
         $instrument_list = Utility::getAllInstruments();
@@ -375,7 +375,7 @@ class NDB_Form_statistics extends NDB_Form
             );
             $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
                 "Breakdown of Registered Candidates",
-                "Gender Breakdown",
+                "Breakdown by Sex",
                 '',
                 $Subcategories,
                 $Visits,
@@ -618,14 +618,7 @@ class NDB_Form_statistics extends NDB_Form
         foreach ($Scan_type_results as $row) {
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
-        //TODO: IBIS
-        $scan_types_ibis = array(
-                            'T1'           => 'T1',
-                            'T2'           => 'T2',
-                            'DTI'          => 'DTI',
-                            'BOLD'         => 'BOLD',
-                            'Spectroscopy' => 'Spectroscopy',
-                           );
+
         $scans_selected  =array();
         if(isset($_REQUEST['Scans']) && $_REQUEST['Scans'] != '') {
             $scans_selected_input = explode(",", $_REQUEST['Scans']);
@@ -661,6 +654,18 @@ class NDB_Form_statistics extends NDB_Form
             $MRI_Type = current($scan_types);
         } else {
             $MRI_Type = $scan_types[$_REQUEST['mri_type']];
+        }
+        //TODO IBIS
+        if ($MRI_Type==='t1w') {
+            $MRI_Type ='T1';
+        } elseif ($MRI_Type=='t2w') {
+            $MRI_Type ='T2';
+        } elseif ($MRI_Type=='dti') {
+            $MRI_Type ='DTI';
+        } elseif ($MRI_Type=='ep2d_bold') {
+            $MRI_Type ='BOLD';
+        } elseif ($MRI_Type=='DTI65' || $MRI_Type=='DTI65_B1000' ) {
+            $MRI_Type ='Spectroscopy';
         }
 
         $MRI_Type_Field = $MRI_Type . "_Scan_Done";

@@ -75,10 +75,10 @@ table.fancytable th:hover, table.listColorCoded th:hover {
 
 
 /*MRI big table*/
-.data tr td.total {
+.data tr td.total, .data tr td.visit_complete.total {
     background-color: #F0F0F0
 }
-.data tr td.complete, .data tr td.complete.total
+.data tr td.complete
 {
     background-color: #E5FFCC;
 }
@@ -97,4 +97,15 @@ table.fancytable th:hover, table.listColorCoded th:hover {
 .data tr td.female
 {
     background-color: #FFCCE5;
+}
+
+.data tr td.male.total
+{
+    background-color: #CCFFFF;
+    font-weight: bold;
+}
+.data tr td.female.total
+{
+    background-color: #FFCCE5;
+    font-weight: bold;
 }
