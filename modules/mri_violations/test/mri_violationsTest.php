@@ -80,8 +80,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         'series_description' => 'Test Series Description',
                  'SeriesUID' => '5556'
             )
-        );         insert(
-        $thi"violations_resolved",
+        );        
+        $this->DB->insert(
+            "violations_resolved",
             array(
              'ExtID'         => '1001',
              'TypeTable'     => 'mri_protocol_violated_scans',
