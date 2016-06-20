@@ -193,7 +193,7 @@ ImagePanelQCCaveatSelector = React.createClass({displayName: "ImagePanelQCCaveat
     render: function () {
         return (
             React.createElement(ImageQCDropdown, {
-                Label: "Caveat", 
+                Label: "Caveat",
                 FormName: "caveat", 
                 FileID: this.props.FileID, 
                 editable: this.props.HasQCPerm, 
@@ -281,17 +281,11 @@ ImageQCCommentsButton = React.createClass({displayName: "ImageQCCommentsButton",
     }
 });
 
-ImageQCCommentsButton2 = React.createClass({displayName: "ImageQCCommentsButton2",
+LongitudinalViewButton = React.createClass({displayName: "LongitudinalViewButton",
     openWindowHandler: function(e) {
         e.preventDefault();
          window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.OtherTimepoints + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
      },
-    //     window.open(
-    //         this.props.BaseURL + "/feedback_mri_popup.php?fileID=" + this.props.FileID,
-    //         "feedback_mri",
-    //         "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes"
-    //     );
-    // },
     render: function() {
         if (!this.props.FileID || this.props.FileID == '') {
             return React.createElement("span", null);
@@ -303,7 +297,7 @@ ImageQCCommentsButton2 = React.createClass({displayName: "ImageQCCommentsButton2
                 },
                 React.createElement("span", {className: "text-default"},
                     React.createElement("span", {className: "glyphicon glyphicon-pencil"}),
-                    React.createElement("span", {className: "hidden-xs"}, "QC Comments2")
+                    React.createElement("span", {className: "hidden-xs"}, "Longitudinal View")
                 )
             )
         );
@@ -314,7 +308,6 @@ ImageDownloadButtons = React.createClass({displayName: "ImageDownloadButtons",
     render: function() {
         return (
             React.createElement("div", {className: "row mri-second-row-panel col-xs-12"},
-
                 React.createElement(ImageQCCommentsButton, {FileID: this.props.FileID, 
                     BaseURL: this.props.BaseURL}
                 ),
@@ -334,7 +327,7 @@ ImageDownloadButtons = React.createClass({displayName: "ImageDownloadButtons",
                     BaseURL: this.props.BaseURL, 
                     Label: "Download NRRD"}
                 ),
-                React.createElement(ImageQCCommentsButton2, {FileID: this.props.FileID, OtherTimepoints: this.props.OtherTimepoints,
+                React.createElement(LongitudinalViewButton, {FileID: this.props.FileID, OtherTimepoints: this.props.OtherTimepoints,
                     BaseURL: this.props.BaseURL}
                 )
             )
@@ -364,7 +357,8 @@ ImagePanelBody = React.createClass({displayName: "ImagePanelBody",
                                 QCStatus: this.props.QCStatus, 
                                 Caveat: this.props.Caveat, 
                                 SelectedOptions: this.props.SelectedOptions, 
-                                Selected: this.props.Selected}
+                                Selected: this.props.Selected,
+                            }
                             )
                          )
                     ), 

@@ -494,7 +494,15 @@ class NDB_Form_Imaging_Browser extends NDB_Form
      */
     function _getFilesAcrossTimepoints($initialFileID, $initialFileAcquisitionID){
 
-        $selectResults = $this->DB->pselect("SELECT FileID FROM files WHERE AcquisitionProtocolID =:initialFileAcquisitionID AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)", array('initialFileAcquisitionID' => $initialFileAcquisitionID, 'initialFileID' => $initialFileID));
+        $selectResults = $this->DB->pselect("SELECT FileID FROM files ".
+            "WHERE AcquisitionProtocolID =:initialFileAcquisitionID ".
+            "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".
+            "ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)",
+            array(
+                'initialFileAcquisitionID' => $initialFileAcquisitionID,
+                'initialFileID' => $initialFileID
+            )
+        );
 
         $fileIDS = array();
         foreach($selectResults as $selectResult) {
