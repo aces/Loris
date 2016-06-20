@@ -130,5 +130,24 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $html =  $feedbackPanel->display();
         return $html;
     }
+    
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/instrument_list/js/instrument_list_helper.js",
+            )
+        );
+    }
 }
 ?>
