@@ -253,7 +253,6 @@ class SinglePointLogin
 
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
-
         if (!function_exists('getallheaders')) {
             function getallheaders() {
                 $headers = '';
