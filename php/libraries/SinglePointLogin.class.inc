@@ -268,17 +268,16 @@ class SinglePointLogin
                             ucwords(
                                 strtolower(
                                     str_replace(
-                                     '_',
-                                     ' ',
-                                         substr(
-                                          $name,
-                                          5
-                                         )
+                                        '_',
+                                        ' ',
+                                        substr(
+                                            $name,
+                                            5
+                                        )
                                     )
                                 )
                             )
-                         )
-                        ] = $value;
+                         )] = $value;
                     }
                 }
                 return $headers;
