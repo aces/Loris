@@ -251,19 +251,34 @@ class SinglePointLogin
         // Reset passwordExpired flag
         $this->_passwordExpired = false;
 
-        // First try JWT authentication, which is cheaper and
-        // doesn't involve database calls
+        /**
+         * In case unable to detect getallheaders function
+         *
+         * @return array headers
+         */
         if (!function_exists('getallheaders')) {
             function getallheaders() {
                 $headers = '';
                 foreach ($_SERVER as $name => $value) {
                     if (substr($name, 0, 5) == 'HTTP_') {
-                        $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+                        $headers[str_replace(
+                            ' ',
+                            '-',
+                            ucwords(
+                                strtolower(
+                                    str_replace(
+                                        '_',
+                                        ' ',
+                                        substr(
+                                            $name, 5
+                                              )))))] = $value;
                     }
                 }
                 return $headers;
             }
         }
+        // First try JWT authentication, which is cheaper and
+        // doesn't involve database calls
         $headers    = getallheaders();
         $authHeader = $headers['Authorization'];
         if (!empty($authHeader)) {
