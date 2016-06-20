@@ -251,27 +251,34 @@ class SinglePointLogin
         // Reset passwordExpired flag
         $this->_passwordExpired = false;
 
-        /**
-         * In case unable to detect getallheaders function
-         *
-         * @return array headers
-         */
         if (!function_exists('getallheaders')) {
-            function getallheaders() {
+            /**
+             * In case unable to detect getallheaders function
+             *
+             * @return array headers
+             */
+            function getallheaders()
+            {
                 $headers = '';
                 foreach ($_SERVER as $name => $value) {
                     if (substr($name, 0, 5) == 'HTTP_') {
                         $headers[str_replace(
+                         ' ',
+                         '-',
+                         ucwords(
+                          strtolower(
+                           str_replace(
+                            '_',
                             ' ',
-                            '-',
-                            ucwords(
-                                strtolower(
-                                    str_replace(
-                                        '_',
-                                        ' ',
-                                        substr(
-                                            $name, 5
-                                              )))))] = $value;
+                            substr(
+                             $name,
+                             5
+                            )
+                           )
+                          )
+                         )
+                        )
+                       ] = $value;
                     }
                 }
                 return $headers;
