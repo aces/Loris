@@ -277,7 +277,7 @@ class SinglePointLogin
                                     )
                                 )
                             )
-                         )] = $value;
+                        )] = $value;
                     }
                 }
                 return $headers;
