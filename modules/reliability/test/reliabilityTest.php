@@ -6,7 +6,7 @@
  *
  * @category Test
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   WangShen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -20,11 +20,49 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
+
+ /**
+     * Insert testing data
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+         $window = new WebDriverWindow($this->webDriver);
+         $size = new WebDriverDimension(1024,768);
+         $window->setSize($size);
+   
+
+
+    }
+
     function testReliabilityDoespageLoad()
     {
         $this->safeGet($this->url . "/reliability/");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("reliability", $bodyText);
     }
+
+   /**
+     *Tests landing the Reliability with the permission 'violated_scans_view_allsites'
+     *
+     * @return void
+     */
+    function testLoginWithPermission()
+    {
+         $this->setupPermissions(array("access_all_profiles"));
+         $this->safeGet($this->url . "/reliability/");
+         $bodyText = $this->safeFindElement(
+              WebDriverBy::cssSelector("body")
+          )->getText();
+          $this->assertNotContains("You do not have access to this page.", $bodyText);
+          $this->resetPermissions();
+     }
+
+
+
+
+
 }
 ?>
