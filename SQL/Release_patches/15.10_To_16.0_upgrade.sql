@@ -97,8 +97,7 @@ CREATE TABLE `acknowledgements` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO LorisMenu (Label, OrderNumber) VALUES ('Acknowledgements', 7);
-INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Acknowledgements','/acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Acknowledgements'), 1);
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Acknowledgements','/acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 8);
 
 INSERT INTO permissions (code,description,categoryID) VALUES ('acknowledgements_view','View Acknowledgements',2);
 INSERT INTO permissions (code,description,categoryID) VALUES ('acknowledgements_edit','Edit Acknowledgements',2);
