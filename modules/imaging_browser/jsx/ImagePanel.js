@@ -311,7 +311,7 @@ ImagePanelBody = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     openWindowHandler: function (e) {
         e.preventDefault();
-        window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.FileID + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
+        window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.HasQCPerm + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
     },
     render: function() {
         return (

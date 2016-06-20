@@ -62,7 +62,8 @@
                       'Fullname' : "{$files[file].FullFilename}",
                       "XMLProtocol" : "{$files[file].XMLprotocol}",
                       "XMLReport" : "{$files[file].XMLreport}",
-                      "NrrdFile" : "{$files[file].NrrdFile}"
+                      "NrrdFile" : "{$files[file].NrrdFile}",
+                      "OtherTimepoints" : "{$files[file].OtherTimepoints}"
                   }),
                   document.getElementById("image-{$files[file].FileID}" )
                   );

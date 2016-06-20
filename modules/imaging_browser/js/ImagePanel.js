@@ -280,13 +280,44 @@ ImageQCCommentsButton = React.createClass({displayName: "ImageQCCommentsButton",
         );
     }
 });
+
+ImageQCCommentsButton2 = React.createClass({displayName: "ImageQCCommentsButton2",
+    openWindowHandler: function(e) {
+        e.preventDefault();
+         window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.OtherTimepoints + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
+     },
+    //     window.open(
+    //         this.props.BaseURL + "/feedback_mri_popup.php?fileID=" + this.props.FileID,
+    //         "feedback_mri",
+    //         "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes"
+    //     );
+    // },
+    render: function() {
+        if (!this.props.FileID || this.props.FileID == '') {
+            return React.createElement("span", null);
+        };
+        return (
+            React.createElement("a", {className: "btn btn-default",
+                    href: "#noID",
+                    onClick: this.openWindowHandler
+                },
+                React.createElement("span", {className: "text-default"},
+                    React.createElement("span", {className: "glyphicon glyphicon-pencil"}),
+                    React.createElement("span", {className: "hidden-xs"}, "QC Comments2")
+                )
+            )
+        );
+    }
+});
+
 ImageDownloadButtons = React.createClass({displayName: "ImageDownloadButtons",
     render: function() {
         return (
-            React.createElement("div", {className: "row mri-second-row-panel col-xs-12"}, 
+            React.createElement("div", {className: "row mri-second-row-panel col-xs-12"},
+
                 React.createElement(ImageQCCommentsButton, {FileID: this.props.FileID, 
                     BaseURL: this.props.BaseURL}
-                ), 
+                ),
                 React.createElement(DownloadButton, {FileName: this.props.Fullname, 
                     Label: "Download Minc", 
                     BaseURL: this.props.BaseURL}
@@ -302,6 +333,9 @@ ImageDownloadButtons = React.createClass({displayName: "ImageDownloadButtons",
                 React.createElement(DownloadButton, {FileName: this.props.NrrdFile, 
                     BaseURL: this.props.BaseURL, 
                     Label: "Download NRRD"}
+                ),
+                React.createElement(ImageQCCommentsButton2, {FileID: this.props.FileID, OtherTimepoints: this.props.OtherTimepoints,
+                    BaseURL: this.props.BaseURL}
                 )
             )
         );
@@ -340,7 +374,9 @@ ImagePanelBody = React.createClass({displayName: "ImagePanelBody",
                             Fullname: this.props.Fullname, 
                             XMLProtocol: this.props.XMLProtocol, 
                             XMLReport: this.props.XMLReport, 
-                            XMLReport: this.props.NrrdFile}
+                            XMLReport: this.props.NrrdFile,
+                            OtherTimepoints: this.props.OtherTimepoints
+                    }
                         ), 
                     this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, {HeaderInfo: this.props.HeaderInfo}) : ''
                 )
@@ -399,7 +435,9 @@ ImagePanel = React.createClass({displayName: "ImagePanel",
                         Fullname: this.props.Fullname, 
                         XMLProtocol: this.props.XMLProtocol, 
                         XMLReport: this.props.XMLReport, 
-                        NrrdFile: this.props.NrrdFile}
+                        NrrdFile: this.props.NrrdFile,
+                        OtherTimepoints: this.props.OtherTimepoints
+                    }
                     )
                 )
             )
