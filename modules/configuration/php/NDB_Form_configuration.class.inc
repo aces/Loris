@@ -198,6 +198,25 @@ class NDB_Form_Configuration extends NDB_Form
             throw new ConfigurationException("Projects are not used in this study.");
         }
     }
+    
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/configuration/js/configuration_helper.js",
+            )
+        );
+    }
 }
 
 ?>
