@@ -92,7 +92,7 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane active">
-                <div class="row">
+                <div>
                     <!--  title table with pagination -->
                     <table id="LogEntries" border="0" valign="bottom" width="100%">
                         <tr>
@@ -171,20 +171,13 @@
                                 {sectionelse}
                                 <tr><td colspan="12">No data found</td></tr>
                             {/section}
-                            <tr>
-                                <td nowrap="nowrap" colspan="1"> </td>
-                                <td nowrap="nowrap" colspan="1"> </td>
-                                <td nowrap="nowrap" colspan="1"> </td>
-                                <td nowrap="nowrap" colspan="1"> </td>
-                                <td nowrap="nowrap" colspan="1"> </td>
-                                <td nowrap="nowrap" colspan="1"> </td>
-                                <td nowrap="nowrap" colspan="5">
-                                    <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
-                                    <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
-                                </td>
-                            </tr>
                             </tbody>
+
                         </table>
+                        <div class="pull-right">
+                            <input class="btn btn-sm btn-primary" name="fire_away" value="Save" type="submit" />
+                            <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
+                        </div>
                     </form>
                 </div>
             </div>
