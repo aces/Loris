@@ -415,8 +415,9 @@ class SinglePointLogin
                     $user->updatePassword($password);
                 }
 
-                if ($row['Active'] == 'N') {
-                    $this->_lastError = "Your account has been deactivated."
+                if ($row['Active'] == 'N' || $this->disabledDueToInactivity($username, 365)) {
+                    $this->_lastError = "Your account has been deactivated,"
+                        . " possibly due to inactivity."
                         . " Please contact your project administrator to"
                         . " reactivate this account.";
                     $this->insertFailedDetail(
@@ -515,5 +516,42 @@ class SinglePointLogin
         $result =  $DB->insert('user_login_history', $setArray);
     }
 
+    /**
+     * Checks if a user has not logged in for a given amount of time
+     * As a side-effect, if true, will also set user field 'active' to 'N'
+     * Need to have already confirmed valid user
+     *
+     * @param String $username
+     * @param Int    $maximumDaysInactive Longest allowable time for inactivity in days
+     *
+     *
+     * @return bool - true if the user has now been disabled
+     */
+    function disabledDueToInactivity($username, $maximumDaysInactive)
+    {
+        $DB =& Database::singleton();
+        $query = "SELECT Login_timestamp 
+                  FROM (SELECT Login_timestamp, UserID 
+                        FROM user_login_history 
+                        WHERE UserID = :username 
+                        ORDER BY Login_timestamp DESC) 
+                        as t1 
+                  GROUP BY UserID";
+
+        $row   = $DB->pselectRow($query, array('username' => $username));
+        $last_login = new DateTime($row['Login_timestamp']);
+        $time_now = new DateTime("now");
+        $interval = $last_login->diff($time_now);
+
+        if ($interval->days > $maximumDaysInactive) {
+            $DB->update(
+                'users',
+                array('Active' => 'N'),
+                array('UserID' => $username)
+            );
+            return true;
+        }
+        return false;
+    }
 }
 ?>
