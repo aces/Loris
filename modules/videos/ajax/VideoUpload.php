@@ -41,7 +41,8 @@ function uploadVideo()
     $visit = $_POST['visitLabel'];
     $site = $_POST['For_site'];
     $instrument = $_POST['Instrument'];
-    $comments = "nice vid";
+    $dateTaken = $_POST['dateTaken'];
+    $comments = $_POST['comments'];
 
     $fileSize = $_FILES["file"]["size"];
     $fileName = $_FILES["file"]["name"];
@@ -54,7 +55,7 @@ function uploadVideo()
         'PSCID'         => $pscid,
         'Instrument'    => $instrument,
         'visitLabel'    => $visit,
-        'Date_taken'    => date("Y-m-d H:i:s"),
+        'Date_taken'    => $dateTaken,
         'Date_uploaded' => date("Y-m-d H:i:s"),
         'File_type'     => $fileType,
         'Data_dir'      => $videosPath,

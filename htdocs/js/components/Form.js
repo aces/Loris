@@ -3,15 +3,258 @@
  *	elements.
  */
 
+FormElement = React.createClass({
+  displayName: 'FormElement',
+
+  getDefaultProps: function () {
+    return {
+      'name': '',
+      'id': '',
+      'action': '',
+      'method': 'POST',
+      'class': 'form-horizontal'
+    };
+  },
+
+  handleChange: function (e) {
+    e.preventDefault();
+    if (this.props.onSubmit) this.props.onSubmit(e);
+  },
+
+  render: function () {
+    return React.createElement(
+      'form',
+      {
+        name: this.props.name,
+        action: this.props.action,
+        className: this.props.class,
+        method: this.props.method,
+        encType: 'multipart/form-data',
+        onSubmit: this.handleChange
+      },
+      this.props.children
+    );
+  }
+});
+
+SelectElement = React.createClass({
+  displayName: 'SelectElement',
+
+  getDefaultProps: function () {
+    return {
+      'label': 'Label',
+      'options': [],
+      'multiple': '',
+      'name': '',
+      'id': '',
+      'disabled': '',
+      'required': '',
+      'class': '',
+      'onUserInput': function () {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
+  getInitialState: function () {
+    return {
+      value: ''
+    };
+  },
+  handleChange: function (e) {
+    this.setState({
+      value: e.target.value
+    });
+    this.props.onUserInput(this.props.name, e.target.value);
+  },
+  render: function () {
+    var multiple = this.props.multiple ? 'multiple' : '';
+    var options = this.props.options;
+    return React.createElement(
+      'div',
+      { className: 'form-group' },
+      React.createElement(
+        'label',
+        { className: 'col-sm-3 control-label', 'for': this.props.label },
+        this.props.label
+      ),
+      React.createElement(
+        'div',
+        { className: 'col-sm-9' },
+        React.createElement(
+          'select',
+          {
+            name: this.props.name,
+            multiple: multiple,
+            className: 'form-control',
+            id: this.props.label,
+            value: this.state.value,
+            onChange: this.handleChange
+          },
+          React.createElement('option', null),
+          Object.keys(options).map(function (option) {
+            return React.createElement(
+              'option',
+              { value: option },
+              options[option]
+            );
+          })
+        )
+      )
+    );
+  }
+});
+
+FileElement = React.createClass({
+  displayName: 'FileElement',
+
+
+  getInitialState: function () {
+    return {
+      'id': '',
+      'value': null,
+      'onUserInput': function () {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
+
+  getDefaultProps: function () {
+    return {
+      'label': 'File to Upload',
+      'name': 'file',
+      'class': 'fileUpload'
+    };
+  },
+
+  handleChange: function (e) {
+    this.setState({
+      value: e.target.value.split(/(\\|\/)/g).pop()
+    });
+    // pass current file to parent form
+    var file = e.target.files[0];
+    this.props.onUserInput(this.props.name, file);
+  },
+
+  render: function () {
+
+    if (this.state.value != null) {
+      console.log(this.state.value);
+    }
+
+    return React.createElement(
+      'div',
+      { className: 'form-group' },
+      React.createElement(
+        'label',
+        { className: 'col-sm-3 control-label' },
+        this.props.label
+      ),
+      React.createElement(
+        'div',
+        { className: 'col-sm-9' },
+        React.createElement(
+          'div',
+          { className: 'input-group' },
+          React.createElement(
+            'div',
+            { tabindex: '-1', className: 'form-control file-caption kv-fileinput-caption', title: '' },
+            this.state.value,
+            React.createElement('div', { className: 'file-caption-name', id: 'video_file' })
+          ),
+          React.createElement(
+            'div',
+            { className: 'input-group-btn' },
+            React.createElement(
+              'div',
+              { className: 'btn btn-primary btn-file' },
+              React.createElement('i', { className: 'glyphicon glyphicon-folder-open' }),
+              ' Browse',
+              React.createElement('input', { type: 'file', name: this.props.name, className: this.props.class, ref: 'file', onChange: this.handleChange })
+            )
+          )
+        )
+      )
+    );
+  }
+});
+
+HelpTextElement = React.createClass({
+  displayName: 'HelpTextElement',
+
+  getDefaultProps: function () {
+    return {
+      'html': false,
+      'label': '',
+      'text': ''
+    };
+  },
+  render: function () {
+    if (this.props.html) {
+      return React.createElement(
+        'div',
+        { className: 'form-group' },
+        React.createElement(
+          'label',
+          { className: 'col-sm-3 control-label' },
+          this.props.label
+        ),
+        React.createElement(
+          'div',
+          { className: 'col-sm-9' },
+          React.createElement('div', { dangerouslySetInnerHTML: { __html: this.props.text } })
+        )
+      );
+    }
+    return React.createElement(
+      'div',
+      { className: 'form-group' },
+      React.createElement(
+        'label',
+        { className: 'col-sm-2 control-label' },
+        this.props.label
+      ),
+      React.createElement(
+        'div',
+        { className: 'col-sm-10' },
+        React.createElement(
+          'div',
+          null,
+          this.props.text
+        )
+      )
+    );
+  }
+});
+
+ButtonElement = React.createClass({
+  displayName: 'ButtonElement',
+
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'form-group' },
+      React.createElement(
+        'div',
+        { className: 'col-sm-9 col-sm-offset-3' },
+        React.createElement(
+          'button',
+          { type: 'submit', className: 'btn btn-primary' },
+          'Upload'
+        )
+      )
+    );
+  }
+});
+
 /*
  *	This is the React class for a header element
  */
 HeaderElement = React.createClass({
-  displayName: "HeaderElement",
+  displayName: 'HeaderElement',
 
   render: function () {
     return React.createElement(
-      "h2",
+      'h2',
       null,
       this.props.header
     );
@@ -22,11 +265,11 @@ HeaderElement = React.createClass({
  *	This is the React class for a label element
  */
 LabelElement = React.createClass({
-  displayName: "LabelElement",
+  displayName: 'LabelElement',
 
   render: function () {
     return React.createElement(
-      "p",
+      'p',
       null,
       this.props.label
     );
@@ -37,24 +280,24 @@ LabelElement = React.createClass({
  *	This is the React class for a scored element
  */
 ScoredElement = React.createClass({
-  displayName: "ScoredElement",
+  displayName: 'ScoredElement',
 
   render: function () {
     var score = this.props.score ? this.props.score : 0;
     return React.createElement(
-      "div",
+      'div',
       null,
       React.createElement(
-        "label",
-        { className: "lab col-sm-4 col-xs-12" },
+        'label',
+        { className: 'lab col-sm-4 col-xs-12' },
         this.props.label
       ),
       React.createElement(
-        "div",
-        { className: "col-sm-8" },
+        'div',
+        { className: 'col-sm-8' },
         React.createElement(
-          "div",
-          { className: "col-xs-12 element" },
+          'div',
+          { className: 'col-xs-12 element' },
           score
         )
       )
@@ -66,24 +309,24 @@ ScoredElement = React.createClass({
  *	This is the React class for a textbox element
  */
 TextboxElement = React.createClass({
-  displayName: "TextboxElement",
+  displayName: 'TextboxElement',
 
   render: function () {
     return React.createElement(
-      "div",
+      'div',
       null,
       React.createElement(
-        "label",
-        { className: "lab col-sm-4 col-xs-12" },
+        'label',
+        { className: 'lab col-sm-4 col-xs-12' },
         this.props.label
       ),
       React.createElement(
-        "div",
-        { className: "col-sm-8" },
+        'div',
+        { className: 'col-sm-8' },
         React.createElement(
-          "div",
-          { className: "col-xs-12 col-sm-6 element" },
-          React.createElement("input", { type: "text", className: "form-control input-sm user-success" })
+          'div',
+          { className: 'col-xs-12 col-sm-6 element' },
+          React.createElement('input', { type: 'text', className: 'form-control input-sm user-success' })
         )
       )
     );
@@ -94,25 +337,52 @@ TextboxElement = React.createClass({
  *	This is the React class for a textarea element
  */
 TextareaElement = React.createClass({
-  displayName: "TextareaElement",
+  displayName: 'TextareaElement',
 
+  getDefaultProps: function () {
+    return {
+      'label': 'Text Area',
+      'name': 'textarea',
+      'id': '',
+      'class': 'form-control',
+      'disabled': '',
+      'required': '',
+      'onUserInput': function () {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
+  getInitialState: function () {
+    return {
+      value: ''
+    };
+  },
+  handleChange: function (e) {
+    this.setState({
+      value: e.target.value
+    });
+    this.props.onUserInput(this.props.name, e.target.value);
+  },
   render: function () {
     return React.createElement(
-      "div",
-      null,
+      'div',
+      { className: 'form-group' },
       React.createElement(
-        "label",
-        { className: "lab col-sm-4 col-xs-12" },
+        'label',
+        { className: 'col-sm-3 control-label', 'for': this.props.label },
         this.props.label
       ),
       React.createElement(
-        "div",
-        { className: "col-sm-8" },
-        React.createElement(
-          "div",
-          { className: "col-xs-12 col-sm-6 element" },
-          React.createElement("textarea", { cols: "25", rows: "4", className: "form-control input-sm user-success" })
-        )
+        'div',
+        { className: 'col-sm-9' },
+        React.createElement('textarea', {
+          id: this.props.label,
+          name: this.props.name,
+          cols: '25',
+          rows: '4',
+          className: this.props.class,
+          onChange: this.handleChange
+        })
       )
     );
   }
@@ -155,7 +425,7 @@ TextareaElement = React.createClass({
  *	This is the React class for a date element
  */
 DateElement = React.createClass({
-  displayName: "DateElement",
+  displayName: 'DateElement',
 
 
   getDefaultProps: function () {
@@ -171,26 +441,38 @@ DateElement = React.createClass({
       }
     };
   },
+  getInitialState: function () {
+    return {
+      value: ''
+    };
+  },
+  handleChange: function (e) {
+    this.setState({
+      value: e.target.value
+    });
+    this.props.onUserInput(this.props.name, e.target.value);
+  },
 
   render: function () {
     return React.createElement(
-      "div",
-      { className: "form-group" },
+      'div',
+      { className: 'form-group' },
       React.createElement(
-        "label",
-        { className: "col-sm-3 control-label", "for": this.props.label },
+        'label',
+        { className: 'col-sm-3 control-label', 'for': this.props.label },
         this.props.label
       ),
       React.createElement(
-        "div",
-        { className: "col-sm-9" },
-        React.createElement("input", {
-          type: "date",
+        'div',
+        { className: 'col-sm-9' },
+        React.createElement('input', {
+          type: 'date',
           name: this.props.name,
           id: this.props.label,
           className: this.props.class,
           min: this.props.minYear,
-          max: this.props.maxYear
+          max: this.props.maxYear,
+          onChange: this.handleChange
         })
       )
     );
@@ -201,25 +483,25 @@ DateElement = React.createClass({
  *	This is the React class for a numeric element
  */
 NumericElement = React.createClass({
-  displayName: "NumericElement",
+  displayName: 'NumericElement',
 
   render: function () {
     return React.createElement(
-      "div",
+      'div',
       null,
       React.createElement(
-        "label",
-        { className: "lab col-sm-4 col-xs-12" },
+        'label',
+        { className: 'lab col-sm-4 col-xs-12' },
         this.props.label
       ),
       React.createElement(
-        "div",
-        { className: "col-sm-8" },
+        'div',
+        { className: 'col-sm-8' },
         React.createElement(
-          "div",
-          { className: "col-xs-12 col-sm-6 element" },
-          React.createElement("input", { type: "number",
-            className: "form-control input-sm user-success",
+          'div',
+          { className: 'col-xs-12 col-sm-6 element' },
+          React.createElement('input', { type: 'number',
+            className: 'form-control input-sm user-success',
             min: this.props.min,
             max: this.props.max
           })
@@ -234,7 +516,7 @@ NumericElement = React.createClass({
  * 	in an element and render's the HTML based on its type
  */
 LorisElement = React.createClass({
-  displayName: "LorisElement",
+  displayName: 'LorisElement',
 
   render: function () {
     var element = this.props.element,
@@ -258,7 +540,7 @@ LorisElement = React.createClass({
         break;
       case 'select':
         if (element.Options.AllowMultiple) {
-          elementHtml = React.createElement(SelectElement, { label: element.Description, options: element.Options.Values, multiple: "true" });
+          elementHtml = React.createElement(SelectElement, { label: element.Description, options: element.Options.Values, multiple: 'true' });
         } else {
           elementHtml = React.createElement(SelectElement, { label: element.Description, options: element.Options.Values });
         }
@@ -280,7 +562,7 @@ LorisElement = React.createClass({
         break;
     }
     return React.createElement(
-      "div",
+      'div',
       null,
       elementHtml
     );
