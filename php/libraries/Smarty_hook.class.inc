@@ -63,18 +63,18 @@ class Smarty_NeuroDB extends Smarty
         // change..
         $this->setCompileDir($paths['base']."smarty/templates_c/");
 
-        $this->config_dir = $paths['base']."smarty/configs/";
-        $this->cache_dir  = $paths['base']."smarty/cache/";
+        $this->setConfigDir($paths['base']."smarty/configs/");
+        $this->setCacheDir ($paths['base']."smarty/cache/");
 
         // Behave like smarty2 used to. This should be
         // removed after all the warnings/notices from the PHP
         // side of Loris are fixed, and then the templates can be
         // updated..
-        $this->error_reporting = E_ALL & ~E_NOTICE;
+        $this-> error_reporting = E_ALL & ~E_NOTICE;
         $sandbox = $config->getSetting("sandbox");
 
         if ($sandbox === '1') {
-            $this->force_compile = true;
+            $this->setForceCompile(true);
         }
 
         $this->assign('app_name', 'NeuroDB');
