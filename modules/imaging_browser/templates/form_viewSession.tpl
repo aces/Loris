@@ -6,7 +6,6 @@
 </br>
 {/if}
 </tr>
-{var_dump($files)}
 <div class="row">
 {$headerTable}
 </div>
