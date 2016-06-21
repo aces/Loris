@@ -275,7 +275,8 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
             $deps,
             array(
                 $baseURL . "/js/advancedMenu.js",
-                $baseURL . "/videos/js/columnFormatter.js"
+                $baseURL . "/videos/js/columnFormatter.js",
+                $baseURL . "/videos/js/videos_upload.js"
             )
         );
     }
