@@ -198,7 +198,7 @@ class NDB_Form_Configuration extends NDB_Form
             throw new ConfigurationException("Projects are not used in this study.");
         }
     }
-    
+
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
