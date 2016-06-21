@@ -18,14 +18,7 @@ var VideoUploadForm = React.createClass({
 
   getInitialState: function () {
     return {
-      'formData': {
-        'PSCID': '',
-        'visitLabel': '',
-        'Instrument': '',
-        'For_site': '',
-        'dateTaken': '',
-        'comments': ''
-      },
+      'formData': {},
       'uploadResult': null,
       'Headers': [],
       'Data': [],
@@ -99,6 +92,16 @@ var VideoUploadForm = React.createClass({
         self.setState({
           uploadResult: "success"
         });
+
+        // Itterates through child components and resets state
+        // to initial state in order to clear the form
+        Object.keys(self.refs).map(function (ref) {
+          if (self.refs[ref].state && self.refs[ref].state.value) {
+            self.refs[ref].state.value = "";
+          }
+        });
+        // rerender components
+        self.forceUpdate();
       },
       error: function (err) {
         console.error(err);
@@ -172,7 +175,8 @@ var VideoUploadForm = React.createClass({
         {
           name: 'videoUpload',
           action: this.props.action,
-          onSubmit: this.handleSubmit
+          onSubmit: this.handleSubmit,
+          ref: 'form'
         },
         React.createElement(
           'h3',
@@ -185,39 +189,45 @@ var VideoUploadForm = React.createClass({
           name: 'PSCID',
           label: 'PSCID',
           options: this.state.Data.candidates,
-          onUserInput: this.setFormData
+          onUserInput: this.setFormData,
+          ref: 'pscid'
         }),
         React.createElement(SelectElement, {
           name: 'visitLabel',
           label: 'Visit Label',
           options: this.state.Data.visits,
-          onUserInput: this.setFormData
+          onUserInput: this.setFormData,
+          ref: 'visit'
         }),
         React.createElement(SelectElement, {
           name: 'Instrument',
           label: 'Instrument',
           options: this.state.Data.instruments,
-          onUserInput: this.setFormData
+          onUserInput: this.setFormData,
+          ref: 'instrument'
         }),
         React.createElement(SelectElement, {
           name: 'For_site',
           label: 'For Site',
           options: this.state.Data.sites,
-          onUserInput: this.setFormData
+          onUserInput: this.setFormData,
+          ref: 'site'
         }),
         React.createElement(DateElement, {
           name: 'dateTaken',
           label: 'Date of Administration',
           minYear: '2000',
           maxYear: '2017',
-          onUserInput: this.setFormData
+          onUserInput: this.setFormData,
+          ref: 'date'
         }),
         React.createElement(TextareaElement, {
           name: 'comments',
           label: 'Comments (optional)',
-          onUserInput: this.setFormData
+          onUserInput: this.setFormData,
+          ref: 'comments'
         }),
-        React.createElement(FileElement, { id: 'videoUploadEl', onUserInput: this.setFormData }),
+        React.createElement(FileElement, { id: 'videoUploadEl', onUserInput: this.setFormData, ref: 'file' }),
         React.createElement(ButtonElement, null)
       )
     );

@@ -16,9 +16,12 @@ FormElement = React.createClass({
     };
   },
 
-  handleChange: function (e) {
-    e.preventDefault();
-    if (this.props.onSubmit) this.props.onSubmit(e);
+  handleSubmit: function (e) {
+    // Override default submit if property is set
+    if (this.props.onSubmit) {
+      e.preventDefault();
+      this.props.onSubmit(e);
+    }
   },
 
   render: function () {
@@ -30,7 +33,7 @@ FormElement = React.createClass({
         className: this.props.class,
         method: this.props.method,
         encType: 'multipart/form-data',
-        onSubmit: this.handleChange
+        onSubmit: this.handleSubmit
       },
       this.props.children
     );
@@ -69,6 +72,7 @@ SelectElement = React.createClass({
   render: function () {
     var multiple = this.props.multiple ? 'multiple' : '';
     var options = this.props.options;
+
     return React.createElement(
       'div',
       { className: 'form-group' },
@@ -136,11 +140,6 @@ FileElement = React.createClass({
   },
 
   render: function () {
-
-    if (this.state.value != null) {
-      console.log(this.state.value);
-    }
-
     return React.createElement(
       'div',
       { className: 'form-group' },
@@ -381,7 +380,8 @@ TextareaElement = React.createClass({
           cols: '25',
           rows: '4',
           className: this.props.class,
-          onChange: this.handleChange
+          onChange: this.handleChange,
+          value: this.state.value
         })
       )
     );
@@ -472,7 +472,8 @@ DateElement = React.createClass({
           className: this.props.class,
           min: this.props.minYear,
           max: this.props.maxYear,
-          onChange: this.handleChange
+          onChange: this.handleChange,
+          value: this.state.value
         })
       )
     );

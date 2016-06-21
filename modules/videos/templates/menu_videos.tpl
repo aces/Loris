@@ -20,10 +20,7 @@
 
   <!-- Upload Videos -->
   <div role="tabpanel" class="tab-pane active" id="upload">
-    <div class="controlPanelSection">
-      <a class="btn btn-sm btn-primary" href="video_upload/">Upload a New Video</a>
       {include file='../part/video_upload.tpl'}
-    </div>
   </div>
 </div>
 
