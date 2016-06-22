@@ -8,16 +8,14 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
 
-                        <div class="filename clickable"></div>
-                        <h3 class="panel-title filename clickable">Overlay</h3>
-
-                        <span class="arrow glyphicon glyphicon-chevron-down clickable"></span>
+                        <div class="filename"></div>
+                        <h3 class="panel-title filename">Overlay</h3>
 
                     </div>
                 </div>
             
                 <div class="volume-viewer-controls volume-controls">
-                    <div class="filename-overlay clickable"  style="display: block; margin:auto;"></div>
+                    <div class="filename-overlay"  style="display: block; margin:auto;"></div>
 
 
                     <div class="blend-div" data-volume-id="{{VOLID}}">
@@ -208,4 +206,3 @@
 
     <div id="loading" style="display: block; color: #064785; font-size: 40px; font-weight: bold; text-align: center; margin: auto;">LOADING...</div>
 {/literal}
-
