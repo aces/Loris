@@ -127,62 +127,60 @@ StaticDataTable = React.createClass({
         var index = [],
             that = this;
 
-        if (this.state.SortColumn >= 0) {
-            for (var i = 0; i < this.props.Data.length; i += 1) {
-                var val = this.props.Data[i][this.state.SortColumn];
+        for (var i = 0; i < this.props.Data.length; i += 1) {
+            var val = this.props.Data[i][this.state.SortColumn];
 
-                if (parseInt(val, 10) == val) {
-                    val = parseInt(val, 10);
-                } else if (parseFloat(val, 10) == val) {
-                    val = parseFloat(val, 10);
-                } else if (val == '.') {
-                    val = null;
-                }
-
-                if (this.props.RowNameMap) {
-                    index.push({ RowIdx: i, Value: val, Content: this.props.RowNameMap[i] });
-                } else {
-                    index.push({ RowIdx: i, Value: val, Content: i + 1 });
-                }
+            if (parseInt(val, 10) == val) {
+                val = parseInt(val, 10);
+            } else if (parseFloat(val, 10) == val) {
+                val = parseFloat(val, 10);
+            } else if (val == '.') {
+                val = null;
             }
-            index.sort(function (a, b) {
-                if (that.state.SortOrder === 'ASC') {
-                    // Sort by value
-                    if (a.Value < b.Value) return -1;
-                    if (a.Value > b.Value) return 1;
 
-                    // If all values are equal, sort by rownum
-                    if (a.RowIdx < b.RowIdx) {
-                        return -1;
-                    }
-                    if (a.RowIdx > b.RowIdx) {
-                        return 1;
-                    }
-                } else {
-                    // Sort by value
-                    if (a.Value < b.Value) return 1;
-                    if (a.Value > b.Value) return -1;
+            // if string - convert to lowercase to make sort algorithm work
+            var isString = typeof val === 'string' || val instanceof String;
+            if (val != undefined && isString) {
+                val = val.toLowerCase();
+            }
 
-                    // If all values are equal, sort by rownum
-                    if (a.RowIdx < b.RowIdx) {
-                        return 1;
-                    }
-                    if (a.RowIdx > b.RowIdx) {
-                        return -1;
-                    }
-                }
-                // They're equal..
-                return 0;
-            });
-        } else {
-            for (var i = 0; i < this.props.Data.length; i += 1) {
-                if (this.props.RowNameMap) {
-                    index.push({ RowIdx: i, Content: this.props.RowNameMap[i] });
-                } else {
-                    index.push({ RowIdx: i, Content: i + 1 });
-                }
+            if (this.props.RowNameMap) {
+                index.push({ RowIdx: i, Value: val, Content: this.props.RowNameMap[i] });
+            } else {
+                index.push({ RowIdx: i, Value: val, Content: i + 1 });
             }
         }
+
+        index.sort(function (a, b) {
+            if (that.state.SortOrder === 'ASC') {
+                // Sort by value
+                if (a.Value < b.Value) return -1;
+                if (a.Value > b.Value) return 1;
+
+                // If all values are equal, sort by rownum
+                if (a.RowIdx < b.RowIdx) {
+                    return -1;
+                }
+                if (a.RowIdx > b.RowIdx) {
+                    return 1;
+                }
+            } else {
+                // Sort by value
+                if (a.Value < b.Value) return 1;
+                if (a.Value > b.Value) return -1;
+
+                // If all values are equal, sort by rownum
+                if (a.RowIdx < b.RowIdx) {
+                    return 1;
+                }
+                if (a.RowIdx > b.RowIdx) {
+                    return -1;
+                }
+            }
+            // They're equal..
+            return 0;
+        });
+
         for (var i = rowsPerPage * (this.state.PageNumber - 1); i < this.props.Data.length && rows.length < rowsPerPage; i += 1) {
             curRow = [];
 
@@ -311,3 +309,5 @@ StaticDataTable = React.createClass({
 });
 
 RStaticDataTable = React.createFactory(StaticDataTable);
+
+//# sourceMappingURL=StaticDataTable.js.map

@@ -57,7 +57,7 @@ var Table = {
 	checkOverflow: function (tableID, rightID, leftID, headCol) {
 		var staticCol = headCol === undefined ? false : true;
 	    var element = document.querySelector('#' + tableID);
-	    if( (element.offsetHeight < element.scrollHeight) || (element.offsetWidth < element.scrollWidth)){
+	    if( element && ((element.offsetHeight < element.scrollHeight) || (element.offsetWidth < element.scrollWidth))){
 	        // your element have overflow
 	        if(staticCol){
 	        	$("." + headCol).addClass("colm-static");
