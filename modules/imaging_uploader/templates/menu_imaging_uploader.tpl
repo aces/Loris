@@ -148,7 +148,7 @@
     <div class="col-sm-10 col-md-8">
         <div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter();">
-                Upload process logs
+                Log viewer
             </div>
             <div class="panel-body" id="panel-body">
 
@@ -174,7 +174,7 @@
 <table border="0" valign="bottom" width="100%">
 <tr>
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
 
@@ -199,7 +199,19 @@
                 <tr>
                     <!-- print out data rows -->
                     {section name=piece loop=$items[item]}
-                        {if $items[item][piece].name eq 'Tarchive_Info'}
+                        {if $items[item][piece].name eq 'Progress'}
+                            {if $items[item][piece].value}
+                                <td nowrap="nowrap">
+                                        {if {$items[item][piece].value} eq 'Success'}
+                                            {$items[item][piece].value} ({$items[item][10].value} out of {$items[item][11].value})
+                                        {else}
+                                            {$items[item][piece].value}
+                                        {/if}
+                                </td>
+                            {else}
+                                <td nowrap="nowrap"> </td>
+                            {/if}
+                        {elseif $items[item][piece].name eq 'Tarchive_Info'}
                             {if $items[item][piece].value}
                                 <td nowrap="nowrap">
                                     <a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$items[item][piece].value}">
@@ -212,7 +224,7 @@
                         {elseif $items[item][piece].name eq 'number_of_mincInserted'}
                             {if (!empty($items[item][piece].value)) and $items[item][piece].value >0}
                                 <td nowrap="nowrap">
-                                    <a href="{$baseurl}/imaging_browser/?DCCID={$items[item][2].value}&filter=true">
+                                    <a href="{$baseurl}/imaging_browser/?DCCID={$items[item][3].value}&filter=true">
                                         {$items[item][piece].value}
                                     </a>
                                 </td>
@@ -234,3 +246,15 @@
         </tbody>
     </table>
 </div>
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$numUploads},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/imaging_uploader/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
