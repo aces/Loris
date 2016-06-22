@@ -11,7 +11,7 @@
         <div class="panel-body" id="panel-body">
             <form method="post" action="/videos/">
                 <div class="row">
-                    <div class="col-md-10 col-lg-6 col-md-offset-1 col-lg-offset-3">
+                    <div class="col-md-12 col-lg-6">
                         <div class="row">
                             <div class="form-group col-sm-6">
                                 <label class="col-md-4">{$form.PSCID.label}</label>

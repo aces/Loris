@@ -42,79 +42,7 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
     {
         //create user object
         $user =& User::singleton();
-
         return $user->hasPermission('video_upload');
-    }
-
-    /**
-     * Data for videos table
-     *
-     * @param int $count item count
-     *
-     * @return bool
-     */
-    function _setDataTableRows($count)
-    {
-        $site_names = Utility::getSiteList(false);
-
-        // print out
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            // $identifier = $item['Tracking_log_ID'];
-            $Data_dir = $item['Data_dir'];
-            $record_id = $item['record_id'];
-            $File_size = $item['File_size'];
-
-            foreach ($item as $key => $val) {
-                // Confused about this line
-                if ($key == 'Tracking_log_ID') {
-                    continue;
-                }
-                if ($key == 'Data_dir') {
-                    continue;
-                }
-                if ($key == 'record_id') {
-                    continue;
-                }
-                if ($key == 'File_size') {
-                    continue;
-                }
-
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-
-                if ($key == 'For_site') {
-                    if (isset($site_names[$val])) {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = $site_names[$val];
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value'] = '';
-                    }
-                } else {
-                    $this->tpl_data['items'][$x][$i]['value'] = $val;
-                }
-
-                if ($key == 'File_name') {
-                    $this->tpl_data['items'][$x][$i]['Data_dir'] = $Data_dir;
-                    $this->tpl_data['items'][$x][$i]['File_size']
-                        = $this->formatSize($File_size);
-                }
-
-                if ($key == 'Date_uploaded') {
-                    $this->tpl_data['items'][$x][$i + 1]['name'] = 'record_id';
-                    $this->tpl_data['items'][$x][$i + 1]['value'] = $record_id;
-                }
-
-                $i++;
-            }
-            $x++;
-        }
-
-        return true;
     }
 
     /**
@@ -229,40 +157,10 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
     }
 
     /**
-     * Format Size
+     * Include additional JS files:
+     *  1. columnFormatter.js required to set links for Edit video and Download video
+     *  2. uploadForm.js - reactified form to upload videos
      *
-     * @param int $value file size
-     *
-     * @return null|string
-     */
-    function formatSize($value)
-    {
-        if (is_null($value)) {
-            return null;
-        }
-
-        if ($value >= 1000000000) {
-            $value = floor($value / 1000000000);
-            return "{$value} GB";
-        }
-
-        if ($value >= 1000000) {
-            $value = floor($value / 1000000);
-            return "{$value} MB";
-        }
-
-        if ($value >= 1000) {
-            $value = floor($value / 1000);
-            return "{$value} KB";
-        }
-
-        return "{$value} bytes";
-
-    }
-
-    /**
-     * Include the column formatter required to display the feedback link colours
-     * in the videos menu
      *
      * @return array of javascript to be inserted
      */
@@ -274,9 +172,8 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/js/advancedMenu.js",
                 $baseURL . "/videos/js/columnFormatter.js",
-                $baseURL . "/videos/js/videos_upload.js"
+                $baseURL . "/videos/js/uploadForm.js"
             )
         );
     }

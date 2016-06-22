@@ -54,17 +54,29 @@ var VideoUploadForm = React.createClass({
   },
 
   handleSubmit: function (e) {
+    e.preventDefault();
 
     var self = this;
-
-    $('#videoUploadEl').hide();
-    $("#file-progress").removeClass('hide');
-    e.preventDefault();
     var myFormData = this.state.formData;
+    var formRefs = this.refs;
     var formData = new FormData();
+    var hasErrors = false;
     for (var key in myFormData) {
       formData.append(key, myFormData[key]);
     }
+
+    // // Error checking
+    // Object.keys(formRefs).map(function(ref) {
+    //   if (formRefs[ref].state && formRefs[ref].state.value == "") {
+    //     formRefs[ref].state.hasError = true;
+    //     hasErrors = true;
+    //   }
+    // });
+    // this.forceUpdate();
+    // if (hasErrors) { return; }
+
+    $('#videoUploadEl').hide();
+    $("#file-progress").removeClass('hide');
 
     $.ajax({
       type: 'POST',
@@ -95,9 +107,9 @@ var VideoUploadForm = React.createClass({
 
         // Itterates through child components and resets state
         // to initial state in order to clear the form
-        Object.keys(self.refs).map(function (ref) {
-          if (self.refs[ref].state && self.refs[ref].state.value) {
-            self.refs[ref].state.value = "";
+        Object.keys(formRefs).map(function (ref) {
+          if (formRefs[ref].state && formRefs[ref].state.value) {
+            formRefs[ref].state.value = "";
           }
         });
         // rerender components
@@ -190,7 +202,7 @@ var VideoUploadForm = React.createClass({
           label: 'PSCID',
           options: this.state.Data.candidates,
           onUserInput: this.setFormData,
-          ref: 'pscid',
+          ref: 'PSCID',
           required: true
         }),
         React.createElement(SelectElement, {
@@ -198,21 +210,22 @@ var VideoUploadForm = React.createClass({
           label: 'Visit Label',
           options: this.state.Data.visits,
           onUserInput: this.setFormData,
-          ref: 'visit'
+          ref: 'visitLabel',
+          required: true
         }),
         React.createElement(SelectElement, {
           name: 'Instrument',
           label: 'Instrument',
           options: this.state.Data.instruments,
           onUserInput: this.setFormData,
-          ref: 'instrument'
+          ref: 'Instrument'
         }),
         React.createElement(SelectElement, {
           name: 'For_site',
           label: 'For Site',
           options: this.state.Data.sites,
           onUserInput: this.setFormData,
-          ref: 'site'
+          ref: 'For_site'
         }),
         React.createElement(DateElement, {
           name: 'dateTaken',
@@ -220,15 +233,20 @@ var VideoUploadForm = React.createClass({
           minYear: '2000',
           maxYear: '2017',
           onUserInput: this.setFormData,
-          ref: 'date'
+          ref: 'dateTaken'
         }),
         React.createElement(TextareaElement, {
           name: 'comments',
-          label: 'Comments (optional)',
+          label: 'Comments',
           onUserInput: this.setFormData,
           ref: 'comments'
         }),
-        React.createElement(FileElement, { id: 'videoUploadEl', onUserInput: this.setFormData, ref: 'file' }),
+        React.createElement(FileElement, {
+          id: 'videoUploadEl',
+          onUserInput: this.setFormData,
+          required: true,
+          ref: 'file'
+        }),
         React.createElement(ButtonElement, null)
       )
     );
@@ -236,4 +254,4 @@ var VideoUploadForm = React.createClass({
 });
 
 RVideoUploadForm = React.createFactory(VideoUploadForm);
-//# sourceMappingURL=videos_upload.js.map
+//# sourceMappingURL=uploadForm.js.map

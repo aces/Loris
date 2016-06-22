@@ -15,7 +15,6 @@ FormElement = React.createClass({
       'class': 'form-horizontal'
     };
   },
-
   handleSubmit: function (e) {
     // Override default submit if property is set
     if (this.props.onSubmit) {
@@ -52,6 +51,7 @@ SelectElement = React.createClass({
       'options': [],
       'multiple': '',
       'disabled': false,
+      'hasError': false,
       'required': false,
       'errorMessage': 'The field is required!',
       'onUserInput': function () {
@@ -83,8 +83,9 @@ SelectElement = React.createClass({
     var multiple = this.props.multiple ? this.props.multiple : '';
     var options = this.props.options;
     var errorMessage = '';
+    var required = this.props.required ? 'required' : '';
 
-    if (this.state.hasError) {
+    if (this.state.hasError && this.props.required) {
       errorMessage = this.props.errorMessage;
     }
 
@@ -107,7 +108,8 @@ SelectElement = React.createClass({
             className: 'form-control',
             id: this.props.label,
             value: this.state.value,
-            onChange: this.handleChange
+            onChange: this.handleChange,
+            required: required
           },
           React.createElement('option', null),
           Object.keys(options).map(function (option) {
@@ -136,6 +138,7 @@ FileElement = React.createClass({
     return {
       'id': '',
       'value': null,
+      'required': '',
       'onUserInput': function () {
         console.warn('onUserInput() callback is not set');
       }
@@ -160,6 +163,9 @@ FileElement = React.createClass({
   },
 
   render: function () {
+
+    var required = this.props.required ? 'required' : '';
+
     return React.createElement(
       'div',
       { className: 'form-group' },
@@ -196,7 +202,13 @@ FileElement = React.createClass({
               { className: 'btn btn-primary btn-file' },
               React.createElement('i', { className: 'glyphicon glyphicon-folder-open' }),
               ' Browse',
-              React.createElement('input', { type: 'file', name: this.props.name, className: this.props.class, ref: 'file', onChange: this.handleChange })
+              React.createElement('input', {
+                type: 'file',
+                name: this.props.name,
+                className: this.props.class,
+                onChange: this.handleChange,
+                required: required
+              })
             )
           )
         )
@@ -416,39 +428,6 @@ TextareaElement = React.createClass({
   }
 });
 
-// /*
-//  *	This is the React class for a select element
-//  */
-// SelectElement = React.createClass({
-//   render: function(){
-//     var multiple = '';
-//     if(this.props.multiple){
-//       // Set select type as mutiple
-//       multiple = 'multiple';
-//     }
-//     return (
-//       <div>
-//         <label className="lab col-sm-4 col-xs-12">
-//           {this.props.label}
-//         </label>
-//         <div className="col-sm-8">
-//           <div className="col-xs-12 col-sm-6 element">
-//             <select multiple={multiple} className="form-control input-sm">
-//               {Object.keys(this.props.options).map(function(option){
-//                 return (
-//                   <option>
-//                     {option}
-//                   </option>
-//                 )
-//               })}
-//             </select>
-//           </div>
-//         </div>
-//       </div>
-//     )
-//   }
-// });
-
 /*
  *	This is the React class for a date element
  */
@@ -482,6 +461,9 @@ DateElement = React.createClass({
   },
 
   render: function () {
+
+    var required = this.props.required ? 'required' : '';
+
     return React.createElement(
       'div',
       { className: 'form-group' },
@@ -501,7 +483,8 @@ DateElement = React.createClass({
           min: this.props.minYear,
           max: this.props.maxYear,
           onChange: this.handleChange,
-          value: this.state.value
+          value: this.state.value,
+          required: required
         })
       )
     );
