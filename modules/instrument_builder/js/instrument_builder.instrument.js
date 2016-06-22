@@ -113,12 +113,23 @@ var Instrument = {
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
                         break;
                     case "date":
-                        content += 'date{@}';
-                        content += element.Name + "{@}" + element.Description ;
-                        content += "{@}" + element.Options.MinDate.split('-')[0];
-                        content += "{@}" + element.Options.MaxDate.split('-')[0] + "\n";
-                        content += "select{@}" + element.Name + "_status" +
+                        var elName = element.Name.replace(/\s/g, "").toLowerCase();
+                        var dropdown = "";
+
+                        // Add dropdown and special naming when no date format is set
+                        // (i.e when addDateElement() is used)
+                        if (element.Options.dateFormat === "") {
+                            elName = elName + "_date";                            
+                            dropdown = "select{@}" + elName + "_status" +
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+                        }
+
+                        content += 'date{@}';
+                        content += elName + "{@}" + element.Description;
+                        content += "{@}" + element.Options.MinDate.split('-')[0];
+                        content += "{@}" + element.Options.MaxDate.split('-')[0];
+                        content += "{@}" + element.Options.dateFormat + "\n";
+                        content += dropdown;
                         break;
                     case "numeric":
                         content += 'numeric{@}';
@@ -302,5 +313,8 @@ var Instrument = {
         enum_option = enum_option.replace(/\./, "");
         enum_option = enum_option.toLowerCase();
         return enum_option;
+    },
+    clone: function(obj) {
+        return JSON.parse(JSON.stringify(obj))
     }
 }

@@ -190,7 +190,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/mri_violations/?pageID=" + pageNum
+        location.href="{$baseurl}/mri_violations/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
     },
     Active: {$pageID}
 });

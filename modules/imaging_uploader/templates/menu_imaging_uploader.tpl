@@ -148,7 +148,7 @@
     <div class="col-sm-10 col-md-8">
         <div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter();">
-                Upload process logs
+                Log viewer
             </div>
             <div class="panel-body" id="panel-body">
 
@@ -199,7 +199,19 @@
                 <tr>
                     <!-- print out data rows -->
                     {section name=piece loop=$items[item]}
-                        {if $items[item][piece].name eq 'Tarchive_Info'}
+                        {if $items[item][piece].name eq 'Progress'}
+                            {if $items[item][piece].value}
+                                <td nowrap="nowrap">
+                                        {if {$items[item][piece].value} eq 'Success'}
+                                            {$items[item][piece].value} ({$items[item][10].value} out of {$items[item][11].value})
+                                        {else}
+                                            {$items[item][piece].value}
+                                        {/if}
+                                </td>
+                            {else}
+                                <td nowrap="nowrap"> </td>
+                            {/if}
+                        {elseif $items[item][piece].name eq 'Tarchive_Info'}
                             {if $items[item][piece].value}
                                 <td nowrap="nowrap">
                                     <a href="{$baseurl}/dicom_archive/viewDetails/?tarchiveID={$items[item][piece].value}">

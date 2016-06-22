@@ -97,8 +97,7 @@ CREATE TABLE `acknowledgements` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO LorisMenu (Label, OrderNumber) VALUES ('Acknowledgements', 7);
-INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Acknowledgements','/acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Acknowledgements'), 1);
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Acknowledgements','/acknowledgements/', (SELECT ID FROM LorisMenu as L WHERE Label='Tools'), 8);
 
 INSERT INTO permissions (code,description,categoryID) VALUES ('acknowledgements_view','View Acknowledgements',2);
 INSERT INTO permissions (code,description,categoryID) VALUES ('acknowledgements_edit','Edit Acknowledgements',2);
@@ -281,8 +280,7 @@ UPDATE files_qcstatus AS fq, parameter_file AS pf, parameter_type AS pt SET fq.S
 -- Remove all Selected values from parameter_file
 -- DELETE FROM parameter_file WHERE ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='Selected');
 -- DELETE FROM parameter_type WHERE Name="Selected";
-UPDATE Config SET Value = LEFT(Value , LENGTH(Value)-1) WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url') AND RIGHT(Value,1) = "/";
-UPDATE LorisMenu SET Link = RIGHT(Link, LENGTH(Link)-1) WHERE LEFT(Link,1) = "/";ALTER TABLE test_battery ADD instr_order tinyint after firstVisit;
+ALTER TABLE test_battery ADD instr_order tinyint after firstVisit;
 ALTER TABLE test_subgroups ADD group_order tinyint after Subgroup_name;
 -- Update the Dataquery Menu Link
 UPDATE LorisMenu SET Link='/dataquery/' WHERE Label='Data Query Tool';
@@ -408,3 +406,5 @@ ON DUPLICATE KEY UPDATE content='The Imaging Uploader allows users to upload ima
 
 REPLACE INTO help (parentID, hash, topic, content, updated) VALUES(IFNULL((SELECT h.helpID FROM help as h WHERE h.topic LIKE 'Configuration%'),-1), md5('project'), 'Project', 'You then click on &quot;New ProjectID&quot;, fill in the fields on the right, click save.  Immediately refresh the page to view your new project.  Clicking save more than once will register a duplicate project ID.  If you create an extra ID, you have to delete it from the database manually with an sql command.\n\nDefine all projectID-subprojectID relationships by populating the project_rel table, e.g.\n\nINSERT INTO `project_rel` VALUES (1,1),(1,2),(2,3);', '2016-04-01 00:00:00');
 REPLACE INTO help (parentID, hash, topic, content, updated) VALUES(IFNULL((SELECT h.helpID FROM help as h WHERE h.topic LIKE 'Configuration%'),-1), md5('subproject'), 'Subproject', 'You then click on &quot;New SubprojectID&quot;, fill in the fields on the right, click save.  Immediately refresh the page to view your new subproject.  Clicking save more than once will register a duplicate subproject ID.  If you create an extra ID, you have to delete it from the database manually with an sql command.\n\nDefine all projectID-subprojectID relationships by populating the project_rel table, e.g.\n\nINSERT INTO `project_rel` VALUES (1,1),(1,2),(2,3);', '2016-04-01 00:00:00');
+UPDATE Config SET Value = LEFT(Value , LENGTH(Value)-1) WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url') AND RIGHT(Value,1) = "/";
+UPDATE LorisMenu SET Link = RIGHT(Link, LENGTH(Link)-1) WHERE LEFT(Link,1) = "/";
