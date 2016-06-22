@@ -450,7 +450,7 @@ function prepareIn($preparray)
     $i      = 0;
 
     foreach ($preparray as $value) {
-        $key          = 'a' . $i;
+        $key          = 'zqx' . $i;
         $karray[]     = ':' . $key;
         $varray[$key] = $value;
         $i++;
