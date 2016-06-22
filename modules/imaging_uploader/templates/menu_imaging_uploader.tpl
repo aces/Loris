@@ -148,7 +148,7 @@
     <div class="col-sm-10 col-md-8">
         <div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter();">
-                Upload process logs
+                Log viewer
             </div>
             <div class="panel-body" id="panel-body">
 
