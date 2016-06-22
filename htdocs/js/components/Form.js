@@ -45,14 +45,15 @@ SelectElement = React.createClass({
 
   getDefaultProps: function () {
     return {
+      'name': '',
+      'id': '',
+      'class': '',
       'label': 'Label',
       'options': [],
       'multiple': '',
-      'name': '',
-      'id': '',
-      'disabled': '',
-      'required': '',
-      'class': '',
+      'disabled': false,
+      'required': false,
+      'errorMessage': 'The field is required!',
       'onUserInput': function () {
         console.warn('onUserInput() callback is not set');
       }
@@ -60,18 +61,32 @@ SelectElement = React.createClass({
   },
   getInitialState: function () {
     return {
-      value: ''
+      value: '',
+      hasError: false
     };
   },
   handleChange: function (e) {
+
+    var hasError = false;
+    if (this.props.required && e.target.value == "") {
+      hasError = true;
+    }
+
     this.setState({
-      value: e.target.value
+      value: e.target.value,
+      hasError: hasError
     });
+
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function () {
-    var multiple = this.props.multiple ? 'multiple' : '';
+    var multiple = this.props.multiple ? this.props.multiple : '';
     var options = this.props.options;
+    var errorMessage = '';
+
+    if (this.state.hasError) {
+      errorMessage = this.props.errorMessage;
+    }
 
     return React.createElement(
       'div',
@@ -102,6 +117,11 @@ SelectElement = React.createClass({
               options[option]
             );
           })
+        ),
+        React.createElement(
+          'span',
+          { className: 'alert-danger' },
+          errorMessage
         )
       )
     );
@@ -156,8 +176,16 @@ FileElement = React.createClass({
           { className: 'input-group' },
           React.createElement(
             'div',
-            { tabindex: '-1', className: 'form-control file-caption kv-fileinput-caption', title: '' },
-            this.state.value,
+            { tabindex: '-1', className: 'form-control file-caption kv-fileinput-caption' },
+            React.createElement(
+              'div',
+              { className: 'truncate-ellipsis' },
+              React.createElement(
+                'span',
+                null,
+                this.state.value
+              )
+            ),
             React.createElement('div', { className: 'file-caption-name', id: 'video_file' })
           ),
           React.createElement(

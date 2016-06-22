@@ -41,14 +41,15 @@ FormElement = React.createClass({
 SelectElement = React.createClass({
   getDefaultProps: function() {
     return {
+      'name':     '',
+      'id':       '',
+      'class':    '',
       'label':    'Label',
       'options':  [],
       'multiple': '',
-      'name':     '',
-      'id':       '',
-      'disabled': '',
-      'required': '',
-      'class':    '',
+      'disabled': false,
+      'required': false,
+      'errorMessage': 'The field is required!',
       'onUserInput': function() {
         console.warn('onUserInput() callback is not set');
       }
@@ -56,18 +57,32 @@ SelectElement = React.createClass({
   },
   getInitialState: function() {
     return {
-      value: ''
+      value: '',
+      hasError: false
     }
   },
   handleChange: function(e) {
+
+    var hasError = false;
+    if (this.props.required && e.target.value == "") {
+      hasError = true;
+    }
+
     this.setState({
-      value: e.target.value
+      value: e.target.value,
+      hasError: hasError
     });
+
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function() {
-    var multiple = this.props.multiple ? 'multiple' : '';
+    var multiple = this.props.multiple ? this.props.multiple : '';
     var options = this.props.options;
+    var errorMessage = '';
+
+    if (this.state.hasError) {
+      errorMessage = this.props.errorMessage;
+    }
 
     return (
       <div className="form-group">
@@ -88,6 +103,7 @@ SelectElement = React.createClass({
               return <option value={option}>{options[option]}</option>
             })}
           </select>
+          <span className="alert-danger">{errorMessage}</span>
         </div>
       </div>
     )
@@ -131,8 +147,10 @@ FileElement = React.createClass({
         </label>
         <div className="col-sm-9">
           <div className="input-group">
-            <div tabindex="-1" className="form-control file-caption kv-fileinput-caption" title="">
-              {this.state.value}
+            <div tabindex="-1" className="form-control file-caption kv-fileinput-caption">
+              <div className="truncate-ellipsis">
+                <span>{this.state.value}</span>
+              </div>
               <div className="file-caption-name" id="video_file"></div>
             </div>
             <div className="input-group-btn">

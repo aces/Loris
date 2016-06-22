@@ -190,7 +190,8 @@ var VideoUploadForm = React.createClass({
           label: 'PSCID',
           options: this.state.Data.candidates,
           onUserInput: this.setFormData,
-          ref: 'pscid'
+          ref: 'pscid',
+          required: true
         }),
         React.createElement(SelectElement, {
           name: 'visitLabel',
