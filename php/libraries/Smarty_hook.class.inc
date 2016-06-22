@@ -64,7 +64,7 @@ class Smarty_NeuroDB extends Smarty
         $this->setCompileDir($paths['base']."smarty/templates_c/");
 
         $this->setConfigDir($paths['base']."smarty/configs/");
-        $this->setCacheDir ($paths['base']."smarty/cache/");
+        $this->setCacheDir($paths['base']."smarty/cache/");
 
         // Behave like smarty2 used to. This should be
         // removed after all the warnings/notices from the PHP
