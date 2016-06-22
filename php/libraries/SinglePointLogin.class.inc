@@ -415,7 +415,9 @@ class SinglePointLogin
                     $user->updatePassword($password);
                 }
 
-                if ($row['Active'] == 'N' || $this->disabledDueToInactivity($username, 365)) {
+                if ($row['Active'] == 'N'
+                    || $this->disabledDueToInactivity($username, 365)
+                ) {
                     $this->_lastError = "Your account has been deactivated,"
                         . " possibly due to inactivity."
                         . " Please contact your project administrator to"
@@ -521,22 +523,17 @@ class SinglePointLogin
      * As a side-effect, if true, will also set user field 'active' to 'N'
      * Need to have already confirmed valid user
      *
-     * @param String $username
-     * @param Int    $maximumDaysInactive Longest allowable time for inactivity in days
-     *
+     * @param String $username            username
+     * @param Int    $maximumDaysInactive Most allowable days for inactivity
      *
      * @return bool - true if the user has now been disabled
      */
     function disabledDueToInactivity($username, $maximumDaysInactive)
     {
         $DB =& Database::singleton();
-        $query = "SELECT Login_timestamp 
-                  FROM (SELECT Login_timestamp, UserID 
-                        FROM user_login_history 
-                        WHERE UserID = :username 
-                        ORDER BY Login_timestamp DESC) 
-                        as t1 
-                  GROUP BY UserID";
+        $query = "SELECT MAX(Login_timestamp) 
+                  FROM user_login_history 
+                  WHERE UserID = :username";
 
         $row   = $DB->pselectRow($query, array('username' => $username));
         $last_login = new DateTime($row['Login_timestamp']);
