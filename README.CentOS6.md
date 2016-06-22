@@ -33,8 +33,9 @@ curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
 
-Note that the version of PHP installed by CentOS 6.x doesn't meet the minimum requirements of many development dependencies.
-As a result, you need to either upgrade your version of PHP to 5.6 for LORIS 16.0
+Note that the default dependencies installed by CentOS 6.x may not meet the version requirements LORIS deployment or development.
+* MySQL 5.5 or lower is supported for LORIS 16.0
+* PHP 5.6 (or 5.5) is required for LORIS 16.0 - upgrade your PHP manually
 Or run composer with the `--no-dev` option. (Upgrading PHP is preferred, but for now we'll
 assume you just want to get it running, so we'll run it with `--no-dev`.)
 
