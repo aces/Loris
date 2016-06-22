@@ -1,8 +1,13 @@
 <?php
 /**
- *
  * This script is used to move mri violations to the resolved tab in bulk.
+ * This is the first step for a project that wants to insert scans that were
+ * previously excluded.
  * Just modify the where clause and test on the front end with same filter first.
+ *
+ * Usage: php mri_violations_resolvert.php [confirm]
+ *
+ * PHP Version 5
  *
  * @category MRI
  * @package  Main
@@ -19,6 +24,12 @@ $configFile = "../project/config.xml";
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
 
+
+$confirm = false;
+if (isset($argv[1]) && $argv[1] === "confirm") {
+    $confirm = true;
+}
+
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
@@ -26,7 +37,14 @@ $client->initialize($configFile);
 $DB =& Database::singleton();
 
 // Query as it is in the mri violation module
-$query  = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun, v.MincFile, v.Series_Description as Series_Description_Or_Scan_Type, v.Problem, v.SeriesUID, v.hash, v.join_id, v.Resolved FROM (
+// It is complete as it apears in the module for two reasons:
+//   1. for reproducibility, this tools expects that you have validated your search
+//      in LORIS front end first.
+//   2. for future feature improvements that will use currently unused part of this
+//      query.
+$query = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun,
+          v.MincFile, v.Series_Description as Series_Description_Or_Scan_Type,
+          v.Problem, v.SeriesUID, v.hash, v.join_id, v.Resolved FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
                 c.ProjectID as Project,
@@ -35,7 +53,7 @@ $query  = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun, v.M
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem,
                 SeriesUID,
-                md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)) as hash,
+            md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)) as hash,
                 mri_protocol_violated_scans.ID as join_id,
                 p.CenterID as Site,
                 violations_resolved.Resolved as Resolved
@@ -65,7 +83,7 @@ $query  = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun, v.M
             LEFT JOIN mri_scan_type
             ON (mri_scan_type.ID=mri_violations_log.Scan_type)
             LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=mri_violations_log.LogID 
+            ON (violations_resolved.ExtID=mri_violations_log.LogID
             AND violations_resolved.TypeTable='mri_violations_log')
             LEFT JOIN candidate c
             ON (mri_violations_log.CandID=c.CandID)
@@ -87,7 +105,7 @@ $query  = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun, v.M
                 violations_resolved.Resolved as Resolved
             FROM MRICandidateErrors
             LEFT JOIN violations_resolved
-            ON (violations_resolved.ExtID=MRICandidateErrors.ID 
+            ON (violations_resolved.ExtID=MRICandidateErrors.ID
             AND violations_resolved.TypeTable='MRICandidateErrors')
             LEFT JOIN candidate c
             ON (SUBSTRING_INDEX(MRICandidateErrors.PatientName,'_',1)=c.PSCID)
@@ -102,28 +120,41 @@ $query  = "SELECT v.PatientName, v.Project, v.Subproject, v.Site, v.TimeRun, v.M
             ORDER BY v.TimeRun DESC";
 
 // Filter values to modify
-$where   = array('pr' => 'Protocol Violation', 'sd' => '%t1%');
+$where   = array(
+            'pr' => 'Protocol Violation',
+            'sd' => '%t1%',
+           );
 $results = $DB->pselect($query, $where);
 
 foreach ($results AS $result) {
 
-    $newlyResolved = array();
+    $newlyResolved         = array();
     $newlyResolved['hash'] = $result['hash'];
-    $newlyResolved['Resolved'] = 'inserted_flag';
-    $newlyResolved['User'] = 'lorisadmin';
+    $newlyResolved['Resolved']   = 'inserted_flag';
+    $newlyResolved['User']       = 'lorisadmin';
     $newlyResolved['ChangeDate'] = date("Y-m-d H:i:s");
-    $newlyResolved['TypeTable'] = 'mri_violations_log';
-    $newlyResolved['ExtID'] = $result['join_id'];
+    $newlyResolved['TypeTable']  = 'mri_violations_log';
+    $newlyResolved['ExtID']      = $result['join_id'];
 
     // Does a hash and a ExtID already exists?
-    $row = $DB->pselectRow("SELECT * FROM violations_resolved
+    $row = $DB->pselectRow(
+        "SELECT * FROM violations_resolved
         WHERE hash = :ha and ExtID = :ex ",
-        array('ha' => $result['hash'], 'ex' => $result['join_id']));
+        array(
+         'ha' => $result['hash'],
+         'ex' => $result['join_id'],
+        )
+    );
 
     // Insert if new
     if (empty($row)) {
-        print "inserting\t" . $result['hash'] . "\t" . $result['join_id'] . "\n";
-        $DB->insert('violations_resolved', $newlyResolved);
-    } else { print "skip\n"; }
+        if ($confirm) {
+            $DB->insert('violations_resolved', $newlyResolved);
+            print "inserting\t";
+        }
+        print $result['hash'] . "\t" . $result['join_id'] . "\n";
+    } else {
+        print "skip\n";
+    }
 
 }
