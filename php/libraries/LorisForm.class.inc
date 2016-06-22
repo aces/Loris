@@ -746,7 +746,7 @@ class LorisForm
                 ? ' required' : ''
               )
             . (
-                !empty($value)
+                (!empty($value) || $value === '0')
                 ? ' value="' . $this->getValue($el['name']) . '"'
                 : ''
               )
