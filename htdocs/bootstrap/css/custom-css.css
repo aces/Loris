@@ -366,3 +366,10 @@ div.navbar div.container div.navbar-brand {
 .right.carousel-control {
     margin-right: 15px;
 }
+
+/*
+ *  CSS for Select Dropdown
+ */
+.dropdownSearch {
+  padding: 10px;
+}
