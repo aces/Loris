@@ -271,7 +271,7 @@ class Database
     {
         $retVal = array();
         foreach ($set as $key => $val) {
-            $retVal[$key] = htmlspecialchars($val);
+            $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
         }
         return $retVal;
     }
@@ -543,6 +543,11 @@ class Database
      */
     function select($query, &$result)
     {
+        error_log(
+            "LORIS's Database::select() wrappers are deprecated and will be "
+            . "removed in a future version of LORIS. Please use prepared statements "
+            . " in the Database::pselect() variety instead."
+        );
         $result = array();
 
         if (strpos(strtoupper($query), 'SELECT') !== 0
@@ -1049,6 +1054,35 @@ class Database
         throw new DatabaseException(
             "Database class no longer extends PEAR"
         );
+    }
+    /**
+     * Checks to see if a table exists in the Database
+     *
+     * @param string $test_name The table to check for.
+     *
+     * @return boolean true if the table exists
+     */
+    function tableExists($test_name)
+    {
+        $config   =& NDB_Config::singleton();
+        $database = $config->getSetting('database');
+        $query    = "SELECT table_name
+            FROM information_schema.tables
+            WHERE TABLE_SCHEMA=:db
+            AND table_name=:tn";
+
+        $result = $this->pselectOne(
+            $query,
+            array(
+             'tn' => $test_name,
+             'db' => $database['database'],
+            )
+        );
+
+        if (!empty($result)) {
+            return true;
+        }
+        return false;
     }
 
 }

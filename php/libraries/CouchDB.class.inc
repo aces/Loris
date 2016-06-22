@@ -113,6 +113,9 @@ class SocketWrapper
         if ($this->socket) {
             $status = fgets($this->socket);
             if ($status === false) {
+                if ($this->eof()) {
+                    return $status;
+                }
                 throw new \LorisException(
                     "Could not read from CouchDB server at $this->host:$this->port"
                 );

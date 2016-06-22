@@ -337,7 +337,13 @@ class NDB_BVL_Battery
             }
         }
 
-        $query .= " ORDER BY Subgroup_order";
+        $query .= " GROUP BY t.Full_name";
+
+        if (Utility::columnsHasNull('test_subgroups', 'group_order')) {
+            $query .= " ORDER BY Subgroup_name";
+        } else {
+            $query .= " ORDER BY Subgroup_order";
+        }
         if (!is_null($stage)) {
             $query .= ", instrument_order";
         } else {

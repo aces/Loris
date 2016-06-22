@@ -38,8 +38,8 @@ with open(annotation_file, 'r') as f:
             continue
 
         sys.stdout.write("INSERT IGNORE INTO genome_loc (Chromosome, EndLoc, StartLoc, Strand) VALUES\n")
-        sys.stdout.write("  ('" + line["CHR"] + "'," + line["MAPINFO"] + "," + line["MAPINFO"] + ",'" + line["Strand"] + "');\n")
-        genome_loc_subquery = "(SELECT GenomeLocID FROM genome_loc WHERE Chromosome = '" + line["CHR"] + "' AND StartLoc = " + line["MAPINFO"] + " AND EndLoc = " + line["MAPINFO"] + ")"
+        sys.stdout.write("  ('chr" + line["CHR"] + "'," + line["MAPINFO"] + "," + line["MAPINFO"] + ",'" + line["Strand"] + "');\n")
+        genome_loc_subquery = "(SELECT GenomeLocID FROM genome_loc WHERE Chromosome = 'chr" + line["CHR"] + "' AND StartLoc = " + line["MAPINFO"] + " AND EndLoc = " + line["MAPINFO"] + ")"
 
         sys.stdout.write("INSERT IGNORE INTO genomic_cpg_annotation (cpg_name, location_id, address_id_a, probe_seq_a, address_id_b, probe_seq_b, design_type, color_channel, genome_build, probe_snp_10, gene_name, gene_acc_num, gene_group, island_loc, island_relation, fantom_promoter_loc, dmr, enhancer, hmm_island_loc, reg_feature_loc, reg_feature_group, dhs, platform_id) VALUES\n")
 

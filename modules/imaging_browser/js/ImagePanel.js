@@ -316,6 +316,12 @@ ImageQCDropdown = React.createClass({
                 },
                 options
             );
+        } else {
+            dropdown = React.createElement(
+                'div',
+                { className: 'col-xs-12' },
+                this.props.defaultValue
+            );
         }
         return React.createElement(
             'div',
@@ -507,14 +513,12 @@ ImageDownloadButtons = React.createClass({
 });
 ImagePanelBody = React.createClass({
     displayName: 'ImagePanelBody',
-    mixins: [React.addons.PureRenderMixin],
 
+    mixins: [React.addons.PureRenderMixin],
     openWindowHandler: function (e) {
         e.preventDefault();
         window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.FileID + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
     },
-
-
     render: function () {
         return React.createElement(
             'div',
@@ -526,12 +530,9 @@ ImagePanelBody = React.createClass({
                     'div',
                     { className: 'col-xs-9 imaging_browser_pic' },
                     React.createElement(
-			'a', 
-			{ href: '#noID', onClick: this.openWindowHandler},
-                        React.createElement(
-			    'img', 
-			    { className: 'img-checkpic img-responsive', src: this.props.Checkpic }
-			)
+                        'a',
+                        { href: '#noID', onClick: this.openWindowHandler },
+                        React.createElement('img', { className: 'img-checkpic img-responsive', src: this.props.Checkpic })
                     )
                 ),
                 React.createElement(
@@ -554,7 +555,7 @@ ImagePanelBody = React.createClass({
                 Fullname: this.props.Fullname,
                 XMLProtocol: this.props.XMLProtocol,
                 XMLReport: this.props.XMLReport,
-                XMLReport: this.props.NrrdFile
+                NrrdFile: this.props.NrrdFile
             }),
             this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, { HeaderInfo: this.props.HeaderInfo }) : ''
         );

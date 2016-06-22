@@ -184,8 +184,12 @@ input[type=checkbox].button:checked + label {
   background-color: #042d54;
 }
 
-#sync-volumes-wrapper > label {
+#sync-volumes-wrapper > label, #reset-wrapper > label {
   font-weight: bold;
   font-size: 14px;
   line-height: 1.5;
+}
+
+#reset-wrapper {
+  margin-right: 10px;
 }

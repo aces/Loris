@@ -1,3 +1,6 @@
+<script>
+    loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+</script>
 <div class="col-sm-12">
   <div class="row">
     <div id="tabs"> 
@@ -149,77 +152,35 @@
       </div>
     </div>
   </div>
-  <div class="row">
-  <!-- title table with pagination -->
-    <table id="LogEntries" border="0" valign="bottom" width="100%">
-      <tr>
-      <!-- title -->
-        {if {$resultcount} != '' }
-          <td class="controlpanelsection">Profiles found: <strong>{$resultcount}</strong> total</td>
-                              <a href="{$csvUrl}" download="{$csvFile}_profiles.csv">
-                                                    [ Download as CSV ]
-                                                                        </a><br>
-        {else}
-          <td>No results found. </td>
-        {/if}
-        <!-- display pagination links -->
-        {if $resultcount != '' && $resultcount > 25 }
-	  <td align="right">Pages:&nbsp;&nbsp;&nbsp; {$page_links}</td>
-        {/if}
-      </tr>
-    </table>
-    <!-- start data table -->
-    <table  class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
-      <thead>
-        <tr class="info">
-          <th>No.</th>
-          <!-- print out column headings - quick & dirty hack -->
-          {section name=header loop=$headers}
-            <th><a href="{$baseurl}/genomic_browser/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-          {/section}
-        </tr>
-      </thead>
-      <tbody>
-        {section name=item loop=$items}
-        <tr>
-        <!-- print out data rows -->
-          {section name=piece loop=$items[item]}
-            {if $items[item][piece].bgcolor != ''}
-              <td style="background-color:{$items[item][piece].bgcolor}">
-            {else}
-              <td>
-            {/if}
-            {if $items[item][piece].name == "DCCID"}
-              {assign var="CandID" value=$items[item][piece].value}
-              {$CandID}
-            {elseif $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-              {assign var="PSCID" value=$items[item][piece].value}
-               <a href="{$baseurl}/{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
-
-            {elseif $items[item][piece].value eq ""}
-              -
-              {* just print a dash if no value available*}
-            {elseif $items[item][piece].name eq "Files" } 
-               <a href="{$baseurl}/genomic_browser/viewGenomicFile/?candID={$CandID}">
-                   <b>({$items[item][piece].value})</b> &nbsp;&nbsp;View
-                   <span class="glyphicon glyphicon-eye-open"></span>
-               </a>
-            {elseif $items[item][piece].name eq "SNPs" }
-                 <a href="{$baseurl}/genomic_browser/?submenu=snp_browser" class="snp_link" data-pscid="{$PSCID}" >{$items[item][piece].value}</a>
-            {elseif $items[item][piece].name eq "CNVs" }
-                 <a href="#" class="cnv_link" data-pscid="{$PSCID}" >{$items[item][piece].value}</a>
-            {elseif $items[item][piece].name eq "CPGs" }
-                 <a href="#" class="cpg_link" data-pscid="{$PSCID}" >{$items[item][piece].value}</a>
-            {else}
-              {$items[item][piece].value}
-            {/if}
-            </td>
-          {/section}
-          </tr>
-        {/section}
-      </tbody>
-      <!-- end data table -->
-    </table>
-  </div>
+  <table border="0" valign="bottom" width="100%">
+    <tr>
+      <!-- display pagination links -->
+      <td align="left" id="pageLinks"></td>
+    </tr>
+  </table>
+  <div id="datatable"></div>
 </div>
-<br>
+<script>
+
+if (document.getElementsByName('Show_Brief_Results')[0].value != "brief") {
+    loris.hiddenHeaders = [];
+}
+
+{literal}
+loris.subprojectList = {};
+Array.from(document.getElementsByName('SubprojectID')[0].children).forEach(
+    function (o) {
+        if (o.value !== "") {
+            loris.subprojectList[o.value] = o.label;
+        }
+    }
+);
+{/literal}
+
+var table = RDynamicDataTable({
+    "DataURL" : "{$baseurl}/genomic_browser/?format=json",
+    "getFormattedCell" : formatColumn,
+    "freezeColumn" : "PSCID"
+});
+React.render(table, document.getElementById("datatable"));
+</script>

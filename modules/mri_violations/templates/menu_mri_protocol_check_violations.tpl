@@ -37,7 +37,7 @@
                                 <div class="visible-xs col-xs-12"> </div>
                                 <div class="visible-xs col-xs-12"> </div>
                                 <div class="col-sm-6 col-xs-12">
-                                    <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=mri_protocol_check_violations&reset=true'">
+                                    <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&reset=true'">
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                                 <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                             </div>
                             <div class="col-sm-6 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=mri_violations&submenu=mri_protocol_check_violations&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&reset=true'">
                             </div>
                         </div>
                         <input type="hidden" name="test_name" value="mri_violations" />
@@ -132,7 +132,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&pageID=" + pageNum
+        location.href="{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
     },
     Active: {$pageID}
 });

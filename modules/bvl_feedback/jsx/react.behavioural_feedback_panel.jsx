@@ -413,8 +413,8 @@ var FeedbackSummaryPanel = React.createClass({
 	    var summary_rows = this.props.summary_data.map(function(row){
 		return <tr>
 		<td>{row.QC_Class}</td>
-		<td><a href={"main.php?test_name=" + row.Instrument + "&candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID}>{row.Instrument}</a></td>
-		<td><a href={"main.php?test_name=instrument_list&candID=" + row.CandID + "&sessionID="
+		<td><a href={loris.BaseURL + "/" + row.Instrument + "/?candID=" + row.CandID + "&sessionID=" + row.SessionID + "&commentID=" + row.CommentID}>{row.Instrument}</a></td>
+		<td><a href={loris.BaseURL + "/instrument_list/?candID=" + row.CandID + "&sessionID="
 		+ row.SessionID}>{row.Visit}</a></td>
 		<td>{row.No_Threads}</td>
 		</tr>
@@ -543,7 +543,7 @@ var FeedbackPanel = React.createClass({
 
 	request = $.ajax({
 	    type:"POST",
-	    url: "AjaxHelper.php?Module=bvl_feedback&script=close_bvl_feedback_thread.php",
+	    url: loris.BaseURL + "/bvl_feedback/ajax/close_bvl_feedback_thread.php",
 	    data:{
 		"candID": this.props.candID,
 		"feedbackID" : feedbackID
@@ -574,7 +574,7 @@ var FeedbackPanel = React.createClass({
 	  
 	request = $.ajax({
 	    type:"POST",
-	    url: "AjaxHelper.php?Module=bvl_feedback&script=open_bvl_feedback_thread.php",
+	    url: loris.BaseURL + "/bvl_feedback/ajax/open_bvl_feedback_thread.php",
 	    data:{
 		"candID": this.props.candID,
 		"feedbackID" : feedbackID

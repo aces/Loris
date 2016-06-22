@@ -1,8 +1,8 @@
 # Candidate Parameters Test Plan
 
 1. Check Permissions. Try removing each of these permissions/conditions one at a time. You should not be able to access the page
-	* data_entry
-	* unsend_to_dcc
+    * Edit Candidate Parameters
+	* data_entry ("Data Entry", in front-end)
 	* having the same site as the candidate you are accessing	
 2. Make sure that the candidate date of birth and gender, shown in the table at the top of the page, match what is stored in the candidate table for this given candidate.
 3. Click on the Return to Timepoint List button and ensure it goes to the correct timepoint list page.
@@ -17,7 +17,9 @@
 5. Click on update Candidate Info and make sure it takes you to the correct form for that candidate
 
 ### Update Candidate Info
-6. For each field, change it and make sure that it saves when the "Save" button is clicked. Do each field one at a time. Should you be able to save the Caveat Emptor Reason without the Caveat Emptor flag set?
+6. For each field, change it and make sure that it saves when the "Save" button is clicked. Do each field one at a
+time. You should still be able to save the Caveat Emptor Reason without the Caveat Emptor flag set because
+abnormalities may be deemed satisfactory and the reason may be logged.
 7. If you set the Caveat Emptor flag to Yes, check that a reason must be specified. If the reason is set to other, check that an explanation must be provided.
 8. Check that the return candidate info button is working.
 9. Check if your changes are displayed in the Candidate Information panel
@@ -61,8 +63,8 @@ Note: Is there no way to edit/remove a family member from the front-end?
 34. Try editing the Comments field and saving
 
 ### Participation Consent Status Panel
-35. Add a new consent type following the Developer's guide. Does it show up in this panel when you refresh the page?
-36. Does the consent info shown in this table match what is stroed in the participant_status table?
+35. Add a new consent type following [the guide](https://github.com/aces/Loris/wiki/Candidate-Information-Page) on the LORIS Wiki. Does it show up in this panel when you refresh the page?
+36. Does the consent info shown in this table match what is stored in the participant_status table?
 
 ### Update Consent Info
 37. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?

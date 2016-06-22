@@ -78,7 +78,7 @@ $(document).ready(function () {
 
 function applyFilter(test_name, filters) {
     var form = $('<form />', {
-        "action" : "main.php?test_name=" + test_name,
+        "action" : loris.BaseURL + "/" + test_name + "/",
         "method" : "post"
     });
 
@@ -137,7 +137,7 @@ function formatLineData(data) {
 
 // AJAX to get scan line chart data
 $.ajax({
-    url: 'AjaxHelper.php?Module=dashboard&script=get_scan_line_data.php',
+    url: loris.BaseURL + '/dashboard/ajax/get_scan_line_data.php',
     type: 'post',
     success: function(data) {
         var scanLineData = formatLineData(data);
@@ -176,7 +176,7 @@ $.ajax({
 
 // AJAX to get pie chart data
 $.ajax({
-    url: 'AjaxHelper.php?Module=dashboard&script=get_recruitment_pie_data.php',
+    url: loris.BaseURL + '/dashboard/ajax/get_recruitment_pie_data.php',
     type: 'post',
         success: function(data) {
         var jsonData = $.parseJSON(data);
@@ -200,7 +200,7 @@ $.ajax({
 
 // AJAX to get bar chart data
 $.ajax({
-    url: 'AjaxHelper.php?Module=dashboard&script=get_recruitment_bar_data.php',
+    url: loris.BaseURL + '/dashboard/ajax/get_recruitment_bar_data.php',
     type: 'post',
     success: function(data) {
         var recruitmentBarData = formatBarData(data);
@@ -233,7 +233,7 @@ $.ajax({
 
 // AJAX to get recruitment line chart data
 $.ajax({
-    url: 'AjaxHelper.php?Module=dashboard&script=get_recruitment_line_data.php',
+    url: loris.BaseURL + '/dashboard/ajax/get_recruitment_line_data.php',
     type: 'post',
     success: function(data) {
         var recruitmentLineData = formatLineData(data);
