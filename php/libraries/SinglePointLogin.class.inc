@@ -530,15 +530,15 @@ class SinglePointLogin
      */
     function disabledDueToInactivity($username, $maximumDaysInactive)
     {
-        $DB =& Database::singleton();
+        $DB    =& Database::singleton();
         $query = "SELECT MAX(Login_timestamp) 
                   FROM user_login_history 
                   WHERE UserID = :username";
 
-        $row   = $DB->pselectRow($query, array('username' => $username));
+        $row        = $DB->pselectRow($query, array('username' => $username));
         $last_login = new DateTime($row['Login_timestamp']);
-        $time_now = new DateTime("now");
-        $interval = $last_login->diff($time_now);
+        $time_now   = new DateTime("now");
+        $interval   = $last_login->diff($time_now);
 
         if ($interval->days > $maximumDaysInactive) {
             $DB->update(
