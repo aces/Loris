@@ -289,7 +289,7 @@ class NDB_Form_videos extends NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/videos/js/video_upload.js"
+                $baseURL . "/videos/js/editForm.js"
             ]
         );
     }
@@ -419,6 +419,11 @@ class NDB_Form_videos extends NDB_Form
         }
 
         return $selectOptions;
+    }
+
+    function edit_video()
+    {
+
     }
 
     /**

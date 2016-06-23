@@ -53,11 +53,17 @@ SelectElement = React.createClass({
       'disabled': false,
       'hasError': false,
       'required': false,
+      'value': '',
       'errorMessage': 'The field is required!',
       'onUserInput': function () {
         console.warn('onUserInput() callback is not set');
       }
     };
+  },
+  componentDidMount: function () {
+    if (this.props.value) {
+      this.setState({ value: this.props.value });
+    }
   },
   getInitialState: function () {
     return {
@@ -84,6 +90,7 @@ SelectElement = React.createClass({
     var options = this.props.options;
     var errorMessage = '';
     var required = this.props.required ? 'required' : '';
+    var disabled = this.props.disabled ? 'disabled' : '';
 
     if (this.state.hasError && this.props.required) {
       errorMessage = this.props.errorMessage;
@@ -109,7 +116,8 @@ SelectElement = React.createClass({
             id: this.props.label,
             value: this.state.value,
             onChange: this.handleChange,
-            required: required
+            required: required,
+            disabled: disabled
           },
           React.createElement('option', null),
           Object.keys(options).map(function (option) {
@@ -149,8 +157,15 @@ FileElement = React.createClass({
     return {
       'label': 'File to Upload',
       'name': 'file',
-      'class': 'fileUpload'
+      'class': 'fileUpload',
+      'value': ''
     };
+  },
+
+  componentDidMount: function () {
+    if (this.props.value) {
+      this.setState({ value: this.props.value });
+    }
   },
 
   handleChange: function (e) {
@@ -386,6 +401,7 @@ TextareaElement = React.createClass({
       'class': 'form-control',
       'disabled': '',
       'required': '',
+      'value': '',
       'onUserInput': function () {
         console.warn('onUserInput() callback is not set');
       }
@@ -395,6 +411,11 @@ TextareaElement = React.createClass({
     return {
       value: ''
     };
+  },
+  componentDidMount: function () {
+    if (this.props.value) {
+      this.setState({ value: this.props.value });
+    }
   },
   handleChange: function (e) {
     this.setState({
@@ -442,6 +463,7 @@ DateElement = React.createClass({
       'id': '',
       'disabled': '',
       'required': '',
+      'value': '',
       'class': 'form-control',
       'onUserInput': function () {
         console.warn('onUserInput() callback is not set');
@@ -453,6 +475,13 @@ DateElement = React.createClass({
       value: ''
     };
   },
+
+  componentDidMount: function () {
+    if (this.props.value) {
+      this.setState({ value: this.props.value });
+    }
+  },
+
   handleChange: function (e) {
     this.setState({
       value: e.target.value

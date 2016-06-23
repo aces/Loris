@@ -6,7 +6,6 @@
  * Time: 3:08 PM
  */
 
-
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "getVideoData") {
@@ -81,6 +80,7 @@ function uploadVideo()
  */
 function getUploadFields()
 {
+
     $db =& Database::singleton();
 
 //    $dateOptions = [
@@ -91,6 +91,7 @@ function getUploadFields()
 //        'addEmptyOption'   => true,
 //        'emptyOptionValue' => null
 //    ];
+
 
     $instruments = $db->pselect(
         "SELECT Test_name FROM test_names ORDER BY Test_name", []
@@ -105,12 +106,21 @@ function getUploadFields()
     $visitList = Utility::getVisitList();
     $siteList = Utility::getSiteList(false);
 
+    $videoData = null;
+    if ($_GET['idVideo']) {
+        $idVideo = $_GET['idVideo'];
+        $videoData = $db->pselectRow(
+            "SELECT * FROM videos WHERE record_id = $idVideo", []
+        );
+    }
+
     $result = [
-        'candidates' => $candidatesList,
-        'candIDs' => $candIdList,
-        'visits' => $visitList,
+        'candidates'  => $candidatesList,
+        'candIDs'     => $candIdList,
+        'visits'      => $visitList,
         'instruments' => $instrumentsList,
-        'sites' => $siteList
+        'sites'       => $siteList,
+        'videoData'   => $videoData
     ];
 
     return $result;
