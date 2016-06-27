@@ -20,6 +20,7 @@ var VideoUploadForm = React.createClass({
     return {
       'formData': {},
       'uploadResult': null,
+      'errorMessage': null,
       'Headers': [],
       'Data': [],
       'isLoaded': false,
@@ -60,12 +61,21 @@ var VideoUploadForm = React.createClass({
     var myFormData = this.state.formData;
     var formRefs = this.refs;
     var formData = new FormData();
-    var hasErrors = false;
     for (var key in myFormData) {
       formData.append(key, myFormData[key]);
     }
 
+    var requiredFileName = myFormData['PSCID'] + "_" + myFormData['visitLabel'];
+    var fileName = myFormData['file'].name;
+    var isValidFileName = fileName.indexOf(requiredFileName) > -1;
+
+    if (!isValidFileName) {
+      alert("File name should start with: " + requiredFileName);
+      return;
+    }
+
     // // Error checking
+    //var hasErrors = false;
     // Object.keys(formRefs).map(function(ref) {
     //   if (formRefs[ref].state && formRefs[ref].state.value == "") {
     //     formRefs[ref].state.hasError = true;
@@ -116,9 +126,10 @@ var VideoUploadForm = React.createClass({
         self.forceUpdate();
       },
       error: function (err) {
-        console.error(err);
+        var errorMessage = JSON.parse(err.responseText).message;
         self.setState({
-          uploadResult: "error"
+          uploadResult: "error",
+          errorMessage: errorMessage
         });
       }
 
@@ -169,8 +180,9 @@ var VideoUploadForm = React.createClass({
         submitClass = "alert alert-success text-center";
         submitMessage = "Upload Successful!";
       } else if (this.state.uploadResult == "error") {
+        var errorMessage = this.state.errorMessage;
         submitClass = "alert alert-danger text-center";
-        submitMessage = "Failed to upload";
+        submitMessage = errorMessage ? errorMessage : "Failed to upload";
       }
     }
 
@@ -247,11 +259,10 @@ var VideoUploadForm = React.createClass({
           required: true,
           ref: 'file'
         }),
-        React.createElement(ButtonElement, null)
+        React.createElement(ButtonElement, { label: 'Upload Video' })
       )
     );
   }
 });
 
 RVideoUploadForm = React.createFactory(VideoUploadForm);
-//# sourceMappingURL=uploadForm.js.map

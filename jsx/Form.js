@@ -85,15 +85,17 @@ SelectElement = React.createClass({
     var multiple = this.props.multiple ? this.props.multiple : '';
     var options = this.props.options;
     var errorMessage = '';
+    var elementClass = 'form-group';
     var required = this.props.required ? 'required' : '';
     var disabled = this.props.disabled ? 'disabled' : '';
 
     if (this.state.hasError && this.props.required) {
       errorMessage = this.props.errorMessage;
+      elementClass = 'form-group has-error';
     }
 
     return (
-      <div className="form-group">
+      <div className={elementClass}>
         <label className="col-sm-3 control-label" for={this.props.label}>
           {this.props.label}
         </label>
@@ -113,7 +115,7 @@ SelectElement = React.createClass({
               return <option value={option}>{options[option]}</option>
             })}
           </select>
-          <span className="alert-danger">{errorMessage}</span>
+          <span>{errorMessage}</span>
         </div>
       </div>
     )
@@ -138,7 +140,8 @@ FileElement = React.createClass({
       'label': 'File to Upload',
       'name':  'file',
       'class': 'fileUpload',
-      'value': ''
+      'value': '',
+      'disabled': false
     };
   },
 
@@ -161,6 +164,38 @@ FileElement = React.createClass({
 
     var required = this.props.required ? 'required' : '';
 
+    var truncateEllipsis = {
+      display: 'table',
+      tableLayout: 'fixed',
+      width: '100%',
+      whiteSpace: 'nowrap',
+    };
+
+    var truncateEllipsisChild = {
+      display: 'table-cell',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    };
+
+    if (this.props.disabled) {
+
+      // add padding to align video title on disabled field
+      truncateEllipsis.paddingTop = "7px";
+
+      return (
+        <div className="form-group">
+          <label className="col-sm-3 control-label">
+            {this.props.label}
+          </label>
+          <div className="col-sm-9">
+            <div style={truncateEllipsis}>
+              <span style={truncateEllipsisChild}>{this.state.value}</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="form-group">
         <label className="col-sm-3 control-label">
@@ -169,8 +204,8 @@ FileElement = React.createClass({
         <div className="col-sm-9">
           <div className="input-group">
             <div tabindex="-1" className="form-control file-caption kv-fileinput-caption">
-              <div className="truncate-ellipsis">
-                <span>{this.state.value}</span>
+              <div style={truncateEllipsis}>
+                <span style={truncateEllipsisChild}>{this.state.value}</span>
               </div>
               <div className="file-caption-name" id="video_file"></div>
             </div>
@@ -228,11 +263,16 @@ HelpTextElement = React.createClass({
 });
 
 ButtonElement = React.createClass({
+  getDefaultProps: function() {
+    return {
+      'label': 'Submit'
+    };
+  },
   render: function() {
     return (
       <div className="form-group">
         <div className="col-sm-9 col-sm-offset-3">
-          <button type="submit" className="btn btn-primary">Upload</button>
+          <button type="submit" className="btn btn-primary">{this.props.label}</button>
         </div>
       </div>
     );

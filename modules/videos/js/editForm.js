@@ -41,10 +41,16 @@ var VideoUploadForm = React.createClass({
         return xhr;
       },
       success: function (data) {
+
+        var formData = {
+          'idVideo': data.videoData.record_id
+        };
+
         that.setState({
           'Data': data,
           'isLoaded': true,
-          'videoData': data.videoData
+          'videoData': data.videoData,
+          'formData': formData
         });
       },
       error: function (data, error_code, error_msg) {
@@ -62,6 +68,7 @@ var VideoUploadForm = React.createClass({
     var formRefs = this.refs;
     var formData = new FormData();
     var hasErrors = false;
+
     for (var key in myFormData) {
       formData.append(key, myFormData[key]);
     }
@@ -81,7 +88,7 @@ var VideoUploadForm = React.createClass({
 
     $.ajax({
       type: 'POST',
-      url: loris.BaseURL + "/videos/ajax/VideoUpload.php?action=upload",
+      url: loris.BaseURL + "/videos/ajax/VideoUpload.php?action=edit",
       data: formData,
       cache: false,
       contentType: false,
@@ -108,13 +115,13 @@ var VideoUploadForm = React.createClass({
 
         // Itterates through child components and resets state
         // to initial state in order to clear the form
-        Object.keys(formRefs).map(function (ref) {
-          if (formRefs[ref].state && formRefs[ref].state.value) {
-            formRefs[ref].state.value = "";
-          }
-        });
-        // rerender components
-        self.forceUpdate();
+        // Object.keys(formRefs).map(function(ref) {
+        //   if (formRefs[ref].state && formRefs[ref].state.value) {
+        //     formRefs[ref].state.value = "";
+        //   }
+        // });
+        // // rerender components
+        // self.forceUpdate();
       },
       error: function (err) {
         console.error(err);
@@ -160,7 +167,6 @@ var VideoUploadForm = React.createClass({
       );
     }
 
-    var helpText = "File name should begin with<b> [PSCID]_[CandID]_[Visit Label]_[Instrument]</b><br> For example, for candidate <i>9990000</i>, visit <i>V1</i> for <i>Biosample Collection</i> the file name should be prefixed by: <b>9990000_CandID_V1_Biosample_Collection</b>";
     var submitMessage = "";
     var submitClass = "alert text-center hide";
 
@@ -168,10 +174,10 @@ var VideoUploadForm = React.createClass({
 
       if (this.state.uploadResult == "success") {
         submitClass = "alert alert-success text-center";
-        submitMessage = "Upload Successful!";
+        submitMessage = "Update Successful!";
       } else if (this.state.uploadResult == "error") {
         submitClass = "alert alert-danger text-center";
-        submitMessage = "Failed to upload";
+        submitMessage = "Failed to update the video";
       }
     }
 
@@ -197,7 +203,6 @@ var VideoUploadForm = React.createClass({
           'Edit Video'
         ),
         React.createElement('br', null),
-        React.createElement(HelpTextElement, { label: 'Note', html: true, text: helpText }),
         React.createElement(SelectElement, {
           name: 'PSCID',
           label: 'PSCID',
@@ -215,6 +220,7 @@ var VideoUploadForm = React.createClass({
           onUserInput: this.setFormData,
           ref: 'visitLabel',
           required: true,
+          disabled: true,
           value: this.state.videoData.visitLabel
         }),
         React.createElement(SelectElement, {
@@ -223,6 +229,7 @@ var VideoUploadForm = React.createClass({
           options: this.state.Data.instruments,
           onUserInput: this.setFormData,
           ref: 'Instrument',
+          disabled: true,
           value: this.state.videoData.Instrument
         }),
         React.createElement(SelectElement, {
@@ -253,15 +260,14 @@ var VideoUploadForm = React.createClass({
           id: 'videoUploadEl',
           onUserInput: this.setFormData,
           required: true,
+          disabled: true,
           ref: 'file',
           value: this.state.videoData.File_name
         }),
-        React.createElement(ButtonElement, null)
+        React.createElement(ButtonElement, { label: 'Update Video' })
       )
     );
   }
 });
 
 RVideoUploadForm = React.createFactory(VideoUploadForm);
-
-//# sourceMappingURL=editForm.js.map

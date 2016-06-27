@@ -7,7 +7,7 @@ function formatColumn(column, cell, rowData) {
 
   if (column === 'Edit Metadata') {
     var index = rowData.length - 1;
-    var url = loris.BaseURL + "/videos/video_upload/?identifier=" + rowData[index];
+    var url = loris.BaseURL + "/videos/edit_video/?id=" + rowData[index];
     return <td><a href={url}>Edit</a></td>;
   }
 

@@ -89,16 +89,18 @@ SelectElement = React.createClass({
     var multiple = this.props.multiple ? this.props.multiple : '';
     var options = this.props.options;
     var errorMessage = '';
+    var elementClass = 'form-group';
     var required = this.props.required ? 'required' : '';
     var disabled = this.props.disabled ? 'disabled' : '';
 
     if (this.state.hasError && this.props.required) {
       errorMessage = this.props.errorMessage;
+      elementClass = 'form-group has-error';
     }
 
     return React.createElement(
       'div',
-      { className: 'form-group' },
+      { className: elementClass },
       React.createElement(
         'label',
         { className: 'col-sm-3 control-label', 'for': this.props.label },
@@ -130,7 +132,7 @@ SelectElement = React.createClass({
         ),
         React.createElement(
           'span',
-          { className: 'alert-danger' },
+          null,
           errorMessage
         )
       )
@@ -158,7 +160,8 @@ FileElement = React.createClass({
       'label': 'File to Upload',
       'name': 'file',
       'class': 'fileUpload',
-      'value': ''
+      'value': '',
+      'disabled': false
     };
   },
 
@@ -181,6 +184,48 @@ FileElement = React.createClass({
 
     var required = this.props.required ? 'required' : '';
 
+    var truncateEllipsis = {
+      display: 'table',
+      tableLayout: 'fixed',
+      width: '100%',
+      whiteSpace: 'nowrap'
+    };
+
+    var truncateEllipsisChild = {
+      display: 'table-cell',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis'
+    };
+
+    if (this.props.disabled) {
+
+      // add padding to align video title on disabled field
+      truncateEllipsis.paddingTop = "7px";
+
+      return React.createElement(
+        'div',
+        { className: 'form-group' },
+        React.createElement(
+          'label',
+          { className: 'col-sm-3 control-label' },
+          this.props.label
+        ),
+        React.createElement(
+          'div',
+          { className: 'col-sm-9' },
+          React.createElement(
+            'div',
+            { style: truncateEllipsis },
+            React.createElement(
+              'span',
+              { style: truncateEllipsisChild },
+              this.state.value
+            )
+          )
+        )
+      );
+    }
+
     return React.createElement(
       'div',
       { className: 'form-group' },
@@ -200,10 +245,10 @@ FileElement = React.createClass({
             { tabindex: '-1', className: 'form-control file-caption kv-fileinput-caption' },
             React.createElement(
               'div',
-              { className: 'truncate-ellipsis' },
+              { style: truncateEllipsis },
               React.createElement(
                 'span',
-                null,
+                { style: truncateEllipsisChild },
                 this.state.value
               )
             ),
@@ -283,6 +328,11 @@ HelpTextElement = React.createClass({
 ButtonElement = React.createClass({
   displayName: 'ButtonElement',
 
+  getDefaultProps: function () {
+    return {
+      'label': 'Submit'
+    };
+  },
   render: function () {
     return React.createElement(
       'div',
@@ -293,7 +343,7 @@ ButtonElement = React.createClass({
         React.createElement(
           'button',
           { type: 'submit', className: 'btn btn-primary' },
-          'Upload'
+          this.props.label
         )
       )
     );
@@ -611,5 +661,3 @@ LorisElement = React.createClass({
 });
 
 RDateElement = React.createFactory(DateElement);
-
-//# sourceMappingURL=Form.js.map

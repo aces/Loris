@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-7">
+  <div class="col-md-9 col-lg-7">
     <div id="video-upload-form"></div>
     <div id="file-progress" class="col-sm-10 hide">
       <div class="progress">

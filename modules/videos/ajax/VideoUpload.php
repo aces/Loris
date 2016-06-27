@@ -12,8 +12,32 @@ if (isset($_GET['action'])) {
         echo json_encode(getUploadFields());
     } else if ($action == "upload") {
         uploadVideo();
+    } else if ($action == "edit") {
+        editVideo();
     }
+
 }
+
+
+function editVideo()
+{
+    $db =& Database::singleton();
+
+    // Process posted data
+    $idVideo = $_POST['idVideo'];
+    $site = $_POST['For_site'];
+    $dateTaken = $_POST['dateTaken'];
+    $comments = $_POST['comments'];
+
+    $updateValues = [
+        'For_site' => $site,
+        'Date_taken' => $dateTaken,
+        'comments' => $comments
+    ];
+
+    $db->update('videos', $updateValues, ['record_id' => $idVideo]);
+}
+
 
 /**
  * Handles the video upload process
@@ -36,12 +60,18 @@ function uploadVideo()
     chmod($videosPath, 0777);
 
     // Process posted data
-    $pscid = $_POST['PSCID'];
-    $visit = $_POST['visitLabel'];
-    $site = $_POST['For_site'];
-    $instrument = $_POST['Instrument'];
-    $dateTaken = $_POST['dateTaken'];
-    $comments = $_POST['comments'];
+    $pscid = isset($_POST['PSCID']) ? $_POST['PSCID'] : null;
+    $visit = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null;
+    $instrument = isset($_POST['Instrument']) ? $_POST['Instrument'] : null;
+    $site = isset($_POST['For_site']) ? $_POST['For_site'] : null;
+    $dateTaken = isset($_POST['dateTaken']) ? $_POST['dateTaken'] : null;
+    $comments = isset($_POST['comments']) ? $_POST['comments'] : null;
+
+    // If required fields are not set, show an error
+    if (!isset($_FILES) || !isset($pscid) || !isset($visit)) {
+        showError("Please fill in all required fields!");
+        return;
+    }
 
     $fileSize = $_FILES["file"]["size"];
     $fileName = $_FILES["file"]["name"];
@@ -82,16 +112,6 @@ function getUploadFields()
 {
 
     $db =& Database::singleton();
-
-//    $dateOptions = [
-//        'language'         => 'en',
-//        'format'           => 'YMd',
-//        'minYear'          => $config->getSetting('startYear'),
-//        'maxYear'          => $config->getSetting('endYear'),
-//        'addEmptyOption'   => true,
-//        'emptyOptionValue' => null
-//    ];
-
 
     $instruments = $db->pselect(
         "SELECT Test_name FROM test_names ORDER BY Test_name", []

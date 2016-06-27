@@ -15,7 +15,7 @@ function formatColumn(column, cell, rowData) {
 
   if (column === 'Edit Metadata') {
     var index = rowData.length - 1;
-    var url = loris.BaseURL + "/videos/video_upload/?identifier=" + rowData[index];
+    var url = loris.BaseURL + "/videos/edit_video/?id=" + rowData[index];
     return React.createElement(
       "td",
       null,
@@ -33,3 +33,4 @@ function formatColumn(column, cell, rowData) {
     cell
   );
 }
+//# sourceMappingURL=columnFormatter.js.map
