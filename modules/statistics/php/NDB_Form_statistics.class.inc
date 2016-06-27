@@ -103,7 +103,7 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['mri_table_exists'] = true;
         if (!$DB->tableExists('mri_parameter_form')) {
             $this->tpl_data['mri_table_exists'] = false;
-            return;
+            //return;
         }
 
         $this->tpl_data['showTable'] = true;
@@ -546,12 +546,7 @@ class NDB_Form_statistics extends NDB_Form
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;
         $bigTable_params =array();
-        //if table is not in database handle by displaying error message
-        $this->tpl_data['mri_table_exists'] = true;
-        if (!$DB->tableExists('mri_parameter_form')) {
-            $this->tpl_data['mri_table_exists'] = false;
-            return;
-        }
+
 
         $this->tpl_data['showTable'] = true;
 
@@ -649,6 +644,12 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['Visits']         = $Visits;
 
         //START BIG TABLE
+        //if table is not in database handle by displaying error message
+        $this->tpl_data['mri_table_exists'] = true;
+        if (!$DB->tableExists('mri_parameter_form')) {
+            $this->tpl_data['mri_table_exists'] = false;
+            return;
+        }
         $MRISubcategories = array(
                              'Complete',
                              'Partial Run',

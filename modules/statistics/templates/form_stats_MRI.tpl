@@ -90,8 +90,10 @@
     {if $mri_table_exists}
         {$MRI_Done_Table}
     {else}
+        <br><br>
         <h2>Oops</h2>
-        <p> It seems like the "mri_parameter_form" table is missing in the database currently in use. This table is necessary in order to compute the MRI statistics on this page.</p>
+        <p> It seems like the "mri_parameter_form" table is missing in the database currently in use. <br>
+            This table is necessary in order to compute the Breakdown table of the MRI statistics page.</p>
     {/if}
 </div>
 
