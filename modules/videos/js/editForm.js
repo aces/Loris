@@ -43,7 +43,11 @@ var VideoUploadForm = React.createClass({
       success: function (data) {
 
         var formData = {
-          'idVideo': data.videoData.record_id
+          'idVideo': data.videoData.record_id,
+          'For_site': data.videoData.For_site,
+          'dateTaken': data.videoData.Date_taken,
+          'comments': data.videoData.comments,
+          'hide_video': data.videoData.hide_video
         };
 
         that.setState({
@@ -263,6 +267,15 @@ var VideoUploadForm = React.createClass({
           disabled: true,
           ref: 'file',
           value: this.state.videoData.File_name
+        }),
+        React.createElement(SelectElement, {
+          name: 'hide_video',
+          label: 'Hide Video',
+          emptyOption: false,
+          options: ["No", "Yes"],
+          onUserInput: this.setFormData,
+          ref: 'hide_video',
+          value: this.state.videoData.hide_video
         }),
         React.createElement(ButtonElement, { label: 'Update Video' })
       )

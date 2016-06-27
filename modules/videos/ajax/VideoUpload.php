@@ -28,11 +28,13 @@ function editVideo()
     $site = $_POST['For_site'];
     $dateTaken = $_POST['dateTaken'];
     $comments = $_POST['comments'];
+    $hideVideo = $_POST['hide_video'];
 
     $updateValues = [
         'For_site' => $site,
         'Date_taken' => $dateTaken,
-        'comments' => $comments
+        'comments' => $comments,
+        'hide_video' => $hideVideo
     ];
 
     $db->update('videos', $updateValues, ['record_id' => $idVideo]);

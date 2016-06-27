@@ -50,6 +50,7 @@ SelectElement = React.createClass({
       'label': 'Label',
       'options': [],
       'multiple': '',
+      'emptyOption': true,
       'disabled': false,
       'hasError': false,
       'required': false,
@@ -92,6 +93,12 @@ SelectElement = React.createClass({
     var elementClass = 'form-group';
     var required = this.props.required ? 'required' : '';
     var disabled = this.props.disabled ? 'disabled' : '';
+    var emptyOptionHTML = "";
+
+    // Add empty option
+    if (this.props.emptyOption) {
+      emptyOptionHTML = "<option></option>";
+    }
 
     if (this.state.hasError && this.props.required) {
       errorMessage = this.props.errorMessage;
@@ -121,7 +128,7 @@ SelectElement = React.createClass({
             required: required,
             disabled: disabled
           },
-          React.createElement('option', null),
+          React.createElement('div', { dangerouslySetInnerHTML: { __html: emptyOptionHTML } }),
           Object.keys(options).map(function (option) {
             return React.createElement(
               'option',
