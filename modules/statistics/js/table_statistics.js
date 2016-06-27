@@ -47,7 +47,7 @@ function updateBehaviouralInstrument() {
     var BehaviouralProject    = document.getElementById("BehaviouralProject");
     var request = $.ajax(
         {
-            url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralSite=' + BehaviouralSite.value + '&BehaviouralInstrument=' + BehaviouralInstrument.value + '&BehaviouralProject=' + BehaviouralProject.value,
+            url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralSite=' + BehaviouralSite.value + '&BehaviouralInstrument=' + (BehaviouralProject==null ? "" : BehaviouralProject.value) + '&BehaviouralProject=' + BehaviouralProject.value,
             type: 'GET',
             data: 'html',
             success: function(page) {
@@ -63,7 +63,7 @@ function updateMRITable() {
     var request          = $.ajax(
         {
             url: loris.BaseURL + '/statistics/stats_MRI/?dynamictabs=dynamictabs&mri_type=' + selectedMRI_TYPE.value +
-            '&MRIProject=' + MRIProject.value,
+            '&MRIProject=' + (MRIProject==null ? "" : MRIProject.value),
             type: 'GET',
             data: 'html',
             success: function(page) {

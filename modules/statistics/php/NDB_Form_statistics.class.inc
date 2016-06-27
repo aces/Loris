@@ -78,13 +78,13 @@ class NDB_Form_statistics extends NDB_Form
     function statistics()
     {
         $DB =& Database::singleton();
-
         $this->tpl_data['StatsTabs'] = $DB->pselect(
             "SELECT ModuleName, SubModuleName, Description
                  FROM StatisticsTabs
                  ORDER BY OrderNo",
             array()
         );
+
     }
 
     function stats_general()
@@ -95,7 +95,9 @@ class NDB_Form_statistics extends NDB_Form
     function stats_demographic()
     {
         $DB =& Database::singleton();
-
+        $config = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        $this->tpl_data['useProjects'] = $useProjects;
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table
         $this->tpl_data['mri_table_exists'] = true;
@@ -393,7 +395,9 @@ class NDB_Form_statistics extends NDB_Form
     function stats_behavioural()
     {
         $DB =& Database::singleton();
-
+        $config = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        $this->tpl_data['useProjects'] = $useProjects;
         $subprojList ="";
 
         $centers = $DB->pselect(
@@ -538,6 +542,9 @@ class NDB_Form_statistics extends NDB_Form
     function stats_MRI()
     {
         $DB =& Database::singleton();
+        $config = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        $this->tpl_data['useProjects'] = $useProjects;
         $bigTable_params =array();
         //if table is not in database handle by displaying error message
         $this->tpl_data['mri_table_exists'] = true;
@@ -871,7 +878,9 @@ class NDB_Form_statistics extends NDB_Form
     function stats_reliability()
     {
         $DB =& Database::singleton();
-
+        $config = NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
+        $this->tpl_data['useProjects'] = $useProjects;
         //PROJECTS
         $projects[null] = 'All Projects';
         foreach(Utility::getProjectList() as $key => $value) {

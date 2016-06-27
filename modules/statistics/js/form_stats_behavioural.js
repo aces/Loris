@@ -3,7 +3,7 @@ function updateBehaviouralTab() {
     var BehaviouralProject = document.getElementById("BehaviouralProject");
     var request            = $.ajax(
         {
-            url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' + BehaviouralProject.value,
+            url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' + (BehaviouralProject==null ? "" : BehaviouralProject.value),
             type: 'GET',
             data: 'html',
             success: function (response) {

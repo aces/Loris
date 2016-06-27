@@ -4,12 +4,14 @@
     <div class="col-sm-2">
         {html_options id="MRIsite" options=$Sites name="MRIsite" selected=$CurrentSite.ID class="form-control"}
     </div>
-    <div class="col-sm-2">
-        {html_options id="MRIProject" options=$Projects name="MRIProject" selected=$CurrentProject.ID class="form-control"}
-    </div>
+    {if $useProjects == "true"}
+        <div class="col-sm-2">
+            {html_options id="MRIProject" options=$Projects name="MRIProject" selected=$CurrentProject.ID class="form-control"}
+        </div>
+    {/if}
     <br><br>
     <div id="scancheckbox">
-        <input type="checkbox" id="selectall" checked/> Select All
+        <input type="checkbox" id="selectall"/> Select All
         {html_checkboxes id="MRIScans" options=$scan_types name="MRIScans" selected=$Scans_sel_box class="timesheet-daily-checkbox"}
         {*<input type="checkbox" name="all" value="bla" checked><b>All Scan Types</b>
         {foreach item=scan key=scanid from=$scan_types}
