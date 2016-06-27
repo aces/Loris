@@ -43,9 +43,9 @@ var VideoUploadForm = React.createClass({
       success: function (data) {
 
         var formData = {
-          'idVideo': data.videoData.record_id,
-          'For_site': data.videoData.For_site,
-          'dateTaken': data.videoData.Date_taken,
+          'idVideo': data.videoData.id,
+          'for_site': data.videoData.for_site,
+          'date_taken': data.videoData.date_taken,
           'comments': data.videoData.comments,
           'hide_video': data.videoData.hide_video
         };
@@ -208,50 +208,50 @@ var VideoUploadForm = React.createClass({
         ),
         React.createElement('br', null),
         React.createElement(SelectElement, {
-          name: 'PSCID',
+          name: 'pscid',
           label: 'PSCID',
           options: this.state.Data.candidates,
           onUserInput: this.setFormData,
-          ref: 'PSCID',
+          ref: 'pscid',
           required: true,
           disabled: true,
-          value: this.state.videoData.PSCID
+          value: this.state.videoData.pscid
         }),
         React.createElement(SelectElement, {
-          name: 'visitLabel',
+          name: 'visit_label',
           label: 'Visit Label',
           options: this.state.Data.visits,
           onUserInput: this.setFormData,
-          ref: 'visitLabel',
+          ref: 'visit_label',
           required: true,
           disabled: true,
-          value: this.state.videoData.visitLabel
+          value: this.state.videoData.visit_label
         }),
         React.createElement(SelectElement, {
-          name: 'Instrument',
+          name: 'instrument',
           label: 'Instrument',
           options: this.state.Data.instruments,
           onUserInput: this.setFormData,
-          ref: 'Instrument',
+          ref: 'instrument',
           disabled: true,
-          value: this.state.videoData.Instrument
+          value: this.state.videoData.instrument
         }),
         React.createElement(SelectElement, {
-          name: 'For_site',
+          name: 'for_site',
           label: 'For Site',
           options: this.state.Data.sites,
           onUserInput: this.setFormData,
-          ref: 'For_site',
-          value: this.state.videoData.For_site
+          ref: 'for_site',
+          value: this.state.videoData.for_site
         }),
         React.createElement(DateElement, {
-          name: 'dateTaken',
+          name: 'date_taken',
           label: 'Date of Administration',
           minYear: '2000',
           maxYear: '2017',
           onUserInput: this.setFormData,
-          ref: 'dateTaken',
-          value: this.state.videoData.Date_taken
+          ref: 'date_taken',
+          value: this.state.videoData.date_taken
         }),
         React.createElement(TextareaElement, {
           name: 'comments',
@@ -266,7 +266,8 @@ var VideoUploadForm = React.createClass({
           required: true,
           disabled: true,
           ref: 'file',
-          value: this.state.videoData.File_name
+          label: 'Uploaded file',
+          value: this.state.videoData.file_name
         }),
         React.createElement(SelectElement, {
           name: 'hide_video',
@@ -284,3 +285,4 @@ var VideoUploadForm = React.createClass({
 });
 
 RVideoUploadForm = React.createFactory(VideoUploadForm);
+//# sourceMappingURL=editForm.js.map

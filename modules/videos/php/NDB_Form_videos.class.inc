@@ -40,9 +40,9 @@ class NDB_Form_videos extends NDB_Form
         $idVideo = $_GET['id'];
 
         // Check if video exists, if not redirect to /videos/ page
-        if ($idVideo) {
+        if (isset($idVideo)) {
             $result = $db->pselectRow(
-                "SELECT record_id FROM videos WHERE record_id = $idVideo", []
+                "SELECT id FROM videos WHERE id = $idVideo", []
             );
             if (count($result) < 1) {
                 header('Location: ' . $baseURL . '/videos/');

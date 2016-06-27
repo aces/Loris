@@ -65,7 +65,7 @@ var VideoUploadForm = React.createClass({
       formData.append(key, myFormData[key]);
     }
 
-    var requiredFileName = myFormData['PSCID'] + "_" + myFormData['visitLabel'];
+    var requiredFileName = myFormData['pscid'] + "_" + myFormData['visit_label'];
     var fileName = myFormData['file'].name;
     var isValidFileName = fileName.indexOf(requiredFileName) > -1;
 
@@ -210,42 +210,42 @@ var VideoUploadForm = React.createClass({
         React.createElement('br', null),
         React.createElement(HelpTextElement, { label: 'Note', html: true, text: helpText }),
         React.createElement(SelectElement, {
-          name: 'PSCID',
+          name: 'pscid',
           label: 'PSCID',
           options: this.state.Data.candidates,
           onUserInput: this.setFormData,
-          ref: 'PSCID',
+          ref: 'pscid',
           required: true
         }),
         React.createElement(SelectElement, {
-          name: 'visitLabel',
+          name: 'visit_label',
           label: 'Visit Label',
           options: this.state.Data.visits,
           onUserInput: this.setFormData,
-          ref: 'visitLabel',
+          ref: 'visit_label',
           required: true
         }),
         React.createElement(SelectElement, {
-          name: 'Instrument',
+          name: 'instrument',
           label: 'Instrument',
           options: this.state.Data.instruments,
           onUserInput: this.setFormData,
-          ref: 'Instrument'
+          ref: 'instrument'
         }),
         React.createElement(SelectElement, {
-          name: 'For_site',
+          name: 'for_site',
           label: 'For Site',
           options: this.state.Data.sites,
           onUserInput: this.setFormData,
-          ref: 'For_site'
+          ref: 'for_site'
         }),
         React.createElement(DateElement, {
-          name: 'dateTaken',
+          name: 'date_taken',
           label: 'Date of Administration',
           minYear: '2000',
           maxYear: '2017',
           onUserInput: this.setFormData,
-          ref: 'dateTaken'
+          ref: 'date_taken'
         }),
         React.createElement(TextareaElement, {
           name: 'comments',
@@ -257,7 +257,8 @@ var VideoUploadForm = React.createClass({
           id: 'videoUploadEl',
           onUserInput: this.setFormData,
           required: true,
-          ref: 'file'
+          ref: 'file',
+          label: 'File to upload'
         }),
         React.createElement(ButtonElement, { label: 'Upload Video' })
       )
@@ -266,3 +267,4 @@ var VideoUploadForm = React.createClass({
 });
 
 RVideoUploadForm = React.createFactory(VideoUploadForm);
+//# sourceMappingURL=uploadForm.js.map

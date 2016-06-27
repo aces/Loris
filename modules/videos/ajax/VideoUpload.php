@@ -4,7 +4,7 @@
  *
  * Handles video upload and update actions received from a front-end ajax call
  *
- * @author Alex I.
+ * @author  Alex I.
  * @version 1.0.0
  */
 
@@ -31,19 +31,19 @@ function editVideo()
 
     // Process posted data
     $idVideo = $_POST['idVideo'];
-    $site = $_POST['For_site'];
-    $dateTaken = $_POST['dateTaken'];
+    $site = $_POST['for_site'];
+    $dateTaken = $_POST['date_taken'];
     $comments = $_POST['comments'];
     $hideVideo = $_POST['hide_video'];
 
     $updateValues = [
-        'For_site' => $site,
-        'Date_taken' => $dateTaken,
-        'comments' => $comments,
+        'for_site'   => $site,
+        'date_taken' => $dateTaken,
+        'comments'   => $comments,
         'hide_video' => $hideVideo
     ];
 
-    $db->update('videos', $updateValues, ['record_id' => $idVideo]);
+    $db->update('videos', $updateValues, ['id' => $idVideo]);
 }
 
 
@@ -59,25 +59,27 @@ function uploadVideo()
     $config = NDB_Config::singleton();
 
     // Get videos path
-    $videosPath  = $config->getSetting('paths')['videosPath'];
+    $videosPath = $config->getSetting('paths')['videosPath'];
     if (!isset($videosPath) && !file_exists($videosPath)) {
         echo "Error! Video path is not set in Loris Settings!";
+
         return;
     }
     // Make sure folder is writable
     chmod($videosPath, 0777);
 
     // Process posted data
-    $pscid = isset($_POST['PSCID']) ? $_POST['PSCID'] : null;
-    $visit = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null;
-    $instrument = isset($_POST['Instrument']) ? $_POST['Instrument'] : null;
-    $site = isset($_POST['For_site']) ? $_POST['For_site'] : null;
-    $dateTaken = isset($_POST['dateTaken']) ? $_POST['dateTaken'] : null;
+    $pscid = isset($_POST['pscid']) ? $_POST['pscid'] : null;
+    $visit = isset($_POST['visit_label']) ? $_POST['visit_label'] : null;
+    $instrument = isset($_POST['instrument']) ? $_POST['instrument'] : null;
+    $site = isset($_POST['for_site']) ? $_POST['for_site'] : null;
+    $dateTaken = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
     $comments = isset($_POST['comments']) ? $_POST['comments'] : null;
 
     // If required fields are not set, show an error
     if (!isset($_FILES) || !isset($pscid) || !isset($visit)) {
         showError("Please fill in all required fields!");
+
         return;
     }
 
@@ -89,19 +91,19 @@ function uploadVideo()
 
     // Build insert query
     $query = [
-        'PSCID'         => $pscid,
-        'Instrument'    => $instrument,
-        'visitLabel'    => $visit,
-        'Date_taken'    => $dateTaken,
-        'Date_uploaded' => date("Y-m-d H:i:s"),
-        'File_type'     => $fileType,
-        'Data_dir'      => $videosPath,
-        'File_name'     => $fileName,
-        'File_size'     => $fileSize,
-        'uploaded_by'   => $userID,
-        'For_site'      => $site,
+        'pscid'         => $pscid,
+        'visit_label'   => $visit,
+        'instrument'    => $instrument,
+        'for_site'      => $site,
+        'date_taken'    => $dateTaken,
         'comments'      => $comments,
-        'hide_video'    => 0
+        'file_name'     => $fileName,
+        'file_type'     => $fileType,
+        'file_size'     => $fileSize,
+        'data_dir'      => $videosPath,
+        'uploaded_by'   => $userID,
+        'hide_video'    => 0,
+        'date_uploaded' => date("Y-m-d H:i:s"),
     ];
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $videosPath . $fileName)) {
@@ -130,8 +132,8 @@ function getUploadFields()
     );
 
     $instrumentsList = toSelect($instruments, "Test_name", null);
-    $candidatesList  = toSelect($candidates, "PSCID", null);
-    $candIdList      = toSelect($candidates, "CandID", "PSCID");
+    $candidatesList = toSelect($candidates, "PSCID", null);
+    $candIdList = toSelect($candidates, "CandID", "PSCID");
     $visitList = Utility::getVisitList();
     $siteList = Utility::getSiteList(false);
 
@@ -139,7 +141,7 @@ function getUploadFields()
     if (isset($_GET['idVideo'])) {
         $idVideo = $_GET['idVideo'];
         $videoData = $db->pselectRow(
-            "SELECT * FROM videos WHERE record_id = $idVideo", []
+            "SELECT * FROM videos WHERE id = $idVideo", []
         );
     }
 
@@ -185,7 +187,9 @@ function toSelect($options, $item, $item2)
     $selectOptions = [];
 
     $optionsValue = $item;
-    if (isset($item2)) { $optionsValue = $item2; }
+    if (isset($item2)) {
+        $optionsValue = $item2;
+    }
 
     foreach ($options as $key => $value) {
         $selectOptions[$options[$key][$optionsValue]] = $options[$key][$item];

@@ -80,17 +80,17 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
 
         $instrumentList = [null => 'Any'];
         $instrumentsQuery = $db->pselect(
-            "SELECT DISTINCT Instrument FROM videos", []
+            "SELECT DISTINCT instrument FROM videos", []
         );
         foreach ($instrumentsQuery as $instrument) {
-            $instrumentList[$instrument['Instrument']] = $instrument['Instrument'];
+            $instrumentList[$instrument['instrument']] = $instrument['instrument'];
         }
 
         // Form Elements
         $this->addBasicText('PSCID', 'PSCID:', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('Instrument', 'Instrument:', $instrumentList);
-        $this->addSelect('visitLabel', 'Visit Label:', $visitList);
-        $this->addSelect('For_site', 'For Site:', $siteList);
+        $this->addSelect('instrument', 'instrument:', $instrumentList);
+        $this->addSelect('visit_label', 'Visit Label:', $visitList);
+        $this->addSelect('for_site', 'For Site:', $siteList);
         $this->addBasicText('uploaded_by', 'Uploaded By');
 
         return true;
@@ -118,39 +118,39 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
 
         // set the class variables
         $this->columns = [
-            'v.File_name',
+            'v.file_name',
             'v.uploaded_by',
-            '(SELECT Full_name FROM test_names WHERE Test_name=v.Instrument)',
-            'v.PSCID',
-            'v.visitLabel',
-            'v.Date_taken',
-            '(SELECT name FROM psc WHERE CenterID=v.For_site)',
+            '(SELECT Full_name FROM test_names WHERE Test_name=v.instrument)',
+            'v.pscid',
+            'v.visit_label',
+            'v.date_taken',
+            '(SELECT name FROM psc WHERE CenterID=v.for_site)',
             'substring(v.comments, 1, 50) as comments',
-            'v.Date_uploaded',
-            'v.record_id'
+            'v.date_uploaded',
+            'v.id'
         ];
 
         $this->query = $query;
         $this->group_by = '';
-        $this->order_by = 'v.Instrument';
+        $this->order_by = 'v.instrument';
         $this->headers = [
-            'File_name', 'uploaded_by', 'Instrument', 'PSCID',
-            'visitLabel', 'Date_Taken', 'For_site', 'comments',
-            'Date_uploaded', 'Edit Metadata'
+            'file_name', 'uploaded_by', 'instrument', 'pscid',
+            'visit_label', 'date_taken', 'for_site', 'comments',
+            'date_uploaded', 'Edit Metadata'
         ];
         $this->validFilters = [
-            'v.PSCID', 'v.Instrument', 'v.Data_dir',
-            'v.For_site', 'v.visitLabel', 'v.uploaded_by'
+            'v.pscid', 'v.instrument', 'v.data_dir',
+            'v.for_site', 'v.visit_label', 'v.uploaded_by'
         ];
         $this->formToFilter = [
-            'File_name'     => 'v.File_name',
-            'Data_dir'      => 'v.Data_dir',
-            'Instrument'    => 'v.Instrument',
-            'PSCID'         => 'v.PSCID',
-            'For_site'      => 'v.For_site',
+            'file_name'     => 'v.file_name',
+            'data_dir'      => 'v.data_dir',
+            'instrument'    => 'v.instrument',
+            'pscid'         => 'v.pscid',
+            'for_site'      => 'v.for_site',
             'uploaded_by'   => 'v.uploaded_by',
-            'visitLabel'    => 'v.visitLabel',
-            'Date_uploaded' => 'v.Date_uploaded',
+            'visit_label'    => 'v.visit_label',
+            'date_uploaded' => 'v.date_uploaded',
             'comments'      => 'comments'
         ];
 

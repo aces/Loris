@@ -14,36 +14,36 @@ var VideoUploadForm = React.createClass({
     DataURL: React.PropTypes.string.isRequired
   },
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
-      'formData': {},
+      'formData':     {},
       'uploadResult': null,
-      'Headers':    [],
-      'Data':       [],
-      'isLoaded':   false,
-      'loadedData': 0
+      'Headers':      [],
+      'Data':         [],
+      'isLoaded':     false,
+      'loadedData':   0
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
     var that = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
-      xhr:      function () {
+      xhr: function() {
         var xhr = new window.XMLHttpRequest();
-        xhr.addEventListener("progress", function (evt) {
+        xhr.addEventListener("progress", function(evt) {
           that.setState({
             'loadedData': evt.loaded
           });
         });
         return xhr;
       },
-      success:  function (data) {
+      success: function(data) {
 
         var formData = {
-          'idVideo':    data.videoData.record_id,
-          'For_site':   data.videoData.For_site,
-          'dateTaken':  data.videoData.Date_taken,
+          'idVideo':    data.videoData.id,
+          'for_site':   data.videoData.for_site,
+          'date_taken': data.videoData.date_taken,
           'comments':   data.videoData.comments,
           'hide_video': data.videoData.hide_video,
         };
@@ -52,10 +52,10 @@ var VideoUploadForm = React.createClass({
           'Data':      data,
           'isLoaded':  true,
           'videoData': data.videoData,
-          'formData': formData
+          'formData':  formData
         });
       },
-      error:    function (data, error_code, error_msg) {
+      error:    function(data, error_code, error_msg) {
         console.error(error_code + ': ' + error_msg);
         that.setState({"error": "Error loading data"});
       }
@@ -88,28 +88,28 @@ var VideoUploadForm = React.createClass({
     $('#videoUploadEl').hide();
     $("#file-progress").removeClass('hide');
 
-    $.ajax ({
-      type: 'POST',
-      url: loris.BaseURL + "/videos/ajax/VideoUpload.php?action=edit",
-      data: formData,
-      cache: false,
-      contentType:false,
-      processData:false,
-      xhr: function() {
+    $.ajax({
+      type:        'POST',
+      url:         loris.BaseURL + "/videos/ajax/VideoUpload.php?action=edit",
+      data:        formData,
+      cache:       false,
+      contentType: false,
+      processData: false,
+      xhr:         function() {
         var xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function(evt) {
           if (evt.lengthComputable) {
             var progressbar = $("#progressbar");
             var progresslabel = $("#progresslabel");
-            var percent = Math.round ((evt.loaded / evt.total) * 100);
-            $(progressbar).width (percent + "%");
-            $(progresslabel).html (percent + "%");
+            var percent = Math.round((evt.loaded / evt.total) * 100);
+            $(progressbar).width(percent + "%");
+            $(progresslabel).html(percent + "%");
             progressbar.attr('aria-valuenow', percent);
           }
         }, false);
         return xhr;
       },
-      success: function(data) {
+      success:     function(data) {
         $("#file-progress").addClass('hide');
         self.setState({
           uploadResult: "success"
@@ -125,7 +125,7 @@ var VideoUploadForm = React.createClass({
         // // rerender components
         // self.forceUpdate();
       },
-      error: function(err) {
+      error:       function(err) {
         console.error(err);
         self.setState({
           uploadResult: "error"
@@ -140,7 +140,7 @@ var VideoUploadForm = React.createClass({
     formData[formElement] = value;
 
     this.setState({
-      formData : formData
+      formData: formData
     });
   },
 
@@ -194,50 +194,50 @@ var VideoUploadForm = React.createClass({
           <h3>Edit Video</h3>
           <br />
           <SelectElement
-            name="PSCID"
+            name="pscid"
             label="PSCID"
             options={this.state.Data.candidates}
             onUserInput={this.setFormData}
-            ref="PSCID"
+            ref="pscid"
             required={true}
             disabled={true}
-            value={this.state.videoData.PSCID}
+            value={this.state.videoData.pscid}
           />
           <SelectElement
-            name="visitLabel"
+            name="visit_label"
             label="Visit Label"
             options={this.state.Data.visits}
             onUserInput={this.setFormData}
-            ref="visitLabel"
+            ref="visit_label"
             required={true}
             disabled={true}
-            value={this.state.videoData.visitLabel}
+            value={this.state.videoData.visit_label}
           />
           <SelectElement
-            name="Instrument"
+            name="instrument"
             label="Instrument"
             options={this.state.Data.instruments}
             onUserInput={this.setFormData}
-            ref="Instrument"
+            ref="instrument"
             disabled={true}
-            value={this.state.videoData.Instrument}
+            value={this.state.videoData.instrument}
           />
           <SelectElement
-            name="For_site"
+            name="for_site"
             label="For Site"
             options={this.state.Data.sites}
             onUserInput={this.setFormData}
-            ref="For_site"
-            value={this.state.videoData.For_site}
+            ref="for_site"
+            value={this.state.videoData.for_site}
           />
           <DateElement
-            name="dateTaken"
+            name="date_taken"
             label="Date of Administration"
             minYear="2000"
             maxYear="2017"
             onUserInput={this.setFormData}
-            ref="dateTaken"
-            value={this.state.videoData.Date_taken}
+            ref="date_taken"
+            value={this.state.videoData.date_taken}
           />
           <TextareaElement
             name="comments"
@@ -252,7 +252,8 @@ var VideoUploadForm = React.createClass({
             required={true}
             disabled={true}
             ref="file"
-            value={this.state.videoData.File_name}
+            label="Uploaded file"
+            value={this.state.videoData.file_name}
           />
           <SelectElement
             name="hide_video"

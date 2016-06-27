@@ -63,7 +63,7 @@ var VideoUploadForm = React.createClass({
       formData.append(key, myFormData[key]);
     }
 
-    var requiredFileName = myFormData['PSCID'] + "_" + myFormData['visitLabel'];
+    var requiredFileName = myFormData['pscid'] + "_" + myFormData['visit_label'];
     var fileName = myFormData['file'].name;
     var isValidFileName = (fileName.indexOf(requiredFileName) > -1)
 
@@ -196,42 +196,42 @@ var VideoUploadForm = React.createClass({
           <br />
           <HelpTextElement label="Note" html={true} text={helpText} />
           <SelectElement
-            name="PSCID"
+            name="pscid"
             label="PSCID"
             options={this.state.Data.candidates}
             onUserInput={this.setFormData}
-            ref="PSCID"
+            ref="pscid"
             required={true}
           />
           <SelectElement
-            name="visitLabel"
+            name="visit_label"
             label="Visit Label"
             options={this.state.Data.visits}
             onUserInput={this.setFormData}
-            ref="visitLabel"
+            ref="visit_label"
             required={true}
           />
           <SelectElement
-            name="Instrument"
+            name="instrument"
             label="Instrument"
             options={this.state.Data.instruments}
             onUserInput={this.setFormData}
-            ref="Instrument"
+            ref="instrument"
           />
           <SelectElement
-            name="For_site"
+            name="for_site"
             label="For Site"
             options={this.state.Data.sites}
             onUserInput={this.setFormData}
-            ref="For_site"
+            ref="for_site"
           />
           <DateElement
-            name="dateTaken"
+            name="date_taken"
             label="Date of Administration"
             minYear="2000"
             maxYear="2017"
             onUserInput={this.setFormData}
-            ref="dateTaken"
+            ref="date_taken"
           />
           <TextareaElement
             name="comments"
@@ -244,6 +244,7 @@ var VideoUploadForm = React.createClass({
             onUserInput={this.setFormData}
             required={true}
             ref="file"
+            label="File to upload"
           />
           <ButtonElement label="Upload Video" />
         </FormElement>
