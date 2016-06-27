@@ -20,11 +20,11 @@ $('#selectall').click(
 $('input:checkbox[id=MRIScans]').click(
     function(event) {
         if(this.checked) {
-            if ($('input:checkbox[id=MRIScans]:checked').length==$('input:checkbox[id=MRIScans]').length){
-                document.getElementById("selectall").checked=true;
+            if ($('input:checkbox[id=MRIScans]:checked').length==$('input:checkbox[id=MRIScans]').length) {
+                document.getElementById("selectall").checked =true;
             }
         }else{
-            document.getElementById("selectall").checked=false;
+            document.getElementById("selectall").checked =false;
         }
     }
 );

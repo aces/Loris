@@ -94,8 +94,8 @@ class NDB_Form_statistics extends NDB_Form
 
     function stats_demographic()
     {
-        $DB =& Database::singleton();
-        $config = NDB_Config::singleton();
+        $DB          =& Database::singleton();
+        $config      = NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;
         //This boolean is for optional use by project if the demographics table
@@ -394,8 +394,8 @@ class NDB_Form_statistics extends NDB_Form
 
     function stats_behavioural()
     {
-        $DB =& Database::singleton();
-        $config = NDB_Config::singleton();
+        $DB          =& Database::singleton();
+        $config      = NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;
         $subprojList ="";
@@ -541,8 +541,8 @@ class NDB_Form_statistics extends NDB_Form
 
     function stats_MRI()
     {
-        $DB =& Database::singleton();
-        $config = NDB_Config::singleton();
+        $DB          =& Database::singleton();
+        $config      = NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;
         $bigTable_params =array();
@@ -626,7 +626,7 @@ class NDB_Form_statistics extends NDB_Form
             $scan_types[$row['ID']] = $row['Scan_type'];
         }
 
-        $scans_selected  =array();
+        $scans_selected =array();
         if(isset($_REQUEST['Scans']) && $_REQUEST['Scans'] != '') {
             $scans_selected_input = explode(",", $_REQUEST['Scans']);
         }
@@ -877,8 +877,8 @@ class NDB_Form_statistics extends NDB_Form
     //RELIABILITY
     function stats_reliability()
     {
-        $DB =& Database::singleton();
-        $config = NDB_Config::singleton();
+        $DB          =& Database::singleton();
+        $config      = NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;
         //PROJECTS
