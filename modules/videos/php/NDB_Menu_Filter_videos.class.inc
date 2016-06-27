@@ -42,6 +42,7 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
     {
         //create user object
         $user =& User::singleton();
+
         return $user->hasPermission('video_upload');
     }
 
@@ -157,10 +158,28 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
     }
 
     /**
+     * Include additional CSS files:
+     *  1. videos.js
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL . "/videos/css/videos.css"
+            ]
+        );
+    }
+
+    /**
      * Include additional JS files:
      *  1. columnFormatter.js required to set links for Edit video and Download video
      *  2. uploadForm.js - reactified form to upload videos
-     *
      *
      * @return array of javascript to be inserted
      */
@@ -171,10 +190,10 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/videos/js/columnFormatter.js",
                 $baseURL . "/videos/js/uploadForm.js"
-            )
+            ]
         );
     }
 }

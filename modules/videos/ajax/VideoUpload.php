@@ -1,9 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Alister
- * Date: 2016-06-16
- * Time: 3:08 PM
+ * VideoUpload.php
+ *
+ * Handles video upload and update actions received from a front-end ajax call
+ *
+ * @author Alex I.
+ * @version 1.0.0
  */
 
 if (isset($_GET['action'])) {
@@ -15,10 +17,14 @@ if (isset($_GET['action'])) {
     } else if ($action == "edit") {
         editVideo();
     }
-
 }
 
 
+/**
+ * Handles the video update/edit process
+ *
+ * @throws DatabaseException
+ */
 function editVideo()
 {
     $db =& Database::singleton();
@@ -107,6 +113,7 @@ function uploadVideo()
 
 /**
  * Returns a list of fields from database
+ *
  * @return array
  * @throws DatabaseExceptionr
  */
@@ -122,14 +129,14 @@ function getUploadFields()
         "SELECT CandID, PSCID FROM candidate ORDER BY PSCID", []
     );
 
-    $instrumentsList = toSelect($instruments, "Test_name");
-    $candidatesList  = toSelect($candidates, "PSCID");
+    $instrumentsList = toSelect($instruments, "Test_name", null);
+    $candidatesList  = toSelect($candidates, "PSCID", null);
     $candIdList      = toSelect($candidates, "CandID", "PSCID");
     $visitList = Utility::getVisitList();
     $siteList = Utility::getSiteList(false);
 
     $videoData = null;
-    if ($_GET['idVideo']) {
+    if (isset($_GET['idVideo'])) {
         $idVideo = $_GET['idVideo'];
         $videoData = $db->pselectRow(
             "SELECT * FROM videos WHERE record_id = $idVideo", []

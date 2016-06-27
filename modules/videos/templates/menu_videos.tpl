@@ -17,9 +17,6 @@
   {/if}
 </ul>
 
-
-
-
 <!-- Tab panes -->
 <div class="tab-content">
 
@@ -34,7 +31,6 @@
       {include file='../part/video_upload.tpl'}
   </div>
 </div>
-
 
 <script>
   var table = RDynamicDataTable({

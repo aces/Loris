@@ -1,7 +1,7 @@
 function formatColumn(column, cell, rowData) {
 
   if (column === 'File Name') {
-    var url = loris.BaseURL + "/videos/ajax/GetFile.php?File=" + rowData[0];
+    var url = loris.BaseURL + "/videos/ajax/VideoDownload.php?File=" + rowData[0];
     return <td><a href={url} target="_blank">{cell}</a></td>;
   }
 

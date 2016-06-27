@@ -1,6 +1,7 @@
 <?php
 /**
  * Video downloader.
+ *
  * This ensures that the file exists and the user is logged in to
  * Loris before trying to return the file to the user.
  *
@@ -8,7 +9,7 @@
  *
  * @category Loris
  * @package  Videos
- * @author   Alex Ilea <ailea@gmail.com>
+ * @author   Loris Team <ailea@gmail.com>
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  *
@@ -40,7 +41,17 @@ if (!file_exists($filePath)) {
 }
 
 // Output file in downloadable format
-header('Content-Type: application/force-download');
+header('Content-Description: File Transfer');
+header('Content-Type: application/octet-stream');
 header("Content-Transfer-Encoding: Binary");
 header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
+header('Expires: 0');
+header('Cache-Control: must-revalidate');
+header('Pragma: public');
+header('Content-Length: ' . filesize($file));
+ob_clean();
+flush();
+
 readfile($filePath);
+
+exit;

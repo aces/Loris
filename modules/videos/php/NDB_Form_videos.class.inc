@@ -13,7 +13,6 @@
  */
 
 require_once "NDB_Form.class.inc";
-require_once "Utility.class.inc";
 
 /**
  * Creates the form for NDB_Form_videos
@@ -34,7 +33,6 @@ class NDB_Form_videos extends NDB_Form
      */
     function edit_video()
     {
-
         $db =& Database::singleton();
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
@@ -52,13 +50,32 @@ class NDB_Form_videos extends NDB_Form
         } else {
             header('Location: ' . $baseURL . '/videos/');
         }
-
     }
 
     /**
-     * Additional js files
+     * Include additional CSS files:
+     *  1. videos.js
      *
-     * @return array
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL . "/videos/css/videos.css"
+            ]
+        );
+    }
+
+    /**
+     * Include additional JS files:
+     *  1. editForm.js - reactified form to update videos
+     *
+     * @return array of javascript to be inserted
      */
     function getJSDependencies()
     {
@@ -76,21 +93,15 @@ class NDB_Form_videos extends NDB_Form
     /**
      * Check user permissions
      *
-     * @return bool - has access
-     *
+     * @return bool
      * @throws ConfigurationException
-     * @throws Exception
      */
     function _hasAccess()
     {
+        //create user object
         $user =& User::singleton();
-        $site =& Site::singleton($user->getData('CenterID'));
 
-        if ($site->isStudySite()) {
-            return $user->hasPermission('video_upload');
-        }
-
-        return false;
+        return $user->hasPermission('video_upload');
     }
 
 }
