@@ -298,19 +298,20 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/reliability/");
         try{
         $this->webDriver->findElement(WebDriverBy::ID("swapDown"))->click();
-        }catch(Exception $e)
-        {
-         print($e);
-         }
+        
         $this->webDriver->findElement(WebDriverBy::Name("Cand1PSCID"))->sendKeys
             ("8888");
         $this->webDriver->findElement(WebDriverBy::Name("Cand2PSCID"))->sendKeys
             ("8889");
-        $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='swap-body']/form/div[6]/div[5]/input"))->click();
+        $this->webDriver->findElement(WebDriverBy::Xpath(
+                     "//*[@id='swap-body']/form/div[6]/div[5]/input"))->click();
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".error"))->
                  getText();
         $this->assertContains("Cannot swap candidates.", $bodyText);
-
+        }catch(Exception $e)
+        {
+         print($e);
+        }
      }
 
 }
