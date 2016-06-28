@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Mri_violations automated integration tests
