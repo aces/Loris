@@ -874,9 +874,11 @@ class Utility
      */
     static function columnExists($test_name,$column)
     {
-        error_log("WARNING: ColumnExists function will soon be moved to the Database " .
-        "class. Please replace any static reference to Utility::ColumnExists() ".
-        "by Database->ColumnExists() calls.");
+        error_log(
+            "WARNING: ColumnExists function will soon be moved to the Database " .
+            "class. Please replace any static reference to Utility::ColumnExists() ".
+            "by Database->ColumnExists() calls."
+        );
         $config   =& NDB_Config::singleton();
         $database = $config->getSetting('database');
         $query    = "SELECT DISTINCT table_name

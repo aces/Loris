@@ -1091,7 +1091,7 @@ class Database
      * @param string $test_name The table to check for a column.
      * @param string $column    The column name to check the table for.
      *
-     * @return  boolean true if the table has a the given column
+     * @return boolean true if the table has a the given column
      */
     function columnExists($test_name,$column)
     {
@@ -1106,9 +1106,9 @@ class Database
         $effected = $this->pselectOne(
             $query,
             array(
-                'tn' => $test_name,
-                'cn' => $column,
-                'db' => $database,
+             'tn' => $test_name,
+             'cn' => $column,
+             'db' => $database,
             )
         );
         if ($effected) {
