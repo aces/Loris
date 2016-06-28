@@ -483,56 +483,67 @@ ImageQCCommentsButton = React.createClass({
     }
 });
 
-LongitudinalViewButton = React.createClass({displayName: "LongitudinalViewButton",
-    openWindowHandler: function(e) {
+LongitudinalViewButton = React.createClass({
+    displayName: 'LongitudinalViewButton',
+
+    openWindowHandler: function (e) {
         e.preventDefault();
-         window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.OtherTimepoints + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
-     },
-    render: function() {
+        window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.OtherTimepoints + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
+    },
+    render: function () {
         if (!this.props.FileID || this.props.FileID == '') {
-            return React.createElement("span", null);
+            return React.createElement('span', null);
         };
-        return (
-            React.createElement("a", {className: "btn btn-default",
-                    href: "#noID",
-                    onClick: this.openWindowHandler
-                },
-                React.createElement("span", {className: "text-default"},
-                    React.createElement("span", {className: "glyphicon glyphicon-pencil"}),
-                    React.createElement("span", {className: "hidden-xs"}, "Longitudinal View")
+        return React.createElement(
+            'a',
+            { className: 'btn btn-default',
+                href: '#noID',
+                onClick: this.openWindowHandler
+            },
+            React.createElement(
+                'span',
+                { className: 'text-default' },
+                React.createElement('span', { className: 'glyphicon glyphicon-pencil' }),
+                React.createElement(
+                    'span',
+                    { className: 'hidden-xs' },
+                    'Longitudinal View'
                 )
             )
         );
     }
 });
 
-ImageDownloadButtons = React.createClass({displayName: "ImageDownloadButtons",
-    render: function() {
-        return (
-            React.createElement("div", {className: "row mri-second-row-panel col-xs-12"},
-                React.createElement(ImageQCCommentsButton, {FileID: this.props.FileID, 
-                    BaseURL: this.props.BaseURL}
-                ),
-                React.createElement(DownloadButton, {FileName: this.props.Fullname, 
-                    Label: "Download Minc", 
-                    BaseURL: this.props.BaseURL}
-                ), 
-                React.createElement(DownloadButton, {FileName: this.props.XMLProtocol, 
-                    BaseURL: this.props.BaseURL, 
-                    Label: "Download XML Protocol"}
-                ), 
-                React.createElement(DownloadButton, {FileName: this.props.XMLReport, 
-                    BaseURL: this.props.BaseURL, 
-                    Label: "Download XML Report"}
-                ), 
-                React.createElement(DownloadButton, {FileName: this.props.NrrdFile, 
-                    BaseURL: this.props.BaseURL, 
-                    Label: "Download NRRD"}
-                ),
-                React.createElement(LongitudinalViewButton, {FileID: this.props.FileID, OtherTimepoints: this.props.OtherTimepoints,
-                    BaseURL: this.props.BaseURL}
-                )
-            )
+ImageDownloadButtons = React.createClass({
+    displayName: 'ImageDownloadButtons',
+
+    render: function () {
+        return React.createElement(
+            'div',
+            { className: 'row mri-second-row-panel col-xs-12' },
+            React.createElement(ImageQCCommentsButton, { FileID: this.props.FileID,
+                BaseURL: this.props.BaseURL
+            }),
+            React.createElement(DownloadButton, { FileName: this.props.Fullname,
+                Label: 'Download Minc',
+                BaseURL: this.props.BaseURL
+            }),
+            React.createElement(DownloadButton, { FileName: this.props.XMLProtocol,
+                BaseURL: this.props.BaseURL,
+                Label: 'Download XML Protocol'
+            }),
+            React.createElement(DownloadButton, { FileName: this.props.XMLReport,
+                BaseURL: this.props.BaseURL,
+                Label: 'Download XML Report'
+            }),
+            React.createElement(DownloadButton, { FileName: this.props.NrrdFile,
+                BaseURL: this.props.BaseURL,
+                Label: 'Download NRRD'
+            }),
+            React.createElement(LongitudinalViewButton, { FileID: this.props.FileID,
+                BaseURL: this.props.BaseURL,
+                OtherTimepoints: this.props.OtherTimepoints
+            })
         );
     }
 });
@@ -544,7 +555,7 @@ ImagePanelBody = React.createClass({
         e.preventDefault();
         window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.FileID + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
     },
-       render: function () {
+    render: function () {
         return React.createElement(
             'div',
             { className: 'panel-body' },
@@ -645,9 +656,8 @@ ImagePanel = React.createClass({
                     XMLReport: this.props.XMLReport,
                     NrrdFile: this.props.NrrdFile,
                     OtherTimepoints: this.props.OtherTimepoints
-                    }
-                    )
-                )
+                })
+            )
         );
     }
 });
