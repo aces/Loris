@@ -426,5 +426,3 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     }
 }
 ?>
-                                                                                                                                                                                    428,1         Bot
-
