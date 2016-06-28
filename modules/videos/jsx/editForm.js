@@ -114,22 +114,14 @@ var VideoUploadForm = React.createClass({
         self.setState({
           uploadResult: "success"
         });
-
-        // Itterates through child components and resets state
-        // to initial state in order to clear the form
-        // Object.keys(formRefs).map(function(ref) {
-        //   if (formRefs[ref].state && formRefs[ref].state.value) {
-        //     formRefs[ref].state.value = "";
-        //   }
-        // });
-        // // rerender components
-        // self.forceUpdate();
+        self.showAlertMessage();
       },
       error:       function(err) {
         console.error(err);
         self.setState({
           uploadResult: "error"
         });
+        self.showAlertMessage();
       }
 
     });
@@ -141,6 +133,21 @@ var VideoUploadForm = React.createClass({
 
     this.setState({
       formData: formData
+    });
+  },
+
+  showAlertMessage: function() {
+    var self = this;
+
+    if (this.refs["alert-message"] == null) {
+      return;
+    }
+    
+    var alertMsg = this.refs["alert-message"].getDOMNode();
+    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
+      self.setState({
+        uploadResult: null
+      });
     });
   },
 
@@ -166,24 +173,24 @@ var VideoUploadForm = React.createClass({
       );
     }
 
-    var submitMessage = "";
-    var submitClass = "alert text-center hide";
+    var alertMessage = "";
+    var alertClass = "alert text-center hide";
 
     if (this.state.uploadResult) {
 
       if (this.state.uploadResult == "success") {
-        submitClass = "alert alert-success text-center";
-        submitMessage = "Update Successful!";
+        alertClass = "alert alert-success text-center";
+        alertMessage = "Update Successful!";
       } else if (this.state.uploadResult == "error") {
-        submitClass = "alert alert-danger text-center";
-        submitMessage = "Failed to update the video";
+        alertClass = "alert alert-danger text-center";
+        alertMessage = "Failed to update the video";
       }
     }
 
     return (
       <div>
-        <div className={submitClass} role="alert">
-          {submitMessage}
+        <div className={alertClass} role="alert" ref="alert-message">
+          {alertMessage}
         </div>
         <FormElement
           name="videoUpload"
