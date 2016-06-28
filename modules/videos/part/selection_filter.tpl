@@ -11,25 +11,25 @@
         <div class="panel-body" id="panel-body">
             <form method="post" action="/videos/">
                 <div class="row">
-                    <div class="col-md-12 col-lg-6">
+                    <div class="col-md-12 col-lg-8">
                         <div class="row">
                             <div class="form-group col-sm-6">
                                 <label class="col-md-4">{$form.PSCID.label}</label>
                                 <div class="col-md-8">{$form.PSCID.html}</div>
                             </div>
                             <div class="form-group col-sm-6">
-                                <label class="col-md-4">{$form.Instrument.label}</label>
-                                <div class="col-md-8">{$form.Instrument.html}</div>
+                                <label class="col-md-4">{$form.instrument.label}</label>
+                                <div class="col-md-8">{$form.instrument.html}</div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-6">
-                                <label class="col-md-4">{$form.visitLabel.label}</label>
-                                <div class="col-md-8">{$form.visitLabel.html}</div>
+                                <label class="col-md-4">{$form.visit_label.label}</label>
+                                <div class="col-md-8">{$form.visit_label.html}</div>
                             </div>
                             <div class="form-group col-sm-6">
-                                <label class="col-md-4">{$form.For_site.label}</label>
-                                <div class="col-md-8">{$form.For_site.html}</div>
+                                <label class="col-md-4">{$form.for_site.label}</label>
+                                <div class="col-md-8">{$form.for_site.html}</div>
                             </div>
                         </div>
                         <div class="row">
