@@ -87,9 +87,8 @@ LoadPane = React.createClass({
 				break;
 		}
 		return (
-			<TabPane Title="Load Instrument"
-                TabId={this.props.TabId}>
-                	<div className="col-sm-4 col-xs-12">
+			<TabPane Title="Load Instrument" TabId={this.props.TabId}>
+                	<div className="col-sm-6 col-xs-12">
                 		{alert}
 						<input className="fileUpload"
 							   type="file" id="instfile"
@@ -551,9 +550,11 @@ InstrumentBuilderApp = React.createClass({
 				    <li role="presentation"><a href="#Save" aria-controls="messages" role="tab" data-toggle="tab">Save</a></li>
 				 </ul>
 
-			  	<div className="tab-content col-xs-12">
-				    {tabs}
-			  	</div>
+				<div className="row">
+					<div className="tab-content col-xs-12">
+						{tabs}
+					</div>
+				</div>
 			</div>
 		)
 	}
