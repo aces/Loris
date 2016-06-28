@@ -29,7 +29,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
                         null,
                         React.createElement(
                             'a',
-                            { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID + "&outputType=" + current + "&backURL=/imaging_browser/" },
+                            { href: loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&outputType=" + current + "&backURL=/imaging_browser/" },
                             current
                         ),
                         ' | '
@@ -40,14 +40,14 @@ function formatColumn(column, cell, rowData, rowHeaders) {
                     null,
                     React.createElement(
                         'a',
-                        { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID + "&selectedOnly=1&backURL=/imaging_browser/" },
+                        { href: loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&selectedOnly=1&backURL=/imaging_browser/" },
                         'selected'
                     ),
                     ' | '
                 ));
                 cellLinks.push(React.createElement(
                     'a',
-                    { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID + "&backURL=/imaging_browser/" },
+                    { href: loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&backURL=/imaging_browser/" },
                     'all types'
                 ));
                 reactElement = React.createElement(
