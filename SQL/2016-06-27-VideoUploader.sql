@@ -30,7 +30,7 @@ INSERT INTO permissions (`code`, `description`, `categoryID`) VALUES (
 	'video_upload', 'Video uploading ', 1
 );
 
-DELETE FROM user_perm_rel WHERE userID=(SELECT ID FROM users WHERE UserID = 'admin');
+DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code = 'video_upload');
 INSERT INTO user_perm_rel (`userID`, `permID`) VALUES (
 	(SELECT ID FROM users WHERE UserID = 'admin'),
 	(SELECT permID FROM permissions WHERE code = 'video_upload')
