@@ -503,7 +503,7 @@ LongitudinalViewButton = React.createClass({
             React.createElement(
                 'span',
                 { className: 'text-default' },
-                React.createElement('span', { className: 'glyphicon glyphicon-pencil' }),
+                React.createElement('span', { className: 'glyphicon glyphicon-eye-open' }),
                 React.createElement(
                     'span',
                     { className: 'hidden-xs' },

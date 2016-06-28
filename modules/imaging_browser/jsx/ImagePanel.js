@@ -300,7 +300,7 @@ LongitudinalViewButton = React.createClass({
                onClick={this.openWindowHandler}
             >
                     <span className="text-default">
-                        <span className="glyphicon glyphicon-pencil"></span>
+                        <span className="glyphicon glyphicon-eye-open"></span>
                         <span className="hidden-xs">Longitudinal View</span>
                     </span>
             </a>
