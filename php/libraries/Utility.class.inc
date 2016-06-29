@@ -859,43 +859,6 @@ class Utility
         return $column_threshold;
     }
 
-
-    /**
-     * Checks to see if a table contains a specified column
-     *
-     * @param string $test_name The table to check for a column.
-     * @param string $column    The column name to check the table for.
-     *
-     * @return  boolean true if the table has a the given column
-     * @note    This should be moved to the Database class and references to it
-     *       updated.
-     * @note    Function comment written by Dave, not the author of this function.
-     * @cleanup
-     */
-    static function columnExists($test_name,$column)
-    {
-        $config   =& NDB_Config::singleton();
-        $database = $config->getSetting('database');
-        $query    = "SELECT DISTINCT table_name
-            FROM information_schema.columns
-            WHERE table_name = :tn
-            AND COLUMN_NAME = :cn
-            AND TABLE_SCHEMA = :db";
-        $DB       =& Database::singleton();
-        $effected = $DB->pselectOne(
-            $query,
-            array(
-             'tn' => $test_name,
-             'cn' => $column,
-             'db' => $database,
-            )
-        );
-        if ($effected) {
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Checks to see if a table contains a specified column
      *
