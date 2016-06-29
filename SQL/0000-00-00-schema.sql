@@ -136,7 +136,8 @@ CREATE TABLE `document_repository` (
   `EARLI` tinyint(1) DEFAULT '0',
   `hide_video` tinyint(1) DEFAULT '0',
   `File_category` int(3) DEFAULT NULL,
-  PRIMARY KEY (`record_id`)
+  PRIMARY KEY (`record_id`),
+  CONSTRAINT `FK_document_repository_FileTypes` FOREIGN KEY (`File_type`) REFERENCES `FileTypes`(`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -415,11 +416,12 @@ DROP TABLE IF EXISTS `mri_processing_protocol`;
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ProtocolFile` varchar(255) NOT NULL DEFAULT '',
-  `FileType` enum('xml','txt') DEFAULT NULL,
+  `FileType` varchar(255) DEFAULT NULL,
   `Tool` varchar(255) NOT NULL DEFAULT '',
   `InsertTime` int(10) unsigned NOT NULL DEFAULT '0',
   `md5sum` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`ProcessProtocolID`)
+  PRIMARY KEY (`ProcessProtocolID`),
+  CONSTRAINT `FK_mri_processing_protocol_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `FileTypes`(`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -438,7 +440,7 @@ CREATE TABLE `files` (
   `CoordinateSpace` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
-  `FileType` enum('mnc','obj','xfm','xfmmnc','imp','vertstat','xml','txt','nii','nii.gz') default NULL,
+  `FileType` varchar(255) default NULL,
   `PendingStaging` tinyint(1) NOT NULL default '0',
   `InsertedByUserID` varchar(255) NOT NULL default '',
   `InsertTime` int(10) unsigned NOT NULL default '0',
@@ -458,7 +460,8 @@ CREATE TABLE `files` (
   CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
-  CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`)
+  CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`),
+  CONSTRAINT `FK_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `FileTypes`(`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `files_qcstatus`;
@@ -1990,7 +1993,8 @@ CREATE TABLE `genomic_files` (
   `AnalysisModality` varchar(100),
   PRIMARY KEY (`GenomicFileID`),
   KEY `AnalysisModality` (`AnalysisModality`),
-  CONSTRAINT `genomic_files_ibfk_1` FOREIGN KEY (`AnalysisModality`) REFERENCES `genomic_analysis_modality_enum` (`analysis_modality`)
+  CONSTRAINT `genomic_files_ibfk_1` FOREIGN KEY (`AnalysisModality`) REFERENCES `genomic_analysis_modality_enum` (`analysis_modality`),
+  CONSTRAINT `FK_genomic_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `FileTypes`(`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `genomic_candidate_files_rel`;
@@ -2165,3 +2169,22 @@ CREATE TABLE `data_release_permissions` (
  CONSTRAINT `FK_userid` FOREIGN KEY (`userid`) REFERENCES `users` (`ID`),
  CONSTRAINT `FK_data_release_id` FOREIGN KEY (`data_release_id`) REFERENCES `data_release` (`id`)
 );
+-- Table structure for table `FileTypes`
+
+DROP TABLE IF EXISTS `FileTypes`;
+CREATE TABLE `FileTypes` (
+ `type` varchar(255) NOT NULL PRIMARY KEY
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `FileTypes` VALUES
+      ('mnc'),
+      ('obj'),
+      ('xfm'),
+      ('xfmmnc'),
+      ('imp'),
+      ('vertstat'),
+      ('xml'),
+      ('txt'),
+      ('nii'),
+      ('nii.gz'),
+      ('nrrd');
