@@ -90,7 +90,7 @@ class ConfigurationTest extends LorisIntegrationTestForConfiguration
         $this->linkTest(
             WebDriverBy::linkText("Paths"),
             $contentArea,
-            "pecify directories where LORIS-related files are stored or created."
+            "Specify directories where LORIS-related files are stored or created."
         );
         $this->linkTest(
             WebDriverBy::linkText("GUI"),
