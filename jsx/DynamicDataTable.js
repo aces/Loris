@@ -17,31 +17,41 @@ DynamicDataTable = React.createClass({
         };
     },
     componentDidMount: function() {
-        var that = this;
-        $.ajax(this.props.DataURL, {
-            dataType: 'json',
-            xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-                xhr.addEventListener("progress", function(evt) {
-                    console.log(evt);
-                    that.setState({
-                        'loadedData' : evt.loaded
-                    });
-                });
-                return xhr;
-            },
-            success: function(data) {
-                that.setState({
-                    'Headers' : data.Headers,
-                    'Data' : data.Data,
-                    'isLoaded' : true
-                });
-            },
-            error: function(data,error_code,error_msg) {
-                console.error(error_code + ': ' + error_msg);
-                that.setState({ "error" : "Error loading data" });
-            }
-        });
+      var self = this;
+      self.fetchData();
+
+      // Listen for update event to update data table on outside changes
+      $(document).on('update', function(e) {
+        self.fetchData();
+      });
+    },
+    fetchData: function() {
+      var that = this;
+      $.ajax(this.props.DataURL, {
+        dataType: 'json',
+        cache: false,
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
+          xhr.addEventListener("progress", function(evt) {
+            console.log(evt);
+            that.setState({
+              'loadedData' : evt.loaded
+            });
+          });
+          return xhr;
+        },
+        success: function(data) {
+          that.setState({
+            'Headers' : data.Headers,
+            'Data' : data.Data,
+            'isLoaded' : true
+          });
+        },
+        error: function(data,error_code,error_msg) {
+          console.error(error_code + ': ' + error_msg);
+          that.setState({ "error" : "Error loading data" });
+        }
+      });
     },
     render: function() {
         if (!this.state.isLoaded) {
@@ -52,7 +62,7 @@ DynamicDataTable = React.createClass({
                            {this.state.error}
                          </strong>
                        </div>;
-            } 
+            }
 
             return <button className="btn-info has-spinner">
                      Loading

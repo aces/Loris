@@ -113,6 +113,9 @@ var VideoUploadForm = React.createClass({
           uploadResult: "success"
         });
 
+        // Trigger an update event to update all observers (i.e DataTable)
+        $(document).trigger('update');
+
         self.showAlertMessage();
 
         // Itterates through child components and resets state
