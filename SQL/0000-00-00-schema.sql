@@ -1974,7 +1974,7 @@ CREATE TABLE `genomic_files` (
   `FileName` varchar(255) NOT NULL,
   `FilePackage` tinyint(1) DEFAULT NULL,
   `Description` varchar(255) NOT NULL,
-  `FileType` varchar(255) NOT NULL,
+  `FileType` varchar(255) default NULL,
   `FileSize` int(20) NOT NULL,
   `Platform` varchar(255) DEFAULT NULL,
   `Batch` varchar(255) DEFAULT NULL,
