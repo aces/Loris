@@ -142,7 +142,7 @@ var VideoUploadForm = React.createClass({
     if (this.refs["alert-message"] == null) {
       return;
     }
-    
+
     var alertMsg = this.refs["alert-message"].getDOMNode();
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
       self.setState({
@@ -192,6 +192,7 @@ var VideoUploadForm = React.createClass({
         <div className={alertClass} role="alert" ref="alert-message">
           {alertMessage}
         </div>
+        {this.state.uploadResult == "success" ? <a className="btn btn-primary" href="/videos/">Back to videos</a> : null}
         <FormElement
           name="videoUpload"
           action={this.props.action}

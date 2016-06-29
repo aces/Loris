@@ -200,6 +200,11 @@ var VideoUploadForm = React.createClass({
         { className: alertClass, role: 'alert', ref: 'alert-message' },
         alertMessage
       ),
+      this.state.uploadResult == "success" ? React.createElement(
+        'a',
+        { className: 'btn btn-primary', href: '/videos/' },
+        'Back to videos'
+      ) : null,
       React.createElement(
         FormElement,
         {
