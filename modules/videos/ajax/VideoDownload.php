@@ -42,16 +42,7 @@ if (!file_exists($filePath)) {
 
 // Output file in downloadable format
 header('Content-Description: File Transfer');
-header('Content-Type: application/octet-stream');
+header('Content-Type: application/force-download');
 header("Content-Transfer-Encoding: Binary");
 header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
-header('Expires: 0');
-header('Cache-Control: must-revalidate');
-header('Pragma: public');
-header('Content-Length: ' . filesize($file));
-ob_clean();
-flush();
-
 readfile($filePath);
-
-exit;
