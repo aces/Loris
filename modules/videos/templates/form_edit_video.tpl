@@ -5,9 +5,8 @@
 </div>
 
 <script>
-  var videoEditForm = RVideoUploadForm({
+  var videoEditForm = RVideoEditForm({
     "DataURL": "{$baseurl}/videos/ajax/VideoUpload.php?action=getVideoData&idVideo=" + {$smarty.get.id},
-    "idVideo": {$smarty.get.id},
     "action": "{$baseurl}/videos/ajax/VideoUpload.php?action=edit"
   });
   React.render(videoEditForm, document.getElementById("video-edit-form"));

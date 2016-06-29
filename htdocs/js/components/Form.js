@@ -63,7 +63,16 @@ SelectElement = React.createClass({
   },
   componentDidMount: function () {
     if (this.props.value) {
-      this.setState({ value: this.props.value });
+      this.setState({
+        value: this.props.value
+      });
+    }
+  },
+  componentWillReceiveProps: function () {
+    if (this.props.hasError) {
+      this.setState({
+        hasError: this.props.hasError
+      });
     }
   },
   getInitialState: function () {
@@ -100,7 +109,7 @@ SelectElement = React.createClass({
       emptyOptionHTML = "<option></option>";
     }
 
-    if (this.state.hasError && this.props.required) {
+    if (this.state.hasError) {
       errorMessage = this.props.errorMessage;
       elementClass = 'form-group has-error';
     }
@@ -156,6 +165,7 @@ FileElement = React.createClass({
       'id': '',
       'value': null,
       'required': '',
+      'hasError': false,
       'onUserInput': function () {
         console.warn('onUserInput() callback is not set');
       }
@@ -168,19 +178,38 @@ FileElement = React.createClass({
       'name': 'file',
       'class': 'fileUpload',
       'value': '',
+      'hasError': false,
+      'errorMessage': 'The field is required!',
       'disabled': false
     };
   },
 
   componentDidMount: function () {
     if (this.props.value) {
-      this.setState({ value: this.props.value });
+      this.setState({
+        value: this.props.value
+      });
+    }
+  },
+
+  componentWillReceiveProps: function () {
+    if (this.props.hasError) {
+      this.setState({
+        hasError: this.props.hasError
+      });
     }
   },
 
   handleChange: function (e) {
+
+    var hasError = false;
+    if (this.props.required && e.target.value == "") {
+      hasError = true;
+    }
+
     this.setState({
-      value: e.target.value.split(/(\\|\/)/g).pop()
+      value: e.target.value.split(/(\\|\/)/g).pop(),
+      hasError: hasError
     });
     // pass current file to parent form
     var file = e.target.files[0];
@@ -190,6 +219,13 @@ FileElement = React.createClass({
   render: function () {
 
     var required = this.props.required ? 'required' : '';
+    var errorMessage = '';
+    var elementClass = 'form-group';
+
+    if (this.state.hasError) {
+      errorMessage = this.props.errorMessage;
+      elementClass = 'form-group has-error';
+    }
 
     var truncateEllipsis = {
       display: 'table',
@@ -211,7 +247,7 @@ FileElement = React.createClass({
 
       return React.createElement(
         'div',
-        { className: 'form-group' },
+        { className: elementClass },
         React.createElement(
           'label',
           { className: 'col-sm-3 control-label' },
@@ -235,7 +271,7 @@ FileElement = React.createClass({
 
     return React.createElement(
       'div',
-      { className: 'form-group' },
+      { className: elementClass },
       React.createElement(
         'label',
         { className: 'col-sm-3 control-label' },
@@ -278,6 +314,11 @@ FileElement = React.createClass({
               })
             )
           )
+        ),
+        React.createElement(
+          'span',
+          null,
+          errorMessage
         )
       )
     );
