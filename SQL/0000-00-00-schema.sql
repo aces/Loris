@@ -111,6 +111,26 @@ LOCK TABLES `caveat_options` WRITE;
 /*!40000 ALTER TABLE `caveat_options` ENABLE KEYS */;
 UNLOCK TABLES;
 
+-- Table structure for table `FileTypes`
+
+DROP TABLE IF EXISTS `FileTypes`;
+CREATE TABLE `FileTypes` (
+ `type` varchar(255) NOT NULL PRIMARY KEY
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `FileTypes` VALUES
+      ('mnc'),
+      ('obj'),
+      ('xfm'),
+      ('xfmmnc'),
+      ('imp'),
+      ('vertstat'),
+      ('xml'),
+      ('txt'),
+      ('nii'),
+      ('nii.gz'),
+      ('nrrd');
+
 
 --
 -- Table structure for table `document_repository`
@@ -2169,22 +2189,3 @@ CREATE TABLE `data_release_permissions` (
  CONSTRAINT `FK_userid` FOREIGN KEY (`userid`) REFERENCES `users` (`ID`),
  CONSTRAINT `FK_data_release_id` FOREIGN KEY (`data_release_id`) REFERENCES `data_release` (`id`)
 );
--- Table structure for table `FileTypes`
-
-DROP TABLE IF EXISTS `FileTypes`;
-CREATE TABLE `FileTypes` (
- `type` varchar(255) NOT NULL PRIMARY KEY
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `FileTypes` VALUES
-      ('mnc'),
-      ('obj'),
-      ('xfm'),
-      ('xfmmnc'),
-      ('imp'),
-      ('vertstat'),
-      ('xml'),
-      ('txt'),
-      ('nii'),
-      ('nii.gz'),
-      ('nrrd');
