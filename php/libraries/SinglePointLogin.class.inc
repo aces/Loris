@@ -418,8 +418,7 @@ class SinglePointLogin
                 if ($row['Active'] == 'N'
                     || $this->disabledDueToInactivity($username, 365)
                 ) {
-                    $this->_lastError = "Your account has been deactivated,"
-                        . " possibly due to inactivity."
+                    $this->_lastError = "Your account has been deactivated."
                         . " Please contact your project administrator to"
                         . " reactivate this account.";
                     $this->insertFailedDetail(
