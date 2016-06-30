@@ -131,7 +131,7 @@ foreach ($results AS $result) {
     $newlyResolved         = array();
     $newlyResolved['hash'] = $result['hash'];
     $newlyResolved['Resolved']   = 'inserted_flag';
-    $newlyResolved['User']       = 'lorisadmin';
+    $newlyResolved['User']       = get_current_user();
     $newlyResolved['ChangeDate'] = date("Y-m-d H:i:s");
     $newlyResolved['TypeTable']  = 'mri_violations_log';
     $newlyResolved['ExtID']      = $result['join_id'];
