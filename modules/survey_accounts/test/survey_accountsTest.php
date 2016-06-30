@@ -172,6 +172,7 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testSurveyAccountsAddSurvey()
     {
+          //Visit does not exist for given candidate.
           $this->safeGet($this->url . "/survey_accounts/");
           $this->safeFindElement(
                WebDriverBy::Name("button")
@@ -189,15 +190,67 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
                WebDriverBy::cssSelector(".error")
            )->getText();
            $this->assertContains("Visit does not exist for given candidate", $bodyText);
+          //PSCID and DCC ID do not match or candidate does not exist.
+          $this->safeFindElement(
+               WebDriverBy::Name("CandID")
+           )->sendKeys("888888");
+          $this->safeFindElement(
+               WebDriverBy::Name("PSCID")
+           )->sendKeys("8889");
+          $this->safeFindElement(
+               WebDriverBy::Name("fire_away")
+           )->click();
+           $bodyText =  $this->safeFindElement(
+               WebDriverBy::cssSelector(".error")
+           )->getText();
+           $this->assertContains("PSCID and DCC ID do not match or candidate does not exist", $bodyText);
     }
 
-//to do search
+   /**
+     * Tests clear button in the filter section, input some data, then click the clear button,
+     * all of data in the filter section will be gone. 
+     *
+     * @return void
+     */
+    function testSurveyAccountsClearButton()
+    {
+        //testing the PSCID
+        $this->safeGet($this->url . "/survey_accounts/");
+        $this->webDriver->findElement(WebDriverBy::Name("PSCID"))->sendKeys("test");
+        $this->webDriver->findElement(WebDriverBy::Name("reset"))->click();
+        $bodyText = $this->webDriver->findElement(WebDriverBy::Name("PSCID"))
+               ->getText();
+        $this->assertEquals("", $bodyText);
 
-//clear
+        //testing the Email
+        $this->webDriver->findElement(WebDriverBy::Name("Email"))->sendKeys("test");
+        $this->webDriver->findElement(WebDriverBy::Name("reset"))->click();
+        $bodyText = $this->webDriver->findElement(WebDriverBy::Name("Email"))
+               ->getText();
+        $this->assertEquals("", $bodyText);
+    }
+   /**
+     * Tests that, input some data and click search button, check the results.
+     *
+     * @return void
+     */
+    function testResolvedSearchButton()
+    {
+        //testing search by PSCID
+        $this->safeGet($this->url . "/survey_accounts/");
+        $this->webDriver->findElement(WebDriverBy::Name("PSCID"))->sendKeys
+             ("8888");
+        $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains("8888", $bodyText);
 
-
-
-
-
+        //testing search by Email
+        $this->safeGet($this->url . "/survey_accounts/");
+        $this->webDriver->findElement(WebDriverBy::Name("Email"))
+             ->sendKeys("TestTestTest@gmail.com");
+        $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains("TestTestTest@gmail.com", $bodyText);
+     }
 }
 ?>
