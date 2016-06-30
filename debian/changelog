@@ -1,0 +1,7 @@
+loris (16.0.1-1) UNRELEASED; urgency=medium
+
+  * Initial packaging.
+
+ -- Michael Hanke <mih@debian.org>  Fri, 11 Dec 2015 20:30:35 +0100
+
+

@@ -1,0 +1,23 @@
+Source: loris
+Maintainer: Loris Team <info.loris@mcgill.ca>
+Uploaders: Michael Hanke <mih@debian.org>,
+           Samir Das <samir.das@mcgill.ca>,
+           Cecile Madjar <cecile.madjar@mail.mcgill.ca>
+Section: science
+Priority: optional
+Build-Depends: debhelper (>= 9~),
+Standards-Version: 3.9.6
+Vcs-Browser: https://github.com/aces/Loris
+Vcs-Git: https://github.com/aces/Loris.git
+Homepage: http://loris.ca
+
+Package: loris
+Architecture: all
+Depends: php-mysql,
+         php-gd,
+         php-sqlite,
+         php-json,
+         libapache2-mod-php,
+         ${misc:Depends}
+Description: web-accessible database for longitudinal multi-site studies
+ Whis should I install this one over XNAT?
