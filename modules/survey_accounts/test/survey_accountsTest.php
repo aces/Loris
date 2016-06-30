@@ -234,7 +234,7 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testResolvedSearchButton()
+    function testSurveyAccountsSearchButton()
     {
         //testing search by PSCID
         $this->safeGet($this->url . "/survey_accounts/");
