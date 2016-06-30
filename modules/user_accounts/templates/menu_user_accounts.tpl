@@ -92,7 +92,7 @@
     </div> 
 </div>  
 <!-- react datatable -->
-<div id="datatable" />
+<div class="dynamictable" id="datatable" />
 <script>
 var table = RDynamicDataTable({
     "DataURL" : "{$baseurl}/user_accounts/?format=json",
