@@ -285,19 +285,31 @@ class NDB_Form_candidate_parameters extends NDB_Form
           
        }
        // updating participant status
-       if (isset($values['participant_status']) || isset($values['reason_specify'])
-          || isset($values['reason_specify_status']) || isset($values['participant_suboptions'])) {
-           $participant_vals                       = array();
-           $participant_vals['participant_status'] = $values['participant_status'];
-           $sub_reasonID                           = $DB->pselectOne("SELECT ID FROM participant_status_options 
-                                                     WHERE Description=:sub_desc", 
-                                                     array('sub_desc' =>$values['participant_suboptions']));
-           if (empty($sub_reasonID)) {
-               $participant_vals['participant_suboptions'] = NULL;
-           } else {
-               $participant_vals['participant_suboptions'] = $sub_reasonID;
-           }
-           $participant_vals['participant_suboptions']= $values['participant_suboptions']; 
+        if (isset($values['participant_status']) || isset($values['reason_specify'])
+            || isset($values['reason_specify_status']) || isset($values['participant_suboptions'])) {
+            $participant_vals                       = array();
+            $participant_vals['participant_status'] = $values['participant_status'];
+
+            //Due to the AJAX call for dydnamic suboptions dropdown generation,
+            //the vavlue of $values['participant_suboptions'] could be either
+            //numeric (if coming from a previously "inactive" option or a string
+            //this if statement deals with the case
+
+            if (!is_numeric($values['participant_suboptions']))
+            {
+                $values['participant_suboptions']  = $DB->pselectOne("
+                                  SELECT ID
+                                  FROM participant_status_options
+                                  WHERE Description=:sub_desc",
+                    array('sub_desc' =>$values['participant_suboptions']));
+            }
+            /*if (empty($sub_reasonID)) {
+                $participant_vals['participant_suboptions'] = NULL;
+            } else {
+                $participant_vals['participant_suboptions'] = $sub_reasonID;
+            }
+             */
+           $participant_vals['participant_suboptions']= $values['participant_suboptions'];
            $participant_vals['entry_staff']           = $id;
            $participant_vals['reason_specify']        = $values['reason_specify'];
            $participant_vals['reason_specify_status'] = $values['reason_specify_status'];
@@ -319,13 +331,17 @@ class NDB_Form_candidate_parameters extends NDB_Form
                $success = $DB->insert("participant_status",$participant_vals);
            }
 
-           $current_status = $DB->pselectOne("SELECT participant_status FROM participant_status_history
+           $current_status = $DB->pselectRow("SELECT * FROM participant_status_history
                                               WHERE CandID = :cid ORDER BY data_entry_date DESC", 
                                               array("cid"=>$values['CandID']) );
-           if($current_status != $participant_vals['participant_status']) {
+
+           if($current_status['participant_status'] != $participant_vals['participant_status'] ||
+               $current_status['entry_staff'] != $participant_vals['entry_staff'] ||
+               $current_status['reason_specify'] != $participant_vals['reason_specify'] ||
+               $current_status['participant_subOptions'] != $sub_reasonID) {
                $success = $DB->insert("participant_status_history", 
                           array('participant_status'=>$participant_vals['participant_status'], 
-                                'participant_suboptions'=>$participant_vals['participant_suboptions'],
+                                'participant_subOptions'=>$participant_vals['participant_suboptions'],
                                 'entry_staff'=>$participant_vals['entry_staff'],
                                 'CandID' => $participant_vals['CandID'],
                                 'reason_specify'=>$participant_vals['reason_specify'],
@@ -737,7 +753,11 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $active_family[] = $relative['CandID'];    
         }
         if (in_array($cand, $active_family)){
-            $errors['FamilyMemberID'] = 'CandID already entered as Sibling';    
+            $errors['FamilyMemberID'] = 'CandID already entered as sibling';
+        }
+        $CandID = $this->identifier;
+        if ($CandID == $cand) {
+            $errors['FamilyMemberID'] = 'Cannot enter candidate as own sibling';
         }
         if (empty($values['relation_type'])) {
             $errors['relation_type'] = 'Please specify relationship type';    

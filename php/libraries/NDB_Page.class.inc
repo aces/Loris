@@ -81,18 +81,20 @@ class NDB_Page
     /**
      * Wrapper to create a file element and add it to the current page
      *
-     * @param string $name  The name of this file element
-     * @param string $label The label to attach to this element
+     * @param string $name    The name of this file element
+     * @param string $label   The label to attach to this element
+     * @param array  $options Options to pass to the form for this
+     *                        file chooser.
      *
      * @return none
      */
-    function addFile($name, $label)
+    function addFile($name, $label, $options=array())
     {
         $this->form->addElement(
             'file',
             $name,
             $label,
-            array('class' => 'fileUpload')
+            array_merge(array('class' => 'fileUpload'), $options)
         );
     }
 
@@ -568,20 +570,6 @@ class NDB_Page
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
                   $baseurl . '/js/components/react.breadcrumb.js',
                  );
-        if (file_exists($paths['base'] . "modules/$TestName/js/$TestName.js")) {
-            error_log(
-                "WARNING: Relying on $TestName.js getting automatically loaded will"
-                . " soon be removed. "
-                . "Override getJSDependencies() instead"
-            );
-
-            if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
-            ) {
-                $files[] = $baseurl . "/$TestName/js/$TestName.js";
-            } else {
-                $files[] = $baseurl . "/GetJS.php?Module=$TestName";
-            }
-        }
         return $files;
     }
 }
