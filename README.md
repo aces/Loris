@@ -1,4 +1,4 @@
-#LORIS Neuroimaging Platform
+#LORIS Neuroimaging Platform [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=16.1-dev)](https://travis-ci.org/aces/Loris)
 
 LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
