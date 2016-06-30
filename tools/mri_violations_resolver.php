@@ -5,7 +5,7 @@
  * previously excluded.
  * Just modify the where clause and test on the front end with same filter first.
  *
- * Usage: php mri_violations_resolvert.php [confirm]
+ * Usage: php mri_violations_resolver.php [confirm]
  *
  * PHP Version 5
  *
@@ -152,7 +152,7 @@ foreach ($results AS $result) {
             $DB->insert('violations_resolved', $newlyResolved);
             print "inserting\t";
         }
-        print $result['hash'] . "\t" . $result['join_id'] . "\n";
+        print_r($newlyResolved);
     } else {
         print "skip\n";
     }
