@@ -336,12 +336,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $actualRows = $dataTable->findElements(
                 WebDriverBy::xpath('.//tbody//tr')
             );
-            $this->assertEquals(
-                count($actualRows),
-                count($expectedRows),
-                "Number of users returned should be "
-                . count($expectedRows) . ", not " . count($actualRows)
-            );
+           
             for ($i=1; $i<=count($actualRows); $i++) {
                 $elements      = $actualRows[$i-1]->findElements(
                     WebDriverBy::xpath('.//td')
