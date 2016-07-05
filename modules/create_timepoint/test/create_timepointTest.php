@@ -72,6 +72,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
+        //input a unique visit label and create it successfully.
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
@@ -93,12 +94,13 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
-
+        $select = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText("Control");
 
         $this->webDriver->findElement(WebDriverBy::Name("visitLabel"))->sendKeys("V2");
         $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
+        $this->assertContains("This visit label is not unique.", $bodyText);
 
     }
     /**
