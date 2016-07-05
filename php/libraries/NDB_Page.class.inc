@@ -569,6 +569,7 @@ class NDB_Page
                   $baseurl . '/js/polyfiller.js',
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
                   $baseurl . '/js/components/react.breadcrumb.js',
+                  $baseurl . '/js/components/Form.js'
                  );
         if (file_exists($paths['base'] . "modules/$TestName/js/$TestName.js")) {
             error_log(
