@@ -7,6 +7,7 @@
  * @category Test
  * @package  Test
  * @author   Gregory Luneau <gregory.luneau@mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -72,59 +73,98 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->safeGet(
-            $this->url . "/create_timepoint/?candID=900000&identifier=900000"
-        );
-
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Create Time Point", $bodyText);
-
-        $select = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText("Experimental");
-
-        $this->webDriver->findElement(WebDriverBy::Name("visitLabel"))->sendKeys("V2");
-        $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
-
+        $this->_createTimepoint('900000','Experimental','V1');
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("New time point successfully registered", $bodyText);
 
-      // Test input a duplicate visit tag and get error message
-        $this->safeGet(
-            $this->url . "/create_timepoint/?candID=900000&identifier=900000"
-        );
-
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText("Control");
-
-        $this->webDriver->findElement(WebDriverBy::Name("visitLabel"))->sendKeys("V2");
-        $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
-
     }
     /**
-     * Tests that, when loading the create_timepoint module and input a delicate visit tag,
-     * some error text appears in the body.
+     * Tests that, create a timepoint and test the success link
+     * 
      *
      * @return void
      */
-    function testCreateTimepointWithError()
+    function testCreateTimepointSuccessLink()
+    {
+        $this->_createTimepoint('900000','Experimental','V9');
+
+        $this->safeClick(WebDriverBy::LinkText("Click here to continue."));
+        sleep(3); 
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains("V9", $bodyText);
+
+    }
+
+   /**
+     * Tests that, create a timepoint and input a error format visit label
+     * get Error message
+     *
+     * @return void
+     */
+    function testCreateTimepointErrorVisitLabel()
+    {
+        $this->_createTimepoint('900000','Experimental','V9999');
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains("This visit label does not match the required structure.", $bodyText);
+
+    }
+
+    /**
+     * Create a timepoint with three parameters.
+     *
+     * @param string $canID   ID of candidate
+     * @param string $subproject text of Subproject
+     * @param string $visitlabel 
+     * @return void.
+     */
+    private function _createTimepoint($canID, $subproject, $visitlabel)
+    {
+        $this->safeGet(
+            $this->url . "/create_timepoint/?candID=" .$canID . "&identifier=" .$canID
+        );
+
+        $select = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
+        $element = new WebDriverSelect($select);
+        $element->selectByVisibleText($subproject);
+
+        $this->webDriver->findElement(WebDriverBy::Name("visitLabel"))->sendKeys($visitlabel);
+        $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
+       
+    }
+
+
+   /**
+     * Tests that, create a timepoint and input a empty subproject
+     * get Error message
+     *
+     * @return void
+     */
+    function testCreateTimepointErrorEmptySubproject()
     {
         $this->safeGet(
             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
         );
-
-        $select = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
-        $element = new WebDriverSelect($select);
-        $element->selectByVisibleText("Experimental");
-
-//        $this->webDriver->findElement(WebDriverBy::Name("visitLabel"))->sendKeys("V2");
         $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
-         sleep(20);
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("A visit label is required for creating a timepoint.", $bodyText);
 
     }
-
+    /**
+      * Tests that timepoint loads with the permission
+      *
+      * @return void
+      */
+     public function testCreateTimepointPermission()
+     {
+          $this->setupPermissions(array("data_entry"));
+          $this->safeGet($this->url . "/create_timepoint/?candID=900000&identifier=900000");
+          $bodyText = $this->webDriver->findElement(
+              WebDriverBy::cssSelector("body")
+          )->getText();
+          
+          $this->assertNotContains("You do not have access to this page.", $bodyText);
+          $this->resetPermissions();
+     }
 }
 ?>
                  
