@@ -91,7 +91,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->safeClick(WebDriverBy::LinkText("Click here to continue."));
         sleep(3);
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("V9", $bodyText);
+        $this->assertContains("900000", $bodyText);
 
     }
 
