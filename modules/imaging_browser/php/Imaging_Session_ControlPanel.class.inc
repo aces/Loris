@@ -8,7 +8,7 @@
  * @category Behavioural
  * @package  Main
  * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
 */
 
@@ -21,14 +21,14 @@
  * @category Behavioural
  * @package  Main
  * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
 
 class Imaging_Session_ControlPanel
 {
     /**
-     * var to store the sessionID.
+     * Var to store the sessionID.
      */
     var $sessionID;
 
@@ -67,15 +67,21 @@ class Imaging_Session_ControlPanel
 
         $subjectData['sessionID'] = $_REQUEST['sessionID'];
         $subjectData['candid']    = $timePoint->getCandID();
-        $subjectData['ParameterFormCommentID']   = $DB->pselectOne(
+
+        $qresult = $DB->pselectOne(
             "SELECT CommentID FROM flag 
-            WHERE Test_name='mri_parameter_form' AND SessionID=$this->sessionID"
+            WHERE Test_name='mri_parameter_form' AND SessionID = :v_sessions_id",
+            array('v_sessions_id' => $this->sessionID)
         );
-        $subjectData['RadiologyReviewCommentID'] = $DB->pselectOne(
+        $subjectData['ParameterFormCommentID'] = (empty($qresult)) ? "" : $qresult;
+
+        $qresult = $DB->pselectOne(
             "SELECT CommentID 
             FROM flag WHERE Test_name='radiology_review' 
-            AND SessionID=$this->sessionID"
+            AND SessionID = :v_sessions_id",
+            array('v_sessions_id' => $this->sessionID)
         );
+        $subjectData['RadiologyReviewCommentID'] = (empty($qresult)) ? "" : $qresult;
 
         $candidate =& Candidate::singleton($timePoint->getCandID());
 
@@ -105,8 +111,8 @@ class Imaging_Session_ControlPanel
         $subjectData['has_permission']  = $this->_hasAccess();
         $subjectData['status_options']  = array(
                                            'Unrated' => '',
-                                           'Pass' => 'Pass',
-                                           'Fail' => 'Fail',
+                                           'Pass'    => 'Pass',
+                                           'Fail'    => 'Fail',
                                           );
         $subjectData['pending_options'] = array(
                                            'Y' => 'Yes',
@@ -114,14 +120,17 @@ class Imaging_Session_ControlPanel
                                           );
 
         $qcstatus = $DB->pselectRow(
-            "SELECT MRIQCStatus, MRIQCPending 
-            FROM session WHERE ID=$this->sessionID"
+            "SELECT MRIQCStatus, MRIQCPending FROM session WHERE ID=:sid",
+            array("sid" => $this->sessionID)
         );
 
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
 
-        $subjectData['backURL'] = urldecode($_REQUEST['backURL']);
+        $factory = NDB_Factory::singleton();
+        $subjectData['backURL'] = $factory->settings()->getBaseURL()
+            . urldecode($_REQUEST['backURL']);
+
         $NavBar = new MRINavigation($this->sessionID);
         $subjectData['nextTimepoint']['URL'] = $NavBar->nextLink();
         $subjectData['prevTimepoint']['URL'] = $NavBar->prevLink();
@@ -129,7 +138,7 @@ class Imaging_Session_ControlPanel
         return $subjectData;
     }
     /**
-     * generates the HTML to display the set of buttons
+     * Generates the HTML to display the set of buttons
      * for the timepoint status flags
      *
      * @return string
@@ -156,7 +165,7 @@ class Imaging_Session_ControlPanel
  * @category Behavioural
  * @package  Main
  * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
 

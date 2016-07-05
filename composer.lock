@@ -1,11 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7bf7a584d5d478a7809b9eda8c51bc54",
-    "content-hash": "e7c43b589c6fd696aed1350613f573af",
+    "hash": "74f6a7d62205738b3633a84577f3c105",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -49,6 +48,65 @@
             "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
             "homepage": "https://github.com/firebase/php-jwt",
             "time": "2015-07-22 18:31:08"
+        },
+        {
+            "name": "pear-pear.php.net/HTML_Common",
+            "version": "1.2.5",
+            "dist": {
+                "type": "file",
+                "url": "https://pear.php.net/get/HTML_Common-1.2.5.tgz",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "php": ">=4.0.4.0"
+            },
+            "replace": {
+                "pear-pear/html_common": "== 1.2.5.0"
+            },
+            "type": "pear-library",
+            "autoload": {
+                "classmap": [
+                    ""
+                ]
+            },
+            "include-path": [
+                "/"
+            ],
+            "license": [
+                "PHP License"
+            ],
+            "description": "The PEAR::HTML_Common package provides methods for html code display and attributes handling.\n* Methods to set, remove, update html attributes.\n* Handles comments in HTML code.\n* Handles layout, tabs, line endings for nicer HTML code."
+        },
+        {
+            "name": "pear-pear.php.net/HTML_QuickForm",
+            "version": "3.2.14",
+            "dist": {
+                "type": "file",
+                "url": "https://pear.php.net/get/HTML_QuickForm-3.2.14.tgz",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "pear-pear.php.net/html_common": ">=1.2.1.0",
+                "php": ">=4.3.0.0"
+            },
+            "replace": {
+                "pear-pear/html_quickform": "== 3.2.14.0"
+            },
+            "type": "pear-library",
+            "autoload": {
+                "classmap": [
+                    ""
+                ]
+            },
+            "include-path": [
+                "/"
+            ],
+            "license": [
+                "PHP License"
+            ],
+            "description": "NOTICE: development of HTML_QuickForm version 3 is frozen. Please submit\nfeature requests for HTML_QuickForm2 package.\n\nThe HTML_QuickForm package provides methods to dynamically create, validate\nand render HTML forms.\n\nFeatures:\n* More than 20 ready-to-use form elements.\n* XHTML compliant generated code.\n* Numerous mixable and extendable validation rules.\n* Automatic server-side validation and filtering.\n* On request javascript code generation for client-side validation.\n* File uploads support.\n* Total customization of form rendering.\n* Support for external template engines (ITX, Sigma, Flexy, Smarty).\n* Pluggable elements, rules and renderers extensions."
         },
         {
             "name": "phpoffice/phpexcel",
@@ -1081,16 +1139,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.8.3",
+            "version": "v2.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "2a4ee40acb880c56f29fb1b8886e7ffe94f3b995"
+                "reference": "584e52cb8f788a887553ba82db6caacb1d6260bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/2a4ee40acb880c56f29fb1b8886e7ffe94f3b995",
-                "reference": "2a4ee40acb880c56f29fb1b8886e7ffe94f3b995",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/584e52cb8f788a887553ba82db6caacb1d6260bb",
+                "reference": "584e52cb8f788a887553ba82db6caacb1d6260bb",
                 "shasum": ""
             },
             "require": {
@@ -1126,7 +1184,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2016-02-23 07:41:20"
+            "time": "2016-03-04 07:54:35"
         }
     ],
     "aliases": [],

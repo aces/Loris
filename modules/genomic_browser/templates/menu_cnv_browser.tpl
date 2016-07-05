@@ -1,3 +1,6 @@
+<script>
+    loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+</script>
 <div class="col-sm-12">
   <div class="row">
     <div id="tabs"> 
@@ -6,6 +9,8 @@
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=gwas_browser">GWAS</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>CNV</strong></a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cpg_browser">Methylation</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=genomic_file_uploader">Files</a></li>
       </ul>
       <br>
     </div>
@@ -74,40 +79,43 @@
               <div class="form-group col-sm-5">
                 <div class="panel panel-primary">
                   <div class="panel-heading" onclick="hideFilterGene();">
-                    Gene Filters
+                    Genomic Range Filters 
                     <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-gene"></span>
                     <span class="glyphicon glyphicon-chevron-up pull-right" id="up-gene"></span>
                   </div>
                   <div class="panel-body" id="panel-body-gene">
 	            <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
+<!--
+                        <label class="col-sm-12 col-md-1" data-toggle="tooltip" data-placement="top" title="HUGO Gene Nomenclature Committee ID ex: PINK1">
         		  {$form.Gene_Symbol.label}
                         </label>
                         <div class="col-sm-12 col-md-3">
         	          {$form.Gene_Symbol.html}
 		        </div>
-                        <label class="col-sm-12 col-md-2">
-        	          {$form.Gene_Name.label}
+-->
+                        <div class="col-sm-12 col-md-4"></div>
+                        <label class="col-sm-12 col-md-2" data-toggle="tooltip" data-placement="top" title="Genome Reference Consortium ID">
+        	          {$form.Assembly.label}
                         </label>
-                        <div class="col-sm-12 col-md-5">
-        	          {$form.Gene_Name.html}
+                        <div class="col-sm-12 col-md-3">
+        	          {$form.Assembly.html}
 		        </div>
 		      </div>
 	            </div>
 	            <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-3">
-      		          {$form.Chromosome.label}
+                        <label class="col-sm-12 col-md-1">
+      		          {$form.Strand.label}
                         </label>
                         <div class="col-sm-12 col-md-2">
-        	          {$form.Chromosome.html}
+        	          {$form.Strand.html}
 		        </div>
                         <label class="col-sm-12 col-md-3">
-        	          {$form.Platform.label}
+        	          {$form.genomic_range.label}
                         </label>
-                        <div class="col-sm-12 col-md-4">
-        	          {$form.Platform.html}
+                        <div class="col-sm-12 col-md-6">
+        	          {$form.genomic_range.html}
 		        </div>
 		      </div>
 	            </div>
@@ -216,71 +224,24 @@
       </div>
     </div>
   </div>
-  <div class="row">
-  <!-- title table with pagination -->
-    <table id="LogEntries" border="0" valign="bottom" width="100%">
-      <tr>
-      <!-- title -->
-        {if {$resultcount} != '' }
-          <td class="controlpanelsection">Variants found: <strong>{$resultcount}</strong> total</td>
-                    <a href="{$csvUrl}" download="{$csvFile}_CNV.csv">
-                      [ Download as CSV ]
-                    </a><br>
-        {else}
-          <td>No variants found. </td>
-        {/if}
-        <!-- display pagination links -->
-        {if $resultcount != '' && $resultcount > 25 }
-	  <td align="right">Pages:&nbsp;&nbsp;&nbsp; {$page_links}</td>
-        {/if}
-      </tr>
-    </table>
-    <!-- start data table -->
-    <table  class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
-      <thead>
-        <tr class="info">
-          <th>No.</th>
-          <!-- print out column headings - quick & dirty hack -->
-          {section name=header loop=$headers}
-            <th><a href="{$baseurl}/genomic_browser/?submenu=cnv_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-          {/section}
-        </tr>
-      </thead>
-      <tbody>
-        {section name=item loop=$items}
-        <tr>
-        <!-- print out data rows -->
-          {section name=piece loop=$items[item]}
-            {if $items[item][piece].bgcolor != ''}
-              <td style="background-color:{$items[item][piece].bgcolor}">
-            {else}
-              <td>
-            {/if}
-            {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-              {assign var="PSCID" value=$items[item][piece].value}
-               <a href="{$baseurl}/{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
-            {elseif $items[item][piece].name == "Chromosome"}
-              {assign var="chromValue" value=$items[item][piece].value}
-              {$chromValue} 
-            {elseif $items[item][piece].name == "StartLoc"}
-              {assign var="startLocValue" value=$items[item][piece].value}
-              <!--{assign var="sizeValue" value=$items[item]["Size"].name}-->
-              {$startLocValue} 
-            {elseif $items[item][piece].name == "Size"}
-              {assign var="sizeValue" value=$items[item][piece].value}
-              {assign var="endLocValue" value=$startLocValue+$sizeValue}
-              <a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=chr{$chromValue}%3A{$startLocValue}-{$endLocValue}" target="_blank">{$sizeValue}</a>
-              <!--a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=chr{$chromValue}%3A{$startLocValue}-{$endLocValue}" target="_blank">{$startLocValue} + {$sizeValue} : {$endLocValue}</a-->
-            {else}
-              {$items[item][piece].value}
-            {/if}
-            </td>
-          {/section}
-          </tr>
-        {/section}
-      </tbody>
-      <!-- end data table -->
-    </table>
-  </div>
+  <table border="0" valign="bottom" width="100%">
+    <tr>
+      <!-- display pagination links -->
+      <td align="left" id="pageLinks"></td>
+    </tr>
+  </table>
+  <div id="datatable"></div>
 </div>
-<br>
+<script>
+if (document.getElementsByName('Show_Brief_Results')[0].value != "brief") {
+    loris.hiddenHeaders = [];
+}
+
+var table = RDynamicDataTable({
+    "DataURL" : "{$baseurl}/genomic_browser/?submenu=cnv_browser&format=json",
+    "getFormattedCell" : formatColumn,
+});
+
+React.render(table, document.getElementById("datatable"));
+</script>
+

@@ -1,3 +1,6 @@
+<script>
+    loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+</script>
 <div class="col-sm-12">
   <div class="row">
     <div id="tabs">
@@ -6,6 +9,8 @@
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>GWAS</strong></a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cpg_browser">Methylation</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=genomic_file_uploader">Files</a></li>
       </ul>
       <br>
     </div>
@@ -127,72 +132,25 @@
       </div>
     </div>
   </div> <!-- end row containing all filters-->
-  <div class="row">
-    <!-- title table with pagination -->
-    <table border="0" valign="bottom" width="100%"><tr>
-      <!-- title -->
-      {if {$resultcount} != '' }
-        <td class="controlpanelsection">Results found: <strong>{$resultcount}</strong> total</td>
-                            <a href="{$csvUrl}" download="{$csvFile}_GWAS.csv">
-                                                  [ Download as CSV ]
-                                                                      </a><br><br>
-      {else}
-        <td>No results found. </td>
-      {/if} 
+  <table border="0" valign="bottom" width="100%">
+    <tr>
       <!-- display pagination links -->
-      {if {$resultcount} != '' && $resultcount > 25}  
-        <td align="right">Pages:&nbsp;&nbsp;&nbsp; {$page_links}</td>
-      {/if}
+      <td align="left" id="pageLinks"></td>
     </tr>
-    </table>
-<!-- start data table -->
-    <table  class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
-      <thead>
-        <tr class="info">
-          <th>No.</th>
-          <!-- print out column headings - quick & dirty hack -->
-          {section name=header loop=$headers}
-            <th>
-               <a href="{$baseurl}/genomic_browser/?submenu=gwas_browser&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
-                   {if $headers[header].displayName == "P Value"}
-                       P-value Trend
-                   {else}
-                       {$headers[header].displayName}
-                   {/if}
-               </a>
-            </th>
-          {/section}
-        </tr>
-      </thead>
-      <tbody>
-        {section name=item loop=$items}
-          <tr>
-        <!-- print out data rows -->
-          {section name=piece loop=$items[item]}
-            {if $items[item][piece].bgcolor != ''}
-              <td style="background-color:{$items[item][piece].bgcolor}">
-            {else}
-              <td>
-            {/if}
-            {if $items[item][piece].SNP_ID != "" AND $items[item][piece].name == "SNP_ID"}
-              {assign var="SNP_ID" value=$items[item][piece].value}
-              <a href="{$baseurl}/genomic_browser/?submenu=snp_browser&rsID={$items[item][piece].SNP_ID}">{$items[item][piece].value}</a>
-            {elseif $items[item][piece].name == "Chromosome"}
-              {assign var="chromValue" value=$items[item][piece].value}
-              {$chromValue} 
-            {elseif $items[item][piece].name == "Position_BP"}
-              {assign var="startLocValue" value=$items[item][piece].value}
-              <a href="https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=chr{$chromValue}%3A{$startLocValue}-{$startLocValue}" target="_blank">{$startLocValue}</a>
-            {else}
-              {$items[item][piece].value}
-            {/if }
-            </td>
-          {/section}
-        </tr>
-        {/section}
-      </tbody>
-      <!-- end data table -->
-    </table>
-  </div>
+  </table>
+  <div id="datatable"></div>
 </div>
-<br>
+<script>
+
+if (document.getElementsByName('Show_Brief_Results')[0].value != "brief") {
+    loris.hiddenHeaders = [];
+}
+
+var table = RDynamicDataTable({
+    "DataURL" : "{$baseurl}/genomic_browser/?submenu=gwas_browser&format=json",
+    "getFormattedCell" : formatColumn,
+});
+
+React.render(table, document.getElementById("datatable"));
+</script>
+

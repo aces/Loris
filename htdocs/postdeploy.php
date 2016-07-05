@@ -65,6 +65,12 @@ $conn->query(
 );
 
 mkdir('../project');
+mkdir('../project/data');
+mkdir('../project/libraries');
+mkdir('../project/instruments');
+mkdir('../project/templates');
+mkdir('../project/tables_sql');
+mkdir('../project/modules');
 mkdir('../smarty/templates_c', 0777);
 $path_to_file  = '../docs/config/config.xml';
 $file_contents = file_get_contents($path_to_file);

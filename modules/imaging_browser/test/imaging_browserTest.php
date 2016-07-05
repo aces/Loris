@@ -160,13 +160,14 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             )
         );
 
+        // @codingStandardsIgnoreStart
         $this->DB->insert(
             'files',
             array(
              'FileID'                => 1,
              'SessionID'             => 999998,
              'File'                  => 'assembly/506145/V1/mri/native/' .
-               'loris-MRI_506145_V1_t2_001.mnc',
+              'loris-MRI_506145_V1_t2_001.mnc',
              'SeriesUID'             => '1.3.12.2.1107.5.2.32.35049.' .
                '2014021711090977356751313.0.0.0',
              'EchoTime'              => 0.011,
@@ -185,7 +186,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'TarchiveSource'        => 263,
             )
         );
+        // @codingStandardsIgnoreEnd
 
+        // @codingStandardsIgnoreStart
         $this->DB->insert(
             'files',
             array(
@@ -211,6 +214,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'TarchiveSource'        => 263,
             )
         );
+        // @codingStandardsIgnoreStart
 
         $this->DB->insert(
             'mri_acquisition_dates',
@@ -607,6 +611,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
 
         // Setting permissions to view all sites to view all datasets
         $this->setupPermissions(array('imaging_browser_view_allsites'));
+
         $this->webDriver->navigate()->refresh();
 
         // Go to first item in the imaging browser list of candidates
@@ -617,19 +622,17 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
 
-        $SelectedLink = $this->webDriver->findElement(
+        $this->safeClick(
             WebDriverBy::xPath(
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[13]/a'
             )
         );
-        $this->clickToLoadNewPage($SelectedLink);
 
-        $BackToListButton = $this->webDriver->findElement(
+        $this->safeClick(
             WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[1]/li[1]/a/span/span')
         );
-        $BackToListButton->click();
 
-        $SelectionFilter = $this->webDriver->findElement(
+        $SelectionFilter = $this->safeFindElement(
             WebDriverBy::xPath('//*[@id="lorisworkspace"]/div[1]/div/div/div[1]')
         )->getText();
         $this->assertContains("Selection Filter", $SelectionFilter);
@@ -639,32 +642,29 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             $this->url . "/imaging_browser/"
         );
 
-        $NativeLink = $this->webDriver->findElement(
+        $this->safeClick(
             WebDriverBy::xPath(
                 '//*[@id="lorisworkspace"]/div[2]/div/div/table/tbody/tr/td[12]/a'
             )
         );
-        $this->clickToLoadNewPage($NativeLink);
 
-        $NextButton = $this->webDriver->findElement(
+        $this->safeClick(
             WebDriverBy::xPath('//*[@id="sidebar-content"]/ul[1]/li[2]/a/span/span')
         );
-        $NextButton->click();
 
-        $SiteText2 = $this->webDriver->findElement(
+        $SiteText2 = $this->safeFindElement(
             WebDriverBy::xPath('//*[@id="table-header-left"]/tbody/tr/td[5]')
         )->getText();
         $this->assertContains("Test Site BOL", $SiteText2);
 
         //Previous Button
-        $PrevButton = $this->webDriver->findElement(
+        $this->safeClick(
             WebDriverBy::xPath(
                 '//*[@id="sidebar-content"]/ul[1]/li[2]/a[1]/span/span'
             )
         );
-        $PrevButton->click();
 
-        $SiteText1 = $this->webDriver->findElement(
+        $SiteText1 = $this->safeFindElement(
             WebDriverBy::xPath('//*[@id="table-header-left"]/tbody/tr/td[5]')
         )->getText();
         $this->assertContains("Test Site AOL", $SiteText1);
@@ -901,14 +901,14 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->clickToLoadNewPage($NativeLink);
 
         $BreadCrumbLink = $this->webDriver->findElement(
-            WebDriverBy::xPath("
-                //div[@id='breadcrumbs']
-                /div
-                /div
-                /div
-                /a[2]
-                /div
-            ")
+            WebDriverBy::xPath(
+                "//div[@id='breadcrumbs']
+                 /div
+                 /div
+                 /div
+                 /a[2]
+                 /div"
+            )
         );
         $this->clickToLoadNewPage($BreadCrumbLink);
 
@@ -1135,7 +1135,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $CommentsButton = $this->webDriver->findElement(
             WebDriverBy::cssSelector(
                 ".mri-second-row-panel > a:nth-child(1) > " .
-                  "span:nth-child(1) > span:nth-child(2)"
+                "span:nth-child(1) > span:nth-child(2)"
             )
         );
         $handleList     = $this->webDriver->getWindowHandles();
@@ -1251,7 +1251,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $ImageQCFeedback = $this->webDriver->findElement(
             WebDriverBy::cssSelector(
                 ".mri-second-row-panel > a:nth-child(1) > " .
-                  "span:nth-child(1) > span:nth-child(2)"
+                "span:nth-child(1) > span:nth-child(2)"
             )
         );
         $handleList      = $this->webDriver->getWindowHandles();

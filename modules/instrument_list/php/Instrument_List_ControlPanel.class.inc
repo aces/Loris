@@ -21,6 +21,9 @@ Class Instrument_List_ControlPanel extends TimePoint
      */
     function display()
     {
+        $factory = NDB_Factory::singleton();
+        $this->tpl_data['baseurl'] = $factory->settings()->getBaseURL();
+
         $this->tpl_data['candID'] = $this->getData('CandID');
         $this->tpl_data['sessionID'] = $this->getData('SessionID');
 
@@ -332,6 +335,7 @@ Class Instrument_List_ControlPanel extends TimePoint
     {
     	// get the current bvlqc type
     	$qcStatus = $this->getBVLQCStatus();
+
 		foreach($this->bvlQcTypes as $type){
 			$isSelected=$type == $this->getBVLQCType();
 			$type=strtolower($type);
@@ -340,7 +344,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             	$this->tpl_data['bvl_qc_type_'.$type]['icon'] = 'selected';
             }
             //If a BVLQC status is not selected, and this type is not already chosen, show the link.
-            if(!$isSelected && empty($qcStatus)){ 
+            if(!$isSelected && empty($qcStatus) && $this->tpl_data['access']['bvl_qc']){
             	$this->tpl_data['bvl_qc_type_'.$type]['showlink']=true;
             }
         }
@@ -364,7 +368,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             	$this->tpl_data['bvl_qc_status_'.$status]['icon'] = 'selected';
             }
             //If a BVLQC type is selected, and this status is not already chosen, show the link.
-            if(!empty($qcType) && !$isSelected){ 
+            if(!empty($qcType) && !$isSelected && $this->tpl_data['access']['bvl_qc']){
             	$this->tpl_data['bvl_qc_status_'.$status]['showlink']=true;
             }
         }

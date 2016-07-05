@@ -3,7 +3,7 @@
     {if $dynamictabs neq "dynamictabs"}
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
-        <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
+        <link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 
         {* 
         This can't be loaded from getJSDependencies(), because it's needs access to smarty
@@ -352,7 +352,7 @@
                                                                 {$timePoint.SubprojectTitle}
                                                             </td>
                                                             <td>
-                                                                {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"images/help2.gif\" width=\"12\" height=\"12\" />"}
+                                                                {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"$baseurl/images/help2.gif\" width=\"12\" height=\"12\" />"}
                                                             </td>
                                                             {* 
                                                                 <td>

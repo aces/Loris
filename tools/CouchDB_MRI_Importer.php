@@ -84,15 +84,10 @@ class CouchDBMRIImporter
         foreach ($ScanTypes as $Scan) {
             $Query .= ", (SELECT f.File FROM files f LEFT JOIN files_qcstatus fqc
                       USING(FileID)
-                      LEFT JOIN parameter_file p
-                      ON (p.FileID=f.FileID
-                      AND p.ParameterTypeID=$Scan[ParameterTypeID])
-                      WHERE f.SessionID=s.ID AND p.Value='$Scan[ScanType]' LIMIT 1)
+                      WHERE f.SessionID=s.ID AND fqc.Selected='$Scan[ScanType]' LIMIT 1)
                             as `Selected_$Scan[ScanType]`, (SELECT fqc.QCStatus
                       FROM files f LEFT JOIN files_qcstatus fqc USING(FileID)
-                      LEFT JOIN parameter_file p ON (p.FileID=f.FileID
-                      AND p.ParameterTypeID=$Scan[ParameterTypeID])
-                      WHERE f.SessionID=s.ID AND p.Value='$Scan[ScanType]' LIMIT 1)
+                      WHERE f.SessionID=s.ID AND fqc.Selected='$Scan[ScanType]' LIMIT 1)
                              as `$Scan[ScanType]_QCStatus`";
         }
         $Query .= " FROM session s JOIN candidate c USING (CandID)
@@ -369,13 +364,9 @@ class CouchDBMRIImporter
     public function getScanTypes()
     {
         $ScanTypes = $this->SQLDB->pselect(
-            "SELECT DISTINCT pf.ParameterTypeID,
-                          pf.Value as ScanType
-                     FROM parameter_type pt
-                     JOIN parameter_file pf
-                     USING (ParameterTypeID)
-                     WHERE pt.Name='selected'
-                     AND COALESCE(pf.Value, '') <> ''",
+            "SELECT DISTINCT fqc.Selected as ScanType
+                     FROM files_qcstatus fqc
+                     WHERE COALESCE(fqc.Selected, '') <> ''",
             array()
         );
         return $ScanTypes;

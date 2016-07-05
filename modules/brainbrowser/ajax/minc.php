@@ -18,6 +18,7 @@
 ini_set('default_charset', 'utf-8');
 require_once "Utility.class.inc";
 require_once "NDB_Config.class.inc";
+require_once "MincEnv.php.inc";
 
 $headers = array();
 
@@ -50,6 +51,12 @@ function extractDimension($dimension, $minc_file)
             'start'        => exec("mincinfo -attval $dimension:start $minc_file"),
             'space_length' => exec("mincinfo -dimlength $dimension $minc_file"),
             'step'         => exec("mincinfo -attval $dimension:step $minc_file"),
+            'dir_cosines'  => explode(
+                " ",
+                exec(
+                    "mincinfo -attval $dimension:direction_cosines $minc_file"
+                )
+            ),
            );
 }
 

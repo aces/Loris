@@ -317,10 +317,14 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // 2. After resetting filters (if applicable), set the new
         // filters using the appropriate method.
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET'
+            || ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['filter']))
+        ) {
             // If it's a GET request (ie just reloading the page with
             // previous filters or clicking on a sort column, use
             // the filters that were saved into the session.
+            // OR a post request with no new defined filters (ie a second
+            // form on the page)
             $savedFilters = $_SESSION['State']->getProperty('filter');
             $this->_setFilters($savedFilters);
 
@@ -611,8 +615,10 @@ class NDB_Menu_Filter extends NDB_Menu
 
         $pageID = isset($_GET['pageID']) ? $_GET['pageID'] : 1;
 
-        $this->tpl_data['rowsPerPage'] = $rowsPerPage;
-        $this->tpl_data['pageID']      = $pageID;
+        $this->tpl_data['rowsPerPage']      = $rowsPerPage;
+        $this->tpl_data['pageID']           = $pageID;
+        $this->tpl_data['filterfield']      = $_GET['filter'][order][field];
+        $this->tpl_data['filterfieldOrder'] = $_GET['filter'][order][fieldOrder];
 
         $this->tpl_data['TotalItems'] = $this->TotalItems;
         // print out column headings
@@ -634,7 +640,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the template data for the table rows
         if (is_array($this->list) && !empty($this->list)) {
             // print out data rows
-            $this->_setDataTableRows($rowsPerPage*($pageID-1));
+            $this->_setDataTableRows($rowsPerPage*($pageID-1)+1);
         }
     }
 
@@ -678,15 +684,19 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function display()
     {
-        // dump the html for the menu
-        $this->tpl_data['csvUrl']  = 'main.php?'
-            . $_SERVER['QUERY_STRING']
-            . '&format=csv';
+        // Set the csvFile links
+        $uri    = ltrim($_SERVER['REQUEST_URI'], "/");
+        $suffix = strpos($uri, '?') ? '&format=csv' : '?&format=csv';
+        $this->tpl_data['csvUrl']  = $uri . $suffix;
         $this->tpl_data['csvFile'] = $_REQUEST['test_name'];
         if (isset($_REQUEST['subtest'])) {
             $this->tpl_data['csvFile'] .= '-' . $_REQUEST['subtest'];
+        } elseif (isset($_REQUEST['submenu'])) {
+            $this->tpl_data['csvFile'] .= '-' . $_REQUEST['submenu'];
         }
         $this->tpl_data['csvFile'] .= date('-Y_m_d');
+
+        // dump the html for the menu
         $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);
         $smarty->assign('form', $this->form->toArray());
@@ -730,9 +740,12 @@ class NDB_Menu_Filter extends NDB_Menu
             },
             $this->headers
         );
+
+        $MappedData = array();
         foreach ($data as $row) {
             $MappedData[] = array_values($row);
         }
+
         return array(
                 'Headers' => $headers,
                 'Data'    => $MappedData,

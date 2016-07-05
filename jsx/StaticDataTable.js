@@ -66,8 +66,34 @@ StaticDataTable = React.createClass({
            'PageNumber' : 1
        });
     },
+    downloadCSV: function() {
+        var headers = this.props.Fields,
+            csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
+
+
+        csvworker.addEventListener('message', function (e) {
+            var dataURL, dataDate, link;
+            if (e.data.cmd === 'SaveCSV') {
+                dataDate = new Date().toISOString();
+                dataURL = window.URL.createObjectURL(e.data.message);
+                link = document.createElement("a");
+                link.download = "data-" + dataDate + ".csv";
+                link.type = "text/csv";
+                link.href = dataURL;
+                document.body.appendChild(link);
+                $(link)[0].click();
+                document.body.removeChild(link);
+            }
+        });
+        csvworker.postMessage({
+            cmd: 'SaveFile',
+            data: this.props.Data,
+            headers: this.props.Headers,
+            identifiers: this.props.RowNameMap
+        });
+    },
     render: function() {
-        if (this.props.Data == null) {
+        if (this.props.Data == null || this.props.Data.length == 0) {
             return (
                 <div 
                     className="alert alert-info no-result-found-panel"
@@ -79,66 +105,66 @@ StaticDataTable = React.createClass({
         var rowsPerPage = this.state.RowsPerPage;
         var headers = [<th onClick={this.setSortColumn(-1)}>{this.props.RowNumLabel}</th>];
         for(var i = 0; i < this.props.Headers.length; i += 1) {
-            if(this.props.Headers[i] == this.props.freezeColumn){
-                headers.push(<th id={this.props.freezeColumn} onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
-            }else {
-                headers.push(<th onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+ 
+            if ( typeof loris.hiddenHeaders === "undefined" || -1 == loris.hiddenHeaders.indexOf(this.props.Headers[i]) ) {
+                if(this.props.Headers[i] == this.props.freezeColumn){
+                    headers.push(<th id={this.props.freezeColumn} onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+                }else {
+                    headers.push(<th onClick={this.setSortColumn(i)}>{this.props.Headers[i]}</th>);
+                }
             }
         }
         var rows = [];
         var curRow = [];
         var index = [], that = this;
 
-        if(this.state.SortColumn >= 0) {
-            for(var i = 0; i < this.props.Data.length; i += 1) {
-                var val = this.props.Data[i][this.state.SortColumn];
-
-                if (parseInt(val, 10) == val) {
-                    val = parseInt(val, 10);
-                } else if (parseFloat(val, 10) == val) {
-                    val = parseFloat(val, 10);
-                } else if (val == '.') {
-                    val = null;
-                }
-
-                if (this.props.RowNameMap) {
-                    index.push({ RowIdx: i, Value: val, Content: this.props.RowNameMap[i]});
-                } else {
-                    index.push({ RowIdx: i, Value: val, Content: i+1 });
-                }
+        for (var i = 0; i < this.props.Data.length; i += 1) {
+            var val = this.props.Data[i][this.state.SortColumn];
+            
+            if (parseInt(val, 10) == val) {
+                val = parseInt(val, 10);
+            } else if (parseFloat(val, 10) == val) {
+                val = parseFloat(val, 10);
+            } else if (val == '.') {
+                val = null;
             }
-            index.sort(function(a, b) {
-                if(that.state.SortOrder === 'ASC') {
-                    // Sort by value
-                    if(a.Value < b.Value) return -1;
-                    if(a.Value > b.Value) return 1;
 
-                    // If all values are equal, sort by rownum
-                    if(a.RowIdx < b.RowIdx) { return -1; }
-                    if(a.RowIdx > b.RowIdx) { return 1; }
-                } else {
-                    // Sort by value
-                    if(a.Value < b.Value) return 1;
-                    if(a.Value > b.Value) return -1;
+            // if string - convert to lowercase to make sort algorithm work
+            var isString = (typeof val === 'string' || val instanceof String);
+            if (val != undefined && isString) {
+                val = val.toLowerCase();
+            }
 
-                    // If all values are equal, sort by rownum
-                    if(a.RowIdx < b.RowIdx) { return 1; }
-                    if(a.RowIdx > b.RowIdx) { return -1; }
-                }
-                // They're equal..
-                return 0;
-
-            });
-        } else {
-            for(var i = 0; i < this.props.Data.length; i += 1) {
-                if (this.props.RowNameMap) {
-                    index.push({ RowIdx: i, Content: this.props.RowNameMap[i]});
-                } else {
-                    index.push({ RowIdx: i, Content: i+1});
-                }
+            if (this.props.RowNameMap) {
+                index.push({ RowIdx: i, Value: val, Content: this.props.RowNameMap[i]});
+            } else {
+                index.push({ RowIdx: i, Value: val, Content: i+1 });
             }
         }
-        for(var i = (rowsPerPage*(this.state.PageNumber-1));
+
+        index.sort(function(a, b) {
+            if (that.state.SortOrder === 'ASC') {
+                // Sort by value
+                if (a.Value < b.Value) return -1;
+                if (a.Value > b.Value) return 1;
+
+                // If all values are equal, sort by rownum
+                if (a.RowIdx < b.RowIdx) { return -1; }
+                if (a.RowIdx > b.RowIdx) { return 1; }
+            } else {
+                // Sort by value
+                if (a.Value < b.Value) return 1;
+                if (a.Value > b.Value) return -1;
+
+                // If all values are equal, sort by rownum
+                if (a.RowIdx < b.RowIdx) { return 1; }
+                if (a.RowIdx > b.RowIdx) { return -1; }
+            }
+            // They're equal..
+            return 0;
+        });
+
+        for (var i = (rowsPerPage*(this.state.PageNumber-1));
                 (i < this.props.Data.length) && (rows.length < rowsPerPage);
                 i += 1) {
             curRow = [];
@@ -164,7 +190,8 @@ StaticDataTable = React.createClass({
             );
         }
 
-        var RowsPerPageDropdown = (<select className="input-sm rowsPerPage" onChange={this.changeRowsPerPage}>
+        var RowsPerPageDropdown = (
+            <select className="input-sm perPage" onChange={this.changeRowsPerPage}>
                 <option>20</option>
                 <option>50</option>
                 <option>100</option>
@@ -196,6 +223,12 @@ StaticDataTable = React.createClass({
                 <div className="panel-footer table-footer">
                     <div className="row">
                         <div className="col-xs-12">
+                            <div className="col-xs-12 footerText">
+                                {rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown})
+                            </div>
+                            <div className="col-xs-6">
+                                <button className="btn btn-primary downloadCSV" onClick={this.downloadCSV}>Download Table as CSV</button>
+                            </div>
                             <div className="pull-right">
                                 <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
                             </div>

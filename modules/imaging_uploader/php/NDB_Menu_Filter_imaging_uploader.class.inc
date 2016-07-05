@@ -60,9 +60,14 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
 
+        $progressSelectPart = "IF(ISNULL(Inserting), 'Not Started',"
+            . "IF(Inserting=1, 'In Progress...', "
+            . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";
+
         // set the class variables
         $this->columns = array(
                           'UploadID',
+                          $progressSelectPart,
                           's.CandID',
                           'c.PSCID',
                           's.Visit_label',
@@ -135,6 +140,25 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             'Are these Phantom Scans:',
             $phantom_options
         );
+
+        $this->addSelect(
+            'LogType',
+            '',
+            array(
+             'summary'  => 'Summary',
+             'detailed' => 'Detailed',
+            )
+        );
+
+        $this->form->addTextArea(
+            'UploadLogs',
+            '',
+            array(
+             'class' => 'upload-logs-table',
+             'id'    => 'mri_upload_logs',
+            )
+        );
+
         ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -149,13 +173,50 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         }
         return true;
     }
-     /**
-      * Returns true if the _saveFile has successfully
-      * completed
-      *
-      * @param array $values the array of values from the form
-      *
-      * @return true on success, false othewise
+
+
+    /**
+     * Overrides the default setDataTableRows to assign the background colour
+     * to the progress column
+     *
+     * @param integer $count The number of rows in the table
+     *
+     * @return true on success
+     */
+    function _setDataTableRows($count)
+    {
+        $x = 0;
+        foreach ($this->list as $item) {
+            //count column
+            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
+
+            //print out data rows
+            $i = 1;
+            foreach ($item as $key => $val) {
+                $itemi          =& $this->tpl_data['items'][$x][$i];
+                $itemi['name']  = $key;
+                $itemi['value'] = $val;
+                if ($key == 'Progress' && $val == 'Failure') {
+                    $itemi['bgcolor'] =  '#E4A09E';
+                } elseif ($key == 'Progress' && $val == 'In Progress...') {
+                    $itemi['bgcolor'] =  '#F3F781';
+                }
+                $i++;
+            }
+
+            $x++;
+        }
+        $this->tpl_data['numUploads'] = $this->TotalItems;
+        return true;
+    }
+
+    /**
+     * Returns true if the _saveFile has successfully
+     * completed
+     *
+     * @param array $values the array of values from the form
+     *
+     * @return true on success, false othewise
      */
     function _process($values)
     {

@@ -191,7 +191,7 @@ $(document).ready(function() {
 		  <div class="panel-body">
 		  		<div class="col-xs-12">
 		  			<center>
-		  				<img src="{$baseurl}/images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_Logo_141007.png'" align="middle" width="85%"> 
+		  				<img src="{$baseurl}/images/LORIS_logo.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_logo.png'" align="middle" width="85%"> 
 		  			</center>
 					<br>
 		  		</div>
@@ -214,8 +214,8 @@ $(document).ready(function() {
                             </div>
                                 <input class="btn btn-primary col-xs-12" id="loginAPI" name="login" type="submit" value="Login" />
                             <br><br><br>
-                            <a href="lost_password.php"><center>Forgot your password?</center></a>
-                            <a href="request_account/process_new_account.php"><center>Request Account</center></a>
+                            <a href="{$baseurl}/lost_password.php"><center>Forgot your password?</center></a>
+                            <a href="{$baseurl}/request_account/process_new_account.php"><center>Request Account</center></a>
                         </div>
                     </form>
 			  	</div>	

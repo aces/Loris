@@ -34,10 +34,8 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
     /**
      * Variables to enable special filter behaviour -
      * Show brief results or show full results (all available fields)
-     * used in (overridden) _addValidFilters function below
      */
     var $_displayBrief = true;  // default: display only Brief results
-    var $_briefFields  = array(); // which fields to display
 
     /**
      * Overloading this method to allow access to site users (own site only)
@@ -66,7 +64,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         // set the class variables
         $this->columns = array(
                           'psc.Name AS PSC',
-                          'candidate.CandID AS DCCID',
+                          'LPAD(candidate.CandID, 6, "0") AS DCCID',
                           'candidate.PSCID',
                           'candidate.Gender',
                           'cohort.SubprojectID as Subproject',
@@ -96,19 +94,38 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                           'SNP.ExonicFunction as Exonic_Function',
                          );
 
-        $this->_briefFields = array(
-                               'DCCID',
-                               'PSCID',
-                               'Subproject',
-                               'Chromosome',
-                               'StartLoc',
-                               'Gene_Name',
-                               'Platform',
-                               'rsID',
-                               'SNP_Name',
-                               'SNP_Description',
-                               'Function_Prediction',
-                              );
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array(
+                 'PSC',
+                 'DCCID',
+                 'Subproject',
+                 'DoB',
+                 'externalID',
+                 'Chromosome',
+                 'Strand',
+                 'StartLoc',
+                 'EndLoc',
+                 'Size',
+                 'Gene_Symbol',
+                 'Gene_Name',
+                 'Platform',
+                 'SNP_Name',
+                 'SNP_Description',
+                 'External_Source',
+                 'Array_Report',
+                 'Markers',
+                 'Validation_Method',
+                 'Validated',
+                 'Genotype_Quality',
+                )
+            )
+        );
 
         // Chromosome from genome_loc table
         // INNER JOIN on SNP_candidate_rel table. //##
@@ -161,6 +178,9 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'SNP.ExonicFunction',
                                'genome_loc.Chromosome',
                                'genome_loc.Strand',
+                               'genome_loc.StartLoc',
+                               'genome_loc.EndLoc',
+                               'genome_loc.Strand',
                                'gene.OfficialSymbol',
                                'gene.OfficialName',
                                'genotyping_platform.Name',
@@ -191,6 +211,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                 'Exonic_Function'     => 'SNP.ExonicFunction',
                 'Chromosome'          => 'genome_loc.Chromosome',
                 'Gene_Symbol'         => 'gene.OfficalSymbol',
+                'genomic_range'       => 'genomic_range',
                 'Platform'            => 'genotyping_platform.Name',
                );
 
@@ -259,6 +280,13 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addSelect('Show_Brief_Results', 'Display:', $show_results_options);
 
         // SNP
+
+        $Base_options = array(
+                         null => 'Any',
+                         '37' => 'GRCh37',
+                        );
+        $this->addSelect('Assembly', 'Build:', $Base_options);
+
         $this->addBasicText('rsID', 'rsID:');
         $this->addBasicText('SNP_Name', 'Name:');
         $this->addBasicText('SNP_Description', 'Description:');
@@ -306,9 +334,15 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addBasicText('Genotype_Quality', 'Genotype Quality:');
         $this->addBasicText('Exonic_Function', 'Exonic Function:');
 
-        $this->addBasicText('Chromosome', 'Chromosome:');
-        $this->addBasicText('Strand', 'Strand:');
-        $this->addBasicText('Gene_Symbol', 'Symbol:');
+        $Base_options = array(
+                         null => 'Any',
+                         'F'  => 'Forward',
+                         'R'  => 'Reverse',
+                        );
+        $this->addSelect('Strand', 'Strand:', $Base_options);
+
+        $this->addBasicText('genomic_range', 'Genomic Range:');
+        $this->addBasicText('Gene_Symbol', 'Gene:');
         $this->addBasicText('Gene_Name', 'Name:');
 
         $DB = Database::singleton();
@@ -331,89 +365,6 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
         $this->addSelect('Array_Report', 'Array Report:', $Array_Report_options);
         $this->addBasicText('Markers', 'Markers:');
         $this->addBasicText('Validation_Method', 'Validation Method:');
-
-        return true;
-    }
-
-    /**
-     * Function _setDataTableRows
-     *
-     * @param string $count number of data
-     *
-     * @note   overloaded function
-     * @return bool
-     */
-    function _setDataTableRows($count)
-    {
-        // create user object
-        $user           = User::singleton();
-        $subprojectlist = Utility::getSubprojectList();
-
-        $this->tpl_data['resultcount']  = $this->TotalItems;
-        $this->tpl_data['displayBrief'] = $this->_displayBrief;
-
-        // re-set headers if Brief; if full, gets set by _setDataTable()
-        if ($this->_displayBrief) {
-            $this->headers = array(); // re-initialize i.e. wipe
-            foreach ($this->_briefFields as $col) {
-                $this->headers[] = $col;
-            }
-
-            // copy column headings to new array, then replace
-            $colCount     = 0; // column counter
-            $maxCols      = sizeof($this->tpl_data['headers']); //limit
-            $briefHeaders = array();  // reset
-            foreach ($this->headers as $header) {
-                $found = false;
-                while ($colCount < $maxCols && !$found ) {
-                    // copy entire tpl_data element
-                    // including displayName and fieldOrder
-                    if ($this->tpl_data['headers'][$colCount]['name'] == $header) {
-                        $found          = true;
-                        $briefHeaders[] = $this->tpl_data['headers'][$colCount];
-                    }
-                    $colCount++;
-                } // iterate to check for next elt, starting from here
-            }
-            // When done, replace tpl_data headers
-            $this->tpl_data['headers'] = $briefHeaders;
-        }
-
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-
-                if ($this->_displayBrief && !in_array($key, $this->_briefFields)) {
-                    continue;  // no increment to $i
-                }
-
-                //Show the URL to the timepoint list on PSCID field
-                if ($key == 'PSCID' && $user->hasPermission('access_all_profiles')) {
-                    $this->tpl_data['items'][$x][$i]['DCCID']
-                        = str_pad($item['DCCID'], 6, '0', STR_PAD_LEFT);
-                }
-                $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-
-                if ($key=='Subproject') {
-                    if (is_null($val)) {
-                        $this->tpl_data['items'][$x][$i]['value'] = null;
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = $subprojectlist[$val];
-                    }
-                }
-                $i++;
-            }
-            $x++;
-        }
-        $this->tpl_data['resultcount']   = $this->TotalItems;
-        $this->tpl_data['displayFilter'] = $this->_displayBrief;
 
         return true;
     }
@@ -452,11 +403,47 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             ) {
 
                  $query .= " AND $field = :v_$prepared_key";
+            } elseif ($field == "candidate.CandID") {
+                $query .= " AND $field = CONVERT( :v_$prepared_key, DECIMAL) ";
+            } elseif ($field == "genomic_range") {
+                $temp_array = explode(':', $val);
+                $chr        = str_replace('chr', '', $temp_array[0]);
+                $query     .= " AND genome_loc.Chromosome = '$chr'";
+
+                if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
+                    $temp_array = explode('-', $temp_array[1]);
+                    $from       = $temp_array[0];
+                    $to         = $temp_array[1];
+                    $query     .= " AND genome_loc.StartLoc < $to";
+                    $query     .= " AND genome_loc.EndLoc > $from";
+                }
+                $query .= " AND :v_$prepared_key IS NOT NULL";
+
             } else {
                  $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
             }
         }
         return $query;
+    }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/genomic_browser/js/genomic_browser.js",
+             $baseURL . "/genomic_browser/js/snpColumnFormatter.js",
+            )
+        );
     }
 
 }

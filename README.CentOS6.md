@@ -1,6 +1,6 @@
 #LORIS CentOS 6.x Notes
 
-Note that the README in LORIS assumes that LORIS is being run on Ubuntu.
+Note that the main README in LORIS assumes that LORIS is being run on Ubuntu.
 
 This document contains details on how to manually perform a basic CentOS 6.x
 install of LORIS without using the install script (as the install script
@@ -33,10 +33,10 @@ curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
 
-Note that the version of PHP installed by CentOS 6.x is approximately 600 years
-old, and doesn't meet the minimum requirements of many development dependencies.
-As a result, you need to either upgrade your version of PHP or run composer
-with the `--no-dev` option. (Upgrading PHP is preferred, but for now we'll
+Note that the default dependencies installed by CentOS 6.x may not meet the version requirements LORIS deployment or development.
+* MySQL 5.5 or lower is supported for LORIS 16.0
+* PHP 5.6 (or 5.5) is required for LORIS 16.0 - upgrade your PHP manually
+Or run composer with the `--no-dev` option. (Upgrading PHP is preferred, but for now we'll
 assume you just want to get it running, so we'll run it with `--no-dev`.)
 
 ```bash
@@ -51,8 +51,10 @@ composer install --no-dev
 This details how to manual populate the MySQL database which is assumed
 to already exist (if not, create one before proceeding)
 
-Connect to MySQL, use your database and source the 
-`SQL/0000-00-00-schema.sql` file into it.
+Connect to MySQL, use your database and source all the files in the
+SQL/ directory of LORIS which are prefixed with `0000-00-` into it
+(ie `SQL/0000-00-00-schema.sql`, `SQL/0000-00-01-Permission.sql`, 
+`SQL/0000-00-02-Menus.sql`, etc.)
 
 There are a few settings in the Config module that LORIS currently depends
 on being updated to load correctly that must be set manually from MySQL as

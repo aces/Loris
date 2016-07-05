@@ -174,7 +174,7 @@ if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
 fi
 
 # Create some subdirectories, if needed.
-mkdir -p ../project ../project/data ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
+mkdir -p ../project ../project/data ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../project/modules ../smarty/templates_c
 
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
@@ -372,7 +372,7 @@ while true; do
         [Yy]* )
             echo ""
             echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'$mysqluserhost' ..."
-            echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'$mysqluserhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
+            echo "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON $mysqldb.* TO '$mysqluser'@'$mysqluserhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
             MySQLError=$?;
             if [ $MySQLError -ne 0 ] ; then
                 echo "Could not connect to database with $mysqlrootuser user provided.";

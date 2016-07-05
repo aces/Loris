@@ -320,7 +320,7 @@ ViewDataTabPane = React.createClass({
                                     </li>
                                     <li onClick={this.changeDataDisplay.bind(this, 1)}>
                                         <div className="col-sm-12">
-                                            <h5 className="">Longitudial</h5>
+                                            <h5 className="">Longitudinal</h5>
                                         </div>
                                     </li>
                                 </ul>
@@ -763,9 +763,19 @@ ManageSavedQueryRow = React.createClass({
     render: function() {
         var fields = [];
         var filters;
-        if(this.props.Query.Fields) {
+        if(this.props.Query.Fields && Array.isArray(this.props.Query.Fields)) {
             for(var i = 0; i < this.props.Query.Fields.length; i += 1) {
                 fields.push(<li>{this.props.Query.Fields[i]}</li>);
+            }
+        } else if(this.props.Query.Fields) {
+            for(var instrument in this.props.Query.Fields){
+                for(var field in this.props.Query.Fields[instrument]){
+                    if(field === "allVisits"){
+                        continue;
+                    } else {
+                        fields.push(<li>{instrument},{field}</li>);
+                    }
+                }
             }
         }
 
@@ -774,20 +784,34 @@ ManageSavedQueryRow = React.createClass({
         }
 
         if(this.props.Query.Conditions) {
-            var operator = (<span>AND</span>),
+            var operator,
                 filter;
             if(this.props.Query.Conditions.activeOperator) {
-                filter = this.props.Query.Conditions.children.map(function(element, key){
-                    return <ManageSavedQueryFilter
-                                filterItem = {element}
-                            />
-                });
+                if(this.props.Query.Conditions.children) {
+                    if(this.props.Query.Conditions.activeOperator === 0){
+                        operator = (<span>AND</span>)
+                    } else {
+                        operator = (<span>OR</span>)
+                    }
+                    filter = this.props.Query.Conditions.children.map(function(element, key){
+                        return <ManageSavedQueryFilter
+                                    filterItem = {element}
+                                />
+                    });
+                } else {
+                    operator = (<span>No filters defined</span>);
+                }
             } else {
-                filter = this.props.Query.Conditions.map(function(element, key){
-                    return <ManageSavedQueryFilter
-                                filterItem = {element}
-                            />
-                 });
+                if(this.props.Query.Conditions.length === 0){
+                    operator = (<span>No filters defined</span>);
+                } else {
+                    operator = (<span>AND</span>);
+                    filter = this.props.Query.Conditions.map(function(element, key){
+                        return <ManageSavedQueryFilter
+                                    filterItem = {element}
+                                />
+                    });
+                }
             }
             filters = (
                 <div className="tree">
