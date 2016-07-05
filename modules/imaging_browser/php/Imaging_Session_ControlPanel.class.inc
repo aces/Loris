@@ -120,8 +120,8 @@ class Imaging_Session_ControlPanel
                                           );
 
         $qcstatus = $DB->pselectRow(
-            "SELECT MRIQCStatus, MRIQCPending 
-            FROM session WHERE ID=$this->sessionID"
+            "SELECT MRIQCStatus, MRIQCPending FROM session WHERE ID=:sid",
+            array("sid" => $this->sessionID)
         );
 
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];

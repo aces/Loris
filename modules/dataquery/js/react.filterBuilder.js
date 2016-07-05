@@ -79,7 +79,7 @@ FilterRule = React.createClass({
 			}, 'json');
 		}
 	},
-	fieldSelect: function () {
+	fieldSelect: function (event) {
 		// Update the rules desired field, setting the rules field and field type
 		var rule = this.props.rule;
 		delete rule.field;
@@ -94,7 +94,7 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
-	operatorSelect: function () {
+	operatorSelect: function (event) {
 		// Update the desired rule operation for the selected field
 		var rule = this.props.rule;
 		delete rule.operator;
@@ -106,7 +106,7 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
-	valueSet: function () {
+	valueSet: function (event) {
 		// Update the value to filter for, and runs the query for the rules parameters
 		var rule = this.props.rule,
 		    that = this;

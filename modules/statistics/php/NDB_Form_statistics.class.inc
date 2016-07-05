@@ -159,6 +159,18 @@ class NDB_Form_statistics extends NDB_Form
             }
         }
         // DDE STATS
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        $ddeInstrumentsQuoted = array();
+        foreach ($ddeInstruments as $ddeInstrument) {
+            array_push($ddeInstrumentsQuoted, $DB->quote($ddeInstrument));
+        }
+
+        $ddeInstrumentCriteria = "";
+        if ($ddeInstruments != null) {
+            $ddeInstrumentCriteria = implode(" OR f.Test_name=", $ddeInstrumentsQuoted);
+            $ddeInstrumentCriteria = "AND (f.Test_name =" . $ddeInstrumentCriteria . ") ";
+        }
+        
         $DB->select("SELECT s.CenterID, 
                 f.Data_Entry as Data_Entry, 
                 s.visit_label as VLabel,
@@ -168,9 +180,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.CommentID LIKE 'DDE%' 
                 AND c.Active='Y' 
-                AND (f.Test_name NOT LIKE '%parameter%' 
-                    AND f.Test_name NOT LIKE '%radiological%' 
-                    AND f.Test_name NOT LIKE '%vineland%')
+                $ddeInstrumentCriteria
                 $ExtraProject_Criteria
                 GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID;",
             $result);
@@ -942,5 +952,25 @@ class NDB_Form_statistics extends NDB_Form
 
         return array_merge($across_reliable, $within_reliable);
     }
-} // End class
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/statistics/js/statistics_helper.js",
+            )
+        );
+    }
+
+            } // End class
 ?>

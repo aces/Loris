@@ -2134,9 +2134,9 @@ CREATE TABLE ExternalLinks (
 );
 INSERT INTO ExternalLinks (LinkTypeID, LinkText, LinkURL) VALUES 
     (1,  'Loris Website', 'http://www.loris.ca'),
-    (1,  'GitHub', 'https://github.com/aces'),
+    (1,  'GitHub', 'https://github.com/aces/Loris'),
     (2,  'Loris Website', 'http://www.loris.ca'),
-    (2,  'GitHub', 'https://github.com/aces'),
+    (2,  'GitHub', 'https://github.com/aces/Loris'),
     (3,  'Loris Website', 'http://www.loris.ca');
 
 DROP TABLE IF EXISTS empty_queries;

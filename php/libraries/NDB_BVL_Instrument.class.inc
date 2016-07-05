@@ -272,7 +272,16 @@ class NDB_BVL_Instrument extends NDB_Page
         $instrumentPermissions = $config->getSetting("instrumentPermissions");
 
         //check if instrumentPermissions are being used.
-        if ($instrumentPermissions['useInstrumentPermissions'] == false) {
+        if (!is_array($instrumentPermissions)) {
+            //instrument permissions not used...
+            return true; //default
+        } else if (!array_key_exists(
+            'useInstrumentPermissions',
+            $instrumentPermissions
+        )) {
+            //instrument permissions not used...
+            return true; //default
+        } else if ($instrumentPermissions['useInstrumentPermissions'] == false) {
             //instrument permissions not used...
             return true; //default
         } else { //check if user has instrument's permissions

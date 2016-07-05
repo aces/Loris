@@ -122,11 +122,10 @@ LoadPane = React.createClass({
 		}
 		return React.createElement(
 			TabPane,
-			{ Title: "Load Instrument",
-				TabId: this.props.TabId },
+			{ Title: "Load Instrument", TabId: this.props.TabId },
 			React.createElement(
 				"div",
-				{ className: "col-sm-4 col-xs-12" },
+				{ className: "col-sm-6 col-xs-12" },
 				alert,
 				React.createElement("input", { className: "fileUpload",
 					type: "file", id: "instfile",
@@ -693,8 +692,12 @@ InstrumentBuilderApp = React.createClass({
 			),
 			React.createElement(
 				"div",
-				{ className: "tab-content col-xs-12" },
-				tabs
+				{ className: "row" },
+				React.createElement(
+					"div",
+					{ className: "tab-content col-xs-12" },
+					tabs
+				)
 			)
 		);
 	}
