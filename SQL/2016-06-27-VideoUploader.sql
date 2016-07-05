@@ -4,8 +4,7 @@ DELETE FROM LorisMenu WHERE Label='Videos';
 INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Videos', 'videos/', (SELECT ID FROM LorisMenu as L WHERE Label='Clinical'), 5);
 
 -- Add 'videos' table
-DROP TABLE IF EXISTS `videos`;
-CREATE TABLE `videos` (
+CREATE TABLE IF NOT EXISTS `videos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pscid` varchar(255) NOT NULL DEFAULT '',
   `visit_label` varchar(255) NOT NULL DEFAULT '',
