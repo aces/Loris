@@ -14,7 +14,7 @@
         </testsuite>
 -->
         <testsuite name='Loris Module Integration Tests'>
-            <directory>../modules/document_repository/test/</directory>
+            <directory>../modules/create_timepoint/test/</directory>
 <!--            <directory>../modules/candidate_list/test/</directory>
             <directory>../modules/candidate_parameters/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
