@@ -22,22 +22,33 @@ CREATE TABLE IF NOT EXISTS `videos` (
   PRIMARY KEY (`id`)
 );
 
--- Add user permissions
-DELETE FROM permissions WHERE code='video_upload';
-INSERT INTO permissions (`code`, `description`, `categoryID`) VALUES (
-  'video_upload', 'Video uploading ', 1
-);
+-- If table already exists, update field names
+ALTER IGNORE TABLE videos CHANGE record_id id int(11);
+ALTER IGNORE TABLE videos CHANGE PSCID pscid varchar(255);
+ALTER IGNORE TABLE videos CHANGE Instrument instrument varchar(255);
+ALTER IGNORE TABLE videos CHANGE visitLabel visit_label varchar(255);
+ALTER IGNORE TABLE videos CHANGE Date_taken date_taken date;
+ALTER IGNORE TABLE videos CHANGE Date_uploaded date_uploaded timestamp;
+ALTER IGNORE TABLE videos CHANGE File_type file_type varchar(255);
+ALTER IGNORE TABLE videos CHANGE Data_dir data_dir varchar(255);
+ALTER IGNORE TABLE videos CHANGE File_name file_name varchar(255);
+ALTER IGNORE TABLE videos CHANGE File_size file_size bigint(20);
+ALTER IGNORE TABLE videos CHANGE For_site for_site varchar(255);
 
-DELETE FROM user_perm_rel WHERE permID=(SELECT permID FROM permissions WHERE code = 'video_upload');
-INSERT INTO user_perm_rel (`userID`, `permID`) VALUES (
+-- Add user permissions
+SET @currentPermissionID = (SELECT permID FROM permissions WHERE code='video_upload');
+INSERT IGNORE INTO permissions (`permID`, `code`, `description`, `categoryID`) VALUES (
+    @currentPermissionID, 'video_upload', 'Video uploading ', 1
+);
+INSERT IGNORE INTO user_perm_rel (`userID`, `permID`) VALUES (
   (SELECT ID FROM users WHERE UserID = 'admin'), (SELECT permID FROM permissions WHERE code = 'video_upload')
- );
+);
 
 -- Set path to upload/download videos
 SET @parentID = (SELECT ID FROM ConfigSettings WHERE Name = 'paths');
-DELETE FROM ConfigSettings WHERE Name='videosPath';
+DELETE FROM ConfigSettings WHERE Name='mediaPath';
 INSERT INTO ConfigSettings (`Name`, `Description`, `Visible`, `AllowMultiple`, `DataType`, `Parent`, `Label`, `OrderNumber`) VALUES (
-  'videosPath', 'Path to uploaded videos', 1, 0, 'text', @parentID, 'Videos', 10
+  'mediaPath', 'Path to uploaded media files', 1, 0, 'text', @parentID, 'Media', 10
 );
 
 DELETE FROM Config WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='videosPath');
