@@ -14,7 +14,6 @@
  *  @link       https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
 /**
  * Provides the PHP code for the menu filter for the issue tracker
  *
@@ -27,45 +26,8 @@ require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
  */
 class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 {
-    var $AjaxModule = false;
-    /**
-     * Determine whether the user has permission to view this page
-     *
-     * @return bool whether the user has access
-     */
-    function _hasAccess()
-    {
-        $user =& User::singleton();
-
-        // allow only to view own site data
-        $site =& Site::singleton($user->getData('CenterID'));
-
-        return ($user->hasPermission('issue_tracker_view_allsites') || ($site->isStudySite() && $user->hasPermission('issue_tracker_view_site')));
-    }
-
-    /**
-     * Determine whether the user has permission to assign issues
-     *
-     * @return bool whether the user has the ability
-     */
-    function canAssign()
-    {
-        $user =& User::singleton();
-
-        return ($user->hasPermission('issue_tracker_can_assign'));
-    }
-
-    /**
-     * Determine whether the user has permission to change issue status
-     *
-     * @return bool whether the user has the ability
-     */
-    function canChangeStatus()
-    {
-        $user =& User::singleton();
-
-        return ($user->hasPermission('issue_tracker_change_status'));
-    }
+    //aka building-table-using-react module
+    var $AjaxModule = true;
 
     /**
      * Set up the variables required by NDB_Menu_Filter class for constructing
@@ -78,10 +40,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 
         //adding gratuitous first statement in the where because I have nothing else to say
         //and as it stands I want everything
-        $this->query = " FROM issues as i
-            LEFT JOIN candidate c ON (i.candID=c.CandID)
-            LEFT JOIN psc p ON (i.centerID=p.CenterID)
-            WHERE issueID != NULL";
+        $this->query = " FROM issues as i LEFT JOIN candidate c ON (i.candID=c.CandID) LEFT JOIN psc p ON (i.centerID=p.CenterID) WHERE i.status != 'closed'";
 
         $user =& User::singleton();
         $DB = Database::singleton();
@@ -89,18 +48,20 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             $this->query .= " AND i.centerID=" . $DB->quote($user->getCenterID());
         }
 
+        //TODO: change field names and add project into things
+        //note that this needs to be in the same order as the headers array
         $this->columns = array(
             'i.issueID as Issue_ID',
+            'p.Name as Site',
             'c.PSCID as PSCID',
-            'i.visitLabel as Visit_Label',
             'i.candID as DCCID',
+            'i.visitLabel as Visit_Label',
             'i.reporter as Reporter',
             'i.assignee as Assignee',
-            'p.Name as Site',
             'i.status as Status',
+            'i.priority as Priority',
             'i.lastUpdate as Last_Update',
-            'i.comment as Comment_Preview',
-            'i.priority as Priority'
+            'i.comment as Comment_Preview'
         );
 
         //TODO: figure out if you want to initially group by id or dateUodated
@@ -116,9 +77,9 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'Reporter',
             'Assignee',
             'Status',
+            'Priority',
             'Last_Update',
-            'Comment_Preview',
-            'Priority'
+            'Comment_Preview'
         );
        
         $this->validFilters = array(
@@ -128,7 +89,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'i.candID',
             'i.reporter',
             'i.assignee',
-            'p.Name',
+            'i.centerID',
             'watching',
             'i.status',
             'includeClosed',
@@ -143,7 +104,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'DCCID' => 'i.candID',
             'reporter' => 'i.reporter',
             'assignee' =>'i.assignee',
-            'site' =>'p.Name',
+            'site' =>'i.centerID',
             'watching' =>'watching',
             'status' =>'i.status',
             'includeClosed' => 'includeClosed',
@@ -152,22 +113,12 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         );
         //TODO: figure out wtf this is for
         //$this->EqualityFilters = array('f.AcquisitionProtocolID');
-        $this->EqualityFilters = array(i.issueID);
+        $this->EqualityFilters = array('i.issueID', 'i.centerID');
         $this->searchKeyword    = array();
 
         //TODO: and this
         $this->tpl_data['numTimepoints'] = 0;
 
-        // This variable will be used by the columnFormatter javascript
-        // to set the default hidden columns in the data table.
-//        $this->tpl_data['hiddenHeaders'] = json_encode(
-//            array_map(
-//                function ($header) {
-//                        return ucwords(str_replace('_', ' ', $header));
-//                },
-//                array('sessionID')
-//            )
-//        );
     }
 
     /**
@@ -177,10 +128,9 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        // create user object
         $user =& User::singleton();
-        
-        // PSC
+        $DB = Database::singleton();
+
         if ($user->hasPermission('issue_tracker_view_allsites')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList();
@@ -194,7 +144,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             }
         }
 
-        //could upgrade this to add "meee"
+        //could upgrade this to add "meee" at the top
         $reporters = array('' => 'All');
         $assignees = array('' => 'All');
         $reporter_expanded = $DB->pselect(
@@ -202,18 +152,21 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             array()
         );
         foreach ($reporter_expanded as $r_row) {
-            $reporter                   = $r_row['reporter'];
+            $reporter                   = $r_row['Real_name'];
             $reporters[$reporter] = $reporter;
         }
+
         $assignee_expanded = $DB->pselect(
-            "SELECT u.Real_name FROM issues i LEFT JOIN users u ON(i.assignee=u.UserID",
+            "SELECT u.Real_name FROM issues i LEFT JOIN users u ON(i.assignee=u.UserID)",
             array()
         );
         foreach ($assignee_expanded as $a_row) {
-            $assignee                   = $a_row['assignee'];
+            $assignee                   = $a_row['Real_name'];
             $assignees[$assignee] = $assignee;
         }
+
         $statuses = array(
+            '' => 'All',
             'new' => 'New',
             'acknowledged' => 'Acknowledged',
             'assigned' => 'Assigned',
@@ -222,6 +175,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         );
 
         $priorities = array(
+            '' => 'All',
             'low' => 'Low',
             'normal' => 'Normal',
             'high' => 'High',
@@ -235,7 +189,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)
         );
         $this->addBasicText(
-            'visitLabel', 'Visit Label', array('size' => "10", "maxlength"=>"25")
+            'visitLabel', 'Visit Label', array('size' => "5", "maxlength"=>"15")
         );
 
         $config =& NDB_Config::singleton();
@@ -263,7 +217,6 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
     }
 
 
-    //TODO: change this instead to be watching and new and include_closed
     /**
      * Overwrites the function to add a customized filter
      * for Pending and New
@@ -276,6 +229,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
+        error_log($field . $val);
         $user =& User::singleton();
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
@@ -293,14 +247,15 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                 } else {
                     $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
                 }
-            } else if ($field == 'includeClosed' && $val != 1) {
-                $query .= " AND i.status!='closed'";
+            } else if ($field == 'includeClosed' && $val == 1) {
+                $query .= " OR i.status = 'closed'";
             }
-            } else if ($field == 'watching' && $val ===1) { //double check this
+            } else if ($field == 'watching' && $val ==1) { //double check this
                   $query .= " AND i.issueID in (SELECT issueID FROM issues_watching WHERE userID=" . $user->getData('CenterID') .")";
             }
         return $query;
     }
+
 
     /**
      * Include the column formatter
