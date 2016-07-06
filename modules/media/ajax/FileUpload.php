@@ -1,8 +1,8 @@
 <?php
 /**
- * VideoUpload.php
+ * FileUpload.php
  *
- * Handles video upload and update actions received from a front-end ajax call
+ * Handles media upload and update actions received from a front-end ajax call
  *
  * @author  Alex I.
  * @version 1.0.0
@@ -10,63 +10,63 @@
 
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
-    if ($action == "getVideoData") {
+    if ($action == "getData") {
         echo json_encode(getUploadFields());
     } else if ($action == "upload") {
-        uploadVideo();
+        uploadFile();
     } else if ($action == "edit") {
-        editVideo();
+        editFile();
     }
 }
 
 
 /**
- * Handles the video update/edit process
+ * Handles the media update/edit process
  *
  * @throws DatabaseException
  */
-function editVideo()
+function editFile()
 {
     $db =& Database::singleton();
 
     // Process posted data
-    $idVideo = $_POST['idVideo'];
+    $idMediaFile = $_POST['idMediaFile'];
     $site = $_POST['for_site'];
     $dateTaken = $_POST['date_taken'];
     $comments = $_POST['comments'];
-    $hideVideo = $_POST['hide_video'];
+    $hideFile = $_POST['hide_file'];
 
     $updateValues = [
         'for_site'   => $site,
         'date_taken' => $dateTaken,
         'comments'   => $comments,
-        'hide_video' => $hideVideo
+        'hide_file' => $hideFile
     ];
 
-    $db->update('videos', $updateValues, ['id' => $idVideo]);
+    $db->update('media', $updateValues, ['id' => $idMediaFile]);
 }
 
 
 /**
- * Handles the video upload process
+ * Handles the media upload process
  *
  * @throws DatabaseException
  */
-function uploadVideo()
+function uploadFile()
 {
     $user =& User::singleton();
     $db =& Database::singleton();
     $config = NDB_Config::singleton();
 
-    // Get videos path
-    $videosPath = $config->getSetting('paths')['videosPath'];
-    if (!isset($videosPath) && !file_exists($videosPath)) {
-        echo "Error! Video path is not set in Loris Settings!";
+    // Get media path
+    $mediaPath = $config->getSetting('paths')['mediaPath'];
+    if (!isset($mediaPath) && !file_exists($mediaPath)) {
+        echo "Error! Media path is not set in Loris Settings!";
 
         return;
     }
     // Make sure folder is writable
-    chmod($videosPath, 0777);
+    chmod($mediaPath, 0777);
 
     // Process posted data
     $pscid = isset($_POST['pscid']) ? $_POST['pscid'] : null;
@@ -100,14 +100,14 @@ function uploadVideo()
         'file_name'     => $fileName,
         'file_type'     => $fileType,
         'file_size'     => $fileSize,
-        'data_dir'      => $videosPath,
+        'data_dir'      => $mediaPath,
         'uploaded_by'   => $userID,
-        'hide_video'    => 0,
+        'hide_file'    => 0,
         'date_uploaded' => date("Y-m-d H:i:s"),
     ];
 
-    if (move_uploaded_file($_FILES["file"]["tmp_name"], $videosPath . $fileName)) {
-        $db->insert('videos', $query);
+    if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
+        $db->insert('media', $query);
     } else {
         showError("Could not upload the file. Please try again!");
     }
@@ -137,11 +137,11 @@ function getUploadFields()
     $visitList = Utility::getVisitList();
     $siteList = Utility::getSiteList(false);
 
-    $videoData = null;
-    if (isset($_GET['idVideo'])) {
-        $idVideo = $_GET['idVideo'];
-        $videoData = $db->pselectRow(
-            "SELECT * FROM videos WHERE id = $idVideo", []
+    $mediaData = null;
+    if (isset($_GET['idMediaFile'])) {
+        $idMediaFile = $_GET['idMediaFile'];
+        $mediaData = $db->pselectRow(
+            "SELECT * FROM media WHERE id = $idMediaFile", []
         );
     }
 
@@ -151,7 +151,7 @@ function getUploadFields()
         'visits'      => $visitList,
         'instruments' => $instrumentsList,
         'sites'       => $siteList,
-        'videoData'   => $videoData
+        'mediaData'   => $mediaData
     ];
 
     return $result;

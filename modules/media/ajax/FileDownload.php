@@ -1,6 +1,6 @@
 <?php
 /**
- * Video downloader.
+ * Media downloader.
  *
  * This ensures that the file exists and the user is logged in to
  * Loris before trying to return the file to the user.
@@ -8,7 +8,7 @@
  * PHP Version 5
  *
  * @category Loris
- * @package  Videos
+ * @package  Media
  * @author   Loris Team <ailea@gmail.com>
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
@@ -16,7 +16,7 @@
  */
 
 $user =& User::singleton();
-if (!$user->hasPermission('video_upload')) {
+if (!$user->hasPermission('media_upload')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
@@ -31,7 +31,7 @@ if (strpos("..", $file) !== false) {
 }
 
 $config =& NDB_Config::singleton();
-$path = $config->getSetting('VideosPath');
+$path = $config->getSetting('mediaPath');
 $filePath = $path . $file;
 
 if (!file_exists($filePath)) {

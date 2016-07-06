@@ -9,7 +9,7 @@
 
     <div id="selection-filter" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
         <div class="panel-body" id="panel-body">
-            <form method="post" action="/videos/">
+            <form method="post" action="/media/">
                 <div class="row">
                     <div class="col-md-12 col-lg-8">
                         <div class="row">

@@ -1,11 +1,11 @@
 <?php
 /**
- * This file contains the NDB_Menu_Filter_videos class
+ * This file contains the NDB_Menu_Filter_media class
  *
  * PHP Version 5
  *
  * @category Module
- * @package  Videos
+ * @package  Media
  * @author   Alex Ilea <ailea.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
@@ -14,21 +14,21 @@
 require_once 'NDB_Menu_Filter.class.inc';
 
 /**
- * Main class for videos module corresponding to /video URL
+ * Main class for media module corresponding to /media/ URL
  * Child or Clinical section of the LorisMenu.
  *
- * Displays a list of video files and control panel to search them and upload
+ * Displays a list of media files and control panel to search them and upload
  * new ones.
  *
  * PHP Version 5
  *
  * @category Module
- * @package  Videos
+ * @package  Media
  * @author   Alex Ilea <ailea.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class NDB_Menu_Filter_videos extends NDB_Menu_Filter
+class NDB_Menu_Filter_media extends NDB_Menu_Filter
 {
     var $centerIDMap;
 
@@ -43,11 +43,11 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
         //create user object
         $user =& User::singleton();
 
-        return $user->hasPermission('video_upload');
+        return $user->hasPermission('media_upload');
     }
 
     /**
-     * Create a form to filter video by various criteria
+     * Create a form to filter media by various criteria
      *
      * @return bool
      * @throws ConfigurationException
@@ -80,7 +80,7 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
 
         $instrumentList = [null => 'Any'];
         $instrumentsQuery = $db->pselect(
-            "SELECT DISTINCT instrument FROM videos", []
+            "SELECT DISTINCT instrument FROM media", []
         );
         foreach ($instrumentsQuery as $instrument) {
             $instrumentList[$instrument['instrument']] = $instrument['instrument'];
@@ -97,7 +97,7 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
     }
 
     /**
-     * Build video list
+     * Build media list
      *
      * @return bool
      * @throws DatabaseException
@@ -113,8 +113,8 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
         }
 
         // the base query
-        $query = " FROM videos v"; // left join candidate c using(pscid) ";
-        $query .= " WHERE (v.hide_video=false OR v.hide_video IS NULL)";
+        $query = " FROM media v"; // left join candidate c using(pscid) ";
+        $query .= " WHERE (v.hide_file=false OR v.hide_file IS NULL)";
 
         // set the class variables
         $this->columns = [
@@ -159,7 +159,7 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
 
     /**
      * Include additional CSS files:
-     *  1. videos.js
+     *  1. media.css
      *
      * @return array of javascript to be inserted
      */
@@ -171,15 +171,15 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
         return array_merge(
             $deps,
             [
-                $baseURL . "/videos/css/videos.css"
+                $baseURL . "/media/css/media.css"
             ]
         );
     }
 
     /**
      * Include additional JS files:
-     *  1. columnFormatter.js required to set links for Edit video and Download video
-     *  2. uploadForm.js - reactified form to upload videos
+     *  1. columnFormatter.js required to set links to Edit and Download file
+     *  2. uploadForm.js - reactified form to upload files
      *
      * @return array of javascript to be inserted
      */
@@ -191,8 +191,8 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
         return array_merge(
             $deps,
             [
-                $baseURL . "/videos/js/columnFormatter.js",
-                $baseURL . "/videos/js/uploadForm.js"
+                $baseURL . "/media/js/columnFormatter.js",
+                $baseURL . "/media/js/uploadForm.js"
             ]
         );
     }

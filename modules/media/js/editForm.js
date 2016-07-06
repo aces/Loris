@@ -1,15 +1,15 @@
 /**
- * Video Upload Form
+ * Media Edit Form
  *
- * Fetches data from Loris backend and display a form allowing
- * to upload a video attached to a specific instrument
+ * Fetches data corresponding to a given file from Loris backend and
+ * displays a form allowing meta information of the media file
  *
  * @author Alex Ilea
  * @version 1.0.0
  *
  * */
-var VideoEditForm = React.createClass({
-  displayName: 'VideoEditForm',
+var MediaEditForm = React.createClass({
+  displayName: 'MediaEditForm',
 
 
   propTypes: {
@@ -43,17 +43,17 @@ var VideoEditForm = React.createClass({
       success: function (data) {
 
         var formData = {
-          'idVideo': data.videoData.id,
-          'for_site': data.videoData.for_site,
-          'date_taken': data.videoData.date_taken,
-          'comments': data.videoData.comments,
-          'hide_video': data.videoData.hide_video
+          'idMediaFile': data.mediaData.id,
+          'for_site': data.mediaData.for_site,
+          'date_taken': data.mediaData.date_taken,
+          'comments': data.mediaData.comments,
+          'hide_file': data.mediaData.hide_file
         };
 
         that.setState({
           'Data': data,
           'isLoaded': true,
-          'videoData': data.videoData,
+          'mediaData': data.mediaData,
           'formData': formData
         });
       },
@@ -97,7 +97,7 @@ var VideoEditForm = React.createClass({
         alertMessage = "Update Successful!";
       } else if (this.state.uploadResult == "error") {
         alertClass = "alert alert-danger text-center";
-        alertMessage = "Failed to update the video";
+        alertMessage = "Failed to update the file";
       }
     }
 
@@ -111,20 +111,20 @@ var VideoEditForm = React.createClass({
       ),
       this.state.uploadResult == "success" ? React.createElement(
         'a',
-        { className: 'btn btn-primary', href: '/videos/' },
-        'Back to videos'
+        { className: 'btn btn-primary', href: '/media/' },
+        'Back to media'
       ) : null,
       React.createElement(
         FormElement,
         {
-          name: 'videoUpload',
+          name: 'mediaEdit',
           onSubmit: this.handleSubmit,
           ref: 'form'
         },
         React.createElement(
           'h3',
           null,
-          'Edit Video'
+          'Edit Media File'
         ),
         React.createElement('br', null),
         React.createElement(SelectElement, {
@@ -135,7 +135,7 @@ var VideoEditForm = React.createClass({
           ref: 'pscid',
           required: true,
           disabled: true,
-          value: this.state.videoData.pscid
+          value: this.state.mediaData.pscid
         }),
         React.createElement(SelectElement, {
           name: 'visit_label',
@@ -145,7 +145,7 @@ var VideoEditForm = React.createClass({
           ref: 'visit_label',
           required: true,
           disabled: true,
-          value: this.state.videoData.visit_label
+          value: this.state.mediaData.visit_label
         }),
         React.createElement(SelectElement, {
           name: 'instrument',
@@ -154,7 +154,7 @@ var VideoEditForm = React.createClass({
           onUserInput: this.setFormData,
           ref: 'instrument',
           disabled: true,
-          value: this.state.videoData.instrument
+          value: this.state.mediaData.instrument
         }),
         React.createElement(SelectElement, {
           name: 'for_site',
@@ -162,7 +162,7 @@ var VideoEditForm = React.createClass({
           options: this.state.Data.sites,
           onUserInput: this.setFormData,
           ref: 'for_site',
-          value: this.state.videoData.for_site
+          value: this.state.mediaData.for_site
         }),
         React.createElement(DateElement, {
           name: 'date_taken',
@@ -171,34 +171,34 @@ var VideoEditForm = React.createClass({
           maxYear: '2017',
           onUserInput: this.setFormData,
           ref: 'date_taken',
-          value: this.state.videoData.date_taken
+          value: this.state.mediaData.date_taken
         }),
         React.createElement(TextareaElement, {
           name: 'comments',
           label: 'Comments',
           onUserInput: this.setFormData,
           ref: 'comments',
-          value: this.state.videoData.comments
+          value: this.state.mediaData.comments
         }),
         React.createElement(FileElement, {
-          id: 'videoUploadEl',
+          id: 'mediaEditEl',
           onUserInput: this.setFormData,
           required: true,
           disabled: true,
           ref: 'file',
           label: 'Uploaded file',
-          value: this.state.videoData.file_name
+          value: this.state.mediaData.file_name
         }),
         React.createElement(SelectElement, {
-          name: 'hide_video',
-          label: 'Hide Video',
+          name: 'hide_file',
+          label: 'Hide File',
           emptyOption: false,
           options: ["No", "Yes"],
           onUserInput: this.setFormData,
-          ref: 'hide_video',
-          value: this.state.videoData.hide_video
+          ref: 'hide_file',
+          value: this.state.mediaData.hide_file
         }),
-        React.createElement(ButtonElement, { label: 'Update Video' })
+        React.createElement(ButtonElement, { label: 'Update File' })
       )
     );
   },
@@ -220,7 +220,7 @@ var VideoEditForm = React.createClass({
       formData.append(key, myFormData[key]);
     }
 
-    $('#videoUploadEl').hide();
+    $('#mediaEditEl').hide();
     $("#file-progress").removeClass('hide');
 
     $.ajax({
@@ -297,4 +297,4 @@ var VideoEditForm = React.createClass({
 
 });
 
-RVideoEditForm = React.createFactory(VideoEditForm);
+RMediaEditForm = React.createFactory(MediaEditForm);

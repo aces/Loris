@@ -1,15 +1,15 @@
 /**
- * Video Upload Form
+ * Media Upload Form
  *
- * Fetches data from Loris backend and display a form allowing
- * to upload a video attached to a specific instrument
+ * Fetches data from Loris backend and displays a form allowing
+ * to upload a media file attached to a specific instrument
  *
  * @author Alex Ilea
  * @version 1.0.0
  *
  * */
-var VideoUploadForm = React.createClass({
-  displayName: 'VideoUploadForm',
+var MediaUploadForm = React.createClass({
+  displayName: 'MediaUploadForm',
 
 
   propTypes: {
@@ -104,14 +104,14 @@ var VideoUploadForm = React.createClass({
       React.createElement(
         FormElement,
         {
-          name: 'videoUpload',
+          name: 'mediaUpload',
           onSubmit: this.handleSubmit,
           ref: 'form'
         },
         React.createElement(
           'h3',
           null,
-          'Upload Video'
+          'Upload a media file'
         ),
         React.createElement('br', null),
         React.createElement(HelpTextElement, { label: 'Note', html: true, text: helpText }),
@@ -161,13 +161,13 @@ var VideoUploadForm = React.createClass({
           ref: 'comments'
         }),
         React.createElement(FileElement, {
-          id: 'videoUploadEl',
+          id: 'mediaUploadEl',
           onUserInput: this.setFormData,
           ref: 'file',
           label: 'File to upload',
           required: true
         }),
-        React.createElement(ButtonElement, { label: 'Upload Video' })
+        React.createElement(ButtonElement, { label: 'Upload File' })
       )
     );
   },
@@ -216,14 +216,14 @@ var VideoUploadForm = React.createClass({
       return;
     }
 
-    // Set form data and upload the video
+    // Set form data and upload the media file
     var self = this;
     var formData = new FormData();
     for (var key in myFormData) {
       formData.append(key, myFormData[key]);
     }
 
-    $('#videoUploadEl').hide();
+    $('#mediaUploadEl').hide();
     $("#file-progress").removeClass('hide');
 
     $.ajax({
@@ -361,4 +361,4 @@ var VideoUploadForm = React.createClass({
 
 });
 
-RVideoUploadForm = React.createFactory(VideoUploadForm);
+RMediaUploadForm = React.createFactory(MediaUploadForm);

@@ -1,14 +1,14 @@
 /**
- * Video Upload Form
+ * Media Upload Form
  *
- * Fetches data from Loris backend and display a form allowing
- * to upload a video attached to a specific instrument
+ * Fetches data from Loris backend and displays a form allowing
+ * to upload a media file attached to a specific instrument
  *
  * @author Alex Ilea
  * @version 1.0.0
  *
  * */
-var VideoUploadForm = React.createClass({
+var MediaUploadForm = React.createClass({
 
   propTypes: {
     DataURL: React.PropTypes.string.isRequired,
@@ -95,11 +95,11 @@ var VideoUploadForm = React.createClass({
           {alertMessage}
         </div>
         <FormElement
-          name="videoUpload"
+          name="mediaUpload"
           onSubmit={this.handleSubmit}
           ref="form"
         >
-          <h3>Upload Video</h3>
+          <h3>Upload a media file</h3>
           <br />
           <HelpTextElement label="Note" html={true} text={helpText} />
           <SelectElement
@@ -148,13 +148,13 @@ var VideoUploadForm = React.createClass({
             ref="comments"
           />
           <FileElement
-            id="videoUploadEl"
+            id="mediaUploadEl"
             onUserInput={this.setFormData}
             ref="file"
             label="File to upload"
             required={true}
           />
-          <ButtonElement label="Upload Video" />
+          <ButtonElement label="Upload File" />
         </FormElement>
       </div>
     )
@@ -207,14 +207,14 @@ var VideoUploadForm = React.createClass({
     }
 
 
-    // Set form data and upload the video
+    // Set form data and upload the media file
     var self = this;
     var formData = new FormData();
     for (var key in myFormData) {
       formData.append(key, myFormData[key]);
     }
 
-    $('#videoUploadEl').hide();
+    $('#mediaUploadEl').hide();
     $("#file-progress").removeClass('hide');
 
     $.ajax({
@@ -353,4 +353,4 @@ var VideoUploadForm = React.createClass({
 
 });
 
-RVideoUploadForm = React.createFactory(VideoUploadForm);
+RMediaUploadForm = React.createFactory(MediaUploadForm);

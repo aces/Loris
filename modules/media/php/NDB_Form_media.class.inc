@@ -1,12 +1,11 @@
 <?php
 /**
- * This file contains the NDB_Form_videos
- * class
+ * This file contains the NDB_Form_media class
  *
  * PHP Version 5
  *
  * @category Loris
- * @package  Videos
+ * @package  Media
  * @author   Alex Ilea <ailea.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
@@ -15,46 +14,46 @@
 require_once "NDB_Form.class.inc";
 
 /**
- * Creates the form for NDB_Form_videos
+ * Creates the form for NDB_Form_media
  *
  * @category Loris
- * @package  Videos
+ * @package  Media
  * @author   Alex Ilea <ailea.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class NDB_Form_videos extends NDB_Form
+class NDB_Form_media extends NDB_Form
 {
     /**
-     * Entry point for /videos/video_edit/
-     * Checks if video id is provided and otherwise redirects to /videos/ page
+     * Entry point for /media/edit/
+     * Checks if file id is provided and otherwise redirects to /media/ page
      *
      * @throws DatabaseException
      */
-    function edit_video()
+    function edit()
     {
         $db =& Database::singleton();
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
 
-        $idVideo = $_GET['id'];
+        $idMediaFile = $_GET['id'];
 
-        // Check if video exists, if not redirect to /videos/ page
-        if (isset($idVideo)) {
+        // Check if media file exists, if not redirect to /media/ page
+        if (isset($idMediaFile)) {
             $result = $db->pselectRow(
-                "SELECT id FROM videos WHERE id = $idVideo", []
+                "SELECT id FROM media WHERE id = $idMediaFile", []
             );
             if (count($result) < 1) {
-                header('Location: ' . $baseURL . '/videos/');
+                header('Location: ' . $baseURL . '/media/');
             }
         } else {
-            header('Location: ' . $baseURL . '/videos/');
+            header('Location: ' . $baseURL . '/media/');
         }
     }
 
     /**
      * Include additional CSS files:
-     *  1. videos.js
+     *  1. media.js
      *
      * @return array of javascript to be inserted
      */
@@ -66,14 +65,14 @@ class NDB_Form_videos extends NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/videos/css/videos.css"
+                $baseURL . "/media/css/media.css"
             ]
         );
     }
 
     /**
      * Include additional JS files:
-     *  1. editForm.js - reactified form to update videos
+     *  1. editForm.js - reactified form to update media
      *
      * @return array of javascript to be inserted
      */
@@ -85,7 +84,7 @@ class NDB_Form_videos extends NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/videos/js/editForm.js"
+                $baseURL . "/media/js/editForm.js"
             ]
         );
     }
@@ -101,7 +100,7 @@ class NDB_Form_videos extends NDB_Form
         //create user object
         $user =& User::singleton();
 
-        return $user->hasPermission('video_upload');
+        return $user->hasPermission('media_upload');
     }
 
 }

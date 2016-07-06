@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-9 col-lg-7">
-    <div id="video-upload-form"></div>
+    <div id="media-upload-form"></div>
     <div id="file-progress" class="col-sm-10 hide">
       <div class="progress">
         <div
@@ -19,10 +19,10 @@
 </div>
 
 <script>
-  var videoUploadForm = RVideoUploadForm({
-    "DataURL": "{$baseurl}/videos/ajax/VideoUpload.php?action=getVideoData",
-    "action": "{$baseurl}/videos/ajax/VideoUpload.php?action=upload"
+  var mediaUploadForm = RMediaUploadForm({
+    "DataURL": "{$baseurl}/media/ajax/FileUpload.php?action=getData",
+    "action": "{$baseurl}/media/ajax/FileUpload.php?action=upload"
   });
-  React.render(videoUploadForm, document.getElementById("video-upload-form"));
+  React.render(mediaUploadForm, document.getElementById("media-upload-form"));
 </script>
 

@@ -11,7 +11,7 @@
   {if $smarty.get.identifier}
     <li role="presentation">
       <a href="#edit" aria-controls="edit" role="tab" data-toggle="tab">
-        Edit Video
+        Edit File
       </a>
     </li>
   {/if}
@@ -20,21 +20,21 @@
 <!-- Tab panes -->
 <div class="tab-content">
 
-  <!-- Browse Videos -->
+  <!-- Browse Media -->
   <div role="tabpanel" class="tab-pane active" id="browse">
     {include file='../part/selection_filter.tpl'}
     <div id="datatable"></div>
   </div>
 
-  <!-- Upload Videos -->
+  <!-- Upload Media -->
   <div role="tabpanel" class="tab-pane" id="upload">
-      {include file='../part/video_upload.tpl'}
+      {include file='../part/file_upload.tpl'}
   </div>
 </div>
 
 <script>
   var table = RDynamicDataTable({
-    "DataURL" : "{$baseurl}/videos/?format=json",
+    "DataURL" : "{$baseurl}/media/?format=json",
     "getFormattedCell" : formatColumn,
     "freezeColumn" : "File Name"
   });
