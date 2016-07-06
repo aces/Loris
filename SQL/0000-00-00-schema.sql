@@ -1179,6 +1179,7 @@ CREATE TABLE `test_battery` (
   `AgeMaxDays` int(10) unsigned default NULL,
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Stage` varchar(255) default NULL,
+  `ProjectID` int(11) default NULL,
   `SubprojectID` int(11) default NULL,
   `Visit_label` varchar(255) default NULL,
   `CenterID` int(11) default NULL,
