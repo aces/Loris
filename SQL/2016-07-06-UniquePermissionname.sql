@@ -1,0 +1,1 @@
+ALTER TABLE permissions ADD CONSTRAINT code_name UNIQUE (code);
