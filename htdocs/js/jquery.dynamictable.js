@@ -34,7 +34,6 @@
             step = 100,
             scrollAmount = 0,
             scrollContent = function (direction, elem) {
-                var amount = (direction === "left" ? -3 : 3);
                 $(elem).animate({
                     scrollLeft: $(elem).scrollLeft() + scrollAmount
                 }, 1, function () {
@@ -132,8 +131,7 @@
         $(table).unwrap();
         // Remove row wrapper
         $(table).unwrap();
-    },
-    freezeColm = function (tableID, colm_static) {
+    }, freezeColm = function (tableID, colm_static) {
         var statColPos = $("." + tableID + "FrozenColumn").offset().left,
             statColWid = $("." + tableID + "FrozenColumn").outerWidth(),
             leftScrollPos = $(".leftScrollBar").offset().left,
@@ -176,7 +174,7 @@
                 child1;
 
             // check if table is already scollable, if so delete scroll components
-            if($(this).parent(".dynamicContentWrapper").length === 1){
+            if ($(this).parent(".dynamicContentWrapper").length === 1) {
                 unwrapTable(this);
             }
             // set up table for scrollable side bars
