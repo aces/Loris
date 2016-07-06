@@ -7,6 +7,7 @@
  * @category Test
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -22,11 +23,53 @@ require_once __DIR__ .
  * @category Test
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
 class ExaminerTest extends LorisIntegrationTest
 {
+    /**
+    * Insert testing data
+    *
+    * @return void
+    */
+    public function setUp()
+    {
+        parent::setUp();
+         $window = new WebDriverWindow($this->webDriver);
+         $size   = new WebDriverDimension(1024, 1768);
+         $window->setSize($size);
+        $this->DB->insert(
+            "psc",
+            array(
+             'CenterID'   => '9999999',
+             'Name'       => 'TEST_Site',
+             'Study_site' => 'Y',
+             'StateID'    => '0',
+             'Alias'      => 'DDD',
+             'MRI_alias'  => 'TESTTEST',
+            )
+        );
+    }
+    /**
+    * Delete testing data
+    *
+    * @return void
+    */
+    public function tearDown()
+    {
+        $this->DB->delete(
+            "examiners",
+            array('full_name' => 'Test_Examiner')
+        );
+
+        $this->DB->delete(
+            "psc",
+            array('Name' => 'TEST_Site')
+        );
+         parent::tearDown();
+    }
 
     /**
      * Tests that the breadcrumb loads, which it should regardless of the user's
@@ -37,6 +80,7 @@ class ExaminerTest extends LorisIntegrationTest
     public function testBreadcrumbLoads()
     {
         $this->safeGet($this->url . "/examiner/");
+//        sleep(100);
         $breadcrumbText = $this->webDriver
             ->findElement(WebDriverBy::id("breadcrumbs"))->getText();
         $this->assertContains("Examiner", $breadcrumbText);
@@ -90,7 +134,6 @@ class ExaminerTest extends LorisIntegrationTest
 
         $this->resetPermissions();
     }
-
     /**
      * Tests that the Add Examiner form loads if the user has the correct permission
      *
@@ -149,7 +192,6 @@ class ExaminerTest extends LorisIntegrationTest
 
         $this->resetPermissions();
     }
-
     /**
      * Tests that the certification column loads if EnableCertification is set in
      * the config
@@ -158,17 +200,12 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerLoadsCertificationElements()
     {
-        $this->markTestIncomplete("Test not implemented!");
-        /*$this->setupConfigSetting('EnableCertification', '1');
+        $this->_setupConfigSetting('EnableCertification', '1');
         $this->safeGet($this->url . "/examiner/");
-
+        
         // Check that the certification column appears
-        $tableText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".table-responsive")
-        )->getText();
-        $this->assertContains("Certification", $tableText);
-
-        $this->restoreConfigSetting("EnableCertification");*/
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains("Certification", $bodyText);
     }
 
     /**
@@ -179,17 +216,9 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerDoesNotLoadCertificationElements()
     {
-        $this->markTestIncomplete("Test not implemented!");
-        /*$this->setupConfigSetting('EnableCertification', '0');
         $this->safeGet($this->url . "/examiner/");
-
-        // Check that the certification column does not appear
-        $tableText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".table-responsive")
-        )->getText();
+        $bodyText = $this->webDriver->getPageSource();
         $this->assertNotContains("Certification", $bodyText);
-
-        $this->restoreConfigSetting("EnableCertification");*/
     }
 
     /**
@@ -208,5 +237,86 @@ class ExaminerTest extends LorisIntegrationTest
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
+    /**
+     * Tests that examiner selection filter, search a Examiner name
+     * and click clear form, the input data should disappear.
+     *
+     * @return void
+     */
+    function testExaminerFilterClearForm()
+    {
+        $this->safeGet($this->url . "/examiner/");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("examiner")
+        )->sendKeys("XXXX");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("reset")
+        )->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::Name("examiner")
+        )->getText();
+        $this->assertEquals("", $bodyText);
+    }
+    /**
+     * Tests that Add examiner section, insert an Examiner and find it.
+     *
+     * @return void
+     */
+    function testExaminerAddExaminer()
+    {
+        //insert a new exmainer with name "Test_Examiner" and radiologist
+        //in the TEST_Site.
+        $this->safeGet($this->url . "/examiner/");
+        $this->safeFindElement(
+            WebDriverBy::Name("addName")
+        )->sendKeys("Test_Examiner");
+        $this->safeFindElement(
+            WebDriverBy::Name("addRadiologist")
+        )->click();
+        $select  = $this->safeFindElement(WebDriverBy::Name("addSite"));
+        $element = new WebDriverSelect($select);
+        $element->selectByVisibleText("TEST_Site");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
+        sleep(5);
+        //search the examiner which inserted
+        $this->webDriver->findElement(
+            WebDriverBy::Name("examiner")
+        )->sendKeys("Test_Examiner");
+        $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        )->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("Test_Examiner", $bodyText);
+
+    }
+  private function _setupConfigSetting($node,$value)
+    {
+      // Set up database wrapper and config
+//        $this->factory = NDB_Factory::singleton();
+  //      $this->factory->reset();
+  //      $this->factory->setTesting(false);
+
+  //      $this->config = $this->factory->Config(CONFIG_XML);
+ //       var_dump($this->config);
+ //     $this->config->$node = $value;
+  //      $newXml = $solrXml->asXML();
+
+//    $fp = fopen("solrConfig.xml","w+");
+
+    $Xml = simplexml_load_file("../project/config.xml");
+//    print_r($Xml);
+    $Xml->EnableCertification = '1';
+//    $Xml->page[1]->page[0]->layout = "1";
+    $newXml = $Xml->asXML();
+
+    print_r($newXml);
+   // $fp = fopen("../project/config.xml","w+");
+   // fwrite($fp,$newXml);
+
+   }  
 }
 ?>
