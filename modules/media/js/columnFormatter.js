@@ -1,6 +1,7 @@
 function formatColumn(column, cell, rowData) {
 
-  if (column === 'File Name') {
+  // hasWritePermission is defined in menu_media.tpl
+  if (column === 'File Name' && hasWritePermission == true) {
     var url = loris.BaseURL + "/media/ajax/FileDownload.php?File=" + rowData[0];
     return React.createElement(
       "td",

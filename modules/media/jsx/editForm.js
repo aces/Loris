@@ -201,7 +201,9 @@ var MediaEditForm = React.createClass({
     var hasErrors = false;
 
     for (var key in myFormData) {
-      formData.append(key, myFormData[key]);
+      if (myFormData[key] != "") {
+        formData.append(key, myFormData[key]);
+      }
     }
 
     $('#mediaEditEl').hide();

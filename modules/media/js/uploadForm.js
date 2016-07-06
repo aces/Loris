@@ -220,7 +220,9 @@ var MediaUploadForm = React.createClass({
     var self = this;
     var formData = new FormData();
     for (var key in myFormData) {
-      formData.append(key, myFormData[key]);
+      if (myFormData[key] != "") {
+        formData.append(key, myFormData[key]);
+      }
     }
 
     $('#mediaUploadEl').hide();

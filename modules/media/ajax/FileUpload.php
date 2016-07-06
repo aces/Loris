@@ -19,7 +19,6 @@ if (isset($_GET['action'])) {
     }
 }
 
-
 /**
  * Handles the media update/edit process
  *
@@ -28,12 +27,17 @@ if (isset($_GET['action'])) {
 function editFile()
 {
     $db =& Database::singleton();
+    $user =& User::singleton();
+    if (!$user->hasPermission('media_write')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
 
     // Process posted data
     $idMediaFile = $_POST['idMediaFile'];
-    $site = $_POST['for_site'];
-    $dateTaken = $_POST['date_taken'];
-    $comments = $_POST['comments'];
+    $site = isset($_POST['for_site']) ? $_POST['for_site'] : null;
+    $dateTaken = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
+    $comments = isset($_POST['comments']) ? $_POST['comments'] : null;
     $hideFile = $_POST['hide_file'];
 
     $updateValues = [
@@ -54,9 +58,13 @@ function editFile()
  */
 function uploadFile()
 {
-    $user =& User::singleton();
     $db =& Database::singleton();
     $config = NDB_Config::singleton();
+    $user =& User::singleton();
+    if (!$user->hasPermission('media_write')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
 
     // Get media path
     $mediaPath = $config->getSetting('paths')['mediaPath'];

@@ -100,7 +100,7 @@ class NDB_Form_media extends NDB_Form
         //create user object
         $user =& User::singleton();
 
-        return $user->hasPermission('media_upload');
+        return $user->hasPermission('media_write');
     }
 
 }

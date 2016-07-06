@@ -30,7 +30,8 @@ require_once 'NDB_Menu_Filter.class.inc';
  */
 class NDB_Menu_Filter_media extends NDB_Menu_Filter
 {
-    var $centerIDMap;
+    public $centerIDMap;
+    public $hasWritePermission = false;
 
     /**
      * Check user permissions
@@ -43,7 +44,10 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
         //create user object
         $user =& User::singleton();
 
-        return $user->hasPermission('media_upload');
+        // Set global permission to control access to different modules of media page
+        $this->hasWritePermission = $user->hasPermission('media_write');
+
+        return $user->hasPermission('media_read');
     }
 
     /**
@@ -93,6 +97,8 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
         $this->addSelect('for_site', 'For Site:', $siteList);
         $this->addBasicText('uploaded_by', 'Uploaded By');
 
+        $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
+
         return true;
     }
 
@@ -134,10 +140,14 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
         $this->group_by = '';
         $this->order_by = 'v.instrument';
         $this->headers = [
-            'file_name', 'uploaded_by', 'instrument', 'pscid',
-            'visit_label', 'date_taken', 'for_site', 'comments',
-            'date_uploaded', 'Edit Metadata'
+            'file_name', 'uploaded_by', 'instrument', 'pscid', 'visit_label',
+            'date_taken', 'for_site', 'comments', 'date_uploaded'
         ];
+
+        if ($this->hasWritePermission) {
+            array_push($this->headers, 'Edit Metadata');
+        }
+
         $this->validFilters = [
             'v.pscid', 'v.instrument', 'v.data_dir',
             'v.for_site', 'v.visit_label', 'v.uploaded_by'

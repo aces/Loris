@@ -16,7 +16,7 @@
  */
 
 $user =& User::singleton();
-if (!$user->hasPermission('media_upload')) {
+if (!$user->hasPermission('media_write')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }

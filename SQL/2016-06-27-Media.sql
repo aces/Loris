@@ -27,21 +27,21 @@ CREATE TABLE IF NOT EXISTS `media` (
 -- Add user permissions
 
 -- Upload/Edit/Hide Media Files
-SET @uploadPermissionID = (SELECT permID FROM permissions WHERE code='media_upload');
+SET @uploadPermissionID = (SELECT permID FROM permissions WHERE code='media_write');
 INSERT IGNORE INTO permissions (`permID`, `code`, `description`, `categoryID`) VALUES (
-    @uploadPermissionID, 'media_upload', 'Uploading media files', 1
+    @uploadPermissionID, 'media_write', 'Media files: Uploading/Downloading/Editing', 2
 );
 INSERT IGNORE INTO user_perm_rel (`userID`, `permID`) VALUES (
-  (SELECT ID FROM users WHERE UserID = 'admin'), (SELECT permID FROM permissions WHERE code = 'media_upload')
+  (SELECT ID FROM users WHERE UserID = 'admin'), (SELECT permID FROM permissions WHERE code = 'media_write')
 );
 
 -- Browse Media Files
-SET @browsePermissionID = (SELECT permID FROM permissions WHERE code='media_browse');
+SET @browsePermissionID = (SELECT permID FROM permissions WHERE code='media_read');
 INSERT IGNORE INTO permissions (`permID`, `code`, `description`, `categoryID`) VALUES (
-    @browsePermissionID, 'media_browse', 'Browsing media files', 1
+    @browsePermissionID, 'media_read', 'Media files: Browsing ', 2
 );
 INSERT IGNORE INTO user_perm_rel (`userID`, `permID`) VALUES (
-  (SELECT ID FROM users WHERE UserID = 'admin'), (SELECT permID FROM permissions WHERE code = 'media_browse')
+  (SELECT ID FROM users WHERE UserID = 'admin'), (SELECT permID FROM permissions WHERE code = 'media_read')
 );
 
 

@@ -3,15 +3,10 @@
   <li role="presentation" class="active">
     <a href="#browse" aria-controls="browse" role="tab" data-toggle="tab">Browse</a>
   </li>
-  <li role="presentation">
-    <a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">
-      Upload
-    </a>
-  </li>
-  {if $smarty.get.identifier}
+  {if $hasWritePermission}
     <li role="presentation">
-      <a href="#edit" aria-controls="edit" role="tab" data-toggle="tab">
-        Edit File
+      <a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">
+        Upload
       </a>
     </li>
   {/if}
@@ -33,6 +28,7 @@
 </div>
 
 <script>
+  var hasWritePermission = {json_encode($hasWritePermission)};
   var table = RDynamicDataTable({
     "DataURL" : "{$baseurl}/media/?format=json",
     "getFormattedCell" : formatColumn,
