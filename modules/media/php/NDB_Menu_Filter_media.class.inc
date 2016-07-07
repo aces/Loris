@@ -125,23 +125,29 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
         // set the class variables
         $this->columns = [
             'v.file_name',
-            'v.uploaded_by',
-            '(SELECT Full_name FROM test_names WHERE Test_name=v.instrument)',
             'v.pscid',
             'v.visit_label',
-            'v.date_taken',
+            '(SELECT Full_name FROM test_names WHERE Test_name=v.instrument)',
             '(SELECT name FROM psc WHERE CenterID=v.for_site)',
+            'v.uploaded_by',
+            'v.date_taken',
             'substring(v.comments, 1, 50) as comments',
             'v.date_uploaded',
-            'v.id'
+            'v.id',
+            // candidate id
+            "(SELECT CandID FROM candidate WHERE PSCID=v.pscid) as candID",
+            // sessiod id
+            "(SELECT ID FROM session WHERE CandID=(SELECT CandID FROM candidate " .
+                "WHERE PSCID=v.pscid) AND Visit_label=v.visit_label)"
         ];
 
         $this->query = $query;
+
         $this->group_by = '';
         $this->order_by = 'v.instrument';
         $this->headers = [
-            'file_name', 'uploaded_by', 'instrument', 'pscid', 'visit_label',
-            'date_taken', 'for_site', 'comments', 'date_uploaded'
+            'File Name', 'PSCID', 'Visit Label', 'Instrument', 'Site',
+            'Uploaded By', 'Date Taken',  'Comments', 'Date Uploaded'
         ];
 
         if ($this->hasWritePermission) {
