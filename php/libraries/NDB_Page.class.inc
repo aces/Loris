@@ -586,5 +586,44 @@ class NDB_Page
         }
         return $files;
     }
+
+
+    /**
+     * Returns an ordered list of CSS dependencies that this page depends
+     * on.  These will get loaded into the template in order, so that
+     * interdependent files can be included in the correct order.
+     *
+     * @return array of strings with URLs to retrieve CSS resources
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $www     = $config->getSetting('www');
+        $baseurl = $www['url'];
+
+        $paths = $config->getSetting("paths");
+
+        $TestName = $this->name;
+
+        $files = array(
+                  $baseurl . "/bootstrap/css/bootstrap.min.css",
+                  $baseurl . "/bootstrap/css/custom-css.css",
+                 );
+
+        if (file_exists($paths['base'] . "modules/$TestName/css/$TestName.css")) {
+            error_log(
+                "WARNING: Relying on $TestName.css getting automatically loaded will"
+                . " soon be removed. "
+                . "Override getCSSDependencies() instead"
+            );
+
+            $files[] = $baseurl . "/$TestName/js/$TestName.css";
+        }
+
+        return $files;
+    }
+
 }
 ?>

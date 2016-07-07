@@ -24,14 +24,9 @@
    
         <link type="text/css" href="{$baseurl}/css/loris-jquery/jquery-ui-1.10.4.custom.min.css" rel="Stylesheet" />
 
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{$baseurl}/bootstrap/css/custom-css.css">
-
-        <!-- Module-specific CSS -->
-        {if $test_name_css}
-            <link rel="stylesheet" href="{$baseurl}/{$test_name_css}" type="text/css" />
-        {/if}
+	{section name=cssfile loop=$cssfiles}
+		<link rel="stylesheet" href="{$cssfiles[cssfile]}">
+	{/section}
 
         <title>
             {$study_title}
