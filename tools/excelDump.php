@@ -158,7 +158,7 @@ echo "$tarFile ready in $destinationDir\n";
 
 
 /**
-* Converst the column number into the excel column name in letters
+* Converts the column number into the excel column name in letters
 * 
 * @param int $num The column number
 * 
