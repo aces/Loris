@@ -1188,7 +1188,8 @@ CREATE TABLE `test_battery` (
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
-  CONSTRAINT `FK_test_battery_1` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`)
+  CONSTRAINT `FK_test_battery_1` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`),
+  FOREIGN KEY (`project_ProjectID`) REFERENCES project(`ProjectID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
