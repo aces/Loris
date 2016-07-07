@@ -14,7 +14,7 @@ Your current version number can be found in the VERSION file under the LORIS roo
 If you'd like to contribute code, here are some things to keep in mind.
 
 * If your changes require any table modifications, don't forget to modify the
-  SQL/0000-*.sql file with your changes for new installs, and also
+  SQL/0000*.sql file with your changes for new installs, and also
   include a patch for existing projects to apply to get your changes of which
   should be placed in the corresponding SQL/VERSIONNUMBER/ directory.
 * Include a test for any new module in the modules/MODULENAME/test/
