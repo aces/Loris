@@ -1114,6 +1114,7 @@ DROP TABLE IF EXISTS `tarchive_files`;
 CREATE TABLE `tarchive_files` (
   `TarchiveFileID` int(11) NOT NULL auto_increment,
   `TarchiveID` int(11) NOT NULL default '0',
+  `TarchiveSeriesID` INT(11) DEFAULT NULL,
   `SeriesNumber` int(11) default NULL,
   `FileNumber` int(11) default NULL,
   `EchoNumber` int(11) default NULL,
@@ -1122,7 +1123,8 @@ CREATE TABLE `tarchive_files` (
   `FileName` varchar(255) NOT NULL,
   PRIMARY KEY  (`TarchiveFileID`),
   KEY `TarchiveID` (`TarchiveID`),
-  CONSTRAINT `tarchive_files_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE
+  CONSTRAINT `tarchive_files_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE,
+  FOREIGN KEY (`tarchive_series_TarchiveSeriesID`) REFERENCES tarchive_series(`TarchiveSeriesID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
