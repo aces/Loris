@@ -14,8 +14,24 @@ function formatColumn(column, cell, rowData) {
     );
   }
 
-  if (column === 'Edit Metadata') {
+  if (column === 'Visit Label') {
     var index = rowData.length - 1;
+    if (rowData[index - 1] != null && rowData[index] != null) {
+      var url = loris.BaseURL + "/instrument_list/?candID=" + rowData[index - 1] + "&sessionID=" + rowData[index];
+      return React.createElement(
+        "td",
+        null,
+        React.createElement(
+          "a",
+          { href: url },
+          cell
+        )
+      );
+    }
+  }
+
+  if (column === 'Edit Metadata') {
+    var index = rowData.length - 3;
     var url = loris.BaseURL + "/media/edit/?id=" + rowData[index];
     return React.createElement(
       "td",
