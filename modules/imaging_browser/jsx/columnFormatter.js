@@ -1,29 +1,36 @@
-function formatColumn(column, cell, rowData) {
-    if(column === 'SessionID') {
-        return null;
-    }
-    if(column === 'New Data') {
-        if(cell === 'new') {
-            return <td className="newdata">NEW</td>
-        }
-        return <td></td>;
-    }
-    if(column === 'Links') {
-        var cellTypes = cell.split(",");
-        var cellLinks = []
-        for(var i = 0; i < cellTypes.length; i += 1) {
-            cellLinks.push(<a href={loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&outputType=" + cellTypes[i] + "&backURL=/imaging_browser/"}>{cellTypes[i]}</a>);
-            cellLinks.push(" | ");
+function formatColumn(column, cell, rowData, rowHeaders) {
+    reactElement = null;
 
+    if (-1 == loris.hiddenHeaders.indexOf(column)) {
+
+        var row = {};
+        rowHeaders.forEach(function(header, index) {
+            row[header] = rowData[index];
+        }, this);
+
+        switch (column) {
+            case 'New Data':
+                if(cell === 'new') {
+                     reactElement = <td className="newdata">NEW</td>;
+                } else {
+                     reactElement = <td></td>;
+                }
+                break;
+            case 'Links':
+                // 11 = SessionID 
+                var cellTypes = cell.split(",");
+                var cellLinks = cellTypes.map(function (current, index) {
+                    return <span><a href={loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&outputType=" + current + "&backURL=/imaging_browser/"}>{current}</a> | </span>;
+                }, this);
+                cellLinks.push(<span><a href={loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&selectedOnly=1&backURL=/imaging_browser/"}>selected</a> | </span>);
+                cellLinks.push(<a href={loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&backURL=/imaging_browser/"}>all types</a>);
+                reactElement = <td>{cellLinks}</td>;
+console.log(row);
+                break;
+            default:
+                reactElement = <td>{cell}</td>;
+                break;
         }
-        cellLinks.push(<a href={loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&selectedOnly=1&backURL=/imaging_browser/"}>selected</a> );
-        cellLinks.push(" | ");
-        cellLinks.push(<a href={loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + rowData[11] + "&backURL=/imaging_browser/"}>all types</a> );
-        return (
-                <td>
-                    {cellLinks}
-                </td>
-               );
     }
-    return <td>{cell}</td>;
+    return reactElement;
 }
