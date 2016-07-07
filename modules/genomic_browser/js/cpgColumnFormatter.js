@@ -1,4 +1,26 @@
 
+function getClassColor(methylationLevel) {
+    var className = '';
+    var level = parseFloat(methylationLevel);
+    // Color coding of cpg link follow display convention of the wgEncodeHaibMethyl450 track
+    // at the UCSC Genome-Browser
+    switch (true) {
+       case ( methylationLevel >= 0.6):
+           className = 'cpgOrange';
+           break;
+       case ( methylationLevel > 0.2):
+           className = 'cpgPurple';
+           break;
+       case ( methylationLevel > 0):
+           className = 'cpgBlue';
+           break;
+       default:
+           className = 'cpgBlack';
+           break;
+    }
+    return className;
+}
+
 function formatColumn(column, cell, rowData) {
     reactElement = null;
     if (-1 == loris.hiddenHeaders.indexOf(column)) {
@@ -21,15 +43,25 @@ function formatColumn(column, cell, rowData) {
                 var startLoc = parseInt(genomicLocation) - 1000,
                     endLoc   = parseInt(genomicLocation) + 1000;
                 
+                var className = getClassColor(rowData[8]);
+
                 var url = "http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&position=" + chr + ":" + startLoc + "-" + endLoc;
                 reactElement = React.createElement(
                     "td",
-                    null,
+                    {className: className},
                     React.createElement(
                         "a",
                         { href: url , target: '_blank'},
                         cell
                     )
+                );
+                break;
+            case 'Beta Value':
+                var className = getClassColor(rowData[8]);
+                reactElement = React.createElement(
+                    "td",
+                    {className: className},
+                    cell
                 );
                 break;
             case 'Gene':
