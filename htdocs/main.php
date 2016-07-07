@@ -193,7 +193,8 @@ try {
     }
 
     if (isset($caller->page)) {
-        $tpl_data['jsfiles'] = $caller->page->getJSDependencies();
+        $tpl_data['jsfiles']  = $caller->page->getJSDependencies();
+        $tpl_data['cssfiles'] = $caller->page->getCSSDependencies();
     }
 
     $tpl_data['workspace'] = $workspace;
