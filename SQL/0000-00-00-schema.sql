@@ -1124,7 +1124,7 @@ CREATE TABLE `tarchive_files` (
   PRIMARY KEY  (`TarchiveFileID`),
   KEY `TarchiveID` (`TarchiveID`),
   CONSTRAINT `tarchive_files_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE,
-  FOREIGN KEY (`tarchive_series_TarchiveSeriesID`) REFERENCES tarchive_series(`TarchiveSeriesID`)
+  FOREIGN KEY (`TarchiveSeriesID`) REFERENCES tarchive_series(`TarchiveSeriesID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
