@@ -398,6 +398,7 @@ class NDB_Form_Dashboard extends NDB_Form
             array(
              $baseurl . '/js/d3.min.js',
              $baseurl . '/js/c3.min.js',
+             $baseurl . '/dashboard/js/dashboard-helper.js',
             )
         );
 

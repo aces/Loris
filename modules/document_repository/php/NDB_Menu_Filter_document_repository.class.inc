@@ -335,6 +335,25 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         return "{$value} bytes";
       
     }
+    
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/document_repository/js/document_repository_helper.js",
+            )
+        );
+    }
 }
 
 ?>

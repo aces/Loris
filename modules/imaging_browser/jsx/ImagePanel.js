@@ -280,6 +280,34 @@ ImageQCCommentsButton = React.createClass({
         );
     }
 });
+
+LongitudinalViewButton = React.createClass({
+    openWindowHandler: function(e) {
+        e.preventDefault();
+        window.open(
+            this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.OtherTimepoints + "]",
+            "BrainBrowser Volume Viewer",
+            "location = 0,width = auto, height = auto, scrollbars=yes"
+        );
+    },
+    render: function() {
+        if (!this.props.FileID || this.props.FileID == '') {
+            return <span />;
+        };
+        return (
+            <a className="btn btn-default"
+               href="#noID"
+               onClick={this.openWindowHandler}
+            >
+                    <span className="text-default">
+                        <span className="glyphicon glyphicon-eye-open"></span>
+                        <span className="hidden-xs">Longitudinal View</span>
+                    </span>
+            </a>
+        );
+    }
+});
+
 ImageDownloadButtons = React.createClass({
     render: function() {
         return (
@@ -302,6 +330,10 @@ ImageDownloadButtons = React.createClass({
                 <DownloadButton FileName={this.props.NrrdFile} 
                     BaseURL={this.props.BaseURL}
                     Label="Download NRRD"
+                />
+                <LongitudinalViewButton FileID={this.props.FileID}
+                    BaseURL={this.props.BaseURL}
+                    OtherTimepoints={this.props.OtherTimepoints}
                 />
             </div>
         );
@@ -341,6 +373,7 @@ ImagePanelBody = React.createClass({
                             XMLProtocol={this.props.XMLProtocol}
                             XMLReport={this.props.XMLReport}
                             NrrdFile={this.props.NrrdFile}
+                            OtherTimepoints={this.props.OtherTimepoints}
                         />
                     {this.props.HeadersExpanded ? <ImagePanelHeadersTable HeaderInfo={this.props.HeaderInfo} /> : ''}
                 </div>
@@ -400,6 +433,7 @@ ImagePanel = React.createClass({
                         XMLProtocol={this.props.XMLProtocol}
                         XMLReport={this.props.XMLReport}
                         NrrdFile={this.props.NrrdFile}
+                        OtherTimepoints={this.props.OtherTimepoints}
                     /> }
                 </div>
             </div>
