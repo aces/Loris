@@ -174,6 +174,11 @@ if (!empty($_REQUEST['sessionID'])) {
 
 //--------------------------------------------------
 
+// Set default dependencies
+$page = new NDB_Page();
+$tpl_data['jsfiles']  = $page->getJSDependencies();
+$tpl_data['cssfiles'] = $page->getCSSDependencies();
+
 // load the menu or instrument
 try {
     $caller    =& NDB_Caller::singleton();
