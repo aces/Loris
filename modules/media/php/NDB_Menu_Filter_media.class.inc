@@ -133,12 +133,12 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
             'v.date_taken',
             'substring(v.comments, 1, 50) as comments',
             'v.date_uploaded',
-            'v.id',
             // candidate id
             "(SELECT CandID FROM candidate WHERE PSCID=v.pscid) as candID",
             // sessiod id
             "(SELECT ID FROM session WHERE CandID=(SELECT CandID FROM candidate " .
-                "WHERE PSCID=v.pscid) AND Visit_label=v.visit_label)"
+                "WHERE PSCID=v.pscid) AND Visit_label=v.visit_label)",
+            'v.id'
         ];
 
         $this->query = $query;
@@ -146,10 +146,14 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
         $this->group_by = '';
         $this->order_by = 'v.instrument';
         $this->headers = [
-            'File Name', 'PSCID', 'Visit Label', 'Instrument', 'Site',
-            'Uploaded By', 'Date Taken',  'Comments', 'Date Uploaded'
+            'File Name', 'PSCID', 'Visit Label', 'Instrument', 'Site', 'Uploaded By',
+            'Date Taken',  'Comments', 'Date Uploaded', 'Cand ID', 'Session ID'
         ];
 
+        // Set header as hidden from the data table
+        $this->tpl_data['hiddenHeaders'] = json_encode(['Cand ID', 'Session ID']);
+
+        // Add Edit field if user has permissions
         if ($this->hasWritePermission) {
             array_push($this->headers, 'Edit Metadata');
         }
