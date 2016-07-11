@@ -16,6 +16,7 @@ module.exports = function (grunt) {
 						'htdocs/js/components/StaticDataTable.js' : 'jsx/StaticDataTable.js',
 						'htdocs/js/components/react.breadcrumb.js' : 'jsx/react.breadcrumb.js',
 						'htdocs/js/components/react.dynamicTable.js' : 'jsx/react.dynamicTable.js',
+                                                'htdocs/js/components/Form.js' : 'jsx/Form.js',
 						'modules/bvl_feedback/js/react.behavioural_feedback_panel.js' : 'modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
 						'modules/candidate_list/js/columnFormatter.js' : 'modules/candidate_list/jsx/columnFormatter.js',
 						'modules/configuration/js/SubprojectRelations.js' : 'modules/configuration/jsx/SubprojectRelations.js',
@@ -32,7 +33,6 @@ module.exports = function (grunt) {
 						'modules/genomic_browser/js/FileUploadModal.js' : 'modules/genomic_browser/jsx/FileUploadModal.js',
 						'modules/imaging_browser/js/ImagePanel.js' : 'modules/imaging_browser/jsx/ImagePanel.js',
 						'modules/imaging_browser/js/columnFormatter.js' : 'modules/imaging_browser/jsx/columnFormatter.js',
-						'modules/instrument_builder/js/react.elements.js' : 'modules/instrument_builder/jsx/react.elements.js',
 						'modules/instrument_builder/js/react.instrument_builder.js' : 'modules/instrument_builder/jsx/react.instrument_builder.js',
 						'modules/instrument_builder/js/react.questions.js' : 'modules/instrument_builder/jsx/react.questions.js'
 					}

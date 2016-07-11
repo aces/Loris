@@ -239,8 +239,8 @@ SavePane = React.createClass({
 });
 
 /**
- *	This is the React class displaying the questions
- *	in the table.
+ *  This is the React class displaying the questions
+ *  in the table.
  */
 DisplayElements = React.createClass({
 	displayName: "DisplayElements",
@@ -315,6 +315,7 @@ DisplayElements = React.createClass({
 	render: function () {
 		var temp = this.props.elements.map(function (element, i) {
 			var row;
+			var colStyles = { 'wordWrap': 'break-word' };
 			if (element.editing) {
 				// If you are editing an element, show element as an AddElement object
 				row = React.createElement(
@@ -327,7 +328,8 @@ DisplayElements = React.createClass({
 					React.createElement(
 						"td",
 						{ className: "col-xs-2", colSpan: "3" },
-						React.createElement(AddElement, { updateQuestions: this.props.updateElement, element: element, index: i })
+						React.createElement(AddElement, { updateQuestions: this.props.updateElement,
+							element: element, index: i })
 					)
 				);
 			} else {
@@ -341,17 +343,17 @@ DisplayElements = React.createClass({
 						onDragStart: this.dragStart },
 					React.createElement(
 						"td",
-						{ className: "col-xs-2" },
+						{ style: colStyles },
 						element.Name
 					),
 					React.createElement(
 						"td",
-						{ className: "col-xs-8" },
+						{ style: colStyles },
 						React.createElement(LorisElement, { element: element })
 					),
 					React.createElement(
 						"td",
-						{ className: "col-xs-2" },
+						{ style: colStyles },
 						React.createElement(
 							"button",
 							{ onClick: this.props.editElement.bind(this, i), className: "button" },
@@ -367,9 +369,15 @@ DisplayElements = React.createClass({
 			}
 			return { row };
 		}.bind(this));
+
+		// Set fixed layout to force column widths to be based on first row
+		var tableStyles = {
+			tableLayout: 'fixed'
+		};
+
 		return React.createElement(
 			"table",
-			{ id: "sortable", className: "table table-hover" },
+			{ id: "sortable", className: "table table-hover", style: tableStyles },
 			React.createElement(
 				"thead",
 				null,
@@ -383,12 +391,12 @@ DisplayElements = React.createClass({
 					),
 					React.createElement(
 						"th",
-						null,
+						{ className: "col-xs-6" },
 						"Question Display (Front End)"
 					),
 					React.createElement(
 						"th",
-						null,
+						{ className: "col-xs-4" },
 						"Edit"
 					)
 				)
