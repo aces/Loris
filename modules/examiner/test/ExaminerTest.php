@@ -79,7 +79,6 @@ class ExaminerTest extends LorisIntegrationTest
     public function testBreadcrumbLoads()
     {
         $this->safeGet($this->url . "/examiner/");
-//        sleep(100);
         $breadcrumbText = $this->webDriver
             ->findElement(WebDriverBy::id("breadcrumbs"))->getText();
         $this->assertContains("Examiner", $breadcrumbText);
