@@ -292,20 +292,21 @@ class ExaminerTest extends LorisIntegrationTest
         $this->assertContains("Test_Examiner", $bodyText);
 
     }
-   /**
+    /**
      * Setting the value of EnableCertification in the config.xml file
      *
-     * @param $value   the value of EnableCertification
+     * @param string $value The value of EnableCertification
+     *
      * @return void
      */
     private function _setupConfigEnableCertification($value)
     {
-    $Xml = simplexml_load_file("../project/config.xml");
-    $Xml->study->Certification->EnableCertification = $value;
-    $newXml = $Xml->asXML();
-    $fp = fopen("../project/config.xml","w+");
-    fwrite($fp,$newXml);
+        $Xml = simplexml_load_file("../test/config.xml");
+        $Xml->study->Certification->EnableCertification = $value;
+        $newXml = $Xml->asXML();
+        $fp     = fopen("../test/config.xml", "w+");
+        fwrite($fp, $newXml);
 
-   }
+    }
 }
 ?>
