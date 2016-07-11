@@ -35,12 +35,12 @@ table th{
 .pis {
     height: 80px;
 }
-.table-scroll { 
+.table-scroll {
     overflow-x:auto;
     padding-bottom:1px;
 }
-.table-scroll-static { 
-    overflow-x:auto;  
+.table-scroll-static {
+    overflow-x:auto;
     margin-left:7em;
     padding-bottom:1px;
 }
@@ -53,12 +53,12 @@ table th{
     margin-left:10em;
 }
 .static-col {
-    position:absolute; 
-    width:7em; 
+    position:absolute;
+    width:7em;
     left:0;
     top:auto;
     word-wrap: break-word;
-    border-right: 0px none black; 
+    border-right: 0px none black;
     border-top-width:3px; /*only relevant for first row*/
 }
 .colm-static{
@@ -125,7 +125,7 @@ ul#navlist {
 	display: inline;
 	list-style-type: none;
 }
-/* 
+/*
  *  Styling for modals
  */
 .modal-header {
@@ -372,4 +372,12 @@ div.navbar div.container div.navbar-brand {
  */
 .dropdownSearch {
   padding: 10px;
+}
+
+.navbar {
+  border-radius: 0;
+}
+
+.navbar-brand {
+  height: auto;
 }

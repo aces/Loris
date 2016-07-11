@@ -170,10 +170,10 @@ $(document).ready(function() {
 	<div class ="logo">
 
 	</div>
-	
- 	<div class="navbar navbar-default" role="navigation" style="height:90px">
+
+ 	<div class="navbar navbar-default" role="navigation">
  		<div class="container">
-	 		<div class="navbar-brand">
+	 		<div class="navbar-brand clearfix">
                 {if $study_logo}
 		 		<img src="{$baseurl}/{$study_logo}" border="0" width="64" height="57" />
                 {/if}
@@ -191,7 +191,7 @@ $(document).ready(function() {
 		  <div class="panel-body">
 		  		<div class="col-xs-12">
 		  			<center>
-		  				<img src="{$baseurl}/images/LORIS_logo.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_logo.png'" align="middle" width="85%"> 
+		  				<img src="{$baseurl}/images/LORIS_logo.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_logo.png'" align="middle" width="85%">
 		  			</center>
 					<br>
 		  		</div>
@@ -218,7 +218,7 @@ $(document).ready(function() {
                             <a href="{$baseurl}/request_account/process_new_account.php"><center>Request Account</center></a>
                         </div>
                     </form>
-			  	</div>	
+			  	</div>
 		  		<div class="row">
 		  		<table class="LorisFooter" align="center">
 					<tr>
@@ -241,10 +241,10 @@ $(document).ready(function() {
 					<tr>
                     <br>
 					<td align="center" colspan="1">A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
-					</tr>	
+					</tr>
 					<tr>
 					<td align="center" colspan="1">Powered by LORIS &copy; {$currentyear}. All rights reserved.</td>
-					</tr>	
+					</tr>
 					<tr>
 					<td align="center" colspan="1">Created by <a href="http://mcin-cnim.ca" style="color: #064785" target="_blank">MCIN</a></td>
 					</tr>
@@ -287,7 +287,7 @@ $(document).ready(function() {
 if(BrowserDetect.browser == "Explorer") {
 	document.write('<p align="center"><b>The browser you are using (Internet Explorer) is not compatible with this database!</b><br>For full functionality please download the latest version of <a href="http://www.mozilla.com/" target="blank">Firefox.</a></p>');
 }
-// -->	
+// -->
 </script>
 {/literal}
 
@@ -296,7 +296,7 @@ if(BrowserDetect.browser == "Explorer") {
 	<script type='text/javascript'>
 		<!--
 		document.write('<p><b>Browser check:</b> You\'re using ' + BrowserDetect.browser + ' ' + BrowserDetect.version + ' on ' + BrowserDetect.OS + '!</p>');
-	// -->	
+	// -->
 	</script>
 	{/literal}
 	*}
