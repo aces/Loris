@@ -86,7 +86,7 @@ script:
       done
 
     # Run PHPCS on the entire libraries directory.
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions php/installer
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs
 
     # Run PHPCS on some scripts
