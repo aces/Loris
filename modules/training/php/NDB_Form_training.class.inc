@@ -204,7 +204,25 @@ class NDB_Form_Training extends NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseurl . "/training/js/training_helper.js",
+             $baseURL . "/training/js/training_helper.js",
+            )
+        );
+    }
+
+    /**
+     * Gathers CSS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/training/css/training.css",
             )
         );
     }
