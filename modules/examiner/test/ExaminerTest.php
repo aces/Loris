@@ -70,7 +70,6 @@ class ExaminerTest extends LorisIntegrationTest
         );
          parent::tearDown();
     }
-
     /**
      * Tests that the breadcrumb loads, which it should regardless of the user's
      * permissions
@@ -80,6 +79,7 @@ class ExaminerTest extends LorisIntegrationTest
     public function testBreadcrumbLoads()
     {
         $this->safeGet($this->url . "/examiner/");
+//        sleep(100);
         $breadcrumbText = $this->webDriver
             ->findElement(WebDriverBy::id("breadcrumbs"))->getText();
         $this->assertContains("Examiner", $breadcrumbText);
@@ -199,17 +199,12 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerLoadsCertificationElements()
     {
-        $this->markTestIncomplete("Test not implemented!");
-        /*$this->setupConfigSetting('EnableCertification', '1');
+        $this->_setupConfigEnableCertification('1');
         $this->safeGet($this->url . "/examiner/");
 
         // Check that the certification column appears
-        $tableText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".table-responsive")
-        )->getText();
-        $this->assertContains("Certification", $tableText);
-
-        $this->restoreConfigSetting("EnableCertification");*/
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains("Certification", $bodyText);
     }
 
     /**
@@ -220,17 +215,10 @@ class ExaminerTest extends LorisIntegrationTest
      */
     function testExaminerDoesNotLoadCertificationElements()
     {
-        $this->markTestIncomplete("Test not implemented!");
-        /*$this->setupConfigSetting('EnableCertification', '0');
+        $this->_setupConfigEnableCertification('0');
         $this->safeGet($this->url . "/examiner/");
-
-        // Check that the certification column does not appear
-        $tableText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".table-responsive")
-        )->getText();
+        $bodyText = $this->webDriver->getPageSource();
         $this->assertNotContains("Certification", $bodyText);
-
-        $this->restoreConfigSetting("EnableCertification");*/
     }
 
     /**
@@ -305,6 +293,20 @@ class ExaminerTest extends LorisIntegrationTest
         $this->assertContains("Test_Examiner", $bodyText);
 
     }
+   /**
+     * Setting the value of EnableCertification in the config.xml file
+     *
+     * @param $value   the value of EnableCertification
+     * @return void
+     */
+    private function _setupConfigEnableCertification($value)
+    {
+    $Xml = simplexml_load_file("../project/config.xml");
+    $Xml->study->Certification->EnableCertification = $value;
+    $newXml = $Xml->asXML();
+    $fp = fopen("../project/config.xml","w+");
+    fwrite($fp,$newXml);
 
+   }
 }
 ?>
