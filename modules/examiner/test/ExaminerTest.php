@@ -301,16 +301,10 @@ class ExaminerTest extends LorisIntegrationTest
      */
     private function _setupConfigEnableCertification($value)
     {
-        $Xml = simplexml_load_file("../test/config.xml");
-        $A = simplexml_load_file("/test/config.xml");
-        printf($A);
-        $b = simplexml_load_file("/project/config.xml");
-        printf($b);
-        $c = simplexml_load_file("../project/config.xml");
-        printf($c);
+        $Xml = simplexml_load_file("../project/config.xml");
         $Xml->study->Certification->EnableCertification = $value;
         $newXml = $Xml->asXML();
-        $fp     = fopen("../test/config.xml", "w+");
+        $fp     = fopen("../project/config.xml", "w+");
         fwrite($fp, $newXml);
 
     }
