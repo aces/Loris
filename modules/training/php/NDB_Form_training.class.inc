@@ -222,7 +222,7 @@ class NDB_Form_Training extends NDB_Form
         return array_merge(
             $deps,
             array(
-                $baseURL . "/training/css/training.css",
+             $baseURL . "/training/css/training.css",
             )
         );
     }
