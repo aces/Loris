@@ -19,7 +19,7 @@ function editCategory() {
 }
 
 
-//Checks that all fields required for file upload are entered 
+//Checks that all fields required for file upload are entered
 function isEmpty(element) {
     "use strict";
 
@@ -201,19 +201,22 @@ function renderTree(){
             var path = dir.CategoryName.split(">");
             var depth = path.length;
 
+            var dirID = path[depth - 1].replace(/[^\w]/gi,"_") + "_" + i;
+            var parentID = null;
+
+            if (depth >= 2) {
+              parentID = path[depth - 2].replace(/[^\w]/gi,"_") + "_" + dir.ParentID;
+            }
+
             //new table layout
             var directory = $('#dir').html();
             Mustache.parse(directory);
             if(!filtered){
                 var dirData = {
                     name: path[depth - 1],
-                    id: path[depth - 1].replace(/[^\w]/gi,"_"),
+                    id: dirID,
                     Comment: dir.Comment,
-                    parentID: function(){
-                        if(depth >= 2)
-                         return path[depth - 2].replace(/[^\w]/gi,"_");
-                        return null;
-                    },
+                    parentID: parentID,
                     indent: function(){
                         return (depth - 1)*60;
                     },
@@ -237,7 +240,7 @@ function renderTree(){
                     $("#dir-tree").append(renderDir);
                 } else {
                     //new table layout
-                    $("#" + path[depth - 2].replace(/[^\w]/gi,"_") + "a").after(renderDir);
+                    $("#" + parentID + "a").after(renderDir);
                 }
             }
             var files = fileDir[i].Files;
@@ -248,7 +251,7 @@ function renderTree(){
                 Mustache.parse(file);   // optional, speeds up future uses
                 if(!filtered){
                     files[ii].indent = (depth)*60;
-                    files[ii].parentID = path[depth - 1].replace(/[^\w]/gi,"_");
+                    files[ii].parentID = dirID;
                     files[ii].depth =   function(){
                                             var depthArray = [];
                                             for (var i = 0; i < depth; i++) {
@@ -262,7 +265,7 @@ function renderTree(){
                                             return depthArray;
                                         }
                     var renderedFile = Mustache.render(file, files[ii]);
-                    $("#" + path[depth - 1].replace(/[^\w]/gi,"_") + "a").after(renderedFile);
+                    $("#" + dirID + "a").after(renderedFile);
                 } else {
                     files[ii].filtered = true;
                     var renderedFile = Mustache.render(file, files[ii]);
