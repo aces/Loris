@@ -121,7 +121,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             }
             $this->tpl_data['snr'] = $snr_values;
 
-
             $this->tpl_data['status_options'] 
                 = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
             $this->tpl_data['caveat_options'] 

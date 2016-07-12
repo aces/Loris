@@ -1,4 +1,4 @@
-ImagePanelHeader = React.createClass({
+QImagePanelHeader = React.createClass({
     displayName: 'ImagePanelHeader',
 
     mixins: [React.addons.PureRenderMixin],
@@ -390,7 +390,6 @@ ImagePanelQCStatusSelector = React.createClass({
         });
     }
 });
-
 ImagePanelQCSelectedSelector = React.createClass({
     displayName: 'ImagePanelQCSelectedSelector',
 
