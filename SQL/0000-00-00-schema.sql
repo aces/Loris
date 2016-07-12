@@ -448,6 +448,7 @@ CREATE TABLE `files` (
   `ProcessProtocolID` int(11) unsigned, 
   `Caveat` tinyint(1) default NULL,
   `TarchiveSource` int(11) default NULL,
+  `SNR` double DEFAULT NULL,
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
