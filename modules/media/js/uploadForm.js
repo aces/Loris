@@ -137,7 +137,8 @@ var MediaUploadForm = React.createClass({
           label: 'Instrument',
           options: this.state.Data.instruments,
           onUserInput: this.setFormData,
-          ref: 'instrument'
+          ref: 'instrument',
+          required: true
         }),
         React.createElement(SelectElement, {
           name: 'for_site',

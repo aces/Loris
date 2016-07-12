@@ -85,7 +85,7 @@ function uploadFile()
     $comments = isset($_POST['comments']) ? $_POST['comments'] : null;
 
     // If required fields are not set, show an error
-    if (!isset($_FILES) || !isset($pscid) || !isset($visit)) {
+    if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($instrument)) {
         showError("Please fill in all required fields!");
 
         return;
