@@ -110,6 +110,18 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             }
             $this->tpl_data['selected_options'] = $types;
 
+            $snr_values_q = $this->DB->pselect(
+                "SELECT files.SNR FROM files
+                WHERE SessionID=:sid",
+                array('sid' => $this->sessionID)
+            );
+            foreach ($snr_values_q as $row) {
+                $snr_value=$row['SNR'];
+                $snr_values[$snr_value] = $snr_value;
+            }
+            $this->tpl_data['snr'] = $snr_values;
+
+
             $this->tpl_data['status_options'] 
                 = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
             $this->tpl_data['caveat_options'] 
@@ -236,6 +248,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'QCStatus' => $FileObj->getParameter('QCStatus'),
                 'QCDate' => $FileObj->getParameter('QCLastChangeTime'),
                 'Caveat' => $FileObj->getParameter('Caveat'),
+                'SNR' => $FileObj->getParameter('SNR'),
                 'SeriesUID' => $FileObj->getParameter('SeriesUID'),
                 'XMLreport' => $FileObj->getParameter('processing:DTIPrepXmlReport'),
                 'XMLprotocol' => $FileObj->getParameter('ProtocolFile'),

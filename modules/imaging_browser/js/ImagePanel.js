@@ -335,6 +335,28 @@ ImageQCDropdown = React.createClass({
         );
     }
 });
+ImageQCStatic = React.createClass({
+    displayName: 'ImageQCStatic',
+
+    render: function () {
+        var static;
+            static = React.createElement(
+                'div',
+                { className: 'col-xs-12' },
+                this.props.defaultValue
+            );
+        return React.createElement(
+            'div',
+            { className: 'row' },
+            React.createElement(
+                'label',
+                null,
+                this.props.Label
+            ),
+            static
+        );
+    }
+});
 
 ImagePanelQCStatusSelector = React.createClass({
     displayName: 'ImagePanelQCStatusSelector',
@@ -368,6 +390,7 @@ ImagePanelQCStatusSelector = React.createClass({
         });
     }
 });
+
 ImagePanelQCSelectedSelector = React.createClass({
     displayName: 'ImagePanelQCSelectedSelector',
 
@@ -400,6 +423,18 @@ ImagePanelQCCaveatSelector = React.createClass({
         });
     }
 });
+ImagePanelQCSNRValue = React.createClass({
+    displayName: 'ImagePanelQCSNRValue',
+
+    render: function () {
+        return React.createElement(ImageQCStatic, {
+            Label: 'SNR',
+            FormName: 'snr',
+            FileID: this.props.FileID,
+            defaultValue: this.props.SNR
+        });
+    }
+});
 ImagePanelQCPanel = React.createClass({
     displayName: 'ImagePanelQCPanel',
 
@@ -424,6 +459,10 @@ ImagePanelQCPanel = React.createClass({
                 FileID: this.props.FileID,
                 HasQCPerm: this.props.HasQCPerm,
                 Caveat: this.props.Caveat
+            }),
+            React.createElement(ImagePanelQCSNRValue, {
+                FileID: this.props.FileID,
+                SNR: this.props.SNR
             })
         );
     }
@@ -581,7 +620,8 @@ ImagePanelBody = React.createClass({
                         QCStatus: this.props.QCStatus,
                         Caveat: this.props.Caveat,
                         SelectedOptions: this.props.SelectedOptions,
-                        Selected: this.props.Selected
+                        Selected: this.props.Selected,
+                        SNR: this.props.SNR
                     })
                 )
             ),
@@ -650,6 +690,7 @@ ImagePanel = React.createClass({
                     Caveat: this.props.Caveat,
                     SelectedOptions: this.props.SelectedOptions,
                     Selected: this.props.Selected,
+                    SNR: this.props.SNR,
 
                     Fullname: this.props.Fullname,
                     XMLProtocol: this.props.XMLProtocol,
