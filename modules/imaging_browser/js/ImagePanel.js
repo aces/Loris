@@ -1,4 +1,4 @@
-QImagePanelHeader = React.createClass({
+ImagePanelHeader = React.createClass({
     displayName: 'ImagePanelHeader',
 
     mixins: [React.addons.PureRenderMixin],
