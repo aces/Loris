@@ -16,8 +16,8 @@ In order to use media module user might need one or both of the following permis
 ### 💯 Features
 
 1. **Browse** a list of uploaded files and related information
-2. **Edit** meta information about videos with exclusion of timepoint related data (PSCID, Visit Label and Instrument)
-3. **Upload** new videos associated to a specific timepoint
+2. **Edit** meta information about media files (except timepoint related data such as PSCID, Visit Label and Instrument)
+3. **Upload** new files associated to a specific timepoint
   - PSCID, Visit Label and Instrument are required fields for all uploaded files
   - File name should always start with [PSCID]\_[Visit Label]\_[Instrument]
-4. **Delete** videos. Deleting video hides it from the frontend, but preserves a copy in the database.
+4. **Delete** files. Deleting a file hides it from the frontend, but preserves a copy in the database.
