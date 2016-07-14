@@ -44,114 +44,113 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "users",
             array(
-             'UserID' => 'testUser1',
-             'Email' => 'test@test.com',
-             'Password' => 'AA1234567!',
-             'CenterID' => '1',
-             'Password_expiry' => '2020-01-06'
+             'UserID'          => 'testUser1',
+             'Email'           => 'test@test.com',
+             'Password'        => 'AA1234567!',
+             'CenterID'        => '1',
+             'Password_expiry' => '2020-01-06',
             )
         );
         //Insert two violation scan
         $this->DB->insert(
             "psc",
             array(
-             'CenterID' => '55',
-             'Name' => 'TESTinPSC',
-             'Alias' => 'test',
-             'MRI_alias' => 'test'
+             'CenterID'  => '55',
+             'Name'      => 'TESTinPSC',
+             'Alias'     => 'test',
+             'MRI_alias' => 'test',
             )
-
         );
         $this->DB->insert(
             "candidate",
             array(
-             'CandID'        => '999888',
-             'CenterID'      => '55',
-             'UserID'        => '1',
-             'PSCID'         => '8888',
-             'ProjectID'     => '7777',
-             'Entity_type'   => 'Human'
+             'CandID'      => '999888',
+             'CenterID'    => '55',
+             'UserID'      => '1',
+             'PSCID'       => '8888',
+             'ProjectID'   => '7777',
+             'Entity_type' => 'Human',
             )
         );
         $this->DB->insert(
             "session",
             array(
-             'ID'            => '222222',
-             'CandID'        => '999888',
-             'CenterID'      => '55',
-             'UserID'        => '1',
-             'MRIQCStatus'   => 'Pass',
-             'SubprojectID'  => '6666'
+             'ID'           => '222222',
+             'CandID'       => '999888',
+             'CenterID'     => '55',
+             'UserID'       => '1',
+             'MRIQCStatus'  => 'Pass',
+             'SubprojectID' => '6666',
             )
         );
         $this->DB->insert(
             "mri_protocol_violated_scans",
             array(
-             'ID'            => '1001',
-             'CandID'        => '999888',
-             'PatientName'   => '[Test]PatientName',
-             'time_run'      => '2009-06-29 04:00:44',
-             'minc_location' => 'assembly/test/test/mri/test/test.mnc',
-        'series_description' => 'Test Series Description',
-                 'SeriesUID' => '5555'
+             'ID'                 => '1001',
+             'CandID'             => '999888',
+             'PatientName'        => '[Test]PatientName',
+             'time_run'           => '2009-06-29 04:00:44',
+             'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
+             'series_description' => 'Test Series Description',
+             'SeriesUID'          => '5555',
             )
         );
         $this->DB->insert(
             "mri_protocol_violated_scans",
             array(
-             'ID'            => '1002',
-             'CandID'        => '999888',
-             'PatientName'   => '[Test]PatientName',
-             'time_run'      => '2008-06-29 04:00:44',
-             'minc_location' => 'assembly/test2/test2/mri/test2/test2.mnc',
-        'series_description' => 'Test Series Description',
-                 'SeriesUID' => '5556'
+             'ID'                 => '1002',
+             'CandID'             => '999888',
+             'PatientName'        => '[Test]PatientName',
+             'time_run'           => '2008-06-29 04:00:44',
+             'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
+             'series_description' => 'Test Series Description',
+             'SeriesUID'          => '5556',
             )
         );
         $this->DB->insert(
             "violations_resolved",
             array(
-             'ExtID'         => '1001',
-             'TypeTable'     => 'mri_protocol_violated_scans',
-             'Resolved'      => 'other'
+             'ExtID'     => '1001',
+             'TypeTable' => 'mri_protocol_violated_scans',
+             'Resolved'  => 'other',
             )
         );
         $this->DB->insert(
             "violations_resolved",
             array(
-             'ExtID'         => '1002',
-             'TypeTable'     => 'MRICandidateErrors',
-             'Resolved'      => 'unresolved'
+             'ExtID'     => '1002',
+             'TypeTable' => 'MRICandidateErrors',
+             'Resolved'  => 'unresolved',
             )
         );
         $this->DB->insert(
             "MRICandidateErrors",
             array(
-             'ID'         => '1002',
-             'PatientName'      => '[Test]PatientName',
-             'MincFile'       => 'assembly/test2/test2/mri/test2/test2.mnc',
-             'SeriesUID'      => '5556'
+             'ID'          => '1002',
+             'PatientName' => '[Test]PatientName',
+             'MincFile'    => 'assembly/test2/test2/mri/test2/test2.mnc',
+             'SeriesUID'   => '5556',
             )
         );
-   //Insert an incomplete form data
+        //Insert an incomplete form data
          $this->DB->insert(
              "test_names",
              array(
-              'ID'             => '111',
-              'Test_name'      => 'TestName11111111111',
+              'ID'        => '111',
+              'Test_name' => 'TestName11111111111',
              )
          );
          $this->DB->insert(
              "flag",
              array(
-              'ID'             => '111111',
-              'SessionID'      => '222222',
-              'Test_name'      => 'TestName11111111111',
-              'CommentID'      => 'commentID111',
-              'Data_entry'     => 'In Progress',
+              'ID'         => '111111',
+              'SessionID'  => '222222',
+              'Test_name'  => 'TestName11111111111',
+              'CommentID'  => 'commentID111',
+              'Data_entry' => 'In Progress',
              )
          );
-     //Insert a demo data into conflicts_unresolved
+         //Insert a demo data into conflicts_unresolved
          $this->DB->insert(
              "conflicts_unresolved",
              array(
@@ -168,60 +167,69 @@ class DashboardTest extends LorisIntegrationTest
          );
 
     }
-
-
-    //Delete the test data
+    /**
+     * Delete the test data
+     *
+     * @return void
+     */
     public function tearDown()
     {
         $this->DB->delete(
             "users",
-            array('UserID'=>'testUser1')
+            array('UserID' => 'testUser1')
         );
         $this->DB->delete(
             "session",
-            array('CandID' => '999888','CenterID' => '55')
+            array(
+             'CandID'   => '999888',
+             'CenterID' => '55',
+            )
         );
         $this->DB->delete(
             "candidate",
-            array('CandID' => '999888','CenterID' => '55')
-        );
-        $this->DB->delete(
-            "mri_protocol_violated_scans",
-           array(
-             'ID'            => '1001',
-             'CandID'        => '999888'
+            array(
+             'CandID'   => '999888',
+             'CenterID' => '55',
             )
         );
         $this->DB->delete(
             "mri_protocol_violated_scans",
-           array(
-             'ID'            => '1002',
-             'CandID'        => '999888'
+            array(
+             'ID'     => '1001',
+             'CandID' => '999888',
+            )
+        );
+        $this->DB->delete(
+            "mri_protocol_violated_scans",
+            array(
+             'ID'     => '1002',
+             'CandID' => '999888',
             )
         );
         $this->DB->delete(
             "violations_resolved",
             array(
-             'ExtID'         => '1001',
-             'TypeTable'     => 'mri_protocol_violated_scans'
+             'ExtID'     => '1001',
+             'TypeTable' => 'mri_protocol_violated_scans',
             )
         );
         $this->DB->delete(
             "MRICandidateErrors",
-            array(
-             'ID'         => '1002'
-            )
+            array('ID' => '1002')
         );
         $this->DB->delete(
             "violations_resolved",
             array(
-             'ExtID'         => '1002',
-             'TypeTable'     => 'mri_protocol_violated_scans'
+             'ExtID'     => '1002',
+             'TypeTable' => 'mri_protocol_violated_scans',
             )
         );
         $this->DB->delete(
             "psc",
-            array('CenterID' => '55', 'Name' => 'TESTinPSC')
+            array(
+             'CenterID' => '55',
+             'Name'     => 'TESTinPSC',
+            )
         );
         $this->DB->delete(
             "flag",
@@ -233,10 +241,10 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "conflicts_unresolved",
-            array('TableName'=>'TestTestTest')
+            array('TableName' => 'TestTestTest')
         );
         parent::tearDown();
-     }
+    }
 
 
 
@@ -293,9 +301,9 @@ class DashboardTest extends LorisIntegrationTest
     }
 
     /**
-     * If a user has right permission, the number of pending 
-     * account approvals is displayed in the My Task panel. 
-     * This should be the number of entries in the User Account 
+     * If a user has right permission, the number of pending
+     * account approvals is displayed in the My Task panel.
+     * This should be the number of entries in the User Account
      * page with the following Selection Filter: Site set to 'All' and
      * Pending Approval set to 'Yes'. The Site displayed
      * when you click on the task.
@@ -305,11 +313,12 @@ class DashboardTest extends LorisIntegrationTest
     public function testPendingUser()
     {
         $this->setupPermissions(
-             array(
-              "user_accounts_multisite","user_accounts"
-             )
-         );
-        $this->_testMytaskPanelAndLink(".pending-accounts","1","testUser1");
+            array(
+             "user_accounts_multisite",
+             "user_accounts",
+            )
+        );
+        $this->_testMytaskPanelAndLink(".pending-accounts", "1", "testUser1");
         $this->resetPermissions();
     }
     /**
@@ -317,65 +326,73 @@ class DashboardTest extends LorisIntegrationTest
      * permission has a task with the number of violated scans displayed.
      * This is the number of entries on the MRI Violated Scans page.
      * Check that clicking on the task takes you to the Violated Scans page.
+     *
      * @return void
      */
-
     public function testMriViolations()
     {
-      $this->setupPermissions(
-             array(
-              "violated_scans_view_allsites"
-             )
-         );
-      $this->_testMytaskPanelAndLink(".mri_violations","2","[Test]PatientName");
-      $this->resetPermissions();
+        $this->setupPermissions(
+            array("violated_scans_view_allsites")
+        );
+        $this->_testMytaskPanelAndLink(".mri_violations", "2", "[Test]PatientName");
+        $this->resetPermissions();
     }
     /**
      * Check that for a user with 'Data Entry' permission, the number of incomplete
      * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
-     * Tasks panel. If the user also has 'Across all sites access candidates 
+     * Tasks panel. If the user also has 'Across all sites access candidates
      * profiles' then the site displayed is 'All', otherwise it is set to the site
      * the user belongs to and only the candidates that belong to the user's site
-     * are considered for the computation of the number of incomplete forms. 
+     * are considered for the computation of the number of incomplete forms.
+     *
+     *  @return void
      */
     public function testIncompleteForm()
     {
 
-     $this->setupPermissions(
-             array(
-              "data_entry","access_all_profiles"
-             )
-         );
-     $this->safeGet($this->url . '/dashboard/');
-     $this->_testMytaskPanelAndLink(".statistics","1","Welcome to the statistics page.");
-     $this->resetPermissions();
+        $this->setupPermissions(
+            array(
+             "data_entry",
+             "access_all_profiles",
+            )
+        );
+        $this->safeGet($this->url . '/dashboard/');
+        $this->_testMytaskPanelAndLink(
+            ".statistics",
+            "1",
+            "Welcome to the statistics page."
+        );
+        $this->resetPermissions();
     }
     /**
      * Verify that for a user with 'Resolving conflicts' permission the number of
-     * data entry conflicts is reported in the My Task panel. 
+     * data entry conflicts is reported in the My Task panel.
      * If the user also has 'Across all sites access candidates profiles'
      * then the site displayed is 'All', otherwise it is set to the site the user
-     * belongs to. The number of data entry conflicts is the number of 
-     * entries in the Unresolved tab of the Conflict Resolver page. 
+     * belongs to. The number of data entry conflicts is the number of
+     * entries in the Unresolved tab of the Conflict Resolver page.
      * Click on this task and check that you go to the Conflict Resolver page.
+     *
+     *  @return void
      */
     public function testDataEntryConflicts()
     {
-     $this->setupPermissions(
-             array(
-              "conflict_resolver","access_all_profiles"
-             )
-         );
-     $this->safeGet($this->url . '/dashboard/');
-     $this->_testMytaskPanelAndLink(".conflict_resolver","1","TestTestTest");
-     $this->resetPermissions();
+        $this->setupPermissions(
+            array(
+             "conflict_resolver",
+             "access_all_profiles",
+            )
+        );
+        $this->safeGet($this->url . '/dashboard/');
+        $this->_testMytaskPanelAndLink(".conflict_resolver", "1", "TestTestTest");
+        $this->resetPermissions();
     }
     /**
      * Test the link with right value and permission
      *
-     * @param string $className  class Name of template  
-     * @param string $value      the total of test data
-     * @param string $dataSeed   test result
+     * @param string $className class Name of template
+     * @param string $value     the total of test data
+     * @param string $dataSeed  test result
      *
      * @return void.
      */
@@ -383,7 +400,7 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/dashboard/');
         sleep(5);
-        $link = $this->webDriver
+        $link     = $this->webDriver
             ->findElement(WebDriverBy::cssSelector($className));
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
         $this->assertContains($value, $bodyText);
@@ -395,4 +412,4 @@ class DashboardTest extends LorisIntegrationTest
     }
 
 }
-?>                                                                                    
+?>
