@@ -620,7 +620,7 @@ class NDB_Page
                 . "Override getCSSDependencies() instead"
             );
 
-            $files[] = $baseurl . "/$TestName/js/$TestName.css";
+            $files[] = $baseurl . "/$TestName/css/$TestName.css";
         }
 
         return $files;
