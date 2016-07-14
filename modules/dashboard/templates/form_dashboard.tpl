@@ -129,7 +129,7 @@
                     <div class="panel-body">
                         <div class="list-group tasks">
                             {if $conflicts neq "" and $conflicts neq 0}
-                            <a href="{$baseURL}/conflict_resolver/" class="list-group-item">
+                            <a href="{$baseURL}/conflict_resolver/" class="list-group-item conflict_resolver">
                                 <div class="row">
                                     <div class="col-xs-8 text-left">
                                         <div class="huge">{$conflicts}</div>
@@ -144,7 +144,7 @@
                             {/if}
                             {if $incomplete_forms neq "" and $incomplete_forms neq 0}
                                 {if $incomplete_forms_site eq "Site: all"}
-                                <a href="{$baseURL}/statistics/statistics_site/" class="list-group-item">
+                                <a href="{$baseURL}/statistics/statistics_site/" class="list-group-item statistics">
                                 {else}
                                 <a href="{$baseURL}/statistics/statistics_site/?CenterID={$user_site}" class="list-group-item">
                                 {/if}
@@ -175,7 +175,7 @@
                                 </a>
                             {/if}
                             {if $violated_scans neq "" and $violated_scans neq 0}
-                                <a href="{$baseURL}/mri_violations/" class="list-group-item">
+                                <a href="{$baseURL}/mri_violations/" class="list-group-item mri_violations">
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
                                             <div class="huge">{$violated_scans}</div>
