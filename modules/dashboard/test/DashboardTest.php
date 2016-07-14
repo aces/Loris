@@ -69,12 +69,14 @@ class DashboardTest extends LorisIntegrationTest
              'CenterID'      => '55',
              'UserID'        => '1',
              'PSCID'         => '8888',
-             'ProjectID'     => '7777'
+             'ProjectID'     => '7777',
+             'Entity_type'   => 'Human'
             )
         );
         $this->DB->insert(
             "session",
             array(
+             'ID'            => '222222',
              'CandID'        => '999888',
              'CenterID'      => '55',
              'UserID'        => '1',
@@ -131,8 +133,43 @@ class DashboardTest extends LorisIntegrationTest
              'SeriesUID'      => '5556'
             )
         );
+   //Insert an incomplete form data
+         $this->DB->insert(
+             "test_names",
+             array(
+              'ID'             => '111',
+              'Test_name'      => 'TestName11111111111',
+             )
+         );
+         $this->DB->insert(
+             "flag",
+             array(
+              'ID'             => '111111',
+              'SessionID'      => '222222',
+              'Test_name'      => 'TestName11111111111',
+              'CommentID'      => 'commentID111',
+              'Data_entry'     => 'In Progress',
+             )
+         );
+     //Insert a demo data into conflicts_unresolved
+         $this->DB->insert(
+             "conflicts_unresolved",
+             array(
+              'TableName'      => 'TestTestTest',
+              'ExtraKeyColumn' => 'Test',
+              'ExtraKey1'      => 'Null',
+              'ExtraKey2'      => 'Null',
+              'FieldName'      => 'TestTestTest',
+              'CommentId1'     => '963443000111271151398976899',
+              'Value1'         => 'no',
+              'CommentId2'     => 'DDE_963443000111271151398976899',
+              'Value2'         => 'no',
+             )
+         );
 
     }
+
+    
     //Delete the test data
     public function tearDown()
     {
@@ -186,6 +223,18 @@ class DashboardTest extends LorisIntegrationTest
             "psc",
             array('CenterID' => '55', 'Name' => 'TESTinPSC')
         );
+        $this->DB->delete(
+            "flag",
+            array('CommentID' => 'commentID111')
+        );
+        $this->DB->delete(
+            "test_names",
+            array('ID' => '111')
+        );
+        $this->DB->delete(
+            "conflicts_unresolved",
+            array('TableName'=>'TestTestTest')
+        );
         parent::tearDown();
      } 
 
@@ -197,15 +246,13 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-/*    public function testDashboardPageLoads()
+    public function testDashboardPageLoads()
     {
         $this->safeGet($this->url . '/dashboard/');
         $welcomeText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
         $this->assertContains("Welcome", $welcomeText);
     }
-*/
-
 
      /**
       * To test that, when loading the Dashboard, click the Views button of
@@ -215,7 +262,7 @@ class DashboardTest extends LorisIntegrationTest
       *
       * @return void
       */
-/*    public function testDashboardRecruitmentView()
+    public function testDashboardRecruitmentView()
     {
         $this->safeGet($this->url . '/dashboard/');
         $views = $this->webDriver
@@ -244,93 +291,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->assertContains("View overall recruitment", $assertText1);
         $this->assertContains("View site breakdown", $assertText2);
     }
-*/
-    /**
-  * Verify that for a user with 'conflict_resolver' permission,
-  * Check that site displayed is always 'All'.
-  * Click on this task and verify that you go to the conflict_resolver page.
-  *
-  *@return void
-  */
-/*    public function testConflictResolverPermission()
-    {
-        // check the element which shows on the My tasks panel
-         $this->setupPermissions(array("conflict_resolver"));
-             // check the link
-             $this->safeGet($this->url . "/conflict_resolver/");
-             $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-                 ->getText();
 
-             $this->assertNotContains(
-                 "You do not have access to this page",
-                 $bodyText
-             );
-             $this->resetPermissions();
-
-    }
-*/
-    /**
-   * Verify that for a user with 'Violated Scans: View all-sites' permissions,
-   * Check that site displayed is always 'All'.
-   *
-   * @return void
-   */
-/*    public function testViolatedPermission()
-    {
-         $this->setupPermissions(array("violated_scans_view_allsites"));
-         // check the link
-         $this->safeGet($this->url . "/mri_violations/");
-         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-             ->getText();
-         $this->assertNotContains("You do not have access to this page", $bodyText);
-         $this->resetPermissions();
-
-    }
-*/
-    /**
-  * Verify that for a user with 'Across all sites create and edit user
-  * accounts' permission.
-  * Check that site displayed is always 'All'.
-  *
-  * @return void
-  */
-/*    public function testAcrossAllPermission()
-    {
-         $this->setupPermissions(array("user_accounts_multisite", "user_accounts"));
-         // check the link
-         $this->safeGet($this->url . "/user_accounts/");
-         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-             ->getText();
-         $this->assertNotContains("You do not have access to this page", $bodyText);
-         $this->resetPermissions();
-
-    }
-*/
-    /**
-   * Verify that for a user with "edit Final radiological review" or
-   * "view_final_radiological_review" permission.
-   * Check that site displayed is always 'All'.
-  *
-   * @return void
-   */
-/*
-    public function testRadiologicalPermission()
-    {
-         $this->setupPermissions(
-             array(
-              "edit_final_radiological_review",
-              "view_final_radiological_review",
-             )
-         );
-         // check the link
-         $this->safeGet($this->url . "/final_radiological_review/");
-         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-             ->getText();
-         $this->assertNotContains("You do not have access to this page", $bodyText);
-         $this->resetPermissions();
-
-    }
-/*
     /**
      * Tests that, when loading the Dashboard and Config,the number of the Target
      * number of participants should be same.
@@ -350,9 +311,43 @@ class DashboardTest extends LorisIntegrationTest
     
     public function testMriViolations()
     {
+      $this->setupPermissions(
+             array(
+              "violated_scans_view_allsites"
+             )
+         );
       $this->_testMytaskPanelAndLink(".mri_violations","2","[Test]PatientName");   
+      $this->resetPermissions();
     } 
-   
+    
+    public function testIncompleteForm()
+    {
+
+     $this->setupPermissions(
+             array(
+              "data_entry","access_all_profiles"
+             )
+         );
+     $this->safeGet($this->url . '/dashboard/');
+     $this->_testMytaskPanelAndLink(".statistics","1","Welcome to the statistics page.");
+     $this->resetPermissions();
+    }   
+    public function testDataEntryConflicts()
+    {
+     $this->setupPermissions(
+             array(
+              "conflict_resolver","access_all_profiles"
+             )
+         );
+     $this->safeGet($this->url . '/dashboard/');
+     $this->_testMytaskPanelAndLink(".conflict_resolver","1","TestTestTest");
+     $this->resetPermissions();
+    }
+    public function testToDo()
+    {
+     $this->safeGet($this->url . '/dashboard/');
+     sleep(30);
+    }
     private function _testMytaskPanelAndLink($className,$value,$dataSeed)
     {
         $this->safeGet($this->url . '/dashboard/');
