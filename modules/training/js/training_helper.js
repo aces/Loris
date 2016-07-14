@@ -23,14 +23,18 @@ function loadTabContent(tabNumber, type) {
     "use strict";
 
     var tabID = '#' + tabNumber;
-    $.post(loris.BaseURL + "/AjaxHelper.php?Module=training&script=getTabContent.php", {instrument: instrumentID, tabNumber: tabNumber, type: type}, function (data) {
-        var tabPane = $(tabID).children().attr('data-target');
-        $(tabPane).html(data);
-    });
+    $.post(
+        loris.BaseURL + "/AjaxHelper.php?Module=training&script=getTabContent.php",
+        {instrument: instrumentID, tabNumber: tabNumber, type: type},
+        function (data) {
+            var tabPane = $(tabID).children().attr('data-target');
+            $(tabPane).html(data);
+        }
+    );
 }
 
 function activateTab(tabNumber) {
-    var tabID = '#' + tabNumber,
+    var tabID     = '#' + tabNumber,
           tabPane = $(tabID).children().attr('data-target');
     $(tabID).removeClass('disabled');
     $(tabID).tab('show');
@@ -42,83 +46,106 @@ function activateTab(tabNumber) {
 function loadTabs(type) {
     "use strict";
 
-    $.post(loris.BaseURL + "/AjaxHelper.php?Module=training&script=getTabs.php", {instrument: instrumentID, instrumentName: instrumentName, type: type}, function (data) {
-        $('#tabs').html(data);
-        if (type == 'training') {
-            loadTabContent(1, type);
-            activateTab(1);
+    $.post(
+        loris.BaseURL + "/AjaxHelper.php?Module=training&script=getTabs.php",
+        {instrument: instrumentID, instrumentName: instrumentName, type: type},
+        function (data) {
+            $('#tabs').html(data);
+            if (type == 'training') {
+                loadTabContent(1, type);
+                activateTab(1);
+            }
+            else {
+                loadTabContent(1, type);
+                activateTab(1);
+            }
         }
-        else {
-            loadTabContent(1, type);
-            activateTab(1);
-        }
-    });
+    );
 }
 
-$(document).ready(function () {
+$(document).ready(
+    function () {
+        $(".panel-not-certified").click(
+            function () {
+                var ID         = this.id.split("-",2);
+                instrumentID   = ID[1];
+                instrumentName = $(this).attr("data-instrument");
+                $("#training-options").slideUp();
+                loadTabs('training');
+            }
+        );
+        $(".panel-certified").click(
+            function () {
+                var ID         = this.id.split("-",2);
+                instrumentID   = ID[1];
+                instrumentName = $(this).attr("data-instrument");
+                $("#training-options").slideUp();
+                loadTabs('review');
+            }
+        );
+        $('body').on(
+            'click',
+            '.btn-agree',
+            function (e) {
+                e.preventDefault();
+                var tabNumber = parseInt($("ul.nav-tabs li.active").attr('id')) + 1;
+                loadTabContent(tabNumber, 'training');
+                activateTab(tabNumber);
+                $(this).prop('disabled', true);
+            }
+        );
+        $('body').on(
+            'click',
+            '.review > a',
+            function (e) {
+                e.preventDefault();
+                var tabNumber = $(this).parent().attr('id');
+                // Todo: check if the tab has already been loaded before fetching content
+                loadTabContent(tabNumber, 'review');
+                activateTab(tabNumber);
+            }
+        );
+        // on click of quiz completion, mark quiz, update certification status, clear tabs?
+        $('body').on(
+            'submit',
+            '#quiz',
+            function (e) {
+                e.preventDefault();
 
-    $(".panel-not-certified").click(function () {
-        var ID         = this.id.split("-",2);
-        instrumentID   = ID[1];
-        instrumentName = $(this).attr("data-instrument");
+                // Disable quiz button submit
+                $(this).prop('disabled', true);
 
-        $("#training-options").slideUp();
-        loadTabs('training');
-    });
+                // Check that all answers have been filled out
+                if (validateQuiz(this) === 1) {
+                    var form      = $(this).serialize(),
+                    requestString = form + '&instrument=' + instrumentID;
 
-    $(".panel-certified").click(function () {
-        var ID         = this.id.split("-",2);
-        instrumentID   = ID[1];
-        instrumentName = $(this).attr("data-instrument");
-
-        $("#training-options").slideUp();
-        loadTabs('review');
-    });
-
-    $('body').on('click', '.btn-agree', function (e) {
-        e.preventDefault();
-        var tabNumber = parseInt($("ul.nav-tabs li.active").attr('id')) + 1;
-        loadTabContent(tabNumber, 'training');
-        activateTab(tabNumber);
-        $(this).prop('disabled', true);
-    });
-
-    $('body').on('click', '.review > a', function (e) {
-        e.preventDefault();
-        var tabNumber = $(this).parent().attr('id');
-        // Todo: check if the tab has already been loaded before fetching content
-        loadTabContent(tabNumber, 'review');
-        activateTab(tabNumber);
-    });
-
-    // on click of quiz completion, mark quiz, update certification status, clear tabs?
-    $('body').on('submit', '#quiz', function (e) {
-        e.preventDefault();
-
-        // Disable quiz button submit
-        $(this).prop('disabled', true);
-
-        // Check that all answers have been filled out
-        if (validateQuiz(this) === 1) {
-            var form          = $(this).serialize(),
-            requestString = form + '&instrument=' + instrumentID;
-
-            $.post(loris.BaseURL + "/AjaxHelper.php?Module=training&script=markQuiz.php", requestString, function (data) {
-                if (data === 'correct') {
-                    $('#correct').modal({
-                        keyboard: false,
-                        backdrop: 'static'
-                    });
+                    $.post(
+                        loris.BaseURL + "/AjaxHelper.php?Module=training&script=markQuiz.php",
+                        requestString,
+                        function (data) {
+                            if (data === 'correct') {
+                                $('#correct').modal(
+                                    {
+                                        keyboard: false,
+                                        backdrop: 'static'
+                                    }
+                                );
+                            } else {
+                                $('#incorrect').modal(
+                                    {
+                                        keyboard: false,
+                                        backdrop: 'static'
+                                    }
+                                );
+                            }
+                        }
+                    );
                 } else {
-                    $('#incorrect').modal({
-                        keyboard: false,
-                        backdrop: 'static'
-                    });
+                    $('#incomplete').modal();
                 }
-            });
-        } else {
-            $('#incomplete').modal();
-        }
 
-    });
-});
+            }
+        );
+    }
+);
