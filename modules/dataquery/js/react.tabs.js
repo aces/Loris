@@ -200,6 +200,7 @@ ViewDataTabPane = React.createClass({
                 link.href = dataURL;
                 document.body.appendChild(link);
                 $(link)[0].click();
+                $(link)[0].remove();
             }
         });
         csvworker.postMessage({
