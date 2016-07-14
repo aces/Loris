@@ -1,0 +1,15 @@
+{
+   "_id": "1234-cg0042544",
+   "meta": {
+       "doctype": "variable",
+       "identifier": {
+           "variable_id": "cg00034556",
+           "chromosome": "chr1",
+           "start_loc": "566731",
+           "size" : "1",
+           "strand" : "F"
+       }
+   },
+   "values": [], /* ordered value for that row */
+   "properties": {} /* For each column between the first and the values columns, create a key value */
+}

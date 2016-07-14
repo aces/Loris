@@ -1,0 +1,8 @@
+### This file is a example of data.frame file expected by the CouchDB importer of LORIS. 
+### Comment line start with (###)
+### Any informations about history or provenance should be on a line stating with (##). 
+### Those informations should be represented as key, value pairs and will be kept as string.
+### The actual separator is comma+space
+## Description, Example data.frame file type describing the format expected by the LORIS CouchDB import script. 
+## Author, xlecours
+## 
