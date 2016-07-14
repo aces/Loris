@@ -96,6 +96,9 @@ ViewDataTabPane = React.createClass({
     getInitialState: function() {
         return { 'sessions' : [] }
     },
+    getDefaultProps: function () {
+        return { 'FileList' : [] };
+    },
     runQuery: function() {
         // Wrapper function to run the current query
         if(this.props.onRunQueryClicked) {
@@ -118,6 +121,7 @@ ViewDataTabPane = React.createClass({
                 link.download = "data-" + dataDate + ".csv";
                 link.type = "text/csv";
                 link.href = dataURL;
+                document.body.appendChild(link);
                 $(link)[0].click();
 
             }
