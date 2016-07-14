@@ -1,6 +1,9 @@
 #LORIS Mac Install Guide
+### Mac is no longer supported as of 15.10. 
 
-This is a guide on how to get a LORIS instance Running on your Mac computer. It is designed for installation in a sandbox environment. It has been partially tested for Mac OS X 10.9 and 10.10.
+This is a guide on how to get a LORIS instance Running on your Mac computer. It is designed for installation in a sandbox environment. 
+It has been partially tested for Mac OS X 10.9 and 10.10 for 15.04. Installing on Mac OS X El Capitan will require additional Apache setup. 
+For best results, we recommend installing LORIS on Ubuntu or CentOS.
 
 # 1. System Requirements
 
@@ -112,8 +115,8 @@ If already installed continue to section 1.6 else continue
 
 ### 1.5.2 Obtaining MySQL
 
-Download the latest DMG Archive for you current Mac setup (either 32-bit or 64-bit) from the following link [dev.mysql.com/downloads/mysql]
-(dev.mysql.com/downloads/mysql) and install the necessary files.
+Download the latest DMG Archive for you current Mac setup (either 32-bit or 64-bit) from the following link [http://dev.mysql.com/downloads/mysql]
+(http://dev.mysql.com/downloads/mysql) and install the necessary files.
 
 ### 1.5.3 Starting MySQL
 
@@ -347,5 +350,4 @@ UPDATE Config SET Value='$yourHostname' WHERE ConfigID=(SELECT ID FROM ConfigSet
 ```
 
 Make sure that `$yourURL` above contains the "http://" or "https://" and `$yourHostname` does not. If your server is only being accessed from localhost, you can skip this step.
-
 

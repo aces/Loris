@@ -1,7 +1,7 @@
 <script type="text/javascript" src="{$baseurl}/mri_violations/js/mri_protocol_violations.js"></script>
-<link rel="stylesheet" href="css/c3.css">
-<script src="js/d3.min.js" charset="utf-8"></script>
-<script src="js/c3.min.js"></script>
+<link rel="stylesheet" href="{$baseurl}/css/c3.css">
+<script src="{$baseurl}/js/d3.min.js" charset="utf-8"></script>
+<script src="{$baseurl}/js/c3.min.js"></script>
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
@@ -158,7 +158,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/mri_violations/?submenu=mri_protocol_violations&pageID=" + pageNum
+        location.href="{$baseurl}/mri_violations/?submenu=mri_protocol_violations&filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
     },
     Active: {$pageID}
 });
