@@ -1,7 +1,7 @@
 <!-- Nav tabs -->
 <ul class="nav nav-tabs nav-tabs-loris" role="tablist">
   <li role="presentation" class="active">
-    <a href="#browse" aria-controls="browse" role="tab" data-toggle="tab">Browse</a>
+    <a id="tab-browse" href="#browse" aria-controls="browse" role="tab" data-toggle="tab">Browse</a>
   </li>
   {if $hasWritePermission}
     <li role="presentation">
@@ -25,6 +25,7 @@
   <div role="tabpanel" class="tab-pane" id="upload">
       {include file='../part/file_upload.tpl'}
   </div>
+
 </div>
 
 <script>
