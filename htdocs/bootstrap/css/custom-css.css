@@ -373,3 +373,19 @@ a.btn.btn-primary {
 .dropdownSearch {
   padding: 10px;
 }
+
+
+/* Style login navbar and logo */
+.navbar {
+  border-radius: 0;
+}
+
+.navbar-brand {
+  height: auto;
+}
+
+.navbar-brand .study-logo {
+  width: 64px;
+  height: 57px;
+  margin-bottom: 10px;
+}
