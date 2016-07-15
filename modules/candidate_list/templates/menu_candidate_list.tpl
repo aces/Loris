@@ -118,12 +118,13 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-4">
-                            {$form.edc.label}
+                            {$form.Feedback.label}
                         </label>
                         <div class="col-sm-12 col-md-8">
-                            {$form.edc.html}
+                            {$form.Feedback.html}
                         </div>
                     </div>
+
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-4">
@@ -144,10 +145,10 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-4">
-                            {$form.Feedback.label}
+                            {$form.edc.label}
                         </label>
                         <div class="col-sm-12 col-md-8">
-                            {$form.Feedback.html}
+                            {$form.edc.html}
                         </div>
                     </div>
                 </div>
