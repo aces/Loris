@@ -115,8 +115,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
 		WHERE ParameterTypeID=(select ParameterTypeID
 		FROM parameter_type pt
 		WHERE pt.Name='SNR') 
-		and pf.FileID IN (SELECT f.FileID FROM files f 
-		WHERE f.sessionID=:SID))",
+		AND pf.FileID IN (SELECT f.FileID FROM files f 
+		WHERE f.SessionID=:sid)",
                 array('sid' =>$this->sessionID)
             );
             foreach ($snr_values_q as $row) {
