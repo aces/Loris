@@ -339,8 +339,8 @@ ImageQCStatic = React.createClass({
     displayName: 'ImageQCStatic',
 
     render: function () {
-        var static;
-            static = React.createElement(
+        var staticInfo;
+            staticInfo = React.createElement(
                 'div',
                 { className: 'col-xs-12' },
                 this.props.defaultValue
@@ -353,7 +353,7 @@ ImageQCStatic = React.createClass({
                 null,
                 this.props.Label
             ),
-            static
+            staticInfo
         );
     }
 });

@@ -155,8 +155,8 @@ ImageQCDropdown = React.createClass({
 });
 ImageQCStatic = React.createClass({
     render: function() {
-        var static;
-        static = (
+        var staticInfo;
+        staticInfo = (
             <div className="col-xs-12">
                 {this.props.defaultValue}
             </div>
@@ -164,7 +164,7 @@ ImageQCStatic = React.createClass({
         return (
             <div className="row">
                 <label>{this.props.Label}</label>
-                {static}
+                {staticInfo}
             </div>
         );
     }
@@ -460,6 +460,7 @@ ImagePanel = React.createClass({
                         Caveat={this.props.Caveat}
                         SelectedOptions={this.props.SelectedOptions}
                         Selected={this.props.Selected}
+                        SNR={this.props.SNR}
 
                         Fullname={this.props.Fullname}
                         XMLProtocol={this.props.XMLProtocol}

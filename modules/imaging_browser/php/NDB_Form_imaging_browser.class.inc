@@ -111,12 +111,16 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $this->tpl_data['selected_options'] = $types;
 
             $snr_values_q = $this->DB->pselect(
-                "SELECT files.SNR FROM files
-                WHERE SessionID=:sid",
-                array('sid' => $this->sessionID)
+                "SELECT pf.Value from parameter_file pf
+		WHERE ParameterTypeID=(select ParameterTypeID
+		FROM parameter_type pt
+		WHERE pt.Name='SNR') 
+		and pf.FileID IN (SELECT f.FileID FROM files f 
+		WHERE f.sessionID=:SID))",
+                array('sid' =>$this->sessionID)
             );
             foreach ($snr_values_q as $row) {
-                $snr_value=$row['SNR'];
+                $snr_value = $row['Value'];
                 $snr_values[$snr_value] = $snr_value;
             }
             $this->tpl_data['snr'] = $snr_values;
