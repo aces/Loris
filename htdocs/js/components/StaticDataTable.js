@@ -6,8 +6,8 @@ StaticDataTable = React.createClass({
         Headers: React.PropTypes.array.isRequired,
         Data: React.PropTypes.array.isRequired,
         RowNumLabel: React.PropTypes.string,
-        // Function of which returns a JSX element for a table cell, takes parameters of the form:
-        // func(ColumnName, CellData, EntireRowData)
+        // Function of which returns a JSX element for a table cell, takes
+        // parameters of the form: func(ColumnName, CellData, EntireRowData)
         getFormattedCell: React.PropTypes.func
     },
     componentDidMount: function () {
@@ -40,7 +40,8 @@ StaticDataTable = React.createClass({
         return {
             Headers: [],
             Data: {},
-            RowNumLabel: 'No.'
+            RowNumLabel: 'No.',
+            Filter: {}
         };
     },
     changePage: function (pageNo) {
@@ -198,15 +199,32 @@ StaticDataTable = React.createClass({
             return 0;
         });
 
+        // Push rows to data table
         for (var i = rowsPerPage * (this.state.PageNumber - 1); i < this.props.Data.length && rows.length < rowsPerPage; i += 1) {
             curRow = [];
 
+            // Counts filter matches
+            var filterMatchCount = 0;
+
+            // Itterates through headers to populate row columns
+            // with corresponding data
             for (var j = 0; j < this.props.Headers.length; j += 1) {
+
+                var data = "Unknown";
+
+                // Set column data
                 if (this.props.Data[index[i].RowIdx]) {
                     data = this.props.Data[index[i].RowIdx][j];
-                } else {
-                    data = "Unknown";
                 }
+
+                // Increase counter, if filter value is found to be a substring
+                // of one of the column values
+                var filterData = this.props.Filter[this.props.Headers[j]];
+                if (filterData !== null && data.indexOf(filterData) > -1) {
+                    filterMatchCount++;
+                }
+
+                // Get custom cell formatting if available
                 if (this.props.getFormattedCell) {
                     data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[i].RowIdx], this.props.Headers);
                     curRow.push({ data });
@@ -218,16 +236,20 @@ StaticDataTable = React.createClass({
                     ));
                 }
             }
-            rows.push(React.createElement(
-                "tr",
-                { colSpan: headers.length },
-                React.createElement(
-                    "td",
-                    null,
-                    index[i].Content
-                ),
-                curRow
-            ));
+
+            // Only display a row if all filter values have been matched
+            if (Object.keys(this.props.Filter).length == filterMatchCount) {
+                rows.push(React.createElement(
+                    "tr",
+                    { colSpan: headers.length },
+                    React.createElement(
+                        "td",
+                        null,
+                        index[i].Content
+                    ),
+                    curRow
+                ));
+            }
         }
 
         var RowsPerPageDropdown = React.createElement(
