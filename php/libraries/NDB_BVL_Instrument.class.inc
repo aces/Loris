@@ -170,7 +170,6 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     static function factory($instrument, $commentID, $page, $guarantee_exists = true)
     {
-        include_once 'HTML/QuickForm.php';
         $class = "NDB_BVL_Instrument_$instrument";
 
         // Make sure the instrument class has been included/required!
@@ -424,7 +423,6 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->form->setDefaults($defaults);
 
         if ($this->DataEntryType == 'DirectEntry') {
-            $renderer = new HTML_QuickForm_Renderer_Default();
             if (isset($this->testName)) {
                 $renderer->setFormTemplate(
                     "<form{attributes}>
