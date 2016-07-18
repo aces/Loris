@@ -305,27 +305,6 @@ class DashboardTest extends LorisIntegrationTest
     }
 
     /**
-     * If a user has right permission, the number of pending
-     * account approvals is displayed in the My Task panel.
-     * This should be the number of entries in the User Account
-     * page with the following Selection Filter: Site set to 'All' and
-     * Pending Approval set to 'Yes'. The Site displayed
-     * when you click on the task.
-     *
-     * @return void
-     */
-    public function testPendingUser()
-    {
-        $this->setupPermissions(
-            array(
-             "user_accounts_multisite",
-             "user_accounts",
-            )
-        );
-        $this->_testMytaskPanelAndLink(".pending-accounts", "1", "testUser1");
-        $this->resetPermissions();
-    }
-    /**
      * Verify that a user with 'Violated Scans: View all-sites Violated Scans'
      * permission has a task with the number of violated scans displayed.
      * This is the number of entries on the MRI Violated Scans page.
@@ -366,29 +345,6 @@ class DashboardTest extends LorisIntegrationTest
             "1",
             "General Description"
         );
-        $this->resetPermissions();
-    }
-    /**
-     * Verify that for a user with 'Resolving conflicts' permission the number of
-     * data entry conflicts is reported in the My Task panel.
-     * If the user also has 'Across all sites access candidates profiles'
-     * then the site displayed is 'All', otherwise it is set to the site the user
-     * belongs to. The number of data entry conflicts is the number of
-     * entries in the Unresolved tab of the Conflict Resolver page.
-     * Click on this task and check that you go to the Conflict Resolver page.
-     *
-     *  @return void
-     */
-    public function testDataEntryConflicts()
-    {
-        $this->setupPermissions(
-            array(
-             "conflict_resolver",
-             "access_all_profiles",
-            )
-        );
-        $this->safeGet($this->url . '/dashboard/');
-        $this->_testMytaskPanelAndLink(".conflict_resolver", "1", "TestTestTest");
         $this->resetPermissions();
     }
     /**
