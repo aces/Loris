@@ -318,6 +318,10 @@ class DashboardTest extends LorisIntegrationTest
              "user_accounts",
             )
         );
+        //test
+        $bodyText = $this->webDriver->getPageSource();
+        printf($bodyText);
+        //test
         $this->_testMytaskPanelAndLink(".pending-accounts", "1", "testUser1");
         $this->resetPermissions();
     }
@@ -360,7 +364,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".statistics",
             "1",
-            "Welcome to the statistics page."
+            "General Description"
         );
         $this->resetPermissions();
     }
