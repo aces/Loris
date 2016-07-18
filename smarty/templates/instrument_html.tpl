@@ -14,7 +14,11 @@
 	{assign var="inTable" value="FALSE"}
 	{foreach from=$form.elements item=element}
 		{if $element.name neq mainError}
-			{if $element.name eq lorisSubHeader}
+			{if $element.type eq header}
+				<div class="col-xs-12">
+					{$element.html}
+				</div>
+			{elseif $element.name eq lorisSubHeader}
 				<div class="col-xs-12">
 					{$element.label}
 				</div>
