@@ -40,7 +40,7 @@ class Statistics_Test extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/statistics/");
         $bodyText = $this->safeFindElement(
-                WebDriverBy::Xpath("//div[@id = 'page']/H2"))->getText();
+                WebDriverBy::cssSeletor("body"))->getText();
         $this->assertContains("Welcome to the statistics page.", $bodyText);
 
     }
@@ -59,7 +59,7 @@ class Statistics_Test extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertContains("General Description", $bodyText);
 
         $this->resetPermissions();
     }
@@ -76,9 +76,9 @@ class Statistics_Test extends LorisIntegrationTest
         $this->safeGet($this->url . "/statistics/");
 
         // Test that the Imaging menu appears in the first row
-        $bodyText = $this->safeFindElement(WebDriverBy::Xpath(
-                  "//div[@id = 'page']/H2"))->getText();
-        $this->assertContains("Welcome to the statistics page.", $bodyText);
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(
+                  "body"))->getText();
+        $this->assertContains("General Description", $bodyText);
 
         $this->resetPermissions();
     }
@@ -117,4 +117,3 @@ class Statistics_Test extends LorisIntegrationTest
 
     }
 
-}
