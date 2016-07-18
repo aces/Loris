@@ -259,10 +259,10 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $welcomeText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
-//test
+        //test
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("================================", $bodyText);
-//test
+        //test
         $this->assertContains("Welcome", $welcomeText);
     }
 
@@ -360,7 +360,7 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/dashboard/');
         sleep(5);
-        $link =$this->safeFindElement(WebDriverBy::cssSelector($className));
+        $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
         $this->assertContains($value, $bodyText);
         $link->click();
