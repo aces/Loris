@@ -1427,7 +1427,7 @@ class LorisForm
     function getSubmitValues()
     {
         $retVal = array();
-        $this->getGroupValues(array_keys($_REQUEST), $retVal);
+        $this->getGroupValues(array_keys($_POST), $retVal);
         return $retVal;
     }
 
