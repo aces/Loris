@@ -25,13 +25,12 @@ require_once __DIR__ .
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-require_once __DIR__ . 
-"/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class Statistics_Test extends LorisIntegrationTest
 {
-
-/**
-     * Tests that, when loading the statistics module, some
+    
+   /**
+     * Tests that, when loading the Statistics module, some
      * text appears in the body.
      *
      * @return void
@@ -39,14 +38,13 @@ class Statistics_Test extends LorisIntegrationTest
     function testLoadPage()
     {
         $this->safeGet($this->url . "/statistics/");
-        $bodyText = $this->safeFindElement(
-                WebDriverBy::cssSeletor("body"))->getText();
-        $this->assertContains("Welcome to the statistics page.", $bodyText);
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("General Description", $bodyText);
 
     }
        /**
-     * Tests that the statistics loads if the user has not the correct
-     * permissions 
+     * Tests that the Statistics loads if the user has not the correct
+     * permissions
      *
      * @return void
      */
@@ -59,33 +57,33 @@ class Statistics_Test extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("General Description", $bodyText);
-
+        $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
 
-   /**
-     * Tests that the statistics loads if the user has the correct
-     * permissions 
+       /**
+     * Tests that the Statistics loads if the user has the correct
+     * permissions (data_entry)
      *
      * @return void
      */
-    function testLoadPageWithPermission()
+    function testLoadPageWithoutPermission()
     {
         $this->setupPermissions(array("data_entry"));
         $this->safeGet($this->url . "/statistics/");
 
         // Test that the Imaging menu appears in the first row
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(
-                  "body"))->getText();
-        $this->assertContains("General Description", $bodyText);
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
 
         $this->resetPermissions();
     }
 
 
 
-    /** Tests that, when loading the create_timepoint module, some
+    /** Tests that, when loading the Statistics module, some
      * text appears in the body.
      *
      * @return void
@@ -93,17 +91,15 @@ class Statistics_Test extends LorisIntegrationTest
     function testBehaviouralTab()
     {
         $this->safeGet($this->url . "/statistics/stats_behavioural/?dynamictabs=dynamictabs");
-        $bodyText = $this->
-                 safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
         $this->assertContains("Data Entry Statistics", $bodyText);
 
        //test one link inside this Tab
-        $this->safeFindElement(WebDriverBy::linkText("Click here for breakdown per participant"))->click();
-        $bodyText = $this->
-                     safeFindElement(WebDriverBy::cssSelector("body"))->getText();
+	$this->safeFindElement(WebDriverBy::linkText("Click here for breakdown per participant"))->click();
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("All Completion Statistics", $bodyText);
     }
- /** Tests that, when loading the create_timepoint module, some
+   /** Tests that, when loading the Statistics module, some
      * text appears in the body.
      *
      * @return void
@@ -111,9 +107,9 @@ class Statistics_Test extends LorisIntegrationTest
     function testReliabilityStatisticsTab()
     {
         $this->safeGet($this->url . "/statistics/stats_reliability/?dynamictabs=dynamictabs");
-        $bodyText = $this->
-                safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
         $this->assertContains("Reliability Statistics", $bodyText);
 
     }
 
+}
