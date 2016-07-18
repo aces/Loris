@@ -259,6 +259,10 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $welcomeText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
+//test
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains("================================", $bodyText);
+//test
         $this->assertContains("Welcome", $welcomeText);
     }
 
@@ -318,11 +322,6 @@ class DashboardTest extends LorisIntegrationTest
              "user_accounts",
             )
         );
-        //test
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("================================", $bodyText);     
-        
-        //test
         $this->_testMytaskPanelAndLink(".pending-accounts", "1", "testUser1");
         $this->resetPermissions();
     }
@@ -388,11 +387,6 @@ class DashboardTest extends LorisIntegrationTest
              "access_all_profiles",
             )
         );
-                //test
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("================================", $bodyText);
-        
-        //test
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(".conflict_resolver", "1", "TestTestTest");
         $this->resetPermissions();
@@ -410,8 +404,7 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/dashboard/');
         sleep(5);
-        $link     = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector($className));
+        $link =$this->safeFindElement(WebDriverBy::cssSelector($className));
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
         $this->assertContains($value, $bodyText);
         $link->click();
