@@ -1,74 +1,107 @@
-DICOMFilterTable = React.createClass({
+DicomArchive = React.createClass({
     mixins: [React.addons.PureRenderMixin],
-    getFormValue: function(Name) {
-        if(this.props.FilterValues && this.props.FilterValues[Name]) {
-            return this.props.FilterValues[Name];
+
+    getInitialState: function() {
+        return {
+            Filter: {},
         }
-        return undefined;
+    },
+    getDefaultProps: function() {
+        return {
+            Gender: {
+                M: 'Male',
+                F: 'Female',
+                O: 'N/A'
+            }
+        }
+    },
+    setFilterValues: function(fieldName, fieldValue) {
+
+        // Create deep copy of a current filter
+        var Filter = JSON.parse(JSON.stringify(this.state.Filter));
+
+        if (fieldValue === "") {
+            delete Filter[fieldName];
+        } else {
+            Filter[fieldName] = fieldValue;
+        }
+
+        this.setState({Filter: Filter});
     },
     render: function() {
-        var Genders = {
-            M: 'Male',
-            F: 'Female',
-            O: 'N/A'
-        };
-        return (<FilterTable Module="dicom_archive">
-                <div className="row">
-                    <FilterField
-                        Label="Site"
-                        Type="Dropdown"
-                        Options={this.props.Sites}
-                        FormName="SiteID"
-                        Value={this.getFormValue("SiteID")}
-                    />
-                    <FilterField
-                        Label="Patient ID"
-                        Type="Text"
-                        FormName="PatientID"
-                        Value={this.getFormValue("PatientID")}
-                     />
-                </div>
-                <div className="row">
-                    <FilterField
-                        Label="Patient Name"
-                        Type="Text"
-                        FormName="PatientName"
-                        Value={this.getFormValue("PatientName")}
-                    />
-                    <FilterField
-                        Label="Gender"
-                        Type="Dropdown"
-                        Options={Genders}
-                        FormName="Gender"
-                        Value={this.getFormValue("Gender")}
-                    />
-                </div>
-                <div className="row">
-                    <FilterField
-                        Label="Date of Birth"
-                        Type="Text"
-                        FormName="DoB"
-                        Value={this.getFormValue("DoB")}
-                    />
-                    <FilterField
-                        Label="Acquisition Date"
-                        Type="Text"
-                        FormName="Acquisition"
-                        Value={this.getFormValue("Acquisition")}
-                    />
-                </div>
-                <div className="row">
-                    <FilterField
-                        Label="Archive Location"
-                        Type="Text"
-                        FormName="Location"
-                        Value={this.getFormValue("Location")}
-                    />
-                    <FilterActions Module="dicom_archive" />
-                </div>
-        </FilterTable>
+        return (
+            <div>
+                <FilterTable Module="dicom_archive">
+                    <div className="row">
+                        <div className="col-md-6">
+                            <TextboxElement
+                                name="Patient ID"
+                                label="Patient ID"
+                                onUserInput={this.setFilterValues}
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <TextboxElement
+                                name="Patient Name"
+                                label="Patient Name"
+                                onUserInput={this.setFilterValues}
+                            />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <SelectElement
+                                name="Sites"
+                                label="Sites"
+                                options={this.props.Sites}
+                                onUserInput={this.setFilterValues}
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <SelectElement
+                                name="Gender"
+                                label="Gender"
+                                options={this.props.Gender}
+                                onUserInput={this.setFilterValues}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-md-6">
+                            <DateElement
+                                name="Date Of Birth"
+                                label="Date of Birth"
+                                onUserInput={this.setFilterValues}
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <DateElement
+                                name="Acquisition"
+                                label="Acquisition Date"
+                                onUserInput={this.setFilterValues}
+                            />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <TextboxElement
+                                name="Archive Location"
+                                label="Archive Location"
+                                onUserInput={this.setFilterValues}
+                            />
+                        </div>
+                    </div>
+                </FilterTable>
+                <DynamicDataTable
+                    DataURL={this.props.DataURL}
+                    Filter={this.state.Filter}
+                    getFormattedCell={this.props.getFormattedCell}
+                />
+            </div>
         );
     }
-
 });
-RDICOMFilterTable = React.createFactory(DICOMFilterTable);
+
+
+RDicomArchive = React.createFactory(DicomArchive);
