@@ -42,7 +42,7 @@ class Statistics_Test extends LorisIntegrationTest
         $this->assertContains("General Description", $bodyText);
 
     }
-       /**
+    /**
      * Tests that the Statistics loads if the user has not the correct
      * permissions
      *
@@ -61,29 +61,26 @@ class Statistics_Test extends LorisIntegrationTest
         $this->resetPermissions();
     }
 
-       /**
+    /**
      * Tests that the Statistics loads if the user has the correct
      * permissions (data_entry)
      *
      * @return void
      */
-    function testLoadPageWithoutPermission()
+    function testLoadPageWithPermission()
     {
         $this->setupPermissions(array("data_entry"));
         $this->safeGet($this->url . "/statistics/");
-
-        // Test that the Imaging menu appears in the first row
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertNotContains("You do not have access to this page.", $bodyText);
-
         $this->resetPermissions();
     }
 
 
 
-    /** Tests that, when loading the Statistics module, some
+    /** Tests that, when loading the Statistics module behavioural tab, some
      * text appears in the body.
      *
      * @return void
@@ -99,7 +96,7 @@ class Statistics_Test extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("All Completion Statistics", $bodyText);
     }
-   /** Tests that, when loading the Statistics module, some
+   /** Tests that, when loading the Reliability Statistics Tab in Statistics module, some
      * text appears in the body.
      *
      * @return void
