@@ -1,0 +1,41 @@
+### This file is a example of data.frame file expected by the CouchDB importer of LORIS. 
+### File following this format will be transformed into a dataset.json file and N variable.json files. (Where N is the number of data lines)
+###
+### Comment line start with (###).
+### Those lines will be ignored.
+###
+### Any informations about history or provenance should be on a line stating with (##). 
+### Those informations should be represented as key, value pairs and will be kept as string.
+### The key needs to be a single word at the start of the line.
+### The actual separator is single comma.
+### Invalid lines will be ommited.
+### The following information are required :
+### --REQUIRED--> variable_type: This is used to create the tabs in the genomic browser. 
+### --REQUIRED--> variable_format: One of float, integer, string. variable values will always be stored as string be this specify of to display them.
+### --REQUIRED--> sample_count: How many column to treaty as samples starting from the right of the data.frame
+###
+### The headers line should start with a single (#).
+### There should be only one headers line.
+### Headers will be put to lower case, whites-space trimmed at both ends then spaces and dash will be replaced by underscore. ( UCSC Gene-group =>ucsc_gene_group)
+### Sample headers will not be modified.
+### The lines following the headers will be considered as data line.
+###
+### Data lines should contain at least 4 columns before the samples columns in the following order :
+### --REQUIRED--> variable_name, the unique identifier of the variable.
+### --REQUIRED--> chromosome, The chromosome where this variable is located.
+### --REQUIRED--> start_loc, The loci of that variable.
+### --REQUIRED--> size, The number of base paires covered by that variable.
+###
+### The parser script will stop at the first invaliud line.
+###
+## description, Example data.frame file type describing the format expected by the LORIS CouchDB import script. 
+## author,xlecours
+## project,LORIS demo data
+## normalisation_method,Python random() function
+## variable_type,Methylation Beta value
+## variable_format,float
+## sample_count,6
+# variable_name,chromosome,start_loc,size,gene_name,gene_acc_num,gene_group,12341234_R01C01,12341234_R01C02,12341234_R02C01,12341234_R02C02,12341234_R03C01,12341234_R03C02 
+cg17866181,1,536847,1,MORN1,NM_024848,Body,0.03771442,0.70914765,0.19532871,0.04765696,0.78155105,0.46059274
+cg14253035,1,981566,1,AGRN,NM_198576,Body,0.91822067,0.38131484,0.75674614,0.36899578,0.99989939,0.71954035
+cg16526047,1,949893,1,ISG15,NM_005101,3'UTR,0.35591484,0.72613193,0.58488640,0.43822592,0.69308487,0.84194751
