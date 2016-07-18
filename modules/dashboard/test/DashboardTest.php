@@ -259,10 +259,6 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $welcomeText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
-        //test
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("================================", $bodyText);
-        //test
         $this->assertContains("Welcome", $welcomeText);
     }
 
