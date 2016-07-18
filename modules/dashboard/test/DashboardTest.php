@@ -320,7 +320,8 @@ class DashboardTest extends LorisIntegrationTest
         );
         //test
         $bodyText = $this->webDriver->getPageSource();
-        printf($bodyText);
+        $this->assertContains("================================", $bodyText);     
+        
         //test
         $this->_testMytaskPanelAndLink(".pending-accounts", "1", "testUser1");
         $this->resetPermissions();
@@ -387,6 +388,11 @@ class DashboardTest extends LorisIntegrationTest
              "access_all_profiles",
             )
         );
+                //test
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains("================================", $bodyText);
+        
+        //test
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(".conflict_resolver", "1", "TestTestTest");
         $this->resetPermissions();
