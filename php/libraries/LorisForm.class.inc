@@ -81,6 +81,9 @@ class LorisForm
         if (isset($attribs['required']) && $attribs['required'] === true) {
             $el['required'] = true;
         }
+        if (isset($attribs['align'])) {
+            $el['align'] = $attribs['align'];
+        }
 
         return $el;
     }
@@ -346,7 +349,7 @@ class LorisForm
             $el = $this->addPassword($name, $label, $options);
             break;
         case 'header':
-            $el = $this->addHeader($name, $label);
+            $el = $this->addHeader($name, $label, $options);
             break;
         case 'advcheckbox':
             $el = $this->addCheckbox($name, $label, $options);
@@ -1046,7 +1049,17 @@ class LorisForm
      */
     function headerHTML($el)
     {
-        return "<h2>$el[label]</h2>";
+        $cls   = '';
+        $align = '';
+
+        if (isset($el['class'])) {
+            $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['align'])) {
+            $align = "align=\"$el[align]\"";
+        }
+
+        return "<h2 $cls $align>$el[label]</h2>";
     }
 
     /**
