@@ -1,4 +1,5 @@
 ### This file is a example of data.frame file expected by the CouchDB importer of LORIS. 
+### File following this format will be transformed into a dataset.json file and N variable.json files. (Where N is the number of data lines)
 ###
 ### Comment line start with (###).
 ### Those lines will be ignored.

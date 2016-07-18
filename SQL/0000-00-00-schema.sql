@@ -2006,15 +2006,20 @@ CREATE TABLE `genomic_candidate_files_rel` (
 
 DROP TABLE IF EXISTS `genomic_sample_candidate_rel`;
 CREATE TABLE `genomic_sample_candidate_rel` (
+  `genomic_file_id` int(10) unsigned NOT NULL,
   `sample_label` varchar(100) NOT NULL,
   `CandID` int(6) NOT NULL,
-  PRIMARY KEY (sample_label, CandID),
-  UNIQUE KEY `sample_label` (`sample_label`),
-  FOREIGN KEY (CandID)
-    REFERENCES candidate(CandID)
-    ON DELETE RESTRICT
+  PRIMARY KEY (`genomic_file_id`,`sample_label`),
+  UNIQUE KEY `idx_candid_sample_file` (`CandID`,`sample_label`,`genomic_file_id`),
+  FOREIGN KEY (`genomic_file_id`) 
+    REFERENCES `genomic_files` (`GenomicFileID`) 
+    ON DELETE NO ACTION 
+    ON UPDATE NO ACTION,
+  FOREIGN KEY (`CandID`) 
+    REFERENCES `candidate` (`CandID`) 
+    ON DELETE NO ACTION 
+    ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
-COMMENT = '';
 
 DROP TABLE IF EXISTS `genomic_cpg_annotation`;
 CREATE TABLE `genomic_cpg_annotation` (
