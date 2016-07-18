@@ -381,6 +381,29 @@ class LorisForm
     }
 
     /**
+     * Reimplementation of HTML_QuickForm's createSubmit function.
+     *
+     * Creates a text element that can be added to the page but
+     * does not itself add the element.
+     *
+     * @param string $elname  The name of the element to be added to
+     *                        the form
+     * @param string $value   The value of the element to be added to
+     *                        the form
+     * @param array  $attribs An array of extra HTML attributes to be
+     *                        added to this element.
+     *
+     * @return array of the form that can be added to $this->form
+     */
+    function createSubmit($elname, $value, $attribs = array())
+    {
+        $attribs['value'] = $value;
+        $el         =& $this->createBase($elname, null, $attribs);
+        $el['type'] = 'submit';
+        return $el;
+    }
+
+    /**
      * Reimplementation of HTML_QuickForm's createTextArea function.
      *
      * Creates a text element that can be added to the page but
@@ -755,6 +778,32 @@ class LorisForm
     }
 
     /**
+     * Generates the HTML to add to the page when rendered for a submit
+     * element.
+     *
+     * @param array  $el   The element to render from $this->form
+     * @param string $type The HTML input type to user for this input
+     *                     box
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function submitHTML($el, $type='submit')
+    {
+        $cls      = '';
+        if (isset($el['class'])) {
+            $cls = "class=\"$el[class]\"";
+        }
+        $value = $this->getValue($el['name']);
+        return "<input name=\"$el[name]\" type=\"$type\" $cls"
+            . (
+                (!empty($value) || $value === '0')
+                ? ' value="' . $this->getValue($el['value']) . '"'
+                : ''
+              )
+            .">";
+    }
+
+    /**
      * Generates the HTML to add to the page when a file is
      * added to the form.
      *
@@ -979,6 +1028,8 @@ class LorisForm
             return $this->headerHTML($el);
         case 'page':
             return '';
+        case 'submit':
+            return $this->submitHTML($el);
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
@@ -1251,6 +1302,8 @@ class LorisForm
             return $this->createText($elname, $label, $options, $attribs);
         case 'select':
             return $this->createSelect($elname, $label, $options, $attribs);
+        case 'submit':
+            return $this->createSubmit($elname, $label, $options);
         case 'static':
             /* Label seems to usually be the wrong attribute for static
              * elements?
