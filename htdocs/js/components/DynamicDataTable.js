@@ -70,6 +70,7 @@ DynamicDataTable = React.createClass({
 
         return React.createElement(StaticDataTable, { Headers: this.state.Headers,
             Data: this.state.Data,
+            Filter: this.props.Filter,
             getFormattedCell: this.props.getFormattedCell,
             freezeColumn: this.props.freezeColumn
         });
