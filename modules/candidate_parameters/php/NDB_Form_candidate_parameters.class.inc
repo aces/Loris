@@ -144,7 +144,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
  
        // Getting participant status default values
         $ps_info = $DB->pselectRow("SELECT study_consent,study_consent_date,study_consent_withdrawal,
-                                    reason_specify,participant_status,participant_suboptions
+                                    reason_specify,participant_status,participant_suboptions,
+                                    ndar_consent,ndar_consent_date,ndar_consent_withdrawal
                                     FROM participant_status
                                     WHERE CandID = :cid", array('cid'=>$this->identifier));
         if (empty ($ps_info['participant_status'])) {
@@ -804,7 +805,14 @@ class NDB_Form_candidate_parameters extends NDB_Form
                 $consent           = date_create();
                 $today             = date('Y-m-d'); 
                 $consent->setDate($consentDate['Y'], $consentDate['M'], $consentDate['d']);
-                $consent = $consent->format('Y-m-d'); 
+                $consent = $consent->format('Y-m-d');
+
+                //print_r($consentVal);
+
+                if ($consentVal == ""){
+                    print_r("bla".$consentVal);
+                    $errors[$fieldname] = "Consent status required \n";
+                }
                 if ($consent > $today) {
                     $errors[$fieldname.'_date'] = 'Cannot be later than today';
 
