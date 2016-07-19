@@ -15,9 +15,9 @@
  * Document Repository Class
  *
  * This class is for the Document Repository
- * 
+ *
  * @category Documentation
- * @package  Main 
+ * @package  Main
  * @author   Justin Kat <justinkat@gmail.com>, Mia Petkova <mia.petkova@gmail.com>
  * @license  GPLv3
  * @link     https://www.github.com/Jkat/Loris-Trunk/
@@ -28,15 +28,15 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
 
     var $centerIDMap;
     var $treeToArray = array();
-    
+
     function _hasAccess()
     {
-        
+
         //create user object
         $user =& User::singleton();
 
         return $user->hasPermission('document_repository_view') || $user->hasPermission('document_repository_delete');
-    
+
     }
 
     function _setupVariables()
@@ -49,8 +49,8 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         foreach ($pscRows AS $row) {
             $this->centerIDMap[$row['CenterID']] = $row['Name'];
         }
-        
-        $query = " FROM document_repository v"; 
+
+        $query = " FROM document_repository v";
         $query .= " WHERE COALESCE(v.hide_video, false)=false";
 
         // set the class variables
@@ -58,9 +58,9 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
                                'v.File_type', 'v.Instrument', 'v.uploaded_by', 'v.For_site', 'v.comments',
                                'v.Data_dir', 'v.Date_uploaded');
 
-        $openAccordion = $_GET['openAccordion'];	
+        $openAccordion = $_GET['openAccordion'];
         $this->tpl_data['openAccordion'] = $openAccordion;
-        $filtered = $_GET['filtered'];	
+        $filtered = $_GET['filtered'];
         $this->tpl_data['filtered'] = $filtered;
         $this->query = $query;
         $this->group_by = '';
@@ -89,7 +89,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
 
         $list_of_sites = Utility::getSiteList(true, false);
            // allow to view all sites data through filter
-        if ($user->hasPermission('access_all_profiles')) { 
+        if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             if (is_array($list_of_sites)) $list_of_sites = array(null => 'Any') + $list_of_sites;
         } else {
@@ -101,13 +101,13 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         }
 
         $list_of_instruments = Utility::getAllInstruments();
-        
+
         $list_of_visit_labels = array_merge(array(null=>"Any") + Utility::getVisitList());
         $subproject_options = Utility::getSubprojectList();
         $subproject_options = array(null=>'Any') + $subproject_options;
 
         $DB = Database::singleton();
-        
+
         //There's no dropdown filter for file names?
         //$fileNames = $DB->pselect("Select File_name from document_repository", array());
         $fileTypes = array();
@@ -118,11 +118,11 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         $fileTypes = array_merge(array(null=>'Any') + $fileTypes);
 
         // Form Elements
-        $this->addBasicText('File_name', 'File name:'); 
-        $this->addBasicText('version', 'Version:'); 
+        $this->addBasicText('File_name', 'File name:');
+        $this->addBasicText('version', 'Version:');
 
-        $this->addSelect('File_type', 'File type:', $fileTypes); 
-        $this->addSelect('File_category', 'File category:', $fileCategories); 
+        $this->addSelect('File_type', 'File type:', $fileTypes);
+        $this->addSelect('File_category', 'File category:', $fileCategories);
         $this->tpl_data['Sites'] = $list_of_sites;
         $this->tpl_data['Instruments'] = $list_of_instruments;
         $user =& User::singleton();
@@ -130,7 +130,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         $this->tpl_data['User'] = $userID;
         $this->addSelect('For_site', 'For Site:', $list_of_sites);
         $this->addBasicText('uploaded_by', 'Uploaded By:');
-       
+
         return true;
     }
 
@@ -175,7 +175,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
      * Works the same as NDB_Menu_Filter but doesn't include limit.
      * The document_repository is not paginated
      */
-    function _getPreparedQuery() 
+    function _getPreparedQuery()
     {
         $DB = Database::singleton();
 
@@ -237,12 +237,12 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
             $tree; // contains the newly sorted tree.
         }
 
-        $IDCategories = $DB->pselect("SELECT id,category_name,parent_id,comments FROM document_repository_categories ORDER BY parent_id", array());	
+        $IDCategories = $DB->pselect("SELECT id,category_name,parent_id,comments FROM document_repository_categories ORDER BY parent_id", array());
         $tmpIDCategories = $IDCategories;
 
         //$tree is an object with references, so here we are encoding it as json and then decoding it into a php associative array
         $tmpIDCategories = json_decode(json_encode($tree), true);
-        $categoryOrdering = $this->parseTree($tmpIDCategories); 
+        $categoryOrdering = $this->parseTree($tmpIDCategories);
 
         foreach ($categoryOrdering as $order) {
             foreach ($IDCategories as $key=>$value) {
@@ -251,7 +251,8 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
                     $fileCategories[$CategoryID] = array(
                         'CategoryName' => $this->parseCategory($value),
                         'Comment'      => $value['comments'],
-                        'Files'        => array()
+                        'Files'        => array(),
+                        'ParentID'     => $value['parent_id']
                     );
                 }
             }
@@ -293,7 +294,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         $prepared = $DB->prepare($query['query']);
         $prepared->execute($query['params']);
 
-        $site_names = Utility::getSiteList(true); 
+        $site_names = Utility::getSiteList(true);
         // print out
         $x = 0;
         while ($item = $prepared->fetch(PDO::FETCH_ASSOC)) {
@@ -312,13 +313,13 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         return true;
     }
 
-    
+
     function format_size($value)
     {
         if (is_null($value)) {
             return null;
         }
-      
+
         if ($value >= 1000000000) {
             $value = floor($value/1000000000);
             return "{$value} GB";
@@ -331,9 +332,28 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
             $value = floor($value/1000);
             return "{$value} KB";
         }
-      
+
         return "{$value} bytes";
-      
+
+    }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/document_repository/js/document_repository_helper.js",
+            )
+        );
     }
 }
 

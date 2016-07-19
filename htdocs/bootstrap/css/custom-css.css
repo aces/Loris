@@ -35,12 +35,12 @@ table th{
 .pis {
     height: 80px;
 }
-.table-scroll { 
+.table-scroll {
     overflow-x:auto;
     padding-bottom:1px;
 }
-.table-scroll-static { 
-    overflow-x:auto;  
+.table-scroll-static {
+    overflow-x:auto;
     margin-left:7em;
     padding-bottom:1px;
 }
@@ -53,12 +53,12 @@ table th{
     margin-left:10em;
 }
 .static-col {
-    position:absolute; 
-    width:7em; 
+    position:absolute;
+    width:7em;
     left:0;
     top:auto;
     word-wrap: break-word;
-    border-right: 0px none black; 
+    border-right: 0px none black;
     border-top-width:3px; /*only relevant for first row*/
 }
 .colm-static{
@@ -125,7 +125,7 @@ ul#navlist {
 	display: inline;
 	list-style-type: none;
 }
-/* 
+/*
  *  Styling for modals
  */
 .modal-header {
@@ -187,6 +187,13 @@ div.navbar div.container div.navbar-brand {
  * Styling for the breadcrumbs
  */
 
+.btn-breadcrumb {
+  width: 100%;
+  background-color: #064785;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
 /*
  * Breadcrumbs from http://bootsnipp.com/snippets/featured/triangle-breadcrumbs-arrows
  */
@@ -215,52 +222,45 @@ div.navbar div.container div.navbar-brand {
   position: absolute;
   top: 50%;
   margin-top: -17px;
-  margin-left: 1px;
+  margin-left: 2px;
   left: 100%;
   z-index: 3;
 }
 
+/** The Spacing **/
 .btn-breadcrumb .btn {
-  padding:1px 12px 1px 24px;
-  border: 0px;
+  padding:6px 12px 6px 24px;
 }
 .btn-breadcrumb .btn:first-child {
-  padding:1px 6px 1px 10px;
+  padding:6px 6px 6px 10px;
 }
 .btn-breadcrumb .btn:last-child {
-  padding:1px 18px 1px 24px;
+  padding:6px 18px 6px 24px;
 }
 
 /** Primary button **/
-.btn.btn-primary {
-  color: white;
-}
 .btn-breadcrumb .btn.btn-primary:not(:last-child):after {
   border-left: 10px solid #064785;
+  -webkit-transition: border-color 0.2s ease-in; /* Safari */
+  transition: border-color 0.2s ease-in;
 }
 .btn-breadcrumb .btn.btn-primary:not(:last-child):before {
-  border-left: 12px solid #042d54;
+  border-left: 10px solid #042d54;
+  -webkit-transition: border-color 0.2s ease-in; /* Safari */
+  transition: border-color 0.2s ease-in;
 }
 .btn-breadcrumb .btn.btn-primary:hover:not(:last-child):after {
-  border-left: 12px solid #042d54;
+  border-left: 10px solid #042d54;
 }
 .btn-breadcrumb .btn.btn-primary:hover:not(:last-child):before {
   border-left: 10px solid #042d54;
 }
-.btn-breadcrumb .btn.btn-primary:hover {
-  border-bottom: 5px solid #042d54;
-  border-top: 5px solid #042d54;
-  margin-left: 1px;
-}
-.btn-breadcrumb:hover {
-  padding: 0px;
-}
-.btn-breadcrumb:hover .btn-primary {
-  border-bottom: 5px solid #064785;
-  border-top: 5px solid #064785;
-}
-.btn-breadcrumb {
-  width: 100%;
+
+a.btn.btn-primary {
+  color: #fff;
+  border-color: transparent;
+  -webkit-transition: background-color 0.2s ease-in; /* Safari */
+  transition: background-color 0.2s ease-in;
 }
 
 /* The responsive part */
@@ -378,4 +378,20 @@ div.navbar div.container div.navbar-brand {
  */
 .dropdownSearch {
   padding: 10px;
+}
+
+
+/* Style login navbar and logo */
+.navbar {
+  border-radius: 0;
+}
+
+.navbar-brand {
+  height: auto;
+}
+
+.navbar-brand .study-logo {
+  width: 64px;
+  height: 57px;
+  margin-bottom: 10px;
 }

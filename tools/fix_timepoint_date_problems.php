@@ -309,7 +309,7 @@ function addInstrument($sessionID, $testName)
  * @param string type of the date to change
  * @param date the new date in format YYYY-MM-DD
  * @param int sessionID, optional
- * @throws PEAR::error
+ * @throws LorisException
  * @return void
  */
 function fixDate($candID, $dateType, $newDate, $sessionID=null)
@@ -411,7 +411,7 @@ function fixDate($candID, $dateType, $newDate, $sessionID=null)
  * @param  string dateType, type of date to change
  * @param  string date, new date to use to define the battery
  * @return array list of missing instruments
- * @throws PEAR error
+ * @throws LorisException
  */
 function diagnose($sessionID, $dateType=null, $newDate=null)
 {

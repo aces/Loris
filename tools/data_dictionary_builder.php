@@ -58,12 +58,19 @@ $client->makeCommandLine();
 $client->initialize($configFile);
 $DB = Database::singleton();
 
+// Set a user for the history table
+if (!isset($_SESSION['State'])) {
+    $_SESSION['State'] =& State::singleton();
+}
+$_SESSION['State']->setUsername(get_current_user());
+
 // define which configuration file we're using for this installation
 //Get the entries we already have in the DB
 getColumns(
     "Select Name, ParameterTypeID from parameter_type",
     $DB,
-    $parameter_types
+    $parameter_types,
+    array()
 );
 
 //Delete in the parameter_type table relating to
@@ -72,25 +79,25 @@ getColumns(
 getColumn(
     "SELECT ParameterTypeCategoryID
         FROM parameter_type_category
-        WHERE Type = 'Instrument'",
+        WHERE Type = :in",
     $DB,
-    $instrumentParameterTypeCategoryIDs
+    $instrumentParameterTypeCategoryIDs,
+    array('in' => 'Instrument')
 );
 
-$instrumentParameterTypeCategoryIDString = implode(
-    ', ',
-    $instrumentParameterTypeCategoryIDs
-);
+if (!empty($instrumentParameterTypeCategoryIDs)) {
+    // Prepare for the IN () SQL quandary
+    $prepIn = prepareIn($instrumentParameterTypeCategoryIDs);
 
-if (!empty($instrumentParameterTypeCategoryIDString)) {
     //get all 'Instrument' ParameterTypeIDs
     getColumn(
         "SELECT ParameterTypeID
             FROM parameter_type_category_rel
             WHERE ParameterTypeCategoryID
-            IN ($instrumentParameterTypeCategoryIDString)",
+            IN (" . $prepIn['query'] . ")",
         $DB,
-        $instrumentParameterTypeIDs
+        $instrumentParameterTypeIDs,
+        $prepIn['array']
     );
 
     $instrumentParameterTypeIDString = implode(', ', $instrumentParameterTypeIDs);
@@ -387,16 +394,17 @@ function enumizeOptions($options, $table, $name)
 /**
  * Runs a MySQL query and returns the result in
  *
- * @param string   $query  The SQL query to run
- * @param Database $DB     Reference to the Database object
- * @param array    $result A reference to an array in which to
+ * @param string   $query     The SQL query to run
+ * @param Database $DB        Reference to the Database object
+ * @param array    $result    A reference to an array in which to
+ * @param array    $preparray Values for the prepared statements
  *                         store the output.
  *
  * @return an array of the results of the query
  */
-function getColumn($query, &$DB, &$result)
+function getColumn($query, &$DB, &$result, $preparray)
 {
-    $DB->select($query, $TwoDArray);
+    $TwoDArray = $DB->pselect($query, $preparray);
     foreach ($TwoDArray as $container=>$cell) {
         foreach ($cell as $key=>$value) {
             $result[] = $value;
@@ -408,22 +416,48 @@ function getColumn($query, &$DB, &$result)
 /**
  * Builds an array parameterTypeID=>Name
  *
- * @param string   $query  The SQL query to run
- * @param Database $DB     Reference to the Database object
- * @param array    $result A reference to an array in which to
+ * @param string   $query     The SQL query to run
+ * @param Database $DB        Reference to the Database object
+ * @param array    $result    A reference to an array in which to
+ * @param array    $preparray Values for the prepared statements
  *                         store the output.
  *
  * @return array An array of the query where the index of the
  *               array is the ParameterTypeID and the value
  *               is the row from the query supplied.
  */
-function getColumns($query, &$DB, &$result)
+function getColumns($query, &$DB, &$result, $preparray)
 {
-    $DB->select($query, $TwoDArray);
+    $TwoDArray = $DB->pselect($query, $preparray);
     foreach ($TwoDArray as $containers=>$cells) {
         $values = array_values($cells);
         $result[$values[0]] = $values[1];
     }
+    return $result;
+}
+
+/**
+ * Builds an array and a string to allow IN () to be prepared
+ *
+ * @param array $preparray Values for the prepared statements
+ *
+ * @return array   a string of keys for the query, and key value pairs to prepare
+ */
+function prepareIn($preparray)
+{
+    $varray = array();
+    $karray = array();
+    $i      = 0;
+
+    foreach ($preparray as $value) {
+        $key          = 'zqx' . $i;
+        $karray[]     = ':' . $key;
+        $varray[$key] = $value;
+        $i++;
+    }
+
+    $result['query'] = implode(',', $karray);
+    $result['array'] = $varray;
     return $result;
 }
 
