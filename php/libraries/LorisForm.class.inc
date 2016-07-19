@@ -100,7 +100,7 @@ class LorisForm
      *
      * @return &array A reference to the array that was added to $this->form
      */
-    protected function &addBase($name, $label, $attribs)
+    protected function &addBase($name, $label, $attribs = array())
     {
         $el = $this->createBase($name, $label, $attribs);
         $this->form[$name] =& $el;
@@ -163,6 +163,21 @@ class LorisForm
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'password';
+        return $el;
+    }
+
+    /**
+     * Reimplementation of HTML_QuickForm's "addHidden" API.
+     *
+     * @param string $name    The element name.
+     * @param string $value   The element value.
+     *
+     * @return &array
+     */
+    public function addHidden($name, $value)
+    {
+        $el         =& $this->addBase($name, null, array('value' => $value));
+        $el['type'] = 'hidden';
         return $el;
     }
 
@@ -353,6 +368,9 @@ class LorisForm
             break;
         case 'advcheckbox':
             $el = $this->addCheckbox($name, $label, $options);
+            break;
+        case 'hidden':
+            $el = $this->addHidden($name, $label);
             break;
         case 'text':
         default:
@@ -797,14 +815,30 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        $value = $this->getValue($el['name']);
-        return "<input name=\"$el[name]\" type=\"$type\" $cls"
-            . (
-                (!empty($value) || $value === '0')
-                ? ' value="' . $this->getValue($el['value']) . '"'
-                : ''
-              )
-            .">";
+        $value = '';
+        if (isset($el['value'])) {
+            $value = "value=\"$el[value]\"";
+        }
+        return "<input name=\"$el[name]\" type=\"$type\" $cls $value>";
+    }
+
+    /**
+     * Generates the HTML to add to the page when rendered for a hidden
+     * element.
+     *
+     * @param array  $el   The element to render from $this->form
+     * @param string $type The HTML input type to user for this input
+     *                     box
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function hiddenHTML($el, $type='hidden')
+    {
+        $value = '';
+        if (isset($el['value'])) {
+            $value = "value=\"$el[value]\"";
+        }
+        return "<input name=\"$el[name]\" type=\"$type\" $value>";
     }
 
     /**
@@ -1034,6 +1068,8 @@ class LorisForm
             return '';
         case 'submit':
             return $this->submitHTML($el);
+        case 'hidden':
+            return $this->hiddenHTML($el);
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
