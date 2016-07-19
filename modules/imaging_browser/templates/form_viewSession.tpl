@@ -71,6 +71,6 @@
    </div> <!-- closing panel-body div-->
 </div>
 {else}
-    <h3>No data selected</h3>
+    <h3>No data available</h3>
 </div>
 {/if}

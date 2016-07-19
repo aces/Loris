@@ -49,7 +49,7 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
         // PSC
         if ($user->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
-            $list_of_sites =& Utility::getSiteList(false);
+            $list_of_sites = Utility::getSiteList(false);
             if(is_array($list_of_sites)) $list_of_sites = array('' => 'All') + $list_of_sites;
         }
         else {

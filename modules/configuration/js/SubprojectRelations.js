@@ -1,4 +1,6 @@
 var SubprojectRelations = React.createClass({
+    displayName: "SubprojectRelations",
+
     getDefaultProps: function () {
         return {
             "Relations": {}
