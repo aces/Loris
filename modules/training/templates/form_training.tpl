@@ -94,7 +94,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <p>You are now certified.</p>
+                <p>All of your answers were correct! You are now certified.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -108,11 +108,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <p>Your answers were not correct. You can repeat the training and try again to get certified.</p>
+                <p>Not all of your answers were correct. Please review the corrections before moving on to the next training module.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" onclick="window.location.href='{$baseurl}/training/'">Return to training center</button>
-                <button type="button" class="btn btn-primary" onclick="tryAgain()">Try again</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
