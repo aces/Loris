@@ -303,5 +303,24 @@ function getDIUsers()
     return $user_ids;
 }
 
+/**
+ * Include the column formatter required to display the feedback link colours
+ * in the candidate_list menu
+ *
+ * @return array of javascript to be inserted
+ */
+function getJSDependencies()
+{
+    $factory = NDB_Factory::singleton();
+    $baseURL = $factory->settings()->getBaseURL();
+    $deps    = parent::getJSDependencies();
+    return array_merge(
+        $deps,
+        array(
+         $baseURL . "/data_integrity_flag/js/data_integrity_flag_helper.js",
+        )
+    );
+}
+
 }
 ?>

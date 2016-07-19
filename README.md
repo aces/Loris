@@ -1,4 +1,4 @@
-#LORIS Neuroimaging Platform
+#LORIS Neuroimaging Platform [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=16.1-dev)](https://travis-ci.org/aces/Loris)
 
 LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
@@ -8,6 +8,11 @@ This Readme covers installation of the <b>17.0</b> LORIS development branch on <
 If you are looking to install a stable release, please consult the [Releases page](https://github.com/aces/Loris/releases) and the Readme for the last stable release.
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
+
+<b>⇾  Deploy on Heroku</b>
+As an alternative to installing LORIS on your system (per instructions below), LORIS can now be deployed on Heroku.
+Note: Your default credentials after deployment will be 'admin' as the username and your password will be the uniquely generated password used by ClearDB.
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/16.1-dev)
 
 # Prerequisites for Installation
 
