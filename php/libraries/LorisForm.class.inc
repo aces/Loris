@@ -717,14 +717,15 @@ class LorisForm
      *
      * @return string A string of the HTML markup to render
      */
-    function groupHTML($el)
+    function groupHTML(&$el)
     {
         $retVal = '';
-        foreach ($el['elements'] as $element) {
+        foreach ($el['elements'] as &$element) {
             if (isset($el['options']['prefix_wrapper'])) {
                 $retVal .= $el['options']['prefix_wrapper'];
             }
-            $retVal .= $this->renderElement($element);
+            $element['html'] = $this->renderElement($element);
+            $retVal .= $element['html'];
             if (isset($el['options']['postfix_wrapper'])) {
                 $retVal .= $el['options']['postfix_wrapper'];
             }
@@ -1006,7 +1007,7 @@ class LorisForm
      *
      * @return string the HTML for the given element.
      */
-    function renderElement($el)
+    function renderElement(&$el)
     {
         switch($el['type']) {
         case 'date':
