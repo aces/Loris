@@ -66,13 +66,19 @@ function uploadFile()
         exit;
     }
 
-    // Get media path
+    // Validate media path and destination folder
     $mediaPath = $config->getSetting('paths')['mediaPath'];
-    if (!isset($mediaPath) && !file_exists($mediaPath)) {
-        echo "Error! Media path is not set in Loris Settings!";
 
-        return;
+    if (!isset($mediaPath)) {
+        showError("Error! Media path is not set in Loris Settings!");
+        exit;
     }
+
+    if (!file_exists($mediaPath)) {
+        showError("Error! The upload folder '$mediaPath' does not exist!");
+        exit;
+    }
+
     // Make sure folder is writable
     chmod($mediaPath, 0777);
 
