@@ -1,6 +1,6 @@
 <br />
-{literal}
 <script type="text/javascript" src="{$baseurl}/js/invalid_form_scroll.js"></script>
+{literal}
 <script>
 
 $(document).ready(function() {

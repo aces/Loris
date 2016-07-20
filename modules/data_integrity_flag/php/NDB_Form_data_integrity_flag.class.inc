@@ -182,7 +182,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         // create Database object
         $DB = Database::singleton();
 
-        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments' &&  $_REQUEST[$Filter] !=='All Visits') {
+        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments' && $_REQUEST[$Filter] !=='No instruments for this visit' &&  $_REQUEST[$Filter] !=='All Visits') {
 
             if ($Filter =='instrument'){
                 $test_name = $this->getTestNameusingMappedName($_REQUEST[$Filter]); //get actual test_name
@@ -301,6 +301,25 @@ function getDIUsers()
         $user_ids[$user['dataflag_userid']] = $user['dataflag_userid'];
     }
     return $user_ids;
+}
+
+/**
+ * Include the column formatter required to display the feedback link colours
+ * in the candidate_list menu
+ *
+ * @return array of javascript to be inserted
+ */
+function getJSDependencies()
+{
+    $factory = NDB_Factory::singleton();
+    $baseURL = $factory->settings()->getBaseURL();
+    $deps    = parent::getJSDependencies();
+    return array_merge(
+        $deps,
+        array(
+         $baseURL . "/data_integrity_flag/js/data_integrity_flag_helper.js",
+        )
+    );
 }
 
 }

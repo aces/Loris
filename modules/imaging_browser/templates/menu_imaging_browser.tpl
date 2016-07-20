@@ -9,7 +9,9 @@
     }
 </script>
 {/literal}
-
+<script>
+    loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+</script>
 <div class="row">
 <div class="col-sm-9">
 <div class="panel panel-primary">

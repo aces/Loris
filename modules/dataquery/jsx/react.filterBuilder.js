@@ -17,14 +17,16 @@ LogicOperator = React.createClass({
 	render: function() {
 		// Renders the html for the component
 
-		var andClass = "btn btn-primary",
-			orClass = "btn btn-primary";
+		var andClass = "btn",
+			orClass = "btn";
 
 		// Set operator to OR if logicOperator is 1, AND otherwise
 		if(this.props.logicOperator === 1) {
-			orClass += " active";
+			orClass += " btn-primary";
+			andClass += " switch"
 		} else {
-			andClass += " active";
+			andClass += " btn-primary";
+			orClass += " switch"
 		}
 		return (
 			<div className="btn-group" role="group">
@@ -65,7 +67,7 @@ FilterRule = React.createClass({
             }, 'json');
 		}
 	},
-	fieldSelect: function() {
+	fieldSelect: function(event) {
 		// Update the rules desired field, setting the rules field and field type
 		var rule = this.props.rule;
 		delete rule.field;
@@ -80,7 +82,7 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
-	operatorSelect: function() {
+	operatorSelect: function(event) {
 		// Update the desired rule operation for the selected field
 		var rule = this.props.rule;
 		delete rule.operator;
@@ -92,7 +94,7 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(that.props.index, rule);
 	},
-	valueSet: function() {
+	valueSet: function(event) {
 		// Update the value to filter for, and runs the query for the rules parameters
 		var rule = this.props.rule,
 			that = this;
@@ -460,7 +462,7 @@ FilterGroup = React.createClass({
 				<button className="btn btn-danger btn-sm pull-right"
 										onClick={this.props.deleteGroup.bind(this, this.props.index)}
 				>
-					<span className="glyphicon glyphicon-remove"></span> Add Rule
+					<span className="glyphicon glyphicon-remove"></span> Delete Group
 				</button>
 			)
 		}

@@ -169,7 +169,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
     function _setFilterForm()
     {
         $list_of_sites = array('' => 'All');
-        $sitesList = Utility::getSiteList(false);
+        $sitesList = Utility::getSiteList();
 
         foreach ($sitesList as $key=>$value) {
             $list_of_sites[$key]= $value;
@@ -324,6 +324,11 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
                 $row[1] = 'INVALID - HIDDEN';
             }
 
+            // remove Transfer_Status column if showTransferStatus is false
+            if ($this->dicomArchiveSettings['showTransferStatus'] == 'false') {
+                array_shift($row);
+            }
+
             $data[] = $row;
         }
         return array(
@@ -340,6 +345,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             $deps,
             array(
                 $baseURL . "/dicom_archive/js/columnFormatter.js",
+                $baseURL . "/dicom_archive/js/dicom_archive_helper.js",
             )   
         );  
     }

@@ -140,7 +140,8 @@ DataQueryApp = React.createClass({
             "field"      : rule.field,
             "operator"   : rule.operator,
             "value"      : rule.value,
-            "instrument" : rule.instrument
+            "instrument" : rule.instrument,
+            "visit"      : rule.visit
         }
         return savedRule;
     },
@@ -169,7 +170,7 @@ DataQueryApp = React.createClass({
 
         $.post(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=saveQuery.php",
             {
-                Fields: this.state.fields,
+                Fields: this.state.selectedFields,
                 Filters: filter,
                 QueryName: name,
                 SharedQuery: shared,
@@ -281,7 +282,34 @@ DataQueryApp = React.createClass({
         $.ajax({
             url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script,
             success: function(data) {
-                rule.session = data;
+                var i,
+                    allSessions = {},
+                    allCandiates = {};
+                // Loop through data and divide into individual visits with unique PSCIDs
+                // storing a master list of unique PSCIDs
+                for(i = 0; i < data.length; i++){
+                    if(!allSessions[data[i][1]]){
+                        allSessions[data[i][1]] = [];
+                    }
+                    allSessions[data[i][1]].push(data[i][0]);
+                    if(!allCandiates[data[i][0]]){
+                        allCandiates[data[i][0]] = []
+                    }
+                    allCandiates[data[i][0]].push(data[i][1]);
+                }
+                rule.candidates = {
+                    "allCandiates" : allCandiates,
+                    "allSessions" : allSessions
+                };
+                if (rule.visit == "All") {
+                    rule.session = Object.keys(allCandiates);
+                } else {
+                    if (allSessions[rule.visit]) {
+                        rule.session = allSessions[rule.visit];
+                    } else {
+                        rule.session = [];
+                    }
+                }
             },
             async: false,
             data: {
@@ -314,7 +342,9 @@ DataQueryApp = React.createClass({
     loadSavedQuery: function (fields, criteria) {
         // Used to load a saved query
 
-        var filterState = {};
+        var filterState = {},
+            selectedFields = {},
+            fieldsList = [];
         if(Array.isArray(criteria)){
             // This is used to load a query that is saved in the old format
             // so translate it into the new format, grouping the given critiras
@@ -331,7 +361,8 @@ DataQueryApp = React.createClass({
                         "instrument" : fieldInfo[0],
                         "field"      : fieldInfo[1],
                         "value"      : item.Value,
-                        "type"       : "rule"
+                        "type"       : "rule",
+                        "visit"      : "All"
                     };
                 switch(item.Operator) {
                     case "=":
@@ -352,14 +383,55 @@ DataQueryApp = React.createClass({
                 }
                 return rule;
             });
+
+            var fieldSplit;
+            fieldsList = fields;
+            for(var i = 0; i < fields.length; i++){
+                fieldSplit = fields[i].split(",");
+                if(!selectedFields[fieldSplit[0]]){
+                    selectedFields[fieldSplit[0]] = {};
+                    selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
+                    selectedFields[fieldSplit[0]].allVisits = {};
+                    for(var key in this.props.Visits){
+                        selectedFields[fieldSplit[0]].allVisits[key] = 1;
+                        selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+                    }
+                } else {
+                    selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
+                    for(var key in this.props.Visits){
+                        selectedFields[fieldSplit[0]].allVisits[key]++;
+                        selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+                    }
+                }
+            }
         } else {
             // Query was saved in the new format
             filterState = criteria;
+            selectedFields = fields;
+            for(var instrument in fields){
+                for(var field in fields[instrument]){
+                    if(field === "allVisits"){
+                        continue;
+                    } else {
+                        fieldsList.push(instrument + "," + field);
+                    }
+                }
+            }
         }
-        filterState = this.loadFilterGroup(filterState);
+        if(filterState.children){
+            filterState = this.loadFilterGroup(filterState);
+        } else {
+            filterState.children = [
+                    {
+                        type: "rule"
+                    }
+            ];
+            filterState.session = this.props.AllSessions;
+        }
         this.setState(function(state) {
            return  {
-                fields: fields,
+                fields: fieldsList,
+                selectedFields: selectedFields,
                 filter: filterState,
                 alertLoaded: true,
                 alertSaved: false
@@ -375,7 +447,11 @@ DataQueryApp = React.createClass({
                 // Adding a new visit for field, add visit to field and
                 // increase count of visit in allVisits
                 temp[field.field][visit] = visit;
-                temp.allVisits[visit]++;
+                if(temp.allVisits[visit]){
+                    temp.allVisits[visit]++;
+                } else {
+                    temp.allVisits[visit] = 1;
+                }
             } else {
                 // Removing visit, delete visit from field
                 delete temp[field.field][visit];
@@ -444,15 +520,19 @@ DataQueryApp = React.createClass({
                 }
             } else {
                 // The category already has fields but not the desired one, add it
-                selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+                // var selectedVisits = Object.keys(selectedFields[category].allVisits);
+                if(!selectedFields[category][fieldName]) {
+                    selectedFields[category][fieldName] = {};
+                }
+                // selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
 
                 // Increment the visit count for the visit, setting it to 1 if doesn't exist
-                for(var key in that.props.Visits){
-                    if(selectedFields[category].allVisits[key]){
-                        selectedFields[category].allVisits[key]++;
-                    } else {
-                        selectedFields[category].allVisits[key] = 1;
+                for(var key in selectedFields[category].allVisits){
+                    if(key == "allVisits") {
+                        continue;
                     }
+                    selectedFields[category].allVisits[key]++;
+                    selectedFields[category][fieldName][key] = key;
                 }
                 fields.push(category + "," + fieldName);
                 if(downloadable){
@@ -700,10 +780,10 @@ DataQueryApp = React.createClass({
     },
     resetQuery: function(){
         // Used to reset the current query
-// TODO: reset values of new format
         this.setState({
             fields: [],
-            criteria: {}
+            criteria: {},
+            selectedFields : {}
         });
     },
     changeDataDisplay: function(displayID){

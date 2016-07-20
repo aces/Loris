@@ -87,9 +87,8 @@ LoadPane = React.createClass({
 				break;
 		}
 		return (
-			<TabPane Title="Load Instrument"
-                TabId={this.props.TabId}>
-                	<div className="col-sm-4 col-xs-12">
+			<TabPane Title="Load Instrument" TabId={this.props.TabId}>
+                	<div className="col-sm-6 col-xs-12">
                 		{alert}
 						<input className="fileUpload"
 							   type="file" id="instfile"
@@ -283,10 +282,10 @@ DisplayElements = React.createClass({
 										<LorisElement element={element} />
 									</td>
 									<td className="col-xs-2">
-										<button onClick={this.props.editElement.bind(this, i)} className="button">
+										<button onClick={this.props.editElement.bind(this, i)} className="button editButton">
 											Edit
 										</button>
-										<button onClick={this.props.deleteElement.bind(this, i)} className="button">
+										<button onClick={this.props.deleteElement.bind(this, i)} className="button deleteButton">
 											Delete
 										</button>
 									</td>
@@ -546,14 +545,16 @@ InstrumentBuilderApp = React.createClass({
 		return (
 			<div>
 				<ul className="nav nav-tabs" role="tablist">
-					<li role="presentation"><a href="#Load" aria-controls="home" role="tab" data-toggle="tab">Load</a></li>
-				    <li role="presentation" className="active"><a href="#Build" aria-controls="build" role="tab" data-toggle="tab">Build</a></li>
-				    <li role="presentation"><a href="#Save" aria-controls="messages" role="tab" data-toggle="tab">Save</a></li>
+					<li role="presentation"><a href="#Load" id="load" aria-controls="home" role="tab" data-toggle="tab">Load</a></li>
+				    <li role="presentation" className="active"><a href="#Build" id="build" aria-controls="build" role="tab" data-toggle="tab">Build</a></li>
+				    <li role="presentation"><a href="#Save" id="save" aria-controls="messages" role="tab" data-toggle="tab">Save</a></li>
 				 </ul>
 
-			  	<div className="tab-content col-xs-12">
-				    {tabs}
-			  	</div>
+				<div className="row">
+					<div className="tab-content col-xs-12">
+						{tabs}
+					</div>
+				</div>
 			</div>
 		)
 	}

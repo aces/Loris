@@ -11,8 +11,8 @@
  RewriteRule ^([0-9]{6,6})/([0-9]+)/$ main.php?test_name=instrument_list&candID=$1&sessionID=$2
 
 # Redirect /CandID/Visit/Instrument/(subtest/) to the instrument
- RewriteRule ^([0-9]{6,6})/([0-9]+)/([a-zA-Z_]+)/$ main.php?test_name=$3&candID=$1&sessionID=$2 [QSA]
- RewriteRule ^([0-9]{6,6})/([0-9]+)/([a-zA-Z_]+)/([a-zA-Z0-9_]+)/$ main.php?test_name=$3&candID=$1&sessionID=$2&subtest=$4 [QSA]
+ RewriteRule ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/$ main.php?test_name=$3&candID=$1&sessionID=$2 [QSA]
+ RewriteRule ^([0-9]{6,6})/([0-9]+)/([a-zA-Z0-9_]+)/([a-zA-Z0-9_]+)/$ main.php?test_name=$3&candID=$1&sessionID=$2&subtest=$4 [QSA]
 
  # Preferences is a special case for url rewriting
  RewriteRule ^preferences/$ /main.php?test_name=user_accounts&subtest=my_preferences
@@ -21,11 +21,11 @@
  #          /foo/js/javascriptfile.js
  #          /foo/ajax/AjaxScript.php
  # To use the appropriate helper script as well.
- RewriteRule ^([a-zA-Z_-]+)/$ main.php?test_name=$1 [QSA]
+ RewriteRule ^([a-zA-Z0-9_-]+)/$ main.php?test_name=$1 [QSA]
  RewriteRule ^([a-zA-Z_-]+)/css/([a-zA-Z0-9_.-]+)$ GetCSS.php?Module=$1&file=$2
  RewriteRule ^([a-zA-Z_-]+)/js/([a-zA-Z0-9_.-]+)$ GetJS.php?Module=$1&file=$2
  RewriteRule ^([a-zA-Z_-]+)/static/([a-zA-Z0-9_.-/]+)$ GetStatic.php?Module=$1&file=$2
  RewriteRule ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$ AjaxHelper.php?Module=$1&script=$2 [QSA]
- RewriteRule ^([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)/$ main.php?test_name=$1&subtest=$2 [QSA]
+ RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)/$ main.php?test_name=$1&subtest=$2 [QSA]
 </IfModule>
 

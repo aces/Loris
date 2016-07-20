@@ -54,21 +54,28 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
     function _setupVariables()
     {
         // set the class variables
-        $this->_displayBrief = !(isset($_REQUEST['format']));
-        $this->columns       = array(
-                                'GenomicFileID',
-                                'FileName',
-                                'Description',
-                                'FileType',
-                                'Date_inserted',
-                                'InsertedByUserID',
-                                'Caveat',
-                                'Notes',
-                               );
+        $this->columns = array(
+                          'GenomicFileID',
+                          'FileName',
+                          'Description',
+                          'FileType',
+                          'Date_inserted',
+                          'InsertedByUserID',
+                          'Caveat',
+                          'Notes',
+                         );
 
-        // Chromosome from genome_loc table
-        // INNER JOIN on table.
-        // If a candidate has no CPG records, they will not appear.
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array()
+            )
+        );
+
         $this->query = " FROM genomic_files WHERE 1=1 ";
 
         $this->validFilters = array(
@@ -128,7 +135,10 @@ class NDB_Menu_Filter_Genomic_File_Uploader extends NDB_Menu_Filter
         $this->addCheckbox('caveat', 'Caveat:', $Base_options);
 
         $user = User::singleton();
-        $this->tpl_data['user'] = $user->getUsername();
+        $this->tpl_data['user']           = $user->getUsername();
+        $this->tpl_data['upload_allowed'] = $user->hasPermission(
+            'genomic_data_manager'
+        );
 
         return true;
     }

@@ -316,6 +316,12 @@ ImageQCDropdown = React.createClass({
                 },
                 options
             );
+        } else {
+            dropdown = React.createElement(
+                'div',
+                { className: 'col-xs-12' },
+                this.props.defaultValue
+            );
         }
         return React.createElement(
             'div',
@@ -476,6 +482,38 @@ ImageQCCommentsButton = React.createClass({
         );
     }
 });
+
+LongitudinalViewButton = React.createClass({
+    displayName: 'LongitudinalViewButton',
+
+    openWindowHandler: function (e) {
+        e.preventDefault();
+        window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.OtherTimepoints + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
+    },
+    render: function () {
+        if (!this.props.FileID || this.props.FileID == '') {
+            return React.createElement('span', null);
+        };
+        return React.createElement(
+            'a',
+            { className: 'btn btn-default',
+                href: '#noID',
+                onClick: this.openWindowHandler
+            },
+            React.createElement(
+                'span',
+                { className: 'text-default' },
+                React.createElement('span', { className: 'glyphicon glyphicon-eye-open' }),
+                React.createElement(
+                    'span',
+                    { className: 'hidden-xs' },
+                    'Longitudinal View'
+                )
+            )
+        );
+    }
+});
+
 ImageDownloadButtons = React.createClass({
     displayName: 'ImageDownloadButtons',
 
@@ -501,20 +539,22 @@ ImageDownloadButtons = React.createClass({
             React.createElement(DownloadButton, { FileName: this.props.NrrdFile,
                 BaseURL: this.props.BaseURL,
                 Label: 'Download NRRD'
+            }),
+            React.createElement(LongitudinalViewButton, { FileID: this.props.FileID,
+                BaseURL: this.props.BaseURL,
+                OtherTimepoints: this.props.OtherTimepoints
             })
         );
     }
 });
 ImagePanelBody = React.createClass({
     displayName: 'ImagePanelBody',
-    mixins: [React.addons.PureRenderMixin],
 
+    mixins: [React.addons.PureRenderMixin],
     openWindowHandler: function (e) {
         e.preventDefault();
         window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.FileID + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
     },
-
-
     render: function () {
         return React.createElement(
             'div',
@@ -526,12 +566,9 @@ ImagePanelBody = React.createClass({
                     'div',
                     { className: 'col-xs-9 imaging_browser_pic' },
                     React.createElement(
-			'a', 
-			{ href: '#noID', onClick: this.openWindowHandler},
-                        React.createElement(
-			    'img', 
-			    { className: 'img-checkpic img-responsive', src: this.props.Checkpic }
-			)
+                        'a',
+                        { href: '#noID', onClick: this.openWindowHandler },
+                        React.createElement('img', { className: 'img-checkpic img-responsive', src: this.props.Checkpic })
                     )
                 ),
                 React.createElement(
@@ -554,7 +591,8 @@ ImagePanelBody = React.createClass({
                 Fullname: this.props.Fullname,
                 XMLProtocol: this.props.XMLProtocol,
                 XMLReport: this.props.XMLReport,
-                XMLReport: this.props.NrrdFile
+                NrrdFile: this.props.NrrdFile,
+                OtherTimepoints: this.props.OtherTimepoints
             }),
             this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, { HeaderInfo: this.props.HeaderInfo }) : ''
         );
@@ -616,7 +654,8 @@ ImagePanel = React.createClass({
                     Fullname: this.props.Fullname,
                     XMLProtocol: this.props.XMLProtocol,
                     XMLReport: this.props.XMLReport,
-                    NrrdFile: this.props.NrrdFile
+                    NrrdFile: this.props.NrrdFile,
+                    OtherTimepoints: this.props.OtherTimepoints
                 })
             )
         );

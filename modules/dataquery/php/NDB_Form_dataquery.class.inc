@@ -87,7 +87,7 @@ class NDB_Form_dataquery extends NDB_Form
                 "group" => "true",
             )
         );
-        $this->tpl_data['visits'] = Utility::getVisitList();
+        $this->tpl_data['visits'] = Utility::getExistingVisitLabels();
 
         $sessions = array_map(function($element) { return $element['key']; }, $sessionResults);
 
@@ -117,8 +117,9 @@ class NDB_Form_dataquery extends NDB_Form
              $baseURL . "/dataquery/js/jstat.js",
              $baseURL . "/js/components/StaticDataTable.js",
              $baseURL . "/js/flot/jquery.flot.min.js",
-             $baseurl . '/js/components/PaginationLinks.js',
+             $baseURL . '/js/components/PaginationLinks.js',
              $baseURL . "/js/jszip/jszip.min.js",
+             $baseURL . "/js/components/MultiSelectDropdown.js"
             )
         );
     }
