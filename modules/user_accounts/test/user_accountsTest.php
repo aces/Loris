@@ -35,7 +35,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                                     'Data Coordinating Center',
                                     'admin',
                                     'Admin account',
-                                    'admin@localhost',
+                                    'admin@example.com',
                                     'Y',
                                     'N',
                                    );
