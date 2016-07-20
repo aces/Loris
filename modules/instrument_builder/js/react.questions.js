@@ -376,7 +376,9 @@ ListElements = React.createClass({
 						{ id: 'selected-input', type: 'button', className: 'btn btn-default dropdown-toggle', 'data-toggle': 'dropdown' },
 						React.createElement(
 							'span',
-							{ id: 'search_concept' },
+							{ id: 'search_concept',
+                                                          className: 'SelectOne'
+                                                        },
 							this.props.value,
 							' '
 						),
@@ -556,7 +558,7 @@ AddElement = React.createClass({
 				Description: '',
 				Name: '',
 				selected: {
-					id: '',
+					id: 'SelectOne',
 					value: 'Select One'
 				}
 			};
@@ -767,14 +769,14 @@ AddElement = React.createClass({
 		}
 		// Set the button/header based on whether you are editing or adding an element.
 		if (this.props.element) {
-			buttons = React.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Edit Row', onClick: this.addQuestion });
+			buttons = React.createElement('input', { className: 'btn btn-default', id: 'EditRow',type: 'button', value: 'Edit Row', onClick: this.addQuestion });
 		} else {
 			header = React.createElement(
 				'h2',
 				null,
 				'Add Question'
 			);
-			buttons = React.createElement('input', { className: 'btn btn-default', type: 'button', value: 'Add Row', onClick: this.addQuestion });
+			buttons = React.createElement('input', { className: 'btn btn-default',id: 'AddRow', type: 'button', value: 'Add Row', onClick: this.addQuestion });
 		}
 		return React.createElement(
 			'div',

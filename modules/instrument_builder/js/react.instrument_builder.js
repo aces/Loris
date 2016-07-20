@@ -283,10 +283,10 @@ DisplayElements = React.createClass({displayName: "DisplayElements",
 										React.createElement(LorisElement, {element: element})
 									), 
 									React.createElement("td", {className: "col-xs-2"}, 
-										React.createElement("button", {onClick: this.props.editElement.bind(this, i), className: "button"}, 
+										React.createElement("button", {onClick: this.props.editElement.bind(this, i), className: "button editButton"}, 
 											"Edit"
 										), 
-										React.createElement("button", {onClick: this.props.deleteElement.bind(this, i), className: "button"}, 
+										React.createElement("button", {onClick: this.props.deleteElement.bind(this, i), className: "button deleteButton"}, 
 											"Delete"
 										)
 									)
@@ -546,9 +546,9 @@ InstrumentBuilderApp = React.createClass({displayName: "InstrumentBuilderApp",
 		return (
 			React.createElement("div", null, 
 				React.createElement("ul", {className: "nav nav-tabs", role: "tablist"}, 
-					React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Load", "aria-controls": "home", role: "tab", "data-toggle": "tab"}, "Load")), 
-				    React.createElement("li", {role: "presentation", className: "active"}, React.createElement("a", {href: "#Build", "aria-controls": "build", role: "tab", "data-toggle": "tab"}, "Build")), 
-				    React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Save", "aria-controls": "messages", role: "tab", "data-toggle": "tab"}, "Save"))
+					React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Load", id: "load","aria-controls": "home", role: "tab", "data-toggle": "tab"}, "Load")), 
+				    React.createElement("li", {role: "presentation", className: "active"}, React.createElement("a", {href: "#Build", id: "build","aria-controls": "build", role: "tab", "data-toggle": "tab"}, "Build")), 
+				    React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Save",id: "save", "aria-controls": "messages", role: "tab", "data-toggle": "tab"}, "Save"))
 				 ), 
 
 			  	React.createElement("div", {className: "tab-content col-xs-12"}, 
