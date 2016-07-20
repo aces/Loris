@@ -324,8 +324,7 @@ class NDB_BVL_Battery
             AND LEFT(f.CommentID, 3) != 'DDE'";
 
         if (!is_null($stage)) {
-            $query         .= " AND t.Test_name=b.Test_name AND b.Stage=:stg";
-            $qparams['stg'] = $stage;
+            $query .= " AND t.Test_name=b.Test_name";
 
             if (!is_null($SubprojectID)) {
                 $query .= " AND (

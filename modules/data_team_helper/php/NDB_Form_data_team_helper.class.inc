@@ -272,7 +272,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         $qparams = array();
 
-        if (Utility::ColumnExists($test_name, 'Test_name_display')) {
+        if ($DB->ColumnExists($test_name, 'Test_name_display')) {
             $query = "SELECT DISTINCT s.CandID,ca.PSCID, c.FieldName,
                 c.TableName,t.test_name_display, s.visit_label
                 FROM conflicts_unresolved c
@@ -328,7 +328,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         //And then extract the specific info through template..
         global $DB;
         $conflicts = array();
-        if (Utility::ColumnExists($test_name, 'Test_name_display')) {
+        if ($DB->ColumnExists($test_name, 'Test_name_display')) {
 
             $query = "SELECT DISTINCT s.CandID, ca.PSCID, c.FieldName,
                 c.TableName,t.test_name_display, s.visit_label
@@ -531,7 +531,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         $DB     =& Database::singleton();
         $values = array();
         if ((!(is_null($full_name)))) {
-            if (Utility::ColumnExists('test_battery', 'Test_name_display')) {
+            if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
                 $test_name = $DB->pselectOne("SELECT Test_name FROM test_battery WHERE Test_name_display=:display", array('display' => $full_name));
             } else {
                 $test_name = Utility::getTestNameUsingFullName($full_name);
@@ -552,7 +552,7 @@ class NDB_Form_data_team_helper extends NDB_Form
     {
         $DB =& Database::singleton();
 
-        if (Utility::ColumnExists('test_battery', 'Test_name_display')) {
+        if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect("SELECT distinct Test_name_display from test_battery where Visit_label =:vl", array('vl' => $visit_label));
         } else {
             $test_names = $DB->pselect(
@@ -567,5 +567,24 @@ class NDB_Form_data_team_helper extends NDB_Form
         }
 
         return $test_names;
+    }
+    
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/data_team_helper/js/data_team.js",
+            )
+        );
     }
 }
