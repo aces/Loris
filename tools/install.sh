@@ -145,7 +145,7 @@ fi
 # Create some subdirectories, if needed.
 mkdir -p ../project ../project/data ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../project/modules ../smarty/templates_c
 
-# Setting 777 permissions for templates_c
+# Setting 770 permissions for templates_c
 chmod 770 ../smarty/templates_c
 
 # Changing group to 'www-data' or 'apache' to give permission to create directories in Document Repository module

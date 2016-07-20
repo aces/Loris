@@ -7,7 +7,7 @@
  * Since it's written in PHP, obviously Apache and PHP are required to be
  * set up before accessing this page. Nonetheless, it will verify all
  * of the dependencies on the server being installed, create required
- * accounts, and source the schema. Users can either user the NeuroDebian,
+ * accounts, and source the schema. Users can either use the NeuroDebian,
  * or Docker packages or set them up themselves depending on their experience.
  *
  * The user must have also already run `composer install` before accessing
