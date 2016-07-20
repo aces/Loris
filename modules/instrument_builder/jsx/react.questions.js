@@ -358,7 +358,7 @@ ListElements = React.createClass({
                 <div className="col-sm-4">
                     <div className="btn-group">
                         <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                            <span id="search_concept">{this.props.value} </span>
+                            <span id="search_concept" className="SelectOne">{this.props.value} </span>
                             <span className="caret"></span>
                         </button>
                         <ul className="dropdown-menu" role="menu">
