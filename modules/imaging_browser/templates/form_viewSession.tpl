@@ -36,7 +36,6 @@
 
                       "Caveat" : "{if $files[file].Caveat}{$files[file].Caveat}{/if}",
                       "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",
-                      "SNRValues" : {$snr|json_encode}, 
                       'HeaderInfo' : {
                           'XStep' : "{$files[file].Xstep}",
                           'YStep' : "{$files[file].Ystep}",
