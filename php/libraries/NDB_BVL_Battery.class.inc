@@ -323,7 +323,13 @@ class NDB_BVL_Battery
         }
         $query .= " WHERE f.SessionID=:SID
             AND LEFT(f.CommentID, 3) != 'DDE'";
-
+	if (!is_null($stage) && !is_null($SubprojectID)) {
+                $query .= " AND (
+                    b.SubprojectID IS NULL
+                    OR b.SubprojectID=:SubprojID
+                )";
+                $qparams['SubprojID'] = $SubprojectID;
+        }
         $query .= " GROUP BY t.Full_name";
 
         if (Utility::columnsHasNull('test_subgroups', 'group_order')) {
