@@ -546,9 +546,9 @@ InstrumentBuilderApp = React.createClass({displayName: "InstrumentBuilderApp",
 		return (
 			React.createElement("div", null, 
 				React.createElement("ul", {className: "nav nav-tabs", role: "tablist"}, 
-					React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Load", id: "load","aria-controls": "home", role: "tab", "data-toggle": "tab"}, "Load")), 
-				    React.createElement("li", {role: "presentation", className: "active"}, React.createElement("a", {href: "#Build", id: "build","aria-controls": "build", role: "tab", "data-toggle": "tab"}, "Build")), 
-				    React.createElement("li", {role: "presentation"}, React.createElement("a", {href: "#Save",id: "save", "aria-controls": "messages", role: "tab", "data-toggle": "tab"}, "Save"))
+					React.createElement("li", {role: "presentation",id: "load"}, React.createElement("a", {href: "#Load","aria-controls": "home", role: "tab", "data-toggle": "tab"}, "Load")), 
+				    React.createElement("li", {role: "presentation", className: "active",id: "build"}, React.createElement("a", {href: "#Build","aria-controls": "build", role: "tab", "data-toggle": "tab"}, "Build")), 
+				    React.createElement("li", {role: "presentation",id: "save"}, React.createElement("a", {href: "#Save", "aria-controls": "messages", role: "tab", "data-toggle": "tab"}, "Save"))
 				 ), 
 
 			  	React.createElement("div", {className: "tab-content col-xs-12"}, 
