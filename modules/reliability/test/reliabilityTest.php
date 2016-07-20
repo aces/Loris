@@ -286,30 +286,6 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals("",$value);
 
      }
-    /**
-     * Tests that, Swap Candidates try swapping both different combinations of PSCID
-     * and visit lables and try a couple of different instruments.
-     *
-     * @return void
-     */
-    function testReliabiliySwap()
-    {
-        //testing search by PSCID
-        $this->safeGet($this->url . "/reliability/");
-       
-//        $this->webDriver->findElement(WebDriverBy::ID("swap"))->click();
-        
-        $this->webDriver->findElement(WebDriverBy::Name("Cand1PSCID"))->sendKeys
-            ("8888");
-        $this->webDriver->findElement(WebDriverBy::Name("Cand2PSCID"))->sendKeys
-            ("8889");
-        $this->webDriver->findElement(WebDriverBy::Xpath(
-                     "//*[@id='swap-body']/form/div[6]/div[5]/input"))->click();
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".error"))->
-                 getText();
-        $this->assertContains("Cannot swap candidates.", $bodyText);
-       
-     }
 
 }
 ?>
