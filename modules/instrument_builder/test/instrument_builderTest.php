@@ -125,3 +125,4 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
     }
 
 }
+?>
