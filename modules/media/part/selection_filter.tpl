@@ -14,8 +14,8 @@
                     <div class="col-md-12 col-lg-8">
                         <div class="row">
                             <div class="form-group col-sm-6">
-                                <label class="col-md-4">{$form.PSCID.label}</label>
-                                <div class="col-md-8">{$form.PSCID.html}</div>
+                                <label class="col-md-4">{$form.pscid.label}</label>
+                                <div class="col-md-8">{$form.pscid.html}</div>
                             </div>
                             <div class="form-group col-sm-6">
                                 <label class="col-md-4">{$form.instrument.label}</label>

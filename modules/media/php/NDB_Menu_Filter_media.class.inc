@@ -91,7 +91,7 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
         }
 
         // Form Elements
-        $this->addBasicText('PSCID', 'PSCID:', ["size" => 9, "maxlength" => 7]);
+        $this->addBasicText('pscid', 'PSCID:', ["size" => 9, "maxlength" => 7]);
         $this->addSelect('instrument', 'Instrument:', $instrumentList);
         $this->addSelect('visit_label', 'Visit Label:', $visitList);
         $this->addSelect('for_site', 'For Site:', $siteList);
