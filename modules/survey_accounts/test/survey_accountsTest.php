@@ -83,7 +83,7 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
             "participant_accounts",
             array(
              'SessionID'     => '111111',
-             'Email'         => 'TestTestTest@gmail.com',
+             'Email'         => 'TestTestTest@example.com',
              'Test_name'     => 'Test',
              'Status'        => 'In Progress',
              'OneTimePassword' => 'Test'
