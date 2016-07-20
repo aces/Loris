@@ -299,10 +299,7 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
     {
         //testing search by PSCID
         $this->safeGet($this->url . "/reliability/");
-        try{
-        $this->webDriver->findElement(WebDriverBy::ID("swapDown"))->click();
-        } catch(RuntimeException $e){
-        }
+       
         $this->webDriver->findElement(WebDriverBy::Name("Cand1PSCID"))->sendKeys
             ("8888");
         $this->webDriver->findElement(WebDriverBy::Name("Cand2PSCID"))->sendKeys
@@ -313,7 +310,7 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
                  getText();
         $this->assertContains("Cannot swap candidates.", $bodyText);
 
-     }
+     
 
 }
 ?>
