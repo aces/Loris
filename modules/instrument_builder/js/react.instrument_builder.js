@@ -354,12 +354,12 @@ DisplayElements = React.createClass({
 						{ className: "col-xs-2" },
 						React.createElement(
 							"button",
-							{ onClick: this.props.editElement.bind(this, i), className: "button" },
+							{ onClick: this.props.editElement.bind(this, i), className: "button editButton" },
 							"Edit"
 						),
 						React.createElement(
 							"button",
-							{ onClick: this.props.deleteElement.bind(this, i), className: "button" },
+							{ onClick: this.props.deleteElement.bind(this, i), className: "button deleteButton" },
 							"Delete"
 						)
 					)
@@ -667,7 +667,7 @@ InstrumentBuilderApp = React.createClass({
 					{ role: "presentation" },
 					React.createElement(
 						"a",
-						{ href: "#Load", "aria-controls": "home", role: "tab", "data-toggle": "tab" },
+						{ href: "#Load", id: "load","aria-controls": "home", role: "tab", "data-toggle": "tab" },
 						"Load"
 					)
 				),
@@ -676,7 +676,7 @@ InstrumentBuilderApp = React.createClass({
 					{ role: "presentation", className: "active" },
 					React.createElement(
 						"a",
-						{ href: "#Build", "aria-controls": "build", role: "tab", "data-toggle": "tab" },
+						{ href: "#Build", id: "build","aria-controls": "build", role: "tab", "data-toggle": "tab" },
 						"Build"
 					)
 				),
@@ -685,7 +685,7 @@ InstrumentBuilderApp = React.createClass({
 					{ role: "presentation" },
 					React.createElement(
 						"a",
-						{ href: "#Save", "aria-controls": "messages", role: "tab", "data-toggle": "tab" },
+						{ href: "#Save", id: "save","aria-controls": "messages", role: "tab", "data-toggle": "tab" },
 						"Save"
 					)
 				)
