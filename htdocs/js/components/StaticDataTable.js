@@ -191,7 +191,7 @@ StaticDataTable = React.createClass({
                     data = "Unknown";
                 }
                 if (this.props.getFormattedCell) {
-                    data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[i].RowIdx]);
+                    data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[i].RowIdx], this.props.Headers);
                     curRow.push({ data });
                 } else {
                     curRow.push(React.createElement(
@@ -309,5 +309,3 @@ StaticDataTable = React.createClass({
 });
 
 RStaticDataTable = React.createFactory(StaticDataTable);
-
-//# sourceMappingURL=StaticDataTable.js.map
