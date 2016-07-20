@@ -89,9 +89,10 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->_createTimepoint('900000','Experimental','V9');
 
         $this->safeClick(WebDriverBy::LinkText("Click here to continue."));
-        sleep(3);
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("900000", $bodyText);
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Could not select Candidate data from the database (DCCID: )", $bodyText);
+
+
 
     }
 
