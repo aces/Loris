@@ -283,10 +283,10 @@ DisplayElements = React.createClass({
 										<LorisElement element={element} />
 									</td>
 									<td className="col-xs-2">
-										<button onClick={this.props.editElement.bind(this, i)} className="button">
+										<button onClick={this.props.editElement.bind(this, i)} className="button editButton">
 											Edit
 										</button>
-										<button onClick={this.props.deleteElement.bind(this, i)} className="button">
+										<button onClick={this.props.deleteElement.bind(this, i)} className="button deleteButton">
 											Delete
 										</button>
 									</td>
@@ -477,7 +477,7 @@ BuildPane = React.createClass({
 			            <div className="col-sm-4">
 			                <div className="btn-group">
 			                    <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
-			                        <span id="search_concept">{this.state.Elements[this.state.currentPage].Description}</span>
+			                        <span id="search_concept" className="SelectOne" >{this.state.Elements[this.state.currentPage].Description}</span>
 			                        <span className="caret"></span>
 						        </button>
 						        <ul className="dropdown-menu" role="menu">
@@ -546,9 +546,9 @@ InstrumentBuilderApp = React.createClass({
 		return (
 			<div>
 				<ul className="nav nav-tabs" role="tablist">
-					<li role="presentation"><a href="#Load" aria-controls="home" role="tab" data-toggle="tab">Load</a></li>
-				    <li role="presentation" className="active"><a href="#Build" aria-controls="build" role="tab" data-toggle="tab">Build</a></li>
-				    <li role="presentation"><a href="#Save" aria-controls="messages" role="tab" data-toggle="tab">Save</a></li>
+					<li role="presentation" id="load"><a href="#Load" aria-controls="home" role="tab" data-toggle="tab">Load</a></li>
+				    <li role="presentation" id="build" className="active"><a href="#Build" aria-controls="build" role="tab" data-toggle="tab">Build</a></li>
+				    <li role="presentation" id="save" ><a href="#Save" aria-controls="messages" role="tab" data-toggle="tab">Save</a></li>
 				 </ul>
 
 			  	<div className="tab-content col-xs-12">
