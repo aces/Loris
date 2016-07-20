@@ -84,10 +84,10 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
 
         $instrumentList = [null => 'Any'];
         $instrumentsQuery = $db->pselect(
-            "SELECT DISTINCT instrument FROM media", []
+            "SELECT Test_name FROM test_names ORDER BY Test_name", []
         );
         foreach ($instrumentsQuery as $instrument) {
-            $instrumentList[$instrument['instrument']] = $instrument['instrument'];
+            $instrumentList[$instrument['Test_name']] = $instrument['Test_name'];
         }
 
         // Form Elements
