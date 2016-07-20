@@ -297,7 +297,7 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
         //testing search by PSCID
         $this->safeGet($this->url . "/reliability/");
        
-        $this->webDriver->findElement(WebDriverBy::ID("swap"))->click();
+//        $this->webDriver->findElement(WebDriverBy::ID("swap"))->click();
         
         $this->webDriver->findElement(WebDriverBy::Name("Cand1PSCID"))->sendKeys
             ("8888");
