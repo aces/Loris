@@ -137,14 +137,6 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-4">
-                            &nbsp;
-                        </label>
-                        <div class="col-sm-12 col-md-8">
-                            &nbsp;
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-4">
                             {$form.edc.label}
                         </label>
                         <div class="col-sm-12 col-md-8">
