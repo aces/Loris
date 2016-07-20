@@ -917,6 +917,9 @@ class NDB_Form_candidate_parameters extends NDB_Form
              // consent requirements
         $consent = $config->getSetting('ConsentModule');
         if ($consent['useConsent'] === 'true') {
+            if(!is_null($consent['Consent']['name'])) {
+                $consent['Consent'] = array($consent['Consent']);
+            }
             foreach (Utility::asArray($consent['Consent']) as $consenttype) {
                 $fieldname         = $consenttype['name'];
                 $consentVal        = $fields[$fieldname];
@@ -927,14 +930,11 @@ class NDB_Form_candidate_parameters extends NDB_Form
                 $consent->setDate($consentDate['Y'], $consentDate['M'], $consentDate['d']);
                 $consent = $consent->format('Y-m-d');
 
-                //print_r($consentVal);
-
                 if ($consentVal == "") {
-                    print_r("bla".$consentVal);
-                    $errors[$fieldname] = "Consent status required \n";
+                    $errors[$fieldname] = $consenttype['label'].", Consent status required <br>";
                 }
                 if ($consent > $today) {
-                    $errors[$fieldname.'_date'] = 'Cannot be later than today';
+                    $errors[$fieldname.'_date'] = 'Cannot be later than today <br>';
 
                 }
 
@@ -943,7 +943,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                     || empty($consentDate['M'])
                     || empty($consentDate['d'])                    )
                 ) {
-                    $errors[$fieldname . '_date'] = 'Required';
+                    $errors[$fieldname . '_date'] = "Date required when YES <br>";
                 }
                 if (!empty($consentWithdrawal['Y'])
                     && !empty($consentWithdrawal['M'])
