@@ -169,8 +169,8 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addHidden" API.
      *
-     * @param string $name    The element name.
-     * @param string $value   The element value.
+     * @param string $name  The element name.
+     * @param string $value The element value.
      *
      * @return &array
      */
@@ -742,8 +742,10 @@ class LorisForm
             if (isset($el['options']['prefix_wrapper'])) {
                 $retVal .= $el['options']['prefix_wrapper'];
             }
+
             $element['html'] = $this->renderElement($element);
-            $retVal .= $element['html'];
+            $retVal         .= $element['html'];
+
             if (isset($el['options']['postfix_wrapper'])) {
                 $retVal .= $el['options']['postfix_wrapper'];
             }
@@ -811,7 +813,7 @@ class LorisForm
      */
     function submitHTML($el, $type='submit')
     {
-        $cls      = '';
+        $cls = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
