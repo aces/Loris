@@ -68,7 +68,7 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
     {
         //Insert a text content
         $this->safeGet($this->url . "/instrument_builder/");
-        $this->webDriver->findElement(WebDriverBy::ID("SelectOne"))->click();
+        $this->webDriver->findElement(WebDriverBy::cssSelector(".SelectOne"))->click();
         $this->webDriver->findElement(WebDriverBy::ID("header"))->click();
         $this->webDriver->findElement(WebDriverBy::ID("questionText"))
               ->sendKeys("Test Header");
