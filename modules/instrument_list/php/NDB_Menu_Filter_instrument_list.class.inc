@@ -49,7 +49,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $this->tpl_data['subprojectID'] = Utility::getSubprojectIDUsingCandID($this->tpl_data['candID']);
 
         // get the list of instruments
-        $listOfInstruments = $battery->getBatteryVerbose($this->tpl_data['stage'], $this->tpl_data['subprojectID']);
+        $listOfInstruments = $battery->getBatteryInstrumentList($this->tpl_data['stage'], $this->tpl_data['subprojectID']);
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
