@@ -480,7 +480,7 @@ ListElements = React.createClass({
                         { id: 'selected-input', type: 'button', className: 'btn btn-default dropdown-toggle', 'data-toggle': 'dropdown' },
                         React.createElement(
                             'span',
-                            { id: 'search_concept' },
+                            { id: 'search_concept',className="SelectOne" },
                             this.props.value,
                             ' '
                         ),
