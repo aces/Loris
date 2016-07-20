@@ -1334,7 +1334,7 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expiry)
-VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','N','2016-03-30');
+VALUES (1,'admin','Admin account','Admin','account','admin@example.com',1,0,'N','','Y','N','2016-03-30');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

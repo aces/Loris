@@ -139,7 +139,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             'user_accounts',
             'UnitTester',
             'Email',
-            'newemail@gmail.com'
+            'newemail@example.com'
         );
         $this->_verifyUserModification(
             'user_accounts',
@@ -171,7 +171,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             'user_accounts/my_preferences',
             'UnitTester',
             'Email',
-            'newemail@gmail.com'
+            'newemail@example.com'
         );
     }
     /**
@@ -200,10 +200,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field->sendKeys('last');
         $field = $this->safeFindElement(WebDriverBy::Name('Email'));
         $field->clear();
-        $field->sendKeys('email@gmail.com');
+        $field->sendKeys('email@example.com');
         $field = $this->safeFindElement(WebDriverBy::Name('__ConfirmEmail'));
         $field->clear();
-        $field->sendKeys('email@gmail.com');
+        $field->sendKeys('email@example.com');
         $this->safeClick(WebDriverBy::Name('SendEmail'));
         $this->safeClick(WebDriverBy::Name('fire_away'));
         $this->_accessUser('user_accounts', 'userid');
@@ -212,7 +212,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field = $this->safeFindElement(WebDriverBy::Name('Last_name'));
         $this->assertEquals($field->getAttribute('value'), 'last');
         $field = $this->safeFindElement(WebDriverBy::Name('Email'));
-        $this->assertEquals($field->getAttribute('value'), 'email@gmail.com');
+        $this->assertEquals($field->getAttribute('value'), 'email@example.com');
     }
 
     /**
