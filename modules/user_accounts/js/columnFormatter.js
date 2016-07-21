@@ -1,6 +1,6 @@
 function formatColumn(column, cell, rowData) {
     if (column === 'Username') {
-        var url = loris.BaseURL + "/user_accounts/edit_user/?identifier=" + rowData[1];
+        var url = loris.BaseURL + "/user_accounts/edit_user/?identifier=" + row.Username;
         return React.createElement(
             "td",
             null,
