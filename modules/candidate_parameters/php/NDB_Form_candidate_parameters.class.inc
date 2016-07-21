@@ -831,7 +831,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                             || empty($consentDate['d'])
                             )
                    ) {
-                    $errors[$fieldname . '_date'] = 'Required';
+                    $errors[$fieldname . '_date'] = 'When consent is set to YES the date is required';
                 }
                 if (
                         !empty($consentWithdrawal['Y'])
