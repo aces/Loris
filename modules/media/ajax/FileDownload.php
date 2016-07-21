@@ -9,10 +9,9 @@
  *
  * @category Loris
  * @package  Media
- * @author   Loris Team <ailea@gmail.com>
+ * @author   Alex I. <ailea.mcin@gmail.com>
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
- *
  */
 
 $user =& User::singleton();
@@ -30,8 +29,8 @@ if (strpos("..", $file) !== false) {
     exit(4);
 }
 
-$config =& NDB_Config::singleton();
-$path = $config->getSetting('mediaPath');
+$config   =& NDB_Config::singleton();
+$path     = $config->getSetting('mediaPath');
 $filePath = $path . $file;
 
 if (!file_exists($filePath)) {

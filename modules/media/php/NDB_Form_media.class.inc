@@ -22,17 +22,19 @@ require_once "NDB_Form.class.inc";
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class NDB_Form_media extends NDB_Form
+class NDB_Form_Media extends NDB_Form
 {
     /**
      * Entry point for /media/edit/
      * Checks if file id is provided and otherwise redirects to /media/ page
      *
      * @throws DatabaseException
+     *
+     * @return void
      */
     function edit()
     {
-        $db =& Database::singleton();
+        $db      =& Database::singleton();
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
 
@@ -41,7 +43,8 @@ class NDB_Form_media extends NDB_Form
         // Check if media file exists, if not redirect to /media/ page
         if (isset($idMediaFile)) {
             $result = $db->pselectRow(
-                "SELECT id FROM media WHERE id = $idMediaFile", []
+                "SELECT id FROM media WHERE id = $idMediaFile",
+                []
             );
             if (count($result) < 1) {
                 header('Location: ' . $baseURL . '/media/');
@@ -61,12 +64,10 @@ class NDB_Form_media extends NDB_Form
     {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $deps = parent::getCSSDependencies();
+        $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [
-                $baseURL . "/media/css/media.css"
-            ]
+            [$baseURL . "/media/css/media.css"]
         );
     }
 
@@ -80,12 +81,10 @@ class NDB_Form_media extends NDB_Form
     {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $deps = parent::getJSDependencies();
+        $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [
-                $baseURL . "/media/js/editForm.js"
-            ]
+            [$baseURL . "/media/js/editForm.js"]
         );
     }
 

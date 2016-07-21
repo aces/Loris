@@ -28,7 +28,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class NDB_Menu_Filter_media extends NDB_Menu_Filter
+class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 {
     public $centerIDMap;
     public $hasWritePermission = false;
@@ -61,9 +61,9 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
     function _setFilterForm()
     {
         $user =& User::singleton();
-        $db = Database::singleton();
+        $db   = Database::singleton();
 
-        $siteList = Utility::getSiteList(false);
+        $siteList  = Utility::getSiteList(false);
         $visitList = [null => 'Any'] + Utility::getVisitList();
 
         // allow to view all sites data through filter
@@ -77,14 +77,15 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
                 $siteList = [
-                    $user->getData('CenterID') => $user->getData('Site')
-                ];
+                             $user->getData('CenterID') => $user->getData('Site'),
+                            ];
             }
         }
 
-        $instrumentList = [null => 'Any'];
+        $instrumentList   = [null => 'Any'];
         $instrumentsQuery = $db->pselect(
-            "SELECT Test_name FROM test_names ORDER BY Test_name", []
+            "SELECT Test_name FROM test_names ORDER BY Test_name",
+            []
         );
         foreach ($instrumentsQuery as $instrument) {
             $instrumentList[$instrument['Test_name']] = $instrument['Test_name'];
@@ -119,36 +120,46 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
         }
 
         // the base query
-        $query = " FROM media v"; // left join candidate c using(pscid) ";
+        $query  = " FROM media v"; // left join candidate c using(pscid) ";
         $query .= " WHERE (v.hide_file=false OR v.hide_file IS NULL)";
 
         // set the class variables
-        $this->columns = [
-            'v.file_name',
-            'v.pscid',
-            'v.visit_label',
-            '(SELECT Full_name FROM test_names WHERE Test_name=v.instrument)',
-            '(SELECT name FROM psc WHERE CenterID=v.for_site)',
-            'v.uploaded_by',
-            'v.date_taken',
-            'substring(v.comments, 1, 50) as comments',
-            'v.date_uploaded',
-            // candidate id
-            "(SELECT CandID FROM candidate WHERE PSCID=v.pscid) as candID",
-            // sessiod id
-            "(SELECT ID FROM session WHERE CandID=(SELECT CandID FROM candidate " .
-                "WHERE PSCID=v.pscid) AND Visit_label=v.visit_label)",
-            'v.id'
-        ];
+        $this->columns
+            = [
+               'v.file_name',
+               'v.pscid',
+               'v.visit_label',
+               '(SELECT Full_name FROM test_names WHERE Test_name=v.instrument)',
+               '(SELECT name FROM psc WHERE CenterID=v.for_site)',
+               'v.uploaded_by',
+               'v.date_taken',
+               'substring(v.comments, 1, 50) as comments',
+               'v.date_uploaded',
+               // candidate id
+               "(SELECT CandID FROM candidate WHERE PSCID=v.pscid) as candID",
+                // sessiod id
+               "(SELECT ID FROM session WHERE CandID=(SELECT CandID FROM candidate ".
+               "WHERE PSCID=v.pscid) AND Visit_label=v.visit_label)",
+               'v.id',
+              ];
 
         $this->query = $query;
 
         $this->group_by = '';
         $this->order_by = 'v.instrument';
-        $this->headers = [
-            'File Name', 'PSCID', 'Visit Label', 'Instrument', 'Site', 'Uploaded By',
-            'Date Taken',  'Comments', 'Date Uploaded', 'Cand ID', 'Session ID'
-        ];
+        $this->headers  = [
+                           'File Name',
+                           'PSCID',
+                           'Visit Label',
+                           'Instrument',
+                           'Site',
+                           'Uploaded By',
+                           'Date Taken',
+                           'Comments',
+                           'Date Uploaded',
+                           'Cand ID',
+                           'Session ID',
+                          ];
 
         // Set header as hidden from the data table
         $this->tpl_data['hiddenHeaders'] = json_encode(['Cand ID', 'Session ID']);
@@ -159,20 +170,24 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
         }
 
         $this->validFilters = [
-            'v.pscid', 'v.instrument', 'v.data_dir',
-            'v.for_site', 'v.visit_label', 'v.uploaded_by'
-        ];
+                               'v.pscid',
+                               'v.instrument',
+                               'v.data_dir',
+                               'v.for_site',
+                               'v.visit_label',
+                               'v.uploaded_by',
+                              ];
         $this->formToFilter = [
-            'file_name'     => 'v.file_name',
-            'data_dir'      => 'v.data_dir',
-            'instrument'    => 'v.instrument',
-            'pscid'         => 'v.pscid',
-            'for_site'      => 'v.for_site',
-            'uploaded_by'   => 'v.uploaded_by',
-            'visit_label'    => 'v.visit_label',
-            'date_uploaded' => 'v.date_uploaded',
-            'comments'      => 'comments'
-        ];
+                               'file_name'     => 'v.file_name',
+                               'data_dir'      => 'v.data_dir',
+                               'instrument'    => 'v.instrument',
+                               'pscid'         => 'v.pscid',
+                               'for_site'      => 'v.for_site',
+                               'uploaded_by'   => 'v.uploaded_by',
+                               'visit_label'   => 'v.visit_label',
+                               'date_uploaded' => 'v.date_uploaded',
+                               'comments'      => 'comments',
+                              ];
 
         return true;
     }
@@ -187,12 +202,10 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
     {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $deps = parent::getCSSDependencies();
+        $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            [
-                $baseURL . "/media/css/media.css"
-            ]
+            [$baseURL . "/media/css/media.css"]
         );
     }
 
@@ -211,8 +224,8 @@ class NDB_Menu_Filter_media extends NDB_Menu_Filter
         return array_merge(
             $deps,
             [
-                $baseURL . "/media/js/columnFormatter.js",
-                $baseURL . "/media/js/uploadForm.js"
+             $baseURL . "/media/js/columnFormatter.js",
+             $baseURL . "/media/js/uploadForm.js",
             ]
         );
     }

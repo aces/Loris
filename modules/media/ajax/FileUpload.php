@@ -1,11 +1,16 @@
 <?php
 /**
- * FileUpload.php
+ * Media uploader.
  *
  * Handles media upload and update actions received from a front-end ajax call
  *
- * @author  Alex I.
- * @version 1.0.0
+ * PHP Version 5
+ *
+ * @category Loris
+ * @package  Media
+ * @author   Alex I. <ailea.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://github.com/aces/Loris-Trunk
  */
 
 if (isset($_GET['action'])) {
@@ -23,10 +28,12 @@ if (isset($_GET['action'])) {
  * Handles the media update/edit process
  *
  * @throws DatabaseException
+ *
+ * @return void
  */
 function editFile()
 {
-    $db =& Database::singleton();
+    $db   =& Database::singleton();
     $user =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         header("HTTP/1.1 403 Forbidden");
@@ -35,17 +42,17 @@ function editFile()
 
     // Process posted data
     $idMediaFile = $_POST['idMediaFile'];
-    $site = isset($_POST['for_site']) ? $_POST['for_site'] : null;
-    $dateTaken = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
-    $comments = isset($_POST['comments']) ? $_POST['comments'] : null;
-    $hideFile = $_POST['hide_file'];
+    $site        = isset($_POST['for_site']) ? $_POST['for_site'] : null;
+    $dateTaken   = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
+    $comments    = isset($_POST['comments']) ? $_POST['comments'] : null;
+    $hideFile    = $_POST['hide_file'];
 
     $updateValues = [
-        'for_site'   => $site,
-        'date_taken' => $dateTaken,
-        'comments'   => $comments,
-        'hide_file' => $hideFile
-    ];
+                     'for_site'   => $site,
+                     'date_taken' => $dateTaken,
+                     'comments'   => $comments,
+                     'hide_file'  => $hideFile,
+                    ];
 
     $db->update('media', $updateValues, ['id' => $idMediaFile]);
 }
@@ -55,12 +62,14 @@ function editFile()
  * Handles the media upload process
  *
  * @throws DatabaseException
+ *
+ * @return void
  */
 function uploadFile()
 {
-    $db =& Database::singleton();
+    $db     =& Database::singleton();
     $config = NDB_Config::singleton();
-    $user =& User::singleton();
+    $user   =& User::singleton();
     if (!$user->hasPermission('media_write')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
@@ -83,12 +92,12 @@ function uploadFile()
     chmod($mediaPath, 0777);
 
     // Process posted data
-    $pscid = isset($_POST['pscid']) ? $_POST['pscid'] : null;
-    $visit = isset($_POST['visit_label']) ? $_POST['visit_label'] : null;
+    $pscid      = isset($_POST['pscid']) ? $_POST['pscid'] : null;
+    $visit      = isset($_POST['visit_label']) ? $_POST['visit_label'] : null;
     $instrument = isset($_POST['instrument']) ? $_POST['instrument'] : null;
-    $site = isset($_POST['for_site']) ? $_POST['for_site'] : null;
-    $dateTaken = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
-    $comments = isset($_POST['comments']) ? $_POST['comments'] : null;
+    $site       = isset($_POST['for_site']) ? $_POST['for_site'] : null;
+    $dateTaken  = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
+    $comments   = isset($_POST['comments']) ? $_POST['comments'] : null;
 
     // If required fields are not set, show an error
     if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($instrument)) {
@@ -105,20 +114,20 @@ function uploadFile()
 
     // Build insert query
     $query = [
-        'pscid'         => $pscid,
-        'visit_label'   => $visit,
-        'instrument'    => $instrument,
-        'for_site'      => $site,
-        'date_taken'    => $dateTaken,
-        'comments'      => $comments,
-        'file_name'     => $fileName,
-        'file_type'     => $fileType,
-        'file_size'     => $fileSize,
-        'data_dir'      => $mediaPath,
-        'uploaded_by'   => $userID,
-        'hide_file'    => 0,
-        'date_uploaded' => date("Y-m-d H:i:s"),
-    ];
+              'pscid'         => $pscid,
+              'visit_label'   => $visit,
+              'instrument'    => $instrument,
+              'for_site'      => $site,
+              'date_taken'    => $dateTaken,
+              'comments'      => $comments,
+              'file_name'     => $fileName,
+              'file_type'     => $fileType,
+              'file_size'     => $fileSize,
+              'data_dir'      => $mediaPath,
+              'uploaded_by'   => $userID,
+              'hide_file'     => 0,
+              'date_uploaded' => date("Y-m-d H:i:s"),
+             ];
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         $db->insert('media', $query);
@@ -139,34 +148,37 @@ function getUploadFields()
     $db =& Database::singleton();
 
     $instruments = $db->pselect(
-        "SELECT Test_name FROM test_names ORDER BY Test_name", []
+        "SELECT Test_name FROM test_names ORDER BY Test_name",
+        []
     );
-    $candidates = $db->pselect(
-        "SELECT CandID, PSCID FROM candidate ORDER BY PSCID", []
+    $candidates  = $db->pselect(
+        "SELECT CandID, PSCID FROM candidate ORDER BY PSCID",
+        []
     );
 
     $instrumentsList = toSelect($instruments, "Test_name", null);
-    $candidatesList = toSelect($candidates, "PSCID", null);
-    $candIdList = toSelect($candidates, "CandID", "PSCID");
-    $visitList = Utility::getVisitList();
-    $siteList = Utility::getSiteList(false);
+    $candidatesList  = toSelect($candidates, "PSCID", null);
+    $candIdList      = toSelect($candidates, "CandID", "PSCID");
+    $visitList       = Utility::getVisitList();
+    $siteList        = Utility::getSiteList(false);
 
     $mediaData = null;
     if (isset($_GET['idMediaFile'])) {
         $idMediaFile = $_GET['idMediaFile'];
-        $mediaData = $db->pselectRow(
-            "SELECT * FROM media WHERE id = $idMediaFile", []
+        $mediaData   = $db->pselectRow(
+            "SELECT * FROM media WHERE id = $idMediaFile",
+            []
         );
     }
 
     $result = [
-        'candidates'  => $candidatesList,
-        'candIDs'     => $candIdList,
-        'visits'      => $visitList,
-        'instruments' => $instrumentsList,
-        'sites'       => $siteList,
-        'mediaData'   => $mediaData
-    ];
+               'candidates'  => $candidatesList,
+               'candIDs'     => $candIdList,
+               'visits'      => $visitList,
+               'instruments' => $instrumentsList,
+               'sites'       => $siteList,
+               'mediaData'   => $mediaData,
+              ];
 
     return $result;
 }
@@ -174,7 +186,9 @@ function getUploadFields()
 /**
  * Utility function to return errors from the server
  *
- * @param $message
+ * @param string $message error message to display
+ *
+ * @return void
  */
 function showError($message)
 {
@@ -190,9 +204,9 @@ function showError($message)
  * Utility function to convert data from database to a
  * (select) dropdown friendly format
  *
- * @param $options
- * @param $item
- * @param $item2
+ * @param array  $options array of options
+ * @param string $item    key
+ * @param string $item2   value
  *
  * @return array
  */
