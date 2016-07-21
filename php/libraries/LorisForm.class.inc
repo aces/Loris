@@ -81,6 +81,9 @@ class LorisForm
         if (isset($attribs['required']) && $attribs['required'] === true) {
             $el['required'] = true;
         }
+        if (isset($attribs['align'])) {
+            $el['align'] = $attribs['align'];
+        }
 
         return $el;
     }
@@ -97,7 +100,7 @@ class LorisForm
      *
      * @return &array A reference to the array that was added to $this->form
      */
-    protected function &addBase($name, $label, $attribs)
+    protected function &addBase($name, $label, $attribs = array())
     {
         $el = $this->createBase($name, $label, $attribs);
         $this->form[$name] =& $el;
@@ -160,6 +163,21 @@ class LorisForm
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'password';
+        return $el;
+    }
+
+    /**
+     * Reimplementation of HTML_QuickForm's "addHidden" API.
+     *
+     * @param string $name  The element name.
+     * @param string $value The element value.
+     *
+     * @return &array
+     */
+    public function addHidden($name, $value)
+    {
+        $el         =& $this->addBase($name, null, array('value' => $value));
+        $el['type'] = 'hidden';
         return $el;
     }
 
@@ -346,10 +364,13 @@ class LorisForm
             $el = $this->addPassword($name, $label, $options);
             break;
         case 'header':
-            $el = $this->addHeader($name, $label);
+            $el = $this->addHeader($name, $label, $options);
             break;
         case 'advcheckbox':
             $el = $this->addCheckbox($name, $label, $options);
+            break;
+        case 'hidden':
+            $el = $this->addHidden($name, $label);
             break;
         case 'text':
         default:
@@ -377,6 +398,29 @@ class LorisForm
     {
         $el         =& $this->createBase($elname, $label, $attribs);
         $el['type'] = 'text';
+        return $el;
+    }
+
+    /**
+     * Reimplementation of HTML_QuickForm's createSubmit function.
+     *
+     * Creates a text element that can be added to the page but
+     * does not itself add the element.
+     *
+     * @param string $elname  The name of the element to be added to
+     *                        the form
+     * @param string $value   The value of the element to be added to
+     *                        the form
+     * @param array  $attribs An array of extra HTML attributes to be
+     *                        added to this element.
+     *
+     * @return array of the form that can be added to $this->form
+     */
+    function createSubmit($elname, $value, $attribs = array())
+    {
+        $attribs['value'] = $value;
+        $el         =& $this->createBase($elname, null, $attribs);
+        $el['type'] = 'submit';
         return $el;
     }
 
@@ -691,14 +735,17 @@ class LorisForm
      *
      * @return string A string of the HTML markup to render
      */
-    function groupHTML($el)
+    function groupHTML(&$el)
     {
         $retVal = '';
-        foreach ($el['elements'] as $element) {
+        foreach ($el['elements'] as &$element) {
             if (isset($el['options']['prefix_wrapper'])) {
                 $retVal .= $el['options']['prefix_wrapper'];
             }
-            $retVal .= $this->renderElement($element);
+
+            $element['html'] = $this->renderElement($element);
+            $retVal         .= $element['html'];
+
             if (isset($el['options']['postfix_wrapper'])) {
                 $retVal .= $el['options']['postfix_wrapper'];
             }
@@ -752,6 +799,48 @@ class LorisForm
               )
             . $disabled
             .">";
+    }
+
+    /**
+     * Generates the HTML to add to the page when rendered for a submit
+     * element.
+     *
+     * @param array  $el   The element to render from $this->form
+     * @param string $type The HTML input type to user for this input
+     *                     box
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function submitHTML($el, $type='submit')
+    {
+        $cls = '';
+        if (isset($el['class'])) {
+            $cls = "class=\"$el[class]\"";
+        }
+        $value = '';
+        if (isset($el['value'])) {
+            $value = "value=\"$el[value]\"";
+        }
+        return "<input name=\"$el[name]\" type=\"$type\" $cls $value>";
+    }
+
+    /**
+     * Generates the HTML to add to the page when rendered for a hidden
+     * element.
+     *
+     * @param array  $el   The element to render from $this->form
+     * @param string $type The HTML input type to user for this input
+     *                     box
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function hiddenHTML($el, $type='hidden')
+    {
+        $value = '';
+        if (isset($el['value'])) {
+            $value = "value=\"$el[value]\"";
+        }
+        return "<input name=\"$el[name]\" type=\"$type\" $value>";
     }
 
     /**
@@ -954,7 +1043,7 @@ class LorisForm
      *
      * @return string the HTML for the given element.
      */
-    function renderElement($el)
+    function renderElement(&$el)
     {
         switch($el['type']) {
         case 'date':
@@ -979,6 +1068,10 @@ class LorisForm
             return $this->headerHTML($el);
         case 'page':
             return '';
+        case 'submit':
+            return $this->submitHTML($el);
+        case 'hidden':
+            return $this->hiddenHTML($el);
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
@@ -995,7 +1088,17 @@ class LorisForm
      */
     function headerHTML($el)
     {
-        return "<h2>$el[label]</h2>";
+        $cls   = '';
+        $align = '';
+
+        if (isset($el['class'])) {
+            $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['align'])) {
+            $align = "align=\"$el[align]\"";
+        }
+
+        return "<h2 $cls $align>$el[label]</h2>";
     }
 
     /**
@@ -1251,6 +1354,8 @@ class LorisForm
             return $this->createText($elname, $label, $options, $attribs);
         case 'select':
             return $this->createSelect($elname, $label, $options, $attribs);
+        case 'submit':
+            return $this->createSubmit($elname, $label, $options);
         case 'static':
             /* Label seems to usually be the wrong attribute for static
              * elements?
@@ -1374,7 +1479,7 @@ class LorisForm
     function getSubmitValues()
     {
         $retVal = array();
-        $this->getGroupValues(array_keys($_REQUEST), $retVal);
+        $this->getGroupValues(array_keys($_POST), $retVal);
         return $retVal;
     }
 
