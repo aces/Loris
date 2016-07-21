@@ -1107,34 +1107,6 @@ LOCK TABLES `tarchive` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `tarchive_files`
---
-
-DROP TABLE IF EXISTS `tarchive_files`;
-CREATE TABLE `tarchive_files` (
-  `TarchiveFileID` int(11) NOT NULL auto_increment,
-  `TarchiveID` int(11) NOT NULL default '0',
-  `SeriesNumber` int(11) default NULL,
-  `FileNumber` int(11) default NULL,
-  `EchoNumber` int(11) default NULL,
-  `SeriesDescription` varchar(255) default NULL,
-  `Md5Sum` varchar(255) NOT NULL,
-  `FileName` varchar(255) NOT NULL,
-  PRIMARY KEY  (`TarchiveFileID`),
-  KEY `TarchiveID` (`TarchiveID`),
-  CONSTRAINT `tarchive_files_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `tarchive_files`
---
-
-LOCK TABLES `tarchive_files` WRITE;
-/*!40000 ALTER TABLE `tarchive_files` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tarchive_files` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tarchive_series`
 --
 
@@ -1165,6 +1137,37 @@ CREATE TABLE `tarchive_series` (
 LOCK TABLES `tarchive_series` WRITE;
 /*!40000 ALTER TABLE `tarchive_series` DISABLE KEYS */;
 /*!40000 ALTER TABLE `tarchive_series` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tarchive_files`
+--
+
+DROP TABLE IF EXISTS `tarchive_files`;
+CREATE TABLE `tarchive_files` (
+  `TarchiveFileID` int(11) NOT NULL auto_increment,
+  `TarchiveID` int(11) NOT NULL default '0',
+  `TarchiveSeriesID` INT(11) DEFAULT NULL,
+  `SeriesNumber` int(11) default NULL,
+  `FileNumber` int(11) default NULL,
+  `EchoNumber` int(11) default NULL,
+  `SeriesDescription` varchar(255) default NULL,
+  `Md5Sum` varchar(255) NOT NULL,
+  `FileName` varchar(255) NOT NULL,
+  PRIMARY KEY  (`TarchiveFileID`),
+  KEY `TarchiveID` (`TarchiveID`),
+  KEY `TarchiveSeriesID` (`TarchiveSeriesID`),
+  CONSTRAINT `tarchive_files_ibfk_1` FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`) ON DELETE CASCADE,
+  CONSTRAINT `tarchive_files_TarchiveSeriesID_fk` FOREIGN KEY (`TarchiveSeriesID`) REFERENCES `tarchive_series` (`TarchiveSeriesID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `tarchive_files`
+--
+
+LOCK TABLES `tarchive_files` WRITE;
+/*!40000 ALTER TABLE `tarchive_files` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tarchive_files` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2071,7 +2074,7 @@ CREATE TABLE `certification_training` (
     `TestID` int(10) UNSIGNED NOT NULL,
     `Title` varchar(255) NOT NULL,
     `Content` text,
-    `TrainingType` enum('text', 'pdf', 'video', 'quiz') NOT NULL,
+    `TrainingType` enum('text', 'pdf', 'video', 'quiz', 'vimeo') NOT NULL,
     `OrderNumber` INTEGER UNSIGNED NOT NULL,
     PRIMARY KEY (`ID`),
     CONSTRAINT `FK_certification_training` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)

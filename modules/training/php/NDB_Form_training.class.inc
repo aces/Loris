@@ -225,6 +225,7 @@ class NDB_Form_Training extends NDB_Form
              $baseURL . "/training/css/training.css",
             )
         );
+        return $deps;
     }
 }
 ?>
