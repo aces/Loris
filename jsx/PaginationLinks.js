@@ -68,7 +68,7 @@ PaginationLinks = React.createClass({
         pageLinks.push(<li onClick={this.changePage(lastPage)}><a href="#">&raquo;</a></li>);
         }
         return (
-            <ul className="pagination">
+            <ul className="pagination pagination-table">
                 {pageLinks}
             </ul>
         );
