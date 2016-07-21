@@ -323,7 +323,7 @@ class NDB_BVL_Battery
         }
         $query .= " WHERE f.SessionID=:SID
             AND LEFT(f.CommentID, 3) != 'DDE'";
-	if (!is_null($stage) && !is_null($SubprojectID)) {
+        if (!is_null($stage) && !is_null($SubprojectID)) {
                 $query .= " AND (
                     b.SubprojectID IS NULL
                     OR b.SubprojectID=:SubprojID
@@ -349,7 +349,7 @@ class NDB_BVL_Battery
         // return all the data selected
         return $rows;
     } // end getBatteryVerbose()
-    
+
 
     /**
      * Checks if a test_name has double data entry enabled in the config
