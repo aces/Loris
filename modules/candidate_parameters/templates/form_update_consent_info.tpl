@@ -11,7 +11,7 @@
     </div>
     <div class="panel-body">
         {foreach from=$form.errors item=error}
-            <font class="error">{$error}</font>
+            <font class="error">{$error}<br></font>
         {/foreach}
         {if $consent}
         	<div class="row">
