@@ -143,8 +143,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         }
  
        // Getting participant status default values
-        $ps_info = $DB->pselectRow("SELECT study_consent,study_consent_date,study_consent_withdrawal,
-                                    reason_specify,participant_status,participant_suboptions
+        $ps_info = $DB->pselectRow("SELECT *
                                     FROM participant_status
                                     WHERE CandID = :cid", array('cid'=>$this->identifier));
         if (empty ($ps_info['participant_status'])) {
