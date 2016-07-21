@@ -58,7 +58,7 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
-        /**
+    /**
      * Tests that, when loading the Instrument builder module without permisson, some
      * text appears in the body.
      *
@@ -101,7 +101,7 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentBuilderTab()
     {
-        $this->_testInstrumentBuilderTabLink("load","Load Instrument");
+//        $this->_testInstrumentBuilderTabLink("load","Load Instrument");
         $this->_testInstrumentBuilderTabLink("save","Save Instrument");
         $this->_testInstrumentBuilderTabLink("build","Build your Instrument");
 
