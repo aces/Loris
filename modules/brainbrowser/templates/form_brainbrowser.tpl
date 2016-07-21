@@ -1,5 +1,3 @@
-<link rel="stylesheet" type="text/css" href="{$baseURL}/GetCSS.php?Module=brainbrowser&file=volume-viewer-demo.css">
-
 {literal}
     <script id="overlay-ui-template" type="x-volume-ui-template">
         <div class="row">
@@ -13,7 +11,7 @@
 
                     </div>
                 </div>
-            
+
                 <div class="volume-viewer-controls volume-controls">
                     <div class="filename-overlay"  style="display: block; margin:auto;"></div>
 

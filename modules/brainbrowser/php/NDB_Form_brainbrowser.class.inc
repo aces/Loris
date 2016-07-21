@@ -67,5 +67,28 @@ class NDB_Form_Brainbrowser extends NDB_Form
             )
         );
     }
+
+    /**
+     * Include additional CSS files:
+     *  1. brainbrowser.css
+     *  2. volume-viewer-demo.css
+     *  3. surface-viewer-demo.css
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL . "/brainbrowser/css/brainbrowser.css",
+                $baseURL . "/brainbrowser/css/volume-viewer-demo.css",
+                $baseURL . "/brainbrowser/css/surface-viewer-demo.css"
+            ]
+        );
+    }
 }
 ?>
