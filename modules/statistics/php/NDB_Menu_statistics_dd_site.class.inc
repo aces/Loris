@@ -54,8 +54,10 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
         $this->_checkCriteria($centerID, $projectID);
         $DB =& Database::singleton();
 
+        $safe_instrument = $DB->escape($instrument);
+
         return $DB->pselectOne(
-            "SELECT count(s.CandID)  FROM session s, candidate c, flag f, {$instrument} i WHERE 
+            "SELECT count(s.CandID)  FROM session s, candidate c, flag f, $safe_instrument i WHERE
                 s.ID=f.SessionID AND f.CommentID=i.CommentID 
                 AND s.CandID=c.CandID  
                 AND s.Active='Y' 
@@ -71,8 +73,9 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
     {
         $this->_checkCriteria($centerID, $projectID);
         $DB     =& Database::singleton();
+        $safe_instrument = $DB->escape($instrument);
         $result = $DB->pselect(
-            "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, lower(s.Visit_label) as Visit_label  FROM session s, candidate c, flag f, {$instrument} i 
+            "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, lower(s.Visit_label) as Visit_label  FROM session s, candidate c, flag f, $safe_instrument i
                 WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND 
                 s.CandID=c.CandID  AND s.Active='Y' 
                 $this->query_criteria

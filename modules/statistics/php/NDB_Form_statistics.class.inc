@@ -317,7 +317,7 @@ class NDB_Form_statistics extends NDB_Form
                     s.visit_label as VLabel
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
-                    JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
+                    JOIN ".$DB->escape($_REQUEST[DemographicInstrument])." i USING(CommentID)
                 WHERE s.Active='Y'
                     AND c.CenterID <> '1'
                     AND f.Data_entry='Complete'
@@ -332,7 +332,7 @@ class NDB_Form_statistics extends NDB_Form
                     s.visit_label as VLabel
                 FROM session s JOIN candidate c USING(CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
-                    JOIN $_REQUEST[DemographicInstrument] i USING(CommentID)
+                    JOIN ".$DB->escape($_REQUEST[DemographicInstrument])." i USING(CommentID)
                 WHERE s.Active='Y' AND s.CenterID <> 1
                     $Param_Project
                     AND f.CommentID NOT LIKE 'DDE%'
