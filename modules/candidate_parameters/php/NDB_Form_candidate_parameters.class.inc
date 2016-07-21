@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Various <example@example.com>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -18,11 +18,11 @@
  * @category Main
  * @package  Loris
  * @author   Various <example@example.com>
- * @license  GPLv3
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-class NDB_Form_candidate_parameters extends NDB_Form
+class NDB_Form_Candidate_Parameters extends NDB_Form
 {
     var $relationType =  array(
                           null           => '',
@@ -37,7 +37,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
      *
      * @return boolean true if access is permitted
      */
-
     function _hasAccess()
     {
         // create user object
@@ -240,6 +239,13 @@ class NDB_Form_candidate_parameters extends NDB_Form
         return $defaults;
     }
 
+    /**
+     * Processes the submitted form
+     *
+     * @param array $values Array of submitted values
+     *
+     * @return boolean
+     */
     function _process($values)
     {
         if (!is_array($values) || count($values) ==0) {
@@ -453,7 +459,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                                   $question['name'].'_date',
                                   $question['name'].'_withdrawal',
                                  );
-                foreach($consent_dates as $field) {
+                foreach ($consent_dates as $field) {
                     $value = $this->_getDatabaseDate($values[$field]);
                     if ($value === '--') {
                         $value = '';
@@ -492,7 +498,16 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->form->freeze();
     }
 
-
+    /**
+     *  Function returning valued at desired field of an instrument
+     *
+     * @param string $instrument for which ino is needed
+     * @param string $param      required for instrument
+     *
+     * @return string   $ret value at selected field
+     *
+     * @Note this function does not seem to be used
+     */
     function _getInstrumentInfo($instrument, $param)
     {
         $DB =& Database::singleton();
@@ -511,6 +526,10 @@ class NDB_Form_candidate_parameters extends NDB_Form
     }
 
     /**
+     * Main function loading initial page
+     *
+     * @return null
+     *
      * @throws DatabaseException
      */
     function candidate_parameters()
@@ -627,7 +646,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                 );
                 $study_consent_hist = array();
                 for ($i=0; $i<sizeof($study_consent); $i++ ) {
-                    foreach($consentQuestion as $key => $column_title) {
+                    foreach ($consentQuestion as $key => $column_title) {
                         if ($key == $question['name'] && empty($study_consent[$i][$question['name']])) {
                             break;
                         }
@@ -647,8 +666,13 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->form->addFormRule(array(&$this, '_validate'));
     }
 
-    /* This is taken from NDB_BVL_Instrument. It should be moved to NDB_Page once NDB_Page is merged. */
-
+    /**
+     * Function transforming date into a database compatible format
+     *
+     * @param String $formDateValue date processed in the form
+     *
+     * @return string   database formatted date
+     */
     function _getDatabaseDate($formDateValue)
     {
         if (!empty($formDateValue)) {
@@ -665,6 +689,13 @@ class NDB_Form_candidate_parameters extends NDB_Form
         return $databaseValue;
     }
 
+    /**
+     * Function handling addition of a family member
+     *
+     * @return null
+     *
+     * @throws DatabaseException
+     */
     function add_family()
     {
         $DB =& Database::singleton();
@@ -685,6 +716,13 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
     }
 
+    /**
+     * Function handling the modifications to a participant's status
+     *
+     * @return null
+     *
+     * @throws DatabaseException
+     */
     function update_participant_status()
     {
         $DB    =& Database::singleton();
@@ -724,6 +762,13 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
     }
 
+    /**
+     * Function handling the modifications to a participant's information
+     *
+     * @return null
+     *
+     * @throws DatabaseException
+     */
     function update_candidate_info()
     {
 
@@ -739,7 +784,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
         $caveat_options = array('' => null);
         $options        = $DB->pselect("SELECT ID, Description FROM caveat_options");
-        foreach($options as $row) {
+        foreach ($options as $row) {
             $caveat_options[$row['ID']] = $row['Description'];
         }
         $this->addSelect(
@@ -809,6 +854,13 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
     }
 
+    /**
+     * Function handling the modifications to a proband's information
+     *
+     * @return null
+     *
+     * @throws DatabaseException
+     */
     function update_proband_info()
     {
 
@@ -838,6 +890,14 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
         $this->form->addFormRule(array(&$this, '_validate'));
     }
+
+    /**
+     * Function handling the modifications to a participant's consent
+     *
+     * @return null
+     *
+     * @throws DatabaseException
+     */
     function update_consent_info()
     {
         $DB    =& Database::singleton();
@@ -910,6 +970,15 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
     }
 
+    /**
+     * Function validating data for adding a family member
+     *
+     * @param array $values passed to the function to be validated
+     *
+     * @return array|bool array of $errors if need be
+     *
+     * @throws DatabaseException
+     */
     function _validate_add_family($values)
     {
         if (!is_array($values) || count($values) ==0) {
@@ -1115,7 +1184,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
      * Gets the participant_status options suboptions from participant_status_options
      * getParticipantStatusSubOptions()
      *
-     * @param  int participant status option ID of parent
+     * @param int $parentID participant status option ID of parent
+     *
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
