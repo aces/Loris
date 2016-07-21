@@ -17,6 +17,15 @@ StaticDataTable = React.createClass({
             }
         }
     },
+    componentDidUpdate: function() {
+        if (jQuery.fn.DynamicTable) {
+            if(this.props.freezeColumn) {
+                $("#dynamictable").DynamicTable({"freezeColumn" : this.props.freezeColumn});
+            } else {
+                $("#dynamictable").DynamicTable();
+            }
+        }
+    },
     getInitialState: function() {
         return {
             'PageNumber' : 1,
@@ -192,7 +201,17 @@ StaticDataTable = React.createClass({
             </select>
             );
         return (
-            <div className="panel panel-primary">
+            <div className="panel panel-default">
+                <div className="table-header panel-heading">
+                    <div className="row">
+                        <div className="col-xs-12">
+                            {rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown}) 
+                            <div className="pull-right">
+                                <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
                     <table className="table table-hover table-primary table-bordered" id="dynamictable">
                         <thead>
                             <tr className="info">{headers}</tr>
