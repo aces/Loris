@@ -564,10 +564,12 @@ class LorisForm
      */
     private function _getFilteredValue($name, $value)
     {
+        $newValue = $value;
+
         // Apply field specific filters
         if (isset($this->filters[$name])) {
             if (in_array('trim', $this->filters[$name])) {
-                $new_value = trim($value);
+                $newValue = trim($value);
             }
         }
 
