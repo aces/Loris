@@ -152,7 +152,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         if (!$user->hasPermission('access_all_profiles') 
             && !is_null($user->getData('CenterID'))
         ) {
-            $sitesCond = " AND p.CenterID = '".$user->getData('CenterID')."' ";
+            $sitesCond = " AND p.CenterID = ".$user->getData('CenterID')." ";
         }
 
         $this->columns = array(
