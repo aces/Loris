@@ -40,7 +40,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
             array(
              'helpID'   => '999999',
              'parentID' => '-1',
-             'hash'     => '7292dd87f9a200f21bf40ded779a58c2',
+             'hash'     => 'md5("the string being hashed")',
              'topic'    => 'Test Topic',
              'content'  => 'This is a test content.',
              'created'  => '2013-04-05 00:00:00',
@@ -95,121 +95,6 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Edit Help Content", $assertText);
 
     }//end test_page_load()
-
-
-    /**
-     * Tests that, when loading the help editor, search Test Topic, click show data
-     * the Test Data should appear.
-     *
-     * @return void
-     */
-    public function testSearchTopic()
-    {
-        $this->safeGet($this->url.'/help_editor/');
-      try{ 
-          $this->safeFindElement(WebDriverBy::ID("down"))->click();
-         } catch(WebDriverException $ex){}
-      finally {
-        $this->safeFindElement(WebDriverBy::Name("topic"))->click(); 
-        $searchbox = $this->safeFindElement(WebDriverBy::Name("topic"));
-        $searchbox->sendKeys("Test Topic");
-        $showdata  = $this->safeClick(
-                WebDriverBy::Xpath(
-                    "//*[@id='panel-body']".
-                    "/form/div[2]/div/div[1]/input"
-                )
-            );
-        $assertText = $this->safeFindElement(WebDriverBy::Id("Topic"))->getText();
-        $this->assertContains("Test Topic", $assertText);
-        }
-    }//end test_search_topic()
-
-    /**
-     * Tests that, when loading the help editor, search the keyword with This is
-     * a test content, click show data, the Test Topic should appear.
-     *
-     * @return void
-     */
-    public function testSearchKeyword()
-    {
-        $this->safeGet($this->url.'/help_editor/');
-      try{
-          $this->safeFindElement(WebDriverBy::ID("down"))->click();
-         } catch(WebDriverException $ex){}
-      finally {
-        $searchbox = $this->safeFindElement(WebDriverBy::Name("keyword"));
-        $searchbox->sendKeys("This is a test content.");
-        $showdata = $this->safeClick(
-                WebDriverBy::Xpath(
-                    "//*[@id='panel-body']".
-                    "/form/div[2]/div/div[1]/input"
-                )
-            );
-        $assertText = $this->safeFindElement(WebDriverBy::Id("Topic"))->getText();
-        $this->assertContains("Test Topic", $assertText);
-        }
-    }//end test_search_keyword()
-    /**
-     * Tests that, when loading the help editor, search the keyword with This is
-     * a test content, click show data, and link to detail.
-     *
-     * @return void
-     */
-    public function testSearchKeywordLinkToDetail()
-    {
-        $this->safeGet($this->url.'/help_editor/');
-      try{
-          $this->safeFindElement(WebDriverBy::ID("down"))->click();
-         } catch(WebDriverException $ex){}
-      finally {        
-        $searchbox = $this->safeFindElement(WebDriverBy::Name("keyword"));
-        $searchbox->sendKeys("This is a test content.");
-        $showdata = $this->safeClick(
-                WebDriverBy::Xpath(
-                    "//*[@id='panel-body']".
-                    "/form/div[2]/div/div[1]/input"
-                )
-            );
-        $linkDetail = $this->safeClick(
-            WebDriverBy::Xpath("//*[@id='Topic']/a")
-        );
-        $assertText = $this->safeFindElement(
-            WebDriverBy::XPath(
-                "//*[@id='edit_help_content']/div/div/div[2]/div/textarea"
-            )
-        )->getText();
-        $this->assertContains("This is a test content.", $assertText);
-        }
-    }//end test_search_keyword_to_detail()
-
-
-
-    /**
-     * Tests that, when loading the help editor, search Hand Preference,
-     * click clear form, the text Hand Preference should disappear.
-     *
-     * @return void
-     */
-    public function testClearForm()
-    {
-        $this->safeGet($this->url.'/help_editor/');
-      try{
-          $this->safeFindElement(WebDriverBy::ID("down"))->click();
-         } catch(WebDriverException $ex){}
-      finally {
-        
-        $searchbox = $this->safeFindElement(WebDriverBy::Name("topic"));
-        $searchbox->sendKeys("Hand Preference");
-        $clearform = $this->safeClick(
-                WebDriverBy::Xpath(
-                    "//*[@id='panel-body']/".
-                    "form/div[2]/div/div[2]/input"
-                )
-            );
-        $assertText = $this->safeFindElement(WebDriverBy::Name("topic"))->getText();
-        $this->assertEquals(null, $assertText);
-        }
-    }//end test_clear_form()
 
     /**
      * Tests that help editor loads with the permission
