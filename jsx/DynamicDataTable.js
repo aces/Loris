@@ -52,7 +52,7 @@ DynamicDataTable = React.createClass({
                            {this.state.error}
                          </strong>
                        </div>;
-            } 
+            }
 
             return <button className="btn-info has-spinner">
                      Loading
@@ -64,6 +64,7 @@ DynamicDataTable = React.createClass({
         return (
                 <StaticDataTable Headers={this.state.Headers}
                                  Data={this.state.Data}
+                                 Filter={this.props.Filter}
                                  getFormattedCell={this.props.getFormattedCell}
                                  freezeColumn={this.props.freezeColumn}
                 />
