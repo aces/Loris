@@ -14,7 +14,7 @@
 
 require_once __DIR__
     . "/../../../test/integrationtests/".
-    "LorisIntegrationTestForConfiguration.class.inc";
+    "LorisIntegrationTest.class.inc";
 /**
  * Configuration module automated integration tests
  *
@@ -136,18 +136,21 @@ class ConfigurationTest extends LorisIntegrationTest
     /**
       * Add a method for testing the link. After click the link,the page
       * shows particular content.
-      * @param1 webDriver: find the link and click.
-      * @param2 webDriver: find the text showing on the page.
-      * @param3 text: put the text that should be shown in the assert.
+      *
+      * @param $by   find the link and click.
+      * @param $byForContent   find the text showing on the page.
+      * @param $text  put the text that should be shown in the assert.
+      *
+      * @return void
       */
-     private function _linkTest(WebDriverBy $by, WebDriverBy $byForContent, $testContent)
-     {
-         $webElement = $this->safeFindElement($by)->click();
-        
-         $bodyText = $this->safeFindElement(
-              $byForContent
-          )->getText();
-         $this->assertContains($testContent, $bodyText);
-     }
+    private function _linkTest(WebDriverBy $by, WebDriverBy $byForContent, $text)
+    {
+        $webElement = $this->safeFindElement($by)->click();
+
+        $bodyText = $this->safeFindElement(
+            $byForContent
+        )->getText();
+        $this->assertContains($text, $bodyText);
+    }
 }
 ?>
