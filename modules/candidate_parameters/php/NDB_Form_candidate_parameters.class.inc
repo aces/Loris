@@ -917,6 +917,10 @@ class NDB_Form_candidate_parameters extends NDB_Form
              // consent requirements
         $consent = $config->getSetting('ConsentModule');
         if ($consent['useConsent'] === 'true') {
+            // The following if statement deals with the case of having only one consent
+            // type in the config causing the $consent to be a 1D array.
+            // The for-loop expects a nested array and as such the if statement
+            // wraps the 1D array in an empty array.
             if(!is_null($consent['Consent']['name'])) {
                 $consent['Consent'] = array($consent['Consent']);
             }
