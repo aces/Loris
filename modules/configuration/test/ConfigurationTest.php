@@ -137,9 +137,9 @@ class ConfigurationTest extends LorisIntegrationTest
       * Add a method for testing the link. After click the link,the page
       * shows particular content.
       *
-      * @param $by   find the link and click.
-      * @param $byForContent   find the text showing on the page.
-      * @param $text  put the text that should be shown in the assert.
+      * @param WebDriverBy $by           find the link and click.
+      * @param WebDriverBy $byForContent find the text showing on the page.
+      * @param string      $text         the text that should be shown in the assert.
       *
       * @return void
       */
