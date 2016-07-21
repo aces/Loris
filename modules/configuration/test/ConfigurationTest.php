@@ -26,7 +26,7 @@ require_once __DIR__
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class ConfigurationTest extends LorisIntegrationTestForConfiguration
+class ConfigurationTest extends LorisIntegrationTest
 {
     /**
      * Tests that, when loading the Configuration module, the word
@@ -82,57 +82,72 @@ class ConfigurationTest extends LorisIntegrationTestForConfiguration
         $this->safeGet($this->url . "/configuration/");
         $contentArea = WebDriverBy::cssSelector("body");
 
-        $this->linkTest(
+        $this->_linkTest(
             WebDriverBy::linkText("Study"),
             $contentArea,
             "Settings related to details of the study"
         );
-        $this->linkTest(
+        $this->_linkTest(
             WebDriverBy::linkText("Paths"),
             $contentArea,
             "Specify directories where LORIS-related files are stored or created."
         );
-        $this->linkTest(
+        $this->_linkTest(
             WebDriverBy::linkText("GUI"),
             $contentArea,
             "Settings related to the overall display of LORIS"
         );
-        $this->linkTest(
+        $this->_linkTest(
             WebDriverBy::linkText("WWW"),
             $contentArea,
             "Web address settings"
         );
-        $this->linkTest(
+        $this->_linkTest(
             WebDriverBy::linkText("Dashboard"),
             $contentArea,
             "Settings that affect the appearance of the dashboard and its charts"
         );
-        $this->linkTest(
+        $this->_linkTest(
             WebDriverBy::linkText("DICOM Archive"),
             $contentArea,
             "DICOM Archive settings"
         );
-        $this->linkTest(
+        $this->_linkTest(
             WebDriverBy::linkText("Statistics"),
             $contentArea,
             "Statistics module settings"
         );
-        $this->linkTest(
+        $this->_linkTest(
             WebDriverBy::linkText("Email"),
             $contentArea,
             "LORIS email settings"
         );
-        $this->linkTest(
+        $this->_linkTest(
             WebDriverBy::linkText("Uploads"),
             $contentArea,
             "Settings related to file uploading"
         );
-        $this->linkTest(
+        $this->_linkTest(
             WebDriverBy::linkText("API Keys"),
             $contentArea,
             "Specify any API keys required for LORIS"
         );
     }
-
+    /**
+      * Add a method for testing the link. After click the link,the page
+      * shows particular content.
+      * @param1 webDriver: find the link and click.
+      * @param2 webDriver: find the text showing on the page.
+      * @param3 text: put the text that should be shown in the assert.
+      */
+     private function _linkTest(WebDriverBy $by, WebDriverBy $byForContent, $testContent)
+     {
+         $webElement = $this->safeFindElement($by)->click();
+        
+         $bodyText = $this->safeFindElement(
+              $byForContent
+          )->getText();
+         $this->assertContains($testContent, $bodyText);
+     }
 }
 ?>
