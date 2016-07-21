@@ -475,6 +475,24 @@ ScoredElement = React.createClass({
 TextboxElement = React.createClass({
   displayName: 'TextboxElement',
 
+  getInitialState: function () {
+    return {
+      'value': ''
+    };
+  },
+  getDefaultProps: function () {
+    return {
+      'onUserInput': function () {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
+  handleChange: function (e) {
+    this.setState({
+      value: e.target.value
+    });
+    this.props.onUserInput(this.props.name, e.target.value);
+  },
   render: function () {
     return React.createElement(
       'div',
@@ -487,7 +505,11 @@ TextboxElement = React.createClass({
       React.createElement(
         'div',
         { className: 'col-sm-9' },
-        React.createElement('input', { type: 'text', className: 'form-control' })
+        React.createElement('input', {
+          type: 'text',
+          className: 'form-control',
+          onChange: this.handleChange
+        })
       )
     );
   }
