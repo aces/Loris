@@ -19,6 +19,15 @@ StaticDataTable = React.createClass({
             }
         }
     },
+    componentDidUpdate: function () {
+        if (jQuery.fn.DynamicTable) {
+            if (this.props.freezeColumn) {
+                $("#dynamictable").DynamicTable({ "freezeColumn": this.props.freezeColumn });
+            } else {
+                $("#dynamictable").DynamicTable();
+            }
+        }
+    },
     getInitialState: function () {
         return {
             'PageNumber': 1,
@@ -153,6 +162,10 @@ StaticDataTable = React.createClass({
 
         index.sort(function (a, b) {
             if (that.state.SortOrder === 'ASC') {
+                // Check if null values
+                if (a.Value === null) return -1;
+                if (b.Value === null) return 1;
+
                 // Sort by value
                 if (a.Value < b.Value) return -1;
                 if (a.Value > b.Value) return 1;
@@ -165,6 +178,10 @@ StaticDataTable = React.createClass({
                     return 1;
                 }
             } else {
+                // Check if null values
+                if (a.Value === null) return 1;
+                if (b.Value === null) return -1;
+
                 // Sort by value
                 if (a.Value < b.Value) return 1;
                 if (a.Value > b.Value) return -1;
@@ -249,7 +266,30 @@ StaticDataTable = React.createClass({
         );
         return React.createElement(
             "div",
-            { className: "panel panel-primary" },
+            { className: "panel panel-default" },
+            React.createElement(
+                "div",
+                { className: "table-header panel-heading" },
+                React.createElement(
+                    "div",
+                    { className: "row" },
+                    React.createElement(
+                        "div",
+                        { className: "col-xs-12" },
+                        rows.length,
+                        " rows displayed of ",
+                        this.props.Data.length,
+                        ". (Maximum rows per page: ",
+                        RowsPerPageDropdown,
+                        ")",
+                        React.createElement(
+                            "div",
+                            { className: "pull-right" },
+                            React.createElement(PaginationLinks, { Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber })
+                        )
+                    )
+                )
+            ),
             React.createElement(
                 "table",
                 { className: "table table-hover table-primary table-bordered", id: "dynamictable" },
