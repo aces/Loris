@@ -48,6 +48,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
         $candidate =& Candidate::singleton($this->identifier);
 
+        $this->tpl_data['candidate_parameter_edit'] = $user->hasPermission('candidate_parameter_edit');
+
         // check user permissions
         return ($user->getData('CenterID') == '1' ||
             ($user->getData('CenterID') == $candidate->getData('CenterID')) &&
@@ -590,7 +592,14 @@ class NDB_Form_candidate_parameters extends NDB_Form
     } 
 
     function update_candidate_info() {
-        
+
+        // create user object
+        $user =& User::singleton();
+
+        if (!$user->hasPermission('candidate_parameter_edit')) {
+            return;
+        }
+
         $DB =& Database::singleton();
         $pscid = $DB->pselectone(
                 'SELECT PSCID FROM candidate where CandID = :candid',

@@ -64,6 +64,9 @@ Class TimePoint_List_ControlPanel extends Candidate
         $this->tpl_data['isDataEntryPerson'] = $user->hasPermission('data_entry')
               && ($user_CenterID == $cand_CenterID || $user->isUserDCC());
 
+        $this->tpl_data['candidate_parameters_view'] = $user->hasPermission('candidate_parameter_view');
+        $this->tpl_data['candidate_parameters_edit'] = $user->hasPermission('candidate_parameter_edit');
+
         //set the baseurl of the tpl_data
         $factory  = NDB_Factory::singleton();
         $settings = $factory->settings();
