@@ -85,8 +85,7 @@ class NDB_Form_Brainbrowser extends NDB_Form
             $deps,
             [
                 $baseURL . "/brainbrowser/css/brainbrowser.css",
-                $baseURL . "/brainbrowser/css/volume-viewer-demo.css",
-                $baseURL . "/brainbrowser/css/surface-viewer-demo.css"
+                $baseURL . "/brainbrowser/css/volume-viewer-demo.css"
             ]
         );
     }
