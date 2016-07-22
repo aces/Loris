@@ -922,6 +922,9 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     private function _getEmailError($DB, $email)
     {
+
+        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
         // check email address' uniqueness
         $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
         $params = array('VEmail' => $email);
@@ -930,7 +933,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             $params['UID'] = $this->identifier;
         }
         $result = $DB->pselectOne($query, $params);
-
+        
         // Email already exists in database
         if ($result > 0) {
             return 'The email address already exists';
