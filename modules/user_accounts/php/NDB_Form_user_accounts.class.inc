@@ -922,7 +922,7 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     private function _getEmailError($DB, $email)
     {
-
+        // remove illegal characters
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
 
         // check email address' uniqueness
@@ -933,7 +933,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             $params['UID'] = $this->identifier;
         }
         $result = $DB->pselectOne($query, $params);
-        
+
         // Email already exists in database
         if ($result > 0) {
             return 'The email address already exists';
