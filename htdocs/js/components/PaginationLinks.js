@@ -93,7 +93,7 @@ PaginationLinks = React.createClass({
         }
         return React.createElement(
             'ul',
-            { className: 'pagination' },
+            { className: 'pagination pagination-table' },
             pageLinks
         );
     }

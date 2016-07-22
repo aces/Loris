@@ -1,7 +1,7 @@
 <div class="row">
 <div class="col-sm-8">
     <div class="panel panel-primary">
-        <div class="panel-heading" onclick="hideFilter();">
+        <div class="panel-heading" id="swap" onclick="hideFilter();">
             Selection Filter  
             <label id="advanced-label" style="display:none">(Advanced Options)</label>
             <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
