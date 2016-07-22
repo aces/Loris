@@ -87,10 +87,9 @@
           <hr/>
 
           <div id="color-map-{{VOLID}}">
-                            <span class="control-heading"
-                                  id="color-map-heading-{{VOLID}}">
-                                Color Map
-                            </span>
+            <span class="control-heading" id="color-map-heading-{{VOLID}}">
+                Color Map
+            </span>
           </div>
 
           <hr/>
@@ -100,10 +99,8 @@
               Threshold
             </div>
             <div class="thresh-inputs">
-              <input id="min-threshold-{{VOLID}}"
-                     class="control-inputs thresh-input-left" value="0"/>
-              <input id="max-threshold-{{VOLID}}"
-                     class="control-inputs thresh-input-right" value="255"/>
+              <input id="min-threshold-{{VOLID}}" class="control-inputs thresh-input-left" value="0"/>
+              <input id="max-threshold-{{VOLID}}" class="control-inputs thresh-input-right" value="255"/>
             </div>
             <div class="slider volume-viewer-threshold clickable"
                  id="threshold-slider-{{VOLID}}"></div>
@@ -111,8 +108,7 @@
 
           <hr/>
 
-          <div class="filename-additional-info"
-               id="filename-additional-info-{{VOLID}}">
+          <div class="filename-additional-info" id="filename-additional-info-{{VOLID}}">
             <div class="control-heading" id="voxel-coordinates-heading-{{VOLID}}">
               Voxel Coordinates
             </div>
@@ -125,60 +121,46 @@
             <hr/>
 
             <div id="intensity-value-div-{{VOLID}}">
-                              <span class="control-heading intensity-heading"
-                                    data-volume-id="{{VOLID}}">
-                                Intensity Value:
-                              </span>
+              <span class="control-heading intensity-heading" data-volume-id="{{VOLID}}">
+                Intensity Value:
+              </span>
               <span id="intensity-value-{{VOLID}}"
                     class="control-inputs intensity-value"></span>
             </div>
 
-            <div id="time-{{VOLID}}" class="time-div" data-volume-id="{{VOLID}}"
-                 style="display:none">
+            <div id="time-{{VOLID}}" class="time-div" data-volume-id="{{VOLID}}" style="display:none">
               <span class="control-heading">Time:</span>
-              <input class="control-inputs time-inputs" value="0"
-                     id="time-val-{{VOLID}}"/>
-                                <span class="btn btn-sm btn-primary play-btn">
-                                    <input type="checkbox"
-                                           class="button ui-helper-hidden-accessible"
-                                           id="play-{{VOLID}}">
-                                    <label for="play-{{VOLID}}">Play</label>
-                                </span>
-              <div class="slider volume-viewer-threshold"
-                   id="time-slider-{{VOLID}}"></div>
+              <input class="control-inputs time-inputs" value="0" id="time-val-{{VOLID}}"/>
+                <span class="btn btn-sm btn-primary play-btn">
+                    <input type="checkbox" class="button ui-helper-hidden-accessible" id="play-{{VOLID}}">
+                    <label for="play-{{VOLID}}">Play</label>
+                </span>
+              <div class="slider volume-viewer-threshold" id="time-slider-{{VOLID}}"></div>
             </div>
 
             <div class="contrast-div" data-volume-id="{{VOLID}}">
-                              <span class="control-heading"
-                                    id="contrast-heading{{VOLID}}">Contrast (0.0 to 2.0):
-                              <input class="control-inputs intensity-value"
-                                     value="1.0" id="contrast-val"/></span>
+              <span class="control-heading" id="contrast-heading{{VOLID}}">Contrast (0.0 to 2.0):
+              <input class="control-inputs intensity-value" value="1.0" id="contrast-val"/></span>
               <div id="contrast-slider" class="slider volume-viewer-contrast"></div>
             </div>
 
             <div class="brightness-div" data-volume-id="{{VOLID}}">
-                              <span class="control-heading"
-                                    id="brightness-heading{{VOLID}}">Brightness (-1 to 1):
-                              <input class="control-inputs intensity-value" value="0"
-                                     id="brightness-val"/></span>
-              <div id="brightness-slider"
-                   class="slider volume-viewer-brightness"></div>
+              <span class="control-heading" id="brightness-heading{{VOLID}}">
+                Brightness (-1 to 1):
+              <input class="control-inputs intensity-value" value="0" id="brightness-val"/></span>
+              <div id="brightness-slider" class="slider volume-viewer-brightness"></div>
             </div>
 
             <hr/>
 
-            <div id="slice-series-{{VOLID}}" class="slice-series-div"
-                 data-volume-id="{{VOLID}}">
+            <div id="slice-series-{{VOLID}}" class="slice-series-div" data-volume-id="{{VOLID}}">
               <div class="control-heading" id="slice-series-heading-{{VOLID}}">View
                 Slices
               </div>
               <div class="slice-series-buttons">
-                                    <span class="slice-series-button button btn btn-sm btn-primary"
-                                          data-axis="xspace">Sagittal</span>
-                                    <span class="slice-series-button button btn btn-sm btn-primary"
-                                          data-axis="yspace">Coronal</span>
-                                    <span class="slice-series-button button btn btn-sm btn-primary"
-                                          data-axis="zspace">Transverse</span>
+                <span class="slice-series-button button btn btn-sm btn-primary" data-axis="xspace">Sagittal</span>
+                <span class="slice-series-button button btn btn-sm btn-primary" data-axis="yspace">Coronal</span>
+                <span class="slice-series-button button btn btn-sm btn-primary" data-axis="zspace">Transverse</span>
               </div>
             </div>
           </div>
