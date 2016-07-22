@@ -587,7 +587,10 @@ $(function() {
           url: loris.BaseURL + '/brainbrowser/ajax/getMincName.php',
           method: 'GET',
           success: function(data) {
-            $("#filename-"+vol_id).html(data);
+              var fileName = $("#filename-" + vol_id);
+              fileName.html(data);
+              fileName.data("title", data);
+              fileName.tooltip();
           }
       });
 
