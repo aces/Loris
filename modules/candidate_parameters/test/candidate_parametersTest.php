@@ -41,14 +41,14 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
     }
 
     /**
-     * Tests that, when loading the candidate_parameters module > update_participant_status subtest, some
+     * Tests that, when loading the candidate_parameters module > updateParticipantStatus subtest, some
      * text appears in the body.
      *
      * @return void
      */
     function testCandidateParametersUpdateParticipantStatusDoespageLoad()
     {
-        $this->safeGet($this->url . "/candidate_parameters/update_participant_status/?candID=900000&identifier=900000");
+        $this->safeGet($this->url . "/candidate_parameters/updateParticipantStatus/?candID=900000&identifier=900000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Update Participant Status", $bodyText);
     }

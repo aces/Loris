@@ -99,7 +99,7 @@
     </table>
     </div>
     <div class="panel-body">
-        <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_participant_status/?candID={$candID}&identifier={$candID}'" value="Update Participant Status" type="button" />
+        <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/updateParticipantStatus/?candID={$candID}&identifier={$candID}'" value="Update Participant Status" type="button" />
     </div>
     {if $display_consent}
         <div class="panel-heading">
