@@ -734,7 +734,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      *
      * @throws DatabaseException
      */
-    function add_family()
+    function addFamily()
     {
         $DB =& Database::singleton();
 

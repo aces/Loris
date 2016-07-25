@@ -68,7 +68,7 @@
             {/foreach}
         </div>
         <br>
-        <input class="btn btn-sm btn-primary col-sm-offset-2" colspan="2" onclick="location.href='{$baseurl}/candidate_parameters/add_family/?candID={$candID}&identifier={$candID}'" value="Add Family Info" type="button" />
+        <input class="btn btn-sm btn-primary col-sm-offset-2" colspan="2" onclick="location.href='{$baseurl}/candidate_parameters/addFamily/?candID={$candID}&identifier={$candID}'" value="Add Family Info" type="button" />
         <br><br>
     </td>
     {/if}

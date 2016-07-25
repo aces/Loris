@@ -28,14 +28,14 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
     }
 
     /**
-     * Tests that, when loading the candidate_parameters module > add_family subtest, some
+     * Tests that, when loading the candidate_parameters module > addFamily subtest, some
      * text appears in the body.
      *
      * @return void
      */
     function testCandidateParametersAddFamilyDoespageLoad()
     {
-        $this->safeGet($this->url . "/candidate_parameters/add_family/?candID=900000&identifier=900000");
+        $this->safeGet($this->url . "/candidate_parameters/addFamily/?candID=900000&identifier=900000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Add Family", $bodyText);
     }

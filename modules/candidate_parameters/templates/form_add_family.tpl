@@ -5,7 +5,7 @@
 {/if}
 
 
-<form method="post" name="add_family" id="add_family" enctype="multipart/form-data">
+<form method="post" name="addFamily" id="addFamily" enctype="multipart/form-data">
 {if not $success}
 <div class="panel panel-primary">
     <div class="panel-heading">
