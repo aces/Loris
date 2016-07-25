@@ -1,6 +1,6 @@
 <?php
 /**
- * candidate_parameters automated integration tests
+ * Candidate_Parameters automated integration tests
  *
  * PHP Version 5
  *
@@ -12,7 +12,16 @@
  */
 
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
-class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCandidate
+/**
+ * CandidateParametersTestIntegrationTest
+ *
+ * @category Test
+ * @package  Loris
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+class CandidateParametersTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
     /**
      * Tests that, when loading the candidate_parameters module, some
