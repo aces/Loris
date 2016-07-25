@@ -194,7 +194,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                 $consent_info[$key] = $val;
             }
         }
-
+        print_r($consent_info);
         foreach ($consent_info as $key=>$val) {
             $defaults[$key] = $val;
             if (strpos($key, "_date") !== false
@@ -1040,7 +1040,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
             }
             $this->tpl_data['consent'] = $consentQuestions;
         }
-        $this->form->addFormRule(array(&$this, '_validate'));
+        $this->form->addFormRule(array(&$this, '_validateConsent'));
 
     }
 
@@ -1126,7 +1126,47 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
             $errors['ProbandDoB'] = 'Date of Birth Proband fields must match.';
         }
 
-             // consent requirements
+        if ($fields['flagged_caveatemptor']=='true'
+            && empty($fields['flagged_reason'])
+        ) {
+            $errors['flagged_reason'] = 'Please provide additional information for 
+                                         flagging candidate as Caveat Emptor';
+        }
+        $fields['flagged_other'] =trim($fields['flagged_other']);
+        if ($fields['flagged_reason']== 3 && empty($fields['flagged_other'])) {
+            $errors['flagged_other_group'] = 'If Other, please specify '.
+                'details for cavear emptor';
+        }
+
+        if ($options[$fields['participant_status']]['Required'] == true) {
+            $fields['participant_suboptions']
+                = trim($fields['participant_suboptions']);
+            if (empty($fields['participant_suboptions'])) {
+                $errors['participant_suboptions'] = "Please specify the status";
+            }
+        }
+        return $errors;
+    }
+
+    /**
+     * This function is for validation of user input for the consent update,
+     * depending on the questions answered.
+     *
+     * @param array $fields The list of input to the form submitted by
+     *                      smarty.
+     *
+     * @return array An array of elements with errors. An empty array if
+     *               all elements are valid.
+     */
+    function _validateConsent($fields)
+    {
+        $config  =& NDB_Config::singleton();
+        $errors  =array();
+        $options = self::getParticipantStatusOptionsVerbose();
+
+        $DB =& Database::singleton();
+
+        // consent requirements
         $consent = $config->getSetting('ConsentModule');
         if ($consent['useConsent'] === 'true') {
             /* The following if statement deals with the case of having
@@ -1168,7 +1208,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                     || empty($consentDate['d']))
                 ) {
                     $errors[$fieldname . '_date'] = 'When consent is set to '.
-                    'YES the date is required';
+                        'YES the date is required';
                 }
                 if (!empty($consentWithdrawal['Y'])
                     && !empty($consentWithdrawal['M'])
@@ -1194,7 +1234,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                     || $fields[$fieldname.'_withdrawal']['Y'] != $fields[$fieldname.'_withdrawal2']['Y']
                 ) {
                     $errors[$fieldname.'_withdrawal'] = 'Date of withdrawal '.
-                    'fields must match.';
+                        'fields must match.';
                 }
                 if ($fields[$fieldname.'_date']['M'] != $fields[$fieldname.'_date2']['M']
                     || $fields[$fieldname.'_date']['d'] != $fields[$fieldname.'_date2']['d']
@@ -1206,28 +1246,8 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
 
             }
         }
-        if ($fields['flagged_caveatemptor']=='true'
-            && empty($fields['flagged_reason'])
-        ) {
-            $errors['flagged_reason'] = 'Please provide additional information for 
-                                         flagging candidate as Caveat Emptor';
-        }
-        $fields['flagged_other'] =trim($fields['flagged_other']);
-        if ($fields['flagged_reason']== 3 && empty($fields['flagged_other'])) {
-            $errors['flagged_other_group'] = 'If Other, please specify '.
-                'details for cavear emptor';
-        }
-
-        if ($options[$fields['participant_status']]['Required'] == true) {
-            $fields['participant_suboptions']
-                = trim($fields['participant_suboptions']);
-            if (empty($fields['participant_suboptions'])) {
-                $errors['participant_suboptions'] = "Please specify the status";
-            }
-        }
         return $errors;
     }
-
     /**
      * Gets the participant_status options from participant_status_options
      * getParticipantStatusOptions()
