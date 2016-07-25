@@ -15,7 +15,6 @@ module.exports = function(grunt) {
                     'htdocs/js/components/PaginationLinks.js': 'jsx/PaginationLinks.js',
                     'htdocs/js/components/StaticDataTable.js': 'jsx/StaticDataTable.js',
                     'htdocs/js/components/react.breadcrumb.js': 'jsx/react.breadcrumb.js',
-                    'htdocs/js/components/react.dynamicTable.js': 'jsx/react.dynamicTable.js',
                     'htdocs/js/components/Form.js': 'jsx/Form.js',
                     'modules/bvl_feedback/js/react.behavioural_feedback_panel.js': 'modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
                     'modules/candidate_list/js/columnFormatter.js': 'modules/candidate_list/jsx/columnFormatter.js',
