@@ -50,7 +50,7 @@
                 </div>
             </div>
             <br>
-            <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_proband_info/?candID={$candID}&identifier={$candID}'" value="Update Proband Info" type="button" />
+            <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/updateProbandInfo/?candID={$candID}&identifier={$candID}'" value="Update Proband Info" type="button" />
         </div>
     {/if}
     {if $display_family}
