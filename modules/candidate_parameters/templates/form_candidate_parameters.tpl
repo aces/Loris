@@ -28,7 +28,7 @@
             </div>
         {/foreach}
         <br>
-        <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_candidate_info/?candID={$candID}&identifier={$candID}'" value="Update Candidate Info" type="button" />
+        <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/updateCandidateInfo/?candID={$candID}&identifier={$candID}'" value="Update Candidate Info" type="button" />
     </div>
     {if $display_proband}
         <div class="panel-heading">

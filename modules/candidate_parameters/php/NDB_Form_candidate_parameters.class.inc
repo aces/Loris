@@ -808,7 +808,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      *
      * @throws DatabaseException
      */
-    function update_candidate_info()
+    function updateCandidateInfo()
     {
 
         $DB    =& Database::singleton();
@@ -1161,7 +1161,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                     $errors[$fieldname.'_date'] = 'Cannot be later than today';
 
                 }
-
+                print_r($consentVal);
                 if ($consentVal === 'yes' && ( empty($consentDate)
                     || empty($consentDate['Y'])
                     || empty($consentDate['M'])
