@@ -972,7 +972,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      *
      * @throws DatabaseException
      */
-    function update_consent_info()
+    function updateConsentInfo()
     {
         $DB    =& Database::singleton();
         $pscid = $DB->pselectone(

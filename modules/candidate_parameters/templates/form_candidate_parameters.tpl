@@ -131,7 +131,7 @@
             {if $form.$row.error}
                 <span class="error">{$form.$row.error}</span>
             {/if}
-            <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_consent_info/?candID={$candID}&identifier={$candID}'" value="Update Consent Info" type="button" />
+            <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/updateConsentInfo/?candID={$candID}&identifier={$candID}'" value="Update Consent Info" type="button" />
         </div>
     {/if}
 </div>

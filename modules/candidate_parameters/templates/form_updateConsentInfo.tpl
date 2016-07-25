@@ -3,7 +3,7 @@
 <p>Consent Information was updated successful<br /></p>
 <br />
 {/if}
-<form method="post" name="update_consent_info" id="update_consent_info" enctype="multipart/form-data">
+<form method="post" name="updateConsentInfo" id="updateConsentInfo" enctype="multipart/form-data">
 {if not $success}
 <div class="panel panel-primary">
     <div class="panel-heading">
