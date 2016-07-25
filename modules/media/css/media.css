@@ -1,0 +1,122 @@
+.error-msg {
+    display: none;
+}
+
+#log_box {
+    width: 600px;
+    height: 200px;
+    border: 2px solid #064785;
+    overflow: auto;
+    padding: 5px;
+}
+
+progress {
+    /*position: relative;*/
+    width: 400px;
+    height: 20px;
+    color: #1C70B6;
+    border-style: none;
+    border-radius: 10px;
+}
+
+/* Firefox */
+progress::-moz-progress-bar {
+    background: #1C70B6;
+    border-radius: 10px;
+}
+
+/* Chrome */
+progress::-webkit-progress-value {
+    background: #1C70B6;
+    border-radius: 10px;
+}
+
+/* Polyfill */
+progress[aria-valuenow]:before {
+    background: #1C70B6;
+    border-radius: 10px;
+}
+
+.progress {
+    background-color: lightgrey;
+    height: 30px;
+}
+
+#progresslabel {
+    width: 95%;
+    position: absolute;
+    z-index: 1000;
+    color: white;
+    text-align: center;
+    padding-top: 4px;
+}
+
+.upload-logs-table-summary {
+    width: 95%;
+    height: 130px;
+    background: #E8E8E8;
+    resize: vertical;
+    margin-left: 30px;
+    padding: 5px;
+}
+
+.upload-logs-table-detailed {
+    width: 95%;
+    height: 400px;
+    background: #E8E8E8;
+    resize: vertical;
+    margin-left: 30px;
+    padding: 5px;
+}
+
+
+.nav-tabs-loris {
+    margin: 0 0 10px 0;
+}
+
+/* Selection Filter */
+
+.panel-heading > a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    padding: 0;
+}
+
+.panel-heading > a:hover,
+.panel-heading > a:focus,
+.panel-heading > a:visited {
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn-group-loris {
+    width: 100%;
+    text-align: center;
+}
+
+.btn-loris {
+    width: 100%;
+    max-width: 250px;
+    margin: 3px 0px;
+}
+
+
+/*
+ * Truncates a line of text when it no longer fits in parent
+ * Works responsively across all screen sizes.
+ *
+ * [Usage]: <div class="truncate-ellipsis"><span>Long text</span></div>
+ */
+.truncate-ellipsis {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    white-space: nowrap;
+}
+.truncate-ellipsis > * {
+    display: table-cell;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
