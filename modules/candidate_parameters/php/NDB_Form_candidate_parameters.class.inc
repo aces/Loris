@@ -45,7 +45,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         // check that the $candID is passed b/c the profile needs to be opened
         if ($this->identifier != $_REQUEST['candID']) {
             throw new LorisException(
-                "NDB_Form_candidate_parameters::_access: 
+                "NDB_Form_candidate_parameters::_access:
                        Candidate Profile Error (".$_REQUEST['candID']."): "
             );
         }
@@ -194,7 +194,6 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                 $consent_info[$key] = $val;
             }
         }
-        print_r($consent_info);
         foreach ($consent_info as $key=>$val) {
             $defaults[$key] = $val;
             if (strpos($key, "_date") !== false
