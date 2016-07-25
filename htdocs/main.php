@@ -193,7 +193,8 @@ try {
     }
 
     if (isset($caller->page)) {
-        $tpl_data['jsfiles'] = $caller->page->getJSDependencies();
+        $tpl_data['jsfiles']  = $caller->page->getJSDependencies();
+        $tpl_data['cssfiles'] = $caller->page->getCSSDependencies();
     }
 
     $tpl_data['workspace'] = $workspace;
@@ -216,6 +217,13 @@ try {
         break;
     }
     $tpl_data['error_message'][] = $e->getMessage();
+} finally {
+    // Set dependencies if they are not set
+    if (!isset($tpl_data['jsfiles']) || !isset($tpl_data['cssfiles'])) {
+        $page = new NDB_Page();
+        $tpl_data['jsfiles']  = $page->getJSDependencies();
+        $tpl_data['cssfiles'] = $page->getCSSDependencies();
+    }
 }
 
 //--------------------------------------------------

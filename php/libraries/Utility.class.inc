@@ -874,6 +874,11 @@ class Utility
      */
     static function columnExists($test_name,$column)
     {
+        error_log(
+            "WARNING: ColumnExists function will soon be moved to the Database " .
+            "class. Please replace any static reference to Utility::ColumnExists() ".
+            "by Database->ColumnExists() calls."
+        );
         $config   =& NDB_Config::singleton();
         $database = $config->getSetting('database');
         $query    = "SELECT DISTINCT table_name
@@ -1156,7 +1161,7 @@ class Utility
     {
         $DB =& Database::singleton();
 
-        if (Utility::ColumnExists('test_battery', 'Test_name_display')) {
+        if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
                 "SELECT DISTINCT Test_name_display FROM test_battery 
                 WHERE Visit_label=:vl",

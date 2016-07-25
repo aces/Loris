@@ -15,6 +15,11 @@ if [ ! -d '/var/lib/mysql/mysql' -a "${1%_safe}" = 'mysqld' ]; then
 
     mysql -e "CREATE DATABASE $MYSQL_DATABASE;"
     mysql $MYSQL_DATABASE < /0000-00-00-schema.sql
+    mysql $MYSQL_DATABASE < /0000-00-01-Permission.sql
+    mysql $MYSQL_DATABASE < /0000-00-02-Menus.sql
+    mysql $MYSQL_DATABASE < /0000-00-03-ConfigTables.sql
+    mysql $MYSQL_DATABASE < /0000-00-04-Help.sql
+    mysql $MYSQL_DATABASE < /0000-00-99-indexes.sql
 
     mysqladmin shutdown
 
