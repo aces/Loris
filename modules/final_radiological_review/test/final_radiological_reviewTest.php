@@ -32,6 +32,7 @@ class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
         $this->assertNotContains("You do not have access to this page.", $bodyText);
 
         $this->resetPermissions();
+    }
 }
 ?>
 
