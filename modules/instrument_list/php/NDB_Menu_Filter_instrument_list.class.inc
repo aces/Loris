@@ -1,31 +1,21 @@
 <?php
-require_once 'NDB_Menu_Filter.class.inc';
-require_once 'Instrument_List_ControlPanel.class.inc';
 
 /**
  * The timepoint details menu
  * @package behavioural
  */
+require_once __DIR__ ."/Instrument_List_ControlPanel.class.inc";
 class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 {
     function _hasAccess()
     {
         // create user object
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if (Utility::isErrorX($timePoint)) {
-            return PEAR::raiseError("TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage());
-        }
         $candID = $timePoint->getCandID();
 
         $candidate =& Candidate::singleton($candID);
-        if (Utility::isErrorX($candidate)) {
-            return PEAR::raiseError("Candidate Error ($candID): ".$candidate->getMessage());
-        }
 
         // check user permissions
     	return ($user->hasPermission('access_all_profiles') || $user->getData('CenterID') == $candidate->getData('CenterID') || $user->getData('CenterID') == $timePoint->getData('CenterID'));
@@ -33,27 +23,16 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 
     function getControlPanel() {
         $controlPanel = new Instrument_List_ControlPanel($_REQUEST['sessionID']);
-        if (Utility::isErrorX($controlPanel)) {
-            $tpl_data['error_message'][] = $controlPanel->getMessage();
-        } else {
-            // save possible changes from the control panel...
-            $success = $controlPanel->save();
-            if (Utility::isErrorX($success)) {
-                return $success;
-            }
+        // save possible changes from the control panel...
+        $success = $controlPanel->save();
 
-            // display the control panel
-            $html = $controlPanel->display();
-            if (Utility::isErrorX($html)) {
-                return $html;
-            }
-            // I don't know why this is here, but it
-            // was in main.php, so moved it to be safe.
-            $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-            $timePoint->select($_REQUEST['sessionID']);
-            return $html;
-        }
-
+        // display the control panel
+        $html = $controlPanel->display();
+        // I don't know why this is here, but it
+        // was in main.php, so moved it to be safe.
+        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint->select($_REQUEST['sessionID']);
+        return $html;
     }
     function setup()
     {
@@ -64,26 +43,17 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $this->_setupPage(null, null, null, null, 'filter');
         // get behavioral battery for this visit (time point)
         $battery = new NDB_BVL_Battery;
-        if (Utility::isErrorX($battery)) {
-            return PEAR::raiseError('Battery Error: '.$battery->getMessage());
-        }
         $success = $battery->selectBattery($_REQUEST['sessionID']);
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError('instrument_list::setup() battery: '.$success->getMessage());
-        }
+
+        $this->tpl_data['stage'] = Utility::getStageUsingCandID($this->tpl_data['candID']);
+        $this->tpl_data['subprojectID'] = Utility::getSubprojectIDUsingCandID($this->tpl_data['candID']);
 
         // get the list of instruments
-        $listOfInstruments = $battery->getBatteryVerbose();
-        if(Utility::isErrorX($listOfInstruments)) {
-            return PEAR::raiseError('instrument_list::setup() instruments: '.$listOfInstruments->getMessage());
-        }
+        $listOfInstruments = $battery->getBatteryVerbose($this->tpl_data['stage'], $this->tpl_data['subprojectID']);
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
             $user =& User::singleton();
-            if (Utility::isErrorX($user)) {
-                return PEAR::raiseError ("User Error: ".$user->getMessage());
-            }
             $username = $user->getData('UserID');
 
             $feedback_select_inactive = null;
@@ -105,16 +75,10 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
                 // make an instrument status object
                 $status = new NDB_BVL_InstrumentStatus;
                 $success = $status->select($instrument['CommentID']);
-                if(Utility::isErrorX($success)) {
-                    return PEAR::raiseError("instrument_list::setup() instrument status: ".$success->getMessage());
-                }
 
                 $ddeStatus = new NDB_BVL_InstrumentStatus;
                 $success = $ddeStatus->select($instrument['DDECommentID']);
-                if(Utility::isErrorX($success)) {
-                    return PEAR::raiseError("instrument_list::setup() instrument status: ".$success->getMessage());
-                }
-		
+
                 $this->tpl_data['instruments'][$x][$i]['fullName'] = $instrument['Full_name'];
                 $this->tpl_data['instruments'][$x][$i]['dataEntryStatus'] = $status->getDataEntryStatus();
                 $this->tpl_data['instruments'][$x][$i]['administrationStatus'] = $status->getAdministrationStatus();
@@ -124,22 +88,14 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
                 $this->tpl_data['instruments'][$x][$i]['ddeCommentID'] = $instrument['DDECommentID'];
                 $this->tpl_data['instruments'][$x][$i]['ddeDataEntryStatus'] = $ddeStatus->getDataEntryStatus();
                 $this->tpl_data['instruments'][$x][$i]['isDirectEntry'] = $instrument['isDirectEntry'];
-                		
+                $this->tpl_data['instruments'][$x][$i]['instrumentOrder'] = $instrument['instrument_order'];
+
                 // create feedback object for the time point
                 $feedback = NDB_BVL_Feedback::singleton($username, null, null, $instrument['CommentID']);
-                if (Utility::isErrorX($feedback)) {
-                    return PEAR::raiseError("Feedback Error (".$instrument['CommentID']."): ".$feedback->getMessage());
-                }
 		
                 $feedback_status = $feedback->getMaxThreadStatus($feedback_select_inactive);
-                if (Utility::isErrorX($feedback_status)) {
-                    return PEAR::raiseError("instrument_list::setup() feedback status: ".$feedback_status->getMessage());
-                }
 
                 $feedback_count = $feedback->getThreadCount();
-                if (Utility::isErrorX($feedback_count)) {
-                    return PEAR::raiseError("instrument_list::setup() feedback count: ".$feedback_count->getMessage());
-                }
 
                 $this->tpl_data['instruments'][$x][$i]['feedbackCount'] = (empty($feedback_count)) ? $feedback_status : $feedback_count;
                 if(!empty($feedback_status)){
@@ -155,17 +111,24 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         }
 
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if (Utility::isErrorX($timePoint)) {
-            return PEAR::raiseError("TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage());
-        }
         $candID = $timePoint->getCandID();
 
         $candidate =& Candidate::singleton($candID);
-        if (Utility::isErrorX($candidate)) {
-            return PEAR::raiseError("Candidate Error ($candID): ".$candidate->getMessage());
-        }
 
         $this->tpl_data['display'] = array_merge($candidate->getData(), $timePoint->getData());
+    }
+    /**
+     * Used by the NDB_caller class when loading a page. 
+     * Call the display function of the appropriate modules feedback panel.
+     *
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     */
+
+    function getFeedbackPanel($candID, $sessionID)
+    {
+        $feedbackPanel = new BVL_Feedback_Panel($candID, $sessionID);
+        $html =  $feedbackPanel->display();
+        return $html;
     }
 }
 ?>

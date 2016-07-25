@@ -8,34 +8,34 @@
  * @category Main
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
- * @license  Loris License
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
 
 ini_set('default_charset', 'utf-8');
 
-require_once "Database.class.inc";
-require_once 'NDB_Client.class.inc';
-require_once "Utility.class.inc";
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize();
+$DB = Database::singleton();
 
-$DB =& Database::singleton();
 $recruitmentBySiteData = array();
-$list_of_sites =& Utility::getSiteList();
-foreach ($list_of_sites as $site) {
-    $recruitmentBySiteData[] = array(
-        "label" => $site,
-        "total" => $DB->pselectOne(
-            "SELECT count(c.CandID) 
-            FROM candidate c LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-            WHERE c.Active='Y' AND psc.Name=:Site", array('Site' => $site)
-        )
+$list_of_sites         = Utility::getAssociativeSiteList(true, false);
+
+foreach ($list_of_sites as $siteID => $siteName) {
+
+    $totalRecruitment = $DB->pselectOne(
+        "SELECT COUNT(c.CandID)
+         FROM candidate c
+         WHERE c.CenterID=:Site AND c.Active='Y' AND c.Entity_type='Human'",
+        array('Site' => $siteID)
     );
+
+    $recruitmentBySiteData[] = array(
+                                "label" => $siteName,
+                                "total" => $totalRecruitment,
+                               );
 }
+
 print json_encode($recruitmentBySiteData);
 
-exit();
+return 0;
 
 ?>

@@ -1,7 +1,4 @@
 <?php
-require_once 'Utility.class.inc';
-require_once 'NDB_Form.class.inc';
-
 /**
  * The welcome menu
  * @package main
@@ -10,9 +7,6 @@ class NDB_Form_statistics extends NDB_Form
 {
     function _hasAccess() {
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         return $user->hasPermission('data_entry');
     }
 
@@ -70,9 +64,6 @@ class NDB_Form_statistics extends NDB_Form
     function statistics()
     {
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
 
         $this->tpl_data['StatsTabs'] = $DB->pselect(
             "SELECT ModuleName, SubModuleName, Description
@@ -84,28 +75,20 @@ class NDB_Form_statistics extends NDB_Form
 
     function stats_general()
     {
-        $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
+        //$DB =& Database::singleton();
     }
 
     function stats_behavioural()
     {
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
-        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1'", $centers);
-        if(Utility::isErrorX($centers)) {
-            return PEAR::raiseError("DB Error: ".$centers->getMessage());
-        }
+        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1' AND Study_site = 'Y'", $centers);
+
         $this->tpl_data['Centers'] = $centers;
         $this->tpl_data['Sites'] = array('' => 'All Sites');
 
         $projects[null] = 'All Projects';
         foreach(Utility::getProjectList() as $key=>$value) {
-           $projects[$key] = $value;    
+            $projects[$key] = $value;
         }
         $this->tpl_data['Projects'] = $projects;
         foreach ($centers as $row) {
@@ -122,15 +105,15 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['CurrentProject'] = array('ID' => $currentProject, 'Name' => $projects[$currentProject]);
         } else {
             $ExtraProject_Criteria = '';
-         }
-         $subprojects = Utility::getSubprojectsForProject($currentProject);
+        }
+        $subprojects = Utility::getSubprojectsForProject($currentProject);
 
-         $this->tpl_data['Subprojects'] = $subprojects;
-         foreach($subprojects as $key=>$val) {
-             $subprojList .= $key.",";
-         }
-         $subprojList = substr($subprojList, 0, -1);
-         $config = NDB_Config::singleton();
+        $this->tpl_data['Subprojects'] = $subprojects;
+        foreach($subprojects as $key=>$val) {
+            $subprojList .= $key.",";
+        }
+        $subprojList = substr($subprojList, 0, -1);
+        $config = NDB_Config::singleton();
 
         $Visits = Utility::getExistingVisitLabels($currentProject);
         $this->tpl_data['Visits'] = $Visits;
@@ -150,7 +133,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.SubprojectID IN ($subprojList)
                 $ExtraProject_Criteria
                 GROUP by s.CenterID, VLabel, f.Data_Entry",
-                $result);
+            $result);
 
         foreach($result as $row) {
             // Put some things into variables to make the lines shorter
@@ -176,6 +159,18 @@ class NDB_Form_statistics extends NDB_Form
             }
         }
         // DDE STATS
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        $ddeInstrumentsQuoted = array();
+        foreach ($ddeInstruments as $ddeInstrument) {
+            array_push($ddeInstrumentsQuoted, $DB->quote($ddeInstrument));
+        }
+
+        $ddeInstrumentCriteria = "";
+        if ($ddeInstruments != null) {
+            $ddeInstrumentCriteria = implode(" OR f.Test_name=", $ddeInstrumentsQuoted);
+            $ddeInstrumentCriteria = "AND (f.Test_name =" . $ddeInstrumentCriteria . ") ";
+        }
+        
         $DB->select("SELECT s.CenterID, 
                 f.Data_Entry as Data_Entry, 
                 s.visit_label as VLabel,
@@ -185,11 +180,10 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.CommentID LIKE 'DDE%' 
                 AND c.Active='Y' 
-                AND (f.Test_name NOT LIKE '%parameter%' 
-                    AND f.Test_name NOT LIKE '%radiological%' 
-                    AND f.Test_name NOT LIKE '%vineland%')
+                $ddeInstrumentCriteria
+                $ExtraProject_Criteria
                 GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID;",
-                $result);
+            $result);
         foreach($result as $row) {
             $center = $row['CenterID'];
             $vl = $row['VLabel'];
@@ -215,9 +209,6 @@ class NDB_Form_statistics extends NDB_Form
     function stats_MRI()
     {
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
 
         $projects[null] = 'All Projects';
         foreach(Utility::getProjectList() as $key => $value) {
@@ -225,89 +216,86 @@ class NDB_Form_statistics extends NDB_Form
         }
         if(isset($_REQUEST['site']) && $_REQUEST['site'] != '') {
             $ExtraSite_Criteria = 'AND (c.CenterID IS NULL OR c.CenterID=' . $_REQUEST['site'] . ')';
-         } else {
+        } else {
             $ExtraSite_Criteria = '';
-         }
-         $currentProject = null;
-         $this->tpl_data['showTable']= true;    
-         if(isset($_REQUEST['MRIProject']) && $_REQUEST['MRIProject'] != '') {
+        }
+        $currentProject = null;
+        $this->tpl_data['showTable']= true;
+        if(isset($_REQUEST['MRIProject']) && $_REQUEST['MRIProject'] != '') {
             $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $_REQUEST['MRIProject'] . ')';
-             $currentProject = $_REQUEST['MRIProject'];
-             $this->tpl_data['CurrentProject'] = array('ID' => $currentProject, 'Name' => $projects[$currentProject]);
-          } else {
-             $ExtraProject_Criteria = '';
-          }
-          $subprojects = Utility::getSubprojectsForProject($currentProject);  
-          $this->tpl_data['Subprojects'] = $subprojects;
-          foreach($subprojects as $key=>$val) {
-             $subprojList .= $key.",";
-          }
-          $subprojList = substr($subprojList, 0, -1); 
-          $this->tpl_data['Projects'] = $projects;
+            $currentProject = $_REQUEST['MRIProject'];
+            $this->tpl_data['CurrentProject'] = array('ID' => $currentProject, 'Name' => $projects[$currentProject]);
+        } else {
+            $ExtraProject_Criteria = '';
+        }
+        $subprojects = Utility::getSubprojectsForProject($currentProject);
+        $this->tpl_data['Subprojects'] = $subprojects;
+        foreach($subprojects as $key=>$val) {
+            $subprojList .= $key.",";
+        }
+        $subprojList = substr($subprojList, 0, -1);
+        $this->tpl_data['Projects'] = $projects;
 
         $this->tpl_data['Subprojects'] = $subprojects;
         $this->tpl_data['Projects'] = $projects;
 
-        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1'", $centers);
-                    if(Utility::isErrorX($centers)) {
-                    return PEAR::raiseError("DB Error: ".$centers->getMessage());
-                    }
-                    $this->tpl_data['Centers'] = $centers;
-                    $this->tpl_data['Sites'] = array('' => 'All Sites');
-                    foreach ($centers as $row) {
-                    $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
-                    if($_REQUEST['site'] == $row['NumericID']) {
-                    $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
-                    }
+        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1' AND Study_site = 'Y'", $centers);
+        $this->tpl_data['Centers'] = $centers;
+        $this->tpl_data['Sites'] = array('' => 'All Sites');
+        foreach ($centers as $row) {
+            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
+            if($_REQUEST['site'] == $row['NumericID']) {
+                $this->tpl_data['CurrentSite'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
+            }
 
-                    }
-                    $this->tpl_data['Subprojects'] = Utility::getSubprojectList(); //array('1' => '6 Month Recruit', '2' => '12 Month Recruit', '3' => 'Control');
-                    $Visits = Utility::getExistingVisitLabels($currentProject);
-                    $this->tpl_data['Visits'] = $Visits;
+        }
+        $this->tpl_data['Subprojects'] = Utility::getSubprojectList(); //array('1' => '6 Month Recruit', '2' => '12 Month Recruit', '3' => 'Control');
+        $Visits = Utility::getExistingVisitLabels($currentProject);
+        $this->tpl_data['Visits'] = $Visits;
 
 
-                    $MRISubcategories = array('Complete', 'Partial Run', 'No Scan');
-                    $MRIOptions = array('T1' => 'T1',
-                            'T2' => 'T2',
-                            'T1T2' => 'T1 and T2',
-                            'DTI' => 'DTI',
-                            'BOLD' => 'BOLD',
-                            'Spectroscopy' => 'Spectroscopy'
-                            );
-                    if($_REQUEST['mri_type']) {
-                        $MRI_Type = $_REQUEST['mri_type'];
-                        $MRI_Type_Field = $_REQUEST['mri_type'] . "_Scan_Done";
-                        $MRIHeader = "$MRI_Type Breakdown";
-                        if($_REQUEST['mri_type'] == 'T1T2') {
-                            $MRI_Type_Field = "T1_Scan_Done='Complete' and T2_Scan_Done='Complete'";
-                            $MRIHeader = "T1 and T2 Complete Breakdown";
-                            $CaseStatement = "
+        $MRISubcategories = array('Complete', 'Partial Run', 'No Scan');
+        $MRIOptions = array('T1' => 'T1',
+            'T2' => 'T2',
+            'T1T2' => 'T1 and T2',
+            'DTI' => 'DTI',
+            'BOLD' => 'BOLD',
+            'Spectroscopy' => 'Spectroscopy'
+        );
+        if($_REQUEST['mri_type']) {
+            $MRI_Type = $_REQUEST['mri_type'];
+            $MRI_Type_Field = $_REQUEST['mri_type'] . "_Scan_Done";
+            $MRIHeader = "$MRI_Type Breakdown";
+            if($_REQUEST['mri_type'] == 'T1T2') {
+                $MRI_Type_Field = "T1_Scan_Done='Complete' and T2_Scan_Done='Complete'";
+                $MRIHeader = "T1 and T2 Complete Breakdown";
+                $CaseStatement = "
                                 CASE($MRI_Type_Field)
                                 WHEN True then 'Complete'
                                 WHEN False Then 'Incomplete'
                                 ELSE 'Incomplete'
                                 END";
-                            $MRISubcategories = array('Complete', 'Incomplete');
-                        } else {
-                            $CaseStatement = "
+                $MRISubcategories = array('Complete', 'Incomplete');
+            } else {
+                $CaseStatement = "
                                 CASE($MRI_Type_Field)
                                 WHEN 'Partial' THEN 'Partial Run'
                                 WHEN 'No' THEN 'No Scan'
                                 ELSE $MRI_Type_Field
                                 END";
-                        }
-                    } else {
-                        $MRI_Type_Field = 'T1_Scan_Done';
-                        $MRI_Type = 'T1';
-                        $MRIHeader = "T1 Scan Done Breakdown";
-                        $CaseStatement = "
+            }
+        } else {
+            $MRI_Type_Field = 'T1_Scan_Done';
+            $MRI_Type = 'T1';
+            $MRIHeader = "T1 Scan Done Breakdown";
+            $CaseStatement = "
                             CASE($MRI_Type_Field)
                             WHEN 'Partial' THEN 'Partial Run'
                             WHEN 'No' THEN 'No Scan'
                             ELSE $MRI_Type_Field
                             END";
-                    }
-                    $DB->select("SELECT s.SubprojectID, 
+        }
+        $DB->select("SELECT s.SubprojectID,
                             c.CenterID, 
                             s.Visit_label as VLabel,
                             $CaseStatement as Subcat,
@@ -323,10 +311,10 @@ class NDB_Form_statistics extends NDB_Form
                             AND s.SubprojectID IN ($subprojList)
                             $ExtraProject_Criteria
                             GROUP BY Subcat, s.SubprojectID, c.CenterID, s.Visit_label", $result);
-                    $M_Visits = Utility::getExistingVisitLabels($currentProject);
-                    $this->tpl_data['MRI_Done_Table'] = $this->render_stats_table($MRIHeader, $MRISubcategories, $M_Visits, "mri_type", $MRIOptions, $MRI_Type, $centers, $result, "mri", $currentProject);
+        $M_Visits = Utility::getExistingVisitLabels($currentProject);
+        $this->tpl_data['MRI_Done_Table'] = $this->render_stats_table($MRIHeader, $MRISubcategories, $M_Visits, "mri_type", $MRIOptions, $MRI_Type, $centers, $result, "mri", $currentProject);
 
-                    $DB->select("SELECT s.SubprojectID, 
+        $DB->select("SELECT s.SubprojectID,
                             c.CenterID, 
                             CASE s.visit_label
                             WHEN '6mo' THEN 'v06'
@@ -346,22 +334,23 @@ class NDB_Form_statistics extends NDB_Form
                             AND s.SubprojectID IN ($subprojList)
                             $ExtraProject_Criteria
                             GROUP BY s.SubprojectID, c.CenterID, s.Visit_label;",
-                            $result);
-                    foreach($result as $row) {
-                        $center = $row['CenterID'];
-                        $cohort = $row['SubprojectID'];
-                        $vl = $row['VLabel'];
-                        $c =& $this->tpl_data['mri_total'][$cohort]['C' . $center];
+            $result);
+        foreach($result as $row) {
+            $center = $row['CenterID'];
+            $cohort = $row['SubprojectID'];
+            $vl = $row['VLabel'];
+            $c =& $this->tpl_data['mri_total'][$cohort]['C' . $center];
 
-                        $c[$vl] += $row['val'];
-                        $this->tpl_data['mri_total']['C' . $center][$vl]['total'] += $row['val'];
-                        $this->tpl_data['mri_total'][$cohort]['total'] += $row['val'];
-                        $this->tpl_data['mri_total']['total'] += $row['val'];
+            $c[$vl] += $row['val'];
+            $this->tpl_data['mri_total']['C' . $center][$vl]['total'] += $row['val'];
+            $this->tpl_data['mri_total'][$cohort]['total'] += $row['val'];
+            $this->tpl_data['mri_total']['total'] += $row['val'];
 
-                    }
-                    // MRI INTEGRITY STATS 
-                    // MRI parameter form is completed, but nothing in tarchive
-                    $DB->select("SELECT COUNT(distinct f.CommentID) as val, 
+        }
+        // MRI INTEGRITY STATS
+        // MRI parameter form is completed, but nothing in tarchive
+        /*
+        $DB->select("SELECT COUNT(distinct f.CommentID) as val,
                             s.CenterID as CenterID
                             FROM flag f JOIN session s ON (f.SessionID=s.ID) 
                             LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
@@ -379,12 +368,13 @@ class NDB_Form_statistics extends NDB_Form
                             AND (m.T1_Scan_done IS NULL OR m.T1_Scan_done <> 'No')
                             AND s.SubprojectID IN ($subprojList)
                             GROUP BY s.CenterID;", $result);
-                    foreach($result as $row) {
-                        $this->tpl_data['mri_errors'][$row['CenterID']]['no_tarchive'] = $row['val'];
-                    }
+        foreach($result as $row) {
+            $this->tpl_data['mri_errors'][$row['CenterID']]['no_tarchive'] = $row['val'];
+        }
+         */
 
-                    // MRI parameter form completed, but nothing in browser
-                    $DB->select("SELECT s.CenterID as CenterID, 
+        // MRI parameter form completed, but nothing in browser
+        $DB->select("SELECT s.CenterID as CenterID,
                             COUNT(distinct f.CommentID) as val
                             FROM mri_parameter_form m LEFT JOIN flag f ON (f.CommentID=m.CommentID)
                             LEFT JOIN session s ON (s.ID=f.SessionID) 
@@ -398,12 +388,12 @@ class NDB_Form_statistics extends NDB_Form
                             AND s.Active='Y'
                             AND s.SubprojectID IN ($subprojList)
                             GROUP by s.CenterID;", $result);
-                    foreach($result as $row) {
-                        $this->tpl_data['mri_errors'][$row['CenterID']]['no_browser'] = $row['val'];
-                    }
+        foreach($result as $row) {
+            $this->tpl_data['mri_errors'][$row['CenterID']]['no_browser'] = $row['val'];
+        }
 
-                    // MRI Browser populated, but no MRI parameter form completed.
-                    $DB->select("SELECT s.CenterID as CenterID, COUNT(distinct s.ID) as val
+        // MRI Browser populated, but no MRI parameter form completed.
+        $DB->select("SELECT s.CenterID as CenterID, COUNT(distinct s.ID) as val
                             FROM files LEFT JOIN session s ON (files.SessionID=s.ID)
                             LEFT JOIN flag f on (f.SessionID=s.ID
                                 AND f.Test_name='mri_parameter_form' 
@@ -417,57 +407,49 @@ class NDB_Form_statistics extends NDB_Form
                             AND s.SubprojectID IN ($subprojList)
                             $ExtraProject_Criteria
                             GROUP BY s.CenterID", $result);
-                    foreach($result as $row) {
-                        $this->tpl_data['mri_errors'][$row['CenterID']]['no_parameter'] = $row['val'];
-                    }
-                    // TOP MRI TABLE
+        foreach($result as $row) {
+            $this->tpl_data['mri_errors'][$row['CenterID']]['no_parameter'] = $row['val'];
+        }
+        // TOP MRI TABLE
 
-                    // Below this has not been optimized. It's kind of ugly.
-                    foreach($centers as $center) {
-                        $id = $center['NumericID'];
-                        $name = $center['LongName'];
-                        // -------- MRI STATS---------------
-                        $DB->select("SELECT COUNT(distinct s.CandID, s.Visit_label) FROM tarchive as t, session as s WHERE MID(t.PatientName,9,6)=s.CandID AND s.SubprojectID IN ($subprojList) AND s.CenterID={$center['NumericID']};", $result23);
-                        if (Utility::isErrorX($result23)) {
-                            return PEAR::raiseError("DB Error: ".$result23->getMessage());
-                        }
-                        list(,$result23)=each($result23[0]);
-                        $work_station_count = $result23;
+        // Below this has not been optimized. It's kind of ugly.
+        foreach($centers as $center) {
+            $id = $center['NumericID'];
+            $name = $center['LongName'];
+            // -------- MRI STATS---------------
+            $DB->select("SELECT COUNT(distinct s.CandID, s.Visit_label) FROM tarchive as t, session as s WHERE MID(t.PatientName,9,6)=s.CandID AND s.SubprojectID IN ($subprojList) AND s.CenterID={$center['NumericID']};", $result23);
+            list(,$result23)=each($result23[0]);
+            $work_station_count = $result23;
 
-                        $DB->select("SELECT COUNT(s.CandID) FROM session as s, psc as p, candidate as c WHERE c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID  AND s.Scan_done='Y' AND s.SubprojectID IN ($subprojList) $ExtraProject_Criteria AND s.CenterID={$id} ORDER BY s.CandID;", $result24);
-                        if (Utility::isErrorX($result24)) {
-                            return PEAR::raiseError("DB Error: ".$result24->getMessage());
-                        }
-                        list(,$result24)=each($result24[0]);
-                        $claimed_count = $result24;
+            $DB->select("SELECT COUNT(s.CandID) FROM session as s, psc as p, candidate as c WHERE c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID  AND s.Scan_done='Y' AND s.SubprojectID IN ($subprojList) $ExtraProject_Criteria AND s.CenterID={$id} ORDER BY s.CandID;", $result24);
+            list(,$result24)=each($result24[0]);
+            $claimed_count = $result24;
 
-                        $DB->select("SELECT COUNT(s.CandID) FROM mri_parameter_form as pf, session as s, flag as f, psc as p, candidate as c WHERE f.CommentID=pf.CommentID AND s.ID=f.SessionID AND c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID AND pf.Data_entry_completion_status='Complete' AND s.CenterID={$id} AND s.SubprojectID IN ($subprojList) $ExtraProject_Criteria ORDER BY p.Name;", $result25);
-                        if (Utility::isErrorX($result25)) {
-                            return PEAR::raiseError("DB Error: ".$result25->getMessage());
-                        }
-                        list(,$result25)=each($result25[0]);
-                        $forms_count = $result25;
-                        $three_scans = $DB->selectOne("SELECT count(distinct CandID) FROM session v06  join flag f06 ON (f06.SessionID=v06.ID and Test_name='mri_parameter_form' AND CommentID NOT LIKE 'DDE%') join mri_parameter_form m06 ON (f06.CommentID=m06.CommentID) 
+            $DB->select("SELECT COUNT(s.CandID) FROM mri_parameter_form as pf, session as s, flag as f, psc as p, candidate as c WHERE f.CommentID=pf.CommentID AND s.ID=f.SessionID AND c.CandID=s.CandID AND s.Active='Y' AND s.CenterID=p.CenterID AND pf.Data_entry_completion_status='Complete' AND s.CenterID={$id} AND s.SubprojectID IN ($subprojList) $ExtraProject_Criteria ORDER BY p.Name;", $result25);
+            list(,$result25)=each($result25[0]);
+            $forms_count = $result25;
+            $three_scans = $DB->selectOne("SELECT count(distinct CandID) FROM session v06  join flag f06 ON (f06.SessionID=v06.ID and Test_name='mri_parameter_form' AND CommentID NOT LIKE 'DDE%') join mri_parameter_form m06 ON (f06.CommentID=m06.CommentID)
                                 WHERE v06.Active='Y' AND v06.Visit_label='v06' and m06.T1_Scan_Done='Complete'
                                 AND EXISTS (SELECT 'x' FROM session v12 join flag f12 ON (f12.SessionID=v12.ID and Test_name='mri_parameter_form' AND CommentID NOT LIKE 'DDE%') join mri_parameter_form m12 ON (f12.CommentID=m12.CommentID)
                                     WHERE v12.Active='Y' AND v12.Visit_label='v12' AND v06.CandID=v12.CandID AND m12.T1_Scan_Done='Complete') 
                                 AND EXISTS (SELECT 'x' FROM session v24 join flag f24 ON (f24.SessionID=v24.ID and Test_name='mri_parameter_form' AND CommentID NOT LIKE 'DDE%') join mri_parameter_form m24 ON (f24.CommentID=m24.CommentID)
                                     WHERE v24.Active='Y' AND v24.Visit_label='v24' AND v06.CandID=v24.CandID and m24.T1_Scan_Done='Complete') 
-                                AND v06.CenterID='{$id}' AND V06.SubprojectID IN ($subprojList) $ExtraProject_Criteria");
-
+                                AND v06.CenterID='{$id}' AND v06.SubprojectID IN ($subprojList) $ExtraProject_Criteria");
                         $mri_data[] = array('name' => $name,  'work_station_count' => $work_station_count, 'claimed_count' => $claimed_count, 'forms_count' => $forms_count, 'all_three_scans' => $three_scans);
 
                     }
-                    $MultiTimepoint = $DB->pselect("SELECT psc.PSCArea as Center, SUM(Three_done) as T1, SUM(Three_T2_Done) as T2 , SUM(Three_DTI_Done) as DTI, SUM(Three_All_done) as Three_All_done FROM 
-                            (SELECT c.CenterID, COUNT(DISTINCT c.CandID)," .
-                             /* This essentially does COUNT(T1_Scan_done='Complete'), but because of the way COUNT(expr) works, 
-                              * we need to make sure that anything that isn't 'Complete' is evaluated as NULL (not false), hence
-                              * the crazy CASE statement. The different count statements Do v06, v06+v12, v06+v12+v24, all 3 for T2, all
-                              * three for DTI, and all three for T1+T2+DTI. The outer select statement sums up all the groupings, to get
-                              * a final scalar value.
-                              */
+                    $subprojectList = "'" . implode("','", Utility::getSubprojectList()) . "'";
 
-                             "COUNT(DISTINCT CASE (COALESCE(mpf06.T1_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as v06_Done, 
+                    $MultiTimepoint = $DB->pselect("SELECT psc.PSCArea as Center, SUM(Three_done) as T1, SUM(Three_T2_Done) as T2 , SUM(Three_DTI_Done) as DTI, SUM(Three_All_done) as Three_All_done FROM
+                            (SELECT c.CenterID, COUNT(DISTINCT c.CandID)," .
+                            /* This essentially does COUNT(T1_Scan_done='Complete'), but because of the way COUNT(expr) works,
+                             * we need to make sure that anything that isn't 'Complete' is evaluated as NULL (not false), hence
+                             * the crazy CASE statement. The different count statements Do v06, v06+v12, v06+v12+v24, all 3 for T2, all
+                             * three for DTI, and all three for T1+T2+DTI. The outer select statement sums up all the groupings, to get
+                             * a final scalar value.
+                             */
+
+                            "COUNT(DISTINCT CASE (COALESCE(mpf06.T1_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as v06_Done,
                              COUNT(DISTINCT CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T1_Scan_done, 'No')='Complete' ) WHEN true THEN c.CandID ELSE null END) as Two_Done, 
                              COUNT(DISTINCT CASE (COALESCE(mpf12.T1_Scan_done, 'No')='Complete' AND COALESCE(mpf06.T1_Scan_done, 'No')='Complete' 
                                      AND COALESCE(mpf24.T1_Scan_done, 'No')='Complete') WHEN true THEN c.CandID ELSE null END) as Three_done, 
@@ -493,7 +475,9 @@ class NDB_Form_statistics extends NDB_Form
                                  LEFT JOIN mri_parameter_form mpf24 ON (mpf24.CommentID=f24.CommentID) WHERE 
                                  c.Active='Y' and c.PSCID  not like 'dcc%'  and c.PSCID <> 'scanner' 
                                  GROUP BY c.CenterID) breakdown JOIN psc ON (breakdown.CenterID=psc.CenterID) WHERE psc.CenterID <> 1 GROUP BY psc.Name ORDER BY psc.CenterID", array());
+
                     $total = array('Name' => 'Total', 'T1' => 0, 'T2' => 0, 'DTI' => 0, 'All' => 0);
+
                     foreach ($MultiTimepoint as $row) {
                         $this->tpl_data['mri_all_scans_done'][] = array(
                                 'Name' => $row['Center'],
@@ -518,13 +502,7 @@ class NDB_Form_statistics extends NDB_Form
     function stats_reliability()
     {
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
-        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1'", $centers);
-        if(Utility::isErrorX($centers)) {
-            return PEAR::raiseError("DB Error: ".$centers->getMessage());
-        }
+        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1' AND Study_site = 'Y'", $centers);
         $this->tpl_data['Centers'] = $centers;
         $this->tpl_data['Sites'] = array('' => 'All Sites');
         $projects[null] = 'All Projects';
@@ -542,22 +520,19 @@ class NDB_Form_statistics extends NDB_Form
             $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $_REQUEST['ReliabilityProject'] . ')';
             $currentProject = $_REQUEST['ReliabilityProject'];
             $this->tpl_data['CurrentProject'] = array('ID' => $currentProject, 'Name' => $projects[$currentProject]);
-         } else {
+        } else {
             $ExtraProject_Criteria = '';
-         }
+        }
 
-         if($_REQUEST['ReliabilityProject'] == $row['NumericID']) {
-         $this->tpl_data['CurrentProject'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
-         }
-         $this->tpl_data['reliability_completion'] = $this->getReliabilityData();
+        if($_REQUEST['ReliabilityProject'] == $row['NumericID']) {
+            $this->tpl_data['CurrentProject'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
+        }
+        $this->tpl_data['reliability_completion'] = $this->getReliabilityData();
     }
 
     function stats_demographic()
     {
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
 
         $projects[null] = 'All Projects';
         foreach(Utility::getProjectList() as $key => $value) {
@@ -576,7 +551,7 @@ class NDB_Form_statistics extends NDB_Form
         }
         $subprojects = Utility::getSubprojectsForProject($currentProject);
         foreach($subprojects as $key=>$val) {
-        $subprojList .= $key.",";
+            $subprojList .= $key.",";
         }
         $subprojList = substr($subprojList, 0, -1);
 
@@ -597,28 +572,25 @@ class NDB_Form_statistics extends NDB_Form
             $this->tpl_data['registered'][$row['rowid']]['visit'] = $row['val'];
             $this->tpl_data['registered']['visittotal'] += $row['val'];
 
-
-
-            $DB->select("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' and coalesce(s.visit_label, 'v06') in ('v06', 'v12', 'v18', 'v24', 'v36') AND c.Active='Y' $ExtraSite_Criteria $ExtraProject_Criteria group by s.subprojectid", $result);
-            foreach($result as $row) {
-                $this->tpl_data['registered'][$row['rowid']]['total'] = $row['val'];
-                $this->tpl_data['registered']['total'] += $row['val'];
-            }
-
             // Total, explicitly calculated instead of added in the loop to ensure there's no one double registered in 2 different cohorts
             $DB->select("SELECT count(distinct(c.PSCID)) from candidate as c WHERE c.PSCID<>'scanner' AND c.CenterID<>'1' AND c.Active='Y' $ExtraSite_Criteria $ExtraProject_Criteria", $total);
-            if (Utility::isErrorX($total)) {
-                return PEAR::raiseError("DB Error: ".$total->getMessage());
-            }
             list(,$total)=each($total[0]);
             $Total_candidates = $total;
             $this->tpl_data['Total_candidates'] = $Total_candidates;
 
-            // Number of visits.
-            // This is based on the EDI completion status, since the EDI
-            // is done by every cohort at every visit
-            $DB->select("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM flag f join session s ON (s.ID=f.SessionID) join candidate c ON (c.CandID=s.CandID)  where f.Test_name IN 
-                ('edi', 'mri_parameter_form', 'vineland_subject') 
+        }
+        // Total for 'registered candidates' row.
+        $DB->select("SELECT s.subprojectid as rowid, count(DISTINCT(c.PSCID)) as val from candidate as c left join session s ON (s.CandID=c.CandID) WHERE coalesce(s.active, 'Y')='Y' AND c.CenterID <> '1' and c.PSCID <> 'scanner' and coalesce(s.visit_label, 'v06') in ('v06', 'v12', 'v18', 'v24', 'v36') AND c.Active='Y' $ExtraSite_Criteria $ExtraProject_Criteria group by s.subprojectid", $result);
+        foreach($result as $row) {
+            $this->tpl_data['registered'][$row['rowid']]['total'] = $row['val'];
+            $this->tpl_data['registered']['total'] += $row['val'];
+        }
+
+        // Number of visits.
+        // This is based on the EDI completion status, since the EDI
+        // is done by every cohort at every visit
+        $DB->select("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM flag f join session s ON (s.ID=f.SessionID) join candidate c ON (c.CandID=s.CandID)  where f.Test_name IN
+                ('edi', 'mri_parameter_form', 'vineland_subject')
                 AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
                 AND s.Active='Y'
@@ -627,13 +599,13 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin'
                 $ExtraSite_Criteria $ExtraProject_Criteria
                 GROUP BY s.SubprojectID", $result);
-            foreach($result as $row) {
-                $this->tpl_data['edi'][$row['rowid']]['complete'] = $row['val'];
-                $this->tpl_data['edi']['complete'] += $row['val'];
-            }
+        foreach($result as $row) {
+            $this->tpl_data['edi'][$row['rowid']]['complete'] = $row['val'];
+            $this->tpl_data['edi']['complete'] += $row['val'];
+        }
 
-            // Number of T1 candidates scanned
-            $DB->select("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM flag f JOIN mri_parameter_form mp USING(CommentID) join session s ON (s.ID=f.SessionID) join candidate c ON (c.CandID=s.CandID) WHERE f.Test_name='mri_parameter_form'
+        // Number of T1 candidates scanned
+        $DB->select("SELECT count(DISTINCT c.PSCID) as val, s.SubprojectID as rowid FROM flag f JOIN mri_parameter_form mp USING(CommentID) join session s ON (s.ID=f.SessionID) join candidate c ON (c.CandID=s.CandID) WHERE f.Test_name='mri_parameter_form'
                 AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
                 AND s.Active='Y'
@@ -643,20 +615,15 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin'
                 $ExtraSite_Criteria $ExtraProject_Criteria
                 GROUP BY s.SubprojectID", $result);
-            foreach($result as $row) {
-                $this->tpl_data['scanned'][$row['rowid']]['complete'] = $row['val'];
-                $this->tpl_data['scanned']['complete'] += $row['val'];
-            }
+        foreach($result as $row) {
+            $this->tpl_data['scanned'][$row['rowid']]['complete'] = $row['val'];
+            $this->tpl_data['scanned']['complete'] += $row['val'];
         }
-        // NUMBER OF CANDIDATES STATS TABLE
 
 
         // Adds a C to the start of the centerid, because that's how the
         // template is looking for it. Exclude DCC 
-        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1'", $centers);
-        if(Utility::isErrorX($centers)) {
-            return PEAR::raiseError("DB Error: ".$centers->getMessage());
-        }
+        $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1' AND Study_site = 'Y'", $centers);
         $this->tpl_data['Centers'] = $centers;
         $this->tpl_data['Sites'] = array('' => 'All Sites');
         foreach ($centers as $row) {
@@ -719,9 +686,6 @@ class NDB_Form_statistics extends NDB_Form
                 AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat", $result);
-            if (Utility::isErrorX($result)) {
-                return PEAR::raiseError("DB Error: ".$result->getMessage());
-            }
             $this->tpl_data['RecruitsTable'] = $this->render_stats_table("Breakdown of Registered Candidates", $Subcategories, $Visits, "DemographicInstrument", $instruments, '', $centers, $result, "demographics", $currentProject);
 
         }
@@ -730,21 +694,21 @@ class NDB_Form_statistics extends NDB_Form
 
 
     static function getEnrollmentData($siteID= null, $projID= null){
-        $DB =& Database::singleton(); 
+        $DB =& Database::singleton();
         $enroll_data = array();
         $params = array();
         $Extra_Where = '';
         if(!empty($siteID)) {
             $Extra_Where .= " AND sn.CenterID = :site"; //$_REQUEST['site'];
-            $params['site'] = $siteID; 
+            $params['site'] = $siteID;
         }
         if(!empty($projID)) {
             $Extra_Where .= " AND  cad.ProjectID = :project"; //$_REQUEST['site'];
             $params['project'] = $projID;
         }
         $ethnic_categories = array("hispanic","non_hispanic","not_answered");
-        $ethnic_name = array("Hispanic or Latino", "Not Hispanic or Latino", 
-                "Unknown (individuals not reporting ethnicity");
+        $ethnic_name = array("Hispanic or Latino", "Not Hispanic or Latino",
+            "Unknown (individuals not reporting ethnicity");
         $cat_count = 0;
         $cat_total = array('Female' =>0, 'Male' =>0, 'Unknown' =>0);
         foreach($ethnic_categories as $ethnic_cat){
@@ -773,7 +737,7 @@ class NDB_Form_statistics extends NDB_Form
             $enroll_data[] = array('ethnic_cat' => $ethnic_name[$cat_count],'female_count' => $gender['Female'],'male_count' => $gender['Male'],'unknown_count' => $gender['Unknown'],'total_count' =>array_sum($gender) );
             $cat_count++;
         }
-        $enroll_data_total[] = array('total_name' =>" Ethnic Category: Total of All Subjects",'total_female'=>$cat_total['Female'],'total_male'=>$cat_total['Male'],'total_unknown'=> $cat_total['Unknown'],'total_total'=> array_sum($cat_total)); 
+        $enroll_data_total[] = array('total_name' =>" Ethnic Category: Total of All Subjects",'total_female'=>$cat_total['Female'],'total_male'=>$cat_total['Male'],'total_unknown'=> $cat_total['Unknown'],'total_total'=> array_sum($cat_total));
 
         $enroll_data_race = array();
 
@@ -805,7 +769,7 @@ class NDB_Form_statistics extends NDB_Form
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
                         LEFT JOIN tsi ti on fg.CommentID = ti.CommentID WHERE ti.candidate_race LIKE  '$race_cat' AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' AND cad.Active='Y' AND fg.Data_Entry='Complete' $Extra_Where AND fg.Administration <> 'None' AND fg.Test_name='tsi' GROUP BY Gender" , $params);
-            }      
+            }
 
             $Count = 0;
             foreach($results as $row){
@@ -845,7 +809,7 @@ class NDB_Form_statistics extends NDB_Form
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
                         LEFT JOIN tsi ti on fg.CommentID = ti.CommentID WHERE ( ti.candidate_race LIKE  '$race_cat' OR ti.candidate_race LIKE '%{@}%' ) AND ti.child_ethnicity='hispanic' AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' AND cad.Active='Y' AND fg.Data_Entry='Complete' $Extra_Where AND fg.Administration <> 'None' AND fg.Test_name='tsi' GROUP BY Gender" , $params);
-            }         
+            }
             else if($race_cat === "unknown_not_reported"){
                 $results = $DB->pselect("SELECT COALESCE(Gender,'Unknown') as Gender ,COUNT( DISTINCT cad.CandID) as val FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
@@ -856,7 +820,7 @@ class NDB_Form_statistics extends NDB_Form
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
                         LEFT JOIN tsi ti on fg.CommentID = ti.CommentID WHERE ti.candidate_race LIKE '$race_cat' AND ti.child_ethnicity='hispanic' AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' AND cad.Active='Y' AND fg.Data_Entry='Complete'  $Extra_Where  AND fg.Administration <> 'None' AND fg.Test_name='tsi' GROUP BY Gender" , $params);
-            }    
+            }
 
             foreach($results as $row){
                 $Gender = $row['Gender'];
@@ -885,21 +849,21 @@ class NDB_Form_statistics extends NDB_Form
 
         $enroll_results = array('enroll_data'=> $enroll_data,'enroll_data_total'=> $enroll_data_total,'enroll_data_race'=> $enroll_data_race,'enroll_data_racetotal'=>$enroll_data_racetotal,'enroll_data_hispanic'=>$enroll_data_hispanic,'enroll_data_hispanictotal'=> $enroll_data_hispanictotal , 'withdraw' => $withdraw);
 
-        return $enroll_results; 
+        return $enroll_results;
 
-    } 
+    }
 
 
 
     function _getCrossSiteReliabilityData($name, $inst_name, $cutoff, $extra_where="") {
         $data = $this->_getSingleReliabilityData($name, $inst_name, $cutoff,
-                " $extra_where AND CommentID NOT LIKE CONCAT('%', CASE reliability_center_id WHEN 1 THEN 'dcc' WHEN 2 THEN 'SEA' WHEN 3 THEN 'PHI' WHEN 4 THEN 'STL' WHEN 5 THEN 'UNC' WHEN 6 THEN 'UofA' END, '%')");
+            " $extra_where AND CommentID NOT LIKE CONCAT('%', CASE reliability_center_id WHEN 1 THEN 'dcc' WHEN 2 THEN 'SEA' WHEN 3 THEN 'PHI' WHEN 4 THEN 'STL' WHEN 5 THEN 'UNC' WHEN 6 THEN 'UofA' END, '%')");
         $data['name'] = $name . ' (Cross Site)';
         return $data;
     }
     function _getWithinSiteReliabilityData($name, $inst_name, $cutoff, $extra_where = "") {
         $data = $this->_getSingleReliabilityData($name, $inst_name, $cutoff,
-                " $extra_where AND CommentID like CONCAT('%', CASE reliability_center_id WHEN 1 THEN 'dcc' WHEN 2 THEN 'SEA' WHEN 3 THEN 'PHI' WHEN 4 THEN 'STL' WHEN 5 THEN 'UNC' WHEN 6 THEN 'UofA' END, '%')");
+            " $extra_where AND CommentID like CONCAT('%', CASE reliability_center_id WHEN 1 THEN 'dcc' WHEN 2 THEN 'SEA' WHEN 3 THEN 'PHI' WHEN 4 THEN 'STL' WHEN 5 THEN 'UNC' WHEN 6 THEN 'UofA' END, '%')");
         $data['name'] = $name . ' (Within Site)';
         return $data;
     }
@@ -940,16 +904,16 @@ class NDB_Form_statistics extends NDB_Form
         // Thresholds was copy/pasted from 
         require_once __DIR__ . "/../../reliability/php/NDB_Menu_Filter_reliability.class.inc";
         $thresholds = NDB_Menu_Filter_Reliability::getThreshholds();
-        
-        $tests = array(
-                'adi_r_proband' => 'ADI-R (Proband)',
-                'adi_r_subject' => 'ADI-R (Subject)',
-                'aosi' => 'AOSI',
-                'ados_module1' => 'ADOS (Module 1)',
-                'ados_module2' => 'ADOS (Module 2)',
-                'csbs' => 'CSBS'
 
-                );
+        $tests = array(
+            'adi_r_proband' => 'ADI-R (Proband)',
+            'adi_r_subject' => 'ADI-R (Subject)',
+            'aosi' => 'AOSI',
+            'ados_module1' => 'ADOS (Module 1)',
+            'ados_module2' => 'ADOS (Module 2)',
+            'csbs' => 'CSBS'
+
+        );
         $within_cross = array('adi_r_subject', 'ados_module1', 'ados_module2', 'aosi', 'csbs');
 
         $reliable = array();
@@ -959,30 +923,30 @@ class NDB_Form_statistics extends NDB_Form
             if(in_array($inst, $within_cross)) {
                 if($inst == 'aosi') {
                     $within_reliable[] = $this->_getWithinSiteReliabilityData(
-                            $name . " v06", 
-                            $inst, $thresholds[$inst], 
-                            " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON (s.ID=f.SessionID) WHERE f.CommentID=r.CommentID and lower(s.Visit_label)='v06')");
+                        $name . " v06",
+                        $inst, $thresholds[$inst],
+                        " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON (s.ID=f.SessionID) WHERE f.CommentID=r.CommentID and lower(s.Visit_label)='v06')");
                     $across_reliable[] = $this->_getCrossSiteReliabilityData(
-                            $name . " v06", 
-                            $inst, $thresholds[$inst], 
-                            " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON (s.ID=f.SessionID) WHERE f.CommentID=r.CommentID and lower(s.Visit_label)='v06')");
+                        $name . " v06",
+                        $inst, $thresholds[$inst],
+                        " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON (s.ID=f.SessionID) WHERE f.CommentID=r.CommentID and lower(s.Visit_label)='v06')");
                     $within_reliable[] = $this->_getWithinSiteReliabilityData(
-                            $name . " v12", 
-                            $inst, $thresholds[$inst], 
-                            " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON (s.ID=f.SessionID) WHERE f.CommentID=r.CommentID and lower(s.Visit_label)='v12')");
+                        $name . " v12",
+                        $inst, $thresholds[$inst],
+                        " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON (s.ID=f.SessionID) WHERE f.CommentID=r.CommentID and lower(s.Visit_label)='v12')");
                     $across_reliable[] = $this->_getCrossSiteReliabilityData(
-                            $name . " v12", 
-                            $inst, $thresholds[$inst], 
-                            " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON (s.ID=f.SessionID) WHERE f.CommentID=r.CommentID and lower(s.Visit_label)='v12')");
+                        $name . " v12",
+                        $inst, $thresholds[$inst],
+                        " AND EXISTS (SELECT 'x' FROM flag f JOIN session s ON (s.ID=f.SessionID) WHERE f.CommentID=r.CommentID and lower(s.Visit_label)='v12')");
                 } else {
-                    $within_reliable[] = $this->_getWithinSiteReliabilityData($name, 
-                            $inst, $thresholds[$inst]);
-                    $across_reliable[] = $this->_getCrossSiteReliabilityData($name, 
-                            $inst, $thresholds[$inst]);
+                    $within_reliable[] = $this->_getWithinSiteReliabilityData($name,
+                        $inst, $thresholds[$inst]);
+                    $across_reliable[] = $this->_getCrossSiteReliabilityData($name,
+                        $inst, $thresholds[$inst]);
                 }
             } else {
-                $within_reliable[] = $this->_getSingleReliabilityData($name, 
-                        $inst, $thresholds[$inst]);
+                $within_reliable[] = $this->_getSingleReliabilityData($name,
+                    $inst, $thresholds[$inst]);
             }
         }
 

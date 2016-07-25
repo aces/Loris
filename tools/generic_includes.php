@@ -1,40 +1,35 @@
 <?php
 
+/**
+ * This script contains useful generic stuff to include
+ *
+ * PHP Version 5
+ *
+ * @category Main
+ * @package  Main
+ * @author   Loris <loris-dev@bic.mni.mcgill.ca>
+ * @license  Loris License
+ * @link     https://github.com/aces/Loris
+ */
+
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+
+require_once __DIR__ . "/../vendor/autoload.php";
+$configFile = "../project/config.xml";
+$client     = new NDB_Client();
+$client->makeCommandLine();
+$client->initialize($configFile);
+$DB = Database::singleton();
+
 // PEAR::Config
-require_once "Config.php";
 
 //allow instruments to find libraries
 require_once 'Utility.class.inc';
-
-// define which configuration file we're using for this installation
-$configFile = "../project/config.xml";
-
-// load the configuration data into a global variable $config
-$configObj = new Config;
-$root =& $configObj->parseConfig($configFile, "XML");
-if(Utility::isErrorX($root)) {
-    die("Config error: ".$root->getMessage());
-}
-$configObj =& $root->searchPath(array('config'));
-$configxml = $configObj->toArray();
-$configxml = $configxml['config'];
-unset($configObj, $root);
 
 // require all relevant OO class libraries
 require_once "Database.class.inc";
 require_once "NDB_Config.class.inc";
 require_once "NDB_BVL_Instrument.class.inc";
 require_once "Candidate.class.inc";
-
-/*
- * new DB Object
- * gets connection name and user name..
- */
-$DB =& Database::singleton($configxml['database']['database'], $configxml['database']['username'], $configxml['database']['password'], $configxml['database']['host']);
-if(Utility::isErrorX($DB)) {
-    print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-    die();
-}
 
 ?>

@@ -1,7 +1,7 @@
 <div id="mri">
 <h2 class="statsH2">General Statistics with QC Status for {$mri_center_name} {$mri_project_name}</h2>
-    <script type="text/javascript" src="GetJS.php?Module=statistics&file=table_statistics.js"></script>
-    <script type="text/javascript" src="GetJS.php?Module=statistics&file=form_stats_MRI.js"></script>
+    <script type="text/javascript" src="{$baseurl}/statistics/js/table_statistics.js"></script>
+    <script type="text/javascript" src="{$baseurl}/statistics/js/form_stats_MRI.js"></script>
     <div class="col-sm-2">
         {html_options id="MRIsite" options=$Sites name="MRIsite" selected=$mri_center class="form-control"}
     </div>
@@ -92,7 +92,7 @@
           <tr class="info">
                 <th>No Parameter Form Completed</th>
                 <th>Nothing in Imaging Browser for Form</th>
-                <th>No tarchive Entry for Form</th>
+                {* <th>No tarchive Entry for Form</th> *}
                 <th>Breakdown of Problems</th>
           </tr>
         </thead>
@@ -101,8 +101,8 @@
           <tr>
                 <td>{$mri_errors[$center.NumericID].no_parameter}</td>
                 <td>{$mri_errors[$center.NumericID].no_browser}</td>
-                <td>{$mri_errors[$center.NumericID].no_tarchive}</td>
-                <td><a href="?test_name=statistics&submenu=statistics_mri_site&CenterID={$mri_center}&ProjectID={$mri_project}">Click Here for breakdown per participant</a></td>
+                {* <td>{$mri_errors[$center.NumericID].no_tarchive}</td> *}
+                <td><a href="{$baseurl}/statistics/?submenu=statistics_mri_site&CenterID={$mri_center}&ProjectID={$mri_project}">Click Here for breakdown per participant</a></td>
           </tr>
           {/foreach}
         </tbody>

@@ -12,8 +12,6 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once 'NDB_Menu_Filter_Form.class.inc';
-
 /**
  * Menu_Filter_Form_Conflicts_Resolver Class
  *
@@ -61,7 +59,9 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         $user =& User::singleton();
 
         foreach ($values AS $key => $val) {
-            if ($val != 'none') {
+            // The only valid values are 1, 2 or none.  Therefore we are only
+            // allowing an update if 1 or 2 rather than different from none.
+            if (($val == 1) || ($val == 2)) {
                 $hash = $key;
                 $row  = $DB->pselectRow(
                     "SELECT cr.ConflictID, cr.TableName, cr.ExtraKeyColumn,
@@ -79,11 +79,11 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
                     // insert into conflicts_resolved
                     $user1         = $DB->pselectOne(
-                        "SELECT UserID FROM $row[TableName] WHERE CommentID=:CID",
+                        "SELECT UserID FROM flag WHERE CommentID=:CID",
                         array('CID' => $row['CommentId1'])
                     );
                     $user2         = $DB->pselectOne(
-                        "SELECT UserID FROM $row[TableName] WHERE CommentID=:CID",
+                        "SELECT UserID FROM flag WHERE CommentID=:CID",
                         array('CID' => $row['CommentId2'])
                     );
                     $resolutionLog = array(
@@ -244,11 +244,19 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
             )
         );
 
-        $this->query        = " FROM conflicts_unresolved
+        $this->query = " FROM conflicts_unresolved
             LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
             WHERE 1=1";
+
+        $user = User::singleton();
+        if (!$user->hasPermission('access_all_profiles')) {
+            // restrict data to own site
+            $this->query .= " AND candidate.CenterID=";
+            $this->query .= $user->getCenterID();
+        }
+
         $this->group_by     = '';
         $this->order_by     = 'conflicts_unresolved.TableName, session.Visit_label';
         $this->validFilters = array(

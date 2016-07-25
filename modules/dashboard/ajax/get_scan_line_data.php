@@ -23,31 +23,33 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$DB =& Database::singleton();
+$DB = Database::singleton();
 
-$scanData = array();
-$scanStartDate = $DB->pselectOne(
-    "SELECT min(AcquisitionDate) FROM mri_acquisition_dates", array()
+$scanData           = array();
+$scanStartDate      = $DB->pselectOne(
+    "SELECT MIN(AcquisitionDate) FROM mri_acquisition_dates",
+    array()
 );
-$scanEndDate = $DB->pselectOne(
-    "SELECT max(AcquisitionDate) FROM mri_acquisition_dates", array()
+$scanEndDate        = $DB->pselectOne(
+    "SELECT MAX(AcquisitionDate) FROM mri_acquisition_dates",
+    array()
 );
-$scanData['labels'] 
+$scanData['labels']
     = createChartLabels($scanStartDate, $scanEndDate);
-$list_of_sites =& Utility::getSiteList();
-foreach ($list_of_sites as $dataset) {
+$list_of_sites      = Utility::getAssociativeSiteList(true, false);
+foreach ($list_of_sites as $siteID => $siteName) {
     $scanData['datasets'][] = array(
-        "name" => $dataset,
-        "data" => getScanData($dataset, $scanData['labels'])
-    );
+                               "name" => $siteName,
+                               "data" => getScanData($siteID, $scanData['labels']),
+                              );
 }
 
 print json_encode($scanData);
 
-exit();
+return 0;
 
 /**
- * create chart labels (dates)
+ * Create chart labels (dates)
  *
  * @param date $startDate start date of scans
  * @param date $endDate   end date of scans
@@ -56,14 +58,14 @@ exit();
  */
 function createChartLabels($startDate, $endDate)
 {
-    $startDateYear = substr($startDate, 0, 4);
-    $endDateYear = substr($endDate, 0, 4);
+    $startDateYear  = substr($startDate, 0, 4);
+    $endDateYear    = substr($endDate, 0, 4);
     $startDateMonth = substr($startDate, 5, 2);
-    $endDateMonth = substr($endDate, 5, 2);
-    $labels = array();
+    $endDateMonth   = substr($endDate, 5, 2);
+    $labels         = array();
     for ($year = (int)$startDateYear; $year <= (int)$endDateYear; $year++) {
         $startMonth = ($year == (int)$startDateYear) ? (int)$startDateMonth : 1;
-        $endMonth = ($year == (int)$endDateYear) ? (int)$endDateMonth : 12;
+        $endMonth   = ($year == (int)$endDateYear) ? (int)$endDateMonth : 12;
         for ($month = $startMonth; $month <= $endMonth; $month++) {
             $labels[] = $month . "-" . $year;
         }
@@ -72,31 +74,34 @@ function createChartLabels($startDate, $endDate)
 }
 
 /**
- * get scan data for each month in the label array
+ * Get scan data for each month in the label array
  *
- * @param string $dataset name of a site
- * @param array  $labels  chart labels (months to query)
+ * @param string $siteID ID of a site
+ * @param array  $labels chart labels (months to query)
  *
  * @return array
  */
-function getScanData($dataset, $labels)
+function getScanData($siteID, $labels)
 {
-    $DB =& Database::singleton();
+    $DB   = Database::singleton();
     $data = array();
     foreach ($labels as $label) {
-        $month = (strlen($label) == 6) 
+        $month  = (strlen($label) == 6)
             ? substr($label, 0, 1) : substr($label, 0, 2);
-        $year = substr($label, -4, 4);
-        $data[]= $DB->pselectOne(
-            "SELECT count(distinct s.ID) 
+        $year   = substr($label, -4, 4);
+        $data[] = $DB->pselectOne(
+            "SELECT COUNT(distinct s.ID) 
              FROM files f
              LEFT JOIN mri_acquisition_dates mad ON (mad.SessionID=f.SessionID)
              LEFT JOIN session s ON (s.ID=f.SessionID) 
-             LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-             WHERE psc.Name=:Dataset 
+             WHERE s.CenterID=:Site
              AND MONTH(mad.AcquisitionDate)=:Month 
-             AND YEAR(mad.AcquisitionDate)=:Year", 
-            array('Dataset' => $dataset, 'Month' => $month, 'Year' => $year)
+             AND YEAR(mad.AcquisitionDate)=:Year",
+            array(
+             'Site'  => $siteID,
+             'Month' => $month,
+             'Year'  => $year,
+            )
         );
     }
     return $data;

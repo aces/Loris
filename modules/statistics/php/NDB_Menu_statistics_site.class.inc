@@ -1,7 +1,4 @@
 <?php
-require_once "Utility.class.inc";
-require_once 'NDB_Menu.class.inc';
-
 /**
  * The welcome menu
  * @package main
@@ -56,9 +53,6 @@ class NDB_Menu_statistics_site extends NDB_Menu
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.Administration='All' 
                 AND i.CommentID NOT LIKE 'DDE%'", $this->query_vars);
-        if (PEAR::isError($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
         return $count;
     }
 
@@ -76,9 +70,6 @@ class NDB_Menu_statistics_site extends NDB_Menu
                 $this->query_criteria
                 AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') 
                 AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID", $this->query_vars);
-        if (PEAR::isError($result)) {
-            return PEAR::raiseError("DB Error: ".$result->getMessage());
-        }
         return $result;
     }
 
@@ -91,9 +82,6 @@ class NDB_Menu_statistics_site extends NDB_Menu
             header("Location: ?test_name=statistics#data_entry");
         }
         $DB =& Database::singleton();
-        if(PEAR::isError($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
         if (!empty($_REQUEST['CenterID']))
         {
             $center = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID =:cid", array('cid'=>$_REQUEST['CenterID'])); 

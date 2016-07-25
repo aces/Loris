@@ -1,116 +1,152 @@
 <?php
-require_once "NDB_Form.class.inc";
-require_once "TimePoint_Flag.class.inc";
+ /**
+ * Comments
+ * 
+ * PHP Version 5
+ * 
+ *  @category Main
+ *  @package  TimePoint_Flag
+ *  @author   jharlap <username@example.com>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ *  @version  GIT: <git_id>
+ *  @link     https://www.github.com/aces/Loris-Trunk/
+ **/
 
 /**
- * Candidate Parameter form
- * @package main
+ *  Candidate Parameter form
+ * 
+ *  @category Main
+ *  @package  Main
+ *  @author   jharlap <username@example.com>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ *  @version  Release: <package_version>
+ *  @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Form_timepoint_flag extends NDB_Form
+class NDB_Form_Timepoint_Flag extends NDB_Form
 {
-    
+
+    /**
+    * Comment
+    * 
+    * @return bool
+    * 
+    */
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
-		$config =& NDB_Config::singleton();
-        $timepoint =& TimePoint_Flag::singleton($this->identifier);
-        
+        $user   =& User::singleton();
+        $config =& NDB_Config::singleton();
+        $tp     =& TimePoint_Flag::singleton($this->identifier);
+        $cs     = $tp->getData('Current_stage');
+
         // get the value of the session.Scan_done field
-        $scanDone = $timepoint->getData('Scan_done');
+        $scanDone = $tp->getData('Scan_done');
 
         // make the option available is the Stage/Status is Sendable to DCC
         // or if its Superuser and option was Sent (to unsend i.e. set to N)
-        
-        if ($user->hasPermission('unsend_to_dcc') && $timepoint->getData('Submitted')=='Y') {
+
+        if ($user->hasPermission('unsend_to_dcc')
+            && $tp->getData('Submitted')=='Y'
+        ) {
             return true;
         } elseif ($user->hasPermission('send_to_dcc')
-                  && $user->getData('CenterID') == $timepoint->getData('CenterID')
-                  && $timepoint->getData('Submitted')=='N' 
-                  && in_array($timepoint->getData('Current_stage'), array('Screening', 'Visit'))
-                  && !in_array($timepoint->getData($timepoint->getData('Current_stage')), array(null, 'In Progress'))
-                  && ($config->getSetting("useScanDone")==="false" || ($timepoint->getData('Current_stage') == 'Screening' || !empty($scanDone))))
-        {
+                  && $user->getData('CenterID') == $tp->getData('CenterID')
+                  && $tp->getData('Submitted')=='N'
+                  && in_array($cs, array('Screening', 'Visit'))
+                  && !in_array($tp->getData($cs), array(null, 'In Progress'))
+                  && ($config->getSetting("useScanDone")==="false"
+                      || ($tp->getData('Current_stage') == 'Screening'
+                      || !empty($scanDone)))
+          ) {
             return true;
         }
         return false;
     }
 
-    function check_timepoint_flag()
+    /**
+    * Comment 
+    * 
+    * @return bool
+    * 
+    */
+    function checkTimepointFlag()
     {
-        $db =& Database::singleton();
+        $db        =& Database::singleton();
         $sessionID = $this->identifier;
-        
-        $timepointFlagObject =& TimePoint_Flag::singleton($sessionID);
+
+        $tpFlagObj =& TimePoint_Flag::singleton($sessionID);
 
         // send basic timepoint data to the template
-        $this->tpl_data['candID'] = $timepointFlagObject->getData('CandID');
-        $this->tpl_data['sessionID'] = $sessionID;
-        $this->tpl_data['timepointLabel'] = $timepointFlagObject->getData('Visit_label');
+        $this->tpl_data['candID']         = $tpFlagObj->getData('CandID');
+        $this->tpl_data['sessionID']      = $sessionID;
+        $this->tpl_data['timepointLabel'] = $tpFlagObj->getData('Visit_label');
 
-        // evaluate the flags for the timepoint and get the list of triggered flags and their statuses
-        // flag statuses are captured as constants TIMEPOINT_FLAG_TRIGGER, TIMEPOINT_FLAG_NA_INSTRUMENT, TIMEPOINT_FLAG_NULL
+        // evaluate the flags for the timepoint and get the list of triggered flags
+        //  and their statuses
+        // flag statuses are captured as constants TIMEPOINT_FLAG_TRIGGER,
+        //  TIMEPOINT_FLAG_NA_INSTRUMENT, TIMEPOINT_FLAG_NULL
         $flagList = array();
-        $flagList = $timepointFlagObject->evaluateTimepointFlags();
-        
-        
+        $flagList = $tpFlagObj->evaluateTimepointFlags();
+
         // if there are no flags, show the buttons to send the timepoint to DCC
         if (count($flagList)==0) {
-            $this->tpl_data['send_to_dcc']['set_submitted']='Y';
+            $this->tpl_data['send_to_dcc']['set_submitted'] = 'Y';
             return true;
         }
 
-        $newFlagTriggered=0;
+        $newFlagTriggered = 0;
         foreach ($flagList as $flagName=>$flagStatus) {
 
             // check if the flag exists, i.e. previously triggered
-            $flagExists = $timepointFlagObject->timepointFlagExists($sessionID, $flagName);
+            $flagExists = $tpFlagObj->timepointFlagExists($sessionID, $flagName);
+            $tpfmd      = $tpFlagObj->showConstant('TIMEPOINT_FLAG_MISSING_DATA');
 
-        	// skip to next flag if it's already in the table
-            if ($flagExists && $flagStatus != $timepointFlagObject->showConstant('TIMEPOINT_FLAG_MISSING_DATA')) {
-                $data['exists'][]=$flagName;
+            // skip to next flag if it's already in the table
+            if ($flagExists && $flagStatus != $tpfmd) {
+                $data['exists'][] = $flagName;
                 continue;
             }
-            
-            $data[$flagStatus][]=$flagName;
-            
-            $newFlagTriggered=1;
+
+            $data[$flagStatus][] = $flagName;
+
+            $newFlagTriggered = 1;
         } // end foreach flag
 
-        foreach ($data as $key=>$val) {
-        
+        foreach ($data as $key => $val) {
+
             switch ($key) {
-                case "exists":
-                $message= "Previously triggered";
-                case "DERR":
-                $message= "Data Entry Error";
-                case "MI":
-                $message= "Missing Instrument";
-                case "1":
-                $message= "New Flag";
+            case "exists":
+                $message = "Previously triggered";
+            case "DERR":
+                $message = "Data Entry Error";
+            case "MI":
+                $message = "Missing Instrument";
+            case "1":
+                $message = "New Flag";
             }
-        
-            foreach ($val as $key1=>$flag) {
+
+            foreach ($val as $key1 => $flag) {
                 if ($key != 'MI') {
                     $this->addScoreColumn($key.$flag, "FLAG : ".$flag);
-                    $this->tpl_data["elements_list_$key"][]=$key.$flag;
+                    $this->tpl_data["elements_list_$key"][] = $key.$flag;
                 }
             }
-            
+
+            $kftn = $key.$flag.$triggerName;
             // add the list of triggers for each flag - except for existing ones
             if ($key != 'exists') {
-                $flagPositiveTriggers = $timepointFlagObject->evaluateFlagTriggers($flag);
+                $flagPositiveTriggers = $tpFlagObj->evaluateFlagTriggers($flag);
                 if (is_array($flagPositiveTriggers)) {
                     foreach ($flagPositiveTriggers as $triggerName=>$triggerStatus) {
-                        $this->addScoreColumn($key.$flag.$triggerName,$triggerName);
-                        $this->tpl_data["elements_list_$key"][]=$key.$flag.$triggerName;
+                        $this->addScoreColumn($key.$flag.$triggerName, $triggerName);
+                        $this->tpl_data["elements_list_$key"][] = $kftn;
                     }
                 }
             }
         }
 
-        if ($newFlagTriggered==0) {
-            $this->tpl_data['send_to_dcc']['set_submitted']='Y';
+        if ($newFlagTriggered == 0) {
+            $this->tpl_data['send_to_dcc']['set_submitted'] = 'Y';
             return true;
         }
     }

@@ -11,8 +11,6 @@
  * @link     https://www.github.com/Jkat/Loris-Trunk/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Document Repository Class
  *
@@ -36,20 +34,14 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
         
         //create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User error: " . $user->getMessage());
-        }
 
-        return $user->hasPermission('file_upload');
+        return $user->hasPermission('document_repository_view') || $user->hasPermission('document_repository_delete');
     
     }
 
     function _setupVariables()
     {
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         // create the centerID map
         $db =& Database::singleton();
@@ -94,24 +86,15 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         $list_of_sites = Utility::getSiteList(true, false);
            // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) { 
             // get the list of study sites - to be replaced by the Site object
-            if (Utility::isErrorX($list_of_sites)) {
-                return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
-            }
             if (is_array($list_of_sites)) $list_of_sites = array(null => 'Any') + $list_of_sites;
         } else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (Utility::isErrorX($site)) {
-                return PEAR::raiseError("DB Error: ".$site->getMessage());
-            }
             if ($site->isStudySite()) {
                 $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
             }
@@ -195,13 +178,6 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
     function _getPreparedQuery() 
     {
         $DB = Database::singleton();
-      // create DB object
-        $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError(
-                "Could not connect to database: ".$DB->getMessage()
-            );
-        }
 
         $qparams = array();
         // add the base query
@@ -233,7 +209,6 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
      * Sets the template data for the list of candidates, users, etc.
      *
      * @return void
-     * @throws PEAR_Error
      * @access private
      */
     function _setDataTable()

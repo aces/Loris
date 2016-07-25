@@ -1,6 +1,4 @@
 <?php
-require_once 'NDB_Form.class.inc';
-
 /**
  * The forms for the start next stage menu
  * @package main
@@ -49,9 +47,6 @@ class NDB_Form_next_stage extends NDB_Form
         // create a new battery object && new battery
         $battery = new NDB_BVL_Battery;
         $candidate =& Candidate::singleton($timePoint->getCandID() );
-        if (Utility::isErrorX($candidate)) {
-            return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
-        }
 
         $firstVisit = false;
         $vLabel = $candidate->getFirstVisit();//get first visit for candidate 
@@ -136,7 +131,7 @@ class NDB_Form_next_stage extends NDB_Form
         if (empty($values['date1']['M']) && empty($values['date1']['d']) && empty($values['date1']['Y'])) {
             $errors['date1'] .= "Date is required. \n";
         }
-        elseif (!_checkDate($values['date1'])) {
+        elseif (!Utility::_checkDate($values['date1'])) {
             $errors['date1'] .= "Date is not a valid date. \n";
         }
 

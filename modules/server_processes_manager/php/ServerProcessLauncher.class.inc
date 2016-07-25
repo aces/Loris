@@ -1,0 +1,173 @@
+<?php
+/**
+ * Provides a way to asynchronously execute a process on the server.
+ * The process will be run in the background, as a stand-alone Unix process
+ *
+ * PHP Version 5
+ *
+ * @category ServerProcessesLauncher
+ * @package  Loris
+ * @author   Nicolas Brossard <nicolasbrossard.mni@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+
+require_once "IDatabaseProvider.class.inc";
+require_once "DefaultDatabaseProvider.class.inc";
+require_once "DefaultProcessMonitor.class.inc";
+require_once "MriUploadServerProcess.class.inc";
+
+/**
+ * Allows processes to be executed on the server, as background Unix processes.
+ * Records the processes successfully started in the database.
+ *
+ * PHP Version 5
+ *
+ * @category ServerProcessesLauncher
+ * @package  Loris
+ * @author   Nicolas Brossard <nicolasbrossard.mni@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+
+class ServerProcessLauncher
+{
+
+    /**
+     * Entity used to get a handle on the database
+     *
+     * @var IDatabaseProvider
+     */
+    private $_databaseProvider;
+
+    /**
+     * Builds a new ServerProcessesLauncher
+     *
+     * @param mixed $databaseProvider entity used to access the database
+     */
+    public function __construct(
+        IDatabaseProvider $databaseProvider = null
+    ) {
+        $this->setDatabaseProvider($databaseProvider);
+    }
+
+    /**
+      * Accessor for field $_databaseProvider
+      *
+      * @return IDatabaseProvider value of field $_databaseProvider
+      */
+    public function getDatabaseProvider()
+    {
+        if (is_null($this->_databaseProvider)) {
+            $this->setDatabaseProvider(new DefaultDatabaseProvider());
+        }
+
+        return $this->_databaseProvider;
+    }
+
+    /**
+      * Mutator for field $_databaseProvider
+      *
+      * @param mixed $databaseProvider new value of field
+      *                                $_databaseProvider
+      *
+      * @return void
+      */
+    public function setDatabaseProvider($databaseProvider)
+    {
+        $this->_databaseProvider = $databaseProvider;
+    }
+
+    /**
+     * Records in the database the information associated to a process that was
+     * just started.
+     *
+     * @param AbstractServerProcess $process the process that was just started
+     *
+     * @return void
+     * @throws InvalidArgumentException if the process is null or if either the
+     *                                  PID or the process start time is null.
+     */
+    private function _saveProcess(AbstractServerProcess $process)
+    {
+        if (is_null($process)) {
+            throw new InvalidArgumentException("Invalid null process argument");
+        }
+
+        if (is_null($process->getPid())) {
+            throw new InvalidArgumentException(
+                "Cannot save a process with a null PID"
+            );
+        }
+
+        if (is_null($process->getStartTime())) {
+            throw new InvalidArgumentException(
+                "Cannot record a process with a null start time"
+            );
+        }
+
+        $db = $this->getDatabaseProvider()->getDatabase();
+
+        $db->insert(
+            'server_processes',
+            array(
+             'pid'            => $process->getPid(),
+             'type'           => $process->getType(),
+             'stdout_file'    => $process->getStdoutFile(),
+             'stderr_file'    => $process->getStderrFile(),
+             'exit_code_file' => $process->getExitCodeFile(),
+             'userid'         => $process->getUserId(),
+             'start_time'     => $process->getStartTime(),
+            )
+        );
+
+        return $db->lastInsertID;
+    }
+
+    /**
+     * Determines if a process should be allowed to be run or not.
+     *
+     * @param AbstractServerProcess $process process to consider.
+     *
+     * @return boolean true if the process is allowed to run, false otherwise.
+     */
+    private function _okToExecute(AbstractServerProcess $process)
+    {
+        return true;
+    }
+
+    /**
+     * Launches the process passes as argument and records its information
+     * in the database.
+     *
+     * @param AbstractServerProcess $process process to launch.
+     *
+     * @return int ID of the process saved in the database.
+     */
+    private function _launch(AbstractServerProcess $process)
+    {
+        if (!$this->_okToExecute($process)) {
+            return null;
+        }
+
+        $process->execute();
+        return $this->_saveProcess($process);
+    }
+
+    /**
+     * Launch an MRI upload process
+     *
+     * @param int    $mriUploadId    ID of the MRI upload in the mri_upload table.
+     * @param string $sourceLocation location of the MRI file
+     *
+     * @return int ID (in the database) of the launched process or null
+     *             if the process could not be run
+     */
+    public function mriUpload($mriUploadId, $sourceLocation)
+    {
+        $mriUploadProcess = new MriUploadServerProcess($mriUploadId, $sourceLocation);
+        return $this->_launch($mriUploadProcess);
+    }
+}
+
+?>

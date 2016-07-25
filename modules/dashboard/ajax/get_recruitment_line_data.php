@@ -8,48 +8,46 @@
  * @category Main
  * @package  Loris
  * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
- * @license  Loris License
- * @link     https://github.com/aces/Loris-Trunk
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
  */
 
 header("content-type:application/json");
-
 ini_set('default_charset', 'utf-8');
 
-require_once "Database.class.inc";
-require_once 'NDB_Client.class.inc';
-require_once "Utility.class.inc";
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize();
+$DB = Database::singleton();
 
-$DB =& Database::singleton();
-
-$recruitmentData = array();
+$recruitmentData      = array();
 $recruitmentStartDate = $DB->pselectOne(
-    "SELECT min(Date_registered) FROM candidate", array()
+    "SELECT MIN(Date_registered) FROM candidate",
+    array()
 );
-$recruitmentEndDate = $DB->pselectOne(
-    "SELECT max(Date_registered) FROM candidate", array()
+$recruitmentEndDate   = $DB->pselectOne(
+    "SELECT MAX(Date_registered) FROM candidate",
+    array()
 );
-$recruitmentData['labels'] 
+
+$recruitmentData['labels']
     = createChartLabels($recruitmentStartDate, $recruitmentEndDate);
-$list_of_sites =& Utility::getSiteList();
-foreach ($list_of_sites as $dataset) {
+
+$list_of_sites = Utility::getAssociativeSiteList(true, false);
+
+foreach ($list_of_sites as $siteID => $siteName) {
     $recruitmentData['datasets'][] = array(
-        "name" => $dataset,
-        "data" => getRecruitmentData(
-            $dataset, $recruitmentData['labels']
-        )
-    );
+                                      "name" => $siteName,
+                                      "data" => getRecruitmentData(
+                                          $siteID,
+                                          $recruitmentData['labels']
+                                      ),
+                                     );
 }
 
 print json_encode($recruitmentData);
 
-exit();
+return 0;
 
 /**
- * create chart labels (dates)
+ * Create chart labels (dates)
  *
  * @param date $startDate start date of recruitment
  * @param date $endDate   end date of recruitment
@@ -58,43 +56,53 @@ exit();
  */
 function createChartLabels($startDate, $endDate)
 {
-    $startDateYear = substr($startDate, 0, 4);
-    $endDateYear = substr($endDate, 0, 4);
+    $startDateYear  = substr($startDate, 0, 4);
+    $endDateYear    = substr($endDate, 0, 4);
     $startDateMonth = substr($startDate, 5, 2);
-    $endDateMonth = substr($endDate, 5, 2);
-    $labels = array();
+    $endDateMonth   = substr($endDate, 5, 2);
+    $labels         = array();
+
     for ($year = (int)$startDateYear; $year <= (int)$endDateYear; $year++) {
         $startMonth = ($year == (int)$startDateYear) ? (int)$startDateMonth : 1;
-        $endMonth = ($year == (int)$endDateYear) ? (int)$endDateMonth : 12;
+        $endMonth   = ($year == (int)$endDateYear) ? (int)$endDateMonth : 12;
+
         for ($month = $startMonth; $month <= $endMonth; $month++) {
             $labels[] = $month . "-" . $year;
         }
     }
+
     return $labels;
 }
 
 /**
- * get recruitment data for each month in the label array
+ * Get recruitment data for each month in the label array
  *
- * @param string $dataset name of a site
- * @param array  $labels  chart labels (months to query)
+ * @param string $siteID ID of a site
+ * @param array  $labels chart labels (months to query)
  *
  * @return array
  */
-function getRecruitmentData($dataset, $labels)
+function getRecruitmentData($siteID, $labels)
 {
-    $DB =& Database::singleton();
+    $DB   = Database::singleton();
     $data = array();
+
     foreach ($labels as $label) {
-        $month = (strlen($label) == 6) 
+        $month  = (strlen($label) == 6)
             ? substr($label, 0, 1) : substr($label, 0, 2);
-        $year = substr($label, -4, 4);
-        $data[]= $DB->pselectOne(
-            "SELECT count(c.CandID) FROM candidate c 
-            LEFT JOIN psc ON (psc.CenterID=c.CenterID) 
-            WHERE psc.Name=:Dataset AND MONTH(Date_registered)=$month 
-            AND YEAR(Date_registered)=:Year", 
-            array('Dataset' => $dataset, 'Year' => $year)
+        $year   = substr($label, -4, 4);
+        $data[] = $DB->pselectOne(
+            "SELECT COUNT(c.CandID)
+             FROM candidate c
+             WHERE c.CenterID=:Site
+             AND MONTH(c.Date_registered)=:Month
+             AND YEAR(c.Date_registered)=:Year
+             AND c.Entity_type='Human'",
+            array(
+             'Site'  => $siteID,
+             'Month' => $month,
+             'Year'  => $year,
+            )
         );
     }
     return $data;

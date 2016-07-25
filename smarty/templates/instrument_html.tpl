@@ -1,4 +1,4 @@
-<script type="text/javascript" src="js/instrument_form_control.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/instrument_form_control.js"></script>
 <style type="text/css">
 	.table-instrument>tbody>tr>th{
 		color: black;
@@ -8,6 +8,7 @@
 	 }
 </style>
 <form {$form.attributes}>
+<div class="row">
 	{$form.hidden}
 	{$form.errors.mainError}
 	{assign var="inTable" value="FALSE"}
@@ -235,4 +236,5 @@
 		{assign var="inTable" value="FALSE"}
 		</table>
 	{/if}
+</div>
 </form>

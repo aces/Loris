@@ -14,6 +14,7 @@
  * @license  Loris License
  * @link     https://github.com/aces/IBIS
  */
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
 require_once "ConflictDetector.class.inc";
 require_once "NDB_BVL_InstrumentStatus.class.inc";
@@ -49,6 +50,7 @@ $change = false;
 $change_all = false;
 $instrument = null;
 $visit_label = null;
+
 if (!is_array($opts)) {
     print "There was a problem reading in the options.\n\n";
     exit(1);
@@ -82,7 +84,6 @@ if ($change && $change_all) {
 $config = NDB_Config::singleton();
 $db = Database::singleton();
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
-$config = NDB_Config::singleton();
 $db_config = $config->getSetting('database');
 $paths = $config->getSetting('paths');
 $dataDir = $paths['base'] . $config->getSetting('log');
@@ -95,15 +96,31 @@ $conflicts_to_be_excluded = array();
 
 // Check to see if the variable instrument is set
 if (($instrument=='all') ||($instrument=='All')) {
-    $instruments = Utility::getAllInstruments();
+
+    $Factory       = NDB_Factory::singleton();
+    $DB            = $Factory->Database(); //=& Database::singleton();
+    $instruments_q = $DB->pselect(
+        "SELECT Test_name FROM test_names",
+        array()
+    );
+
+    $instruments   = array();
+
+    foreach ($instruments_q as $row) {
+        if (isset($row['Test_name'])) {
+            $instruments[$row['Test_name']] =$row['Test_name'];
+        }
+    }
+
 } else {
     $instruments = array($instrument=>$instrument);
 }
 foreach ($instruments as $instrument) {
     if (isset($instrument)) {
-        
+
         include_once $paths['base'].
-        "project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
+            "project/instruments/NDB_BVL_Instrument_$instrument.class.inc";
+
         print  "instrument is $instrument \n";
 
         //Run the script for all the instruments
@@ -212,7 +229,7 @@ function getCommentIDs($test_name, $visit_label=null, $candid=null)
     $params = array();
     $query = "SELECT CommentID, s.visit_label,Test_name,
         CONCAT('DDE_', CommentID) AS DDECommentID FROM flag f
-        JOIN session s ON (s.ID=f.SessionID) 
+        JOIN session s ON (s.ID=f.SessionID)
         JOIN candidate c ON (c.CandID=s.CandID)";
     $where = " WHERE CommentID NOT LIKE 'DDE%'
         AND s.Active='Y' AND c.Active='Y'

@@ -13,33 +13,47 @@ function getQueryVariable(variable) {
     }
 }
 
-BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
-    "use strict";
-    var loading_div = $("#loading");
 
+// This script is meant to be a demonstration of how to
+// use most of the functionality available in the
+// BrainBrowser Volume Viewer.
+$(function() {
+  "use strict";
+
+  $(".button").button();
+
+  /////////////////////////////////////
+  // Start running the Volume Viewer
+  /////////////////////////////////////
+  window.viewer = BrainBrowser.VolumeViewer.start("brainbrowser", function(viewer) {
+    var loading_div = $("#loading");
 
     var link, minc_ids, minc_ids_arr, minc_volumes = [], i, minc_filenames = [] ,
     bboptions = {};
 
-    $(".button").button();
-    // This part is stolen from the BrainBrowser demo
-    // *********************
+    ///////////////////////////
+    // Set up global UI hooks.
+    ///////////////////////////
+
 
     // Change viewer panel canvas size.
     $("#panel-size").change(function() {
       var size = parseInt($(this).val(), 10);
+
       viewer.setPanelSize(size, size, { scale_image: true });
     });
 
     // Should cursors in all panels be synchronized?
     $("#sync-volumes").change(function() {
       var synced = $(this).is(":checked");
-      if (synced) {
-        viewer.resetDisplays();
-        viewer.redrawVolumes();
-      }
 
       viewer.synced = synced;
+    });
+
+    // Reset button
+    $("#reset-view").click(function() {
+      viewer.resetDisplays();
+      viewer.redrawVolumes();
     });
 
     // This will create an image of all the display panels
@@ -76,7 +90,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       }
 
       viewer.volumes.forEach(function(volume, x) {
-        volume.display.forEach(function(panel, y) {
+        volume.display.forEach(function(panel, axis_name, y) {
           context.drawImage(panel.canvas, x * width, y * height);
         });
       });
@@ -100,10 +114,66 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
       img.src = canvas.toDataURL();
     });
 
+    // Load a new model from a MINC file that the user has
+    // selected.
+    $("#volume-file-minc-submit").click(function() {
+      viewer.clearVolumes();
+      viewer.loadVolume({
+        type: "minc",
+        header_file: document.getElementById("header-file"),
+        raw_data_file: document.getElementById("raw-data-file"),
+        template: {
+          element_id: "volume-ui-template",
+          viewer_insert_class: "volume-viewer-display"
+        }
+      }, function() {
+        $(".slice-display").css("display", "inline");
+        $(".volume-controls").css("width", "auto");
+      });
+    });
+
+    // Load a new model from a NIfTI-1 file that the user has
+    // selected.
+    $("#volume-file-nifti1-submit").click(function() {
+      viewer.clearVolumes();
+      viewer.loadVolume({
+        type: "nifti1",
+        nii_file: document.getElementById("nifti1-file"),
+        template: {
+          element_id: "volume-ui-template",
+          viewer_insert_class: "volume-viewer-display"
+        }
+      }, function() {
+        $(".slice-display").css("display", "inline");
+        $(".volume-controls").css("width", "auto");
+      });
+    });
+
+    // Load a new model from a MGH file that the user has
+    // selected.
+    $("#volume-file-mgh-submit").click(function() {
+      viewer.clearVolumes();
+      viewer.loadVolume({
+        type: "mgh",
+        file: document.getElementById("mgh-file"),
+        template: {
+          element_id: "volume-ui-template",
+          viewer_insert_class: "volume-viewer-display"
+        }
+      }, function() {
+        $(".slice-display").css("display", "inline");
+        $(".volume-controls").css("width", "auto");
+      });
+    });
+
     //////////////////////////////////
     // Per volume UI hooks go in here.
     //////////////////////////////////
-    viewer.addEventListener("volumeuiloaded", function(container, volume, vol_id) {
+    viewer.addEventListener("volumeuiloaded", function(event) {
+      var container = event.container;
+      var volume = event.volume;
+      var vol_id = event.volume_id;
+
       container = $(container);
 
       container.find(".button").button();
@@ -128,38 +198,52 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         }
 
         // Set coordinates and redraw.
-        viewer.volumes[vol_id].setWorldCoords(x, y, z);
+        if (viewer.synced) {
+          viewer.volumes.forEach(function(volume) {
+            volume.setWorldCoords(x, y, z);
+          });
+        }
+        else {
+          viewer.volumes[vol_id].setWorldCoords(x, y, z);
+        }
 
         viewer.redrawVolumes();
       });
 
-      // The voxel coordinate input fields
+      // The world coordinate input fields.
       container.find(".voxel-coords").change(function() {
         var div = $(this);
 
-        var x = parseInt(div.find("#voxel-x-" + vol_id).val(), 10);
-        var y = parseInt(div.find("#voxel-y-" + vol_id).val(), 10);
-        var z = parseInt(div.find("#voxel-z-" + vol_id).val(), 10);
+        var i = parseInt(div.find("#voxel-i-" + vol_id).val(), 10);
+        var j = parseInt(div.find("#voxel-j-" + vol_id).val(), 10);
+        var k = parseInt(div.find("#voxel-k-" + vol_id).val(), 10);
 
         // Make sure the values are numeric.
-        if (!BrainBrowser.utils.isNumeric(x)) {
-          x = 0;
+        if (!BrainBrowser.utils.isNumeric(i)) {
+          i = 0;
         }
-        if (!BrainBrowser.utils.isNumeric(y)) {
-          y = 0;
+        if (!BrainBrowser.utils.isNumeric(j)) {
+          j = 0;
         }
-        if (!BrainBrowser.utils.isNumeric(z)) {
-          z = 0;
+        if (!BrainBrowser.utils.isNumeric(k)) {
+          k = 0;
         }
 
         // Set coordinates and redraw.
-        viewer.volumes[vol_id].setVoxelCoords(x, y, z);
+        viewer.volumes[vol_id].setVoxelCoords(i, j, k);
+        if (viewer.synced) {
+          var synced_volume = viewer.volumes[vol_id];
+          var wc = synced_volume.getWorldCoords();
+          viewer.volumes.forEach(function(volume) {
+            if (synced_volume !== volume) {
+              volume.setWorldCoords(wc.x, wc.y, wc.z);
+            }
+          });
+        }
 
         viewer.redrawVolumes();
       });
 
-
-      // Change the color map currently being used to display data.
       // Color map URLs are read from the config file and added to the
       // color map select box.
       var color_map_select = $('<select id="color-map-select" class="form-control input-sm"></select>').change(function() {
@@ -197,11 +281,17 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         // Slider to modify min and max thresholds.
         var slider = div.find(".slider");
 
+        var volume = viewer.volumes[vol_id];
+
+        // Update the input fields.
+        min_input.val(volume.getVoxelMin());
+        max_input.val(volume.getVoxelMax());
+
         slider.slider({
           range: true,
-          min: 0,
-          max: 255,
-          values: [0, 255],
+          min: volume.getVoxelMin(),
+          max: volume.getVoxelMax(),
+          values: [volume.getVoxelMin(), volume.getVoxelMax()],
           step: 1,
           slide: function(event, ui){
             var values = ui.values;
@@ -211,8 +301,8 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
             max_input.val(values[1]);
 
             // Update the volume and redraw.
-            volume.min = values[0];
-            volume.max = values[1];
+            volume.intensity_min = values[0];
+            volume.intensity_max = values[1];
             viewer.redrawVolumes();
           },
           stop: function() {
@@ -223,47 +313,48 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         // Input field for minimum threshold.
         min_input.change(function() {
           var value = parseFloat(this.value);
-          
+
           // Make sure input is numeric and in range.
           if (!BrainBrowser.utils.isNumeric(value)) {
-            value = 0;
+            value = volume.getVoxelMin();
           }
-          value = Math.max(0, Math.min(value, 255));
+          value = Math.max(volume.getVoxelMin(),
+                           Math.min(value, volume.getVoxelMax()));
           this.value = value;
 
           // Update the slider.
           slider.slider("values", 0, value);
 
           // Update the volume and redraw.
-          volume.min = value;
+          volume.intensity_min = value;
           viewer.redrawVolumes();
         });
 
         max_input.change(function() {
           var value = parseFloat(this.value);
-          
+
           // Make sure input is numeric and in range.
           if (!BrainBrowser.utils.isNumeric(value)) {
-            value = 255;
+            value = volume.getVoxelMax();
           }
-          value = Math.max(0, Math.min(value, 255));
+          value = Math.max(volume.getVoxelMin(),
+                           Math.min(value, volume.getVoxelMax()));
           this.value = value;
 
           // Update the slider.
           slider.slider("values", 1, value);
-          
+
           // Update the volume and redraw.
-          volume.max = value;
+          volume.intensity_max = value;
           viewer.redrawVolumes();
         });
 
       });
 
-
       container.find(".time-div").each(function() {
         var div = $(this);
-        
-        if (volume.data.time) {
+
+        if (volume.header.time) {
           div.show();
         } else {
           return;
@@ -274,9 +365,9 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
         var play_button = div.find("#play-" + vol_id);
 
         var min = 0;
-        var max = volume.data.time.space_length - 1;
+        var max = volume.header.time.space_length - 1;
         var play_interval;
-    
+
         slider.slider({
           min: min,
           max: max,
@@ -292,7 +383,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
             $(this).find("a").blur();
           }
         });
-        
+
         time_input.change(function() {
           var value = parseInt(this.value, 10);
           if (!BrainBrowser.utils.isNumeric(value)) {
@@ -307,7 +398,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
           volume.current_time = value;
           viewer.redrawVolumes();
         });
-        
+
         play_button.change(function() {
           if(play_button.is(":checked")){
             clearInterval(play_interval);
@@ -339,7 +430,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
         div.find(".slice-series-button").click(function() {
           var axis_name = $(this).data("axis");
-          var axis = volume.data[axis_name];
+          var axis = volume.header[axis_name];
           var space_length = axis.space_length;
           var time = volume.current_time;
           var per_column = 10;
@@ -351,7 +442,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
           var context = canvas.getContext("2d");
 
           // Get first slice to set dimensions of the canvas.
-          var image_data = volume.slice(axis_name, 0, time).getImage(zoom);
+          var image_data = volume.getSliceImage(volume.slice(axis_name, 0, time), zoom);
           var img = new Image();
           canvas.width = per_column * image_data.width;
           canvas.height = Math.ceil(space_length / per_column) * image_data.height;
@@ -363,13 +454,13 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
           // Draw the rest of the slices on the canvas.
           for (i = 1; i < space_length; i++) {
-            image_data = volume.slice(axis_name, i, time).getImage(zoom);
+            image_data = volume.getSliceImage(volume.slice(axis_name, i, time), zoom);
             x = i % per_column * image_data.width;
             y = Math.floor(i / per_column) * image_data.height;
             context.putImageData(image_data, x, y);
           }
 
-          // Retrieve image from canvas and display it 
+          // Retrieve image from canvas and display it
           // in a dialog box.
           img.onload = function() {
             $("<div></div>").append(img).dialog({
@@ -378,7 +469,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
               width: img.width
             });
           };
-          
+
           img.src = canvas.toDataURL();
         });
       });
@@ -399,7 +490,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
             var value = parseFloat(ui.value);
             volume.blend_ratios[0] = 1 - value;
             volume.blend_ratios[1] = value;
-            
+
 
 
             blend_input.val(value);
@@ -409,11 +500,11 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
             $(this).find("a").blur();
           }
         });
-        
+
         // Input field to select blend values explicitly.
         blend_input.change(function() {
           var value = parseFloat(this.value);
-          
+
           // Check that input is numeric and in range.
           if (!BrainBrowser.utils.isNumeric(value)) {
             value = 0;
@@ -431,7 +522,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
       $.ajax({
           data: 'minc_id=' + minc_ids_arr[vol_id],
-          url: 'AjaxHelper.php?Module=brainbrowser&script=getMincName.php',
+          url: loris.BaseURL + '/brainbrowser/ajax/getMincName.php',
           method: 'GET',
           success: function(data) {
             $("#filename-"+vol_id).html(data);
@@ -459,47 +550,171 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
        });
 
+        $('.arrow').on("click", function() {
+              $('#filename-additional-info-'+vol_id).slideToggle("fast");
+              if ($('.arrow').hasClass('glyphicon-chevron-down')) {
+                $('.arrow').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+              } else {
+                $('.arrow').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+              }
+            });
+
+      // Contrast controls
+      container.find(".contrast-div").each(function() {
+        var div = $(this);
+        var slider = div.find(".slider");
+        var contrast_input = div.find("#contrast-val");
+
+        // Slider to select contrast value.
+        slider.slider({
+          min: 0,
+          max: 2,
+          step: 0.05,
+          value: 1,
+          slide: function(event, ui) {
+            var value = parseFloat(ui.value);
+            volume.display.setContrast(value);
+            volume.display.refreshPanels();
+
+            contrast_input.val(value);
+          },
+          stop: function() {
+            $(this).find("a").blur();
+          }
+        });
+
+        // Input field to select contrast values explicitly.
+        contrast_input.change(function() {
+          var value = parseFloat(this.value);
+
+          // Check that input is numeric and in range.
+          if (!BrainBrowser.utils.isNumeric(value)) {
+            value = 0;
+          }
+          value = Math.max(0, Math.min(value, 2));
+          this.value = value;
+
+          // Update slider and redraw volumes.
+          slider.slider("value", value);
+          volume.display.setContrast(value);
+          volume.display.refreshPanels();
+          viewer.redrawVolumes();
+        });
+      });
+
+      // Contrast controls
+      container.find(".brightness-div").each(function() {
+        var div = $(this);
+        var slider = div.find(".slider");
+        var brightness_input = div.find("#brightness-val");
+
+        // Slider to select brightness value.
+        slider.slider({
+          min: -1,
+          max: 1,
+          step: 0.05,
+          value: 0,
+          slide: function(event, ui) {
+            var value = parseFloat(ui.value);
+            volume.display.setBrightness(value);
+            volume.display.refreshPanels();
+
+            brightness_input.val(value);
+          },
+          stop: function() {
+            $(this).find("a").blur();
+          }
+        });
+
+        // Input field to select brightness values explicitly.
+        brightness_input.change(function() {
+          var value = parseFloat(this.value);
+
+          // Check that input is numeric and in range.
+          if (!BrainBrowser.utils.isNumeric(value)) {
+            value = 0;
+          }
+          value = Math.max(-1, Math.min(value, 1));
+          this.value = value;
+
+          // Update slider and redraw volumes.
+          slider.slider("value", value);
+          volume.display.setBrightness(value);
+          volume.display.refreshPanels();
+          viewer.redrawVolumes();
+        });
+      });
     });
 
+    /* This function simply takes an input hex background color
+     * and returns either "black" or "white" as the appropriate
+     * foreground color for text rendered over the background colour.
+     * Idea from https://24ways.org/2010/calculating-color-contrast/
+     * Equation is from http://www.w3.org/TR/AERT#color-contrast
+     */
+    function getContrastYIQ(hexcolor) {
+      var r = parseInt(hexcolor.substr(0, 2), 16);
+      var g = parseInt(hexcolor.substr(2, 2), 16);
+      var b = parseInt(hexcolor.substr(4, 2), 16);
+      var yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+      return (yiq >= 128) ? 'black' : 'white';
+    }
 
     $("#brainbrowser-wrapper").slideDown({duration: 600});
-        // End part stolen from BrainBrowser demo
-        // *********************
 
-    // Update coordinate display as slices are updated
-    // by the user.
-    viewer.addEventListener("sliceupdate", function() {
-      // 'this' gets bound to the panel that triggered the
-      // sliceupdate event
-      var panel = this;
-      var volume = panel.volume;
+    /////////////////////////////////////////////////////
+    // UI updates to be performed after each slice update.
+    //////////////////////////////////////////////////////
+    viewer.addEventListener("sliceupdate", function(event) {
+      var panel = event.target;
+      var volume = event.volume;
       var vol_id = panel.volume_id;
-      var world_coords = volume.getWorldCoords();
-      var voxel_coords = volume.getVoxelCoords();
+      var world_coords, voxel_coords;
       var value;
 
-      $("#world-x-" + vol_id).val(world_coords.x.toPrecision(4));
-      $("#world-y-" + vol_id).val(world_coords.y.toPrecision(4));
-      $("#world-z-" + vol_id).val(world_coords.z.toPrecision(4));
+      if (BrainBrowser.utils.isFunction(volume.getWorldCoords)) {
+        world_coords = volume.getWorldCoords();
+        $("#world-x-" + vol_id).val(world_coords.x.toPrecision(6));
+        $("#world-y-" + vol_id).val(world_coords.y.toPrecision(6));
+        $("#world-z-" + vol_id).val(world_coords.z.toPrecision(6));
+      }
 
-      $("#voxel-x-" + vol_id).val(parseInt(voxel_coords.x, 10));
-      $("#voxel-y-" + vol_id).val(parseInt(voxel_coords.y, 10));
-      $("#voxel-z-" + vol_id).val(parseInt(voxel_coords.z, 10));
+      if (BrainBrowser.utils.isFunction(volume.getVoxelCoords)) {
+        voxel_coords = volume.getVoxelCoords();
+        $("#voxel-i-" + vol_id).val(parseInt(voxel_coords.i, 10));
+        $("#voxel-j-" + vol_id).val(parseInt(voxel_coords.j, 10));
+        $("#voxel-k-" + vol_id).val(parseInt(voxel_coords.k, 10));
+      }
 
       value = volume.getIntensityValue();
-      $("#intensity-value-" + vol_id).html(Math.floor(value));
-      $("#intensity-value-bg-" + vol_id).css("background-color", "#" + volume.color_map.colorFromValue(value,     {
-        format: "hex",
-        min: volume.min,
-        max: volume.max
-      }));
 
-      if (volume.data && volume.data.time) {
+      /* Set background color of intensity value to match colormap
+       * entry for that value.
+       */
+      var bg_color = volume.color_map.colorFromValue(value, {
+        hex: true,
+        min: volume.intensity_min,
+        max: volume.intensity_max,
+        contrast: panel.contrast,
+        brightness: panel.brightness
+      });
+
+      /* Given that the background color has a wide range, use a little
+       * cleverness to pick either white or black as the foreground color
+       * of the intensity value. This improves readability.
+       */
+      var fg_color = getContrastYIQ(bg_color);
+
+      $("#intensity-value-" + vol_id)
+      .css("background-color", "#" + bg_color)
+      .css("color", fg_color)
+      .html(Math.floor(value));
+
+      if (volume.header && volume.header.time) {
         $("#time-slider-" + vol_id).slider("option", "value", volume.current_time);
         $("#time-val-" + vol_id).val(volume.current_time);
       }
     });      // Should cursors in all panels be synchronized?
-
 
     link = window.location.search;
 
@@ -518,8 +733,8 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
 
         minc_volumes.push({
             type: 'minc',
-            header_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
-            raw_data_url: "AjaxHelper.php?Module=brainbrowser&script=minc.php&minc_id=" + minc_ids_arr[i] + "&raw_data=true",
+	    header_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
+	    raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i] + "&raw_data=true",
             template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
@@ -569,4 +784,7 @@ BrainBrowser.VolumeViewer.start("brainbrowser", function (viewer) {
     // Load the volumes.
     /////////////////////
     viewer.loadVolumes(bboptions);
+
+  });
+
 });

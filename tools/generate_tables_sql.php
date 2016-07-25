@@ -24,36 +24,11 @@ if (version_compare(phpversion(),'4.3.0','<'))
 }
 
 
-// PEAR::Config
-require_once "Config.php";
-
-// define which configuration file we're using for this installation
-$configFile = "../project/config.xml";
-
-// load the configuration data into a global variable $config
-$configObj = new Config;
-$root =& $configObj->parseConfig($configFile, "XML");
-if(PEAR::isError($root)) {
-    die("Config error: ".$root->getMessage());
-}
-$configObj =& $root->searchPath(array('config'));
-$config =& $configObj->toArray();
-$config = $config['config'];
-unset($configObj, $root);
-
 // require all relevant OO class libraries
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "../php/libraries/Database.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
 require_once "../php/libraries/NDB_BVL_Instrument.class.inc";
-
-/*
-* new DB Object
-*/
-$DB =& Database::singleton($config['database']['database'], $config['database']['username'], $config['database']['password'], $config['database']['host']);
-if(PEAR::isError($DB)) {
-    print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-    die();
-}
 
 
 $fp=fopen("ip_output.txt","r");
@@ -70,7 +45,7 @@ foreach($instruments AS $instrument){
     foreach($items AS $item){
         $paramId="";
         $bits=explode("{@}",trim($item));
-        if(ereg("Examiner[0-9]*" , $bits[1])){
+        if(preg_match("/Examiner[0-9]*/" , (string)(array_key_exists(1,$bits) ? $bits[1] : null))){
             continue;
         }
         switch($bits[0]){
@@ -93,26 +68,31 @@ foreach($instruments AS $instrument){
 
             //generate specific column definitions for specific types of HTML elements
             default:
-                if($bits[1] == "") {
+                if((array_key_exists(1,$bits) ? $bits[1] : "") == "") {
                     continue;
                 }
                 if($bits[0]=="select"){
-                    $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
-                } else if($bits[0]=="selectmultiple"){
+                    $bits[0]=enumizeOptions(
+                        array_key_exists(3,$bits) ? $bits[3] : null,
+                        $table = array(),
+                        $bits[1]
+                    );
+                } else if((array_key_exists(0,$bits) ? $bits[0] : null) =="selectmultiple"){
                     $bits[0]="varchar(255)";
-                } else if($bits[0]=="textarea"){
+                } else if((array_key_exists(0,$bits) ? $bits[0] : null) == "textarea"){
                     $bits[0]="text";
-                } else if($bits[0]=="text"){
+                } else if((array_key_exists(0,$bits) ? $bits[0] : null) == "text"){
                     $bits[0]="varchar(255)";
-                } else if($bits[0]=="checkbox") {
+                } else if((array_key_exists(0,$bits) ? $bits[0] : null) == "checkbox") {
                     $bits[0]="varchar(255)";
-                } else if ($bits[0]=="static") {
+                } else if ((array_key_exists(0,$bits) ? $bits[0] : null) == "static") {
                     $bits[0]="varchar(255)";
-                } else if ($bits[0]=="radio") {
-                    $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
+                } else if ((array_key_exists(0,$bits) ? $bits[0] : null) == "radio") {
+                    $bits[0]=enumizeOptions($bits[3], $table = array(), $bits[1]);
                 }
-                
-                $bits[2]=htmlspecialchars($bits[2]);
+                if(array_key_exists(2,$bits)){
+                    $bits[2]=htmlspecialchars($bits[2]);
+                }
                 $output.="`$bits[1]` $bits[0] default NULL,\n";
         }
 

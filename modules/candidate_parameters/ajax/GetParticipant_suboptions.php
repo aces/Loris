@@ -8,6 +8,13 @@ ini_set('default_charset', 'utf-8');
   require_once "Database.class.inc";
   require_once 'NDB_Config.class.inc';
   require_once 'NDB_Client.class.inc';
+
+  $user =& User::singleton();
+  if (!$user->hasPermission('candidate_parameter_edit')) {
+      header("HTTP/1.1 403 Forbidden");
+      exit;
+  }
+
   $config =& NDB_Config::singleton();
   $client = new NDB_Client();
   $client->initialize();

@@ -16,7 +16,6 @@
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "PEAR.php";
 
 /**
  * Class that implements a wrapper around a Loris battery.
@@ -27,7 +26,7 @@ require_once "PEAR.php";
  *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_BVL_Battery extends PEAR
+class NDB_BVL_Battery
 {
     /**
      * ID column of session table - identifies a visit - which is the
@@ -40,7 +39,7 @@ class NDB_BVL_Battery extends PEAR
     /**
      * Constructor - merely asserts that the environment is suitable
      */
-    function NDB_BVL_Battery()
+    function __construct()
     {
     }
 
@@ -120,9 +119,6 @@ class NDB_BVL_Battery extends PEAR
     ) {
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if ($this->isError($error)) {
-            return $error;
-        }
 
         // get the current battery (center id is irrelevant here,
         // as is stage probably)
@@ -176,15 +172,9 @@ class NDB_BVL_Battery extends PEAR
         $DB = Database::singleton();
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
-        if ($this->isError($error)) {
-            return $error;
-        }
 
         // assert that the instrument is valid
         $error = $this->_assertValidInstrument($testName);
-        if ($this->isError($error)) {
-            return $error;
-        }
 
         // get SessionID, UserID
         $query = "SELECT ID as SessionID, UserID FROM session WHERE ID=:SID";
@@ -218,7 +208,7 @@ class NDB_BVL_Battery extends PEAR
         $ddeCommentID = 'DDE_'.$commentID;
 
         // insert the dde into the test table
-         $success = $DB->insert($testName, array('CommentID' => $ddeCommentID));
+        $success = $DB->insert($testName, array('CommentID' => $ddeCommentID));
 
         // insert the dde into the flag table
         $success = $DB->insert(
@@ -312,13 +302,17 @@ class NDB_BVL_Battery extends PEAR
         $error = $this->_assertBatterySelected();
 
         // craft the select query
-        $query   = "SELECT f.Test_name,
+        $query = "SELECT f.Test_name,
                     t.Full_name,
                     f.CommentID,
                     CONCAT('DDE_', f.CommentID) AS DDECommentID,
                     ts.Subgroup_name as Sub_group,
-                    t.isDirectEntry
-                FROM flag AS f, test_names as t, test_subgroups as ts ";
+                    ts.group_order as Subgroup_order,
+                    t.isDirectEntry";
+        if (!is_null($stage)) {
+            $query .= ", b.instr_order as instrument_order";
+        }
+        $query  .= " FROM flag AS f, test_names as t, test_subgroups as ts ";
         $qparams = array('SID' => $this->sessionID);
 
         if (!is_null($stage)) {
@@ -343,8 +337,19 @@ class NDB_BVL_Battery extends PEAR
             }
         }
 
-        $query .= "ORDER BY Sub_group, Full_name";
+        $query .= " GROUP BY t.Full_name";
 
+        if (Utility::columnsHasNull('test_subgroups', 'group_order')) {
+            $query .= " ORDER BY Subgroup_name";
+        } else {
+            $query .= " ORDER BY Subgroup_order";
+        }
+        if (!is_null($stage)) {
+            $query .= ", instrument_order";
+        } else {
+            $query .= ", Full_name";
+        }
+        //print_r($query);
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
 
@@ -476,6 +481,10 @@ class NDB_BVL_Battery extends PEAR
             // Unless the center is specified & matched, don't return
             // site-restricted instruments
             $query .= " AND b.CenterID IS NULL";
+        }
+
+        if ($firstVisit === false) {
+            $query .= " AND (b.firstVisit IS NULL OR b.firstVisit='N')";
         }
 
         // get the list of instruments

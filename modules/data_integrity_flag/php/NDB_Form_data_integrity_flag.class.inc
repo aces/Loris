@@ -1,5 +1,4 @@
 <?php
-require_once "NDB_Form.class.inc";
 
 /**
  * @package main
@@ -12,9 +11,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         return ($user->hasPermission('data_integrity_flag'));
     }
 
@@ -49,9 +45,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 
         // get the userID
         $user =& User::singleton();
-        if(PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         $user_name = $user->getUsername();
 
         $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //get actual test_name
@@ -73,9 +66,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         $sucess =  $DB->update('data_integrity_flag',array('latest_entry'=>0),array('dataflag_instrument' => $instrument, 'dataflag_visitlabel'=>$visit_label));
         $success = $DB->insert("data_integrity_flag", array('dataflag_instrument'=>$instrument,'dataflag_visitlabel'=>$visit_label,'dataflag_comment'=>$comment,'dataflag_date'=>$date,'dataflag_status'=>$flag,'latest_entry'=>1,'dataflag_userid'=>$user_name));
 
-        if(PEAR::isError($success)) {
-            return PEAR::raiseError("NDB_Form_data_integrity_flag::_process: ".$success->getMessage());
-        }
         $this->tpl_data['success'] = true;
     }
 
@@ -136,7 +126,14 @@ class NDB_Form_data_integrity_flag extends NDB_Form
                 );
 
         $this->addBasicDate('date', "Date:", $dateOptions); //date drop down
-        $this->addSelect('flag_status', 'Flag Status:', array(''=>null,"1"=>'1- Ready For Review',"2"=>'2- Review Completed', "3"=>'3- Feedbacks Closed', "4"=>'4- Finalization')); //flag status
+        $flag_status_list = array(
+            '' => null,
+            "1" => '1- Ready For Review',
+            "2" => '2- Review Completed',
+            "3" => '3- Feedbacks Closed',
+            "4" => '4- Finalization'
+        );
+        $this->addSelect('flag_status', 'Flag Status:', $flag_status_list); //flag status
         $this->addBasicTextArea('comment','Comment:',array('rows' => 2, 'cols' => 20));//comment box
 
         //static or hiddent elements
@@ -160,7 +157,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
             $this->tpl_data['elements_list_names'] [] = $data['dataflag_id'];
             $full_name = $DB->pselectOne("SELECT Full_name from test_names where Test_name = :tname",array('tname'=>$data['dataflag_instrument']));
             $this->tpl_data['elements_array'][$data['dataflag_id']]['date']= $data['dataflag_date'];
-            $this->tpl_data['elements_array'][$data['dataflag_id']]['flag'] = $data['dataflag_status'];
+            $this->tpl_data['elements_array'][$data['dataflag_id']]['flag'] = $flag_status_list[$data['dataflag_status']];
             $this->tpl_data['elements_array'][$data['dataflag_id']]['comment']= $data['dataflag_comment'];
             $this->tpl_data['elements_array'][$data['dataflag_id']]['instrument']= $data['dataflag_instrument'];
             $this->tpl_data['elements_array'][$data['dataflag_id']]['full_name']= $full_name;
@@ -184,12 +181,8 @@ class NDB_Form_data_integrity_flag extends NDB_Form
     function AddWhere($Column, $Filter) {
         // create Database object
         $DB = Database::singleton();
-        if(PEAR::isError($DB)) {
-            print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-            die();
-        }
 
-        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments' &&  $_REQUEST[$Filter] !=='All Visits') {
+        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments' && $_REQUEST[$Filter] !=='No instruments for this visit' &&  $_REQUEST[$Filter] !=='All Visits') {
 
             if ($Filter =='instrument'){
                 $test_name = $this->getTestNameusingMappedName($_REQUEST[$Filter]); //get actual test_name
@@ -216,10 +209,6 @@ class NDB_Form_data_integrity_flag extends NDB_Form
 
         // create Database object
         $DB = Database::singleton();
-        if(PEAR::isError($DB)) {
-            print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-            die();
-        }
 
         $is_error_set = false;
 

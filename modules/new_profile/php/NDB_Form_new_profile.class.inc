@@ -1,6 +1,4 @@
 <?php
-require_once "NDB_Form.class.inc";
-
 /**
  * The forms for the new profile menu
  * @package main
@@ -11,15 +9,10 @@ class NDB_Form_new_profile extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         $site =& Site::singleton($user->getData('CenterID'));
-        if (Utility::isErrorX($site)) {
-            return PEAR::raiseError("Unable to construct the list_of_sites array: ".$site->getMessage());
-        }
-        if ($site->isStudySite()) {
+        
+        if ($site->isStudySite() or ($site->getCenterName() == "DCC")) {
             return $user->hasPermission('data_entry');
         }
 
@@ -42,9 +35,6 @@ class NDB_Form_new_profile extends NDB_Form
 
         // create the candidate
         $candID = Candidate::createNew($user->getData('CenterID'), $dob, $edc, $values['gender'], $values['PSCID']);
-        if (Utility::isErrorX($candID)) {
-            return PEAR::raiseError("new_profile::_process(): ".$candID->getMessage());
-        }
 
         // get the candidate
         $candidate =& Candidate::singleton($candID);
@@ -52,9 +42,6 @@ class NDB_Form_new_profile extends NDB_Form
         if($config->getSetting('useProjects') == "true") {
             $candidate->setData('ProjectID', $values['ProjectID']);
 
-        }
-        if (Utility::isErrorX($candidate)) {
-            return PEAR::raiseError("Candidate Error ($candID): ".$candidate->getMessage());
         }
 
         //------------------------------------------------------------
@@ -70,23 +57,27 @@ class NDB_Form_new_profile extends NDB_Form
     function new_profile()
     {
         $config =& NDB_Config::singleton();
-        $study = $config->getSetting('study');
+        $startYear = $config->getSetting('startYear');
+        $endYear = $config->getSetting('endYear');
+        $ageMax = $config->getSetting('ageMax');
+        $ageMin = $config->getSetting('ageMin');
         $dateOptions = array(
                              'language'        => 'en',
                              'format'          => 'YMd',
                              'addEmptyOption'  => true,
-                             'minYear'         => $study['startYear'] - $study['ageMax'],
-                             'maxYear'         => $study['endYear'] - $study['ageMin']
+                             'minYear'         => $startYear - $ageMax,
+                             'maxYear'         => $endYear - $ageMin
                              );
 
         // add date of birth
         $this->addBasicDate('dob1', 'Date of Birth', $dateOptions);
         $this->addBasicDate('dob2', 'Confirm Date of Birth', $dateOptions);
-   
+        $this->addRule(array('dob1', 'dob2'), 'Date of birth fields must match', 'compare');
+
 
         // date of birth rules
-        $this->addGroupRule('dob1', 'Date of Birth is required', 'required');
-        $this->addGroupRule('dob2', 'Date of Birth confirmation is required', 'required');
+        $this->addRule('dob1', 'Date of Birth is required', 'required');
+        $this->addRule('dob2', 'Date of Birth confirmation is required', 'required');
 
         if($config->getSetting('useEDC') == "true"){
             // add expected date of confinement
@@ -109,7 +100,7 @@ class NDB_Form_new_profile extends NDB_Form
         // add gender
         $genderOptions = array('' => '', 'Male' => 'Male', 'Female' => 'Female');
         $this->addSelect('gender', 'Gender', $genderOptions);
-    
+
         // gender rules
         $this->addRule('gender', 'Gender is required', 'required');
 
@@ -134,7 +125,7 @@ class NDB_Form_new_profile extends NDB_Form
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
         if($config->getSetting('useEDC') == "true") {
-            if (strlen(implode($values['edc1'])) > 2 && !_checkDate($values['edc1'])) {
+            if (strlen(implode($values['edc1'])) > 2 && !Utility::_checkDate($values['edc1'])) {
                 $errors['edc1'] = 'EDC is not a valid date';
             }
             if($values['edc1']['M'] != $values['edc2']['M'] ||

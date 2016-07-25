@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once'ConflictDetector.class.inc';
 
 /**
  * Behavioural instrument status class
@@ -74,7 +73,6 @@ class NDB_BVL_InstrumentStatus
                               'Pass',
                              );
 
-
     /**
      * Loads the object with the current status of the instrument
      *
@@ -101,6 +99,7 @@ class NDB_BVL_InstrumentStatus
 
     /**
      * Gets the SessionID of the current instrument
+     *
      * @return int
      * @access public
      */
@@ -121,6 +120,7 @@ class NDB_BVL_InstrumentStatus
 
     /**
      * Gets the current administration status of the instrument
+     *
      * @return string
      */
     function getAdministrationStatus()
@@ -179,19 +179,48 @@ class NDB_BVL_InstrumentStatus
                 ? $this->_commentID
                 : substr($this->_commentID, 4)
             );
+            $DDECommentId       = 'DDE_' . $principalCommentId;
 
-            $instrumentName = NDB_BVL_Battery::getInstrumentNameForCommentId(
-                $principalCommentId
+            $query = $GLOBALS['DB']->pselect(
+                "SELECT Data_entry FROM flag
+                WHERE CommentID=:PCID OR CommentID=:DDECID",
+                array(
+                 'PCID'   => $principalCommentId,
+                 'DDECID' => $DDECommentId,
+                )
             );
 
-            ConflictDetector::clearConflictsForInstance($principalCommentId);
-            $diff = ConflictDetector::detectConflictsForCommentIds(
-                $instrumentName,
-                $principalCommentId,
-                'DDE_'.$principalCommentId
-            );
-            ConflictDetector::recordUnresolvedConflicts($diff);
+            // Run ConflictDetector if Data_entry of SDE and DDE are both Complete
+            $count = 0;
+            foreach ($query as $key => $dataEntryStatus) {
+                if ($dataEntryStatus['Data_entry'] == 'Complete') {
+                    $count++;
+                }
+                if ($count > 1) {
+                    $instrumentName = NDB_BVL_Battery::getInstrumentNameForCommentId(
+                        $principalCommentId
+                    );
+
+                    ConflictDetector::clearConflictsForInstance($principalCommentId);
+                    $diff = ConflictDetector::detectConflictsForCommentIds(
+                        $instrumentName,
+                        $principalCommentId,
+                        $DDECommentId
+                    );
+                    ConflictDetector::recordUnresolvedConflicts($diff);
+                }
+            }
         }
+
+        // Remove conflicts for SDE & DDE form from the
+        // Conflict Resolver if new status is 'In Progress'
+        if ($this->getDataEntryStatus() != null && $status == 'In Progress') {
+            $deleteWhere1 = array('CommentId1' => $this->_commentID);
+            $deleteWhere2 = array('CommentId2' => $this->_commentID);
+            $GLOBALS['DB']->delete('conflicts_unresolved', $deleteWhere1);
+            $GLOBALS['DB']->delete('conflicts_unresolved', $deleteWhere2);
+        }
+
     }
 
     /**
@@ -271,4 +300,4 @@ class NDB_BVL_InstrumentStatus
         $updateResult = $this->select($this->_commentID);
     }
 
-} // end class
+} // end of class

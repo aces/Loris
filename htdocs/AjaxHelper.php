@@ -15,7 +15,6 @@
  *  @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  *  @license  Loris license
  *  @link     https://github.com/aces/Loris-Trunk
- *
  */
 
 
@@ -26,27 +25,29 @@ set_include_path(
     __DIR__ . "/../php/libraries"
 );
 
+require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
 $client->initialize("../project/config.xml");
+
 
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
 $paths  = $config->getSetting('paths');
 
 // Basic config validation
-$basePath    = $paths['base'];
+$basePath = $paths['base'];
 if (empty($basePath)) {
     error_log("ERROR: Config settings are missing");
-    header("HTTP/1.1 500 Internal Server Error"); 
+    header("HTTP/1.1 500 Internal Server Error");
     exit(1);
 }
 
 
 // Now get the file and do file validation
 $Module = $_GET['Module'];
-$File = $_GET['script'];
+$File   = $_GET['script'];
 if (empty($Module) || empty($File)) {
     error_log("Missing required parameters for request");
     header("HTTP/1.1 400 Bad Request");
@@ -63,14 +64,23 @@ if (strpos("..", $File) !== false) {
     exit(4);
 }
 
+if (is_dir($basePath . "project/modules/$Module")
+    || is_dir($basePath . "modules/$Module")
+) {
+        $ModuleDir = is_dir($basePath . "project/modules/$Module")
+            ? $basePath . "project/modules/$Module"
+            : $basePath . "modules/$Module";
+        set_include_path(
+            get_include_path() . ':' .
+            $ModuleDir . "/php"
+        );
+} else {
+    error_log("ERROR: Module does not exist");
+    header("HTTP/1.1 400 Bad Request");
+    exit(5);
+}
 // Also check the module directory for PHP files
-set_include_path(
-    get_include_path() . ":" .
-    __DIR__ . "/../project/libraries:" .
-    __DIR__ . "/../php/libraries:" .
-    __DIR__ . "/../modules/$Module/php"
-);
-$FullPath = $basePath . "/modules/$Module/ajax/$File";
+$FullPath = "$ModuleDir/ajax/$File";
 
 if (!file_exists($FullPath)) {
     error_log("ERROR: File $File does not exist");
@@ -78,5 +88,6 @@ if (!file_exists($FullPath)) {
     exit(5);
 }
 
+$user =& User::singleton($_SESSION['State']->getUsername());
 require $FullPath;
 ?>

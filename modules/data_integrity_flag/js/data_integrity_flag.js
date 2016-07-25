@@ -22,7 +22,6 @@ function changeVisitLabels() {
         visit_label_value = visit_label_dropdown.value,
         request = getQueryVariable("visit_label"),
         instrument_dropdown_value,
-        temp_array = ["All Instruments"],
         instruments;
     if ($.trim(visit_label_value) === 'All Visits') {visit_label_value = ''; }
     if (request !== undefined) {
@@ -32,10 +31,9 @@ function changeVisitLabels() {
     if (instrument_dropdown_value !== undefined) {
         instrument_dropdown_value = instrument_dropdown_value.replace(/\+/g, ' ');
     }
-    $.get("AjaxHelper.php?Module=data_team_helper&script=GetInstruments.php&visit_label=" + visit_label_value,
+    $.get(loris.BaseURL + "/data_team_helper/ajax/GetInstruments.php?visit_label=" + visit_label_value,
         function (data) {
-            instruments = data.split("\n");
-            instruments = temp_array.concat(instruments); //adds 'All instruments to the array'
+            instruments = data;
             instrument_dropdown.options.length = 0;
             var i, numInstruments = instruments.length, val;
             for (i = 0; i < numInstruments; i += 1) {

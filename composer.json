@@ -1,10 +1,26 @@
 {
+    "name": "aces/loris",
+    "license" : "GPL-3.0+",
+    "description" : "LORIS (Longitudinal Online Research and Imaging System) is a web-accessible database solution for neuroimaging.",
+    "repositories" : [
+    {
+        "type" : "pear",
+        "url" : "https://pear.php.net"
+    }
+    ],
     "require" : {
-        "smarty/smarty" : "3.1.*"
+        "smarty/smarty" : "~3.1",
+        "PHPOffice/PHPExcel": "1.8.*",
+        "firebase/php-jwt" : "~3.0",
+        "pear-pear.php.net/HTML_QuickForm" : "~3.2"
     },
     "require-dev" : {
-        "squizlabs/php_codesniffer" : ">= 2.0",
+        "squizlabs/php_codesniffer" : "2.5.*",
         "phpunit/phpunit" : "4.3.*",
-        "phpunit/phpunit-selenium" : ">=1.2"
+        "phpunit/dbunit": ">=1.2",
+        "facebook/webdriver" : "dev-master"
+    },
+    "autoload" : {
+        "classmap": ["php/libraries", "php/exceptions"]
     }
 }

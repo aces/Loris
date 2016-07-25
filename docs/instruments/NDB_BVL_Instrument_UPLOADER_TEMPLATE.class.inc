@@ -85,7 +85,10 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
 
     }
 
-    function _saveValues($values) {
+    function _saveValues($values)
+    {
+         $timepoint = TimePoint::singleton($this->getSessionID());
+         $candidate = Candidate::singleton($timepoint->getCandID());
 
          if(isset($values['upload_file']) && !empty($values['upload_file']['name'])) {
             require_once "File_Upload.class.inc";
@@ -139,6 +142,22 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
       $this->_save($values);
 
    }
+
+   /**
+     * getTargetDirectory retrieves info about where the file should be stored.
+     *
+     * The returned directory is ADDED to the baseUploadDirectory proprety.  It should have a trailing slash.
+     *
+     * @param     string  $file    The full filename including directory.
+     *
+     * @return    bool    $success     if operation succeeded
+     * @access    public
+     */
+    function getTargetDirectory(&$file, $args){
+        $output=$args['candID']."/";
+        return $output;
+    }
+
    /*
     * Import data from the uploaded file
     *

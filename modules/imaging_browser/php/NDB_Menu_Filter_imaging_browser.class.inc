@@ -14,8 +14,7 @@
  *  @link       https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
+require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
 /**
  * Provides the PHP code for the menu filter for the imaging browser
  *
@@ -28,6 +27,7 @@ require_once 'NDB_Menu_Filter.class.inc';
  */
 class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 {
+    var $AjaxModule = true;
     /**
      * Determine whether the user has permission to view this page
      *
@@ -36,15 +36,9 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     function _hasAccess()
     {
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
 
         // allow only to view own site data
         $site =& Site::singleton($user->getData('CenterID'));
-        if (Utility::isErrorX($site)) {
-            return PEAR::raiseError("DB Error: ".$site->getMessage());
-        }
 
         return ($user->hasPermission('imaging_browser_view_allsites') || ($site->isStudySite() && $user->hasPermission('imaging_browser_view_site')));
     }
@@ -77,7 +71,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                 SELECT MIN(files_qcstatus.QCStatus+0) 
                 FROM files JOIN files_qcstatus 
                 USING (FileID) 
-                WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=44 
+                WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=44 and (files_qcstatus.QCStatus=1 or files_qcstatus.QCStatus=2)
                 GROUP BY files.SessionID), '')
             WHEN '' THEN ''
             WHEN 1 THEN 'Passed'
@@ -89,7 +83,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                 SELECT MIN(files_qcstatus.QCStatus+0) 
                 FROM files JOIN files_qcstatus 
                 USING (FileID) 
-                WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=45 
+                WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=45 and (files_qcstatus.QCStatus=1 or files_qcstatus.QCStatus=2)
                 GROUP BY files.SessionID), '')
             WHEN '' THEN ''
             WHEN 1 THEN 'Passed'
@@ -100,7 +94,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $PendingFailSubquery = "
             CASE s.MRIQCStatus
                 WHEN 'Fail' THEN
-                    IF(s.MRIQCPending, 'Pending Fail', 'Fail')
+                    IF(s.MRIQCPending='Y', 'Pending Fail', 'Fail')
                 WHEN 'Pass' THEN
                     IF(s.MRIQCPending='Y', 'Pending Pass', 'Pass')
                 ELSE s.MRIQCStatus
@@ -112,7 +106,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
-            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID) 
+            JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
             WHERE 
             f.PendingStaging=0 AND 
             f.FileType='mnc' AND 
@@ -132,11 +126,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             's.visit_label as Visit_Label',
             "$PendingFailSubquery as QC_Status",
             'MIN(md.AcquisitionDate) as First_Acq_Date',
-            'MAX(fqc.QCLastChangeTime) as Last_QC',
+            'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
             "$NewDataSubquery as New_Data",
             "$T1PassSubquery as T1_Passed",
             "$T2PassSubquery as T2_Passed",
-            "'links' as Links",
+            "GROUP_CONCAT(DISTINCT OutputType) as Links",
             's.ID as sessionID'
         );
         $this->order_by = 'c.PSCID, s.Visit_label';
@@ -152,7 +146,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'New_Data',
             'T1_Passed',
             'T2_Passed',
-            'Links'
+            'Links',
+            'sessionID'
         );
        
         $this->validFilters = array(
@@ -162,7 +157,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'c.ProjectID',
             'c.CenterID',
             's.MRIQCStatus',
-            'pending'
+            'pending',
+            'f.AcquisitionProtocolID'
         );
 
         $this->formToFilter = array(
@@ -172,10 +168,24 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'ProjectID' => 'c.ProjectID',
             'SiteID' => 'c.CenterID',
             'VisitQCStatus' => 's.MRIQCStatus',
-            'Pending' => 'pending'
+            'Pending' => 'pending',
+            'Scan_type'=>'f.AcquisitionProtocolID'
         );
-        $this->EqualityFilters = array();
+        $this->EqualityFilters = array('f.AcquisitionProtocolID');
         $this->searchKeyword    = array();
+        
+        $this->tpl_data['numTimepoints'] = 0;
+
+        // This variable will be used by the columnFormatter javascript
+        // to set the default hidden columns in the data table.
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            array_map(
+                function ($header) {
+                        return ucwords(str_replace('_', ' ', $header));
+                },
+                array('sessionID')
+            )
+        );
     }
 
     /**
@@ -187,25 +197,16 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         
         // PSC
         if ($user->hasPermission('imaging_browser_view_allsites')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList();
-            if(Utility::isErrorX($list_of_sites)) {
-                return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
-            }
             if(is_array($list_of_sites)) $list_of_sites = array('' => 'All') + $list_of_sites;
         }
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (Utility::isErrorX($site)) {
-                return PEAR::raiseError("DB Error: ".$site->getMessage());
-            }
             if ($site->isStudySite()) {
                 $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
             }
@@ -220,7 +221,17 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->addBasicText(
             'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)
         );
-        $this->addSelect('ProjectID', 'Project', $allAr + Utility::getProjectList());
+
+        $config =& NDB_Config::singleton();
+        if ($config->getSetting('useProjects') === "true") {
+            $list_of_projects = $allAr;
+            $projectList = Utility::getProjectList();
+            foreach ($projectList as $key => $value) {
+                $list_of_projects[$key] =$value;
+            }
+            $this->addSelect('ProjectID', 'Project', $list_of_projects);  
+        }
+
         $this->addSelect('SiteID', 'Site', $list_of_sites);
         $this->addSelect(
             'VisitQCStatus',
@@ -232,7 +243,21 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'Pending',
             'Pending and New',
             array(''=>'All', 'P'=>'Pending', 'N'=>'New', 'PN'=>'Pending or New')
-        ); 
+        );
+
+        //query to get scan types that exist for the project
+        $types_q = $DB->pselect(
+                "SELECT ID, Scan_type FROM mri_scan_type mri
+                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+                 array()
+        );
+        $scan_types = $allAr;
+        foreach ($types_q as $row) {
+            $type                   = $row['Scan_type'];
+            $scan_types[$row['ID']] = $type;
+        }
+        $this->addSelect('Scan_type', 'Sequence Type', $scan_types);
+
         $outputTypes = $DB->pselect(
             "SELECT DISTINCT OutputType AS outputType 
             FROM files WHERE FileType='mnc' AND OutputType!='native'", array()
@@ -256,42 +281,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     }
 
     /**
-     * Setup table rows for the template
-     *
-     * @param int $count number
-     *
-     * @return null
-     */
-
-    function _setDataTableRows($count)
-    {
-        // print out
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                if ($key == 'sessionID') {
-                    $this->tpl_data['items'][$x]['sessionID'] = $val;
-                    $filtered_sessionIDs[] = $val;
-                    continue;
-                }
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-                $i++;
-            }
-            $x++;
-        }
-        $this->tpl_data['numTimepoints'] = $this->TotalItems; //$x;
-        $_SESSION['State']->setProperty(
-	    'mriSessionsListed', $filtered_sessionIDs
-        );
-        return true;
-    }
-    /**
      * Overwrites the function to add a customized filter
      * for Pending and New
      *
@@ -305,7 +294,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     {
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
-            if ($field != 'pending') {
+            if ($field != 'pending' && $field !='AcquisitionProtocolID') {
                 if (in_array($field, $this->CheckboxFilters) && $val) {
                     $query .= " AND $field";
                 } elseif (strtolower(substr($field, -8)) == 'centerid'
@@ -319,22 +308,65 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                 } else {
                     $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
                 }
-            } else {
+            } else if ($field == 'pending') {
                 switch ($val) {
                 case "P":
                     $query .= " AND s.MRIQCPending='Y'"; 
                     break;
                 case "N":
-                    $query .= " AND (s.MRIQCStatus='' 
-                        OR fqc.QCFirstChangeTime IS NULL)"; 
+                    $query .= " AND fqc.QCFirstChangeTime IS NULL"; 
                     break;
                 case "PN":
                     $query .= " AND (s.MRIQCPending='Y' 
-                        OR s.MRIQCStatus='' OR fqc.QCFirstChangeTime IS NULL)"; 
+                        OR fqc.QCFirstChangeTime IS NULL)"; 
                     break;
                 }
+            } else if ($field == 'AcquisitionProtocolID') {
+                  $query .= " AND $field = :v_$prepared_key";
             }
         }
         return $query;
+    }
+
+    /**
+     * Converts this menu filter to an array of the form
+     *
+     * Headers => (string array)
+     * Data => (array of arrays of row data)
+     *
+     * @note overloaded function
+     *         Overloading this method to create a list of sessionID that
+     *         will be used for the Navigation Links in  the viewSession
+     *         page.
+     *
+     * @return associative array
+     */
+    function toArray()
+    {
+        $data   = parent::toArray();
+        $index = array_search('SessionID', $data['Headers']);
+        if ($index !== false) {
+            $_SESSION['State']->setProperty(
+                'mriSessionsListed',
+                array_column($data['Data'], $index)
+            );
+        }
+        return $data;
+    }
+
+    /**
+     * Include the column formatter
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies() {
+        $factory = NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        return array_merge(
+            parent::getJSDependencies(),
+            array(
+                $baseurl . "/imaging_browser/js/columnFormatter.js"
+            )
+        );
     }
 }

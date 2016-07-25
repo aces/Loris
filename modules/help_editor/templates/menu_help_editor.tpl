@@ -1,4 +1,4 @@
-<script type="text/javascript" src="js/filterControl.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
 
 <div class="row">
 <div class="col-sm-10 col-md-10">
@@ -9,7 +9,7 @@
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
         </div>
         <div class="panel-body" id="panel-body">
-            <form method="post" action="main.php?test_name=help_editor">
+            <form method="post" action="{$baseurl}/help_editor/">
                 <div class="row">
                     <div class="form-group col-sm-6">
                         <label class="col-sm-12 col-md-4">{$form.topic.label}</label>
@@ -26,7 +26,7 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
                         </div>
                         <div class="col-sm-4">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=help_editor&reset=true'" />
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/help_editor/?reset=true'" />
                         </div>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
     <!-- title -->
     <td class="controlPanelSection">List of Topics</td>
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
 
@@ -59,7 +59,7 @@
             <tr class="info">
              <th>No.</th>
                 {section name=header loop=$headers}
-                    <th><a href="main.php?test_name=help_editor&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
+                    <th><a href="{$baseurl}/help_editor/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
                     
                 {/section}
                 
@@ -77,7 +77,7 @@
                           {if $items[item][piece].parentID eq -1 && $items[item][piece].name eq 'Parent_Topic' && $items[item][piece].value eq '-'}
                            {$items[item][piece].value}
                            {else}
-                           <a href="main.php?test_name=help_editor&subtest=edit_help_content&helpID={$items[item][piece].helpID}&parentID={$items[item][piece].parentID}">
+                           <a href="{$baseurl}/help_editor/edit_help_content/?helpID={$items[item][piece].helpID}&parentID={$items[item][piece].parentID}">
                            {$items[item][piece].value}</a>
                           {/if}
                         </td>
@@ -100,3 +100,16 @@
     <!-- end data table -->
     </table>
 </div>
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/help_editor/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
+

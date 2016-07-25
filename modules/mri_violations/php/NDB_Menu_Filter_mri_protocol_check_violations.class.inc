@@ -17,8 +17,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Implements the menu filter for mri_violations_log table
  *
@@ -39,20 +37,17 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
     function _hasAccess()
     {
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
         return $user->hasPermission('violated_scans_view_allsites');
     }
 
     /**
      * Set up the class and smarty variables to use for the menu filter
-     * 
+     *
      * @return none
      */
     function _setupVariables()
     {
-        $this->query = " FROM mri_violations_log l JOIN mri_scan_type m
+        $this->query = " FROM mri_violations_log l LEFT JOIN mri_scan_type m
                          ON m.ID=l.Scan_type WHERE 1=1 ";
         $this->columns = array(
             'l.PatientName',
@@ -69,15 +64,15 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
         );
         $this->order_by = 'PatientName';
         $this->headers = array('PatientName',
-                               'CandID',
-                               'Visit_label',
-                               'Scan_type',
-                               'Severity',
-                               'Header',
-                               'Value',
-                               'ValidRange',
-                               'ValidRegex',
-                               'SeriesUID'
+            'CandID',
+            'Visit_label',
+            'Scan_type',
+            'Severity',
+            'Header',
+            'Value',
+            'ValidRange',
+            'ValidRegex',
+            'SeriesUID'
         );
         $this->validFilters = array(
             'l.TarchiveID',
@@ -86,10 +81,10 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
             'l.CandID'
         );
         $this->formToFilter = array (
-                                    'TarchiveID' => 'l.TarchiveID',
-                                    'SeriesUID' => 'l.SeriesUID',
-                                    'PatientName' => 'l.PatientName',
-                                    'CandID' => 'l.CandID'
+            'TarchiveID' => 'l.TarchiveID',
+            'SeriesUID' => 'l.SeriesUID',
+            'PatientName' => 'l.PatientName',
+            'CandID' => 'l.CandID'
         );
     }
 
@@ -156,18 +151,29 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
                     'name' => $key
                 );
                 $row['CandID'] = isset($item['CandID']) ? $item['CandID'] : '';
-                $row['CommentID'] = isset($item['CommentID']) 
-                    ? $item['CommentID'] 
+                $row['CommentID'] = isset($item['CommentID'])
+                    ? $item['CommentID']
                     : '';
-                $row['SessionID'] = isset($item['SessionID']) 
-                    ? $item['SessionID'] 
+                $row['SessionID'] = isset($item['SessionID'])
+                    ? $item['SessionID']
                     : '';
-
 
                 $this->tpl_data['items'][$x][$i] = $row;
                 $i++;
             }
             $x++;
         }
+    }
+
+    function getJSDependencies() {
+        $factory = NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        $depends = parent::getJSDependencies();
+        return array_merge(
+            $depends,
+            array(
+             $baseurl . "/mri_violations/js/mri_protocol_check_violations.js",
+            )
+        );
     }
 }

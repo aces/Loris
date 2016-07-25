@@ -11,7 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once 'PEAR.php';
 
 /**
  * Breadcrumb class
@@ -24,10 +23,11 @@ require_once 'PEAR.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Breadcrumb extends PEAR
+class NDB_Breadcrumb
 {
     /**
      * The breadcrumb
+     *
      * @var    array
      * @access private
      */
@@ -35,6 +35,7 @@ class NDB_Breadcrumb extends PEAR
 
     /**
      * The index of the last crumb
+     *
      * @var    int
      * @access private
      */
@@ -42,6 +43,7 @@ class NDB_Breadcrumb extends PEAR
 
     /**
      * The available parameters to build into the URL
+     *
      * @var    array
      * @access private
      */
@@ -49,6 +51,7 @@ class NDB_Breadcrumb extends PEAR
 
     /**
      * The user-friendly names for different forms or menus
+     *
      * @var    array
      * @access private
      */
@@ -85,9 +88,24 @@ class NDB_Breadcrumb extends PEAR
         // go the the next crumb
         $this->_lastIndex++;
 
+        $tn = $this->_parameters['test_name'];
+        $st = $this->_parameters['subtest'];
+
+        unset($this->_parameters['test_name']);
+        unset($this->_parameters['subtest']);
         // set the query string
         $this->_breadcrumb[$this->_lastIndex]['query']
-            = http_build_query($this->_parameters);
+            = "/" . $tn. "/";
+        if (!empty($st)) {
+            $this->_breadcrumb[$this->_lastIndex]['query']
+                .= "/" . $st . "/";
+
+        }
+        $this->_breadcrumb[$this->_lastIndex]['query']
+            .= "?" . http_build_query($this->_parameters);
+
+        $this->_parameters['test_name'] = $tn;
+        $this->_parameters['subtest']   = $st;
 
         // set the crumb text
         if (!is_null($text)) {
@@ -140,7 +158,6 @@ class NDB_Breadcrumb extends PEAR
      * Makes a breadcrumb
      *
      * @return array
-     * @throws PEAR_Error
      * @access public
      */
     function getBreadcrumb()
@@ -237,7 +254,7 @@ class NDB_Breadcrumb extends PEAR
                        'candidate_list'   => array(
                                               'next'  => '',
                                               'unset' => '',
-                                             )
+                                             ),
                       );
 
         // loop through the crumbs according to the order above, or just

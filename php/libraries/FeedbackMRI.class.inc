@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once "MRIFile.class.inc";
 
 /**
  * Class for managing MRI comments
@@ -44,7 +43,7 @@ class FeedbackMRI
      * @param int $fileID    The fileID that this feedback is for
      * @param int $sessionID The SessionID that this feedback is for
      */
-    function FeedbackMRI($fileID='', $sessionID='')
+    function __construct($fileID='', $sessionID='')
     {
         // set object properties
         $this->fileID    = $fileID;
@@ -83,7 +82,6 @@ class FeedbackMRI
      * Clears all comments from the object
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function clearAllComments()
@@ -193,8 +191,8 @@ class FeedbackMRI
      * @param int $commentTypeID CommentTypeID from feedback_mri_comment_types
      *                           table
      *
-     * @return array an array with key (int) PredefinedCommentID and value
-     *               (string) Comment
+     * @return A two-dimensional array with key (int) PredefinedCommentID and
+     *               one-element array ('Comment'=> string CommentName)
      */
     function getAllPredefinedComments($commentTypeID)
     {
@@ -212,9 +210,10 @@ class FeedbackMRI
         $comments = array();
         if (is_array($result)) {
             foreach ($result as $row) {
-                $PredefinedID = $row['PredefinedCommentID'];
-
-                $comments[$PredefinedID] = stripslashes($row['Comment']);
+                $PredefinedID       = $row['PredefinedCommentID'];
+                $preDefinedComments = array();
+                $preDefinedComments['Comment'] = stripslashes($row['Comment']);
+                $comments[$PredefinedID]       = $preDefinedComments;
             }
         }
 

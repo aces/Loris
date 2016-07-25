@@ -4,6 +4,7 @@
  * inititalize
  */
 set_include_path(get_include_path().":../php/libraries:");
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
 require_once "NDB_Config.class.inc";
 require_once "Utility.class.inc";
@@ -14,10 +15,6 @@ $client->initialize("../project/config.xml");
 $config = NDB_Config::singleton();
 
 $db =& Database::singleton();
-if(PEAR::isError($db)) {
-    fwrite(STDERR, "Could not connect to database: ".$db->getMessage());
-    return false;
-}
 
 $database = $config->getSetting('database');
 

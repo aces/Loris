@@ -1,8 +1,8 @@
 <?php
 /**
- * Controls access to files on the filesystem. This script should ensure that 
+ * Controls access to files on the filesystem. This script should ensure that
  * only files relative to the paths specified in the config.xml are accessible.
- * By calling new NDB_Client(), it also makes sure that the user is logged in to 
+ * By calling new NDB_Client(), it also makes sure that the user is logged in to
  * Loris.
  *
  * It also does validation to make sure said paths are specified and not set to /
@@ -17,7 +17,6 @@
  *  @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  *  @license  Loris license
  *  @link     https://github.com/aces/Loris-Trunk
- *
  */
 
 
@@ -25,10 +24,12 @@
 set_include_path(
     get_include_path() . ":../../../project/libraries:../../../php/libraries"
 );
-// Since we're sending binary data, we don't want PHP to print errors or warnings 
+require_once __DIR__ . "/../../../vendor/autoload.php";
+// Since we're sending binary data, we don't want PHP to print errors or warnings
 // inline. They'll still show up in the Apache logs.
 ini_set("display_errors", "Off");
 
+require_once __DIR__ . "/../../../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
@@ -44,13 +45,13 @@ $DownloadPath = $paths['DownloadPath'];
 $mincPath     = $paths['mincPath'];
 if (empty($imagePath) || empty($DownloadPath) || empty($mincPath)) {
     error_log("ERROR: Config settings are missing");
-    header("HTTP/1.1 500 Internal Server Error"); 
+    header("HTTP/1.1 500 Internal Server Error");
     exit(1);
 }
 
 if ($imagePath === '/' || $DownloadPath === '/' || $mincPath === '/') {
     error_log("ERROR: Path can not be root for security reasons.");
-    header("HTTP/1.1 500 Internal Server Error"); 
+    header("HTTP/1.1 500 Internal Server Error");
     exit(2);
 }
 
@@ -66,13 +67,13 @@ if (strpos($File, ".") === false) {
 
 // Find the extension
 $path_parts = pathinfo($File);
-$FileExt = $path_parts['extension'];
+$FileExt    = $path_parts['extension'];
 
-//make sure that we have a .nii.gz image if FileExt equal gz 
-if(strcmp($FileExt,"gz") == 0){
+//make sure that we have a .nii.gz image if FileExt equal gz
+if (strcmp($FileExt, "gz") == 0) {
     $path_subparts = pathinfo($path_parts['filename']);
-    if(strcmp($path_subparts['extension'],"nii")==0){
-       $FileExt = "nii.gz";
+    if (strcmp($path_subparts['extension'], "nii")==0) {
+        $FileExt = "nii.gz";
     }
 }
 unset($path_parts);
@@ -89,18 +90,18 @@ if (strpos("..", $File) !== false) {
 
 switch($FileExt) {
 case 'mnc':
-    $FullPath = $mincPath . '/' . $File;
-    $MimeType = "application/x-minc";
+    $FullPath         = $mincPath . '/' . $File;
+    $MimeType         = "application/x-minc";
     $DownloadFilename = basename($File);
     break;
 case 'nii':
-    $FullPath = $mincPath . '/' . $File;
-    $MimeType = "application/x-nifti";
+    $FullPath         = $mincPath . '/' . $File;
+    $MimeType         = "application/x-nifti";
     $DownloadFilename = basename($File);
     break;
 case 'nii.gz':
-    $FullPath = $mincPath . '/' . $File;
-    $MimeType = "application/x-nifti-gz";
+    $FullPath         = $mincPath . '/' . $File;
+    $MimeType         = "application/x-nifti-gz";
     $DownloadFilename = basename($File);
     break;
 case 'png':
@@ -119,18 +120,18 @@ case 'raw_byte.gz':
     $MimeType = 'application/octet-stream';
     break;
 case 'xml':
-    $FullPath = $imagePath . '/' . $File;
-    $MimeType = 'application/xml';
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'application/xml';
     $DownloadFilename = basename($File);
     break;
 case 'nrrd':
-    $FullPath = $imagePath . '/' . $File;
-    $MimeType = 'image/vnd.nrrd';
+    $FullPath         = $imagePath . '/' . $File;
+    $MimeType         = 'image/vnd.nrrd';
     $DownloadFilename = basename($File);
     break;
 default:
-    $FullPath = $DownloadPath . '/' . $File;
-    $MimeType = 'application/octet-stream';
+    $FullPath         = $DownloadPath . '/' . $File;
+    $MimeType         = 'application/octet-stream';
     $DownloadFilename = basename($File);
     break;
 }

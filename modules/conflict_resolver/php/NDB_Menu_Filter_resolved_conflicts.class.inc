@@ -12,8 +12,6 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Menu_Filter_Form_resolved_conflicts Class
  *
@@ -69,7 +67,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             $this->columns[] = 'candidate.ProjectID as Project';
         }
 
-        $this->columns      =array_merge(
+        $this->columns = array_merge(
             $this->columns,
             array(
              'conflicts_resolved.FieldName',
@@ -79,10 +77,18 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
              'session.CenterID',
             )
         );
-        $this->query        = " FROM conflicts_resolved
+        $this->query   = " FROM conflicts_resolved
             LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID) WHERE 1=1";
+
+        $user = User::singleton();
+        if (!$user->hasPermission('access_all_profiles')) {
+            // restrict data to own site
+            $this->query .= " AND candidate.CenterID=";
+            $this->query .= $user->getCenterID();
+        }
+
         $this->group_by     = '';
         $this->order_by     = 'conflicts_resolved.TableName, session.Visit_label';
         $this->validFilters = array(
@@ -100,7 +106,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             array(
              'candidate.PSCID',
              'session.CandID',
-             'conflicts_unresolved.Fieldname',
+             'conflicts_resolved.Fieldname',
             )
         );
 
@@ -138,7 +144,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             array(
              'CandID'   => 'session.CandID',
              'PSCID'    => 'candidate.PSCID',
-             'Question' => 'conflicts_unresolved.Fieldname',
+             'Question' => 'conflicts_resolved.Fieldname',
             )
         );
         return true;

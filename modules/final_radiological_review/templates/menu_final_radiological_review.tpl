@@ -1,9 +1,9 @@
-<script type="text/javascript" src="js/filterControl.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
 
 <div class="row">
 <div class="col-xs-12">
     <!-- start the selection table -->
-    <form method="post" action="main.php?test_name=final_radiological_review">
+    <form method="post" action="{$baseurl}/final_radiological_review/">
         <div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter();">
                 Selection Filter
@@ -45,8 +45,8 @@
                         <div class="col-sm-12 col-md-4">{$form.Review_done.html}</div>
                     </div>
                     <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-8">{$form.Project.label}</label>
-                        <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
+                        <label class="col-sm-12 col-md-8">{$form.Exclusionary_Status.label}</label>
+                        <div class="col-sm-12 col-md-4">{$form.Exclusionary_Status.html}</div>
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-6">{$form.dccid.label}</label>
@@ -68,10 +68,12 @@
                         <label class="col-sm-12 col-md-8">{$form.Final_Review_Results.label}</label>
                         <div class="col-sm-12 col-md-4">{$form.Final_Review_Results.html}</div>
                     </div>
+                    {if $form.Project}
                     <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-8">{$form.Exclusionary_Status.label}</label>
-                        <div class="col-sm-12 col-md-4">{$form.Exclusionary_Status.html}</div>
+                        <label class="col-sm-12 col-md-8">{$form.Project.label}</label>
+                        <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
                     </div>
+                    {/if}
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-4">
@@ -88,7 +90,7 @@
                         <div class="visible-xs col-xs-12"> </div>
                         <div class="visible-xs col-xs-12"> </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=final_radiological_review&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/final_radiological_review/?reset=true'">
                         </div>
                     </div>
                 </div>
@@ -103,12 +105,8 @@
 <div id="pagelinks">
 <table border="0" valign="bottom" width="100%">
 <tr>
-    <!-- title -->
-    {* Comment 
-    <td class="controlPanelSection"><a href="main.php?test_name=final_radiological_review&subtest=final_radiological_review">Create new review</a></td>
-    *}
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
 </div>
@@ -122,7 +120,7 @@
                 <th>No.</th>
                 <!-- print out column headings - quick & dirty hack -->
                 {section name=header loop=$headers}
-                    <th><a href="main.php?test_name=final_radiological_review&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                    <th><a href="{$baseurl}/final_radiological_review/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                 {/section}
             </tr>
         </thead>
@@ -133,7 +131,7 @@
                 {section name=piece loop=$items[item]}
                 <td>
                     {if $items[item][piece].name == "PSCID"}
-                        <a href="main.php?test_name=final_radiological_review&subtest=final_radiological_review&identifier={$items[item][piece].CommentID}">{$items[item][piece].value}</a>
+                        <a href="{$baseurl}/final_radiological_review/final_radiological_review/?identifier={$items[item][piece].CommentID}">{$items[item][piece].value}</a>
                     {else}
                         {$items[item][piece].value}
                     {/if}
@@ -147,4 +145,17 @@
     <!-- end data table -->
     </table>
 </div>
+
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/final_radiological_review/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
 

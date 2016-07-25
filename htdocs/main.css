@@ -97,13 +97,6 @@ h3 {
 	font-size: 90%;
     }
 
-h4 {
-    margin-top: 5px;
-    text-color: white;
-    font-size: 110%;
-    background-color: #064785;
-    width: 100%;
-}
 .site{
     color:white
 }
@@ -591,6 +584,10 @@ h2.statsH2 {
    cursor: pointer;
 }
 
+.alert > a > label{
+   cursor: pointer;
+}
+
 .watermark{
     position:absolute;
     bottom:0;
@@ -670,8 +667,8 @@ tr.directentry {
     background: #BDDDBD;
 }
 .help-content {
-    max-height: 96%;
-    width: 600px;
+    max-height: 94%;
+    width: 30%;
     height: auto;
     position: fixed;
     top: 50px;
@@ -688,6 +685,9 @@ tr.directentry {
     color: #FFFFFF;
     white-space: pre-wrap;
     word-break: normal;
+}
+#help-seperator {
+   margin-top: 50px;
 }
 #helpclose {
    position: absolute;

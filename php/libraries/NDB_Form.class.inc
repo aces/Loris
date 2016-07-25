@@ -10,11 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once "NDB_Page.class.inc";
-require_once "PEAR.php";
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 /**
  * Base Form class that is overwritten by specific form pages
  *
@@ -28,6 +23,7 @@ class NDB_Form extends NDB_Page
 {
     /**
      * Stores the template
+     *
      * @var    string
      * @access private
      */
@@ -35,6 +31,7 @@ class NDB_Form extends NDB_Page
 
     /**
      * Redirect URL
+     *
      * @var    string
      * @access private
      */
@@ -42,6 +39,7 @@ class NDB_Form extends NDB_Page
 
     /**
      * Separates the group elements
+     *
      * @var    string
      * @access private
      */
@@ -76,6 +74,7 @@ class NDB_Form extends NDB_Page
 
         // set the local variables
         $obj->_setupPage($name, $page, $identifier, null, 'test_form');
+        $obj->registerDefaultFilter();
 
         $access = $obj->_hasAccess();
 
@@ -94,9 +93,26 @@ class NDB_Form extends NDB_Page
             throw new Exception("Form does not exist: $name $page", 404);
         }
 
+        //set the baseurl of the tpl_data
+        $factory  = NDB_Factory::singleton();
+        $settings = $factory->settings();
+
+        $obj->tpl_data['baseurl'] = $settings->getBaseURL();
+
         return $obj;
     }
 
+    /**
+     * By default, trim all fields on the form before any processing/validation
+     * is done. Derived classes can override this behavior if needed.
+     *
+     * @return void
+     * @access public
+     */
+    function registerDefaultFilter()
+    {
+        $this->form->applyFilter('__ALL__', 'trim');
+    }
 
     /**
      * Returns false if user does not have access to page.
@@ -128,18 +144,12 @@ class NDB_Form extends NDB_Page
      * saves the validated data into the database
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function save()
     {
         if ($this->form->validate()) {
             $success = $this->form->process(array(&$this, "_save"), false);
-            // Just in case QuickForm returned a PEAR error instead of an
-            // exception..
-            if (Utility::isErrorX($success)) {
-                throw new Exception($success->getMessage());
-            }
         }
     }
 

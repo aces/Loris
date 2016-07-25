@@ -12,9 +12,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once "PEAR.php";
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/Default.php';
 
 /**
  * Base class that contains a number of wrapper functions for adding
@@ -26,7 +23,7 @@ require_once 'HTML/QuickForm/Renderer/Default.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page extends PEAR
+class NDB_Page
 {
     /**
      * The name of the test_name being accessed
@@ -40,6 +37,8 @@ class NDB_Page extends PEAR
 
     /**
      * Reference to the HTML QuickForm
+     *
+     * @var LorisForm
      */
     var $form;
 
@@ -70,7 +69,7 @@ class NDB_Page extends PEAR
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $this->form       = new HTML_QuickForm($formname);
+        $this->form       = new LorisForm($formname);
         $this->name       = $name;
         $this->page       = $page;
         $this->identifier = $identifier;
@@ -82,18 +81,20 @@ class NDB_Page extends PEAR
     /**
      * Wrapper to create a file element and add it to the current page
      *
-     * @param string $name  The name of this file element
-     * @param string $label The label to attach to this element
+     * @param string $name    The name of this file element
+     * @param string $label   The label to attach to this element
+     * @param array  $options Options to pass to the form for this
+     *                        file chooser.
      *
      * @return none
      */
-    function addFile($name, $label)
+    function addFile($name, $label, $options=array())
     {
         $this->form->addElement(
             'file',
             $name,
             $label,
-            array('class' => 'fileUpload')
+            array_merge(array('class' => 'fileUpload'), $options)
         );
     }
 
@@ -157,7 +158,7 @@ class NDB_Page extends PEAR
 
 
     /**
-     * Adds a text element to the current page with no accompagnying
+     * Adds a text element to the current page with no accompanying
      * not answered option
      *
      * @param string $field   The name of the text element to add
@@ -173,7 +174,7 @@ class NDB_Page extends PEAR
     }
 
     /**
-     * Adds a text area to the current page with no accompagnying not answered
+     * Adds a text area to the current page with no accompanying not answered
      * option.
      *
      * @param string $field          The name of the text area to add
@@ -195,7 +196,7 @@ class NDB_Page extends PEAR
     }
 
     /**
-     * Adds a date field (without an accompagnying not answered option) to the
+     * Adds a date field (without an accompanying not answered option) to the
      * current page.
      *
      * @param string $field   The name of the date field
@@ -215,6 +216,27 @@ class NDB_Page extends PEAR
               )
     ) {
         $this->form->addElement('date', $field, $label, $options, $attr);
+    }
+
+    /**
+     * Wrapper to create a checkbox
+     *
+     * @param string $name     The field name of this checkbox
+     * @param string $label    The label to attach to this checkbox
+     * @param array  $options  Options to pass to QuickForm for this
+     *                         checkbox
+     * @param array  $optional Optional extra HTML attributes to add
+     *                         to the checkbox
+     *
+     * @return none
+     */
+    function addCheckbox($name, $label, $options, $optional=array())
+    {
+        $optional = array_merge(
+            array('class' => 'form-control input-sm'),
+            $optional
+        );
+        $this->form->addElement('advcheckbox', $name, $label, $options, $optional);
     }
 
     /**
@@ -424,22 +446,13 @@ class NDB_Page extends PEAR
      */
     function createCheckbox($field, $label, $options=null, $closer='</label>')
     {
-        $group   = array();
-        $group[] = $this->form->createElement('static', null, null, '<label>');
-        $group[] = $this->form->createElement(
-            'advcheckbox',
+        return $this->form->createElement(
+            "advcheckbox",
             $field,
-            null,
-            null,
-            $options
+            $label,
+            $options,
+            array()
         );
-        $group[] = $this->form->createElement(
-            'static',
-            'checkLabel',
-            null,
-            $label.$closer
-        );
-        return $group;
     }
 
     /**
@@ -490,12 +503,11 @@ class NDB_Page extends PEAR
         $this->form->applyFilter('__ALL__', 'trim');
 
         // display the HTML_Quickform object
-        $smarty   = new Smarty_neurodb($this->name);
-        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
-        $this->form->accept($renderer);
+        $smarty = new Smarty_neurodb($this->name);
+
         $smarty->ModuleName = $this->name;
 
-        $smarty->assign('form', $renderer->toArray());
+        $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("form_$this->template.tpl");
         return $html;
@@ -525,6 +537,54 @@ class NDB_Page extends PEAR
         $this->defaults = $defaults;
         $this->form->setDefaults($defaults);
         return $defaults;
+    }
+
+    /**
+     * Returns an ordered list of javascript dependencies that this page depends
+     * on.  These will get loaded into the template in order, so that
+     * interdependent files can be included in the correct order.
+     *
+     * @return array of strings with URLs to retrieve JS resources
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $www     = $config->getSetting('www');
+        $baseurl = $www['url'];
+
+        $paths = $config->getSetting("paths");
+
+        $TestName = $this->name;
+
+        $files = array(
+                  $baseurl . '/js/jquery/jquery-1.11.0.min.js',
+                  $baseurl . '/js/helpHandler.js',
+                  $baseurl . '/js/modernizr.min.js',
+                  $baseurl . '/js/react-with-addons-0.13.3.min.js',
+                  $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
+                  $baseurl . '/js/jquery.dynamictable.js',
+                  $baseurl . '/js/jquery.fileupload.js',
+                  $baseurl . '/js/polyfiller.js',
+                  $baseurl . '/bootstrap/js/bootstrap.min.js',
+                  $baseurl . '/js/components/react.breadcrumb.js',
+                 );
+        if (file_exists($paths['base'] . "modules/$TestName/js/$TestName.js")) {
+            error_log(
+                "WARNING: Relying on $TestName.js getting automatically loaded will"
+                . " soon be removed. "
+                . "Override getJSDependencies() instead"
+            );
+
+            if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
+            ) {
+                $files[] = $baseurl . "/$TestName/js/$TestName.js";
+            } else {
+                $files[] = $baseurl . "/GetJS.php?Module=$TestName";
+            }
+        }
+        return $files;
     }
 }
 ?>

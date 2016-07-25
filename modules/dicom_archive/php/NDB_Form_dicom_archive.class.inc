@@ -12,8 +12,6 @@
  * @link       https://github.com/aces/Loris-Trunk
 */
 
-require_once 'NDB_Form.class.inc';
-
 /**
  * NDB_Form_Dicom_Archive Class
  *
@@ -53,10 +51,6 @@ class NDB_Form_Dicom_Archive extends NDB_Form
     function viewDetails()
     {
         $this->DB = Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-            die();
-        }
 
         if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess())) {
             $tarchiveID = $_REQUEST['tarchiveID'];
@@ -123,11 +117,7 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             break;
         }
         
-        if (Utility::isErrorX($array)) { 
-            return null;
-        } else {
-            return $array;
-        }
+        return $array;
     }
     /**
     * Validates PatientName and PatientID,
@@ -175,13 +165,13 @@ class NDB_Form_Dicom_Archive extends NDB_Form
      */
     function _setProtocols() 
     {
-        $query = "SELECT Scan_type, TR_range, TE_range, TI_range, 
-            slice_thickness_range FROM mri_protocol";
-        $this->protocols = $this->DB->pselect($query, array());
-        if (Utility::isErrorX($this->protocols)) { 
-            return false;
-        } else {
+        try {
+            $query = "SELECT Scan_type, TR_range, TE_range, TI_range, 
+                slice_thickness_range FROM mri_protocol";
+            $this->protocols = $this->DB->pselect($query, array());
             return true;
+        } catch(LorisException $e) {
+            return false;
         }
     }
     /**
@@ -234,12 +224,12 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             return false;
         } else {
             $seriesRangeTrimmed = (float)trim($seriesRange);
-            $protocolRanges = split(",", $protocolRange);
+            $protocolRanges = explode(",", $protocolRange);
             
             foreach ($protocolRanges as $range) {
                 $rangeTrimmed = trim($range);
                 if (strpos($rangeTrimmed, "-")) { // range X-Y
-                    $array = split("-", $rangeTrimmed);
+                    $array = explode("-", $rangeTrimmed);
                     $left = (float)trim($array[0]);
                     $right = (float)trim($array[1]);
                     if ($left <= $seriesRangeTrimmed 
@@ -267,12 +257,12 @@ class NDB_Form_Dicom_Archive extends NDB_Form
      */
     function _getProtocolNameFromID($id) 
     {
-        $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
-        $array = $this->DB->pselectRow($query, array('ID' => $id));
-        if (Utility::isErrorX($array)) {
-            return "Unknown";
-        } else {
+        try {
+            $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
+            $array = $this->DB->pselectRow($query, array('ID' => $id));
             return $array['Scan_type'];
+        } catch (LorisException $e) {
+            return "Unknown";
         }
     }
 }

@@ -10,47 +10,15 @@
  * @package behavioural
  */
 
-
-//Ensure php version compatability
-//taken from php.net notes
-if (version_compare(phpversion(),'4.3.0','<')) 
-{
-    define('STDIN',fopen("php://stdin","r"));
-    register_shutdown_function( create_function( '' , 'fclose(STDIN);
-    fclose(STDOUT); fclose(STDERR); return true;' ) );
-}
-
-
-// PEAR::Config
-require_once "Config.php";
-
-
-//allow instruments to find libraries
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
-// define which configuration file we're using for this installation
-$configFile = "../project/config.xml";
+require_once __DIR__ . "/../vendor/autoload.php";
+include_once 'HTML/QuickForm.php';
 
-// load the configuration data into a global variable $config
-$configObj = new Config;
-$root =& $configObj->parseConfig($configFile, "XML");
-if(PEAR::isError($root)) {
-    die("Config error: ".$root->getMessage());
-}
-$configObj =& $root->searchPath(array('config'));
-$config =& $configObj->toArray();
-$config = $config['config'];
-unset($configObj, $root);
+$client = new NDB_Client();
+$client->makeCommandLine();
+$client->initialize("../project/config.xml");
 
-// require all relevant OO class libraries
-require_once "Database.class.inc";
-require_once "NDB_Config.class.inc";
-require_once "NDB_BVL_Instrument.class.inc";
-require_once "Candidate.class.inc";
-
-
-////////instruments to be excluded
- 
 $instrumentsToSkip = array();
 $instruments = getExcludedInstruments();
 foreach ($instruments as $instrument) {
@@ -58,16 +26,6 @@ foreach ($instruments as $instrument) {
         $instrumentsToSkip[] = $instrument;
     }
 }
-
-/*
- * new DB Object
- */
-$DB =& Database::singleton($config['database']['database'], $config['database']['username'], $config['database']['password'], $config['database']['host']);
-if(PEAR::isError($DB)) {
-    print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-    die();
-}
-
 
 //Get the list of files from STDIN
 while($file=fgets(STDIN)){

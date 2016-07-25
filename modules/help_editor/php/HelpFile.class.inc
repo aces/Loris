@@ -1,12 +1,11 @@
 <?php
-require_once 'PEAR.php';
 
 /**
  * HelpFile class
  * @package main
  * @subpackage unused
  */
-class HelpFile extends PEAR
+class HelpFile
 {
     /**
      * Identifies the help file
@@ -29,7 +28,6 @@ class HelpFile extends PEAR
      *
      * @param  int         Help file's ID
      * @return HelpFile
-     * @throws PEAR_Error
      * @access public
      */
     function &factory($helpID)
@@ -57,7 +55,6 @@ class HelpFile extends PEAR
      *
      * @param  array       Associative array of values
      * @return int         New help file's ID
-     * @throws PEAR_Error
      * @access public
      * @static
      */
@@ -78,7 +75,6 @@ class HelpFile extends PEAR
      *
      * @param  array       Associative array of values
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function update($set)
@@ -98,7 +94,6 @@ class HelpFile extends PEAR
      *
      * @param  array       Array of related help file IDs
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function addLinks($relatedIDs)
@@ -123,7 +118,6 @@ class HelpFile extends PEAR
      *
      * @param  array       Array of related help file IDs
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function removeLinks($relatedIDs)
@@ -151,7 +145,6 @@ class HelpFile extends PEAR
      *
      * @param  array       Array of related help file IDs
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function updateLinks($relatedIDs)
@@ -174,7 +167,6 @@ class HelpFile extends PEAR
      * Returns whether or not the topic has subtopics
      *
      * @return bool
-     * @throws PEAR_Error
      * @access public
      */
     function hasChild()
@@ -193,7 +185,6 @@ class HelpFile extends PEAR
      * @param  int         Stop at this depth
      * @param  int         Depth
      * @return array
-     * @throws PEAR_Error
      * @access public
      */
     function childIDs($stopat = 1, $level = 1)
@@ -383,7 +374,6 @@ class HelpFile extends PEAR
      * Returns an array of its related link's IDs
      *
      * @return array
-     * @throws PEAR_Error
      * @access public
      */
     function relationIDs()
@@ -408,7 +398,6 @@ class HelpFile extends PEAR
      * Returns an array of its related links' IDs and topics
      *
      * @return array
-     * @throws PEAR_Error
      * @access public
      */
     function relationData()
@@ -513,7 +502,6 @@ class HelpFile extends PEAR
      * Dumps the HelpFile as an array
      *
      * @return array
-     * @throws PEAR_Error
      * @access public
      */
     function toArray()

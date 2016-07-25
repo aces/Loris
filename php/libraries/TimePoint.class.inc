@@ -11,7 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "PEAR.php";
 
 /**
  * The Loris TimePoint class
@@ -22,7 +21,7 @@ require_once "PEAR.php";
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-Class TimePoint
+class TimePoint
 {
     var $_timePointInfo;
 
@@ -67,6 +66,7 @@ Class TimePoint
                                    'Not Excluded',
                                   );
 
+
     /**
      * Returns an object representing this Timepoint, and ensures that only
      * one is ever created per Session.
@@ -79,18 +79,17 @@ Class TimePoint
     static function &singleton($sessionID)
     {
         // instantiate new TimePoint object
-        static $timePointList =array();
+        static $timePointList = array();
         if (!isset($timePointList[$sessionID])) {
             try {
                 $timePointList[$sessionID] = new TimePoint();
 
                 $success = $timePointList[$sessionID]->select($sessionID);
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 // Since there was a problem with this $sessionID, don't store
                 // it in the static list but then keep propagating the error..
                 unset($timePointList[$sessionID]);
-                throw new Exception("Could not select timepoint", null, $e);
+                throw $e;
             }
         }
 
@@ -137,7 +136,7 @@ Class TimePoint
             $subprojectSettings   = $config->getSubprojectSettings(
                 $row['SubprojectID']
             );
-            $this->_timePointInfo['SubprojectTitle'] =$subprojectSettings['title'];
+            $this->_timePointInfo['SubprojectTitle'] = $subprojectSettings['title'];
         } else {
             // return error when 0 rows to prevent creation of an empty object
             throw new Exception(
@@ -146,7 +145,7 @@ Class TimePoint
         }
         // New feature, older databases might not have the table created,
         // so require a config option to be set
-        if ($config->getSetting("SupplementalSessionStatus") == true) {
+        if ($config->getSetting("SupplementalSessionStatus") == 'true') {
 
             $query = "SELECT ss.Name, ss.Value
                         FROM session_status ss
@@ -155,7 +154,7 @@ Class TimePoint
 
             $statuses = $db->pselect($query, array(":sessionID" => $sessionID));
             foreach ($statuses as $row) {
-                if (!isset( $this->_timePointInfo['status'])) {
+                if (!isset($this->_timePointInfo['status'])) {
                     $this->_timePointInfo['status'] = array();
                 }
                 $this->_timePointInfo['status'][$row['Name']] = $row['Value'];
@@ -181,24 +180,24 @@ Class TimePoint
 
     }
 
+
     /**
      * Registers a new timepoint into the session table
      *
-     * @param integer $candID         6 digit CandID who is having a timepoint
-     *                                created.
+     * @param integer $candID         6 digit CandID having a timepoint created.
      * @param integer $SubprojectID   The subprojectID of the new timepoint
-     * @param string  $nextVisitLabel The visit label of the timepoint being
-     *                                created
+     * @param string  $nextVisitLabel The visit label of the timepoint being created
      *
      * @return A new TimePoint instance.
      */
-    static function createNew($candID, $SubprojectID, $nextVisitLabel=null)
+    static function createNew($candID, $SubprojectID, $nextVisitLabel = null)
     {
         // insert into session set CandID=$candID,
         // SubprojectID=$SubprojectID, VisitNo=nextVisitNumber(),
         // UserID=$State->getUsername(), etc...  NO Date_* are
         // specified here!
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         // select the candidate data
         $query = "SELECT c.PSCID, c.CenterID,
@@ -210,7 +209,7 @@ Class TimePoint
         $row   = $db->pselectRow($query, array('CaID' => $candID));
 
         // if this is a web hit (thus state exists)
-        if (is_object($_SESSION['State'])) {
+        if (isset($_SESSION) && is_object($_SESSION['State'])) {
             // get username from State
             $userID = $_SESSION['State']->getUsername();
         } else {
@@ -223,7 +222,7 @@ Class TimePoint
 
         // setup the insert data array
         $VisitLabel = $nextVisitLabel == null
-            ? 'V'.$row['nextVisitNo']
+            ? 'V' . $row['nextVisitNo']
             : $nextVisitLabel;
         $insertData = array(
                        'CandID'          => $candID,
@@ -275,7 +274,7 @@ Class TimePoint
      *
      * @return none, side-effect modifies session table.
      */
-    function setData($var, $value=null)
+    function setData($var, $value = null)
     {
         if (!is_array($var)) {
             $setData = array($var => $value);
@@ -441,7 +440,6 @@ Class TimePoint
     }
 
 
-
     /**
      * Gets whether or not a scan was done for this TimePoint
      *
@@ -509,7 +507,7 @@ Class TimePoint
      */
     function getCurrentStatus()
     {
-         $method = 'get'.$this->getCurrentStage().'Status';
+        $method = 'get' . $this->getCurrentStage() . 'Status';
         if (method_exists($this, $method)) {
             return $this->$method();
         } else {
@@ -524,7 +522,7 @@ Class TimePoint
      */
     function getCurrentDate()
     {
-        $getDateMethod = "getDateOf".$this->getCurrentStage();
+        $getDateMethod = "getDateOf" . $this->getCurrentStage();
         if (method_exists($this, $getDateMethod)) {
             return $this->$getDateMethod();
         } else {
@@ -554,7 +552,7 @@ Class TimePoint
             $this->_stageOptions
         );
 
-        $nextStageIndex = $index+1;
+        $nextStageIndex = $index + 1;
 
         return $this->_stageOptions[$nextStageIndex];
     }
@@ -617,6 +615,17 @@ Class TimePoint
         if ($this->isSubmitted() && $this->getApprovalStatus() != 'NULL') {
             if ($this->getApprovalStatus() == 'Failure') {
                 $newCurrentStage = 'Recycling Bin';
+                // delete from conflicts_unresolved if marked Recycling Bin
+                $commentIDs = $db->pselect(
+                    "SELECT CommentID FROM flag WHERE SessionID=:SID",
+                    array('SID' => $this->getSessionID())
+                );
+                foreach ($commentIDs as $commentID) {
+                    $deleteWhere1 = array('CommentId1' => $commentID);
+                    $deleteWhere2 = array('CommentId2' => $commentID);
+                    $db->delete('conflicts_unresolved', $deleteWhere1);
+                    $db->delete('conflicts_unresolved', $deleteWhere2);
+                }
             } else {
                 // in all other cases
                 $newCurrentStage = 'Approval';
@@ -636,10 +645,10 @@ Class TimePoint
         $today = date("Y-m-d");
 
         // update session table
-        $update_columns =array(
-                          "Date_stage_change" => $today,
-                          'Current_stage'     => $newCurrentStage,
-                         );
+        $update_columns = array(
+                           "Date_stage_change" => $today,
+                           'Current_stage'     => $newCurrentStage,
+                          );
 
         $dbErrors = $db->update(
             'session',
@@ -816,43 +825,11 @@ Class TimePoint
      */
     function isStartable()
     {
-        $config =& NDB_Config::singleton();
-        $onlyOneOpenTimepoint = $config->getSetting('onlyOneOpenTimepoint');
-
         $currentStage = $this->getData('Current_stage');
 
         // if we have not yet started, and at least one timepoint is in
         // screening or visit, do not allow the user to start another timepoint
         if ($currentStage == 'Not Started') {
-            $candidate =& Candidate::singleton($this->getCandID());
-
-            // when starting screening, make sure that all other started visits
-            // were previously submitted to DCC
-            $listOfTimePoints = $candidate->getListOfTimePoints();
-            $currentTimePoint = TimePoint::singleton($_REQUEST['sessionID']);
-
-            // if there are any timepoints
-            if (is_array($listOfTimePoints)) {
-                foreach ($listOfTimePoints as $sessionID) {
-                    // create timepoint object
-                    $timepoint = TimePoint::singleton($sessionID);
-
-                    // if a timepoint is started and not submitted, return false
-                    if ($onlyOneOpenTimepoint=="true"
-                        && (in_array(
-                            $timepoint->getData('Current_stage'),
-                            array(
-                             'Screening',
-                             'Visit',
-                            )
-                        )
-                        && $timepoint->getSubprojectID() == $this->getSubprojectID())
-                    ) {
-                        return false;
-                    }
-                }
-            }
-
             return true;
         } elseif ($currentStage == 'Screening'
             && in_array($this->getData('Screening'), array('Pass', 'Failure'))
@@ -887,7 +864,7 @@ Class TimePoint
         $config    = NDB_Config::singleton();
         $candidate = Candidate::singleton($this->getCandID());
         $settings  = $config->getSubprojectSettings($this->getSubprojectID());
-        if ($settings['options']['useEDC']=="true") {
+        if ($settings['options']['useEDC'] == "true") {
             return $candidate->getCandidateEDC();
         }
 

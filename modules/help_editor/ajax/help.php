@@ -24,10 +24,6 @@ require_once "HelpFile.class.inc";
 
 // create DB object
 $DB =& Database::singleton();
-if (Utility::isErrorX($DB)) {
-    return PEAR::raiseError("Could not connect to database: ".
-                             $DB->getMessage());
-}
 
 // store some request information
 if (!empty($_REQUEST['helpID'])) {

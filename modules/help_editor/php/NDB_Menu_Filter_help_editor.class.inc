@@ -11,9 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-require_once 'NDB_Form.class.inc';
-
 /**
  * This file contains code for editing context help section 
  *
@@ -32,9 +29,6 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
     {
         // create user object
         $user = User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         return $user->hasPermission('context_help');
     }
@@ -42,9 +36,6 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
     function _setupVariables()
     {
         $user = User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         // the base query
         $query = " FROM help WHERE hash IS NOT NULL AND topic IS NOT NULL";
@@ -80,10 +71,6 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
     {
         $DB = Database::singleton();
         //Get the default values
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".
-                                     $DB->getMessage());
-        }
         $help = $DB->pselect("SELECT helpID, topic from help", array());
         foreach ($help as $row) {
             $help_section[$row['helpID']] = $row['topic'];

@@ -10,8 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "PEAR.php";
-require_once "Utility.class.inc";
+
 /**
  * This class provides a generic interface to Loris configuration.
  * Generally, the way to use it is to use NDB_Config::singleton() to
@@ -34,12 +33,14 @@ class NDB_Config
 {
     /**
      * The raw array of settings
+     *
      * @access private
      */
     var $_settings = array();
 
     /**
      * The merged array of study and site-specific settings
+     *
      * @access private
      */
     var $_siteSettings = array();
@@ -47,6 +48,7 @@ class NDB_Config
     /**
      * An optional override for the location of the config file.
      * (default is ../project/config.xml)
+     *
      * @access public
      */
     var $configFilePath;
@@ -58,10 +60,34 @@ class NDB_Config
      *
      * @return NDB_Config object
      */
-    static function &singleton($configFile = "../project/config.xml")
+    static function &singleton($configFile = null)
     {
         static $config = null;
         if (is_null($config)) {
+            // If calling singleton without any parameter, first check
+            // for a project/config.xml, then check for the config
+            // file in a standard unix filesystem location.
+            // /etc/loris/config.xml
+            if ($configFile === null) {
+                // Can't directly check !empty because of a bug
+                // in PHP < 5.5, need to assign to a variable first
+                $env = getenv('LORIS_DB_CONFIG');
+                if (!empty($env)) {
+                    $configFile = $env;
+                } else if (file_exists(__DIR__ . "/../../project/config.xml")) {
+                    // "Classic" Loris location of project directory
+                    // parallel to php directory
+                    $configFile = __DIR__ . "/../../project/config.xml";
+                } else if (file_exists("/etc/loris/config.xml")) {
+                    // Standard Unix filesystem layout
+                    $configFile = "/etc/loris/config.xml";
+                } else if (file_exists("/usr/local/etc/loris/config.xml")) {
+                    // Standard Unix filesystem layout, option 2
+                    $configFile = "/usr/local/etc/loris/config.xml";
+                }
+            }
+
+            // Load the file
             $config  = new NDB_Config();
             $success = $config->load($configFile);
         }
@@ -79,10 +105,14 @@ class NDB_Config
     function load($configFile = "../project/config.xml")
     {
         // load the configuration data into a global variable $config
-        $newroot         = simplexml_load_file($configFile);
-        if($newroot === FALSE || $newroot === null) {
-            throw new Exception("Could not load Loris config file $configFile");
+        $newroot = simplexml_load_file($configFile);
+
+        if ($newroot === false || $newroot === null) {
+            throw new Exception(
+                "Could not load Loris config file $configFile"
+            );
         }
+
         $this->_settings = NDB_Config::convertToArray($newroot);
     }
 
@@ -160,7 +190,7 @@ class NDB_Config
             if (count($attributes) > 0) {
                 $retVal = array(
                            '#' => $retVal,
-                           '@' => array()
+                           '@' => array(),
                           );
                 foreach ($attributes as $name => $val) {
                     $retVal['@'][$name] = $val->__toString();
@@ -232,10 +262,12 @@ class NDB_Config
             return null;
         }
 
-        $db = Database::singleton();
+        $factory = NDB_Factory::singleton();
+
+        $db = $factory->database();
         if ($db->isConnected() !== true) {
             // no database connection, fall back on config.xml
-            throw new Exception(
+            throw new DatabaseException(
                 "No connection to database while trying to get setting $name"
             );
         }
@@ -251,6 +283,12 @@ class NDB_Config
                 WHERE cs.Name=:nm",
                 array("nm" => $name)
             );
+
+            if (count($configSetting) === 0) {
+                throw new ConfigurationException(
+                    "Config setting $name does not exist in database"
+                );
+            }
         } else {
             $configSetting = $db->pselect(
                 "SELECT cs.ID as ParentID, child.ID as ChildID,
@@ -275,6 +313,9 @@ class NDB_Config
                     "SELECT Value FROM Config WHERE ConfigID=:CID",
                     array('CID' => $configSetting['ParentID'])
                 );
+                if (empty($val)) {
+                    return null;
+                }
                 return $val;
             } else {
                 // Allows multiple, but has no child elements. Was called
@@ -333,11 +374,17 @@ class NDB_Config
                 return $value;
             }
 
-            // look inside the top level node
-            if (isset($value[$name])) {
+            // Look inside the top level node
+            // is_array is called before the isset check. This is done to
+            // fix an undesirable feature of isset: it would sometimes
+            // return true is $value was not an array (see isset PHP doc)
+            // in PHP <= 5.3. This behavior was changed for PHP > 5.3.
+            if (is_array($value) && isset($value[$name])) {
                 return $value[$name];
             }
         }
+        // Nothing was found, this is an error.
+        throw new ConfigurationException("No setting $name in config.xml");
     }
 
     /**
@@ -350,16 +397,50 @@ class NDB_Config
     function getSetting($name)
     {
         try {
-            $DBValue = $this->getSettingFromDB($name);
+            $XMLValue = $this->getSettingFromXML($name);
 
-            if ($DBValue !== null) {
-                return $DBValue;
+            if ($XMLValue !== null) {
+                return $XMLValue;
             }
-        } catch(Exception $e) {
+        } catch(ConfigurationException $e) {
+            // There was no config in the database with this
+            // name. It may exist in the XML, so we handle this
+            // silently.
         }
 
-        // nothing in the database, so get the value from config.xml
-        return $this->getSettingFromXML($name);
+        // nothing in the config file, so get the value from the DB
+        // This will throw a ConfigurationException if it does not
+        // exist.
+        return $this->getSettingFromDB($name);
+    }
+
+    /**
+    * Get list of projects for this projects, given a ProjectID.
+    *
+    * @param integer $ProjectID The ProjectID we want settings for
+    *
+    * @return an array of settings for this project.
+    */
+    function getProjectSettings($ProjectID)
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+        try
+        {
+             $info =$DB->pselectRow(
+                 "SELECT * FROM Project WHERE ProjectID=:sp",
+                 array('sp' => $ProjectID)
+             );
+        } catch (DatabaseException $e)
+        {
+            return null;
+        }
+        //Format the result into config.xml format.
+        return array(
+                'id'                => $info['ProjectID'],
+                'Name'              => $info['Name'],
+                'recruitmentTarget' => $info['recruitmentTarget'],
+               );
     }
 
     /**
@@ -375,20 +456,32 @@ class NDB_Config
      */
     function getSubprojectSettings($subprojectID)
     {
-        // Sub Project
-        $subprojectSettings =$this->getSetting('subprojects');
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
-        //Loop through the subprojects to get an id out and to create
-        //the subproject drop down.
-        foreach (Utility::toArray($subprojectSettings['subproject'])
-            AS $subproject
-        ) {
-            if ($subproject['id']==$subprojectID) {
-                return $subproject;
-            }
+        try {
+            $info = $DB->pselectRow(
+                "SELECT * FROM subproject WHERE SubprojectID=:sp",
+                array('sp' => $subprojectID)
+            );
+        } catch(DatabaseException $e) {
+            return null;
         }
-        // no nodes found - returning null
-        return null;
+        // Format the results the same way it was formatted in config.xml
+        // This variable assignment was done for phpcs... if anyone figures out
+        // a way around this, please correct it
+        if (!empty($info)) {
+            $x = $info['WindowDifference'];
+            return array(
+                    'id'                => $info['SubprojectID'],
+                    'title'             => $info['title'],
+                    'options'           => array(
+                                            'useEDC'           => $info['useEDC'],
+                                            'WindowDifference' => $x,
+                                           ),
+                    'RecruitmentTarget' => $info['RecruitmentTarget'],
+                   );
+        }
     }
 
     /**
@@ -462,7 +555,7 @@ class NDB_Config
 
             $LevelWithPerm = array_filter(
                 $thisLevel,
-                function($el) {
+                function ($el) {
                     return NDB_Config::checkMenuPermission($el['ID']);
                 }
             );
@@ -484,6 +577,33 @@ class NDB_Config
         }
 
         return $thisLevel;
+    }
+
+    /**
+     * Retrieve a set of links to display to the user
+     *
+     * @param string $type The type of links to show
+     *
+     * @return associative array of Label => URL
+     */
+    function getExternalLinks($type)
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $results = $db->pselect(
+            "SELECT LinkText, LinkURL
+                FROM ExternalLinks l JOIN ExternalLinkTypes lt
+                    ON (l.LinkTypeID=lt.LinkTypeID)
+                WHERE lt.LinkType=:name",
+            array('name' => $type)
+        );
+
+        $mapped = array();
+        foreach ($results as $row) {
+            $mapped[$row['LinkText']] = $row['LinkURL'];
+        }
+        return $mapped;
     }
 
 }

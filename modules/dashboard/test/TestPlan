@@ -8,10 +8,10 @@
 6. Check that site breakdown view (recruitment panel) is correct.
 7. Check that scans per site (study progression panel) view is correct (scan dates and scan numbers).
 8. Check that recruitment per site view is correct (study progression panel).
-9. Verify that for a user with 'Edit MRI feedback threads' permission the My Tasks panel reports the number of new
+9. Verify that for a user with 'Edit imaging browser QC status' permission the My Tasks panel reports the number of new
    scans (i.e. the number of scans on the MRI browser page for which QC status has not been set). Check that site 
-  displayed is always 'All'. Click on this task and verify that you go to the MRI Browser page. 
-10. Verify that for a user with 'Conflict Resolver' permission the number of data entry conflicts is reported in the 
+   displayed is always 'All'. Click on this task and verify that you go to the MRI Browser page. 
+10. Verify that for a user with 'Resolving conflicts' permission the number of data entry conflicts is reported in the 
     My Task panel. If the user also has 'Across all sites access candidates profiles' then the site displayed is 
     'All', otherwise it is set to the site the user belongs to. The number of data entry conflicts is the number of 
     entries in the Unresolved tab of the Conflict Resolver page. Click on this task and check that you go to the 
@@ -37,13 +37,13 @@
     page with the following Selection Filter: Site set to the user's site and Pending Approval set to 'Yes'. The
     Site displayed will be the user's site. Check that you are taken to that page (with the Selection Filter 
     correctly set) when you click on the task. 
-15. Verify that a user with 'Violated Scans' permission has a task with the number of violated scans displayed. This
-    is the number of entries on the MRI Violated Scans page. The Site displayed will always be 'All'. Check that 
-    clicking on the task takes you to the Violated Scans page.
-16. Verify that if a user has the 'Access the files in the document repository' permission, the latest documents to 
-    have been edited or uploaded in the document repository are displayed (4 at most) in the Document Repository 
-    panel. Clicking on a document will display it in the browser. Clicking on the Document Repository button takes 
-    you to the Document Repository page.
+15. Verify that a user with 'Violated Scans: View all-sites Violated Scans' permission has a task with the number
+    of violated scans displayed. This is the number of entries on the MRI Violated Scans page. The Site displayed will
+    always be 'All'. Check that clicking on the task takes you to the Violated Scans page.
+16. Verify that if a user has the 'View and upload files in Document Repository' or 'Delete files in Document Repository'    
+    permission, the latest documents to have been edited or uploaded in the document repository are displayed (4 at most)
+    in the Document Repository panel. Clicking on a document will display it in the browser. Clicking on the Document
+    Repository button takes you to the Document Repository page.
 17. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Document 
     Repository panel.
 18. Check that a 'New' notification is not labeled 'New' anymore after login in again.

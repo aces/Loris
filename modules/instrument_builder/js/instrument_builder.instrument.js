@@ -1,75 +1,71 @@
 /*global document: false, $: false, alert: false, saveAs: false, Enumize: false*/
 var Instrument = {
-    validate: function () {
+   //  validate: function () {
+   //      "use strict";
+   //      var names = [],
+   //          table = document.getElementById("workspace"),
+   //          name,
+   //          type,
+   //          question,
+   //          i,
+   //          row;
+
+   //      for (i = 0; i < table.rows.length; i += 1) {
+   //          //alert("Checking row" + i);
+   //          row = table.rows[i];
+   //          name = $.trim(row.children[0].textContent);
+   //          type = $.trim(row.children[1].textContent);
+   //          question = $.trim(row.children[2].textContent);
+
+   //          if (type === "textbox" || type === "dropdown" || type === "scored" || type === "textarea" || type === "date" || type === 'multiselect') {
+   //              if (name === '') {
+   //                  alert("Must supply database name for " + type);
+   //                  return false;
+   //              } else if (names.indexOf(name) >= 0) {
+   //                  alert("Duplicate question name: " + name);
+   //                  return false;
+   //              }
+   //          }
+   //          names.push(name);
+
+   //      }
+   //      alert("Instrument appears valid");
+   //      return true;
+   //  },
+
+    save: function (saveInfo, elements) {
         "use strict";
-        var names = [],
-            table = document.getElementById("workspace"),
-            name,
-            type,
-            question,
-            i,
-            row;
+        var name = saveInfo.fileName || "instrument",
+            content = this.render(saveInfo, elements),
+            element = document.createElement("a"),
+            blob = new Blob([content], { type: 'text/plain;base64' }),
+            url = URL.createObjectURL(blob);
 
-        for (i = 0; i < table.rows.length; i += 1) {
-            //alert("Checking row" + i);
-            row = table.rows[i];
-            name = $.trim(row.children[0].textContent);
-            type = $.trim(row.children[1].textContent);
-            question = $.trim(row.children[2].textContent);
 
-            if (type === "textbox" || type === "dropdown" || type === "scored" || type === "textarea" || type === "date" || type === 'multiselect') {
-                if (name === '') {
-                    alert("Must supply database name for " + type);
-                    return false;
-                } else if (names.indexOf(name) >= 0) {
-                    alert("Duplicate question name: " + name);
-                    return false;
-                }
-            }
-            names.push(name);
-
-        }
-        alert("Instrument appears valid");
-        return true;
-    },
-
-    save: function () {
-        "use strict";
-        var valid = this.validate(), content, name, fs, element;
-        if (!valid) {
-            return;
-        }
-        content = this.render();
-        name = document.getElementById("filename").value || "instrument";
-
-        element = document.createElement("a");
-
-        var blob = new Blob([content], { type: 'text/plain;base64' });
-        var url = URL.createObjectURL(blob);
+        // var valid = this.validate(), content, name, fs, element;
+        // if (!valid) {
+        //     return;
+        // }
+        // content = this.render();
+        // name = document.getElementById("filename").value || "instrument";
 
         element.href = url;
         element.download = name + ".linst";
+        element.style.display = "none";
+        // add element to the document so that it can be clicked
+        // this is need to download in firefox
+        document.body.appendChild(element);
         element.click();
+        // remove the element once it has been clicked
+        document.body.removeChild(element);
     },
-    render: function () {
+    render: function (saveInfo, elements) {
         "use strict";
         var content = '',
-            name = document.getElementById("filename").value || "instrument",
-            title,
-            table,
-            rows,
-            row,
+            name = saveInfo.fileName || "instrument",
+            title = saveInfo.instrumentName,
+            element,
             i,
-            type,
-            questionCell,
-            qVal,
-            addStatus,
-            min,
-            max,
-            selectOptions,
-            j,
-            enum_option,
-            options,
             option;
         if (!name) {
             alert("Invalid name");
@@ -77,7 +73,6 @@ var Instrument = {
         }
 
         content += "table{@}" + name + "\n";
-        title = document.getElementById("longname").value;
         if (title) {
             content += "title{@}" + title + "\n";
             // Add metadata fields
@@ -88,207 +83,238 @@ var Instrument = {
 
         }
 
-        table = document.getElementById("workspace");
-        rows = table.rows;
-        for (i = 0; i < rows.length; i += 1) {
-            row = rows[i];
-            if (row.children.length < 3) {
-                continue;
+        for (i = 0; i < elements.length; i++) {
+            if (i > 0) {
+                content += "page{@}{@}" + elements[i].Description + "\n";
             }
-            name = $.trim(row.children[0].textContent);
-            type = $.trim(row.children[1].textContent);
-            questionCell = row.children[2];
+            for (element of elements[i].Elements) {
+                switch (element.Type) {
+                    case "select":
+                        if (element.Options.AllowMultiple) {
+                            content += "selectmultiple{@}"
+                        } else {
+                            content += "select{@}"
+                        }
+                        content += element.Name + "{@}" + element.Description + "{@}";
+                        content += "NULL=>''";
+                        for (option in element.Options.Values) {
+                            content += "{-}'" + option + "'=>'" + element.Options.Values[option] + "'";
+                        }
+                        content += "{-}'not_answered'=>'Not Answered'\n";
+                        break;
+                    case "text":
+                        if (element.Options.Type === "large") {
+                            content += 'textarea{@}';
+                        } else {
+                            content += 'text{@}';
+                        }
+                        content += element.Name + "{@}" + element.Description + "\n";
+                        content += "select{@}" + element.Name + "_status" +
+                            "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+                        break;
+                    case "date":
+                        var elName = element.Name.replace(/\s/g, "").toLowerCase();
+                        var dropdown = "";
 
-            if (questionCell.firstChild) {
-                qVal = $.trim(questionCell.firstChild.textContent);
-            } else {
-                qVal = '';
-            }
+                        // Add dropdown and special naming when no date format is set
+                        // (i.e when addDateElement() is used)
+                        if (element.Options.dateFormat === "") {
+                            elName = elName + "_date";                            
+                            dropdown = "select{@}" + elName + "_status" +
+                            "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+                        }
 
-            addStatus = false;
-            switch (type) {
-            case 'header':
-                content += 'header';
-                break;
-            case 'textbox':
-                content += 'text';
-                addStatus = true;
-                break;
-            case 'textarea':
-                content += 'textarea';
-                addStatus = true;
-                break;
-            case 'date':
-                content += 'date';
-                name = name + "_date";
-                // questionCell.lastChild is the year's select box.
-                // the first option in that is the start year, the last one is the end year.
-		if( questionCell.lastChild.firstChild != null) {
-			min = questionCell.lastChild.firstChild.textContent;
-			max = questionCell.lastChild.lastChild.textContent;
-		}
-                addStatus = true;
-                break;
-            case 'numeric':
-                content += 'numeric';
-		if( questionCell.lastChild.firstChild != null) {
-			min = questionCell.lastChild.firstChild.textContent;
-			max = questionCell.lastChild.lastChild.textContent;
-		}
-                addStatus = true;
-                break;
-            case 'dropdown':
-                content += 'select';
-                selectOptions = questionCell.firstChild.nextSibling;
-                // Dropdowns have not answered as an option, not as a separate dropdown
-                addStatus = false;
-                break;
-            case 'multiselect':
-                content += 'selectmultiple';
-                selectOptions = questionCell.firstChild.nextSibling;
-                addStatus = false;
-                break;
-            case 'page-break':
-                content += 'page';
-                break;
-            case 'scored':
-            case 'line':
-            case 'label':
-                content += 'static';
-                break;
-            default:
-                break;
-            }
-
-            content += "{@}";
-            content += name;
-            content += "{@}";
-            content += qVal;
-            if (type === 'line') {
-                content += '<br />';
-            }
-            if (type === 'date' || type === 'numeric') {
-                content += "{@}" + min + "{@}" + max;
-            }
-
-            if (type === 'dropdown' || type === 'multiselect') {
-                content += '{@}';
-                content += "NULL=>''";
-                options = selectOptions.children;
-                for (j = 0; j < options.length; j += 1) {
-                    option = options[j].textContent;
-                    enum_option = Enumize(options[j].textContent);
-                    content += "{-}'" + enum_option + "'=>'" + option + "'";
-
+                        content += 'date{@}';
+                        content += elName + "{@}" + element.Description;
+                        content += "{@}" + element.Options.MinDate.split('-')[0];
+                        content += "{@}" + element.Options.MaxDate.split('-')[0];
+                        content += "{@}" + element.Options.dateFormat + "\n";
+                        content += dropdown;
+                        break;
+                    case "numeric":
+                        content += 'numeric{@}';
+                        content += element.Name + "{@}" + element.Description;
+                        content += "{@}" + element.Options.MinValue;
+                        content += "{@}" + element.Options.MaxValue + "\n";
+                        content += "select{@}" + element.Name + "_status" +
+                            "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
+                        break;
+                    case "score":
+                        content += 'static{@}';
+                        content += element.Name + "{@}" + element.Description + "\n";
+                        break;
+                    case "label":
+                        content += 'static{@}{@}' + element.Description + "\n";
+                        break;
+                    case "header":
+                        content += 'header{@}{@}' + element.Description + "\n";
+                        break;
+                    default:
+                        break;
                 }
-                content += "{-}'not_answered'=>'Not Answered'";
-            }
-
-            content += "\n";
-            if (addStatus) {
-                content += "select{@}" + name + "_status" +
-                    "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
             }
         }
         return content;
    },
-   load: function () {
-        var ParseSelectOptions = function (opt, type) {
-            if(!type) {
-                type = ''
-            }
-            var options = opt.split("{-}");
-            for(var i = 0; i < options.length; i++) {
-                var option = options[i]
-                var keyval = option.split("=>");
-                if(keyval[0] != 'NULL' && keyval[1]) {
-                    // hack off the ' at the start and end
-                    val = keyval[1].substr(1, keyval[1].length-2);
-                    // Don't add "not_answered", because save automagically adds it.
-                    if(val != 'Not Answered') {
-                        document.getElementById("new" + type + "SelectOption").value = val;
-                        //addDropdownOption("multi");
-                        addDropdownOption(type);
-                    }
-                }
-            }
-
-        }       
-        var ParseInstrument = function() {
-            table = document.getElementById("workspace")
-            $("table#workspace tr td").each(function() {
-                $(this).closest("tr").remove();
-            });
-            for(var i = 1; i < table.rows.length; i++) {
-                table.deleteRow(1)
-            }
-            lines = this.result.split("\n");
-            for(var i = 0; i < lines.length; i++) {
-                pieces = lines[i].split("{@}");
-                if(pieces[1] == "Date_taken" || pieces[1] == "Examiner" || pieces[1] == "Candidate_Age" || pieces[1] == "Window_Difference" || 
-                        (pieces[1] && pieces[1].indexOf && pieces[1].indexOf("_status") >= 0)) {
-                    continue;
-                }
-
-                if(pieces[0] == 'date') {
-                    dateIdx = pieces[1].indexOf("_date");
-                    if(dateIdx >= 0) {
-                        pieces[1] = pieces[1].substring(0, dateIdx);
-                    }
-                }
-                switch(pieces[0]) {
-                    case "table":
-                        document.getElementById("filename").value = pieces[1]; continue;
-                    case "title":
-                        document.getElementById("longname").value = pieces[1]; continue;
-                    case "text":
-                        $("#textbox").click(); break;
-                    case "selectmultiple":
-                        $("#multiselect").click();
-                        ParseSelectOptions(pieces[3], "multi");
-                        break;
-                    case "select":
-                        $("#dropdown").click();
-                        ParseSelectOptions(pieces[3]);
-                        break;
-                    case "header":
-                        // lots of things are saved as "header".. need to do
-                        // a little detective work
-                        if(pieces[1]) {
-                            $("#scored").click(); break;
-                        }
-                        $("#header").click(); break;
-                    case "static":
-                        if(pieces[1]) {
-                           $("#scored").click(); break;
-                        } else {
-                           if(pieces[2] == '<br />') {
-                               $("#line").click(); break;
-                           } else {
-                               $("#label").click(); break;
-                           }
-                        }
-                    case "page":
-                        $("#page-break").click(); break;
-                    default:
-                        $("#" + pieces[0]).click(); break;
-                        break;
-                        
-                }
-
-                document.getElementById("questionName").value = pieces[1];
-                document.getElementById("questionText").value = pieces[2];
-                addQuestion();
-                clearDropdownOption();
-                document.getElementById("questionName").value = '';
-                document.getElementById("questionText").value = '';
-            }
-        }
-
-        var file = document.getElementById("instfile").files[0];
+   load: function (file, callback) {
         var reader = new FileReader();
-        reader.onload = ParseInstrument;
-        var data = reader.readAsText(file);
-        alert("Instrument Loaded");
+            ParseInstrument = function () {
+                var Elements = [{
+                        Type        : "ElementGroup",
+                        GroupType   : "Page",
+                        Description : "Top",
+                        Elements    : []
+                    }],
+                    fileInfo = {
+                        fileName: '',
+                        instrumentName: ''
+                    },
+                    tempElement = {},
+                    specialCase = false,
+                    currentPage = 0,
+                    lines = this.result.split("\n"),
+                    options,
+                    keyVal;
+                for (line of lines) {
+                    if (line == '') {
+                        continue;
+                    }
+                    pieces = line.split("{@}");
+                    if(pieces[1] == "Date_taken" || pieces[1] == "Examiner" || pieces[1] == "Candidate_Age" || pieces[1] == "Window_Difference" ||
+                            (pieces[1] && pieces[1].indexOf && pieces[1].indexOf("_status") >= 0)) {
+                        continue;
+                    }
+                    switch (pieces[0]) {
+                        case "table":
+                            fileInfo.fileName = pieces[1];
+                            continue;
+                        case "title":
+                            fileInfo.instrumentName = pieces[1];
+                            continue;
+                        case "page":
+                            Elements.push({
+                                Type        : "ElementGroup",
+                                GroupType   : "Page",
+                                Description : pieces[2],
+                                Elements    : []
+                            });
+                            currentPage++;
+                            continue;
+                        case "selectmultiple":
+                            specialCase = true;
+                        case "select":
+                            tempElement.Type = 'select';
+                            tempElement.Name = pieces[1];
+                            tempElement.Description = pieces[2];
+                            tempElement.Options = {
+                                Values : {},
+                                AllowMultiple : specialCase
+                            };
+                            options = pieces[3].split("{-}");
+                            for (option of options) {
+                                keyVal = option.split("=>");
+                                if (keyVal[0].indexOf('not_answered') == -1) {
+                                    if (keyVal[0] == "NULL") {
+                                        tempElement.Options.Values['']
+                                            = keyVal[1].substr(1, keyVal[1].length-2);
+                                    } else {
+                                        tempElement.Options.Values[keyVal[0].substr(1, keyVal[0].length-2)]
+                                            = keyVal[1].substr(1, keyVal[1].length-2);
+                                    }
+                                }
+                            }
+                            tempElement.selected = {
+                                id: (specialCase) ? "multiselect" : "dropdown",
+                                value: (specialCase) ? "Multiselect" : "Dropdown"
+                            };
+                            break;
+                        case "textarea":
+                            specialCase = true;
+                        case "text":
+                            tempElement.Type = 'text';
+                            tempElement.Name = pieces[1];
+                            tempElement.Description = pieces[2];
+                            tempElement.Options = {
+                                Type : (specialCase) ? 'large' : 'small'
+                            };
+                            tempElement.selected = {
+                                id: (specialCase) ? "textarea" : "textbox",
+                                value: (specialCase) ? "Textarea" : "Textbox"
+                            };
+                            break;
+                        case "date":
+                            tempElement.Type = 'date';
+                            tempElement.Name = pieces[1];
+                            tempElement.Description = pieces[2];
+                            tempElement.Options = {
+                                MinDate : pieces[3] + "-01-01",
+                                MaxDate : pieces[4] + "-12-31"
+                            };
+                            tempElement.selected = {
+                                id: "date",
+                                value: "Date"
+                            };
+                            break;
+                        case "numeric":
+                            tempElement.Type = 'numeric';
+                            tempElement.Name = pieces[1];
+                            tempElement.Description = pieces[2];
+                            tempElement.Options = {
+                                MinValue : pieces[3],
+                                MaxValue : pieces[4]
+                            };
+                            tempElement.selected = {
+                                id: "numeric",
+                                value: "Numeric"
+                            };
+                            break;
+                        case "static":
+                            tempElement.Type = (pieces[1] === '') ? 'label' : 'score';
+                            if (tempElement.Type === 'score') {
+                                tempElement.Name = pieces[1];
+                                tempElement.selected = {
+                                    id: "score",
+                                    value: "Scored Field"
+                                };
+                            } else {
+                                tempElement.selected = {
+                                    id: "label",
+                                    value: "Label"
+                                };
+                            }
+                            tempElement.Description = pieces[2];
+                            break;
+                        case "header":
+                            tempElement.Type = 'header';
+                            tempElement.Description = pieces[2];
+                            tempElement.selected = {
+                                id: "header",
+                                value: "Header"
+                            };
+                            break;
+                        default:
+                            break;
+                    }
+                    Elements[currentPage].Elements.push(tempElement);
+                    tempElement = {};
+                    specialCase = false;
+                }
+                callback.success(Elements, fileInfo);
+            };
+        if (file.name.split('.')[1] === 'linst') {
+            reader.onload = ParseInstrument;
+            var data = reader.readAsText(file);
+        } else {
+            callback.error("typeError");
+        }
+    },
+    Enumize: function (option) {
+        var enum_option = option.replace(/ /g, "_");
+        enum_option = enum_option.replace(/\./, "");
+        enum_option = enum_option.toLowerCase();
+        return enum_option;
+    },
+    clone: function(obj) {
+        return JSON.parse(JSON.stringify(obj))
     }
 }

@@ -10,8 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "../php/libraries/NDB_Client.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
 require_once "../php/libraries/ConflictDetector.class.inc";
@@ -48,7 +48,7 @@ if (empty($argv[1]) || $argv[1] == 'help') {
 * Get cmd-line arguments
 */
 // get $action argument
-$action         = strtolower($argv[1]);
+$action         = $argv[1];
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 //$ddeInstruments = array('figs_year3');
 $ddeInstruments = array('head_measurements_subject');
@@ -63,16 +63,9 @@ foreach ($ddeInstruments as $test) {
     $instruments = $db->pselect("SELECT CommentID, Test_name, CONCAT('DDE_', CommentID) AS DDECommentID FROM flag sde join session s ON (s.ID=sde.SessionID) JOIN candidate c ON (c.CandID=s.CandID) WHERE sde.Test_name=:testname AND sde.CommentID NOT LIKE 'DDE%' AND sde.Data_entry='Complete' AND s.Active='Y' AND c.Active='Y' AND EXISTS (SELECT 'x' FROM flag dde WHERE dde.CommentID=CONCAT('DDE_', sde.CommentID) AND Data_entry='Complete')",
         array('testname' => $test)
     );
-
-    foreach($instruments as $instrument) {
-    // If the instrument requires double data entry, check that DDE is also done
-    if(in_array($instrument['Test_name'], $ddeInstruments)) {
-        ConflictDetector::clearConflictsForInstance($instrument['CommentID']);
-        print "Recreating conflicts for " . $instrument['Test_name'] . ':' .  $instrument['CommentID'] . "\n";
-        $diff=ConflictDetector::detectConflictsForCommentIds($instrument['Test_name'], 
-            $instrument['CommentID'], $instrument['DDECommentID']
-        );
-
+    
+    foreach ($clear_conflicts as $conflict) {
+        ConflictDetector::clearConflictsForInstance($conflict['CommentID']);
     }
 }
 foreach ($ddeInstruments as $test) {

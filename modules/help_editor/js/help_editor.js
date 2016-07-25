@@ -34,3 +34,6 @@ $("input[name=preview]").click(function(e) {
 
 });
 });
+function goBack() {
+    window.history.back();
+}

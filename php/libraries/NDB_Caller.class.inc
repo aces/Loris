@@ -11,9 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
 */
-require_once 'PEAR.php';
-require_once 'User.class.inc';
-require_once 'NDB_Menu.class.inc';
 
 /**
  * Caller class
@@ -27,17 +24,19 @@ require_once 'NDB_Menu.class.inc';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Caller extends PEAR
+class NDB_Caller
 {
     /**
      * Identifies what type of script is being run (menu, form or instrument)
-     * @var    string
+     *
+     * @var string
      */
     var $type;
 
     /**
      * Determines how data entry is being performed (directly from a study
      * participant, or by a data entry staff.)
+     *
      * @var string
      */
     var $DataEntry;
@@ -51,7 +50,6 @@ class NDB_Caller extends PEAR
      * Singleton method
      *
      * @return NDB_Caller
-     * @throws PEAR_Error
      * @access public
      * @static
      */
@@ -78,7 +76,9 @@ class NDB_Caller extends PEAR
     */
     function load($test_name, $subtest, $CommentID = '', $nextpage=null)
     {
-        $config = NDB_Config::singleton();
+        $factory  = NDB_Factory::singleton();
+        $config   = $factory->config();
+        $settings = $factory->settings();
         // if no first argument, return
         if (empty($test_name)) {
             return;
@@ -87,10 +87,10 @@ class NDB_Caller extends PEAR
             && isset($_POST['login'])
         ) {
             header("HTTP/1.1 303 See Other");
-             $url  = $config->getSetting('url');
-             $url .= $_SERVER['REQUEST_URI'];
-             // sending user to the url that was requested
-             header("Location: $url");
+            $url  = $settings->getBaseURL();
+            $url .= Utility::removeCommonAffix($url, $_SERVER['REQUEST_URI']);
+            // sending user to the url that was requested
+            header("Location: $url");
         }
         if (empty($CommentID) && isset($_REQUEST['commentID'])) {
             $CommentID = $_REQUEST['commentID'];
@@ -98,14 +98,17 @@ class NDB_Caller extends PEAR
         // get the files path, aka the base directory
         $base = $config->getSetting('base');
 
-        if (is_dir($base . "modules/$test_name")) {
+        if (is_dir($base . "project/modules/$test_name")
+            || is_dir($base . "modules/$test_name")
+        ) {
+            $ModuleDir = is_dir($base . "project/modules/$test_name")
+                ? $base . "project/modules/$test_name"
+                : $base . "modules/$test_name";
             // New module style
             // Only supports Menu_Filters and Forms.
             // Modules can not have instruments or reliability.
             set_include_path(
-                $base . "project/libraries:"
-                . $base . "modules/$test_name:"
-                . $base . "modules/$test_name/php:"
+                "$ModuleDir/php:"
                 . get_include_path()
             );
 
@@ -203,12 +206,9 @@ class NDB_Caller extends PEAR
             }
 
             // it is a reliability form
-            $proj_reliable = $base . "project/libraries/"
-                                   . "NDB_Reliability_$test_name.class.inc";
-            $php_reliable  = $base . "php/libraries/"
+            $proj_reliable = $base . "project/reliability/"
                                    . "NDB_Reliability_$test_name.class.inc";
             if ($this->existsAndRequire($proj_reliable)
-                || $this->existsAndRequire($php_reliable)
             ) {
 
                 $html = $this->loadReliability(
@@ -222,7 +222,7 @@ class NDB_Caller extends PEAR
                 return $html;
             }
 
-            // it is an intrument
+            // it is an instrument
             $phpfile   = $base . "project/instruments/"
                                . "NDB_BVL_Instrument_$test_name.class.inc";
             $linstfile = $base."project/instruments/$test_name.linst";
@@ -241,9 +241,7 @@ class NDB_Caller extends PEAR
                 return $html;
             } else if (file_exists($linstfile)) {
                 $html = $this->loadInstrument($test_name, $subtest, $CommentID);
-                if (Utility::isErrorX($html)) {
-                    return PEAR::raiseError($html->getMessage());
-                }
+
                 $this->type = 'instrument';
                 return $html;
             }
@@ -268,13 +266,51 @@ class NDB_Caller extends PEAR
 
         $success = $menu->setup();
 
+        if (isset($_REQUEST['format'])) {
+            switch ($_REQUEST['format']) {
+            case 'csv':
+                if (method_exists($menu, "getCSVData")) {
+                    $csv_data = $menu->getCSVData();
+                    header("HTTP/1.1 200 OK");
+                    print $csv_data;
+                    exit(2);
+                } else {
+                    error_log(
+                        "ERROR: This download of this table's data is "
+                        . "not yet implemented."
+                    );
+                    header("HTTP/1.1 501 Not Implemented");
+                    exit(5);
+                }
+                break;
+            case 'json':
+                header('Content-Type: application/json');
+                print $menu->toJSON();
+                exit(0);
+                break;
+            default:
+                error_log(
+                    "ERROR: This format is not yet supproted."
+                );
+                header("HTTP/1.1 501 Not Implemented");
+                exit(5);
+            }
+        }
+
         if (method_exists($menu, 'getControlPanel')) {
             $this->controlPanel = $menu->getControlPanel();
         }
-        $html = $menu->display();
+        if (method_exists($menu, 'getFeedbackPanel')) {
+            $this->feedbackPanel = $menu->getFeedbackPanel(
+                $_REQUEST['candID'],
+                $_REQUEST['sessionID']
+            );
+        }
         if (method_exists($menu, 'save')) {
             $success = $menu->save();
         }
+        $this->page = $menu;
+        $html       = $menu->display();
 
         return $html;
     }
@@ -301,7 +337,8 @@ class NDB_Caller extends PEAR
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
         }
-        $html = $form->display();
+        $this->page = $form;
+        $html       = $form->display();
         return $html;
     }
 
@@ -319,7 +356,7 @@ class NDB_Caller extends PEAR
     function loadReliability($class, $page, $identifier, $reliability_center_id)
     {
         // make an instance of the form's object
-        $form = NDB_Reliability::factory(
+        $form = NDB_Reliability::reliabilityfactory(
             $class,
             $page,
             $identifier,
@@ -328,7 +365,8 @@ class NDB_Caller extends PEAR
 
         $success = $form->save();
 
-        $html = $form->display();
+        $this->page = $form;
+        $html       = $form->display();
 
         return $html;
     }
@@ -380,8 +418,11 @@ class NDB_Caller extends PEAR
         if (method_exists($instrument, 'getControlPanel')) {
             $this->controlPanel = $instrument->getControlPanel();
         }
-        if (Utility::isErrorX($instrument)) {
-            return $instrument;
+        if (method_exists($instrument, 'getFeedbackPanel')) {
+            $this->feedbackPanel = $instrument->getFeedbackPanel(
+                $_REQUEST['candID'],
+                $_REQUEST['sessionID']
+            );
         }
 
         // save instrument form data
@@ -406,7 +447,8 @@ class NDB_Caller extends PEAR
             }
         }
 
-        $html = $instrument->display();
+        $this->page = $instrument;
+        $html       = $instrument->display();
 
         return $html;
     }

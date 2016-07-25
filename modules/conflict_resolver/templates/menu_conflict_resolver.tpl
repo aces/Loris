@@ -1,8 +1,8 @@
-<script src="js/filterControl.js" type="text/javascript"></script>
+<script src="{$baseurl}/js/filterControl.js" type="text/javascript"></script>
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="main.php?test_name=conflict_resolver">
+        <form method="post" action="{$baseurl}/conflict_resolver/">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -51,7 +51,7 @@
                             <div class="visible-xs col-xs-12"> </div>
 
                             <div class="col-sm-5 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflict_resolver&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/conflict_resolver/?reset=true'">
                             </div>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflict_resolver&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/conflict_resolver/?reset=true'">
                         </div>
                     </div>
                     <input type="hidden" name="test_name" value="conflict_resolver" />
@@ -73,7 +73,7 @@
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs ">
         <li class="active"><a id="onLoad">Unresolved Conflicts</a></li>
-        <li><a href="main.php?test_name=conflict_resolver&submenu=resolved_conflicts">Resolved Conflicts</a></li>
+        <li><a href="{$baseurl}/conflict_resolver/?submenu=resolved_conflicts">Resolved Conflicts</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active">
@@ -81,10 +81,10 @@
             <table id="LogEntries" border="0" valign="bottom" width="100%">
                 <tr>
                     <!-- display pagination links -->
-                    <td align="right">{$page_links}</td>
+                    <td align="right" id="pageLinks"></td>
                 </tr>
             </table>
-            <form method="post" action="main.php?test_name=conflict_resolver" name="conflict_resolver" id="conflict_resolver">
+            <form method="post" action="{$baseurl}/conflict_resolver/" name="conflict_resolver" id="conflict_resolver">
                 <table class="table table-hover table-primary table-bordered table-unresolved-conflicts dynamictable" border="0">
                     <thead>
 
@@ -97,7 +97,7 @@
                     <tr class="info">
                         <th>No.</th>
                         {section name=header loop=$headers}
-                            <th><a href="main.php?test_name=conflict_resolver&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                            <th><a href="{$baseurl}/conflict_resolver/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                                     {if $headers[header].displayName == "TableName"}
                                         Instrument
                                     {else if $headers[header].displayName == "CandID"}
@@ -157,3 +157,16 @@
     </div>
 </div>
 </div>
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/conflict_resolver/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
+

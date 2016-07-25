@@ -12,9 +12,6 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once "PEAR.php";
-require_once "HTML/QuickForm.php";
-
 /**
  * Class for managing file uploads
  *
@@ -27,13 +24,13 @@ require_once "HTML/QuickForm.php";
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class File_Upload extends PEAR
+class File_Upload
 {
     /**
      * Construct the File_Upload class. This sets the default parameters
      * for a file which can be overwritten by calling the set* methods
      */
-    function File_Upload()
+    function __construct()
     {
         //Set Defaults
         $this->renameMode        = "incremental";

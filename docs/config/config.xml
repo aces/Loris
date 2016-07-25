@@ -9,16 +9,6 @@
   branch in its entirely will override the study branch.
 -->
 <config>
-    <tests>
-        <!-- Whether or not tests are allowed to modify data.
-             should only ever be true on a sandbox, since even though the tests
-             try and revert everything, something could potentially go wrong -->
-        <testModify>false</testModify>
-        <!-- This isn't necessary, but if you want to use a specific candidate to
-             check if the instruments work, put the CandID here.. -->
-        <!--testCandidate>965327</testCandidate-->
-    </tests>
-
     <!-- set to 1 if development environment -->
     <dev>
         <sandbox>0</sandbox>
@@ -35,23 +25,9 @@
         <name>Example database</name>
     </database>
 
-    <!-- Following links will appear on the footer of the home page of loris installation -->
-    <Studylinks>
-        <link url='http://www.loris.ca'>Loris Website</link>
-        <link url='https://github.com/aces'>GitHub</link>
-    </Studylinks>
-
-    <links>
-        <link url='http://www.loris.ca'>Loris Website</link>
-        <link url='https://github.com/aces'>GitHub</link>
-    </links>
-
-    <dashboard>
-        <!-- The dashboard links will appear just below the project description on the Dashboard. -->
-        <dashboardLinks>
-            <link url='http://www.loris.ca'>Important Website</link>
-        </dashboardLinks>
-    </dashboard>
+    <CouchDB>
+        <SyncAccounts>false</SyncAccounts>
+    </CouchDB>
 
     <!-- study variables -->
     <study>
@@ -70,43 +46,13 @@
                 <seq type="numeric" length="4" min='1000' max='9999'/>
             </structure>
         </ExternalID>
-
-        <Projects>
-            <project>
-                <id>1</id>
-                <title>Sample Project</title>
-            </project>
-            <project>
-                <id>2</id>
-                <title>Another Sample Project</title>
-            </project>
-        </Projects>
-
-        <!-- Add items to display in the header table for a candidate/session.
-         Until a project has been going on for a while, this is most likely
-         unnecessary. -->
-        <!--HeaderTable>
-         <parameter_candidate>candidate_comment</parameter_candidate>
-        </HeaderTable-->
-        <!-- number of subprojects in the project - corresponds to the list of subpojects below -->
-        <!-- max number of timepoints per subject (integer)-->
-        <subprojects>
-            <subproject>
-                <id>1</id>
-                <title>MRI session</title>
-                <options>
-                    <useEDC>false</useEDC>
-                </options>
-            </subproject>
-            <subproject>
-                <id>2</id>
-                <title>Instrument Data</title>
-                <options>
-                    <useEDC>false</useEDC>
-                </options>
-            </subproject>
-        </subprojects>
-
+        <!--Header table is diplayed on top of instrument list page and instrument pages -->
+        <HeaderTable>
+            <!--Specify the table as the tag and the field to query as the value inside the tag -->
+            <parameter_candidate>candidate_comment</parameter_candidate>
+            <candidate>ProbandDoB</candidate>
+            <parameter_session>MRI_Done</parameter_session>
+        </HeaderTable>
         <!-- defines how visit labels are assigned -->
         <visitLabel subprojectID="1">
             <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
@@ -174,6 +120,8 @@
                 <!--test value=InstrumentName>InstrumentName</test-->
             </CertificationInstruments>
         </Certification>
+        <!--This permission allows users from sites to have access to other sites bvl feedback info -->
+        <multiSiteEnabledCenters></multiSiteEnabledCenters>
 
         <!-- Consent module allows addition of consent information in the candidate information page-->
          <ConsentModule>
@@ -190,5 +138,33 @@
     <gui>
         <showDatabaseQueries>0</showDatabaseQueries>
     </gui>
+
+    <!-- used by _hasAccess in NDB_BVL_Instrument to determine
+         what permissions should be required for each instrument
+         on a configurable basis. -->
+    <instrumentPermissions>
+        <!-- By default anyone has permission -->
+        <useInstrumentPermissions>false</useInstrumentPermissions>
+        <!-- Add one instrument tag for each instrument that is
+             having it's permissions configured. If an instrument
+             is missing, the default is for users to have access
+             -->
+        <instrument>
+            <!-- Instrument name -->
+            <Test_name>sampleInstrument</Test_name>
+            <!-- Permission required for accessing instrument.
+                 If multiple permissions are added, *any* of
+                 them individually will allow access to the
+                 instrument -->
+            <permission>sampleInstrumentPermissionName</permission>
+        </instrument>
+        <instrument>
+            <Test_name>sampleInstrument2</Test_name>
+            <permission>sampleInstrument2PermissionName</permission>
+        </instrument>
+    </instrumentPermissions>
+
+    <!-- MINC TOOLS PATH -->
+    <MINCToolsPath>%MINCTOOLSPATH%</MINCToolsPath>
 
 </config>

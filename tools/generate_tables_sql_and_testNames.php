@@ -14,37 +14,12 @@
 
 //Ensure php version compatability
 //taken from php.net notes
-// PEAR::Config
-require_once "Config.php";
-
-// define which configuration file we're using for this installation
-$configFile = "../project/config.xml";
-
-// load the configuration data into a global variable $config
-$configObj = new Config;
-$root =& $configObj->parseConfig($configFile, "XML");
-if(PEAR::isError($root)) {
-    die("Config error: ".$root->getMessage());
-}
-$configObj =& $root->searchPath(array('config'));
-$config =& $configObj->toArray();
-$config = $config['config'];
-unset($configObj, $root);
 
 // require all relevant OO class libraries
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "../php/libraries/Database.class.inc";
 require_once "../php/libraries/NDB_Config.class.inc";
 require_once "../php/libraries/NDB_BVL_Instrument.class.inc";
-
-/*
-* new DB Object
-*/
-$DB =& Database::singleton($config['database']['database'], $config['database']['username'], $config['database']['password'], $config['database']['host']);
-if(PEAR::isError($DB)) {
-    print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-    die();
-}
-
 
 $data = stream_get_contents(STDIN);
 
@@ -67,7 +42,7 @@ foreach($instruments AS $instrument){
             case "table":
                 $tablename = $bits[1];
 
-                $filename="../project/tables_sql/".$bits[1].".super_sql";
+                $filename="../project/tables_sql/".$bits[1].".sql";
                 $output="CREATE TABLE `$bits[1]` (\n";
                 $output.="`CommentID` varchar(255) NOT NULL default '',
                           `UserID` varchar(255) default NULL,

@@ -13,9 +13,7 @@
  * @link       https://github.com/aces/Loris-Trunk
 */
 
-require_once 'Imaging_Session_ControlPanel.class.inc';
-require_once 'Notify.class.inc';
-
+require_once __DIR__ . '/Imaging_Session_ControlPanel.class.inc';
 /**
  * NDB_Form_Imaging_Browser Class
  *
@@ -49,15 +47,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function _hasAccess()
     {
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
 
         // allow only to view own site data
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if (Utility::isErrorX($timePoint)) {
-            return PEAR::raiseError("TimePoint Error (".$_REQUEST['sessionID']."): ".$timePoint->getMessage());
-        }
 
         return ($user->hasPermission('imaging_browser_view_allsites') || ($user->getData('CenterID') == $timePoint->getData('CenterID') && $user->hasPermission('imaging_browser_view_site')));
     }
@@ -70,25 +62,18 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function _hasQCPerm()
     {
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
 
         return $user->hasPermission('imaging_browser_qc');
     }
 
     /**
-    * Sets up main parameters 
-    *
-    * @return NULL
-    */
+     * Sets up main parameters 
+     *
+     * @return NULL
+     */
     function viewSession() 
     {
         $this->DB = Database::singleton();
-        if (Utility::isErrorX($this->DB)) {
-            print "Could not connect to database: ".$DB->getMessage()."<br>\n";
-            die();
-        }
 
         $this->sessionID = $_REQUEST['sessionID'];
 
@@ -106,9 +91,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
 
             $file = $this->DB->pselectOne(
                 "SELECT File FROM files f 
-	         JOIN session s 
-	         ON (s.ID=f.SessionID) 
-	         WHERE s.ID=:sid AND FileType='obj'", 
+                JOIN session s 
+                ON (s.ID=f.SessionID) 
+                WHERE s.ID=:sid AND FileType='obj'", 
                 array('sid' =>$this->sessionID)
             );
             if (!empty($file)) {
@@ -124,13 +109,17 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $types[$type] = $type;
             }
             $this->tpl_data['selected_options'] = $types;
- 
+
             $this->tpl_data['status_options'] 
                 = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
             $this->tpl_data['caveat_options'] 
                 = array ('' => '&nbsp;', true => 'True', false => 'False');
             $this->tpl_data['has_permission'] = ($this->_hasAccess()) ? true : false;
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ? true : false;
+            if ($this->_hasQCPerm()) {
+                $this->FormAction = "/imaging_browser/viewSession/?sessionID=" . $this->sessionID;
+            }
+
         }
     }
     /**
@@ -142,7 +131,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     {
         $extra_where_string = "";
         if (!empty($_REQUEST['selectedOnly'])) {
-            $extra_where_string .= " AND COALESCE(sel.Value,'') <> ''";
+            $extra_where_string .= " AND COALESCE(sel.Selected,'') <> ''";
         }
         // To better support QC for CIVET output a couple of 
         // additional conditions have been put in...
@@ -161,19 +150,14 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             }
         }
         $files = $this->DB->pselect(
-            "SELECT files.FileID FROM files LEFT JOIN parameter_file as sel on (
-            files.FileID=sel.FileID AND sel.ParameterTypeID=:selectedTypeID) 
+            "SELECT files.FileID FROM files LEFT JOIN files_qcstatus as sel on (
+            files.FileID=sel.FileID) 
             WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL 
             OR AcquisitionProtocolID not in (1, 2, 3, 52)) 
             AND PendingStaging=0 $extra_where_string 
-            ORDER BY files.OutputType, sel.Value DESC, AcquisitionProtocolID",
+            ORDER BY files.OutputType, files.File",
             array(
                'SID' => $this->sessionID,
-               'selectedTypeID' => $this->DB->selectOne(
-                   "SELECT ParameterTypeID 
-                   FROM parameter_type 
-                   WHERE Name='Selected' LIMIT 1"
-               )
            )
         );
         $this->tpl_data['files'] = array();
@@ -344,9 +328,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     $success = $this->DB->update(
                         'files_qcstatus', $updateSet, $updateWhere
                     );
-                    if (Utility::isErrorX($success)) {
-                        die("DB Error: ".$success->getMessage());
-                    }
                 } else {
                     $file = new MRIFile($curFileID);
                     $updateSet['SeriesUID'] = $file->getParameter(
@@ -401,51 +382,42 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     */
     function _updateSelected() 
     {
-        $selectedTypeID = $this->DB->selectOne(
-            "SELECT ParameterTypeID 
-            FROM parameter_type 
-            WHERE Name='selected' LIMIT 1"
-        );
         // update selected's
         if (is_array($_POST['selectedvol'])) {
             foreach ($_POST['selectedvol'] AS $curFileID => $curSelected) {
-                $params = array('FID' => $curFileID, 'STID' => $selectedTypeID);
+                $params = array('FID' => $curFileID);
                 $updateWhere = array(
-                    'FileID' => $curFileID, 'ParameterTypeID'=>$selectedTypeID
+                    'FileID' => $curFileID
                 );
 
                 if ($curSelected == 'Unselected') {
                     if ($this->DB->pselectOne(
                         "SELECT COUNT(*) 
-                        FROM parameter_file 
-                        WHERE FileID=:FID AND ParameterTypeID=:STID", $params
+                        FROM files_qcstatus 
+                        WHERE FileID=:FID ", $params
                     ) > 0) {
-                        $success = $this->DB->delete('parameter_file', $updateWhere);
+                        $success = $this->DB->delete('files_qcstatus', $updateWhere);
                     }
                 } else {
                     if ($this->DB->pselectOne(
                         "SELECT COUNT(*) 
-                        FROM parameter_file 
-                        WHERE FileID=:FID AND ParameterTypeID=:STID", $params
+                        FROM files_qcstatus
+                        WHERE FileID=:FID ", $params
                     ) > 0) {
                         $updateSet = array(
-                            'Value'=>$curSelected, 'InsertTime'=>time()
+                            'Selected'=>$curSelected, 'QCLastChangeTime'=>time()
                         );
                         $success = $this->DB->update(
-                            'parameter_file', $updateSet, $updateWhere
+                            'files_qcstatus', $updateSet, $updateWhere
                         );
                     } else {
                         $insertSet = array(
                             'FileID' => $curFileID, 
-                            'ParameterTypeID'=> $selectedTypeID, 
-                            'Value'=> $curSelected, 
-                            'InsertTime'=>time()
+                            'Selected'=> $curSelected, 
+                            'QCFirstChangeTime'=>time()
                         );
-                        $success = $this->DB->insert('parameter_file', $insertSet);
+                        $success = $this->DB->insert('files_qcstatus', $insertSet);
                     }
-                }
-                if (Utility::isErrorX($success)) {
-                    die("DB Error: ".$success->getMessage());
                 }
             }
         }
@@ -489,9 +461,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $success = $this->DB->update(
                 'session', $updateSet, array('ID'=>$this->sessionID)
             );
-            if (Utility::isErrorX($success)) {
-                die("DB Error: ".$success->getMessage());
-            }
             // sppool a message to the mri qc status rss channel
             if (($save_visit_status != $old_visit_status) 
                 || ($old_pending_status != $_POST['visit_pending'])
@@ -529,10 +498,12 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         if (!empty($_REQUEST['outputType'])) {
             $tpl_data['outputType'] = urldecode($_REQUEST['outputType']);
         }
+        $config = NDB_Config::singleton();
+        if ($config->getSetting('useEDC') === 'true') {
+            $tpl_data['useEDC'] = true;
+        }
 
-
-        $smarty = new Smarty_neurodb;
-        $smarty->ModuleName = "imaging_browser";
+        $smarty = new Smarty_neurodb('imaging_browser');
 
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_session_header.tpl");
@@ -546,9 +517,6 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function getSubjectData() 
     {
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if (Utility::isErrorX($timePoint)) {
-            print $timePoint->getMessage()."<br>";
-        }
 
         $subjectData['sessionID'] = $_REQUEST['sessionID'];
         $subjectData['SubprojectID'] = $timePoint->getSubprojectID();
@@ -565,36 +533,33 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
         $subjectData['candid'] = $timePoint->getCandID();
         $subjectData['scanner'] = $this->scanner;
-        $candidate =& Candidate::singleton($timePoint->getCandID());
-        if (Utility::isErrorX($candidate)) { 
-            print $candidate->getMessage()."<br>";
-        } else {
-            $subjectData['pscid'] = $candidate->getPSCID();
-            $subjectData['dob'] = $candidate->getCandidateDoB();
-            $subjectData['edc'] = $candidate->getCandidateEDC();
-            $subjectData['gender'] = $candidate->getCandidateGender();
 
-            // This doesn't work. 
-            //Need to find the proper way to get the TarchiveID. 
-            //It should be per file, not per candidate. --Dave
-            $params = array();
-            $EntityType = $candidate->getData('Entity_type');
-            if ($EntityType == 'Scanner') {
-                $ID = ":PPSCID";
-                $params['PPSCID'] = $timePoint->getData('PSCID');
-            } else {
-                $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
-                $params['PPSCID'] = $candidate->getPSCID();
-                $params['PCandID'] = $timePoint->getCandID();
-                $params['PVL'] = $timePoint->getVisitLabel();
-            }
-            $tarchiveIDs = $this->DB->pselect(
-                "SELECT TarchiveID 
-                FROM tarchive 
-                WHERE PatientName LIKE $ID", $params
-            );
-            $subjectData['tarchiveids'] = $tarchiveIDs;
+        $candidate =& Candidate::singleton($timePoint->getCandID());
+        $subjectData['pscid'] = $candidate->getPSCID();
+        $subjectData['dob'] = $candidate->getCandidateDoB();
+        $subjectData['edc'] = $candidate->getCandidateEDC();
+        $subjectData['gender'] = $candidate->getCandidateGender();
+
+        // This doesn't work. 
+        //Need to find the proper way to get the TarchiveID. 
+        //It should be per file, not per candidate. --Dave
+        $params = array();
+        $EntityType = $candidate->getData('Entity_type');
+        if ($EntityType == 'Scanner') {
+            $ID = ":PPSCID";
+            $params['PPSCID'] = $timePoint->getData('PSCID');
+        } else {
+            $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
+            $params['PPSCID'] = $candidate->getPSCID();
+            $params['PCandID'] = $timePoint->getCandID();
+            $params['PVL'] = $timePoint->getVisitLabel();
         }
+        $tarchiveIDs = $this->DB->pselect(
+            "SELECT TarchiveID 
+            FROM tarchive 
+            WHERE PatientName LIKE $ID", $params
+        );
+        $subjectData['tarchiveids'] = $tarchiveIDs;
         // Cache the data
         return $subjectData;
     }
@@ -607,6 +572,21 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     {
         $controlPanel = new Imaging_Session_ControlPanel($_REQUEST['sessionID']);
         return $controlPanel->display();
+    }
+
+    function getJSDependencies() {
+        $depends = parent::getJSDependencies();
+        if($this->page === 'viewSession') {
+            $factory = NDB_Factory::singleton();
+            $baseurl = $factory->settings()->getBaseURL();
+            $depends = array_merge($depends,
+                array(
+                    $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
+                    $baseurl . "/imaging_browser/js/ImagePanel.js"
+                ));
+
+        }
+        return $depends;
     }
 }
 

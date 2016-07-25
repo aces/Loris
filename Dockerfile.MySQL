@@ -1,0 +1,9 @@
+FROM mysql:5.5
+
+COPY SQL/0000-00-00-schema.sql /0000-00-00-schema.sql
+
+ADD docs/Docker/LorisDB-EntryPoint.sh /entrypoint.sh
+
+VOLUME /var/lib/mysql
+CMD ["mysqld_safe", "--datadir=/var/lib/mysql"]
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

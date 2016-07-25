@@ -1,3 +1,65 @@
+.tree {
+    min-height:20px;
+    padding:19px;
+    margin-bottom:20px;
+    background-color:#fbfbfb;
+    border:1px solid #999;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    -webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05)
+}
+.tree li {
+    list-style-type:none;
+    margin:0;
+    padding:10px 5px 0 5px;
+    position:relative
+}
+.tree li::before, .tree li::after {
+    content:'';
+    left:-20px;
+    position:absolute;
+    right:auto
+}
+.tree li::before {
+    border-left:1px solid #999;
+    bottom:50px;
+    height:100%;
+    top:0;
+    width:1px
+}
+.tree li::after {
+    border-top:1px solid #999;
+    height:20px;
+    top:25px;
+    width:25px
+}
+.tree li span {
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border:1px solid #999;
+    border-radius:5px;
+    display:inline-block;
+    padding:3px 8px;
+    text-decoration:none
+}
+.tree li.parent_li>span {
+    cursor:pointer
+}
+.tree>ul>li::before, .tree>ul>li::after {
+    border:0
+}
+.tree li:last-child::before {
+    height:30px
+}
+.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {
+    background:#eee;
+    border:1px solid #94a0b4;
+    color:#000
+}
+
 button#upload {
 background: rgb(255,140,25); /* Old browsers */
 background: -moz-linear-gradient(-45deg,  rgba(255,140,25,1) 0%, rgba(207,4,4,1) 100%); /* FF3.6+ */
@@ -146,4 +208,131 @@ label em {
 }
 .categorycomments{
     color: black;
+}
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+.tree{
+    overflow-x: auto
+}
+#home-dir{
+    padding-left: 0px;
+}
+.file_name{
+    float: left;
+    border: 1px solid #999;
+}
+.version{
+    width: 30px;
+    float: left;
+    border: 1px solid #999;
+}
+.file_type{
+    width: 50px;
+    float: left;
+    border: 1px solid #999;
+}
+.instrument{
+    width: 100px;
+    float: left;
+    border: 1px solid #999;
+}
+.updated_by{
+    width: 100px;
+    float: left;
+    border: 1px solid #999;
+}
+.for_site{
+    width: 100px;
+    float: left;
+    border: 1px solid #999;
+}
+.comments{
+    width: 300px;
+    float: left;
+    border: 1px solid #999;
+}
+.date_uploaded{
+    width: 150px;
+    float: left;
+    border: 1px solid #999;
+}
+.editLink{
+    width: 50px;
+    float: left;
+    border: 1px solid #999;
+}
+.deleteLink{
+    width: 50px;
+    float: left;
+    border: 1px solid #999;
+}
+.fileDDD::before{
+    position: absolute;
+    margin-top: 20px;
+    margin-left: -30px;
+    overflow: hidden;
+    width: 30px;
+    height: 1px;
+    content: '\a0';
+    background-color: #999;
+}
+#dir-tree>tr>td:first-child {
+    padding: 0px;
+    /*height: 100%;*/
+}
+#dir-tree>tr>td:first-child>div{
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    border-left:1px solid #999;
+    padding-left: 30px;
+    height:100%;
+    overflow: auto;
+    word-break: break-word;
+}
+.fileDDD>div{
+    overflow: inherit;
+}
+#dir-tree>tr>td:first-child>span{
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    border-left:1px solid #999;
+    padding-left: 30px;
+    overflow: auto;
+    word-break: break-word;
+}
+.spacer{
+    float: left;
+    width: 60px;
+}
+.fileDDD>span, td>span{
+    border: 1px solid #999;
+    border-radius: 5px;
+    margin: 5px;
+}
+.fileColumn{
+    min-width: 350px;
+}
+.directoryRow{
+    height: 50px;
+}
+.fileRow{
+    height: 60px;
+}
+@-moz-document url-prefix() {
+    .directoryRow>td{
+    height: 100%;
+}
 }

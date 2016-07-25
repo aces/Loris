@@ -12,9 +12,6 @@
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "NDB_Form.class.inc";
-require_once "Email.class.inc";
-
 /**
  * The form which creates the add_survey page for the
  * Loris survey module
@@ -37,9 +34,6 @@ class NDB_Form_survey_accounts extends NDB_Form
     {
         // create user object
         $editor =& User::singleton();
-        if (Utility::isErrorX($editor)) {
-            return PEAR::raiseError("User Error: ".$editor->getMessage());
-        }
 
         return $editor->hasPermission('user_accounts');
     }
@@ -203,9 +197,6 @@ class NDB_Form_survey_accounts extends NDB_Form
                 'CommentID'        => $commentID
             )
         );
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error: ".$success->getMessage());
-        }
         $this->tpl_data['success'] = $success;
  
         if ($email) {
@@ -215,7 +206,7 @@ class NDB_Form_survey_accounts extends NDB_Form
             $msg_data = array(
                 'study'     => $config->getSetting("title"),
                 'url'       => $www['url'] . '/survey.php?key=' . $key,
-                'EmailForm' => $values['EmailContent']
+                'EmailForm' => $values['email_dialog']
             );
             Email::send($values['Email'], 'new_survey.tpl', $msg_data);
         }

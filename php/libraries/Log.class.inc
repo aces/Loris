@@ -11,8 +11,6 @@
  * @link     https://github.com/aces/IBIS
 */
 
-require_once 'PEAR.php';
-
 /**
  * Log Class
  *
@@ -24,7 +22,7 @@ require_once 'PEAR.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/IBIS
 */
-class Log extends PEAR
+class Log
 {
 
     var $GENERAL_ERROR_DIR;
@@ -35,7 +33,7 @@ class Log extends PEAR
      * @param String $file_name The name of the log file
      * @param String $location  The path of the log file
      */
-    function Log($file_name,$location=null)
+    function __construct($file_name,$location=null)
     {
         $today = getdate();
         $date  = sprintf(

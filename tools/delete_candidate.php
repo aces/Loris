@@ -11,6 +11,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
 require_once "Candidate.class.inc";
 require_once "Utility.class.inc";

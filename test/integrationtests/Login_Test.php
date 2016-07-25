@@ -1,59 +1,52 @@
 <?php
-require_once __DIR__ . '/../../vendor/autoload.php';
-
-class Login_Test extends PHPUnit_Extensions_Selenium2TestCase
+require_once __DIR__ . '/LorisIntegrationTest.class.inc';
+class LorisLoginTest extends LorisIntegrationTest
 {
-    protected function setUp()
+    function testLoginFailure()
     {
-        $this->setBrowser('firefox');
-        $this->setBrowserUrl('http://localhost/');
+       $this->webDriver->get($this->url . '/main.php?logout=true');
+
+       $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
+       $this->assertEquals('', $username->getAttribute("value"));
+
+       $password = $this->webDriver->findElement(WebDriverBy::Name("password"));
+       $this->assertEquals('', $password->getAttribute("value"));
+
+
+       $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
+       $this->assertEquals('submit', $login->getAttribute("type"));
+       $this->assertEquals('Login', $login->getAttribute("value"));
+
+       $username->sendKeys("UnitTester");
+       $password->sendKeys("IJUSTMADETHISUP");
+
+       $login->click();
+
+       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+       $this->assertContains("Incorrect username or password", $bodyText);
     }
 
-    public function testLoginFailure()
+    function testLoginSuccess()
     {
-        //print_r($this->getAvailableDrivers());
-        $this->url('/main.php');
-        //assert username element exists and doesn't have any
-        //data prepopulated.
-        $username = $this->byName("username");
-        $this->assertEquals('', $username->value());
-        //assert password element exists and doesn't have any
-        //data prepopulated.
-        $password = $this->byName("password");
-        $this->assertEquals('', $password->value());
+       $this->webDriver->get($this->url . '/main.php?logout=true');
+       $username = $this->webDriver->findElement(WebDriverBy::Name("username"));
+       $this->assertEquals('', $username->getAttribute("value"));
 
-        //ensure a login button exists
-        $login = $this->byName("login");
-        $this->assertEquals('submit', $login->attribute("type"));
-        $this->assertEquals('login', $login->value());
+       $password = $this->webDriver->findElement(WebDriverBy::Name("password"));
+       $this->assertEquals('', $password->getAttribute("value"));
 
-        // Make up a fake username and password, click it, and make
-        // sure the page has an "Incorrect username or password" message
-        // somewhere on it.
-        $username->value("admin");
-        $this->assertEquals('admin', $username->value());
-        $password->value("IJUSTMADETHISUP");
-        $login->click();
 
-        $this->assertContains("Incorrect username or password", $this->byCssSelector("body")->text());
-    }
+       $login= $this->webDriver->findElement(WebDriverBy::Name("login"));
+       $this->assertEquals('submit', $login->getAttribute("type"));
+       $this->assertEquals('Login', $login->getAttribute("value"));
 
-    public function testLoginSuccess()
-    {
-        $this->url('/main.php');
-        $username = $this->byName("username");
-        $password = $this->byName("password");
+       $username->sendKeys("UnitTester");
+       $password->sendKeys("4test4");
 
-        $username->value("admin");
-        $password->value("testpass");
+       $login->click();
 
-        $login = $this->byName("login");
-        $this->assertEquals('submit', $login->attribute("type"));
-        $this->assertEquals('login', $login->value());
-
-        $login->click();
-
-        $this->assertContains("Welcome", $this->byCssSelector("body")->text());
+       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+       $this->assertContains("Welcome", $bodyText);
     }
 }
 ?>

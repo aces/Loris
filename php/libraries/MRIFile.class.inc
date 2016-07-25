@@ -31,7 +31,7 @@ class MRIFile
      *
      * @param integer $fileID The FileID to be loaded
      */
-    function MRIFile($fileID)
+    function __construct($fileID)
     {
         $db     =& Database::singleton();
         $params = array('FID' => $fileID);

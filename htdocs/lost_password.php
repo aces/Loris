@@ -1,11 +1,22 @@
 <?php
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
-ini_set('default_charset', 'utf-8');
-
 /**
- * lost password form
- * @package main
+ * This implements the lost password page in Loris. It must be
+ * separated from main.php because being on the last password page
+ * means the user is not logged in, and the main.php will only work
+ * for logged in users.
+ *
+ * PHP Version 5
+ *
+ * @category Behavioural
+ * @package  Loris
+ * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
+require_once __DIR__ . '/../vendor/autoload.php';
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+require_once __DIR__ . "/../vendor/autoload.php";
+ini_set('default_charset', 'utf-8');
 ob_start('ob_gzhandler');
 
 require_once "NDB_Client.class.inc";
@@ -18,18 +29,19 @@ require_once "Email.class.inc";
 $tpl_data = array();
 
 // create an instance of the config object
-$config =& NDB_Config::singleton();
-$tpl_data['css']=$config->getSetting('css');
+$config          =& NDB_Config::singleton();
+$tpl_data['css'] =$config->getSetting('css');
 $tpl_data['study_title'] = $config->getSetting('title');
-$tpl_data['study_logo']  = "../".$config->getSetting('studylogo');
+try {
+    $tpl_data['study_logo'] = $config->getSetting('studylogo');
+} catch(ConfigurationException $e) {
+    $tpl_data['study_logo'] = '';
+}
 
 if (isset($_POST['username'])) {
 
     // create the user object
     $user =& User::singleton($_POST['username']);
-    if (PEAR::isError($user)) {
-        $tpl_data['error_message'] = $user->getMessage();
-    }
 
     $email = $user->getData('Email');
 
@@ -43,27 +55,22 @@ if (isset($_POST['username'])) {
             $password = User::newPassword();
 
             // reset the password in the database
-            $success = $user->update(array('Password_md5' => User::MD5Salt($password), 'Password_expiry' => '0000-00-00'));
-            if (PEAR::isError($success)) {
-                $tpl_data['error_message'] = $success->getMessage();
-            }
+            // expire password so user must change it upon login
+            $success = $user->updatePassword($password, '0000-00-00');
 
             // send the user an email
-            $msg_data['study'] = $config->getSetting('title');
-            $msg_data['url'] = $config->getSetting('url');
+            $msg_data['study']    = $config->getSetting('title');
+            $msg_data['url']      = $config->getSetting('url');
             $msg_data['realname'] = $user->getData('Real_name');
             $msg_data['password'] = $password;
             Email::send($email, 'lost_password.tpl', $msg_data);
 
-            $tpl_data['confirm'] = $user->getData('Real_name').', you should receive an email within a few minutes.';
-    	}
-
-	    else {
+            $tpl_data['confirm'] = $user->getData('Real_name')
+                .', you should receive an email within a few minutes.';
+        } else {
             $tpl_data['error_message'] = 'That user has an invalid email address.';
-	    }
-    }
-
-    else {
+        }
+    } else {
         $tpl_data['error_message'] = 'That user is not in the system.';
     }
 }

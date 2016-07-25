@@ -11,9 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once "NDB_Form.class.inc";
-require_once "Utility.class.inc";
-
 /**
  * A class for holding a set of functions to update candidate 
  * info page.
@@ -42,25 +39,18 @@ class NDB_Form_candidate_parameters extends NDB_Form
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         // check that the $candID is passed b/c the profile needs to be opened
         if ($this->identifier != $_REQUEST['candID']) {
-            return PEAR::raiseError("NDB_Form_candidate_parameters::_access: 
+            throw new LorisException("NDB_Form_candidate_parameters::_access: 
                        Candidate Profile Error (".$_REQUEST['candID']."): ");
         }
 
         $candidate =& Candidate::singleton($this->identifier);
-        if (Utility::isErrorX($candidate)) {
-            return PEAR::raiseError("Candidate Error 
-                           ($this->identifier): ".$candidate->getMessage());
-        }
 
         // check user permissions
-	return ($user->hasPermission('candidate_parameter_edit')  
-                && $user->getData('CenterID') == $candidate->getData('CenterID'));  
+        return ($user->hasPermission('candidate_parameter_edit')  
+            && $user->getData('CenterID') == $candidate->getData('CenterID'));  
     }
      /**
       * Returns default values for all candidate parameters
@@ -106,16 +96,12 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $familyid = $DB->pselectOne("SELECT FamilyID from family WHERE 
                                     CandID=:CandidateID",
                                     array('CandidateID'=>$this->identifier));
-        if (Utility::isErrorX($familyid)) {
-            return PEAR::raiseError("Error: ".$familyid->getMessage());
-        } else {
-            $this->tpl_data['familyID'] = $familyid;
-            $relations                  = $DB->pselect("SELECT CandID, Relationship_type 
-                                          FROM family WHERE FamilyID=:fam_id AND 
-                                          CandID <> '$this->identifier'",
-                                          array('fam_id'=> $familyid));
+        $this->tpl_data['familyID'] = $familyid;
+        $relations                  = $DB->pselect("SELECT CandID, Relationship_type 
+            FROM family WHERE FamilyID=:fam_id AND 
+            CandID <> '$this->identifier'",
+            array('fam_id'=> $familyid));
 
-        }
         $this->tpl_data['sibling_list'] = array();
         foreach ($relations as $relation) {
             $relation['Relationship_type']    = $this->relationType[$relation['Relationship_type']];
@@ -158,8 +144,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
  
        // Getting participant status default values
         $ps_info = $DB->pselectRow("SELECT study_consent,study_consent_date,study_consent_withdrawal,
-                                    ndar_consent,ndar_consent_date,ndar_consent_withdrawal,reason_specify,
-                                    participant_status,participant_suboptions FROM participant_status 
+                                    reason_specify,participant_status,participant_suboptions
+                                    FROM participant_status
                                     WHERE CandID = :cid", array('cid'=>$this->identifier));
         if (empty ($ps_info['participant_status'])) {
             //set candidate to active by default
@@ -282,48 +268,48 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
        if (isset($values['FamilyMemberID'])) { 
            $fid = $DB->pselectOne("SELECT FamilyID FROM family WHERE CandID=:CaID", array('CaID' => $this->identifier));
-           if (Utility::isErrorX($fid)) {
-               return PEAR::raiseError("Could not family id: ".$fid->getMessage());
-           }
            if (empty($fid)) {
                $famID = $DB->pselectOne("SELECT max(FamilyID) from family");
-               if (Utility::isErrorX($famID)) {
-                   return PEAR::raiseError("Could not family id: ".$famID->getMessage());
-               }
                if (empty($famID)) {
                    $famID = 0;
                }
                $fid = $famID+1;
                $success = $DB->insert('family', array('CandID'=>$this->identifier, 'FamilyID'=>$fid,
                            'Relationship_type'=>$values['relation_type']));
-               if (Utility::isErrorX($success)) {
-                   return PEAR::raiseError("DB Error: ".$success->getMessage());
-               }
 
            }
 
            $value   = $values['FamilyMemberID'];
            $success = $DB->insert('family', array('CandID'=>$value,'FamilyID'=>$fid,
                                   'Relationship_type'=>$values['relation_type']));
-           if (Utility::isErrorX($success)) {
-               return PEAR::raiseError("DB Error: ".$success->getMessage());
-           }
           
        }
        // updating participant status
-       if (isset($values['participant_status']) || isset($values['reason_specify'])
-          || isset($values['reason_specify_status']) || isset($values['participant_suboptions'])) {
-           $participant_vals                       = array();
-           $participant_vals['participant_status'] = $values['participant_status'];
-           $sub_reasonID                           = $DB->pselectOne("SELECT ID FROM participant_status_options 
-                                                     WHERE Description=:sub_desc", 
-                                                     array('sub_desc' =>$values['participant_suboptions']));
-           if (empty($sub_reasonID)) {
-               $participant_vals['participant_suboptions'] = NULL;
-           } else {
-               $participant_vals['participant_suboptions'] = $sub_reasonID;
-           }
-           $participant_vals['participant_suboptions']= $values['participant_suboptions']; 
+        if (isset($values['participant_status']) || isset($values['reason_specify'])
+            || isset($values['reason_specify_status']) || isset($values['participant_suboptions'])) {
+            $participant_vals                       = array();
+            $participant_vals['participant_status'] = $values['participant_status'];
+
+            //Due to the AJAX call for dydnamic suboptions dropdown generation,
+            //the vavlue of $values['participant_suboptions'] could be either
+            //numeric (if coming from a previously "inactive" option or a string
+            //this if statement deals with the case
+
+            if (!is_numeric($values['participant_suboptions']))
+            {
+                $values['participant_suboptions']  = $DB->pselectOne("
+                                  SELECT ID
+                                  FROM participant_status_options
+                                  WHERE Description=:sub_desc",
+                    array('sub_desc' =>$values['participant_suboptions']));
+            }
+            /*if (empty($sub_reasonID)) {
+                $participant_vals['participant_suboptions'] = NULL;
+            } else {
+                $participant_vals['participant_suboptions'] = $sub_reasonID;
+            }
+             */
+           $participant_vals['participant_suboptions']= $values['participant_suboptions'];
            $participant_vals['entry_staff']           = $id;
            $participant_vals['reason_specify']        = $values['reason_specify'];
            $participant_vals['reason_specify_status'] = $values['reason_specify_status'];
@@ -345,29 +331,21 @@ class NDB_Form_candidate_parameters extends NDB_Form
                $success = $DB->insert("participant_status",$participant_vals);
            }
 
-           if (Utility::isErrorX($success)) {
-               return PEAR::raiseError(
-                       "NDB_Form_candidate_parameters::_process: ".$success->getMessage()
-                       );
-           }
-
-           $current_status = $DB->pselectOne("SELECT participant_status FROM participant_status_history
+           $current_status = $DB->pselectRow("SELECT * FROM participant_status_history
                                               WHERE CandID = :cid ORDER BY data_entry_date DESC", 
                                               array("cid"=>$values['CandID']) );
-           if($current_status != $participant_vals['participant_status']) {
+
+           if($current_status['participant_status'] != $participant_vals['participant_status'] ||
+               $current_status['entry_staff'] != $participant_vals['entry_staff'] ||
+               $current_status['reason_specify'] != $participant_vals['reason_specify'] ||
+               $current_status['participant_subOptions'] != $sub_reasonID) {
                $success = $DB->insert("participant_status_history", 
                           array('participant_status'=>$participant_vals['participant_status'], 
-                                'participant_suboptions'=>$participant_vals['participant_suboptions'],
+                                'participant_subOptions'=>$participant_vals['participant_suboptions'],
                                 'entry_staff'=>$participant_vals['entry_staff'],
                                 'CandID' => $participant_vals['CandID'],
                                 'reason_specify'=>$participant_vals['reason_specify'],
                                 'reason_specify_status'=>$participant_vals['reason_specify_status']));
-               if (Utility::isErrorX($success)) {
-                   return PEAR::raiseError(
-                           "NDB_Form_candidate_parameters::_process: ".$success->getMessage()
-                           );
-               }
-
            }
           
        }
@@ -435,23 +413,15 @@ class NDB_Form_candidate_parameters extends NDB_Form
         return $ret;
     }
 
+    /**
+     * @throws DatabaseException
+     */
     function candidate_parameters()
     {
         $DB =& Database::singleton();
         $config =& NDB_Config::singleton();
-
-        $ethnicityList = array(null=>'');
-        $success = Utility::getEthnicityList();
-        if (Utility::isErrorX($success)) {
-        	return PEAR::raiseError("Utility::getEthnicityList error: ".$success->getMessage());
-        }
-        $ethnicityList = array_merge($ethnicityList,$success);
-        unset($success);
         
         $candidate =& Candidate::singleton($this->identifier);
-        if (Utility::isErrorX($candidate)) {
-            return PEAR::raiseError("Candidate Error ($this->identifier): ".$candidate->getMessage());
-        }
 
         // candID
         $this->tpl_data['candID'] = $candidate->getData('CandID');
@@ -496,7 +466,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->addScoreColumn('pscid', 'PSCID');
         $this->tpl_data['pscid'] = $pscid;
 
-        $options = $this->getParticipantStatusOptions();
+        $options = self::getParticipantStatusOptions();
         $options = array('') + $options;
         $this->tpl_data['pstatus_options'] = $options;
         $this->tpl_data['pstat'] = $_REQUEST['participant_status'];
@@ -522,24 +492,27 @@ class NDB_Form_candidate_parameters extends NDB_Form
                 $consentQuestion = array($question['name']=> $question['label'],
                                          $question['name'] . '_date' => "Date of <BR> $question[label]",
                                          $question['name'] . '_withdrawal' => "Date of withdrawal <BR> of $question[label]",
+                                         'entry_staff'=>'Data Entry Staff',
                                          'data_entry_date' =>'Date Updated',
-                                         'entry_staff'=>'Data Entry Staff');
+                                        );
                 $fields = $question['name'].', '.$question['name'] . '_date, '.$question['name'] . '_withdrawal, ';
-                $study_consent = $DB->pselect("SELECT $fields entry_staff,data_entry_date 
+                $study_consent = $DB->pselect("SELECT $fields entry_staff,data_entry_date
                                                FROM consent_info_history WHERE CandID=:cid", 
                                                array('cid'=>$this->identifier));
                $study_consent_hist = array();
                 for ($i=0; $i<sizeof($study_consent); $i++ ) {
-                    foreach ($study_consent[$i] as $key=>$value) {
-                        if ($key == $question['name'] && empty($study_consent[$i][$question['name']])) {
-                            break;
-                        }
-                        if (!empty($study_consent[$i][$question['name']])) {
-                           $study_consent_hist[$i][$key] = $value;
-                        }
+                    foreach($consentQuestion as $key => $column_title) {
+                          if ($key == $question['name'] && empty($study_consent[$i][$question['name']])) {
+                              break;
+                          }
+
+                         if (!empty($study_consent[$i][$question['name']])) {
+                             $study_consent_hist[$i][$key] = $study_consent[$i][$key];
+                         }
                     }
                 }
-            $this->tpl_data['consent_list'][$question['name']] = array('label'=>$consentQuestion, 
+
+            $this->tpl_data['consent_list'][$question['name']] = array('label'=>$consentQuestion,
                                                                        'history'=>$study_consent_hist);
             }
         }
@@ -595,9 +568,9 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->tpl_data['pscid'] = $pscid;
         $parentID = $DB->pselectOne('SELECT participant_status FROM participant_status Where CandID = :candid',
                                      array('candid'=>$this->identifier));
-        $sub_options = $this->getParticipantStatusSubOptions($parentID);
+        $sub_options = self::getParticipantStatusSubOptions($parentID);
         $sub_options = array('') + $sub_options;
-        $options = $this->getParticipantStatusOptions();
+        $options = self::getParticipantStatusOptions();
       //  $options = array('') + $options;
         $this->tpl_data['pstatus_options'] = $options;
         $this->tpl_data['pstatus_suboptions'] = $sub_options;
@@ -780,7 +753,11 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $active_family[] = $relative['CandID'];    
         }
         if (in_array($cand, $active_family)){
-            $errors['FamilyMemberID'] = 'CandID already entered as Sibling';    
+            $errors['FamilyMemberID'] = 'CandID already entered as sibling';
+        }
+        $CandID = $this->identifier;
+        if ($CandID == $cand) {
+            $errors['FamilyMemberID'] = 'Cannot enter candidate as own sibling';
         }
         if (empty($values['relation_type'])) {
             $errors['relation_type'] = 'Please specify relationship type';    
@@ -806,7 +783,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
     { 
         $config =& NDB_Config::singleton();
         $errors=array();
-        $options = $this->getParticipantStatusOptionsVerbose();
+        $options = self::getParticipantStatusOptionsVerbose();
 
         $DB =& Database::singleton();
         if($fields['ProbandDoB']['M'] != $fields['ProbandDoB2']['M'] ||
@@ -901,7 +878,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
-    function getParticipantStatusOptions()
+    static function getParticipantStatusOptions()
     {
         $DB =& Database::singleton();
         $options = $DB->pselect(
@@ -923,7 +900,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
      *               the entire row from participant_status_options instead of
      *               only the description
      */
-    function getParticipantStatusOptionsVerbose()
+    static function getParticipantStatusOptionsVerbose()
     {
         $DB =& Database::singleton();
         $options = $DB->pselect(
@@ -947,7 +924,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
-    function getParticipantStatusSubOptions($parentID)
+    static function getParticipantStatusSubOptions($parentID)
     {
         $DB =& Database::singleton();
         $options = $DB->pselect(

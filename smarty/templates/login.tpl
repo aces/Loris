@@ -2,10 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" style="height:100%">
 <head>
 <meta charset="utf-8"/>
+  <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
+
 <!-- shortcut icon that displays on the browser window -->
-<link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
-<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="bootstrap/css/custom-css.css">
+<link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
+<link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="{$baseurl}/bootstrap/css/custom-css.css">
 <!-- page title -->
 <title>{$title}</title>
 
@@ -118,11 +120,49 @@ string: navigator.platform,
 
 };
 BrowserDetect.init();
+{/literal}
 
+    /*
+$(document).ready(function() {
+    $("#loginAPI").click(function(e) {
+        var username = document.getElementById("username").value,
+            password = document.getElementById("password").value,
+            error = document.getElementById("error");
+
+        e.preventDefault();
+
+        error.textContent = '';
+        $.ajax("api/v0.0.1/login", {
+            method: 'POST',
+            data: {
+                "username" : username,
+                "password" : password
+            },
+            success: function(data) {
+                var data = JSON.parse(data);
+                var token = data.token;
+                $.ajax("", {
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("Authorization", "Bearer " + token);
+                    },
+                    success: function() {
+                        window.location = "{$baseurl}/main.php";
+                    },
+                    error: function() {
+                        window.location = "{$baseurl}/main.php";
+                    }
+                });
+            },
+            error: function(data) {
+                error.textContent = JSON.parse(data.responseText).error;
+            }
+        });
+    });
+});
+    */
 // -->
 </script>
 
-{/literal}
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 </head>
@@ -133,17 +173,25 @@ BrowserDetect.init();
 	
  	<div class="navbar navbar-default" role="navigation" style="height:90px">
  		<div class="container">
-	 		<a class="navbar-brand" href="#" style="align:center;">
-		 		<img src="{$study_logo}" border="0" width="64" height="57" />
+	 		<div class="navbar-brand">
+                {if $study_logo}
+		 		<img src="{$baseurl}/{$study_logo}" border="0" width="64" height="57" />
+                {/if}
 		 		{$study_title}
-	 		</a>
+	 		</div>
 	 	</div>
  	</div>
- 	<div class="row panel panel-default col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+   <div class="col-xs-12"> <!--maindiv start -->
+    <div class="row panel panel-default col-xs-6 col-xs-offset-1">
+        <div class="panel-body">
+            {$study_description}
+         </div>
+    </div>
+ 	<div class="row panel panel-default col-xs-4 col-xs-offset-1">
 		  <div class="panel-body">
 		  		<div class="col-xs-12">
 		  			<center>
-		  				<img src="images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" onerror="this.src='images/LORIS_Logo_141007.png'" align="middle" width="85%"> 
+		  				<img src="{$baseurl}/images/LORIS_logo.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_logo.png'" align="middle" width="85%"> 
 		  			</center>
 					<br>
 		  		</div>
@@ -151,31 +199,33 @@ BrowserDetect.init();
 		  			<br><br><br><br>
 		  		</div>
 		  		<div class="col-xs-12">
-		  			<font color="red" align="middle">
+		  			<font color="red" align="middle" id="error">
 		  				{$error_message}
 		  			</font>
 		  		</div>
 		  		<div class="row">
-			  		<div class="col-xs-12">
-				  		<form action="{$action}" method="post">
-				  			<div class="form-group">
-				  				<input name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
-				  			</div>
-				  			<div class="form-group">
-				  				<input name="password" class="form-control" type="password" placeholder="Password"/>
-				  			</div>
-				  			<input class="btn btn-primary col-xs-12" name="login" type="submit" value="login" />
-				  			<br><br><br>
-				  			<a href="lost_password.php"><center>Forgot your password?</center></a>
-				  			<a href="request_account/process_new_account.php"><center>Request Account</center></a>
-				  		</form>
-			  		</div>
+                    <form action="{$action}" method="post">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <input id="username" name="username" class="form-control" type="text" value="{$username}" placeholder="User"/>
+                            </div>
+                            <div class="form-group">
+                                <input id="password" name="password" class="form-control" type="password" placeholder="Password"/>
+                            </div>
+                                <input class="btn btn-primary col-xs-12" id="loginAPI" name="login" type="submit" value="Login" />
+                            <br><br><br>
+                            <a href="{$baseurl}/lost_password.php"><center>Forgot your password?</center></a>
+                            <a href="{$baseurl}/request_account/process_new_account.php"><center>Request Account</center></a>
+                        </div>
+                    </form>
 			  	</div>	
 		  		<div class="row">
-		  		<table class="LoginFooter" align="center">
+		  		<table class="LorisFooter" align="center">
 					<tr>
 					<hr width = 70%>
 					<td width="100%">
+                    {if $studylinks}
+                    <center>
 					<ul id="navlist" style="margin-top: 5px; margin-bottom: 2px;">
 
 					<li id="active">|</li>
@@ -184,29 +234,29 @@ BrowserDetect.init();
 					{/foreach}
 
 					</ul>
+                    </center>
+                    {/if}
 					</td>
 					</tr>
 					<tr>
-					<!--td align="center" colspan="1"><br><font color="#C40A29">A WebGL-compatible browser is required for full functionality.</font></td-->
-					</tr>       
-					<tr>
-					<td align="center" colspan="1" style="color:#808080" >A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
+                    <br>
+					<td align="center" colspan="1">A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)</td>
 					</tr>	
 					<tr>
-					<td align="center" colspan="1" style="color:#808080" >Powered by LORIS &copy; {$currentyear}. All rights reserved.</td>
+					<td align="center" colspan="1">Powered by LORIS &copy; {$currentyear}. All rights reserved.</td>
 					</tr>	
 					<tr>
-					<td align="center" colspan="1"style="color: #808080">Created by <a href="http://mcin-cnim.ca" style="color: #064785" target="_blank">MCIN</a></td>
+					<td align="center" colspan="1">Created by <a href="http://mcin-cnim.ca" style="color: #064785" target="_blank">MCIN</a></td>
 					</tr>
 					<tr>
-					<td align="center" colspan="1" style="color: #808080"> Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>
+					<td align="center" colspan="1">Developed at <a href="http://www.mni.mcgill.ca" style="color: #064785" target="_blank">Montreal Neurological Institute and Hospital</a></td>
 
 					</tr>
 				</table>
 				</div>
 		  </div>
 	</div>
-
+  </div> <!--closing maindiv -->
 
 
 <!-- old study web links positioning

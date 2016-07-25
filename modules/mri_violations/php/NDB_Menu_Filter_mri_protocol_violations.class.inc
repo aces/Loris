@@ -15,7 +15,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  *
  */
-require_once 'NDB_Menu_Filter.class.inc';
 
 /**
  * Implements the menu filter for the mri protocol violation log table
@@ -41,9 +40,6 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
@@ -60,9 +56,6 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
         // set the class variables
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
         $this->columns = array(
             'mpv.CandID',
             'mpv.PSCID',
@@ -116,12 +109,22 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
+        $config =& NDB_Config::singleton();
+        $study = $config->getSetting('study');
+        $dateOptions = array(
+            'language'        => 'en',
+            'format'          => 'YMd',
+            'addEmptyOption'  => true,
+            'minYear'         => $study['startYear'] - $study['ageMax'],
+            'maxYear'         => $study['endYear'] - $study['ageMin']
+        );
+
         $this->addBasicText('CandID', 'DCC-ID:');
         $this->addBasicText('PSCID', 'PSC-ID:');
         $this->addBasicText('PatientName', 'Patient-Name:');
         $this->addBasicText('SeriesUID', 'SeriesUID:');
         $this->addBasicText('SeriesDescription', 'Series Description:');
-        $this->addBasicText('TimeRun', 'Time Run');
+        $this->addBasicDate('TimeRun', 'Time Run', $dateOptions);
         return true;
     }
 

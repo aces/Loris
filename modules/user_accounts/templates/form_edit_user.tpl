@@ -1,6 +1,8 @@
 <br />
+<script type="text/javascript" src="{$baseurl}/js/invalid_form_scroll.js"></script>
 {literal}
 <script>
+
 $(document).ready(function() {
     function toggleGroup(group) {
         if(group) {
@@ -23,24 +25,31 @@ $(document).ready(function() {
         section = id.substring(7);
         section_el = $("#perms_" + section + " br:nth-child(1)").hide();
     });
-    
 });
 </script>
 {/literal}
-<form method="post" name="edit_user" >
-
+<form method="post" name="edit_user">
     {if $form.errors}
         <div class="alert alert-danger" role="alert">
-            Please ensure that all required fields are filled
+            The form you submitted contains data entry errors
         </div>
     {/if}
-	<h3>Password Rules</h3>
-	<ul>
-		<li>The password must be at least 8 characters long</li>
-        <li>The password must contain at least 1 letter, 1 number and 1 character from   !@#$%^&amp;*()</li>
-        <li>The password and the user name must not be the same</li>
-        <li>The password and the email address must not be the same</li>
-	</ul>
+   <div class="panel panel-default">
+      <div class="panel-body">
+	    <h3>Password Rules</h3>
+	    <ul>
+		    <li>The password must be at least 8 characters long</li>
+            <li>The password must contain at least 1 letter, 1 number and 1 character from   !@#$%^&amp;*()</li>
+            <li>The password and the user name must not be the same</li>
+            <li>The password and the email address must not be the same</li>
+        </ul>
+        <h3>Notes</h3>
+        <ul>
+            <li>It is recommended to use an email address as the username, for clarity and uniqueness.</li>
+            <li>When generating a new password, please notify the user by checking 'Send email to user' box below!</li>
+        </ul>
+       </div>
+    </div>
 	<h3>Add/Edit User</h3>
 	<!-- {foreach from=$form.errors item=error key=k}
 	    <ul>
@@ -53,6 +62,7 @@ $(document).ready(function() {
         {else}
         <div class="row form-group form-inline form-inline">
         {/if}
+        {if $form.UserID_Group != null}
 	    	<label class="col-sm-12 col-sm-2 form-label">
                    {$form.UserID_Group.label}
             </label>
@@ -64,31 +74,28 @@ $(document).ready(function() {
                     <font class="form-error">{$form.errors.UserID_Group}</font>
                 </div>
             {/if}
-	    </div>
+        {else}
+	    	<label class="col-sm-12 col-sm-2 form-label">
+                   {$form.UserID.label}
+            </label>
+	    	<div class="col-sm-10">
+	    		{$form.UserID.html}
+	    	</div>
         
+        {/if}
+	     </div>
     <!-- </div> -->
-    <br>
-    <div class="row form-group form-inline">
-    	<label class="col-sm-2">
-    		NOTE:
-    	</label>
-    	<div class="col-sm-10">
-    		<B>When generating a new password, please notify the user by checking 'Send email to user' box!</B>
-    	</div>
-    </div>
     <br>
     {if $form.errors.Password_Group}
     <div class="row form-group form-inline form-inline has-error">
     {else}
     <div class="row form-group form-inline form-inline">
     {/if}
-    	<label class="col-sm-2 form-label">
+    	<label class="col-sm-2">
     		{$form.Password_Group.label}
     	</label>
     	<div class="col-sm-10">
-    		{$form.Password_Group.NA_Password.html} {$form.Password_Group.checkLabel.html}
-            <br>
-            {$form.Password_Group.Password_md5.html}
+    		{$form.Password_Group.html}
     	</div>
         {if $form.errors.Password_Group}
             <div class="col-sm-offset-2 col-xs-12">
@@ -263,6 +270,25 @@ $(document).ready(function() {
             </div>
         {/if}
     </div>
+    {if $form.__ConfirmEmail}
+    {if $form.errors.__ConfirmEmail}
+    <div class="row form-group form-inline form-inline has-error">
+    {else}
+    <div class="row form-group form-inline form-inline">
+    {/if}
+    	<label class="col-sm-2">
+    		{$form.__ConfirmEmail.label}
+    	</label>
+    	<div class="col-sm-10">
+    		{$form.__ConfirmEmail.html}
+    	</div>
+        {if $form.errors.__ConfirmEmail}
+            <div class="col-sm-offset-2 col-xs-12">
+                <font class="form-error">{$form.errors.__ConfirmEmail}</font>
+            </div>
+        {/if}
+    </div>
+    {/if}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.CenterID.label}
@@ -289,14 +315,6 @@ $(document).ready(function() {
     </div>
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.Examiner.label}
-    	</label>
-    	<div class="col-sm-10">
-    		{$form.Examiner.html}
-    	</div>
-    </div>
-    <div class="row form-group form-inline">
-    	<label class="col-sm-2">
     		{$form.PermID_Group.label}
     	</label>
     	<div class="col-sm-10 col-xs-12">
@@ -306,6 +324,17 @@ $(document).ready(function() {
     	</div>
     </div>
     <div class="row form-group form-inline">
+        <label class="col-sm-2">
+          {$form.Supervisors_Group.label}
+        </label>
+        <div class="col-sm-10 col-xs-12">
+          <div>
+            {$form.Supervisors_Group.html}
+          </div>
+        </div>
+     </div>
+
+    <div class="row form-group form-inline">
     	<div class="col-sm-2">
     		<input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
     	</div>
@@ -313,7 +342,7 @@ $(document).ready(function() {
     		<input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" />
     	</div>
     	<div class="col-sm-2">
-    		<input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=user_accounts'" value="Back" type="button" />
+    		<input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/'" value="Back" type="button" />
     	</div>
     </div>
 <!-- </form> -->

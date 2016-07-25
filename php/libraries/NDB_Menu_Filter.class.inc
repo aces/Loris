@@ -11,12 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'Pager/Pager.php';
-require_once 'NDB_Menu.class.inc';
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-require_once 'HTML/QuickForm/text.php';
-require_once 'HTML/QuickForm/select.php';
 /**
  * Menu class, with filtering
  *
@@ -30,9 +24,11 @@ require_once 'HTML/QuickForm/select.php';
  */
 class NDB_Menu_Filter extends NDB_Menu
 {
+    var $AjaxModule = false;
     var $TotalItems;
     /**
      * The columns to SELECT
+     *
      * @var    array
      * @access private
      */
@@ -40,6 +36,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * The base select query, starts at FROM
+     *
      * @var    string
      * @access private
      */
@@ -47,6 +44,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * The default GROUP BY column
+     *
      * @var    string
      * @access private
      */
@@ -54,6 +52,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * The default ORDER BY column
+     *
      * @var    string
      * @access private
      */
@@ -61,6 +60,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * Items selected from the GUI selection form
+     *
      * @var    array
      * @access private
      */
@@ -68,6 +68,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * An array of all valid filters to use
+     *
      * @var    array
      * @access private
      */
@@ -86,6 +87,7 @@ class NDB_Menu_Filter extends NDB_Menu
     var $validHavingFilters = array();
     /**
      * Associates the form element to the appropriate filter
+     *
      * @var    array
      * @access private
      */
@@ -103,6 +105,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * The list of candidates, users, etc
+     *
      * @var    array
      * @access private
      */
@@ -126,7 +129,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Calls other member functions to do all the work necessary to create the menu
      *
      * @return void
-     * @throws PEAR_Error
      * @access public
      */
     function setup()
@@ -143,7 +145,9 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // start the filter form
-        $this->_setupPage(null, null, null, null, 'filter');
+        $this->_setupPage($this->menu, null, null, null, 'filter');
+        $this->registerDefaultFilter();
+
         // $this->form = new HTML_QuickForm('filter');
 
         // set the filters
@@ -153,6 +157,18 @@ class NDB_Menu_Filter extends NDB_Menu
         $success = $this->_build();
 
         return true;
+    }
+
+    /**
+     * By default, trim all fields on the form before any processing/validation
+     * is done. Derived classes can override this behavior if needed.
+     *
+     * @return void
+     * @access public
+     */
+    function registerDefaultFilter()
+    {
+        $this->form->applyFilter('__ALL__', 'trim');
     }
 
     /**
@@ -211,15 +227,19 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // Go through the form's fields and set the valid ones.
         foreach ($this->formToFilter as $formKey => $dbField) {
-            if (isset($values[$formKey]) && $values[$formKey] !== '') {
-                $value = $values[$formKey];
-                if (in_array($dbField, $this->validFilters)) {
-                    $newFormFilters[$dbField] = $value;
+            if (isset($values[$formKey])) {
+                // Call to form->getValue will apply all the form filters that
+                // will modify the submitted data
+                $filteredValue = $values[$formKey];
+                if ($filteredValue !== '') {
+                    if (in_array($dbField, $this->validFilters)) {
+                        $newFormFilters[$dbField] = $filteredValue;
 
-                    if (in_array($dbField, $this->validHavingFilters)) {
-                        $this->having[$dbField] = $value;
-                    } else {
-                        $this->filter[$dbField] = $value;
+                        if (in_array($dbField, $this->validHavingFilters)) {
+                            $this->having[$dbField] = $filteredValue;
+                        } else {
+                            $this->filter[$dbField] = $filteredValue;
+                        }
                     }
                 }
             }
@@ -297,10 +317,14 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // 2. After resetting filters (if applicable), set the new
         // filters using the appropriate method.
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET'
+            || ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['filter']))
+        ) {
             // If it's a GET request (ie just reloading the page with
             // previous filters or clicking on a sort column, use
             // the filters that were saved into the session.
+            // OR a post request with no new defined filters (ie a second
+            // form on the page)
             $savedFilters = $_SESSION['State']->getProperty('filter');
             $this->_setFilters($savedFilters);
 
@@ -308,7 +332,11 @@ class NDB_Menu_Filter extends NDB_Menu
             // the filters values remain populated correctly in the front-end,
             // not just in the query..
             $defaults = $this->_getDefaults();
-            $this->_setDefaults(array_merge($defaults, $savedFilters));
+            if (is_array($savedFilters)) {
+                $this->_setDefaults(array_merge($defaults, $savedFilters));
+            } else {
+                $this->_setDefaults($defaults);
+            }
         } else if ($_SERVER['REQUEST_METHOD'] === 'POST'
             && isset($_POST['filter'])
         ) {
@@ -350,7 +378,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Contructs the menu
      *
      * @return void
-     * @throws PEAR_Error
      * @access private
      */
     function _build()
@@ -358,13 +385,15 @@ class NDB_Menu_Filter extends NDB_Menu
         // show selection form table
         $success = $this->_setFilterForm();
 
+        if ($this->AjaxModule) {
+            return;
+        }
         // get the list
         $this->list = $this->_getList();
 
         // show data table with user information and access URLs
         $success = $this->_setDataTable();
     }
-
 
     /**
      * Sets the template data for the filter form
@@ -431,7 +460,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Returns a list of candidates, users, etc.
      *
      * @return array
-     * @throws PEAR_Error
      * @access private
      */
     function _getList()
@@ -502,9 +530,9 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
 
-        if (is_array($this->searchKey)
-            && count($this->searchKey) > 0
-            && $this->searchKey['keyword'] !== ''
+        if (is_array($this->searchKeyword)
+            && count($this->searchKeyword) > 0
+            && !empty($this->searchKey['keyword'])
         ) {
             $WhereClause .= " AND (";
             $fields       = array();
@@ -576,7 +604,6 @@ class NDB_Menu_Filter extends NDB_Menu
      * Sets the template data for the list of candidates, users, etc.
      *
      * @return void
-     * @throws PEAR_Error
      * @access private
      */
     function _setDataTable()
@@ -584,16 +611,16 @@ class NDB_Menu_Filter extends NDB_Menu
         // create instance of config object
         $config =& NDB_Config::singleton();
         // configure the page pagination
-            $params = array(
-                       'mode'       => 'Sliding',
-                       'perPage'    => $config->getSetting('rowsPerPage'),
-                       'delta'      => 3,
-                       'totalItems' => $this->TotalItems,
-                      );
-        $pager      = Pager::factory($params);
-        $links      = $pager->getLinks();
-        $this->tpl_data['page_links'] = $links['all'];
+        $rowsPerPage = $config->getSetting('rowsPerPage');
 
+        $pageID = isset($_GET['pageID']) ? $_GET['pageID'] : 1;
+
+        $this->tpl_data['rowsPerPage']      = $rowsPerPage;
+        $this->tpl_data['pageID']           = $pageID;
+        $this->tpl_data['filterfield']      = $_GET['filter'][order][field];
+        $this->tpl_data['filterfieldOrder'] = $_GET['filter'][order][fieldOrder];
+
+        $this->tpl_data['TotalItems'] = $this->TotalItems;
         // print out column headings
         $i = 0;
         foreach ($this->headers as $header) {
@@ -605,7 +632,7 @@ class NDB_Menu_Filter extends NDB_Menu
             if (isset($this->filter['order'])) {
                 $this->tpl_data['headers'][$i]['fieldOrder']
                     = ($this->filter['order']['fieldOrder']
-                        == 'DESC') ? 'ASC' : 'DESC';
+                    == 'DESC') ? 'ASC' : 'DESC';
             }
             $i++;
         }
@@ -613,8 +640,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the template data for the table rows
         if (is_array($this->list) && !empty($this->list)) {
             // print out data rows
-            $count   = $pager->getOffsetByPageId();
-            $success = $this->_setDataTableRows($count[0]);
+            $this->_setDataTableRows($rowsPerPage*($pageID-1)+1);
         }
     }
 
@@ -658,15 +684,161 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function display()
     {
+        // Set the csvFile links
+        $uri    = ltrim($_SERVER['REQUEST_URI'], "/");
+        $suffix = strpos($uri, '?') ? '&format=csv' : '?&format=csv';
+        $this->tpl_data['csvUrl']  = $uri . $suffix;
+        $this->tpl_data['csvFile'] = $_REQUEST['test_name'];
+        if (isset($_REQUEST['subtest'])) {
+            $this->tpl_data['csvFile'] .= '-' . $_REQUEST['subtest'];
+        } elseif (isset($_REQUEST['submenu'])) {
+            $this->tpl_data['csvFile'] .= '-' . $_REQUEST['submenu'];
+        }
+        $this->tpl_data['csvFile'] .= date('-Y_m_d');
+
         // dump the html for the menu
-        $smarty   = new Smarty_neurodb($this->Module);
-        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
-        $this->form->accept($renderer);
+        $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);
-        $smarty->assign('form', $renderer->toArray());
+        $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("menu_$this->menu.tpl");
         return $html;
+    }
+
+    /**
+     * Controls access to a module's SQL tables, transforming the table into a csv
+     * string. This script should ensure that only files relative to module's path
+     * specified are accessible.
+     *
+     * @return string  csv formated string
+     */
+    function getCSVData()
+    {
+        $list['data']    = $this->_getFullList();
+        $list['headers'] = $this->headers;
+
+        return Utility::arrayToCSV($list);
+    }
+
+    /**
+     * Converts this menu filter to an array of the form
+     *
+     * Headers => (string array)
+     * Data => (array of arrays of row data)
+     *
+     * Suitable for serializing to JSON, CSV, etc..
+     *
+     * @return associative array
+     */
+    function toArray()
+    {
+        $data = $this->_getFullList();
+
+        $headers = array_map(
+            function ($header) {
+                return ucwords(str_replace('_', ' ', $header));
+            },
+            $this->headers
+        );
+
+        $MappedData = array();
+        foreach ($data as $row) {
+            $MappedData[] = array_values($row);
+        }
+
+        return array(
+                'Headers' => $headers,
+                'Data'    => $MappedData,
+               );
+    }
+
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        return json_encode($this->toArray());
+    }
+    /**
+     * Returns the full list of candidates, users, etc.
+     *
+     * @return array
+     * @access private
+     */
+    function _getFullList()
+    {
+        // create DB object
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+
+        $qparams = array();
+        // add the base query
+        $query  = '';
+        $query .= $this->_getBaseQuery();
+
+        $filterdetails = $this->_getBaseFilter();
+        $query        .= $filterdetails['clause'];
+        $qparams       = $filterdetails['params'];
+        // apply ORDER BY filters
+        $query .= " ORDER BY ";
+        if (!empty($this->filter['order'])) {
+            $query .= $this->filter['order']['field']
+                ." ".$this->filter['order']['fieldOrder'].", ";
+        }
+        $query .= $this->order_by;
+        // get the list
+
+        $this->_getNumberPages($query);
+
+        $config         =& NDB_Config::singleton();
+        $resultsPerPage = $config->getSetting('rowsPerPage');
+        $result         = $DB->pselect($query, $qparams);
+
+        return $result;
+    }
+
+    /**
+     * Returns an array of filters that are currently set for this
+     * menu filter
+     *
+     * @return array of filters that are set
+     */
+    function _getFilterValues()
+    {
+        $FilterValues = array();
+        foreach ($this->formToFilter as $formName => $field) {
+            if (isset($_REQUEST[$formName])) {
+                $FilterValues[$formName] = $_REQUEST[$formName];
+            } else {
+                $FilterValues[$formName] = null;
+            }
+        }
+        return $FilterValues;
+    }
+
+    /**
+     * Adds React table related dependencies to menu filters, since forms don't
+     * usually have tables or pagination
+     *
+     * @return array of javascript files to be sourced
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $depends = parent::getJSDependencies();
+        $baseURL = $factory->settings()->getBaseURL();
+        return array_merge(
+            $depends,
+            array(
+             $baseURL . '/js/components/PaginationLinks.js',
+             $baseURL . '/js/components/FilterTable.js',
+             $baseURL . '/js/components/StaticDataTable.js',
+             $baseURL . '/js/components/DynamicDataTable.js',
+            )
+        );
     }
 }
 ?>
