@@ -28,7 +28,7 @@
             </div>
         {/foreach}
         <br>
-        {if $candidate_parameters_edit}
+        {if $candidate_parameter_edit}
             <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_candidate_info/?candID={$candID}&identifier={$candID}'" value="Update Candidate Info" type="button" />
         {/if}
     </div>
@@ -52,7 +52,7 @@
                 </div>
             </div>
             <br>
-            {if $candidate_parameters_edit}
+            {if $candidate_parameter_edit}
                 <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_proband_info/?candID={$candID}&identifier={$candID}'" value="Update Proband Info" type="button" />
             {/if}
         </div>
@@ -72,7 +72,7 @@
             {/foreach}
         </div>
         <br>
-        {if $candidate_parameters_edit}
+        {if $candidate_parameter_edit}
             <input class="btn btn-sm btn-primary col-sm-offset-2" colspan="2" onclick="location.href='{$baseurl}/candidate_parameters/add_family/?candID={$candID}&identifier={$candID}'" value="Add Family Info" type="button" />
         {/if}
         <br><br>
@@ -105,7 +105,7 @@
     </table>
     </div>
     <div class="panel-body">
-        {if $candidate_parameters_edit}
+        {if $candidate_parameter_edit}
             <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_participant_status/?candID={$candID}&identifier={$candID}'" value="Update Participant Status" type="button" />
         {/if}
     </div>
@@ -139,7 +139,7 @@
             {if $form.$row.error}
                 <span class="error">{$form.$row.error}</span>
             {/if}
-            {if $candidate_parameters_edit}
+            {if $candidate_parameter_edit}
                 <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_consent_info/?candID={$candID}&identifier={$candID}'" value="Update Consent Info" type="button" />
             {/if}
         </div>
