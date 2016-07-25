@@ -106,10 +106,8 @@
 
             <hr/>
 
-            <div class="filename-additional-info"
-                 id="filename-additional-info-{{VOLID}}">
-              <div class="control-heading"
-                   id="voxel-coordinates-heading-{{VOLID}}">
+            <div class="filename-additional-info" id="filename-additional-info-{{VOLID}}">
+              <div class="control-heading" id="voxel-coordinates-heading-{{VOLID}}">
                 Voxel Coordinates
               </div>
               <div class="voxel-coords" data-volume-id="{{VOLID}}">
@@ -158,9 +156,12 @@
                   View Slices
                 </div>
                 <div class="slice-series-buttons">
-                  <span class="slice-series-button button btn btn-sm btn-primary" data-axis="xspace">Sagittal</span>
-                  <span class="slice-series-button button btn btn-sm btn-primary" data-axis="yspace">Coronal</span>
-                  <span class="slice-series-button button btn btn-sm btn-primary" data-axis="zspace">Transverse</span>
+                  <span class="slice-series-button button btn btn-sm btn-primary"
+                        data-axis="xspace">Sagittal</span>
+                  <span class="slice-series-button button btn btn-sm btn-primary"
+                        data-axis="yspace">Coronal</span>
+                  <span class="slice-series-button button btn btn-sm btn-primary"
+                        data-axis="zspace">Transverse</span>
                 </div>
               </div>
             </div>
