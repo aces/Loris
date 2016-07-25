@@ -167,7 +167,7 @@ class NDB_Form_Dashboard extends NDB_Form
 			LEFT JOIN candidate c ON (s.CandID=c.CandID)
                     LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
                     WHERE Data_entry='In Progress' AND psc.Name=:Site
-			s.Active='Y' AND c.Active='Y'",
+			          AND s.Active='Y' AND c.Active='Y'",
                     array('Site' => $site)
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Site: ' . $site;
