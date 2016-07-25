@@ -84,8 +84,8 @@ class NDB_Form_Brainbrowser extends NDB_Form
         return array_merge(
             $deps,
             [
-                $baseURL . "/brainbrowser/css/volume-viewer-demo.css",
-                $baseURL . "/brainbrowser/css/brainbrowser.css"
+             $baseURL . "/brainbrowser/css/volume-viewer-demo.css",
+             $baseURL . "/brainbrowser/css/brainbrowser.css",
             ]
         );
     }
