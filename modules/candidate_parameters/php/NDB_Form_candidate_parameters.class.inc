@@ -132,9 +132,10 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         foreach ($emptor_info as $key=>$val) {
             if ($key == 'flagged_reason') {
                 $reason = $DB->pselectOne(
-                    "SELECT Description AS Reason FROM candidate c 
-                                           JOIN caveat_options o ON (o.ID = c.flagged_reason) 
-                                           WHERE CandID=:CandidateID",
+                    "SELECT Description AS Reason
+                      FROM candidate c
+                      JOIN caveat_options o ON (o.ID = c.flagged_reason)
+                       WHERE CandID=:CandidateID",
                     array('CandidateID' => $this->identifier)
                 );
                 if (!empty($reason)) {
@@ -320,7 +321,9 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                             null,
                             false
                         );
-                        $setValue = array('Date_taken' => $inst->getFieldValue('Date_taken'));
+                        $setValue = array(
+                                     'Date_taken' => $inst->getFieldValue('Date_taken'),
+                                    );
                         $inst->_saveCandidateAge($setValue);
                         $DB->update(
                             $test['Test_name'],
@@ -427,9 +430,9 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                 array("cid" => $values['CandID'])
             );
 
-            if ($current_status['participant_status'] != $participant_vals['participant_status']
-                || $current_status['entry_staff'] != $participant_vals['entry_staff']
-                || $current_status['reason_specify'] != $participant_vals['reason_specify']
+            if ($current_status['participant_status'] !=$participant_vals['participant_status']
+                || $current_status['entry_staff'] !=$participant_vals['entry_staff']
+                || $current_status['reason_specify'] !=$participant_vals['reason_specify']
                 || $current_status['participant_subOptions'] != $sub_reasonID
             ) {
                 $success = $DB->insert(
@@ -475,8 +478,10 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                 array("cid" => $values['CandID'])
             );
 
-            // Insert to consent_info_history table first, before participant_status
-            // because else{} below adds a column specific to participant_status table
+            // Insert to consent_info_history table first, before
+            // participant_status
+            // because else{} below adds a column specific to
+            // participant_status table
             $success = $DB->insert("consent_info_history", $participant_vals);
 
             if ($ParticipantCount > 0) {
@@ -487,7 +492,8 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                 );
             } else {
                 //insert it
-                $participant_vals['participant_status'] = 1; // 1 is Active which should be default
+                $participant_vals['participant_status'] = 1;
+                // 1 is Active which should be default
                 $success = $DB->insert("participant_status", $participant_vals);
             }
 
@@ -513,11 +519,13 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         $DB =& Database::singleton();
 
         $ret = $DB->selectOne(
-            "SELECT t.$param FROM flag f JOIN $instrument t ON (t.CommentID=f.CommentID) 
-                               JOIN session s ON (f.SessionID=s.ID) WHERE 
-                               s.CandID=" . $DB->quote($this->identifier) . ' 
-                               AND f.test_name=' . $DB->quote($instrument) . ' 
-                               AND t.CommentID NOT LIKE \'DDE_%\''
+            "SELECT t.$param
+              FROM flag f
+                JOIN $instrument t ON (t.CommentID=f.CommentID)
+                JOIN session s ON (f.SessionID=s.ID)
+              WHERE s.CandID=" . $DB->quote($this->identifier) . '
+                AND f.test_name=' . $DB->quote($instrument) . '
+                AND t.CommentID NOT LIKE \'DDE_%\''
         );
         if ($ret == array()) {
             return;
@@ -542,9 +550,18 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         // candID
         $this->tpl_data['candID'] = $candidate->getData('CandID');
 
-        $this->addScoreColumn('flagged_caveatemptor', 'Caveat Emptor flag for Candidate');
-        $this->addScoreColumn('flagged_reason', $this->indent.'Reason for Caveat Emptor flag');
-        $this->addScoreColumn('flagged_other', $this->indent.'Additional Comments for flag');
+        $this->addScoreColumn(
+            'flagged_caveatemptor',
+            'Caveat Emptor flag for Candidate'
+        );
+        $this->addScoreColumn(
+            'flagged_reason',
+            $this->indent.'Reason for Caveat Emptor flag'
+        );
+        $this->addScoreColumn(
+            'flagged_other',
+            $this->indent.'Additional Comments for flag'
+        );
 
         //Extract the fields from the parameter_type table
         $DB->select(
@@ -605,7 +622,14 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         $options = array('') + $options;
         $this->tpl_data['pstatus_options'] = $options;
         $this->tpl_data['pstat']           = $_REQUEST['participant_status'];
-        $this->addTextAreaGroup('reason_specify', "Comments", array(null => '', 'not_answered' => 'Not Answered'));
+        $this->addTextAreaGroup(
+            'reason_specify',
+            "Comments",
+            array(
+             null           => '',
+             'not_answered' => 'Not Answered',
+            )
+        );
 
         //Consent Information
         $result = $DB->pselect(
@@ -621,7 +645,9 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
             array('cid' => $this->identifier)
         );
         for ($i = 0; $i< sizeof($result); $i++) {
-            if ($result[$i]['Description'] =='Active' && empty($result[$i]['entry_staff'])) {
+            if ($result[$i]['Description'] =='Active'
+                && empty($result[$i]['entry_staff'])
+            ) {
                 $result[$i]['entry_staff'] = 'Enrollment';
             }
 
@@ -633,21 +659,29 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
             foreach (Utility::toArray($consent['Consent']) as $question) {
                 $consentQuestion = array(
                                     $question['name']                 => $question['label'],
-                                    $question['name'] . '_date'       => "Date of <BR> $question[label]",
-                                    $question['name'] . '_withdrawal' => "Date of withdrawal <BR> of $question[label]",
+                                    $question['name'] . '_date'       => "Date of ".
+                        "<BR> $question[label]",
+                                    $question['name'] . '_withdrawal' => "Date of withdrawal ".
+                        "<BR> of $question[label]",
                                     'entry_staff'                     => 'Data Entry Staff',
                                     'data_entry_date'                 => 'Date Updated',
                                    );
-                $fields          = $question['name'].', '.$question['name'] . '_date, '.$question['name'] . '_withdrawal, ';
+                $fields          = $question['name'].', '
+                    .$question['name']
+                    . '_date, '
+                    .$question['name']
+                    . '_withdrawal, ';
                 $study_consent   = $DB->pselect(
                     "SELECT $fields entry_staff,data_entry_date
-                                               FROM consent_info_history WHERE CandID=:cid",
+                     FROM consent_info_history WHERE CandID=:cid",
                     array('cid' => $this->identifier)
                 );
                 $study_consent_hist = array();
                 for ($i=0; $i<sizeof($study_consent); $i++ ) {
                     foreach ($consentQuestion as $key => $column_title) {
-                        if ($key == $question['name'] && empty($study_consent[$i][$question['name']])) {
+                        if ($key == $question['name']
+                            && empty($study_consent[$i][$question['name']])
+                        ) {
                             break;
                         }
 
@@ -677,13 +711,17 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
     {
         if (!empty($formDateValue)) {
             // check if it's already formatted correctly
-            if (is_string($formDateValue) && preg_match("/^[\d]{4}-[\d]{2}-[\d]{2}$/", $formDateValue)) {
+            if (is_string($formDateValue)
+                && preg_match("/^[\d]{4}-[\d]{2}-[\d]{2}$/", $formDateValue)
+            ) {
                 return $formDateValue;
             }
             if (count($formDateValue)==2) {
-                $databaseValue = "$formDateValue[H]:$formDateValue[i]";  //handle time (HH:MM:SS)
+                $databaseValue = "$formDateValue[H]:$formDateValue[i]";
+                //handle time (HH:MM:SS)
             } else {
-                $databaseValue = "$formDateValue[Y]-$formDateValue[M]-$formDateValue[d]";  //handle date (YYYY/MM/DD)
+                $databaseValue = "$formDateValue[Y]-$formDateValue[M]-$formDateValue[d]";
+                //handle date (YYYY/MM/DD)
             }
         }
         return $databaseValue;
@@ -711,7 +749,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
 
         $this->addBasicText('FamilyMemberID', 'Family Member ID:<BR/> (Enter DCCID)');
         $this->addSelect('relation_type', 'Relation Type', $this->relationType);
-        $this->form->addFormRule(array(&$this, '_validate_add_family'));
+        $this->form->addFormRule(array(&$this, '_validateAddFamily'));
         $this->tpl_data['candID'] = $this->identifier;
 
     }
@@ -748,7 +786,8 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         $this->addSelect('participant_status', "Participant Status", $options);
         $this->addSelect(
             'participant_suboptions',
-            "Specify Reason for status<BR>(Required only for status Inactive/Incomplete)",
+            "Specify Reason for status".
+            "<BR>(Required only for status Inactive/Incomplete)",
             $sub_options
         );
         $this->addTextAreaGroup(
@@ -811,15 +850,22 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         );
         //Extract the fields from the parameter_type table
         $DB->select(
-            "SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, 
-                     parameter_type_category as ptc, parameter_type_category_rel as ptcr 
-                     WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID 
-                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC",
+            "SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description
+              FROM parameter_type as pt,
+                     parameter_type_category as ptc,
+                     parameter_type_category_rel as ptcr
+              WHERE pt.ParameterTypeID=ptcr.ParameterTypeID
+                AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID
+                AND ptc.Name='Candidate Parameters'
+              ORDER BY pt.ParameterTypeID, pt.name ASC",
             $field_results
         );
         //If there are no defined fields pritn a message to that effect
         if (empty($field_results)) {
-            $this->addScoreColumn("static", "No candidate parameters have been defined for this study");
+            $this->addScoreColumn(
+                "static",
+                "No candidate parameters have been defined for this study"
+            );
             return;
         }
 
@@ -834,18 +880,29 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                 foreach ($options as $option) {
                     $elOptions[$option] = $option;
                 }
-                $this->addSelect("PTID_".$fresult['ParameterTypeID'], $fresult['Description'], $elOptions);
+                $this->addSelect(
+                    "PTID_".$fresult['ParameterTypeID'],
+                    $fresult['Description'],
+                    $elOptions
+                );
                 break;
 
             case "dat":
-                $this->addBasicDate("PTID_".$fresult['ParameterTypeID'], $fresult['Description'], $dateOptions);
+                $this->addBasicDate(
+                    "PTID_".$fresult['ParameterTypeID'],
+                    $fresult['Description'],
+                    $dateOptions
+                );
                 break;
 
             case "int":
             case "var":
             case "tex":
             default:
-                $this->addBasicTextArea("PTID_".$fresult['ParameterTypeID'], $fresult['Description']);
+                $this->addBasicTextArea(
+                    "PTID_". $fresult['ParameterTypeID'],
+                    $fresult['Description']
+                );
 
             }
             $this->tpl_data['elements_list'][] ="PTID_".$fresult['ParameterTypeID'];
@@ -878,15 +935,32 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         $probandDateOptions = array(
                                'language'         => 'en',
                                'format'           => 'YMd',
-                               'minYear'          => $config->getSetting('startYear') - 20, //allows for proband siblings up to 20 years older than candidate
+                               'minYear'          => $config->getSetting('startYear') - 20,
+            //allows for proband siblings up to 20 years older than candidate
                                'maxYear'          => $config->getSetting('endYear'),
                                'addEmptyOption'   => true,
                                'emptyOptionValue' => null,
                               );
 
-        $this->addBasicDate('ProbandDoB', 'DoB Proband:', $probandDateOptions);
-        $this->addBasicDate('ProbandDoB2', 'Confirm DoB Proband:', $probandDateOptions);
-        $this->addSelect('ProbandGender', 'Proband gender:', array('' => '', 'Male' => 'Male', 'Female' => 'Female'));
+        $this->addBasicDate(
+            'ProbandDoB',
+            'DoB Proband:',
+            $probandDateOptions
+        );
+        $this->addBasicDate(
+            'ProbandDoB2',
+            'Confirm DoB Proband:',
+            $probandDateOptions
+        );
+        $this->addSelect(
+            'ProbandGender',
+            'Proband gender:',
+            array(
+             ''       => '',
+             'Male'   => 'Male',
+             'Female' => 'Female',
+            )
+        );
 
         $this->form->addFormRule(array(&$this, '_validate'));
     }
@@ -979,7 +1053,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      *
      * @throws DatabaseException
      */
-    function _validate_add_family($values)
+    function _validateAddFamily($values)
     {
         if (!is_array($values) || count($values) ==0) {
             return true;
@@ -987,13 +1061,17 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         $cand    = $values['FamilyMemberID'];
         $DB      =& Database::singleton();
         $errors  = array();
-        $results = $DB->pselect("SELECT CandID from candidate where Active='Y'", array());
+        $results = $DB->pselect(
+            "SELECT CandID from candidate where Active='Y'",
+            array()
+        );
         $activeCandidates = array();
         foreach ($results as $row) {
             $activeCandidates[] = $row['CandID'];
         }
         if (!in_array($cand, $activeCandidates)) {
-            $errors['FamilyMemberID'] = 'Candidate should be part of study. Please enter correct CandID';
+            $errors['FamilyMemberID'] = 'Candidate should be part of study. '.
+            'Please enter correct CandID';
         }
         $familyID      = $DB->pselectOne(
             "SELECT FamilyID from family WHERE CandID=:cid",
@@ -1051,7 +1129,8 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
              // consent requirements
         $consent = $config->getSetting('ConsentModule');
         if ($consent['useConsent'] === 'true') {
-            /* The following if statement deals with the case of having only one consent
+            /* The following if statement deals with the case of having
+                only one consent
                 type in the config causing the $consent to be a 1D array.
                 The for-loop expects a nested array and as such the if statement
                 wraps the 1D array in an empty array. */
@@ -1066,11 +1145,16 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                 $consentWithdrawal = $fields[$fieldname . '_withdrawal'];
                 $consent           = date_create();
                 $today = date('Y-m-d');
-                $consent->setDate($consentDate['Y'], $consentDate['M'], $consentDate['d']);
+                $consent->setDate(
+                    $consentDate['Y'],
+                    $consentDate['M'],
+                    $consentDate['d']
+                );
                 $consent = $consent->format('Y-m-d');
 
                 if ($consentVal == "") {
-                    $errors[$fieldname] = $consenttype['label'].", Consent status required";
+                    $errors[$fieldname] = $consenttype['label'].
+                        ", Consent status required";
                 }
 
                 if ($consent > $today) {
@@ -1078,12 +1162,13 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
 
                 }
 
-                if ($consentVal === 'yes' && (                    empty($consentDate)
+                if ($consentVal === 'yes' && ( empty($consentDate)
                     || empty($consentDate['Y'])
                     || empty($consentDate['M'])
-                    || empty($consentDate['d'])                    )
+                    || empty($consentDate['d']))
                 ) {
-                    $errors[$fieldname . '_date'] = 'When consent is set to YES the date is required';
+                    $errors[$fieldname . '_date'] = 'When consent is set to '.
+                    'YES the date is required';
                 }
                 if (!empty($consentWithdrawal['Y'])
                     && !empty($consentWithdrawal['M'])
@@ -1091,42 +1176,51 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
                 ) {
                     $withdrawal = date_create();
 
-                    $withdrawal->setDate($consentWithdrawal['Y'], $consentWithdrawal['M'], $consentWithdrawal['d']);
+                    $withdrawal->setDate(
+                        $consentWithdrawal['Y'],
+                        $consentWithdrawal['M'],
+                        $consentWithdrawal['d']
+                    );
                     $withdrawal = $withdrawal->format('Y-m-d');
                     $diff       = date_diff($withdrawal, $consent);
                     if ($withdrawal < $consent) {
                         $errors[$fieldname . '_withdrawal'] = 'Must be after date of consent';
                     } else if ($withdrawal > $today) {
                         $errors[$fieldname . '_withdrawal'] = 'Cannot be later than today';
-
                     }
                 }
                 if ($fields[$fieldname.'_withdrawal']['M'] != $fields[$fieldname.'_withdrawal2']['M']
                     || $fields[$fieldname.'_withdrawal']['d'] != $fields[$fieldname.'_withdrawal2']['d']
                     || $fields[$fieldname.'_withdrawal']['Y'] != $fields[$fieldname.'_withdrawal2']['Y']
                 ) {
-                    $errors[$fieldname.'_withdrawal'] = 'Date of withdrawal fields must match.';
+                    $errors[$fieldname.'_withdrawal'] = 'Date of withdrawal '.
+                    'fields must match.';
                 }
                 if ($fields[$fieldname.'_date']['M'] != $fields[$fieldname.'_date2']['M']
                     || $fields[$fieldname.'_date']['d'] != $fields[$fieldname.'_date2']['d']
                     || $fields[$fieldname.'_date']['Y'] != $fields[$fieldname.'_date2']['Y']
                 ) {
-                    $errors[$fieldname.'_date'] = 'Date of consent fields must match.';
+                    $errors[$fieldname.'_date'] = 'Date of consent fields '.
+                        'must match.';
                 }
 
             }
         }
-        if ($fields['flagged_caveatemptor']=='true' && empty($fields['flagged_reason'])) {
+        if ($fields['flagged_caveatemptor']=='true'
+            && empty($fields['flagged_reason'])
+        ) {
             $errors['flagged_reason'] = 'Please provide additional information for 
                                          flagging candidate as Caveat Emptor';
         }
         $fields['flagged_other'] =trim($fields['flagged_other']);
         if ($fields['flagged_reason']== 3 && empty($fields['flagged_other'])) {
-            $errors['flagged_other_group'] = 'If Other, please specify details for cavear emptor';
+            $errors['flagged_other_group'] = 'If Other, please specify '.
+                'details for cavear emptor';
         }
 
         if ($options[$fields['participant_status']]['Required'] == true) {
-            $fields['participant_suboptions'] = trim($fields['participant_suboptions']);
+            $fields['participant_suboptions']
+                = trim($fields['participant_suboptions']);
             if (empty($fields['participant_suboptions'])) {
                 $errors['participant_suboptions'] = "Please specify the status";
             }
@@ -1145,7 +1239,9 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
     {
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
-            "SELECT ID,Description FROM participant_status_options WHERE parentID IS NULL",
+            "SELECT ID,Description
+              FROM participant_status_options
+              WHERE parentID IS NULL",
             array()
         );
         $option_array = array();
@@ -1193,7 +1289,9 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
     {
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
-            "SELECT ID,Description FROM participant_status_options WHERE parentID=:pid",
+            "SELECT ID,Description
+              FROM participant_status_options
+              WHERE parentID=:pid",
             array('pid' => $parentID)
         );
         $option_array = array();
