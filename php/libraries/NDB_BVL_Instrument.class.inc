@@ -2067,7 +2067,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $db        =& Database::singleton();
         $CommentID = $this->getCommentID();
 
-        $pscid = $db->pselectRow(
+        $pscid = $db->pselectOne(
             "SELECT c.PSCID FROM $this->testName i
             JOIN flag f USING (CommentID)
             JOIN session s ON (f.SessionID=s.ID)
