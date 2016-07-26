@@ -12,5 +12,14 @@ function formatColumn(column, cell, rowData) {
             default: return <td>None</td>;
         }
     }
+    if (column === 'Scan Done' && cell === 'Y') {
+        return (
+            <td className="scanDoneLink">
+                <a href="#" onClick={loris.loadFilteredMenuClickHandler('imaging_browser', {'pscid' : rowData[2]})}>
+                    {cell}
+                </a>
+            </td>
+        );
+    }
     return <td>{cell}</td>;
 }

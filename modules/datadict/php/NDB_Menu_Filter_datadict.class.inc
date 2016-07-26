@@ -147,6 +147,7 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
             $deps,
             array(
                 $baseURL . "/datadict/js/columnFormatter.js",
+                $baseURL . "/datadict/js/datadict_helper.js",
             )   
         );  
     }   

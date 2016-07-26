@@ -1,5 +1,7 @@
 FROM ubuntu:14.04
 MAINTAINER Dave MacFarlane <david.macfarlane2@mcgill.ca>
+# Stock images come without apt archive -- needs an update
+RUN apt-get -qqq update
 RUN apt-get -y install php5 php5-json curl git php5-mysql mysql-client
 # Eventually remove this.
 RUN apt-get -y install php-pear

@@ -141,7 +141,7 @@ var pageLinks = RPaginationLinks(
     RowsPerPage : {$rowsPerPage},
     Total: {$TotalItems},
     onChangePage: function(pageNum) {
-        location.href="{$baseurl}/user_accounts/?pageID=" + pageNum
+        location.href="{$baseurl}/user_accounts/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
     },
     Active: {$pageID}
 });

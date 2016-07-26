@@ -239,7 +239,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'SeriesUID' => $FileObj->getParameter('SeriesUID'),
                 'XMLreport' => $FileObj->getParameter('processing:DTIPrepXmlReport'),
                 'XMLprotocol' => $FileObj->getParameter('ProtocolFile'),
-                'NrrdFile' => $FileObj->getParameter('processing:nrrd_file')
+                'NrrdFile' => $FileObj->getParameter('processing:nrrd_file'),
+                'OtherTimepoints' => $this->_getFilesAcrossTimepoints((int)$FileObj->getParameter('SessionID'),
+                (int)$FileObj->getParameter('AcquisitionProtocolID'))
             );
             $this->tpl_data['files'][] = $file;
         }
@@ -486,6 +488,31 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     }
 
     /**
+     * Gets candidate's scans with the same acquisitionID.
+     *
+     * @return string of FileIDs, comma separated
+     */
+    function _getFilesAcrossTimepoints($initialFileID, $initialFileAcquisitionID){
+
+        $selectResults = $this->DB->pselect("SELECT FileID FROM files ".
+            "WHERE AcquisitionProtocolID =:initialFileAcquisitionID ".
+            "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".
+            "ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)",
+            array(
+                'initialFileAcquisitionID' => $initialFileAcquisitionID,
+                'initialFileID' => $initialFileID
+            )
+        );
+
+        $fileIDS = array();
+        foreach($selectResults as $selectResult) {
+            $fileIDS[] = $selectResult['FileID'];
+        }
+        $fileIDString = implode(",", $fileIDS);
+        return $fileIDString;
+    }
+
+    /**
     * Gets header table html
     *
     * @return $html of the header table
@@ -578,9 +605,10 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         $depends = parent::getJSDependencies();
         if($this->page === 'viewSession') {
             $factory = NDB_Factory::singleton();
-            $baseURL = $factory->settings()->getBaseURL();
+            $baseurl = $factory->settings()->getBaseURL();
             $depends = array_merge($depends,
                 array(
+                    $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
                     $baseurl . "/imaging_browser/js/ImagePanel.js"
                 ));
 

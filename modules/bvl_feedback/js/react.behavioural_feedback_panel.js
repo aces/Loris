@@ -753,7 +753,7 @@ var FeedbackPanel = React.createClass({
 
     request = $.ajax({
       type: "POST",
-      url: "AjaxHelper.php?Module=bvl_feedback&script=close_bvl_feedback_thread.php",
+      url: loris.BaseURL + "/bvl_feedback/ajax/close_bvl_feedback_thread.php",
       data: {
         "candID": this.props.candID,
         "feedbackID": feedbackID
@@ -784,7 +784,7 @@ var FeedbackPanel = React.createClass({
 
     request = $.ajax({
       type: "POST",
-      url: "AjaxHelper.php?Module=bvl_feedback&script=open_bvl_feedback_thread.php",
+      url: loris.BaseURL + "/bvl_feedback/ajax/open_bvl_feedback_thread.php",
       data: {
         "candID": this.props.candID,
         "feedbackID": feedbackID

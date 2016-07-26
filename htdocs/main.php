@@ -123,7 +123,9 @@ $paths = $config->getSetting('paths');
 if (!empty($TestName)) {
     // Get CSS for a module
     $base = $paths['base'];
-    if (file_exists($base . "modules/$TestName/css/$TestName.css")) {
+    if (file_exists($base . "modules/$TestName/css/$TestName.css")
+        || file_exists($base . "project/modules/$TestName/css/$TestName.css")
+    ) {
         if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
             && strcmp($_SERVER['REQUEST_URI'], '/') != 0
         ) {
@@ -191,7 +193,8 @@ try {
     }
 
     if (isset($caller->page)) {
-        $tpl_data['jsfiles'] = $caller->page->getJSDependencies();
+        $tpl_data['jsfiles']  = $caller->page->getJSDependencies();
+        $tpl_data['cssfiles'] = $caller->page->getCSSDependencies();
     }
 
     $tpl_data['workspace'] = $workspace;
@@ -214,6 +217,13 @@ try {
         break;
     }
     $tpl_data['error_message'][] = $e->getMessage();
+} finally {
+    // Set dependencies if they are not set
+    if (!isset($tpl_data['jsfiles']) || !isset($tpl_data['cssfiles'])) {
+        $page = new NDB_Page();
+        $tpl_data['jsfiles']  = $page->getJSDependencies();
+        $tpl_data['cssfiles'] = $page->getCSSDependencies();
+    }
 }
 
 //--------------------------------------------------

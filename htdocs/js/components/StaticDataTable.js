@@ -19,6 +19,15 @@ StaticDataTable = React.createClass({
             }
         }
     },
+    componentDidUpdate: function () {
+        if (jQuery.fn.DynamicTable) {
+            if (this.props.freezeColumn) {
+                $("#dynamictable").DynamicTable({ "freezeColumn": this.props.freezeColumn });
+            } else {
+                $("#dynamictable").DynamicTable();
+            }
+        }
+    },
     getInitialState: function () {
         return {
             'PageNumber': 1,
@@ -127,62 +136,68 @@ StaticDataTable = React.createClass({
         var index = [],
             that = this;
 
-        if (this.state.SortColumn >= 0) {
-            for (var i = 0; i < this.props.Data.length; i += 1) {
-                var val = this.props.Data[i][this.state.SortColumn];
+        for (var i = 0; i < this.props.Data.length; i += 1) {
+            var val = this.props.Data[i][this.state.SortColumn];
 
-                if (parseInt(val, 10) == val) {
-                    val = parseInt(val, 10);
-                } else if (parseFloat(val, 10) == val) {
-                    val = parseFloat(val, 10);
-                } else if (val == '.') {
-                    val = null;
-                }
-
-                if (this.props.RowNameMap) {
-                    index.push({ RowIdx: i, Value: val, Content: this.props.RowNameMap[i] });
-                } else {
-                    index.push({ RowIdx: i, Value: val, Content: i + 1 });
-                }
+            if (parseInt(val, 10) == val) {
+                val = parseInt(val, 10);
+            } else if (parseFloat(val, 10) == val) {
+                val = parseFloat(val, 10);
+            } else if (val == '.') {
+                val = null;
             }
-            index.sort(function (a, b) {
-                if (that.state.SortOrder === 'ASC') {
-                    // Sort by value
-                    if (a.Value < b.Value) return -1;
-                    if (a.Value > b.Value) return 1;
 
-                    // If all values are equal, sort by rownum
-                    if (a.RowIdx < b.RowIdx) {
-                        return -1;
-                    }
-                    if (a.RowIdx > b.RowIdx) {
-                        return 1;
-                    }
-                } else {
-                    // Sort by value
-                    if (a.Value < b.Value) return 1;
-                    if (a.Value > b.Value) return -1;
+            // if string - convert to lowercase to make sort algorithm work
+            var isString = typeof val === 'string' || val instanceof String;
+            if (val != undefined && isString) {
+                val = val.toLowerCase();
+            }
 
-                    // If all values are equal, sort by rownum
-                    if (a.RowIdx < b.RowIdx) {
-                        return 1;
-                    }
-                    if (a.RowIdx > b.RowIdx) {
-                        return -1;
-                    }
-                }
-                // They're equal..
-                return 0;
-            });
-        } else {
-            for (var i = 0; i < this.props.Data.length; i += 1) {
-                if (this.props.RowNameMap) {
-                    index.push({ RowIdx: i, Content: this.props.RowNameMap[i] });
-                } else {
-                    index.push({ RowIdx: i, Content: i + 1 });
-                }
+            if (this.props.RowNameMap) {
+                index.push({ RowIdx: i, Value: val, Content: this.props.RowNameMap[i] });
+            } else {
+                index.push({ RowIdx: i, Value: val, Content: i + 1 });
             }
         }
+
+        index.sort(function (a, b) {
+            if (that.state.SortOrder === 'ASC') {
+                // Check if null values
+                if (a.Value === null) return -1;
+                if (b.Value === null) return 1;
+
+                // Sort by value
+                if (a.Value < b.Value) return -1;
+                if (a.Value > b.Value) return 1;
+
+                // If all values are equal, sort by rownum
+                if (a.RowIdx < b.RowIdx) {
+                    return -1;
+                }
+                if (a.RowIdx > b.RowIdx) {
+                    return 1;
+                }
+            } else {
+                // Check if null values
+                if (a.Value === null) return 1;
+                if (b.Value === null) return -1;
+
+                // Sort by value
+                if (a.Value < b.Value) return 1;
+                if (a.Value > b.Value) return -1;
+
+                // If all values are equal, sort by rownum
+                if (a.RowIdx < b.RowIdx) {
+                    return 1;
+                }
+                if (a.RowIdx > b.RowIdx) {
+                    return -1;
+                }
+            }
+            // They're equal..
+            return 0;
+        });
+
         for (var i = rowsPerPage * (this.state.PageNumber - 1); i < this.props.Data.length && rows.length < rowsPerPage; i += 1) {
             curRow = [];
 
@@ -193,7 +208,7 @@ StaticDataTable = React.createClass({
                     data = "Unknown";
                 }
                 if (this.props.getFormattedCell) {
-                    data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[i].RowIdx]);
+                    data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[i].RowIdx], this.props.Headers);
                     curRow.push({ data });
                 } else {
                     curRow.push(React.createElement(
@@ -251,7 +266,30 @@ StaticDataTable = React.createClass({
         );
         return React.createElement(
             "div",
-            { className: "panel panel-primary" },
+            { className: "panel panel-default" },
+            React.createElement(
+                "div",
+                { className: "table-header panel-heading" },
+                React.createElement(
+                    "div",
+                    { className: "row" },
+                    React.createElement(
+                        "div",
+                        { className: "col-xs-12" },
+                        rows.length,
+                        " rows displayed of ",
+                        this.props.Data.length,
+                        ". (Maximum rows per page: ",
+                        RowsPerPageDropdown,
+                        ")",
+                        React.createElement(
+                            "div",
+                            { className: "pull-right" },
+                            React.createElement(PaginationLinks, { Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber })
+                        )
+                    )
+                )
+            ),
             React.createElement(
                 "table",
                 { className: "table table-hover table-primary table-bordered", id: "dynamictable" },

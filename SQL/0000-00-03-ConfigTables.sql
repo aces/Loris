@@ -60,7 +60,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'log', 'Path to logs (relative path starting from /var/www/$projectname)', 1, 0, 'text', ID, 'Logs', 2 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'IncomingPath', 'Path for imaging data transferred to the project server (e.g. /data/incoming/$project/)', 1, 0, 'text', ID, 'Incoming data', 7 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRICodePath', 'Path to directory where Loris-MRI (git) code is installed', 1, 0, 'text', ID, 'LORIS-MRI code', 6 FROM ConfigSettings WHERE Name="paths";
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRIUploadIncomingPath', '"Path to the Directory of Uploaded Scans', 1, 0, 'text', ID, 'MRI-Upload Directory', 7 FROM ConfigSettings WHERE Name="paths"; 
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'MRIUploadIncomingPath', '"Path to the Directory of Uploaded Scans', 1, 0, 'text', ID, 'MRI-Upload Directory', 7 FROM ConfigSettings WHERE Name="paths";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'GenomicDataPath', 'Path to Genomic data files', 1, 0, 'text', ID, 'Genomic Data Path', 8 FROM ConfigSettings WHERE Name="paths";
 
 -- gui
@@ -98,8 +98,8 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'Reply-to', 'Reply-to email address header (e.g. admin@myproject.loris.ca)', 1, 0, 'email', ID, 'Reply-to', 2 FROM ConfigSettings WHERE Name="mail";
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'X-MimeOLE', 'X-MimeOLE', 1, 0, 'text', ID, 'X-MimeOLE', 3 FROM ConfigSettings WHERE Name="mail";
 
--- uploads 
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('uploads', 'Settings related to file uploading', 1, 0, 'Uploads', '9'); 
+-- uploads
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('uploads', 'Settings related to file uploading', 1, 0, 'Uploads', '9');
 
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'FileGroup', 'Determines the group permission for new subdirectories created for uploaded files', 1, 0, 'text', ID, 'File Group for Uploads', 1 FROM ConfigSettings WHERE Name="uploads";
 
@@ -115,7 +115,7 @@ INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType,
 INSERT INTO Config (ConfigID, Value) SELECT ID, 1 FROM ConfigSettings WHERE Name="additional_user_info";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "Example Study" FROM ConfigSettings WHERE Name="title";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "<h3>Example Study Description</h3>\r\n <p>This is a sample description for this study, because it is a new LORIS install that has not yet customized this text.</p>\r\n <p>A LORIS administrator can customize this text in the configuration module, under the configuration option labeled \"Study Description\"</p>\r\n <h3>Useful Links</h3>\r\n <ul>\r\n <li><a href=\"https://github.com/aces/Loris\" >LORIS GitHub Repository</a></li>\r\n <li><a href=\"https://github.com/aces/Loris/wiki/Setup\" >LORIS Setup Guide</a></li>\r\n <li><a href=\"https://www.youtube.com/watch?v=2Syd_BUbl5A\" >A video of a loris on YouTube</a></li>\r\n </ul>" FROM ConfigSettings WHERE Name="StudyDescription";
-INSERT INTO Config (ConfigID, Value) SELECT ID, "images/neuro_logo_blue.gif" FROM ConfigSettings WHERE Name="studylogo";
+INSERT INTO Config (ConfigID, Value) SELECT ID, "images/neurorgb_web.jpg" FROM ConfigSettings WHERE Name="studylogo";
 INSERT INTO Config (ConfigID, Value) SELECT ID, "false" FROM ConfigSettings WHERE Name="useEDC";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 8 FROM ConfigSettings WHERE Name="ageMin";
 INSERT INTO Config (ConfigID, Value) SELECT ID, 11 FROM ConfigSettings WHERE Name="ageMax";

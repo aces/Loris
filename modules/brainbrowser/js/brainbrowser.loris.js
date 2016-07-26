@@ -40,7 +40,21 @@ $(function() {
     $("#panel-size").change(function() {
       var size = parseInt($(this).val(), 10);
 
-      viewer.setPanelSize(size, size, { scale_image: true });
+      if (size < 0) {
+        viewer.setAutoResize(true, 'volume-controls');
+        $('#brainbrowser-wrapper').css("width", "90%");
+        $('#volume-viewer').css("width", "100%");
+        $('#brainbrowser').css("width", "100%");
+        viewer.doAutoResize();
+      }
+      else {
+        viewer.setAutoResize(false);
+        $('#brainbrowser-wrapper').css("width", "60em");
+        $('#volume-viewer').css("width", "");
+        $('#brainbrowser').css("width", "");
+        $('.volume-controls').css("width", "");
+        viewer.setPanelSize(size, size, { scale_image: true });
+      }
     });
 
     // Should cursors in all panels be synchronized?
@@ -165,6 +179,54 @@ $(function() {
         $(".volume-controls").css("width", "auto");
       });
     });
+
+    /**
+     * @doc function
+     * @name viewer.setAutoResize
+     * @param {boolean} flag Whether we should auto-resize the views.
+     * @param {string} class_name The name of the class associated with volume
+     * controls.
+     *
+     * @description
+     * Enable or disable auto-resizing mode.
+     * ```js
+     * viewer.setAutoResize(true, 'volume-controls');
+     * ```
+     */
+    viewer.setAutoResize = function(flag, class_name) {
+      viewer.auto_resize = flag;
+      viewer.volume_control_class = class_name;
+    };
+
+    /**
+     * @doc function
+     * @name viewer.doAutoResize
+     * @description
+     * This function implements auto-resizing of the volume panels
+     * when the window itself is resized. It should therefore be invoked
+     * as part of a window resize notification.
+     */
+    viewer.doAutoResize = function() {
+      if (!viewer.auto_resize) {
+        return;
+      }
+      function getIntProperty(class_name, prop_name) {
+        return parseInt($(class_name).css(prop_name).replace('px', ''), 10);
+      }
+      /* Assumes at least three views or three volumes across.
+       */
+      var n = Math.max(viewer.volumes.length, 3);
+      var ml = getIntProperty('.slice-display', 'margin-left');
+      var mr = getIntProperty('.slice-display', 'margin-right');
+      var vv = getIntProperty('.volume-viewer-controls', 'width');
+
+      var size = ($('#' + viewer.dom_element.id).width() / n) - ((ml * 2) + (mr * 2) + (vv / n));
+
+      viewer.setDefaultPanelSize(size, size);
+      viewer.setPanelSize(size, size, { scale_image: true });
+    };
+
+    window.addEventListener('resize', viewer.doAutoResize, false);
 
     //////////////////////////////////
     // Per volume UI hooks go in here.
