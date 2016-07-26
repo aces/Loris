@@ -112,17 +112,23 @@ function uploadFile()
 
     $userID = $user->getData('UserID');
 
+
+    $sessionID = $db->pselectOne("SELECT s.ID as session_id FROM candidate c LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND s.Visit_label = :v_visit_label AND s.CenterID = :v_center_id",
+        [
+            'v_pscid'       => $pscid,
+            'v_visit_label' => $visit,
+            'v_center_id'   => $site
+        ]
+    );
+
     // Build insert query
     $query = [
-              'pscid'         => $pscid,
-              'visit_label'   => $visit,
+              'session_id'    => $sessionID,
               'instrument'    => $instrument,
-              'for_site'      => $site,
               'date_taken'    => $dateTaken,
               'comments'      => $comments,
               'file_name'     => $fileName,
               'file_type'     => $fileType,
-              'file_size'     => $fileSize,
               'data_dir'      => $mediaPath,
               'uploaded_by'   => $userID,
               'hide_file'     => 0,
