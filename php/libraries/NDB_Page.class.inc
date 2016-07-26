@@ -372,7 +372,8 @@ class NDB_Page
 
     /**
      * Create a QuickForm label element but does not add it to the form
-     * @param $labelString the label to attach to the element
+     *
+     * @param string $labelString The label to attach to the element
      *
      * @return HTML_QuickForm Label element
      */
