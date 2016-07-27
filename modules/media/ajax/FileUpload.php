@@ -42,13 +42,11 @@ function editFile()
 
     // Process posted data
     $idMediaFile = $_POST['idMediaFile'];
-    $site        = isset($_POST['for_site']) ? $_POST['for_site'] : null;
     $dateTaken   = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
     $comments    = isset($_POST['comments']) ? $_POST['comments'] : null;
     $hideFile    = $_POST['hide_file'];
 
     $updateValues = [
-                     'for_site'   => $site,
                      'date_taken' => $dateTaken,
                      'comments'   => $comments,
                      'hide_file'  => $hideFile,
@@ -122,6 +120,12 @@ function uploadFile()
         ]
     );
 
+    if (!isset($sessionID) || count($sessionID) < 1) {
+        showError("Provided candidate ($pscid) doesn't not have a have specified timepoint ($visit)");
+
+        return;
+    }
+
     // Build insert query
     $query = [
               'session_id'    => $sessionID,
@@ -169,6 +173,39 @@ function getUploadFields()
     $visitList       = Utility::getVisitList();
     $siteList        = Utility::getSiteList(false);
 
+    // Build array of session data to be used in upload media dropdowns
+    $sessionData = [];
+    $sessionRecords = $db->pselect(
+        "SELECT c.PSCID, s.Visit_label, s.CenterID " .
+        "FROM candidate c LEFT JOIN session s USING(CandID) ORDER BY c.PSCID ASC"
+    );
+    foreach ($sessionRecords as $record) {
+
+        if (!isset($sessionData[$record["PSCID"]]['visits'])) {
+            $sessionData[$record["PSCID"]]['visits'] = [];
+        }
+
+        if (!isset($sessionData[$record["PSCID"]]['sites'])) {
+            $sessionData[$record["PSCID"]]['sites'] = [];
+        }
+
+        if (!isset($sessionData[$record["PSCID"]]['sites'][$record["CenterID"]])) {
+            $sessionData[$record["PSCID"]]['sites'][$record["CenterID"]] = [];
+        }
+
+        if (!isset($sessionData[$record["PSCID"]]['visits'][$record["CenterID"]])) {
+            $sessionData[$record["PSCID"]]['visits'][$record["Visit_label"]] = [];
+        }
+
+        if (!in_array($record["Visit_label"], $sessionData[$record["PSCID"]]['visits'], true)) {
+            $sessionData[$record["PSCID"]]['visits'][$record["Visit_label"]] = $record["Visit_label"];
+        }
+
+        if (!in_array($record["CenterID"], $sessionData[$record["PSCID"]]['sites'], true)) {
+            $sessionData[$record["PSCID"]]['sites'][$record["CenterID"]] = $siteList[$record["CenterID"]];
+        }
+    }
+
     // Build media data to be displayed when editing a media file
     $mediaData = null;
     if (isset($_GET['idMediaFile'])) {
@@ -183,7 +220,8 @@ function getUploadFields()
             "date_taken, " .
             "comments, " .
             "file_name, " .
-            "hide_file FROM media m LEFT JOIN session s ON m.session_id = s.ID " .
+            "hide_file, " .
+            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID " .
             "WHERE m.id = $idMediaFile",
             []
         );
@@ -196,6 +234,7 @@ function getUploadFields()
                'instruments' => $instrumentsList,
                'sites'       => $siteList,
                'mediaData'   => $mediaData,
+               'sessionData' => $sessionData
               ];
 
     return $result;

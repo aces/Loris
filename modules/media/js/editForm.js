@@ -162,6 +162,7 @@ var MediaEditForm = React.createClass({
           options: this.state.Data.sites,
           onUserInput: this.setFormData,
           ref: 'for_site',
+          disabled: true,
           value: this.state.mediaData.for_site
         }),
         React.createElement(DateElement, {

@@ -336,6 +336,13 @@ var MediaUploadForm = React.createClass({
    * @param value
    */
   setFormData: function (formElement, value) {
+
+    // Only display visits and sites available for the current pscid
+    if (formElement === "pscid") {
+      this.state.Data.visits = this.state.Data.sessionData[value].visits;
+      this.state.Data.sites = this.state.Data.sessionData[value].sites;
+    }
+
     var formData = this.state.formData;
     formData[formElement] = value;
 
