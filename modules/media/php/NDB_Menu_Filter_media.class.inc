@@ -30,7 +30,6 @@ require_once 'NDB_Menu_Filter.class.inc';
  */
 class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 {
-    public $centerIDMap;
     public $hasWritePermission = false;
 
     /**
@@ -76,9 +75,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
-                $siteList = [
-                             $user->getData('CenterID') => $user->getData('Site'),
-                            ];
+                $siteList = [$user->getData('CenterID') => $user->getData('Site')];
             }
         }
 
@@ -104,21 +101,13 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     }
 
     /**
-     * Build media list
+     * Build a list of media to display in Data Table
      *
      * @return bool
      * @throws DatabaseException
      */
     function _setupVariables()
     {
-        $db =& Database::singleton();
-
-        // create the centerID map
-//        $pscRows = $db->pselect("SELECT CenterID, Name FROM psc", []);
-//        foreach ($pscRows as $row) {
-//            $this->centerIDMap[$row['CenterID']] = $row['Name'];
-//        }
-
         // the base query
         $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID";
         $query .= " WHERE m.hide_file = FALSE";
@@ -129,14 +118,15 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                'm.file_name',
                '(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid',
                's.Visit_label as visit_label',
-               '(SELECT Full_name FROM test_names WHERE Test_name=m.instrument) as instrument',
+               '(SELECT Full_name FROM test_names WHERE Test_name=m.instrument)',
                '(SELECT name FROM psc WHERE CenterID=s.CenterID) as site',
                'm.uploaded_by',
                'm.date_taken',
                'substring(m.comments, 1, 50) as comments',
                'm.date_uploaded',
                's.CandID as cand_id',
-               's.ID as session_id'
+               's.ID as session_id',
+               'm.id',
               ];
 
         $this->query = $query;

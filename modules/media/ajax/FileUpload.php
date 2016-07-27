@@ -100,24 +100,25 @@ function uploadFile()
     $comments   = isset($_POST['comments']) ? $_POST['comments'] : null;
 
     // If required fields are not set, show an error
-    if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($instrument)) {
+    if (!isset($_FILES) || !isset($pscid) || !isset($visit)) {
         showError("Please fill in all required fields!");
 
         return;
     }
 
-    $fileSize = $_FILES["file"]["size"];
     $fileName = $_FILES["file"]["name"];
     $fileType = $_FILES["file"]["type"];
 
     $userID = $user->getData('UserID');
 
-
-    $sessionID = $db->pselectOne("SELECT s.ID as session_id FROM candidate c LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND s.Visit_label = :v_visit_label AND s.CenterID = :v_center_id",
+    $sessionID = $db->pselectOne(
+        "SELECT s.ID as session_id FROM candidate c " .
+        "LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND " .
+        "s.Visit_label = :v_visit_label AND s.CenterID = :v_center_id",
         [
-            'v_pscid'       => $pscid,
-            'v_visit_label' => $visit,
-            'v_center_id'   => $site
+         'v_pscid'       => $pscid,
+         'v_visit_label' => $visit,
+         'v_center_id'   => $site,
         ]
     );
 
@@ -168,11 +169,22 @@ function getUploadFields()
     $visitList       = Utility::getVisitList();
     $siteList        = Utility::getSiteList(false);
 
+    // Build media data to be displayed when editing a media file
     $mediaData = null;
     if (isset($_GET['idMediaFile'])) {
         $idMediaFile = $_GET['idMediaFile'];
         $mediaData   = $db->pselectRow(
-            "SELECT * FROM media WHERE id = $idMediaFile",
+            "SELECT " .
+            "m.session_id, " .
+            "(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid, " .
+            "Visit_label as visit_label, " .
+            "instrument, " .
+            "CenterID as for_site, " .
+            "date_taken, " .
+            "comments, " .
+            "file_name, " .
+            "hide_file FROM media m LEFT JOIN session s ON m.session_id = s.ID " .
+            "WHERE m.id = $idMediaFile",
             []
         );
     }
