@@ -122,7 +122,8 @@ class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/survey_accounts/js/columnFormatter.js",
+                $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
+                $baseURL . "/survey_accounts/js/columnFormatter.js"
             )
         );
     }
