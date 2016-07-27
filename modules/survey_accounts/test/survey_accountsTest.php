@@ -241,16 +241,18 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->findElement(WebDriverBy::Name("PSCID"))->sendKeys
              ("8888");
         $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
-        $bodyText = $this->webDriver->getPageSource();
+        $bodyText = $this->webDriver->findElement(WebDriverBy::ID("datatable"))
+             ->getText();
         $this->assertContains("8888", $bodyText);
 
         //testing search by Email
         $this->safeGet($this->url . "/survey_accounts/");
         $this->webDriver->findElement(WebDriverBy::Name("Email"))
-             ->sendKeys("TestTestTest@gmail.com");
+             ->sendKeys("TestTestTest@example.com");
         $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("TestTestTest@gmail.com", $bodyText);
+        $bodyText = $this->webDriver->findElement(WebDriverBy::ID("datatable"))
+             ->getText();
+        $this->assertContains("TestTestTest@example.com", $bodyText);
      }
 }
 ?>
