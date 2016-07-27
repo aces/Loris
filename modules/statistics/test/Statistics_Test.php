@@ -85,17 +85,9 @@ class Statistics_Test extends LorisIntegrationTest
      */
     function testBehaviouralTab()
     {
-	$this->markTestSkipped(
-          'Skipping after new module revamp'
-        );
         $this->safeGet($this->url . "/statistics/stats_behavioural/?dynamictabs=dynamictabs");
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
         $this->assertContains("Data Entry Statistics", $bodyText);
-
-       //test one link inside this Tab
-	$this->safeFindElement(WebDriverBy::linkText("Click here for breakdown per participant"))->click();
-        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("All Completion Statistics", $bodyText);
     }
    /** Tests that, when loading the Reliability Statistics Tab in Statistics module, some
      * text appears in the body.
