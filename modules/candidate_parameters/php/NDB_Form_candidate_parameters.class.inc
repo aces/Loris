@@ -51,8 +51,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->tpl_data['candidate_parameter_edit'] = $user->hasPermission('candidate_parameter_edit');
 
         // check user permissions
-        return ($user->getData('CenterID') == '1' ||
-            ($user->getData('CenterID') == $candidate->getData('CenterID')) &&
+        return ($user->getData('CenterID') == $candidate->getData('CenterID') &&
             ($user->hasPermission('candidate_parameter_edit')||
                 $user->hasPermission('candidate_parameter_view'))
         );
