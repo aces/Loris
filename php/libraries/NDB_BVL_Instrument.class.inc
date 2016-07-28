@@ -2094,6 +2094,27 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Get the candidates PSCID.
+     *
+     * @return The candidate's PSCID.
+     */
+    function getPSCID()
+    {
+        $db        =& Database::singleton();
+        $CommentID = $this->getCommentID();
+
+        $pscid = $db->pselectOne(
+            "SELECT c.PSCID FROM $this->testName i
+            JOIN flag f USING (CommentID)
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c USING (CandID)
+            WHERE f.CommentID=:CID",
+            array('CID' => $CommentID)
+        );
+        return $pscid;
+    }
+
+    /**
      * Clears all the data saved into this instrument instance
      *
      * @return none
