@@ -2,6 +2,7 @@
 
 1. Check Permissions. Try removing each of these permissions/conditions one at a time. You should not be able to access the page
     * Edit Candidate Parameters
+    * View Candidate Parameters (you should not be able to access any "Update" buttons on the page)
 	* data_entry ("Data Entry", in front-end)
 	* having the same site as the candidate you are accessing	
 2. Make sure that the candidate date of birth and gender, shown in the table at the top of the page, match what is stored in the candidate table for this given candidate.
@@ -14,7 +15,7 @@
 	* Reason for Caveat Emptor flag
 	* Additional Comments for flag
 	* Comment
-5. Click on update Candidate Info and make sure it takes you to the correct form for that candidate
+5. Click on Update Candidate Info and make sure it takes you to the correct form for that candidate
 
 ### Update Candidate Info
 6. For each field, change it and make sure that it saves when the "Save" button is clicked. Do each field one at a
