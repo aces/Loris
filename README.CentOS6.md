@@ -10,6 +10,7 @@ It assumes you already understand basic UNIX, MySQL and Apache setup and
 settings. If you're not already comfortable troubleshooting sysadmin issues,
 you should not follow this guide.
 
+
 # 1. System Requirements
 
 The yum packages to be installed vary from the Ubuntu packages referenced
@@ -27,22 +28,23 @@ yum install mysql
 ```
 
 PHP Composer must also be installed:
-
 ```bash
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
 
 Note that the default dependencies installed by CentOS 6.x may not meet the version requirements LORIS deployment or development.
-* MySQL 5.5 or lower is supported for LORIS 16.0
-* PHP 5.6 (or 5.5) is required for LORIS 16.0 - upgrade your PHP manually
+* MySQL 5.5 or lower is supported for LORIS 16.*
+* PHP 5.6 (or 5.5) is required for LORIS 16.* - upgrade your PHP manually
 Or run composer with the `--no-dev` option. (Upgrading PHP is preferred, but for now we'll
 assume you just want to get it running, so we'll run it with `--no-dev`.)
 
 ```bash
 # Will download all of LORIS's library requirements, assuming an
 # active internet connection. This must be done from the LORIS
-# root directory that you downloaded and extracted LORIS into
+# root directory that you downloaded and extracted LORIS into.
+# Expect this step to print scary warning messages 
+# about downloading and installing dependencies. 
 composer install --no-dev
 ```
 
