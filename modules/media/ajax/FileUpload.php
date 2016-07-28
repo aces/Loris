@@ -121,7 +121,10 @@ function uploadFile()
     );
 
     if (!isset($sessionID) || count($sessionID) < 1) {
-        showError("Provided candidate ($pscid) doesn't not have a have specified timepoint ($visit)");
+        showError(
+            "Error! A session does not exist for candidate '$pscid'' " .
+            "and visit label '$visit'."
+        );
 
         return;
     }
@@ -174,35 +177,32 @@ function getUploadFields()
     $siteList        = Utility::getSiteList(false);
 
     // Build array of session data to be used in upload media dropdowns
-    $sessionData = [];
+    $sessionData    = [];
     $sessionRecords = $db->pselect(
         "SELECT c.PSCID, s.Visit_label, s.CenterID " .
-        "FROM candidate c LEFT JOIN session s USING(CandID) ORDER BY c.PSCID ASC"
+        "FROM candidate c LEFT JOIN session s USING(CandID) ORDER BY c.PSCID ASC",
+        []
     );
+
     foreach ($sessionRecords as $record) {
-
-        if (!isset($sessionData[$record["PSCID"]]['visits'])) {
-            $sessionData[$record["PSCID"]]['visits'] = [];
+        if (!in_array(
+            $record["CenterID"],
+            $sessionData[$record["PSCID"]]['sites'],
+            true
+        )
+        ) {
+            $sessionData[$record["PSCID"]]['sites'][$record["CenterID"]]
+                = $siteList[$record["CenterID"]];
         }
 
-        if (!isset($sessionData[$record["PSCID"]]['sites'])) {
-            $sessionData[$record["PSCID"]]['sites'] = [];
-        }
-
-        if (!isset($sessionData[$record["PSCID"]]['sites'][$record["CenterID"]])) {
-            $sessionData[$record["PSCID"]]['sites'][$record["CenterID"]] = [];
-        }
-
-        if (!isset($sessionData[$record["PSCID"]]['visits'][$record["CenterID"]])) {
-            $sessionData[$record["PSCID"]]['visits'][$record["Visit_label"]] = [];
-        }
-
-        if (!in_array($record["Visit_label"], $sessionData[$record["PSCID"]]['visits'], true)) {
-            $sessionData[$record["PSCID"]]['visits'][$record["Visit_label"]] = $record["Visit_label"];
-        }
-
-        if (!in_array($record["CenterID"], $sessionData[$record["PSCID"]]['sites'], true)) {
-            $sessionData[$record["PSCID"]]['sites'][$record["CenterID"]] = $siteList[$record["CenterID"]];
+        if (!in_array(
+            $record["Visit_label"],
+            $sessionData[$record["PSCID"]]['visits'],
+            true
+        )
+        ) {
+            $sessionData[$record["PSCID"]]['visits'][$record["Visit_label"]]
+                = $record["Visit_label"];
         }
     }
 
@@ -234,7 +234,7 @@ function getUploadFields()
                'instruments' => $instrumentsList,
                'sites'       => $siteList,
                'mediaData'   => $mediaData,
-               'sessionData' => $sessionData
+               'sessionData' => $sessionData,
               ];
 
     return $result;
