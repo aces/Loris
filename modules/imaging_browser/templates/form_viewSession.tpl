@@ -35,6 +35,7 @@
                       "SelectedOptions" : {$selected_options|json_encode},
 
                       "Caveat" : "{if $files[file].Caveat}{$files[file].Caveat}{/if}",
+                      "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",
                       'HeaderInfo' : {
                           'XStep' : "{$files[file].Xstep}",
                           'YStep' : "{$files[file].Ystep}",

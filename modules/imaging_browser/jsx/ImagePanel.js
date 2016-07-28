@@ -153,6 +153,22 @@ ImageQCDropdown = React.createClass({
         );
     }
 });
+ImageQCStatic = React.createClass({
+    render: function() {
+        var staticInfo;
+        staticInfo = (
+            <div className="col-xs-12">
+                {this.props.defaultValue}
+            </div>
+        );
+        return (
+            <div className="row">
+                <label>{this.props.Label}</label>
+                {staticInfo}
+            </div>
+        );
+    }
+});
 
 ImagePanelQCStatusSelector = React.createClass({
     render: function() {
@@ -209,6 +225,18 @@ ImagePanelQCCaveatSelector = React.createClass({
         );
     }
 });
+ImagePanelQCSNRValue = React.createClass({
+    render: function () {
+        return (
+            <ImageQCStatic
+                Label="SNR"
+                FormName="snr"
+                FileID={this.props.FileID}
+                defaultValue={this.props.SNR}
+            />
+        );
+    }
+});
 ImagePanelQCPanel = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     render: function() {
@@ -231,7 +259,10 @@ ImagePanelQCPanel = React.createClass({
                     HasQCPerm={this.props.HasQCPerm}
                     Caveat={this.props.Caveat}
                 />
-
+                <ImagePanelQCSNRValue
+                    FileID={this.props.FileID}
+                    SNR={this.props.SNR}
+                />
             </div>
         );
     }
@@ -363,6 +394,7 @@ ImagePanelBody = React.createClass({
                                 Caveat={this.props.Caveat}
                                 SelectedOptions={this.props.SelectedOptions}
                                 Selected={this.props.Selected}
+                                SNR={this.props.SNR}
                             />
                          </div>
                     </div>
@@ -428,6 +460,7 @@ ImagePanel = React.createClass({
                         Caveat={this.props.Caveat}
                         SelectedOptions={this.props.SelectedOptions}
                         Selected={this.props.Selected}
+                        SNR={this.props.SNR}
 
                         Fullname={this.props.Fullname}
                         XMLProtocol={this.props.XMLProtocol}

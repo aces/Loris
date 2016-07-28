@@ -19,13 +19,13 @@ function formatColumn(column, cell, rowData, rowHeaders) {
             var cellTypes = cell.split(",");
             var cellLinks = []
             for(var i = 0; i < cellTypes.length; i += 1) {
-                cellLinks.push(<a href={loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&outputType=" + cellTypes[i] + "&backURL=/imaging_browser/"}>{cellTypes[i]}</a>);
+                cellLinks.push(<a href={loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID + "&outputType=" + cellTypes[i] + "&backURL=/imaging_browser/"}>{cellTypes[i]}</a>);
                 cellLinks.push(" | ");
     
             }
-            cellLinks.push(<a href={loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&selectedOnly=1&backURL=/imaging_browser/"}>selected</a> );
+            cellLinks.push(<a href={loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID + "&selectedOnly=1&backURL=/imaging_browser/"}>selected</a> );
             cellLinks.push(" | ");
-            cellLinks.push(<a href={loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&backURL=/imaging_browser/"}>all types</a> );
+            cellLinks.push(<a href={loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID + "&backURL=/imaging_browser/"}>all types</a> );
             return (
                     <td>
                         {cellLinks}
