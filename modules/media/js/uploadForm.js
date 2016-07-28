@@ -253,7 +253,8 @@ var MediaUploadForm = React.createClass({
       success: function (data) {
         $("#file-progress").addClass('hide');
         self.setState({
-          uploadResult: "success"
+          uploadResult: "success",
+          formData: {} // reset form data after successful file upload
         });
 
         // Trigger an update event to update all observers (i.e DataTable)
