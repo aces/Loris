@@ -12,16 +12,16 @@ var MediaEditForm = React.createClass({
 
   propTypes: {
     DataURL: React.PropTypes.string.isRequired,
-    action: React.PropTypes.string.isRequired,
+    action: React.PropTypes.string.isRequired
   },
 
   getInitialState: function() {
     return {
-      'Data':         [],
-      'formData':     {},
+      'Data': [],
+      'formData': {},
       'uploadResult': null,
-      'isLoaded':     false,
-      'loadedData':   0
+      'isLoaded': false,
+      'loadedData': 0
     };
   },
 
@@ -39,20 +39,19 @@ var MediaEditForm = React.createClass({
         return xhr;
       },
       success: function(data) {
-
         var formData = {
           'idMediaFile': data.mediaData.id,
           'for_site': data.mediaData.for_site,
           'date_taken': data.mediaData.date_taken,
           'comments': data.mediaData.comments,
-          'hide_file': data.mediaData.hide_file,
+          'hide_file': data.mediaData.hide_file
         };
 
         that.setState({
-          'Data':      data,
-          'isLoaded':  true,
+          'Data': data,
+          'isLoaded': true,
           'mediaData': data.mediaData,
-          'formData':  formData
+          'formData': formData
         });
       },
       error: function(data, error_code, error_msg) {
@@ -64,7 +63,6 @@ var MediaEditForm = React.createClass({
   },
 
   render: function() {
-
     if (!this.state.isLoaded) {
       if (this.state.error != undefined) {
         return (
@@ -184,7 +182,7 @@ var MediaEditForm = React.createClass({
           <ButtonElement label="Update File"/>
         </FormElement>
       </div>
-    )
+    );
   },
 
   /**
@@ -210,13 +208,13 @@ var MediaEditForm = React.createClass({
     $("#file-progress").removeClass('hide');
 
     $.ajax({
-      type:        'POST',
-      url:         self.props.action,
-      data:        formData,
-      cache:       false,
+      type: 'POST',
+      url: self.props.action,
+      data: formData,
+      cache: false,
       contentType: false,
       processData: false,
-      xhr:         function() {
+      xhr: function() {
         var xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function(evt) {
           if (evt.lengthComputable) {
@@ -230,14 +228,14 @@ var MediaEditForm = React.createClass({
         }, false);
         return xhr;
       },
-      success:     function(data) {
+      success: function(data) {
         $("#file-progress").addClass('hide');
         self.setState({
           uploadResult: "success"
         });
         self.showAlertMessage();
       },
-      error:       function(err) {
+      error: function(err) {
         console.error(err);
         self.setState({
           uploadResult: "error"
@@ -280,7 +278,6 @@ var MediaEditForm = React.createClass({
       });
     });
   }
-
 
 });
 
