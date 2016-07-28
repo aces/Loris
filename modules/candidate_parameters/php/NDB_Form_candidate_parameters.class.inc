@@ -130,9 +130,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
         }
 
-        $value_results = $DB->pselect("SELECT ParameterTypeID, Value FROM parameter_candidate 
-                     WHERE CandID=:cid",
-            array("cid" => $this->identifier));
+        $DB->select("SELECT ParameterTypeID, Value FROM parameter_candidate 
+                     WHERE CandID='".$this->identifier."'", $value_results);
         foreach ($value_results AS $vresult) {
             if (!empty($vresult['Value'])) {
                 $cand_info["PTID_".$vresult['ParameterTypeID']] = $vresult['Value'];
@@ -407,12 +406,11 @@ class NDB_Form_candidate_parameters extends NDB_Form
     function _getInstrumentInfo($instrument, $param) {
         $DB  =& Database::singleton();
 
-        $ret = $DB->pselectOne("SELECT t.$param FROM flag f JOIN $instrument t ON (t.CommentID=f.CommentID) 
+        $ret = $DB->selectOne("SELECT t.$param FROM flag f JOIN $instrument t ON (t.CommentID=f.CommentID) 
                                JOIN session s ON (f.SessionID=s.ID) WHERE 
-                               s.CandID=:cid 
-                               AND f.test_name=:instr 
-                               AND t.CommentID NOT LIKE \'DDE_%\'",
-            array('cid'=> $this->identifier, 'instr' => $instrument));
+                               s.CandID=" . $DB->quote($this->identifier) . ' 
+                               AND f.test_name=' . $DB->quote($instrument) . ' 
+                               AND t.CommentID NOT LIKE \'DDE_%\'');
         if ($ret == array()) {
             return;
         }
@@ -440,9 +438,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $field_results = $DB->pselect("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description 
                      FROM parameter_type as pt, parameter_type_category as ptc, parameter_type_category_rel as ptcr 
                      WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID 
-                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC",
-            array()
-        );
+                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC", array());
         //If there are no defined fields print a message to that effect
         if (empty($field_results)) {
             $this->addScoreColumn("static", "No candidate parameters have been defined for this study");
@@ -592,13 +588,6 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
     function update_candidate_info() {
 
-        // create user object
-        $user =& User::singleton();
-
-        if (!$user->hasPermission('candidate_parameter_edit')) {
-            return;
-        }
-
         $DB =& Database::singleton();
         $pscid = $DB->pselectone(
             'SELECT PSCID FROM candidate where CandID = :candid',
@@ -621,12 +610,10 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->addTextAreaGroup('flagged_other',$this->indent.'If Other, please specify',
             array(null=>'','not_answered'=>'Not Answered'));
         //Extract the fields from the parameter_type table
-        $field_results = $DB->pselect("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, 
+        $DB->select("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, 
                      parameter_type_category as ptc, parameter_type_category_rel as ptcr 
                      WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID 
-                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC",
-            array()
-        );
+                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC", $field_results);
         //If there are no defined fields pritn a message to that effect
         if (empty($field_results)) {
             $this->addScoreColumn("static", "No candidate parameters have been defined for this study");
@@ -973,6 +960,5 @@ class NDB_Form_candidate_parameters extends NDB_Form
             )
         );
     }
-
 }
 ?>
