@@ -48,9 +48,13 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
         $candidate =& Candidate::singleton($this->identifier);
 
+        $this->tpl_data['candidate_parameter_edit'] = $user->hasPermission('candidate_parameter_edit');
+
         // check user permissions
-        return ($user->hasPermission('candidate_parameter_edit')  
-            && $user->getData('CenterID') == $candidate->getData('CenterID'));  
+        return ($user->getData('CenterID') == $candidate->getData('CenterID') &&
+            ($user->hasPermission('candidate_parameter_edit')||
+                $user->hasPermission('candidate_parameter_view'))
+        );
     }
      /**
       * Returns default values for all candidate parameters
