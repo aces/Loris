@@ -423,12 +423,13 @@ $(function() {
         }
 
         var slider = div.find(".slider");
-        var time_input = div.find("#time-val-" + vol_id);
-        var play_button = div.find("#play-" + vol_id);
+        var timeInput = div.find("#time-val-" + vol_id);
+        var playButton = div.find("#play-" + vol_id);
+        var isPlaying = false;
 
         var min = 0;
         var max = volume.header.time.space_length - 1;
-        var play_interval;
+        var playInterval;
 
         slider.slider({
           min: min,
@@ -437,7 +438,7 @@ $(function() {
           step: 1,
           slide: function(event, ui) {
             var value = +ui.value;
-            time_input.val(value);
+            timeInput.val(value);
             volume.current_time = value;
             viewer.redrawVolumes();
           },
@@ -446,7 +447,7 @@ $(function() {
           }
         });
 
-        time_input.change(function() {
+        timeInput.change(function() {
           var value = parseInt(this.value, 10);
           if (!BrainBrowser.utils.isNumeric(value)) {
             value = 0;
@@ -455,28 +456,31 @@ $(function() {
           value = Math.max(min, Math.min(value, max));
 
           this.value = value;
-          time_input.val(value);
+          timeInput.val(value);
           slider.slider("value", value);
           volume.current_time = value;
           viewer.redrawVolumes();
         });
 
-        play_button.change(function() {
-          if(play_button.is(":checked")){
-            clearInterval(play_interval);
-            play_interval = setInterval(function() {
+        playButton.click(function() {
+          if (!isPlaying) {
+            clearInterval(playInterval);
+            playInterval = setInterval(function() {
               var value = volume.current_time + 1;
               value = value > max ? 0 : value;
               volume.current_time = value;
-              time_input.val(value);
+              timeInput.val(value);
               slider.slider("value", value);
               viewer.redrawVolumes();
             }, 200);
+            isPlaying = true;
+            playButton.text("Pause");
           } else {
-            clearInterval(play_interval);
+            clearInterval(playInterval);
+            isPlaying = false;
+            playButton.text("Play");
           }
         });
-
       });
 
       // Create an image of all slices in a certain
@@ -587,7 +591,10 @@ $(function() {
           url: loris.BaseURL + '/brainbrowser/ajax/getMincName.php',
           method: 'GET',
           success: function(data) {
-            $("#filename-"+vol_id).html(data);
+              var fileName = $("#filename-" + vol_id);
+              fileName.html(data);
+              fileName.data("title", data);
+              fileName.tooltip();
           }
       });
 
