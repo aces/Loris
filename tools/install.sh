@@ -474,6 +474,7 @@ echo "Ubuntu distribution detected."
                 sudo a2dissite 000-default
                 sudo a2ensite $projectname.conf
                 sudo a2enmod rewrite
+                sudo a2enmod headers
                 break;;
             [Nn]* )
                 echo "Not configuring apache."
