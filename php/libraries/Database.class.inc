@@ -1117,5 +1117,48 @@ class Database
         return false;
     }
 
+    /**
+     * Escapes a string properly for mysql and appends and prepends backticks.
+     * Any backticks you append or prepend will be escaped.
+     *
+     * @param string $tableName The column or table name that needs to be escaped
+     *
+     * @return string surrounded by backticks and with special characters escaped.
+     */
+    function escape($tableName)
+    {
+        //with help from
+        // http://php.net/manual/en/function.mysql-real-escape-string.php
+        if (!empty($tableName) && is_string($tableName)) {
+            $stringWithEscapedChars = str_replace(
+                array(
+                 '\\',
+                 "\0",
+                 "\n",
+                 "\r",
+                 "'",
+                 '"',
+                 "\x1a",
+                 "`",
+                ),
+                array(
+                 '\\\\',
+                 '\\0',
+                 '\\n',
+                 '\\r',
+                 "\\'",
+                 '\\"',
+                 '\\Z',
+                 "\\`",
+                ),
+                $tableName
+            );
+            $fullyEscapedString     = "`".$stringWithEscapedChars."`";
+            return $fullyEscapedString;
+        } else {
+            return $tableName;
+        }
+    }
+
 }
 ?>
