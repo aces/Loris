@@ -250,6 +250,7 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->findElement(WebDriverBy::Name("Email"))
              ->sendKeys("TestTestTest@example.com");
         $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
+        sleep(5);
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("TestTestTest@example.com</td>", $bodyText);       
      }
