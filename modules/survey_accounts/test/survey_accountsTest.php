@@ -242,8 +242,9 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
              ("8888");
         $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
         sleep(5);
+        $this->webDriver->findElement(WebDriverBy::Name("PSCID"))->clear();
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("<td nowrap=\"nowrap\">8888</td>", $bodyText);
+        $this->assertContains("8888</td>", $bodyText);
        
         //testing search by Email
         $this->safeGet($this->url . "/survey_accounts/");
@@ -251,6 +252,7 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
              ->sendKeys("TestTestTest@example.com");
         $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
         sleep(5);
+         $this->webDriver->findElement(WebDriverBy::Name("Email"))->clear();
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("TestTestTest@example.com</td>", $bodyText);       
      }
