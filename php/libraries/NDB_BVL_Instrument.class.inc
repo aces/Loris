@@ -1101,19 +1101,19 @@ class NDB_BVL_Instrument extends NDB_Page
                 if (array_key_exists("Y", $formDateValue)) {
                     $yearString = $formDateValue[Y];
                 } else {
-                    $yearString = "0000";
+                    $yearString = "0001";
                 }
 
                 if (array_key_exists("M", $formDateValue)) {
                     $monthString = $formDateValue[M];
                 } else {
-                    $monthString = "00";
+                    $monthString = "01";
                 }
 
                 if (array_key_exists("d", $formDateValue)) {
                     $dayString = $formDateValue[d];
                 } else {
-                    $dayString = "00";
+                    $dayString = "01";
                 }
 
                 $databaseValue = $yearString . "-" . $monthString . "-" . $dayString;
@@ -1124,12 +1124,12 @@ class NDB_BVL_Instrument extends NDB_Page
                 if (array_key_exists("H", $formDateValue)) {
                     $hourString = $formDateValue[H];
                 } else {
-                    $hourString = "00";
+                    $hourString = "01";
                 }
                 if (array_key_exists("i", $formDateValue)) {
                     $minuteString = $formDateValue[i];
                 } else {
-                    $minuteString = "00";
+                    $minuteString = "01";
                 }
 
                 $databaseValue = $hourString . ":" . $minuteString;
