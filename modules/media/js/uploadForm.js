@@ -133,19 +133,19 @@ var MediaUploadForm = React.createClass({
           required: true
         }),
         React.createElement(SelectElement, {
+          name: 'for_site',
+          label: 'Site',
+          options: this.state.Data.sites,
+          onUserInput: this.setFormData,
+          ref: 'for_site',
+          required: true
+        }),
+        React.createElement(SelectElement, {
           name: 'instrument',
           label: 'Instrument',
           options: this.state.Data.instruments,
           onUserInput: this.setFormData,
-          ref: 'instrument',
-          required: true
-        }),
-        React.createElement(SelectElement, {
-          name: 'for_site',
-          label: 'For Site',
-          options: this.state.Data.sites,
-          onUserInput: this.setFormData,
-          ref: 'for_site'
+          ref: 'instrument'
         }),
         React.createElement(DateElement, {
           name: 'date_taken',
