@@ -33,6 +33,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
+        $md5String = md5("TestTestTest");
         $window = new WebDriverWindow($this->webDriver);
         $window->maximize();
         $this->DB->insert(
@@ -40,7 +41,7 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
             array(
              'helpID'   => '999999',
              'parentID' => '-1',
-             'hash'     => 'md5("the string being hashed")',
+             'hash'     => $md5String,
              'topic'    => 'Test Topic',
              'content'  => 'This is a test content.',
              'created'  => '2013-04-05 00:00:00',
