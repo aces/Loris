@@ -6,12 +6,11 @@ This document contains details on how to manually perform a basic CentOS 6.x
 install of LORIS without using the install script (as the install script
 makes some assumptions about apt-get being installed.)
 
-For details on the UNIX, MySQL and PHP accounts we recommend setting up to use with LORIS conventions, please see the GitHub wiki CentOS Install page.  
-
 It assumes you already understand basic UNIX, MySQL and Apache setup and
 settings. If you're not already comfortable troubleshooting sysadmin issues,
 you should not follow this guide.
 
+For further details on the install process including LORIS nomenclature for recommended UNIX, MySQL and front-end user accounts, please see the LORIS GitHub Wiki CentOS Install page.  
 
 # 1. System Requirements
 
@@ -76,7 +75,7 @@ you'll be running on localhost (otherwise update host and url appropriately)
 Useful tip for administrators: while connected to MySQL, you can also reset the admin password:
 
 ```SQL
--- Reset password to YOURPASSWORD
+-- Reset 'admin' front-end user account password to YOURPASSWORD
 UPDATE users SET Password_md5=CONCAT('aa', MD5('aaYOURPASSWORD')) WHERE ID=1;
 ```
 
@@ -85,8 +84,8 @@ UPDATE users SET Password_md5=CONCAT('aa', MD5('aaYOURPASSWORD')) WHERE ID=1;
 Create a directory named "project" directory under the LORIS root, and copy
 the sample config.xml from `docs/config/config.xml` to `project/config.xml`
 
-Update the database section of the config.xml to point to the database you
-just configured with an appropriate user.
+Update the _<database>_ section of the config.xml to point to the database you
+just configured with an appropriate user.  (Ignore _quatuser_ and _quatpassword_ tags.)
 
 ## 1.3 Apache
 
