@@ -1,3 +1,5 @@
+/* exported RMediaEditForm */
+
 /**
  * Media Edit Form
  *
@@ -17,11 +19,11 @@ var MediaEditForm = React.createClass({
 
   getInitialState: function() {
     return {
-      'Data': [],
-      'formData': {},
-      'uploadResult': null,
-      'isLoaded': false,
-      'loadedData': 0
+      Data: [],
+      formData: {},
+      uploadResult: null,
+      isLoaded: false,
+      loadedData: 0
     };
   },
 
@@ -33,30 +35,31 @@ var MediaEditForm = React.createClass({
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function(evt) {
           that.setState({
-            'loadedData': evt.loaded
+            loadedData: evt.loaded
           });
         });
         return xhr;
       },
       success: function(data) {
         var formData = {
-          'idMediaFile': data.mediaData.id,
-          'for_site': data.mediaData.for_site,
-          'date_taken': data.mediaData.date_taken,
-          'comments': data.mediaData.comments,
-          'hide_file': data.mediaData.hide_file
+          idMediaFile: data.mediaData.id,
+          forSite: data.mediaData.forSite,
+          dateTaken: data.mediaData.dateTaken,
+          comments: data.mediaData.comments,
+          hideFile: data.mediaData.hideFile
         };
 
         that.setState({
-          'Data': data,
-          'isLoaded': true,
-          'mediaData': data.mediaData,
-          'formData': formData
+          Data: data,
+          isLoaded: true,
+          mediaData: data.mediaData,
+          formData: formData
         });
       },
-      error: function(data, error_code, error_msg) {
+      error: function(data, errorCode, errorMsg) {
+        console.error(errorCode, errorMsg);
         that.setState({
-          'error': 'An error occured when loading the form!'
+          error: 'An error occured when loading the form!'
         });
       }
     });
@@ -64,7 +67,7 @@ var MediaEditForm = React.createClass({
 
   render: function() {
     if (!this.state.isLoaded) {
-      if (this.state.error != undefined) {
+      if (this.state.error !== undefined) {
         return (
           <div className="alert alert-danger text-center">
             <strong>
@@ -77,7 +80,8 @@ var MediaEditForm = React.createClass({
       return (
         <button className="btn-info has-spinner">
           Loading
-          <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+          <span className="glyphicon glyphicon-refresh
+          glyphicon-refresh-animate"></span>
         </button>
       );
     }
@@ -86,10 +90,10 @@ var MediaEditForm = React.createClass({
     var alertClass = "alert text-center hide";
 
     if (this.state.uploadResult) {
-      if (this.state.uploadResult == "success") {
+      if (this.state.uploadResult === "success") {
         alertClass = "alert alert-success text-center";
         alertMessage = "Update Successful!";
-      } else if (this.state.uploadResult == "error") {
+      } else if (this.state.uploadResult === "error") {
         alertClass = "alert alert-danger text-center";
         alertMessage = "Failed to update the file";
       }
@@ -100,7 +104,11 @@ var MediaEditForm = React.createClass({
         <div className={alertClass} role="alert" ref="alert-message">
           {alertMessage}
         </div>
-        {this.state.uploadResult == "success" ? <a className="btn btn-primary" href="/media/">Back to media</a> : null}
+        {
+          this.state.uploadResult === "success" ?
+          <a className="btn btn-primary" href="/media/">Back to media</a> :
+          null
+        }
         <FormElement
           name="mediaEdit"
           onSubmit={this.handleSubmit}
@@ -119,11 +127,11 @@ var MediaEditForm = React.createClass({
             value={this.state.mediaData.pscid}
           />
           <SelectElement
-            name="visit_label"
+            name="visitLabel"
             label="Visit Label"
             options={this.state.Data.visits}
             onUserInput={this.setFormData}
-            ref="visit_label"
+            ref="visitLabel"
             required={true}
             disabled={true}
             value={this.state.mediaData.visit_label}
@@ -138,20 +146,20 @@ var MediaEditForm = React.createClass({
             value={this.state.mediaData.instrument}
           />
           <SelectElement
-            name="for_site"
+            name="forSite"
             label="For Site"
             options={this.state.Data.sites}
             onUserInput={this.setFormData}
-            ref="for_site"
+            ref="forSite"
             value={this.state.mediaData.for_site}
           />
           <DateElement
-            name="date_taken"
+            name="dateTaken"
             label="Date of Administration"
             minYear="2000"
             maxYear="2017"
             onUserInput={this.setFormData}
-            ref="date_taken"
+            ref="dateTaken"
             value={this.state.mediaData.date_taken}
           />
           <TextareaElement
@@ -171,12 +179,12 @@ var MediaEditForm = React.createClass({
             value={this.state.mediaData.file_name}
           />
           <SelectElement
-            name="hide_file"
+            name="hideFile"
             label="Hide File"
             emptyOption={false}
             options={["No", "Yes"]}
             onUserInput={this.setFormData}
-            ref="hide_file"
+            ref="hideFile"
             value={this.state.mediaData.hide_file}
           />
           <ButtonElement label="Update File"/>
@@ -187,19 +195,17 @@ var MediaEditForm = React.createClass({
 
   /**
    * Handles form submission
-   * @param e
+   * @param {event} e - Form submition event
    */
   handleSubmit: function(e) {
     e.preventDefault();
 
     var self = this;
     var myFormData = this.state.formData;
-    var formRefs = this.refs;
     var formData = new FormData();
-    var hasErrors = false;
 
     for (var key in myFormData) {
-      if (myFormData[key] != "") {
+      if (myFormData[key] !== "") {
         formData.append(key, myFormData[key]);
       }
     }
@@ -247,10 +253,10 @@ var MediaEditForm = React.createClass({
   },
 
   /**
-   * Sets the form data based on state values of child elements/componenets
+   * Set the form data based on state values of child elements/componenets
    *
-   * @param formElement
-   * @param value
+   * @param {string} formElement - name of the selected element
+   * @param {string} value - selected value for corresponding form element
    */
   setFormData: function(formElement, value) {
     var formData = this.state.formData;
@@ -267,7 +273,7 @@ var MediaEditForm = React.createClass({
   showAlertMessage: function() {
     var self = this;
 
-    if (this.refs["alert-message"] == null) {
+    if (this.refs["alert-message"] === null) {
       return;
     }
 
@@ -281,4 +287,4 @@ var MediaEditForm = React.createClass({
 
 });
 
-RMediaEditForm = React.createFactory(MediaEditForm);
+var RMediaEditForm = React.createFactory(MediaEditForm);

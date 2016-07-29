@@ -42,10 +42,10 @@ function editFile()
 
     // Process posted data
     $idMediaFile = $_POST['idMediaFile'];
-    $site        = isset($_POST['for_site']) ? $_POST['for_site'] : null;
-    $dateTaken   = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
+    $site        = isset($_POST['forSite']) ? $_POST['forSite'] : null;
+    $dateTaken   = isset($_POST['dateTaken']) ? $_POST['dateTaken'] : null;
     $comments    = isset($_POST['comments']) ? $_POST['comments'] : null;
-    $hideFile    = $_POST['hide_file'];
+    $hideFile    = $_POST['hideFile'];
 
     $updateValues = [
                      'for_site'   => $site,
@@ -93,10 +93,10 @@ function uploadFile()
 
     // Process posted data
     $pscid      = isset($_POST['pscid']) ? $_POST['pscid'] : null;
-    $visit      = isset($_POST['visit_label']) ? $_POST['visit_label'] : null;
+    $visit      = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null;
     $instrument = isset($_POST['instrument']) ? $_POST['instrument'] : null;
-    $site       = isset($_POST['for_site']) ? $_POST['for_site'] : null;
-    $dateTaken  = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
+    $site       = isset($_POST['forSite']) ? $_POST['forSite'] : null;
+    $dateTaken  = isset($_POST['dateTaken']) ? $_POST['dateTaken'] : null;
     $comments   = isset($_POST['comments']) ? $_POST['comments'] : null;
 
     // If required fields are not set, show an error

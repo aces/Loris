@@ -1,3 +1,5 @@
+/* exported RMediaUploadForm */
+
 /**
  * Media Upload Form
  *
@@ -118,11 +120,11 @@ var MediaUploadForm = React.createClass({
             required={true}
           />
           <SelectElement
-            name="visit_label"
+            name="visitLabel"
             label="Visit Label"
             options={this.state.Data.visits}
             onUserInput={this.setFormData}
-            ref="visit_label"
+            ref="visitLabel"
             required={true}
           />
           <SelectElement
@@ -134,19 +136,19 @@ var MediaUploadForm = React.createClass({
             required={true}
           />
           <SelectElement
-            name="for_site"
+            name="forSite"
             label="For Site"
             options={this.state.Data.sites}
             onUserInput={this.setFormData}
-            ref="for_site"
+            ref="forSite"
           />
           <DateElement
-            name="date_taken"
+            name="dateTaken"
             label="Date of Administration"
             minYear="2000"
             maxYear="2017"
             onUserInput={this.setFormData}
-            ref="date_taken"
+            ref="dateTaken"
           />
           <TextareaElement
             name="comments"
@@ -174,10 +176,10 @@ var MediaUploadForm = React.createClass({
   /**
    * Returns a valid name for the file to be uploaded
    *
-   * @param {string} pscid
-   * @param {string} visitLabel
-   * @param {string} instrument
-   * @returns {string}
+   * @param {string} pscid - PSCID selected from the dropdown
+   * @param {string} visitLabel - Visit label selected from the dropdown
+   * @param {string} instrument - Instrument selected from the dropdown
+   * @return {string} - Generated valid filename for the current selection
    */
   getValidFileName: function(pscid, visitLabel, instrument) {
     var fileName = pscid + "_" + visitLabel;
@@ -187,8 +189,8 @@ var MediaUploadForm = React.createClass({
   },
 
   /**
-   * Handles form submission
-   * @param e
+   * Handle form submission
+   * @param {object} e - Form submission event
    */
   handleSubmit: function(e) {
     e.preventDefault();
@@ -205,7 +207,7 @@ var MediaUploadForm = React.createClass({
     var instrument = myFormData.instrument ? myFormData.instrument : null;
     var fileName = myFormData.file ? myFormData.file.name : null;
     var requiredFileName = this.getValidFileName(
-      myFormData.pscid, myFormData.visit_label, instrument
+      myFormData.pscid, myFormData.visitLabel, instrument
     );
 
     if (!this.isValidFileName(requiredFileName, fileName)) {
@@ -282,9 +284,9 @@ var MediaUploadForm = React.createClass({
   /**
    * Checks if the inputted file name is valid
    *
-   * @param requiredFileName
-   * @param fileName
-   * @returns {boolean}
+   * @param {string} requiredFileName - Required file name
+   * @param {string} fileName - Provided file name
+   * @return {boolean} - true if file names match and false otherwise
    */
   isValidFileName: function(requiredFileName, fileName) {
     if (fileName === null || requiredFileName === null) {
@@ -295,28 +297,26 @@ var MediaUploadForm = React.createClass({
   },
 
   /**
-   * Validates the form
+   * Validate the form
    *
-   * @param formRefs
-   * @param formData
-   * @returns {boolean}
+   * @param {object} formRefs - Object containing references to React form elements
+   * @param {object} formData - Object containing form data inputed by user
+   * @return {boolean} - true if all required fields are filled, false otherwise
    */
   isValidForm: function(formRefs, formData) {
     var isValidForm = true;
     var requiredFields = {
       pscid: null,
-      visit_label: null,
+      visitLabel: null,
       file: null
     };
 
     Object.keys(requiredFields).map(function(field) {
       if (formData[field]) {
         requiredFields[field] = formData[field];
-      } else {
-        if (formRefs[field]) {
-          formRefs[field].props.hasError = true;
-          isValidForm = false;
-        }
+      } else if (formRefs[field]) {
+        formRefs[field].props.hasError = true;
+        isValidForm = false;
       }
     });
     this.forceUpdate();
@@ -325,10 +325,10 @@ var MediaUploadForm = React.createClass({
   },
 
   /**
-   * Sets the form data based on state values of child elements/componenets
+   * Set the form data based on state values of child elements/componenets
    *
-   * @param formElement
-   * @param value
+   * @param {string} formElement - name of the selected element
+   * @param {string} value - selected value for corresponding form element
    */
   setFormData: function(formElement, value) {
     var formData = this.state.formData;
@@ -359,4 +359,4 @@ var MediaUploadForm = React.createClass({
 
 });
 
-RMediaUploadForm = React.createFactory(MediaUploadForm);
+var RMediaUploadForm = React.createFactory(MediaUploadForm);

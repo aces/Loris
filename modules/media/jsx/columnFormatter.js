@@ -1,4 +1,5 @@
-/* global loris, hasWritePermission */
+/* global hasWritePermission */
+/* exported formatColumn */
 
 /**
  * Modify behaviour of specified column cells in the Data Table component
@@ -8,7 +9,7 @@
  * @param {arrray} rowHeaders - array of table headers (column names)
  * @return {*} a formated table cell for a given column
  */
-export function formatColumn(column, cell, rowData, rowHeaders) {
+function formatColumn(column, cell, rowData, rowHeaders) {
   // If a column if set as hidden, don't display it
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
