@@ -195,9 +195,15 @@ StaticDataTable = React.createClass({
 
                 // Increase counter, if filter value is found to be a substring
                 // of one of the column values
-                var filterData = this.props.Filter[this.props.Headers[j]];
+                var filterData = this.props.Filter[camelize(this.props.Headers[j])];
                 if (filterData !== null && data.indexOf(filterData) > -1) {
                     filterMatchCount++;
+                }
+
+                function camelize(str) {
+                  return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(letter, index) {
+                    return index == 0 ? letter.toLowerCase() : letter.toUpperCase();
+                  }).replace(/\s+/g, '');
                 }
 
                 // Get custom cell formatting if available
@@ -240,7 +246,7 @@ StaticDataTable = React.createClass({
                 <div className="table-header panel-heading">
                     <div className="row">
                         <div className="col-xs-12">
-                            {rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown}) 
+                            {rows.length} rows displayed of {this.props.Data.length}. (Maximum rows per page: {RowsPerPageDropdown})
                             <div className="pull-right">
                                 <PaginationLinks Total={this.props.Data.length} onChangePage={this.changePage} RowsPerPage={rowsPerPage} Active={this.state.PageNumber} />
                             </div>
