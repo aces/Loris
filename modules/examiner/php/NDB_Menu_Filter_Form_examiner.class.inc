@@ -59,11 +59,11 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $query     = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
         $certQuery = " LEFT JOIN certification c ON (c.examinerID = e.examinerID) 
             LEFT JOIN test_names tn ON (c.testID = tn.ID)";
-        
+
         if ($this->useCertification == '1') {
             $query .= $certQuery;
         }
-        
+
         $query .= ' WHERE 1=1';
 
         $user = User::singleton();
@@ -174,8 +174,6 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _setDataTableRows($count)
     {
-        $DB = Database::singleton();
-
         $x = 0;
         foreach ($this->list as $item) {
             //count column
