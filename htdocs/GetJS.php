@@ -46,23 +46,25 @@ if (empty($basePath)) {
     exit(1);
 }
 
-
 // Now get the file and do file validation
-$Module = $_GET['Module'];
+$Module   = $_GET['Module'];
+$JSModule = $_GET['JSModule'];
 if (!isset($_GET['file']) || empty($_GET['file'])) {
     $File = $Module . ".js";
 } else {
     $File = $_GET['file'];
 }
 
-if (empty($Module) || empty($File)) {
+
+if ((empty($Module) && empty($JSModule)) || empty($File)) {
     error_log("Missing required parameters for request");
     header("HTTP/1.1 400 Bad Request");
     exit(2);
 }
 
-if (is_dir($basePath . "project/modules/$Module")
-    || is_dir($basePath . "modules/$Module")
+
+if (!empty($Module) && (is_dir($basePath . "project/modules/$Module")
+    || is_dir($basePath . "modules/$Module"))
 ) {
     $ModuleDir = is_dir($basePath . "project/modules/$Module")
         ? $basePath . "project/modules/$Module"
@@ -71,6 +73,15 @@ if (is_dir($basePath . "project/modules/$Module")
         get_include_path() . ':' .
         $ModuleDir . "/php"
     );
+    $FullPath = "$ModuleDir/js/$File";
+} elseif (!empty($JSModule) && is_dir($basePath . "project/htdocs/js/$JSModule")
+) {
+    $JSModuleDir = $basePath . "project/htdocs/js/$JSModule";
+    set_include_path(
+        get_include_path() . ':' .
+        $basePath . "project/instruments"
+    );
+    $FullPath = "$JSModuleDir/$File";
 } else {
     error_log("ERROR: Module does not exist");
     header("HTTP/1.1 400 Bad Request");
@@ -91,9 +102,6 @@ if (strpos("..", $File) !== false) {
     header("HTTP/1.1 400 Bad Request");
     exit(4);
 }
-
-
-$FullPath = "$ModuleDir/js/$File";
 
 if (!file_exists($FullPath)) {
     error_log("ERROR: File $File does not exist");
