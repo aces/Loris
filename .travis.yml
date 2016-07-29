@@ -29,9 +29,10 @@ install:
     # Install jslint
     - npm install -g jslint
 
-    # Install NPM dependencies (ESLint, Babel, etc)
-    - rm -r node_modules
-    - npm install
+    # Install ESLint
+    - npm -g install eslint
+    - npm -g install eslint-config-google
+    - npm -g install eslint-plugin-react
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
@@ -108,7 +109,7 @@ script:
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
-    - node_modules/.bin/eslint modules/media/
+    - eslint modules/media/
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
