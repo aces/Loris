@@ -243,15 +243,14 @@ class NDB_Page
      * Adds a hidden element to the current page. Note if the hidden element
      * needs a value it should be added to the defaults.
      *
-     * @param string $label      The label to attach to the element
-     * @param array  $attributes List of HTML attributes to add to the
-     *                           element
+     * @param string $name  The name of the hidden element to add
+     * @param array  $value The value of the hidden element to add
      *
      * @return none
      */
-    function addHidden($label, $attributes=null)
+    function addHidden($name, $value=null)
     {
-        $this->form->addElement('hidden', $label, $attributes);
+        $this->form->addElement('hidden', $name, $value);
     }
 
     /**
