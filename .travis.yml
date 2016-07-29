@@ -20,7 +20,7 @@ before_install:
     - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1600x1200x16"
     #- "export DISPLAY=:99.0"
     #- "sh -e /etc/init.d/xvfb start"
-    # Ensure NPM V3 is installed
+    # Ensure node version is up to date
     - nvm install node
 
 install:
@@ -31,7 +31,7 @@ install:
     # Install jslint
     - npm install -g jslint
 
-    # Install ESLint
+    # Install ESLint and plugins
     - npm -g install eslint
     - npm -g install eslint-config-google
     - npm -g install eslint-plugin-react
@@ -111,6 +111,8 @@ script:
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
+
+    # Run ESLint on specific modules
     - eslint modules/media/
 
     # Run unit tests to make sure functions still do what they should.
