@@ -60,7 +60,7 @@ SQL/ directory of LORIS which are prefixed with `0000-00-` into it
 `SQL/0000-00-02-Menus.sql`, etc.)
 
 There are a few settings in the Config module that LORIS currently depends
-on being updated to load correctly that must be set manually from MySQL as
+on being updated to load correctly -- these must be set manually from the MySQL commandline as
 they're normally set by the install script.
 
 ```SQL
@@ -72,10 +72,10 @@ UPDATE Config SET Value='http://localhost' WHERE ConfigID=(SELECT ID FROM Config
 Where `/var/www/loris/` is the location where LORIS is installed and assuming
 you'll be running on localhost (otherwise update host and url appropriately)
 
-Useful tip for administrators: while connected to MySQL, you can also reset the admin password:
+Set the password for the front-end _admin_ user account while connected to MySQL.
 
 ```SQL
--- Reset 'admin' front-end user account password to YOURPASSWORD
+-- Set 'admin' front-end user account password to YOURPASSWORD
 UPDATE users SET Password_md5=CONCAT('aa', MD5('aaYOURPASSWORD')) WHERE ID=1;
 ```
 
@@ -84,8 +84,8 @@ UPDATE users SET Password_md5=CONCAT('aa', MD5('aaYOURPASSWORD')) WHERE ID=1;
 Create a directory named "project" directory under the LORIS root, and copy
 the sample config.xml from `docs/config/config.xml` to `project/config.xml`
 
-Update the _<database>_ section of the config.xml to point to the database you
-just configured with an appropriate user.  (Ignore _quatuser_ and _quatpassword_ tags.)
+Update the _database_ tagset section of config.xml to point to the database you
+just configured with an appropriate user. (Ignore _quatuser_ and _quatpassword_ tags.)
 
 ## 1.3 Apache
 
