@@ -33,8 +33,9 @@
     <study>
         <PSCID>
             <!-- PSCID (Study Center ID) generation method possible options: sequential/random/user -->
-            <generation>user</generation>
+            <generation>sequential</generation>
             <structure>
+                <seq type="siteAbbrev"/>
                 <seq type="alphanumeric" minLength="4"/> <!-- Ex: AAA1-->
             </structure>
         </PSCID>
