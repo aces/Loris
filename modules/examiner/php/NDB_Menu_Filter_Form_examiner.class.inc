@@ -59,16 +59,20 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $query     = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
         $certQuery = " LEFT JOIN certification c ON (c.examinerID = e.examinerID) 
             LEFT JOIN test_names tn ON (c.testID = tn.ID)";
-
+        
         if ($this->useCertification == '1') {
             $query .= $certQuery;
         }
-
+        
         $query .= ' WHERE 1=1';
 
         $user = User::singleton();
         if (!$user->hasPermission('examiner_multisite')) {
             $query .= " AND e.CenterID=" . $DB->quote($user->getData('CenterID'));
+        }
+
+        if ($this->useCertification == '1') {
+            $query .= ' GROUP BY e.examinerID';
         }
 
         // set the class variables
@@ -101,9 +105,9 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         if ($this->useCertification == '1') {
             array_push(
                 $this->columns,
-                'tn.Full_name as Certification',
-                'e.examinerID as ID',
-                'c.pass as Pass'
+                "GROUP_CONCAT(tn.Full_name SEPARATOR ', ') as Certification",
+                "e.examinerID as ID",
+                "c.pass as Pass"
             );
             array_push($this->headers, 'Certification');
             array_push($this->validFilters, 'tn.Full_name');
@@ -170,52 +174,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _setDataTableRows($count)
     {
-        // Code from old certification module
-
-        if ($this->useCertification == '1') {
-            $IDs        = array();
-            $duplicates = array();
-            $i          = 0;
-
-            foreach ($this->list as $li) {
-                $id            = $li['ID'];
-                $certification = $li['Certification'];
-
-                $str           = explode(' ', $certification);
-                $certification = $str[0];
-
-                if (array_key_exists($id, $IDs)) {
-                    if ($li['Pass'] == 'certified') {
-                        if ($IDs[$id] == 'none') {
-                            $IDs[$id] = $certification;
-                        } else {
-                            $IDs[$id] .= ", " . $certification;
-                        }
-                    }
-                    array_push($duplicates, $i);
-                } else {
-                    if ($li['Pass'] == 'certified') {
-                        $IDs[$id] = $certification;
-                    } else {
-                        $IDs[$id] = "none";
-                    }
-                }
-                $i++;
-            }
-
-            // create concatenated list of certifications for each examiner
-            foreach ($this->list as &$l) {
-                if (array_key_exists($l['ID'], $IDs)) {
-                    $l['Certification'] = $IDs[$l['ID']];
-                }
-            }
-
-            $list =& $this->list;
-            foreach ($duplicates as $k=>$v) {
-                unset($list[$v]);
-
-            }
-        }
+        $DB = Database::singleton();
 
         $x = 0;
         foreach ($this->list as $item) {
