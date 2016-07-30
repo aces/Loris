@@ -179,8 +179,11 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'low' => 'Low',
             'normal' => 'Normal',
             'high' => 'High',
-            'urgent' => 'Urgent'
+            'urgent' => 'Urgent',
+            'immediate' => 'Immediate'
         );
+        
+        
         $allAr = array('' => 'All');
 
         $this->addBasicText('issueID', 'Issue ID', array("size"=>10,"maxlength"=>25));
