@@ -18,7 +18,7 @@ if (isset($_GET['action'])) {
     if ($action == "getData") {
         echo json_encode(getIssueFields());
     }else if ($action == "edit"){
-        editIssue();
+        echo editIssue();
     }
 }
 
@@ -63,7 +63,6 @@ function editIssue()
 
     if (isset($issueID)) {
         $db->update('issue_tracker', $issueValues, ['issueID' => $issueID]);
-        updateComments($issueValues, $issueID);
     }
     else {
         $issueValues['reporter'] = $user->getData['UserID'];
@@ -71,8 +70,11 @@ function editIssue()
 
         $db->insert('issue_tracker', $issueValues);
         $issueID = $db->getLastInsertId();
-        updateComments($issueValues, $issueID);
     }
+
+    $issueValues['comments'] = updateComments($issueValues, $issueID);
+
+    return $issueID;
 }
 
 function getChangedValues(){
@@ -164,15 +166,25 @@ function getIssueFields()
             []
         );
         $issueData['comment'] = getComments($issueID);
+    }else{
+        $issueData['reporter'] = $user->getData['UserID']; //these are what need to be displayed upon creation of a new issue, but before the user has saved it. the user cannot change these values.
+        $issueData['dateCreated'] = date('Y-m-d H:i:s');
     }
 
+    //temporary
+        $issueData['PSCID'] = 123;
+        $issueData['DCCID'] = 123;
+        $issueData['site'] = 'DCC';
+
     $result = [
-        'assignees' => $sites,
-        'statues' => $statuses,
+        'assignees' => $assignees,
+        'sites' => $sites,
+        'statuses' => $statuses,
         'priorities' => $priorities,
         'categories' => $categories,
         'modules' => $modules,
         'issueData'   => $issueData,
+        'hasEditPermission' => $user->hasPermission('issue_tracker_can_assign'); @//todo: fix this when you decide on new permissions.
     ];
 
     return $result;

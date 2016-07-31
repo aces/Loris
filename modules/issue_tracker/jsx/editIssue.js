@@ -13,13 +13,226 @@ var IssueEditForm = React.createClass({
             'errorMessage': null,
             'isLoaded':     false,
             'loadedData':   0,
-            'isNewIssue': false
+            'isNewIssue': false,
+            'issueID' : 0
         };
     },
 
     componentDidMount: function() {
-        var that = this;
-        $.ajax(this.props.DataURL, {
+        var that = this; //check that this is where you should be doing this. (lol)
+        that.getDataAndChangeState();
+    },
+
+    render: function() {
+
+        if (!this.state.isLoaded) {
+            if (this.state.error != undefined) {
+                return (
+                    <div className="alert alert-danger text-center">
+                        <strong>
+                            {this.state.error}
+                        </strong>
+                    </div>
+                );
+            }
+
+            return (
+                <button className="btn-info has-spinner">
+                    Loading
+                    <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                </button>
+            );
+        }
+
+        var helpText = ""; //todo: here fill out the fields that are neccessary.
+        var alertMessage = "";
+        var alertClass = "alert text-center hide";
+        var hasEditPermission = data.hasEditPermission; //bool
+
+
+        if (this.state.uploadResult) {
+            if (this.state.uploadResult == "success") {
+                alertClass = "alert alert-success text-center";
+                alertMessage = "Upload Successful!";
+            } else if (this.state.uploadResult == "error") {
+                var errorMessage = this.state.errorMessage;
+                alertClass = "alert alert-danger text-center";
+                alertMessage = errorMessage ? errorMessage : "Failed to upload!";
+            }
+        }
+
+        return (
+            <div>
+                <div className={alertClass} role="alert" ref="alert-message">
+                    {alertMessage}
+                </div>
+                <FormElement
+                    name="issueEdit"
+                    onSubmit={this.handleSubmit}
+                    ref="form"
+                >
+                    <h3>Edit Issue</h3>
+                    <br />
+                    <LabelElement
+                        name="issueID"
+                        label="IssueID"
+                        ref="title"
+                        value={this.state.issueData.issueID}
+                    />
+                    <TextElement
+                        name="title"
+                        label="Title"
+                        onUserInput={this.setIssueData}
+                        ref="title"
+                        required={true}
+                        disabled={hasEditPermission}
+                        value={this.state.issueData.title}
+                    />
+                    <LabelElement
+                        name="lastUpdate"
+                        label="Last Update"
+                        ref="visit_label"
+                        value={this.state.issueData.lastUpdate}
+                    />
+                    <LabelElement
+                        name="dateCreated"
+                        label="Last Update"
+                        ref="dateCreated"
+                        value={this.state.issueData.dateCreated}
+                    />
+                    //todo: and here is where you learn how html works and put shit on a new line.
+                    <LabelElement
+                        name="reporter"
+                        label="Reporter"
+                        ref="reporter"
+                        value={this.state.issueData.reporter}
+                    />
+                    <SelectElement
+                        name="assignee"
+                        label="Assignee"
+                        emptyOption={false}//just cause I already put it in
+                        options={data.assignees} //cjeck that this is actually the correct syntax
+                        onUserInput={this.setIssueData}
+                        ref="assignee"
+                        disabled={hasEditPermission}
+                        value={this.state.issueData.assignee}
+                    />
+                    <SelectElement
+                        name="status"
+                        label="Status"
+                        emptyOption={false}//just cause I already put it in
+                        options={data.statuses} //cjeck that this is actually the correct syntax
+                        onUserInput={this.setIssueData}
+                        ref="status"
+                        value={this.state.issueData.status} //todo: edit this so the options are different if the user doesn't have permission
+                    />
+                    <SelectElement
+                        name="priority"
+                        label="Priority"
+                        emptyOption={false}//just cause I already put it in
+                        options={data.priorities} //cjeck that this is actually the correct syntax
+                        onUserInput={this.setIssueData}
+                        ref="priority"
+                        required={false}
+                        disabled={hasEditPermission}
+                        value={this.state.issueData.priority}
+                    />
+                    <SelectElement
+                        name="category"
+                        label="Category"
+                        emptyOption={false}//just cause I already put it in
+                        options={data.categories} //cjeck that this is actually the correct syntax
+                        onUserInput={this.setIssueData}
+                        ref="category"
+                        disabled={hasEditPermission}
+                        value={this.state.issueData.category}
+                    />
+                    <SelectElement
+                        name="module"
+                        label="Module"
+                        emptyOption={false}//just cause I already put it in
+                        options={data.modules} //cjeck that this is actually the correct syntax
+                        onUserInput={this.setIssueData}
+                        ref="hide_file"
+                        disabled={hasEditPermission}
+                        value={this.state.issueData.module}
+                    />
+                    <TextElement
+                        name="PSCID"
+                        label="PSCID"
+                        onUserInput={this.setIssueData}
+                        ref="PSCID"
+                        required={false}
+                        disabled={hasEditPermission}
+                        value={this.state.issueData.PSCID}
+                    />
+                    <TextElement
+                        name="DCCID"
+                        label="DCCID"
+                        onUserInput={this.setIssueData}
+                        ref="DCCID"
+                        required={false}
+                        disabled={hasEditPermission}
+                        value={this.state.issueData.DCCID}
+                    />
+                    <TextElement
+                        name="visitLabel"
+                        label="DCCID"
+                        onUserInput={this.setIssueData}
+                        ref="DCCID"
+                        required={false}
+                        disabled={hasEditPermission}
+                        value={this.state.issueData.DCCID}
+                    />
+                    <SelectElement
+                        name="site"
+                        label="Site"
+                        emptyOption={false}//just cause I already put it in
+                        options={data.sites} //cjeck that this is actually the correct syntax
+                        onUserInput={this.setIssueData}
+                        ref="site"
+                        disabled={hasEditPermission}
+                        value={this.state.issueData.site}
+                    />
+                    <HelpTextElement
+                        name="allComments"
+                        html={false}
+                        label="Comments"
+                        text={this.state.issueData.comment}
+                        ref="allComments"
+                    />
+                    <TextareaElement
+                        name="comment"
+                        label="Comments"
+                        onUserInput={this.setIssueData}
+                        ref="comment"
+                        value={this.state.issueData.comment}
+                    />
+                    <SelectElement
+                        name="watching"
+                        label="Watching?"
+                        emptyOption={false}
+                        options={["No", "Yes"]}
+                        onUserInput={this.setFormData}
+                        ref="watching"
+                        value={this.state.issueData.watching}
+                    />
+                    <ButtonElement label="Update Issue"/>
+                </FormElement>
+            </div>
+        )
+    },
+
+    getDataAndChangeState: function() {
+        var dataURL = this.props.DataURL;
+
+        if (this.state.isNewIssue){
+            var dataURL = this.props.DataURL;
+            dataURL = dataURL.substring(0, str.length - 2); //todo: check this performs correctly, should get rid of the '' in the issueID= in the get request (current url)
+            dataURL = dataURL.concat(this.state.issueID); //really hope this  is a string.
+        }
+
+        $.ajax(dataURL, {
             dataType: 'json',
             xhr: function() {
                 var xhr = new window.XMLHttpRequest();
@@ -67,92 +280,9 @@ var IssueEditForm = React.createClass({
                 });
             }
         });
+
     },
 
-    render: function() {
-
-        if (!this.state.isLoaded) {
-            if (this.state.error != undefined) {
-                return (
-                    <div className="alert alert-danger text-center">
-                        <strong>
-                            {this.state.error}
-                        </strong>
-                    </div>
-                );
-            }
-
-            return (
-                <button className="btn-info has-spinner">
-                    Loading
-                    <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
-                </button>
-            );
-        }
-
-        var helpText = ""; //todo: here fill out the fields that are neccessary.
-        var alertMessage = "";
-        var alertClass = "alert text-center hide";
-
-        return (
-            <div>
-                <div className={alertClass} role="alert" ref="alert-message">
-                    {alertMessage}
-                </div>
-                <FormElement
-                    name="issueEdit"
-                    onSubmit={this.handleSubmit}
-                    ref="form"
-                >
-                    <h3>Edit Issue</h3>
-                    <br />
-                    <TextElement
-                        name="title"
-                        label="Title"
-                        onUserInput={this.setFormData}
-                        ref="title"
-                        required={true}
-                        value={this.state.issueData.title}
-                    />
-                    <LabelElement
-                        name="last_update"
-                        label="Last Update"
-                        onUserInput={this.setFormData}
-                        ref="visit_label"
-                        required={true}
-                        disabled={true}
-                        value={this.state.issueData.last_update}
-                    />
-                    <TextareaElement
-                        name="comments"
-                        label="Comments"
-                        onUserInput={this.setFormData}
-                        ref="comments"
-                        value={this.state.mediaData.comments}
-                    />
-                    <FileElement
-                        id="mediaEditEl"
-                        onUserInput={this.setFormData}
-                        required={true}
-                        disabled={true}
-                        ref="file"
-                        label="Uploaded file"
-                        value={this.state.mediaData.file_name}
-                    />
-                    <SelectElement
-                        name="hide_file"
-                        label="Hide File"
-                        emptyOption={false}
-                        options={["No", "Yes"]}
-                        onUserInput={this.setFormData}
-                        ref="hide_file"
-                        value={this.state.mediaData.hide_file}
-                    />
-                    <ButtonElement label="Update Issue"/>
-                </FormElement>
-            </div>
-        )
-    },
 
     /**
      * Handles form submission
@@ -162,19 +292,21 @@ var IssueEditForm = React.createClass({
         e.preventDefault();
 
         var self = this;
-        var myFormData = this.state.issueData;
+        var myFormData = this.state.formData;
         var formRefs = this.refs;
         var formData = new FormData();
         var hasErrors = false;
+
+        // Validate the form
+        if (!this.isValidForm(formRefs, myFormData)) {
+            return;
+        }
 
         for (var key in myFormData) {
             if (myFormData[key] != "") {
                 formData.append(key, myFormData[key]);
             }
         }
-
-        $('#mediaEditEl').hide();
-        $("#file-progress").removeClass('hide');
 
         $.ajax({
             type:        'POST',
@@ -183,6 +315,7 @@ var IssueEditForm = React.createClass({
             cache:       false,
             contentType: false,
             processData: false,
+            async:       false,       //this is so I can return data and know that it will be there when success is run.
             xhr:         function() {
                 var xhr = new window.XMLHttpRequest();
                 xhr.upload.addEventListener("progress", function(evt) {
@@ -197,17 +330,25 @@ var IssueEditForm = React.createClass({
                 }, false);
                 return xhr;
             },
-            success:     function(data) {
-                $("#file-progress").addClass('hide');
+
+            success:     function(returnedIssueID) {
                 self.setState({
-                    uploadResult: "success"
+                    submissionResult: "success",
+                    issueID: returnedIssueID
                 });
+                this.getDataAndChangeState();
+
+                // Trigger an update event to update all observers (i.e DataTable) //todo: figure out what this is
+                $(document).trigger('update');
+
                 self.showAlertMessage();
+
+
             },
             error:       function(err) {
                 console.error(err);
                 self.setState({
-                    uploadResult: "error"
+                    submissionResult: "error"
                 });
                 self.showAlertMessage();
             }
@@ -221,7 +362,10 @@ var IssueEditForm = React.createClass({
      * @param formElement
      * @param value
      */
-    setFormData: function(formElement, value) {
+    setIssueData: function(formElement, value) {
+
+        //todo: only give valid inputs for fields given previous input to other fields
+
         var formData = this.state.formData;
         formData[formElement] = value;
 
@@ -241,9 +385,8 @@ var IssueEditForm = React.createClass({
 
         var isValidForm = true;
         var requiredFields = {
-            'pscid': null,
-            'visit_label': null,
-            'file' : null
+            'title':null,
+            'priority':null
         };
 
         Object.keys(requiredFields).map(function(field) {
