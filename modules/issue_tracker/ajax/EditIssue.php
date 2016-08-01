@@ -43,7 +43,7 @@ function editIssue()
     $assignee    = isset($_POST['assignee']) ? $_POST['assignee'] : null;
     $status   = isset($_POST['status']) ? $_POST['status'] : null;
     $priority   = isset($_POST['priority']) ? $_POST['priority'] : null;
-    $candID   = isset($_POST['PSCID']) ? $_POST['PSCID'] : null; //TODO: deal with adding DCCID
+    $candID   = isset($_POST['PSCID']) ? $_POST['PSCID'] : null; //TODO: deal with adding DCCID and validating
     $visitLabel   = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null;
     $centerID   = isset($_POST['centerID']) ? $_POST['centerID'] : null;
     $title = isset($_POST['title']) ? $_POST['title'] : null;
@@ -53,16 +53,18 @@ function editIssue()
 
 
     $issueValues = [
-        'assignee'   => $assignee,
+        'assignee'   => "admin",
         'status'     => $status,
         'priority'   => $priority,
-        'candID'     => $candID,
+//        'candID'     => $candID
         'visitLabel' => $visitLabel,
         'centerID'   => $centerID,
         'title'      => $title,
         'category'   => $category,
         'module'     => $module
     ];
+
+    error_log(json_encode($issueValues));
 
     if (isset($issueID)) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
@@ -131,10 +133,12 @@ function getIssueFields()
     }
 
     $assignees = array();
-    $assignee_expanded = $db->pselect(
-        "SELECT u.Real_name FROM issues i LEFT JOIN users u ON(i.assignee=u.UserID)",
-        array()
-    );
+
+    $assignee_expanded = $db->pselect("SELECT assignee from issues");
+//    $assignee_expanded = $db->pselect(
+//        "SELECT u.Real_name FROM issues i LEFT JOIN users u ON(i.assignee=u.UserID)",
+//        array()
+//    );
     foreach ($assignee_expanded as $a_row) {
         $assignee                   = $a_row['Real_name'];
         $assignees[$assignee] = $assignee;

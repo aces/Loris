@@ -247,77 +247,74 @@ var IssueEditForm = React.createClass({
         )
     },
 
-    // getDataAndChangeState: function() {
-    //     var that = this;
-    //     that.setState({
-    //         'error': "noooooo"
-    //     });
-    //     var dataURL = this.props.DataURL;
-    //
-    //     if (this.state.isNewIssue){
-    //         var dataURL = this.props.DataURL;
-    //         dataURL = dataURL.substring(0, str.length - 2); //todo: check this performs correctly, should get rid of the '' in the issueID= in the get request (current url)
-    //         dataURL = dataURL.concat(this.state.issueID); //really hope this  is a string.
-    //     }
-    //
-    //     $.ajax(dataURL, {
-    //         dataType: 'json',
-    //         async:       false,       //this is so I can return data and know that it will be there when success is run.
-    //         xhr: function() {
-    //             var xhr = new window.XMLHttpRequest();
-    //             xhr.addEventListener("progress", function(evt) {
-    //                 that.setState({
-    //                     'loadedData': evt.loaded
-    //                 });
-    //             });
-    //             return xhr;
-    //         },
-    //
-    //         success: function(data) {
-    //             that.setState({
-    //                 'error': "ha"
-    //             });
-    //             if(data.issueData) {
-    //                 var formData = {
-    //                     'issueID': data.issueData.issueID,
-    //                     'title': data.issueData.title,
-    //                     'lastUpdate': data.issueData.lastUpdate,
-    //                     'site': data.issueData.site,
-    //                     'PSCID': data.issueData.PSCID,
-    //                     'DCCID': data.issueData.DCCID,
-    //                     'reporter': data.issueData.reporter,
-    //                     'assignee': data.issueData.assignee,
-    //                     'status': data.issueData.status,
-    //                     'priority': data.issueData.priority,
-    //                     'comment': data.issueData.comment,
-    //                     'watching': data.issueData.watching,
-    //                     'visitLabel': data.issueData.visitLabel,
-    //                     'dateCreated': data.issueData.dateCreated,
-    //                     'category': data.issueData.category
-    //                 };
-    //             }else{
-    //                 that.setState({'isNewIssue': true});
-    //             }
-    //
-    //             that.setState({
-    //                 'Data':      data,
-    //                 'isLoaded':  true,
-    //                 'issueData': data.issueData,
-    //                 'formData':  formData
-    //             });
-    //
-    //             that.setState({
-    //                 'error': "finished success"
-    //             })
-    //         },
-    //         error: function(data, error_code, error_msg) {
-    //             that.setState({
-    //                 'error': "error"
-    //             });
-    //         }
-    //     });
-    //
-    // },
+    getDataAndChangeState: function() {
+        var that = this;
+
+        var dataURL = this.props.DataURL;
+
+        if (this.state.isNewIssue){
+            var dataURL = this.props.DataURL;
+            dataURL = dataURL.substring(0, str.length - 2); //todo: check this performs correctly, should get rid of the '' in the issueID= in the get request (current url)
+            dataURL = dataURL.concat(this.state.issueID); //really hope this  is a string.
+        }
+
+        $.ajax(dataURL, {
+            dataType: 'json',
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.addEventListener("progress", function(evt) {
+                    that.setState({
+                        'loadedData': evt.loaded
+                    });
+                });
+                return xhr;
+            },
+
+            success: function(data) {
+                that.setState({
+                    'error': "ha"
+                });
+                if(data.issueData) {
+                    var formData = {
+                        'issueID': data.issueData.issueID,
+                        'title': data.issueData.title,
+                        'lastUpdate': data.issueData.lastUpdate,
+                        'site': data.issueData.site,
+                        'PSCID': data.issueData.PSCID,
+                        'DCCID': data.issueData.DCCID,
+                        'reporter': data.issueData.reporter,
+                        'assignee': data.issueData.assignee,
+                        'status': data.issueData.status,
+                        'priority': data.issueData.priority,
+                        'comment': data.issueData.comment,
+                        'watching': data.issueData.watching,
+                        'visitLabel': data.issueData.visitLabel,
+                        'dateCreated': data.issueData.dateCreated,
+                        'category': data.issueData.category
+                    };
+                }else{
+                    that.setState({'isNewIssue': true});
+                }
+
+                that.setState({
+                    'Data':      data,
+                    'isLoaded':  true,
+                    'issueData': data.issueData,
+                    'formData':  formData
+                });
+
+                that.setState({
+                    'error': "finished success"
+                })
+            },
+            error: function(data, error_code, error_msg) {
+                that.setState({
+                    'error': "error"
+                });
+            }
+        });
+
+    },
 
 
     /**
@@ -351,7 +348,6 @@ var IssueEditForm = React.createClass({
             cache:       false,
             contentType: false,
             processData: false,
-            async:       false,       //this is so I can return data and know that it will be there when success is run.
             xhr:         function() {
                 var xhr = new window.XMLHttpRequest();
                 xhr.upload.addEventListener("progress", function(evt) {
@@ -372,7 +368,8 @@ var IssueEditForm = React.createClass({
                     submissionResult: "success",
                     issueID: returnedIssueID
                 });
-                this.getDataAndChangeState();
+                console.log(returnedIssueID);
+                self.getDataAndChangeState();
 
                 // Trigger an update event to update all observers (i.e DataTable) //todo: figure out what this is
                 $(document).trigger('update');
