@@ -32,13 +32,51 @@
                                 <div class="row">
                                     <div class="form-group col-sm-4">
                                         <label class="col-sm-12 col-md-4">
+                                            {$form.keyword.label}
+                                        </label>
+                                        <div class="col-sm-12 col-md-8">
+                                            {$form.keyword.html}
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label class="col-sm-12 col-md-4">
                                             {$form.issueID.label}
                                         </label>
                                         <div class="col-sm-12 col-md-8">
                                             {$form.issueID.html}
                                         </div>
                                     </div>
+
+                                </div>
+                                <div class="row">
+
                                     <div class="form-group col-sm-4">
+                                        <label class="col-sm-12 col-md-4">
+                                            {$form.module.label}
+                                        </label>
+                                        <div class="col-sm-12 col-md-8">
+                                            {$form.module.html}
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label class="col-sm-12 col-md-4">
+                                            {$form.category.label}
+                                        </label>
+                                        <div class="col-sm-12 col-md-8">
+                                            {$form.category.html}
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-4">
+                                        <label class="col-sm-12 col-md-4">
+                                            {$form.site.label}
+                                        </label>
+                                        <div class="col-sm-12 col-md-8">
+                                            {$form.site.html}
+                                        </div>
+                                    </div>
+                                    </div>
+                                <div class="row">
+                                <div class="form-group col-sm-4">
                                         <label class="col-sm-12 col-md-4">
                                             {$form.reporter.label}
                                         </label>
@@ -54,6 +92,17 @@
                                             {$form.assignee.html}
                                         </div>
                                     </div>
+                                    <div class="form-group col-sm-4">
+                                        <label class="col-sm-12 col-md-4">
+                                            {$form.watching.label}
+                                        </label>
+                                        <div class="col-sm-12 col-md-8">
+                                            {$form.watching.html}
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
                                     <div class="form-group col-sm-4">
                                         <label class="col-sm-12 col-md-4">
                                             {$form.priority.label}
@@ -72,20 +121,16 @@
                                     </div>
                                     <div class="form-group col-sm-4">
                                         <label class="col-sm-12 col-md-4">
-                                            {$form.watching.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.watching.html}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
                                             {$form.includeClosed.label}
                                         </label>
                                         <div class="col-sm-12 col-md-8">
                                             {$form.includeClosed.html}
                                         </div>
                                     </div>
+
+                                </div>
+                                <div class="'row">
+                                    <hr>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-sm-4">
@@ -122,14 +167,6 @@
                                             </div>
                                         </div>
                                     {/if}
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.site.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.site.html}
-                                        </div>
-                                    </div>
                                     <div class="col-sm-2 col-sm-offset-8">
                                         <input type="submit" class="btn btn-sm btn-primary col-xs-12" name="filter"
                                                value="Show Data">
@@ -165,7 +202,6 @@
     </div>
 
     <div id="datatable">
-
         <script>
             var table = RDynamicDataTable({
                 "DataURL": "{$baseurl}/issue_tracker/?format=json",

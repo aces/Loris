@@ -1,5 +1,5 @@
 function formatColumn(column, cell, rowData, rowHeaders) {
-    if (-1 == loris.hiddenHeaders.indexOf(column)) {
+    //if (-1 == loris.hiddenHeaders.indexOf(column)) {
         // If this column is not a hidden one
 
         console.log("in function formatcolumn");
@@ -33,25 +33,25 @@ function formatColumn(column, cell, rowData, rowHeaders) {
                     return React.createElement(
                         "td",
                         { style: { background: "#CCFFCC" } },
-                        "normal"
+                        "Normal"
                     );
                 case "high":
                     return React.createElement(
                         "td",
                         { style: { background: "#EEEEAA" } },
-                        "high"
+                        "High"
                     );
                 case "urgent":
                     return React.createElement(
                         "td",
                         { style: { background: "#CC6600" } },
-                        "urgent"
+                        "Urgent"
                     );
                 case "immediate":
                     return React.createElement(
                         "td",
                         { style: { background: "#E4A09E" } },
-                        "immediate"
+                        "Immediate"
                     );
                 default:
                     return React.createElement(
@@ -67,6 +67,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
             null,
             cell
         );
-    }
+  //  }
     return null;
 }

@@ -39,7 +39,7 @@ function editIssue()
     //maybe check for some kind of permission here. otherwise delete that utility method.
 
     // Process posted data
-    $issueID     = isset($_POST['issueID']) ? $_POST['issueID'] : null;
+    $issueID     = !empty($_POST['issueID']) ? $_POST['issueID'] : null;
     $assignee    = isset($_POST['assignee']) ? $_POST['assignee'] : null;
     $status   = isset($_POST['status']) ? $_POST['status'] : null;
     $priority   = isset($_POST['priority']) ? $_POST['priority'] : null;
@@ -52,11 +52,12 @@ function editIssue()
     $comment = isset($_POST['comment']) ? $_POST['comment'] : null;
 
 
+    //validate candID here
     $issueValues = [
-        'assignee'   => "admin",
+        'assignee'   => $assignee,
         'status'     => $status,
         'priority'   => $priority,
-//        'candID'     => $candID
+  //      'candID'     => $candID,
         'visitLabel' => $visitLabel,
         'centerID'   => $centerID,
         'title'      => $title,
@@ -64,15 +65,19 @@ function editIssue()
         'module'     => $module
     ];
 
+    error_log($centerID);
+    error_log($_POST['centerID']);
     error_log(json_encode($issueValues));
+    error_log($issueID);
 
-    if (isset($issueID)) {
+    if (!empty($issueID)) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
+        error_log("why am I here?");
     }
     else {
         $issueValues['reporter'] = $user->getData['UserID'];
         $issueValues['dateCreated'] = date('Y-m-d H:i:s'); //because mysql 5.56 //todo: check that this works.
-
+        error_log("at new issue submission");
         $db->insert('issues', $issueValues);
         $issueID = $db->getLastInsertId();
     }
@@ -131,17 +136,18 @@ function getIssueFields()
             $sites[''] = 'All';
         }
     }
+    error_log(json_encode($sites));
+
 
     $assignees = array();
 
-    $assignee_expanded = $db->pselect("SELECT assignee from issues");
-//    $assignee_expanded = $db->pselect(
-//        "SELECT u.Real_name FROM issues i LEFT JOIN users u ON(i.assignee=u.UserID)",
-//        array()
-//    );
+//    $assignee_expanded = $db->pselect("SELECT assignee from issues");
+    $assignee_expanded = $db->pselect(
+        "SELECT Real_name, UserID FROM users",
+        array()
+    );
     foreach ($assignee_expanded as $a_row) {
-        $assignee                   = $a_row['Real_name'];
-        $assignees[$assignee] = $assignee;
+        $assignees[$a_row['UserID']] = $a_row['Real_name'];
     }
 
 
@@ -162,33 +168,50 @@ function getIssueFields()
     );
 
     $categories = array(
-        '' => 'All',
-
+        'configuration' => 'Configuration',
+        'code fix' => 'Code Fix',
+        'sql error' => 'SQL Error',
+        'documentation' => 'Documentation'
     );
-    $modules = $db->pselect(
-        "SELECT Label FROM LorisMenu ORDER BY Label",
+
+    $modules = array();
+    $modules_expanded = $db->pselect(
+        "SELECT DISTINCT Label FROM LorisMenu ORDER BY Label",
         []
     );
+
+    foreach ($modules_expanded as $m_row) {
+        $module                  = $m_row['Label'];
+        $modules[$module] = $module;
+    }
 
     //$visitList       = Utility::getVisitList();
 
     $issueData = null;
-    if (isset($_GET['issueID'])) {
+    if (!empty($_GET['issueID'])) {
         $issueID = $_GET['issueID'];
         $issueData   = $db->pselectRow(
             "SELECT * FROM issues WHERE issueID = $issueID", //TODO: you actually need to join on candidate. and on site and call it site. also maybe watching
             []
         );
+
+        $additionalIssueData = $db->pselectRow(
+            "SELECT c.CandID, c.PSCID, p.Name FROM issues as i LEFT JOIN candidate c ON (i.candID=c.CandID) LEFT JOIN psc p ON (i.centerID=p.CenterID)",
+            []
+        );
+
+        $issueData['DCCID'] = $additionalIssueData['c.CandID'];
+        $issueData['PSCID'] = $additionalIssueData['c.PSCID'];
+        $issueData['site'] = $additionalIssueData['p.Name'];
+
         //$issueData['comment'] = getComments($issueID);
     }else{
-        $issueData['reporter'] = $user->getData['UserID']; //these are what need to be displayed upon creation of a new issue, but before the user has saved it. the user cannot change these values.
+
+        $issueData['reporter'] = $user->getData('UserID'); //these are what need to be displayed upon creation of a new issue, but before the user has saved it. the user cannot change these values.
         $issueData['dateCreated'] = date('Y-m-d H:i:s');
+        $issueData['site'] = $user->getData('Site');
     }
 
-    //temporary
-        $issueData['PSCID'] = 123;
-        $issueData['DCCID'] = 123;
-        $issueData['site'] = 'DCC';
         $issueData['watching'] = true;
 
     $result = [

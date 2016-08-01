@@ -35,30 +35,28 @@ var IssueEditForm = React.createClass({
             success: function(data) {
                 console.log("here");
                 console.log(data);
-                if(data.issueData) {
-                    console.log("here");
-                    var formData = {
-                        'issueID': data.issueData.issueID,
-                        'title': data.issueData.title,
-                        'lastUpdate': data.issueData.lastUpdate,
-                        'site': data.issueData.site,
-                        'PSCID': data.issueData.PSCID,
-                        'DCCID': data.issueData.DCCID,
-                        'reporter': data.issueData.reporter,
-                        'assignee': data.issueData.assignee,
-                        'status': data.issueData.status,
-                        'priority': data.issueData.priority,
-                        'comment': data.issueData.comment,
-                        'watching': data.issueData.watching,
-                        'visitLabel': data.issueData.visitLabel,
-                        'dateCreated': data.issueData.dateCreated,
-                        'category': data.issueData.category
-                    };
-                    console.log(formData);
-                }else{
+                if(!data.issueData.issueID) {
                     that.setState({'isNewIssue': true});
                 }
+                var formData = {
+                    'issueID': data.issueData.issueID,
+                    'title': data.issueData.title,
+                    'lastUpdate': data.issueData.lastUpdate,
+                    'site': data.issueData.site,
+                    'PSCID': data.issueData.PSCID,
+                    'DCCID': data.issueData.DCCID,
+                    'reporter': data.issueData.reporter,
+                    'assignee': data.issueData.assignee,
+                    'status': data.issueData.status,
+                    'priority': data.issueData.priority,
+                    'comment': data.issueData.comment,
+                    'watching': data.issueData.watching,
+                    'visitLabel': data.issueData.visitLabel,
+                    'dateCreated': data.issueData.dateCreated,
+                    'category': data.issueData.category
+                };
 
+                console.log(formData);
                 that.setState({
                     'Data':      data,
                     'isLoaded':  true,
@@ -104,15 +102,38 @@ var IssueEditForm = React.createClass({
         var alertClass = "alert text-center hide";
         var hasEditPermission = this.state.Data.hasEditPermission; //bool
 
+        var headerText = " ";
+        console.log("asldkf");
+        console.log(this.state.isNewIssue);
+        if(this.state.isNewIssue) {
+            headerText = "Create New Issue";
+        }
+        else{
+            headerText = "Edit Issue #" + this.state.issueData.issueID;
+        }
+
+        var lastUpdateValue=" ";
+        if(this.state.isNewIssue){
+            lastUpdateValue="Never!"
+        } else{
+            lastUpdateValue=this.state.issueData.lastUpdate
+        }
+
+        var dateCreated=" ";
+        if(this.state.isNewIssue){
+            dateCreated="Sometime Soon!"
+        } else{
+            dateCreated=this.state.issueData.dateCreated
+        }
 
         if (this.state.submissionResult) {
             if (this.state.submissionResult == "success") {
                 alertClass = "alert alert-success text-center";
-                alertMessage = "Upload Successful!";
+                alertMessage = "Submission Successful!";
             } else if (this.state.submissionResult == "error") {
                 var errorMessage = this.state.errorMessage;
                 alertClass = "alert alert-danger text-center";
-                alertMessage = errorMessage ? errorMessage : "Failed to upload!";
+                alertMessage = errorMessage ? errorMessage : "Failed to submit issue :(";
             }
         }
 
@@ -128,7 +149,7 @@ var IssueEditForm = React.createClass({
                 >
                     <HeaderElement
                         name="issueID"
-                        header={"Edit Issue #" + this.state.issueData.issueID}
+                        header={headerText}
                         ref="issueID"
                     />
                     <br/>
@@ -136,13 +157,13 @@ var IssueEditForm = React.createClass({
                         name="lastUpdate"
                         label={"Last Update: "}
                         ref="lastUpdate"
-                        score={this.state.issueData.lastUpdate}
+                        score={lastUpdateValue}
                     />
                     <ScoredElement
                         name="dateCreated"
                         label={"Date Created: "}
                         ref="dateCreated"
-                        score={this.state.issueData.dateCreated}
+                        score={dateCreated}
                     />
                     <ScoredElement
                         name="reporter"
@@ -190,7 +211,7 @@ var IssueEditForm = React.createClass({
                     <SelectElement
                         name="category"
                         label="Category"
-                        emptyOption={false}//just cause I already put it in
+                        emptyOption={true}//just cause I already put it in
                         options={this.state.Data.categories} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="category"
@@ -200,7 +221,7 @@ var IssueEditForm = React.createClass({
                     <SelectElement
                         name="module"
                         label="Module"
-                        emptyOption={false}//just cause I already put it in
+                        emptyOption={true}//just cause I already put it in
                         options={this.state.Data.modules} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="hide_file"
@@ -211,12 +232,36 @@ var IssueEditForm = React.createClass({
                     <SelectElement
                         name="site"
                         label="Site"
-                        emptyOption={false}//just cause I already put it in
+                        emptyOption={true}//just cause I already put it in
                         options={this.state.Data.sites} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="site"
                         disabled={!hasEditPermission}
                         value={this.state.issueData.site}
+                    />
+                    <SmallTextareaElement
+                        name="PSCID"
+                        label="PSCID"
+                        onUserInput={this.setIssueData}
+                        ref="PSCID"
+                        disabled={true}
+                        value={this.state.issueData.PSCID}
+                    />
+                    <SmallTextareaElement
+                        name="DCCID"
+                        label="DCCID"
+                        onUserInput={this.setIssueData}
+                        ref="DCCID"
+                        disabled={true}
+                        value={this.state.issueData.DCCID}
+                    />
+                    <SmallTextareaElement
+                        name="visitLabel"
+                        label="visitLabel"
+                        onUserInput={this.setIssueData}
+                        ref="visitLabel"
+                        disabled={true}
+                        value={this.state.issueData.visitLabel}
                     />
                     <HelpTextElement
                         name="allComments"
@@ -340,6 +385,10 @@ var IssueEditForm = React.createClass({
                 formData.append(key, myFormData[key]);
             }
         }
+
+        console.log("myFormData");
+        console.log(myFormData);
+
 
         $.ajax({
             type:        'POST',

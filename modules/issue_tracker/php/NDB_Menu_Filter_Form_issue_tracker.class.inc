@@ -38,7 +38,6 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
 
-        //adding gratuitous first statement in the where because I have nothing else to say
         //and as it stands I want everything
         $this->query = " FROM issues as i LEFT JOIN candidate c ON (i.candID=c.CandID) LEFT JOIN psc p ON (i.centerID=p.CenterID) WHERE i.status != 'closed'";
 
@@ -52,16 +51,18 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         //note that this needs to be in the same order as the headers array
         $this->columns = array(
             'i.issueID as Issue_ID',
-            'p.Name as Site',
-            'c.PSCID as PSCID',
-            'i.candID as DCCID',
-            'i.visitLabel as Visit_Label',
+            'i.title as Title',
+            'i.module as Module',
+            'i.category as Category',
             'i.reporter as Reporter',
             'i.assignee as Assignee',
             'i.status as Status',
             'i.priority as Priority',
-            'i.lastUpdate as Last_Update',
-            'i.comment as Comment_Preview'
+            'p.Name as Site',
+            'c.PSCID as PSCID',
+            'i.candID as DCCID',
+            'i.visitLabel as Visit_Label',
+            'i.lastUpdate as Last_Update'
         );
 
         //TODO: figure out if you want to initially group by id or dateUodated
@@ -70,20 +71,24 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         //NDB filter will remove underscores
         $this->headers = array(
             'Issue_ID',
-            'Site',
-            'PSCID',
-            'DCCID',
-            'Visit_Label',
+            'Title',
+            'Module',
+            'Category',
             'Reporter',
             'Assignee',
             'Status',
             'Priority',
-            'Last_Update',
-            'Comment_Preview'
+            'Site',
+            'PSCID',
+            'DCCID',
+            'Visit_Label',
+            'Last_Update'
         );
        
         $this->validFilters = array(
             'i.issueID',
+            'i.module',
+            'i.category',
             'c.PSCID',
             'i.visitLabel',
             'i.candID',
@@ -94,11 +99,14 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'i.status',
             'includeClosed',
             'i.projectID',
-            'i.priority'
+            'i.priority',
+            'keyword'
         );
 
         $this->formToFilter = array(
             'issueID' =>'i.issueID',
+            'category' => 'i.category',
+            'module' => 'i.module',
             'PSCID' => 'c.PSCID',
             'visitLabel' => 'i.visitLabel',
             'DCCID' => 'i.candID',
@@ -109,12 +117,12 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'status' =>'i.status',
             'includeClosed' => 'includeClosed',
             'projectID' => 'i.projectID',
-            'priority' => 'i.priority'
+            'priority' => 'i.priority',
+            'keyword' => 'i.comment'
         );
-        //TODO: figure out wtf this is for
         //$this->EqualityFilters = array('f.AcquisitionProtocolID');
         $this->EqualityFilters = array('i.issueID', 'i.centerID');
-        $this->searchKeyword    = array();
+        $this->searchKeyword    = array('i.comment');
 
         //TODO: and this
         $this->tpl_data['numTimepoints'] = 0;
@@ -165,6 +173,20 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             $assignees[$assignee] = $assignee;
         }
 
+
+        $modules = array('' => 'All');
+        $modules_expanded = $DB->pselect(
+            "SELECT DISTINCT Label FROM LorisMenu ORDER BY Label",
+            []
+        );
+
+        foreach ($modules_expanded as $m_row) {
+            $module                  = $m_row['Label'];
+            $modules[$module] = $module;
+        }
+
+        error_log(json_encode($module));
+
         $statuses = array(
             '' => 'All',
             'new' => 'New',
@@ -182,11 +204,22 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'urgent' => 'Urgent',
             'immediate' => 'Immediate'
         );
+
+        $categories = array(
+            '' => 'All',
+            'configuration' => 'Configuration',
+            'code fix' => 'Code Fix',
+            'sql error' => 'SQL Error',
+            'documentation' => 'Documentation'
+        );
         
         
         $allAr = array('' => 'All');
 
+        $this->addBasicText('keyword','Keyword', array("size"=>10,"maxlength"=>50));
         $this->addBasicText('issueID', 'Issue ID', array("size"=>10,"maxlength"=>25));
+        $this->addSelect('module','Module', $modules);
+        $this->addSelect('category','Category', $categories);
         $this->addBasicText('PSCID', 'PSCID', array("size"=>10,"maxlength"=>25));
         $this->addBasicText(
             'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)
@@ -222,7 +255,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 
     /**
      * Overwrites the function to add a customized filter
-     * for Pending and New
+     * for watching and include closed
      *
      * @param string $prepared_key filter key
      * @param string $field        filter field
