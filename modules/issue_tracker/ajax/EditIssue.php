@@ -130,7 +130,7 @@ function getIssueFields()
         }
     }
 
-    $assignees = array('' => 'All');
+    $assignees = array();
     $assignee_expanded = $db->pselect(
         "SELECT u.Real_name FROM issues i LEFT JOIN users u ON(i.assignee=u.UserID)",
         array()
@@ -142,7 +142,6 @@ function getIssueFields()
 
 
     $statuses = array(
-        '' => 'All',
         'new' => 'New',
         'acknowledged' => 'Acknowledged',
         'assigned' => 'Assigned',
@@ -151,7 +150,6 @@ function getIssueFields()
     );
 
     $priorities = array(
-        '' => 'All',
         'low' => 'Low',
         'normal' => 'Normal',
         'high' => 'High',

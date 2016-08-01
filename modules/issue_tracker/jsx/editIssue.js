@@ -132,48 +132,45 @@ var IssueEditForm = React.createClass({
                         ref="issueID"
                     />
                     <br/>
-                    <LabelElement
+                    <ScoredElement
+                        name="lastUpdate"
+                        label={"Last Update: "}
+                        ref="lastUpdate"
+                        score={this.state.issueData.lastUpdate}
+                    />
+                    <ScoredElement
+                        name="dateCreated"
+                        label={"Date Created: "}
+                        ref="dateCreated"
+                        score={this.state.issueData.dateCreated}
+                    />
+                    <ScoredElement
+                        name="reporter"
+                        label={"Reporter: "}
+                        ref="reporter"
+                        score={this.state.issueData.reporter}
+                    />
+                    <SmallTextareaElement
                         name="title"
                         label="Title"
                         onUserInput={this.setIssueData}
                         ref="title"
-                        required={true}
-                        disabled={hasEditPermission}
                         value={this.state.issueData.title}
-                    />
-                    <LabelElement
-                        name="lastUpdate"
-                        label="Last Update"
-                        ref="visit_label"
-                        value={this.state.issueData.lastUpdate}
-                    />
-                    <LabelElement
-                        name="dateCreated"
-                        label="Last Update"
-                        ref="dateCreated"
-                        value={this.state.issueData.dateCreated}
-                    />
-                    //todo: and here is where you learn how html works and put shit on a new line.
-                    <LabelElement
-                        name="reporter"
-                        label="Reporter"
-                        ref="reporter"
-                        value={this.state.issueData.reporter}
                     />
                     <SelectElement
                         name="assignee"
                         label="Assignee"
-                        emptyOption={false}//just cause I already put it in
+                        emptyOption={true}//just cause I already put it in
                         options={this.state.Data.assignees} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="assignee"
-                        disabled={hasEditPermission}
+                        disabled={!hasEditPermission}
                         value={this.state.issueData.assignee}
                     />
                     <SelectElement
                         name="status"
                         label="Status"
-                        emptyOption={false}//just cause I already put it in
+                        emptyOption={true}//just cause I already put it in
                         options={this.state.Data.statuses} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="status"
@@ -187,7 +184,7 @@ var IssueEditForm = React.createClass({
                         onUserInput={this.setIssueData}
                         ref="priority"
                         required={false}
-                        disabled={hasEditPermission}
+                        disabled={!hasEditPermission}
                         value={this.state.issueData.priority}
                     />
                     <SelectElement
@@ -197,7 +194,7 @@ var IssueEditForm = React.createClass({
                         options={this.state.Data.categories} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="category"
-                        disabled={hasEditPermission}
+                        disabled={!hasEditPermission}
                         value={this.state.issueData.category}
                     />
                     <SelectElement
@@ -207,36 +204,10 @@ var IssueEditForm = React.createClass({
                         options={this.state.Data.modules} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="hide_file"
-                        disabled={hasEditPermission}
+                        disabled={!hasEditPermission}
                         value={this.state.issueData.module}
                     />
-                    <TextboxElement
-                        name="PSCID"
-                        label="PSCID"
-                        onUserInput={this.setIssueData}
-                        ref="PSCID"
-                        required={false}
-                        disabled={hasEditPermission}
-                        value={this.state.issueData.PSCID}
-                    />
-                    <TextboxElement
-                        name="DCCID"
-                        label="DCCID"
-                        onUserInput={this.setIssueData}
-                        ref="DCCID"
-                        required={false}
-                        disabled={hasEditPermission}
-                        value={this.state.issueData.DCCID}
-                    />
-                    <TextboxElement
-                        name="visitLabel"
-                        label="DCCID"
-                        onUserInput={this.setIssueData}
-                        ref="DCCID"
-                        required={false}
-                        disabled={hasEditPermission}
-                        value={this.state.issueData.DCCID}
-                    />
+
                     <SelectElement
                         name="site"
                         label="Site"
@@ -244,7 +215,7 @@ var IssueEditForm = React.createClass({
                         options={this.state.Data.sites} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="site"
-                        disabled={hasEditPermission}
+                        disabled={!hasEditPermission}
                         value={this.state.issueData.site}
                     />
                     <HelpTextElement
