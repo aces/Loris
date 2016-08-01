@@ -22,7 +22,7 @@ require_once "NDB_Form.class.inc";
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class NDB_Form_Media extends NDB_Form
+class NDB_Form_issue_tracker extends NDB_Form
 {
     /**
      * Entry point for issue_tracker/edit.

@@ -16,6 +16,8 @@
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "getData") {
+        error_log("here");
+        error_log(json_encode(getIssueFields()));
         echo json_encode(getIssueFields());
     }else if ($action == "edit"){
         echo editIssue();
@@ -47,6 +49,7 @@ function editIssue()
     $title = isset($_POST['title']) ? $_POST['title'] : null;
     $category = isset($_POST['category']) ? $_POST['category'] : null;
     $module = isset($_POST['module']) ? $_POST['module'] : null;
+    $comment = isset($_POST['comment']) ? $_POST['comment'] : null;
 
 
     $issueValues = [
@@ -62,17 +65,17 @@ function editIssue()
     ];
 
     if (isset($issueID)) {
-        $db->update('issue_tracker', $issueValues, ['issueID' => $issueID]);
+        $db->update('issues', $issueValues, ['issueID' => $issueID]);
     }
     else {
         $issueValues['reporter'] = $user->getData['UserID'];
         $issueValues['dateCreated'] = date('Y-m-d H:i:s'); //because mysql 5.56 //todo: check that this works.
 
-        $db->insert('issue_tracker', $issueValues);
+        $db->insert('issues', $issueValues);
         $issueID = $db->getLastInsertId();
     }
 
-    $issueValues['comments'] = updateComments($issueValues, $issueID);
+    updateComments($issueValues, $issueID, $comment);
 
     return $issueID;
 }
@@ -83,13 +86,22 @@ function getChangedValues(){
     //although you'd have to do a join everytime.
 }
 
-function updateComments() {
-
+//this will call getChangedValues and concatenate everything onto the back of the comment. For now it just changes the comment.
+function updateComments($issueValues, $issueID, $comment) {
+    $db   =& Database::singleton();
+    $commentValue = [
+        'comment' => $comment
+    ];
+    $db->update('issues', $commentValue, ['issueID' => $issueID]);
 }
 
+//will be updated once you make a separate comments table.
 function getComments() {
-    
-    
+    $db   =& Database::singleton();
+    $db->pselect(
+        "SELECT comment FROM issues",
+        array()
+    );    
 }
 
 /**
@@ -119,7 +131,7 @@ function getIssueFields()
     }
 
     $assignees = array('' => 'All');
-    $assignee_expanded = $DB->pselect(
+    $assignee_expanded = $db->pselect(
         "SELECT u.Real_name FROM issues i LEFT JOIN users u ON(i.assignee=u.UserID)",
         array()
     );
@@ -162,10 +174,10 @@ function getIssueFields()
     if (isset($_GET['issueID'])) {
         $issueID = $_GET['issueID'];
         $issueData   = $db->pselectRow(
-            "SELECT * FROM issue_tracker WHERE id = $issueID", //TODO: you actually need to join on candidate. and on site and call it site. also maybe watching
+            "SELECT * FROM issues WHERE issueID = $issueID", //TODO: you actually need to join on candidate. and on site and call it site. also maybe watching
             []
         );
-        $issueData['comment'] = getComments($issueID);
+        //$issueData['comment'] = getComments($issueID);
     }else{
         $issueData['reporter'] = $user->getData['UserID']; //these are what need to be displayed upon creation of a new issue, but before the user has saved it. the user cannot change these values.
         $issueData['dateCreated'] = date('Y-m-d H:i:s');
@@ -175,6 +187,7 @@ function getIssueFields()
         $issueData['PSCID'] = 123;
         $issueData['DCCID'] = 123;
         $issueData['site'] = 'DCC';
+        $issueData['watching'] = true;
 
     $result = [
         'assignees' => $assignees,
@@ -184,8 +197,9 @@ function getIssueFields()
         'categories' => $categories,
         'modules' => $modules,
         'issueData'   => $issueData,
-        'hasEditPermission' => $user->hasPermission('issue_tracker_can_assign'); @//todo: fix this when you decide on new permissions.
+        'hasEditPermission' => $user->hasPermission('issue_tracker_can_assign') //todo: fix this when you decide on new permissions.
     ];
 
+    error_log("result");
     return $result;
 }

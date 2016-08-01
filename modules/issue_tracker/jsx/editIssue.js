@@ -19,8 +19,63 @@ var IssueEditForm = React.createClass({
     },
 
     componentDidMount: function() {
-        var that = this; //check that this is where you should be doing this. (lol)
-        that.getDataAndChangeState();
+
+        var that = this;
+        $.ajax(this.props.DataURL, {
+            dataType: 'json',
+            xhr: function() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.addEventListener("progress", function(evt) {
+                    that.setState({
+                        'loadedData': evt.loaded
+                    });
+                });
+                return xhr;
+            },
+            success: function(data) {
+                console.log("here");
+                console.log(data);
+                if(data.issueData) {
+                    console.log("here");
+                    var formData = {
+                        'issueID': data.issueData.issueID,
+                        'title': data.issueData.title,
+                        'lastUpdate': data.issueData.lastUpdate,
+                        'site': data.issueData.site,
+                        'PSCID': data.issueData.PSCID,
+                        'DCCID': data.issueData.DCCID,
+                        'reporter': data.issueData.reporter,
+                        'assignee': data.issueData.assignee,
+                        'status': data.issueData.status,
+                        'priority': data.issueData.priority,
+                        'comment': data.issueData.comment,
+                        'watching': data.issueData.watching,
+                        'visitLabel': data.issueData.visitLabel,
+                        'dateCreated': data.issueData.dateCreated,
+                        'category': data.issueData.category
+                    };
+                    console.log(formData);
+                }else{
+                    that.setState({'isNewIssue': true});
+                }
+
+                that.setState({
+                    'Data':      data,
+                    'isLoaded':  true,
+                    'issueData': data.issueData,
+                    'formData':  formData
+                });
+                console.log("here again");
+                console.log(this.state);
+
+            },
+            error: function(data, error_code, error_msg) {
+                that.setState({
+                    'error': "error"
+                });
+            }
+        });
+
     },
 
     render: function() {
@@ -38,7 +93,7 @@ var IssueEditForm = React.createClass({
 
             return (
                 <button className="btn-info has-spinner">
-                    Loading
+                    loading
                     <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
                 </button>
             );
@@ -47,14 +102,14 @@ var IssueEditForm = React.createClass({
         var helpText = ""; //todo: here fill out the fields that are neccessary.
         var alertMessage = "";
         var alertClass = "alert text-center hide";
-        var hasEditPermission = data.hasEditPermission; //bool
+        var hasEditPermission = this.state.Data.hasEditPermission; //bool
 
 
-        if (this.state.uploadResult) {
-            if (this.state.uploadResult == "success") {
+        if (this.state.submissionResult) {
+            if (this.state.submissionResult == "success") {
                 alertClass = "alert alert-success text-center";
                 alertMessage = "Upload Successful!";
-            } else if (this.state.uploadResult == "error") {
+            } else if (this.state.submissionResult == "error") {
                 var errorMessage = this.state.errorMessage;
                 alertClass = "alert alert-danger text-center";
                 alertMessage = errorMessage ? errorMessage : "Failed to upload!";
@@ -71,15 +126,13 @@ var IssueEditForm = React.createClass({
                     onSubmit={this.handleSubmit}
                     ref="form"
                 >
-                    <h3>Edit Issue</h3>
-                    <br />
-                    <LabelElement
+                    <HeaderElement
                         name="issueID"
-                        label="IssueID"
-                        ref="title"
-                        value={this.state.issueData.issueID}
+                        header={"Edit Issue #" + this.state.issueData.issueID}
+                        ref="issueID"
                     />
-                    <TextElement
+                    <br/>
+                    <LabelElement
                         name="title"
                         label="Title"
                         onUserInput={this.setIssueData}
@@ -111,7 +164,7 @@ var IssueEditForm = React.createClass({
                         name="assignee"
                         label="Assignee"
                         emptyOption={false}//just cause I already put it in
-                        options={data.assignees} //cjeck that this is actually the correct syntax
+                        options={this.state.Data.assignees} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="assignee"
                         disabled={hasEditPermission}
@@ -121,7 +174,7 @@ var IssueEditForm = React.createClass({
                         name="status"
                         label="Status"
                         emptyOption={false}//just cause I already put it in
-                        options={data.statuses} //cjeck that this is actually the correct syntax
+                        options={this.state.Data.statuses} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="status"
                         value={this.state.issueData.status} //todo: edit this so the options are different if the user doesn't have permission
@@ -130,7 +183,7 @@ var IssueEditForm = React.createClass({
                         name="priority"
                         label="Priority"
                         emptyOption={false}//just cause I already put it in
-                        options={data.priorities} //cjeck that this is actually the correct syntax
+                        options={this.state.Data.priorities} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="priority"
                         required={false}
@@ -141,7 +194,7 @@ var IssueEditForm = React.createClass({
                         name="category"
                         label="Category"
                         emptyOption={false}//just cause I already put it in
-                        options={data.categories} //cjeck that this is actually the correct syntax
+                        options={this.state.Data.categories} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="category"
                         disabled={hasEditPermission}
@@ -151,13 +204,13 @@ var IssueEditForm = React.createClass({
                         name="module"
                         label="Module"
                         emptyOption={false}//just cause I already put it in
-                        options={data.modules} //cjeck that this is actually the correct syntax
+                        options={this.state.Data.modules} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="hide_file"
                         disabled={hasEditPermission}
                         value={this.state.issueData.module}
                     />
-                    <TextElement
+                    <TextboxElement
                         name="PSCID"
                         label="PSCID"
                         onUserInput={this.setIssueData}
@@ -166,7 +219,7 @@ var IssueEditForm = React.createClass({
                         disabled={hasEditPermission}
                         value={this.state.issueData.PSCID}
                     />
-                    <TextElement
+                    <TextboxElement
                         name="DCCID"
                         label="DCCID"
                         onUserInput={this.setIssueData}
@@ -175,7 +228,7 @@ var IssueEditForm = React.createClass({
                         disabled={hasEditPermission}
                         value={this.state.issueData.DCCID}
                     />
-                    <TextElement
+                    <TextboxElement
                         name="visitLabel"
                         label="DCCID"
                         onUserInput={this.setIssueData}
@@ -188,7 +241,7 @@ var IssueEditForm = React.createClass({
                         name="site"
                         label="Site"
                         emptyOption={false}//just cause I already put it in
-                        options={data.sites} //cjeck that this is actually the correct syntax
+                        options={this.state.Data.sites} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="site"
                         disabled={hasEditPermission}
@@ -223,65 +276,77 @@ var IssueEditForm = React.createClass({
         )
     },
 
-    getDataAndChangeState: function() {
-        var dataURL = this.props.DataURL;
-
-        if (this.state.isNewIssue){
-            var dataURL = this.props.DataURL;
-            dataURL = dataURL.substring(0, str.length - 2); //todo: check this performs correctly, should get rid of the '' in the issueID= in the get request (current url)
-            dataURL = dataURL.concat(this.state.issueID); //really hope this  is a string.
-        }
-
-        $.ajax(dataURL, {
-            dataType: 'json',
-            xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-                xhr.addEventListener("progress", function(evt) {
-                    that.setState({
-                        'loadedData': evt.loaded
-                    });
-                });
-                return xhr;
-            },
-            success: function(data) {
-
-                if(data.issueData) {
-                    var formData = {
-                        'issueID': data.issueData.issueID,
-                        'title': data.issueData.title,
-                        'lastUpdate': data.issueData.lastUpdate,
-                        'site': data.issueData.site,
-                        'PSCID': data.issueData.PSCID,
-                        'DCCID': data.issueData.DCCID,
-                        'reporter': data.issueData.reporter,
-                        'assignee': data.issueData.assignee,
-                        'status': data.issueData.status,
-                        'priority': data.issueData.priority,
-                        'comment': data.issueData.comment,
-                        'watching': data.issueData.watching,
-                        'visitLabel': data.issueData.visitLabel,
-                        'dateCreated': data.issueData.dateCreated,
-                        'category': data.issueData.category
-                    };
-                }else{
-                    that.setState({'isNewIssue': true});
-                }
-
-                that.setState({
-                    'Data':      data,
-                    'isLoaded':  true,
-                    'issueData': data.issueData,
-                    'formData':  formData
-                });
-            },
-            error: function(data, error_code, error_msg) {
-                that.setState({
-                    'error': error_msg
-                });
-            }
-        });
-
-    },
+    // getDataAndChangeState: function() {
+    //     var that = this;
+    //     that.setState({
+    //         'error': "noooooo"
+    //     });
+    //     var dataURL = this.props.DataURL;
+    //
+    //     if (this.state.isNewIssue){
+    //         var dataURL = this.props.DataURL;
+    //         dataURL = dataURL.substring(0, str.length - 2); //todo: check this performs correctly, should get rid of the '' in the issueID= in the get request (current url)
+    //         dataURL = dataURL.concat(this.state.issueID); //really hope this  is a string.
+    //     }
+    //
+    //     $.ajax(dataURL, {
+    //         dataType: 'json',
+    //         async:       false,       //this is so I can return data and know that it will be there when success is run.
+    //         xhr: function() {
+    //             var xhr = new window.XMLHttpRequest();
+    //             xhr.addEventListener("progress", function(evt) {
+    //                 that.setState({
+    //                     'loadedData': evt.loaded
+    //                 });
+    //             });
+    //             return xhr;
+    //         },
+    //
+    //         success: function(data) {
+    //             that.setState({
+    //                 'error': "ha"
+    //             });
+    //             if(data.issueData) {
+    //                 var formData = {
+    //                     'issueID': data.issueData.issueID,
+    //                     'title': data.issueData.title,
+    //                     'lastUpdate': data.issueData.lastUpdate,
+    //                     'site': data.issueData.site,
+    //                     'PSCID': data.issueData.PSCID,
+    //                     'DCCID': data.issueData.DCCID,
+    //                     'reporter': data.issueData.reporter,
+    //                     'assignee': data.issueData.assignee,
+    //                     'status': data.issueData.status,
+    //                     'priority': data.issueData.priority,
+    //                     'comment': data.issueData.comment,
+    //                     'watching': data.issueData.watching,
+    //                     'visitLabel': data.issueData.visitLabel,
+    //                     'dateCreated': data.issueData.dateCreated,
+    //                     'category': data.issueData.category
+    //                 };
+    //             }else{
+    //                 that.setState({'isNewIssue': true});
+    //             }
+    //
+    //             that.setState({
+    //                 'Data':      data,
+    //                 'isLoaded':  true,
+    //                 'issueData': data.issueData,
+    //                 'formData':  formData
+    //             });
+    //
+    //             that.setState({
+    //                 'error': "finished success"
+    //             })
+    //         },
+    //         error: function(data, error_code, error_msg) {
+    //             that.setState({
+    //                 'error': "error"
+    //             });
+    //         }
+    //     });
+    //
+    // },
 
 
     /**
