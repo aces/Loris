@@ -61,11 +61,12 @@ GenomicFileUploadModal = React.createClass({
                         var result = JSON.parse(new_response);
                         console.log(result);
 
-                        //document.getElementById("uploadStatus").innerHTML = result.message + '';
-                        //document.getElementById('progressBar').style.width = result.progress + "%";
-                        //if (result.error != undefined) {
-                        //    document.getElementById('progressBar').style.backgroundColor = 'red';
-                        //}
+                        document.getElementById("uploadStatus").innerHTML = result.message + '';
+                        document.getElementById('progressBar').style.backgroundColor = 'green';
+                        document.getElementById('progressBar').style.width = result.progress + "%";
+                        if (result.error != undefined) {
+                           document.getElementById('progressBar').style.backgroundColor = 'red';
+                        }
 
                         xhr.previous_text = xhr.responseText;
                         break;
@@ -146,8 +147,12 @@ GenomicFileUploadModal = React.createClass({
                     React.createElement(
                         'div',
                         { className: 'modal-body' },
-                        React.createElement(UploadForm, { baseURL: this.props.baseURL, validate: this.validateForm })
+                        React.createElement(UploadForm, { baseURL: this.props.baseURL, validate: this.validateForm }),
+                        React.createElement('div', { className: 'modal-progress', id: 'progressBar' },
+                            React.createElement('h3', { id: 'uploadStatus' })
+                        )
                     ),
+                   
                     React.createElement(
                         'div',
                         { className: 'modal-footer' },

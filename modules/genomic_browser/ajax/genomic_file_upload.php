@@ -38,7 +38,6 @@ set_time_limit(0);
 ob_implicit_flush(true);
 ob_end_flush();
 header('Content-Type: application/json; charset=UTF-8');
-reportProgress(1, 'Validating...');
 
 $fileToUpload
     = (object) array(
@@ -86,6 +85,8 @@ exit;
  */
 function validateRequest()
 {
+
+    reportProgress(1, 'Validating...');
     if (( empty($_POST['pscidColumn'])
         && empty($_POST['fileMapping']) )
         || empty($_FILES['fileData'])
@@ -103,7 +104,7 @@ function validateRequest()
         // Should compare the header and existing data to inform
         // the user about predicted no-insertion.
     }
-    reportProgress(4, "Validation completed");
+    reportProgress(5, "Validation completed");
 }
 
 /**
@@ -121,13 +122,13 @@ function moveFileToFS(&$fileToUpload)
     $config           = NDB_Config::singleton();
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
-    reportProgress(5, "Copying file to $genomic_data_dir ");
+    reportProgress(50, "Copying file to: " . $genomic_data_dir);
     if (move_uploaded_file(
         $fileToUpload->tmp_name,
         $genomic_data_dir . 'genomic_uploader/'
         . $fileToUpload->file_name
     )) {
-        reportProgress(5, "File copied to $genomic_data_dir ");
+        reportProgress(75, "File copied to: " . $genomic_data_dir);
     } else {
         die(
             json_encode(
@@ -191,7 +192,7 @@ function registerFile(&$fileToUpload)
             )
         );
     }
-    reportProgress(15, "File copied");
+    reportProgress(90, "File registered");
 
 }
 
