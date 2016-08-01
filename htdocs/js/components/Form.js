@@ -556,6 +556,67 @@ TextareaElement = React.createClass({
 });
 
 /*
+ * This is the React class for a small textarea element
+ */
+SmallTextareaElement = React.createClass({
+  displayName: 'SmallTextareaElement',
+
+  getDefaultProps: function () {
+    return {
+      'label': 'Small Text Area',
+      'name': 'smalltextarea',
+      'id': '',
+      'class': 'form-control',
+      'disabled': '',
+      'required': '',
+      'value': '',
+      'onUserInput': function () {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
+  getInitialState: function () {
+    return {
+      value: ''
+    };
+  },
+  componentDidMount: function () {
+    if (this.props.value) {
+      this.setState({ value: this.props.value });
+    }
+  },
+  handleChange: function (e) {
+    this.setState({
+      value: e.target.value
+    });
+    this.props.onUserInput(this.props.name, e.target.value);
+  },
+  render: function () {
+    return React.createElement(
+      'div',
+      { className: 'row form-group' },
+      React.createElement(
+        'label',
+        { className: 'col-sm-3 control-label', 'for': this.props.label },
+        this.props.label
+      ),
+      React.createElement(
+        'div',
+        { className: 'col-sm-9' },
+        React.createElement('textarea', {
+          id: this.props.label,
+          name: this.props.name,
+          cols: '25',
+          rows: '1',
+          className: this.props.class,
+          onChange: this.handleChange,
+          value: this.state.value
+        })
+      )
+    );
+  }
+});
+/*
  * This is the React class for a date element
  */
 DateElement = React.createClass({
