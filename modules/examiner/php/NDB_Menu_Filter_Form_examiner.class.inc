@@ -55,29 +55,19 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             $useCertification = false;
         }
 
-        // base queries
-        $query     = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
-        $certQuery = " LEFT JOIN certification c ON (c.examinerID = e.examinerID) 
-            LEFT JOIN test_names tn ON (c.testID = tn.ID)";
-
-        if ($this->useCertification == '1') {
-            $query .= $certQuery;
-        }
-
-        $query .= ' WHERE 1=1';
+        // base query
+        $query = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID) WHERE
+            1=1";
 
         $user = User::singleton();
         if (!$user->hasPermission('examiner_multisite')) {
             $query .= " AND e.CenterID=" . $DB->quote($user->getData('CenterID'));
         }
 
-        if ($this->useCertification == '1') {
-            $query .= ' GROUP BY e.examinerID';
-        }
-
         // set the class variables
         $this->columns      = array(
                                'e.full_name as Examiner',
+                               'e.examinerID as ID',
                                'psc.Name as Site',
                                'e.radiologist as Radiologist',
                               );
@@ -103,15 +93,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         // If certification is turned on, update the class variables to include
         // certification information
         if ($this->useCertification == '1') {
-            array_push(
-                $this->columns,
-                "GROUP_CONCAT(tn.Full_name SEPARATOR ', ') as Certification",
-                "e.examinerID as ID",
-                "c.pass as Pass"
-            );
             array_push($this->headers, 'Certification');
-            array_push($this->validFilters, 'tn.Full_name');
-            array_push($this->formToFilter, array('instrument' => 'tn.Full_name'));
         }
         return true;
     }
@@ -174,6 +156,38 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _setDataTableRows($count)
     {
+        $DB = Database::singleton();
+
+        if ($this->useCertification == '1') {
+
+            // For each examiner, build the certification column
+            foreach ($this->list as &$examiner) {
+                $examinerID = $examiner['ID'];
+
+                // Grab their certifications from the database
+                $certifications = $DB->pselect(
+                    "SELECT tn.Full_name FROM certification c
+                     LEFT JOIN test_names tn ON (tn.ID=c.testID) 
+                     WHERE c.examinerID=:EID AND c.pass='certified'",
+                    array('EID' => $examinerID)
+                );
+
+                if (empty($certifications)) {
+                    $examiner['Certification'] = 'None';
+                } else {
+                    foreach ($certifications as $certification) {
+                        if (end($certifications) == $certification) {
+                            $examiner['Certification'] .= " " .
+                                $certification['Full_name'];
+                        } else {
+                            $examiner['Certification'] .= $certification['Full_name']
+                                . ", ";
+                        }
+                    }
+                }
+            }
+        }
+
         $x = 0;
         foreach ($this->list as $item) {
             //count column
@@ -182,22 +196,24 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             //print out data rows
             $i = 1;
             foreach ($item as $key => $val) {
-                if ($key == 'Examiner') {
-                    $this->tpl_data['items'][$x][$i]['ID'] = $item['ID'];
-                }
-
-                if ($key == 'Radiologist') {
-                    $this->tpl_data['items'][$x][$i]['name'] = $key;
-                    if ($val == 1) {
-                        $this->tpl_data['items'][$x][$i]['value'] = 'Yes';
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value'] = 'No';
+                if ($key != 'ID') {
+                    if ($key == 'Examiner') {
+                        $this->tpl_data['items'][$x][$i]['ID'] = $item['ID'];
                     }
-                } else if ($key != 'ID' && $key != 'Pass') {
-                    $this->tpl_data['items'][$x][$i]['name']  = $key;
-                    $this->tpl_data['items'][$x][$i]['value'] = $val;
+
+                    if ($key == 'Radiologist') {
+                        $this->tpl_data['items'][$x][$i]['name'] = $key;
+                        if ($val == 1) {
+                            $this->tpl_data['items'][$x][$i]['value'] = 'Yes';
+                        } else {
+                            $this->tpl_data['items'][$x][$i]['value'] = 'No';
+                        }
+                    } else {
+                        $this->tpl_data['items'][$x][$i]['name']  = $key;
+                        $this->tpl_data['items'][$x][$i]['value'] = $val;
+                    }
+                    $i++;
                 }
-                $i++;
             }
             $x++;
         }
