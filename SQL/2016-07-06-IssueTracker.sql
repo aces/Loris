@@ -29,35 +29,30 @@ CREATE TABLE `issues` (
   `status` enum('new','acknowledged','assigned','resolved','closed') NOT NULL DEFAULT 'new',
   `comment` longtext,
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `priority` enum('low','normal','high','urgent') DEFAULT 'low',
+  `priority` enum('low','normal','high','urgent','immediate') NOT NULL DEFAULT 'low',
   `candID` int(6) DEFAULT NULL,
   `sessionID` int(10) unsigned DEFAULT NULL,
   `visitLabel` varchar(255) DEFAULT NULL,
   `centerID` tinyint(2) unsigned DEFAULT NULL,
-  `dateCreated` int(11) DEFAULT NULL,
+  `dateCreated` datetime DEFAULT NULL,
+  `title` text NOT NULL,
+  `category` enum('Anonimyzer/Scheduler/ID (ASID)','API/Mobile','Behavioural QC','CBRAIN hooks','Code fixes','Configurations','Demo','DICOM archive','Documentation','DQT','Genomics','GUI/Bootstrap','Help section','Imaging Browser','Imaging preprocessing scripts','Imaging Uploader','Improvements','Install Process','Instrument Builder','LorisForm','Public Repositories','Release process tasks','Schema','Server/technical','Stand alone Scripts','Statistics','Survey accounts','Testing (Automated)','Testing (Manual)','User accounts/Permissions') DEFAULT NULL,
+  `module` enum('Candidate','Clinical','Imaging','Reports','Tools','Admin','New Profile','Access Profile','Reliability','Conflicts Resolver','Examiner','Radiological Reviews','DICOM Archive','Imaging Browser','Statistics','Data Query Tool','Data Dictionary','Document Repository','Data Team Helper','Instrument Builder','User Accounts','Survey Module','Imaging Uploader','Data Integrity','MRI Violated Scans','Configuration','Data Integrity Flag','Instrument Manager','Genomic Browser','Training','Server Processes Manager','Acknowledgements','Data Release','Issue Tracker','Media') DEFAULT NULL,
+  `lastUpdatedBy` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`issueID`),
   KEY `fk_issues_1` (`reporter`),
   KEY `fk_issues_2` (`assignee`),
   KEY `fk_issues_3` (`candID`),
   KEY `fk_issues_4` (`sessionID`),
   KEY `fk_issues_5` (`centerID`),
+  KEY `fk_issues_6` (`lastUpdatedBy`),
   CONSTRAINT `fk_issues_1` FOREIGN KEY (`reporter`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_2` FOREIGN KEY (`assignee`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_3` FOREIGN KEY (`candID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `fk_issues_4` FOREIGN KEY (`sessionID`) REFERENCES `session` (`ID`),
-  CONSTRAINT `fk_issues_5` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `issues`
---
-
-LOCK TABLES `issues` WRITE;
-/*!40000 ALTER TABLE `issues` DISABLE KEYS */;
-INSERT INTO `issues` VALUES (1,'admin','admin','closed','Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.','2016-07-06 20:42:58','low',NULL,NULL,NULL,1,NULL),(2,'demo','admin','new','Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.','2016-07-06 20:32:10','low',NULL,NULL,NULL,2,NULL);
-/*!40000 ALTER TABLE `issues` ENABLE KEYS */;
-UNLOCK TABLES;
+  CONSTRAINT `fk_issues_5` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `issues_watching`
