@@ -127,6 +127,13 @@ var IssueEditForm = React.createClass({
             dateCreated=this.state.issueData.dateCreated
         }
 
+	var submitButtonValue = "";
+	if(this.state.isNewIssue){
+	    submitButtonValue="Submit Issue"
+	}else {
+	    submitButtonValue="Update Issue"
+	}
+	
         if (this.state.submissionResult) {
             if (this.state.submissionResult == "success") {
                 alertClass = "alert alert-success text-center";
@@ -258,7 +265,7 @@ var IssueEditForm = React.createClass({
                     />
                     <SmallTextareaElement
                         name="visitLabel"
-                        label="visitLabel"
+                        label="Visit Label"
                         onUserInput={this.setIssueData}
                         ref="visitLabel"
                         disabled={true}
@@ -267,7 +274,7 @@ var IssueEditForm = React.createClass({
                     <HelpTextElement
                         name="allComments"
                         html={false}
-                        label="Comments"
+                        label="Comment History"
                         text={this.state.issueData.comment}
                         ref="allComments"
                     />
@@ -287,7 +294,7 @@ var IssueEditForm = React.createClass({
                         ref="watching"
                         value={this.state.issueData.watching}
                     />
-                    <ButtonElement label="Update Issue"/>
+                    <ButtonElement label={submitButtonValue}/>
                 </FormElement>
             </div>
         )

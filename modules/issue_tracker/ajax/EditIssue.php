@@ -74,8 +74,10 @@ function editIssue()
 	   }
 
     error_log(json_encode($issueValues));
-    $issueID = NULL;
-    $assignee = NULL;
+    if($issueID == "null") {
+        $issueID = NULL;
+    }
+
     if (!empty($issueID)) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
         error_log("why am I here?");
@@ -102,9 +104,15 @@ function getChangedValues(){
 //this will call getChangedValues and concatenate everything onto the back of the comment. For now it just changes the comment.
 function updateComments($issueValues, $issueID, $comment) {
     $db   =& Database::singleton();
+
+    if ($comment == "null"){
+       $comment = NULL;
+    }
+
     $commentValue = [
-        'comment' => $comment
+        'comment' => $comment;
     ];
+
     $db->update('issues', $commentValue, ['issueID' => $issueID]);
 }
 
@@ -231,6 +239,7 @@ function getIssueFields()
 	$issueData['watching'] = NULL;
 	$issueData['visitLabel'] = NULL;
 	$issueData['category'] = NULL;	 
+	$issueData['lastUpdatedBy'] = NULL;
     }
 
         $issueData['watching'] = true;
