@@ -12,6 +12,7 @@
  */
 
 require_once "NDB_Form.class.inc";
+require_once __DIR__ . '/issue_tracker_ControlPanel.class.inc';
 
 /**
  * Creates the form for NDB_Form_issue_tracker
@@ -42,6 +43,7 @@ class NDB_Form_issue_tracker extends NDB_Form
         }
     }
 
+
     /**
      * Include issue_tracker.css
      *
@@ -57,6 +59,19 @@ class NDB_Form_issue_tracker extends NDB_Form
             [$baseURL . "/issue_tracker/css/issue_tracker.css"]
         );
     }
+
+
+    /**
+    * Gets control panel
+    *
+    * @return $controlPanel
+    */
+    function getControlPanel() 
+    {
+        $controlPanel = new issue_tracker_ControlPanel($_REQUEST['sessionID']);
+        return $controlPanel->display();
+    }
+
 
     /**
      * Include editIssue.js
