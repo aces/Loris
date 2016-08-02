@@ -54,7 +54,8 @@ var IssueEditForm = React.createClass({
                     'watching': data.issueData.watching,
                     'visitLabel': data.issueData.visitLabel,
                     'dateCreated': data.issueData.dateCreated,
-                    'category': data.issueData.category
+                    'category': data.issueData.category,
+		    'lastUpdatedBy': data.issueData.lastUpdatedBy
                 };
 
                 console.log(formData);
@@ -120,6 +121,13 @@ var IssueEditForm = React.createClass({
             lastUpdateValue=this.state.issueData.lastUpdate
         }
 
+	var lastUpdatedByValue=" ";
+	if(this.state.isNewIssue){
+	    lastUpdatedByValue="No-one!"
+	}else{
+	    lastUpdatedByValue=this.state.issueData.lastUpdatedBy
+	}
+	   
         var dateCreated=" ";
         if(this.state.isNewIssue){
             dateCreated="Sometime Soon!"
@@ -133,6 +141,8 @@ var IssueEditForm = React.createClass({
 	}else {
 	    submitButtonValue="Update Issue"
 	}
+
+	if (this.state.issueData.comment == "null") this.state.issueData.comment = null
 	
         if (this.state.submissionResult) {
             if (this.state.submissionResult == "success") {
@@ -166,7 +176,13 @@ var IssueEditForm = React.createClass({
                         label={"Last Update: "}
                         ref="lastUpdate"
                         score={lastUpdateValue}
-                    />
+                />
+		<ScoredElement
+	    name="lastUpdatedBy"
+	    label={"Last Updated By: "}
+	    ref="lastUpdatedBy"
+	    score={lastUpdatedByValue}
+		/>
                     <ScoredElement
                         name="dateCreated"
                         label={"Date Created: "}
@@ -239,7 +255,7 @@ var IssueEditForm = React.createClass({
 
                     <SelectElement
                         name="centerID"
-                        label="Site"
+                        label="(Site)"
                         emptyOption={true}//just cause I already put it in
                         options={this.state.Data.sites} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
@@ -249,7 +265,7 @@ var IssueEditForm = React.createClass({
                     />
                     <SmallTextareaElement
                         name="PSCID"
-                        label="PSCID"
+                        label="(PSCID)"
                         onUserInput={this.setIssueData}
                         ref="PSCID"
                         disabled={true}
@@ -257,7 +273,7 @@ var IssueEditForm = React.createClass({
                     />
                     <SmallTextareaElement
                         name="DCCID"
-                        label="DCCID"
+                        label="(DCCID)"
                         onUserInput={this.setIssueData}
                         ref="DCCID"
                         disabled={true}
@@ -280,7 +296,7 @@ var IssueEditForm = React.createClass({
                     />
                     <TextareaElement
                         name="comment"
-                        label="Comments"
+                        label="New Comment"
                         onUserInput={this.setIssueData}
                         ref="comment"
                         value={this.state.issueData.comment}
@@ -348,7 +364,8 @@ var IssueEditForm = React.createClass({
                         'watching': data.issueData.watching,
                         'visitLabel': data.issueData.visitLabel,
                         'dateCreated': data.issueData.dateCreated,
-                        'category': data.issueData.category
+                        'category': data.issueData.category,
+		        'lastUpdatedBy':data.issueData.lastUpdatedBy
                     };
 
 		

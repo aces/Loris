@@ -66,6 +66,7 @@ function editIssue()
         'module'     => $module
     ];
 
+    $issueValues['lastUpdatedBy'] = $user->getData('UserID');
     
     foreach ($issueValues as $key => $value) {
     	    if ($value == "null") {  
@@ -110,7 +111,7 @@ function updateComments($issueValues, $issueID, $comment) {
     }
 
     $commentValue = [
-        'comment' => $comment;
+        'comment' => $comment
     ];
 
     $db->update('issues', $commentValue, ['issueID' => $issueID]);
