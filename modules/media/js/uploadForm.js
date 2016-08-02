@@ -133,19 +133,19 @@ var MediaUploadForm = React.createClass({
           required: true
         }),
         React.createElement(SelectElement, {
+          name: 'for_site',
+          label: 'Site',
+          options: this.state.Data.sites,
+          onUserInput: this.setFormData,
+          ref: 'for_site',
+          required: true
+        }),
+        React.createElement(SelectElement, {
           name: 'instrument',
           label: 'Instrument',
           options: this.state.Data.instruments,
           onUserInput: this.setFormData,
-          ref: 'instrument',
-          required: true
-        }),
-        React.createElement(SelectElement, {
-          name: 'for_site',
-          label: 'For Site',
-          options: this.state.Data.sites,
-          onUserInput: this.setFormData,
-          ref: 'for_site'
+          ref: 'instrument'
         }),
         React.createElement(DateElement, {
           name: 'date_taken',
@@ -253,7 +253,8 @@ var MediaUploadForm = React.createClass({
       success: function (data) {
         $("#file-progress").addClass('hide');
         self.setState({
-          uploadResult: "success"
+          uploadResult: "success",
+          formData: {} // reset form data after successful file upload
         });
 
         // Trigger an update event to update all observers (i.e DataTable)
@@ -336,6 +337,13 @@ var MediaUploadForm = React.createClass({
    * @param value
    */
   setFormData: function (formElement, value) {
+
+    // Only display visits and sites available for the current pscid
+    if (formElement === "pscid") {
+      this.state.Data.visits = this.state.Data.sessionData[value].visits;
+      this.state.Data.sites = this.state.Data.sessionData[value].sites;
+    }
+
     var formData = this.state.formData;
     formData[formElement] = value;
 
