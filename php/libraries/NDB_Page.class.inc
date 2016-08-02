@@ -557,11 +557,13 @@ class NDB_Page
 
         $TestName = $this->name;
 
+        $min = ($config->getSetting("sandbox") === '1') ? '' : '.min';
+
         $files = array(
                   $baseurl . '/js/jquery/jquery-1.11.0.min.js',
                   $baseurl . '/js/helpHandler.js',
                   $baseurl . '/js/modernizr.min.js',
-                  $baseurl . '/js/react-with-addons-0.13.3.min.js',
+                  $baseurl . "/js/react-with-addons-0.13.3$min.js",
                   $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
                   $baseurl . '/js/jquery.dynamictable.js',
                   $baseurl . '/js/jquery.fileupload.js',
