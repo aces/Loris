@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8"/>
-<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
 <!-- shortcut icon that displays on the browser window -->
-<link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
+<link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 <!-- page title -->
 <title>Lost Password</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -26,7 +26,7 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="col-sm-2 col-xs-3 col-sm-offset-2">
-				<img src="images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" align="left">
+				<img src="{$baseurl}/images/LORIS_logo.svg" class="img-responsive" alt="Responsive image" align="left" onerror="this.src='{$baseurl}/images/LORIS_logo.png'">
 			</div>
 			<div class="col-sm-6 col-xs-9">
 				{if $error_message}
@@ -57,7 +57,7 @@
 	  			</div>
 	  			<br>
 	  			<div class="col-xs-10 col-xs-offset-2">
-	  				<a href="main.php">Return to login screen</a>
+	  				<a href="{$baseurl}/main.php">Return to login screen</a>
 	  			</div>
 	  			
 			</div>
@@ -65,7 +65,7 @@
 				<br>Created by <a href="http://mcin-cnim.ca" target="_blank">MCIN</a>
 			</div>
 			<div class="col-xs-4 col-xs-offset-4  ">
-				Developed at <a href="www.mni.mcgill.ca" target="_blank">Montreal Neurological Institute and Hospital</a>
+				Developed at <a href="http://www.mni.mcgill.ca" target="_blank">Montreal Neurological Institute and Hospital</a>
 	  		</div>
 		</div>
 	</div>

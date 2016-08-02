@@ -33,12 +33,14 @@ class NDB_Config
 {
     /**
      * The raw array of settings
+     *
      * @access private
      */
     var $_settings = array();
 
     /**
      * The merged array of study and site-specific settings
+     *
      * @access private
      */
     var $_siteSettings = array();
@@ -46,6 +48,7 @@ class NDB_Config
     /**
      * An optional override for the location of the config file.
      * (default is ../project/config.xml)
+     *
      * @access public
      */
     var $configFilePath;

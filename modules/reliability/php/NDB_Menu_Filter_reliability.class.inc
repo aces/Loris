@@ -65,7 +65,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         // create the centerID map
         $db =& Database::singleton();
         $pscRows = array();
-        $pscRows = $db->pselect("SELECT CenterID, Name FROM psc");
+        $pscRows = $db->pselect("SELECT CenterID, Name FROM psc", array());
         foreach($pscRows AS $row) {
             $this->centerIDMap[$row['CenterID']] = $row['Name'];
         }
@@ -310,7 +310,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     function _populate_reliability_table()
     { 
        $db =& Database::singleton();
-       $this->reliability_table= $db->pselect("SELECT CommentID, reliability_center_id FROM reliability");
+       $this->reliability_table= $db->pselect("SELECT CommentID, reliability_center_id FROM reliability", array());
        
        
        $this->reliability_table = map_cIDs($this->reliability_table);
@@ -457,7 +457,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 
         }
         $value = array('NewID'=>$newCommentID['NewID']);
-        $replacementCheck = $DB->pselectRow("SELECT CommentID FROM reliability WHERE CommentID=:NewID'",$value );
+        $replacementCheck = $DB->pselectRow("SELECT CommentID FROM reliability WHERE CommentID=:NewID",$value );
         if(!empty($replacementCheck)) {
             $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." already in reliability. Cannot swap".$params['pid']."/".$params['id_V']."for it";
             return array('error' => $error_msg);
@@ -510,6 +510,25 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                'Manual_Swap'=>'no') 
         );
         return array("message" => "Inserted new reliability candidate".$params['PSCID']."/".$params['Visit_label'] );
+    }
+    
+     /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/reliability/js/reliability_helper.js",
+            )
+        );
     }
 }
 ?>

@@ -118,12 +118,13 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-4">
-                            {$form.edc.label}
+                            {$form.Feedback.label}
                         </label>
                         <div class="col-sm-12 col-md-8">
-                            {$form.edc.html}
+                            {$form.Feedback.html}
                         </div>
                     </div>
+
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-4">
@@ -136,18 +137,10 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-4">
-                            &nbsp;
+                            {$form.edc.label}
                         </label>
                         <div class="col-sm-12 col-md-8">
-                            &nbsp;
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-4">
-                            {$form.Feedback.label}
-                        </label>
-                        <div class="col-sm-12 col-md-8">
-                            {$form.Feedback.html}
+                            {$form.edc.html}
                         </div>
                     </div>
                 </div>
@@ -190,7 +183,7 @@
         <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
     </div>
     <div class="panel-body" id="panel-body">
-    <form class="form-horizontal" id="accessProfileForm" name="accessProfileForm" method="get" action="main.php">
+    <form class="form-horizontal" id="accessProfileForm" name="accessProfileForm" method="get" action="#">
         <input type="hidden" name="test_name" value="timepoint_list">
         <div class="form-group col-sm-12">
             <label class="col-sm-12 col-md-4">
@@ -219,7 +212,8 @@
 <script>
 var table = RDynamicDataTable({
     "DataURL" : "{$baseurl}/candidate_list/?format=json",
-    "getFormattedCell" : formatColumn
+    "getFormattedCell" : formatColumn,
+    "freezeColumn" : "PSCID"
 });
 
 React.render(table, document.getElementById("datatable"));

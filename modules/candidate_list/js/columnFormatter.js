@@ -45,6 +45,17 @@ function formatColumn(column, cell, rowData) {
                 );
         }
     }
+    if (column === 'Scan Done' && cell === 'Y') {
+        return React.createElement(
+            "td",
+            { className: "scanDoneLink" },
+            React.createElement(
+                "a",
+                { href: "#", onClick: loris.loadFilteredMenuClickHandler('imaging_browser', { 'pscid': rowData[2] }) },
+                cell
+            )
+        );
+    }
     return React.createElement(
         "td",
         null,

@@ -60,6 +60,9 @@ class LorisForm
         if (isset($attribs['class'])) {
             $el['class'] = $attribs['class'];
         }
+        if (isset($attribs['id'])) {
+            $el['id'] = $attribs['id'];
+        }
         if (isset($attribs['onchange'])) {
             $el['onchange'] = $attribs['onchange'];
         }
@@ -71,6 +74,9 @@ class LorisForm
         }
         if (isset($attribs['pattern'])) {
             $el['pattern'] = $attribs['pattern'];
+        }
+        if (isset($attribs['disabled'])) {
+            $el['disabled'] = true;
         }
         if (isset($attribs['required']) && $attribs['required'] === true) {
             $el['required'] = true;
@@ -109,7 +115,7 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addSelect($name, $label, $options, $attribs = array())
     {
@@ -119,7 +125,7 @@ class LorisForm
         if (isset($attribs['multiple'])) {
             $el['multiple'] = $attribs['multiple'];
         }
-
+        return $el;
     }
 
     /**
@@ -130,12 +136,13 @@ class LorisForm
      * @param string $name  The element name.
      * @param string $label The label to attach to this element.
      *
-     * @return none, but modifies $this->form as a side-effect
+     * @return &array
      */
     public function addStatic($name, $label)
     {
         $el         =& $this->addBase($name, $label, array());
         $el['type'] = 'static';
+        return $el;
     }
 
     /**
@@ -147,12 +154,13 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addPassword($name, $label, $options=array())
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'password';
+        return $el;
     }
 
     /**
@@ -164,12 +172,13 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addText($name, $label, $options=array())
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'text';
+        return $el;
     }
 
     /**
@@ -182,7 +191,7 @@ class LorisForm
      *                        "rows", and "cols" attributes will get
      *                        added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addTextArea($elname, $label, $options=array())
     {
@@ -210,13 +219,14 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     public function addDate($name, $label, $options, $attribs = array())
     {
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'date';
         $el['options'] = $options;
+        return $el;
     }
 
     /**
@@ -228,12 +238,13 @@ class LorisForm
      *                        get added. Currently only the "class"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     function addFile($name, $label, $options)
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'file';
+        return $el;
     }
 
     /**
@@ -245,12 +256,13 @@ class LorisForm
      *                        get added. Currently only the "value"
      *                        attribute gets added.
      *
-     * @return none, modifies $this->form as a side-effect.
+     * @return &array
      */
     function addCheckbox($name, $label, $options)
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'advcheckbox';
+        return $el;
     }
 
     /**
@@ -260,7 +272,7 @@ class LorisForm
      * @param string $label   The description for the header
      * @param array  $options Other options for this header element
      *
-     * @return none
+     * @return &array
      */
     function addHeader($name, $label, $options = array())
     {
@@ -268,6 +280,7 @@ class LorisForm
 
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'header';
+        return $el;
     }
     /**
      * Generates a unique element name for anonymous elements to use
@@ -552,6 +565,8 @@ class LorisForm
         $cls           = '';
         $changehandler = '';
         $multiple      = '';
+        $id            = '';
+        $disabled      = '';
 
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
@@ -577,13 +592,22 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
+        if (isset($el['id'])) {
+            $id = "id=\"$el[id]\"";
+        }
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
+        }
         if (isset($el['onchange'])) {
             $changehandler = "onchange=\"$el[onchange]\"";
         }
         if (isset($el['multiple'])) {
             $multiple = "multiple=\"multiple\"";
         }
-        $retVal = "<select name=\"$el[name]\" $cls $changehandler $multiple";
+
+        $retVal = "<select name=\"$el[name]\" $cls $id $changehandler $multiple "
+            . $disabled;
+
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if ($el['requireMsg']) {
@@ -625,11 +649,15 @@ class LorisForm
      */
     function dateHTML($el)
     {
-        $cls     = '';
-        $minYear = '';
-        $maxYear = '';
+        $cls      = '';
+        $minYear  = '';
+        $maxYear  = '';
+        $disabled = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
         }
         if (isset($el['options']['minYear'])) {
             $minYear = "min=\"" . $el['options']['minYear'] . "-01-01\"";
@@ -640,8 +668,9 @@ class LorisForm
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
         $value    = $this->getValue($el['name']);
-        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear"
-            . "onChange=\"this.setCustomValidity($required)\""
+        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear "
+            . $disabled
+            . " onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
             !empty($value)
@@ -649,8 +678,8 @@ class LorisForm
                 : ''
             )
             . ">";
-        return $elmnt;
 
+        return $elmnt;
     }
 
     /**
@@ -690,9 +719,13 @@ class LorisForm
      */
     function textHTML($el, $type='text')
     {
-        $cls = '';
+        $cls      = '';
+        $disabled = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
         }
         $value = $this->getValue($el['name']);
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
@@ -713,10 +746,11 @@ class LorisForm
                 ? ' required' : ''
               )
             . (
-                !empty($value)
+                (!empty($value) || $value === '0')
                 ? ' value="' . $this->getValue($el['name']) . '"'
                 : ''
               )
+            . $disabled
             .">";
     }
 
@@ -730,10 +764,14 @@ class LorisForm
      */
     function fileHTML($el)
     {
-        $cls = '';
-        $val = $this->getValue($el['name']);
+        $cls      = '';
+        $disabled = '';
+        $val      = $this->getValue($el['name']);
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
+        }
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"file\" $cls"
             . (
@@ -741,6 +779,7 @@ class LorisForm
                 ? ' value="' . $val . '"'
                 : ''
               )
+            . $disabled
             .">";
     }
 
@@ -754,12 +793,15 @@ class LorisForm
      */
     function textareaHTML($el)
     {
-        $cls  = '';
-        $dims = '';
+        $cls      = '';
+        $dims     = '';
+        $disabled = '';
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
+        }
         if (isset($el['rows'])) {
             $dims .= " rows=\"$el[rows]\"";
         }
@@ -767,7 +809,7 @@ class LorisForm
             $dims .= " cols=\"$el[cols]\"";
         }
         $value = $this->getValue($el['name']);
-        return "<textarea name=\"$el[name]\" $cls $dims>"
+        return "<textarea name=\"$el[name]\" $cls $dims $disabled>"
             . (
                 !empty($value)
                 ? $this->getValue($el['name']) : ''
@@ -966,16 +1008,21 @@ class LorisForm
      */
     function checkboxHTML($el)
     {
-        $val     = $this->getValue($el['name']);
-        $checked = '';
-        $value   = '';
+        $val      = $this->getValue($el['name']);
+        $checked  = '';
+        $value    = '';
+        $disabled = '';
         if (!empty($val)) {
             $checked = 'checked="checked"';
         }
         if (isset($el['value'])) {
             $value = "value=\"$el[value]\"";
         }
-        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value/>"
+        if (isset($el['disabled'])) {
+            $disabled = 'disabled';
+        }
+        return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value "
+            . "$disabled/>"
             . " $el[label]";
     }
     /**

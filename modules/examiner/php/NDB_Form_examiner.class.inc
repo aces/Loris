@@ -186,7 +186,7 @@ class NDB_Form_Examiner extends NDB_Form
                 $oldVal  = $oldVals['new'];
                 $oldDate = $oldVals['new_date'];
 
-                $oldCertification = $DB->pselect(
+                $oldCertification = $DB->pselectRow(
                     "SELECT pass, date_cert, comment
                      FROM certification
                      WHERE examinerID=:EID AND testID=:TID",
@@ -237,7 +237,7 @@ class NDB_Form_Examiner extends NDB_Form
                 }
             }
         }
-        $url = "main.php?test_name=examiner&subtest=editExaminer&identifier="
+        $url = "{$baseurl}/examiner/editExaminer/?identifier="
                . $examinerID;
         header("Location: " . $url, true, 303);
     }

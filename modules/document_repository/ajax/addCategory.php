@@ -22,6 +22,8 @@ require_once "NDB_Client.class.inc";
 require_once "NDB_Config.class.inc";
 require_once "Email.class.inc";
 
+$factory = NDB_Factory::singleton();
+$baseURL = $factory->settings()->getBaseURL();
 $client = new NDB_Client();
 $client->initialize("../../project/config.xml");
 
@@ -58,11 +60,10 @@ if ($user->hasPermission('document_repository_view') || $user->hasPermission('do
               "comments"      => $comments)
     );
 
-    $www = $config->getSetting('www');
 
-    $msg_data['newCategory'] = $www['url'] . 
-                               "/main.php?test_name=document_repository";
+    $msg_data['newCategory'] = $baseURL . "/document_repository/";
     $msg_data['category']    = $category_name;
+    $msg_data['study']       = $config->getSetting('title');
 
     $Doc_Repo_Notification_Emails = $DB->pselect(
         "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid",

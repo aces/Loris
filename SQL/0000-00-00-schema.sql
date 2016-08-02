@@ -17,6 +17,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `acknowledgements`
+--
+
+DROP TABLE IF EXISTS `acknowledgements`;
+CREATE TABLE `acknowledgements` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ordering` varchar(255) DEFAULT NULL,
+  `full_name` varchar(255) DEFAULT NULL,
+  `citation_name` varchar(255) DEFAULT NULL,
+  `title` enum('') DEFAULT NULL,
+  `affiliations` varchar(255) DEFAULT NULL,
+  `degrees` varchar(255) DEFAULT NULL,
+  `roles` varchar(255) DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `present` enum('Yes', 'No') DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `acknowledgements`
+--
+
+LOCK TABLES `acknowledgements` WRITE;
+/*!40000 ALTER TABLE `acknowledgements` DISABLE KEYS */;
+/*!40000 ALTER TABLE `acknowledgements` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `candidate`
 --
 
@@ -73,9 +102,9 @@ CREATE TABLE `caveat_options` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 
+--
 -- Dumping data for table `caveat_options`
--- 
+--
 
 LOCK TABLES `caveat_options` WRITE;
 /*!40000 ALTER TABLE `caveat_options` DISABLE KEYS */;
@@ -239,7 +268,7 @@ CREATE TABLE `feedback_bvl_type` (
 
 LOCK TABLES `feedback_bvl_type` WRITE;
 /*!40000 ALTER TABLE `feedback_bvl_type` DISABLE KEYS */;
-INSERT INTO `feedback_bvl_type` VALUES 
+INSERT INTO `feedback_bvl_type` VALUES
     (1,'Input','Input Errors'),
     (2,'Scoring','Scoring Errors');
 /*!40000 ALTER TABLE `feedback_bvl_type` ENABLE KEYS */;
@@ -264,13 +293,13 @@ CREATE TABLE `feedback_mri_comment_types` (
 
 LOCK TABLES `feedback_mri_comment_types` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_comment_types` DISABLE KEYS */;
-INSERT INTO `feedback_mri_comment_types` VALUES 
+INSERT INTO `feedback_mri_comment_types` VALUES
     (1,'Geometric distortion','volume','a:2:{s:5:\"field\";s:20:\"Geometric_distortion\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
     (2,'Intensity artifact','volume','a:2:{s:5:\"field\";s:18:\"Intensity_artifact\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
     (3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
     (4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:31:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
     (5,'Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),	    (6,'Overall','volume',''),
-    (7,'Subject','visit',''),	
+    (7,'Subject','visit',''),
     (8,'Dominant Direction Artifact (DWI ONLY)','volume','a:2:{s:5:"field";s:14:"Color_Artifact";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"Good";i:2;s:4:"Fair";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}'),
     (9,'Entropy Rating (DWI ONLY)','volume','a:2:{s:5:"field";s:7:"Entropy";s:6:"values";a:5:{i:0;s:0:"";i:1;s:10:"Acceptable";i:2;s:10:"Suspicious";i:3;s:12:"Unacceptable";i:4;s:13:"Not Available";}}');
 /*!40000 ALTER TABLE `feedback_mri_comment_types` ENABLE KEYS */;
@@ -296,7 +325,7 @@ CREATE TABLE `feedback_mri_predefined_comments` (
 
 LOCK TABLES `feedback_mri_predefined_comments` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_predefined_comments` DISABLE KEYS */;
-INSERT INTO `feedback_mri_predefined_comments` VALUES 
+INSERT INTO `feedback_mri_predefined_comments` VALUES
 	(1,2,'missing slices'),
 	(2,2,'reduced dynamic range due to bright artifact/pixel'),
 	(3,2,'slice to slice intensity differences'),
@@ -416,7 +445,7 @@ CREATE TABLE `files` (
   `SourcePipeline` varchar(255),
   `PipelineDate` date,
   `SourceFileID` int(10) unsigned DEFAULT '0',
-  `ProcessProtocolID` int(11) unsigned, 
+  `ProcessProtocolID` int(11) unsigned,
   `Caveat` tinyint(1) default NULL,
   `TarchiveSource` int(11) default NULL,
   PRIMARY KEY  (`FileID`),
@@ -440,7 +469,8 @@ CREATE TABLE `files_qcstatus` (
     EchoTime double DEFAULT NULL,
     QCStatus enum('Pass', 'Fail'),
     QCFirstChangeTime int(10) unsigned,
-    QCLastChangeTime int(10) unsigned
+    QCLastChangeTime int(10) unsigned,
+    Selected VARCHAR(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -628,7 +658,7 @@ CREATE TABLE `mri_scan_type` (
 
 LOCK TABLES `mri_scan_type` WRITE;
 /*!40000 ALTER TABLE `mri_scan_type` DISABLE KEYS */;
-INSERT INTO `mri_scan_type` VALUES 
+INSERT INTO `mri_scan_type` VALUES
     (40,'fMRI'),
     (41,'flair'),
     (44,'t1'),
@@ -644,7 +674,7 @@ INSERT INTO `mri_scan_type` VALUES
     (54,'cocosco_cls'),
     (55,'clean_cls'),
     (56,'em_cls'),
-    (57,'seg'),	
+    (57,'seg'),
     (58,'white_matter'),
     (59,'gray_matter'),
     (60,'csf_matter'),
@@ -694,6 +724,7 @@ CREATE TABLE `notification_spool` (
   `TimeSpooled` datetime DEFAULT NULL,
   `Message` text,
   `Error` enum('Y','N') default NULL,
+  `Verbose` enum('Y','N') NOT NULL DEFAULT 'N',
   `Sent` enum('N','Y') NOT NULL default 'N',
   `CenterID` tinyint(2) unsigned default NULL,
   `Origin` varchar(255) DEFAULT NULL,
@@ -732,7 +763,7 @@ CREATE TABLE `notification_types` (
 
 LOCK TABLES `notification_types` WRITE;
 /*!40000 ALTER TABLE `notification_types` DISABLE KEYS */;
-INSERT INTO `notification_types` (Type,private,Description) VALUES 
+INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('mri new study',0,'New studies processed by the MRI upload handler'),
     ('mri new series',0,'New series processed by the MRI upload handler'),
     ('mri upload handler emergency',1,'MRI upload handler emergencies'),
@@ -742,7 +773,7 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('visual bvl qc',0,'Timepoints selected for visual QC'),
     ('mri qc status',0,'MRI QC Status change');
 
-INSERT INTO notification_types (Type,private,Description) VALUES 
+INSERT INTO notification_types (Type,private,Description) VALUES
     ('minc insertion',1,'Insertion of the mincs into the mri-table'),
     ('tarchive loader',1,'calls specific Insertion Scripts'),
     ('tarchive validation',1,'Validation of the dicoms After uploading'),
@@ -860,8 +891,7 @@ CREATE TABLE `parameter_type` (
 
 LOCK TABLES `parameter_type` WRITE;
 /*!40000 ALTER TABLE `parameter_type` DISABLE KEYS */;
-INSERT INTO `parameter_type` VALUES 
-	(1,'Selected','varchar(10)',NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+INSERT INTO `parameter_type` VALUES
 	(2,'Geometric_distortion','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
 	(3,'Intensity_artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
 	(4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
@@ -923,18 +953,18 @@ UNLOCK TABLES;
 -- ADDing Meta-data Visit_label , candidate_label and candidate_dob
 --
 
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) 
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition)
 VALUES ('candidate_label','text','Identifier_of_candidate',null,null,'PSCID','candidate',null,1,null);
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) 
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition)
 VALUES ('Visit_label','varchar(255)','Visit_label',null,null,'visit_label','session',null,1,null);
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) 
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition)
 VALUES  ('candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
 
 INSERT INTO parameter_type_category (Name, type) VALUES('Identifiers', 'Metavars');
 
-INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID) 
-SELECT pt.ParameterTypeID,ptc.ParameterTypeCategoryID 
-FROM parameter_type pt,parameter_type_category ptc 
+INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID)
+SELECT pt.ParameterTypeID,ptc.ParameterTypeCategoryID
+FROM parameter_type pt,parameter_type_category ptc
 WHERE ptc.Name='Identifiers' AND pt.Name IN ('candidate_label', 'Visit_label','candidate_dob');
 
 
@@ -1153,6 +1183,7 @@ CREATE TABLE `test_battery` (
   `Visit_label` varchar(255) default NULL,
   `CenterID` int(11) default NULL,
   `firstVisit` enum('Y','N') default NULL,
+  `instr_order` tinyint(4) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
@@ -1202,6 +1233,7 @@ DROP TABLE IF EXISTS `test_subgroups`;
 CREATE TABLE `test_subgroups` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `Subgroup_name` varchar(255) default NULL,
+  `group_order` tinyint(4) default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1211,7 +1243,7 @@ CREATE TABLE `test_subgroups` (
 
 LOCK TABLES `test_subgroups` WRITE;
 /*!40000 ALTER TABLE `test_subgroups` DISABLE KEYS */;
-INSERT INTO test_subgroups VALUES (1, 'Instruments');
+INSERT INTO test_subgroups VALUES (1, 'Instruments', NULL);
 /*!40000 ALTER TABLE `test_subgroups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1306,9 +1338,9 @@ CREATE TABLE `conflicts_unresolved` (
       `ExtraKey2` varchar(255) NOT NULL,
       `FieldName` varchar(255) NOT NULL,
       `CommentId1` varchar(255) NOT NULL,
-      `Value1` varchar(255) DEFAULT NULL,
+      `Value1` text DEFAULT NULL,
       `CommentId2` varchar(255) NOT NULL,
-      `Value2` varchar(255) DEFAULT NULL,
+      `Value2` text DEFAULT NULL,
       PRIMARY KEY (`ConflictID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1325,9 +1357,9 @@ CREATE TABLE `conflicts_resolved` (
       `FieldName` varchar(255) NOT NULL,
       `CommentId1` varchar(255) NOT NULL,
       `CommentId2` varchar(255) NOT NULL,
-      `OldValue1` varchar(255) DEFAULT NULL,
-      `OldValue2` varchar(255) DEFAULT NULL,
-      `NewValue` varchar(255) DEFAULT NULL,
+      `OldValue1` text DEFAULT NULL,
+      `OldValue2` text DEFAULT NULL,
+      `NewValue` text DEFAULT NULL,
       `ConflictID` int(10) DEFAULT NULL,
       PRIMARY KEY (`ResolvedID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1469,9 +1501,9 @@ CREATE TABLE participant_status_options (
         Required boolean default NULL,
         parentID int(10) default NULL,
         PRIMARY KEY  (ID),
-        UNIQUE KEY ID (ID) 
+        UNIQUE KEY ID (ID)
 );
-INSERT INTO `participant_status_options` VALUES 
+INSERT INTO `participant_status_options` VALUES
 	(1,'Active',0,NULL),
 	(2,'Refused/Not Enrolled',0,NULL),
 	(3,'Ineligible',0,NULL),
@@ -1500,7 +1532,7 @@ CREATE TABLE participant_status (
         study_consent_date date default NULL,
         study_consent_withdrawal date default NULL,
         PRIMARY KEY  (ID),
-        UNIQUE KEY ID (ID) 
+        UNIQUE KEY ID (ID)
 );
 
 
@@ -1606,8 +1638,8 @@ CREATE TABLE `mri_upload` (
   `UploadDate` DateTime DEFAULT NULL,
   `UploadLocation` varchar(255) NOT NULL DEFAULT '',
   `DecompressedLocation` varchar(255) NOT NULL DEFAULT '',
-  `Processed` tinyint(1) NOT NULL DEFAULT '0',
-  `CurrentlyProcessed` tinyint(1) NOT NULL DEFAULT '0',
+  `InsertionComplete` tinyint(1) NOT NULL DEFAULT '0',
+  `Inserting` tinyint(1) NOT NULL DEFAULT '0',
   `PatientName` varchar(255) NOT NULL DEFAULT '',
   `number_of_mincInserted` int(11) DEFAULT NULL,
   `number_of_mincCreated` int(11) DEFAULT NULL,
@@ -1795,6 +1827,20 @@ CREATE TABLE `final_radiological_review_history` (
 
 -- Genomic Browser tables : no data included
 --
+-- Table structure for table `genome_loc`
+DROP TABLE IF EXISTS `genome_loc`;
+CREATE TABLE `genome_loc` (
+  `GenomeLocID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `Chromosome` varchar(255) DEFAULT NULL,
+  `Strand` varchar(255) DEFAULT NULL,
+  `EndLoc` int(11) DEFAULT NULL,
+  `Size` int(11) DEFAULT NULL,
+  `StartLoc` int(11) DEFAULT NULL,
+  PRIMARY KEY (`GenomeLocID`),
+  UNIQUE KEY (Chromosome, StartLoc, EndLoc),
+  INDEX (Chromosome, EndLoc)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- Table structure for table `gene`
 DROP TABLE IF EXISTS `gene`;
 CREATE TABLE `gene` (
@@ -1809,18 +1855,6 @@ CREATE TABLE `gene` (
   KEY `geneGenomeLocID` (`GenomeLocID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Table structure for table `genome_loc`
-DROP TABLE IF EXISTS `genome_loc`;
-CREATE TABLE `genome_loc` (
-  `GenomeLocID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Chromosome` varchar(255) DEFAULT NULL,
-  `Strand` varchar(255) DEFAULT NULL,
-  `EndLoc` int(11) DEFAULT NULL,
-  `Size` int(11) DEFAULT NULL,
-  `StartLoc` int(11) DEFAULT NULL,
-  PRIMARY KEY (`GenomeLocID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- Table structure for table `genotyping_platform`
 DROP TABLE IF EXISTS `genotyping_platform`;
 CREATE TABLE `genotyping_platform` (
@@ -1829,38 +1863,54 @@ CREATE TABLE `genotyping_platform` (
   `Description` text,
   `TechnologyType` varchar(255) DEFAULT NULL,
   `Provider` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`PlatformID`)
+  PRIMARY KEY (`PlatformID`),
+  UNIQUE KEY `Name` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
 -- Table structure for table `SNP`
+-- used by Genomic Browser module
+--
 DROP TABLE IF EXISTS `SNP`;
 CREATE TABLE `SNP` (
   `SNPID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) DEFAULT NULL,
-  `rsID` varchar(9) DEFAULT NULL,
+  `rsID` varchar(20) DEFAULT NULL,
   `Description` text,
   `SNPExternalName` varchar(255) DEFAULT NULL,
   `SNPExternalSource` varchar(255) DEFAULT NULL,
-  `ObservedBase` enum('A','C','T','G') DEFAULT NULL,
   `ReferenceBase` enum('A','C','T','G') DEFAULT NULL,
-  `ArrayReport` enum('Normal','Pending','Uncertain') DEFAULT NULL,
   `Markers` varchar(255) DEFAULT NULL,
+  `FunctionPrediction` enum('exonic','ncRNAexonic','splicing','UTR3','UTR5') DEFAULT NULL,
+  `Damaging` enum('D','NA') DEFAULT NULL,
+  `ExonicFunction` enum('nonsynonymous','unknown') DEFAULT NULL,
+  `GenomeLocID` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`SNPID`),
+  CONSTRAINT `SNP_ibfk_2` FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `SNP_candidate_rel`
+-- used by Genomic Browser module
+--
+DROP TABLE IF EXISTS `SNP_candidate_rel`;
+CREATE TABLE `SNP_candidate_rel` (
+  `SNPID` bigint(20) NOT NULL DEFAULT '0',
+  `CandID` int(6) NOT NULL DEFAULT '0',
+  `ObservedBase` enum('A','C','T','G') DEFAULT NULL,
+  `ArrayReport` enum('Normal','Uncertain','Pending') DEFAULT NULL,
   `ArrayReportDetail` varchar(255) DEFAULT NULL,
   `ValidationMethod` varchar(50) DEFAULT NULL,
   `Validated` enum('0','1') DEFAULT NULL,
-  `FunctionPrediction` enum('exonic','ncRNAexonic','splicing','UTR3','UTR5') DEFAULT NULL,
-  `Damaging` enum('D','NA') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
-  `ExonicFunction` enum('nonsynonymous','unknown') DEFAULT NULL,
   `PlatformID` bigint(20) DEFAULT NULL,
-  `GenomeLocID` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`SNPID`),
-  FOREIGN KEY (`PlatformID`) REFERENCES genotyping_platform(`PlatformID`),
-  FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`),
-  FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`)
+  PRIMARY KEY (`SNPID`,`CandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
 -- Table structure for table `CNV`
+-- used by Genomic Browser module
+--
+DROP TABLE IF EXISTS `CNV`;
 CREATE TABLE `CNV` (
   `CNVID` bigint(20) NOT NULL AUTO_INCREMENT,
   `CandID` int(6) DEFAULT NULL,
@@ -1879,9 +1929,142 @@ CREATE TABLE `CNV` (
   `GenomeLocID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`CNVID`),
   FOREIGN KEY (`PlatformID`) REFERENCES genotyping_platform(`PlatformID`),
-  FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`),
-  FOREIGN KEY (`CandID`) REFERENCES candidate(`CandID`)
+  FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `GWAS`
+-- Genomic Browser module
+--
+DROP TABLE IF EXISTS `GWAS`;
+CREATE TABLE `GWAS` (
+  `GWASID` int unsigned NOT NULL AUTO_INCREMENT,
+  `SNPID` bigint(20) NOT NULL,
+  `rsID` varchar(20) DEFAULT NULL,
+  `MajorAllele` enum('A','C','T','G') DEFAULT NULL,
+  `MinorAllele` enum('A','C','T','G') DEFAULT NULL,
+  `MAF` varchar(20) DEFAULT NULL,
+  `Estimate` varchar(20) DEFAULT NULL,
+  `StdErr` varchar(20) DEFAULT NULL,
+  `Pvalue` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`GWASID`),
+  FOREIGN KEY (`SNPID`) REFERENCES SNP(`SNPID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores results of Genome-Wide Analysis Study';
+
+DROP TABLE IF EXISTS `genomic_analysis_modality_enum`;
+CREATE TABLE `genomic_analysis_modality_enum` (
+  `analysis_modality` varchar(100),
+  PRIMARY KEY (`analysis_modality`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+COMMENT '';
+
+INSERT IGNORE INTO `genomic_analysis_modality_enum` (analysis_modality) VALUES
+('Methylation beta-values'),
+('Other');
+
+--
+-- Table structure for table `genomic_files`
+--
+DROP TABLE IF EXISTS `genomic_files`;
+CREATE TABLE `genomic_files` (
+  `GenomicFileID` int unsigned NOT NULL AUTO_INCREMENT,
+  `FileName` varchar(255) NOT NULL,
+  `FilePackage` tinyint(1) DEFAULT NULL,
+  `Description` varchar(255) NOT NULL,
+  `FileType` varchar(255) NOT NULL,
+  `FileSize` int(20) NOT NULL,
+  `Platform` varchar(255) DEFAULT NULL,
+  `Batch` varchar(255) DEFAULT NULL,
+  `Source` varchar(255) DEFAULT NULL,
+  `Date_taken` date DEFAULT NULL,
+  `Category` enum('raw','cleaned') DEFAULT NULL,
+  `Pipeline` varchar(255) DEFAULT NULL,
+  `Algorithm` varchar(255) DEFAULT NULL,
+  `Normalization` varchar(255) DEFAULT NULL,
+  `SampleID` varchar(255) DEFAULT NULL,
+  `AnalysisProtocol` varchar(255) DEFAULT NULL,
+  `InsertedByUserID` varchar(255) NOT NULL DEFAULT '',
+  `Date_inserted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `Caveat` tinyint(1) DEFAULT NULL,
+  `Notes` text,
+  `AnalysisModality` varchar(100),
+  PRIMARY KEY (`GenomicFileID`),
+  KEY `AnalysisModality` (`AnalysisModality`),
+  CONSTRAINT `genomic_files_ibfk_1` FOREIGN KEY (`AnalysisModality`) REFERENCES `genomic_analysis_modality_enum` (`analysis_modality`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `genomic_candidate_files_rel`;
+CREATE TABLE `genomic_candidate_files_rel` (
+    `CandID` int(6) NOT NULL,
+    `GenomicFileID` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`CandID`,`GenomicFileID`),
+    FOREIGN KEY (CandID)
+        REFERENCES candidate (CandID),
+    FOREIGN KEY (GenomicFileID)
+        REFERENCES genomic_files (GenomicFileID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `genomic_sample_candidate_rel`;
+CREATE TABLE `genomic_sample_candidate_rel` (
+  `sample_label` varchar(100) NOT NULL,
+  `CandID` int(6) NOT NULL,
+  PRIMARY KEY (sample_label, CandID),
+  UNIQUE KEY `sample_label` (`sample_label`),
+  FOREIGN KEY (CandID)
+    REFERENCES candidate(CandID)
+    ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+COMMENT = '';
+
+DROP TABLE IF EXISTS `genomic_cpg_annotation`;
+CREATE TABLE `genomic_cpg_annotation` (
+  `cpg_name` varchar(100) NOT NULL,
+  `location_id` bigint(20) NOT NULL,
+  `address_id_a` int unsigned NULL,
+  `probe_seq_a` varchar(100) NULL,
+  `address_id_b` int unsigned NULL,
+  `probe_seq_b` varchar(100) NULL,
+  `design_type` varchar(20) NULL,
+  `color_channel` enum ('Red', 'Grn') NULL,
+  `genome_build` varchar(40) NULL,
+  `probe_snp_10` varchar(40) NULL,
+  `gene_name` text NULL,
+  `gene_acc_num` text NULL,
+  `gene_group` text NULL,
+  `island_loc` varchar(100) NULL,
+  `island_relation` enum ('island', 'n_shelf', 'n_shore', 's_shelf', 's_shore') NULL,
+  `fantom_promoter_loc`varchar(100) NULL,
+  `dmr` enum ('CDMR', 'DMR', 'RDMR') NULL,
+  `enhancer` tinyint(1) NULL,
+  `hmm_island_loc` varchar(100) NULL,
+  `reg_feature_loc` varchar(100) NULL,
+  `reg_feature_group` varchar(100) NULL,
+  `dhs` tinyint(1) NULL,
+  `platform_id` bigint(20) NULL,
+  PRIMARY KEY (cpg_name),
+  FOREIGN KEY (location_id)
+    REFERENCES genome_loc(`GenomeLocID`)
+    ON DELETE RESTRICT,
+  FOREIGN KEY (platform_id)
+    REFERENCES genotyping_platform(`PlatformID`)
+    ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+COMMENT = '';
+
+DROP TABLE IF EXISTS `genomic_cpg`;
+CREATE TABLE `genomic_cpg` (
+  `sample_label` varchar(100) NOT NULL,
+  `cpg_name` varchar(100) NOT NULL,
+  `beta_value` decimal(4,3) DEFAULT NULL,
+  PRIMARY KEY (sample_label, cpg_name),
+  FOREIGN KEY (sample_label)
+    REFERENCES genomic_sample_candidate_rel(sample_label)
+    ON DELETE RESTRICT,
+  FOREIGN KEY (cpg_name)
+    REFERENCES genomic_cpg_annotation(cpg_name)
+    ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+COMMENT = '';
 
 CREATE TABLE `certification_training` (
     `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1935,7 +2118,7 @@ DROP TABLE IF EXISTS ExternalLinkTypes;
 CREATE TABLE ExternalLinkTypes (
     LinkTypeID int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     LinkType varchar(255)
-);  
+);
 INSERT INTO ExternalLinkTypes (LinkType)
     VALUES ('FooterLink'),
            ('StudyLinks'),
@@ -1949,10 +2132,54 @@ CREATE TABLE ExternalLinks (
     LinkURL varchar(255) NOT NULL,
     FOREIGN KEY (LinkTypeID) REFERENCES ExternalLinkTypes(LinkTypeID)
 );
-INSERT INTO ExternalLinks (LinkTypeID, LinkText, LinkURL) VALUES 
+INSERT INTO ExternalLinks (LinkTypeID, LinkText, LinkURL) VALUES
     (1,  'Loris Website', 'http://www.loris.ca'),
-    (1,  'GitHub', 'https://github.com/aces'),
+    (1,  'GitHub', 'https://github.com/aces/Loris'),
     (2,  'Loris Website', 'http://www.loris.ca'),
-    (2,  'GitHub', 'https://github.com/aces'),
+    (2,  'GitHub', 'https://github.com/aces/Loris'),
     (3,  'Loris Website', 'http://www.loris.ca');
 
+DROP TABLE IF EXISTS empty_queries;
+CREATE TABLE empty_queries (
+ ID int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ query text NOT NULL,
+ timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS `data_release`;
+CREATE TABLE `data_release` (
+ `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+ `file_name` varchar(255),
+ `version` varchar(255),
+ `upload_date` date,
+ PRIMARY KEY (`id`)
+);
+
+DROP TABLE IF EXISTS `data_release_permissions`;
+CREATE TABLE `data_release_permissions` (
+ `userid` int(10) unsigned NOT NULL,
+ `data_release_id` int(10) unsigned NOT NULL,
+ PRIMARY KEY (`userid`, `data_release_id`),
+ KEY `FK_userid` (`userid`),
+ KEY `FK_data_release_id` (`data_release_id`),
+ CONSTRAINT `FK_userid` FOREIGN KEY (`userid`) REFERENCES `users` (`ID`),
+ CONSTRAINT `FK_data_release_id` FOREIGN KEY (`data_release_id`) REFERENCES `data_release` (`id`)
+);
+
+DROP TABLE IF EXISTS `media`;
+CREATE TABLE `media` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` int(10) unsigned NOT NULL,
+  `instrument` varchar(255) DEFAULT NULL,
+  `date_taken` date DEFAULT NULL,
+  `comments` text,
+  `file_name` varchar(255) NOT NULL,
+  `file_type` varchar(255) DEFAULT NULL,
+  `data_dir` varchar(255) NOT NULL,
+  `uploaded_by` varchar(255) DEFAULT NULL,
+  `hide_file` tinyint(1) DEFAULT '0',
+  `date_uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`session_id`) REFERENCES `session` (`ID`),
+  FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

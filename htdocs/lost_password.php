@@ -33,7 +33,7 @@ $config          =& NDB_Config::singleton();
 $tpl_data['css'] =$config->getSetting('css');
 $tpl_data['study_title'] = $config->getSetting('title');
 try {
-    $tpl_data['study_logo'] = "../".$config->getSetting('studylogo');
+    $tpl_data['study_logo'] = $config->getSetting('studylogo');
 } catch(ConfigurationException $e) {
     $tpl_data['study_logo'] = '';
 }
@@ -55,7 +55,8 @@ if (isset($_POST['username'])) {
             $password = User::newPassword();
 
             // reset the password in the database
-            $success = $user->updatePassword($password);
+            // expire password so user must change it upon login
+            $success = $user->updatePassword($password, '0000-00-00');
 
             // send the user an email
             $msg_data['study']    = $config->getSetting('title');

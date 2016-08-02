@@ -67,7 +67,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           'c.CandID AS DCCID',
                           'c.PSCID',
                           'c.Gender',
-                          "COALESCE(pso.Description,'\"Active\"') "
+                          "COALESCE(pso.Description,'Active') "
                           . " AS Participant_Status",
                          );
         if ($useProjects) {
@@ -105,7 +105,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
         // Need distinct because of joining with feedback_bvl_thread
         $VisitCountSQL = 'COUNT(DISTINCT s.Visit_label)';
-        $FeedbackSQL   = 'MIN(feedback_bvl_thread.Status+0)';
+        $FeedbackSQL   = 'IFNULL(MIN(feedback_bvl_thread.Status+0),0)';
 
         $this->columns = array_merge(
             $this->columns,
@@ -134,7 +134,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
                           //'COALESCE(pso.ID,1) AS Participant_Status',
         $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Gender';
-        $this->order_by = 'psc.Name, c.CandID DESC';
+        $this->order_by = 'c.PSCID ASC';
 
         if ($useProjects) {
             $this->validFilters[] = 'c.ProjectID';
@@ -410,6 +410,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             array(
              $baseURL . "/js/advancedMenu.js",
              $baseURL . "/candidate_list/js/columnFormatter.js",
+             $baseURL . "/candidate_list/js/candidate_list_helper.js",
             )
         );
     }

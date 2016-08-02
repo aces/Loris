@@ -7,6 +7,11 @@ require_once __DIR__ . "/../BaseTestCase.php";
 class InstrumentData_Test extends BaseTestCase
 {
     function testValidMethods() {
+
+        $this->markTestSkipped(
+          'Skipping test until we remove dependency on Quickform'
+        );
+
         try {
             // Get the candidate data for the candidate set up in the base
             // class. Since the instrument data portion uses all sorts of static

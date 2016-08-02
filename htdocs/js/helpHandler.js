@@ -14,8 +14,10 @@ $(document).ready(function(){
             return;
         }
         var getParams = {};
-        getParams.test_name = loris.TestName; 
-        getParams.subtest = loris.Subtest; 
+        getParams.test_name = loris.TestName;
+        if(loris.Subtest != "") {
+            getParams.subtest = loris.Subtest;
+        }
         document.cookie = 'LastUrl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
         $.get(loris.BaseURL + "/help_editor/ajax/help.php", getParams, function (content) {
             var div = document.createElement("div"),
@@ -25,7 +27,7 @@ $(document).ready(function(){
                 text = document.createTextNode("Edit"),
                 button = document.createTextNode("Close");
 
-            pre.innerHTML = "<h3>" + content.topic + "</h3>";
+            pre.innerHTML = "<hr id='help-seperator'><h3>" + content.topic + "</h3>";
             pre.innerHTML += content.content;
             pre.innerHTML =  pre.innerHTML + "<hr>Last updated: " + content.updated ;
             btn.appendChild(button);
@@ -36,7 +38,7 @@ $(document).ready(function(){
             edit.setAttribute("id", "helpedit");
             div.appendChild(pre);
             div.appendChild(btn);
-            if(loris.userHasPermission("help_edit")) {
+            if(loris.userHasPermission("context_help")) {
                 div.appendChild(edit);
                 edit.addEventListener("click", function(e) {
                     e.preventDefault();

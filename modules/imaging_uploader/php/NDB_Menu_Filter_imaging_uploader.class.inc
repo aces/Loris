@@ -29,6 +29,16 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
 
     var $show_queries = true;
     var $temp_path    = null;
+
+    /**
+     * ID of the uploaded file in mri_upload table (if upload successful).
+     */
+    var $mri_upload_id;
+
+    /**
+     * Path to the uploaded file (value of SourceLocation in mri_upload table).
+     */
+    var $uploaded_file_path;
     /**
      * The _has_access returns true
      * if the user has the specific permission
@@ -50,9 +60,14 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
 
+        $progressSelectPart = "IF(ISNULL(Inserting), 'Not Started',"
+            . "IF(Inserting=1, 'In Progress...', "
+            . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";
+
         // set the class variables
         $this->columns = array(
                           'UploadID',
+                          $progressSelectPart,
                           's.CandID',
                           'c.PSCID',
                           's.Visit_label',
@@ -125,6 +140,25 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             'Are these Phantom Scans:',
             $phantom_options
         );
+
+        $this->addSelect(
+            'LogType',
+            '',
+            array(
+             'summary'  => 'Summary',
+             'detailed' => 'Detailed',
+            )
+        );
+
+        $this->form->addTextArea(
+            'UploadLogs',
+            '',
+            array(
+             'class' => 'upload-logs-table',
+             'id'    => 'mri_upload_logs',
+            )
+        );
+
         ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -139,19 +173,73 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         }
         return true;
     }
-     /**
-      * Returns true if the _saveFile has successfully
-      * completed
-      *
-      * @param array $values the array of values from the form
-      *
-      * @return true on success, false othewise
+
+
+    /**
+     * Overrides the default setDataTableRows to assign the background colour
+     * to the progress column
+     *
+     * @param integer $count The number of rows in the table
+     *
+     * @return true on success
+     */
+    function _setDataTableRows($count)
+    {
+        $x = 0;
+        foreach ($this->list as $item) {
+            //count column
+            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
+
+            //print out data rows
+            $i = 1;
+            foreach ($item as $key => $val) {
+                $itemi          =& $this->tpl_data['items'][$x][$i];
+                $itemi['name']  = $key;
+                $itemi['value'] = $val;
+                if ($key == 'Progress' && $val == 'Failure') {
+                    $itemi['bgcolor'] =  '#E4A09E';
+                } elseif ($key == 'Progress' && $val == 'In Progress...') {
+                    $itemi['bgcolor'] =  '#F3F781';
+                }
+                $i++;
+            }
+
+            $x++;
+        }
+        $this->tpl_data['numUploads'] = $this->TotalItems;
+        return true;
+    }
+
+    /**
+     * Returns true if the _saveFile has successfully
+     * completed
+     *
+     * @param array $values the array of values from the form
+     *
+     * @return true on success, false othewise
      */
     function _process($values)
     {
         if ($this->_saveFile($values)) {
+            // Save file succeeded. All that's left to do is launch the MRI
+            // pipeline if the auto-launch switch is on
+            $config = NDB_Config::singleton();
+            $ImagingUploaderAutoLaunch = $config->getSetting(
+                'ImagingUploaderAutoLaunch'
+            );
+
+            if ($ImagingUploaderAutoLaunch) {
+                // Perform the real upload on the server
+                $serverProcessLauncher = new ServerProcessLauncher();
+                $serverProcessLauncher->mriUpload(
+                    $this->mri_upload_id,
+                    $this->uploaded_file_path
+                );
+            }
+
             return true;
         }
+
         return false;
     }
 
@@ -268,6 +356,18 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             }
 
             ///////////////////////////////////////////////////////////////////////
+            ////////////// Make sure the file name matches the format   ///////////
+            ///////////////////////////////////////////////////////////////////////
+            if (($file_name != $pscid."_". $candid ."_". $visit_label . ".zip")
+                && ($file_name != $pscid."_". $candid ."_". $visit_label . ".tgz")
+                && ($file_name != $pscid."_". $candid ."_". $visit_label . ".tar.gz")
+            ) {
+                $errors[] = "Make sure the file name matches this format:  " .
+                "\"". $pscid ."_". $candid ."_". $visit_label .
+                ".(tgz or tar.gz or .zip)\"";
+            }
+
+            ///////////////////////////////////////////////////////////////////////
             //////check to see if candid/pscid and visit-label exist///////////////
             ///////////////////////////////////////////////////////////////////////
             if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
@@ -277,9 +377,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                      WHERE s.Visit_label = :vlabel
                      AND c.pscid = :pid AND c.candid = :cid",
                     array(
-                     'cid'    => $candid,
-                     'vlabel' => $visit_label,
-                     'pid'    => $pscid,
+                     ':cid'    => $candid,
+                     ':vlabel' => $visit_label,
+                     ':pid'    => $pscid,
                     )
                 )==0) {
                         $errors[] = "Make sure you enter the CandID: $candid ,".
@@ -334,10 +434,6 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $feedbacks = array();
         $db        = Database::singleton();
         $file_name =  $file->fileInfo['name'];
-        $config    = NDB_Config::singleton();
-        $ImagingUploaderAutoLaunch = $config->getSetting(
-            'ImagingUploaderAutoLaunch'
-        );
 
         $pname     = '';
         $IsPhantom = $args['values']['IsPhantom'];
@@ -382,7 +478,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///Get the directory to which the temp file has been moved to/////
         /// MRI_upload Incoming directory/////////////////////////////////
         //////////////////////////////////////////////////////////////////
-        $uploaded_file_path = trim(
+        $this->uploaded_file_path = trim(
             $file->getDestinationDirectory() .
             $file->getDestinationFilename()
         );
@@ -392,15 +488,15 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ////Otherwise keep uploaded directory in the /tmp and insert///
         ////into the mri_upload table//////////////////////////////////
         ///////////////////////////////////////////////////////////////
-        if ($uploaded_file_path) {
+        if ($this->uploaded_file_path) {
             $this->removeTempDir();
         } else {
-                $uploaded_file_path = $this->getTempPath();
+                $this->uploaded_file_path = $this->getTempPath();
         }
         $values = array(
                    'UploadedBy'     => $user_name,
                    'UploadDate'     => $date,
-                   'UploadLocation' => $uploaded_file_path,
+                   'UploadLocation' => $this->uploaded_file_path,
                    'SessionID'      => $sessionid,
                    'PatientName'    => $pname,
                    'IsPhantom'      => $IsPhantom,
@@ -409,21 +505,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             'mri_upload',
             $values
         );
-        if ($ImagingUploaderAutoLaunch) {
-            // Get MRI upload ID of the upload entry that was just inserted
-            $query       = "SELECT UploadID
-                       FROM mri_upload
-                       WHERE UploadedBy     = :UploadedBy
-                       AND   UploadDate     = :UploadDate
-                       AND   UploadLocation = :UploadLocation
-                       AND   SessionID      = :SessionID
-                       AND   PatientName    = :PatientName
-                       AND   IsPhantom      = :IsPhantom";
-            $mriUploadId = $db->pselectOne($query, $values);
-            // Perform the real upload on the server
-            $serverProcessLauncher = new ServerProcessLauncher();
-            $serverProcessLauncher->mriUpload($mriUploadId, $uploaded_file_path);
-        }
+        $this->mri_upload_id = $db->getLastInsertId();
+
         return true;
     }
     /**
@@ -537,5 +620,25 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         }
         return rmdir($folder);
     }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
+            )
+        );
+    }
+
 }
 ?>

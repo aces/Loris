@@ -3,7 +3,7 @@
     {if $dynamictabs neq "dynamictabs"}
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
-        <link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
+        <link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 
         {* 
         This can't be loaded from getJSDependencies(), because it's needs access to smarty
@@ -24,18 +24,31 @@
    
         <link type="text/css" href="{$baseurl}/css/loris-jquery/jquery-ui-1.10.4.custom.min.css" rel="Stylesheet" />
 
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{$baseurl}/bootstrap/css/custom-css.css">
-
-        <!-- Module-specific CSS -->
-        {if $test_name_css}
-            <link rel="stylesheet" href="{$baseurl}/{$test_name_css}" type="text/css" />
-        {/if}
+	{section name=cssfile loop=$cssfiles}
+		<link rel="stylesheet" href="{$cssfiles[cssfile]}">
+	{/section}
 
         <title>
             {$study_title}
+            {if $crumbs != ""}
+                {section name=crumb loop=$crumbs}
+                    - {$crumbs[crumb].text}
+                {/section}
+            {/if}
         </title>
+            <script language="javascript" type="text/javascript">
+                $(document).ready(function(){
+                    {if $crumbs != "" && empty($error_message)}
+                        var crumbs = {$crumbs|@json_encode},
+                            baseurl = "{$baseurl}",
+                            breadcrumbs = RBreadcrumbs({
+                                breadcrumbs: crumbs,
+                                baseURL: baseurl
+                            });
+                        React.render(breadcrumbs, document.getElementById("breadcrumbs"));
+                    {/if}
+                })
+            </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
         <link href="{$baseurl}/css/simple-sidebar.css" rel="stylesheet">
 
@@ -201,36 +214,9 @@
                     </div>
 
                 {/if}
-                <!-- <div class="panel panel-primary"> -->
-                    
-                    {if $crumbs != "" && empty($error_message)}
-                        <div class="alert alert-info alert-sm">
-                            {section name=crumb loop=$crumbs}
-                                {if $test_name == "conflicts_resolve"}
-                                    <a href="main.php/{$crumbs[crumb].query}" class="text-default" style="color: white">
-                                        <label>Conflicts Resolver</label>
-                                    </a> 
-                                    {if not $smarty.section.crumb.last}
-                                        &gt; 
-                                    {/if}
-                                {elseif $test_name == "statistics_dd_site"}
-                                    <a href="main.php/{$crumbs[crumb].query}" class="text-default">
-                                        <label>Double Data Entry Site Statistics</label>
-                                    </a> 
-                                    {if not $smarty.section.crumb.last}
-                                        &gt; 
-                                    {/if}
-                                {else}
-                                    <a href="{$baseurl}{$crumbs[crumb].query}" style="color: white">
-                                        <label>{$crumbs[crumb].text}</label>
-                                    </a> 
-                                    {if not $smarty.section.crumb.last}
-                                        &gt; 
-                                    {/if}
-                                {/if}
-                            {/section}
-                        </div>
-                    {/if}
+                {if $crumbs != "" && empty($error_message)}
+                    <div id="breadcrumbs"></div>
+                {/if}
                         <div>
                             {if $error_message != ""}
                                 <p>
@@ -361,7 +347,7 @@
                                                                 {$timePoint.SubprojectTitle}
                                                             </td>
                                                             <td>
-                                                                {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"images/help2.gif\" width=\"12\" height=\"12\" />"}
+                                                                {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"$baseurl/images/help2.gif\" width=\"12\" height=\"12\" />"}
                                                             </td>
                                                             {* 
                                                                 <td>

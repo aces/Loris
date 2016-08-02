@@ -739,6 +739,35 @@ class Utility
         return $instruments;
     }
 
+    /**
+     * Get a list of DDE instruments installed in Loris.
+     *
+     * @return Associative array of the form Test_name => Full Description
+     * @note   Arguably, this should be a static function in NDB_BVL_Instrument
+     */
+    static function getAllDDEInstruments()
+    {
+        $Factory       = NDB_Factory::singleton();
+        $DB            = $Factory->Database();
+        $config        =& NDB_Config::singleton();
+        $instruments_q = $DB->pselect(
+            "SELECT Test_name,Full_name FROM test_names",
+            array()
+        );
+        $doubleDataEntryInstruments = $config->getSetting(
+            'DoubleDataEntryInstruments'
+        );
+
+        $instruments = array();
+        foreach ($instruments_q as $row) {
+            if (isset($row['Test_name']) && isset($row['Full_name'])) {
+                if (in_array($row['Test_name'], $doubleDataEntryInstruments)) {
+                    $instruments[$row['Test_name']] = $row['Full_name'];
+                }
+            }
+        }
+        return $instruments;
+    }
 
     /**
      * Gets a list of all instruments where are administered as direct data
@@ -845,6 +874,11 @@ class Utility
      */
     static function columnExists($test_name,$column)
     {
+        error_log(
+            "WARNING: ColumnExists function will soon be moved to the Database " .
+            "class. Please replace any static reference to Utility::ColumnExists() ".
+            "by Database->ColumnExists() calls."
+        );
         $config   =& NDB_Config::singleton();
         $database = $config->getSetting('database');
         $query    = "SELECT DISTINCT table_name
@@ -862,6 +896,32 @@ class Utility
             )
         );
         if ($effected) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks to see if a table contains a specified column
+     *
+     * @param string $table_name The table to check for a column.
+     * @param string $column     The column name to check the table for.
+     *
+     * @return boolean true if the table has at least one NULL in the column
+     */
+    static function columnsHasNull($table_name,$column)
+    {
+        //$config   =& NDB_Config::singleton();
+        //$database = $config->getSetting('database');
+        $query    = "SELECT count(*)
+            FROM {$table_name}
+            WHERE {$column} is NULL";
+        $DB       =& Database::singleton();
+        $num_null = $DB->pselectOne(
+            $query,
+            array()
+        );
+        if ($num_null > 0) {
             return true;
         }
         return false;
@@ -894,6 +954,40 @@ class Utility
         $visitlabels = $db->pselect($query, array('tn' => $test_name));
         return $visitlabels;
     }
+
+    /**
+     * Looks up visit stage using candidate ID.
+     *
+     * @param string $Cand_id candidate ID
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getStageUsingCandID($Cand_id)
+    {
+        $db    =& Database::singleton();
+        $query = "select DISTINCT Current_stage from session where ".
+            "CandID = :Cand_id";
+        $stage = $db->pselect($query, array('Cand_id' => $Cand_id));
+        return $stage[0]['Current_stage'];
+    }
+
+    /**
+     * Looks up visit stage using candidate ID.
+     *
+     * @param string $Cand_id candidate ID
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getSubprojectIDUsingCandID($Cand_id)
+    {
+        $db    =& Database::singleton();
+        $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
+        $stage = $db->pselect($query, array('CandID' => $Cand_id));
+        return $stage[0]['SubprojectID'];
+    }
+
     /**
      * Looks up the test_name for the current full name
      *
@@ -1067,7 +1161,7 @@ class Utility
     {
         $DB =& Database::singleton();
 
-        if (Utility::ColumnExists('test_battery', 'Test_name_display')) {
+        if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
                 "SELECT DISTINCT Test_name_display FROM test_battery 
                 WHERE Visit_label=:vl",

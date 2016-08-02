@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <link rel="stylesheet" href="{$css}" type="text/css" />
 <!-- shortcut icon that displays on the browser window -->
-<link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
+<link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 
 <title>DCC MRI Quality Control</title>
 </head>
@@ -32,7 +32,6 @@
 
 {if $has_permission}
 <form method="post">
-<input type="submit" name="fire_away" value="Save">
 {/if}
 
 {foreach from=$comment item=curr_comment}

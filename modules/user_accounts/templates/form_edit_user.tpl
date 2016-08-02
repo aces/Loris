@@ -1,6 +1,6 @@
 <br />
-{literal}
 <script type="text/javascript" src="{$baseurl}/js/invalid_form_scroll.js"></script>
+{literal}
 <script>
 
 $(document).ready(function() {
@@ -31,7 +31,7 @@ $(document).ready(function() {
 <form method="post" name="edit_user">
     {if $form.errors}
         <div class="alert alert-danger" role="alert">
-            Please ensure that all required fields are filled
+            The form you submitted contains data entry errors
         </div>
     {/if}
    <div class="panel panel-default">
@@ -270,6 +270,25 @@ $(document).ready(function() {
             </div>
         {/if}
     </div>
+    {if $form.__ConfirmEmail}
+    {if $form.errors.__ConfirmEmail}
+    <div class="row form-group form-inline form-inline has-error">
+    {else}
+    <div class="row form-group form-inline form-inline">
+    {/if}
+    	<label class="col-sm-2">
+    		{$form.__ConfirmEmail.label}
+    	</label>
+    	<div class="col-sm-10">
+    		{$form.__ConfirmEmail.html}
+    	</div>
+        {if $form.errors.__ConfirmEmail}
+            <div class="col-sm-offset-2 col-xs-12">
+                <font class="form-error">{$form.errors.__ConfirmEmail}</font>
+            </div>
+        {/if}
+    </div>
+    {/if}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.CenterID.label}

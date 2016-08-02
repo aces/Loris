@@ -70,18 +70,21 @@ class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * String to separate the group elements
+     *
      * @access private
      */
     var $_GUIDelimiter = "</td>\n<td>";
 
     /**
      * Commonly used level of indentation
+     *
      * @access private
      */
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
     /**
      * Array of required fields to check
+     *
      * @access private
      */
     var $_requiredElements = array();
@@ -118,6 +121,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
      * or not.
+     *
      * @access private
      */
     var $ValidityEnabled = true;
@@ -125,10 +129,18 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Whether the "Validity" field is required before flagging an instrument
      * as complete or not.
+     *
      * @access private
      */
     var $ValidityRequired = true;
 
+    /**
+     * True if the instrument page is being loaded by a script
+     * such as the quickform_parser where all elements should be added to form,
+     * ignoring age-dependent or other conditional display logic in the form.
+     * To be called from within individual instrument forms.
+     */
+    var $displayAllFields = false;
 
     /**
      * True if the page is being previewed from the instrument builder,
@@ -158,7 +170,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     static function factory($instrument, $commentID, $page, $guarantee_exists = true)
     {
-        //include_once 'HTML/QuickForm.php';
+        include_once 'HTML/QuickForm.php';
         $class = "NDB_BVL_Instrument_$instrument";
 
         // Make sure the instrument class has been included/required!
@@ -200,6 +212,11 @@ class NDB_BVL_Instrument extends NDB_Page
             // Now go ahead and instantiate it
             $obj = new $class;
             // Now go ahead and instantiate it
+        }
+
+        // if a script is loading this form without a commentID, display all fields
+        if (!isset($commentID)) {
+            $obj->displayAllFields = true;
         }
 
         // Sets up page variables such as $this->commentID and $this->form
@@ -255,7 +272,16 @@ class NDB_BVL_Instrument extends NDB_Page
         $instrumentPermissions = $config->getSetting("instrumentPermissions");
 
         //check if instrumentPermissions are being used.
-        if ($instrumentPermissions['useInstrumentPermissions'] == false) {
+        if (!is_array($instrumentPermissions)) {
+            //instrument permissions not used...
+            return true; //default
+        } else if (!array_key_exists(
+            'useInstrumentPermissions',
+            $instrumentPermissions
+        )) {
+            //instrument permissions not used...
+            return true; //default
+        } else if ($instrumentPermissions['useInstrumentPermissions'] == false) {
             //instrument permissions not used...
             return true; //default
         } else { //check if user has instrument's permissions
@@ -597,60 +623,61 @@ class NDB_BVL_Instrument extends NDB_Page
         if (!empty($values['Date_taken'])) {
             $DB  = Database::singleton();
             $age = $this->getCandidateAge($values['Date_taken']);
-            if (!Utility::isErrorX($age)) {
-                $agedays   = $age['year']*365 + $age['mon']*30 + $age['day'];
-                $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
-                // 1 Decimal.
-                $agemonths = (round($agemonths*10) / 10.0);
-                if (!empty($age)) {
-                    $query_params = array(
-                                     'TN'  => $this->testName,
-                                     'CID' => $this->getCommentID(),
-                                    );
+            if (empty($age)) {
+                throw new LorisException("Candidate age could not be found.");
+            }
+            $agedays   = $age['year']*365 + $age['mon']*30 + $age['day'];
+            $agemonths = $age['year']*12 + $age['mon'] + ($age['day']/30);
+            // 1 Decimal.
+            $agemonths = (round($agemonths*10) / 10.0);
+            if (!empty($age)) {
+                $query_params = array(
+                                 'TN'  => $this->testName,
+                                 'CID' => $this->getCommentID(),
+                                );
 
-                    $validage = $DB->pselectOne(
-                        "SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays)
-                            FROM test_battery tb
-                                JOIN flag f USING(Test_name)
-                                JOIN session s ON (s.ID=f.SessionID)
-                            WHERE tb.Active='Y'
-                                AND tb.Test_name=:TN
-                                AND tb.SubprojectID=s.SubprojectID
-                                AND f.CommentID=:CID",
+                $validage = $DB->pselectOne(
+                    "SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays)
+                        FROM test_battery tb
+                            JOIN flag f USING(Test_name)
+                            JOIN session s ON (s.ID=f.SessionID)
+                        WHERE tb.Active='Y'
+                            AND tb.Test_name=:TN
+                            AND tb.SubprojectID=s.SubprojectID
+                            AND f.CommentID=:CID",
+                    $query_params
+                );
+                $values['Candidate_Age']     = $agemonths;
+                $values['Window_Difference'] = 0;
+
+                // Age isn't valid, so find out how far out it is
+
+                if ($validage == 0) {
+                    $Windows = $DB->pselect(
+                        "SELECT AgeMinDays, AgeMaxDays
+                        FROM test_battery tb
+                            JOIN flag f USING(Test_name)
+                            JOIN session s ON (s.ID=f.SessionID)
+                        WHERE tb.Active='Y' AND tb.Test_name=:TN
+                            AND tb.SubprojectID=s.SubprojectID
+                            AND f.CommentID=:CID",
                         $query_params
                     );
-                    $values['Candidate_Age']     = $agemonths;
-                    $values['Window_Difference'] = 0;
-
-                    // Age isn't valid, so find out how far out it is
-
-                    if ($validage == 0) {
-                        $Windows = $DB->pselect(
-                            "SELECT AgeMinDays, AgeMaxDays
-                            FROM test_battery tb
-                                JOIN flag f USING(Test_name)
-                                JOIN session s ON (s.ID=f.SessionID)
-                            WHERE tb.Active='Y' AND tb.Test_name=:TN
-                                AND tb.SubprojectID=s.SubprojectID
-                                AND f.CommentID=:CID",
-                            $query_params
-                        );
-                        foreach ($Windows as $window) {
-                            if ($agedays < $window['AgeMinDays']) {
-                                $delta = $window['AgeMinDays'] - $agedays;
-                                if (abs($delta) < abs($values['Window_Difference'])
-                                    || $values['Window_Difference'] == 0
-                                ) {
-                                    $values['Window_Difference'] = 0-abs($delta);
-                                }
+                    foreach ($Windows as $window) {
+                        if ($agedays < $window['AgeMinDays']) {
+                            $delta = $window['AgeMinDays'] - $agedays;
+                            if (abs($delta) < abs($values['Window_Difference'])
+                                || $values['Window_Difference'] == 0
+                            ) {
+                                $values['Window_Difference'] = 0-abs($delta);
                             }
-                            if ($agedays > $window['AgeMaxDays']) {
-                                $delta = $agedays - $window['AgeMaxDays'];
-                                if (abs($delta) < abs($values['Window_Difference'])
-                                    || $values['Window_Difference'] == 0
-                                ) {
-                                    $values['Window_Difference'] = abs($delta);
-                                }
+                        }
+                        if ($agedays > $window['AgeMaxDays']) {
+                            $delta = $agedays - $window['AgeMaxDays'];
+                            if (abs($delta) < abs($values['Window_Difference'])
+                                || $values['Window_Difference'] == 0
+                            ) {
+                                $values['Window_Difference'] = abs($delta);
                             }
                         }
                     }
@@ -1072,14 +1099,50 @@ class NDB_BVL_Instrument extends NDB_Page
     function _getDatabaseDate($formDateValue)
     {
         if (!empty($formDateValue)) {
-            if (count($formDateValue)==2) {
-                //handle time (HH:MM:SS)
-                $databaseValue = "$formDateValue[H]:$formDateValue[i]";
-            } else {
-                //handle date (YYYY/MM/DD)
-                $databaseValue = "$formDateValue[Y]-"
-                    . "$formDateValue[M]-"
-                    . "$formDateValue[d]";
+
+            $databaseValue = "";
+
+            if (array_key_exists("Y", $formDateValue)
+                || array_key_exists("M", $formDateValue)
+                || array_key_exists("d", $formDateValue)
+            ) {
+
+                if (array_key_exists("Y", $formDateValue)) {
+                    $yearString = $formDateValue[Y];
+                } else {
+                    $yearString = "0001";
+                }
+
+                if (array_key_exists("M", $formDateValue)) {
+                    $monthString = $formDateValue[M];
+                } else {
+                    $monthString = "01";
+                }
+
+                if (array_key_exists("d", $formDateValue)) {
+                    $dayString = $formDateValue[d];
+                } else {
+                    $dayString = "01";
+                }
+
+                $databaseValue = $yearString . "-" . $monthString . "-" . $dayString;
+
+            } elseif (array_key_exists("H", $formDateValue)
+                || array_key_exists("i", $formDateValue)
+            ) {
+                if (array_key_exists("H", $formDateValue)) {
+                    $hourString = $formDateValue[H];
+                } else {
+                    $hourString = "01";
+                }
+                if (array_key_exists("i", $formDateValue)) {
+                    $minuteString = $formDateValue[i];
+                } else {
+                    $minuteString = "01";
+                }
+
+                $databaseValue = $hourString . ":" . $minuteString;
+
             }
         }
         return $databaseValue;
@@ -2031,6 +2094,27 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Get the candidates PSCID.
+     *
+     * @return The candidate's PSCID.
+     */
+    function getPSCID()
+    {
+        $db        =& Database::singleton();
+        $CommentID = $this->getCommentID();
+
+        $pscid = $db->pselectOne(
+            "SELECT c.PSCID FROM $this->testName i
+            JOIN flag f USING (CommentID)
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c USING (CandID)
+            WHERE f.CommentID=:CID",
+            array('CID' => $CommentID)
+        );
+        return $pscid;
+    }
+
+    /**
      * Clears all the data saved into this instrument instance
      *
      * @return none
@@ -2528,3 +2612,31 @@ function _checkDateTaken($dateElement)
     }
 }
 
+/**
+ * QuickForm rule to check that a date is valid.
+ * This is used by create timepoint and start timepoint pages,
+ * so it probably shouldn't be in the instrument class.
+ *
+ * @param array $dateElement The date element in QuickForm array format.
+ *
+ * @return True if the date is invalid, false if it's valid.
+ */
+function _checkDate($dateElement)
+{
+    if (empty($dateElement['M'])
+        && empty($dateElement['d'])
+        && empty($dateElement['Y'])
+    ) {
+        // if all three elements are empty, return true b/c it'll
+        // save the NULL in date field
+        return true;
+    } elseif (empty($dateElement['M'])
+        || empty($dateElement['d'])
+        || empty($dateElement['Y'])
+    ) {
+        // otherwise, if any of the three elements are empty, return
+        // false b/c date entry has been attempted
+        return false;
+    }
+    return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+}

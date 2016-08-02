@@ -174,7 +174,7 @@ if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
 fi
 
 # Create some subdirectories, if needed.
-mkdir -p ../project ../project/data ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../smarty/templates_c
+mkdir -p ../project ../project/data ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../project/modules ../smarty/templates_c
 
 # Setting 777 permissions for templates_c
 chmod 777 ../smarty/templates_c
@@ -372,7 +372,7 @@ while true; do
         [Yy]* )
             echo ""
             echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'$mysqluserhost' ..."
-            echo "GRANT UPDATE,INSERT,SELECT,DELETE ON $mysqldb.* TO '$mysqluser'@'$mysqluserhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
+            echo "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON $mysqldb.* TO '$mysqluser'@'$mysqluserhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
             MySQLError=$?;
             if [ $MySQLError -ne 0 ] ; then
                 echo "Could not connect to database with $mysqlrootuser user provided.";
@@ -400,6 +400,7 @@ while true; do
             mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-02-Menus.sql
             mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-03-ConfigTables.sql
             mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-04-Help.sql
+            mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-99-indexes.sql
             echo "Updating Loris admin user's password."
             pw_expiry=$(date --date="6 month" +%Y-%m-%d)
             echo "Updating admin password reset date to be $pw_expiry"
@@ -472,6 +473,8 @@ echo "Ubuntu distribution detected."
                 sudo ln -s /etc/apache2/sites-available/$projectname.conf /etc/apache2/sites-enabled/$projectname.conf
                 sudo a2dissite 000-default
                 sudo a2ensite $projectname.conf
+                sudo a2enmod rewrite
+                sudo a2enmod headers
                 break;;
             [Nn]* )
                 echo "Not configuring apache."
@@ -500,6 +503,7 @@ while true; do
                 < ../docs/config/apache2-site | sudo tee /etc/httpd/conf.d/$projectname.conf > /dev/null
             
             sudo service httpd restart
+            echo "You may need to manually uncomment the load rewrite module line of your conf."
             break;;
         [Nn]* )
             echo "Not configuring apache."

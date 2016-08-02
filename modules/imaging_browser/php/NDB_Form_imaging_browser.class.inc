@@ -131,7 +131,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     {
         $extra_where_string = "";
         if (!empty($_REQUEST['selectedOnly'])) {
-            $extra_where_string .= " AND COALESCE(sel.Value,'') <> ''";
+            $extra_where_string .= " AND COALESCE(sel.Selected,'') <> ''";
         }
         // To better support QC for CIVET output a couple of 
         // additional conditions have been put in...
@@ -150,19 +150,14 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             }
         }
         $files = $this->DB->pselect(
-            "SELECT files.FileID FROM files LEFT JOIN parameter_file as sel on (
-            files.FileID=sel.FileID AND sel.ParameterTypeID=:selectedTypeID) 
+            "SELECT files.FileID FROM files LEFT JOIN files_qcstatus as sel on (
+            files.FileID=sel.FileID) 
             WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL 
             OR AcquisitionProtocolID not in (1, 2, 3, 52)) 
             AND PendingStaging=0 $extra_where_string 
             ORDER BY files.OutputType, files.File",
             array(
                'SID' => $this->sessionID,
-               'selectedTypeID' => $this->DB->selectOne(
-                   "SELECT ParameterTypeID 
-                   FROM parameter_type 
-                   WHERE Name='Selected' LIMIT 1"
-               )
            )
         );
         $this->tpl_data['files'] = array();
@@ -241,10 +236,13 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'QCStatus' => $FileObj->getParameter('QCStatus'),
                 'QCDate' => $FileObj->getParameter('QCLastChangeTime'),
                 'Caveat' => $FileObj->getParameter('Caveat'),
+                'SNR' => $FileObj->getParameter('SNR'),
                 'SeriesUID' => $FileObj->getParameter('SeriesUID'),
                 'XMLreport' => $FileObj->getParameter('processing:DTIPrepXmlReport'),
                 'XMLprotocol' => $FileObj->getParameter('ProtocolFile'),
-                'NrrdFile' => $FileObj->getParameter('processing:nrrd_file')
+                'NrrdFile' => $FileObj->getParameter('processing:nrrd_file'),
+                'OtherTimepoints' => $this->_getFilesAcrossTimepoints((int)$FileObj->getParameter('SessionID'),
+                (int)$FileObj->getParameter('AcquisitionProtocolID'))
             );
             $this->tpl_data['files'][] = $file;
         }
@@ -387,47 +385,41 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     */
     function _updateSelected() 
     {
-        $selectedTypeID = $this->DB->selectOne(
-            "SELECT ParameterTypeID 
-            FROM parameter_type 
-            WHERE Name='selected' LIMIT 1"
-        );
         // update selected's
         if (is_array($_POST['selectedvol'])) {
             foreach ($_POST['selectedvol'] AS $curFileID => $curSelected) {
-                $params = array('FID' => $curFileID, 'STID' => $selectedTypeID);
+                $params = array('FID' => $curFileID);
                 $updateWhere = array(
-                    'FileID' => $curFileID, 'ParameterTypeID'=>$selectedTypeID
+                    'FileID' => $curFileID
                 );
 
                 if ($curSelected == 'Unselected') {
                     if ($this->DB->pselectOne(
                         "SELECT COUNT(*) 
-                        FROM parameter_file 
-                        WHERE FileID=:FID AND ParameterTypeID=:STID", $params
+                        FROM files_qcstatus 
+                        WHERE FileID=:FID ", $params
                     ) > 0) {
-                        $success = $this->DB->delete('parameter_file', $updateWhere);
+                        $success = $this->DB->delete('files_qcstatus', $updateWhere);
                     }
                 } else {
                     if ($this->DB->pselectOne(
                         "SELECT COUNT(*) 
-                        FROM parameter_file 
-                        WHERE FileID=:FID AND ParameterTypeID=:STID", $params
+                        FROM files_qcstatus
+                        WHERE FileID=:FID ", $params
                     ) > 0) {
                         $updateSet = array(
-                            'Value'=>$curSelected, 'InsertTime'=>time()
+                            'Selected'=>$curSelected, 'QCLastChangeTime'=>time()
                         );
                         $success = $this->DB->update(
-                            'parameter_file', $updateSet, $updateWhere
+                            'files_qcstatus', $updateSet, $updateWhere
                         );
                     } else {
                         $insertSet = array(
                             'FileID' => $curFileID, 
-                            'ParameterTypeID'=> $selectedTypeID, 
-                            'Value'=> $curSelected, 
-                            'InsertTime'=>time()
+                            'Selected'=> $curSelected, 
+                            'QCFirstChangeTime'=>time()
                         );
-                        $success = $this->DB->insert('parameter_file', $insertSet);
+                        $success = $this->DB->insert('files_qcstatus', $insertSet);
                     }
                 }
             }
@@ -494,6 +486,31 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 );
             }
         }
+    }
+
+    /**
+     * Gets candidate's scans with the same acquisitionID.
+     *
+     * @return string of FileIDs, comma separated
+     */
+    function _getFilesAcrossTimepoints($initialFileID, $initialFileAcquisitionID){
+
+        $selectResults = $this->DB->pselect("SELECT FileID FROM files ".
+            "WHERE AcquisitionProtocolID =:initialFileAcquisitionID ".
+            "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".
+            "ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)",
+            array(
+                'initialFileAcquisitionID' => $initialFileAcquisitionID,
+                'initialFileID' => $initialFileID
+            )
+        );
+
+        $fileIDS = array();
+        foreach($selectResults as $selectResult) {
+            $fileIDS[] = $selectResult['FileID'];
+        }
+        $fileIDString = implode(",", $fileIDS);
+        return $fileIDString;
     }
 
     /**
@@ -589,9 +606,10 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         $depends = parent::getJSDependencies();
         if($this->page === 'viewSession') {
             $factory = NDB_Factory::singleton();
-            $baseURL = $factory->settings()->getBaseURL();
+            $baseurl = $factory->settings()->getBaseURL();
             $depends = array_merge($depends,
                 array(
+                    $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
                     $baseurl . "/imaging_browser/js/ImagePanel.js"
                 ));
 

@@ -1,9 +1,16 @@
+<script>
+    loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+</script>
 <div class="col-sm-12">
   <div class="row">
     <div id="tabs"> 
       <ul class="nav nav-tabs">
-        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>CNV</strong></a></li>
+        <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Profiles</strong></a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=gwas_browser">GWAS</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=snp_browser">SNP</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cpg_browser">Methylation</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=genomic_file_uploader">Files</a></li>
       </ul>
       <br>
     </div>
@@ -14,7 +21,7 @@
         <form method="post" action="{$baseurl}/genomic_browser/">
           <div class="col-sm-12">
             <div class="row">
-              <div class="form-group col-sm-7">
+              <div class="form-group col-sm-8">
                 <div class="panel panel-primary">
                   <div class="panel-heading" onclick="hideFilterCandidate();">
                     Candidate Filters
@@ -69,132 +76,63 @@
                   </div> 
                 </div> 
               </div> 
-              <div class="form-group col-sm-5">
-                <div class="panel panel-primary">
-                  <div class="panel-heading" onclick="hideFilterGene();">
-                    Gene Filters
-                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-gene"></span>
-                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up-gene"></span>
-                  </div>
-                  <div class="panel-body" id="panel-body-gene">
-	            <div class="row">
-                      <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
-        		  {$form.Gene_Symbol.label}
-                        </label>
-                        <div class="col-sm-12 col-md-3">
-        	          {$form.Gene_Symbol.html}
-		        </div>
-                        <label class="col-sm-12 col-md-2">
-        	          {$form.Gene_Name.label}
-                        </label>
-                        <div class="col-sm-12 col-md-5">
-        	          {$form.Gene_Name.html}
-		        </div>
-		      </div>
-	            </div>
-	            <div class="row">
-                      <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-3">
-      		          {$form.Chromosome.label}
-                        </label>
-                        <div class="col-sm-12 col-md-2">
-        	          {$form.Chromosome.html}
-		        </div>
-                        <label class="col-sm-12 col-md-3">
-        	          {$form.Platform.label}
-                        </label>
-                        <div class="col-sm-12 col-md-4">
-        	          {$form.Platform.html}
-		        </div>
-		      </div>
-	            </div>
-	          </div>
-                </div>
-              </div> 
-            </div> <!-- end of Gene/Demographic filters row-->
+            </div>
+          </div>
+          <div class="col-sm-12">
             <div class="row">
-              <!-- CNV section -->
               <div class="form-group col-sm-8">
                 <div class="panel panel-primary">
-                  <div class="panel-heading" onclick="hideFilterCNV();">
-                    CNV Filters
-                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-cnv"></span>
-                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up-cnv"></span>
+                  <div class="panel-heading" onclick="hideFilterGenomic();">
+                    Genomic Filters
+                    <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down-genomic"></span>
+                    <span class="glyphicon glyphicon-chevron-up pull-right" id="up-genomic"></span>
                   </div>
-                  <div class="panel-body" id="panel-body-cnv">
+                  <div class="panel-body" id="panel-body-genomic">
                     <div class="row">
                       <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-1 col-lg-1">
-                          {$form.CNV_Type.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-2 col-lg-2">
-                          {$form.CNV_Type.html}
-                        </div>
-                        <label class="col-sm-12 col-md-3">
-		          {$form.Event_Name.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-2 ">
-        		  {$form.Event_Name.html}
-			</div>
-                        <label class="col-sm-12 col-md-3">
-        		  {$form.Characteristics.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-1">
-        		  {$form.Characteristics.html}
-			</div>
-		      </div>
-		    </div>
-                    <div class="row">
-                      <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2 col-lg-1">
-        		  {$form.Common_CNV.label}
-                        </label>
-                    	<div class="col-sm-12 col-md-1 col-lg-2">
-        		  {$form.Common_CNV.html}
-			</div>
                         <label class="col-sm-12 col-md-3 col-lg-3">
-        		  {$form.Copy_Num_Change.label}
+                          {$form.Files.label}
                         </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Copy_Num_Change.html}
+                        <div class="col-sm-12 col-md-3 col-lg-2">
+                          {$form.Files.html}
                         </div>
-                        <label class="col-sm-12 col-md-2">
-		          {$form.Inheritance.label}
+                        <label class="col-sm-12 col-md-3">
+                          {$form.CPGs.label}
                         </label>
-                    	<div class="col-sm-12 col-md-2">
-        		  {$form.Inheritance.html}
-			</div>
-		      </div>
-		    </div>
-		    <div class="row">
-                      <div class="form-group col-sm-12">
-                        <label class="col-sm-12 col-md-2">
-        	          {$form.CNV_Description.label}
+                        <div class="col-sm-12 col-md-3">
+                          {$form.CPGs.html}
+                        </div>
+                        <label class="col-sm-12 col-md-3 col-lg-3">
+                          {$form.SNPs.label} 
                         </label>
-                    	<div class="col-sm-12 col-md-4">
-        		  {$form.CNV_Description.html}
-			</div>
-		      </div>
-		    </div>
-	          </div>
+                        <div class="col-sm-12 col-md-3 col-lg-2">
+                          {$form.SNPs.html}
+                        </div>
+                        <label class="col-sm-12 col-md-3">
+                          {$form.CNVs.label} 
+                        </label>
+                        <div class="col-sm-12 col-md-3 pull-left">
+                          {$form.CNVs.html} 
+                        </div>
+                      </div>
+                    </div> 
+                  </div> 
                 </div> 
-                <!-- end of CNV section -->
               </div> 
               <div class="form-group col-sm-4">
                 <div class="row"><!-- fixed vertical spacing-->
-		  <br><br><br><br><br><br>
-	        </div>
+		          <br><br><br><br>
+	            </div>
                 <div class="row">
                   <div class="form-group col-sm-12">
                     <label class="col-sm-4 col-md-3">
                       {$form.Show_Brief_Results.label} 
                     </label>
                     <div class="col-sm-8 col-md-8">
-	              {$form.Show_Brief_Results.html}
-		    </div>
-	          </div>
-	        </div>
+	                  {$form.Show_Brief_Results.html}
+		            </div>
+	              </div>
+	            </div>
                 <div class="row">
                   <div class="form-group col-sm-12">
                     <div class="col-sm-6 col-xs-12 col-md-6">
@@ -214,73 +152,35 @@
       </div>
     </div>
   </div>
-  <div class="row">
-  <!-- title table with pagination -->
-    <table id="LogEntries" border="0" valign="bottom" width="100%">
-      <tr>
-      <!-- title -->
-        {if {$resultcount} != '' }
-          <td class="controlpanelsection">Variants found: <strong>{$resultcount}</strong> total</td>
-          <a href="{$csvUrl}" download="{$csvFile}.csv">
-            Download all fields as CSV
-          </a>
-        {else}
-          <td>No variants found. </td>
-        {/if}
-        <!-- display pagination links -->
-        {if $resultcount != '' && $resultcount > 25 }
-	  <td align="right" id="pageLinks"></td>
-        {/if}
-      </tr>
-    </table>
-    <!-- start data table -->
-    <table  class ="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
-      <thead>
-        <tr class="info">
-          <th>No.</th>
-          <!-- print out column headings - quick & dirty hack -->
-          {section name=header loop=$headers}
-            <th><a href="{$baseurl}/genomic_browser/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-          {/section}
-        </tr>
-      </thead>
-      <tbody>
-        {section name=item loop=$items}
-        <tr>
-        <!-- print out data rows -->
-          {section name=piece loop=$items[item]}
-            {if $items[item][piece].bgcolor != ''}
-              <td style="background-color:{$items[item][piece].bgcolor}">
-            {else}
-              <td>
-            {/if}
-            {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-              {assign var="PSCID" value=$items[item][piece].value}
-               <a href="{$baseurl}/{$items[item][piece].DCCID}/">{$items[item][piece].value}</a>
-            {else}
-              {$items[item][piece].value}
-            {/if}
-            </td>
-          {/section}
-          </tr>
-        {/section}
-      </tbody>
-      <!-- end data table -->
-    </table>
-  </div>
+  <table border="0" valign="bottom" width="100%">
+    <tr>
+      <!-- display pagination links -->
+      <td align="left" id="pageLinks"></td>
+    </tr>
+  </table>
+  <div id="datatable"></div>
 </div>
-<br>
-
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/genomic_browser/?pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
-</script>
 
+if (document.getElementsByName('Show_Brief_Results')[0].value != "brief") {
+    loris.hiddenHeaders = [];
+}
+
+{literal}
+loris.subprojectList = {};
+Array.from(document.getElementsByName('SubprojectID')[0].children).forEach(
+    function (o) {
+        if (o.value !== "") {
+            loris.subprojectList[o.value] = o.label;
+        }
+    }
+);
+{/literal}
+
+var table = RDynamicDataTable({
+    "DataURL" : "{$baseurl}/genomic_browser/?format=json",
+    "getFormattedCell" : formatColumn,
+    "freezeColumn" : "PSCID"
+});
+React.render(table, document.getElementById("datatable"));
+</script>

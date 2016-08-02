@@ -40,18 +40,34 @@ $(function() {
     $("#panel-size").change(function() {
       var size = parseInt($(this).val(), 10);
 
-      viewer.setPanelSize(size, size, { scale_image: true });
+      if (size < 0) {
+        viewer.setAutoResize(true, 'volume-controls');
+        $('#brainbrowser-wrapper').css("width", "90%");
+        $('#volume-viewer').css("width", "100%");
+        $('#brainbrowser').css("width", "100%");
+        viewer.doAutoResize();
+      }
+      else {
+        viewer.setAutoResize(false);
+        $('#brainbrowser-wrapper').css("width", "60em");
+        $('#volume-viewer').css("width", "");
+        $('#brainbrowser').css("width", "");
+        $('.volume-controls').css("width", "");
+        viewer.setPanelSize(size, size, { scale_image: true });
+      }
     });
 
     // Should cursors in all panels be synchronized?
     $("#sync-volumes").change(function() {
       var synced = $(this).is(":checked");
-      if (synced) {
-        viewer.resetDisplays();
-        viewer.redrawVolumes();
-      }
 
       viewer.synced = synced;
+    });
+
+    // Reset button
+    $("#reset-view").click(function() {
+      viewer.resetDisplays();
+      viewer.redrawVolumes();
     });
 
     // This will create an image of all the display panels
@@ -163,6 +179,54 @@ $(function() {
         $(".volume-controls").css("width", "auto");
       });
     });
+
+    /**
+     * @doc function
+     * @name viewer.setAutoResize
+     * @param {boolean} flag Whether we should auto-resize the views.
+     * @param {string} class_name The name of the class associated with volume
+     * controls.
+     *
+     * @description
+     * Enable or disable auto-resizing mode.
+     * ```js
+     * viewer.setAutoResize(true, 'volume-controls');
+     * ```
+     */
+    viewer.setAutoResize = function(flag, class_name) {
+      viewer.auto_resize = flag;
+      viewer.volume_control_class = class_name;
+    };
+
+    /**
+     * @doc function
+     * @name viewer.doAutoResize
+     * @description
+     * This function implements auto-resizing of the volume panels
+     * when the window itself is resized. It should therefore be invoked
+     * as part of a window resize notification.
+     */
+    viewer.doAutoResize = function() {
+      if (!viewer.auto_resize) {
+        return;
+      }
+      function getIntProperty(class_name, prop_name) {
+        return parseInt($(class_name).css(prop_name).replace('px', ''), 10);
+      }
+      /* Assumes at least three views or three volumes across.
+       */
+      var n = Math.max(viewer.volumes.length, 3);
+      var ml = getIntProperty('.slice-display', 'margin-left');
+      var mr = getIntProperty('.slice-display', 'margin-right');
+      var vv = getIntProperty('.volume-viewer-controls', 'width');
+
+      var size = ($('#' + viewer.dom_element.id).width() / n) - ((ml * 2) + (mr * 2) + (vv / n));
+
+      viewer.setDefaultPanelSize(size, size);
+      viewer.setPanelSize(size, size, { scale_image: true });
+    };
+
+    window.addEventListener('resize', viewer.doAutoResize, false);
 
     //////////////////////////////////
     // Per volume UI hooks go in here.
@@ -359,12 +423,13 @@ $(function() {
         }
 
         var slider = div.find(".slider");
-        var time_input = div.find("#time-val-" + vol_id);
-        var play_button = div.find("#play-" + vol_id);
+        var timeInput = div.find("#time-val-" + vol_id);
+        var playButton = div.find("#play-" + vol_id);
+        var isPlaying = false;
 
         var min = 0;
         var max = volume.header.time.space_length - 1;
-        var play_interval;
+        var playInterval;
 
         slider.slider({
           min: min,
@@ -373,7 +438,7 @@ $(function() {
           step: 1,
           slide: function(event, ui) {
             var value = +ui.value;
-            time_input.val(value);
+            timeInput.val(value);
             volume.current_time = value;
             viewer.redrawVolumes();
           },
@@ -382,7 +447,7 @@ $(function() {
           }
         });
 
-        time_input.change(function() {
+        timeInput.change(function() {
           var value = parseInt(this.value, 10);
           if (!BrainBrowser.utils.isNumeric(value)) {
             value = 0;
@@ -391,28 +456,31 @@ $(function() {
           value = Math.max(min, Math.min(value, max));
 
           this.value = value;
-          time_input.val(value);
+          timeInput.val(value);
           slider.slider("value", value);
           volume.current_time = value;
           viewer.redrawVolumes();
         });
 
-        play_button.change(function() {
-          if(play_button.is(":checked")){
-            clearInterval(play_interval);
-            play_interval = setInterval(function() {
+        playButton.click(function() {
+          if (!isPlaying) {
+            clearInterval(playInterval);
+            playInterval = setInterval(function() {
               var value = volume.current_time + 1;
               value = value > max ? 0 : value;
               volume.current_time = value;
-              time_input.val(value);
+              timeInput.val(value);
               slider.slider("value", value);
               viewer.redrawVolumes();
             }, 200);
+            isPlaying = true;
+            playButton.text("Pause");
           } else {
-            clearInterval(play_interval);
+            clearInterval(playInterval);
+            isPlaying = false;
+            playButton.text("Play");
           }
         });
-
       });
 
       // Create an image of all slices in a certain
@@ -523,7 +591,10 @@ $(function() {
           url: loris.BaseURL + '/brainbrowser/ajax/getMincName.php',
           method: 'GET',
           success: function(data) {
-            $("#filename-"+vol_id).html(data);
+              var fileName = $("#filename-" + vol_id);
+              fileName.html(data);
+              fileName.data("title", data);
+              fileName.tooltip();
           }
       });
 

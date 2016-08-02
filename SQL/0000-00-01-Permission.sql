@@ -17,7 +17,7 @@ CREATE TABLE `permissions` (
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES 
+INSERT INTO `permissions` VALUES
     (1,'superuser','There can be only one Highlander','1'),
     (2,'user_accounts','User management','2'),
     (3,'user_accounts_multisite','Across all sites create and edit users','2'),
@@ -57,7 +57,14 @@ INSERT INTO `permissions` VALUES
     (37,'document_repository_view','View and upload files in Document Repository','2'),
     (38,'document_repository_delete','Delete files in Document Repository','2'),
     (39,'server_processes_manager','View and manage server processes','2'),
-    (40,'imaging_upload','Imaging Uploader','2');
+    (40,'imaging_uploader','Imaging Uploader','2'),
+    (41,'acknowledgements_view','View Acknowledgements','2'),
+    (42,'acknowledgements_edit','Edit Acknowledgements','2'),
+    (43,'dataquery_view','View Data Query Tool','2'),
+    (44,'genomic_data_manager','Manage the genomic files','2'),
+    (45,'media_write','Media files: Uploading/Downloading/Editing','2'),
+    (46,'media_read','Media files: Browsing','2');
+
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 

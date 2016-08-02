@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8"/>
-<link rel="stylesheet" href="main.css" type="text/css" />
+<link rel="stylesheet" href="{$baseurl}/main.css" type="text/css" />
 <!-- shortcut icon that displays on the browser window -->
-<link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
+<link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 
-<link type="text/css" href="css/jqueryslidemenu.css" rel="Stylesheet" />
-<script src="js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script type="text/javascript" src="js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
-<script type="text/javascript" src="js/jquery/jqueryslidemenu.js"></script>
+<link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
+<script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/jquery/jqueryslidemenu.js"></script>
 
 {literal}
 <script language="javascript" type="text/javascript">
@@ -71,14 +71,14 @@ function mailThisPage()
 <th align="left" id="jsheader">
 <div id="slidemenu" class="jqueryslidemenu">
 <ul>
-<li><a href="context_help_popup.php"><img src="images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Front Page</a></li>
+<li><a href="context_help_popup.php"><img src="{$baseurl}/images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Front Page</a></li>
 <li><a href="#">Actions</a>
 <ul>
-<a href="context_help_popup.php?mode=Index"><img src="images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Manual Index</a>
-<a href="context_help_popup.php?mode=Browse"><img src="images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Browse by Topic</a>
-<a href="context_help_popup.php?mode=Updates"><img src="images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Recent Updates</a>
-<a href="context_help_popup.php?helpID={$howto.helpID}"><img src="images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;How to Use Help</a>
-<a href="context_help_popup.php?helpID={$guide.helpID}"><img src="images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Guidelines</a>
+<a href="context_help_popup.php?mode=Index"><img src="{$baseurl}/images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Manual Index</a>
+<a href="context_help_popup.php?mode=Browse"><img src="{$baseurl}/images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Browse by Topic</a>
+<a href="context_help_popup.php?mode=Updates"><img src="{$baseurl}/images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Recent Updates</a>
+<a href="context_help_popup.php?helpID={$howto.helpID}"><img src="{$baseurl}/images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;How to Use Help</a>
+<a href="context_help_popup.php?helpID={$guide.helpID}"><img src="{$baseurl}/images/transfer.gif" alt="" border="0" width="12" height="12">&nbsp;Guidelines</a>
 </ul>
 </li>
 <div class="Account">

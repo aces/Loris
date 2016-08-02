@@ -15,11 +15,11 @@
     </dev>
 
     <!-- database settings -->
-<database>
-        <host>127.0.0.1</host>
-        <username>SQLTestUser</username>
-        <password>TestPassword</password>
-        <database>LorisTest</database>
+    <database>
+        <host>%HOSTNAME%</host>
+        <username>%USERNAME%</username>
+        <password>%PASSWORD%</password>
+        <database>%DATABASE%</database>
         <quatUser>SQLTestUser</quatUser>
         <quatPassword>TestPassword</quatPassword>
         <name>Test database</name>
@@ -50,9 +50,10 @@
     <study>
         <PSCID>
             <!-- PSCID (Study Center ID) generation method possible options: sequential/random/user -->
-            <generation>user</generation>
+            <generation>sequential</generation>
             <structure>
-                <seq type="alphanumeric" minLength="4"/> <!-- Ex: AAA1-->
+                <seq type="siteAbbrev"/>
+                <seq type="numeric" length="4"/>
             </structure>
         </PSCID>
         
@@ -193,4 +194,8 @@
             <permission>sampleInstrument2PermissionName</permission>
         </instrument>
     </instrumentPermissions>
+
+    <!-- MINC TOOLS PATH -->
+    <MINCToolsPath>%MINCTOOLSPATH%</MINCToolsPath>
+
 </config>

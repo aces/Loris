@@ -302,45 +302,54 @@ class NDB_BVL_Battery
         $error = $this->_assertBatterySelected();
 
         // craft the select query
-        $query   = "SELECT f.Test_name,
+        $query = "SELECT f.Test_name,
                     t.Full_name,
                     f.CommentID,
                     CONCAT('DDE_', f.CommentID) AS DDECommentID,
                     ts.Subgroup_name as Sub_group,
-                    t.isDirectEntry
-                FROM flag AS f, test_names as t, test_subgroups as ts ";
+                    ts.group_order as Subgroup_order,
+                    t.isDirectEntry";
+        if (!is_null($stage)) {
+            $query .= ", b.instr_order as instrument_order";
+        }
+        $query  .= " FROM flag f
+            	JOIN test_names t ON (f.Test_name=t.Test_name)
+            	JOIN test_subgroups ts ON (ts.ID = t.Sub_group) ";
         $qparams = array('SID' => $this->sessionID);
 
         if (!is_null($stage)) {
-            $query .= ", test_battery AS b";
+            $query .= "
+            	LEFT JOIN test_battery b ON (t.Test_name=b.Test_name) ";
         }
-        $query .= " WHERE ts.ID = t.Sub_group
-            AND f.Test_name=t.Test_name
-            AND f.SessionID=:SID
+        $query .= " WHERE f.SessionID=:SID
             AND LEFT(f.CommentID, 3) != 'DDE'";
-
-        if (!is_null($stage)) {
-            $query         .= " AND t.Test_name=b.Test_name AND b.Stage=:stg";
-            $qparams['stg'] = $stage;
-
-            if (!is_null($SubprojectID)) {
+        if (!is_null($stage) && !is_null($SubprojectID)) {
                 $query .= " AND (
                     b.SubprojectID IS NULL
                     OR b.SubprojectID=:SubprojID
                 )";
-
                 $qparams['SubprojID'] = $SubprojectID;
-            }
         }
+        $query .= " GROUP BY t.Full_name";
 
-        $query .= "ORDER BY Sub_group, Full_name";
-
+        if (Utility::columnsHasNull('test_subgroups', 'group_order')) {
+            $query .= " ORDER BY Subgroup_name";
+        } else {
+            $query .= " ORDER BY Subgroup_order";
+        }
+        if (!is_null($stage)) {
+            $query .= ", instrument_order";
+        } else {
+            $query .= ", Full_name";
+        }
+        //print_r($query);
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
 
         // return all the data selected
         return $rows;
     } // end getBatteryVerbose()
+
 
     /**
      * Checks if a test_name has double data entry enabled in the config

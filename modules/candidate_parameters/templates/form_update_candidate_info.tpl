@@ -57,6 +57,6 @@
 		{/foreach}
 		<input class="btn btn-sm btn-primary col-sm-offset-3" name="fire_away" value="Save" type="submit" />
 		{/if}
-		<input class="btn btn-sm btn-primary" onclick="location.href='main.php?test_name=candidate_parameters&candID={$candID}&identifier={$candID}'" value="Return to Candidate Info" type="button" />
+		<input class="btn btn-sm btn-primary" onclick="location.href='{$baseurl}/candidate_parameters/?candID={$candID}&identifier={$candID}'" value="Return to Candidate Info" type="button" />
     </div>
 </div>

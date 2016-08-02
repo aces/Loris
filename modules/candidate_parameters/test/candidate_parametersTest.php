@@ -22,7 +22,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
      */
     function testCandidateParametersDoesPageLoad()
     {
-        $this->webDriver->get($this->url . "/candidate_parameters/?candID=000000&identifier=000000");
+        $this->safeGet($this->url . "/candidate_parameters/?candID=900000&identifier=900000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Candidate Parameters", $bodyText);
     }
@@ -35,7 +35,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
      */
     function testCandidateParametersAddFamilyDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/candidate_parameters/add_family/?candID=000000&identifier=000000");
+        $this->safeGet($this->url . "/candidate_parameters/add_family/?candID=900000&identifier=900000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Add Family", $bodyText);
     }
@@ -48,9 +48,9 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
      */
     function testCandidateParametersUpdateParticipantStatusDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/candidate_parameters/update_participant_status/?candID=000000&identifier=000000");
+        $this->safeGet($this->url . "/candidate_parameters/update_participant_status/?candID=900000&identifier=900000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(" Update Participant Status", $bodyText);
+        $this->assertContains("Update Participant Status", $bodyText);
     }
 
     /**
@@ -61,7 +61,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
      */
     function testCandidateParametersUpdateCandidateInfoDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/candidate_parameters/update_candidate_info/?candID=000000&identifier=000000");
+        $this->safeGet($this->url . "/candidate_parameters/update_candidate_info/?candID=900000&identifier=900000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Update Candidate Info", $bodyText);
     }
@@ -74,7 +74,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
      */
     function testCandidateParametersUpdateProbandInfoDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/candidate_parameters/update_proband_info/?candID=000000&identifier=000000");
+        $this->safeGet($this->url . "/candidate_parameters/update_proband_info/?candID=900000&identifier=900000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Update Proband Info", $bodyText);
     }
@@ -87,7 +87,7 @@ class candidateParametersTestIntegrationTest extends LorisIntegrationTestWithCan
      */
     function testCandidateParametersUpdateConsentInfoDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/candidate_parameters/update_consent_info/?candID=000000&identifier=000000");
+        $this->safeGet($this->url . "/candidate_parameters/update_consent_info/?candID=900000&identifier=900000");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Update Consent Info", $bodyText);
     }

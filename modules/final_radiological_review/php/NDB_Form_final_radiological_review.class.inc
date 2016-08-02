@@ -23,6 +23,9 @@
  *   @license    @GPLv3
  *   @link       https://www.github.com/aces/Loris-Trunk/
  */
+
+require_once "NDB_Form.class.inc";
+require_once "NDB_Menu_Filter_final_radiological_review.class.inc";
 class NDB_Form_final_radiological_review extends NDB_Form
 {
     /**
@@ -167,7 +170,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
             $original_review = $DB->pselectRow(
                 "SELECT r.Scan_done as Original_Scan_Done, 
                 r.review_results as Original_Review_Results, 
-                r.abnormal_atypical_exculsionary as Original_Exclusionary, 
+                r.abnormal_atypical_exclusionary as Original_Exclusionary,
                 r.Incidental_findings as Original_Incidental_Findings, 
                 e.full_name as Original_Examiner, 
                 c.PSCID as PSCID, 
