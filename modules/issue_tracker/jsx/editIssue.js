@@ -255,7 +255,7 @@ var IssueEditForm = React.createClass({
 
                     <SelectElement
                         name="centerID"
-                        label="(Site)"
+                        label="Site"
                         emptyOption={true}//just cause I already put it in
                         options={this.state.Data.sites} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
@@ -281,7 +281,7 @@ var IssueEditForm = React.createClass({
                     />
                     <SmallTextareaElement
                         name="visitLabel"
-                        label="Visit Label"
+                        label="(Visit Label)"
                         onUserInput={this.setIssueData}
                         ref="visitLabel"
                         disabled={true}

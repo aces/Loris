@@ -182,12 +182,38 @@ function getIssueFields()
         'immediate' => 'Immediate'
     );
 
-    $categories = array(
-        'configuration' => 'Configuration',
-        'code fix' => 'Code Fix',
-        'sql error' => 'SQL Error',
-        'documentation' => 'Documentation'
-    );
+ $categories = array(
+        'Anonimyzer/Scheduler/ID (ASID)' => 'Anonimyzer/Scheduler/ID (ASID)',
+        'API/Mobile' => 'API/Mobile',
+        'Behavioural QC' => 'Behavioural QC',
+        'CBRAIN hooks' => 'CBRAIN hooks',
+        'Code fixes' => 'Code fixes',
+        'Configurations' => 'Configurations',
+        'Demo' => 'Demo',
+        'DICOM archive' => 'DICOM archive',
+        'Documentation' => 'Documentation',
+        'DQT' => 'DQT',
+        'Genomics' => 'Genomics',
+        'GUI/Bootstrap' => 'GUI/Bootstrap',
+        'Help section' => 'Help section',
+        'Imaging Browser' =>  'Imaging Browser',
+        'Imaging preprocessing scripts' => 'Imaging preprocessing scripts',
+        'Imaging Uploader' => 'Imaging Uploader',
+        'Improvements' =>  'Improvements',
+        'Install Process' => 'Install Process',
+        'Instrument Builder' => 'Instrument Builder',
+        'LorisForm' => 'LorisForm',
+        'Public Repositories' => 'Public Repositories',
+        'Release process tasks' => 'Release process tasks',
+        'Schema' => 'Schema',
+        'Server/technical' => 'Server/technical',
+        'Stand alone Scripts' => 'Stand alone Scripts',
+        'Statistics' => 'Statistics',
+        'Survey accounts' => 'Survey accounts',
+        'Testing (Automated)' => 'Testing (Automated)',
+        'Testing (Manual)' => 'Testing (Manual)',
+        'User accounts/Permissions' => 'User accounts/Permissions'
+         );
 
     $modules = array();
     $modules_expanded = $db->pselect(
