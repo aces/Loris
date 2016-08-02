@@ -38,11 +38,12 @@ var IssueEditForm = React.createClass({
                 if(!data.issueData.issueID) {
                     that.setState({'isNewIssue': true});
                 }
+
                 var formData = {
                     'issueID': data.issueData.issueID,
                     'title': data.issueData.title,
                     'lastUpdate': data.issueData.lastUpdate,
-                    'site': data.issueData.site,
+                    'centerID': data.issueData.centerID,
                     'PSCID': data.issueData.PSCID,
                     'DCCID': data.issueData.DCCID,
                     'reporter': data.issueData.reporter,
@@ -191,7 +192,7 @@ var IssueEditForm = React.createClass({
                     <SelectElement
                         name="status"
                         label="Status"
-                        emptyOption={true}//just cause I already put it in
+                        emptyOption={false}//just cause I already put it in
                         options={this.state.Data.statuses} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
                         ref="status"
@@ -224,20 +225,20 @@ var IssueEditForm = React.createClass({
                         emptyOption={true}//just cause I already put it in
                         options={this.state.Data.modules} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
-                        ref="hide_file"
+                        ref="module"
                         disabled={!hasEditPermission}
                         value={this.state.issueData.module}
                     />
 
                     <SelectElement
-                        name="site"
+                        name="centerID"
                         label="Site"
                         emptyOption={true}//just cause I already put it in
                         options={this.state.Data.sites} //cjeck that this is actually the correct syntax
                         onUserInput={this.setIssueData}
-                        ref="site"
+                        ref="centerID"
                         disabled={!hasEditPermission}
-                        value={this.state.issueData.site}
+                        value={this.state.issueData.centerID}
                     />
                     <SmallTextareaElement
                         name="PSCID"
@@ -298,11 +299,15 @@ var IssueEditForm = React.createClass({
         var dataURL = this.props.DataURL;
 
         if (this.state.isNewIssue){
+	    console.log("in new issue");
+	    console.log(this.state.issueID);
+
             var dataURL = this.props.DataURL;
-            dataURL = dataURL.substring(0, str.length - 2); //todo: check this performs correctly, should get rid of the '' in the issueID= in the get request (current url)
-            dataURL = dataURL.concat(this.state.issueID); //really hope this  is a string.
+            dataURL = dataURL.substring(0, dataURL.length - 2); //todo: check this performs correctly, should get rid of the '' in the issueID= in the get request (current url)
+            dataURL = dataURL + this.state.issueID.toString(); //really hope this  is a string.
         }
 
+	console.log(dataURL);
         $.ajax(dataURL, {
             dataType: 'json',
             xhr: function() {
@@ -316,15 +321,16 @@ var IssueEditForm = React.createClass({
             },
 
             success: function(data) {
-                that.setState({
-                    'error': "ha"
-                });
-                if(data.issueData) {
-                    var formData = {
+              
+                if(!data.issueData.issueID) {
+                    that.setState({'isNewIssue': true});
+                }
+		
+		var formData = {
                         'issueID': data.issueData.issueID,
                         'title': data.issueData.title,
                         'lastUpdate': data.issueData.lastUpdate,
-                        'site': data.issueData.site,
+                        'centerID': data.issueData.centerID,
                         'PSCID': data.issueData.PSCID,
                         'DCCID': data.issueData.DCCID,
                         'reporter': data.issueData.reporter,
@@ -337,10 +343,8 @@ var IssueEditForm = React.createClass({
                         'dateCreated': data.issueData.dateCreated,
                         'category': data.issueData.category
                     };
-                }else{
-                    that.setState({'isNewIssue': true});
-                }
 
+		
                 that.setState({
                     'Data':      data,
                     'isLoaded':  true,
@@ -384,10 +388,13 @@ var IssueEditForm = React.createClass({
             if (myFormData[key] != "") {
                 formData.append(key, myFormData[key]);
             }
-        }
+	    else{
+		formData.append(key, null);
+	    } 
+	}
 
-        console.log("myFormData");
-        console.log(myFormData);
+        console.log("formData");
+        console.log(formData);
 
 
         $.ajax({
@@ -412,12 +419,13 @@ var IssueEditForm = React.createClass({
                 return xhr;
             },
 
-            success:     function(returnedIssueID) {
+            success:     function(data) {
                 self.setState({
                     submissionResult: "success",
-                    issueID: returnedIssueID
+                    issueID: data
                 });
-                console.log(returnedIssueID);
+		console.log("returnedissueid");
+                console.log(data);
                 self.getDataAndChangeState();
 
                 // Trigger an update event to update all observers (i.e DataTable) //todo: figure out what this is
@@ -468,7 +476,6 @@ var IssueEditForm = React.createClass({
         var isValidForm = true;
         var requiredFields = {
             'title':null,
-            'priority':null
         };
 
         Object.keys(requiredFields).map(function(field) {

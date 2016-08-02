@@ -38,19 +38,20 @@ function editIssue()
 
     //maybe check for some kind of permission here. otherwise delete that utility method.
 
+    error_log("post assignee");
+    error_log($_POST['assignee']);
     // Process posted data
-    $issueID     = !empty($_POST['issueID']) ? $_POST['issueID'] : null;
-    $assignee    = isset($_POST['assignee']) ? $_POST['assignee'] : null;
-    $status   = isset($_POST['status']) ? $_POST['status'] : null;
-    $priority   = isset($_POST['priority']) ? $_POST['priority'] : null;
-    $candID   = isset($_POST['PSCID']) ? $_POST['PSCID'] : null; //TODO: deal with adding DCCID and validating
-    $visitLabel   = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null;
-    $centerID   = isset($_POST['centerID']) ? $_POST['centerID'] : null;
-    $title = isset($_POST['title']) ? $_POST['title'] : null;
-    $category = isset($_POST['category']) ? $_POST['category'] : null;
-    $module = isset($_POST['module']) ? $_POST['module'] : null;
-    $comment = isset($_POST['comment']) ? $_POST['comment'] : null;
-
+    $issueID     = isset($_POST['issueID']) ? $_POST['issueID'] : NULL;
+    $assignee    = isset($_POST['assignee']) ? $_POST['assignee'] : NULL;
+    $status   = isset($_POST['status']) ? $_POST['status'] : NULL;
+    $priority   = isset($_POST['priority']) ? $_POST['priority'] : NULL;
+    $candID   = isset($_POST['PSCID']) ? $_POST['PSCID'] : NULL; //TODO: deal with adding DCCID and validating
+    $visitLabel   = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : NULL;
+    $centerID   = isset($_POST['centerID']) ? $_POST['centerID'] : NULL;
+    $title = isset($_POST['title']) ? $_POST['title'] : NULL;
+    $category = isset($_POST['category']) ? $_POST['category'] : NULL;
+    $module = isset($_POST['module']) ? $_POST['module'] : NULL;
+    $comment = isset($_POST['comment']) ? $_POST['comment'] : NULL;
 
     //validate candID here
     $issueValues = [
@@ -65,18 +66,23 @@ function editIssue()
         'module'     => $module
     ];
 
-    error_log($centerID);
-    error_log($_POST['centerID']);
-    error_log(json_encode($issueValues));
-    error_log($issueID);
+    
+    foreach ($issueValues as $key => $value) {
+    	    if ($value == "null") {  
+	    $issueValues[$key] = NULL;	
+	    }
+	   }
 
+    error_log(json_encode($issueValues));
+    $issueID = NULL;
+    $assignee = NULL;
     if (!empty($issueID)) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
         error_log("why am I here?");
     }
     else {
-        $issueValues['reporter'] = $user->getData['UserID'];
-        $issueValues['dateCreated'] = date('Y-m-d H:i:s'); //because mysql 5.56 //todo: check that this works.
+        $issueValues['reporter'] = $user->getData('UserID');
+	$issueValues['dateCreated'] = date('Y-m-d H:i:s'); //because mysql 5.56 //todo: check that this works.
         error_log("at new issue submission");
         $db->insert('issues', $issueValues);
         $issueID = $db->getLastInsertId();
@@ -200,9 +206,11 @@ function getIssueFields()
             []
         );
 
-        $issueData['DCCID'] = $additionalIssueData['c.CandID'];
-        $issueData['PSCID'] = $additionalIssueData['c.PSCID'];
-        $issueData['site'] = $additionalIssueData['p.Name'];
+        error_log("additional");
+        error_log(json_encode($additionalIssueData));
+        $issueData['DCCID'] = $additionalIssueData['CandID'];
+        $issueData['PSCID'] = $additionalIssueData['PSCID'];
+        $issueData['site'] = $additionalIssueData['Name'];
 
         //$issueData['comment'] = getComments($issueID);
     }else{
@@ -210,6 +218,19 @@ function getIssueFields()
         $issueData['reporter'] = $user->getData('UserID'); //these are what need to be displayed upon creation of a new issue, but before the user has saved it. the user cannot change these values.
         $issueData['dateCreated'] = date('Y-m-d H:i:s');
         $issueData['site'] = $user->getData('Site');
+	$issueData['issueID'] = NULL;
+	$issueData['title'] = NULL;
+	$issueData['lastUpdate'] = NULL;
+	$issueData['centerID'] = NULL;
+	$issueData['PSCID'] = NULL;
+	$issueData['DCCID'] = NULL;
+	$issueData['assignee'] = NULL;
+	$issueData['status'] = "new";
+	$issueData['priority'] = "low";
+	$issueData['comment'] = NULL;
+	$issueData['watching'] = NULL;
+	$issueData['visitLabel'] = NULL;
+	$issueData['category'] = NULL;	 
     }
 
         $issueData['watching'] = true;
