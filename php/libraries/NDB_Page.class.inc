@@ -552,11 +552,6 @@ class NDB_Page
 
         $www     = $config->getSetting('www');
         $baseurl = $www['url'];
-
-        $paths = $config->getSetting("paths");
-
-        $TestName = $this->name;
-
         $min = ($config->getSetting("sandbox") === '1') ? '' : '.min';
 
         $files = array(
