@@ -22,11 +22,11 @@
     candidates that belong to the user's site are considered for the computation of the number of incomplete forms. 
     Clicking on this task should take you to the BVL statistics page, with the stats filtered according to the user's 
     site (or without any filter if the user has 'Across all sites access candidates profiles' permission). 
-12. Verify that for a user with 'Can edit final radiological reviews' permission, the number of radiological reviews 
-    to do is displayed in the My Task panel. Site displayed is always 'All'. The number of radiological reviews is 
-    the number of entries on the Radiological Review page for which Review Done is not set (i.e. 'No' is chosen in 
-    the Selection Filter for the Review Done entry). Clicking on the task should take you to that page, with the 
-    Selection Filter set correctly.
+12. Verify that for a user with 'Can edit final radiological reviews' and 'Can view final radiological reviews' 
+    permission, the number of radiological reviews to do is displayed in the My Task panel. Site displayed is always 
+    'All'. The number of radiological reviews is the number of entries on the Radiological Review page for which Review 
+    Done is not set (i.e. 'No' is chosen in the Selection Filter for the Review Done entry). Clicking on the task should
+    take you to that page, with the Selection Filter set correctly.
 13. Verify that if a user has 'Across all sites create and edit user accounts' permission, the number of pending 
     account approvals is displayed in the My Task panel. This should be the number of entries in the User Account 
     page with the following Selection Filter: Site set to 'All' and Pending Approval set to 'Yes'. The Site displayed
