@@ -552,7 +552,7 @@ class NDB_Page
 
         $www     = $config->getSetting('www');
         $baseurl = $www['url'];
-        $min = ($config->getSetting("sandbox") === '1') ? '' : '.min';
+        $min     = ($config->getSetting("sandbox") === '1') ? '' : '.min';
 
         $files = array(
                   $baseurl . '/js/jquery/jquery-1.11.0.min.js',
