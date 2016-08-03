@@ -64,7 +64,7 @@ GenomicFileUploadModal = React.createClass({
                         document.getElementById("progressBar").innerHTML = result.message + '';
                         document.getElementById('progressBar').style.width = result.progress + "%";
                         if (result.error != undefined) {
-                           document.getElementById('progressBar').className='progress-bar progress-bar-danger';
+                            document.getElementById('progressBar').className = 'progress-bar progress-bar-danger';
                         }
 
                         xhr.previous_text = xhr.responseText;
@@ -146,9 +146,7 @@ GenomicFileUploadModal = React.createClass({
                     React.createElement(
                         'div',
                         { className: 'modal-body' },
-                        React.createElement(
-                            UploadForm, 
-                            { baseURL: this.props.baseURL, validate: this.validateForm })
+                        React.createElement(UploadForm, { baseURL: this.props.baseURL, validate: this.validateForm })
                     ),
                     React.createElement(
                         'div',
@@ -174,7 +172,6 @@ UploadForm = React.createClass({
             useColumnHeaders: true };
     },
 
-    // Change this to false when we are ready to use Mapping files
     getDefaultProps: function () {
         return {
             validate: null
@@ -216,7 +213,6 @@ UploadForm = React.createClass({
                 inputs.push(React.createElement(FileInput, { name: 'fileData', label: 'File :' }));
                 inputs.push(React.createElement(TextAreaInput, { name: 'description', label: 'Description :' }));
                 inputs.push(React.createElement(ProgressBar, { name: 'progressbar', label: 'Progress :' }));
-
                 break;
         }
 
@@ -420,7 +416,7 @@ CheckboxInput = React.createClass({
 });
 
 ProgressBar = React.createClass({
-    displayName: 'Progress',
+    displayName: 'ProgressBar',
 
 
     propTypes: {
@@ -429,7 +425,6 @@ ProgressBar = React.createClass({
     },
 
     render: function () {
-
         return React.createElement(
             'div',
             { className: 'col-xs-12 form-group' },
@@ -442,14 +437,11 @@ ProgressBar = React.createClass({
                 'div',
                 { className: 'col-xs-9' },
                 React.createElement(
-                    'div', 
-                    { className: 'progress', style: { 'height': '20px' }},
-                    React.createElement(
-                        'div', 
-                        { className: 'progress-bar progress-bar-success', id: 'progressBar', role: 'progressbar', 'aria-valuenow': '0', 'aria-valuemin': '0', 'aria-valuemax': '100'}
-                    )
+                    'div',
+                    { className: 'progress', style: { "height": "20px" } },
+                    React.createElement('div', { className: 'progress-bar progress-bar-success', id: 'progressBar', role: 'progressbar', 'aria-valuenow': '0', 'aria-valuemin': '0', 'aria-valuemax': '100' })
                 )
-            )  
+            )
         );
     }
 });
