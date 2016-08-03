@@ -61,11 +61,10 @@ GenomicFileUploadModal = React.createClass({
                         var result = JSON.parse(new_response);
                         console.log(result);
 
-                        document.getElementById("uploadStatus").innerHTML = result.message + '';
-                        document.getElementById('progressBar').style.backgroundColor = 'green';
+                        document.getElementById("progressBar").innerHTML = result.message + '';
                         document.getElementById('progressBar').style.width = result.progress + "%";
                         if (result.error != undefined) {
-                           document.getElementById('progressBar').style.backgroundColor = 'red';
+                           document.getElementById('progressBar').className='progress-bar progress-bar-danger';
                         }
 
                         xhr.previous_text = xhr.responseText;
@@ -147,12 +146,18 @@ GenomicFileUploadModal = React.createClass({
                     React.createElement(
                         'div',
                         { className: 'modal-body' },
-                        React.createElement(UploadForm, { baseURL: this.props.baseURL, validate: this.validateForm }),
-                        React.createElement('div', { className: 'modal-progress', id: 'progressBar' },
-                            React.createElement('h3', { id: 'uploadStatus' })
+                        React.createElement(
+                            UploadForm, 
+                            { baseURL: this.props.baseURL, validate: this.validateForm }),
+                        React.createElement(
+                            'div', 
+                            { className: 'progress', style: { 'height': '20px' }},
+                            React.createElement(
+                                'div', 
+                                { className: 'progress-bar progress-bar-success', id: 'progressBar', role: 'progressbar', 'aria-valuenow': '0', 'aria-valuemin': '0', 'aria-valuemax': '100'}
+                            )
                         )
                     ),
-                   
                     React.createElement(
                         'div',
                         { className: 'modal-footer' },
