@@ -922,6 +922,9 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     private function _getEmailError($DB, $email)
     {
+        // remove illegal characters
+        $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
         // check email address' uniqueness
         $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
         $params = array('VEmail' => $email);

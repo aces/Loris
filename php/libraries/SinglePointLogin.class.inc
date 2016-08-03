@@ -286,7 +286,9 @@ class SinglePointLogin
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
         $headers    = getallheaders();
-        $authHeader = $headers['Authorization'];
+        $authHeader = isset($headers['Authorization'])
+                         ? $headers['Authorization']
+                         : '';
         if (!empty($authHeader)) {
             $token = explode(" ", $authHeader);
             // Index 0 is "Bearer", 1 is the token
@@ -405,7 +407,7 @@ class SinglePointLogin
 
         // create DB object
         $factory = NDB_Factory::singleton();
-        $DB      =& $factory->database();
+        $DB      = $factory->database();
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,

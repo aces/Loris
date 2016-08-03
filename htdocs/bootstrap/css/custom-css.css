@@ -341,6 +341,10 @@ a.btn.btn-primary {
  *  CSS for static table
  *  Styling for the staticTable component
  */
+.panel>.table-header {
+    background-color: #DCDCDC;
+}
+
 .downloadCSV {
     margin: 20px 0px;
 }
@@ -349,14 +353,16 @@ a.btn.btn-primary {
     color: black;
 }
 .table-footer {
-    background-color: #1c70b6;
-    color: white;
+    background-color: #DCDCDC;
 }
 #dynamictable {
     margin-bottom: 0px;
 }
 .rowsPerPage {
     color: black;
+}
+.pagination-table {
+  margin: 0px;
 }
 
 .left.carousel-control {
