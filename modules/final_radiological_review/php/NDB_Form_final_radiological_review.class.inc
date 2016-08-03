@@ -41,22 +41,11 @@ class NDB_Form_final_radiological_review extends NDB_Form
      */
     function _hasAccess() 
     {
-        return $this->_has_perm('view_final_radiological_review');
-    }
-    /**
-     * Wrapper to get the user object and check the permission.
-     * Used both in hasAccess and the setup when determining
-     * if the user can view, or view and edit the page
-     *
-     * @param string $perm Name of the permission to check
-     *
-     * @return boolean Whether the user has said permission
-     * @private
-     */
-    function _has_perm($perm)
-    {
         $user =& User::singleton();
-        return $user->hasPermission($perm);
+        return (
+            $user->hasPermission('view_final_radiological_review') ||
+            $user->hasPermission('edit_final_radiological_review')
+        );
     }
 
     /**
