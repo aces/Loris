@@ -148,15 +148,7 @@ GenomicFileUploadModal = React.createClass({
                         { className: 'modal-body' },
                         React.createElement(
                             UploadForm, 
-                            { baseURL: this.props.baseURL, validate: this.validateForm }),
-                        React.createElement(
-                            'div', 
-                            { className: 'progress', style: { 'height': '20px' }},
-                            React.createElement(
-                                'div', 
-                                { className: 'progress-bar progress-bar-success', id: 'progressBar', role: 'progressbar', 'aria-valuenow': '0', 'aria-valuemin': '0', 'aria-valuemax': '100'}
-                            )
-                        )
+                            { baseURL: this.props.baseURL, validate: this.validateForm })
                     ),
                     React.createElement(
                         'div',
@@ -218,10 +210,13 @@ UploadForm = React.createClass({
                     inputs.push(React.createElement(FileInput, { name: 'fileMapping', label: 'Mapping :' }));
                 }
                 inputs.push(React.createElement(CheckboxInput, { handleChange: this.handleCheckboxChange, checked: this.state.useColumnHeaders, name: 'pscidColumn' }));
+                inputs.push(React.createElement(ProgressBar, { name: 'progressbar', label: 'Progress :' }));
                 break;
             case 'Other':
                 inputs.push(React.createElement(FileInput, { name: 'fileData', label: 'File :' }));
                 inputs.push(React.createElement(TextAreaInput, { name: 'description', label: 'Description :' }));
+                inputs.push(React.createElement(ProgressBar, { name: 'progressbar', label: 'Progress :' }));
+
                 break;
         }
 
@@ -420,6 +415,41 @@ CheckboxInput = React.createClass({
                     this.props.label
                 )
             )
+        );
+    }
+});
+
+ProgressBar = React.createClass({
+    displayName: 'Progress',
+
+
+    propTypes: {
+        name: React.PropTypes.string,
+        label: React.PropTypes.string
+    },
+
+    render: function () {
+
+        return React.createElement(
+            'div',
+            { className: 'col-xs-12 form-group' },
+            React.createElement(
+                'label',
+                { className: 'col-xs-3', 'for': this.props.name },
+                this.props.label
+            ),
+            React.createElement(
+                'div',
+                { className: 'col-xs-9' },
+                React.createElement(
+                    'div', 
+                    { className: 'progress', style: { 'height': '20px' }},
+                    React.createElement(
+                        'div', 
+                        { className: 'progress-bar progress-bar-success', id: 'progressBar', role: 'progressbar', 'aria-valuenow': '0', 'aria-valuemin': '0', 'aria-valuemax': '100'}
+                    )
+                )
+            )  
         );
     }
 });
