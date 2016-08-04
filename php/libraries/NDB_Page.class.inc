@@ -219,6 +219,70 @@ class NDB_Page
     }
 
     /**
+     * Wrapper to create a select drop-down list
+     *
+     * @param string $name     The field name of this select dropdown
+     * @param string $label    The label to attach to this dropdown
+     * @param array  $options  Options to pass to QuickForm for this
+     *                         select, adding 'not_answered' option
+     * @param array  $optional Optional extra HTML attributes to add
+     *                         to the select
+     *
+     * @return none
+     */
+    function addBasicSelect($name, $label, $options, $optional=array())
+    {
+        $optional = array_merge(
+            array('class' => 'form-control input-sm'),
+            $optional
+        );
+        $this->form->addElement('select', $name, $label, $options, $optional);
+    }
+
+    /**
+     * Wrapper to create an Hour/Minute field, with no accompanying status field.
+     *
+     * @param string $field        Name given to the HTML QuickForm Element
+     *                             being created
+     * @param string $label        The question text to display
+     *
+     * @return none
+     */
+    function addBasicHourMinElement(
+        $field,
+        $label
+    ) {
+        $this->addBasicDate(
+            $field,
+            $label,
+            array(
+                'language'       => 'en',
+                'format'         => 'H:i',
+                'addEmptyOption' => true,
+            )
+        );
+    }
+
+    /**
+     * Wrapper to create a field that only accepts a number, with an
+     * accompanying status field.
+     *
+     * @param string  $field   The database field in which the response
+     *                         will be stored
+     * @param string  $label   The question text to display
+     * @param a $options Does not appear to be used?
+     *
+     * @return none
+     */
+    function addBasicNumericElement($field, $label, $options = null)
+    {
+        $this->addBasicText($field, $label);
+        $this->addRule($field, "Value must be numeric.", 'numeric');
+    }
+
+
+
+    /**
      * Wrapper to create a checkbox
      *
      * @param string $name     The field name of this checkbox
