@@ -79,35 +79,37 @@ class ConfigurationTest extends LorisIntegrationTest
      */
     public function testAllLinks()
     {
- 
-       $this->safeGet($this->url . "/configuration/");
-       $this->_linkTest("Study");
-       $this->_linkTest("Paths");
-       $this->_linkTest("GUI");
-       $this->_linkTest("WWW");
-       $this->_linkTest("Dashboard");
-       $this->_linkTest("DICOM Archive");
-       $this->_linkTest("Statistics");
-       $this->_linkTest("Email");
-       $this->_linkTest("Uploads");
-       $this->_linkTest("API Keys");
-          
+
+        $this->safeGet($this->url . "/configuration/");
+        $this->_linkTest("Study");
+        $this->_linkTest("Paths");
+        $this->_linkTest("GUI");
+        $this->_linkTest("WWW");
+        $this->_linkTest("Dashboard");
+        $this->_linkTest("DICOM Archive");
+        $this->_linkTest("Statistics");
+        $this->_linkTest("Email");
+        $this->_linkTest("Uploads");
+        $this->_linkTest("API Keys");
+
     }
     /**
       * Add a method for testing the link. After click the link,the page
       * shows particular content.
       *
-      * @param string      $text    the text that should be shown in the assert.
+      * @param string $text the text that should be shown in the assert.
       *
       * @return void
       */
     private function _linkTest($text)
     {
-       $webElement = $this->safeFindElement(WebDriverBy::linkText($text))->click();
-       $webActives = $this->webDriver->findElements(WebDriverBy::cssSelector(".active"));
-       $bodyText = $webActives[1]->getText();
-       $this->assertContains($text, $bodyText);
-    
+        $webElement = $this->safeFindElement(WebDriverBy::linkText($text))->click();
+        $webActives = $this->webDriver->findElements(
+            WebDriverBy::cssSelector(".active")
+        );
+        $bodyText   = $webActives[1]->getText();
+        $this->assertContains($text, $bodyText);
+
     }
 }
 ?>
