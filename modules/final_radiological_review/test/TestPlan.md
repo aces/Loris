@@ -26,6 +26,6 @@
 10. On one of these final radiological review pages, check that the Imaging Browser and Original Radiology Review links are working.
 11. In the form area, try filling out each of the form boxes and pressing the "Save" button. The page should refresh. Ensure that the values were saved. You should only be able to save values if you have the edit_final_radiological_review permission.
   a) Check that the Site Review column data matches what is in the database.
-  b) Input some test conflict data and Check that a conflict message appears if there is a difference between the Final and Extra reviews after click 'Save' button.
-  c) Input some test conflict data and Check that a conflict message appears if there is a difference between the Site and Final reviews after click 'Save' button.
+  b) Input test conflicting data and Check that a conflict message appears if there is a difference between the Final and Extra reviews after click 'Save' button.
+  c) Input test conflicting data and Check that a conflict message appears if there is a difference between the Site and Final reviews after click 'Save' button.
 12. Alter one of the form fields and save the form. Check that a new row is added to the change log, documenting the change.
