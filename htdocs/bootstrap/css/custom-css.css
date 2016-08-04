@@ -35,6 +35,11 @@ Note: other colors are currenly inherited from Bootstrap default color palette
   transition: background-color 0.2s ease-in;
 }
 
+/* Show submenu when hovering on menu item */
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
 /* Loris logo */
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
@@ -42,15 +47,10 @@ Note: other colors are currenly inherited from Bootstrap default color palette
 }
 
 /* Menu items */
+.navbar-default .navbar-nav>li:hover,
 .navbar-default .navbar-nav>li>a:hover,
-.navbar-default .navbar-nav>li>a:focus {
-  background-color: #042d54;
-}
-
-/* Menu items with children (submenus) */
-.navbar-default .navbar-nav>.open>a,
-.navbar-default .navbar-nav>.open>a:hover,
-.navbar-default .navbar-nav>.open>a:focus {
+.navbar-default .navbar-nav>li>a:focus,
+.navbar-default .navbar-nav>li>a:active{
   background-color: #042d54;
 }
 
