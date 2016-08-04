@@ -242,9 +242,9 @@ class NDB_Page
     /**
      * Wrapper to create an Hour/Minute field, with no accompanying status field.
      *
-     * @param string $field        Name given to the HTML QuickForm Element
+     * @param string $field Name given to the HTML QuickForm Element being created
      *                             being created
-     * @param string $label        The question text to display
+     * @param string $label The question text to display
      *
      * @return none
      */
@@ -256,9 +256,9 @@ class NDB_Page
             $field,
             $label,
             array(
-                'language'       => 'en',
-                'format'         => 'H:i',
-                'addEmptyOption' => true,
+             'language'       => 'en',
+             'format'         => 'H:i',
+             'addEmptyOption' => true,
             )
         );
     }
