@@ -60,3 +60,5 @@ INSERT INTO Config (`ConfigID`, `Value`) VALUES (
 INSERT INTO parameter_type (Name, Type, SourceFrom) VALUES ('SNR', 'double', 'parameter_file');
 UPDATE Config SET Value="images/neurorgb_web.jpg" WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name="studylogo") AND Value="images/neuro_logo_blue.gif";
 
+-- Fixing Access Profile permissions
+DELETE FROM LorisMenuPermissions WHERE MenuID=(SELECT ID FROM LorisMenu WHERE Label='Access Profile' AND Parent=1) AND PermID=(SELECT PermID FROM permissions WHERE code='data_entry');
