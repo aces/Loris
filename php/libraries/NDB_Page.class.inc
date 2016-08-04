@@ -263,24 +263,6 @@ class NDB_Page
         );
     }
 
-    /**
-     * Wrapper to create a field that only accepts a number, with an
-     * accompanying status field.
-     *
-     * @param string  $field   The database field in which the response
-     *                         will be stored
-     * @param string  $label   The question text to display
-     * @param a $options Does not appear to be used?
-     *
-     * @return none
-     */
-    function addBasicNumericElement($field, $label, $options = null)
-    {
-        $this->addBasicText($field, $label);
-        $this->addRule($field, "Value must be numeric.", 'numeric');
-    }
-
-
 
     /**
      * Wrapper to create a checkbox
