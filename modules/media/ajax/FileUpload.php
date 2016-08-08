@@ -250,7 +250,7 @@ function getUploadFields()
 function showError($message)
 {
     if (!isset($message)) {
-        $message = 'An unknown error occured!';
+        $message = 'An unknown error occurred!';
     }
     header('HTTP/1.1 500 Internal Server Error');
     header('Content-Type: application/json; charset=UTF-8');

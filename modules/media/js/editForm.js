@@ -19,7 +19,7 @@ var MediaEditForm = React.createClass({
 
   getInitialState: function () {
     return {
-      'Data': [],
+      'Data': {},
       'formData': {},
       'uploadResult': null,
       'isLoaded': false,
@@ -28,18 +28,9 @@ var MediaEditForm = React.createClass({
   },
 
   componentDidMount: function () {
-    var that = this;
+    var self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
-      xhr: function () {
-        var xhr = new window.XMLHttpRequest();
-        xhr.addEventListener("progress", function (evt) {
-          that.setState({
-            'loadedData': evt.loaded
-          });
-        });
-        return xhr;
-      },
       success: function (data) {
 
         var formData = {
@@ -50,16 +41,17 @@ var MediaEditForm = React.createClass({
           'hide_file': data.mediaData.hide_file
         };
 
-        that.setState({
+        self.setState({
           'Data': data,
           'isLoaded': true,
           'mediaData': data.mediaData,
           'formData': formData
         });
       },
-      error: function (data, error_code, error_msg) {
-        that.setState({
-          'error': 'An error occured when loading the form!'
+      error: function (error, errorCode, errorMsg) {
+        console.error(error, errorCode, errorMsg);
+        self.setState({
+          'error': 'An error occurred when loading the form!'
         });
       }
     });
@@ -67,19 +59,21 @@ var MediaEditForm = React.createClass({
 
   render: function () {
 
-    if (!this.state.isLoaded) {
-      if (this.state.error != undefined) {
-        return React.createElement(
-          'div',
-          { className: 'alert alert-danger text-center' },
-          React.createElement(
-            'strong',
-            null,
-            this.state.error
-          )
-        );
-      }
+    // Data loading error
+    if (this.state.error !== undefined) {
+      return React.createElement(
+        'div',
+        { className: 'alert alert-danger text-center' },
+        React.createElement(
+          'strong',
+          null,
+          this.state.error
+        )
+      );
+    }
 
+    // Waiting for data to load
+    if (!this.state.isLoaded) {
       return React.createElement(
         'button',
         { className: 'btn-info has-spinner' },
