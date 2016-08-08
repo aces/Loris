@@ -618,8 +618,8 @@ class NDB_Menu_Filter extends NDB_Menu
 
         $this->tpl_data['rowsPerPage']      = $rowsPerPage;
         $this->tpl_data['pageID']           = $pageID;
-        $this->tpl_data['filterfield']      = $_GET['filter'][order][field];
-        $this->tpl_data['filterfieldOrder'] = $_GET['filter'][order][fieldOrder];
+        $this->tpl_data['filterfield']      = isset($_GET['filter']['order']['field']) ? $_GET['filter']['order']['field'] : '';
+        $this->tpl_data['filterfieldOrder'] = isset($_GET['filter']['order']['fieldOrder']) ? $_GET['filter']['order']['fieldOrder'] : '';
 
         $this->tpl_data['TotalItems'] = $this->TotalItems;
         // print out column headings
