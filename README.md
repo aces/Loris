@@ -2,17 +2,18 @@
 
 LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
+<hr>
+NEW <b>⇾  Try LORIS on Heroku</b> before installing it on your system<br>
+Deploy and log in with username <i>admin</i> and the password that's set up during deployment via ClearDB.
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/17.0-dev)
+<hr>
+
 This Readme covers installation of the <b>17.0</b> LORIS development branch on <b>Ubuntu</b>.
-([CentOS Readme also available](README.CentOS6.md))
+([CentOS Readme also available](https://github.com/aces/Loris/blob/16.1-dev/README.CentOS6.md)).
 
 If you are looking to install a stable release, please consult the [Releases page](https://github.com/aces/Loris/releases) and the Readme for the last stable release.
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
-
-<b>⇾  Deploy on Heroku</b>
-As an alternative to installing LORIS on your system (per instructions below), LORIS can now be deployed on Heroku.
-Note: Your default credentials after deployment will be 'admin' as the username and your password will be the uniquely generated password used by ClearDB.
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/16.1-dev)
 
 # Prerequisites for Installation
 
@@ -25,8 +26,8 @@ Note: Your default credentials after deployment will be 'admin' as the username 
  * Composer : should be run with --no-dev option
 
 <b>Important:</b>
- * Only PHP <b>5.6</b> is supported for LORIS 16.0. We recommend installing/upgrading PHP using this (deprecated) PPA repository: <i>ppa:ondrej/php5-5.6 </i>
- * MySQL 5.7 is not supported for LORIS 16.0 and will cause errors when loading LORIS.  MySQL 5.5 or lower (5.*) is recommmended.  
+ * Only PHP <b>5.6</b> is supported for LORIS 16.1. We recommend installing/upgrading PHP using this (deprecated) PPA repository: <i>ppa:ondrej/php5-5.6 </i>
+ * MySQL 5.7 is not supported for LORIS 16.1 and will cause errors when loading LORIS.  MySQL 5.5 or lower (5.*) is recommmended.  
  * Composer should be run with --no-dev option unless you are an active LORIS developer. 
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information.

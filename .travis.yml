@@ -57,6 +57,7 @@ before_script:
     - mysql LorisTest < SQL/0000-00-02-Menus.sql
     - mysql LorisTest < SQL/0000-00-03-ConfigTables.sql
     - mysql LorisTest < SQL/0000-00-04-Help.sql
+    - mysql LorisTest < docs/instruments/radiology_review.sql
     - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE,DROP,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
     - mysql LorisTest -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aatestpass')), Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
     - cp docs/config/config.xml project/config.xml
