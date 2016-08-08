@@ -103,7 +103,10 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
     function _hasAccess()
     {
         $user =& User::singleton();
-        return $user->hasPermission('view_final_radiological_review');
+        return (
+            $user->hasPermission('view_final_radiological_review') ||
+            $user->hasPermission('edit_final_radiological_review')
+        );
     }
 
     /**

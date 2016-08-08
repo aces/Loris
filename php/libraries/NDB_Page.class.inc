@@ -370,6 +370,23 @@ class NDB_Page
     }
 
     /**
+     * Create a QuickForm label element but does not add it to the form
+     *
+     * @param string $labelString The label to attach to the element
+     *
+     * @return HTML_QuickForm Label element
+     */
+    function createLabel(
+        $labelString
+    ) {
+        return $this->form->createElement(
+            "static",
+            null,
+            null,
+            $labelString
+        );
+    }
+    /**
      * Creates a QuickForm text element but does not add it to the form
      *
      * @param string $field The field name for this text element

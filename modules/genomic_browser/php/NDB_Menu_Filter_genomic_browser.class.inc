@@ -123,7 +123,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             $this->query .= $DB->quote($user->getCenterID());
         }
 
-        $this->group_by     = 'candidate.CandID';
+        $this->group_by     = '';
         $this->order_by     = 'psc.Name, candidate.CandID DESC';
         $this->validFilters = array(
                                'candidate.CenterID',

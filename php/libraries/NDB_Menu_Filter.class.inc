@@ -530,7 +530,8 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
 
-        if (is_array($this->searchKeyword)
+        if (isset($this->searchKeyword)
+            && is_array($this->searchKeyword)
             && count($this->searchKeyword) > 0
             && !empty($this->searchKey['keyword'])
         ) {

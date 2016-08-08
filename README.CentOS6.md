@@ -10,6 +10,8 @@ It assumes you already understand basic UNIX, MySQL and Apache setup and
 settings. If you're not already comfortable troubleshooting sysadmin issues,
 you should not follow this guide.
 
+For further details on the install process including LORIS nomenclature for recommended UNIX, MySQL and front-end user accounts, please see the LORIS GitHub Wiki CentOS Install page.  
+
 # 1. System Requirements
 
 The yum packages to be installed vary from the Ubuntu packages referenced
@@ -27,22 +29,23 @@ yum install mysql
 ```
 
 PHP Composer must also be installed:
-
 ```bash
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 ```
 
 Note that the default dependencies installed by CentOS 6.x may not meet the version requirements LORIS deployment or development.
-* MySQL 5.5 or lower is supported for LORIS 16.0
-* PHP 5.6 (or 5.5) is required for LORIS 16.0 - upgrade your PHP manually
+* MySQL 5.5 or lower is supported for LORIS 16.*
+* PHP 5.6 (or 5.5) is required for LORIS 16.* - upgrade your PHP manually
 Or run composer with the `--no-dev` option. (Upgrading PHP is preferred, but for now we'll
 assume you just want to get it running, so we'll run it with `--no-dev`.)
 
 ```bash
 # Will download all of LORIS's library requirements, assuming an
 # active internet connection. This must be done from the LORIS
-# root directory that you downloaded and extracted LORIS into
+# root directory that you downloaded and extracted LORIS into.
+# Expect this step to print scary warning messages 
+# about downloading and installing dependencies. 
 composer install --no-dev
 ```
 
@@ -57,7 +60,7 @@ SQL/ directory of LORIS which are prefixed with `0000-00-` into it
 `SQL/0000-00-02-Menus.sql`, etc.)
 
 There are a few settings in the Config module that LORIS currently depends
-on being updated to load correctly that must be set manually from MySQL as
+on being updated to load correctly -- these must be set manually from the MySQL commandline as
 they're normally set by the install script.
 
 ```SQL
@@ -69,10 +72,10 @@ UPDATE Config SET Value='http://localhost' WHERE ConfigID=(SELECT ID FROM Config
 Where `/var/www/loris/` is the location where LORIS is installed and assuming
 you'll be running on localhost (otherwise update host and url appropriately)
 
-While connected to MySQL, you can also reset the admin password:
+Set the password for the front-end _admin_ user account while connected to MySQL.
 
 ```SQL
--- Reset password to YOURPASSWORD
+-- Set 'admin' front-end user account password to YOURPASSWORD
 UPDATE users SET Password_md5=CONCAT('aa', MD5('aaYOURPASSWORD')) WHERE ID=1;
 ```
 
@@ -81,8 +84,8 @@ UPDATE users SET Password_md5=CONCAT('aa', MD5('aaYOURPASSWORD')) WHERE ID=1;
 Create a directory named "project" directory under the LORIS root, and copy
 the sample config.xml from `docs/config/config.xml` to `project/config.xml`
 
-Update the database section of the config.xml to point to the database you
-just configured with an appropriate user.
+Update the _database_ tagset section of config.xml to point to the database you
+just configured with an appropriate user. (Ignore _quatuser_ and _quatpassword_ tags.)
 
 ## 1.3 Apache
 
