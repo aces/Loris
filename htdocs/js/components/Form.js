@@ -391,22 +391,32 @@ HelpTextElement = React.createClass({
 ButtonElement = React.createClass({
   displayName: 'ButtonElement',
 
+  getInitialState: function () {
+    return {
+      'onUserInput': function () {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
   getDefaultProps: function () {
     return {
-      'label': 'Submit'
+      'label': 'Submit',
+      'type': 'submit'
     };
+  },
+  handleClick: function (e) {
+    this.props.onUserInput(e);
   },
   render: function () {
     return React.createElement(
       'div',
-      { className: 'form-group' },
+      { className: 'row form-group' },
       React.createElement(
         'div',
         { className: 'col-sm-9 col-sm-offset-3' },
         React.createElement(
           'button',
-          { type: 'submit',
-            className: 'btn btn-primary' },
+          { type: this.props.type, className: 'btn btn-primary', onClick: this.handleClick },
           this.props.label
         )
       )
@@ -477,15 +487,23 @@ TextboxElement = React.createClass({
 
   getInitialState: function () {
     return {
-      'value': ''
+      value: ''
     };
   },
   getDefaultProps: function () {
     return {
-      'onUserInput': function () {
+      value: '',
+      onUserInput: function () {
         console.warn('onUserInput() callback is not set');
       }
     };
+  },
+  componentDidMount: function () {
+    if (this.props.value) {
+      this.setState({
+        value: this.props.value
+      });
+    }
   },
   handleChange: function (e) {
     this.setState({
@@ -508,7 +526,8 @@ TextboxElement = React.createClass({
         React.createElement('input', {
           type: 'text',
           className: 'form-control',
-          onChange: this.handleChange
+          onChange: this.handleChange,
+          value: this.state.value
         })
       )
     );
