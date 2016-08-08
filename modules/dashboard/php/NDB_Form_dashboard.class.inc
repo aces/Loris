@@ -138,10 +138,10 @@ class NDB_Form_Dashboard extends NDB_Form
                     "SELECT COUNT(*) FROM conflicts_unresolved cu 
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
-		     LEFT JOIN candidate c ON (c.CandID=s.CandID)
+		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
                      LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
                      WHERE psc.Name=:Site
-			s.Active='Y' AND c.Active='Y'",
+			            AND s.Active='Y' AND c.Active='Y'",
                     array('Site' => $site)
                 );
                 $this->tpl_data['conflicts_site'] = 'Site: ' . $site;
@@ -167,7 +167,7 @@ class NDB_Form_Dashboard extends NDB_Form
 			LEFT JOIN candidate c ON (s.CandID=c.CandID)
                     LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
                     WHERE Data_entry='In Progress' AND psc.Name=:Site
-			s.Active='Y' AND c.Active='Y'",
+			          AND s.Active='Y' AND c.Active='Y'",
                     array('Site' => $site)
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Site: ' . $site;
@@ -196,7 +196,7 @@ class NDB_Form_Dashboard extends NDB_Form
         ) {
             $this->tpl_data['pending_users']      = $DB->pselectOne(
                 "SELECT COUNT(*) FROM users
-		WHERE Pending_approval='Y' AND CenterID <> 1",
+		WHERE Pending_approval='Y' AND (CenterID <> 1 OR CenterID IS NULL)",
                 array()
             );
             $this->tpl_data['pending_users_site'] = 'Site: all';

@@ -5,6 +5,7 @@
  * @package behavioural
  */
 require_once __DIR__ ."/Instrument_List_ControlPanel.class.inc";
+require_once __DIR__ . "/../../../php/libraries/NDB_BVL_Battery.class.inc";
 class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 {
     function _hasAccess()
@@ -49,7 +50,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $this->tpl_data['subprojectID'] = Utility::getSubprojectIDUsingCandID($this->tpl_data['candID']);
 
         // get the list of instruments
-        $listOfInstruments = $battery->getBatteryVerbose($this->tpl_data['stage'], $this->tpl_data['subprojectID']);
+        $listOfInstruments = $this->getBatteryInstrumentList($this->tpl_data['stage'], $this->tpl_data['subprojectID']);
 
         // display list of instruments
         if (!empty($listOfInstruments)) {
@@ -130,6 +131,70 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $html =  $feedbackPanel->display();
         return $html;
     }
+
+    /**
+     * Gets an associative array of instruments which are members of the current
+     * battery for instrument list module
+     *
+     * @param string  $stage        Either 'visit' or 'screening' - determines
+     *                              whether to register only screening instruments
+     *                              or visit instruments
+     * @param integer $SubprojectID The SubprojectID of that we want the battery for.
+     *
+     * @return array an associative array containing Test_name,
+     *         Full_name, Sub_group, CommentID
+     */
+    function getBatteryInstrumentList($stage=null, $SubprojectID=null)
+    {
+        $DB = Database::singleton();
+
+        // assert that a battery has already been selected
+        if (is_null($_REQUEST['sessionID'])) {
+            throw new Exception("No battery selected");
+        }
+
+        // craft the select query
+        $query = "SELECT f.Test_name,
+                    t.Full_name,
+                    f.CommentID,
+                    CONCAT('DDE_', f.CommentID) AS DDECommentID,
+                    ts.Subgroup_name as Sub_group,
+                    ts.group_order as Subgroup_order,
+                    t.isDirectEntry";
+        if (!is_null($stage)) {
+            $query .= ", b.instr_order as instrument_order";
+        }
+        $query  .= " FROM flag f
+            	JOIN test_names t ON (f.Test_name=t.Test_name)
+            	JOIN test_subgroups ts ON (ts.ID = t.Sub_group) ";
+        $qparams = array('SID' => $_REQUEST['sessionID']);
+
+        if (!is_null($stage)) {
+            $query .= "
+            	LEFT JOIN test_battery b ON (t.Test_name=b.Test_name) ";
+        }
+        $query .= " WHERE f.SessionID=:SID
+            AND LEFT(f.CommentID, 3) != 'DDE'";
+
+        $query .= " GROUP BY t.Full_name";
+
+        if (Utility::columnsHasNull('test_subgroups', 'group_order')) {
+            $query .= " ORDER BY Subgroup_name";
+        } else {
+            $query .= " ORDER BY Subgroup_order";
+        }
+        if (!is_null($stage)) {
+            $query .= ", instrument_order";
+        } else {
+            $query .= ", Full_name";
+        }
+        //print_r($query);
+        // get the list of instruments
+        $rows = $DB->pselect($query, $qparams);
+
+        // return all the data selected
+        return $rows;
+    } // end getBatteryInstrumentList()
     
     /**
      * Include the column formatter required to display the feedback link colours

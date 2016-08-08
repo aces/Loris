@@ -186,7 +186,7 @@ class NDB_Form_Examiner extends NDB_Form
                 $oldVal  = $oldVals['new'];
                 $oldDate = $oldVals['new_date'];
 
-                $oldCertification = $DB->pselect(
+                $oldCertification = $DB->pselectRow(
                     "SELECT pass, date_cert, comment
                      FROM certification
                      WHERE examinerID=:EID AND testID=:TID",
