@@ -5,37 +5,35 @@ var IssueEditForm = React.createClass({
         action: React.PropTypes.string.isRequired,
     },
 
-    getInitialState: function() {
+    getInitialState: function () {
         return {
-            'Data':         [],
-            'formData':     {},
+            'Data': [],
+            'formData': {},
             'submissionResult': null,
             'errorMessage': null,
-            'isLoaded':     false,
-            'loadedData':   0,
+            'isLoaded': false,
+            'loadedData': 0,
             'isNewIssue': false,
-            'issueID' : 0
+            'issueID': 0
         };
     },
 
-    componentDidMount: function() {
+    componentDidMount: function () {
 
         var that = this;
         $.ajax(this.props.DataURL, {
             dataType: 'json',
-            xhr: function() {
+            xhr: function () {
                 var xhr = new window.XMLHttpRequest();
-                xhr.addEventListener("progress", function(evt) {
+                xhr.addEventListener("progress", function (evt) {
                     that.setState({
                         'loadedData': evt.loaded
                     });
                 });
                 return xhr;
             },
-            success: function(data) {
-                console.log("here");
-                console.log(data);
-                if(!data.issueData.issueID) {
+            success: function (data) {
+                if (!data.issueData.issueID) {
                     that.setState({'isNewIssue': true});
                 }
 
@@ -50,26 +48,22 @@ var IssueEditForm = React.createClass({
                     'assignee': data.issueData.assignee,
                     'status': data.issueData.status,
                     'priority': data.issueData.priority,
-                    'comment': data.issueData.comment,
                     'watching': data.issueData.watching,
                     'visitLabel': data.issueData.visitLabel,
                     'dateCreated': data.issueData.dateCreated,
                     'category': data.issueData.category,
-		    'lastUpdatedBy': data.issueData.lastUpdatedBy
+                    'lastUpdatedBy': data.issueData.lastUpdatedBy
                 };
 
-                console.log(formData);
                 that.setState({
-                    'Data':      data,
-                    'isLoaded':  true,
+                    'Data': data,
+                    'isLoaded': true,
                     'issueData': data.issueData,
-                    'formData':  formData
+                    'formData': formData
                 });
-                console.log("here again");
-                console.log(this.state);
 
             },
-            error: function(data, error_code, error_msg) {
+            error: function (data, error_code, error_msg) {
                 that.setState({
                     'error': "error"
                 });
@@ -78,7 +72,7 @@ var IssueEditForm = React.createClass({
 
     },
 
-    render: function() {
+    render: function () {
 
         if (!this.state.isLoaded) {
             if (this.state.error != undefined) {
@@ -105,45 +99,41 @@ var IssueEditForm = React.createClass({
         var hasEditPermission = this.state.Data.hasEditPermission; //bool
 
         var headerText = " ";
-        console.log("asldkf");
-        console.log(this.state.isNewIssue);
-        if(this.state.isNewIssue) {
+        if (this.state.isNewIssue) {
             headerText = "Create New Issue";
         }
-        else{
+        else {
             headerText = "Edit Issue #" + this.state.issueData.issueID;
         }
 
-        var lastUpdateValue=" ";
-        if(this.state.isNewIssue){
-            lastUpdateValue="Never!"
-        } else{
-            lastUpdateValue=this.state.issueData.lastUpdate
+        var lastUpdateValue = " ";
+        if (this.state.isNewIssue) {
+            lastUpdateValue = "Never!"
+        } else {
+            lastUpdateValue = this.state.issueData.lastUpdate
         }
 
-	var lastUpdatedByValue=" ";
-	if(this.state.isNewIssue){
-	    lastUpdatedByValue="No-one!"
-	}else{
-	    lastUpdatedByValue=this.state.issueData.lastUpdatedBy
-	}
-	   
-        var dateCreated=" ";
-        if(this.state.isNewIssue){
-            dateCreated="Sometime Soon!"
-        } else{
-            dateCreated=this.state.issueData.dateCreated
+        var lastUpdatedByValue = " ";
+        if (this.state.isNewIssue) {
+            lastUpdatedByValue = "No-one!"
+        } else {
+            lastUpdatedByValue = this.state.issueData.lastUpdatedBy
         }
 
-	var submitButtonValue = "";
-	if(this.state.isNewIssue){
-	    submitButtonValue="Submit Issue"
-	}else {
-	    submitButtonValue="Update Issue"
-	}
+        var dateCreated = " ";
+        if (this.state.isNewIssue) {
+            dateCreated = "Sometime Soon!"
+        } else {
+            dateCreated = this.state.issueData.dateCreated
+        }
 
-	if (this.state.issueData.comment == "null") this.state.issueData.comment = null
-	
+        var submitButtonValue = "";
+        if (this.state.isNewIssue) {
+            submitButtonValue = "Submit Issue"
+        } else {
+            submitButtonValue = "Update Issue"
+        }
+        
         if (this.state.submissionResult) {
             if (this.state.submissionResult == "success") {
                 alertClass = "alert alert-success text-center";
@@ -176,13 +166,13 @@ var IssueEditForm = React.createClass({
                         label={"Last Update: "}
                         ref="lastUpdate"
                         score={lastUpdateValue}
-                />
-		<ScoredElement
-	    name="lastUpdatedBy"
-	    label={"Last Updated By: "}
-	    ref="lastUpdatedBy"
-	    score={lastUpdatedByValue}
-		/>
+                    />
+                    <ScoredElement
+                        name="lastUpdatedBy"
+                        label={"Last Updated By: "}
+                        ref="lastUpdatedBy"
+                        score={lastUpdatedByValue}
+                    />
                     <ScoredElement
                         name="dateCreated"
                         label={"Date Created: "}
@@ -198,7 +188,7 @@ var IssueEditForm = React.createClass({
                     <SmallTextareaElement
                         name="title"
                         label="Title"
-                        onUserInput={this.setIssueData}
+                        onUserInput={this.setFormData}
                         ref="title"
                         value={this.state.issueData.title}
                     />
@@ -207,7 +197,7 @@ var IssueEditForm = React.createClass({
                         label="Assignee"
                         emptyOption={true}//just cause I already put it in
                         options={this.state.Data.assignees} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setIssueData}
+                        onUserInput={this.setFormData}
                         ref="assignee"
                         disabled={!hasEditPermission}
                         value={this.state.issueData.assignee}
@@ -217,7 +207,7 @@ var IssueEditForm = React.createClass({
                         label="Status"
                         emptyOption={false}//just cause I already put it in
                         options={this.state.Data.statuses} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setIssueData}
+                        onUserInput={this.setFormData}
                         ref="status"
                         value={this.state.issueData.status} //todo: edit this so the options are different if the user doesn't have permission
                     />
@@ -226,7 +216,7 @@ var IssueEditForm = React.createClass({
                         label="Priority"
                         emptyOption={false}//just cause I already put it in
                         options={this.state.Data.priorities} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setIssueData}
+                        onUserInput={this.setFormData}
                         ref="priority"
                         required={false}
                         disabled={!hasEditPermission}
@@ -237,7 +227,7 @@ var IssueEditForm = React.createClass({
                         label="Category"
                         emptyOption={true}//just cause I already put it in
                         options={this.state.Data.categories} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setIssueData}
+                        onUserInput={this.setFormData}
                         ref="category"
                         disabled={!hasEditPermission}
                         value={this.state.issueData.category}
@@ -247,7 +237,7 @@ var IssueEditForm = React.createClass({
                         label="Module"
                         emptyOption={true}//just cause I already put it in
                         options={this.state.Data.modules} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setIssueData}
+                        onUserInput={this.setFormData}
                         ref="module"
                         disabled={!hasEditPermission}
                         value={this.state.issueData.module}
@@ -258,7 +248,7 @@ var IssueEditForm = React.createClass({
                         label="Site"
                         emptyOption={true}//just cause I already put it in
                         options={this.state.Data.sites} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setIssueData}
+                        onUserInput={this.setFormData}
                         ref="centerID"
                         disabled={!hasEditPermission}
                         value={this.state.issueData.centerID}
@@ -266,7 +256,7 @@ var IssueEditForm = React.createClass({
                     <SmallTextareaElement
                         name="PSCID"
                         label="(PSCID)"
-                        onUserInput={this.setIssueData}
+                        onUserInput={this.setFormData}
                         ref="PSCID"
                         disabled={true}
                         value={this.state.issueData.PSCID}
@@ -274,7 +264,7 @@ var IssueEditForm = React.createClass({
                     <SmallTextareaElement
                         name="DCCID"
                         label="(DCCID)"
-                        onUserInput={this.setIssueData}
+                        onUserInput={this.setFormData}
                         ref="DCCID"
                         disabled={true}
                         value={this.state.issueData.DCCID}
@@ -282,24 +272,24 @@ var IssueEditForm = React.createClass({
                     <SmallTextareaElement
                         name="visitLabel"
                         label="(Visit Label)"
-                        onUserInput={this.setIssueData}
+                        onUserInput={this.setFormData}
                         ref="visitLabel"
                         disabled={true}
                         value={this.state.issueData.visitLabel}
                     />
                     <HelpTextElement
+                        html={true}
                         name="allComments"
-                        html={false}
                         label="Comment History"
-                        text={this.state.issueData.comment}
+                        text={this.state.issueData.commentHistory}
                         ref="allComments"
                     />
                     <TextareaElement
                         name="comment"
                         label="New Comment"
-                        onUserInput={this.setIssueData}
+                        onUserInput={this.setFormData}
                         ref="comment"
-                        value={this.state.issueData.comment}
+                        value={null}
                     />
                     <SelectElement
                         name="watching"
@@ -316,26 +306,23 @@ var IssueEditForm = React.createClass({
         )
     },
 
-    getDataAndChangeState: function() {
+    getDataAndChangeState: function () {
         var that = this;
 
         var dataURL = this.props.DataURL;
 
-        if (this.state.isNewIssue){
-	    console.log("in new issue");
-	    console.log(this.state.issueID);
+        if (this.state.isNewIssue) {
 
             var dataURL = this.props.DataURL;
             dataURL = dataURL.substring(0, dataURL.length - 2); //todo: check this performs correctly, should get rid of the '' in the issueID= in the get request (current url)
             dataURL = dataURL + this.state.issueID.toString(); //really hope this  is a string.
         }
 
-	console.log(dataURL);
         $.ajax(dataURL, {
             dataType: 'json',
-            xhr: function() {
+            xhr: function () {
                 var xhr = new window.XMLHttpRequest();
-                xhr.addEventListener("progress", function(evt) {
+                xhr.addEventListener("progress", function (evt) {
                     that.setState({
                         'loadedData': evt.loaded
                     });
@@ -343,44 +330,44 @@ var IssueEditForm = React.createClass({
                 return xhr;
             },
 
-            success: function(data) {
-              
-                if(!data.issueData.issueID) {
+            success: function (data) {
+
+                if (!data.issueData.issueID) {
                     that.setState({'isNewIssue': true});
                 }
-		
-		var formData = {
-                        'issueID': data.issueData.issueID,
-                        'title': data.issueData.title,
-                        'lastUpdate': data.issueData.lastUpdate,
-                        'centerID': data.issueData.centerID,
-                        'PSCID': data.issueData.PSCID,
-                        'DCCID': data.issueData.DCCID,
-                        'reporter': data.issueData.reporter,
-                        'assignee': data.issueData.assignee,
-                        'status': data.issueData.status,
-                        'priority': data.issueData.priority,
-                        'comment': data.issueData.comment,
-                        'watching': data.issueData.watching,
-                        'visitLabel': data.issueData.visitLabel,
-                        'dateCreated': data.issueData.dateCreated,
-                        'category': data.issueData.category,
-		        'lastUpdatedBy':data.issueData.lastUpdatedBy
-                    };
 
-		
+                var formData = {
+                    'issueID': data.issueData.issueID,
+                    'title': data.issueData.title,
+                    'lastUpdate': data.issueData.lastUpdate,
+                    'centerID': data.issueData.centerID,
+                    'PSCID': data.issueData.PSCID,
+                    'DCCID': data.issueData.DCCID,
+                    'reporter': data.issueData.reporter,
+                    'assignee': data.issueData.assignee,
+                    'status': data.issueData.status,
+                    'priority': data.issueData.priority,
+                    'watching': data.issueData.watching,
+                    'visitLabel': data.issueData.visitLabel,
+                    'dateCreated': data.issueData.dateCreated,
+                    'category': data.issueData.category,
+                    'lastUpdatedBy': data.issueData.lastUpdatedBy,
+                    'commentHistory': data.issueData.commentHistory
+                };
+
+
                 that.setState({
-                    'Data':      data,
-                    'isLoaded':  true,
+                    'Data': data,
+                    'isLoaded': true,
                     'issueData': data.issueData,
-                    'formData':  formData
+                    'formData': formData
                 });
 
                 that.setState({
                     'error': "finished success"
                 })
             },
-            error: function(data, error_code, error_msg) {
+            error: function (data, error_code, error_msg) {
                 that.setState({
                     'error': "error"
                 });
@@ -394,7 +381,7 @@ var IssueEditForm = React.createClass({
      * Handles form submission
      * @param e
      */
-    handleSubmit: function(e) {
+    handleSubmit: function (e) {
         e.preventDefault();
 
         var self = this;
@@ -402,6 +389,7 @@ var IssueEditForm = React.createClass({
         var formRefs = this.refs;
         var formData = new FormData();
         var hasErrors = false;
+        var issueData = this.state.issueData;
 
         // Validate the form
         if (!this.isValidForm(formRefs, myFormData)) {
@@ -409,28 +397,29 @@ var IssueEditForm = React.createClass({
         }
 
         for (var key in myFormData) {
-            if (myFormData[key] != "") {
+            if (myFormData[key] != "" && myFormData[key] !== issueData[key]) {
+                console.log(key);
+                console.log(myFormData[key]);
+                console.log(issueData[key]);
                 formData.append(key, myFormData[key]);
             }
-	    else{
-		formData.append(key, null);
-	    } 
-	}
+            // else {
+            //     formData.append(key, null);
+            // }
+        }
 
-        console.log("formData");
-        console.log(formData);
-
+        formData.append('issueID', myFormData['issueID']);
 
         $.ajax({
-            type:        'POST',
-            url:         self.props.action,
-            data:        formData,
-            cache:       false,
+            type: 'POST',
+            url: self.props.action,
+            data: formData,
+            cache: false,
             contentType: false,
             processData: false,
-            xhr:         function() {
+            xhr: function () {
                 var xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", function(evt) {
+                xhr.upload.addEventListener("progress", function (evt) {
                     if (evt.lengthComputable) {
                         var progressbar = $("#progressbar");
                         var progresslabel = $("#progresslabel");
@@ -443,13 +432,11 @@ var IssueEditForm = React.createClass({
                 return xhr;
             },
 
-            success:     function(data) {
+            success: function (data) {
                 self.setState({
                     submissionResult: "success",
                     issueID: data
                 });
-		console.log("returnedissueid");
-                console.log(data);
                 self.getDataAndChangeState();
 
                 // Trigger an update event to update all observers (i.e DataTable) //todo: figure out what this is
@@ -459,7 +446,7 @@ var IssueEditForm = React.createClass({
 
 
             },
-            error:       function(err) {
+            error: function (err) {
                 console.error(err);
                 self.setState({
                     submissionResult: "error"
@@ -476,15 +463,15 @@ var IssueEditForm = React.createClass({
      * @param formElement
      * @param value
      */
-    setIssueData: function(formElement, value) {
+    setFormData: function (formElement, value) {
 
         //todo: only give valid inputs for fields given previous input to other fields
 
-        var formData = this.state.formData;
-        formData[formElement] = value;
+        var formDataUpdate = this.state.formData;
+        formDataUpdate[formElement] = value;
 
         this.setState({
-            formData: formData
+            formData: formDataUpdate
         });
     },
 
@@ -495,16 +482,16 @@ var IssueEditForm = React.createClass({
      * @param formData
      * @returns {boolean}
      */
-    isValidForm: function(formRefs, formData) {
+    isValidForm: function (formRefs, formDataToCheck) {
 
         var isValidForm = true;
         var requiredFields = {
-            'title':null,
+            'title': null,
         };
 
-        Object.keys(requiredFields).map(function(field) {
-            if (formData[field]) {
-                requiredFields[field] = formData[field];
+        Object.keys(requiredFields).map(function (field) {
+            if (formDataToCheck[field]) {
+                requiredFields[field] = formDataToCheck[field];
             } else {
                 if (formRefs[field]) {
                     formRefs[field].props.hasError = true;
@@ -520,7 +507,7 @@ var IssueEditForm = React.createClass({
     /**
      * Display a success/error alert message after form submission
      */
-    showAlertMessage: function() {
+    showAlertMessage: function () {
         var self = this;
 
         if (this.refs["alert-message"] == null) {
@@ -528,7 +515,7 @@ var IssueEditForm = React.createClass({
         }
 
         var alertMsg = this.refs["alert-message"].getDOMNode();
-        $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
+        $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function () {
             self.setState({
                 uploadResult: null
             });

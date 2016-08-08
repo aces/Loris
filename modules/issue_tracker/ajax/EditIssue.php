@@ -16,10 +16,8 @@
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "getData") {
-        error_log("here");
-        error_log(json_encode(getIssueFields()));
         echo json_encode(getIssueFields());
-    }else if ($action == "edit"){
+    } else if ($action == "edit") {
         echo editIssue();
     }
 }
@@ -33,97 +31,94 @@ if (isset($_GET['action'])) {
  */
 function editIssue()
 {
-    $db   =& Database::singleton();
+    $db =& Database::singleton();
     $user =& User::singleton();
 
     //maybe check for some kind of permission here. otherwise delete that utility method.
+    //need to remember to deal with watching
 
-    error_log("post assignee");
-    error_log($_POST['assignee']);
-    // Process posted data
-    $issueID     = isset($_POST['issueID']) ? $_POST['issueID'] : NULL;
-    $assignee    = isset($_POST['assignee']) ? $_POST['assignee'] : NULL;
-    $status   = isset($_POST['status']) ? $_POST['status'] : NULL;
-    $priority   = isset($_POST['priority']) ? $_POST['priority'] : NULL;
-    $candID   = isset($_POST['PSCID']) ? $_POST['PSCID'] : NULL; //TODO: deal with adding DCCID and validating
-    $visitLabel   = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : NULL;
-    $centerID   = isset($_POST['centerID']) ? $_POST['centerID'] : NULL;
-    $title = isset($_POST['title']) ? $_POST['title'] : NULL;
-    $category = isset($_POST['category']) ? $_POST['category'] : NULL;
-    $module = isset($_POST['module']) ? $_POST['module'] : NULL;
-    $comment = isset($_POST['comment']) ? $_POST['comment'] : NULL;
+    $issueValues = array();
+    $fields = array('assignee', 'status', 'priority', 'visitLabel', 'centerID', 'title', 'category', 'module'); //need to add in CANDID
 
-    //validate candID here
-    $issueValues = [
-        'assignee'   => $assignee,
-        'status'     => $status,
-        'priority'   => $priority,
-  //      'candID'     => $candID,
-        'visitLabel' => $visitLabel,
-        'centerID'   => $centerID,
-        'title'      => $title,
-        'category'   => $category,
-        'module'     => $module
-    ];
-
-    $issueValues['lastUpdatedBy'] = $user->getData('UserID');
-    
-    foreach ($issueValues as $key => $value) {
-    	    if ($value == "null") {  
-	    $issueValues[$key] = NULL;	
-	    }
-	   }
-
-    error_log(json_encode($issueValues));
-    if($issueID == "null") {
-        $issueID = NULL;
+    foreach ($fields as $field) {
+        if (isset($_POST[$field])) {
+            $issueValues[$field] = $_POST[$field];
+        }
     }
+
+    $issueID = $_POST['issueID'];
+    $issueValues['lastUpdatedBy'] = $user->getData('UserID');
 
     if (!empty($issueID)) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
-        error_log("why am I here?");
-    }
-    else {
+    } else {
         $issueValues['reporter'] = $user->getData('UserID');
-	$issueValues['dateCreated'] = date('Y-m-d H:i:s'); //because mysql 5.56 //todo: check that this works.
-        error_log("at new issue submission");
+        $issueValues['dateCreated'] = date('Y-m-d H:i:s'); //because mysql 5.56 //todo: check that this works.
         $db->insert('issues', $issueValues);
         $issueID = $db->getLastInsertId();
     }
 
-    updateComments($issueValues, $issueID, $comment);
+    //adding comment in now that I have an issueID for both new and old.
+    if ($_POST['comment'] != "null") {
+        $issueValues['comment'] = $_POST['comment'];
+    }
+
+    updateComments($issueValues, $issueID);
 
     return $issueID;
 }
 
-function getChangedValues(){
-
-    //here find the changed values that you want to add to the comment stream, or to the comment table. I think now you should have a comment table.
-    //although you'd have to do a join everytime.
-}
-
 //this will call getChangedValues and concatenate everything onto the back of the comment. For now it just changes the comment.
-function updateComments($issueValues, $issueID, $comment) {
-    $db   =& Database::singleton();
+function updateComments($issueValues, $issueID)
+{
+    $user =& User::singleton();
+    $db =& Database::singleton();
+    $undesiredFields = array('lastUpdatedBy');
 
-    if ($comment == "null"){
-       $comment = NULL;
+    foreach ($issueValues as $key => $value) {
+        if (in_array($key, $undesiredFields)) {
+            continue;
+        }
+        if (!empty($value)) { //check that this actually counts as null
+            $changedValues = [
+                'newValue' => $value,
+                'fieldChanged' => $key,
+                'issueID' => $issueID,
+                'whoChanged' => $user->getData('UserID')
+            ];
+            $db->insert('issues_comments', $changedValues);
+        }
     }
-
-    $commentValue = [
-        'comment' => $comment
-    ];
-
-    $db->update('issues', $commentValue, ['issueID' => $issueID]);
 }
 
 //will be updated once you make a separate comments table.
-function getComments() {
-    $db   =& Database::singleton();
-    $db->pselect(
-        "SELECT comment FROM issues",
-        array()
-    );    
+// returns string
+function getComments($issueID)
+{
+    $db =& Database::singleton();
+    $unformattedComments = $db->pselect(
+        "SELECT newValue, fieldChanged, dateAdded, whoChanged from issues_comments where issueID=:issueID ORDER BY dateAdded",
+        array('issueID' => $issueID)
+    );
+
+
+    $commentHistory = '';
+    foreach ($unformattedComments as $comment){
+        $commentString = "";
+        $commentString .= '[' . $comment['dateAdded'] . '] ';
+        $commentString .= $comment['whoChanged']; //really should do a join and get real names here eh.
+        if ($comment['fieldChanged'] === 'comment'){
+            $commentString .=  ' commented ' . '<i>' . $comment['newValue'] . '</i>';
+        }
+        else {
+            $commentString .= " updated the <b>" . $comment['fieldChanged'] . "</b> to <i>" . $comment['newValue'] . "</i>";
+        }
+
+        $commentHistory .= $commentString . '<br/>';
+    }
+
+    return $commentHistory;
+
 }
 
 /**
@@ -141,9 +136,8 @@ function getIssueFields()
     if ($user->hasPermission('issue_tracker_view_allsites')) {
         // get the list of study sites - to be replaced by the Site object
         $sites = Utility::getSiteList();
-        if(is_array($sites)) $sites = array('' => 'All') + $sites;
-    }
-    else {
+        if (is_array($sites)) $sites = array('' => 'All') + $sites;
+    } else {
         // allow only to view own site data
         $site =& Site::singleton($user->getData('CenterID'));
         if ($site->isStudySite()) {
@@ -151,8 +145,6 @@ function getIssueFields()
             $sites[''] = 'All';
         }
     }
-    error_log(json_encode($sites));
-
 
     $assignees = array();
 
@@ -182,7 +174,7 @@ function getIssueFields()
         'immediate' => 'Immediate'
     );
 
- $categories = array(
+    $categories = array(
         'Anonimyzer/Scheduler/ID (ASID)' => 'Anonimyzer/Scheduler/ID (ASID)',
         'API/Mobile' => 'API/Mobile',
         'Behavioural QC' => 'Behavioural QC',
@@ -196,10 +188,10 @@ function getIssueFields()
         'Genomics' => 'Genomics',
         'GUI/Bootstrap' => 'GUI/Bootstrap',
         'Help section' => 'Help section',
-        'Imaging Browser' =>  'Imaging Browser',
+        'Imaging Browser' => 'Imaging Browser',
         'Imaging preprocessing scripts' => 'Imaging preprocessing scripts',
         'Imaging Uploader' => 'Imaging Uploader',
-        'Improvements' =>  'Improvements',
+        'Improvements' => 'Improvements',
         'Install Process' => 'Install Process',
         'Instrument Builder' => 'Instrument Builder',
         'LorisForm' => 'LorisForm',
@@ -213,7 +205,7 @@ function getIssueFields()
         'Testing (Automated)' => 'Testing (Automated)',
         'Testing (Manual)' => 'Testing (Manual)',
         'User accounts/Permissions' => 'User accounts/Permissions'
-         );
+    );
 
     $modules = array();
     $modules_expanded = $db->pselect(
@@ -222,7 +214,7 @@ function getIssueFields()
     );
 
     foreach ($modules_expanded as $m_row) {
-        $module                  = $m_row['Label'];
+        $module = $m_row['Label'];
         $modules[$module] = $module;
     }
 
@@ -231,7 +223,7 @@ function getIssueFields()
     $issueData = null;
     if (!empty($_GET['issueID'])) {
         $issueID = $_GET['issueID'];
-        $issueData   = $db->pselectRow(
+        $issueData = $db->pselectRow(
             "SELECT * FROM issues WHERE issueID = $issueID", //TODO: you actually need to join on candidate. and on site and call it site. also maybe watching
             []
         );
@@ -241,35 +233,33 @@ function getIssueFields()
             []
         );
 
-        error_log("additional");
-        error_log(json_encode($additionalIssueData));
         $issueData['DCCID'] = $additionalIssueData['CandID'];
         $issueData['PSCID'] = $additionalIssueData['PSCID'];
         $issueData['site'] = $additionalIssueData['Name'];
 
-        //$issueData['comment'] = getComments($issueID);
-    }else{
+        $issueData['commentHistory'] = getComments($issueID);
+    } else {
 
         $issueData['reporter'] = $user->getData('UserID'); //these are what need to be displayed upon creation of a new issue, but before the user has saved it. the user cannot change these values.
         $issueData['dateCreated'] = date('Y-m-d H:i:s');
         $issueData['site'] = $user->getData('Site');
-	$issueData['issueID'] = NULL;
-	$issueData['title'] = NULL;
-	$issueData['lastUpdate'] = NULL;
-	$issueData['centerID'] = NULL;
-	$issueData['PSCID'] = NULL;
-	$issueData['DCCID'] = NULL;
-	$issueData['assignee'] = NULL;
-	$issueData['status'] = "new";
-	$issueData['priority'] = "low";
-	$issueData['comment'] = NULL;
-	$issueData['watching'] = NULL;
-	$issueData['visitLabel'] = NULL;
-	$issueData['category'] = NULL;	 
-	$issueData['lastUpdatedBy'] = NULL;
+        $issueData['issueID'] = NULL;
+        $issueData['title'] = NULL;
+        $issueData['lastUpdate'] = NULL;
+        $issueData['centerID'] = NULL;
+        $issueData['PSCID'] = NULL;
+        $issueData['DCCID'] = NULL;
+        $issueData['assignee'] = NULL;
+        $issueData['status'] = "new";
+        $issueData['priority'] = "low";
+        $issueData['commentHistory'] = NULL;
+        $issueData['watching'] = NULL;
+        $issueData['visitLabel'] = NULL;
+        $issueData['category'] = NULL;
+        $issueData['lastUpdatedBy'] = NULL;
     }
 
-        $issueData['watching'] = true;
+    $issueData['watching'] = true;
 
     $result = [
         'assignees' => $assignees,
@@ -278,10 +268,9 @@ function getIssueFields()
         'priorities' => $priorities,
         'categories' => $categories,
         'modules' => $modules,
-        'issueData'   => $issueData,
+        'issueData' => $issueData,
         'hasEditPermission' => $user->hasPermission('issue_tracker_can_assign') //todo: fix this when you decide on new permissions.
     ];
 
-    error_log("result");
     return $result;
 }
