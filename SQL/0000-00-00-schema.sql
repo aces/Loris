@@ -38,7 +38,7 @@ CREATE TABLE `acknowledgements` (
 
 --
 -- Dumping data for table `acknowledgements`
--- 
+--
 
 LOCK TABLES `acknowledgements` WRITE;
 /*!40000 ALTER TABLE `acknowledgements` DISABLE KEYS */;
@@ -102,9 +102,9 @@ CREATE TABLE `caveat_options` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 
+--
 -- Dumping data for table `caveat_options`
--- 
+--
 
 LOCK TABLES `caveat_options` WRITE;
 /*!40000 ALTER TABLE `caveat_options` DISABLE KEYS */;
@@ -268,7 +268,7 @@ CREATE TABLE `feedback_bvl_type` (
 
 LOCK TABLES `feedback_bvl_type` WRITE;
 /*!40000 ALTER TABLE `feedback_bvl_type` DISABLE KEYS */;
-INSERT INTO `feedback_bvl_type` VALUES 
+INSERT INTO `feedback_bvl_type` VALUES
     (1,'Input','Input Errors'),
     (2,'Scoring','Scoring Errors');
 /*!40000 ALTER TABLE `feedback_bvl_type` ENABLE KEYS */;
@@ -293,13 +293,13 @@ CREATE TABLE `feedback_mri_comment_types` (
 
 LOCK TABLES `feedback_mri_comment_types` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_comment_types` DISABLE KEYS */;
-INSERT INTO `feedback_mri_comment_types` VALUES 
+INSERT INTO `feedback_mri_comment_types` VALUES
     (1,'Geometric distortion','volume','a:2:{s:5:\"field\";s:20:\"Geometric_distortion\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
     (2,'Intensity artifact','volume','a:2:{s:5:\"field\";s:18:\"Intensity_artifact\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
     (3,'Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
     (4,'Packet movement artifact','volume','a:2:{s:5:\"field\";s:31:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
     (5,'Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),	    (6,'Overall','volume',''),
-    (7,'Subject','visit',''),	
+    (7,'Subject','visit',''),
     (8,'Dominant Direction Artifact (DWI ONLY)','volume','a:2:{s:5:"field";s:14:"Color_Artifact";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"Good";i:2;s:4:"Fair";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}'),
     (9,'Entropy Rating (DWI ONLY)','volume','a:2:{s:5:"field";s:7:"Entropy";s:6:"values";a:5:{i:0;s:0:"";i:1;s:10:"Acceptable";i:2;s:10:"Suspicious";i:3;s:12:"Unacceptable";i:4;s:13:"Not Available";}}');
 /*!40000 ALTER TABLE `feedback_mri_comment_types` ENABLE KEYS */;
@@ -325,7 +325,7 @@ CREATE TABLE `feedback_mri_predefined_comments` (
 
 LOCK TABLES `feedback_mri_predefined_comments` WRITE;
 /*!40000 ALTER TABLE `feedback_mri_predefined_comments` DISABLE KEYS */;
-INSERT INTO `feedback_mri_predefined_comments` VALUES 
+INSERT INTO `feedback_mri_predefined_comments` VALUES
 	(1,2,'missing slices'),
 	(2,2,'reduced dynamic range due to bright artifact/pixel'),
 	(3,2,'slice to slice intensity differences'),
@@ -445,7 +445,7 @@ CREATE TABLE `files` (
   `SourcePipeline` varchar(255),
   `PipelineDate` date,
   `SourceFileID` int(10) unsigned DEFAULT '0',
-  `ProcessProtocolID` int(11) unsigned, 
+  `ProcessProtocolID` int(11) unsigned,
   `Caveat` tinyint(1) default NULL,
   `TarchiveSource` int(11) default NULL,
   PRIMARY KEY  (`FileID`),
@@ -658,7 +658,7 @@ CREATE TABLE `mri_scan_type` (
 
 LOCK TABLES `mri_scan_type` WRITE;
 /*!40000 ALTER TABLE `mri_scan_type` DISABLE KEYS */;
-INSERT INTO `mri_scan_type` VALUES 
+INSERT INTO `mri_scan_type` VALUES
     (40,'fMRI'),
     (41,'flair'),
     (44,'t1'),
@@ -674,7 +674,7 @@ INSERT INTO `mri_scan_type` VALUES
     (54,'cocosco_cls'),
     (55,'clean_cls'),
     (56,'em_cls'),
-    (57,'seg'),	
+    (57,'seg'),
     (58,'white_matter'),
     (59,'gray_matter'),
     (60,'csf_matter'),
@@ -763,7 +763,7 @@ CREATE TABLE `notification_types` (
 
 LOCK TABLES `notification_types` WRITE;
 /*!40000 ALTER TABLE `notification_types` DISABLE KEYS */;
-INSERT INTO `notification_types` (Type,private,Description) VALUES 
+INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('mri new study',0,'New studies processed by the MRI upload handler'),
     ('mri new series',0,'New series processed by the MRI upload handler'),
     ('mri upload handler emergency',1,'MRI upload handler emergencies'),
@@ -773,7 +773,7 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('visual bvl qc',0,'Timepoints selected for visual QC'),
     ('mri qc status',0,'MRI QC Status change');
 
-INSERT INTO notification_types (Type,private,Description) VALUES 
+INSERT INTO notification_types (Type,private,Description) VALUES
     ('minc insertion',1,'Insertion of the mincs into the mri-table'),
     ('tarchive loader',1,'calls specific Insertion Scripts'),
     ('tarchive validation',1,'Validation of the dicoms After uploading'),
@@ -891,7 +891,7 @@ CREATE TABLE `parameter_type` (
 
 LOCK TABLES `parameter_type` WRITE;
 /*!40000 ALTER TABLE `parameter_type` DISABLE KEYS */;
-INSERT INTO `parameter_type` VALUES 
+INSERT INTO `parameter_type` VALUES
 	(2,'Geometric_distortion','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
 	(3,'Intensity_artifact','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
 	(4,'Movement_artifacts_within_scan','text',NULL,NULL,NULL,NULL,'parameter_file',NULL,NULL,0,0),
@@ -953,18 +953,18 @@ UNLOCK TABLES;
 -- ADDing Meta-data Visit_label , candidate_label and candidate_dob
 --
 
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) 
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition)
 VALUES ('candidate_label','text','Identifier_of_candidate',null,null,'PSCID','candidate',null,1,null);
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) 
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition)
 VALUES ('Visit_label','varchar(255)','Visit_label',null,null,'visit_label','session',null,1,null);
-INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition) 
+INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceField, SourceFrom, CurrentGUITable, Queryable, SourceCondition)
 VALUES  ('candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
 
 INSERT INTO parameter_type_category (Name, type) VALUES('Identifiers', 'Metavars');
 
-INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID) 
-SELECT pt.ParameterTypeID,ptc.ParameterTypeCategoryID 
-FROM parameter_type pt,parameter_type_category ptc 
+INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID)
+SELECT pt.ParameterTypeID,ptc.ParameterTypeCategoryID
+FROM parameter_type pt,parameter_type_category ptc
 WHERE ptc.Name='Identifiers' AND pt.Name IN ('candidate_label', 'Visit_label','candidate_dob');
 
 
@@ -1504,9 +1504,9 @@ CREATE TABLE participant_status_options (
         Required boolean default NULL,
         parentID int(10) default NULL,
         PRIMARY KEY  (ID),
-        UNIQUE KEY ID (ID) 
+        UNIQUE KEY ID (ID)
 );
-INSERT INTO `participant_status_options` VALUES 
+INSERT INTO `participant_status_options` VALUES
 	(1,'Active',0,NULL),
 	(2,'Refused/Not Enrolled',0,NULL),
 	(3,'Ineligible',0,NULL),
@@ -1535,7 +1535,7 @@ CREATE TABLE participant_status (
         study_consent_date date default NULL,
         study_consent_withdrawal date default NULL,
         PRIMARY KEY  (ID),
-        UNIQUE KEY ID (ID) 
+        UNIQUE KEY ID (ID)
 );
 
 
@@ -1938,7 +1938,7 @@ CREATE TABLE `CNV` (
 --
 -- Table structure for table `GWAS`
 -- Genomic Browser module
--- 
+--
 DROP TABLE IF EXISTS `GWAS`;
 CREATE TABLE `GWAS` (
   `GWASID` int unsigned NOT NULL AUTO_INCREMENT,
@@ -2024,7 +2024,7 @@ CREATE TABLE `genomic_cpg_annotation` (
   `cpg_name` varchar(100) NOT NULL,
   `location_id` bigint(20) NOT NULL,
   `address_id_a` int unsigned NULL,
-  `probe_seq_a` varchar(100) NULL, 
+  `probe_seq_a` varchar(100) NULL,
   `address_id_b` int unsigned NULL,
   `probe_seq_b` varchar(100) NULL,
   `design_type` varchar(20) NULL,
@@ -2035,7 +2035,7 @@ CREATE TABLE `genomic_cpg_annotation` (
   `gene_acc_num` text NULL,
   `gene_group` text NULL,
   `island_loc` varchar(100) NULL,
-  `island_relation` enum ('island', 'n_shelf', 'n_shore', 's_shelf', 's_shore') NULL, 
+  `island_relation` enum ('island', 'n_shelf', 'n_shore', 's_shelf', 's_shore') NULL,
   `fantom_promoter_loc`varchar(100) NULL,
   `dmr` enum ('CDMR', 'DMR', 'RDMR') NULL,
   `enhancer` tinyint(1) NULL,
@@ -2121,7 +2121,7 @@ DROP TABLE IF EXISTS ExternalLinkTypes;
 CREATE TABLE ExternalLinkTypes (
     LinkTypeID int NOT NULL AUTO_INCREMENT PRIMARY KEY,
     LinkType varchar(255)
-);  
+);
 INSERT INTO ExternalLinkTypes (LinkType)
     VALUES ('FooterLink'),
            ('StudyLinks'),
@@ -2135,7 +2135,7 @@ CREATE TABLE ExternalLinks (
     LinkURL varchar(255) NOT NULL,
     FOREIGN KEY (LinkTypeID) REFERENCES ExternalLinkTypes(LinkTypeID)
 );
-INSERT INTO ExternalLinks (LinkTypeID, LinkText, LinkURL) VALUES 
+INSERT INTO ExternalLinks (LinkTypeID, LinkText, LinkURL) VALUES
     (1,  'Loris Website', 'http://www.loris.ca'),
     (1,  'GitHub', 'https://github.com/aces/Loris'),
     (2,  'Loris Website', 'http://www.loris.ca'),
@@ -2168,3 +2168,21 @@ CREATE TABLE `data_release_permissions` (
  CONSTRAINT `FK_userid` FOREIGN KEY (`userid`) REFERENCES `users` (`ID`),
  CONSTRAINT `FK_data_release_id` FOREIGN KEY (`data_release_id`) REFERENCES `data_release` (`id`)
 );
+
+DROP TABLE IF EXISTS `media`;
+CREATE TABLE `media` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` int(10) unsigned NOT NULL,
+  `instrument` varchar(255) DEFAULT NULL,
+  `date_taken` date DEFAULT NULL,
+  `comments` text,
+  `file_name` varchar(255) NOT NULL,
+  `file_type` varchar(255) DEFAULT NULL,
+  `data_dir` varchar(255) NOT NULL,
+  `uploaded_by` varchar(255) DEFAULT NULL,
+  `hide_file` tinyint(1) DEFAULT '0',
+  `date_uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`session_id`) REFERENCES `session` (`ID`),
+  FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
