@@ -32,7 +32,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
             }
             cellLinks.push(React.createElement(
                 'a',
-                { href: loris.BaseURL + "/iimaging_browser/viewSession/?sessionID=" + row.SessionID + "&selectedOnly=1&backURL=/imaging_browser/" },
+                { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID + "&selectedOnly=1&backURL=/imaging_browser/" },
                 'selected'
             ));
             cellLinks.push(" | ");
