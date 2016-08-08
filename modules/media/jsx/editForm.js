@@ -131,18 +131,6 @@ var MediaEditForm = React.createClass({
             value={this.state.mediaData.visit_label}
           />
           <SelectElement
-<<<<<<< HEAD
-=======
-            name="for_site"
-            label="Site"
-            options={this.state.Data.sites}
-            onUserInput={this.setFormData}
-            ref="for_site"
-            disabled={true}
-            value={this.state.mediaData.for_site}
-          />
-          <SelectElement
->>>>>>> aces/17.0-dev
             name="instrument"
             label="Instrument"
             options={this.state.Data.instruments}
@@ -151,7 +139,6 @@ var MediaEditForm = React.createClass({
             disabled={true}
             value={this.state.mediaData.instrument}
           />
-<<<<<<< HEAD
           <SelectElement
             name="for_site"
             label="For Site"
@@ -160,8 +147,6 @@ var MediaEditForm = React.createClass({
             ref="for_site"
             value={this.state.mediaData.for_site}
           />
-=======
->>>>>>> aces/17.0-dev
           <DateElement
             name="date_taken"
             label="Date of Administration"

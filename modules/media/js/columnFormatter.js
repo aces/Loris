@@ -58,8 +58,4 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     null,
     cell
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> aces/17.0-dev

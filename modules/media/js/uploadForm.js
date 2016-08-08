@@ -133,7 +133,6 @@ var MediaUploadForm = React.createClass({
           required: true
         }),
         React.createElement(SelectElement, {
-<<<<<<< HEAD
           name: 'instrument',
           label: 'Instrument',
           options: this.state.Data.instruments,
@@ -147,21 +146,6 @@ var MediaUploadForm = React.createClass({
           options: this.state.Data.sites,
           onUserInput: this.setFormData,
           ref: 'for_site'
-=======
-          name: 'for_site',
-          label: 'Site',
-          options: this.state.Data.sites,
-          onUserInput: this.setFormData,
-          ref: 'for_site',
-          required: true
-        }),
-        React.createElement(SelectElement, {
-          name: 'instrument',
-          label: 'Instrument',
-          options: this.state.Data.instruments,
-          onUserInput: this.setFormData,
-          ref: 'instrument'
->>>>>>> aces/17.0-dev
         }),
         React.createElement(DateElement, {
           name: 'date_taken',
@@ -269,12 +253,7 @@ var MediaUploadForm = React.createClass({
       success: function (data) {
         $("#file-progress").addClass('hide');
         self.setState({
-<<<<<<< HEAD
           uploadResult: "success"
-=======
-          uploadResult: "success",
-          formData: {} // reset form data after successful file upload
->>>>>>> aces/17.0-dev
         });
 
         // Trigger an update event to update all observers (i.e DataTable)
@@ -357,16 +336,6 @@ var MediaUploadForm = React.createClass({
    * @param value
    */
   setFormData: function (formElement, value) {
-<<<<<<< HEAD
-=======
-
-    // Only display visits and sites available for the current pscid
-    if (formElement === "pscid") {
-      this.state.Data.visits = this.state.Data.sessionData[value].visits;
-      this.state.Data.sites = this.state.Data.sessionData[value].sites;
-    }
-
->>>>>>> aces/17.0-dev
     var formData = this.state.formData;
     formData[formElement] = value;
 
@@ -395,8 +364,4 @@ var MediaUploadForm = React.createClass({
 
 });
 
-<<<<<<< HEAD
 RMediaUploadForm = React.createFactory(MediaUploadForm);
-=======
-RMediaUploadForm = React.createFactory(MediaUploadForm);
->>>>>>> aces/17.0-dev
