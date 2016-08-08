@@ -1097,14 +1097,50 @@ class NDB_BVL_Instrument extends NDB_Page
     function _getDatabaseDate($formDateValue)
     {
         if (!empty($formDateValue)) {
-            if (count($formDateValue)==2) {
-                //handle time (HH:MM:SS)
-                $databaseValue = "$formDateValue[H]:$formDateValue[i]";
-            } else {
-                //handle date (YYYY/MM/DD)
-                $databaseValue = "$formDateValue[Y]-"
-                    . "$formDateValue[M]-"
-                    . "$formDateValue[d]";
+
+            $databaseValue = "";
+
+            if (array_key_exists("Y", $formDateValue)
+                || array_key_exists("M", $formDateValue)
+                || array_key_exists("d", $formDateValue)
+            ) {
+
+                if (array_key_exists("Y", $formDateValue)) {
+                    $yearString = $formDateValue[Y];
+                } else {
+                    $yearString = "0001";
+                }
+
+                if (array_key_exists("M", $formDateValue)) {
+                    $monthString = $formDateValue[M];
+                } else {
+                    $monthString = "01";
+                }
+
+                if (array_key_exists("d", $formDateValue)) {
+                    $dayString = $formDateValue[d];
+                } else {
+                    $dayString = "01";
+                }
+
+                $databaseValue = $yearString . "-" . $monthString . "-" . $dayString;
+
+            } elseif (array_key_exists("H", $formDateValue)
+                || array_key_exists("i", $formDateValue)
+            ) {
+                if (array_key_exists("H", $formDateValue)) {
+                    $hourString = $formDateValue[H];
+                } else {
+                    $hourString = "01";
+                }
+                if (array_key_exists("i", $formDateValue)) {
+                    $minuteString = $formDateValue[i];
+                } else {
+                    $minuteString = "01";
+                }
+
+                $databaseValue = $hourString . ":" . $minuteString;
+
             }
         }
         return $databaseValue;
@@ -2053,6 +2089,27 @@ class NDB_BVL_Instrument extends NDB_Page
             return $age; //$age['year'] + ($age['mon'] / 12) + ($age['day'] / 30);
         }
         return;
+    }
+
+    /**
+     * Get the candidates PSCID.
+     *
+     * @return The candidate's PSCID.
+     */
+    function getPSCID()
+    {
+        $db        =& Database::singleton();
+        $CommentID = $this->getCommentID();
+
+        $pscid = $db->pselectOne(
+            "SELECT c.PSCID FROM $this->testName i
+            JOIN flag f USING (CommentID)
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c USING (CandID)
+            WHERE f.CommentID=:CID",
+            array('CID' => $CommentID)
+        );
+        return $pscid;
     }
 
     /**

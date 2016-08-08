@@ -119,13 +119,12 @@ function moveFileToFS(&$fileToUpload)
 {
 
     $config           = NDB_Config::singleton();
-    $base_dir         = $config->getSetting('base');
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
     reportProgress(5, "Copying file to $genomic_data_dir ");
     if (move_uploaded_file(
         $fileToUpload->tmp_name,
-        $base_dir . $genomic_data_dir . 'genomic_uploader/'
+        $genomic_data_dir . 'genomic_uploader/'
         . $fileToUpload->file_name
     )) {
         reportProgress(5, "File copied to $genomic_data_dir ");
@@ -213,7 +212,6 @@ function createSampleCandidateRelations(&$fileToUpload)
     reportProgress(20, "Creating sample-candidate relations");
 
     $config           = NDB_Config::singleton();
-    $base_dir         = $config->getSetting('base');
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
 
@@ -222,7 +220,7 @@ function createSampleCandidateRelations(&$fileToUpload)
     $rows = array();
 
     $f = fopen(
-        $base_dir . $genomic_data_dir . 'genomic_uploader/'
+        $genomic_data_dir . 'genomic_uploader/'
             . $fileToUpload->file_name,
         'r'
     );
@@ -296,12 +294,11 @@ function insertBetaValues(&$fileToUpload)
     // see: /module/genomic_browser/tool/human...
 
     $config           = NDB_Config::singleton();
-    $base_dir         = $config->getSetting('base');
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
 
     $f = fopen(
-        $base_dir . $genomic_data_dir . 'genomic_uploader/'
+        $genomic_data_dir . 'genomic_uploader/'
             . $fileToUpload->file_name,
         "r"
     );
@@ -389,12 +386,11 @@ function insertBetaValues(&$fileToUpload)
 function createCandidateFileRelations(&$fileToUpload)
 {
     $config           = NDB_Config::singleton();
-    $base_dir         = $config->getSetting('base');
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
 
     $f = fopen(
-        $base_dir . $genomic_data_dir . 'genomic_uploader/'
+        $genomic_data_dir . 'genomic_uploader/'
             . $fileToUpload->file_name,
         "r"
     );

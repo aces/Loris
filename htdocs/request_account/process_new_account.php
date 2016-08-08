@@ -39,6 +39,14 @@ $tpl_data = array();
 
 // create an instance of the config object
 $config = NDB_Config::singleton();
+$DB     = Database::singleton();
+
+$res = array();
+$DB->select("SELECT Name, CenterID FROM psc", $res);
+$site_list = array();
+foreach ($res as $elt) {
+    $site_list[$elt["CenterID"]] = $elt["Name"];
+}
 
 $tpl_data['baseurl']     = $config->getSetting('url');
 $tpl_data['css']         = $config->getSetting('css');
@@ -46,13 +54,15 @@ $tpl_data['rand']        = rand(0, 9999);
 $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['currentyear'] = date('Y');
+$tpl_data['site_list']   = $site_list;
+
 try {
     $tpl_data['study_logo'] = "../".$config->getSetting('studylogo');
 } catch(ConfigurationException $e) {
     $tpl_data['study_logo'] = '';
 }
 try {
-    $study_links = $config->getSetting('Studylinks');// print_r($study_links);
+    $study_links = $config->getSetting('Studylinks');
     foreach (Utility::toArray($study_links['link']) AS $link) {
         $LinkArgs = '';
         $BaseURL  = $link['@']['url'];
@@ -82,6 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $err[] = 'Your email is not valid!';
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
         $err[] = 'Your email is not valid!';
+    }
+    if (!checkLen('site', 0)) {
+        $err[] = 'The Site field is empty!';
     }
     if (isset($_SESSION['tntcon'])
         && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']
@@ -116,6 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $lastname  = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
         $from      = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
         $verif_box = htmlspecialchars($_REQUEST["verif_box"], ENT_QUOTES);
+        $site      = htmlspecialchars($_REQUEST["site"], ENT_QUOTES);
 
         // check to see if verificaton code was correct
         // if verification code was correct send the message and show this page
@@ -127,6 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                      'Last_name'        => $lastname,
                      'Pending_approval' => 'Y',
                      'Email'            => $from,
+                     'CenterID'         => $site,
                     );
         // check email address' uniqueness
         $result = $DB->pselectOne(
