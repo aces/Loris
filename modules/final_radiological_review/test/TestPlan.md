@@ -25,7 +25,7 @@
 9. The values in the PSCID column should be hyperlinks. Try clicking on the links. Make sure that it takes you to the appropriate final radiological review page (right candidate and right visit). You should only be able to access these pages if you have the view_final_radiological_review permission.
 10. On one of these final radiological review pages, check that the Imaging Browser and Original Radiology Review links are working.
 11. In the form area, try filling out each of the form boxes and pressing the "Save" button. The page should refresh. Ensure that the values were saved. You should only be able to save values if you have the edit_final_radiological_review permission.
-12. Check that the Site Review column data matches what is in the database.
-13. Check that a conflict message appears if there is a difference between the Final and Extra reviews.
-14. Check that a conflict message appears if there is a difference between the Site and Final reviews.
-15. Alter one of the form fields and save the form. Check that a new row is added to the change log, documenting the change.
+  a) Check that the Site Review column data matches what is in the database.
+  b) Input test conflicting data and Check that a conflict message appears if there is a difference between the Final and Extra reviews after click 'Save' button.
+  c) Input test conflicting data and Check that a conflict message appears if there is a difference between the Site and Final reviews after click 'Save' button.
+12. Alter one of the form fields and save the form. Check that a new row is added to the change log, documenting the change.
