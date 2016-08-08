@@ -56,3 +56,7 @@ DELETE FROM Config WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='med
 INSERT INTO Config (`ConfigID`, `Value`) VALUES (
   (SELECT ID FROM ConfigSettings WHERE Name='mediaPath'), '/data/uploads/'
 );
+
+INSERT INTO parameter_type (Name, Type, SourceFrom) VALUES ('SNR', 'double', 'parameter_file');
+UPDATE Config SET Value="images/neurorgb_web.jpg" WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name="studylogo") AND Value="images/neuro_logo_blue.gif";
+

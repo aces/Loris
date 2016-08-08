@@ -42,13 +42,19 @@ function editFile()
 
     // Process posted data
     $idMediaFile = $_POST['idMediaFile'];
+<<<<<<< HEAD
     $site        = isset($_POST['for_site']) ? $_POST['for_site'] : null;
+=======
+>>>>>>> aces/17.0-dev
     $dateTaken   = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
     $comments    = isset($_POST['comments']) ? $_POST['comments'] : null;
     $hideFile    = $_POST['hide_file'];
 
     $updateValues = [
+<<<<<<< HEAD
                      'for_site'   => $site,
+=======
+>>>>>>> aces/17.0-dev
                      'date_taken' => $dateTaken,
                      'comments'   => $comments,
                      'hide_file'  => $hideFile,
@@ -100,29 +106,66 @@ function uploadFile()
     $comments   = isset($_POST['comments']) ? $_POST['comments'] : null;
 
     // If required fields are not set, show an error
+<<<<<<< HEAD
     if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($instrument)) {
+=======
+    if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($site)) {
+>>>>>>> aces/17.0-dev
         showError("Please fill in all required fields!");
 
         return;
     }
 
+<<<<<<< HEAD
     $fileSize = $_FILES["file"]["size"];
+=======
+>>>>>>> aces/17.0-dev
     $fileName = $_FILES["file"]["name"];
     $fileType = $_FILES["file"]["type"];
 
     $userID = $user->getData('UserID');
 
+<<<<<<< HEAD
     // Build insert query
     $query = [
               'pscid'         => $pscid,
               'visit_label'   => $visit,
               'instrument'    => $instrument,
               'for_site'      => $site,
+=======
+    $sessionID = $db->pselectOne(
+        "SELECT s.ID as session_id FROM candidate c " .
+        "LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND " .
+        "s.Visit_label = :v_visit_label AND s.CenterID = :v_center_id",
+        [
+         'v_pscid'       => $pscid,
+         'v_visit_label' => $visit,
+         'v_center_id'   => $site,
+        ]
+    );
+
+    if (!isset($sessionID) || count($sessionID) < 1) {
+        showError(
+            "Error! A session does not exist for candidate '$pscid'' " .
+            "and visit label '$visit'."
+        );
+
+        return;
+    }
+
+    // Build insert query
+    $query = [
+              'session_id'    => $sessionID,
+              'instrument'    => $instrument,
+>>>>>>> aces/17.0-dev
               'date_taken'    => $dateTaken,
               'comments'      => $comments,
               'file_name'     => $fileName,
               'file_type'     => $fileType,
+<<<<<<< HEAD
               'file_size'     => $fileSize,
+=======
+>>>>>>> aces/17.0-dev
               'data_dir'      => $mediaPath,
               'uploaded_by'   => $userID,
               'hide_file'     => 0,
@@ -162,11 +205,60 @@ function getUploadFields()
     $visitList       = Utility::getVisitList();
     $siteList        = Utility::getSiteList(false);
 
+<<<<<<< HEAD
+=======
+    // Build array of session data to be used in upload media dropdowns
+    $sessionData    = [];
+    $sessionRecords = $db->pselect(
+        "SELECT c.PSCID, s.Visit_label, s.CenterID " .
+        "FROM candidate c LEFT JOIN session s USING(CandID) ORDER BY c.PSCID ASC",
+        []
+    );
+
+    foreach ($sessionRecords as $record) {
+        if (!in_array(
+            $record["CenterID"],
+            $sessionData[$record["PSCID"]]['sites'],
+            true
+        )
+        ) {
+            $sessionData[$record["PSCID"]]['sites'][$record["CenterID"]]
+                = $siteList[$record["CenterID"]];
+        }
+
+        if (!in_array(
+            $record["Visit_label"],
+            $sessionData[$record["PSCID"]]['visits'],
+            true
+        )
+        ) {
+            $sessionData[$record["PSCID"]]['visits'][$record["Visit_label"]]
+                = $record["Visit_label"];
+        }
+    }
+
+    // Build media data to be displayed when editing a media file
+>>>>>>> aces/17.0-dev
     $mediaData = null;
     if (isset($_GET['idMediaFile'])) {
         $idMediaFile = $_GET['idMediaFile'];
         $mediaData   = $db->pselectRow(
+<<<<<<< HEAD
             "SELECT * FROM media WHERE id = $idMediaFile",
+=======
+            "SELECT " .
+            "m.session_id, " .
+            "(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid, " .
+            "Visit_label as visit_label, " .
+            "instrument, " .
+            "CenterID as for_site, " .
+            "date_taken, " .
+            "comments, " .
+            "file_name, " .
+            "hide_file, " .
+            "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID " .
+            "WHERE m.id = $idMediaFile",
+>>>>>>> aces/17.0-dev
             []
         );
     }
@@ -178,6 +270,10 @@ function getUploadFields()
                'instruments' => $instrumentsList,
                'sites'       => $siteList,
                'mediaData'   => $mediaData,
+<<<<<<< HEAD
+=======
+               'sessionData' => $sessionData,
+>>>>>>> aces/17.0-dev
               ];
 
     return $result;
