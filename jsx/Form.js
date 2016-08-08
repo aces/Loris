@@ -322,17 +322,29 @@ HelpTextElement = React.createClass({
  * React wrapper for <button> element, typically used to submit forms
  */
 ButtonElement = React.createClass({
+  getInitialState: function() {
+    return {
+      'onUserInput': function() {
+        console.warn('onUserInput() callback is not set');
+      }
+    }
+  },
   getDefaultProps: function() {
     return {
-      'label': 'Submit'
+      'label': 'Submit',
+      'type': 'submit'
     };
+  },
+  handleClick: function(e) {
+    this.props.onUserInput(e);
   },
   render: function() {
     return (
-      <div className="form-group">
+      <div className="row form-group">
         <div className="col-sm-9 col-sm-offset-3">
-          <button type="submit"
-                  className="btn btn-primary">{this.props.label}</button>
+          <button type={this.props.type} className="btn btn-primary" onClick={this.handleClick}>
+            {this.props.label}
+          </button>
         </div>
       </div>
     );
@@ -386,14 +398,22 @@ ScoredElement = React.createClass({
 TextboxElement = React.createClass({
     getInitialState: function() {
         return {
-            'value': ''
+            value: ''
         }
     },
     getDefaultProps: function() {
         return {
-            'onUserInput': function() {
+            value: '',
+            onUserInput: function() {
                 console.warn('onUserInput() callback is not set');
             }
+        }
+    },
+    componentDidMount: function() {
+        if (this.props.value) {
+            this.setState({
+              value: this.props.value
+            });
         }
     },
     handleChange: function(e) {
@@ -413,6 +433,7 @@ TextboxElement = React.createClass({
                         type="text"
                         className="form-control"
                         onChange={this.handleChange}
+                        value={this.state.value}
                     />
                 </div>
             </div>

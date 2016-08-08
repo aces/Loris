@@ -148,15 +148,6 @@ var MediaEditForm = React.createClass({
           value: this.state.mediaData.visit_label
         }),
         React.createElement(SelectElement, {
-          name: 'for_site',
-          label: 'Site',
-          options: this.state.Data.sites,
-          onUserInput: this.setFormData,
-          ref: 'for_site',
-          disabled: true,
-          value: this.state.mediaData.for_site
-        }),
-        React.createElement(SelectElement, {
           name: 'instrument',
           label: 'Instrument',
           options: this.state.Data.instruments,
@@ -164,6 +155,14 @@ var MediaEditForm = React.createClass({
           ref: 'instrument',
           disabled: true,
           value: this.state.mediaData.instrument
+        }),
+        React.createElement(SelectElement, {
+          name: 'for_site',
+          label: 'For Site',
+          options: this.state.Data.sites,
+          onUserInput: this.setFormData,
+          ref: 'for_site',
+          value: this.state.mediaData.for_site
         }),
         React.createElement(DateElement, {
           name: 'date_taken',
