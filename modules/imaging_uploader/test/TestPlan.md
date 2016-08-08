@@ -1,6 +1,6 @@
-# Imaging Uploader - Test plan
+# Imaging Uploader - Test Plan
       
-1. Check that you have access to the Imaging Uploader page if you have either the mri_upload or superuser permission.
+1. Check that you have access to the Imaging Uploader page if you have either the imaging_uploader or superuser permission.
 
 2. Check that when accessing the Imaging Uploader page, the search result table displays all the uploads done for all users.
 
