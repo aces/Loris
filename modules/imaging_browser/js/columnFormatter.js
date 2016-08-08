@@ -25,20 +25,20 @@ function formatColumn(column, cell, rowData, rowHeaders) {
             for (var i = 0; i < cellTypes.length; i += 1) {
                 cellLinks.push(React.createElement(
                     'a',
-                    { href: loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&outputType=" + cellTypes[i] + "&backURL=/imaging_browser/" },
+                    { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID + "&outputType=" + cellTypes[i] + "&backURL=/imaging_browser/" },
                     cellTypes[i]
                 ));
                 cellLinks.push(" | ");
             }
             cellLinks.push(React.createElement(
                 'a',
-                { href: loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&selectedOnly=1&backURL=/imaging_browser/" },
+                { href: loris.BaseURL + "/iimaging_browser/viewSession/?sessionID=" + row.SessionID + "&selectedOnly=1&backURL=/imaging_browser/" },
                 'selected'
             ));
             cellLinks.push(" | ");
             cellLinks.push(React.createElement(
                 'a',
-                { href: loris.BaseURL + "imaging_browser/viewSession/?sessionID=" + row.SessionID + "&backURL=/imaging_browser/" },
+                { href: loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID + "&backURL=/imaging_browser/" },
                 'all types'
             ));
             return React.createElement(
