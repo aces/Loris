@@ -7,7 +7,7 @@ In order to run the grunt build step, you will have to install the following dep
 * NodeJS
 * NPM
 
-###1.1 Installing dependencies
+###1.1 Installing dependencies 
 
 ####1.1.1 NodeJS
 
@@ -51,7 +51,7 @@ curl -L https://www.npmjs.com/install.sh | sudo sh
 
 ###1.2 Installing Grunt
 
-Once NodeJS and NPM are installed, you are ready to install Grunt. First, ```cd``` into the LORIS home directory in your terminal.
+Once NodeJS and NPM are installed, you are ready to install Grunt. First, ```cd``` into the LORIS home directory in your terminal. 
 Then run the following command:
 
 ```
@@ -79,7 +79,7 @@ with the following format:
 
 ###2.2 Using Babel to compile JSX
 
-There are four major ways you can compile JSX with Babel. You can compile once or continuously a single or a directory. Using
+There are four major ways you can compile JSX with Babel. You can compile once or continuously a single or a directory. Using 
 continuous compilation becomes useful when you are constantly making changes to the JSX file.
 
 ####2.2.1 Compile single file
@@ -118,7 +118,7 @@ To compile a directory continuously use the following command:
 
 Within LORIS, we have two main ways of adding JSX and their compiled files. When creating a new JSX file **always** use the ```.js```
 extension or the continuous compilation will not work as expected. The file name of the JSX and its compiled file should have the
-same name.
+same name. 
 
 ###3.1 Adding generic JSX files
 
@@ -127,5 +127,5 @@ JSX file should be placed in the ```jsx/``` directory and its compiled file in t
 
 ###3.2 Adding module specific JSX files
 
-In many cases, React components are designed for a specific LORIS module. In such cases the JSX file should be placed in the
+In many cases, React components are designed for a specific LORIS module. In such cases the JSX file should be placed in the 
 ```module/$DESIRED_MODULE/jsx/``` and its compiled file in the ```module/$DESIRED_MODULE/js/``` directory.

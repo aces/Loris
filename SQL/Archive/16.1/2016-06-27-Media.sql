@@ -56,3 +56,5 @@ DELETE FROM Config WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='med
 INSERT INTO Config (`ConfigID`, `Value`) VALUES (
   (SELECT ID FROM ConfigSettings WHERE Name='mediaPath'), '/data/uploads/'
 );
+
+
