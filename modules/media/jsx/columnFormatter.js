@@ -25,7 +25,13 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   if (column === 'File Name' && hasWritePermission === true) {
     var downloadURL = loris.BaseURL + "/media/ajax/FileDownload.php?File=" +
       row['File Name'];
-    return <td><a href={downloadURL} target="_blank">{cell}</a></td>;
+    return (
+      <td>
+        <a href={downloadURL} target="_blank" download={row['File Name']}>
+          {cell}
+        </a>
+      </td>
+    );
   }
 
   if (column === 'Visit Label') {

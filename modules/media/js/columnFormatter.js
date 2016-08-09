@@ -29,7 +29,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       null,
       React.createElement(
         'a',
-        { href: downloadURL, target: '_blank' },
+        { href: downloadURL, target: '_blank', download: row['File Name'] },
         cell
       )
     );
