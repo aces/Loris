@@ -1,3 +1,5 @@
+/* exported RMediaUploadForm */
+
 /**
  * Media Upload Form
  *
@@ -19,12 +21,12 @@ var MediaUploadForm = React.createClass({
 
   getInitialState: function () {
     return {
-      'Data': {},
-      'formData': {},
-      'uploadResult': null,
-      'errorMessage': null,
-      'isLoaded': false,
-      'loadedData': 0
+      Data: {},
+      formData: {},
+      uploadResult: null,
+      errorMessage: null,
+      isLoaded: false,
+      loadedData: 0
     };
   },
 
@@ -34,21 +36,20 @@ var MediaUploadForm = React.createClass({
       dataType: 'json',
       success: function (data) {
         self.setState({
-          'Data': data,
-          'isLoaded': true
+          Data: data,
+          isLoaded: true
         });
       },
       error: function (data, errorCode, errorMsg) {
         console.error(data, errorCode, errorMsg);
         self.setState({
-          'error': 'An error occurred when loading the form!'
+          error: 'An error occurred when loading the form!'
         });
       }
     });
   },
 
   render: function () {
-
     // Data loading error
     if (this.state.error !== undefined) {
       return React.createElement(
@@ -68,19 +69,20 @@ var MediaUploadForm = React.createClass({
         'button',
         { className: 'btn-info has-spinner' },
         'Loading',
-        React.createElement('span', { className: 'glyphicon glyphicon-refresh glyphicon-refresh-animate' })
+        React.createElement('span', {
+          className: 'glyphicon glyphicon-refresh glyphicon-refresh-animate' })
       );
     }
 
-    var helpText = "File name should begin with<b> [PSCID]_[Visit Label]_[Instrument]</b><br> For example, for candidate <i>ABC123</i>, visit <i>V1</i> for <i>Body Mass Index</i> the file name should be prefixed by: <b>ABC123_V1_Body_Mass_Index</b>";
+    var helpText = "File name should begin with " + "<b>[PSCID]_[Visit Label]_[Instrument]</b><br> For example, " + "for candidate <i>ABC123</i>, visit <i>V1</i> for " + "<i>Body Mass Index</i> the file name should be prefixed by: " + "<b>ABC123_V1_Body_Mass_Index</b>";
     var alertMessage = "";
     var alertClass = "alert text-center hide";
 
     if (this.state.uploadResult) {
-      if (this.state.uploadResult == "success") {
+      if (this.state.uploadResult === "success") {
         alertClass = "alert alert-success text-center";
         alertMessage = "Upload Successful!";
-      } else if (this.state.uploadResult == "error") {
+      } else if (this.state.uploadResult === "error") {
         var errorMessage = this.state.errorMessage;
         alertClass = "alert alert-danger text-center";
         alertMessage = errorMessage ? errorMessage : "Failed to upload!";
@@ -119,19 +121,19 @@ var MediaUploadForm = React.createClass({
           required: true
         }),
         React.createElement(SelectElement, {
-          name: 'visit_label',
+          name: 'visitLabel',
           label: 'Visit Label',
           options: this.state.Data.visits,
           onUserInput: this.setFormData,
-          ref: 'visit_label',
+          ref: 'visitLabel',
           required: true
         }),
         React.createElement(SelectElement, {
-          name: 'for_site',
+          name: 'forSite',
           label: 'Site',
           options: this.state.Data.sites,
           onUserInput: this.setFormData,
-          ref: 'for_site',
+          ref: 'forSite',
           required: true
         }),
         React.createElement(SelectElement, {
@@ -142,12 +144,12 @@ var MediaUploadForm = React.createClass({
           ref: 'instrument'
         }),
         React.createElement(DateElement, {
-          name: 'date_taken',
+          name: 'dateTaken',
           label: 'Date of Administration',
           minYear: '2000',
           maxYear: '2017',
           onUserInput: this.setFormData,
-          ref: 'date_taken'
+          ref: 'dateTaken'
         }),
         React.createElement(TextareaElement, {
           name: 'comments',
@@ -167,17 +169,17 @@ var MediaUploadForm = React.createClass({
     );
   },
 
-  /*********************************************************************************
+  /** *******************************************************************************
   *                      ******     Helper methods     *******
   *********************************************************************************/
 
   /**
    * Returns a valid name for the file to be uploaded
    *
-   * @param pscid
-   * @param visitLabel
-   * @param instrument
-   * @returns {string}
+   * @param {string} pscid - PSCID selected from the dropdown
+   * @param {string} visitLabel - Visit label selected from the dropdown
+   * @param {string} instrument - Instrument selected from the dropdown
+   * @return {string} - Generated valid filename for the current selection
    */
   getValidFileName: function (pscid, visitLabel, instrument) {
     var fileName = pscid + "_" + visitLabel;
@@ -187,8 +189,8 @@ var MediaUploadForm = React.createClass({
   },
 
   /**
-   * Handles form submission
-   * @param e
+   * Handle form submission
+   * @param {object} e - Form submission event
    */
   handleSubmit: function (e) {
     e.preventDefault();
@@ -202,9 +204,9 @@ var MediaUploadForm = React.createClass({
     }
 
     // Validate uploaded file name
-    var instrument = myFormData['instrument'] ? myFormData['instrument'] : null;
-    var fileName = myFormData['file'] ? myFormData['file'].name : null;
-    var requiredFileName = this.getValidFileName(myFormData['pscid'], myFormData['visit_label'], instrument);
+    var instrument = myFormData.instrument ? myFormData.instrument : null;
+    var fileName = myFormData.file ? myFormData.file.name : null;
+    var requiredFileName = this.getValidFileName(myFormData.pscid, myFormData.visitLabel, instrument);
 
     if (!this.isValidFileName(requiredFileName, fileName)) {
       alert("File name should start with: " + requiredFileName);
@@ -215,7 +217,7 @@ var MediaUploadForm = React.createClass({
     var self = this;
     var formData = new FormData();
     for (var key in myFormData) {
-      if (myFormData[key] != "") {
+      if (myFormData[key] !== "") {
         formData.append(key, myFormData[key]);
       }
     }
@@ -282,12 +284,12 @@ var MediaUploadForm = React.createClass({
   /**
    * Checks if the inputted file name is valid
    *
-   * @param requiredFileName
-   * @param fileName
-   * @returns {boolean}
+   * @param {string} requiredFileName - Required file name
+   * @param {string} fileName - Provided file name
+   * @return {boolean} - true if file names match and false otherwise
    */
   isValidFileName: function (requiredFileName, fileName) {
-    if (fileName == null || requiredFileName == null) {
+    if (fileName === null || requiredFileName === null) {
       return false;
     }
 
@@ -295,29 +297,26 @@ var MediaUploadForm = React.createClass({
   },
 
   /**
-   * Validates the form
+   * Validate the form
    *
-   * @param formRefs
-   * @param formData
-   * @returns {boolean}
+   * @param {object} formRefs - Object containing references to React form elements
+   * @param {object} formData - Object containing form data inputed by user
+   * @return {boolean} - true if all required fields are filled, false otherwise
    */
   isValidForm: function (formRefs, formData) {
-
     var isValidForm = true;
     var requiredFields = {
-      'pscid': null,
-      'visit_label': null,
-      'file': null
+      pscid: null,
+      visitLabel: null,
+      file: null
     };
 
     Object.keys(requiredFields).map(function (field) {
       if (formData[field]) {
         requiredFields[field] = formData[field];
-      } else {
-        if (formRefs[field]) {
-          formRefs[field].props.hasError = true;
-          isValidForm = false;
-        }
+      } else if (formRefs[field]) {
+        formRefs[field].props.hasError = true;
+        isValidForm = false;
       }
     });
     this.forceUpdate();
@@ -326,13 +325,12 @@ var MediaUploadForm = React.createClass({
   },
 
   /**
-   * Sets the form data based on state values of child elements/componenets
+   * Set the form data based on state values of child elements/componenets
    *
-   * @param formElement
-   * @param value
+   * @param {string} formElement - name of the selected element
+   * @param {string} value - selected value for corresponding form element
    */
   setFormData: function (formElement, value) {
-
     // Only display visits and sites available for the current pscid
     if (formElement === "pscid") {
       this.state.Data.visits = this.state.Data.sessionData[value].visits;
@@ -353,7 +351,7 @@ var MediaUploadForm = React.createClass({
   showAlertMessage: function () {
     var self = this;
 
-    if (this.refs["alert-message"] == null) {
+    if (this.refs["alert-message"] === null) {
       return;
     }
 
@@ -367,4 +365,4 @@ var MediaUploadForm = React.createClass({
 
 });
 
-RMediaUploadForm = React.createFactory(MediaUploadForm);
+var RMediaUploadForm = React.createFactory(MediaUploadForm);
