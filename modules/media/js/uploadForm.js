@@ -259,7 +259,7 @@ var MediaUploadForm = React.createClass({
 
         self.showAlertMessage();
 
-        // Itterates through child components and resets state
+        // Iterates through child components and resets state
         // to initial state in order to clear the form
         Object.keys(formRefs).map(function (ref) {
           if (formRefs[ref].state && formRefs[ref].state.value) {
