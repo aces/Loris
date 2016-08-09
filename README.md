@@ -5,11 +5,12 @@ LORIS (Longitudinal Online Research and Imaging System) is a web-based data and 
 <hr>
 NEW <b>⇾  Try LORIS on Heroku</b> before installing it on your system<br>
 Deploy and log in with username <i>admin</i> and the password that's set up during deployment via ClearDB.
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/16.1-dev)
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/17.0-dev)
 <hr>
 
-This Readme covers installation of the <b>16.1</b> LORIS development branch on <b>Ubuntu</b>.
+This Readme covers installation of the <b>17.0</b> LORIS development branch on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/16.1-dev/README.CentOS6.md)).
+
 If you are looking to install a stable release, please consult the [Releases page](https://github.com/aces/Loris/releases) and the Readme for the last stable release.
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
