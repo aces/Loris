@@ -99,6 +99,7 @@ script:
       && vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/data_release
       && vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/media
       && jslint htdocs/js/jquery.dynamictable.js
+      && jslint htdocs/js/components/Form.js
       && vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
 
 after_success:
