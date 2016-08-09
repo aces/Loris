@@ -220,7 +220,7 @@ StaticDataTable = React.createClass({
                 // Increase counter, if filter value is found to be a substring
                 // of one of the column values
                 var filterData = this.props.Filter[this.props.Headers[j]];
-                if (filterData !== null && data.indexOf(filterData) > -1) {
+                if (filterData !== null && data !== null && data.indexOf(filterData) > -1) {
                     filterMatchCount++;
                 }
 
