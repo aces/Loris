@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-9 col-lg-7">
+  <div class="col-md-10">
     <div id="issue-edit-form"></div>
   </div>
 </div>

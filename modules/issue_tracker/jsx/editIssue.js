@@ -52,7 +52,9 @@ var IssueEditForm = React.createClass({
                     'visitLabel': data.issueData.visitLabel,
                     'dateCreated': data.issueData.dateCreated,
                     'category': data.issueData.category,
-                    'lastUpdatedBy': data.issueData.lastUpdatedBy
+                    'lastUpdatedBy': data.issueData.lastUpdatedBy,
+                    'commentHistory': data.issueData.commentHistory,
+                    'comment' : data.issueData.comment
                 };
 
                 that.setState({
@@ -133,7 +135,7 @@ var IssueEditForm = React.createClass({
         } else {
             submitButtonValue = "Update Issue"
         }
-        
+
         if (this.state.submissionResult) {
             if (this.state.submissionResult == "success") {
                 alertClass = "alert alert-success text-center";
@@ -154,153 +156,257 @@ var IssueEditForm = React.createClass({
                     name="issueEdit"
                     onSubmit={this.handleSubmit}
                     ref="form"
+                    class=""
                 >
                     <HeaderElement
                         name="issueID"
                         header={headerText}
                         ref="issueID"
                     />
-                    <br/>
-                    <ScoredElement
-                        name="lastUpdate"
-                        label={"Last Update: "}
-                        ref="lastUpdate"
-                        score={lastUpdateValue}
-                    />
-                    <ScoredElement
-                        name="lastUpdatedBy"
-                        label={"Last Updated By: "}
-                        ref="lastUpdatedBy"
-                        score={lastUpdatedByValue}
-                    />
-                    <ScoredElement
-                        name="dateCreated"
-                        label={"Date Created: "}
-                        ref="dateCreated"
-                        score={dateCreated}
-                    />
-                    <ScoredElement
-                        name="reporter"
-                        label={"Reporter: "}
-                        ref="reporter"
-                        score={this.state.issueData.reporter}
-                    />
-                    <SmallTextareaElement
-                        name="title"
-                        label="Title"
-                        onUserInput={this.setFormData}
-                        ref="title"
-                        value={this.state.issueData.title}
-                    />
-                    <SelectElement
-                        name="assignee"
-                        label="Assignee"
-                        emptyOption={true}//just cause I already put it in
-                        options={this.state.Data.assignees} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setFormData}
-                        ref="assignee"
-                        disabled={!hasEditPermission}
-                        value={this.state.issueData.assignee}
-                    />
-                    <SelectElement
-                        name="status"
-                        label="Status"
-                        emptyOption={false}//just cause I already put it in
-                        options={this.state.Data.statuses} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setFormData}
-                        ref="status"
-                        value={this.state.issueData.status} //todo: edit this so the options are different if the user doesn't have permission
-                    />
-                    <SelectElement
-                        name="priority"
-                        label="Priority"
-                        emptyOption={false}//just cause I already put it in
-                        options={this.state.Data.priorities} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setFormData}
-                        ref="priority"
-                        required={false}
-                        disabled={!hasEditPermission}
-                        value={this.state.issueData.priority}
-                    />
-                    <SelectElement
-                        name="category"
-                        label="Category"
-                        emptyOption={true}//just cause I already put it in
-                        options={this.state.Data.categories} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setFormData}
-                        ref="category"
-                        disabled={!hasEditPermission}
-                        value={this.state.issueData.category}
-                    />
-                    <SelectElement
-                        name="module"
-                        label="Module"
-                        emptyOption={true}//just cause I already put it in
-                        options={this.state.Data.modules} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setFormData}
-                        ref="module"
-                        disabled={!hasEditPermission}
-                        value={this.state.issueData.module}
-                    />
+                    <br></br>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <ScoredElement
+                                name="lastUpdate"
+                                label={"Last Update: "}
+                                ref="lastUpdate"
+                                score={lastUpdateValue}
+                            />
+                        </div>
 
-                    <SelectElement
-                        name="centerID"
-                        label="Site"
-                        emptyOption={true}//just cause I already put it in
-                        options={this.state.Data.sites} //cjeck that this is actually the correct syntax
-                        onUserInput={this.setFormData}
-                        ref="centerID"
-                        disabled={!hasEditPermission}
-                        value={this.state.issueData.centerID}
-                    />
-                    <SmallTextareaElement
-                        name="PSCID"
-                        label="(PSCID)"
-                        onUserInput={this.setFormData}
-                        ref="PSCID"
-                        disabled={true}
-                        value={this.state.issueData.PSCID}
-                    />
-                    <SmallTextareaElement
-                        name="DCCID"
-                        label="(DCCID)"
-                        onUserInput={this.setFormData}
-                        ref="DCCID"
-                        disabled={true}
-                        value={this.state.issueData.DCCID}
-                    />
-                    <SmallTextareaElement
-                        name="visitLabel"
-                        label="(Visit Label)"
-                        onUserInput={this.setFormData}
-                        ref="visitLabel"
-                        disabled={true}
-                        value={this.state.issueData.visitLabel}
-                    />
-                    <HelpTextElement
-                        html={true}
-                        name="allComments"
-                        label="Comment History"
-                        text={this.state.issueData.commentHistory}
-                        ref="allComments"
-                    />
-                    <TextareaElement
-                        name="comment"
-                        label="New Comment"
-                        onUserInput={this.setFormData}
-                        ref="comment"
-                        value={null}
-                    />
-                    <SelectElement
-                        name="watching"
-                        label="Watching?"
-                        emptyOption={false}
-                        options={["No", "Yes"]}
-                        onUserInput={this.setFormData}
-                        ref="watching"
-                        value={this.state.issueData.watching}
-                    />
-                    <ButtonElement label={submitButtonValue}/>
+                        <div className="col-md-6">
+
+                            <ScoredElement
+                                name="lastUpdatedBy"
+                                label={"Last Updated By: "}
+                                ref="lastUpdatedBy"
+                                score={lastUpdatedByValue}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row">
+
+                        <div className="col-md-6">
+
+                            <ScoredElement
+                                name="dateCreated"
+                                label={"Date Created: "}
+                                ref="dateCreated"
+                                score={dateCreated}
+                            />
+                        </div>
+
+                        <div className="col-md-6">
+
+                            <ScoredElement
+                                name="reporter"
+                                label={"Reporter: "}
+                                ref="reporter"
+                                score={this.state.issueData.reporter}
+                            />
+                        </div>
+                    </div>
+                    <br></br>
+                    <br></br>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <SmallTextareaElement
+                                name="title"
+                                label="Title"
+                                onUserInput={this.setFormData}
+                                ref="title"
+                                value={this.state.issueData.title}
+                            />
+                        </div>
+
+                    </div>
+                    <br></br>
+
+                    <div className="row">
+
+                        <div className="col-md-6">
+
+                            <SelectElement
+                                name="assignee"
+                                label="Assignee"
+                                emptyOption={true}//just cause I already put it in
+                                options={this.state.Data.assignees} //cjeck that this is actually the correct syntax
+                                onUserInput={this.setFormData}
+                                ref="assignee"
+                                disabled={!hasEditPermission}
+                                value={this.state.issueData.assignee}
+                            />
+                        </div>
+                        <div className="col-md-6">
+
+                            <SelectElement
+                                name="centerID"
+                                label="Site"
+                                emptyOption={true}//just cause I already put it in
+                                options={this.state.Data.sites} //cjeck that this is actually the correct syntax
+                                onUserInput={this.setFormData}
+                                ref="centerID"
+                                disabled={!hasEditPermission}
+                                value={this.state.issueData.centerID}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row">
+
+                        <div className="col-md-6">
+                            <SelectElement
+                                name="status"
+                                label="Status"
+                                emptyOption={false}//just cause I already put it in
+                                options={this.state.Data.statuses} //cjeck that this is actually the correct syntax
+                                onUserInput={this.setFormData}
+                                ref="status"
+                                value={this.state.issueData.status} //todo: edit this so the options are different if the user doesn't have permission
+                            />
+                        </div>
+                        <div className="col-md-6">
+
+                            <SelectElement
+                                name="priority"
+                                label="Priority"
+                                emptyOption={false}//just cause I already put it in
+                                options={this.state.Data.priorities} //cjeck that this is actually the correct syntax
+                                onUserInput={this.setFormData}
+                                ref="priority"
+                                required={false}
+                                disabled={!hasEditPermission}
+                                value={this.state.issueData.priority}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row">
+
+                        <div className="col-md-6">
+
+                            <SelectElement
+                                name="category"
+                                label="Category"
+                                emptyOption={true}//just cause I already put it in
+                                options={this.state.Data.categories} //cjeck that this is actually the correct syntax
+                                onUserInput={this.setFormData}
+                                ref="category"
+                                disabled={!hasEditPermission}
+                                value={this.state.issueData.category}
+                            />
+                        </div>
+
+                        <div className="col-md-6">
+
+                            <SelectElement
+                                name="module"
+                                label="Module"
+                                emptyOption={true}//just cause I already put it in
+                                options={this.state.Data.modules} //cjeck that this is actually the correct syntax
+                                onUserInput={this.setFormData}
+                                ref="module"
+                                disabled={!hasEditPermission}
+                                value={this.state.issueData.module}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="row">
+
+
+                        <div className="col-md-6">
+
+                            <SmallTextareaElement
+                                name="PSCID"
+                                label="(PSCID)"
+                                onUserInput={this.setFormData}
+                                ref="PSCID"
+                                disabled={true}
+                                value={this.state.issueData.PSCID}
+                            />
+                        </div>
+
+                        <div className="col-md-6">
+
+                            <SmallTextareaElement
+                                name="DCCID"
+                                label="(DCCID)"
+                                onUserInput={this.setFormData}
+                                ref="DCCID"
+                                disabled={true}
+                                value={this.state.issueData.DCCID}
+                            />
+                        </div>
+
+                    </div>
+
+                    <div className="row">
+
+                        <div className="col-md-6">
+
+                            <SmallTextareaElement
+                                name="visitLabel"
+                                label="(Visit Label)"
+                                onUserInput={this.setFormData}
+                                ref="visitLabel"
+                                disabled={true}
+                                value={this.state.issueData.visitLabel}
+                            />
+                        </div>
+
+                        <div className="col-md-6">
+
+                        <SelectElement
+                            name="watching"
+                            label="Watching?"
+                            emptyOption={false}
+                            options={["No", "Yes"]}
+                            onUserInput={this.setFormData}
+                            ref="watching"
+                            value={this.state.issueData.watching}
+                        />
+                        </div>
+
+                    </div>
+
+                    <div className="row">
+                        <div className="col-md-6">
+
+                        <TextareaElement
+                            name="comment"
+                            label="New Comment"
+                            onUserInput={this.setFormData}
+                            ref="comment"
+                            value={null}
+                        />
+                    </div>
+
+                        <div className="col-md-6">
+
+
+                        <ButtonElement label={submitButtonValue}/>
+
+                    </div>
+                    </div>
+
+
+                    <div className="row">
+
+                        <div className="col-md-6">
+
+                        <HelpTextElement
+                            html={true}
+                            name="allComments"
+                            label="Comment History"
+                            text={this.state.issueData.commentHistory}
+                            ref="allComments"
+                        />
+                    </div>
+                    </div>
+
+
                 </FormElement>
             </div>
         )
@@ -352,7 +458,8 @@ var IssueEditForm = React.createClass({
                     'dateCreated': data.issueData.dateCreated,
                     'category': data.issueData.category,
                     'lastUpdatedBy': data.issueData.lastUpdatedBy,
-                    'commentHistory': data.issueData.commentHistory
+                    'commentHistory': data.issueData.commentHistory,
+                    'comment' : data.issueData.comment
                 };
 
 

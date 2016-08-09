@@ -260,6 +260,7 @@ function getIssueFields()
     }
 
     $issueData['watching'] = true;
+    $issueData['comment'] = null;
 
     $result = [
         'assignees' => $assignees,
