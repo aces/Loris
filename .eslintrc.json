@@ -1,0 +1,28 @@
+{
+  "extends": "google",
+  "plugins": [
+    "react"
+  ],
+  "env": {
+    "browser": true,
+    "jquery": true
+  },
+  "parserOptions": {
+    "sourceType": "script",
+    "ecmaFeatures": {
+      "jsx": true,
+      "globalReturn": false
+    }
+  },
+  "rules": {
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
+    "no-alert": 0,
+    "no-implicit-globals": 0,
+    "array-callback-return": 0
+  },
+  "globals": {
+    "React": true,
+    "loris": true
+  }
+}
