@@ -164,13 +164,24 @@ var SelectElement = React.createClass({
     var options = this.props.options;
     var errorMessage = null;
     var emptyOptionHTML = null;
+    var requiredHTML = null;
     var elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = React.createElement(
+        'span',
+        { className: 'text-danger' },
+        '*'
+      );
+    }
 
     // Add empty option
     if (this.props.emptyOption) {
       emptyOptionHTML = React.createElement('option', null);
     }
 
+    // Add error message
     if (this.state.hasError) {
       errorMessage = React.createElement(
         'span',
@@ -186,7 +197,8 @@ var SelectElement = React.createClass({
       React.createElement(
         'label',
         { className: 'col-sm-3 control-label', htmlFor: this.props.label },
-        this.props.label
+        this.props.label,
+        requiredHTML
       ),
       React.createElement(
         'div',
@@ -276,13 +288,24 @@ var FileElement = React.createClass({
   },
 
   render: function () {
-    var required = this.props.required ? 'required' : '';
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
     var errorMessage = '';
     var elementClass = 'row form-group';
 
+    // Add error message
     if (this.state.hasError) {
       errorMessage = this.props.errorMessage;
       elementClass = 'row form-group has-error';
+    }
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = React.createElement(
+        'span',
+        { className: 'text-danger' },
+        '*'
+      );
     }
 
     var truncateEllipsis = {
@@ -332,7 +355,8 @@ var FileElement = React.createClass({
       React.createElement(
         'label',
         { className: 'col-sm-3 control-label' },
-        this.props.label
+        this.props.label,
+        requiredHTML
       ),
       React.createElement(
         'div',
@@ -592,6 +616,8 @@ var TextboxElement = React.createClass({
   getDefaultProps: function () {
     return {
       value: '',
+      required: false,
+      disabled: false,
       onUserInput: function () {
         console.warn('onUserInput() callback is not set');
       }
@@ -611,22 +637,39 @@ var TextboxElement = React.createClass({
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function () {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = React.createElement(
+        'span',
+        { className: 'text-danger' },
+        '*'
+      );
+    }
+
     return React.createElement(
       'div',
       { className: 'row form-group' },
       React.createElement(
         'label',
-        { className: 'col-sm-3' },
-        this.props.label
+        { className: 'col-sm-3 control-label', htmlFor: 'hey' },
+        this.props.label,
+        requiredHTML
       ),
       React.createElement(
         'div',
         { className: 'col-sm-9' },
         React.createElement('input', {
+          id: 'hey',
           type: 'text',
           className: 'form-control',
           onChange: this.handleChange,
-          value: this.state.value
+          value: this.state.value,
+          required: required,
+          disabled: disabled
         })
       )
     );
@@ -641,12 +684,12 @@ var TextareaElement = React.createClass({
 
   getDefaultProps: function () {
     return {
-      label: 'Text Area',
-      name: 'textarea',
-      id: '',
+      label: '',
+      name: '',
+      id: null,
       class: 'form-control',
-      disabled: '',
-      required: '',
+      disabled: false,
+      required: false,
       value: '',
       onUserInput: function () {
         console.warn('onUserInput() callback is not set');
@@ -670,13 +713,27 @@ var TextareaElement = React.createClass({
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function () {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = React.createElement(
+        'span',
+        { className: 'text-danger' },
+        '*'
+      );
+    }
+
     return React.createElement(
       'div',
       { className: 'row form-group' },
       React.createElement(
         'label',
         { className: 'col-sm-3 control-label', htmlFor: this.props.label },
-        this.props.label
+        this.props.label,
+        requiredHTML
       ),
       React.createElement(
         'div',
@@ -688,7 +745,9 @@ var TextareaElement = React.createClass({
           rows: '4',
           className: this.props.class,
           onChange: this.handleChange,
-          value: this.state.value
+          value: this.state.value,
+          required: required,
+          disabled: disabled
         })
       )
     );
@@ -703,11 +762,11 @@ var DateElement = React.createClass({
 
   getDefaultProps: function () {
     return {
-      label: 'Date',
+      label: '',
       name: '',
-      id: '',
-      disabled: '',
-      required: '',
+      id: null,
+      disabled: false,
+      required: false,
       value: '',
       class: 'form-control',
       onUserInput: function () {
@@ -732,14 +791,27 @@ var DateElement = React.createClass({
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function () {
-    var required = this.props.required ? 'required' : '';
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = React.createElement(
+        'span',
+        { className: 'text-danger' },
+        '*'
+      );
+    }
+
     return React.createElement(
       'div',
       { className: 'row form-group' },
       React.createElement(
         'label',
         { className: 'col-sm-3 control-label', htmlFor: this.props.label },
-        this.props.label
+        this.props.label,
+        requiredHTML
       ),
       React.createElement(
         'div',
@@ -753,7 +825,8 @@ var DateElement = React.createClass({
           max: this.props.maxYear,
           onChange: this.handleChange,
           value: this.state.value,
-          required: required
+          required: required,
+          disabled: disabled
         })
       )
     );

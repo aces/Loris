@@ -163,13 +163,20 @@ var SelectElement = React.createClass({
     var options = this.props.options;
     var errorMessage = null;
     var emptyOptionHTML = null;
+    var requiredHTML = null;
     var elementClass = 'row form-group';
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
 
     // Add empty option
     if (this.props.emptyOption) {
       emptyOptionHTML = <option></option>;
     }
 
+    // Add error message
     if (this.state.hasError) {
       errorMessage = <span>{this.props.errorMessage}</span>;
       elementClass = 'row form-group has-error';
@@ -179,6 +186,7 @@ var SelectElement = React.createClass({
       <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
+          {requiredHTML}
         </label>
         <div className="col-sm-9">
           <select
@@ -261,13 +269,20 @@ var FileElement = React.createClass({
   },
 
   render: function() {
-    var required = this.props.required ? 'required' : '';
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
     var errorMessage = '';
     var elementClass = 'row form-group';
 
+    // Add error message
     if (this.state.hasError) {
       errorMessage = this.props.errorMessage;
       elementClass = 'row form-group has-error';
+    }
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
     }
 
     var truncateEllipsis = {
@@ -305,6 +320,7 @@ var FileElement = React.createClass({
       <div className={elementClass}>
         <label className="col-sm-3 control-label">
           {this.props.label}
+          {requiredHTML}
         </label>
         <div className="col-sm-9">
           <div className="input-group">
@@ -501,6 +517,8 @@ var TextboxElement = React.createClass({
   getDefaultProps: function() {
     return {
       value: '',
+      required: false,
+      disabled: false,
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       }
@@ -520,17 +538,30 @@ var TextboxElement = React.createClass({
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function() {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
     return (
       <div className="row form-group">
-        <label className="col-sm-3">
+        <label className="col-sm-3 control-label" htmlFor="hey">
           {this.props.label}
+          {requiredHTML}
         </label>
         <div className="col-sm-9">
           <input
+            id="hey"
             type="text"
             className="form-control"
             onChange={this.handleChange}
             value={this.state.value}
+            required={required}
+            disabled={disabled}
           />
         </div>
       </div>
@@ -544,12 +575,12 @@ var TextboxElement = React.createClass({
 var TextareaElement = React.createClass({
   getDefaultProps: function() {
     return {
-      label: 'Text Area',
-      name: 'textarea',
-      id: '',
+      label: '',
+      name: '',
+      id: null,
       class: 'form-control',
-      disabled: '',
-      required: '',
+      disabled: false,
+      required: false,
       value: '',
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
@@ -573,10 +604,20 @@ var TextareaElement = React.createClass({
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function() {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
     return (
       <div className="row form-group">
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
+          {requiredHTML}
         </label>
         <div className="col-sm-9">
           <textarea
@@ -587,6 +628,8 @@ var TextareaElement = React.createClass({
             className={this.props.class}
             onChange={this.handleChange}
             value={this.state.value}
+            required={required}
+            disabled={disabled}
           >
           </textarea>
         </div>
@@ -601,11 +644,11 @@ var TextareaElement = React.createClass({
 var DateElement = React.createClass({
   getDefaultProps: function() {
     return {
-      label: 'Date',
+      label: '',
       name: '',
-      id: '',
-      disabled: '',
-      required: '',
+      id: null,
+      disabled: false,
+      required: false,
       value: '',
       class: 'form-control',
       onUserInput: function() {
@@ -630,11 +673,20 @@ var DateElement = React.createClass({
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function() {
-    var required = this.props.required ? 'required' : '';
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
     return (
       <div className="row form-group">
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
           {this.props.label}
+          {requiredHTML}
         </label>
         <div className="col-sm-9">
           <input
@@ -647,6 +699,7 @@ var DateElement = React.createClass({
             onChange={this.handleChange}
             value={this.state.value}
             required={required}
+            disabled={disabled}
           />
         </div>
       </div>
