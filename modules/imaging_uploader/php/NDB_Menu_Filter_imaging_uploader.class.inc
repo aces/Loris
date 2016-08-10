@@ -358,13 +358,11 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////////
             ////////////// Make sure the file name matches the format   ///////////
             ///////////////////////////////////////////////////////////////////////
-            if (($file_name != $pscid."_". $candid ."_". $visit_label . ".zip")
-                && ($file_name != $pscid."_". $candid ."_". $visit_label . ".tgz")
-                && ($file_name != $pscid."_". $candid ."_". $visit_label . ".tar.gz")
-            ) {
+            if (substr($file_name, 0, 18) !== $pscid ."_". $candid ."_". $visit_label)
+            {
                 $errors[] = "Make sure the file name matches this format:  " .
                 "\"". $pscid ."_". $candid ."_". $visit_label .
-                ".(tgz or tar.gz or .zip)\"";
+                " plus extra stuff in you need it and .(tgz or tar.gz or .zip)\"";
             }
 
             ///////////////////////////////////////////////////////////////////////
