@@ -1,3 +1,8 @@
+/* exported FormElement, SelectElement, FileElement, HelpTextElement,
+StaticElement, ButtonElement, HeaderElement, LabelElement, ScoredElement,
+TextboxElement, TextareaElement, DateElement, NumericElement, LorisElement
+*/
+
 /**
  * This file contains React components for Loris form elements.
  *
@@ -10,14 +15,14 @@
  * Form Component.
  * React wrapper for <form> element that accepts children react components
  */
-FormElement = React.createClass({
+var FormElement = React.createClass({
 
   propTypes: {
     name: React.PropTypes.string.isRequired,
     id: React.PropTypes.string,
     method: React.PropTypes.oneOf(['POST', 'GET']),
     class: React.PropTypes.string,
-    onSubmit: React.PropTypes.func,
+    onSubmit: React.PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -40,7 +45,6 @@ FormElement = React.createClass({
     }
   },
   render: function() {
-
     var encType = this.props.fileUpload ? 'multipart/form-data' : null;
 
     return (
@@ -62,7 +66,7 @@ FormElement = React.createClass({
  * Select Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
-SelectElement = React.createClass({
+var SelectElement = React.createClass({
 
   propTypes: {
     name: React.PropTypes.string.isRequired,
@@ -80,17 +84,17 @@ SelectElement = React.createClass({
     emptyOption: React.PropTypes.bool,
     hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
-    onUserInput: React.PropTypes.func,
+    onUserInput: React.PropTypes.func
   },
 
   getDefaultProps: function() {
     return {
-      name:     '',
-      options:  {},
-      label:    '',
-      value:    null,
-      id:       '',
-      class:    '',
+      name: '',
+      options: {},
+      label: '',
+      value: null,
+      id: '',
+      class: '',
       multiple: false,
       disabled: false,
       required: false,
@@ -113,7 +117,7 @@ SelectElement = React.createClass({
     if (this.props.hasError) {
       this.setState({
         hasError: this.props.hasError
-      })
+      });
     }
   },
   getInitialState: function() {
@@ -121,10 +125,9 @@ SelectElement = React.createClass({
     return {
       value: value,
       hasError: false
-    }
+    };
   },
   handleChange: function(e) {
-
     var value = e.target.value;
     var options = e.target.options;
     var hasError = false;
@@ -142,7 +145,9 @@ SelectElement = React.createClass({
     }
 
     // Check for errors
-    if (this.props.required && isEmpty) { hasError = true; }
+    if (this.props.required && isEmpty) {
+      hasError = true;
+    }
 
     this.setState({
       value: value,
@@ -187,14 +192,16 @@ SelectElement = React.createClass({
             disabled={disabled}
           >
             {emptyOptionHTML}
-            {Object.keys(options).map(function (option) {
-              return <option value={option} key={option}>{options[option]}</option>
+            {Object.keys(options).map(function(option) {
+              return (
+                <option value={option} key={option}>{options[option]}</option>
+              );
             })}
           </select>
           {errorMessage}
         </div>
       </div>
-    )
+    );
   }
 });
 
@@ -202,27 +209,27 @@ SelectElement = React.createClass({
  * File Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
-FileElement = React.createClass({
+var FileElement = React.createClass({
   getInitialState: function() {
     return {
-      'id': '',
-      'value': null,
-      'required': '',
-      'hasError': false,
-      'onUserInput': function() {
+      id: '',
+      value: null,
+      required: '',
+      hasError: false,
+      onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       }
-    }
+    };
   },
   getDefaultProps: function() {
     return {
-      'label': 'File to Upload',
-      'name': 'file',
-      'class': 'fileUpload',
-      'value': '',
-      'hasError': false,
-      'errorMessage': 'The field is required!',
-      'disabled': false
+      label: 'File to Upload',
+      name: 'file',
+      class: 'fileUpload',
+      value: '',
+      hasError: false,
+      errorMessage: 'The field is required!',
+      disabled: false
     };
   },
   componentDidMount: function() {
@@ -236,12 +243,12 @@ FileElement = React.createClass({
     if (this.props.hasError) {
       this.setState({
         hasError: this.props.hasError
-      })
+      });
     }
   },
   handleChange: function(e) {
     var hasError = false;
-    if (this.props.required && e.target.value == "") {
+    if (this.props.required && e.target.value === "") {
       hasError = true;
     }
     this.setState({
@@ -267,7 +274,7 @@ FileElement = React.createClass({
       display: 'table',
       tableLayout: 'fixed',
       width: '100%',
-      whiteSpace: 'nowrap',
+      whiteSpace: 'nowrap'
     };
 
     var truncateEllipsisChild = {
@@ -277,7 +284,6 @@ FileElement = React.createClass({
     };
 
     if (this.props.disabled) {
-
       // add padding to align video title on disabled field
       truncateEllipsis.paddingTop = "7px";
 
@@ -334,15 +340,18 @@ FileElement = React.createClass({
  * Used to display a block of help text in a form
  * @deprecated 08/09/2016
  */
-HelpTextElement = React.createClass({
+var HelpTextElement = React.createClass({
   componentDidMount: function() {
-    console.warn("<HelpTextElement> component is deprecated! Please use <StaticElement> instead!")
+    console.warn(
+      "<HelpTextElement> component is deprecated!" +
+      "Please use <StaticElement> instead!"
+    );
   },
   getDefaultProps: function() {
     return {
-      'html': false,
-      'label': '',
-      'text': ''
+      html: false,
+      label: '',
+      text: ''
     };
   },
   render: function() {
@@ -375,7 +384,7 @@ HelpTextElement = React.createClass({
  * Static element component.
  * Used to displays plain/formatted text as part of a form
  */
-StaticElement = React.createClass({
+var StaticElement = React.createClass({
 
   mixins: [React.addons.PureRenderMixin],
   propTypes: {
@@ -385,8 +394,8 @@ StaticElement = React.createClass({
 
   getDefaultProps: function() {
     return {
-      'label': '',
-      'text': null
+      label: '',
+      text: null
     };
   },
 
@@ -404,22 +413,21 @@ StaticElement = React.createClass({
   }
 });
 
-
 /**
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
-ButtonElement = React.createClass({
+var ButtonElement = React.createClass({
   getInitialState: function() {
-    return {}
+    return {};
   },
   getDefaultProps: function() {
     return {
-      'label': 'Submit',
-      'type': 'submit',
-       onUserInput: function() {
+      label: 'Submit',
+      type: 'submit',
+      onUserInput: function() {
         console.warn('onUserInput() callback is not set');
-       }
+      }
     };
   },
   handleClick: function(e) {
@@ -429,7 +437,9 @@ ButtonElement = React.createClass({
     return (
       <div className="row form-group">
         <div className="col-sm-9 col-sm-offset-3">
-          <button type={this.props.type} className="btn btn-primary" onClick={this.handleClick}>
+          <button type={this.props.type}
+                  className="btn btn-primary"
+                  onClick={this.handleClick}>
             {this.props.label}
           </button>
         </div>
@@ -441,29 +451,29 @@ ButtonElement = React.createClass({
 /*
  * This is the React class for a header element
  */
-HeaderElement = React.createClass({
+var HeaderElement = React.createClass({
   render: function() {
     return (
       <h2>{this.props.header}</h2>
-    )
+    );
   }
 });
 
 /*
  *This is the React class for a label element
  */
-LabelElement = React.createClass({
+var LabelElement = React.createClass({
   render: function() {
     return (
       <p>{this.props.label}</p>
-    )
+    );
   }
 });
 
 /*
  * This is the React class for a scored element
  */
-ScoredElement = React.createClass({
+var ScoredElement = React.createClass({
   render: function() {
     var score = (this.props.score) ? this.props.score : 0;
     return (
@@ -475,18 +485,18 @@ ScoredElement = React.createClass({
           {score}
         </div>
       </div>
-    )
+    );
   }
 });
 
 /*
  * This is the React class for a textbox element
  */
-TextboxElement = React.createClass({
+var TextboxElement = React.createClass({
   getInitialState: function() {
     return {
       value: ''
-    }
+    };
   },
   getDefaultProps: function() {
     return {
@@ -494,7 +504,7 @@ TextboxElement = React.createClass({
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       }
-    }
+    };
   },
   componentDidMount: function() {
     if (this.props.value) {
@@ -524,24 +534,24 @@ TextboxElement = React.createClass({
           />
         </div>
       </div>
-    )
+    );
   }
 });
 
 /*
  * This is the React class for a textarea element
  */
-TextareaElement = React.createClass({
+var TextareaElement = React.createClass({
   getDefaultProps: function() {
     return {
-      'label': 'Text Area',
-      'name': 'textarea',
-      'id': '',
-      'class': 'form-control',
-      'disabled': '',
-      'required': '',
-      'value': '',
-      'onUserInput': function() {
+      label: 'Text Area',
+      name: 'textarea',
+      id: '',
+      class: 'form-control',
+      disabled: '',
+      required: '',
+      value: '',
+      onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       }
     };
@@ -549,7 +559,7 @@ TextareaElement = React.createClass({
   getInitialState: function() {
     return {
       value: ''
-    }
+    };
   },
   componentDidMount: function() {
     if (this.props.value) {
@@ -588,17 +598,17 @@ TextareaElement = React.createClass({
 /*
  * This is the React class for a date element
  */
-DateElement = React.createClass({
+var DateElement = React.createClass({
   getDefaultProps: function() {
     return {
-      'label': 'Date',
-      'name': '',
-      'id': '',
-      'disabled': '',
-      'required': '',
-      'value': '',
-      'class': 'form-control',
-      'onUserInput': function() {
+      label: 'Date',
+      name: '',
+      id: '',
+      disabled: '',
+      required: '',
+      value: '',
+      class: 'form-control',
+      onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       }
     };
@@ -606,7 +616,7 @@ DateElement = React.createClass({
   getInitialState: function() {
     return {
       value: ''
-    }
+    };
   },
   componentDidMount: function() {
     if (this.props.value) {
@@ -640,14 +650,14 @@ DateElement = React.createClass({
           />
         </div>
       </div>
-    )
+    );
   }
 });
 
 /*
  *	This is the React class for a numeric element
  */
-NumericElement = React.createClass({
+var NumericElement = React.createClass({
   render: function() {
     return (
       <div className="row form-group">
@@ -663,7 +673,7 @@ NumericElement = React.createClass({
           />
         </div>
       </div>
-    )
+    );
   }
 });
 
@@ -672,35 +682,35 @@ NumericElement = React.createClass({
  * in an element and render's the HTML based on its type
  * (Used in instrument builder)
  */
-LorisElement = React.createClass({
+var LorisElement = React.createClass({
   render: function() {
-    var element = this.props.element,
-      elementHtml = '';
+    var element = this.props.element;
+    var elementHtml = '';
     switch (element.Type) {
       case 'header':
         elementHtml = <HeaderElement header={element.Description}/>;
         break;
       case 'label':
-        elementHtml = <LabelElement label={element.Description}/>
+        elementHtml = <LabelElement label={element.Description}/>;
         break;
       case 'score':
-        elementHtml = <ScoredElement label={element.Description}/>
+        elementHtml = <ScoredElement label={element.Description}/>;
         break;
       case 'text':
         if (element.Options.Type === 'small') {
-          elementHtml = <TextboxElement label={element.Description}/>
+          elementHtml = <TextboxElement label={element.Description}/>;
         } else {
-          elementHtml = <TextareaElement label={element.Description}/>
+          elementHtml = <TextareaElement label={element.Description}/>;
         }
         break;
       case 'select':
         if (element.Options.AllowMultiple) {
           elementHtml = <SelectElement label={element.Description}
                                        options={element.Options.Values}
-                                       multiple={true}/>
+                                       multiple={true}/>;
         } else {
           elementHtml = <SelectElement label={element.Description}
-                                       options={element.Options.Values}/>
+                                       options={element.Options.Values}/>;
         }
         break;
       case 'date':
@@ -708,19 +718,20 @@ LorisElement = React.createClass({
           label={element.Description}
           minYear={element.Options.MinDate}
           maxYear={element.Options.MaxDate}
-        />
+        />;
         break;
       case 'numeric':
         elementHtml = <NumericElement
           label={element.Description}
           min={element.Options.MinValue}
           max={element.Options.MaxValue}
-        />
+        />;
+        break;
       default:
         break;
     }
     return (
       <div>{elementHtml}</div>
-    )
+    );
   }
 });

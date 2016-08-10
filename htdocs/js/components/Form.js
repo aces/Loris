@@ -1,3 +1,8 @@
+/* exported FormElement, SelectElement, FileElement, HelpTextElement,
+StaticElement, ButtonElement, HeaderElement, LabelElement, ScoredElement,
+TextboxElement, TextareaElement, DateElement, NumericElement, LorisElement
+*/
+
 /**
  * This file contains React components for Loris form elements.
  *
@@ -10,7 +15,7 @@
  * Form Component.
  * React wrapper for <form> element that accepts children react components
  */
-FormElement = React.createClass({
+var FormElement = React.createClass({
   displayName: 'FormElement',
 
 
@@ -42,7 +47,6 @@ FormElement = React.createClass({
     }
   },
   render: function () {
-
     var encType = this.props.fileUpload ? 'multipart/form-data' : null;
 
     return React.createElement(
@@ -64,7 +68,7 @@ FormElement = React.createClass({
  * Select Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
-SelectElement = React.createClass({
+var SelectElement = React.createClass({
   displayName: 'SelectElement',
 
 
@@ -125,7 +129,6 @@ SelectElement = React.createClass({
     };
   },
   handleChange: function (e) {
-
     var value = e.target.value;
     var options = e.target.options;
     var hasError = false;
@@ -219,29 +222,29 @@ SelectElement = React.createClass({
  * File Component
  * React wrapper for a simple or 'multiple' <select> element.
  */
-FileElement = React.createClass({
+var FileElement = React.createClass({
   displayName: 'FileElement',
 
   getInitialState: function () {
     return {
-      'id': '',
-      'value': null,
-      'required': '',
-      'hasError': false,
-      'onUserInput': function () {
+      id: '',
+      value: null,
+      required: '',
+      hasError: false,
+      onUserInput: function () {
         console.warn('onUserInput() callback is not set');
       }
     };
   },
   getDefaultProps: function () {
     return {
-      'label': 'File to Upload',
-      'name': 'file',
-      'class': 'fileUpload',
-      'value': '',
-      'hasError': false,
-      'errorMessage': 'The field is required!',
-      'disabled': false
+      label: 'File to Upload',
+      name: 'file',
+      class: 'fileUpload',
+      value: '',
+      hasError: false,
+      errorMessage: 'The field is required!',
+      disabled: false
     };
   },
   componentDidMount: function () {
@@ -260,7 +263,7 @@ FileElement = React.createClass({
   },
   handleChange: function (e) {
     var hasError = false;
-    if (this.props.required && e.target.value == "") {
+    if (this.props.required && e.target.value === "") {
       hasError = true;
     }
     this.setState({
@@ -296,7 +299,6 @@ FileElement = React.createClass({
     };
 
     if (this.props.disabled) {
-
       // add padding to align video title on disabled field
       truncateEllipsis.paddingTop = "7px";
 
@@ -386,17 +388,17 @@ FileElement = React.createClass({
  * Used to display a block of help text in a form
  * @deprecated 08/09/2016
  */
-HelpTextElement = React.createClass({
+var HelpTextElement = React.createClass({
   displayName: 'HelpTextElement',
 
   componentDidMount: function () {
-    console.warn("<HelpTextElement> component is deprecated! Please use <StaticElement> instead!");
+    console.warn("<HelpTextElement> component is deprecated!" + "Please use <StaticElement> instead!");
   },
   getDefaultProps: function () {
     return {
-      'html': false,
-      'label': '',
-      'text': ''
+      html: false,
+      label: '',
+      text: ''
     };
   },
   render: function () {
@@ -441,7 +443,7 @@ HelpTextElement = React.createClass({
  * Static element component.
  * Used to displays plain/formatted text as part of a form
  */
-StaticElement = React.createClass({
+var StaticElement = React.createClass({
   displayName: 'StaticElement',
 
 
@@ -453,8 +455,8 @@ StaticElement = React.createClass({
 
   getDefaultProps: function () {
     return {
-      'label': '',
-      'text': null
+      label: '',
+      text: null
     };
   },
 
@@ -484,7 +486,7 @@ StaticElement = React.createClass({
  * Button component
  * React wrapper for <button> element, typically used to submit forms
  */
-ButtonElement = React.createClass({
+var ButtonElement = React.createClass({
   displayName: 'ButtonElement',
 
   getInitialState: function () {
@@ -492,8 +494,8 @@ ButtonElement = React.createClass({
   },
   getDefaultProps: function () {
     return {
-      'label': 'Submit',
-      'type': 'submit',
+      label: 'Submit',
+      type: 'submit',
       onUserInput: function () {
         console.warn('onUserInput() callback is not set');
       }
@@ -511,7 +513,9 @@ ButtonElement = React.createClass({
         { className: 'col-sm-9 col-sm-offset-3' },
         React.createElement(
           'button',
-          { type: this.props.type, className: 'btn btn-primary', onClick: this.handleClick },
+          { type: this.props.type,
+            className: 'btn btn-primary',
+            onClick: this.handleClick },
           this.props.label
         )
       )
@@ -522,7 +526,7 @@ ButtonElement = React.createClass({
 /*
  * This is the React class for a header element
  */
-HeaderElement = React.createClass({
+var HeaderElement = React.createClass({
   displayName: 'HeaderElement',
 
   render: function () {
@@ -537,7 +541,7 @@ HeaderElement = React.createClass({
 /*
  *This is the React class for a label element
  */
-LabelElement = React.createClass({
+var LabelElement = React.createClass({
   displayName: 'LabelElement',
 
   render: function () {
@@ -552,7 +556,7 @@ LabelElement = React.createClass({
 /*
  * This is the React class for a scored element
  */
-ScoredElement = React.createClass({
+var ScoredElement = React.createClass({
   displayName: 'ScoredElement',
 
   render: function () {
@@ -577,7 +581,7 @@ ScoredElement = React.createClass({
 /*
  * This is the React class for a textbox element
  */
-TextboxElement = React.createClass({
+var TextboxElement = React.createClass({
   displayName: 'TextboxElement',
 
   getInitialState: function () {
@@ -632,19 +636,19 @@ TextboxElement = React.createClass({
 /*
  * This is the React class for a textarea element
  */
-TextareaElement = React.createClass({
+var TextareaElement = React.createClass({
   displayName: 'TextareaElement',
 
   getDefaultProps: function () {
     return {
-      'label': 'Text Area',
-      'name': 'textarea',
-      'id': '',
-      'class': 'form-control',
-      'disabled': '',
-      'required': '',
-      'value': '',
-      'onUserInput': function () {
+      label: 'Text Area',
+      name: 'textarea',
+      id: '',
+      class: 'form-control',
+      disabled: '',
+      required: '',
+      value: '',
+      onUserInput: function () {
         console.warn('onUserInput() callback is not set');
       }
     };
@@ -694,19 +698,19 @@ TextareaElement = React.createClass({
 /*
  * This is the React class for a date element
  */
-DateElement = React.createClass({
+var DateElement = React.createClass({
   displayName: 'DateElement',
 
   getDefaultProps: function () {
     return {
-      'label': 'Date',
-      'name': '',
-      'id': '',
-      'disabled': '',
-      'required': '',
-      'value': '',
-      'class': 'form-control',
-      'onUserInput': function () {
+      label: 'Date',
+      name: '',
+      id: '',
+      disabled: '',
+      required: '',
+      value: '',
+      class: 'form-control',
+      onUserInput: function () {
         console.warn('onUserInput() callback is not set');
       }
     };
@@ -759,7 +763,7 @@ DateElement = React.createClass({
 /*
  *	This is the React class for a numeric element
  */
-NumericElement = React.createClass({
+var NumericElement = React.createClass({
   displayName: 'NumericElement',
 
   render: function () {
@@ -790,12 +794,12 @@ NumericElement = React.createClass({
  * in an element and render's the HTML based on its type
  * (Used in instrument builder)
  */
-LorisElement = React.createClass({
+var LorisElement = React.createClass({
   displayName: 'LorisElement',
 
   render: function () {
-    var element = this.props.element,
-        elementHtml = '';
+    var element = this.props.element;
+    var elementHtml = '';
     switch (element.Type) {
       case 'header':
         elementHtml = React.createElement(HeaderElement, { header: element.Description });
@@ -836,6 +840,7 @@ LorisElement = React.createClass({
           min: element.Options.MinValue,
           max: element.Options.MaxValue
         });
+        break;
       default:
         break;
     }
