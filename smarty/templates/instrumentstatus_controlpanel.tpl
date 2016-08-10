@@ -16,7 +16,7 @@
     <li>
         <img src="{$baseurl}/images/{$administration[item].icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />
     {if $access.administration and $administration[item].showlink}
-        <a href="?commentID={$commentID}&candID={$candID}&sessionID={$sessionID}&setAdministration={$administration[item].label}">{$administration[item].label}</a>
+        <a href="?commentID={$commentID}&candID={$candID}&sessionID={$sessionID}&setAdministration={$administration[item].label}&test_name={$test_name}">{$administration[item].label}</a>
     {else}
         {$administration[item].label}
     {/if}
@@ -31,7 +31,7 @@
     <li>
         <img src="{$baseurl}/images/{$validity[item].icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />
     {if $access.validity and $validity[item].showLink}
-        <a href="?commentID={$commentID}&candID={$candID}&sessionID={$sessionID}&setValidity={$validity[item].label}">{$validity[item].label}</a>
+        <a href="?commentID={$commentID}&candID={$candID}&sessionID={$sessionID}&setValidity={$validity[item].label}&test_name={$test_name}">{$validity[item].label}</a>
     {else}
         {$validity[item].label}
     {/if}
@@ -45,7 +45,7 @@
     <li>
         <img src="{$baseurl}/images/{$data_entry[item].icon|default:'default'}.gif" alt="" border="0" width="12" height="12" />
     {if $access.data_entry and $data_entry[item].showlink}
-        <a href="?commentID={$commentID}&candID={$candID}&sessionID={$sessionID}&setDataEntry={$data_entry[item].label}">{$data_entry[item].label}</a>
+        <a href="?commentID={$commentID}&candID={$candID}&sessionID={$sessionID}&setDataEntry={$data_entry[item].label}&test_name={$test_name}">{$data_entry[item].label}</a>
     {else}
         {$data_entry[item].label}
     {/if}
