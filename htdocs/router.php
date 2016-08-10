@@ -119,11 +119,11 @@ if (preg_match(
 
     include_once __DIR__ . "/GetCSS.php";
 } else if (preg_match(
-    '#^project/htdocs/js/([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)$#',
+    '#^project/js/([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)$#',
     $url
 )) {
     // RewriteRule
-    //      ^project/htdocs/js/([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)$
+    //      ^project/js/([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)$
     //      /GetJS.php?Module=&JSModule=$1&file=$2
     // NOT SURE IF THIS WORKS IF FILE IS NOT SPECIFIED
 

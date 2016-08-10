@@ -23,7 +23,7 @@
  # To use the appropriate helper script as well.
  RewriteRule ^([a-zA-Z0-9_-]+)/$ main.php?test_name=$1 [QSA]
  RewriteRule ^([a-zA-Z_-]+)/css/([a-zA-Z0-9_.-]+)$ GetCSS.php?Module=$1&file=$2
- RewriteRule ^project/htdocs/js/([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)$ GetJS.php?Module=&JSModule=$1&file=$2
+ RewriteRule ^project/js/([a-zA-Z_-]+)/([a-zA-Z0-9_.-]+)$ GetJS.php?Module=&JSModule=$1&file=$2
  RewriteRule ^([a-zA-Z_-]+)/js/([a-zA-Z0-9_.-]+)$ GetJS.php?Module=$1&JSModule=&file=$2
  RewriteRule ^([a-zA-Z_-]+)/static/([a-zA-Z0-9_.-/]+)$ GetStatic.php?Module=$1&file=$2
  RewriteRule ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$ AjaxHelper.php?Module=$1&script=$2 [QSA]
