@@ -142,12 +142,6 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     var $displayAllFields = false;
 
-    /**
-     * True if the page is being previewed from the instrument builder,
-     * and not really loaded.
-     */
-    var $preview = false;
-
     var $WrapperTextElements           = array();
     var $WrapperNumericElements        = array();
     var $WrapperDateWithStatusElements = array();
@@ -188,16 +182,9 @@ class NDB_BVL_Instrument extends NDB_Page
             return;
         }
         if (file_exists($base."project/instruments/$instrument.linst")
-            || $instrument=='instrument_preview'
         ) {
-            if ($instrument == 'instrument_preview') {
-                include_once 'NDB_BVL_Instrument_instrument_preview.class.inc';
-                $obj          = new NDB_BVL_Instrument_instrument_preview();
-                $obj->preview = true;
-            } else {
-                include_once 'NDB_BVL_Instrument_LINST.class.inc';
-                $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
-            }
+            include_once 'NDB_BVL_Instrument_LINST.class.inc';
+            $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST();
         } else {
             if (!class_exists($class)
                 && ($guarantee_exists === true
@@ -395,7 +382,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 'submit',
                 'fire_away',
                 'Save Data',
-                'class=button'
+                array('class' => 'button')
             );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
             $this->addGroup($buttons, null, null, "&nbsp;");
@@ -403,26 +390,24 @@ class NDB_BVL_Instrument extends NDB_Page
 
         // get saved data to pre-populate form
         $db = Database::singleton();
-        if ($this->preview !== true) {
-            $defaults = $db->pselect(
-                "SELECT * FROM $this->table WHERE CommentID=:CID",
-                array('CID' => $this->getCommentID())
-            );
-            // set the defaults (call private method _setDefaultsArray
-            // which could be overridden if necessary)
-            $defaults = $this->_setDefaultsArray($defaults[0]);
 
-            // merge in the localDefaults property so that simple
-            // additions to the defaults array no longer requires
-            // overriding the _setDefaultsArray method
-            $defaults = array_merge($defaults, $this->localDefaults);
-        } else {
-            $defaults = $this->localDefaults;
-        }
+        $defaults = $db->pselect(
+            "SELECT * FROM $this->table WHERE CommentID=:CID",
+            array('CID' => $this->getCommentID())
+        );
+        // set the defaults (call private method _setDefaultsArray
+        // which could be overridden if necessary)
+        $defaults = $this->_setDefaultsArray($defaults[0]);
+
+        // merge in the localDefaults property so that simple
+        // additions to the defaults array no longer requires
+        // overriding the _setDefaultsArray method
+        $defaults = array_merge($defaults, $this->localDefaults);
 
         $this->form->setDefaults($defaults);
 
         if ($this->DataEntryType == 'DirectEntry') {
+            $renderer = new HTML_QuickForm_Renderer_Default();
             if (isset($this->testName)) {
                 $renderer->setFormTemplate(
                     "<form{attributes}>
@@ -489,11 +474,8 @@ class NDB_BVL_Instrument extends NDB_Page
             return $this->toJSON();
         } else {
             $smarty   = new Smarty_neurodb;
-            $renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
-            $this->form->accept($renderer);
-
-            $formArray = $renderer->toArray();
+            $formArray = $this->form->toElementArray();
 
             $smarty->assign('form', $formArray);
             $html = $smarty->fetch("instrument_html.tpl");
@@ -518,12 +500,12 @@ class NDB_BVL_Instrument extends NDB_Page
         if (empty($this->dateTimeFields)) {
             $this->dateTimeFields = array("Date_taken");
         }
-        foreach ($this->dateTimeFields as $field) {
-            $defaults[$field] = $this->_getQuickformDate($defaults[$field]);
-        }
-        foreach ($this->monthYearFields as $field) {
-            $defaults[$field] = $this->_getQuickformDate($defaults[$field]);
-        }
+        // foreach ($this->dateTimeFields as $field) {
+        //     $defaults[$field] = $this->_getQuickformDate($defaults[$field]);
+        // }
+        // foreach ($this->monthYearFields as $field) {
+        //     $defaults[$field] = $this->_getQuickformDate($defaults[$field]);
+        // }
 
         if (isset($defaults['Window_Difference'])
             && $defaults['Window_Difference'] != 0

@@ -36,6 +36,7 @@ class LorisForm
     var $errors        = array();
     var $filters       = array();
     var $frozen        = false;
+    var $enctype       = '';
 
     /**
      * Creates and returns an element that can be added
@@ -265,6 +266,8 @@ class LorisForm
      */
     function addFile($name, $label, $options)
     {
+        $this->enctype    = 'enctype="multipart/form-data"';
+
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'file';
         return $el;
@@ -478,7 +481,7 @@ class LorisForm
                     // This is more for consistency since it would be odd to apply a
                     // filter to a checkbox value
                     $filteredValues[$k]
-                        = $this->_getFilteredValue("[$name}[$k]", $rawValue);
+                        = $this->_getFilteredValue("{$name}[$k]", $rawValue);
                 }
 
                 return $filteredValues;
@@ -866,12 +869,9 @@ class LorisForm
      */
     function fileHTML($el)
     {
-        $cls      = '';
+        $cls      = "class=\"$el[class]\"";
         $disabled = '';
         $val      = $this->getValue($el['name']);
-        if (isset($el['class'])) {
-            $cls = "class=\"$el[class]\"";
-        }
         if (isset($el['disabled'])) {
             $disabled = 'disabled';
         }
@@ -1221,10 +1221,13 @@ class LorisForm
             }
         }
         if (empty($retVal['elements'])) {
+            $curPage['enctype'] = $this->enctype;
             return $curPage;
         }
 
         $retVal['elements'][] = $curPage;
+        $retVal['enctype']    = $this->enctype;
+
         return $retVal;
     }
     /**
@@ -1460,6 +1463,12 @@ class LorisForm
                 continue;
             }
 
+            if($el['type'] === 'file'){
+                $file = $this->getElement($name);
+                $arr[$name] = $file->getValue();
+                continue;
+            }
+
             // Check to see it the element type is a header or is a static
             // element without a request variable. If so do not add to the
             // reference array
@@ -1492,8 +1501,10 @@ class LorisForm
      */
     function getSubmitValues()
     {
-        $retVal = array();
-        $this->getGroupValues(array_keys($_POST), $retVal);
+        $retVal     = array();
+        $submitKeys = array_merge($_POST, $_FILES);
+
+        $this->getGroupValues(array_keys($submitKeys), $retVal);
         return $retVal;
     }
 
