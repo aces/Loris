@@ -108,11 +108,11 @@ SelectElement = React.createClass({
     var elementClass = 'row form-group';
     var required = this.props.required ? 'required' : '';
     var disabled = this.props.disabled ? 'disabled' : '';
-    var emptyOptionHTML = "";
+    var emptyOptionHTML = null;
 
     // Add empty option
     if (this.props.emptyOption) {
-      emptyOptionHTML = "<option></option>"
+      emptyOptionHTML = <option></option>;
     }
 
     if (this.state.hasError) {
@@ -136,7 +136,7 @@ SelectElement = React.createClass({
             required={required}
             disabled={disabled}
           >
-            <div dangerouslySetInnerHTML={{__html: emptyOptionHTML}} />
+            {emptyOptionHTML}
             {Object.keys(options).map(function (option) {
               return <option value={option}>{options[option]}</option>
             })}
@@ -282,8 +282,12 @@ FileElement = React.createClass({
 /**
  * HelpText Component
  * Used to display a block of help text in a form
+ * @deprecated 08/09/2016
  */
 HelpTextElement = React.createClass({
+  componentDidMount: function() {
+    console.warn("<HelpTextElement> component is deprecated! Please use <StaticElement> instead!")
+  },
   getDefaultProps: function() {
     return {
       'html': false,
@@ -316,6 +320,40 @@ HelpTextElement = React.createClass({
     );
   }
 });
+
+/**
+ * Static element component.
+ * Used to displays plain/formatted text as part of a form
+ */
+StaticElement = React.createClass({
+
+  mixins: [React.addons.PureRenderMixin],
+  propTypes: {
+    label: React.PropTypes.string,
+    text: React.PropTypes.string.isRequired
+  },
+
+  getDefaultProps: function() {
+    return {
+      'label': '',
+      'text': null
+    };
+  },
+
+  render: function() {
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label">
+          {this.props.label}
+        </label>
+        <div className="col-sm-9">
+          <p className="form-control-static">{this.props.text}</p>
+        </div>
+      </div>
+    );
+  }
+});
+
 
 /**
  * Button component
