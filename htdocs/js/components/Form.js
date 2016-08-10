@@ -7,19 +7,31 @@
  */
 
 /**
- * Form Component
+ * Form Component.
  * React wrapper for <form> element that accepts children react components
  */
 FormElement = React.createClass({
   displayName: 'FormElement',
 
+
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    id: React.PropTypes.string,
+    method: React.PropTypes.oneOf(['POST', 'GET']),
+    class: React.PropTypes.string,
+    onSubmit: React.PropTypes.func
+  },
+
   getDefaultProps: function () {
     return {
-      'name': '',
-      'id': '',
-      'action': '',
-      'method': 'POST',
-      'class': 'form-horizontal'
+      name: null,
+      id: null,
+      method: 'POST',
+      class: 'form-horizontal',
+      fileUpload: true,
+      onSubmit: function () {
+        console.warn('onSubmit() callback is not set!');
+      }
     };
   },
   handleSubmit: function (e) {
@@ -30,14 +42,17 @@ FormElement = React.createClass({
     }
   },
   render: function () {
+
+    var encType = this.props.fileUpload ? 'multipart/form-data' : null;
+
     return React.createElement(
       'form',
       {
         name: this.props.name,
-        action: this.props.action,
+        id: this.props.id,
         className: this.props.class,
         method: this.props.method,
-        encType: 'multipart/form-data',
+        encType: encType,
         onSubmit: this.handleSubmit
       },
       this.props.children
@@ -52,21 +67,38 @@ FormElement = React.createClass({
 SelectElement = React.createClass({
   displayName: 'SelectElement',
 
+
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    options: React.PropTypes.object.isRequired,
+    label: React.PropTypes.string,
+    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.array]),
+    id: React.PropTypes.string,
+    class: React.PropTypes.string,
+    multiple: React.PropTypes.bool,
+    disabled: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    emptyOption: React.PropTypes.bool,
+    hasError: React.PropTypes.bool,
+    errorMessage: React.PropTypes.string,
+    onUserInput: React.PropTypes.func
+  },
+
   getDefaultProps: function () {
     return {
-      'name': '',
-      'id': '',
-      'class': '',
-      'label': 'Label',
-      'options': [],
-      'multiple': '',
-      'emptyOption': true,
-      'disabled': false,
-      'hasError': false,
-      'required': false,
-      'value': '',
-      'errorMessage': 'The field is required!',
-      'onUserInput': function () {
+      name: '',
+      options: {},
+      label: '',
+      value: null,
+      id: '',
+      class: '',
+      multiple: false,
+      disabled: false,
+      required: false,
+      emptyOption: true,
+      hasError: false,
+      errorMessage: 'The field is required!',
+      onUserInput: function () {
         console.warn('onUserInput() callback is not set');
       }
     };
@@ -86,33 +118,50 @@ SelectElement = React.createClass({
     }
   },
   getInitialState: function () {
+    var value = this.props.multiple ? [] : '';
     return {
-      value: '',
+      value: value,
       hasError: false
     };
   },
   handleChange: function (e) {
 
+    var value = e.target.value;
+    var options = e.target.options;
     var hasError = false;
-    if (this.props.required && e.target.value == "") {
+    var isEmpty = value === "";
+
+    // Multiple values
+    if (this.props.multiple && options.length > 1) {
+      value = [];
+      for (var i = 0, l = options.length; i < l; i++) {
+        if (options[i].selected) {
+          value.push(options[i].value);
+        }
+      }
+      isEmpty = value.length > 1;
+    }
+
+    // Check for errors
+    if (this.props.required && isEmpty) {
       hasError = true;
     }
 
     this.setState({
-      value: e.target.value,
+      value: value,
       hasError: hasError
     });
 
-    this.props.onUserInput(this.props.name, e.target.value);
+    this.props.onUserInput(this.props.name, value);
   },
   render: function () {
-    var multiple = this.props.multiple ? this.props.multiple : '';
+    var multiple = this.props.multiple ? 'multiple' : null;
+    var required = this.props.required ? 'required' : null;
+    var disabled = this.props.disabled ? 'disabled' : null;
     var options = this.props.options;
-    var errorMessage = '';
-    var elementClass = 'row form-group';
-    var required = this.props.required ? 'required' : '';
-    var disabled = this.props.disabled ? 'disabled' : '';
+    var errorMessage = null;
     var emptyOptionHTML = null;
+    var elementClass = 'row form-group';
 
     // Add empty option
     if (this.props.emptyOption) {
@@ -120,7 +169,11 @@ SelectElement = React.createClass({
     }
 
     if (this.state.hasError) {
-      errorMessage = this.props.errorMessage;
+      errorMessage = React.createElement(
+        'span',
+        null,
+        this.props.errorMessage
+      );
       elementClass = 'row form-group has-error';
     }
 
@@ -129,7 +182,7 @@ SelectElement = React.createClass({
       { className: elementClass },
       React.createElement(
         'label',
-        { className: 'col-sm-3 control-label', 'for': this.props.label },
+        { className: 'col-sm-3 control-label', htmlFor: this.props.label },
         this.props.label
       ),
       React.createElement(
@@ -151,16 +204,12 @@ SelectElement = React.createClass({
           Object.keys(options).map(function (option) {
             return React.createElement(
               'option',
-              { value: option },
+              { value: option, key: option },
               options[option]
             );
           })
         ),
-        React.createElement(
-          'span',
-          null,
-          errorMessage
-        )
+        errorMessage
       )
     );
   }
@@ -291,7 +340,7 @@ FileElement = React.createClass({
           { className: 'input-group' },
           React.createElement(
             'div',
-            { tabindex: '-1',
+            { tabIndex: '-1',
               className: 'form-control file-caption kv-fileinput-caption' },
             React.createElement(
               'div',
@@ -439,16 +488,15 @@ ButtonElement = React.createClass({
   displayName: 'ButtonElement',
 
   getInitialState: function () {
-    return {
-      'onUserInput': function () {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
+    return {};
   },
   getDefaultProps: function () {
     return {
       'label': 'Submit',
-      'type': 'submit'
+      'type': 'submit',
+      onUserInput: function () {
+        console.warn('onUserInput() callback is not set');
+      }
     };
   },
   handleClick: function (e) {
@@ -623,7 +671,7 @@ TextareaElement = React.createClass({
       { className: 'row form-group' },
       React.createElement(
         'label',
-        { className: 'col-sm-3 control-label', 'for': this.props.label },
+        { className: 'col-sm-3 control-label', htmlFor: this.props.label },
         this.props.label
       ),
       React.createElement(
@@ -686,7 +734,7 @@ DateElement = React.createClass({
       { className: 'row form-group' },
       React.createElement(
         'label',
-        { className: 'col-sm-3 control-label', 'for': this.props.label },
+        { className: 'col-sm-3 control-label', htmlFor: this.props.label },
         this.props.label
       ),
       React.createElement(
@@ -769,7 +817,7 @@ LorisElement = React.createClass({
         if (element.Options.AllowMultiple) {
           elementHtml = React.createElement(SelectElement, { label: element.Description,
             options: element.Options.Values,
-            multiple: 'true' });
+            multiple: true });
         } else {
           elementHtml = React.createElement(SelectElement, { label: element.Description,
             options: element.Options.Values });
