@@ -26,7 +26,7 @@ FormElement = React.createClass({
       id: null,
       method: 'POST',
       class: 'form-horizontal',
-      fileUpload: true,
+      fileUpload: false,
       onSubmit: function() {
         console.warn('onSubmit() callback is not set!');
       }
