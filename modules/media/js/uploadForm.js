@@ -1,3 +1,5 @@
+'use strict';
+
 /* exported RMediaUploadForm */
 
 /**
@@ -19,7 +21,7 @@ var MediaUploadForm = React.createClass({
     action: React.PropTypes.string.isRequired
   },
 
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       Data: {},
       formData: {},
@@ -30,17 +32,17 @@ var MediaUploadForm = React.createClass({
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     var self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
-      success: function (data) {
+      success: function success(data) {
         self.setState({
           Data: data,
           isLoaded: true
         });
       },
-      error: function (data, errorCode, errorMsg) {
+      error: function error(data, errorCode, errorMsg) {
         console.error(data, errorCode, errorMsg);
         self.setState({
           error: 'An error occurred when loading the form!'
@@ -49,7 +51,7 @@ var MediaUploadForm = React.createClass({
     });
   },
 
-  render: function () {
+  render: function render() {
     // Data loading error
     if (this.state.error !== undefined) {
       return React.createElement(
@@ -101,6 +103,7 @@ var MediaUploadForm = React.createClass({
         FormElement,
         {
           name: 'mediaUpload',
+          fileUpload: true,
           onSubmit: this.handleSubmit,
           ref: 'form'
         },
@@ -181,7 +184,7 @@ var MediaUploadForm = React.createClass({
    * @param {string} instrument - Instrument selected from the dropdown
    * @return {string} - Generated valid filename for the current selection
    */
-  getValidFileName: function (pscid, visitLabel, instrument) {
+  getValidFileName: function getValidFileName(pscid, visitLabel, instrument) {
     var fileName = pscid + "_" + visitLabel;
     if (instrument) fileName += "_" + instrument;
 
@@ -192,7 +195,7 @@ var MediaUploadForm = React.createClass({
    * Handle form submission
    * @param {object} e - Form submission event
    */
-  handleSubmit: function (e) {
+  handleSubmit: function handleSubmit(e) {
     e.preventDefault();
 
     var myFormData = this.state.formData;
@@ -232,7 +235,7 @@ var MediaUploadForm = React.createClass({
       cache: false,
       contentType: false,
       processData: false,
-      xhr: function () {
+      xhr: function xhr() {
         var xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function (evt) {
           if (evt.lengthComputable) {
@@ -246,7 +249,7 @@ var MediaUploadForm = React.createClass({
         }, false);
         return xhr;
       },
-      success: function (data) {
+      success: function success(data) {
         $("#file-progress").addClass('hide');
         self.setState({
           uploadResult: "success",
@@ -269,7 +272,7 @@ var MediaUploadForm = React.createClass({
         // rerender components
         self.forceUpdate();
       },
-      error: function (err) {
+      error: function error(err) {
         var errorMessage = JSON.parse(err.responseText).message;
         self.setState({
           uploadResult: "error",
@@ -288,7 +291,7 @@ var MediaUploadForm = React.createClass({
    * @param {string} fileName - Provided file name
    * @return {boolean} - true if file names match and false otherwise
    */
-  isValidFileName: function (requiredFileName, fileName) {
+  isValidFileName: function isValidFileName(requiredFileName, fileName) {
     if (fileName === null || requiredFileName === null) {
       return false;
     }
@@ -303,7 +306,7 @@ var MediaUploadForm = React.createClass({
    * @param {object} formData - Object containing form data inputed by user
    * @return {boolean} - true if all required fields are filled, false otherwise
    */
-  isValidForm: function (formRefs, formData) {
+  isValidForm: function isValidForm(formRefs, formData) {
     var isValidForm = true;
     var requiredFields = {
       pscid: null,
@@ -330,9 +333,9 @@ var MediaUploadForm = React.createClass({
    * @param {string} formElement - name of the selected element
    * @param {string} value - selected value for corresponding form element
    */
-  setFormData: function (formElement, value) {
+  setFormData: function setFormData(formElement, value) {
     // Only display visits and sites available for the current pscid
-    if (formElement === "pscid") {
+    if (formElement === "pscid" && value !== "") {
       this.state.Data.visits = this.state.Data.sessionData[value].visits;
       this.state.Data.sites = this.state.Data.sessionData[value].sites;
     }
@@ -348,7 +351,7 @@ var MediaUploadForm = React.createClass({
   /**
    * Display a success/error alert message after form submission
    */
-  showAlertMessage: function () {
+  showAlertMessage: function showAlertMessage() {
     var self = this;
 
     if (this.refs["alert-message"] === null) {

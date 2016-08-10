@@ -97,6 +97,7 @@ var MediaUploadForm = React.createClass({
         </div>
         <FormElement
           name="mediaUpload"
+          fileUpload={true}
           onSubmit={this.handleSubmit}
           ref="form"
         >
@@ -327,7 +328,7 @@ var MediaUploadForm = React.createClass({
    */
   setFormData: function(formElement, value) {
     // Only display visits and sites available for the current pscid
-    if (formElement === "pscid") {
+    if (formElement === "pscid" && value !== "") {
       this.state.Data.visits = this.state.Data.sessionData[value].visits;
       this.state.Data.sites = this.state.Data.sessionData[value].sites;
     }
