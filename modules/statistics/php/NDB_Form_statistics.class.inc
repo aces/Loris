@@ -284,9 +284,9 @@ class NDB_Form_statistics extends NDB_Form
 
         //AGE AVERAGE
         $result = $DB->pselect(
-            "SELECT DISTINCT
-                          s.subprojectid as rowid,
-                          AVG(DATEDIFF(c.Date_registered,c.DoB)) as age
+            "SELECT rowid, AVG(DATEDIFF(dr,dob)) as age
+              FROM
+              (SELECT DISTINCT c.CandID, s.subprojectid as rowid, c.Date_registered as dr,c.DoB as dob
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
@@ -296,8 +296,9 @@ class NDB_Form_statistics extends NDB_Form
                           AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           AND c.Active='Y'
                           $Param_Project
-                          $Param_Site
-                      GROUP BY s.subprojectid",
+                          $Param_Site) 
+                                as res
+              GROUP BY rowid",
             $this->params
         );
 
