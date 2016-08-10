@@ -223,8 +223,9 @@
                             {/if}
                         {elseif $items[item][piece].name eq 'number_of_mincInserted'}
                             {if (!empty($items[item][piece].value)) and $items[item][piece].value >0}
+                                {assign var="dccid" value=$items[item][3].value}
                                 <td nowrap="nowrap">
-                                    <a href="{$baseurl}/imaging_browser/?DCCID={$items[item][3].value}&filter=true">
+                                    <a class="image-link" href="#" data-dccid="{$items[item][3].value}">
                                         {$items[item][piece].value}
                                     </a>
                                 </td>
