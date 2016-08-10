@@ -117,9 +117,9 @@ class NDB_Form_statistics extends NDB_Form
         if(isset($_REQUEST['DemographicProject']) && $_REQUEST['DemographicProject'] != '') {
             $currentProject = $_REQUEST['DemographicProject'];
             $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $currentProject,
-                                                 'Name' => $projects[$currentProject],
-                                                );
+                'ID'   => $currentProject,
+                'Name' => $projects[$currentProject],
+            );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] =$_REQUEST['DemographicProject'];
         } else {
@@ -161,9 +161,9 @@ class NDB_Form_statistics extends NDB_Form
             $sites[$row['NumericID']] = $row['ShortName'];
             if($_REQUEST['DemographicSite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
             }
         }
 
@@ -198,10 +198,12 @@ class NDB_Form_statistics extends NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
+                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.CenterID <> '1'
                           AND c.PSCID <> 'scanner'
                           AND c.Active='Y'
+                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
@@ -218,10 +220,12 @@ class NDB_Form_statistics extends NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
+                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.CenterID <> '1'
                           AND c.PSCID <> 'scanner'
-                          AND c.Active<>'Y'
+                          AND c.Active='Y'
+                          AND ps.participant_status=5
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
@@ -238,11 +242,12 @@ class NDB_Form_statistics extends NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
+                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
-                      WHERE coalesce(s.active, 'Y')='Y'
-                          AND c.CenterID <> '1'
+                      WHERE c.CenterID <> '1'
                           AND c.PSCID <> 'scanner'
                           AND c.Active='Y'
+                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           AND c.Gender='Male'
                           $Param_Project
                           $Param_Site
@@ -259,11 +264,12 @@ class NDB_Form_statistics extends NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
+                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
-                      WHERE coalesce(s.active, 'Y')='Y'
-                          AND c.CenterID <> '1'
+                      WHERE c.CenterID <> '1'
                           AND c.PSCID <> 'scanner'
                           AND c.Active='Y'
+                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           AND c.Gender='Female'
                           $Param_Project
                           $Param_Site
@@ -282,10 +288,12 @@ class NDB_Form_statistics extends NDB_Form
                           s.subprojectid as rowid,
                           AVG(DATEDIFF(c.Date_registered,c.DoB)) as age
                       FROM candidate as c
-                          JOIN session s ON (s.CandID=c.CandID)
+                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.CenterID <> '1'
                           AND c.PSCID <> 'scanner'
+                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           AND c.Active='Y'
                           $Param_Project
                           $Param_Site
@@ -306,9 +314,9 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['all_instruments'] = $instrument_list;
         if(isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
             $Subcategories = array(
-                              'Complete',
-                              'Incomplete',
-                             );
+                'Complete',
+                'Incomplete',
+            );
             $result        = $DB->pselect(
                 "SELECT count(*) as val,
                     f.Data_entry as Subcat,
@@ -357,9 +365,9 @@ class NDB_Form_statistics extends NDB_Form
             );
         } else {
             $Subcategories = array(
-                              'Male',
-                              'Female',
-                             );
+                'Male',
+                'Female',
+            );
             $result        = $DB->pselect(
                 "SELECT c.CenterID as CenterID,
                     s.SubprojectID as SubprojectID,
