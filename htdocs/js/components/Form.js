@@ -1,6 +1,5 @@
-/* exported FormElement, SelectElement, FileElement, HelpTextElement,
-StaticElement, ButtonElement, HeaderElement, LabelElement, ScoredElement,
-TextboxElement, TextareaElement, DateElement, NumericElement, LorisElement
+/* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
+NumericElement, FileElement, HelpTextElement, StaticElement, ButtonElement
 */
 
 /**
