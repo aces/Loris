@@ -213,7 +213,7 @@ var MediaUploadForm = React.createClass({
     var requiredFileName = this.getValidFileName(myFormData.pscid, myFormData.visitLabel, instrument);
 
     if (!this.isValidFileName(requiredFileName, fileName)) {
-      alert("File name should start with: " + requiredFileName);
+      alert("File name should begin with: " + requiredFileName);
       return;
     }
 
