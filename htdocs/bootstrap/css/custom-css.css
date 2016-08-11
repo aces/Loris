@@ -3,6 +3,19 @@
  *	to overwrite bootstraps css file
  */
 
+
+/*******************************
+Loris color palette v.0.1
+
+@accent-color: #064785 (blue)
+@accent-color-hover: #042d54 (dark blue)
+
+Note: other colors are currenly inherited from Bootstrap default color palette
+      See: http://getbootstrap.com/css/#less-variables-colors
+
+****************************************/
+
+
 /*
  *	Styling for the navbar dropdowns
  */
@@ -15,6 +28,39 @@
 .navbar-nav>li>.dropdown-menu>li>a {
     color: white;
 }
+
+
+.navbar-default a {
+  -webkit-transition: background-color 0.2s ease-in;
+  transition: background-color 0.2s ease-in;
+}
+
+/* Show submenu when hovering on menu item */
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Loris logo */
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+  background-color: #042d54;
+}
+
+/* Menu items */
+.navbar-default .navbar-nav>li:hover,
+.navbar-default .navbar-nav>li>a:hover,
+.navbar-default .navbar-nav>li>a:focus,
+.navbar-default .navbar-nav>li>a:active{
+  background-color: #042d54;
+}
+
+/* Submenu items*/
+.navbar-nav>li>.dropdown-menu>li>a:hover,
+.navbar-nav>li>.dropdown-menu>li>a:focus{
+  background-color: #042d54;
+}
+
+
 
 /*
  *	Making the table header font colour white
@@ -395,3 +441,4 @@ a.btn.btn-primary {
   height: 57px;
   margin-bottom: 10px;
 }
+
