@@ -130,9 +130,11 @@ class NDB_Form_candidate_parameters extends NDB_Form
             }
          
          }
- 
-        $DB->select("SELECT ParameterTypeID, Value FROM parameter_candidate 
-                     WHERE CandID='".$this->identifier."'", $value_results);
+
+        $value_results = $DB->pselect("SELECT ParameterTypeID, Value FROM parameter_candidate 
+                     WHERE CandID=:cid",
+                array('cid' => $this->identifier)
+            );
         foreach ($value_results AS $vresult) {
             if (!empty($vresult['Value'])) {
                 $cand_info["PTID_".$vresult['ParameterTypeID']] = $vresult['Value'];
@@ -407,11 +409,13 @@ class NDB_Form_candidate_parameters extends NDB_Form
     function _getInstrumentInfo($instrument, $param) {
         $DB  =& Database::singleton();
 
-        $ret = $DB->selectOne("SELECT t.$param FROM flag f JOIN $instrument t ON (t.CommentID=f.CommentID) 
+        $ret = $DB->pselectOne("SELECT t.$param FROM flag f JOIN $instrument t ON (t.CommentID=f.CommentID) 
                                JOIN session s ON (f.SessionID=s.ID) WHERE 
                                s.CandID=" . $DB->quote($this->identifier) . ' 
                                AND f.test_name=' . $DB->quote($instrument) . ' 
-                               AND t.CommentID NOT LIKE \'DDE_%\'');
+                               AND t.CommentID NOT LIKE \'DDE_%\'',
+            array()
+        );
         if ($ret == array()) {
             return;
         }
@@ -436,10 +440,12 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->addScoreColumn('flagged_other', $this->indent.'Additional Comments for flag');
 
  		//Extract the fields from the parameter_type table
-        $DB->select("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description 
+        $field_results = $DB->pselect("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description 
                      FROM parameter_type as pt, parameter_type_category as ptc, parameter_type_category_rel as ptcr 
                      WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID 
-                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC", $field_results);
+                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC",
+            array()
+        );
         //If there are no defined fields print a message to that effect
         if (empty($field_results)) {
             $this->addScoreColumn("static", "No candidate parameters have been defined for this study");
@@ -611,10 +617,12 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->addTextAreaGroup('flagged_other',$this->indent.'If Other, please specify',
                                           array(null=>'','not_answered'=>'Not Answered'));
         //Extract the fields from the parameter_type table
-        $DB->select("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, 
+        $field_results = $DB->pselect("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, 
                      parameter_type_category as ptc, parameter_type_category_rel as ptcr 
                      WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID 
-                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC", $field_results);
+                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC",
+            array()
+        );
         //If there are no defined fields pritn a message to that effect
         if (empty($field_results)) {
         	$this->addScoreColumn("static", "No candidate parameters have been defined for this study");
