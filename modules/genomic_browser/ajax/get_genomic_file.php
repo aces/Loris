@@ -13,7 +13,7 @@
 
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
-$path  = $config->getSetting('GenomicDataPath');
+$path   = $config->getSetting('GenomicDataPath');
 
 // Basic config validation
 if (empty($path) || !is_dir($path)) {
@@ -30,7 +30,7 @@ if (empty($_GET['GenomicFileID'])) {
     exit(2);
 }
 
-$DB =& Database::singleton();
+$DB      =& Database::singleton();
 $results = $DB->pselect(
     'SELECT 
          FileName,
@@ -38,11 +38,11 @@ $results = $DB->pselect(
      FROM 
          genomic_files 
      WHERE 
-         GenomicFileID = :v_file_id', 
+         GenomicFileID = :v_file_id',
     array('v_file_id' => $_GET['GenomicFileID'])
 );
 
-if (count($results) < 1) { 
+if (count($results) < 1) {
     error_log("ERROR: GenomicFileID $_GET[GenomicFileID] does not exist");
     header("HTTP/1.1 404 Not Found");
     exit(5);
@@ -59,7 +59,7 @@ if (!file_exists($full_path) || !is_readable($full_path)) {
 }
 
 
-$fp = fopen($full_path, 'r');
+$fp   = fopen($full_path, 'r');
 $size = filesize($file);
 
 header("Content-Disposition: attachment; filename=$file_name");
