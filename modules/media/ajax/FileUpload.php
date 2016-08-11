@@ -47,9 +47,9 @@ function editFile()
     $hideFile    = $_POST['hideFile'];
 
     $updateValues = [
-                     'dateTaken' => $dateTaken,
+                     'date_taken' => $dateTaken,
                      'comments'  => $comments,
-                     'hideFile'  => $hideFile,
+                     'hide_file'  => $hideFile,
                     ];
 
     $db->update('media', $updateValues, ['id' => $idMediaFile]);
