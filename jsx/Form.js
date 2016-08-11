@@ -214,30 +214,357 @@ var SelectElement = React.createClass({
 });
 
 /**
- * File Component
- * React wrapper for a simple or 'multiple' <select> element.
+ * Textarea Component
+ * React wrapper for a <textarea> element.
  */
-var FileElement = React.createClass({
-  getInitialState: function() {
+var TextareaElement = React.createClass({
+
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    label: React.PropTypes.string,
+    value: React.PropTypes.string,
+    id: React.PropTypes.string,
+    disabled: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    onUserInput: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
     return {
-      id: '',
-      value: null,
-      required: '',
-      hasError: false,
+      name: '',
+      label: '',
+      value: '',
+      id: null,
+      disabled: false,
+      required: false,
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       }
     };
   },
+  getInitialState: function() {
+    return {
+      value: ''
+    };
+  },
+  componentDidMount: function() {
+    if (this.props.value) {
+      this.setState({value: this.props.value});
+    }
+  },
+  handleChange: function(e) {
+    this.setState({
+      value: e.target.value
+    });
+    this.props.onUserInput(this.props.name, e.target.value);
+  },
+  render: function() {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          <textarea
+            cols="25"
+            rows="4"
+            className="form-control"
+            name={this.props.name}
+            id={this.props.id}
+            value={this.state.value}
+            required={required}
+            disabled={disabled}
+            onChange={this.handleChange}
+          >
+          </textarea>
+        </div>
+      </div>
+    );
+  }
+});
+
+/**
+ * Textbox Component
+ * React wrapper for a <input type="text"> element.
+ */
+var TextboxElement = React.createClass({
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    label: React.PropTypes.string,
+    value: React.PropTypes.string,
+    id: React.PropTypes.string,
+    disabled: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    onUserInput: React.PropTypes.func
+  },
+  getInitialState: function() {
+    return {
+      value: ''
+    };
+  },
   getDefaultProps: function() {
     return {
-      label: 'File to Upload',
-      name: 'file',
-      class: 'fileUpload',
+      name: '',
+      label: '',
       value: '',
+      id: null,
+      disabled: false,
+      required: false,
+      onUserInput: function() {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
+  componentDidMount: function() {
+    if (this.props.value) {
+      this.setState({
+        value: this.props.value
+      });
+    }
+  },
+  handleChange: function(e) {
+    this.setState({
+      value: e.target.value
+    });
+    this.props.onUserInput(this.props.name, e.target.value);
+  },
+  render: function() {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          <input
+            type="text"
+            className="form-control"
+            name={this.props.name}
+            id={this.props.id}
+            value={this.state.value}
+            required={required}
+            disabled={disabled}
+            onChange={this.handleChange}
+          />
+        </div>
+      </div>
+    );
+  }
+});
+
+/**
+ * Date Component
+ * React wrapper for a <input type="date"> element.
+ */
+var DateElement = React.createClass({
+
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    label: React.PropTypes.string,
+    value: React.PropTypes.string,
+    id: React.PropTypes.string,
+    disabled: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    onUserInput: React.PropTypes.func
+  },
+
+  getDefaultProps: function() {
+    return {
+      name: '',
+      label: '',
+      value: '',
+      id: null,
+      disabled: false,
+      required: false,
+      onUserInput: function() {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
+  getInitialState: function() {
+    return {
+      value: ''
+    };
+  },
+  componentDidMount: function() {
+    if (this.props.value) {
+      this.setState({value: this.props.value});
+    }
+  },
+  handleChange: function(e) {
+    this.setState({
+      value: e.target.value
+    });
+    this.props.onUserInput(this.props.name, e.target.value);
+  },
+  render: function() {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    // Add required asterix
+    if (required) {
+      requiredHTML = <span className="text-danger">*</span>;
+    }
+
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          <input
+            type="date"
+            className="form-control"
+            name={this.props.name}
+            id={this.props.label}
+            min={this.props.minYear}
+            max={this.props.maxYear}
+            onChange={this.handleChange}
+            value={this.state.value}
+            required={required}
+            disabled={disabled}
+          />
+        </div>
+      </div>
+    );
+  }
+});
+
+/**
+ * Numeric Component
+ * React wrapper for a <input type="number"> element.
+ */
+var NumericElement = React.createClass({
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    min: React.PropTypes.number.isRequired,
+    max: React.PropTypes.number.isRequired,
+    label: React.PropTypes.string,
+    value: React.PropTypes.string,
+    id: React.PropTypes.string,
+    disabled: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    onUserInput: React.PropTypes.func
+  },
+  getInitialState: function() {
+    return {
+      value: ''
+    };
+  },
+  getDefaultProps: function() {
+    return {
+      name: '',
+      min: null,
+      max: null,
+      label: '',
+      value: '',
+      id: null,
+      required: false,
+      disabled: false,
+      onUserInput: function() {
+        console.warn('onUserInput() callback is not set');
+      }
+    };
+  },
+  componentDidMount: function() {
+    if (this.props.value) {
+      this.setState({
+        value: this.props.value
+      });
+    }
+  },
+  handleChange: function(e) {
+    this.setState({
+      value: e.target.value
+    });
+    this.props.onUserInput(this.props.name, e.target.value);
+  },
+  render: function() {
+    var disabled = this.props.disabled ? 'disabled' : null;
+    var required = this.props.required ? 'required' : null;
+    var requiredHTML = null;
+
+    return (
+      <div className="row form-group">
+        <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+          {this.props.label}
+          {requiredHTML}
+        </label>
+        <div className="col-sm-9">
+          <input
+            type="number"
+            className="form-control"
+            name={this.props.name}
+            id={this.props.id}
+            min={this.props.min}
+            max={this.props.max}
+            value={this.props.value}
+            disabled={disabled}
+            required={required}
+            onChange={this.handleChange}
+          />
+        </div>
+      </div>
+    );
+  }
+});
+
+/**
+ * File Component
+ * React wrapper for a simple or 'multiple' <select> element.
+ */
+var FileElement = React.createClass({
+  propTypes: {
+    name: React.PropTypes.string.isRequired,
+    label: React.PropTypes.string,
+    value: React.PropTypes.string,
+    id: React.PropTypes.string,
+    disabled: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    hasError: React.PropTypes.bool,
+    errorMessage: React.PropTypes.string,
+    onUserInput: React.PropTypes.func
+  },
+  getInitialState: function() {
+    return {
+      value: '',
+      hasError: false
+    };
+  },
+  getDefaultProps: function() {
+    return {
+      name: '',
+      label: 'File to Upload',
+      value: '',
+      id: null,
+      disabled: false,
+      required: false,
       hasError: false,
       errorMessage: 'The field is required!',
-      disabled: false
+      onUserInput: function() {
+        console.warn('onUserInput() callback is not set');
+      }
     };
   },
   componentDidMount: function() {
@@ -336,8 +663,8 @@ var FileElement = React.createClass({
                 <i className="glyphicon glyphicon-folder-open"></i> Browse
                 <input
                   type="file"
+                  className="fileUpload"
                   name={this.props.name}
-                  className={this.props.class}
                   onChange={this.handleChange}
                   required={required}
                 />
@@ -434,6 +761,11 @@ var StaticElement = React.createClass({
  * React wrapper for <button> element, typically used to submit forms
  */
 var ButtonElement = React.createClass({
+  propTypes: {
+    label: React.PropTypes.string,
+    type: React.PropTypes.string,
+    onUserInput: React.PropTypes.func
+  },
   getInitialState: function() {
     return {};
   },
@@ -460,331 +792,6 @@ var ButtonElement = React.createClass({
           </button>
         </div>
       </div>
-    );
-  }
-});
-
-/*
- * This is the React class for a header element
- */
-var HeaderElement = React.createClass({
-  render: function() {
-    return (
-      <h2>{this.props.header}</h2>
-    );
-  }
-});
-
-/*
- *This is the React class for a label element
- */
-var LabelElement = React.createClass({
-  render: function() {
-    return (
-      <p>{this.props.label}</p>
-    );
-  }
-});
-
-/*
- * This is the React class for a scored element
- */
-var ScoredElement = React.createClass({
-  render: function() {
-    var score = (this.props.score) ? this.props.score : 0;
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3">
-          {this.props.label}
-        </label>
-        <div className="col-sm-9">
-          {score}
-        </div>
-      </div>
-    );
-  }
-});
-
-/*
- * This is the React class for a textbox element
- */
-var TextboxElement = React.createClass({
-  getInitialState: function() {
-    return {
-      value: ''
-    };
-  },
-  getDefaultProps: function() {
-    return {
-      value: '',
-      required: false,
-      disabled: false,
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
-  },
-  componentDidMount: function() {
-    if (this.props.value) {
-      this.setState({
-        value: this.props.value
-      });
-    }
-  },
-  handleChange: function(e) {
-    this.setState({
-      value: e.target.value
-    });
-    this.props.onUserInput(this.props.name, e.target.value);
-  },
-  render: function() {
-    var disabled = this.props.disabled ? 'disabled' : null;
-    var required = this.props.required ? 'required' : null;
-    var requiredHTML = null;
-
-    // Add required asterix
-    if (required) {
-      requiredHTML = <span className="text-danger">*</span>;
-    }
-
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor="hey">
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-9">
-          <input
-            id="hey"
-            type="text"
-            className="form-control"
-            onChange={this.handleChange}
-            value={this.state.value}
-            required={required}
-            disabled={disabled}
-          />
-        </div>
-      </div>
-    );
-  }
-});
-
-/*
- * This is the React class for a textarea element
- */
-var TextareaElement = React.createClass({
-  getDefaultProps: function() {
-    return {
-      label: '',
-      name: '',
-      id: null,
-      class: 'form-control',
-      disabled: false,
-      required: false,
-      value: '',
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
-  },
-  getInitialState: function() {
-    return {
-      value: ''
-    };
-  },
-  componentDidMount: function() {
-    if (this.props.value) {
-      this.setState({value: this.props.value});
-    }
-  },
-  handleChange: function(e) {
-    this.setState({
-      value: e.target.value
-    });
-    this.props.onUserInput(this.props.name, e.target.value);
-  },
-  render: function() {
-    var disabled = this.props.disabled ? 'disabled' : null;
-    var required = this.props.required ? 'required' : null;
-    var requiredHTML = null;
-
-    // Add required asterix
-    if (required) {
-      requiredHTML = <span className="text-danger">*</span>;
-    }
-
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-9">
-          <textarea
-            id={this.props.label}
-            name={this.props.name}
-            cols="25"
-            rows="4"
-            className={this.props.class}
-            onChange={this.handleChange}
-            value={this.state.value}
-            required={required}
-            disabled={disabled}
-          >
-          </textarea>
-        </div>
-      </div>
-    );
-  }
-});
-
-/*
- * This is the React class for a date element
- */
-var DateElement = React.createClass({
-  getDefaultProps: function() {
-    return {
-      label: '',
-      name: '',
-      id: null,
-      disabled: false,
-      required: false,
-      value: '',
-      class: 'form-control',
-      onUserInput: function() {
-        console.warn('onUserInput() callback is not set');
-      }
-    };
-  },
-  getInitialState: function() {
-    return {
-      value: ''
-    };
-  },
-  componentDidMount: function() {
-    if (this.props.value) {
-      this.setState({value: this.props.value});
-    }
-  },
-  handleChange: function(e) {
-    this.setState({
-      value: e.target.value
-    });
-    this.props.onUserInput(this.props.name, e.target.value);
-  },
-  render: function() {
-    var disabled = this.props.disabled ? 'disabled' : null;
-    var required = this.props.required ? 'required' : null;
-    var requiredHTML = null;
-
-    // Add required asterix
-    if (required) {
-      requiredHTML = <span className="text-danger">*</span>;
-    }
-
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3 control-label" htmlFor={this.props.label}>
-          {this.props.label}
-          {requiredHTML}
-        </label>
-        <div className="col-sm-9">
-          <input
-            type="date"
-            name={this.props.name}
-            id={this.props.label}
-            className={this.props.class}
-            min={this.props.minYear}
-            max={this.props.maxYear}
-            onChange={this.handleChange}
-            value={this.state.value}
-            required={required}
-            disabled={disabled}
-          />
-        </div>
-      </div>
-    );
-  }
-});
-
-/*
- *	This is the React class for a numeric element
- */
-var NumericElement = React.createClass({
-  render: function() {
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3">
-          {this.props.label}
-        </label>
-        <div className="col-sm-9">
-          <input
-            type="number"
-            className="form-control"
-            min={this.props.min}
-            max={this.props.max}
-          />
-        </div>
-      </div>
-    );
-  }
-});
-
-/*
- * This is the React class for a LORIS element. It takes
- * in an element and render's the HTML based on its type
- * (Used in instrument builder)
- */
-var LorisElement = React.createClass({
-  render: function() {
-    var element = this.props.element;
-    var elementHtml = '';
-    switch (element.Type) {
-      case 'header':
-        elementHtml = <HeaderElement header={element.Description}/>;
-        break;
-      case 'label':
-        elementHtml = <LabelElement label={element.Description}/>;
-        break;
-      case 'score':
-        elementHtml = <ScoredElement label={element.Description}/>;
-        break;
-      case 'text':
-        if (element.Options.Type === 'small') {
-          elementHtml = <TextboxElement label={element.Description}/>;
-        } else {
-          elementHtml = <TextareaElement label={element.Description}/>;
-        }
-        break;
-      case 'select':
-        if (element.Options.AllowMultiple) {
-          elementHtml = <SelectElement label={element.Description}
-                                       options={element.Options.Values}
-                                       multiple={true}/>;
-        } else {
-          elementHtml = <SelectElement label={element.Description}
-                                       options={element.Options.Values}/>;
-        }
-        break;
-      case 'date':
-        elementHtml = <DateElement
-          label={element.Description}
-          minYear={element.Options.MinDate}
-          maxYear={element.Options.MaxDate}
-        />;
-        break;
-      case 'numeric':
-        elementHtml = <NumericElement
-          label={element.Description}
-          min={element.Options.MinValue}
-          max={element.Options.MaxValue}
-        />;
-        break;
-      default:
-        break;
-    }
-    return (
-      <div>{elementHtml}</div>
     );
   }
 });
