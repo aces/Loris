@@ -109,7 +109,8 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     function _setupVariables()
     {
         // the base query
-        $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID";
+        $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
+        " LEFT JOIN candidate c ON c.CandID=s.CandID";
         $query .= " WHERE m.hide_file = FALSE";
 
         // set the class variables
@@ -156,23 +157,16 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         }
 
         $this->validFilters = [
-                               'pscid',
+                               'c.PSCID',
                                'm.instrument',
-                               'm.data_dir',
-                               'site',
-                               'visit_label',
-                               'm.uploaded_by',
+                               's.Visit_label',
+                               's.CenterID',
                               ];
         $this->formToFilter = [
-                               'file_name'     => 'm.file_name',
-                               'data_dir'      => 'm.data_dir',
+                               'pscid'         => 'c.PSCID',
                                'instrument'    => 'm.instrument',
-                               'pscid'         => 'm.pscid',
-                               'for_site'      => 'm.site',
-                               'uploaded_by'   => 'm.uploaded_by',
-                               'visit_label'   => 'visit_label',
-                               'date_uploaded' => 'm.date_uploaded',
-                               'comments'      => 'comments',
+                               'visit_label'   => 's.Visit_label',
+                               'for_site'      => 's.CenterID',
                               ];
 
         return true;
