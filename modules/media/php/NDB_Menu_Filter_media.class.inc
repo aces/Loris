@@ -81,11 +81,11 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 
         $instrumentList   = [null => 'Any'];
         $instrumentsQuery = $db->pselect(
-            "SELECT Test_name FROM test_names ORDER BY Test_name",
+            "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
             []
         );
         foreach ($instrumentsQuery as $instrument) {
-            $instrumentList[$instrument['Test_name']] = $instrument['Test_name'];
+            $instrumentList[$instrument['Test_name']] = $instrument['Full_name'];
         }
 
         // Form Elements
@@ -93,7 +93,6 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->addSelect('instrument', 'Instrument:', $instrumentList);
         $this->addSelect('visit_label', 'Visit Label:', $visitList);
         $this->addSelect('for_site', 'For Site:', $siteList);
-        $this->addBasicText('uploaded_by', 'Uploaded By');
 
         $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
 
