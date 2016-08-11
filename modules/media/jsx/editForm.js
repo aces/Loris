@@ -165,6 +165,7 @@ var MediaEditForm = React.createClass({
             value={this.state.mediaData.comments}
           />
           <FileElement
+            name="file"
             id="mediaEditEl"
             onUserInput={this.setFormData}
             required={true}

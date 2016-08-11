@@ -161,6 +161,7 @@ var MediaUploadForm = React.createClass({
           ref: 'comments'
         }),
         React.createElement(FileElement, {
+          name: 'file',
           id: 'mediaUploadEl',
           onUserInput: this.setFormData,
           ref: 'file',
