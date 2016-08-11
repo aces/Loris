@@ -48,7 +48,7 @@ function editFile()
 
     $updateValues = [
                      'date_taken' => $dateTaken,
-                     'comments'  => $comments,
+                     'comments'   => $comments,
                      'hide_file'  => $hideFile,
                     ];
 
