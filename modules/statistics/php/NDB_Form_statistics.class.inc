@@ -244,7 +244,8 @@ class NDB_Form_statistics extends NDB_Form
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
-                      WHERE c.CenterID <> '1'
+                      WHERE coalesce(s.active, 'Y')='Y'
+                          AND c.CenterID <> '1'
                           AND c.PSCID <> 'scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1 OR ps.participant_status IS NULL)
