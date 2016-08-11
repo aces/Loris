@@ -162,10 +162,10 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                                's.CenterID',
                               ];
         $this->formToFilter = [
-                               'pscid'         => 'c.PSCID',
-                               'instrument'    => 'm.instrument',
-                               'visit_label'   => 's.Visit_label',
-                               'for_site'      => 's.CenterID',
+                               'pscid'       => 'c.PSCID',
+                               'instrument'  => 'm.instrument',
+                               'visit_label' => 's.Visit_label',
+                               'for_site'    => 's.CenterID',
                               ];
 
         return true;
