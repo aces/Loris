@@ -156,11 +156,11 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         }
 
         $this->validFilters = [
-                               'm.pscid',
+                               'pscid',
                                'm.instrument',
                                'm.data_dir',
-                               'm.for_site',
-                               'm.visit_label',
+                               'site',
+                               'visit_label',
                                'm.uploaded_by',
                               ];
         $this->formToFilter = [
@@ -168,9 +168,9 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                                'data_dir'      => 'm.data_dir',
                                'instrument'    => 'm.instrument',
                                'pscid'         => 'm.pscid',
-                               'for_site'      => 'm.for_site',
+                               'for_site'      => 'm.site',
                                'uploaded_by'   => 'm.uploaded_by',
-                               'visit_label'   => 'm.visit_label',
+                               'visit_label'   => 'visit_label',
                                'date_uploaded' => 'm.date_uploaded',
                                'comments'      => 'comments',
                               ];
