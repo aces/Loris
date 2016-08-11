@@ -283,14 +283,14 @@ var MediaUploadForm = React.createClass({
    *
    * @param {string} requiredFileName - Required file name
    * @param {string} fileName - Provided file name
-   * @return {boolean} - true if file names match and false otherwise
+   * @return {boolean} - true if fileName starts with requiredFileName, false otherwise
    */
   isValidFileName: function(requiredFileName, fileName) {
     if (fileName === null || requiredFileName === null) {
       return false;
     }
 
-    return (fileName.indexOf(requiredFileName) > -1);
+    return (fileName.indexOf(requiredFileName) === 0);
   },
 
   /**
