@@ -80,6 +80,6 @@ $file_contents = str_replace("%PASSWORD%", "$password", $file_contents);
 $file_contents = str_replace("%DATABASE%", "$db", $file_contents);
 file_put_contents('../project/config.xml', $file_contents);
 
-header("Location: /main.php");
+header("Location: /");
 
 ?>

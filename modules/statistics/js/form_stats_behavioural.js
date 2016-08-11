@@ -1,15 +1,17 @@
 /*global document, $, window, scrollContent*/
 function updateBehaviouralTab() {
-    'use strict';
-    var BehaviouralProject = document.getElementById("BehaviouralProject"),
-        request = $.ajax({
-            url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' + BehaviouralProject.value,
+    var BehaviouralProject = document.getElementById("BehaviouralProject");
+    var request            = $.ajax(
+        {
+            url: loris.BaseURL + '/statistics/stats_behavioural/?dynamictabs=dynamictabs&BehaviouralProject=' + (BehaviouralProject==null ? "" : BehaviouralProject.value),
             type: 'GET',
             data: 'html',
             success: function (response) {
                 $('#data_entry').html(response);
+                $(".dynamictable").DynamicTable();
             }
-        });
+        }
+    );
 }
 function checkOverflow() {
     'use strict';
@@ -42,8 +44,8 @@ function showStats(clicked) {
     'use strict';
     var id = clicked.id;
     $('.' + id).show();
-    $('#' + id).attr('colspan', '3');
-    $('#' + id + "PIS").attr('colspan', '3');
+    $('#' + id).attr('colspan', '2');
+    $('#' + id + "PIS").attr('colspan', '2');
     $('#' + id).attr('onClick', 'hideStats(this)');
     $('#' + id).addClass('stats-active');
     $('#' + id).attr('data-original-title', 'Click to minimize');
@@ -60,24 +62,31 @@ function hideStats(clicked) {
     $('#' + id).attr('data-original-title', 'Click to maximize');
     checkOverflow();
 }
-$(document).ready(function(){
-    $.getScript(loris.BaseURL + "/js/modules/dynamic_table.table.js")
-        .done(function(){
-            Table.setup("content", "scrollRight", "scrollLeft");
-            Table.checkOverflow("content", "scrollRight", "scrollLeft", "headcol");
-            Table.setup("contentDD", "scrollRightDD", "scrollLeftDD");
-            Table.checkOverflow("contentDD", "scrollRightDD", "scrollLeftDD", "headcolDD");
-        });
-    
-    $(".spacer").height($(".centers").height());
-    // checkOverflow();
-});
-$(window).resize(function(){
-    $(".spacer").height($(".centers").height());
-    Table.checkOverflow("contentDD", "scrollRightDD", "scrollLeftDD", "headcolDD");
-    Table.checkOverflow("content", "scrollRight", "scrollLeft", "headcol");
-    // checkOverflow();
-});
-$(function(){
+$(document).ready(
+    function(){
+        $.getScript(loris.BaseURL + "/js/modules/dynamic_table.table.js")
+        .done(
+            function(){
+                Table.setup("content", "scrollRight", "scrollLeft");
+                Table.checkOverflow("content", "scrollRight", "scrollLeft", "headcol");
+                Table.setup("contentDD", "scrollRightDD", "scrollLeftDD");
+                Table.checkOverflow("contentDD", "scrollRightDD", "scrollLeftDD", "headcolDD");
+            }
+        );
+        $(".spacer").height($(".centers").height());
+        // checkOverflow();
+    }
+);
+$(window).resize(
+    function(){
+        $(".spacer").height($(".centers").height());
+        Table.checkOverflow("contentDD", "scrollRightDD", "scrollLeftDD", "headcolDD");
+        Table.checkOverflow("content", "scrollRight", "scrollLeft", "headcol");
+        // checkOverflow();
+    }
+);
+$(
+    function(){
         $(".tip").tooltip();
-    });
+    }
+);

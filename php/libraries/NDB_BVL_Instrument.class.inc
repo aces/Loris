@@ -170,7 +170,6 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     static function factory($instrument, $commentID, $page, $guarantee_exists = true)
     {
-        include_once 'HTML/QuickForm.php';
         $class = "NDB_BVL_Instrument_$instrument";
 
         // Make sure the instrument class has been included/required!
@@ -272,7 +271,16 @@ class NDB_BVL_Instrument extends NDB_Page
         $instrumentPermissions = $config->getSetting("instrumentPermissions");
 
         //check if instrumentPermissions are being used.
-        if ($instrumentPermissions['useInstrumentPermissions'] == false) {
+        if (!is_array($instrumentPermissions)) {
+            //instrument permissions not used...
+            return true; //default
+        } else if (!array_key_exists(
+            'useInstrumentPermissions',
+            $instrumentPermissions
+        )) {
+            //instrument permissions not used...
+            return true; //default
+        } else if ($instrumentPermissions['useInstrumentPermissions'] == false) {
             //instrument permissions not used...
             return true; //default
         } else { //check if user has instrument's permissions
@@ -415,7 +423,6 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->form->setDefaults($defaults);
 
         if ($this->DataEntryType == 'DirectEntry') {
-            $renderer = new HTML_QuickForm_Renderer_Default();
             if (isset($this->testName)) {
                 $renderer->setFormTemplate(
                     "<form{attributes}>
@@ -1106,14 +1113,50 @@ class NDB_BVL_Instrument extends NDB_Page
     function _getDatabaseDate($formDateValue)
     {
         if (!empty($formDateValue)) {
-            if (count($formDateValue)==2) {
-                //handle time (HH:MM:SS)
-                $databaseValue = "$formDateValue[H]:$formDateValue[i]";
-            } else {
-                //handle date (YYYY/MM/DD)
-                $databaseValue = "$formDateValue[Y]-"
-                    . "$formDateValue[M]-"
-                    . "$formDateValue[d]";
+
+            $databaseValue = "";
+
+            if (array_key_exists("Y", $formDateValue)
+                || array_key_exists("M", $formDateValue)
+                || array_key_exists("d", $formDateValue)
+            ) {
+
+                if (array_key_exists("Y", $formDateValue)) {
+                    $yearString = $formDateValue[Y];
+                } else {
+                    $yearString = "0001";
+                }
+
+                if (array_key_exists("M", $formDateValue)) {
+                    $monthString = $formDateValue[M];
+                } else {
+                    $monthString = "01";
+                }
+
+                if (array_key_exists("d", $formDateValue)) {
+                    $dayString = $formDateValue[d];
+                } else {
+                    $dayString = "01";
+                }
+
+                $databaseValue = $yearString . "-" . $monthString . "-" . $dayString;
+
+            } elseif (array_key_exists("H", $formDateValue)
+                || array_key_exists("i", $formDateValue)
+            ) {
+                if (array_key_exists("H", $formDateValue)) {
+                    $hourString = $formDateValue[H];
+                } else {
+                    $hourString = "01";
+                }
+                if (array_key_exists("i", $formDateValue)) {
+                    $minuteString = $formDateValue[i];
+                } else {
+                    $minuteString = "01";
+                }
+
+                $databaseValue = $hourString . ":" . $minuteString;
+
             }
         }
         return $databaseValue;
@@ -2058,6 +2101,27 @@ class NDB_BVL_Instrument extends NDB_Page
             return $age;
         }
         return;
+    }
+
+    /**
+     * Get the candidates PSCID.
+     *
+     * @return The candidate's PSCID.
+     */
+    function getPSCID()
+    {
+        $db        =& Database::singleton();
+        $CommentID = $this->getCommentID();
+
+        $pscid = $db->pselectOne(
+            "SELECT c.PSCID FROM $this->testName i
+            JOIN flag f USING (CommentID)
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c USING (CandID)
+            WHERE f.CommentID=:CID",
+            array('CID' => $CommentID)
+        );
+        return $pscid;
     }
 
     /**

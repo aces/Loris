@@ -236,10 +236,13 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'QCStatus' => $FileObj->getParameter('QCStatus'),
                 'QCDate' => $FileObj->getParameter('QCLastChangeTime'),
                 'Caveat' => $FileObj->getParameter('Caveat'),
+                'SNR' => $FileObj->getParameter('SNR'),
                 'SeriesUID' => $FileObj->getParameter('SeriesUID'),
                 'XMLreport' => $FileObj->getParameter('processing:DTIPrepXmlReport'),
                 'XMLprotocol' => $FileObj->getParameter('ProtocolFile'),
-                'NrrdFile' => $FileObj->getParameter('processing:nrrd_file')
+                'NrrdFile' => $FileObj->getParameter('processing:nrrd_file'),
+                'OtherTimepoints' => $this->_getFilesAcrossTimepoints((int)$FileObj->getParameter('SessionID'),
+                (int)$FileObj->getParameter('AcquisitionProtocolID'))
             );
             $this->tpl_data['files'][] = $file;
         }
@@ -483,6 +486,31 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 );
             }
         }
+    }
+
+    /**
+     * Gets candidate's scans with the same acquisitionID.
+     *
+     * @return string of FileIDs, comma separated
+     */
+    function _getFilesAcrossTimepoints($initialFileID, $initialFileAcquisitionID){
+
+        $selectResults = $this->DB->pselect("SELECT FileID FROM files ".
+            "WHERE AcquisitionProtocolID =:initialFileAcquisitionID ".
+            "AND SessionID in (SELECT s2.ID FROM session s1 RIGHT JOIN session s2 ".
+            "ON s1.CandID = s2.CandID WHERE s1.ID =:initialFileID)",
+            array(
+                'initialFileAcquisitionID' => $initialFileAcquisitionID,
+                'initialFileID' => $initialFileID
+            )
+        );
+
+        $fileIDS = array();
+        foreach($selectResults as $selectResult) {
+            $fileIDS[] = $selectResult['FileID'];
+        }
+        $fileIDString = implode(",", $fileIDS);
+        return $fileIDString;
     }
 
     /**

@@ -6,7 +6,6 @@
 </br>
 {/if}
 </tr>
-
 <div class="row">
 {$headerTable}
 </div>
@@ -35,7 +34,8 @@
                       "Selected" : "{if $files[file].Selected}{$files[file].Selected}{/if}",
                       "SelectedOptions" : {$selected_options|json_encode},
 
-                      "Caveat" : "{if $files[file].Caveat}{$files[file].Caveat}{/if}",
+                      "Caveat" : "{$files[file].Caveat}",
+                      "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",
                       'HeaderInfo' : {
                           'XStep' : "{$files[file].Xstep}",
                           'YStep' : "{$files[file].Ystep}",
@@ -62,7 +62,8 @@
                       'Fullname' : "{$files[file].FullFilename}",
                       "XMLProtocol" : "{$files[file].XMLprotocol}",
                       "XMLReport" : "{$files[file].XMLreport}",
-                      "NrrdFile" : "{$files[file].NrrdFile}"
+                      "NrrdFile" : "{$files[file].NrrdFile}",
+                      "OtherTimepoints" : "{$files[file].OtherTimepoints}"
                   }),
                   document.getElementById("image-{$files[file].FileID}" )
                   );
@@ -71,6 +72,6 @@
    </div> <!-- closing panel-body div-->
 </div>
 {else}
-    <h3>No data selected</h3>
+    <h3>No data available</h3>
 </div>
 {/if}
