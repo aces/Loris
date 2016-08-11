@@ -212,7 +212,7 @@ ImagePanelHeadersTable = React.createClass({
                 React.createElement(
                     'td',
                     { className: 'col-xs-2' },
-                    this.props.HeaderInfo.Time,
+                    this.props.HeaderInfo.NumVolumes,
                     ' volumes'
                 ),
                 React.createElement(

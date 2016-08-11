@@ -28,7 +28,9 @@
             </div>
         {/foreach}
         <br>
-        <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_candidate_info/?candID={$candID}&identifier={$candID}'" value="Update Candidate Info" type="button" />
+        {if $candidate_parameter_edit}
+            <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_candidate_info/?candID={$candID}&identifier={$candID}'" value="Update Candidate Info" type="button" />
+        {/if}
     </div>
     {if $display_proband}
         <div class="panel-heading">
@@ -50,7 +52,9 @@
                 </div>
             </div>
             <br>
-            <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_proband_info/?candID={$candID}&identifier={$candID}'" value="Update Proband Info" type="button" />
+            {if $candidate_parameter_edit}
+                <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_proband_info/?candID={$candID}&identifier={$candID}'" value="Update Proband Info" type="button" />
+            {/if}
         </div>
     {/if}
     {if $display_family}
@@ -68,7 +72,9 @@
             {/foreach}
         </div>
         <br>
-        <input class="btn btn-sm btn-primary col-sm-offset-2" colspan="2" onclick="location.href='{$baseurl}/candidate_parameters/add_family/?candID={$candID}&identifier={$candID}'" value="Add Family Info" type="button" />
+        {if $candidate_parameter_edit}
+            <input class="btn btn-sm btn-primary col-sm-offset-2" colspan="2" onclick="location.href='{$baseurl}/candidate_parameters/add_family/?candID={$candID}&identifier={$candID}'" value="Add Family Info" type="button" />
+        {/if}
         <br><br>
     </td>
     {/if}
@@ -99,7 +105,9 @@
     </table>
     </div>
     <div class="panel-body">
-        <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_participant_status/?candID={$candID}&identifier={$candID}'" value="Update Participant Status" type="button" />
+        {if $candidate_parameter_edit}
+            <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_participant_status/?candID={$candID}&identifier={$candID}'" value="Update Participant Status" type="button" />
+        {/if}
     </div>
     {if $display_consent}
         <div class="panel-heading">
@@ -131,7 +139,9 @@
             {if $form.$row.error}
                 <span class="error">{$form.$row.error}</span>
             {/if}
-            <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_consent_info/?candID={$candID}&identifier={$candID}'" value="Update Consent Info" type="button" />
+            {if $candidate_parameter_edit}
+                <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_consent_info/?candID={$candID}&identifier={$candID}'" value="Update Consent Info" type="button" />
+            {/if}
         </div>
     {/if}
 </div>

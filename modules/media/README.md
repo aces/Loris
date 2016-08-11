@@ -13,6 +13,11 @@ In order to use media module user might need one or both of the following permis
 
 >**Note**: superusers have both of the aforementioned permissions by default! 💪
 
+### Default upload path
+
+By default, all files are uploaded under `/data/uploads/`.
+This setting is configurable in `Paths` section of `Configuration` module.
+
 ### 💯 Features
 
 1. **Browse** a list of uploaded files and related information
