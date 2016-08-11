@@ -92,7 +92,7 @@ ImagePanelHeadersTable = React.createClass({
                 </tr>
                 <tr>
                     <th className="col-xs-2 info">Number of volumes</th>
-                    <td className="col-xs-2">{this.props.HeaderInfo.Time} volumes</td>
+                    <td className="col-xs-2">{this.props.HeaderInfo.NumVolumes} volumes</td>
 
                     <th className="col-xs-2 info">Pipeline</th>
                     <td className="col-xs-2">{this.props.HeaderInfo.Pipeline}</td>

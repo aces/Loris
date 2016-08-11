@@ -20,6 +20,8 @@ before_install:
     - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1600x1200x16"
     #- "export DISPLAY=:99.0"
     #- "sh -e /etc/init.d/xvfb start"
+    # Ensure node version is up to date
+    - nvm install node
 
 install:
     # Install composer modules
@@ -29,7 +31,12 @@ install:
     # Install jslint
     - npm install -g jslint
 
-      # Download a Selenium Web Driver release
+    # Install ESLint and plugins
+    - npm -g install eslint
+    - npm -g install eslint-config-google
+    - npm -g install eslint-plugin-react
+
+    # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
 
     - PHP_INI_SCAN_DIR=":test/" php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
@@ -105,6 +112,9 @@ script:
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
+
+    # Run ESLint on specific modules
+    - eslint modules/media/
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml

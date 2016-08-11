@@ -447,6 +447,12 @@ $(document).ready(
     function() {
         uploadProgress = new UploadProgress();        
         
+        $(".image-link").click(function(e){
+            loris.loadFilteredMenuClickHandler(
+                'imaging_browser',
+                {'DCCID': $(this).attr("data-dccid")}
+            )(e);
+        });
         // update the logs table: make it read-only, as wide as the panel containing it
         // and set the initial content
         $('textarea[name=UploadLogs]').attr("readonly", "true");
