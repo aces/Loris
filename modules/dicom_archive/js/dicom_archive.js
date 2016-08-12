@@ -1,22 +1,26 @@
+"use strict";
+
 var QueryStringMixin = {
 
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     var queryString = window.location.search.substring(1).split("&");
     var formRefs = this.refs;
-    var self = this;
+    var Filter = {};
 
     queryString.forEach(function (param) {
       var key = param.split("=")[0];
       var value = param.split("=")[1];
       if (key !== "" && value !== "") {
         // Set filter from query string
-        self.state.Filter[key] = value;
+        Filter[key] = value;
         // Populate input fields from query string
         formRefs[key].state.value = value;
       }
     });
+
+    this.setState({ Filter: Filter });
   },
-  setQueryString: function (fieldName, fieldValue) {
+  setQueryString: function setQueryString(fieldName, fieldValue) {
 
     // Clear querystring if invalid parameter is passed
     var formRefs = this.refs;
@@ -26,7 +30,7 @@ var QueryStringMixin = {
     }
 
     var queryString = "?"; // always start with '?'
-    var queryStringObj = this.state.Filter; // object representation of querys
+    var queryStringObj = this.state.Filter; // object representation of queries
 
     // Add/Delete to/from query string object
     if (fieldValue === "") {
@@ -45,30 +49,25 @@ var QueryStringMixin = {
 
     window.history.replaceState({}, "", queryString);
   },
-
-  clearQueryString: function () {
+  clearQueryString: function clearQueryString() {
     window.history.replaceState({}, "", "/" + this.props.Module + "/");
   }
-
 };
 
-DicomArchive = React.createClass({
+var DicomArchive = React.createClass({
   displayName: "DicomArchive",
 
 
   propTypes: {
-    'Module': React.PropTypes.string.isRequired
+    Module: React.PropTypes.string.isRequired
   },
-
   mixins: [React.addons.PureRenderMixin, QueryStringMixin],
-
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       Filter: {}
     };
   },
-
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       Gender: {
         M: 'Male',
@@ -77,8 +76,7 @@ DicomArchive = React.createClass({
       }
     };
   },
-
-  setFilter: function (fieldName, fieldValue) {
+  setFilter: function setFilter(fieldName, fieldValue) {
     // Create deep copy of a current filter
     var Filter = JSON.parse(JSON.stringify(this.state.Filter));
 
@@ -91,8 +89,7 @@ DicomArchive = React.createClass({
     this.setQueryString(fieldName, fieldValue);
     this.setState({ Filter: Filter });
   },
-
-  clearFilter: function () {
+  clearFilter: function clearFilter() {
     this.clearQueryString();
     this.setState({
       Filter: {}
@@ -106,8 +103,7 @@ DicomArchive = React.createClass({
       }
     });
   },
-
-  render: function () {
+  render: function render() {
     return React.createElement(
       "div",
       null,
@@ -231,4 +227,4 @@ DicomArchive = React.createClass({
   }
 });
 
-RDicomArchive = React.createFactory(DicomArchive);
+var RDicomArchive = React.createFactory(DicomArchive);
