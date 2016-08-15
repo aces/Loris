@@ -96,14 +96,7 @@ var StaticDataTable = React.createClass({
             identifiers: this.props.RowNameMap
         });
     },
-    countFilteredRows: function countFilteredRows(index) {
-
-        function toCamelCase(str) {
-            return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
-                if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
-                return index == 0 ? match.toLowerCase() : match.toUpperCase();
-            });
-        }
+    countFilteredRows: function countFilteredRows() {
 
         var filterMatchCount = 0;
         var filterValuesCount = this.props.Filter ? Object.keys(this.props.Filter).length : 0;
@@ -115,19 +108,9 @@ var StaticDataTable = React.createClass({
             var headerCount = 0;
 
             for (var j = 0; j < headersData.length; j++) {
-
-                var header = toCamelCase(headersData[j]);
                 var data = tableData[i] ? tableData[i][j] : null;
-                var filterData = this.props.Filter[header] ? this.props.Filter[header] : null;
-
-                // Increase counter, if filter value is found to be a substring
-                // of one of the column values. Serach is case-insensetive.
-                if (filterData !== null && data !== null) {
-                    var searchKey = filterData.toLowerCase();
-                    var searchString = data.toLowerCase();
-                    if (searchString.indexOf(searchKey) > -1) {
-                        headerCount++;
-                    }
+                if (this.hasFilterKeyword(headersData[j], data)) {
+                    headerCount++;
                 }
             }
 
@@ -143,9 +126,48 @@ var StaticDataTable = React.createClass({
 
         return filterMatchCount === 0 ? tableData.length : filterMatchCount;
     },
-    render: function render() {
-        var _this = this;
+    toCamelCase: function toCamelCase(str) {
+        return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
+            if (+match === 0) return "";
+            return index === 0 ? match.toLowerCase() : match.toUpperCase();
+        });
+    },
+    /**
+     * Return true, if filter value is found to be a substring
+     * of one of the column values, false otherwise.
+     *
+     * Note: Search is case-insensetive.
+     *
+     * @param header
+     * @param data
+     * @returns {boolean}
+     */
+    hasFilterKeyword: function hasFilterKeyword(headerData, data) {
 
+        var header = this.toCamelCase(headerData);
+        var filterData = this.props.Filter[header] ? this.props.Filter[header] : null;
+
+        // Handle nullinputs
+        if (filterData === null || data === null) {
+            return false;
+        }
+
+        // Handle numeric inputs
+        if (typeof filterData === 'number') {
+            var intData = Number.parseInt(data, 10);
+            return filterData === intData;
+        }
+
+        // Handle string inputs
+        if (typeof filterData === 'string') {
+            var searchKey = filterData.toLowerCase();
+            var searchString = data.toLowerCase();
+            return searchString.indexOf(searchKey) > -1;
+        }
+
+        return false;
+    },
+    render: function render() {
         if (this.props.Data == null || this.props.Data.length == 0) {
             return React.createElement(
                 "div",
@@ -250,8 +272,8 @@ var StaticDataTable = React.createClass({
             return 0;
         });
 
-        var matchesFound = 0;
-        var filteredRows = this.countFilteredRows(index);
+        var matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
+        var filteredRows = this.countFilteredRows();
         var currentPageRow = rowsPerPage * (this.state.PageNumber - 1);
         // Push rows to data table
         for (var i = 0; i < this.props.Data.length && rows.length < rowsPerPage; i++) {
@@ -263,41 +285,22 @@ var StaticDataTable = React.createClass({
 
             // Itterates through headers to populate row columns
             // with corresponding data
+            for (var j = 0; j < this.props.Headers.length; j += 1) {
 
-            var _loop = function _loop() {
-                data = "Unknown";
+                var data = "Unknown";
 
                 // Set column data
-
-                if (_this.props.Data[index[i].RowIdx]) {
-                    data = _this.props.Data[index[i].RowIdx][j];
+                if (this.props.Data[index[i].RowIdx]) {
+                    data = this.props.Data[index[i].RowIdx][j];
                 }
 
-                camelizedHeader = toCamelCase(_this.props.Headers[j]);
-
-                function toCamelCase(str) {
-                    return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
-                        if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
-                        return index == 0 ? match.toLowerCase() : match.toUpperCase();
-                    });
-                }
-
-                // Increase counter, if filter value is found to be a substring
-                // of one of the column values. Serach is case-insensetive.
-                filterData = _this.props.Filter[camelizedHeader];
-
-                if (filterData !== undefined && data !== undefined) {
-                    searchKey = filterData.toLowerCase();
-                    searchString = data.toLowerCase();
-
-                    if (searchString.indexOf(searchKey) > -1) {
-                        filterMatchCount++;
-                    }
+                if (this.hasFilterKeyword(this.props.Headers[j], data)) {
+                    filterMatchCount++;
                 }
 
                 // Get custom cell formatting if available
-                if (_this.props.getFormattedCell) {
-                    data = _this.props.getFormattedCell(_this.props.Headers[j], data, _this.props.Data[index[i].RowIdx], _this.props.Headers);
+                if (this.props.getFormattedCell) {
+                    data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[i].RowIdx], this.props.Headers);
                     curRow.push({ data: data });
                 } else {
                     curRow.push(React.createElement(
@@ -306,16 +309,6 @@ var StaticDataTable = React.createClass({
                         data
                     ));
                 }
-            };
-
-            for (var j = 0; j < this.props.Headers.length; j += 1) {
-                var data;
-                var camelizedHeader;
-                var filterData;
-                var searchKey;
-                var searchString;
-
-                _loop();
             }
 
             // Only display a row if all filter values have been matched
@@ -428,7 +421,7 @@ var StaticDataTable = React.createClass({
                             { className: "col-xs-12 footerText" },
                             rows.length,
                             " rows displayed of ",
-                            this.props.Data.length,
+                            filteredRows,
                             ". (Maximum rows per page: ",
                             RowsPerPageDropdown,
                             ")"
@@ -445,7 +438,7 @@ var StaticDataTable = React.createClass({
                         React.createElement(
                             "div",
                             { className: "pull-right" },
-                            React.createElement(PaginationLinks, { Total: this.props.Data.length, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber })
+                            React.createElement(PaginationLinks, { Total: filteredRows, onChangePage: this.changePage, RowsPerPage: rowsPerPage, Active: this.state.PageNumber })
                         )
                     )
                 )
