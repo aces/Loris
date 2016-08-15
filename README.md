@@ -4,6 +4,7 @@ LORIS (Longitudinal Online Research and Imaging System) is a web-based data and 
 
 <hr>
 NEW <b>⇾  Try LORIS on Heroku</b> before installing it on your system<br>
+Test out the project management and clinical data management side of LORIS (complete Imaging features not yet available)<br>
 Deploy and log in with username <i>admin</i> and the password that's set up during deployment via ClearDB.
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/16.1-dev)
 <hr>
