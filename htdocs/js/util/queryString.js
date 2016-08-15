@@ -70,10 +70,10 @@ var QueryString = function() {
    * @param {string} moduleName - module used in URL
    */
   this.clear = function(moduleName) {
-    if (moduleName === undefined || moduleName === "") {
-      window.history.replaceState({}, "", "/");
-    } else {
+    if (moduleName !== undefined && moduleName !== "") {
       window.history.replaceState({}, "", "/" + moduleName + "/");
+    } else {
+      console.error('QueryString.clear() expects parameter `moduleName`!');
     }
   };
 
