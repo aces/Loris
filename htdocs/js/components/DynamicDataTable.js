@@ -1,11 +1,13 @@
-DynamicDataTable = React.createClass({
+'use strict';
+
+var DynamicDataTable = React.createClass({
   displayName: 'DynamicDataTable',
 
   propTypes: {
     DataURL: React.PropTypes.string.isRequired
   },
 
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       'Headers': [],
       'Data': [],
@@ -13,26 +15,28 @@ DynamicDataTable = React.createClass({
       'loadedData': 0
     };
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       'DataURL': ''
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     var self = this;
     self.fetchData();
 
     // Listen for update event to update data table on outside changes
-    $(document).on('update', function (e) {
-      self.fetchData();
-    });
+    window.addEventListener('update-datatable', this.fetchData);
   },
-  fetchData: function () {
+  componentWillUnmount: function componentWillUnmount() {
+    // Unsubscribe from the event before component is destroyed
+    window.removeEventListener('update-datatable', this.fetchData);
+  },
+  fetchData: function fetchData() {
     var that = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       cache: false,
-      xhr: function () {
+      xhr: function xhr() {
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function (evt) {
           console.log(evt);
@@ -42,20 +46,20 @@ DynamicDataTable = React.createClass({
         });
         return xhr;
       },
-      success: function (data) {
+      success: function success(data) {
         that.setState({
           'Headers': data.Headers,
           'Data': data.Data,
           'isLoaded': true
         });
       },
-      error: function (data, error_code, error_msg) {
+      error: function error(data, error_code, error_msg) {
         console.error(error_code + ': ' + error_msg);
         that.setState({ "error": "Error loading data" });
       }
     });
   },
-  render: function () {
+  render: function render() {
     if (!this.state.isLoaded) {
 
       if (this.state.error != undefined) {
@@ -87,4 +91,4 @@ DynamicDataTable = React.createClass({
   }
 });
 
-RDynamicDataTable = React.createFactory(DynamicDataTable);
+var RDynamicDataTable = React.createFactory(DynamicDataTable);

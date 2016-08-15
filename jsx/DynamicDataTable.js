@@ -1,4 +1,4 @@
-DynamicDataTable = React.createClass({
+var DynamicDataTable = React.createClass({
     propTypes: {
         DataURL : React.PropTypes.string.isRequired,
     },
@@ -21,9 +21,11 @@ DynamicDataTable = React.createClass({
       self.fetchData();
 
       // Listen for update event to update data table on outside changes
-      $(document).on('update', function(e) {
-        self.fetchData();
-      });
+      window.addEventListener('update-datatable', this.fetchData);
+    },
+    componentWillUnmount: function() {
+      // Unsubscribe from the event before component is destroyed
+      window.removeEventListener('update-datatable', this.fetchData);
     },
     fetchData: function() {
       var that = this;
@@ -82,4 +84,4 @@ DynamicDataTable = React.createClass({
     }
 });
 
-RDynamicDataTable = React.createFactory(DynamicDataTable);
+var RDynamicDataTable = React.createFactory(DynamicDataTable);
