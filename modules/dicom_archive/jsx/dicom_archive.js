@@ -57,7 +57,15 @@ var DicomArchive = React.createClass({
     if (formRefs.hasOwnProperty(fieldName)) {
       queryString.set(Filter, fieldName, fieldValue);
     } else {
-      queryString.clear();
+      queryString.clear(this.props.Module);
+    }
+
+    // Special treatment for site, to explicitly set it as an integer value
+    if (fieldName === "site") {
+      var number = Number.parseInt(fieldValue, 10);
+      if (Number.isInteger(number)) {
+        fieldValue = number;
+      }
     }
 
     if (fieldValue === "") {
@@ -65,6 +73,8 @@ var DicomArchive = React.createClass({
     } else {
       Filter[fieldName] = fieldValue;
     }
+
+    console.log(Filter);
 
     this.setState({Filter: Filter});
   },
@@ -85,80 +95,96 @@ var DicomArchive = React.createClass({
     // Clear filter
     this.setState({Filter: {}});
   },
+  toCamelCase: function(str) {
+    return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
+      if (+match === 0) return "";
+      return index == 0 ? match.toLowerCase() : match.toUpperCase();
+    });
+  },
   render: function() {
+    // Defining element names here ensures that `name` and `ref`
+    // properties of the element are always kept in sync
+    var patientID = "patientID";
+    var patientName = "patientName";
+    var site = "site";
+    var gender = "gender";
+    var dateOfBirth = "dateOfBirth";
+    var acquisition = "acquisition";
+    var archiveLocation = "archiveLocation";
+
     return (
       <div>
         <FilterTable Module="dicom_archive">
           <div className="row">
             <div className="col-md-6">
               <TextboxElement
-                name="patientID"
+                name={patientID}
                 label="Patient ID"
                 onUserInput={this.setFilter}
                 value={this.state.Filter.patientID}
-                ref="patientID"
+                ref={patientID}
               />
             </div>
             <div className="col-md-6">
               <TextboxElement
-                name="patientName"
+                name={patientName}
                 label="Patient Name"
                 onUserInput={this.setFilter}
                 value={this.state.Filter.patientName}
-                ref="patientName"
+                ref={patientName}
               />
             </div>
           </div>
           <div className="row">
             <div className="col-md-6">
               <SelectElement
-                name="sites"
+                name={site}
                 label="Sites"
                 options={this.props.Sites}
                 onUserInput={this.setFilter}
                 value={this.state.Filter.sites}
-                ref="sites"
+                ref={site}
               />
             </div>
             <div className="col-md-6">
               <SelectElement
-                name="gender"
+                name={gender}
                 label="Gender"
                 options={this.props.Gender}
                 onUserInput={this.setFilter}
                 value={this.state.Filter.gender}
-                ref="gender"
+                ref={gender}
               />
             </div>
           </div>
           <div className="row">
             <div className="col-md-6">
               <DateElement
-                name="dateOfBirth"
+                name={dateOfBirth}
                 label="Date of Birth"
                 onUserInput={this.setFilter}
                 value={this.state.Filter.dateOfBirth}
-                ref="dateOfBirth"
+                ref={dateOfBirth}
               />
             </div>
             <div className="col-md-6">
               <DateElement
-                name="acquisition"
+                name={acquisition}
                 label="Acquisition Date"
                 onUserInput={this.setFilter}
                 value={this.state.Filter.acquisition}
-                ref="acquisitionDate"
+                ref={acquisition}
               />
             </div>
           </div>
           <div className="row">
             <div className="col-md-6">
               <TextboxElement
-                name="archiveLocation"
+                name={archiveLocation}
                 label="Archive Location"
                 onUserInput={this.setFilter}
                 value={this.state.Filter.archiveLocation}
-                ref="archiveLocation"
+                ref={archiveLocation}
               />
             </div>
           </div>

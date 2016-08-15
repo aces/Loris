@@ -11,6 +11,12 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData) {
+
+  // If a column if set as hidden, don't display it
+  if (loris.hiddenHeaders.indexOf(column) > -1) {
+    return null;
+  }
+
   if (column === 'Metadata') {
     var metadataURL = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" + rowData[rowData.length - 2];
     return React.createElement(
@@ -23,6 +29,7 @@ function formatColumn(column, cell, rowData) {
       )
     );
   }
+
   if (column === 'MRI Browser') {
     if (rowData[rowData.length - 1] === null || rowData[rowData.length - 1] === '') {
       return React.createElement(
@@ -42,13 +49,15 @@ function formatColumn(column, cell, rowData) {
       )
     );
   }
+
   if (cell === "INVALID - HIDDEN") {
     return React.createElement(
       'td',
-      { className: 'error' },
+      { className: 'text-danger' },
       cell
     );
   }
+
   return React.createElement(
     'td',
     null,
