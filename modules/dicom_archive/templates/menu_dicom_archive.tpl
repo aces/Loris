@@ -1,5 +1,6 @@
 <div id="page-dicom-archive"></div>
 <script>
+  loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
   var dicomArchivePage = RDicomArchive({
     "Sites": {$Sites|@json_encode},
     "DataURL": "{$baseurl}/dicom_archive/?format=json",
