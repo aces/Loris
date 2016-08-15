@@ -114,15 +114,16 @@ class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies()
-    {
+   function getJSDependencies()
+   {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
             array(
-                $baseurl . "/survey_accounts/js/survey_accounts_helper.js",
+                $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
+                $baseURL . "/survey_accounts/js/columnFormatter.js"
             )
         );
     }
