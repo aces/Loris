@@ -346,6 +346,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             array(
                 $baseURL . "/dicom_archive/js/columnFormatter.js",
                 $baseURL . "/dicom_archive/js/dicom_archive.js",
+                $baseURL . "/js/util/queryString.js",
             )
         );
     }

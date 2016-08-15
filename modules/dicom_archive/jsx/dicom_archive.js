@@ -1,67 +1,21 @@
-var QueryStringMixin = {
+/* exported RDicomArchive */
+/* global QueryString  */
 
-  componentDidMount: function() {
-    var queryString = window.location.search.substring(1).split("&");
-    var formRefs = this.refs;
-    var Filter = {};
-
-    queryString.forEach(function(param) {
-      var key = param.split("=")[0];
-      var value = param.split("=")[1];
-      if (key !== "" && value !== "") {
-        // Set filter from query string
-        Filter[key] = value;
-        // Populate input fields from query string
-        formRefs[key].state.value = value;
-      }
-    });
-
-    this.setState({Filter: Filter});
-
-  },
-  setQueryString: function(fieldName, fieldValue) {
-
-    // Clear querystring if invalid parameter is passed
-    var formRefs = this.refs;
-    if (!formRefs.hasOwnProperty(fieldName)) {
-      this.clearQueryString();
-      return;
-    }
-
-    var queryString = "?"; // always start with '?'
-    var queryStringObj = this.state.Filter; // object representation of queries
-
-    // Add/Delete to/from query string object
-    if (fieldValue === "") {
-      delete queryStringObj[fieldName];
-    } else {
-      queryStringObj[fieldName] = fieldValue;
-    }
-
-    // Build query string
-    Object.keys(queryStringObj).map(function(key, count) {
-      queryString += key + "=" + queryStringObj[key];
-      if (count !== Object.keys(queryStringObj).length - 1) {
-        queryString += "&";
-      }
-    });
-
-    window.history.replaceState({}, "", queryString);
-  },
-  clearQueryString: function() {
-    window.history.replaceState({}, "", "/" + this.props.Module + "/");
-  }
-};
-
+/**
+ * DICOM Archive Page.
+ *
+ * Renders DICOM Archive main page consisting of FilterTable and
+ * DataTable components.
+ *
+ * @author Alex Ilea
+ * @version 1.0.0
+ *
+ * */
 var DicomArchive = React.createClass({
-
   propTypes: {
-    Module : React.PropTypes.string.isRequired
+    Module: React.PropTypes.string.isRequired
   },
-  mixins: [
-    React.addons.PureRenderMixin,
-    QueryStringMixin
-  ],
+  mixins: [React.addons.PureRenderMixin],
   getInitialState: function() {
     return {
       Filter: {}
@@ -74,11 +28,37 @@ var DicomArchive = React.createClass({
         F: 'Female',
         O: 'N/A'
       }
-    }
+    };
+  },
+  componentDidMount: function() {
+    var formRefs = this.refs;
+    var queryString = new QueryString();
+    var queryStringObj = queryString.get();
+
+    // Populate input fields from query string
+    Object.keys(queryStringObj).map(function(key) {
+      if (formRefs[key].state && queryStringObj[key]) {
+        formRefs[key].state.value = queryStringObj[key];
+      }
+    });
+
+    this.setState({
+      Filter: queryStringObj,
+      QueryString: queryString
+    });
   },
   setFilter: function(fieldName, fieldValue) {
     // Create deep copy of a current filter
     var Filter = JSON.parse(JSON.stringify(this.state.Filter));
+    var queryString = this.state.QueryString;
+    var formRefs = this.refs;
+
+    // If fieldName is part of the form, add to querystring
+    if (formRefs.hasOwnProperty(fieldName)) {
+      queryString.set(Filter, fieldName, fieldValue);
+    } else {
+      queryString.clear();
+    }
 
     if (fieldValue === "") {
       delete Filter[fieldName];
@@ -86,22 +66,24 @@ var DicomArchive = React.createClass({
       Filter[fieldName] = fieldValue;
     }
 
-    this.setQueryString(fieldName, fieldValue);
     this.setState({Filter: Filter});
   },
   clearFilter: function() {
-    this.clearQueryString();
-    this.setState({
-      Filter: {}
-    });
+    var queryString = this.state.QueryString;
+    var formRefs = this.refs;
+
+    // Clear query string
+    queryString.clear(this.props.Module);
 
     // Reset state of child components of FilterTable
-    var formRefs = this.refs;
     Object.keys(formRefs).map(function(ref) {
       if (formRefs[ref].state && formRefs[ref].state.value) {
         formRefs[ref].state.value = "";
       }
     });
+
+    // Clear filter
+    this.setState({Filter: {}});
   },
   render: function() {
     return (
@@ -198,6 +180,5 @@ var DicomArchive = React.createClass({
     );
   }
 });
-
 
 var RDicomArchive = React.createFactory(DicomArchive);
