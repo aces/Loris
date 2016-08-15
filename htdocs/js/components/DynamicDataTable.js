@@ -21,9 +21,7 @@ var DynamicDataTable = React.createClass({
     };
   },
   componentDidMount: function componentDidMount() {
-    var self = this;
-    self.fetchData();
-
+    this.fetchData();
     // Listen for update event to update data table on outside changes
     window.addEventListener('update-datatable', this.fetchData);
   },
