@@ -17,9 +17,8 @@ addons:
     - graphviz
 
 before_install:
-    - sudo apt-add-repository ppa:webupd8team/java
-    - sudo apt-get update
-    - sudo apt-get install oracle-java8-installer
+    - wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u102-b14/jdk-8u102-linux-x64.tar.gz
+    - tar zxvf jdk-8u102-linux-x64.tar.gz
     - java -version
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
