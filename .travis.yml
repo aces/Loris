@@ -1,6 +1,5 @@
 language: php
-language: java
-   jdk: oraclejdk8
+
 cache:
     directories:
         - vendor
@@ -13,9 +12,15 @@ sudo: false
 
 addons:
     firefox: "44.0"
-
+    apt:
+    packages:
+    - graphviz
 
 before_install:
+    - sudo apt-add-repository ppa:webupd8team/java
+    - sudo apt-get update
+    - sudo apt-get install oracle-java8-installer
+    - java -version
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
     # are hidden when Selenium tries to find them.
