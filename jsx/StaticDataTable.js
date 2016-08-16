@@ -31,7 +31,7 @@ var StaticDataTable = React.createClass({
             'PageNumber' : 1,
             'SortColumn' : -1,
             'SortOrder' : 'ASC',
-            'RowsPerPage' : 5
+            'RowsPerPage' : 20
         };
     },
     getDefaultProps: function() {
