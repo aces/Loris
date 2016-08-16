@@ -116,6 +116,9 @@ script:
     # Run ESLint on specific modules
     - eslint modules/media/
 
+    # Run ESLint on specific scripts
+    - eslint htdocs/js/util/
+
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
 
