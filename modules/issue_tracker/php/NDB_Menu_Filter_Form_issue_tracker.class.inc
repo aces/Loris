@@ -6,28 +6,29 @@
  *
  * PHP Version 5
  *
- *  @category   Behavioural
- *  @package    Main
- *  @subpackage Tools
- *  @author     Caitrin Armstrong <caitrin.armstrong@mail.mcgill.ca
- *  @license    @GPLv3
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Tools
+ * @author     Caitrin Armstrong <caitrin.armstrong@mail.mcgill.ca
+ * @license    @GPLv3
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 
 /**
  * Provides the PHP code for the menu filter for the issue tracker
  *
- *  @category   Behavioural
- *  @package    Main
- *  @subpackage Tools
- *  @author     Caitrin Armstrong <caitrin.armstrong@mail.mcgill.ca>
- *  @license    @GPLv3
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category   Behavioural
+ * @package    Main
+ * @subpackage Tools
+ * @author     Caitrin Armstrong <caitrin.armstrong@mail.mcgill.ca>
+ * @license    @GPLv3
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 {
     //aka building-table-using-react module
     var $AjaxModule = true;
+
 
     /**
      * Set up the variables required by NDB_Menu_Filter class for constructing
@@ -38,16 +39,15 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
 
-        //and as it stands I want everything
-        $this->query = " FROM issues as i LEFT JOIN candidate c ON (i.candID=c.CandID) LEFT JOIN psc p ON (i.centerID=p.CenterID) WHERE i.status != 'closed'";
+        $this->query = " FROM issues as i LEFT JOIN candidate c ON (i.candID=c.CandID) LEFT JOIN psc p ON (i.centerID=p.CenterID) LEFT JOIN LorisMenu l on (i.module=l.ID) WHERE i.status != 'closed'";
 
         $user =& User::singleton();
         $DB = Database::singleton();
-        if (!$user->hasPermission('issue_tracker_view_allsites')) {
+
+        if (!$user->hasPermission('access_all_profiles')) {
             $this->query .= " AND i.centerID=" . $DB->quote($user->getCenterID());
         }
 
-        //TODO: change field names and add project into things
         //note that this needs to be in the same order as the headers array
         $this->columns = array(
             'i.issueID as Issue_ID',
@@ -56,18 +56,16 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'i.category as Category',
             'i.reporter as Reporter',
             'i.assignee as Assignee',
-            'i.status as Status',
             'i.priority as Priority',
             'p.Name as Site',
             'c.PSCID as PSCID',
-            'i.candID as DCCID',
             'i.visitLabel as Visit_Label',
             'i.lastUpdate as Last_Update'
         );
 
-        //TODO: figure out if you want to initially group by id or dateUodated
         $this->order_by = 'i.issueID DESC';
-        $this->group_by = 'i.issueID'; //aka don't want to group by anything, right?
+        $this->group_by = 'i.issueID';
+
         //NDB filter will remove underscores
         $this->headers = array(
             'Issue_ID',
@@ -76,56 +74,45 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'Category',
             'Reporter',
             'Assignee',
-            'Status',
             'Priority',
             'Site',
             'PSCID',
-            'DCCID',
             'Visit_Label',
             'Last_Update'
         );
-       
+
         $this->validFilters = array(
             'i.issueID',
             'i.module',
             'i.category',
             'c.PSCID',
             'i.visitLabel',
-            'i.candID',
             'i.reporter',
             'i.assignee',
             'i.centerID',
             'watching',
-            'i.status',
-            'includeClosed',
             'i.projectID',
             'i.priority',
             'keyword'
         );
 
         $this->formToFilter = array(
-            'issueID' =>'i.issueID',
+            'issueID' => 'i.issueID',
             'category' => 'i.category',
             'module' => 'i.module',
             'PSCID' => 'c.PSCID',
             'visitLabel' => 'i.visitLabel',
-            'DCCID' => 'i.candID',
             'reporter' => 'i.reporter',
-            'assignee' =>'i.assignee',
-            'site' =>'i.centerID',
-            'watching' =>'watching',
-            'status' =>'i.status',
-            'includeClosed' => 'includeClosed',
+            'assignee' => 'i.assignee',
+            'site' => 'i.centerID',
+            'watching' => 'watching',
             'projectID' => 'i.projectID',
             'priority' => 'i.priority',
             'keyword' => 'i.comment'
         );
-        //$this->EqualityFilters = array('f.AcquisitionProtocolID');
-        $this->EqualityFilters = array('i.issueID', 'i.centerID');
-        $this->searchKeyword    = array('i.comment');
 
-        //TODO: and this
-        $this->tpl_data['numTimepoints'] = 0;
+        $this->EqualityFilters = array('i.issueID', 'i.centerID');
+        $this->searchKeyword = array('i.comment');
 
     }
 
@@ -139,62 +126,39 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         $user =& User::singleton();
         $DB = Database::singleton();
 
-        if ($user->hasPermission('issue_tracker_view_allsites')) {
-            // get the list of study sites - to be replaced by the Site object
+        //sites
+        if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = Utility::getSiteList();
-            if(is_array($list_of_sites)) $list_of_sites = array('' => 'All') + $list_of_sites;
-        }
-        else {
-            // allow only to view own site data
+            if (is_array($list_of_sites)) $list_of_sites = array('' => 'All') + $list_of_sites;
+        } else {// allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
                 $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
             }
         }
 
-        //could upgrade this to add "meee" at the top
-        $reporters = array('' => 'All');
-        $assignees = array('' => 'All');
+        //reporters
         $reporter_expanded = $DB->pselect(
             "SELECT u.Real_name FROM issues i LEFT JOIN users u ON(i.reporter=u.UserID)",
             array()
         );
-        foreach ($reporter_expanded as $r_row) {
-            $reporter                   = $r_row['Real_name'];
-            $reporters[$reporter] = $reporter;
-        }
+        $reporters = $this->reorganizeQueryResults($reporter_expanded, 'Real_name');
 
+
+        //assignees
         $assignee_expanded = $DB->pselect(
             "SELECT u.Real_name FROM issues i LEFT JOIN users u ON(i.assignee=u.UserID)",
             array()
         );
-        foreach ($assignee_expanded as $a_row) {
-            $assignee                   = $a_row['Real_name'];
-            $assignees[$assignee] = $assignee;
-        }
+        $assignees = $this->reorganizeQueryResults($assignee_expanded, 'Real_name');
 
-
-        $modules = array('' => 'All');
+        //modules
         $modules_expanded = $DB->pselect(
             "SELECT DISTINCT Label FROM LorisMenu ORDER BY Label",
             []
         );
+        $modules = $this->reorganizeQueryResults($modules_expanded, 'Label');
 
-        foreach ($modules_expanded as $m_row) {
-            $module                  = $m_row['Label'];
-            $modules[$module] = $module;
-        }
-
-        error_log(json_encode($module));
-
-        $statuses = array(
-            '' => 'All',
-            'new' => 'New',
-            'acknowledged' => 'Acknowledged',
-            'assigned' => 'Assigned',
-            'resolved' => 'Resolved',
-            'closed' => 'Closed'
-        );
 
         $priorities = array(
             '' => 'All',
@@ -206,74 +170,36 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         );
 
         $categories = array(
-	'' => 'All',
-	'Anonimyzer/Scheduler/ID (ASID)' => 'Anonimyzer/Scheduler/ID (ASID)',
-	'API/Mobile' => 'API/Mobile',
-	'Behavioural QC' => 'Behavioural QC',
-	'CBRAIN hooks' => 'CBRAIN hooks',
-	'Code fixes' => 'Code fixes',
-	'Configurations' => 'Configurations',
-	'Demo' => 'Demo',
-	'DICOM archive' => 'DICOM archive',
-	'Documentation' => 'Documentation',
-	'DQT' => 'DQT',
-	'Genomics' => 'Genomics',
-	'GUI/Bootstrap' => 'GUI/Bootstrap',
-	'Help section' => 'Help section',
-	'Imaging Browser' =>  'Imaging Browser',
-	'Imaging preprocessing scripts' => 'Imaging preprocessing scripts',
-	'Imaging Uploader' => 'Imaging Uploader',
-	'Improvements' =>  'Improvements',
-	'Install Process' => 'Install Process',
-	'Instrument Builder' => 'Instrument Builder',
-	'LorisForm' => 'LorisForm',
-	'Public Repositories' => 'Public Repositories',
-	'Release process tasks' => 'Release process tasks',
-	'Schema' => 'Schema',
-	'Server/technical' => 'Server/technical',
-	'Stand alone Scripts' => 'Stand alone Scripts',
-	'Statistics' => 'Statistics',
-	'Survey accounts' => 'Survey accounts',
-	'Testing (Automated)' => 'Testing (Automated)',
-	'Testing (Manual)' => 'Testing (Manual)',
-	'User accounts/Permissions' => 'User accounts/Permissions'      
-	 );
-        
-        
-        $allAr = array('' => 'All');
+            '' => 'All',
+            'Behavioural Instruments' => 'Behavioural Instruments',
+            'Behavioural Battery' => 'Behavioural Battery',
+            'Data Entry' => 'Data Entry',
+            'Database Problems' => 'Database Problems',
+            'Examiners' => 'Examiners',
+            'SubprojectID/Project/Plan Changes' => 'SubprojectID/Project/Plan Changes'
+        );
 
-        $this->addBasicText('keyword','Keyword', array("size"=>10,"maxlength"=>50));
-        $this->addBasicText('issueID', 'Issue ID', array("size"=>10,"maxlength"=>25));
-        $this->addSelect('module','Module', $modules);
-        $this->addSelect('category','Category', $categories);
-        $this->addBasicText('PSCID', 'PSCID', array("size"=>10,"maxlength"=>25));
+
+        $this->addBasicText('keyword', 'Keyword', array("size" => 10, "maxlength" => 50));
+        $this->addBasicText('issueID', 'Issue ID', array("size" => 10, "maxlength" => 25));
+        $this->addSelect('module', 'Module', $modules);
+        $this->addSelect('category', 'Category', $categories);
+        $this->addBasicText('PSCID', 'PSCID', array("size" => 10, "maxlength" => 25));
         $this->addBasicText(
             'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)
         );
         $this->addBasicText(
-            'visitLabel', 'Visit Label', array('size' => "5", "maxlength"=>"15")
+            'visitLabel', 'Visit Label', array('size' => "5", "maxlength" => "15")
         );
-
-        $config =& NDB_Config::singleton();
-        if ($config->getSetting('useProjects') === "true") {
-            $list_of_projects = $allAr;
-            $projectList = Utility::getProjectList();
-            foreach ($projectList as $key => $value) {
-                $list_of_projects[$key] =$value;
-            }
-            $this->addSelect('ProjectID', 'Project', $list_of_projects);
-        }
-
         $this->addSelect('site', 'Site', $list_of_sites);
-        $this->addSelect('reporter','Reporter', $reporters);
-        $this->addSelect('assignee','Assignee', $assignees);
-        $this->addSelect('status','Status', $statuses);
-        $this->addSelect('priority','Priority', $priorities);
+        $this->addSelect('reporter', 'Reporter', $reporters);
+        $this->addSelect('assignee', 'Assignee', $assignees);
+        $this->addSelect('priority', 'Priority', $priorities);
 
+        //TODO: $this->addDualDate();
 
-        //this will probably not be hooked up properly
+        //TODO: fix the dual checkbox thing in the backend.
         $this->addCheckbox('watching', 'Watching', array('value' => '1'));
-        $this->addCheckbox('includeClosed', 'Include Closed', array('value' => '1'));
 
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
     }
@@ -284,38 +210,54 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
      * for watching and include closed
      *
      * @param string $prepared_key filter key
-     * @param string $field        filter field
-     * @param string $val          filter value
+     * @param string $field filter field
+     * @param string $val filter value
      *
      * @return null
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
-        error_log($field . $val);
         $user =& User::singleton();
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
-            if ($field != 'watching' && $field !='includeClosed') {
+            if ($field != 'watching') {
                 if (in_array($field, $this->CheckboxFilters) && $val) {
                     $query .= " AND $field";
                 } elseif (strtolower(substr($field, -8)) == 'centerid'
-                        || strtolower(substr($field, -10)) == 'categoryid'
-                        || strtolower(substr($field, -6)) == 'gender'
-                        || (isset($this->EqualityFilters)
+                    || strtolower(substr($field, -10)) == 'categoryid'
+                    || strtolower(substr($field, -6)) == 'gender'
+                    || (isset($this->EqualityFilters)
                         && in_array($field, $this->EqualityFilters))
-                        ) {
+                ) {
                     $query .= " AND $field = :v_$prepared_key";
-                    // $qparams["v_$prepared_key"] = $val;
                 } else {
                     $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
                 }
-            } else if ($field == 'includeClosed' && $val == 1) {
-                $query .= " OR i.status = 'closed'";
+            } else if ($field == 'watching' && $val == 1) { //double check this
+                $query .= " AND i.issueID in (SELECT issueID FROM issues_watching WHERE userID=" . $user->getData('CenterID') . ")";
             }
-            } else if ($field == 'watching' && $val ==1) { //double check this
-                  $query .= " AND i.issueID in (SELECT issueID FROM issues_watching WHERE userID=" . $user->getData('CenterID') .")";
-            }
-        return $query;
+            return $query;
+        }
+    }
+
+
+    /**
+     * Utility function to re-organize query results for selects.
+     *
+     * @param array $queryResult query result
+     * @param string $key key needed to extract appropriate result column
+     *
+     * @return array
+     */
+    function reorganizeQueryResults($queryResult, $key)
+    {
+        $result = array('' => 'All');
+        foreach ($queryResult as $r_row) {
+            $resultValue = $r_row[$key];
+            $result[$resultValue] = $resultValue;
+        }
+
+        return $result;
     }
 
 
@@ -324,7 +266,8 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
      *
      * @return array of javascript to be inserted
      */
-    function getJSDependencies() {
+    function getJSDependencies()
+    {
         $factory = NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(

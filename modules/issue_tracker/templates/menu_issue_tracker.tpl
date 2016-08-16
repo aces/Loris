@@ -9,9 +9,6 @@
         }
     </script>
 {/literal}
-<script>
-    loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
-</script>
 
 <div class="col-sm-16">
     <div class="row">
@@ -74,9 +71,9 @@
                                             {$form.site.html}
                                         </div>
                                     </div>
-                                    </div>
+                                </div>
                                 <div class="row">
-                                <div class="form-group col-sm-4">
+                                    <div class="form-group col-sm-4">
                                         <label class="col-sm-12 col-md-4">
                                             {$form.reporter.label}
                                         </label>
@@ -190,9 +187,11 @@
                     <div class="row">
                         <div class="form-group col-sm-12">
                             <div class="col-sm-1 col-xs-10 col-md-3">
-                                </div>
+                            </div>
                             <div class="col-sm-6 col-xs-12 col-md-5">
-                                <input type="button" name="newIssue" value="New Issue" class="btn btn-lg btn-primary col-xs-12" onclick="location.href='{$baseurl}/issue_tracker/edit/?issueID=0'"/>
+                                <input type="button" name="newIssue" value="New Issue"
+                                       class="btn btn-lg btn-primary col-xs-12"
+                                       onclick="location.href='{$baseurl}/issue_tracker/edit/?issueID=0'"/>
                             </div>
                         </div>
                     </div>
@@ -200,13 +199,34 @@
             </div>
         </div>
     </div>
-
-    <div id="datatable">
-        <script>
-            var table = RDynamicDataTable({
-                "DataURL": "{$baseurl}/issue_tracker/?format=json",
-                "getFormattedCell": formatColumn
-            });
-            React.render(table, document.getElementById("datatable"));
-        </script>
-
+    <div class="row">
+        <div id="tabs" style="background: white">
+            <ul class="nav nav-tabs">
+                <li class="statsTab active"><a class="statsTabLink" id="onLoad" href="{$baseurl}/issue_tracker/">Unresolved Issues</a></li>
+                <li class="statsTab"><a class="statsTabLink"
+                                        href="{$baseurl}/issue_tracker/?submenu=issue_tracker_resolved">Resolved Issues</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active">
+                    <div>
+                        <!--  title table with pagination -->
+                        <table id="LogEntries" border="0" valign="bottom" width="100%">
+                            <tr>
+                                <!-- display pagination links -->
+                                <td align="right" id="pageLinks"></td>
+                            </tr>
+                        </table>
+                        <div id="datatable">
+                            <script>
+                                var table = RDynamicDataTable({
+                                    "DataURL": "{$baseurl}/issue_tracker/?format=json",
+                                    "getFormattedCell": formatColumn
+                                });
+                                React.render(table, document.getElementById("datatable"));
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
