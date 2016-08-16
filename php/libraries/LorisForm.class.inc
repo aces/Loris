@@ -54,10 +54,12 @@ class LorisForm
      */
     protected function &createBase($name, $label, $attribs=array())
     {
-        $el = array(
-               'label' => $label,
-               'name'  => $name,
-              );
+        $name = $this->_generateName($name);
+        $el   = array(
+                 'label' => $label,
+                 'name'  => $name,
+                );
+
         if (isset($attribs['class'])) {
             $el['class'] = $attribs['class'];
         }
@@ -302,8 +304,6 @@ class LorisForm
      */
     function addHeader($name, $label, $options = array())
     {
-        $name = $this->_generateName($name);
-
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'header';
         return $el;
@@ -1320,6 +1320,7 @@ class LorisForm
      */
     function addGroup($array, $name, $label, $delimiter, $options = array())
     {
+        $name = $this->_generateName($name);
         $this->form[$name] = array(
                               'type'      => 'group',
                               'name'      => $name,
@@ -1344,7 +1345,6 @@ class LorisForm
     function addPageBreak($name, $label, $attribs)
     {
         $el   =& $this->createBase($name, $label, $attribs);
-        $name = $this->_generateName($name);
 
         $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'page';
