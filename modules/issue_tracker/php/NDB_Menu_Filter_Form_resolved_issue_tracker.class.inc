@@ -24,7 +24,7 @@
  * @license    @GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_Form_Issue_Tracker_resolved extends NDB_Menu_Filter_Form
+class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
 {
     //aka building-table-using-react module
     var $AjaxModule = true;
@@ -56,7 +56,6 @@ class NDB_Menu_Filter_Form_Issue_Tracker_resolved extends NDB_Menu_Filter_Form
             'i.category as Category',
             'i.reporter as Reporter',
             'i.assignee as Assignee',
-            'i.status as Status',
             'i.priority as Priority',
             'p.Name as Site',
             'c.PSCID as PSCID',
@@ -75,7 +74,6 @@ class NDB_Menu_Filter_Form_Issue_Tracker_resolved extends NDB_Menu_Filter_Form
             'Category',
             'Reporter',
             'Assignee',
-            'Status',
             'Priority',
             'Site',
             'PSCID',
@@ -93,7 +91,6 @@ class NDB_Menu_Filter_Form_Issue_Tracker_resolved extends NDB_Menu_Filter_Form
             'i.assignee',
             'i.centerID',
             'watching',
-            'i.status',
             'i.projectID',
             'i.priority',
             'keyword'
@@ -109,7 +106,6 @@ class NDB_Menu_Filter_Form_Issue_Tracker_resolved extends NDB_Menu_Filter_Form
             'assignee' => 'i.assignee',
             'site' => 'i.centerID',
             'watching' => 'watching',
-            'status' => 'i.status',
             'projectID' => 'i.projectID',
             'priority' => 'i.priority',
             'keyword' => 'i.comment'
@@ -163,15 +159,6 @@ class NDB_Menu_Filter_Form_Issue_Tracker_resolved extends NDB_Menu_Filter_Form
         );
         $modules = $this->reorganizeQueryResults($modules_expanded, 'Label');
 
-        $statuses = array(
-            '' => 'All',
-            'new' => 'New',
-            'acknowledged' => 'Acknowledged',
-            'feedback' => 'Feedback',
-            'assigned' => 'Assigned',
-            'resolved' => 'Resolved',
-            'closed' => 'Closed'
-        );
 
         $priorities = array(
             '' => 'All',
@@ -207,7 +194,6 @@ class NDB_Menu_Filter_Form_Issue_Tracker_resolved extends NDB_Menu_Filter_Form
         $this->addSelect('site', 'Site', $list_of_sites);
         $this->addSelect('reporter', 'Reporter', $reporters);
         $this->addSelect('assignee', 'Assignee', $assignees);
-        $this->addSelect('status', 'Status', $statuses);
         $this->addSelect('priority', 'Priority', $priorities);
 
         //TODO: $this->addDualDate();
