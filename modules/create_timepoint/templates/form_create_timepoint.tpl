@@ -14,7 +14,7 @@
         <label class="error col-sm-12">{$error}</label>
     </div>
     {/foreach}
-
+        <label class="error"></label>
 	<div class="form-group col-sm-12">
 		<label class="col-sm-2">DCCID</label>
 		<div class="col-sm-10">{$candID}</div>
@@ -29,7 +29,7 @@
 	</div>
 
 	<div class="form-group col-sm-12">
-		<div class="col-sm-2 col-sm-offset-2"><input class="btn btn-primary col-sm-12" name="fire_away" value="Create Time Point" type="submit" /></div>
+		<div class="col-sm-2 col-sm-offset-2"><input class="btn btn-primary col-sm-12" name="fire_away" value="Create Time Point" type="submit" onclick="return checkSelect()"/></div>
 	</div>
 
 {$form.hidden}
