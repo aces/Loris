@@ -1,5 +1,6 @@
 language: php
-
+language: java
+   jdk: oraclejdk8
 cache:
     directories:
         - vendor
