@@ -13,8 +13,6 @@ sudo: false
 addons:
     firefox: "44.0"
 
-script:
-  - jdk_switcher use oraclejdk8
 
 before_install:
     # Start Xvfb in a desktop screen size,
