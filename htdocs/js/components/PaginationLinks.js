@@ -1,6 +1,6 @@
-//var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+'use strict';
 
-PaginationLinks = React.createClass({
+var PaginationLinks = React.createClass({
     displayName: 'PaginationLinks',
 
     mixins: [React.addons.PureRenderMixin],
@@ -8,13 +8,13 @@ PaginationLinks = React.createClass({
         onChangePage: React.PropTypes.func,
         Total: React.PropTypes.number.isRequired
     },
-    getDefaultProps: function () {
+    getDefaultProps: function getDefaultProps() {
         return {
             'RowsPerPage': 10,
             'Active': 1
         };
     },
-    changePage: function (i) {
+    changePage: function changePage(i) {
         var that = this;
         return function (evt) {
             // Don't jump to the top of the page
@@ -25,7 +25,7 @@ PaginationLinks = React.createClass({
             }
         };
     },
-    render: function () {
+    render: function render() {
         var rowsPerPage = this.props.RowsPerPage;
         var pageLinks = [];
         var classList;
@@ -65,6 +65,12 @@ PaginationLinks = React.createClass({
         if (lastShownPage < 1) {
             lastShownPage = 1;
         }
+
+        // If there is only 1 page, don't display pagination links
+        if (startPage === lastShownPage) {
+            return React.createElement('div', null);
+        }
+
         for (var i = startPage; i <= lastShownPage; i += 1) {
             classList = '';
             if (this.props.Active == i) {
@@ -99,4 +105,4 @@ PaginationLinks = React.createClass({
     }
 });
 
-RPaginationLinks = React.createFactory(PaginationLinks);
+var RPaginationLinks = React.createFactory(PaginationLinks);

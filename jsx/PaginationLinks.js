@@ -1,6 +1,4 @@
-//var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
-
-PaginationLinks = React.createClass({
+var PaginationLinks = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     propTypes: {
         onChangePage: React.PropTypes.func,
@@ -57,6 +55,12 @@ PaginationLinks = React.createClass({
         if(lastShownPage < 1) {
             lastShownPage = 1;
         }
+
+        // If there is only 1 page, don't display pagination links
+        if (startPage === lastShownPage) {
+          return <div />;
+        }
+
         for(var i = startPage; i <= lastShownPage; i += 1) {
             classList = '';
             if(this.props.Active == i) {
@@ -75,4 +79,4 @@ PaginationLinks = React.createClass({
     }
 });
 
-RPaginationLinks = React.createFactory(PaginationLinks);
+var RPaginationLinks = React.createFactory(PaginationLinks);
