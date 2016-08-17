@@ -29,13 +29,17 @@ require_once 'NDB_Menu_Filter.class.inc';
 class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 {
 
-    var $AjaxModule = false;
-
     /**
      * Variables to enable special filter behaviour -
      * Show brief results or show full results (all available fields)
      */
     var $_displayBrief = true;  // default: display only Brief results
+
+    /**
+     * Tell the Caller that data will be queried using ajax and after
+     * the HTML page rendering.
+     */
+    var $AjaxModule = true;
 
     /**
      * Overloading this method to allow access to site users (own site only)
