@@ -96,7 +96,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                                'conflicts_resolved.TableName',
                                'session.CenterID',
                                'session.Visit_label',
-                               'conflicts_resolved.ResolutionTimestamp', //add into filter
+                               'conflicts_resolved.ResolutionTimestamp',
                               );
 
         if ($useProjects) {
@@ -130,10 +130,10 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $this->headers[] = 'FieldName';
 
         $this->formToFilter = array(
-                               'Instrument' => 'conflicts_resolved.TableName',
-                               'site'       => 'session.CenterID',
-                               'visit'      => 'session.Visit_label',
-                               'ResolutionTimestamp'  => 'conflicts_resolved.ResolutionTimestamp',//add to selection filter
+                   'Instrument'          => 'conflicts_resolved.TableName',
+                   'site'                => 'session.CenterID',
+                   'visit'               => 'session.Visit_label',
+                   'ResolutionTimestamp' => 'conflicts_resolved.ResolutionTimestamp',
                               );
 
         if ($useProjects) {
@@ -209,7 +209,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             )
         );
         $this->addBasicText('Question', 'Search keyword:');
-        $this->addBasicText('ResolutionTimestamp', 'Resolution Timestamp:'); //add to Selection Filter
+        $this->addBasicText('ResolutionTimestamp', 'Resolution Timestamp:');
 
         // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
