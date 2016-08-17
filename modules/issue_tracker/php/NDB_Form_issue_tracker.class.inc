@@ -25,10 +25,13 @@ require_once __DIR__ . '/issue_tracker_ControlPanel.class.inc';
  */
 class NDB_Form_issue_tracker extends NDB_Form
 {
+
     /**
      * Entry point for issue_tracker/edit.
-     * No id is required; if no id is provided then the user will have the option to create a new issue.
-     * If no id is provided and the user does not have permission to create an issue then 403 forbidden will be displayed.
+     * No id is required;if no id is provided
+     * then the user will have the option to create a new issue.
+     * If no id is provided and the user does not have
+     * permission to create an issue then 403 forbidden will be displayed.
      *
      * @return void
      */
@@ -37,8 +40,7 @@ class NDB_Form_issue_tracker extends NDB_Form
         $user =& User::singleton();
         $issueID = $_GET['issueID'];
 
-        // Check if media file exists, if not redirect to /media/ page
-        if (empty($issueID) && !$user->hasPermission('issue_tracker_can_assign')){ //todo: fix this when you change permissions
+        if ((empty($issueID) || !isset($issueID)) && !$user->hasPermission('issue_tracker_reporter')){
             header("HTTP/1.1 403 Forbidden");
         }
     }
@@ -90,17 +92,36 @@ class NDB_Form_issue_tracker extends NDB_Form
     }
 
     /**
-     * Check user permissions
+     * Checks if the user has the ability to *view* the issue page
+     * Does not govern editing abilities; those are controlled by editIssue.js
      *
      * @return bool
      * @throws ConfigurationException
      */
     function _hasAccess()
     {
-        //create user object
         $user =& User::singleton();
+        $db = Database::singleton();
+        $issueID = $_GET['issueID'];
 
-        return $user->hasPermission('issue_tracker_can_change_status'); //todo: change this to something more appropriate.
+        if (!$issueID){
+            return true;
+        }
+
+        //you could do this query after checking for other conditions
+        $issueData = $db->pselectRow(
+            "SELECT centerID FROM issues WHERE issueID = $issueID",
+            []
+        );
+
+        if (($issueData['centerID'] == $user->getData('CenterID'))
+            || ($user->hasPermission('access_all_profiles'))
+            || (!$issueData['centerID'])
+        ){
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
