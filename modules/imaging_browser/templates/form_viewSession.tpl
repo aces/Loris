@@ -18,7 +18,6 @@
    <div class="panel-body">
       {section name=file loop=$files}
           <div id="image-{$files[file].FileID}"></div>
-
           <script>
           React.render(
                   RImagePanel({
@@ -63,7 +62,8 @@
                       "XMLProtocol" : "{$files[file].XMLprotocol}",
                       "XMLReport" : "{$files[file].XMLreport}",
                       "NrrdFile" : "{$files[file].NrrdFile}",
-                      "OtherTimepoints" : "{$files[file].OtherTimepoints}"
+                      "OtherTimepoints" : "{$files[file].OtherTimepoints}",
+                      "SeriesUID": "{$files[file].SeriesUID}"
                   }),
                   document.getElementById("image-{$files[file].FileID}" )
                   );
