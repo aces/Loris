@@ -10,201 +10,183 @@
     </script>
 {/literal}
 
-<div class="col-sm-16">
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="row">
-                <div class="form-group col-sm-8">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading" onclick="hideFilter();">
-                            Selection Filter
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading" onclick="hideFilter();">
+                Selection Filter
                             <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none"
                                   id="down"></span>
-                            <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+                <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+            </div>
+            <div class="panel-body" id="panel-body">
+                <form method="post" action="{$baseurl}/issue_tracker/">
+                    {*<div class="row">*}
+                    {*</div>*}
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.keyword.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.keyword.html}
+                            </div>
                         </div>
-                        <div class="panel-body" id="panel-body">
-                            <form method="post" action="{$baseurl}/issue_tracker/">
-                                {*<div class="row">*}
-                                {*</div>*}
-                                <div class="row">
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.keyword.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.keyword.html}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.issueID.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.issueID.html}
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.module.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.module.html}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.category.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.category.html}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.site.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.site.html}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.reporter.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.reporter.html}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.assignee.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.assignee.html}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.watching.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.watching.html}
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.priority.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.priority.html}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.status.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.status.html}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.includeClosed.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.includeClosed.html}
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="'row">
-                                    <hr>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.PSCID.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.PSCID.html}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.DCCID.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.DCCID.html}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label class="col-sm-12 col-md-4">
-                                            {$form.visitLabel.label}
-                                        </label>
-                                        <div class="col-sm-12 col-md-8">
-                                            {$form.visitLabel.html}
-                                        </div>
-                                    </div>
-                                    {if $form.ProjectID}
-                                        <div class="form-group col-sm-4">
-                                            <label class="col-sm-12 col-md-4">
-                                                {$form.ProjectID.label}
-                                            </label>
-                                            <div class="col-sm-12 col-md-8">
-                                                {$form.ProjectID.html}
-                                            </div>
-                                        </div>
-                                    {/if}
-                                    <div class="col-sm-2 col-sm-offset-8">
-                                        <input type="submit" class="btn btn-sm btn-primary col-xs-12" name="filter"
-                                               value="Show Data">
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <input type="button"
-                                               name="reset"
-                                               value="Clear Form"
-                                               class="btn btn-sm btn-primary col-xs-12"
-                                               onclick="location.href='{$baseurl}/issue_tracker/?reset=true'"/>
-                                    </div>
-                                </div><!--closing row -->
-                            </form>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.issueID.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.issueID.html}
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="form-group col-sm-4">
-                    <div class="row"><!-- fixed vertical spacing-->
-                        <br><br><br><br><br><br><br><br>
+
                     </div>
                     <div class="row">
-                        <div class="form-group col-sm-12">
-                            <div class="col-sm-1 col-xs-10 col-md-3">
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.module.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.module.html}
                             </div>
-                            <div class="col-sm-6 col-xs-12 col-md-5">
-                                <input type="button" name="newIssue" value="New Issue"
-                                       class="btn btn-lg btn-primary col-xs-12"
-                                       onclick="location.href='{$baseurl}/issue_tracker/edit/?issueID=0'"/>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.category.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.category.html}
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.site.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.site.html}
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.reporter.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.reporter.html}
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.assignee.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.assignee.html}
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {*{$form.watching.label}*}
+                                &nbsp;
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                <b>{$form.watching.html}</b>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.priority.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.priority.html}
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.status.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.status.html}
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.includeClosed.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.includeClosed.html}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="'row">
+                        <hr>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.PSCID.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.PSCID.html}
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.DCCID.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.DCCID.html}
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.visitLabel.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.visitLabel.html}
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="form-group col-sm-4 col-md-2 col-xs-12">
+                            <input type="button"
+                                   name="newIssue"
+                                   value="Add Issue"
+                                   class="btn btn-sm btn-primary col-xs-12"
+                                   onclick="location.href='{$baseurl}/issue_tracker/edit/?issueID=0'"/></div>
+                        <div class="form-group col-sm-4 col-md-2 col-xs-12 col-sm-offset-2 col-md-offset-5">
+                            <input type="submit"
+                                   class="btn btn-sm btn-primary col-xs-12"
+                                   name="filter"
+                                   value="Show Data"></div>
+                        <div class="form-group col-sm-4 col-md-2 col-xs-12">
+                            <input type="button"
+                                   name="reset"
+                                   value="Clear Form"
+                                   class="btn btn-sm btn-primary col-xs-12"
+                                   onclick="location.href='{$baseurl}/issue_tracker/?reset=true'"/></div>
+                    </div>
             </div>
+            </form>
         </div>
     </div>
-    <div class="row">
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
         <div id="tabs" style="background: white">
             <ul class="nav nav-tabs">
-                <li class="statsTab active"><a class="statsTabLink" id="onLoad" href="{$baseurl}/issue_tracker/">Unresolved Issues</a></li>
+                <li class="statsTab active"><a class="statsTabLink" id="onLoad" href="{$baseurl}/issue_tracker/">Active
+                        Issues</a></li>
                 <li class="statsTab"><a class="statsTabLink"
-                                        href="{$baseurl}/issue_tracker/?submenu=issue_tracker_resolved">Resolved Issues</a></li>
+                                        href="{$baseurl}/issue_tracker/?submenu=resolved_issue_tracker">Closed
+                        Issues</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active">
@@ -229,4 +211,6 @@
                 </div>
             </div>
         </div>
+
     </div>
+</div>
