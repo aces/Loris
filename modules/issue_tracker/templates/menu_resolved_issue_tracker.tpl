@@ -1,5 +1,3 @@
-<!-- selection filter -->
-<!-- qnts fixme this modified version does not display certain fields in the mri browser selection window-->
 {literal}
     <script type="text/javascript">
         function hideFilter() {
@@ -15,14 +13,15 @@
         <div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter();">
                 Selection Filter
-                            <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none"
-                                  id="down"></span>
-                <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
+                <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none"
+                      id="down">
+                </span>
+                <span class="glyphicon glyphicon-chevron-up pull-right"
+                      id="up">
+                </span>
             </div>
             <div class="panel-body" id="panel-body">
                 <form method="post" action="{$baseurl}/issue_tracker/">
-                    {*<div class="row">*}
-                    {*</div>*}
                     <div class="row">
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
@@ -40,7 +39,6 @@
                                 {$form.issueID.html}
                             </div>
                         </div>
-
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-4">
@@ -94,7 +92,6 @@
                                 <b>{$form.watching.html}</b>
                             </div>
                         </div>
-
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-4">
@@ -113,7 +110,6 @@
                                 {$form.includeClosed.html}
                             </div>
                         </div>
-
                     </div>
                     <div class="'row">
                         <hr>
@@ -164,8 +160,8 @@
                                    class="btn btn-sm btn-primary col-xs-12"
                                    onclick="location.href='{$baseurl}/issue_tracker/?reset=true'"/></div>
                     </div>
+                </form>
             </div>
-            </form>
         </div>
     </div>
 </div>
@@ -203,6 +199,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
