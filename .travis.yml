@@ -1,5 +1,6 @@
 language: php
-
+jdk:
+  - oraclejdk8
 cache:
     directories:
         - vendor
@@ -16,10 +17,7 @@ addons:
     packages:
     - graphviz
 
-before_install:jdk-8u101-linux-arm64-vfp-hflt.tar.gz
-    - wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u102-b14/jdk-8u102-linux-x64.tar.gz"
-    - tar zxvf jdk-8u102-linux-x64.tar.gz
-    - java -version
+before_install:
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
     # are hidden when Selenium tries to find them.
