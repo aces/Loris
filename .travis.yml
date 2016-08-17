@@ -13,9 +13,6 @@ sudo: false
 
 addons:
     firefox: "44.0"
-    apt:
-    packages:
-    - graphviz
 
 before_install:
     # Start Xvfb in a desktop screen size,
