@@ -123,7 +123,6 @@ function detectIgnoreColumns($instruments)
 function defaultIgnoreColumns() {
     $db =& Database::singleton();
 
-<<<<<<< HEAD
     if ($this->confirm) {
         foreach ($this->defaultFields as $field) {
             $defaultQuery = "DELETE FROM conflicts_unresolved WHERE FieldName = '$field'";
@@ -142,9 +141,6 @@ function defaultIgnoreColumns() {
         }
     }
 }
-=======
-    foreach ($instrumentFields as $field => $instr) {
->>>>>>> print conflicts to be removed
 
 /*
  * Prints the instrument-specific ignore columns to be removed
@@ -164,24 +160,10 @@ function ignoreColumn($instrument, $instrumentFields) {
         foreach ($instrumentFields as $field => $instr) {
             $query = "SELECT TableName, FieldName, Value1, Value2 FROM conflicts_unresolved 
           WHERE TableName = '$instrument' AND FieldName = '$field'";
-<<<<<<< HEAD
             $ignoreColumn = $db->pselectOne($query, array());
             echo "TableName, FieldName, Value1, Value2: ";
             print_r($ignoreColumn);
             echo  "\n";
-=======
-        $ignoreColumn = $db->pselectOne($query, array());
-
-        if (!empty($ignoreColumn)) {
-            $query = "SELECT TableName, FieldName, CommentId1, Value1, CommentId2, Value2 FROM conflicts_unresolved WHERE TableName = '$instrument' AND FieldName = '$field'";
-            $conflictsToRemove = $db->pselect($query, array());
-            print_r($conflictsToRemove);
-
-            if ($confirm) {
-                $query = "DELETE FROM conflicts_unresolved WHERE TableName = '$instrument' AND FieldName = '$field'";
-                $db->run($query);
-            }
->>>>>>> print conflicts to be removed
         }
     }
 }
