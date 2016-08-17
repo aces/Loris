@@ -38,6 +38,12 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
     var $_displayBrief = true;  // default: display only Brief results
 
     /**
+     * Tell the Caller that data will be queried using ajax and after
+     * the HTML page rendering.
+     */
+    var $AjaxModule = true;
+
+    /**
      * Overloading this method to allow access to site users (own site only)
      * and users w/ multisite privileges
      *
@@ -166,8 +172,8 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'SNP.SNPExternalName',
                                'SNP.Description',
                                'SNP.SNPExternalSource',
-                               'SNP.ObservedBase',
-                               'SNP_candidate_rel.ReferenceBase',
+                               'SNP_candidate_rel.ObservedBase',
+                               'SNP.ReferenceBase',
                                'SNP_candidate_rel.ArrayReport',
                                'SNP.Markers',
                                'SNP_candidate_rel.ValidationMethod',
