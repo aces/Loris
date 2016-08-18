@@ -1,14 +1,17 @@
 <?php
+
 /**
- * This file contains the NDB_Form_issue_tracker class
+ * This file features the code for the form portion of the Loris issue
+ * tracker.
  *
  * PHP Version 5
  *
- * @category Loris
- * @package  issue_tracker
- * @author   Caitrin Armstrong <caitrin.mcin@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @category   Loris
+ * @package    Main
+ * @subpackage Tools
+ * @author     Caitrin Armstrong <caitrin.armstrong@mail.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
 
 require_once "NDB_Form.class.inc";
@@ -18,12 +21,13 @@ require_once __DIR__ . '/issue_tracker_ControlPanel.class.inc';
  * Creates the form for NDB_Form_issue_tracker
  *
  * @category Loris
- * @package  issue_tracker
+ * @package  Issue_Tracker
  * @author   Caitrin Armstrong <caitrin.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class NDB_Form_issue_tracker extends NDB_Form
+
+class NDB_Form_Issue_Tracker extends NDB_Form
 {
 
     /**
@@ -40,7 +44,10 @@ class NDB_Form_issue_tracker extends NDB_Form
         $user    =& User::singleton();
         $issueID = $_GET['issueID'];
 
-        if ((empty($issueID) || !isset($issueID)) && !$user->hasPermission('issue_tracker_reporter')) {
+        if ((empty($issueID)
+            || !isset($issueID))
+            && !$user->hasPermission('issue_tracker_reporter')
+        ) {
             header("HTTP/1.1 403 Forbidden");
         }
     }
