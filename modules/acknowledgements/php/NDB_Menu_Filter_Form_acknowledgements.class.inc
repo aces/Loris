@@ -109,7 +109,6 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'ordering',
                                'full_name',
                                'citation_name',
-                               'title',
                                'affiliations',
                                'degrees',
                                'roles',
@@ -123,7 +122,6 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         $this->validFilters = array(
                                'full_name',
                                'citation_name',
-                               'title',
                                'start_date',
                                'end_date',
                                'present',
@@ -132,7 +130,6 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                                'ordering',
                                'full_name',
                                'citation_name',
-                               'title',
                                'affiliations',
                                'degrees',
                                'roles',
@@ -143,7 +140,6 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         $this->formToFilter = array(
                                'full_name'     => 'full_name',
                                'citation_name' => 'citation_name',
-                               'title'         => 'title',
                                'start_date'    => 'start_date',
                                'end_date'      => 'end_date',
                                'present'       => 'present',
@@ -162,7 +158,6 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         // enums should match with acknowledgements table
-        $titles  = array('' => '');
         $present = array(
                     ''    => '',
                     'Yes' => 'Yes',
@@ -170,7 +165,6 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
                    );
 
         // add filter elements
-        $this->addSelect('title', 'Title:', $titles);
         $this->addBasicText('ordering', 'Ordering:');
         $this->addBasicText('full_name', 'Full Name:');
         $this->addBasicText('citation_name', 'Citation Name:');
@@ -189,7 +183,6 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         $this->addSelect('present', 'Present?', $present);
 
         // add form elements
-        $this->addSelect('addtitle', 'Title:', $titles);
         $this->addBasicText('addordering', 'Ordering:');
         $this->addBasicText('addfull_name', 'Full Name:');
         $this->addBasicText('addcitation_name', 'Citation Name:');
