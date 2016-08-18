@@ -1,7 +1,18 @@
-function formatColumn(column, cell, rowData) {
+"use strict";
+
+function formatColumn(column, cell, rowData, rowHeaders) {
+    if (loris.hiddenHeaders.indexOf(column) > -1) {
+        return null;
+    }
+
+    // Create the mapping between rowHeaders and rowData in a row object.
+    var row = {};
+    rowHeaders.forEach(function (header, index) {
+        row[header] = rowData[index];
+    }, this);
     if (column === 'URL') {
-        var url = loris.BaseURL + "/survey.php?key=" + rowData[4];
-          return React.createElement(
+        var url = loris.BaseURL + "/survey.php?key=" + row["URL"];
+        return React.createElement(
             "td",
             null,
             React.createElement(
@@ -11,7 +22,6 @@ function formatColumn(column, cell, rowData) {
             )
         );
     }
-
     return React.createElement(
         "td",
         null,
