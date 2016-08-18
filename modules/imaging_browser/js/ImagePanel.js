@@ -421,12 +421,12 @@ ImagePanelQCCaveatSelector = React.createClass({
     displayName: 'ImagePanelQCCaveatSelector',
 
     render: function () {
-
-        console.log(this.props.Caveat, this.props.SeriesUID);
         // Link caveat to MRI Violations if set true
         var mriViolationsLink = null;
         if (this.props.SeriesUID && this.props.Caveat === "1") {
-            mriViolationsLink = '/mri_violations/?' + 'submenu=mri_protocol_check_violations&SeriesUID=' + this.props.SeriesUID + '&filter=true';
+            mriViolationsLink = '/mri_violations/?' +
+              'submenu=mri_protocol_check_violations&SeriesUID=' +
+              this.props.SeriesUID + '&filter=true';
         }
 
         return React.createElement(ImageQCDropdown, {
