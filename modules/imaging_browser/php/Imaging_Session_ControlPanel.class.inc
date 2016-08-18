@@ -118,14 +118,19 @@ class Imaging_Session_ControlPanel
                                            'Y' => 'Yes',
                                            'N' => 'No',
                                           );
+        $subjectData['caveat_options'] = array(
+                                           'true' => 'True',
+                                           'false' => 'False',
+                                          );
 
         $qcstatus = $DB->pselectRow(
-            "SELECT MRIQCStatus, MRIQCPending FROM session WHERE ID=:sid",
+            "SELECT MRIQCStatus, MRIQCPending, Caveat FROM session WHERE ID=:sid",
             array("sid" => $this->sessionID)
         );
 
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
+        $subjectData['mricaveat'] = $qcstatus['Caveat'];
 
         $factory = NDB_Factory::singleton();
         $subjectData['backURL'] = $factory->settings()->getBaseURL()

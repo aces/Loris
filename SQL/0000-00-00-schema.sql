@@ -1040,6 +1040,7 @@ CREATE TABLE `session` (
   `MRIQCPending` enum('Y','N') NOT NULL default 'N',
   `MRIQCFirstChangeTime` datetime default NULL,
   `MRIQCLastChangeTime` datetime default NULL,
+  `Caveat` enum('true','false') NOT NULL default 'false',
   PRIMARY KEY  (`ID`),
   KEY `session_candVisit` (`CandID`,`VisitNo`),
   KEY `FK_session_2` (`CenterID`),
