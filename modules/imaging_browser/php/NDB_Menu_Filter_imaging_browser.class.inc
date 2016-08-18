@@ -143,7 +143,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'Visit_Label',
             'QC_Status', 
             'First_Acq_Date',
-            'Insertion_Date',
+            'Insertion_Date_&_Time',
             'Last_QC',
             'New_Data',
             'T1_Passed',
