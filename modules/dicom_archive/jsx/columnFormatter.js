@@ -8,27 +8,31 @@
  * @param {arrray} rowHeaders - array of table headers (column names)
  * @return {*} a formated table cell for a given column
  */
-function formatColumn(column, cell, rowData) {
+function formatColumn(column, cell, rowData, rowHeaders) {
 
   // If a column if set as hidden, don't display it
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
   }
 
+  // Create the mapping between rowHeaders and rowData in a row object.
+  var row = {};
+  rowHeaders.forEach(function(header, index) {
+    row[header] = rowData[index];
+  }, this);
+
   if (column === 'Metadata') {
     var metadataURL = loris.BaseURL +
-      "/dicom_archive/viewDetails/?tarchiveID=" +
-      rowData[rowData.length - 2];
+      "/dicom_archive/viewDetails/?tarchiveID=" + row['TarchiveID'];
     return <td><a href={metadataURL}>{cell}</a></td>;
   }
 
   if (column === 'MRI Browser') {
-    if (rowData[rowData.length - 1] === null ||
-      rowData[rowData.length - 1] === '') {
+    if (row['SessionID'] === null || row['SessionID'] === '') {
       return <td>&nbsp;</td>;
     }
     var mrlURL = loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" +
-      rowData[rowData.length - 1];
+      row['SessionID'];
     return <td><a href={mrlURL}>{cell}</a></td>;
   }
 
