@@ -384,18 +384,40 @@ ScoredElement = React.createClass({
  * This is the React class for a textbox element
  */
 TextboxElement = React.createClass({
-  render: function() {
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3">
-          {this.props.label}
-        </label>
-        <div className="col-sm-9">
-          <input type="text" className="form-control"/>
-        </div>
-      </div>
-    )
-  }
+    getInitialState: function() {
+        return {
+            'value': ''
+        }
+    },
+    getDefaultProps: function() {
+        return {
+            'onUserInput': function() {
+                console.warn('onUserInput() callback is not set');
+            }
+        }
+    },
+    handleChange: function(e) {
+        this.setState({
+            value: e.target.value
+        });
+        this.props.onUserInput(this.props.name, e.target.value);
+    },
+    render: function() {
+        return (
+            <div className="row form-group">
+                <label className="col-sm-3">
+                    {this.props.label}
+                </label>
+                <div className="col-sm-9">
+                    <input
+                        type="text"
+                        className="form-control"
+                        onChange={this.handleChange}
+                    />
+                </div>
+            </div>
+        )
+    }
 });
 
 /*

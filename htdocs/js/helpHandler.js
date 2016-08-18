@@ -3,9 +3,6 @@ $(document).ready(function(){
         e.preventDefault();
         $(".wrapper").toggleClass("active");
     });
-    $(".dropdown").hover(function(){
-        $(this).toggleClass('open');
-    });
     $(".help-button").click(function(e) {
         var helpContent = $('div.help-content');
         if(helpContent.length) {
@@ -55,7 +52,7 @@ $(document).ready(function(){
                 e.preventDefault();
             }) ;
             e.preventDefault();
-        }, 
+        },
         "json");
     });
 
