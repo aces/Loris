@@ -167,3 +167,5 @@ function ignoreColumn($instrument, $instrumentFields) {
         }
     }
 }
+
+?>
