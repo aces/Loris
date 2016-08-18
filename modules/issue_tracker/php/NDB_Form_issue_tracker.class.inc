@@ -37,10 +37,10 @@ class NDB_Form_issue_tracker extends NDB_Form
      */
     function edit()
     {
-        $user =& User::singleton();
+        $user    =& User::singleton();
         $issueID = $_GET['issueID'];
 
-        if ((empty($issueID) || !isset($issueID)) && !$user->hasPermission('issue_tracker_reporter')){
+        if ((empty($issueID) || !isset($issueID)) && !$user->hasPermission('issue_tracker_reporter')) {
             header("HTTP/1.1 403 Forbidden");
         }
     }
@@ -68,7 +68,7 @@ class NDB_Form_issue_tracker extends NDB_Form
     *
     * @return $controlPanel
     */
-    function getControlPanel() 
+    function getControlPanel()
     {
         $controlPanel = new issue_tracker_ControlPanel($_REQUEST['sessionID']);
         return $controlPanel->display();
@@ -100,11 +100,11 @@ class NDB_Form_issue_tracker extends NDB_Form
      */
     function _hasAccess()
     {
-        $user =& User::singleton();
-        $db = Database::singleton();
+        $user    =& User::singleton();
+        $db      = Database::singleton();
         $issueID = $_GET['issueID'];
 
-        if (!$issueID){
+        if (!$issueID) {
             return true;
         }
 
@@ -117,7 +117,7 @@ class NDB_Form_issue_tracker extends NDB_Form
         if (($issueData['centerID'] == $user->getData('CenterID'))
             || ($user->hasPermission('access_all_profiles'))
             || (!$issueData['centerID'])
-        ){
+        ) {
             return true;
         } else {
             return false;

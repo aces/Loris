@@ -8,17 +8,22 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         console.log(rowHeaders);
         // Create the mapping between rowHeaders and rowData in a row object.
         var row = {};
-        rowHeaders.forEach(function (header, index) {
-            row[header] = rowData[index];
-        }, this);
+        rowHeaders.forEach(
+            function (header, index) {
+                row[header] = rowData[index];
+            },
+            this
+        );
 
         if (column === 'Issue ID') {
             var cellLinks = [];
-            cellLinks.push(React.createElement(
+            cellLinks.push(
+                React.createElement(
                     'a',
                     { href: loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/" },
                     cell
-                ));
+                )
+            );
 
             return React.createElement(
                 'td',
@@ -29,31 +34,31 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
         if (column === 'Priority') {
             switch (cell) {
-                case "normal":
+            case "normal":
                     return React.createElement(
                         "td",
                         { style: { background: "#CCFFCC" } },
                         "Normal"
                     );
-                case "high":
+            case "high":
                     return React.createElement(
                         "td",
                         { style: { background: "#EEEEAA" } },
                         "High"
                     );
-                case "urgent":
+            case "urgent":
                     return React.createElement(
                         "td",
                         { style: { background: "#CC6600" } },
                         "Urgent"
                     );
-                case "immediate":
+            case "immediate":
                     return React.createElement(
                         "td",
                         { style: { background: "#E4A09E" } },
                         "Immediate"
                     );
-                default:
+            default:
                     return React.createElement(
                         "td",
                         { style: { background: "#99CCFF" } },
@@ -67,6 +72,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
             null,
             cell
         );
-  //  }
-    return null;
+        //  }
+        return null;
 }

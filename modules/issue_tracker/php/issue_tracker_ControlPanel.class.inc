@@ -62,7 +62,7 @@ class issue_tracker_ControlPanel
     */
     function getData()
     {
-	return null;
+        return null;
     }
     /**
      * Generates the HTML to display the set of buttons
