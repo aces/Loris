@@ -152,9 +152,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'sessionID'
         );
 
+        // Insert project column after DCCID, if useProject config is enabled
         if ($config->getSetting('useProjects') === "true") {
-            array_push($this->columns, '(SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project');
-            array_push($this->headers, 'Project');
+            array_splice($this->columns, 3, 0,
+                '(SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project');
+            array_splice($this->headers, 3, 0, 'Project');
         }
 
         $this->validFilters = array(
