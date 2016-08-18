@@ -26,7 +26,7 @@
  */
 class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 {
-    //aka building-table-using-react module
+    //aka building-table-using-react
     var $AjaxModule = true;
 
 
@@ -39,10 +39,16 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
     function _setupVariables()
     {
 
-        $this->query = " FROM issues as i LEFT JOIN candidate c ON (i.candID=c.CandID) LEFT JOIN psc p ON (i.centerID=p.CenterID) LEFT JOIN LorisMenu l on (i.module=l.ID) WHERE i.status != 'closed'";
-
         $user =& User::singleton();
         $DB = Database::singleton();
+
+        $this->query = " FROM issues as i LEFT JOIN candidate c ON (i.candID=c.CandID) " .
+        "LEFT JOIN psc p ON (i.centerID=p.CenterID) ".
+        "LEFT JOIN LorisMenu l on (i.module=l.ID) ".
+        "LEFT JOIN session s ON (i.sessionID = s.ID) ".
+        "LEFT JOIN issues_watching w ON (i.issueID = w.issueID) ".
+        "WHERE i.status != 'closed'";
+
 
         if (!$user->hasPermission('access_all_profiles')) {
             $this->query .= " AND i.centerID=" . $DB->quote($user->getCenterID());
@@ -52,14 +58,15 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         $this->columns = array(
             'i.issueID as Issue_ID',
             'i.title as Title',
-            'i.module as Module',
+            'l.Label as Module',
             'i.category as Category',
             'i.reporter as Reporter',
             'i.assignee as Assignee',
+            'i.status as Status',
             'i.priority as Priority',
             'p.Name as Site',
             'c.PSCID as PSCID',
-            'i.visitLabel as Visit_Label',
+            's.Visit_label as Visit_Label',
             'i.lastUpdate as Last_Update'
         );
 
@@ -74,6 +81,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'Category',
             'Reporter',
             'Assignee',
+            'Status',
             'Priority',
             'Site',
             'PSCID',
@@ -83,37 +91,42 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 
         $this->validFilters = array(
             'i.issueID',
-            'i.module',
+            'l.Label',
             'i.category',
             'c.PSCID',
-            'i.visitLabel',
+            's.Visit_label',
             'i.reporter',
             'i.assignee',
             'i.centerID',
-            'watching',
+            'w.userID', //really you could just make the table have a non-composite auto-increment primary key
             'i.projectID',
+            'i.status',
             'i.priority',
-            'keyword'
+            'keyword',
+            'minDate',
+            'maxDate'
         );
 
         $this->formToFilter = array(
             'issueID' => 'i.issueID',
             'category' => 'i.category',
-            'module' => 'i.module',
+            'module' => 'l.Label',
             'PSCID' => 'c.PSCID',
-            'visitLabel' => 'i.visitLabel',
+            'visitLabel' => 's.Visit_label',
             'reporter' => 'i.reporter',
             'assignee' => 'i.assignee',
             'site' => 'i.centerID',
-            'watching' => 'watching',
+            'watching' => 'w.userID',
             'projectID' => 'i.projectID',
+            'status' => 'i.status',
             'priority' => 'i.priority',
-            'keyword' => 'i.comment'
+            'keyword' => 'i.comment',
+            'minDate' => 'minDate',
+            'maxDate' => 'maxDate'
         );
 
-        $this->EqualityFilters = array('i.issueID', 'i.centerID');
+        $this->EqualityFilters = array('i.issueID', 'i.centerID', 'i.status');
         $this->searchKeyword = array('i.comment');
-
     }
 
     /**
@@ -139,18 +152,18 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 
         //reporters
         $reporter_expanded = $DB->pselect(
-            "SELECT u.Real_name FROM issues i LEFT JOIN users u ON(i.reporter=u.UserID)",
+            "SELECT u.UserID FROM issues i LEFT JOIN users u ON(i.reporter=u.UserID)",
             array()
         );
-        $reporters = $this->reorganizeQueryResults($reporter_expanded, 'Real_name');
+        $reporters = $this->reorganizeQueryResults($reporter_expanded, 'UserID');
 
 
         //assignees
         $assignee_expanded = $DB->pselect(
-            "SELECT u.Real_name FROM issues i LEFT JOIN users u ON(i.assignee=u.UserID)",
+            "SELECT u.UserID FROM issues i LEFT JOIN users u ON(i.assignee=u.UserID)",
             array()
         );
-        $assignees = $this->reorganizeQueryResults($assignee_expanded, 'Real_name');
+        $assignees = $this->reorganizeQueryResults($assignee_expanded, 'UserID');
 
         //modules
         $modules_expanded = $DB->pselect(
@@ -169,6 +182,16 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'immediate' => 'Immediate'
         );
 
+        $statuses = array(
+            '' => 'All',
+            'new' => 'New',
+            'acknowledged' => 'Acknowledged',
+            'feedback' => 'Feedback',
+            'assigned' => 'Assigned',
+            'resolved' => 'Resolved',
+            'closed' => 'Closed'
+        );
+
         $categories = array(
             '' => 'All',
             'Behavioural Instruments' => 'Behavioural Instruments',
@@ -177,6 +200,12 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'Database Problems' => 'Database Problems',
             'Examiners' => 'Examiners',
             'SubprojectID/Project/Plan Changes' => 'SubprojectID/Project/Plan Changes'
+        );
+
+        $dateOptions = array(
+            'language'        => 'en',
+            'format'          => 'YMdHis',
+            'addEmptyOption'  => true,
         );
 
 
@@ -195,10 +224,9 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         $this->addSelect('reporter', 'Reporter', $reporters);
         $this->addSelect('assignee', 'Assignee', $assignees);
         $this->addSelect('priority', 'Priority', $priorities);
-
-        //TODO: $this->addDualDate();
-
-        //TODO: fix the dual checkbox thing in the backend.
+        $this->addSelect('status', 'Status', $statuses);
+        $this->addBasicDate('minDate', 'Min Date Created', $dateOptions);
+        $this->addBasicDate('maxDate', 'Max Date Created', $dateOptions);
         $this->addCheckbox('watching', 'Watching', array('value' => '1'));
 
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
@@ -220,29 +248,33 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         $user =& User::singleton();
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
-            if ($field != 'watching') {
+            if (($field != 'w.userID') && ($field != 'minDate') && ($field != 'maxDate')) {
                 if (in_array($field, $this->CheckboxFilters) && $val) {
                     $query .= " AND $field";
-                } elseif (strtolower(substr($field, -8)) == 'centerid'
-                    || strtolower(substr($field, -10)) == 'categoryid'
-                    || strtolower(substr($field, -6)) == 'gender'
-                    || (isset($this->EqualityFilters)
-                        && in_array($field, $this->EqualityFilters))
+                } elseif (isset($this->EqualityFilters)
+                    && in_array($field, $this->EqualityFilters)
                 ) {
                     $query .= " AND $field = :v_$prepared_key";
                 } else {
-                    $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%') ";
+                    $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%')";
                 }
-            } else if ($field == 'watching' && $val == 1) { //double check this
-                $query .= " AND i.issueID in (SELECT issueID FROM issues_watching WHERE userID=" . $user->getData('CenterID') . ")";
+            } else if ($field = 'w.userID' && ($val == 1)) {
+                $query .= " AND w.userID = :v_$prepared_key";
+                //'" . $user->getData('UserID') . "'";
+            } else if ($field = 'minDate') {
+                $query .= " AND i.dateCreated > '" . $val . "00-00-00'"; //yes very hacky
+            } else if ($field = 'maxDate') {
+                $query .= " AND i.dateCreated < " . $val . "00-00-00'";
             }
-            return $query;
         }
+        error_log($query);
+            return $query;
     }
 
 
     /**
      * Utility function to re-organize query results for selects.
+     * Key and value are equal.
      *
      * @param array $queryResult query result
      * @param string $key key needed to extract appropriate result column
@@ -251,12 +283,13 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
      */
     function reorganizeQueryResults($queryResult, $key)
     {
-        $result = array('' => 'All');
+        $result = array('' => "All");
         foreach ($queryResult as $r_row) {
             $resultValue = $r_row[$key];
-            $result[$resultValue] = $resultValue;
+            if($resultValue){
+                $result[$resultValue] = $resultValue;
+            }
         }
-
         return $result;
     }
 
