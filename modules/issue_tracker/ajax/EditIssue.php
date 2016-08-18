@@ -61,7 +61,7 @@ function editIssue()
     updateHistory($issueValues, $issueID);
 
     //adding comment in now that I have an issueID for both new and old.
-    if ($_POST['comment'] != "null") {
+    if ($_POST['comment'] != null) {
         $commentValues = array('issueComment' => $_POST['comment'],
             'addedBy' => $user->getData('UserID'),
             'issueID' => $issueID
@@ -172,7 +172,17 @@ function getComments($issueID)
         $commentString .= $comment['addedBy']; //really should do a join and get real names here hey.
         if ($comment['fieldChanged'] === 'comment') {
             $commentString .= ' commented ' . '<i>' . $comment['newValue'] . '</i>';
-        } else {
+        } else if ($comment['fieldChanged'] === 'module'){
+            $module = $db->pselectOne("SELECT Label FROM LorisMenu WHERE ID=:module",
+                array('module' => $comment['newValue']));
+            $commentString .= " updated the <b>" . $comment['fieldChanged'] . "</b> to <i>" . $module . "</i>";
+        }
+        else if ($comment['fieldChanged'] === 'centerID'){
+            $site = $db->pselectOne("SELECT Name FROM psc WHERE CenterID=:centerID",
+                array('centerID' => $comment['newValue']));
+            $commentString .= " updated the <b>" . "site" . "</b> to <i>" . $site . "</i>";
+        }
+        else {
             $commentString .= " updated the <b>" . $comment['fieldChanged'] . "</b> to <i>" . $comment['newValue'] . "</i>";
         }
 
@@ -220,7 +230,7 @@ function emailUser($issueID)
  * Returns a list of fields from database, including issue data
  *
  * @return array
- * @throws DatabaseExceptionr
+ * @throws DatabaseException
  */
 function getIssueFields()
 {
@@ -279,12 +289,11 @@ function getIssueFields()
 
     $modules = array();
     $modules_expanded = $db->pselect(
-        "SELECT DISTINCT Label FROM LorisMenu ORDER BY Label",
+        "SELECT DISTINCT Label, ID FROM LorisMenu ORDER BY Label",
         []
     );
     foreach ($modules_expanded as $m_row) {
-        $module = $m_row['Label'];
-        $modules[$module] = $module;
+        $modules[$m_row['ID']] = $m_row['Label'];
     }
 
     //Now get issue values

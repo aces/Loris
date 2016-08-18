@@ -1,5 +1,3 @@
-/* exported RIssueEditForm */
-
 /**
  * Issue add/edit form
  *
@@ -31,56 +29,7 @@ var IssueEditForm = React.createClass({
     },
 
     componentDidMount: function () {
-        var that = this;
-        $.ajax(this.props.DataURL, {
-            dataType: 'json',
-            xhr: function () {
-                var xhr = new window.XMLHttpRequest();
-                xhr.addEventListener("progress", function (evt) {
-                    that.setState({
-                        'loadedData': evt.loaded
-                    });
-                });
-                return xhr;
-            },
-            success: function (data) {
-                if (!data.issueData.issueID) {
-                    that.setState({'isNewIssue': true});
-                }
-
-                var formData = {
-                    'issueID': data.issueData.issueID,
-                    'title': data.issueData.title,
-                    'lastUpdate': data.issueData.lastUpdate,
-                    'centerID': data.issueData.centerID,
-                    'PSCID': data.issueData.PSCID,
-                    'DCCID': data.issueData.DCCID,
-                    'reporter': data.issueData.reporter,
-                    'assignee': data.issueData.assignee,
-                    'status': data.issueData.status,
-                    'priority': data.issueData.priority,
-                    'watching': data.issueData.watching,
-                    'visitLabel': data.issueData.visitLabel,
-                    'dateCreated': data.issueData.dateCreated,
-                    'category': data.issueData.category,
-                    'lastUpdatedBy': data.issueData.lastUpdatedBy,
-                    'commentHistory': data.issueData.commentHistory,
-                    'comment': data.issueData.comment
-                };
-
-                that.setState({
-                    'Data': data,
-                    'isLoaded': true,
-                    'issueData': data.issueData,
-                    'formData': formData
-                });
-            },
-            error: function (data, error_code, error_msg) {
-                that.setState({
-                    'error': "error"
-                });
-            }
-        });
+        this.getDataAndChangeState();
     },
 
     render: function () {
@@ -106,7 +55,7 @@ var IssueEditForm = React.createClass({
         var helpText = "A title is required"; //todo: here fill out the fields that are neccessary.
         var alertMessage = "";
         var alertClass = "alert text-center hide";
-        var hasEditPermission = this.state.Data.hasEditPermission;
+        var hasEditPermission = this.state.Data.hasEditPermission || this.state.Data.isOwnIssue;
 
         var headerText = " ";
         if (this.state.isNewIssue) {
@@ -166,45 +115,42 @@ var IssueEditForm = React.createClass({
                     ref="form"
                     class=""
                 >
-                    <HeaderElement
-                        name="issueID"
-                        header={headerText}
-                        ref="issueID"/>
+                    <h3>{headerText}</h3>
                     <br />
                     <div className="row">
                         <div className="col-md-6">
-                            <ScoredElement
+                            <StaticElement
                                 name="lastUpdate"
                                 label={"Last Update: "}
                                 ref="lastUpdate"
-                                score={lastUpdateValue}
+                                text={lastUpdateValue}
                             />
                         </div>
                         <div className="col-md-6">
-                            <ScoredElement
+                            <StaticElement
                                 name="lastUpdatedBy"
                                 label={"Last Updated By: "}
                                 ref="lastUpdatedBy"
-                                score={lastUpdatedByValue}
+                                text={lastUpdatedByValue}
                             />
                         </div>
                     </div>
 
                     <div className="row">
                         <div className="col-md-6">
-                            <ScoredElement
+                            <StaticElement
                                 name="dateCreated"
                                 label={"Date Created: "}
                                 ref="dateCreated"
-                                score={dateCreated}
+                                text={dateCreated}
                             />
                         </div>
                         <div className="col-md-6">
-                            <ScoredElement
+                            <StaticElement
                                 name="reporter"
                                 label={"Reporter: "}
                                 ref="reporter"
-                                score={this.state.issueData.reporter}
+                                text={this.state.issueData.reporter}
                             />
                         </div>
                     </div>
@@ -212,12 +158,14 @@ var IssueEditForm = React.createClass({
                     <br></br>
                     <div className="row">
                         <div className="col-md-6">
-                            <SmallTextareaElement
+                            <TextboxElement
                                 name="title"
                                 label="Title (*required*)"
                                 onUserInput={this.setFormData}
                                 ref="title"
                                 value={this.state.issueData.title}
+                                disabled={!hasEditPermission}
+                                required={true}
                             />
                         </div>
 
@@ -256,10 +204,11 @@ var IssueEditForm = React.createClass({
                             <SelectElement
                                 name="status"
                                 label="Status"
-                                emptyOption={false}//just cause I already put it in
-                                options={this.state.Data.statuses} //cjeck that this is actually the correct syntax
+                                emptyOption={false}
+                                options={this.state.Data.statuses}
                                 onUserInput={this.setFormData}
                                 ref="status"
+                                disabled={!hasEditPermission}
                                 value={this.state.issueData.status} //todo: edit this so the options are different if the user doesn't have permission
                             />
                         </div>
@@ -267,8 +216,8 @@ var IssueEditForm = React.createClass({
                             <SelectElement
                                 name="priority"
                                 label="Priority"
-                                emptyOption={false}//just cause I already put it in
-                                options={this.state.Data.priorities} //cjeck that this is actually the correct syntax
+                                emptyOption={false}
+                                options={this.state.Data.priorities}
                                 onUserInput={this.setFormData}
                                 ref="priority"
                                 required={false}
@@ -283,8 +232,8 @@ var IssueEditForm = React.createClass({
                             <SelectElement
                                 name="category"
                                 label="Category"
-                                emptyOption={true}//just cause I already put it in
-                                options={this.state.Data.categories} //cjeck that this is actually the correct syntax
+                                emptyOption={true}
+                                options={this.state.Data.categories}
                                 onUserInput={this.setFormData}
                                 ref="category"
                                 disabled={!hasEditPermission}
@@ -295,8 +244,8 @@ var IssueEditForm = React.createClass({
                             <SelectElement
                                 name="module"
                                 label="Module"
-                                emptyOption={true}//just cause I already put it in
-                                options={this.state.Data.modules} //cjeck that this is actually the correct syntax
+                                emptyOption={true}
+                                options={this.state.Data.modules}
                                 onUserInput={this.setFormData}
                                 ref="module"
                                 disabled={!hasEditPermission}
@@ -307,7 +256,7 @@ var IssueEditForm = React.createClass({
 
                     <div className="row">
                         <div className="col-md-6">
-                            <SmallTextareaElement
+                            <TextboxElement
                                 name="PSCID"
                                 label="(PSCID)"
                                 onUserInput={this.setFormData}
@@ -317,7 +266,7 @@ var IssueEditForm = React.createClass({
                             />
                         </div>
                         <div className="col-md-6">
-                            <SmallTextareaElement
+                            <TextboxElement
                                 name="DCCID"
                                 label="(DCCID)"
                                 onUserInput={this.setFormData}
@@ -330,7 +279,7 @@ var IssueEditForm = React.createClass({
 
                     <div className="row">
                         <div className="col-md-6">
-                            <SmallTextareaElement
+                            <TextboxElement
                                 name="visitLabel"
                                 label="(Visit Label)"
                                 onUserInput={this.setFormData}
@@ -388,6 +337,9 @@ var IssueEditForm = React.createClass({
         )
     },
 
+    /**
+     * Creates an ajax request and sets the state with the result
+     */
     getDataAndChangeState: function () {
         var that = this;
 
@@ -599,4 +551,5 @@ var IssueEditForm = React.createClass({
 
 });
 
-RIssueEditForm = React.createFactory(IssueEditForm);
+
+var RIssueEditForm = React.createFactory(IssueEditForm);
