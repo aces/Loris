@@ -1,0 +1,1 @@
+INSERT INTO help (helpID, parentID, hash, topic, content, created, updated) VALUES (51,-1,md5('data_release'),'Data Release','The Data Release Module can be used to easily distribute packaged data releases of your study. More info can be found here: https://github.com/aces/Loris/blob/16.1-dev/modules/data_release/README.md',NULL,'2016-08-18 00:00:00',NULL);
