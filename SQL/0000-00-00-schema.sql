@@ -2221,7 +2221,7 @@ CREATE TABLE `issues` (
   CONSTRAINT `fk_issues_7` FOREIGN KEY (`module`) REFERENCES `LorisMenu` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
---issues_watching table
+-- issues_watching table
 CREATE TABLE `issues_watching` (
   `userID` varchar(255) NOT NULL DEFAULT '',
   `issueID` int(11) unsigned NOT NULL,
@@ -2230,7 +2230,7 @@ CREATE TABLE `issues_watching` (
   CONSTRAINT `fk_issues_watching_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---issues_history table
+-- issues_history table
 DROP TABLE IF EXISTS `issues_history`;
 CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -2242,9 +2242,9 @@ CREATE TABLE `issues_history` (
   PRIMARY KEY (`issueHistoryID`),
   KEY `fk_issues_comments_1` (`issueID`),
   CONSTRAINT `fk_issues_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
---issues_comments table
+-- issues_comments table
 DROP TABLE IF EXISTS `issues_comments`;
 CREATE TABLE `issues_comments` (
   `issueCommentID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -2255,7 +2255,7 @@ CREATE TABLE `issues_comments` (
   PRIMARY KEY (`issueCommentID`),
   KEY `fk_issue_comments_1` (`issueID`),
   CONSTRAINT `fk_issue_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- issues_comments_history
 DROP TABLE IF EXISTS `issues_comments_history`;
