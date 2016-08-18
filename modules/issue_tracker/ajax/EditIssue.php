@@ -2,7 +2,7 @@
 /**
  * Issue tracker
  *
- * Handles issue edits and returns data in response to a front end issue call.
+ * Handles issue edits and returns data in response to a front end call.
  *
  * PHP Version 5
  *
@@ -15,7 +15,7 @@
 
 require_once "Email.class.inc";
 
-//or split it into two files... :P
+//TODO: or split it into two files... :P
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "getData") {

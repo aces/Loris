@@ -1,3 +1,15 @@
+/* exported RIssueEditForm */
+
+/**
+ * Issue add/edit form
+ *
+ * Displays a form allowing a user to edit fields.
+ * Includes functionality for both adding a new issue
+ * and editing an existing issue.
+ *
+ * @author Caitrin Armstrong
+ *
+ * */
 var IssueEditForm = React.createClass({
 
     propTypes: {
@@ -19,7 +31,6 @@ var IssueEditForm = React.createClass({
     },
 
     componentDidMount: function () {
-
         var that = this;
         $.ajax(this.props.DataURL, {
             dataType: 'json',
@@ -54,7 +65,7 @@ var IssueEditForm = React.createClass({
                     'category': data.issueData.category,
                     'lastUpdatedBy': data.issueData.lastUpdatedBy,
                     'commentHistory': data.issueData.commentHistory,
-                    'comment' : data.issueData.comment
+                    'comment': data.issueData.comment
                 };
 
                 that.setState({
@@ -63,7 +74,6 @@ var IssueEditForm = React.createClass({
                     'issueData': data.issueData,
                     'formData': formData
                 });
-
             },
             error: function (data, error_code, error_msg) {
                 that.setState({
@@ -71,7 +81,6 @@ var IssueEditForm = React.createClass({
                 });
             }
         });
-
     },
 
     render: function () {
@@ -86,7 +95,6 @@ var IssueEditForm = React.createClass({
                     </div>
                 );
             }
-
             return (
                 <button className="btn-info has-spinner">
                     loading
@@ -95,10 +103,10 @@ var IssueEditForm = React.createClass({
             );
         }
 
-        var helpText = ""; //todo: here fill out the fields that are neccessary.
+        var helpText = "A title is required"; //todo: here fill out the fields that are neccessary.
         var alertMessage = "";
         var alertClass = "alert text-center hide";
-        var hasEditPermission = this.state.Data.hasEditPermission; //bool
+        var hasEditPermission = this.state.Data.hasEditPermission;
 
         var headerText = " ";
         if (this.state.isNewIssue) {
@@ -161,9 +169,8 @@ var IssueEditForm = React.createClass({
                     <HeaderElement
                         name="issueID"
                         header={headerText}
-                        ref="issueID"
-                    />
-                    <br></br>
+                        ref="issueID"/>
+                    <br />
                     <div className="row">
                         <div className="col-md-6">
                             <ScoredElement
@@ -173,9 +180,7 @@ var IssueEditForm = React.createClass({
                                 score={lastUpdateValue}
                             />
                         </div>
-
                         <div className="col-md-6">
-
                             <ScoredElement
                                 name="lastUpdatedBy"
                                 label={"Last Updated By: "}
@@ -186,9 +191,7 @@ var IssueEditForm = React.createClass({
                     </div>
 
                     <div className="row">
-
                         <div className="col-md-6">
-
                             <ScoredElement
                                 name="dateCreated"
                                 label={"Date Created: "}
@@ -196,9 +199,7 @@ var IssueEditForm = React.createClass({
                                 score={dateCreated}
                             />
                         </div>
-
                         <div className="col-md-6">
-
                             <ScoredElement
                                 name="reporter"
                                 label={"Reporter: "}
@@ -213,7 +214,7 @@ var IssueEditForm = React.createClass({
                         <div className="col-md-6">
                             <SmallTextareaElement
                                 name="title"
-                                label="Title"
+                                label="Title (*required*)"
                                 onUserInput={this.setFormData}
                                 ref="title"
                                 value={this.state.issueData.title}
@@ -224,14 +225,12 @@ var IssueEditForm = React.createClass({
                     <br></br>
 
                     <div className="row">
-
                         <div className="col-md-6">
-
                             <SelectElement
                                 name="assignee"
                                 label="Assignee"
-                                emptyOption={true}//just cause I already put it in
-                                options={this.state.Data.assignees} //cjeck that this is actually the correct syntax
+                                emptyOption={true}
+                                options={this.state.Data.assignees}
                                 onUserInput={this.setFormData}
                                 ref="assignee"
                                 disabled={!hasEditPermission}
@@ -239,12 +238,11 @@ var IssueEditForm = React.createClass({
                             />
                         </div>
                         <div className="col-md-6">
-
                             <SelectElement
                                 name="centerID"
                                 label="Site"
-                                emptyOption={true}//just cause I already put it in
-                                options={this.state.Data.sites} //cjeck that this is actually the correct syntax
+                                emptyOption={true}
+                                options={this.state.Data.sites}
                                 onUserInput={this.setFormData}
                                 ref="centerID"
                                 disabled={!hasEditPermission}
@@ -254,7 +252,6 @@ var IssueEditForm = React.createClass({
                     </div>
 
                     <div className="row">
-
                         <div className="col-md-6">
                             <SelectElement
                                 name="status"
@@ -267,7 +264,6 @@ var IssueEditForm = React.createClass({
                             />
                         </div>
                         <div className="col-md-6">
-
                             <SelectElement
                                 name="priority"
                                 label="Priority"
@@ -283,9 +279,7 @@ var IssueEditForm = React.createClass({
                     </div>
 
                     <div className="row">
-
                         <div className="col-md-6">
-
                             <SelectElement
                                 name="category"
                                 label="Category"
@@ -297,9 +291,7 @@ var IssueEditForm = React.createClass({
                                 value={this.state.issueData.category}
                             />
                         </div>
-
                         <div className="col-md-6">
-
                             <SelectElement
                                 name="module"
                                 label="Module"
@@ -314,10 +306,7 @@ var IssueEditForm = React.createClass({
                     </div>
 
                     <div className="row">
-
-
                         <div className="col-md-6">
-
                             <SmallTextareaElement
                                 name="PSCID"
                                 label="(PSCID)"
@@ -327,9 +316,7 @@ var IssueEditForm = React.createClass({
                                 value={this.state.issueData.PSCID}
                             />
                         </div>
-
                         <div className="col-md-6">
-
                             <SmallTextareaElement
                                 name="DCCID"
                                 label="(DCCID)"
@@ -339,13 +326,10 @@ var IssueEditForm = React.createClass({
                                 value={this.state.issueData.DCCID}
                             />
                         </div>
-
                     </div>
 
                     <div className="row">
-
                         <div className="col-md-6">
-
                             <SmallTextareaElement
                                 name="visitLabel"
                                 label="(Visit Label)"
@@ -355,57 +339,49 @@ var IssueEditForm = React.createClass({
                                 value={this.state.issueData.visitLabel}
                             />
                         </div>
-
                         <div className="col-md-6">
-
-                        <SelectElement
-                            name="watching"
-                            label="Watching?"
-                            emptyOption={false}
-                            options={["No", "Yes"]}
-                            onUserInput={this.setFormData}
-                            ref="watching"
-                            value={this.state.issueData.watching}
-                        />
+                            <SelectElement
+                                name="watching"
+                                label="Watching?"
+                                emptyOption={false}
+                                options={{true: 'No', false: 'Yes'}}
+                                onUserInput={this.setFormData}
+                                ref="watching"
+                                value={"No"}
+                            />
                         </div>
-
                     </div>
 
                     <div className="row">
                         <div className="col-md-6">
-
-                        <TextareaElement
-                            name="comment"
-                            label="New Comment"
-                            onUserInput={this.setFormData}
-                            ref="comment"
-                            value={null}
-                        />
-                    </div>
-
+                            <TextareaElement
+                                name="comment"
+                                label="New Comment"
+                                onUserInput={this.setFormData}
+                                ref="comment"
+                                value={null}
+                            />
+                        </div>
                         <div className="col-md-6">
-
-
-                        <ButtonElement label={submitButtonValue}/>
-
-                    </div>
+                            <ButtonElement label={submitButtonValue}/>
+                        </div>
                     </div>
 
 
                     <div className="row">
-
                         <div className="col-md-6">
-
-                        <HelpTextElement
-                            html={true}
-                            name="allComments"
-                            label="Comment History"
-                            text={this.state.issueData.commentHistory}
-                            ref="allComments"
-                        />
+                            <a href="#demo" class="btn btn-info" data-toggle="collapse">View Comment History</a>
+                            <div id="demo" class="collapse">
+                                <HelpTextElement
+                                    html={true}
+                                    name="allComments"
+                                    // label="Comment History"
+                                    text={this.state.issueData.commentHistory}
+                                    ref="allComments"
+                                />
+                            </div>
+                        </div>
                     </div>
-                    </div>
-
 
                 </FormElement>
             </div>
@@ -417,11 +393,11 @@ var IssueEditForm = React.createClass({
 
         var dataURL = this.props.DataURL;
 
+        //replacing with the new issueID value
         if (this.state.isNewIssue) {
-
             var dataURL = this.props.DataURL;
-            dataURL = dataURL.substring(0, dataURL.length - 2); //todo: check this performs correctly, should get rid of the '' in the issueID= in the get request (current url)
-            dataURL = dataURL + this.state.issueID.toString(); //really hope this  is a string.
+            dataURL = dataURL.substring(0, dataURL.length - 2);
+            dataURL = dataURL + this.state.issueID.toString();
         }
 
         $.ajax(dataURL, {
@@ -459,7 +435,7 @@ var IssueEditForm = React.createClass({
                     'category': data.issueData.category,
                     'lastUpdatedBy': data.issueData.lastUpdatedBy,
                     'commentHistory': data.issueData.commentHistory,
-                    'comment' : data.issueData.comment
+                    'comment': data.issueData.comment
                 };
 
 
@@ -505,14 +481,8 @@ var IssueEditForm = React.createClass({
 
         for (var key in myFormData) {
             if (myFormData[key] != "" && myFormData[key] !== issueData[key]) {
-                console.log(key);
-                console.log(myFormData[key]);
-                console.log(issueData[key]);
                 formData.append(key, myFormData[key]);
             }
-            // else {
-            //     formData.append(key, null);
-            // }
         }
 
         formData.append('issueID', myFormData['issueID']);
@@ -595,7 +565,6 @@ var IssueEditForm = React.createClass({
         var requiredFields = {
             'title': null,
         };
-
         Object.keys(requiredFields).map(function (field) {
             if (formDataToCheck[field]) {
                 requiredFields[field] = formDataToCheck[field];
@@ -607,10 +576,9 @@ var IssueEditForm = React.createClass({
             }
         });
         this.forceUpdate();
-
         return isValidForm;
-
     },
+
     /**
      * Display a success/error alert message after form submission
      */
@@ -628,7 +596,6 @@ var IssueEditForm = React.createClass({
             });
         });
     }
-
 
 });
 
