@@ -21,7 +21,7 @@
                 </span>
             </div>
             <div class="panel-body" id="panel-body">
-                <form method="post" action="{$baseurl}/issue_tracker/">
+                <form method="post" action="{$baseurl}/issue_tracker/?submenu=resolved_issue_tracker">
                     <div class="row">
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
@@ -158,7 +158,7 @@
                                    name="reset"
                                    value="Clear Form"
                                    class="btn btn-sm btn-primary col-xs-12"
-                                   onclick="location.href='{$baseurl}/issue_tracker/?reset=true'"/></div>
+                                   onclick="location.href='{$baseurl}/issue_tracker/?submenu=resolved_issue_tracker&reset=true'"/></div>
                     </div>
                 </form>
             </div>

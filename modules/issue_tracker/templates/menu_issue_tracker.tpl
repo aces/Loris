@@ -110,12 +110,22 @@
                                 {$form.status.html}
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
-                                {$form.includeClosed.label}
+                                {$form.minDate.label}
                             </label>
                             <div class="col-sm-12 col-md-8">
-                                {$form.includeClosed.html}
+                                {$form.minDate.html}
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.maxDate.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.maxDate.html}
                             </div>
                         </div>
                     </div>
