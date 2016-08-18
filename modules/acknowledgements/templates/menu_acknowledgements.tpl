@@ -24,14 +24,6 @@
                         {$form.citation_name.html}
                     </div>
                 </div>
-                <div class="form-group col-sm-4">
-                    <label class="col-sm-12 col-md-4">
-                        {$form.title.label}
-                    </label>
-                    <div class="col-sm-12 col-md-8">
-                        {$form.title.html}
-                    </div>
-                </div>
             </div>
             <div class="row">
                 <div class="form-group col-sm-4">
