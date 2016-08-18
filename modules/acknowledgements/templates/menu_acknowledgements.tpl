@@ -128,9 +128,6 @@
                                     <div class="col-sm-12 col-md-12">{$form.addcitation_name.html}</div>
                                 </td>
                                 <td nowrap="nowrap">
-                                    <div class="col-sm-12 col-md-12">{$form.addtitle.html}</div>
-                                </td>
-                                <td nowrap="nowrap">
                                     <div class="col-sm-12 col-md-12">
                                         <select name="addaffiliations[]" multiple>
                                             <option value="douglas">Douglas</option>
