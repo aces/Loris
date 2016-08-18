@@ -115,6 +115,7 @@ var DicomArchive = React.createClass({
     var dateOfBirth = "dateOfBirth";
     var acquisition = "acquisition";
     var archiveLocation = "archiveLocation";
+    var seriesUID = "seriesUID";
 
     return React.createElement(
       'div',
@@ -214,6 +215,17 @@ var DicomArchive = React.createClass({
               onUserInput: this.setFilter,
               value: this.state.Filter.archiveLocation,
               ref: archiveLocation
+            })
+          ),
+          React.createElement(
+            'div',
+            { className: 'col-md-6' },
+            React.createElement(TextboxElement, {
+              name: seriesUID,
+              label: 'Series UID',
+              onUserInput: this.setFilter,
+              value: this.state.Filter.seriesUID,
+              ref: seriesUID
             })
           )
         ),

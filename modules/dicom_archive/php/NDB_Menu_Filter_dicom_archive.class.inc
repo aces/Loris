@@ -71,6 +71,8 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             "'View Details' as Metadata",
             "'View Images' as MRI_Browser",
             // For constructing links, not in headers array
+            "(SELECT GROUP_CONCAT(SeriesUID) FROM tarchive_series e " .
+            "WHERE e.TarchiveID=t.TarchiveID GROUP BY e.TarchiveID) as SeriesUID",
             's.CenterID as site',
             't.TarchiveID as TarchiveID',
             's.ID as SessionID'
@@ -79,7 +81,6 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
         $this->columns = array_merge($colsFirst, $colsLast);
 
         $this->order_by = 't.DateAcquired';
-
 
         $this->headers = [];
 
@@ -96,11 +97,16 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             'Archive_Location',
             'Metadata',
             'MRI_Browser',
-            'Site'
+            'SeriesUID',
+            'Site',
+            'TarchiveID',
+            'SessionID'
         ]);
 
         // Set header as hidden from the data table
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Site']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            ['SeriesUID', 'Site', 'TarchiveID', 'SessionID']
+        );
 
         $this->validFilters = array(
             'c.CenterID',
