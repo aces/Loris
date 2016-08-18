@@ -9,8 +9,8 @@
  * @category   Behavioural
  * @package    Main
  * @subpackage Tools
- * @author     Caitrin Armstrong <caitrin.armstrong@mail.mcgill.ca
- * @license    @GPLv3
+ * @author     Caitrin Armstrong <caitrin.armstrong@mail.mcgill.ca>
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -21,7 +21,7 @@
  * @package    Main
  * @subpackage Tools
  * @author     Caitrin Armstrong <caitrin.armstrong@mail.mcgill.ca>
- * @license    @GPLv3
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
@@ -42,7 +42,8 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         $user =& User::singleton();
         $DB   = Database::singleton();
 
-        $this->query = " FROM issues as i LEFT JOIN candidate c ON (i.candID=c.CandID) " .
+        $this->query = " FROM issues as i ".
+        "LEFT JOIN candidate c ON (i.candID=c.CandID) " .
         "LEFT JOIN psc p ON (i.centerID=p.CenterID) ".
         "LEFT JOIN LorisMenu l on (i.module=l.ID) ".
         "LEFT JOIN session s ON (i.sessionID = s.ID) ".
@@ -97,7 +98,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                                'i.reporter',
                                'i.assignee',
                                'i.centerID',
-                               'w.userID', //really you could just make the table have a non-composite auto-increment primary key
+                               'w.userID',
                                'i.projectID',
                                'i.status',
                                'i.priority',
@@ -145,35 +146,51 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         //sites
         if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = Utility::getSiteList();
-            if (is_array($list_of_sites)) { $list_of_sites = array('' => 'All') + $list_of_sites;
+            if (is_array($list_of_sites)) {
+                $list_of_sites = array('' => 'All') + $list_of_sites;
             }
         } else {// allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
-                $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
+                $list_of_sites = array(
+                                  $user->getData('CenterID') => $user->getData(
+                                      'Site'
+                                  ),
+                                 );
             }
         }
 
         //reporters
         $reporter_expanded = $DB->pselect(
-            "SELECT u.UserID FROM issues i LEFT JOIN users u ON(i.reporter=u.UserID)",
+            "SELECT u.UserID FROM issues i ".
+            "LEFT JOIN users u ON(i.reporter=u.UserID)",
             array()
         );
-        $reporters         = $this->reorganizeQueryResults($reporter_expanded, 'UserID');
+        $reporters         = $this->reorganizeQueryResults(
+            $reporter_expanded,
+            'UserID'
+        );
 
         //assignees
         $assignee_expanded = $DB->pselect(
-            "SELECT u.UserID FROM issues i LEFT JOIN users u ON(i.assignee=u.UserID)",
+            "SELECT u.UserID FROM issues i ".
+            "LEFT JOIN users u ON(i.assignee=u.UserID)",
             array()
         );
-        $assignees         = $this->reorganizeQueryResults($assignee_expanded, 'UserID');
+        $assignees         = $this->reorganizeQueryResults(
+            $assignee_expanded,
+            'UserID'
+        );
 
         //modules
         $modules_expanded = $DB->pselect(
             "SELECT DISTINCT Label FROM LorisMenu ORDER BY Label",
             []
         );
-        $modules          = $this->reorganizeQueryResults($modules_expanded, 'Label');
+        $modules          = $this->reorganizeQueryResults(
+            $modules_expanded,
+            'Label'
+        );
 
         $priorities = array(
                        ''          => 'All',
@@ -196,12 +213,14 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 
         $categories = array(
                        ''                                  => 'All',
-                       'Behavioural Instruments'           => 'Behavioural Instruments',
+                       'Behavioural Instruments'           => 'Behavioural '.
+                           'Instruments',
                        'Behavioural Battery'               => 'Behavioural Battery',
                        'Data Entry'                        => 'Data Entry',
                        'Database Problems'                 => 'Database Problems',
                        'Examiners'                         => 'Examiners',
-                       'SubprojectID/Project/Plan Changes' => 'SubprojectID/Project/Plan Changes',
+                       'SubprojectID/Project/Plan Changes' => 'SubprojectID/'.
+                           'Project/Plan Changes',
                       );
 
         $dateOptions = array(
@@ -210,11 +229,32 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                         'addEmptyOption' => true,
                        );
 
-        $this->addBasicText('keyword', 'Keyword', array("size" => 10, "maxlength" => 50));
-        $this->addBasicText('issueID', 'Issue ID', array("size" => 10, "maxlength" => 25));
+        $this->addBasicText(
+            'keyword',
+            'Keyword',
+            array(
+             "size"      => 10,
+             "maxlength" => 50,
+            )
+        );
+        $this->addBasicText(
+            'issueID',
+            'Issue ID',
+            array(
+             "size"      => 10,
+             "maxlength" => 25,
+            )
+        );
         $this->addSelect('module', 'Module', $modules);
         $this->addSelect('category', 'Category', $categories);
-        $this->addBasicText('PSCID', 'PSCID', array("size" => 10, "maxlength" => 25));
+        $this->addBasicText(
+            'PSCID',
+            'PSCID',
+            array(
+             "size"      => 10,
+             "maxlength" => 25,
+            )
+        );
         $this->addBasicText(
             'DCCID',
             'DCCID',
@@ -259,7 +299,10 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         $user  =& User::singleton();
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
-            if (($field != 'w.userID') && ($field != 'minDate') && ($field != 'maxDate')) {
+            if (($field != 'w.userID')
+                && ($field != 'minDate')
+                && ($field != 'maxDate')
+            ) {
                 if (in_array($field, $this->CheckboxFilters) && $val) {
                     $query .= " AND $field";
                 } elseif (isset($this->EqualityFilters)
@@ -273,7 +316,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                 $query .= " AND w.userID = :v_$prepared_key";
                 //'" . $user->getData('UserID') . "'";
             } else if ($field = 'minDate') {
-                $query .= " AND i.dateCreated > '" . $val . "00-00-00'"; //yes very hacky
+                $query .= " AND i.dateCreated > '" . $val . "00-00-00'";
             } else if ($field = 'maxDate') {
                 $query .= " AND i.dateCreated < " . $val . "00-00-00'";
             }
@@ -297,7 +340,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         $result = array('' => "All");
         foreach ($queryResult as $r_row) {
             $resultValue = $r_row[$key];
-            if($resultValue) {
+            if ($resultValue) {
                 $result[$resultValue] = $resultValue;
             }
         }

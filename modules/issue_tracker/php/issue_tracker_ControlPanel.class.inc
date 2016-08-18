@@ -5,7 +5,7 @@
  *
  * PHP version 5
  *
- * @category Behavioural
+ * @category Loris
  * @package  Main
  * @author   Loris team <info-loris.mni@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
@@ -25,7 +25,7 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-class issue_tracker_ControlPanel
+class Issue_Tracker_ControlPanel
 {
     /**
      * Var to store the sessionID.

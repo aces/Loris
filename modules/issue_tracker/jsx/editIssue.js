@@ -531,8 +531,9 @@ var IssueEditForm = React.createClass(
         /**
      * Validates the form
      *
-     * @param   formRefs
-     * @param   formData
+     * @param formRefs
+     * @param formData
+     *
      * @returns {boolean}
      */
         isValidForm: function (formRefs, formDataToCheck) {

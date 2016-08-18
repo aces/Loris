@@ -13,6 +13,20 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
+/**
+ * Issue tracker
+ *
+ * Handles issue edits and returns data in response to a front end call.
+ *
+ * PHP Version 5
+ *
+ * @category Loris
+ * @package  Media
+ * @author   Caitrin Armstrong <caitrin.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris-Trunk
+ */
+
 require_once "Email.class.inc";
 
 //TODO: or split it into two files... :P
@@ -163,7 +177,8 @@ function updateCommentHistory($issueCommentID, $newCommentValue)
 /**
  * Gets the changes to values, and the comments relevant to the given issue
  *
- * @param  int $issueID the issueID
+ * @param int $issueID the issueID
+ *
  * @throws DatabaseException
  *
  * @return string $commentHistory html
@@ -172,18 +187,22 @@ function getComments($issueID)
 {
     $db =& Database::singleton();
     $unformattedComments = $db->pselect(
-        "SELECT newValue, fieldChanged, dateAdded, addedBy from issues_history where issueID=:issueID " .
+        "SELECT newValue, fieldChanged, dateAdded, addedBy ".
+        "FROM issues_history where issueID=:issueID " .
         "UNION " .
-        "SELECT issueComment, 'comment', dateAdded, addedBy from issues_comments where issueID=:issueID " .
+        "SELECT issueComment, 'comment', dateAdded, addedBy ".
+        "FROM issues_comments where issueID=:issueID " .
         "ORDER BY dateAdded",
         array('issueID' => $issueID)
     );
+
+    //todo: get real names as well
 
     $commentHistory = '';
     foreach ($unformattedComments as $comment) {
         $commentString  = "";
         $commentString .= '[' . $comment['dateAdded'] . '] ';
-        $commentString .= $comment['addedBy']; //really should do a join and get real names here hey.
+        $commentString .= $comment['addedBy'];
         if ($comment['fieldChanged'] === 'comment') {
             $commentString .= ' commented ' . '<i>' . $comment['newValue'] . '</i>';
         } else if ($comment['fieldChanged'] === 'module') {
@@ -191,19 +210,19 @@ function getComments($issueID)
                 "SELECT Label FROM LorisMenu WHERE ID=:module",
                 array('module' => $comment['newValue'])
             );
-            $commentString .= " updated the <b>" . $comment['fieldChanged'] . "</b> to <i>" . $module . "</i>";
-        }
-        else if ($comment['fieldChanged'] === 'centerID') {
+            $commentString .= " updated the <b>" . $comment['fieldChanged'] .
+                "</b> to <i>" . $module . "</i>";
+        } else if ($comment['fieldChanged'] === 'centerID') {
             $site           = $db->pselectOne(
                 "SELECT Name FROM psc WHERE CenterID=:centerID",
                 array('centerID' => $comment['newValue'])
             );
-            $commentString .= " updated the <b>" . "site" . "</b> to <i>" . $site . "</i>";
+            $commentString .= " updated the <b>" . "site" .
+                "</b> to <i>" . $site . "</i>";
+        } else {
+            $commentString .= " updated the <b>" . $comment['fieldChanged'] .
+                "</b> to <i>" . $comment['newValue'] . "</i>";
         }
-        else {
-            $commentString .= " updated the <b>" . $comment['fieldChanged'] . "</b> to <i>" . $comment['newValue'] . "</i>";
-        }
-
         $commentHistory .= $commentString . '<br/>';
     }
 
@@ -227,7 +246,9 @@ function emailUser($issueID)
     $db   =& Database::singleton();
 
     $issue_change_emails = $db->pselect(
-        "SELECT u.Email as Email, u.Real_name as realname from users u INNER JOIN issues_watching w ON (w.userID = u.userID) where w.issueID=:issueID and u.UserID<>:uid",
+        "SELECT u.Email as Email, u.Real_name as realname ".
+        "FROM users u INNER JOIN issues_watching w ON (w.userID = u.userID) WHERE ".
+        "w.issueID=:issueID and u.UserID<>:uid",
         array(
          'issueID' => $issueID,
          'uid'     => $user->getUsername(),
@@ -239,7 +260,8 @@ function emailUser($issueID)
     $baseurl = $factory->settings()->getBaseURL();
 
     $msg_data['realname'] = $issue_change_emails['realname'];
-    $msg_data['url']      = $baseurl . "/issue_tracker/ajax/EditIssue.php?action=getData&issueID=" . $issueID;
+    $msg_data['url']      = $baseurl .
+        "/issue_tracker/ajax/EditIssue.php?action=getData&issueID=" . $issueID;
     $msg_data['issueID']  = $issueID;
 
     foreach ($issue_change_emails as $email) {
@@ -264,7 +286,8 @@ function getIssueFields()
     if ($user->hasPermission('access_all_profiles')) {
         // get the list of study sites - to be replaced by the Site object
         $sites = Utility::getSiteList();
-        if (is_array($sites)) { $sites = array('' => 'All') + $sites;
+        if (is_array($sites)) {
+            $sites = array('' => 'All') + $sites;
         }
     } else {
         // allow only to view own site data
@@ -306,7 +329,8 @@ function getIssueFields()
                    'Data Entry'                        => 'Data Entry',
                    'Database Problems'                 => 'Database Problems',
                    'Examiners'                         => 'Examiners',
-                   'SubprojectID/Project/Plan Changes' => 'SubprojectID/Project/Plan Changes',
+                   'SubprojectID/Project/Plan Changes' => 'SubprojectID'.
+                       '/Project/Plan Changes',
                   );
 
     $modules          = array();
@@ -362,7 +386,8 @@ function getIssueFields()
 
     if ($issueData['userID'] == $user->getData('UserID')) {
         $isOwnIssue = true;
-    } else { $isOwnIssue = false;
+    } else {
+        $isOwnIssue = false;
     }
 
     $result = [
@@ -373,7 +398,9 @@ function getIssueFields()
                'categories'        => $categories,
                'modules'           => $modules,
                'issueData'         => $issueData,
-               'hasEditPermission' => $user->hasPermission('issue_tracker_developer'),
+               'hasEditPermission' => $user->hasPermission(
+                   'issue_tracker_developer'
+               ),
                'isOwnIssue'        => $isOwnIssue,
               ];
 
