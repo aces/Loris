@@ -5,6 +5,68 @@
  */
 
 /*
+ * Note: This is a wrapper for Form.js (Only used in instrument builder)
+ *
+ * This is the React class for a LORIS element. It takes
+ * in an element and render's the HTML based on its type
+ *
+ */
+LorisElement = React.createClass({
+  render: function() {
+    var element = this.props.element;
+    var elementHtml = '';
+    switch (element.Type) {
+      case 'header':
+        elementHtml = <h2>{element.Description}</h2>;
+        break;
+      case 'label':
+        elementHtml = <p>{element.Description}</p>;
+        break;
+      case 'score':
+        elementHtml = <StaticElement text={0} label={element.Description} />;
+
+        break;
+      case 'text':
+        if (element.Options.Type === 'small') {
+          elementHtml = <TextboxElement label={element.Description}/>;
+        } else {
+          elementHtml = <TextareaElement label={element.Description}/>;
+        }
+        break;
+      case 'select':
+        if (element.Options.AllowMultiple) {
+          elementHtml = <SelectElement label={element.Description}
+                                       options={element.Options.Values}
+                                       multiple={true}/>;
+        } else {
+          elementHtml = <SelectElement label={element.Description}
+                                       options={element.Options.Values}/>;
+        }
+        break;
+      case 'date':
+        elementHtml = <DateElement
+          label={element.Description}
+          minYear={element.Options.MinDate}
+          maxYear={element.Options.MaxDate}
+        />;
+        break;
+      case 'numeric':
+        elementHtml = <NumericElement
+          label={element.Description}
+          min={element.Options.MinValue}
+          max={element.Options.MaxValue}
+        />;
+        break;
+      default:
+        break;
+    }
+    return (
+      <div>{elementHtml}</div>
+    );
+  }
+});
+
+/*
  *	This is the React class for the question text input
  */
 QuestionText = React.createClass({
@@ -130,7 +192,7 @@ DropdownOptions = React.createClass({
 	},
 	// Render the HTML
 	render: function () {
-		
+
 		var multi = '';
 		var options = Instrument.clone(this.props.element.Options.Values);
 		var errorMessage = '';
@@ -190,7 +252,7 @@ DateOptions = React.createClass({
 			dateFormat: {
 				"Date" : "Standard Date",
 				"BasicDate" : "Basic Date (does not include 'Not Answered' option)",
-				"MonthYear" : "Month Year (does not include day of the month)" 
+				"MonthYear" : "Month Year (does not include day of the month)"
 			}
 		}
 	},
@@ -217,7 +279,7 @@ DateOptions = React.createClass({
 
         var dateOptionsClass = 'options form-group',
             errorMessage = '';
-		
+
 		var dateFormatOptions = this.state.dateFormat;
 
         if (this.props.element.error && this.props.element.error.dateOption) {
@@ -275,14 +337,14 @@ NumericOptions = React.createClass({
 	render: function() {
         var errorMessage = '';
         var optionsClass = 'options form-group';
-       
+
         // If an error is present, display the error
-        if (this.props.element.error && this.props.element.error.numeric) {            
+        if (this.props.element.error && this.props.element.error.numeric) {
             errorMessage = (<span className="form-error">{this.props.element.error.numeric}</span>);
-            optionsClass += "options form-group has-error";                                
+            optionsClass += "options form-group has-error";
         }
 
-		return (			
+		return (
             <div>
                 <BasicOptions updateState={this.props.updateState} element={this.props.element} />
                 <div id="numericoptions" className={optionsClass}>
@@ -292,12 +354,12 @@ NumericOptions = React.createClass({
                     </div>
                     <label className="col-sm-2 control-label">Max: </label>
                     <div className="col-sm-2">
-                        <input className="form-control" type="number" id="numericmax" onChange={this.onChange} value={this.props.element.Options.MaxValue} />                        
+                        <input className="form-control" type="number" id="numericmax" onChange={this.onChange} value={this.props.element.Options.MaxValue} />
                     </div>
                     <div className="col-sm-offset-2 col-sm-10">
                         {errorMessage}
-                    </div>                                      
-                </div>                
+                    </div>
+                </div>
             </div>
 		)
 	}
@@ -470,7 +532,7 @@ AddElement = React.createClass({
 
 			if ( (isNaN(minDate) && min != '') || (isNaN(maxDate) && max != '') ) {
 				var temp = (this.state.error) ? this.state.error : {};
-				
+
 				temp.dateOption = "Invalid date provided";
 				this.setState({
 					error: temp
@@ -479,15 +541,15 @@ AddElement = React.createClass({
 			}
 
 			if (minDate > maxDate && min != '' && max != '') {
-				var temp = (this.state.error) ? this.state.error : {}; 
+				var temp = (this.state.error) ? this.state.error : {};
 
 				temp.dateOption = "End year append befor start year";
 				this.setState({
 					error: temp
-				}); 
+				});
 				hasError = true;
 			}
-			
+
 			if (!hasError && this.state.error) {
 					var temp = this.state.error;
 					delete temp.dateOption;
@@ -497,30 +559,30 @@ AddElement = React.createClass({
 			}
 		}
 
-        // Checking for error on numeric field                 
+        // Checking for error on numeric field
         if (selected == 'numeric') {
             var min = this.state.Options.MinValue;
             var max = this.state.Options.MaxValue;
-                
-            if (min >= max) {                
-                var temp = (this.state.error) ? this.state.error : {}; 
+
+            if (min >= max) {
+                var temp = (this.state.error) ? this.state.error : {};
                 temp.numeric = "Max value must be larger than min value";
                 this.setState({
                     error: temp
-                }); 
+                });
                 hasError = true;
             }
-            
-            // If error corrected, remove error message and error 
+
+            // If error corrected, remove error message and error
             if (!hasError && this.state.error) {
                 var temp = this.state.error;
                 delete temp.numeric;
                 this.setState({
                     error: temp
                 });
-            }                    	
+            }
         }
-        
+
 	    if (questionText == '' && selected != 'line') {
 	    	// Error, question text is required. Set the element error flag
 	    	// for the questionText with message. Set the hasError flag
