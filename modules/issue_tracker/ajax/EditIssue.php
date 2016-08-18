@@ -13,6 +13,9 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
+require_once "Email.class.inc";
+
+//or split it into two files... :P
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action == "getData") {
@@ -23,7 +26,7 @@ if (isset($_GET['action'])) {
 }
 
 /**
- * Edits an issue.
+ * Either updates an old issue or adds a new one
  *
  * @throws DatabaseException
  *
@@ -34,11 +37,8 @@ function editIssue()
     $db =& Database::singleton();
     $user =& User::singleton();
 
-    //maybe check for some kind of permission here. otherwise delete that utility method.
-    //need to remember to deal with watching
-
-    $issueValues = array();
-    $fields = array('assignee', 'status', 'priority', 'visitLabel', 'centerID', 'title', 'category', 'module'); //need to add in CANDID
+    $issueValues = array(); //TODO: add PSCID and visitLabel
+    $fields = array('assignee', 'status', 'priority', 'visitLabel', 'centerID', 'title', 'category', 'module', 'watching');
 
     foreach ($fields as $field) {
         if (isset($_POST[$field])) {
@@ -53,23 +53,55 @@ function editIssue()
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
     } else {
         $issueValues['reporter'] = $user->getData('UserID');
-        $issueValues['dateCreated'] = date('Y-m-d H:i:s'); //because mysql 5.56 //todo: check that this works.
+        $issueValues['dateCreated'] = date('Y-m-d H:i:s');
         $db->insert('issues', $issueValues);
         $issueID = $db->getLastInsertId();
     }
 
+    updateHistory($issueValues, $issueID);
+
     //adding comment in now that I have an issueID for both new and old.
     if ($_POST['comment'] != "null") {
-        $issueValues['comment'] = $_POST['comment'];
+        $commentValues = array('issueComment' => $_POST['comment'],
+            'addedBy' => $user->getData('UserID'),
+            'issueID' => $issueID
+        );
+        $db->insert('issues_comments', $commentValues);
+
     }
 
-    updateComments($issueValues, $issueID);
+    //adding editor to the watching table unless they don't want to be added.
+    if ($_POST['watching'] != 'no') {
+        $nowWatching = array(
+            'userID' => $user->getData('UserID'),
+            'issueID' => $issueID
+        );
+        $db->replace('issues_watching', $nowWatching);
+    } else if ($_POST['watching'] == 'no') {
+        $db->delete('issues_watching',
+            array(
+                'issueID' => $issueID,
+                'userID' => $user->getData('UserID')
+            )
+        );
+    }
+    //sending email
+    emailUser($issueID);
 
     return $issueID;
 }
 
-//this will call getChangedValues and concatenate everything onto the back of the comment. For now it just changes the comment.
-function updateComments($issueValues, $issueID)
+/**
+ * Puts updated fields into the issues_history table.
+ *
+ * @param array $issueValues the new values
+ * @param string $issueID the issue ID
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function updateHistory($issueValues, $issueID)
 {
     $user =& User::singleton();
     $db =& Database::singleton();
@@ -79,38 +111,68 @@ function updateComments($issueValues, $issueID)
         if (in_array($key, $undesiredFields)) {
             continue;
         }
-        if (!empty($value)) { //check that this actually counts as null
+        if (!empty($value)) { //check that all kinds of nulls are being dealt with
             $changedValues = [
                 'newValue' => $value,
                 'fieldChanged' => $key,
                 'issueID' => $issueID,
-                'whoChanged' => $user->getData('UserID')
+                'addedBy' => $user->getData('UserID')
             ];
-            $db->insert('issues_comments', $changedValues);
+            $db->insert('issues_history', $changedValues);
         }
     }
 }
 
-//will be updated once you make a separate comments table.
-// returns string
+/**
+ * Will keep track of comment edit history
+ *
+ * @param int $issueCommentID the comment that is being edited
+ * @param string $newCommentValue the new comment
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function updateCommentHistory($issueCommentID, $newCommentValue)
+{
+    $user =& User::singleton();
+    $db =& Database::singleton();
+
+    $changedValue = array('issueCommentID' => $issueCommentID,
+        'newValue' => $newCommentValue,
+        'editedBy' => $user->getData('UserID'));
+
+    $db->insert('issues_comments_history', $changedValue);
+}
+
+
+/**
+ * Gets the changes to values, and the comments relevant to the given issue
+ *
+ * @param int $issueID the issueID
+ * @throws DatabaseException
+ *
+ * @return string $commentHistory html
+ */
 function getComments($issueID)
 {
     $db =& Database::singleton();
     $unformattedComments = $db->pselect(
-        "SELECT newValue, fieldChanged, dateAdded, whoChanged from issues_comments where issueID=:issueID ORDER BY dateAdded",
+        "SELECT newValue, fieldChanged, dateAdded, addedBy from issues_history where issueID=:issueID " .
+        "UNION " .
+        "SELECT issueComment, 'comment', dateAdded, addedBy from issues_comments where issueID=:issueID " .
+        "ORDER BY dateAdded",
         array('issueID' => $issueID)
     );
 
-
     $commentHistory = '';
-    foreach ($unformattedComments as $comment){
+    foreach ($unformattedComments as $comment) {
         $commentString = "";
         $commentString .= '[' . $comment['dateAdded'] . '] ';
-        $commentString .= $comment['whoChanged']; //really should do a join and get real names here eh.
-        if ($comment['fieldChanged'] === 'comment'){
-            $commentString .=  ' commented ' . '<i>' . $comment['newValue'] . '</i>';
-        }
-        else {
+        $commentString .= $comment['addedBy']; //really should do a join and get real names here hey.
+        if ($comment['fieldChanged'] === 'comment') {
+            $commentString .= ' commented ' . '<i>' . $comment['newValue'] . '</i>';
+        } else {
             $commentString .= " updated the <b>" . $comment['fieldChanged'] . "</b> to <i>" . $comment['newValue'] . "</i>";
         }
 
@@ -121,8 +183,41 @@ function getComments($issueID)
 
 }
 
+
 /**
- * Returns a list of fields from database
+ * Emails all users that are watching the issue with the changes.
+ *
+ * @param int $issueID the issueID
+ *
+ * @return array
+ * @throws DatabaseExceptionr
+ */
+function emailUser($issueID)
+{
+
+    $user =& User::singleton();
+    $db =& Database::singleton();
+
+    $issue_change_emails = $db->pselect(
+        "SELECT u.Email as Email, u.Real_name as realname from users u INNER JOIN issues_watching w ON (w.userID = u.userID) where w.issueID=:issueID and u.UserID<>:uid",
+        array('issueID' => $issueID, 'uid' => $user->getUsername())
+    );
+
+    //not sure if this is necessary
+    $factory = NDB_Factory::singleton();
+    $baseurl = $factory->settings()->getBaseURL();
+
+    $msg_data['realname'] = $issue_change_emails['realname'];
+    $msg_data['url'] = $baseurl . "/issue_tracker/ajax/EditIssue.php?action=getData&issueID=" . $issueID;
+    $msg_data['issueID'] = $issueID;
+
+    foreach ($issue_change_emails as $email) {
+        Email::send($email['Email'], 'issue_change.tpl', $msg_data);
+    }
+}
+
+/**
+ * Returns a list of fields from database, including issue data
  *
  * @return array
  * @throws DatabaseExceptionr
@@ -133,7 +228,9 @@ function getIssueFields()
     $db =& Database::singleton();
     $user =& User::singleton();
 
-    if ($user->hasPermission('issue_tracker_view_allsites')) {
+    //get field options
+    $sites = array('' => 'All');
+    if ($user->hasPermission('access_all_profiles')) {
         // get the list of study sites - to be replaced by the Site object
         $sites = Utility::getSiteList();
         if (is_array($sites)) $sites = array('' => 'All') + $sites;
@@ -141,14 +238,11 @@ function getIssueFields()
         // allow only to view own site data
         $site =& Site::singleton($user->getData('CenterID'));
         if ($site->isStudySite()) {
-            $sites = array($user->getData('CenterID') => $user->getData('Site'));
-            $sites[''] = 'All';
+            $sites[$user->getData('CenterID')] = $user->getData('Site');
         }
     }
 
     $assignees = array();
-
-//    $assignee_expanded = $db->pselect("SELECT assignee from issues");
     $assignee_expanded = $db->pselect(
         "SELECT Real_name, UserID FROM users",
         array()
@@ -157,11 +251,11 @@ function getIssueFields()
         $assignees[$a_row['UserID']] = $a_row['Real_name'];
     }
 
-
     $statuses = array(
         'new' => 'New',
         'acknowledged' => 'Acknowledged',
         'assigned' => 'Assigned',
+        'feedback' => 'Feedback',
         'resolved' => 'Resolved',
         'closed' => 'Closed'
     );
@@ -175,36 +269,12 @@ function getIssueFields()
     );
 
     $categories = array(
-        'Anonimyzer/Scheduler/ID (ASID)' => 'Anonimyzer/Scheduler/ID (ASID)',
-        'API/Mobile' => 'API/Mobile',
-        'Behavioural QC' => 'Behavioural QC',
-        'CBRAIN hooks' => 'CBRAIN hooks',
-        'Code fixes' => 'Code fixes',
-        'Configurations' => 'Configurations',
-        'Demo' => 'Demo',
-        'DICOM archive' => 'DICOM archive',
-        'Documentation' => 'Documentation',
-        'DQT' => 'DQT',
-        'Genomics' => 'Genomics',
-        'GUI/Bootstrap' => 'GUI/Bootstrap',
-        'Help section' => 'Help section',
-        'Imaging Browser' => 'Imaging Browser',
-        'Imaging preprocessing scripts' => 'Imaging preprocessing scripts',
-        'Imaging Uploader' => 'Imaging Uploader',
-        'Improvements' => 'Improvements',
-        'Install Process' => 'Install Process',
-        'Instrument Builder' => 'Instrument Builder',
-        'LorisForm' => 'LorisForm',
-        'Public Repositories' => 'Public Repositories',
-        'Release process tasks' => 'Release process tasks',
-        'Schema' => 'Schema',
-        'Server/technical' => 'Server/technical',
-        'Stand alone Scripts' => 'Stand alone Scripts',
-        'Statistics' => 'Statistics',
-        'Survey accounts' => 'Survey accounts',
-        'Testing (Automated)' => 'Testing (Automated)',
-        'Testing (Manual)' => 'Testing (Manual)',
-        'User accounts/Permissions' => 'User accounts/Permissions'
+        'Behavioural Instruments' => 'Behavioural Instruments',
+        'Behavioural Battery' => 'Behavioural Battery',
+        'Data Entry' => 'Data Entry',
+        'Database Problems' => 'Database Problems',
+        'Examiners' => 'Examiners',
+        'SubprojectID/Project/Plan Changes' => 'SubprojectID/Project/Plan Changes'
     );
 
     $modules = array();
@@ -212,46 +282,35 @@ function getIssueFields()
         "SELECT DISTINCT Label FROM LorisMenu ORDER BY Label",
         []
     );
-
     foreach ($modules_expanded as $m_row) {
         $module = $m_row['Label'];
         $modules[$module] = $module;
     }
 
-    //$visitList       = Utility::getVisitList();
-
+    //Now get issue values
     $issueData = null;
-    if (!empty($_GET['issueID'])) {
+    if (!empty($_GET['issueID'])) { //if an existing issue
         $issueID = $_GET['issueID'];
         $issueData = $db->pselectRow(
-            "SELECT * FROM issues WHERE issueID = $issueID", //TODO: you actually need to join on candidate. and on site and call it site. also maybe watching
+            "SELECT i.*, c.PSCID, s.Visit_label FROM issues as i " .
+            "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
+            "LEFT JOIN session s ON (i.sessionID=s.ID) " .
+            "WHERE issueID = $issueID",
             []
         );
-
-        $additionalIssueData = $db->pselectRow(
-            "SELECT c.CandID, c.PSCID, p.Name FROM issues as i LEFT JOIN candidate c ON (i.candID=c.CandID) LEFT JOIN psc p ON (i.centerID=p.CenterID)",
-            []
-        );
-
-        $issueData['DCCID'] = $additionalIssueData['CandID'];
-        $issueData['PSCID'] = $additionalIssueData['PSCID'];
-        $issueData['site'] = $additionalIssueData['Name'];
-
         $issueData['commentHistory'] = getComments($issueID);
-    } else {
 
-        $issueData['reporter'] = $user->getData('UserID'); //these are what need to be displayed upon creation of a new issue, but before the user has saved it. the user cannot change these values.
+    } else { //just setting the default values
+        $issueData['reporter'] = $user->getData('UserID');
         $issueData['dateCreated'] = date('Y-m-d H:i:s');
-        $issueData['site'] = $user->getData('Site');
-        $issueData['issueID'] = NULL;
-        $issueData['title'] = NULL;
-        $issueData['lastUpdate'] = NULL;
-        $issueData['centerID'] = NULL;
-        $issueData['PSCID'] = NULL;
-        $issueData['DCCID'] = NULL;
-        $issueData['assignee'] = NULL;
+        $issueData['centerID'] = $user->getData('CenterID');
         $issueData['status'] = "new";
         $issueData['priority'] = "low";
+        $issueData['issueID'] = NULL; //TODO: this is dumb
+        $issueData['title'] = NULL;
+        $issueData['lastUpdate'] = NULL;
+        $issueData['PSCID'] = NULL;
+        $issueData['assignee'] = NULL;
         $issueData['commentHistory'] = NULL;
         $issueData['watching'] = NULL;
         $issueData['visitLabel'] = NULL;
@@ -259,8 +318,16 @@ function getIssueFields()
         $issueData['lastUpdatedBy'] = NULL;
     }
 
-    $issueData['watching'] = true;
+    $isWatching = $db->pselectOne("SELECT * FROM issues_watching WHERE issueID=:issueID AND userID=:userID",
+        array('issueID' => $issueID, 'userID' => $user->getData('UserID')));
+
+    $issueData['watching'] = $isWatching;
     $issueData['comment'] = null;
+
+    if ($issueData['userID'] == $user->getData('UserID')) {
+        $isOwnIssue = true;
+    } else $isOwnIssue = false;
+
 
     $result = [
         'assignees' => $assignees,
@@ -270,7 +337,8 @@ function getIssueFields()
         'categories' => $categories,
         'modules' => $modules,
         'issueData' => $issueData,
-        'hasEditPermission' => $user->hasPermission('issue_tracker_can_assign') //todo: fix this when you decide on new permissions.
+        'hasEditPermission' => $user->hasPermission('issue_tracker_developer'),
+        'isOwnIssue' => $isOwnIssue
     ];
 
     return $result;
