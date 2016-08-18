@@ -181,7 +181,7 @@ class NDB_Form_statistics extends NDB_Form
                       FROM candidate as c
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
+                          AND c.Entity_type != 'Scanner'
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
@@ -201,7 +201,7 @@ class NDB_Form_statistics extends NDB_Form
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
+                          AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           $Param_Project
@@ -223,7 +223,7 @@ class NDB_Form_statistics extends NDB_Form
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
+                          AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND ps.participant_status=5
                           $Param_Project
@@ -246,7 +246,7 @@ class NDB_Form_statistics extends NDB_Form
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
+                          AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           AND c.Gender='Male'
@@ -269,7 +269,7 @@ class NDB_Form_statistics extends NDB_Form
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
+                          AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           AND c.Gender='Female'
@@ -294,7 +294,7 @@ class NDB_Form_statistics extends NDB_Form
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
+                          AND c.Entity_type != 'Scanner'
                           AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           AND c.Active='Y'
                           $Param_Project
