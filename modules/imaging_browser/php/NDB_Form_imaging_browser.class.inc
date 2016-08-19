@@ -99,17 +99,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             if (!empty($file)) {
                 $this->tpl_data['show3DViewer'] = true;
             }
-/*
-            $types_q = $this->DB->pselect(
-                "SELECT mri_scan_type.Scan_type FROM mri_scan_type", array()
-            );
-            $types[''] = '';
-            foreach ($types_q as $row) {
-                $type = $row['Scan_type'];
-                $types[$type] = $type;
-            }
-            $this->tpl_data['selected_options'] = $types;
-*/
+
             $this->tpl_data['status_options'] 
                 = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
             $this->tpl_data['caveat_options'] 
