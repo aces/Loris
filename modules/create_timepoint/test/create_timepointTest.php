@@ -150,7 +150,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         );
         $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("A Subproject label is required for creating a timepoint.", $bodyText);
+        $this->assertContains("Create Time Point", $bodyText);
 
     }
     /**
