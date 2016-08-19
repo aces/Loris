@@ -99,7 +99,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             if (!empty($file)) {
                 $this->tpl_data['show3DViewer'] = true;
             }
-
+/*
             $types_q = $this->DB->pselect(
                 "SELECT mri_scan_type.Scan_type FROM mri_scan_type", array()
             );
@@ -109,7 +109,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $types[$type] = $type;
             }
             $this->tpl_data['selected_options'] = $types;
-
+*/
             $this->tpl_data['status_options'] 
                 = array (''=>'&nbsp;', 'Pass'=>'Pass', 'Fail'=>'Fail');
             $this->tpl_data['caveat_options'] 
@@ -232,7 +232,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'Xstep' => number_format($FileObj->getParameter('xstep'), 2),
                 'Ystep' => number_format($FileObj->getParameter('ystep'), 2),
                 'Zstep' => number_format($FileObj->getParameter('zstep'), 2),
-                'Selected' => $FileObj->getParameter('Selected'),
+                'Selected' => $this->_getSelected((int)$FileObj->getParameter('FileID')),
                 'QCStatus' => $FileObj->getParameter('QCStatus'),
                 'QCDate' => $FileObj->getParameter('QCLastChangeTime'),
                 'Caveat' => $FileObj->getParameter('Caveat'),
@@ -511,6 +511,22 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         }
         $fileIDString = implode(",", $fileIDS);
         return $fileIDString;
+    }
+
+    /**
+     * Gets Selected status from files_qcstatus for a given FileID
+     *
+     * @return Selected status
+     */
+    function _getSelected($FileID){
+
+        $selected = $this->DB->pselectOne("SELECT Selected FROM files_qcstatus ".
+            "WHERE FileID =:FileID",
+            array(
+                'FileID' => $FileID
+            )
+        );
+        return $selected;
     }
 
     /**

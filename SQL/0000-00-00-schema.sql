@@ -470,7 +470,7 @@ CREATE TABLE `files_qcstatus` (
     QCStatus enum('Pass', 'Fail'),
     QCFirstChangeTime int(10) unsigned,
     QCLastChangeTime int(10) unsigned,
-    Selected VARCHAR(255)
+    Selected enum('','true', 'false') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
