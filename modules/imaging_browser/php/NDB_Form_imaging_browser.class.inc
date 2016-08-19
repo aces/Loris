@@ -446,10 +446,16 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 FROM session 
                 WHERE ID=:SID", $params
             );
+            $old_caveat_status = $this->DB->pselectOne(
+                "SELECT Caveat 
+                FROM session 
+                WHERE ID=:SID", $params
+            );
 
             $updateSet = array(
                 'MRIQCPending' => $_POST['visit_pending'], 
                 'MRIQCStatus' => $_POST['visit_status'], 
+                'Caveat' => $_POST['visit_caveat'], 
                 'MRIQCLastChangeTime' => date("Y-m-d H:i:s")
             );
             $firstChangeTime = $this->DB->pselectOne(
@@ -464,9 +470,10 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $success = $this->DB->update(
                 'session', $updateSet, array('ID'=>$this->sessionID)
             );
-            // sppool a message to the mri qc status rss channel
+            // spool a message to the mri qc status rss channel
             if (($save_visit_status != $old_visit_status) 
                 || ($old_pending_status != $_POST['visit_pending'])
+                || ($old_caveat_status != $_POST['visit_caveat'])
             ) {
                 $timePoint =& TimePoint::singleton($this->sessionID);
                 $candid = $timePoint->getCandID();
@@ -474,7 +481,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $pscid = $candidate->getPSCID();
                 $visit_label = $timePoint->getVisitLabel();
                 $not_status = ($_POST['visit_pending'] == 'Y' ? 'Pending ' : '') 
-                    . $_POST['visit_status'];
+                    . $_POST['visit_status']
+                    . $_POST['visit_caveat'];
                 $message = "$candid / $pscid $visit_label 
                     - MRI QC status changed to $not_status";
                 $centerID = $timePoint->getCenterID();
@@ -553,12 +561,13 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         $subjectData['visitNo'] = $timePoint->getVisitNo();
         $subjectData['site'] = $timePoint->getPSC();
         $qcstatus = $this->DB->pselectRow(
-            "SELECT MRIQCStatus, MRIQCPending 
+            "SELECT MRIQCStatus, MRIQCPending, Caveat 
             FROM session WHERE ID=:SID", 
             array('SID' => $_REQUEST['sessionID'])
         );
         $subjectData['mriqcstatus'] = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
+        $subjectData['mricaveat'] = $qcstatus['Caveat'];
         $subjectData['candid'] = $timePoint->getCandID();
         $subjectData['scanner'] = $this->scanner;
 

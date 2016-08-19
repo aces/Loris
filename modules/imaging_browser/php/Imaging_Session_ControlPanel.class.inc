@@ -132,6 +132,7 @@ class Imaging_Session_ControlPanel
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
         $subjectData['mricaveat'] = $qcstatus['Caveat'];
 
+
         $factory = NDB_Factory::singleton();
         $subjectData['backURL'] = $factory->settings()->getBaseURL()
             . urldecode($_REQUEST['backURL']);
