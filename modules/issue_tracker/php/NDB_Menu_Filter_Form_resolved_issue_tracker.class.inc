@@ -314,6 +314,34 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
 
 
     /**
+     * Converts this menu filter to an array of the form
+     *
+     * Headers => (string array)
+     * Data => (array of arrays of row data)
+     *
+     * @note overloaded function
+     *         Overloading this method to create a list of sessionID that
+     *         will be used for the Navigation Links in  the viewSession
+     *         page.
+     *
+     * @return associative array
+     */
+    function toArray()
+    {
+        $data   = parent::toArray();
+        $index = array_search('Issue ID', $data['Headers']);
+        if ($index !== false) {
+            $_SESSION['State']->setProperty(
+                'issuesListed',
+                array_column($data['Data'], $index)
+            );
+        }
+        return $data;
+    }
+
+
+
+        /**
      * Utility function to re-organize query results for selects.
      * Key and value are equal.
      *

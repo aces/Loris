@@ -30,7 +30,7 @@ class Issue_Tracker_ControlPanel
     /**
      * Var to store the sessionID.
      */
-    var $sessionID;
+    var $issueID;
 
     /**
      * Sets up the sessionID
@@ -39,9 +39,9 @@ class Issue_Tracker_ControlPanel
      *
      * @return NULL
      */
-    function __construct($sessionID)
+    function __construct($issueID)
     {
-        $this->sessionID = $sessionID;
+        $this->issueID = $issueID;
     }
 
     /**
@@ -62,7 +62,15 @@ class Issue_Tracker_ControlPanel
     */
     function getData()
     {
-        return null;
+        $factory = NDB_Factory::singleton();
+        $issueData['backURL'] = $factory->settings()->getBaseURL()
+            . urldecode($_REQUEST['backURL']);
+
+        $NavBar = new IssueNavigation($this->issueID);
+        $issueData['nextIssue']['URL'] = $NavBar->nextLink();
+        $issueData['prevIssue']['URL'] = $NavBar->prevLink();
+
+        return $issueData;
     }
     /**
      * Generates the HTML to display the set of buttons
@@ -73,8 +81,7 @@ class Issue_Tracker_ControlPanel
      */
     function display()
     {
-        $this->tpl_data['subject'] = $this->getData();
-
+        $this->tpl_data['issue'] = $this->getData();
         $smarty = new Smarty_neurodb("issue_tracker");
 
         $smarty->assign($this->tpl_data);
@@ -84,10 +91,11 @@ class Issue_Tracker_ControlPanel
 }
 
 /**
- * MRINavigatoin class
+ * IssueNavigation class
  *
  * This class provides the management of sessions
  * to navigate to the previous and/or next session.
+ * Thanks to imaging browser MRINavigation class
  *
  * @category Behavioural
  * @package  Main
@@ -96,26 +104,26 @@ class Issue_Tracker_ControlPanel
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-class MRINavigation
+class IssueNavigation
 {
     /**
     *  Gets the session
     *
-    * @param int $sessionID sessionID
+    * @param int $issueID sessionID
     *
-    * @return NULL
+    * @return null
     */
-    function __construct($sessionID = null)
+    function __construct($issueID = null)
     {
-        $this->sessionID           = $sessionID;
+        $this->issueID           = $issueID;
         $this->FilteredSessionList = $_SESSION['State']
-            ->getProperty('mriSessionsListed');
+            ->getProperty('issuesListed');
 
         if (!is_array($this->FilteredSessionList)) {
             $this->FilteredSessionList = array();
         }
         $this->currentListIndex = array_search(
-            $this->sessionID,
+            $this->issueID,
             $this->FilteredSessionList
         );
         $this->urlParams        = $this->_splitURL();
@@ -145,7 +153,7 @@ class MRINavigation
     {
         if (isset($this->FilteredSessionList[$this->currentListIndex+$delta])) {
             $urlParams = $this->urlParams;
-            $urlParams['sessionID'] = $this
+            $urlParams['issueID'] = $this
                 ->FilteredSessionList[$this->currentListIndex+$delta];
 
             $this->bits[1] = http_build_query($urlParams);

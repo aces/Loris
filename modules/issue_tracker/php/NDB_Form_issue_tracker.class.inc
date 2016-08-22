@@ -77,7 +77,7 @@ class NDB_Form_Issue_Tracker extends NDB_Form
     */
     function getControlPanel()
     {
-        $controlPanel = new issue_tracker_ControlPanel($_REQUEST['sessionID']);
+        $controlPanel = new issue_tracker_ControlPanel($_GET['issueID']);
         return $controlPanel->display();
     }
 
