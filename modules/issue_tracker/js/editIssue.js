@@ -9,6 +9,49 @@
  *
  * @author Caitrin Armstrong
  * */
+
+var CollapsibleComment = React.createClass({
+    displayName: 'CollapsibleComment',
+
+
+    getInitialState: function getInitialState() {
+        return { 'collapsed': true };
+    },
+    toggleCollapsed: function toggleCollapsed() {
+        this.setState({ 'collapsed': !this.state.collapsed });
+    },
+    render: function render() {
+
+        return React.createElement(
+            'div',
+            { className: 'row form-group' },
+            React.createElement(
+                'div',
+                { className: 'col-sm-9' },
+                React.createElement(
+                    'div',
+                    { className: 'btn btn-primary',
+                        onClick: this.toggleCollapsed,
+                        'data-toggle': 'collapse',
+                        'data-target': '#comment-history'
+                    },
+                    'Show Comment History'
+                )
+            ),
+            React.createElement('br', null),
+            React.createElement(
+                'div',
+                { id: 'comment-history' },
+                React.createElement(
+                    'div',
+                    { className: 'col-sm-12' },
+                    React.createElement('div', { dangerouslySetInnerHTML: { __html: this.props.text } })
+                )
+            )
+        );
+    }
+});
+
 var IssueEditForm = React.createClass({
     displayName: 'IssueEditForm',
 
@@ -377,23 +420,10 @@ var IssueEditForm = React.createClass({
                     { className: 'row' },
                     React.createElement(
                         'div',
-                        { className: 'col-md-6' },
-                        React.createElement(
-                            'a',
-                            { href: '#demo', 'class': 'btn btn-info', 'data-toggle': 'collapse' },
-                            'View Comment History'
-                        ),
-                        React.createElement(
-                            'div',
-                            { id: 'demo', 'class': 'collapse' },
-                            React.createElement(HelpTextElement, {
-                                html: true,
-                                name: 'allComments'
-                                // label="Comment History"
-                                , text: this.state.issueData.commentHistory,
-                                ref: 'allComments'
-                            })
-                        )
+                        { className: 'col-md-12' },
+                        React.createElement(CollapsibleComment, {
+                            text: this.state.issueData.commentHistory
+                        })
                     )
                 )
             )
@@ -401,8 +431,8 @@ var IssueEditForm = React.createClass({
     },
 
     /**
-    * Creates an ajax request and sets the state with the result
-    */
+     * Creates an ajax request and sets the state with the result
+     */
     getDataAndChangeState: function getDataAndChangeState() {
         var that = this;
 
@@ -473,10 +503,10 @@ var IssueEditForm = React.createClass({
     },
 
     /**
-    * Handles form submission
-    *
-    * @param e
-    */
+     * Handles form submission
+     *
+     * @param e
+     */
     handleSubmit: function handleSubmit(e) {
         e.preventDefault();
 
@@ -546,11 +576,11 @@ var IssueEditForm = React.createClass({
     },
 
     /**
-    * Sets the form data based on state values of child elements/componenets
-    *
-    * @param formElement
-    * @param value
-    */
+     * Sets the form data based on state values of child elements/componenets
+     *
+     * @param formElement
+     * @param value
+     */
     setFormData: function setFormData(formElement, value) {
 
         //todo: only give valid inputs for fields given previous input to other fields
@@ -564,13 +594,13 @@ var IssueEditForm = React.createClass({
     },
 
     /**
-    * Validates the form
-    *
-    * @param formRefs
-    * @param formData
-    *
-    * @returns {boolean}
-    */
+     * Validates the form
+     *
+     * @param formRefs
+     * @param formData
+     *
+     * @returns {boolean}
+     */
     isValidForm: function isValidForm(formRefs, formDataToCheck) {
 
         var isValidForm = true;
@@ -592,8 +622,8 @@ var IssueEditForm = React.createClass({
     },
 
     /**
-    * Display a success/error alert message after form submission
-    */
+     * Display a success/error alert message after form submission
+     */
     showAlertMessage: function showAlertMessage() {
         var self = this;
 
