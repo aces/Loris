@@ -1,9 +1,5 @@
-"use strict";
 
 function formatColumn(column, cell, rowData, rowHeaders) {
-    if (loris.hiddenHeaders.indexOf(column) > -1) {
-        return null;
-    }
 
     // Create the mapping between rowHeaders and rowData in a row object.
     var row = {};
