@@ -256,14 +256,6 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             )
         );
         $this->addBasicText(
-            'DCCID',
-            'DCCID',
-            array(
-             'size'      => 10,
-             "maxlength" => 25,
-            )
-        );
-        $this->addBasicText(
             'visitLabel',
             'Visit Label',
             array(

@@ -143,14 +143,6 @@
                         </div>
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
-                                {$form.DCCID.label}
-                            </label>
-                            <div class="col-sm-12 col-md-8">
-                                {$form.DCCID.html}
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">
                                 {$form.visitLabel.label}
                             </label>
                             <div class="col-sm-12 col-md-8">
