@@ -33,9 +33,9 @@ class Issue_Tracker_ControlPanel
     var $issueID;
 
     /**
-     * Sets up the sessionID
+     * Sets up the isssueID
      *
-     * @param int $sessionID current sessionID
+     * @param int $issueID current issueID
      *
      * @return NULL
      */
@@ -115,7 +115,7 @@ class IssueNavigation
     */
     function __construct($issueID = null)
     {
-        $this->issueID           = $issueID;
+        $this->issueID = $issueID;
         $this->FilteredSessionList = $_SESSION['State']
             ->getProperty('issuesListed');
 
@@ -152,7 +152,7 @@ class IssueNavigation
     function _otherLink($delta)
     {
         if (isset($this->FilteredSessionList[$this->currentListIndex+$delta])) {
-            $urlParams = $this->urlParams;
+            $urlParams            = $this->urlParams;
             $urlParams['issueID'] = $this
                 ->FilteredSessionList[$this->currentListIndex+$delta];
 

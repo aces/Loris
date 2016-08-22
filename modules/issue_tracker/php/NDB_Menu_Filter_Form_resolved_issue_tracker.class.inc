@@ -320,7 +320,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
      */
     function toArray()
     {
-        $data   = parent::toArray();
+        $data  = parent::toArray();
         $index = array_search('Issue ID', $data['Headers']);
         if ($index !== false) {
             $_SESSION['State']->setProperty(
