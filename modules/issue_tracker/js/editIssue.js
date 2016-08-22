@@ -148,6 +148,10 @@ var IssueEditForm = React.createClass({
                 var errorMessage = this.state.errorMessage;
                 alertClass = "alert alert-danger text-center";
                 alertMessage = errorMessage ? errorMessage : "Failed to submit issue :(";
+            } else if (this.state.submissionResult == "invalid") {
+                var errorMessage = this.state.errorMessage;
+                alertClass = "alert alert-danger text-center";
+                alertMessage = errorMessage ? errorMessage : "Invalid input";
             }
         }
 
@@ -349,26 +353,10 @@ var IssueEditForm = React.createClass({
                             label: '(PSCID)',
                             onUserInput: this.setFormData,
                             ref: 'PSCID',
-                            disabled: true,
+                            disabled: !hasEditPermission,
                             value: this.state.issueData.PSCID
                         })
                     ),
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-6' },
-                        React.createElement(TextboxElement, {
-                            name: 'DCCID',
-                            label: '(DCCID)',
-                            onUserInput: this.setFormData,
-                            ref: 'DCCID',
-                            disabled: true,
-                            value: this.state.issueData.DCCID
-                        })
-                    )
-                ),
-                React.createElement(
-                    'div',
-                    { className: 'row' },
                     React.createElement(
                         'div',
                         { className: 'col-md-6' },
@@ -377,10 +365,14 @@ var IssueEditForm = React.createClass({
                             label: '(Visit Label)',
                             onUserInput: this.setFormData,
                             ref: 'visitLabel',
-                            disabled: true,
+                            disabled: !hasEditPermission,
                             value: this.state.issueData.visitLabel
                         })
-                    ),
+                    )
+                ),
+                React.createElement(
+                    'div',
+                    { className: 'row' },
                     React.createElement(
                         'div',
                         { className: 'col-md-6' },
@@ -469,7 +461,6 @@ var IssueEditForm = React.createClass({
                     'lastUpdate': data.issueData.lastUpdate,
                     'centerID': data.issueData.centerID,
                     'PSCID': data.issueData.PSCID,
-                    'DCCID': data.issueData.DCCID,
                     'reporter': data.issueData.reporter,
                     'assignee': data.issueData.assignee,
                     'status': data.issueData.status,
@@ -514,7 +505,6 @@ var IssueEditForm = React.createClass({
         var myFormData = this.state.formData;
         var formRefs = this.refs;
         var formData = new FormData();
-        var hasErrors = false;
         var issueData = this.state.issueData;
 
         // Validate the form
@@ -535,6 +525,7 @@ var IssueEditForm = React.createClass({
             url: self.props.action,
             data: formData,
             cache: false,
+            dataType: 'json',
             contentType: false,
             processData: false,
             xhr: function xhr() {
@@ -553,15 +544,23 @@ var IssueEditForm = React.createClass({
             },
 
             success: function success(data) {
+                if (!data.isValidSubmission) {
+                    self.setState({
+                        errorMessage: data.invalidMessage,
+                        submissionResult: "invalid"
+                    });
+                    self.showAlertMessage();
+                    return;
+                }
+
                 self.setState({
                     submissionResult: "success",
-                    issueID: data
+                    issueID: data.issueID
                 });
                 self.getDataAndChangeState();
 
                 // Trigger an update event to update all observers (i.e DataTable) //todo: figure out what this is
                 $(document).trigger('update');
-
                 self.showAlertMessage();
             },
             error: function error(err) {
@@ -595,6 +594,7 @@ var IssueEditForm = React.createClass({
 
     /**
      * Validates the form
+     * Except not entirely because PSCID and visitLabel are not validated.
      *
      * @param formRefs
      * @param formData
@@ -632,7 +632,7 @@ var IssueEditForm = React.createClass({
         }
 
         var alertMsg = this.refs["alert-message"].getDOMNode();
-        $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function () {
+        $(alertMsg).fadeTo(2000, 500).delay(50000).slideUp(500, function () {
             self.setState({
                 uploadResult: null
             });
