@@ -255,8 +255,8 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
         $this->addSelect('reporter', 'Reporter', $reporters);
         $this->addSelect('assignee', 'Assignee', $assignees);
         $this->addSelect('priority', 'Priority', $priorities);
-        $this->addBasicDate('minDate', 'Min Date Created', $dateOptions);
-        $this->addBasicDate('maxDate', 'Max Date Created', $dateOptions);
+        $this->addBasicDate('minDate', 'Created After', $dateOptions);
+        $this->addBasicDate('maxDate', 'Created Before', $dateOptions);
         $this->addCheckbox('watching', 'Watching', array('value' => '1'));
 
         $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
