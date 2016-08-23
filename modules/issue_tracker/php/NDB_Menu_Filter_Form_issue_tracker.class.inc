@@ -221,6 +221,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                        'Examiners'                         => 'Examiners',
                        'SubprojectID/Project/Plan Changes' => 'SubprojectID/'.
                            'Project/Plan Changes',
+                       'Imaging'                           => 'Imaging',
                       );
 
         $dateOptions = array(

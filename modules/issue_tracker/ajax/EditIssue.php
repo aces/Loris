@@ -465,6 +465,7 @@ function getIssueFields()
                    'Examiners'                         => 'Examiners',
                    'SubprojectID/Project/Plan Changes' => 'SubprojectID' .
             '/Project/Plan Changes',
+                   'Imaging'                           => 'Imaging',
                   );
 
     $modules          = array();
