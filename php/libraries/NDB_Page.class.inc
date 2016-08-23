@@ -248,9 +248,9 @@ class NDB_Page
      *
      * @return none
      */
-    function addHidden($name, $value=null)
+    function addHidden($name, $value=null, $attributes=null)
     {
-        $this->form->addElement('hidden', $name, $value);
+        $this->form->addElement('hidden', $name, $value, $attributes);
     }
 
     /**
