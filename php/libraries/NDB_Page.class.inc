@@ -245,6 +245,7 @@ class NDB_Page
      *
      * @param string $name  The name of the hidden element to add
      * @param array  $value The value of the hidden element to add
+     * @param array  $attributes Additional html attributes for element
      *
      * @return none
      */
