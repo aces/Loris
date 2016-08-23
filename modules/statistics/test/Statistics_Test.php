@@ -96,6 +96,8 @@ class Statistics_Test extends LorisIntegrationTest
      */
     function testReliabilityStatisticsTab()
     {
+        $this->markTestSkipped("Pending module revamp");
+
         $this->safeGet($this->url . "/statistics/stats_reliability/?dynamictabs=dynamictabs");
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
         $this->assertContains("Reliability Statistics", $bodyText);
