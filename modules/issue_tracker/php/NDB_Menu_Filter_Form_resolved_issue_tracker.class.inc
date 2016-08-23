@@ -160,7 +160,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
         //reporters
         $reporter_expanded = $DB->pselect(
             "SELECT u.UserID FROM issues i ".
-            "LEFT JOIN users u ON(i.reporter=u.UserID)",
+            "INNER JOIN users u ON(i.reporter=u.UserID)",
             array()
         );
         $reporters         = $this->reorganizeQueryResults(
@@ -171,7 +171,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
         //assignees
         $assignee_expanded = $DB->pselect(
             "SELECT u.UserID FROM issues i ".
-            "LEFT JOIN users u ON(i.assignee=u.UserID)",
+            "INNER JOIN users u ON(i.assignee=u.UserID)",
             array()
         );
         $assignees         = $this->reorganizeQueryResults(
@@ -208,7 +208,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
                        'Examiners'                         => 'Examiners',
                        'SubprojectID/Project/Plan Changes' => 'SubprojectID/'.
                            'Project/Plan Changes',
-                       'Imaging'                           => 'Imaging',
+                       'Imaging' => 'Imaging'
                       );
 
         $dateOptions = array(

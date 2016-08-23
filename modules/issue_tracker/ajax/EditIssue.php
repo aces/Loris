@@ -39,7 +39,7 @@ if (isset($_GET['action'])) {
     }
 }
 
-//todo: encapsulate this more
+//TODO: encapsulate more
 /**
  * Either updates an old issue or adds a new one
  *
@@ -117,7 +117,6 @@ function editIssue()
                           'issueID'      => $issueID,
                          );
         $db->insert('issues_comments', $commentValues);
-
     }
 
     //adding editor to the watching table unless they don't want to be added.
@@ -170,7 +169,7 @@ function validateInput($validateValues, $issueID)
             "INNER JOIN issues i ON (i.candID = c.CandID) ".
             "INNER JOIN session s ON (i.sessionID = s.ID) WHERE i.issueID=:issueID",
             array('issueID' => $issueID)
-        );
+        );//inner join because you only want if it has these values.
     }
 
     $oldPSCID      = $old['PSCID'];
@@ -465,7 +464,7 @@ function getIssueFields()
                    'Examiners'                         => 'Examiners',
                    'SubprojectID/Project/Plan Changes' => 'SubprojectID' .
             '/Project/Plan Changes',
-                   'Imaging'                           => 'Imaging',
+                   'Imaging' => 'Imaging'
                   );
 
     $modules          = array();
