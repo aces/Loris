@@ -5,6 +5,80 @@
  */
 
 /*
+ * Note: This is a wrapper for Form.js (Only used in instrument builder)
+ *
+ * This is the React class for a LORIS element. It takes
+ * in an element and render's the HTML based on its type
+ *
+ */
+LorisElement = React.createClass({
+    displayName: 'LorisElement',
+
+    render: function () {
+        var element = this.props.element;
+        var elementHtml = '';
+        switch (element.Type) {
+            case 'header':
+                elementHtml = React.createElement(
+                    'h2',
+                    null,
+                    element.Description
+                );
+                break;
+            case 'label':
+                elementHtml = React.createElement(
+                    'p',
+                    null,
+                    element.Description
+                );
+                break;
+            case 'score':
+                elementHtml = React.createElement(StaticElement, { text: 0, label: element.Description });
+
+                break;
+            case 'text':
+                if (element.Options.Type === 'small') {
+                    elementHtml = React.createElement(TextboxElement, { label: element.Description });
+                } else {
+                    elementHtml = React.createElement(TextareaElement, { label: element.Description });
+                }
+                break;
+            case 'select':
+                if (element.Options.AllowMultiple) {
+                    elementHtml = React.createElement(SelectElement, { label: element.Description,
+                        options: element.Options.Values,
+                        multiple: true });
+                } else {
+                    elementHtml = React.createElement(SelectElement, { label: element.Description,
+                        options: element.Options.Values });
+                }
+                break;
+            case 'date':
+                elementHtml = React.createElement(DateElement, {
+                    label: element.Description,
+                    minYear: element.Options.MinDate,
+                    maxYear: element.Options.MaxDate
+                });
+                break;
+            case 'numeric':
+                elementHtml = React.createElement(NumericElement, {
+                    label: element.Description,
+                    min: element.Options.MinValue,
+                    max: element.Options.MaxValue
+                });
+                break;
+            default:
+                break;
+        }
+        return React.createElement(
+            'div',
+            null,
+            elementHtml
+        );
+    }
+});
+
+/*
  *	This is the React class for the question text input
  */
 QuestionText = React.createClass({
@@ -721,7 +795,7 @@ AddElement = React.createClass({
             }
         }
 
-        // Checking for error on numeric field                
+        // Checking for error on numeric field
         if (selected == 'numeric') {
             var min = this.state.Options.MinValue;
             var max = this.state.Options.MaxValue;
@@ -928,4 +1002,3 @@ AddElement = React.createClass({
         );
     }
 });
-//# sourceMappingURL=react.questions.js.map

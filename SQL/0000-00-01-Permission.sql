@@ -5,7 +5,7 @@
 DROP TABLE IF EXISTS `permissions`;
 CREATE TABLE `permissions` (
   `permID` int(10) unsigned NOT NULL auto_increment,
-  `code` varchar(255) NOT NULL default '',
+  `code` varchar(255) NOT NULL default '' UNIQUE,
   `description` varchar(255) NOT NULL default '',
   `categoryID` int(10) DEFAULT NULL,
   PRIMARY KEY  (`permID`)
@@ -17,7 +17,7 @@ CREATE TABLE `permissions` (
 
 LOCK TABLES `permissions` WRITE;
 /*!40000 ALTER TABLE `permissions` DISABLE KEYS */;
-INSERT INTO `permissions` VALUES 
+INSERT INTO `permissions` VALUES
     (1,'superuser','There can be only one Highlander','1'),
     (2,'user_accounts','User management','2'),
     (3,'user_accounts_multisite','Across all sites create and edit users','2'),
@@ -60,10 +60,10 @@ INSERT INTO `permissions` VALUES
     (40,'imaging_uploader','Imaging Uploader','2'),
     (41,'acknowledgements_view','View Acknowledgements','2'),
     (42,'acknowledgements_edit','Edit Acknowledgements','2'),
-    (43,'dataquery_view','View Data Query Tool','2');
-
-INSERT INTO `permissions` (code, description, categoryID) VALUES
-    ('genomic_data_manager', 'Manage the genomic files', 2);
+    (43,'dataquery_view','View Data Query Tool','2'),
+    (44,'genomic_data_manager','Manage the genomic files','2'),
+    (45,'media_write','Media files: Uploading/Downloading/Editing','2'),
+    (46,'media_read','Media files: Browsing','2');
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;

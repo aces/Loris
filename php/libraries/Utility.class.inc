@@ -1119,7 +1119,7 @@ class Utility
     {
         $DB =& Database::singleton();
 
-        if (Utility::ColumnExists('test_battery', 'Test_name_display')) {
+        if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
                 "SELECT DISTINCT Test_name_display FROM test_battery 
                 WHERE Visit_label=:vl",

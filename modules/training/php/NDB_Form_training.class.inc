@@ -190,5 +190,41 @@ class NDB_Form_Training extends NDB_Form
             return true;
         }
     }
+
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/training/js/training_helper.js",
+            )
+        );
+    }
+
+    /**
+     * Gathers CSS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/training/css/training.css",
+            )
+        );
+    }
 }
 ?>
