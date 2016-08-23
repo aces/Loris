@@ -81,11 +81,11 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 
         $instrumentList   = [null => 'Any'];
         $instrumentsQuery = $db->pselect(
-            "SELECT Test_name FROM test_names ORDER BY Test_name",
+            "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
             []
         );
         foreach ($instrumentsQuery as $instrument) {
-            $instrumentList[$instrument['Test_name']] = $instrument['Test_name'];
+            $instrumentList[$instrument['Test_name']] = $instrument['Full_name'];
         }
 
         // Form Elements
@@ -93,7 +93,6 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->addSelect('instrument', 'Instrument:', $instrumentList);
         $this->addSelect('visit_label', 'Visit Label:', $visitList);
         $this->addSelect('for_site', 'For Site:', $siteList);
-        $this->addBasicText('uploaded_by', 'Uploaded By');
 
         $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
 
@@ -109,7 +108,8 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     function _setupVariables()
     {
         // the base query
-        $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID";
+        $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
+        " LEFT JOIN candidate c ON c.CandID=s.CandID";
         $query .= " WHERE m.hide_file = FALSE";
 
         // set the class variables
@@ -156,23 +156,16 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         }
 
         $this->validFilters = [
-                               'pscid',
+                               'c.PSCID',
                                'm.instrument',
-                               'm.data_dir',
-                               'site',
-                               'visit_label',
-                               'm.uploaded_by',
+                               's.Visit_label',
+                               's.CenterID',
                               ];
         $this->formToFilter = [
-                               'file_name'     => 'm.file_name',
-                               'data_dir'      => 'm.data_dir',
-                               'instrument'    => 'm.instrument',
-                               'pscid'         => 'm.pscid',
-                               'for_site'      => 'm.site',
-                               'uploaded_by'   => 'm.uploaded_by',
-                               'visit_label'   => 'visit_label',
-                               'date_uploaded' => 'm.date_uploaded',
-                               'comments'      => 'comments',
+                               'pscid'       => 'c.PSCID',
+                               'instrument'  => 'm.instrument',
+                               'visit_label' => 's.Visit_label',
+                               'for_site'    => 's.CenterID',
                               ];
 
         return true;

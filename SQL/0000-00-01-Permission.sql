@@ -5,7 +5,7 @@
 DROP TABLE IF EXISTS `permissions`;
 CREATE TABLE `permissions` (
   `permID` int(10) unsigned NOT NULL auto_increment,
-  `code` varchar(255) NOT NULL default '',
+  `code` varchar(255) NOT NULL default '' UNIQUE,
   `description` varchar(255) NOT NULL default '',
   `categoryID` int(10) DEFAULT NULL,
   PRIMARY KEY  (`permID`)
