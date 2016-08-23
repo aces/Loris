@@ -564,10 +564,12 @@ class LorisForm
      */
     private function _getFilteredValue($name, $value)
     {
+        $newValue = $value;
+
         // Apply field specific filters
         if (isset($this->filters[$name])) {
             if (in_array('trim', $this->filters[$name])) {
-                $new_value = trim($value);
+                $newValue = trim($value);
             }
         }
 
@@ -1185,6 +1187,7 @@ class LorisForm
         $curPage = array(
                     'elements' => array(),
                     'type'     => 'page',
+                    'errors'   => $this->errors,
                    );
         $retVal  = $curPage;
 
@@ -1513,7 +1516,8 @@ class LorisForm
      */
     function setElementError($el, $error)
     {
-        $this->errors[$el] = $error;
+        $this->form[$el]["error"] = $error;
+        $this->errors[$el]        = $error;
     }
 
     /**

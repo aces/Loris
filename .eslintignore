@@ -1,0 +1,3 @@
+node_modules/*
+modules/*/js/*.js
+htdocs/js/components/*
