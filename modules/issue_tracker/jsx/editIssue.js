@@ -89,7 +89,7 @@ var IssueEditForm = React.createClass(
                 );
             }
 
-            var helpText          = "A title is required"; //todo: here fill out the fields that are neccessary.
+            var helpText          = "A title and assignee are required"; //todo: here fill out the fields that are neccessary.
             var alertMessage      = "";
             var alertClass        = "alert text-center hide";
             var hasEditPermission = this.state.Data.hasEditPermission || this.state.Data.isOwnIssue;
@@ -576,6 +576,7 @@ var IssueEditForm = React.createClass(
             var isValidForm    = true;
             var requiredFields = {
                 'title': null,
+                'assignee': null,
             };
             Object.keys(requiredFields).map(
                 function (field) {
