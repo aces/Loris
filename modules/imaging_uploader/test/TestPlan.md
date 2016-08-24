@@ -20,7 +20,8 @@
    
 8. Click on the show-data button and check the contents of the upload table after the successful upload done in 6.
    Make sure all fields are correct. Also check that:
-       - the Tarchive info column contains a link to the DICOM archive page with the details of the archive displayed.
+       - the Tarchive info column contains a link to the DICOM archive page with the details of the archive displayed (with
+        the view Dicom Archive module and pages permission).
        - if the minc inserted column contains something, then it will be a clickable number (link) that takes you to 
          the MRI Browser page with all the valid scans loaded in the result table (with view imaging browser pages permission).
        - check that the Number Of MincCreated >= Number Of MincInserted. If there is difference between the number in
