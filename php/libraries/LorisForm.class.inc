@@ -843,11 +843,17 @@ class LorisForm
      */
     function hiddenHTML($el, $type='hidden')
     {
-        $value = '';
-        if (isset($el['value'])) {
-            $value = "value=\"$el[value]\"";
+        $attributes = '';
+        foreach ($el as $key=>$value) {
+            if ($key=='type') {
+                $value = $type;
+            }
+            if (isset($value)) {
+                $attributes .= " $key=\"$value\"";
+            }
+
         }
-        return "<input name=\"$el[name]\" type=\"$type\" $value>";
+        return "<input $attributes>";
     }
 
     /**
