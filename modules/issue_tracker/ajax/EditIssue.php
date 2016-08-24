@@ -119,7 +119,7 @@ function editIssue()
         $db->insert('issues_comments', $commentValues);
     }
 
-    if (isset($_POST['othersWatching'])){
+    if (isset($_POST['othersWatching'])) {
 
     }
     //adding editor to the watching table unless they don't want to be added.
@@ -142,8 +142,8 @@ function editIssue()
     //adding others from multiselect to watching table.
     if (isset($_POST['othersWatching'])) {
         $othersNowWatching = explode(',', $_POST['othersWatching']);
-        foreach ($othersNowWatching as $userWatching){
-            if ($userWatching){ //cause sometimes it sends null
+        foreach ($othersNowWatching as $userWatching) {
+            if ($userWatching) { //cause sometimes it sends null
                 $nowWatching = array(
                     'userID' => $userWatching,
                     'issueID' => $issueID,
@@ -324,10 +324,10 @@ function getWatching($issueID)
     $db =& Database::singleton();
 
     $watching = $db->pselect("SELECT userID from issues_watching WHERE issueID=:issueID",
-    array('issueID' => $issueID));
+        array('issueID' => $issueID));
 
     $whoIsWatching = array();
-    foreach($watching as $watcher){
+    foreach ($watching as $watcher) {
         $whoIsWatching[] = $watcher['userID'];
     }
     error_log(json_encode($whoIsWatching));
@@ -472,15 +472,23 @@ function getIssueFields()
     }
 
     $assignees = array();
-    //you could also make it
-    //"SELECT u.Real_name, u.UserID FROM users u
-    // INNER JOIN user_perm_rel p ON (u.ID = p.userID)
-    // WHERE p.`permID`=
-    // (SELECT permID FROM permissions WHERE code='issue_tracker_developer')"
-    $assignee_expanded = $db->pselect(
-        "SELECT Real_name, UserID FROM users",
-        array()
-    );
+    if ($user->hasPermission('access_all_profiles')) {
+        $assignee_expanded = $db->pselect(
+            "SELECT Real_name, UserID FROM users",
+            array()
+        );
+    } else {
+        $CenterID = $user->getCenterID();
+        $DCCID = $db->pselectOne("SELECT CenterID from psc where Name='DCC'",
+            array());
+        $assignee_expanded = $db->pselect(
+            "SELECT u.Real_name, u.UserID FROM users u 
+WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
+            array('CenterID' => $CenterID,
+                'DCC' => $DCCID)
+        );
+    }
+
     foreach ($assignee_expanded as $a_row) {
         $assignees[$a_row['UserID']] = $a_row['Real_name'];
     }
