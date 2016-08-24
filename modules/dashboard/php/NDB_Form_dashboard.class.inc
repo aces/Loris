@@ -62,10 +62,10 @@ class NDB_Form_Dashboard extends NDB_Form
             foreach ($dashboard_links as $text => $url) {
                 $this->tpl_data['dashboard_links'][]
                     = array(
-                       'url'        => $url,
-                       'label'      => $text,
-                       'WindowName' => md5($url),
-                      );
+                    'url'        => $url,
+                    'label'      => $text,
+                    'WindowName' => md5($url),
+                );
             }
         }
 
@@ -138,10 +138,10 @@ class NDB_Form_Dashboard extends NDB_Form
                     "SELECT COUNT(*) FROM conflicts_unresolved cu 
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
-		     LEFT JOIN candidate c ON (c.CandID=s.CandID)
+		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
                      LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
                      WHERE psc.Name=:Site
-			s.Active='Y' AND c.Active='Y'",
+			            AND s.Active='Y' AND c.Active='Y'",
                     array('Site' => $site)
                 );
                 $this->tpl_data['conflicts_site'] = 'Site: ' . $site;
@@ -167,7 +167,7 @@ class NDB_Form_Dashboard extends NDB_Form
 			LEFT JOIN candidate c ON (s.CandID=c.CandID)
                     LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
                     WHERE Data_entry='In Progress' AND psc.Name=:Site
-			s.Active='Y' AND c.Active='Y'",
+			          AND s.Active='Y' AND c.Active='Y'",
                     array('Site' => $site)
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Site: ' . $site;
@@ -196,7 +196,7 @@ class NDB_Form_Dashboard extends NDB_Form
         ) {
             $this->tpl_data['pending_users']      = $DB->pselectOne(
                 "SELECT COUNT(*) FROM users
-		WHERE Pending_approval='Y' AND CenterID <> 1",
+		WHERE Pending_approval='Y' AND (CenterID <> 1 OR CenterID IS NULL)",
                 array()
             );
             $this->tpl_data['pending_users_site'] = 'Site: all';
@@ -262,7 +262,6 @@ class NDB_Form_Dashboard extends NDB_Form
                     $user->getSiteName();
             }
         }
-
     }
 
     /**
@@ -339,8 +338,8 @@ class NDB_Form_Dashboard extends NDB_Form
              WHERE c.Gender=:Gender AND c.Active='Y' AND c.ProjectID=:PID
              AND c.Entity_type='Human' AND c.CenterID <> 1",
             array(
-             'Gender' => $gender,
-             'PID'    => $projectID,
+                'Gender' => $gender,
+                'PID'    => $projectID,
             )
         );
         return $total;
@@ -418,9 +417,9 @@ class NDB_Form_Dashboard extends NDB_Form
         return array_merge(
             $baseDeps,
             array(
-             $baseurl . '/js/d3.min.js',
-             $baseurl . '/js/c3.min.js',
-             $baseurl . '/dashboard/js/dashboard-helper.js',
+                $baseurl . '/js/d3.min.js',
+                $baseurl . '/js/c3.min.js',
+                $baseurl . '/dashboard/js/dashboard-helper.js',
             )
         );
 
