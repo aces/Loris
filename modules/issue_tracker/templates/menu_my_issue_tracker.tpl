@@ -21,7 +21,7 @@
                 </span>
             </div>
             <div class="panel-body" id="panel-body">
-                <form method="post" action="{$baseurl}/issue_tracker/?submenu=resolved_issue_tracker">
+                <form method="post" action="{$baseurl}/issue_tracker/">
                     <div class="row">
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
@@ -104,10 +104,28 @@
                         </div>
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
-                                {$form.includeClosed.label}
+                                {$form.status.label}
                             </label>
                             <div class="col-sm-12 col-md-8">
-                                {$form.includeClosed.html}
+                                {$form.status.html}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.minDate.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.minDate.html}
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.maxDate.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.maxDate.html}
                             </div>
                         </div>
                     </div>
@@ -150,7 +168,7 @@
                                    name="reset"
                                    value="Clear Form"
                                    class="btn btn-sm btn-primary col-xs-12"
-                                   onclick="location.href='{$baseurl}/issue_tracker/?submenu=resolved_issue_tracker&reset=true'"/></div>
+                                   onclick="location.href='{$baseurl}/issue_tracker/?reset=true'"/></div>
                     </div>
                 </form>
             </div>
@@ -164,11 +182,11 @@
             <ul class="nav nav-tabs">
                 <li class="statsTab"><a class="statsTabLink" id="onLoad" href="{$baseurl}/issue_tracker/">All Active
                         Issues</a></li>
-                <li class="statsTab active"><a class="statsTabLink"
+                <li class="statsTab"><a class="statsTabLink"
                                         href="{$baseurl}/issue_tracker/?submenu=resolved_issue_tracker">Closed
                         Issues</a></li>
-                <li class="statsTab"><a class="statsTabLink"
-                                               href="{$baseurl}/issue_tracker/?submenu=my_issue_tracker">My Issues</a></li>
+                <li class="statsTab active"><a class="statsTabLink"
+                                        href="{$baseurl}/issue_tracker/?submenu=my_issue_tracker">My Issues</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active">
@@ -183,7 +201,7 @@
                         <div id="datatable">
                             <script>
                                 var table = RDynamicDataTable({
-                                    "DataURL": "{$baseurl}/issue_tracker/?format=json&submenu=resolved_issue_tracker",
+                                    "DataURL": "{$baseurl}/issue_tracker/?submenu=my_issue_tracker&format=json",
                                     "getFormattedCell": formatColumn
                                 });
                                 React.render(table, document.getElementById("datatable"));
@@ -193,5 +211,6 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
