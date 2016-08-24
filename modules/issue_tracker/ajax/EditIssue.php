@@ -431,6 +431,11 @@ function getIssueFields()
     }
 
     $assignees         = array();
+    //you could also make it
+    //"SELECT u.Real_name, u.UserID FROM users u
+    // INNER JOIN user_perm_rel p ON (u.ID = p.userID)
+    // WHERE p.`permID`=
+    // (SELECT permID FROM permissions WHERE code='issue_tracker_developer')"
     $assignee_expanded = $db->pselect(
         "SELECT Real_name, UserID FROM users",
         array()
