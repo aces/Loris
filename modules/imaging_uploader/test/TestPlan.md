@@ -22,9 +22,10 @@
    Make sure all fields are correct. Also check that:
        - the Tarchive info column contains a link to the DICOM archive page with the details of the archive displayed.
        - if the minc inserted column contains something, then it will be a clickable number (link) that takes you to 
-         the MRI Browser page with all the valid scans loaded in the result table.
-       - check that mins created >= min inserted. If there is difference between the number in the minc created and 
-         min inserted columns, then check that the invalid MRI scans appear on the MRI violations page.
+         the MRI Browser page with all the valid scans loaded in the result table (with view imaging browser pages permission).
+       - check that the Number Of MincCreated >= Number Of MincInserted. If there is difference between the number in
+         the Number Of MincCreated and Number Of MincInserted columns, then check that the invalid MRI scans appear on the 
+	 MRI violations page.
          
 9. Go to the Candidate Profile page and search for the candid of the candidate to which the scan belongs. Make sure 
    that column scan done is set to yes. Click on the 'Yes' link and verify that it takes you to the Imaging Browser
