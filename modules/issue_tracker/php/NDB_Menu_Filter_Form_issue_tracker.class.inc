@@ -40,7 +40,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
     {
 
         $user =& User::singleton();
-        $DB   = Database::singleton();
+        $db   = Database::singleton();
 
         $this->query = " FROM issues as i ".
         "LEFT JOIN candidate c ON (i.candID=c.CandID) " .
@@ -51,7 +51,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         "WHERE i.status != 'closed'";
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $this->query .= " AND i.centerID=" . $DB->quote($user->getCenterID());
+            $this->query .= " AND i.centerID=" . $db->quote($user->getCenterID());
         }
 
         //note that this needs to be in the same order as the headers array
@@ -141,7 +141,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         $user =& User::singleton();
-        $DB   = Database::singleton();
+        $db   = Database::singleton();
 
         //sites
         if ($user->hasPermission('access_all_profiles')) {
@@ -162,7 +162,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 
         //reporters
         $reporters         = array();
-        $reporter_expanded = $DB->pselect(
+        $reporter_expanded = $db->pselect(
             "SELECT u.UserID, u.Real_name FROM issues i ".
             "INNER JOIN users u ON(i.assignee=u.UserID)",
             array()
@@ -173,7 +173,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 
         //assignees
         $assignees         = array();
-        $assignee_expanded = $DB->pselect(
+        $assignee_expanded = $db->pselect(
             "SELECT u.UserID, u.Real_name FROM issues i ".
             "INNER JOIN users u ON(i.assignee=u.UserID)",
             array()
@@ -183,7 +183,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         }
 
         //modules
-        $modules_expanded = $DB->pselect(
+        $modules_expanded = $db->pselect(
             "SELECT DISTINCT Label FROM LorisMenu ORDER BY Label",
             []
         );
