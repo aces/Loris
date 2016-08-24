@@ -161,26 +161,26 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         }
 
         //reporters
+        $reporters         = array();
         $reporter_expanded = $DB->pselect(
-            "SELECT u.UserID FROM issues i ".
-            "INNER JOIN users u ON(i.reporter=u.UserID)",
-            array()
-        );
-        $reporters         = $this->reorganizeQueryResults(
-            $reporter_expanded,
-            'UserID'
-        );
-
-        //assignees
-        $assignee_expanded = $DB->pselect(
-            "SELECT u.UserID FROM issues i ".
+            "SELECT u.UserID, u.Real_name FROM issues i ".
             "INNER JOIN users u ON(i.assignee=u.UserID)",
             array()
         );
-        $assignees         = $this->reorganizeQueryResults(
-            $assignee_expanded,
-            'UserID'
+        foreach ($reporter_expanded as $r_row) {
+            $reporters[$r_row['UserID']] = $r_row['Real_name'];
+        }
+
+        //assignees
+        $assignees         = array();
+        $assignee_expanded = $DB->pselect(
+            "SELECT u.UserID, u.Real_name FROM issues i ".
+            "INNER JOIN users u ON(i.assignee=u.UserID)",
+            array()
         );
+        foreach ($assignee_expanded as $a_row) {
+            $assignees[$a_row['UserID']] = $a_row['Real_name'];
+        }
 
         //modules
         $modules_expanded = $DB->pselect(
