@@ -119,6 +119,9 @@ function editIssue()
         $db->insert('issues_comments', $commentValues);
     }
 
+    if (isset($_POST['othersWatching'])){
+
+    }
     //adding editor to the watching table unless they don't want to be added.
     if ($_POST['watching'] != 'no') {
         $nowWatching = array(
@@ -136,7 +139,21 @@ function editIssue()
         );
     }
 
-    //adding others from multiselect to watching table. 
+    //adding others from multiselect to watching table.
+    if (isset($_POST['othersWatching'])) {
+        error_log("here");
+        $othersNowWatching = explode(',', $_POST['othersWatching']);
+        foreach ($othersNowWatching as $userWatching){
+            error_log($userWatching);
+            if ($userWatching){ //cause sometimes it sends null
+                $nowWatching = array(
+                    'userID' => $userWatching,
+                    'issueID' => $issueID,
+                );
+                $db->replace('issues_watching', $nowWatching);
+            }
+        }
+    }
 
     //sending email
     emailUser($issueID);
@@ -447,13 +464,13 @@ function getIssueFields()
         $assignees[$a_row['UserID']] = $a_row['Real_name'];
     }
 
-    $potentialWatchers = array();
+    $otherWatchers = array();
     $potential_watchers_expanded = $db->pselect(
         "SELECT Real_name, UserID FROM users",
         array()
     );
     foreach ($potential_watchers_expanded as $w_row) {
-        $potentialWatchers[$w_row['UserID']] = $w_row['Real_name'];
+        $otherWatchers[$w_row['UserID']] = $w_row['Real_name'];
     }
 
     //can't set to closed if not developer.
@@ -559,7 +576,7 @@ function getIssueFields()
         'priorities' => $priorities,
         'categories' => $categories,
         'modules' => $modules,
-        'potentialWatchers' => $potentialWatchers,
+        'otherWatchers' => $otherWatchers,
         'issueData' => $issueData,
         'hasEditPermission' => $user->hasPermission(
             'issue_tracker_developer'
