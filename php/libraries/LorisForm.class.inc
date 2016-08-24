@@ -169,14 +169,19 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addHidden" API.
      *
-     * @param string $name  The element name.
-     * @param string $value The element value.
+     * @param string $name       The element name.
+     * @param string $value      The element value.
+     * @param array  $attributes Additional html attributes for element
      *
      * @return &array
      */
-    public function addHidden($name, $value)
+    public function addHidden($name, $value, $attributes)
     {
-        $el         =& $this->addBase($name, null, array('value' => $value));
+        $el         =& $this->addBase(
+            $name,
+            null,
+            array_merge(array('value' => $value), $attributes)
+        );
         $el['type'] = 'hidden';
         return $el;
     }
@@ -370,7 +375,7 @@ class LorisForm
             $el = $this->addCheckbox($name, $label, $options);
             break;
         case 'hidden':
-            $el = $this->addHidden($name, $label);
+            $el = $this->addHidden($name, $label, $options);
             break;
         case 'text':
         default:
