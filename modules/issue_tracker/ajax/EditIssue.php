@@ -312,6 +312,29 @@ function updateCommentHistory($issueCommentID, $newCommentValue)
     $db->insert('issues_comments_history', $changedValue);
 }
 
+/**
+ * Gets a list of those watching an issue.
+ *
+ * @param int $issueID the relevant issue
+ *
+ * @throws DatabaseException
+ *
+ * @return array those who are watching
+ */
+function getWatching($issueID)
+{
+    $db =& Database::singleton();
+
+    $watching = $db->pselect("SELECT userID from issues_watching WHERE issueID=:issueID",
+    array('issueID' => $issueID));
+
+    $whoIsWatching = array();
+    foreach($watching as $watcher){
+        $whoIsWatching[] = $watcher['userID'];
+    }
+    error_log(json_encode($whoIsWatching));
+    return $whoIsWatching;
+}
 
 /**
  * Gets the changes to values, and the comments relevant to the given issue
@@ -533,6 +556,7 @@ function getIssueFields()
             []
         );
         $issueData['commentHistory'] = getComments($issueID);
+        $issueData['whoIsWatching'] = getWatching($issueID);
 
     } else { //just setting the default values
         $issueData['reporter'] = $user->getData('UserID');
