@@ -100,7 +100,7 @@ var IssueEditForm = React.createClass({
             );
         }
 
-        var helpText = "A title is required"; //todo: here fill out the fields that are neccessary.
+        var helpText = "A title and assignee are required"; //todo: here fill out the fields that are neccessary.
         var alertMessage = "";
         var alertClass = "alert text-center hide";
         var hasEditPermission = this.state.Data.hasEditPermission || this.state.Data.isOwnIssue;
@@ -229,193 +229,187 @@ var IssueEditForm = React.createClass({
                 React.createElement('br', null),
                 React.createElement(
                     'div',
-                    { className: 'row' },
+                    { 'class': 'row' },
                     React.createElement(
                         'div',
-                        { className: 'col-md-6' },
-                        React.createElement(TextboxElement, {
-                            name: 'title',
-                            label: 'Title',
-                            onUserInput: this.setFormData,
-                            ref: 'title',
-                            value: this.state.issueData.title,
-                            disabled: !hasEditPermission,
-                            required: true
-                        })
-                    )
-                ),
-                React.createElement('br', null),
-                React.createElement(
-                    'div',
-                    { className: 'row' },
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-6' },
-                        React.createElement(SelectElement, {
-                            name: 'assignee',
-                            label: 'Assignee',
-                            emptyOption: true,
-                            options: this.state.Data.assignees,
-                            onUserInput: this.setFormData,
-                            ref: 'assignee',
-                            disabled: !hasEditPermission,
-                            value: this.state.issueData.assignee
-                        })
+                        { 'class': 'col-sm-6' },
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(TextboxElement, {
+                                name: 'title',
+                                label: 'Title',
+                                onUserInput: this.setFormData,
+                                ref: 'title',
+                                value: this.state.issueData.title,
+                                disabled: !hasEditPermission,
+                                required: true
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(SelectElement, {
+                                name: 'assignee',
+                                label: 'Assignee',
+                                emptyOption: true,
+                                options: this.state.Data.assignees,
+                                onUserInput: this.setFormData,
+                                ref: 'assignee',
+                                disabled: !hasEditPermission,
+                                value: this.state.issueData.assignee,
+                                required: true
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(SelectElement, {
+                                name: 'centerID',
+                                label: 'Site',
+                                emptyOption: true,
+                                options: this.state.Data.sites,
+                                onUserInput: this.setFormData,
+                                ref: 'centerID',
+                                disabled: !hasEditPermission,
+                                value: this.state.issueData.centerID
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(SelectElement, {
+                                name: 'status',
+                                label: 'Status',
+                                emptyOption: false,
+                                options: this.state.Data.statuses,
+                                onUserInput: this.setFormData,
+                                ref: 'status',
+                                disabled: !hasEditPermission,
+                                value: this.state.issueData.status //todo: edit this so the options are different if the user doesn't have permission
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(SelectElement, {
+                                name: 'priority',
+                                label: 'Priority',
+                                emptyOption: false,
+                                options: this.state.Data.priorities,
+                                onUserInput: this.setFormData,
+                                ref: 'priority',
+                                required: false,
+                                disabled: !hasEditPermission,
+                                value: this.state.issueData.priority
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(SelectElement, {
+                                name: 'category',
+                                label: 'Category',
+                                emptyOption: true,
+                                options: this.state.Data.categories,
+                                onUserInput: this.setFormData,
+                                ref: 'category',
+                                disabled: !hasEditPermission,
+                                value: this.state.issueData.category
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(SelectElement, {
+                                name: 'module',
+                                label: 'Module',
+                                emptyOption: true,
+                                options: this.state.Data.modules,
+                                onUserInput: this.setFormData,
+                                ref: 'module',
+                                disabled: !hasEditPermission,
+                                value: this.state.issueData.module
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(TextboxElement, {
+                                name: 'PSCID',
+                                label: '(PSCID)',
+                                onUserInput: this.setFormData,
+                                ref: 'PSCID',
+                                disabled: !hasEditPermission,
+                                value: this.state.issueData.PSCID
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(TextboxElement, {
+                                name: 'visitLabel',
+                                label: '(Visit Label)',
+                                onUserInput: this.setFormData,
+                                ref: 'visitLabel',
+                                disabled: !hasEditPermission,
+                                value: this.state.issueData.visitLabel
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(SelectElement, {
+                                name: 'watching',
+                                label: 'Watching?',
+                                emptyOption: false,
+                                options: { true: 'No', false: 'Yes' },
+                                onUserInput: this.setFormData,
+                                ref: 'watching',
+                                value: "No"
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(SelectElement, {
+                                name: 'othersWatching',
+                                label: 'Add others to watching?',
+                                emptyOption: true,
+                                options: this.state.Data.otherWatchers,
+                                onUserInput: this.setFormData,
+                                ref: 'watching',
+                                multiple: true,
+                                value: this.state.issueData.whoIsWatching
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(TextareaElement, {
+                                name: 'comment',
+                                label: 'New Comment',
+                                onUserInput: this.setFormData,
+                                ref: 'comment',
+                                value: null
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(ButtonElement, { label: submitButtonValue })
+                        )
                     ),
                     React.createElement(
                         'div',
-                        { className: 'col-md-6' },
-                        React.createElement(SelectElement, {
-                            name: 'centerID',
-                            label: 'Site',
-                            emptyOption: true,
-                            options: this.state.Data.sites,
-                            onUserInput: this.setFormData,
-                            ref: 'centerID',
-                            disabled: !hasEditPermission,
-                            value: this.state.issueData.centerID
-                        })
-                    )
-                ),
-                React.createElement(
-                    'div',
-                    { className: 'row' },
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-6' },
-                        React.createElement(SelectElement, {
-                            name: 'status',
-                            label: 'Status',
-                            emptyOption: false,
-                            options: this.state.Data.statuses,
-                            onUserInput: this.setFormData,
-                            ref: 'status',
-                            disabled: !hasEditPermission,
-                            value: this.state.issueData.status //todo: edit this so the options are different if the user doesn't have permission
-                        })
-                    ),
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-6' },
-                        React.createElement(SelectElement, {
-                            name: 'priority',
-                            label: 'Priority',
-                            emptyOption: false,
-                            options: this.state.Data.priorities,
-                            onUserInput: this.setFormData,
-                            ref: 'priority',
-                            required: false,
-                            disabled: !hasEditPermission,
-                            value: this.state.issueData.priority
-                        })
-                    )
-                ),
-                React.createElement(
-                    'div',
-                    { className: 'row' },
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-6' },
-                        React.createElement(SelectElement, {
-                            name: 'category',
-                            label: 'Category',
-                            emptyOption: true,
-                            options: this.state.Data.categories,
-                            onUserInput: this.setFormData,
-                            ref: 'category',
-                            disabled: !hasEditPermission,
-                            value: this.state.issueData.category
-                        })
-                    ),
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-6' },
-                        React.createElement(SelectElement, {
-                            name: 'module',
-                            label: 'Module',
-                            emptyOption: true,
-                            options: this.state.Data.modules,
-                            onUserInput: this.setFormData,
-                            ref: 'module',
-                            disabled: !hasEditPermission,
-                            value: this.state.issueData.module
-                        })
-                    )
-                ),
-                React.createElement(
-                    'div',
-                    { className: 'row' },
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-6' },
-                        React.createElement(TextboxElement, {
-                            name: 'PSCID',
-                            label: '(PSCID)',
-                            onUserInput: this.setFormData,
-                            ref: 'PSCID',
-                            disabled: !hasEditPermission,
-                            value: this.state.issueData.PSCID
-                        })
-                    ),
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-6' },
-                        React.createElement(TextboxElement, {
-                            name: 'visitLabel',
-                            label: '(Visit Label)',
-                            onUserInput: this.setFormData,
-                            ref: 'visitLabel',
-                            disabled: !hasEditPermission,
-                            value: this.state.issueData.visitLabel
-                        })
-                    )
-                ),
-                React.createElement(
-                    'div',
-                    { className: 'row' },
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-6' },
-                        React.createElement(SelectElement, {
-                            name: 'watching',
-                            label: 'Watching?',
-                            emptyOption: false,
-                            options: { true: 'No', false: 'Yes' },
-                            onUserInput: this.setFormData,
-                            ref: 'watching',
-                            value: "No"
-                        })
-                    )
-                ),
-                React.createElement(
-                    'div',
-                    { className: 'row' },
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-6' },
-                        React.createElement(TextareaElement, {
-                            name: 'comment',
-                            label: 'New Comment',
-                            onUserInput: this.setFormData,
-                            ref: 'comment',
-                            value: null
-                        })
-                    ),
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-6' },
-                        React.createElement(ButtonElement, { label: submitButtonValue })
-                    )
-                ),
-                React.createElement(
-                    'div',
-                    { className: 'row' },
-                    React.createElement(
-                        'div',
-                        { className: 'col-md-12' },
-                        React.createElement(CollapsibleComment, {
-                            text: this.state.issueData.commentHistory
-                        })
+                        { 'class': 'col-sm-6' },
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
+                            React.createElement(CollapsibleComment, {
+                                text: this.state.issueData.commentHistory
+                            })
+                        )
                     )
                 )
             )
@@ -471,8 +465,11 @@ var IssueEditForm = React.createClass({
                     'category': data.issueData.category,
                     'lastUpdatedBy': data.issueData.lastUpdatedBy,
                     'commentHistory': data.issueData.commentHistory,
-                    'comment': data.issueData.comment
+                    'comment': data.issueData.comment,
+                    'otherWatchers': data.issueData.whoIsWatching
                 };
+
+                console.log(data.otherWatchers);
 
                 that.setState({
                     'Data': data,
@@ -605,7 +602,8 @@ var IssueEditForm = React.createClass({
 
         var isValidForm = true;
         var requiredFields = {
-            'title': null
+            'title': null,
+            'assignee': null
         };
         Object.keys(requiredFields).map(function (field) {
             if (formDataToCheck[field]) {

@@ -21,23 +21,23 @@ var CollapsibleComment = React.createClass(
         render: function () {
 
             return (
-            <div className         ="row form-group">
-                <div className     ="col-sm-9">
-                <div className     ="btn btn-primary"
-                     onClick       ={this.toggleCollapsed}
-                     data-toggle   ="collapse"
-                     data-target   ="#comment-history"
-                >
-                    Show Comment History
-                </div>
-                </div>
-                <br></br>
-                <div id            ="comment-history">
-                    <div className ="col-sm-12">
-                        <div dangerouslySetInnerHTML ={{__html: this.props.text}}/>
+                <div className="row form-group">
+                    <div className="col-sm-9">
+                        <div className="btn btn-primary"
+                             onClick={this.toggleCollapsed}
+                             data-toggle="collapse"
+                             data-target="#comment-history"
+                        >
+                            Show Comment History
+                        </div>
+                    </div>
+                    <br></br>
+                    <div id="comment-history">
+                        <div className="col-sm-12">
+                            <div dangerouslySetInnerHTML={{__html: this.props.text}}/>
+                        </div>
                     </div>
                 </div>
-            </div>
 
             );
         }
@@ -74,7 +74,7 @@ var IssueEditForm = React.createClass(
             if (!this.state.isLoaded) {
                 if (this.state.error != undefined) {
                     return (
-                        <div className ="alert alert-danger text-center">
+                        <div className="alert alert-danger text-center">
                             <strong>
                                 {this.state.error}
                             </strong>
@@ -82,16 +82,16 @@ var IssueEditForm = React.createClass(
                     );
                 }
                 return (
-                    <button className   ="btn-info has-spinner">
+                    <button className="btn-info has-spinner">
                         loading
-                        <span className ="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                        <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
                     </button>
                 );
             }
 
-            var helpText          = "A title and assignee are required"; //todo: here fill out the fields that are neccessary.
-            var alertMessage      = "";
-            var alertClass        = "alert text-center hide";
+            var helpText = "A title and assignee are required"; //todo: here fill out the fields that are neccessary.
+            var alertMessage = "";
+            var alertClass = "alert text-center hide";
             var hasEditPermission = this.state.Data.hasEditPermission || this.state.Data.isOwnIssue;
 
             var headerText = " ";
@@ -132,232 +132,234 @@ var IssueEditForm = React.createClass(
 
             if (this.state.submissionResult) {
                 if (this.state.submissionResult == "success") {
-                    alertClass   = "alert alert-success text-center";
+                    alertClass = "alert alert-success text-center";
                     alertMessage = "Submission Successful!";
                 } else if (this.state.submissionResult == "error") {
                     var errorMessage = this.state.errorMessage;
-                    alertClass       = "alert alert-danger text-center";
-                    alertMessage     = errorMessage ? errorMessage : "Failed to submit issue :(";
+                    alertClass = "alert alert-danger text-center";
+                    alertMessage = errorMessage ? errorMessage : "Failed to submit issue :(";
                 }
                 else if (this.state.submissionResult == "invalid") {
                     var errorMessage = this.state.errorMessage;
-                    alertClass       = "alert alert-danger text-center";
-                    alertMessage     = errorMessage ? errorMessage : "Invalid input";
+                    alertClass = "alert alert-danger text-center";
+                    alertMessage = errorMessage ? errorMessage : "Invalid input";
                 }
             }
 
             return (
                 <div>
-                    <div className     ={alertClass} role="alert" ref="alert-message">
+                    <div className={alertClass} role="alert" ref="alert-message">
                         {alertMessage}
                     </div>
                     <FormElement
-                        name           ="issueEdit"
-                        onSubmit       ={this.handleSubmit}
-                        ref            ="form"
-                        class          =""
+                        name="issueEdit"
+                        onSubmit={this.handleSubmit}
+                        ref="form"
+                        class=""
                     >
                         <h3>{headerText}</h3>
                         <br />
-                        <div className ="row">
-                            <div className ="col-md-6">
+                        <div className="row">
+                            <div className="col-md-6">
                                 <StaticElement
-                                    name   ="lastUpdate"
-                                    label  ={"Last Update: "}
-                                    ref    ="lastUpdate"
-                                    text   ={lastUpdateValue}
+                                    name="lastUpdate"
+                                    label={"Last Update: "}
+                                    ref="lastUpdate"
+                                    text={lastUpdateValue}
                                 />
                             </div>
-                            <div className ="col-md-6">
+                            <div className="col-md-6">
                                 <StaticElement
-                                    name   ="lastUpdatedBy"
-                                    label  ={"Last Updated By: "}
-                                    ref    ="lastUpdatedBy"
-                                    text   ={lastUpdatedByValue}
+                                    name="lastUpdatedBy"
+                                    label={"Last Updated By: "}
+                                    ref="lastUpdatedBy"
+                                    text={lastUpdatedByValue}
                                 />
                             </div>
                         </div>
 
-                        <div className          ="row">
-                            <div className      ="col-md-6">
+                        <div className="row">
+                            <div className="col-md-6">
                                 <StaticElement
-                                    name        ="dateCreated"
-                                    label       ={"Date Created: "}
-                                    ref         ="dateCreated"
-                                    text        ={dateCreated}
+                                    name="dateCreated"
+                                    label={"Date Created: "}
+                                    ref="dateCreated"
+                                    text={dateCreated}
                                 />
                             </div>
-                            <div className      ="col-md-6">
+                            <div className="col-md-6">
                                 <StaticElement
-                                    name        ="reporter"
-                                    label       ={"Reporter: "}
-                                    ref         ="reporter"
-                                    text        ={this.state.issueData.reporter}
+                                    name="reporter"
+                                    label={"Reporter: "}
+                                    ref="reporter"
+                                    text={this.state.issueData.reporter}
                                 />
                             </div>
                         </div>
                         <br></br>
                         <br></br>
-                        <div className          ="row">
-                            <div className      ="col-md-6">
-                                <TextboxElement
-                                    name        ="title"
-                                    label       ="Title"
-                                    onUserInput ={this.setFormData}
-                                    ref         ="title"
-                                    value       ={this.state.issueData.title}
-                                    disabled    ={!hasEditPermission}
-                                    required    ={true}
-                                />
-                            </div>
 
-                        </div>
-                        <br></br>
-
-                        <div className          ="row">
-                            <div className      ="col-md-6">
-                                <SelectElement
-                                    name        ="assignee"
-                                    label       ="Assignee"
-                                    emptyOption ={true}
-                                    options     ={this.state.Data.assignees}
-                                    onUserInput ={this.setFormData}
-                                    ref         ="assignee"
-                                    disabled    ={!hasEditPermission}
-                                    value       ={this.state.issueData.assignee}
-                                />
-                            </div>
-                            <div className      ="col-md-6">
-                                <SelectElement
-                                    name        ="centerID"
-                                    label       ="Site"
-                                    emptyOption ={true}
-                                    options     ={this.state.Data.sites}
-                                    onUserInput ={this.setFormData}
-                                    ref         ="centerID"
-                                    disabled    ={!hasEditPermission}
-                                    value       ={this.state.issueData.centerID}
-                                />
-                            </div>
-                        </div>
-
-                        <div className          ="row">
-                            <div className      ="col-md-6">
-                                <SelectElement
-                                    name        ="status"
-                                    label       ="Status"
-                                    emptyOption ={false}
-                                    options     ={this.state.Data.statuses}
-                                    onUserInput ={this.setFormData}
-                                    ref         ="status"
-                                    disabled    ={!hasEditPermission}
-                                    value       ={this.state.issueData.status} //todo: edit this so the options are different if the user doesn't have permission
-                                />
-                            </div>
-                            <div className      ="col-md-6">
-                                <SelectElement
-                                    name        ="priority"
-                                    label       ="Priority"
-                                    emptyOption ={false}
-                                    options     ={this.state.Data.priorities}
-                                    onUserInput ={this.setFormData}
-                                    ref         ="priority"
-                                    required    ={false}
-                                    disabled    ={!hasEditPermission}
-                                    value       ={this.state.issueData.priority}
-                                />
-                            </div>
-                        </div>
-
-                        <div className          ="row">
-                            <div className      ="col-md-6">
-                                <SelectElement
-                                    name        ="category"
-                                    label       ="Category"
-                                    emptyOption ={true}
-                                    options     ={this.state.Data.categories}
-                                    onUserInput ={this.setFormData}
-                                    ref         ="category"
-                                    disabled    ={!hasEditPermission}
-                                    value       ={this.state.issueData.category}
-                                />
-                            </div>
-                            <div className      ="col-md-6">
-                                <SelectElement
-                                    name        ="module"
-                                    label       ="Module"
-                                    emptyOption ={true}
-                                    options     ={this.state.Data.modules}
-                                    onUserInput ={this.setFormData}
-                                    ref         ="module"
-                                    disabled    ={!hasEditPermission}
-                                    value       ={this.state.issueData.module}
-                                />
-                            </div>
-                        </div>
-
-                        <div className          ="row">
-                            <div className      ="col-md-6">
-                                <TextboxElement
-                                    name        ="PSCID"
-                                    label       ="(PSCID)"
-                                    onUserInput ={this.setFormData}
-                                    ref         ="PSCID"
-                                    disabled    ={!hasEditPermission}
-                                    value       ={this.state.issueData.PSCID}
-                                />
-                            </div>
-                            <div className      ="col-md-6">
-                                <TextboxElement
-                                    name        ="visitLabel"
-                                    label       ="(Visit Label)"
-                                    onUserInput ={this.setFormData}
-                                    ref         ="visitLabel"
-                                    disabled    ={!hasEditPermission}
-                                    value       ={this.state.issueData.visitLabel}
-                                />
-                            </div>
-                        </div>
-
-                        <div className          ="row">
-                            <div className      ="col-md-6">
-                                <SelectElement
-                                    name        ="watching"
-                                    label       ="Watching?"
-                                    emptyOption ={false}
-                                    options     ={{true: 'No', false: 'Yes'}}
-                                    onUserInput ={this.setFormData}
-                                    ref         ="watching"
-                                    value       ={"No"}
-                                />
-                            </div>
-                        </div>
-
-                        <div className          ="row">
-                            <div className      ="col-md-6">
-                                <TextareaElement
-                                    name        ="comment"
-                                    label       ="New Comment"
-                                    onUserInput ={this.setFormData}
-                                    ref         ="comment"
-                                    value       ={null}
-                                />
-                            </div>
-                            <div className      ="col-md-6">
-                                <ButtonElement label ={submitButtonValue}/>
-                            </div>
-                        </div>
-
-                        <div className     ="row">
-                            <div className ="col-md-12">
-                                <CollapsibleComment
-                                    text   ={this.state.issueData.commentHistory}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <TextboxElement
+                                        name="title"
+                                        label="Title"
+                                        onUserInput={this.setFormData}
+                                        ref="title"
+                                        value={this.state.issueData.title}
+                                        disabled={!hasEditPermission}
+                                        required={true}
                                     />
+                                </div>
+                                <div class="row">
+                                    <SelectElement
+                                        name="assignee"
+                                        label="Assignee"
+                                        emptyOption={true}
+                                        options={this.state.Data.assignees}
+                                        onUserInput={this.setFormData}
+                                        ref="assignee"
+                                        disabled={!hasEditPermission}
+                                        value={this.state.issueData.assignee}
+                                        required={true}
+                                    />
+                                </div>
+                                <div class="row">
+                                    <SelectElement
+                                        name="centerID"
+                                        label="Site"
+                                        emptyOption={true}
+                                        options={this.state.Data.sites}
+                                        onUserInput={this.setFormData}
+                                        ref="centerID"
+                                        disabled={!hasEditPermission}
+                                        value={this.state.issueData.centerID}
+                                    />
+                                </div>
+
+                                <div class="row">
+                                    <SelectElement
+                                        name="status"
+                                        label="Status"
+                                        emptyOption={false}
+                                        options={this.state.Data.statuses}
+                                        onUserInput={this.setFormData}
+                                        ref="status"
+                                        disabled={!hasEditPermission}
+                                        value={this.state.issueData.status} //todo: edit this so the options are different if the user doesn't have permission
+                                    />
+                                </div>
+                                <div class="row">
+                                    <SelectElement
+                                        name="priority"
+                                        label="Priority"
+                                        emptyOption={false}
+                                        options={this.state.Data.priorities}
+                                        onUserInput={this.setFormData}
+                                        ref="priority"
+                                        required={false}
+                                        disabled={!hasEditPermission}
+                                        value={this.state.issueData.priority}
+                                    />
+                                </div>
+
+                                <div class="row">
+                                    <SelectElement
+                                        name="category"
+                                        label="Category"
+                                        emptyOption={true}
+                                        options={this.state.Data.categories}
+                                        onUserInput={this.setFormData}
+                                        ref="category"
+                                        disabled={!hasEditPermission}
+                                        value={this.state.issueData.category}
+                                    />
+                                </div>
+                                <div class="row">
+                                    <SelectElement
+                                        name="module"
+                                        label="Module"
+                                        emptyOption={true}
+                                        options={this.state.Data.modules}
+                                        onUserInput={this.setFormData}
+                                        ref="module"
+                                        disabled={!hasEditPermission}
+                                        value={this.state.issueData.module}
+                                    />
+                                </div>
+
+                                <div class="row">
+                                    <TextboxElement
+                                        name="PSCID"
+                                        label="(PSCID)"
+                                        onUserInput={this.setFormData}
+                                        ref="PSCID"
+                                        disabled={!hasEditPermission}
+                                        value={this.state.issueData.PSCID}
+                                    />
+                                </div>
+                                <div class="row">
+                                    <TextboxElement
+                                        name="visitLabel"
+                                        label="(Visit Label)"
+                                        onUserInput={this.setFormData}
+                                        ref="visitLabel"
+                                        disabled={!hasEditPermission}
+                                        value={this.state.issueData.visitLabel}
+                                    />
+                                </div>
+
+                                <div class="row">
+                                    <SelectElement
+                                        name="watching"
+                                        label="Watching?"
+                                        emptyOption={false}
+                                        options={{true: 'No', false: 'Yes'}}
+                                        onUserInput={this.setFormData}
+                                        ref="watching"
+                                        value={"No"}
+                                    />
+                                </div>
+
+                                <div class="row">
+                                    <SelectElement
+                                        name="othersWatching"
+                                        label="Add others to watching?"
+                                        emptyOption={true}
+                                        options={this.state.Data.otherWatchers}
+                                        onUserInput={this.setFormData}
+                                        ref="watching"
+                                        multiple={true}
+                                        value={this.state.issueData.whoIsWatching}
+                                    />
+                                </div>
+
+                                <div class="row">
+                                    <TextareaElement
+                                        name="comment"
+                                        label="New Comment"
+                                        onUserInput={this.setFormData}
+                                        ref="comment"
+                                        value={null}
+                                    />
+                                </div>
+
+                                <div class="row">
+                                    <ButtonElement label={submitButtonValue}/>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <CollapsibleComment
+                                        text={this.state.issueData.commentHistory}
+                                    />
+                                </div>
                             </div>
                         </div>
-
                     </FormElement>
-                </div>
+                </
+                    div >
             )
         },
 
@@ -372,8 +374,8 @@ var IssueEditForm = React.createClass(
             //replacing with the new issueID value
             if (this.state.isNewIssue) {
                 var dataURL = this.props.DataURL;
-                dataURL     = dataURL.substring(0, dataURL.length - 2);
-                dataURL     = dataURL + this.state.issueID.toString();
+                dataURL = dataURL.substring(0, dataURL.length - 2);
+                dataURL = dataURL + this.state.issueID.toString();
             }
 
             $.ajax(
@@ -417,8 +419,11 @@ var IssueEditForm = React.createClass(
                             'category': data.issueData.category,
                             'lastUpdatedBy': data.issueData.lastUpdatedBy,
                             'commentHistory': data.issueData.commentHistory,
-                            'comment': data.issueData.comment
+                            'comment': data.issueData.comment,
+                            'otherWatchers': data.issueData.whoIsWatching
                         };
+
+                        console.log(data.otherWatchers);
 
                         that.setState(
                             {
@@ -444,7 +449,6 @@ var IssueEditForm = React.createClass(
                     }
                 }
             );
-
         },
 
 
@@ -456,11 +460,11 @@ var IssueEditForm = React.createClass(
         handleSubmit: function (e) {
             e.preventDefault();
 
-            var self       = this;
+            var self = this;
             var myFormData = this.state.formData;
-            var formRefs   = this.refs;
-            var formData   = new FormData();
-            var issueData  = this.state.issueData;
+            var formRefs = this.refs;
+            var formData = new FormData();
+            var issueData = this.state.issueData;
 
             // Validate the form
             if (!this.isValidForm(formRefs, myFormData)) {
@@ -490,9 +494,9 @@ var IssueEditForm = React.createClass(
                             "progress",
                             function (evt) {
                                 if (evt.lengthComputable) {
-                                    var progressbar   = $("#progressbar");
+                                    var progressbar = $("#progressbar");
                                     var progresslabel = $("#progresslabel");
-                                    var percent       = Math.round((evt.loaded / evt.total) * 100);
+                                    var percent = Math.round((evt.loaded / evt.total) * 100);
                                     $(progressbar).width(percent + "%");
                                     $(progresslabel).html(percent + "%");
                                     progressbar.attr('aria-valuenow', percent);
@@ -552,7 +556,7 @@ var IssueEditForm = React.createClass(
 
             //todo: only give valid inputs for fields given previous input to other fields
 
-            var formDataUpdate          = this.state.formData;
+            var formDataUpdate = this.state.formData;
             formDataUpdate[formElement] = value;
 
             this.setState(
@@ -573,7 +577,7 @@ var IssueEditForm = React.createClass(
          */
         isValidForm: function (formRefs, formDataToCheck) {
 
-            var isValidForm    = true;
+            var isValidForm = true;
             var requiredFields = {
                 'title': null,
                 'assignee': null,
