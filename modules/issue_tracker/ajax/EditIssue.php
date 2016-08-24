@@ -471,6 +471,7 @@ function getIssueFields()
         }
     }
 
+    //not yet ideal permissions
     $assignees = array();
     if ($user->hasPermission('access_all_profiles')) {
         $assignee_expanded = $db->pselect(
