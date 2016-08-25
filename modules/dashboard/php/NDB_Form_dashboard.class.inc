@@ -62,10 +62,10 @@ class NDB_Form_Dashboard extends NDB_Form
             foreach ($dashboard_links as $text => $url) {
                 $this->tpl_data['dashboard_links'][]
                     = array(
-                    'url'        => $url,
-                    'label'      => $text,
-                    'WindowName' => md5($url),
-                );
+                       'url'        => $url,
+                       'label'      => $text,
+                       'WindowName' => md5($url),
+                      );
             }
         }
 
@@ -254,10 +254,9 @@ class NDB_Form_Dashboard extends NDB_Form
                 = $issue_tracker;
 
             // I suppose you could also base it on your query
-            if ($user->hasPermission('access_all_profiles')){
+            if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['issues_assigned_site'] = 'Site: all';
-            }
-            else {
+            } else {
                 $this->tpl_data['issues_assigned_site'] = 'Site: '.
                     $user->getSiteName();
             }
@@ -338,8 +337,8 @@ class NDB_Form_Dashboard extends NDB_Form
              WHERE c.Gender=:Gender AND c.Active='Y' AND c.ProjectID=:PID
              AND c.Entity_type='Human' AND c.CenterID <> 1",
             array(
-                'Gender' => $gender,
-                'PID'    => $projectID,
+             'Gender' => $gender,
+             'PID'    => $projectID,
             )
         );
         return $total;
@@ -417,9 +416,9 @@ class NDB_Form_Dashboard extends NDB_Form
         return array_merge(
             $baseDeps,
             array(
-                $baseurl . '/js/d3.min.js',
-                $baseurl . '/js/c3.min.js',
-                $baseurl . '/dashboard/js/dashboard-helper.js',
+             $baseurl . '/js/d3.min.js',
+             $baseurl . '/js/c3.min.js',
+             $baseurl . '/dashboard/js/dashboard-helper.js',
             )
         );
 
