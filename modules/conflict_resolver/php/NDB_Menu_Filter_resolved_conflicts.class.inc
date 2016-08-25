@@ -128,12 +128,13 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         }
 
         $this->headers[] = 'FieldName';
+        $con = "conflicts_resolved";
 
         $this->formToFilter = array(
-                   'Instrument'          => 'conflicts_resolved.TableName',
-                   'site'                => 'session.CenterID',
-                   'visit'               => 'session.Visit_label',
-                   'ResolutionTimestamp' => 'conflicts_resolved.ResolutionTimestamp',
+                               'Instrument'          => "$con.TableName",
+                               'site'                => 'session.CenterID',
+                               'visit'               => 'session.Visit_label',
+                               'ResolutionTimestamp' => "$con.ResolutionTimestamp",
                               );
 
         if ($useProjects) {
