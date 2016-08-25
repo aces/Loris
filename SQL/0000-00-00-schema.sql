@@ -2187,7 +2187,6 @@ CREATE TABLE `media` (
   FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Issues Table
 DROP TABLE IF EXISTS `issues`;
 CREATE TABLE `issues` (
   `issueID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -2217,11 +2216,9 @@ CREATE TABLE `issues` (
   CONSTRAINT `fk_issues_3` FOREIGN KEY (`candID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `fk_issues_4` FOREIGN KEY (`sessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `fk_issues_5` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`),
-  CONSTRAINT `fk_issues_7` FOREIGN KEY (`module`) REFERENCES `LorisMenu` (`ID`)
+  CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
--- issues_history table
 DROP TABLE IF EXISTS `issues_history`;
 CREATE TABLE `issues_history` (
   `issueHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -2235,7 +2232,6 @@ CREATE TABLE `issues_history` (
   CONSTRAINT `fk_issues_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
--- issues_comments table
 DROP TABLE IF EXISTS `issues_comments`;
 CREATE TABLE `issues_comments` (
   `issueCommentID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -2248,7 +2244,6 @@ CREATE TABLE `issues_comments` (
   CONSTRAINT `fk_issue_comments_1` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
--- issues_comments_history
 DROP TABLE IF EXISTS `issues_comments_history`;
 CREATE TABLE `issues_comments_history` (
   `issueCommentHistoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -2261,7 +2256,6 @@ CREATE TABLE `issues_comments_history` (
   CONSTRAINT `fk_issues_comments_history` FOREIGN KEY (`issueCommentID`) REFERENCES `issues_comments` (`issueCommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- issues_watching
 DROP TABLE IF EXISTS `issues_watching`;
 CREATE TABLE `issues_watching` (
   `userID` varchar(255) NOT NULL DEFAULT '',
