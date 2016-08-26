@@ -175,7 +175,7 @@ class LorisForm
      *
      * @return &array
      */
-    public function addHidden($name, $value, $attributes)
+    public function addHidden($name, $value, $attributes=array())
     {
         $el         =& $this->addBase(
             $name,
