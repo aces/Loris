@@ -473,8 +473,7 @@ class NDB_BVL_Instrument extends NDB_Page
             // not the display function.
             return $this->toJSON();
         } else {
-            $smarty   = new Smarty_neurodb;
-
+            $smarty    = new Smarty_neurodb;
             $formArray = $this->form->toElementArray();
 
             $smarty->assign('form', $formArray);
