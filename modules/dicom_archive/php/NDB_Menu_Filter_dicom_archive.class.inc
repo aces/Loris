@@ -71,6 +71,9 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             "'View Details' as Metadata",
             "'View Images' as MRI_Browser",
             // For constructing links, not in headers array
+            "(SELECT GROUP_CONCAT(SeriesUID) FROM tarchive_series e " .
+            "WHERE e.TarchiveID=t.TarchiveID GROUP BY e.TarchiveID) as SeriesUID",
+            's.CenterID as site',
             't.TarchiveID as TarchiveID',
             's.ID as SessionID'
         );
@@ -79,29 +82,31 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
 
         $this->order_by = 't.DateAcquired';
 
-        $this->headers
-            = ($this->dicomArchiveSettings['showTransferStatus'] == 'true') ?
-            array(
-                'Transfer_Status',
-                'Patient_ID',
-                'Patient_Name',
-                'Gender',
-                'Date_of_birth',
-                'Acquisition',
-                'Archive_Location',
-                'Metadata',
-                'MRI_Browser'
-            ) :
-            array(
-                'Patient_ID',
-                'Patient_Name',
-                'Gender',
-                'Date_of_birth',
-                'Acquisition',
-                'Archive_Location',
-                'Metadata',
-                'MRI Browser'
-            );
+        $this->headers = [];
+
+        if ($this->dicomArchiveSettings['showTransferStatus'] == 'true') {
+            array_push($this->headers, 'Transfer_Status');
+        }
+
+        $this->headers = array_merge($this->headers, [
+            'Patient_ID',
+            'Patient_Name',
+            'Gender',
+            'Date_of_birth',
+            'Acquisition',
+            'Archive_Location',
+            'Metadata',
+            'MRI_Browser',
+            'SeriesUID',
+            'Site',
+            'TarchiveID',
+            'SessionID'
+        ]);
+
+        // Set header as hidden from the data table
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            ['SeriesUID', 'Site', 'TarchiveID', 'SessionID']
+        );
 
         $this->validFilters = array(
             'c.CenterID',
@@ -168,44 +173,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
-        $list_of_sites = array('' => 'All');
-        $sitesList = Utility::getSiteList();
-
-        foreach ($sitesList as $key=>$value) {
-            $list_of_sites[$key]= $value;
-        }
-        ksort($list_of_sites);
-
-        $this->tpl_data['Sites'] = $list_of_sites;
-        $this->addSelect('SiteID', 'Site', $list_of_sites);
-        $this->addBasicText(
-            'PatientID', 'PatientID', array('size' => 10, 'maxlength' => 25)
-        );
-        $this->addBasicText(
-            'Gender', 'Gender', array('size' => 10, "maxlength" => 25)
-        );
-        $this->addBasicText(
-            'Acquisition',
-            'Acquisition Date',
-            array('size' => 10, "maxlength" => 25)
-        );
-        $this->addBasicText(
-            'PatientName',
-            'Patient Name',
-            array('size' => 10, "maxlength" => 25)
-        );
-        $this->addBasicText(
-            'DoB', 'Date of Birth', array('size' => 10, "maxlength" => 25)
-        );
-        $this->addBasicText(
-            'Location',
-            'Archive Location',
-            array('size' => 10, "maxlength" => 25)
-        );
-
-        $this->tpl_data['filterValuesJSON'] = json_encode($this->_getFilterValues());
-
-        $this->tpl_data['backURL'] = $_SERVER['REQUEST_URI'];
+        $this->tpl_data['Sites'] = Utility::getSiteList();
     }
 
     /**
@@ -346,6 +314,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             array(
                 $baseURL . "/dicom_archive/js/columnFormatter.js",
                 $baseURL . "/dicom_archive/js/dicom_archive.js",
+                $baseURL . "/js/util/queryString.js",
             )
         );
     }
