@@ -1554,7 +1554,8 @@ CREATE TABLE `certification` (
   `testID` varchar(255) NOT NULL DEFAULT '',
   `pass` enum('not_certified','in_training','certified') DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`certID`,`testID`)
+  PRIMARY KEY (`certID`,`testID`),
+  CONSTRAINT `FK_certifcation` FOREIGN KEY (`testID`) REFERENCES `test_names` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
