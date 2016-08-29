@@ -94,7 +94,8 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         if ($useProjects === "true") {
             $this->headers[] = 'Project';
         }
-        $this->headers=array_merge($this->headers,array('Instrument', 'reliability_score', 'Reliable'));
+        $this->headers=array_merge($this->headers,array('Instrument', 'reliability_score', 'Reliable','visit','invalid','manual_swap'));
+        $this->tpl_data['hiddenHeaders'] = json_encode(['Visit', 'Invalid','Manual Swap']);
         $this->validFilters = array('reliability.CommentID','reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid','candidate.CandID');
 
         $this->formToFilter = array(
@@ -527,6 +528,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $deps,
             array(
              $baseURL . "/reliability/js/reliability_helper.js",
+             $baseURL . "/reliability/js/columnFormatter.js"
             )
         );
     }
