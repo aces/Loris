@@ -54,7 +54,6 @@ class LorisForm
      */
     protected function &createBase($name, $label, $attribs=array())
     {
-        $name = $this->_generateName($name);
         $el   = array(
                  'label' => $label,
                  'name'  => $name,
@@ -105,8 +104,9 @@ class LorisForm
      */
     protected function &addBase($name, $label, $attribs = array())
     {
-        $el = $this->createBase($name, $label, $attribs);
-        $this->form[$el['name']] =& $el;
+        $el   = $this->createBase($name, $label, $attribs);
+        $name = $this->_generateName($name);
+        $this->form[$name] =& $el;
         return $el;
     }
 
