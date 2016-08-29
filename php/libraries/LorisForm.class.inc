@@ -106,7 +106,7 @@ class LorisForm
     protected function &addBase($name, $label, $attribs = array())
     {
         $el = $this->createBase($name, $label, $attribs);
-        $this->form[$name] =& $el;
+        $this->form[$el[$name]] =& $el;
         return $el;
     }
 
