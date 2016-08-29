@@ -263,7 +263,7 @@ class LorisForm
      */
     function addFile($name, $label, $options)
     {
-        $this->enctype    = 'enctype="multipart/form-data"';
+        $this->enctype = 'enctype="multipart/form-data"';
 
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'file';
@@ -1333,8 +1333,6 @@ class LorisForm
      */
     function addPageBreak($name, $label, $attribs)
     {
-        $el   =& $this->createBase($name, $label, $attribs);
-
         $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'page';
     }
@@ -1452,8 +1450,8 @@ class LorisForm
                 continue;
             }
 
-            if($el['type'] === 'file'){
-                $file = $this->getElement($name);
+            if ($el['type'] === 'file') {
+                $file       = $this->getElement($name);
                 $arr[$name] = $file->getValue();
                 continue;
             }
