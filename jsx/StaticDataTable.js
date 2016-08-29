@@ -125,7 +125,7 @@ var StaticDataTable = React.createClass({
     },
     toCamelCase: function(str) {
       return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-        if (+match === 0) return "";
+        if (match === 0) return "";
         return index === 0 ? match.toLowerCase() : match.toUpperCase();
       });
     },
@@ -133,7 +133,7 @@ var StaticDataTable = React.createClass({
      * Return true, if filter value is found to be a substring
      * of one of the column values, false otherwise.
      *
-     * Note: Search is case-insensetive.
+     * Note: Search is case-insensitive.
      *
      * @param header
      * @param data
