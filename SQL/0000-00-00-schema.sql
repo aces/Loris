@@ -1551,11 +1551,11 @@ CREATE TABLE `certification` (
   `examinerID` int(10) unsigned NOT NULL DEFAULT '0',
   `date_cert` date DEFAULT NULL,
   `visit_label` varchar(255) DEFAULT NULL,
-  `testID` varchar(255) NOT NULL DEFAULT '',
+  `testID` int(10) UNSIGNED NOT NULL,
   `pass` enum('not_certified','in_training','certified') DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`certID`,`testID`),
-  CONSTRAINT `FK_certifcation` FOREIGN KEY (`testID`) REFERENCES `test_names` (`ID`)
+  CONSTRAINT `FK_certifcation` FOREIGN KEY (`testID`) REFERENCES `test_names` (`ID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
