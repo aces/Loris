@@ -74,8 +74,6 @@ var DicomArchive = React.createClass({
       Filter[fieldName] = fieldValue;
     }
 
-    console.log(Filter);
-
     this.setState({Filter: Filter});
   },
   clearFilter: function() {
