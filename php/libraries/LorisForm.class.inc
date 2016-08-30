@@ -645,7 +645,7 @@ class LorisForm
         if (isset($el['id'])) {
             $id = "id=\"$el[id]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         if (isset($el['onchange'])) {
@@ -706,7 +706,7 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         if (isset($el['options']['minYear'])) {
@@ -777,7 +777,7 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         $value = $this->getValue($el['name']);
@@ -862,7 +862,7 @@ class LorisForm
         $cls      = "class=\"$el[class]\"";
         $disabled = '';
         $val      = $this->getValue($el['name']);
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"file\" $cls"
@@ -891,7 +891,7 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         if (isset($el['rows'])) {
@@ -1124,7 +1124,7 @@ class LorisForm
         if (isset($el['value'])) {
             $value = "value=\"$el[value]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value "
