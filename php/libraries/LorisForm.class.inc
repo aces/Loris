@@ -54,7 +54,9 @@ class LorisForm
      */
     protected function &createBase($name, $label, $attribs=array())
     {
-        $el = array('label' => $label);
+        $el = array(
+               'label' => $label
+              );
 
         if (!empty($name)) {
             $el['name'] = $name;
