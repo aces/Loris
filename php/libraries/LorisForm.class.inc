@@ -55,9 +55,12 @@ class LorisForm
     protected function &createBase($name, $label, $attribs=array())
     {
         $el = array(
-               'label' => $label,
-               'name'  => $name,
+               'label' => $label
               );
+
+        if ($name) {
+            $el['name'] = $name;
+        }
 
         if (isset($attribs['class'])) {
             $el['class'] = $attribs['class'];
@@ -682,7 +685,7 @@ class LorisForm
     function staticHTML($el)
     {
         if (empty($el['name'])) {
-            return $el['label'];
+            return '';
         }
         $val = $this->getValue($el['name']);
 
