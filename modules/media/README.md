@@ -18,6 +18,11 @@ In order to use media module user might need one or both of the following permis
 By default, all files are uploaded under `/data/uploads/`.
 This setting is configurable in `Paths` section of `Configuration` module.
 
+>**Important:** The destination directory must have `755` permissions and `www-data` group in order for upload to work.
+Make sure to to run these commands where `data/uploads` is your upload directory:
+`chmod 755 /data/uploads/`
+`sudo chown lorisadmin:www-data /data/uploads/`
+
 ### 💯 Features
 
 1. **Browse** a list of uploaded files and related information
