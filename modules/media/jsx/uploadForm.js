@@ -71,11 +71,19 @@ var MediaUploadForm = React.createClass({
       );
     }
 
-    var helpText = "File name should begin with " +
-      "<b>[PSCID]_[Visit Label]_[Instrument]</b><br> For example, " +
-      "for candidate <i>ABC123</i>, visit <i>V1</i> for " +
-      "<i>Body Mass Index</i> the file name should be prefixed by: " +
-      "<b>ABC123_V1_Body_Mass_Index</b>";
+    var helpText = [
+      "File name should begin with ",
+      <b>[PSCID]_[Visit Label]_[Instrument]</b>,
+      <br/>,
+      " For example, for candidate ",
+      <i>ABC123</i>,
+      ", visit ",
+      <i>V1</i>,
+      " for " ,
+      <i>Body Mass Index</i>,
+      " the file name should be prefixed by: ",
+      <b>ABC123_V1_Body_Mass_Index</b>
+    ];
     var alertMessage = "";
     var alertClass = "alert text-center hide";
 
@@ -103,7 +111,10 @@ var MediaUploadForm = React.createClass({
         >
           <h3>Upload a media file</h3>
           <br />
-          <HelpTextElement label="Note" html={true} text={helpText} />
+          <StaticElement
+            label="Note"
+            text={helpText}
+          />
           <SelectElement
             name="pscid"
             label="PSCID"
