@@ -167,9 +167,6 @@ $(document).ready(function() {
 
 </head>
 <body background="" class="LoginBackground">
-	<div class ="logo">
-    </div>
-
  	<div class="navbar navbar-default" role="navigation">
  		<div class="container">
 	 		<div class="navbar-brand">
