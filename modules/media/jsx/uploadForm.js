@@ -79,7 +79,7 @@ var MediaUploadForm = React.createClass({
       <i>ABC123</i>,
       ", visit ",
       <i>V1</i>,
-      " for " ,
+      " for ",
       <i>Body Mass Index</i>,
       " the file name should be prefixed by: ",
       <b>ABC123_V1_Body_Mass_Index</b>
