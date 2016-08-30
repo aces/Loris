@@ -12,13 +12,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
  
     if(column === 'PSCID' ) {
-        if (row["Manual Swap"]==="yes")
-        {
-        return <td>{cell} <span className="error">  Manual</span> </td>;
+        if (row["Manual Swap"]==="yes") {
+        return <td>{cell} <span className="error">manual</span> </td>;
         }
         if(row["Invalid"] === 'yes' ) {
         var url = loris.BaseURL + "/aosi_reliability?identifier=" +row['Visit Label'] + "&reliability_center_id=" + row['Reliability Center Id'];
-        return <td>{cell} <span className="error"> invalid</span> </td>;}
+        return <td>{cell} <span className="error">invalid</span> </td>;}
         var url = loris.BaseURL + "/aosi_reliability?identifier=" +row['Visit Label'] + "&reliability_center_id=" + row['Reliability Center Id'];
         return <td><a href={url}>{cell}</a></td>;
     }
