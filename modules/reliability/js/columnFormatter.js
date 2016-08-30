@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 function formatColumn(column, cell, rowData, rowHeaders) {
   // If a column if set as hidden, don't display it
@@ -13,41 +13,41 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
 
   if (column === 'PSCID') {
-    if (row["Manual Swap"] === 'yes') {
-      var url = loris.BaseURL + "/aosi_reliability?identifier=" + row['Visit Label'] + "&reliability_center_id=" + row['Reliability Center Id'];
+    if (row["Manual Swap"] === "yes") {
       return React.createElement(
-        'td',
+        "td",
         null,
         cell,
-        '',
+        " ",
         React.createElement(
-          'span',
-          { className: 'error' },
-          ' manual'
+          "span",
+          { className: "error" },
+          "manual"
         ),
-        ' '
+        " "
       );
     }
-    if (row["Invalid"] === "yes") {
+    if (row["Invalid"] === 'yes') {
+      var url = loris.BaseURL + "/aosi_reliability?identifier=" + row['Visit Label'] + "&reliability_center_id=" + row['Reliability Center Id'];
       return React.createElement(
-        'td',
+        "td",
         null,
         cell,
-        '',
+        " ",
         React.createElement(
-          'span',
-          { className: 'error' },
-          '  invalid'
+          "span",
+          { className: "error" },
+          "invalid"
         ),
-        ' '
+        " "
       );
     }
     var url = loris.BaseURL + "/aosi_reliability?identifier=" + row['Visit Label'] + "&reliability_center_id=" + row['Reliability Center Id'];
     return React.createElement(
-      'td',
+      "td",
       null,
       React.createElement(
-        'a',
+        "a",
         { href: url },
         cell
       )
@@ -55,7 +55,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   return React.createElement(
-    'td',
+    "td",
     null,
     cell
   );
