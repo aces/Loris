@@ -1,6 +1,5 @@
 "use strict";
 
-/* global hasWritePermission */
 /* exported formatColumn */
 
 /**

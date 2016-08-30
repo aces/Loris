@@ -1,4 +1,3 @@
-/* global hasWritePermission */
 /* exported formatColumn */
 
 /**
