@@ -31,28 +31,41 @@ class NDB_Form_Issue_Tracker extends NDB_Form
 {
 
     /**
-     * Entry point for issue_tracker/edit.
-     * No id is required;if no id is provided
-     * then the user will have the option to create a new issue.
-     * If no id is provided and the user does not have
-     * permission to create an issue then 403 forbidden will be displayed.
-     *
-     * @return void
-     */
+ * Entry point for issue_tracker/edit.
+ *
+ * @return void
+ */
     function edit()
     {
         $user    =& User::singleton();
         $issueID = $_GET['issueID'];
 
         if ((empty($issueID)
-            || !isset($issueID))
+                || !isset($issueID))
             && !$user->hasPermission('issue_tracker_reporter')
         ) {
             header("HTTP/1.1 403 Forbidden");
         }
     }
 
+    /**
+     * Entry point for issue_tracker/edit.
+     *
+     * @return void
+     */
+    function newIssue()
+    {
+        $user    =& User::singleton();
+        $issueID = $_GET['issueID'];
 
+        if ((empty($issueID)
+                || !isset($issueID))
+            && !$user->hasPermission('issue_tracker_reporter')
+        ) {
+            header("HTTP/1.1 403 Forbidden");
+        }
+    }
+    
     /**
      * Include issue_tracker.css
      *
