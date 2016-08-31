@@ -30,13 +30,10 @@
 require_once "Email.class.inc";
 
 //TODO: or split it into two files... :P
-if (isset($_GET['action'])) {
-    $action = $_GET['action'];
-    if ($action == "getData") {
-        echo json_encode(getIssueFields());
-    } else if ($action == "edit") {
-        echo json_encode(editIssue());
-    }
+if ($_SERVER['REQUEST_METHOD'] === "GET") {
+    echo json_encode(getIssueFields());
+} else if ($_SERVER['REQUEST_METHOD'] === "POST") {
+    echo json_encode(editIssue());
 }
 
 //TODO: encapsulate more
@@ -218,7 +215,7 @@ WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
             return array(
                 'isValidSubmission' => false,
                 'invalidMessage' => 'PSCID and Visit Label '
-            .'do not match a candidate session',
+                    . 'do not match a candidate session',
             );
         } else {
             return array(
