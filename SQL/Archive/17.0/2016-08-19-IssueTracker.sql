@@ -1,3 +1,6 @@
+-- Change LorisMenu engine to InnoDB so that Foreign Keys can be created
+ALTER TABLE `LorisMenu` ENGINE = InnoDB;
+
 -- Add issues tab to the Loris Menu
 INSERT INTO `LorisMenu` (`Parent`, `Label`, `Link`, `Visible`, `OrderNumber`)
 VALUES (5, 'Issue Tracker', 'issue_tracker/', true, 8);
