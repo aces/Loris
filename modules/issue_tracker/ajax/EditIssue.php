@@ -98,7 +98,7 @@ function editIssue()
         return $validatedInput;
     } //aka when it's not valid
 
-    if (!empty($issueID) || $issueID != "null") {
+    if (!empty($issueID) || $issueID != 0) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
     } else {
         $issueValues['reporter'] = $user->getData('UserID');
