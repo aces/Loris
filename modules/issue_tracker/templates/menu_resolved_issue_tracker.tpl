@@ -59,14 +59,24 @@
                         </div>
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
+                                {$form.priority.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.priority.html}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
                                 {$form.site.label}
                             </label>
                             <div class="col-sm-12 col-md-8">
                                 {$form.site.html}
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
                                 {$form.reporter.label}
@@ -83,6 +93,27 @@
                                 {$form.assignee.html}
                             </div>
                         </div>
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.minDate.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.minDate.html}
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.maxDate.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.maxDate.html}
+                            </div>
+                        </div>
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
                                 {*{$form.watching.label}*}
@@ -93,24 +124,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">
-                                {$form.priority.label}
-                            </label>
-                            <div class="col-sm-12 col-md-8">
-                                {$form.priority.html}
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">
-                                {$form.includeClosed.label}
-                            </label>
-                            <div class="col-sm-12 col-md-8">
-                                {$form.includeClosed.html}
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="'row">
                         <hr>
                     </div>
@@ -131,6 +145,7 @@
                                 {$form.visitLabel.html}
                             </div>
                         </div>
+
                     </div>
                     <br>
                     <div class="row">

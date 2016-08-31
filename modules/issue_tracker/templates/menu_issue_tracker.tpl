@@ -39,6 +39,14 @@
                                 {$form.issueID.html}
                             </div>
                         </div>
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.status.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.status.html}
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-4">
@@ -57,6 +65,17 @@
                                 {$form.category.html}
                             </div>
                         </div>
+
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {$form.priority.label}
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                {$form.priority.html}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
                                 {$form.site.label}
@@ -65,8 +84,6 @@
                                 {$form.site.html}
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
                                 {$form.reporter.label}
@@ -83,34 +100,9 @@
                                 {$form.assignee.html}
                             </div>
                         </div>
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">
-                                {*{$form.watching.label}*}
-                                &nbsp;
-                            </label>
-                            <div class="col-sm-12 col-md-8">
-                                <b>{$form.watching.html}</b>
-                            </div>
-                        </div>
+
                     </div>
-                    <div class="row">
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">
-                                {$form.priority.label}
-                            </label>
-                            <div class="col-sm-12 col-md-8">
-                                {$form.priority.html}
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-4">
-                            <label class="col-sm-12 col-md-4">
-                                {$form.status.label}
-                            </label>
-                            <div class="col-sm-12 col-md-8">
-                                {$form.status.html}
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="row">
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
@@ -126,6 +118,16 @@
                             </label>
                             <div class="col-sm-12 col-md-8">
                                 {$form.maxDate.html}
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            <label class="col-sm-12 col-md-4">
+                                {*{$form.watching.label}*}
+                                &nbsp;
+                            </label>
+                            <div class="col-sm-12 col-md-8">
+                                <b>{$form.watching.html}</b>
                             </div>
                         </div>
                     </div>
