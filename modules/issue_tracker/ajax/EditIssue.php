@@ -98,7 +98,7 @@ function editIssue()
         return $validatedInput;
     } //aka when it's not valid
 
-    if (!empty($issueID)) {
+    if (!empty($issueID) || $issueID != "null") {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
     } else {
         $issueValues['reporter'] = $user->getData('UserID');
@@ -246,8 +246,7 @@ function validateInput($validateValues, $issueID)
     } else if (isset($validateValues['visitLabel'])) {
         return array(
             'isValidSubmission' => false,
-            'invalidMessage' => 'A Visit Label must ".
-                "be accompanied by a PSCID',
+            'invalidMessage' => 'A Visit Label must be accompanied by a PSCID',
         );
     } else {
         return array('isValidSubmission' => true);
@@ -570,7 +569,7 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
         $issueData['centerID'] = $user->getData('CenterID');
         $issueData['status'] = "new";
         $issueData['priority'] = "low";
-        $issueData['issueID'] = null; //TODO: this is dumb
+        $issueData['issueID'] = 0; //TODO: this is dumb
         $issueData['title'] = null;
         $issueData['lastUpdate'] = null;
         $issueData['PSCID'] = null;
