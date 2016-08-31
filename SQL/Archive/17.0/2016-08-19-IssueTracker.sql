@@ -31,7 +31,7 @@ CREATE TABLE `issues` (
   `status` enum('new','acknowledged','feedback','assigned','resolved','closed') NOT NULL DEFAULT 'new',
   `priority` enum('low','normal','high','urgent','immediate') NOT NULL DEFAULT 'low',
   `module` int(10) unsigned DEFAULT NULL,
-  `category` enum('Behavioural Instruments','Behavioural Battery','Data Entry','Database Problems','Examiners','SubprojectID/Project/Plan Changes') DEFAULT NULL,
+  `category` enum('Behavioural Instruments','Behavioural Battery','Data Entry','Database Problems','Examiners','SubprojectID/Project/Plan Changes','Imaging') DEFAULT NULL,
   `dateCreated` datetime DEFAULT NULL,
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `lastUpdatedBy` varchar(255) DEFAULT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE `issues` (
   CONSTRAINT `fk_issues_5` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_7` FOREIGN KEY (`module`) REFERENCES `LorisMenu` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 -- issues_watching table
 CREATE TABLE `issues_watching` (

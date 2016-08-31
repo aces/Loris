@@ -423,8 +423,6 @@ var IssueEditForm = React.createClass(
                             'otherWatchers': data.issueData.whoIsWatching
                         };
 
-                        console.log(data.otherWatchers);
-
                         that.setState(
                             {
                                 'Data': data,

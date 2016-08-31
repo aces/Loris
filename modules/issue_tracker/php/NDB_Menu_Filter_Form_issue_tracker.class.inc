@@ -314,7 +314,6 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                 $query .= " AND i.dateCreated < " . $val . "00-00-00'";
             }
         }
-        error_log($query);
             return $query;
     }
 

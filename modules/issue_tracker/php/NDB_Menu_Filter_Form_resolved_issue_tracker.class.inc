@@ -29,7 +29,6 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
     //aka building-table-using-react
     var $AjaxModule = true;
 
-
     /**
      * Set up the variables required by NDB_Menu_Filter class for constructing
      * a query
@@ -301,7 +300,6 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
                 $query .= " AND i.dateCreated < " . $val . "00-00-00'";
             }
         }
-        error_log($query);
         return $query;
     }
 
@@ -331,7 +329,6 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
         }
         return $data;
     }
-
 
 
         /**

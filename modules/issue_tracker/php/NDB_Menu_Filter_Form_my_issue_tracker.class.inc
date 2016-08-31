@@ -49,7 +49,7 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
             "LEFT JOIN session s ON (i.sessionID = s.ID) ".
             "LEFT JOIN issues_watching w ON (i.issueID = w.issueID) ".
             "WHERE i.status != 'closed' ".
-            "AND i.assignee=" . "'". $user->getData('UserID') . "'"; //yup
+            "AND i.assignee=" . $db->quote($user->getData('UserID')); //yup
 
         if (!$user->hasPermission('access_all_profiles')) {
             $this->query .= " AND i.centerID=" . $db->quote($user->getCenterID());
@@ -299,7 +299,6 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
                 $query .= " AND i.dateCreated < " . $val . "00-00-00'";
             }
         }
-        error_log($query);
         return $query;
     }
 

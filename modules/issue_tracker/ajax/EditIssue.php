@@ -7,7 +7,7 @@
  * PHP Version 5
  *
  * @category Loris
- * @package  Media
+ * @package  Issue Tracker
  * @author   Caitrin Armstrong <caitrin.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
@@ -21,7 +21,7 @@
  * PHP Version 5
  *
  * @category Loris
- * @package  Media
+ * @package  Issue Tracker
  * @author   Caitrin Armstrong <caitrin.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
@@ -330,7 +330,6 @@ function getWatching($issueID)
     foreach ($watching as $watcher) {
         $whoIsWatching[] = $watcher['userID'];
     }
-    error_log(json_encode($whoIsWatching));
     return $whoIsWatching;
 }
 
