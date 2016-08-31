@@ -349,7 +349,7 @@ var IssueEditForm = React.createClass(
                             <div class="col-sm-6">
                                 <div class="row">
                                     <CollapsibleComment
-                                        text={this.state.issueData.commentHistory}
+                                        text={this.state.issueData.history}
                                     />
                                 </div>
                             </div>
@@ -414,7 +414,7 @@ var IssueEditForm = React.createClass(
               'dateCreated': data.issueData.dateCreated,
               'category': data.issueData.category,
               'lastUpdatedBy': data.issueData.lastUpdatedBy,
-              'commentHistory': data.issueData.commentHistory,
+              'history': data.issueData.history,
               'comment': data.issueData.comment,
               'otherWatchers': data.issueData.whoIsWatching
             };
@@ -470,7 +470,7 @@ var IssueEditForm = React.createClass(
         }
       }
 
-      formData.append('issueID', this.state.issueID);
+      formData.append('issueID', this.state.Data.issueData.issueID);
 
       $.ajax(
         {
