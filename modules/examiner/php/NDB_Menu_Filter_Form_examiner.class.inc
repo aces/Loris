@@ -166,8 +166,8 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
                 // Grab their certifications from the database
                 $certifications = $DB->pselect(
-                    "SELECT tn.Full_name FROM certification c
-                     RIGHT JOIN test_names tn ON (tn.ID=c.testID) 
+                    "SELECT tn.Full_name FROM test_names tn
+                     LEFT JOIN certification c ON (tn.ID=c.testID) 
                      WHERE c.examinerID=:EID AND c.pass='certified'",
                     array('EID' => $examinerID)
                 );
