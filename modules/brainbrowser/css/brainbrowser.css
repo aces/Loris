@@ -35,16 +35,6 @@ body {
   border-top-right-radius: 4px;
 }
 
-#sync-volumes-wrapper {
-  margin-right: 10px;
-}
-
-#capture-slices, #sync-volumes {
-  font-size: 12px;
-  margin: 0;
-  line-height: 2;
-}
-
 .volume-container {
   display: block;
   margin-bottom: 15px;
@@ -154,13 +144,6 @@ body {
 
 .play-btn:focus { outline: 0; }
 
-.panel-size {
-  color: #fff;
-  background-color: #064785;
-  border-color: #053a6d;
-  font-weight: bold;
-}
-
 .overlay-viewer-display {
   float: right;
 }
@@ -180,3 +163,19 @@ body {
   text-transform: uppercase;
 }
 
+.brainbrowser-wrapper .global-controls .control {
+  color: #fff;
+  background-color: #064785;
+  border: 1px solid #053a6d;
+  font-weight: 500;
+  height: 35px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-right: 10px;
+  outline: 0 !important;
+}
+
+.brainbrowser-wrapper .global-controls .control:active,
+.brainbrowser-wrapper .global-controls .control.isChecked {
+  background-color: #042d54;
+}

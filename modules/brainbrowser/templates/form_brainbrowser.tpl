@@ -175,39 +175,11 @@
 </script>
 {/literal}
 
-<div id="brainbrowser-wrapper" class="brainbrowser-wrapper">
-    <div id="global-controls" class="clearfix">
-        <span id="sync-volumes-wrapper" class="clickable">
-            <input type="checkbox" class="button ui-helper-hidden-accessible" id="sync-volumes">
-            <label for="sync-volumes" id="sync-volumes" class="clickable btn btn-sm btn-primary">Sync Volumes</label>
-        </span>
-
-        <span id="reset-wrapper" class="clickable">
-            <input type="button" class="button ui-helper-hidden-accessible" id="reset-view">
-            <label for="reset-view" id="reset-view" class="clickable btn btn-sm btn-primary">Reset View</label>
-        </span>
-
-        <div class="btn-group">
-            <select id="panel-size" class="form-control panel-size clickable">
-                <option value="256" selected>Choose Panel Size</option>
-                <option value="-1">Auto</option>
-                <option value="100">100 Pixels</option>
-                <option value="200">200 Pixels</option>
-                <option value="256">256 Pixels (Default)</option>
-                <option value="300">300 Pixels</option>
-                <option value="400">400 Pixels</option>
-                <option value="500">500 Pixels</option>
-                <option value="600">600 Pixels</option>
-                <option value="700">700 Pixels</option>
-                <option value="800">800 Pixels</option>
-                <option value="900">900 Pixels</option>
-                <option value="1000">1000 Pixels</option>
-            </select>
-        </div>
-    </div>
+<div id="brainbrowserPage">
+  {* React component is inserted here *}
 </div>
 
-<div id="brainbrowser" class="brainbrowser"></div>
-
-<div id="loading" class="loading-message">Loading...</div>
-
+<script>
+  var brainBrowserPage = RBrainBrowser();
+  React.render(brainBrowserPage, document.getElementById('brainbrowserPage'));
+</script>

@@ -58,10 +58,11 @@ $(function() {
     });
 
     // Should cursors in all panels be synchronized?
-    $("#sync-volumes").change(function() {
-      var synced = $(this).is(":checked");
-
-      viewer.synced = synced;
+    var isChecked = false;
+    $("#sync-volumes").click(function() {
+      isChecked = !isChecked;
+      $(this).toggleClass('isChecked');
+      viewer.synced = isChecked;
     });
 
     // Reset button
