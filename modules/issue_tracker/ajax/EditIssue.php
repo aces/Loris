@@ -58,7 +58,6 @@ function editIssue()
         'assignee',
         'status',
         'priority',
-        'visitLabel',
         'centerID',
         'title',
         'category',
@@ -179,20 +178,20 @@ function editIssue()
 function validateInput($validateValues, $issueID)
 {
     $db =& Database::singleton();
-
+    error_log($issueID);
     $old = null;
     if ($issueID) {
         $old = $db->pSelect(
-            "SELECT c.PSCID, s.Visit_label from candidate c " .
-            "INNER JOIN issues i ON (i.candID = c.CandID) " .
-            "INNER JOIN session s ON (i.sessionID = s.ID) WHERE i.issueID=:issueID",
+            "SELECT c.PSCID, s.Visit_label from candidate c 
+LEFT JOIN issues i ON (i.candID = c.CandID) 
+LEFT JOIN session s ON (i.sessionID = s.ID) 
+WHERE i.issueID=:issueID",
             array('issueID' => $issueID)
         );//inner join because you only want if it has these values.
     }
 
-    $oldPSCID = $old['PSCID'];
-    $oldVisitLabel = $old['visitLabel'];
-
+    $oldPSCID = $old[0]['PSCID'];
+    $oldVisitLabel = $old['Visit_label'];
     if ((isset($validateValues['visitLabel']) && $oldPSCID)
         || (isset($validateValues['PSCID']) && $oldVisitLabel)
     ) {
@@ -202,12 +201,14 @@ function validateInput($validateValues, $issueID)
             $PSCID = $validateValues['PSCID'];
         }
         if (isset($validateValues['visitLabel'])) {
-            $PSCID = $validateValues['visitLabel'];
+            $visitLabel = $validateValues['visitLabel'];
         }
+        error_log($PSCID);
+        error_log($visitLabel);
         $isValidSession = $db->pSelectOne(
-            "SELECT s.ID FROM candidate c " .
-            "INNER JOIN session s on (c.CandID = s.CandID) " .
-            "WHERE s.CandID=:PSCID and s.Visit_label=:visitLabel",
+            "SELECT s.ID FROM candidate c 
+INNER JOIN session s on (c.CandID = s.CandID) 
+WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
             array(
                 'PSCID' => $PSCID,
                 'visitLabel' => $visitLabel,
@@ -216,8 +217,8 @@ function validateInput($validateValues, $issueID)
         if (!$isValidSession) {
             return array(
                 'isValidSubmission' => false,
-                'invalidMessage' => 'PSCID and Visit ".
-                "Label do not match a candidate session',
+                'invalidMessage' => 'PSCID and Visit Label '
+            .'do not match a candidate session',
             );
         } else {
             return array(
@@ -560,7 +561,7 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
             "WHERE issueID = $issueID",
             []
         );
-        $issueData['commentHistory'] = getComments($issueID);
+        $issueData['history'] = getComments($issueID);
         $issueData['whoIsWatching'] = getWatching($issueID);
 
     } else { //just setting the default values
@@ -574,7 +575,7 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
         $issueData['lastUpdate'] = null;
         $issueData['PSCID'] = null;
         $issueData['assignee'] = null;
-        $issueData['commentHistory'] = null;
+        $issueData['history'] = null;
         $issueData['watching'] = null;
         $issueData['visitLabel'] = null;
         $issueData['category'] = null;
