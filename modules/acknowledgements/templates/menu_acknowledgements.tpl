@@ -179,7 +179,7 @@
                             </tr>
 
                             <tr>
-                                <td nowrap="nowrap" colspan="9" id="message-area">
+                                <td nowrap="nowrap" colspan="8" id="message-area">
                                     
                                 </td>
                                 <td nowrap="nowrap">
