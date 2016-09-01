@@ -56,7 +56,7 @@ class LorisForm
     {
         $el = array('label' => $label);
 
-        if ($name) {
+        if (!empty($name)) {
             $el['name'] = $name;
         }
 
