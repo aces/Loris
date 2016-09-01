@@ -499,6 +499,12 @@ class NDB_BVL_Instrument extends NDB_Page
         if (empty($this->dateTimeFields)) {
             $this->dateTimeFields = array("Date_taken");
         }
+        foreach ($this->dateTimeFields as $field) {
+            $defaults[$field] = $this->_getQuickformDate($defaults[$field]);
+        }
+        foreach ($this->monthYearFields as $field) {
+            $defaults[$field] = $this->_getQuickformDate($defaults[$field]);
+        }
 
         if (isset($defaults['Window_Difference'])
             && $defaults['Window_Difference'] != 0
