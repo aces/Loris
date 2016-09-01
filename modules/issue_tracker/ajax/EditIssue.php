@@ -540,7 +540,8 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
 
     $modules = array();
     $modules_expanded = $db->pselect(
-        "SELECT DISTINCT Label, ID FROM LorisMenu ORDER BY Label",
+        "SELECT DISTINCT Label, ID FROM LorisMenu 
+WHERE Parent IS NOT NULL ORDER BY Label ",
         []
     );
     foreach ($modules_expanded as $m_row) {

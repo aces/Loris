@@ -180,7 +180,8 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
 
         //modules
         $modules_expanded = $db->pselect(
-            "SELECT DISTINCT Label FROM LorisMenu ORDER BY Label",
+            "SELECT DISTINCT Label, ID FROM LorisMenu 
+WHERE Parent IS NOT NULL ORDER BY Label ",
             []
         );
         $modules          = $this->reorganizeQueryResults(
