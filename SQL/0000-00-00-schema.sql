@@ -2014,7 +2014,6 @@ CREATE TABLE `genomic_files` (
   PRIMARY KEY (`GenomicFileID`),
   KEY `AnalysisModality` (`AnalysisModality`),
   CONSTRAINT `genomic_files_ibfk_1` FOREIGN KEY (`AnalysisModality`) REFERENCES `genomic_analysis_modality_enum` (`analysis_modality`),
-  CONSTRAINT `FK_genomic_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `FileTypes`(`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `genomic_candidate_files_rel`;
