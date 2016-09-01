@@ -63,7 +63,7 @@
        	    {if $subject.has_permission}{html_options options=$subject.pending_options selected=$subject.mriqcpending name=visit_pending tabindex=2 class="form-control input-sm" style="width:100px"}{else}{if $subject.mriqcpending=='Y'}Yes{else}No{/if}{/if}
    <br>
        	    <label>Visit Level Caveat</label>
-       	    {if $subject.has_permission}{html_options options=$subject.caveat_options selected=$subject.mricaveat name=visit_caveat tabindex=3 class="form-control input-sm" style="width:100px"}{else}{if $subject.mricaveat=='true'}True{else}False{/if}{/if}
+       	    {if $subject.has_permission}{html_options options=$subject.caveat_options selected=$subject.caveat name=visit_caveat tabindex=3 class="form-control input-sm" style="width:100px"}{else}{if $subject.caveat=='true'}True{else}False{/if}{/if}
    <br>
             {if $subject.has_permission}<input class="btn btn-default" type="submit" accesskey="s" value="Save" name="save_changes">{/if}
         </div>

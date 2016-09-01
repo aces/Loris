@@ -130,7 +130,7 @@ class Imaging_Session_ControlPanel
 
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['mricaveat'] = $qcstatus['Caveat'];
+        $subjectData['caveat'] = $qcstatus['Caveat'];
 
 
         $factory = NDB_Factory::singleton();

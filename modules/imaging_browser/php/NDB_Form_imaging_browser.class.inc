@@ -567,7 +567,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         );
         $subjectData['mriqcstatus'] = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['mricaveat'] = $qcstatus['Caveat'];
+        $subjectData['caveat'] = $qcstatus['Caveat'];
         $subjectData['candid'] = $timePoint->getCandID();
         $subjectData['scanner'] = $this->scanner;
 
