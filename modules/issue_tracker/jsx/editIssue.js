@@ -89,7 +89,7 @@ var IssueEditForm = React.createClass(
       var helpText = "A title and assignee are required"; // todo: here fill out the fields that are neccessary.
       var alertMessage = "";
       var alertClass = "alert text-center hide";
-      var hasEditPermission = this.state.Data.hasEditPermission || this.state.Data.isOwnIssue;
+      var hasEditPermission = this.state.Data.hasEditPermission || this.state.Data.isOwnIssue || this.state.isNewIssue;
 
       var headerText = " ";
       if (this.state.isNewIssue) {
