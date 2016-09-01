@@ -16,6 +16,7 @@ module.exports = function(grunt) {
                     'htdocs/js/components/StaticDataTable.js': 'jsx/StaticDataTable.js',
                     'htdocs/js/components/react.breadcrumb.js': 'jsx/react.breadcrumb.js',
                     'htdocs/js/components/Form.js': 'jsx/Form.js',
+                    'htdocs/js/components/Tabs.js': 'jsx/Tabs.js',
                     'modules/bvl_feedback/js/react.behavioural_feedback_panel.js': 'modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
                     'modules/candidate_list/js/columnFormatter.js': 'modules/candidate_list/jsx/columnFormatter.js',
                     'modules/configuration/js/SubprojectRelations.js': 'modules/configuration/jsx/SubprojectRelations.js',

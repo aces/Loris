@@ -4,25 +4,6 @@
  */
 
 /**
- *	Base class for tabs within the UI of the instrument builder
- */
-TabPane = React.createClass({
-    render: function() {
-        var classList = "tab-pane";
-        if(this.props.Active) {
-            classList += " active"
-        }
-        // Render the HTML
-        return (
-            <div className={classList} id={this.props.TabId}>
-                <h1 className="tabHeader">{this.props.Title}</h1>
-                	{this.props.children}
-            </div>
-        );
-    }
-});
-
-/**
  *	This is the React class for loading in a previously
  *	made instrument.
  */
@@ -478,7 +459,7 @@ BuildPane = React.createClass({
 			        	}));
 		return (
 			<TabPane Title="Build your Instrument"
-                TabId={this.props.TabId} Active={true}>
+                TabId={this.props.TabId} DefaultTab={true}>
                 	<div className="form-group col-xs-12">
 					    <label for="selected-input" className="col-xs-2 col-sm-1 control-label">Page:</label>
 			            <div className="col-sm-4">
@@ -550,19 +531,27 @@ InstrumentBuilderApp = React.createClass({
 				save={this.saveInstrument}
 			/>
 		);
+
+        var tabList = [
+                        {
+                            "id" : "Load",
+                            "label" : "Load"
+                        },
+                        {
+                            "id" : "Build",
+                            "label" : "Build"
+                        },
+                        {
+                            "id" : "Save",
+                            "label" : "Save"
+                        }
+        ];
+
 		return (
 			<div>
-				<ul className="nav nav-tabs" role="tablist">
-					<li role="presentation"><a href="#Load" aria-controls="home" role="tab" data-toggle="tab">Load</a></li>
-				    <li role="presentation" className="active"><a href="#Build" aria-controls="build" role="tab" data-toggle="tab">Build</a></li>
-				    <li role="presentation"><a href="#Save" aria-controls="messages" role="tab" data-toggle="tab">Save</a></li>
-				 </ul>
-
-				<div className="row">
-					<div className="tab-content col-xs-12">
-						{tabs}
-					</div>
-				</div>
+                <Tabs tabs={tabList} defaultTab="Build">
+                    {tabs}
+                </Tabs>
 			</div>
 		)
 	}
