@@ -61,6 +61,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                           'session.CandID',
                           'candidate.PSCID',
                           'session.Visit_label',
+                          'conflicts_resolved.ResolutionTimestamp',
                          );
 
         if ($useProjects) {
@@ -95,6 +96,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                                'conflicts_resolved.TableName',
                                'session.CenterID',
                                'session.Visit_label',
+                               'conflicts_resolved.ResolutionTimestamp',
                               );
 
         if ($useProjects) {
@@ -115,6 +117,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                           'CandID',
                           'PSCID',
                           'Visit_label',
+                          'ResolutionTimestamp',
                          );
 
         if ($useProjects) {
@@ -125,11 +128,13 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         }
 
         $this->headers[] = 'FieldName';
+        $con = "conflicts_resolved";
 
         $this->formToFilter = array(
-                               'Instrument' => 'conflicts_resolved.TableName',
-                               'site'       => 'session.CenterID',
-                               'visit'      => 'session.Visit_label',
+                               'Instrument'          => "$con.TableName",
+                               'site'                => 'session.CenterID',
+                               'visit'               => 'session.Visit_label',
+                               'ResolutionTimestamp' => "$con.ResolutionTimestamp",
                               );
 
         if ($useProjects) {
@@ -205,6 +210,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             )
         );
         $this->addBasicText('Question', 'Search keyword:');
+        $this->addBasicText('ResolutionTimestamp', 'Resolution Timestamp:');
 
         // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
@@ -250,6 +256,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                     || $key=='CandID'
                     || $key=='PSCID'
                     || $key=='Visit_label'
+                    || $key=='ResolutionTimestamp'
                     || $key=='FieldName'
                 ) {
                     $this->tpl_data['items'][$x][$i]['name']  = $key;

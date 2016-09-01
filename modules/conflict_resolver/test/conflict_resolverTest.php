@@ -190,7 +190,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::XPath(
                  "//*[@id='tabs']/div/div/div/div/div/".
-                 "table/tbody/tr[1]/td[6]"
+                 "table/tbody/tr[1]/td[7]"
              )
          )->getText();
          $this->assertContains("TestTestTest", $bodyText);
