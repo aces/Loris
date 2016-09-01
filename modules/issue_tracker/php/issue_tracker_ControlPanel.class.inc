@@ -67,9 +67,10 @@ class Issue_Tracker_ControlPanel
             . urldecode($_REQUEST['backURL']);
 
         $NavBar = new IssueNavigation($this->issueID);
-        $issueData['nextIssue']['URL'] = $NavBar->nextLink();
-        $issueData['prevIssue']['URL'] = $NavBar->prevLink();
-
+        if ($this->issueID != 0) {
+            $issueData['nextIssue']['URL'] = $NavBar->nextLink();
+            $issueData['prevIssue']['URL'] = $NavBar->prevLink();
+        }
         return $issueData;
     }
     /**

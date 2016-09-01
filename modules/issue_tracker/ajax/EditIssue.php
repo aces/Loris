@@ -59,7 +59,6 @@ function editIssue()
         'title',
         'category',
         'module',
-        'watching',
     );
     $fieldsToValidateFirst = array(
         'PSCID',
@@ -266,6 +265,8 @@ function updateHistory($issueValues, $issueID)
     $user =& User::singleton();
     $db =& Database::singleton();
     $undesiredFields = array('lastUpdatedBy');
+
+    error_log($user->getData('UserID'));
 
     foreach ($issueValues as $key => $value) {
         if (in_array($key, $undesiredFields)) {
