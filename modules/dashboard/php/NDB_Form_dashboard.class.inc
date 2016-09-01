@@ -376,6 +376,22 @@ class NDB_Form_Dashboard extends NDB_Form
         }
     }
 
+    /**
+     * Include additional CSS files:
+     *  1. dashboard.css
+     *
+     * @return array of css to be included
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/dashboard/css/dashboard.css"]
+        );
+    }
 
     /**
      * Add dependency on D3 and C3 javascript libraries
