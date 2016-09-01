@@ -156,8 +156,7 @@ CREATE TABLE `document_repository` (
   `EARLI` tinyint(1) DEFAULT '0',
   `hide_video` tinyint(1) DEFAULT '0',
   `File_category` int(3) DEFAULT NULL,
-  PRIMARY KEY (`record_id`),
-  CONSTRAINT `FK_document_repository_FileTypes` FOREIGN KEY (`File_type`) REFERENCES `FileTypes`(`type`)
+  PRIMARY KEY (`record_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
