@@ -566,7 +566,7 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
         $issueData['dateCreated'] = date('Y-m-d H:i:s');
         $issueData['centerID'] = $user->getData('CenterID');
         $issueData['status'] = "new";
-        $issueData['priority'] = "low";
+        $issueData['priority'] = "normal";
         $issueData['issueID'] = 0; //TODO: this is dumb
         $issueData['title'] = null;
         $issueData['lastUpdate'] = null;
