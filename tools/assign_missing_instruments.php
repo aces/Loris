@@ -70,8 +70,6 @@ if (!empty($argv[1]) && $argv[1]!="confirm") {
     );
 }
 
-$DB->_trackChanges =false;
-
 /**
  * Adds the missing instruments based on the visit_label
  *
