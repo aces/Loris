@@ -157,6 +157,8 @@ function editIssue()
         }
     }
 
+    error_log(json_encode($issueValues));
+
     //sending email
     emailUser($issueID, $issueValues['assignee']);
 
@@ -286,9 +288,11 @@ function updateHistory($issueValues, $issueID)
 {
     $user =& User::singleton();
     $db =& Database::singleton();
-    $undesiredFields = array('lastUpdatedBy');
-
-    error_log($user->getData('UserID'));
+    $undesiredFields = array(
+        'lastUpdatedBy',
+        'reporter',
+        'dateCreated'
+    );
 
     foreach ($issueValues as $key => $value) {
         if (in_array($key, $undesiredFields)) {
@@ -432,11 +436,13 @@ function display_comments($issueID)
  * @param int $issueID the issueID
  *
  * @return array
- * @throws DatabaseExceptionr
+ * @throws DatabaseException
  */
 function emailUser($issueID, $changed_assignee)
 {
 
+    error_log("changed assignee");
+    error_log($changed_assignee);
     $user =& User::singleton();
     $db =& Database::singleton();
     //not sure if this is necessary
@@ -451,12 +457,12 @@ function emailUser($issueID, $changed_assignee)
                 'assignee' => $changed_assignee,
             )
         );
-        $msg_data['firstname'] = $issue_change_emails_assignee['firstname'];
+        $msg_data['firstname'] = $issue_change_emails_assignee[0]['firstname'];
         $msg_data['url'] = $baseurl .
             "/issue_tracker/edit/?backURL=/issue_tracker/&issueID=" . $issueID;
         $msg_data['issueID'] = $issueID;
         $msg_data['currentUser'] = $user->getUsername();
-        Email::send($issue_change_emails_assignee['Email'], 'issue_assigned.tpl', $msg_data);
+        Email::send($issue_change_emails_assignee[0]['Email'], 'issue_assigned.tpl', $msg_data);
     } else {
         $changed_assignee = $user->getUsername(); // so query below doesn't break..
     }
