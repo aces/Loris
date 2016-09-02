@@ -411,12 +411,11 @@ function getComments($issueID)
 }
 
 /**
- * Emails all users that are watching the issue with the changes.
+ * Returns HTML of comment history
  *
  * @param int $issueID the issueID
  *
- * @return array
- * @throws DatabaseExceptionr
+ * @return string
  */
 function display_comments($issueID)
 {
@@ -454,9 +453,9 @@ function emailUser($issueID, $changed_assignee)
         );
         $msg_data['firstname'] = $issue_change_emails_assignee['firstname'];
         $msg_data['url'] = $baseurl .
-            "/issue_tracker/ajax/EditIssue.php?action=getData&issueID=" . $issueID;
+            "/issue_tracker/edit/?backURL=/issue_tracker/&issueID=" . $issueID;
         $msg_data['issueID'] = $issueID;
-        $msq_data['user'] = $user->getUsername();
+        $msg_data['currentUser'] = $user->getUsername();
         Email::send($issue_change_emails_assignee['Email'], 'issue_assigned.tpl', $msg_data);
     } else {
         $changed_assignee = $user->getUsername(); // so query below doesn't break..
@@ -474,9 +473,9 @@ function emailUser($issueID, $changed_assignee)
     );
 
     $msg_data['url'] = $baseurl .
-        "/issue_tracker/ajax/EditIssue.php?action=getData&issueID=" . $issueID;
+        "/issue_tracker/edit/?backURL=/issue_tracker/&issueID=" . $issueID;
     $msg_data['issueID'] = $issueID;
-    $msq_data['user'] = $user->getUsername();
+    $msg_data['currentUser'] = $user->getUsername();
 
     foreach ($issue_change_emails as $email) {
         $msg_data['firstname'] = $issue_change_emails['firstname'];
