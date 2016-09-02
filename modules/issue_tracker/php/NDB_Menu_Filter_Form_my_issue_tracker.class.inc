@@ -120,6 +120,7 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
                                'keyword'    => 'i.comment',
                                'minDate'    => 'minDate',
                                'maxDate'    => 'maxDate',
+            $user->getData('UserID') => 'watching',
                               );
 
         $this->EqualityFilters = array(
@@ -158,16 +159,16 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
         }
 
         //reporters
+        $reporters = array('' => 'All');
         $reporter_expanded = $db->pselect(
-            "SELECT u.UserID FROM issues i ".
-            "INNER JOIN users u ON(i.reporter=u.UserID)",
+            "SELECT u.UserID, u.Real_name FROM issues i " .
+            "INNER JOIN users u ON(i.assignee=u.UserID)",
             array()
         );
-        $reporters         = $this->reorganizeQueryResults(
-            $reporter_expanded,
-            'UserID'
-        );
-
+        foreach ($reporter_expanded as $r_row) {
+            $reporters[$r_row['UserID']] = $r_row['Real_name'];
+        }
+        
         //modules
         $modules_expanded = $db->pselect(
             "SELECT DISTINCT Label, ID FROM LorisMenu 
@@ -293,7 +294,6 @@ WHERE Parent IS NOT NULL ORDER BY Label",
                 }
             } else if ($field = 'w.userID' && ($val == 1)) {
                 $query .= " AND w.userID = :v_$prepared_key";
-                //'" . $user->getData('UserID') . "'";
             } else if ($field = 'minDate') {
                 $query .= " AND i.dateCreated > '" . $val . "00-00-00'";
             } else if ($field = 'maxDate') {

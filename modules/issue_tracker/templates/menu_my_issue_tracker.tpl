@@ -21,7 +21,7 @@
                 </span>
             </div>
             <div class="panel-body" id="panel-body">
-                <form method="post" action="{$baseurl}/issue_tracker/">
+                <form method="post" action="{$baseurl}/issue_tracker/?submenu=my_issue_tracker">
                     <div class="row">
                         <div class="form-group col-sm-4">
                             <label class="col-sm-12 col-md-4">
