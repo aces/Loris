@@ -222,8 +222,8 @@ WHERE Parent IS NOT NULL ORDER BY Label",
                        'Examiners'                         => 'Examiners',
                        'SubprojectID/Project/Plan Changes' => 'SubprojectID/'.
                            'Project/Plan Changes',
-                       'Imaging' => 'Imaging'
-        );
+                       'Imaging'                           => 'Imaging',
+                      );
 
         $dateOptions = array(
                         'language'       => 'en',

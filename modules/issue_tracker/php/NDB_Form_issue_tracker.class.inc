@@ -41,7 +41,7 @@ class NDB_Form_Issue_Tracker extends NDB_Form
         $issueID = $_GET['issueID'];
 
         if ((empty($issueID)
-                || !isset($issueID))
+            || !isset($issueID))
             && !$user->hasPermission('issue_tracker_reporter')
         ) {
             header("HTTP/1.1 403 Forbidden");
@@ -59,13 +59,13 @@ class NDB_Form_Issue_Tracker extends NDB_Form
         $issueID = $_GET['issueID'];
 
         if ((empty($issueID)
-                || !isset($issueID))
+            || !isset($issueID))
             && !$user->hasPermission('issue_tracker_reporter')
         ) {
             header("HTTP/1.1 403 Forbidden");
         }
     }
-    
+
     /**
      * Include issue_tracker.css
      *

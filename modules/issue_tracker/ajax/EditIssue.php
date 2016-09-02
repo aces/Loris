@@ -168,8 +168,6 @@ function editIssue()
     );
 }
 
-//TODO: change to reflect the fact that
-//TODO: if you have a visitlabel input then you don't need to insert a session
 //also make this better
 /**
  * Validates those fields that need it
@@ -466,14 +464,18 @@ function emailUser($issueID, $changed_assignee)
         );
         $msg_data['firstname'] = $issue_change_emails_assignee[0]['firstname'];
 
-        Email::send($issue_change_emails_assignee[0]['Email'], 'issue_assigned.tpl', $msg_data);
+        Email::send(
+            $issue_change_emails_assignee[0]['Email'],
+            'issue_assigned.tpl',
+            $msg_data
+        );
     } else {
         $changed_assignee = $user->getUsername(); // so query below doesn't break..
     }
 
     $issue_change_emails = $db->pselect(
         "SELECT u.Email as Email, u.First_name as firstname " .
-        "FROM users u INNER JOIN issues_watching w ON (w.userID = u.userID) WHERE " .
+        "FROM users u INNER JOIN issues_watching w ON (w.userID = u.userID) WHERE ".
         "w.issueID=:issueID AND u.UserID<>:uid AND u.UserID<>:assignee",
         array(
             'issueID' => $issueID,
