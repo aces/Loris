@@ -843,7 +843,14 @@ $(function() {
     ////////////////////////////////////////
     // Set the size of slice display panels.
     ////////////////////////////////////////
-    viewer.setDefaultPanelSize(256, 256);
+
+    // Use the size from dropdown as deafault size
+    var panelSize = Number.parseInt($("#panel-size").val(), 10);
+
+    // If not a real size, set to default value
+    if (panelSize < 0) { panelSize = 300; }
+
+    viewer.setDefaultPanelSize(panelSize, panelSize);
 
     ///////////////////
     // Start rendering.

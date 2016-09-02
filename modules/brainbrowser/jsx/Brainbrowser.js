@@ -22,7 +22,7 @@ var BrainBrowser = React.createClass({
     var modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
     var panelSize = this.state.defaultPanelSize;
 
-    if (modulePrefs !== undefined) {
+    if (modulePrefs !== null) {
       this.modulePrefs = modulePrefs; // make prefs accesible within component
       if (modulePrefs[loris.TestName].panelSize !== undefined) {
         panelSize = modulePrefs[loris.TestName].panelSize;
@@ -81,7 +81,6 @@ var BrainBrowser = React.createClass({
                     className="control"
                     value={this.state.panelSize}
                     onChange={this.handleChange}>
-              <option value="">Choose Panel Size</option>
               <option value="-1">Auto</option>
               {Object.keys(options).map(function(option) {
                 return (
