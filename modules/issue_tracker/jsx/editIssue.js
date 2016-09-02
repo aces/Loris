@@ -10,14 +10,15 @@
 
 var CollapsibleComment = React.createClass(
     {
-
         getInitialState: function () {
             return {'collapsed': true};
         },
         toggleCollapsed: function () {
-            this.setState({'collapsed': !this.state.collapsed});
+            this.setState({'collapsed': !this.state.collapsed}
+            );
         },
         render: function () {
+            var comment_hist_bool = (this.state.collapsed ? "Show Comment History" : "Hide Comment History");
             return (
                 <div className="row form-group">
                     <div className="col-sm-9">
@@ -26,7 +27,7 @@ var CollapsibleComment = React.createClass(
                              data-toggle="collapse"
                              data-target="#comment-history"
                         >
-                            Show Comment History
+                            {comment_hist_bool}
                         </div>
                     </div>
                     <br></br>
@@ -189,7 +190,6 @@ var IssueEditForm = React.createClass(
                                 />
                             </div>
                         </div>
-
                         <div className="row">
                             <div className="col-md-6">
                                 <StaticElement

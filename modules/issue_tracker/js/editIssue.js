@@ -13,7 +13,6 @@
 var CollapsibleComment = React.createClass({
     displayName: 'CollapsibleComment',
 
-
     getInitialState: function getInitialState() {
         return { 'collapsed': true };
     },
@@ -21,6 +20,7 @@ var CollapsibleComment = React.createClass({
         this.setState({ 'collapsed': !this.state.collapsed });
     },
     render: function render() {
+        var comment_hist_bool = this.state.collapsed ? "Show Comment History" : "Hide Comment History";
         return React.createElement(
             'div',
             { className: 'row form-group' },
@@ -34,7 +34,7 @@ var CollapsibleComment = React.createClass({
                         'data-toggle': 'collapse',
                         'data-target': '#comment-history'
                     },
-                    'Show Comment History'
+                    comment_hist_bool
                 )
             ),
             React.createElement('br', null),
