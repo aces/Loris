@@ -575,6 +575,10 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         );
         $issueData['history'] = getComments($issueID);
         $issueData['whoIsWatching'] = getWatching($issueID);
+        $issueData['desc'] = $db->pSelectOne("SELECT issueComment 
+FROM issues_comments WHERE issueID=:issueID 
+ORDER BY dateAdded", array('issueID' => $issueID));
+        error_log($issueData['desc']);
 
     } else { //just setting the default values
         $issueData['reporter'] = $user->getData('UserID');

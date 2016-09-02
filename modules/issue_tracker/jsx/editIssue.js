@@ -225,6 +225,14 @@ var IssueEditForm = React.createClass(
                                     />
                                 </div>
                                 <div class="row">
+                                    <StaticElement
+                                        name="description"
+                                        label="Description"
+                                        ref="description"
+                                        text={this.state.issueData.desc}
+                                    />
+                                </div>
+                                <div class="row">
                                     <SelectElement
                                         name="assignee"
                                         label="Assignee"

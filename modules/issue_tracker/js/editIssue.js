@@ -261,6 +261,16 @@ var IssueEditForm = React.createClass({
                         React.createElement(
                             'div',
                             { 'class': 'row' },
+                            React.createElement(StaticElement, {
+                                name: 'description',
+                                label: 'Description',
+                                ref: 'description',
+                                text: this.state.issueData.desc
+                            })
+                        ),
+                        React.createElement(
+                            'div',
+                            { 'class': 'row' },
                             React.createElement(SelectElement, {
                                 name: 'assignee',
                                 label: 'Assignee',
