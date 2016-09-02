@@ -23,8 +23,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this);
 
-  console.log(row);
-
   if (column === 'Metadata') {
     var metadataURL = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" + row['TarchiveID'];
     return React.createElement(

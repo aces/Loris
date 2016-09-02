@@ -97,12 +97,6 @@ var DicomArchive = React.createClass({
     // Clear filter
     this.setState({ Filter: {} });
   },
-  toCamelCase: function toCamelCase(str) {
-    return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
-      if (+match === 0) return "";
-      return index == 0 ? match.toLowerCase() : match.toUpperCase();
-    });
-  },
   render: function render() {
     // Defining element names here ensures that `name` and `ref`
     // properties of the element are always kept in sync
