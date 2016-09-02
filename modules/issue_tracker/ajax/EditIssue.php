@@ -646,7 +646,7 @@ ORDER BY dateAdded", array('issueID' => $issueID));
     $issueData['watching'] = $isWatching;
     $issueData['comment'] = null;
 
-    if ($issueData['userID'] == $user->getData('UserID')) {
+    if ($issueData['reporter'] == $user->getData('UserID')) {
         $isOwnIssue = true;
     } else {
         $isOwnIssue = false;
