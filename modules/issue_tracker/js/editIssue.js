@@ -176,11 +176,6 @@ var IssueEditForm = React.createClass({
             'div',
             null,
             React.createElement(
-                'div',
-                { className: alertClass, role: 'alert', ref: 'alert-message' },
-                alertMessage
-            ),
-            React.createElement(
                 FormElement,
                 {
                     name: 'issueEdit',
@@ -413,8 +408,17 @@ var IssueEditForm = React.createClass({
                         ),
                         React.createElement(
                             'div',
-                            { 'class': 'row' },
-                            React.createElement(ButtonElement, { label: submitButtonValue })
+                            { 'class': 'row submit-area' },
+                            React.createElement(ButtonElement, { label: submitButtonValue }),
+                            React.createElement(
+                                'div',
+                                { 'class': 'col-md-3' },
+                                React.createElement(
+                                    'div',
+                                    { className: alertClass, role: 'alert', ref: 'alert-message' },
+                                    alertMessage
+                                )
+                            )
                         )
                     ),
                     React.createElement(
@@ -516,6 +520,8 @@ var IssueEditForm = React.createClass({
         var formData = new FormData();
         var issueData = this.state.issueData;
 
+        console.log(myFormData);
+
         // Validate the form
         if (!this.isValidForm(formRefs, myFormData)) {
             return;
@@ -567,10 +573,13 @@ var IssueEditForm = React.createClass({
                     issueID: data.issueID
                 });
                 self.getDataAndChangeState();
-
-                // Trigger an update event to update all observers (i.e DataTable) //todo: figure out what this is
-                $(document).trigger('update');
                 self.showAlertMessage();
+
+                if (self.state.isNewIssue) {
+                    setTimeout(function () {
+                        window.location.assign('/issue_tracker');
+                    }, 2000);
+                }
             },
             error: function error(err) {
                 console.error(err);
@@ -639,8 +648,8 @@ var IssueEditForm = React.createClass({
             return;
         }
 
-        var alertMsg = this.refs["alert-message"].getDOMNode();
-        $(alertMsg).fadeTo(2000, 500).delay(50000).slideUp(500, function () {
+        var alertMsg = React.findDOMNode(this.refs["alert-message"]);
+        $(alertMsg).fadeTo(2000, 500).delay(5000).slideUp(500, function () {
             self.setState({
                 uploadResult: null
             });

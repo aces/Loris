@@ -34,6 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === "GET") {
     echo json_encode(getIssueFields());
 } else if ($_SERVER['REQUEST_METHOD'] === "POST") {
     echo json_encode(editIssue());
+} else {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
 }
 
 //TODO: encapsulate more
@@ -174,7 +177,8 @@ function editIssue()
 function validateInput($validateValues, $issueID)
 {
     $db =& Database::singleton();
-    error_log($issueID);
+    $user =& User::singleton();
+
     $old = null;
     if ($issueID) {
         $old = $db->pSelect(
@@ -199,8 +203,6 @@ WHERE i.issueID=:issueID",
         if (isset($validateValues['visitLabel'])) {
             $visitLabel = $validateValues['visitLabel'];
         }
-        error_log($PSCID);
-        error_log($visitLabel);
         $isValidSession = $db->pSelectOne(
             "SELECT s.ID FROM candidate c 
 INNER JOIN session s on (c.CandID = s.CandID) 
@@ -214,25 +216,39 @@ WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
             return array(
                 'isValidSubmission' => false,
                 'invalidMessage' => 'PSCID and Visit Label '
-                    . 'do not match a candidate session',
+                    . 'do not match a valid candidate session',
             );
-        } else {
+        } else if (!isset($validateValues['PSCID'])){
             return array(
                 'isValidSubmission' => true,
                 'sessionID' => $isValidSession,
             );
         }
+        //return here ^ if you're not evaluating a new PSCID.
+        //Otherwise you need to go onto the else if below
+        //To check that the user has permissions on that PSCID
     } else if (isset($validateValues['PSCID'])) {
-        $isValidCandidate = $db->pSelectOne(
-            "SELECT CandID FROM candidate WHERE PSCID=:PSCID",
-            array(
-                'PSCID' => $validateValues['PSCID'],
-            )
-        );
+        if ($user->hasPermission('access_all_profiles')){
+            $isValidCandidate = $db->pSelectOne(
+                "SELECT CandID FROM candidate WHERE PSCID=:PSCID",
+                array(
+                    'PSCID' => $validateValues['PSCID'],
+                )
+            );
+        } else {
+            $isValidCandidate = $db->pSelectOne(
+                "SELECT CandID FROM candidate WHERE PSCID=:PSCID
+                 AND CenterID=:CenterID",
+                array(
+                    'PSCID' => $validateValues['PSCID'],
+                    'CenterID' => $user->getCenterID()
+                )
+            );
+        }
         if (!$isValidCandidate) {
             return array(
                 'isValidSubmission' => false,
-                'invalidMessage' => 'PSCID does not match a candidate',
+                'invalidMessage' => 'PSCID does not match a valid candidate',
             );
         } else {
             return array(
@@ -453,13 +469,9 @@ function getIssueFields()
     $user =& User::singleton();
 
     //get field options
-    $sites = array('' => 'All');
     if ($user->hasPermission('access_all_profiles')) {
         // get the list of study sites - to be replaced by the Site object
         $sites = Utility::getSiteList();
-        if (is_array($sites)) {
-            $sites = array('' => 'All') + $sites;
-        }
     } else {
         // allow only to view own site data
         $site =& Site::singleton($user->getData('CenterID'));

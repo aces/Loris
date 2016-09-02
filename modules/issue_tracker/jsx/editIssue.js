@@ -163,9 +163,6 @@ var IssueEditForm = React.createClass(
 
             return (
                 <div>
-                    <div className={alertClass} role="alert" ref="alert-message">
-                        {alertMessage}
-                    </div>
                     <FormElement
                         name="issueEdit"
                         onSubmit={this.handleSubmit}
@@ -360,8 +357,14 @@ var IssueEditForm = React.createClass(
                                     />
                                 </div>
 
-                                <div class="row">
+                                <div class="row submit-area">
                                     <ButtonElement label={submitButtonValue}/>
+
+                                    <div class="col-md-3">
+                                        <div className={alertClass} role="alert" ref="alert-message">
+                                        {alertMessage}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -475,10 +478,13 @@ var IssueEditForm = React.createClass(
             var formData = new FormData();
             var issueData = this.state.issueData;
 
+            console.log(myFormData);
+
             // Validate the form
             if (!this.isValidForm(formRefs, myFormData)) {
                 return;
             }
+
 
             for (var key in myFormData) {
                 if (myFormData[key] != "" && myFormData[key] !== issueData[key]) {
@@ -531,14 +537,15 @@ var IssueEditForm = React.createClass(
                         self.setState(
                             {
                                 submissionResult: "success",
-                                issueID: data.issueID
+                                issueID: data.issueID,
                             }
                         );
                         self.getDataAndChangeState();
-
-                        // Trigger an update event to update all observers (i.e DataTable) //todo: figure out what this is
-                        $(document).trigger('update');
                         self.showAlertMessage();
+
+                        if (self.state.isNewIssue) {
+                            setTimeout(function(){window.location.assign('/issue_tracker')} , 2000);
+                        }
                     },
                     error: function (err) {
                         console.error(err);
@@ -614,8 +621,8 @@ var IssueEditForm = React.createClass(
                 return;
             }
 
-            var alertMsg = this.refs["alert-message"].getDOMNode();
-            $(alertMsg).fadeTo(2000, 500).delay(50000).slideUp(
+            var alertMsg = React.findDOMNode(this.refs["alert-message"]);
+            $(alertMsg).fadeTo(2000, 500).delay(5000).slideUp(
                 500,
                 function () {
                     self.setState(
