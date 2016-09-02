@@ -550,7 +550,9 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
         array()
     );
     foreach ($potential_watchers_expanded as $w_row) {
-        $otherWatchers[$w_row['UserID']] = $w_row['Real_name'];
+        if ($w_row['UserID'] != $user->getData('UserID')) {
+            $otherWatchers[$w_row['UserID']] = $w_row['Real_name'];
+        }
     }
 
     //can't set to closed if not developer.
