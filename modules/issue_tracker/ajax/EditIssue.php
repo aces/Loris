@@ -140,7 +140,6 @@ function editIssue()
     //adding others from multiselect to watching table.
     if (isset($_POST['othersWatching'])) {
         $othersNowWatching = explode(',', $_POST['othersWatching']);
-        $othersNowWatching[] = $issueValues['reporter'];
         $othersNowWatching[] = $issueValues['assignee'];
         foreach ($othersNowWatching as $userWatching) {
             if ($userWatching) { //cause sometimes it sends null
