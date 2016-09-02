@@ -124,16 +124,28 @@ var StaticDataTable = React.createClass({
       return (filterMatchCount === 0) ? tableData.length : filterMatchCount;
     },
     toCamelCase: function(str) {
-      return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-        if (match === 0) return "";
-        return index === 0 ? match.toLowerCase() : match.toUpperCase();
+
+      // Remove all characters that should not be in a variable name
+      str = str.replace(/([^a-zA-Z0-9_\- ])|^[_0-9]+/g, "").trim().toLowerCase();
+
+      // Uppercase letters preceeded by a hyphen or a space
+      str = str.replace(/([ -]+)([a-zA-Z0-9])/g, function(a,b,c) {
+        return c.toUpperCase();
       });
+
+      // Uppercase letters following numbers
+      str = str.replace(/([0-9]+)([a-zA-Z])/g, function(a, b, c) {
+        return b + c.toUpperCase();
+      });
+
+      return str;
     },
     /**
      * Return true, if filter value is found to be a substring
      * of one of the column values, false otherwise.
      *
      * Note: Search is case-insensitive.
+     * Source: http://bit.ly/2cmd0yw
      *
      * @param header
      * @param data
