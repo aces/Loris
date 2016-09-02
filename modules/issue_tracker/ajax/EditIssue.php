@@ -440,15 +440,22 @@ function display_comments($issueID)
  */
 function emailUser($issueID, $changed_assignee)
 {
-
-    error_log("changed assignee");
-    error_log($changed_assignee);
     $user =& User::singleton();
     $db =& Database::singleton();
     //not sure if this is necessary
     $factory = NDB_Factory::singleton();
     $baseurl = $factory->settings()->getBaseURL();
 
+    $title = $db->pSelectOne("SELECT title FROM issues 
+        WHERE issueID=:issueID",
+        array('issueID' => $issueID));
+
+    $msg_data['url'] = $baseurl .
+        "/issue_tracker/edit/?backURL=/issue_tracker/&issueID=" . $issueID;
+    $msg_data['issueID'] = $issueID;
+    $msg_data['currentUser'] = $user->getUsername();
+    $msg_data['title'] = $title;
+    
     if (isset($changed_assignee)) {
         $issue_change_emails_assignee = $db->pselect(
             "SELECT u.Email as Email, u.First_name as firstname " .
@@ -458,10 +465,7 @@ function emailUser($issueID, $changed_assignee)
             )
         );
         $msg_data['firstname'] = $issue_change_emails_assignee[0]['firstname'];
-        $msg_data['url'] = $baseurl .
-            "/issue_tracker/edit/?backURL=/issue_tracker/&issueID=" . $issueID;
-        $msg_data['issueID'] = $issueID;
-        $msg_data['currentUser'] = $user->getUsername();
+
         Email::send($issue_change_emails_assignee[0]['Email'], 'issue_assigned.tpl', $msg_data);
     } else {
         $changed_assignee = $user->getUsername(); // so query below doesn't break..
