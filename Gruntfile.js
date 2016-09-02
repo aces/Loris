@@ -37,6 +37,8 @@ module.exports = function(grunt) {
                     'modules/media/js/columnFormatter.js': 'modules/media/jsx/columnFormatter.js',
                     'modules/media/js/editForm.js': 'modules/media/jsx/editForm.js',
                     'modules/media/js/uploadForm.js': 'modules/media/jsx/uploadForm.js',
+		    'modules/issue_tracker/js/columnFormatter.js': 'modules/issue_tracker/jsx/columnFormatter.js',
+		    'modules/issue_tracker/js/editIssue.js': 'modules/issue_tracker/jsx/editIssue.js'
                 }
             }
         },
