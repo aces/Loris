@@ -461,7 +461,7 @@ function emailUser($issueID, $changed_assignee)
             AND u.UserID<>:currentUser",
             array(
                 'assignee' => $changed_assignee,
-                'currentUser' => $$user->getUserName()
+                'currentUser' => $user->getUserName()
             )
         );
         $msg_data['firstname'] = $issue_change_emails_assignee[0]['firstname'];
