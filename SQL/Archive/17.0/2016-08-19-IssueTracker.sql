@@ -56,16 +56,7 @@ CREATE TABLE `issues` (
   CONSTRAINT `fk_issues_5` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_7` FOREIGN KEY (`module`) REFERENCES `LorisMenu` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
-
--- issues_watching table
-CREATE TABLE `issues_watching` (
-  `userID` varchar(255) NOT NULL DEFAULT '',
-  `issueID` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`userID`,`issueID`),
-  KEY `fk_issues_watching_2` (`issueID`),
-  CONSTRAINT `fk_issues_watching_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- issues_history table
 CREATE TABLE `issues_history` (
