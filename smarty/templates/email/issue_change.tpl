@@ -1,8 +1,8 @@
 Subject: Change to Issue # - {$issueID}
 
-{$realname},
+{$firstname},
 
-There has been an update to an issue you are watching.
+{$user} has updated an issue you are watching.
 
 Please view the changes here: {$url}
 

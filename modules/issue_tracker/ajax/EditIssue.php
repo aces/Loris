@@ -117,9 +117,15 @@ function editIssue()
         $db->insert('issues_comments', $commentValues);
     }
 
-    if (isset($_POST['othersWatching'])) {
-
+    //adding new assignee to watching
+    if (isset($issueValues['assignee'])) {
+        $nowWatching = array(
+            'userID' => $issueValues['assignee'],
+            'issueID' => $issueID,
+        );
+        $db->replace('issues_watching', $nowWatching);
     }
+
     //adding editor to the watching table unless they don't want to be added.
     if ($_POST['watching'] != 'no') {
         $nowWatching = array(
@@ -140,7 +146,6 @@ function editIssue()
     //adding others from multiselect to watching table.
     if (isset($_POST['othersWatching'])) {
         $othersNowWatching = explode(',', $_POST['othersWatching']);
-        $othersNowWatching[] = $issueValues['assignee'];
         foreach ($othersNowWatching as $userWatching) {
             if ($userWatching) { //cause sometimes it sends null
                 $nowWatching = array(
@@ -153,7 +158,7 @@ function editIssue()
     }
 
     //sending email
-    emailUser($issueID);
+    emailUser($issueID, $issueValues['assignee']);
 
     return array(
         'isValidSubmission' => true,
@@ -219,7 +224,7 @@ WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
                 'invalidMessage' => 'PSCID and Visit Label '
                     . 'do not match a valid candidate session',
             );
-        } else if (!isset($validateValues['PSCID'])){
+        } else if (!isset($validateValues['PSCID'])) {
             return array(
                 'isValidSubmission' => true,
                 'sessionID' => $isValidSession,
@@ -229,7 +234,7 @@ WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
         //Otherwise you need to go onto the else if below
         //To check that the user has permissions on that PSCID
     } else if (isset($validateValues['PSCID'])) {
-        if ($user->hasPermission('access_all_profiles')){
+        if ($user->hasPermission('access_all_profiles')) {
             $isValidCandidate = $db->pSelectOne(
                 "SELECT CandID FROM candidate WHERE PSCID=:PSCID",
                 array(
@@ -370,54 +375,40 @@ function getComments($issueID)
         array('issueID' => $issueID)
     );
 
-    //todo: get real names as well
-
-    $commentHistory = '';
-    foreach ($unformattedComments as $comment) {
-        $commentString = "";
-        $commentString .= '[' . $comment['dateAdded'] . '] ';
-        $commentString .= $comment['addedBy'];
-        if ($comment['fieldChanged'] === 'comment') {
-            $commentString .= ' commented ' . '<i>' . $comment['newValue'] . '</i>';
-        } else if ($comment['fieldChanged'] === 'module') {
+    //looping by reference so can edit in place
+    foreach ($unformattedComments as &$comment) {
+        if ($comment['fieldChanged'] === 'module') {
             $module = $db->pselectOne(
                 "SELECT Label FROM LorisMenu WHERE ID=:module",
                 array('module' => $comment['newValue'])
             );
-            $commentString .= " updated the <b>" . $comment['fieldChanged'] .
-                "</b> to <i>" . $module . "</i>";
+            $comment['newValue'] = $module;
+            continue;
         } else if ($comment['fieldChanged'] === 'centerID') {
             $site = $db->pselectOne(
                 "SELECT Name FROM psc WHERE CenterID=:centerID",
                 array('centerID' => $comment['newValue'])
             );
-            $commentString .= " updated the <b>" . "site" .
-                "</b> to <i>" . $site . "</i>";
+            $comment['newValue'] = $site;
+            continue;
         } else if ($comment['fieldChanged'] === 'candID') {
             $PSCID = $db->pselectOne(
                 "SELECT PSCID FROM candidate WHERE CandID=:candID",
                 array('candID' => $comment['newValue'])
             );
-            $commentString .= " updated the <b>" . "PSCID" .
-                "</b> to <i>" . $PSCID . "</i>";
+            $comment['newValue'] = $PSCID;
+            continue;
         } else if ($comment['fieldChanged'] === 'sessionID') {
             $visitLabel = $db->pselectOne(
                 "SELECT Visit_label FROM session WHERE ID=:sessionID",
                 array('sessionID' => $comment['newValue'])
             );
-            $commentString .= " updated the <b>" . "visit label" .
-                "</b> to <i>" . $visitLabel . "</i>";
-        } else {
-            $commentString .= " updated the <b>" . $comment['fieldChanged'] .
-                "</b> to <i>" . $comment['newValue'] . "</i>";
+            $comment['newValue'] = $visitLabel;
         }
-        $commentHistory .= $commentString . '<br/>';
     }
-
-    return $commentHistory;
+    return $unformattedComments; //now formatted I guess
 
 }
-
 
 /**
  * Emails all users that are watching the issue with the changes.
@@ -427,32 +418,68 @@ function getComments($issueID)
  * @return array
  * @throws DatabaseExceptionr
  */
-function emailUser($issueID)
+function display_comments($issueID)
+{
+    $tpl_data['commentHistory'] = getComments($issueID);
+    $smarty = new Smarty_neurodb("issue_tracker");
+    $smarty->assign($tpl_data);
+    $html = $smarty->fetch("issue_tracker_comment_history.tpl");
+    return $html;
+}
+
+/**
+ * Emails all users that are watching the issue with the changes.
+ *
+ * @param int $issueID the issueID
+ *
+ * @return array
+ * @throws DatabaseExceptionr
+ */
+function emailUser($issueID, $changed_assignee)
 {
 
     $user =& User::singleton();
     $db =& Database::singleton();
-
-    $issue_change_emails = $db->pselect(
-        "SELECT u.Email as Email, u.Real_name as realname " .
-        "FROM users u INNER JOIN issues_watching w ON (w.userID = u.userID) WHERE " .
-        "w.issueID=:issueID and u.UserID<>:uid",
-        array(
-            'issueID' => $issueID,
-            'uid' => $user->getUsername(),
-        )
-    );
-
     //not sure if this is necessary
     $factory = NDB_Factory::singleton();
     $baseurl = $factory->settings()->getBaseURL();
 
-    $msg_data['realname'] = $issue_change_emails['realname'];
+    if (isset($changed_assignee)) {
+        $issue_change_emails_assignee = $db->pselect(
+            "SELECT u.Email as Email, u.First_name as firstname " .
+            "FROM users u WHERE u.UserID=:assignee",
+            array(
+                'assignee' => $changed_assignee,
+            )
+        );
+        $msg_data['firstname'] = $issue_change_emails_assignee['firstname'];
+        $msg_data['url'] = $baseurl .
+            "/issue_tracker/ajax/EditIssue.php?action=getData&issueID=" . $issueID;
+        $msg_data['issueID'] = $issueID;
+        $msq_data['user'] = $user->getUsername();
+        Email::send($issue_change_emails_assignee['Email'], 'issue_assigned.tpl', $msg_data);
+    } else {
+        $changed_assignee = $user->getUsername(); // so query below doesn't break..
+    }
+
+    $issue_change_emails = $db->pselect(
+        "SELECT u.Email as Email, u.First_name as firstname " .
+        "FROM users u INNER JOIN issues_watching w ON (w.userID = u.userID) WHERE " .
+        "w.issueID=:issueID AND u.UserID<>:uid AND u.UserID<>:assignee",
+        array(
+            'issueID' => $issueID,
+            'uid' => $user->getUsername(),
+            'assignee' => $changed_assignee
+        )
+    );
+
     $msg_data['url'] = $baseurl .
         "/issue_tracker/ajax/EditIssue.php?action=getData&issueID=" . $issueID;
     $msg_data['issueID'] = $issueID;
+    $msq_data['user'] = $user->getUsername();
 
     foreach ($issue_change_emails as $email) {
+        $msg_data['firstname'] = $issue_change_emails['firstname'];
         Email::send($email['Email'], 'issue_change.tpl', $msg_data);
     }
 }
@@ -573,12 +600,11 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
             "WHERE issueID = $issueID",
             []
         );
-        $issueData['history'] = getComments($issueID);
+        $issueData['history'] = display_comments($issueID);
         $issueData['whoIsWatching'] = getWatching($issueID);
         $issueData['desc'] = $db->pSelectOne("SELECT issueComment 
 FROM issues_comments WHERE issueID=:issueID 
 ORDER BY dateAdded", array('issueID' => $issueID));
-        error_log($issueData['desc']);
 
     } else { //just setting the default values
         $issueData['reporter'] = $user->getData('UserID');
