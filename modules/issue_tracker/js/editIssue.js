@@ -172,6 +172,7 @@ var IssueEditForm = React.createClass({
             }
         }
         var header;
+        var description;
         if (!this.state.isNewIssue) {
             header = React.createElement(
                 'div',
@@ -225,6 +226,21 @@ var IssueEditForm = React.createClass({
                     )
                 )
             );
+
+            var description = React.createElement(
+                'div',
+                null,
+                React.createElement(
+                    'div',
+                    { 'class': 'row' },
+                    React.createElement(StaticElement, {
+                        name: 'description',
+                        label: 'Description',
+                        ref: 'description',
+                        text: this.state.issueData.desc
+                    })
+                )
+            );
         }
 
         return React.createElement(
@@ -266,16 +282,7 @@ var IssueEditForm = React.createClass({
                                 required: true
                             })
                         ),
-                        React.createElement(
-                            'div',
-                            { 'class': 'row' },
-                            React.createElement(StaticElement, {
-                                name: 'description',
-                                label: 'Description',
-                                ref: 'description',
-                                text: this.state.issueData.desc
-                            })
-                        ),
+                        description,
                         React.createElement(
                             'div',
                             { 'class': 'row' },

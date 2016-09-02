@@ -162,6 +162,7 @@ var IssueEditForm = React.createClass(
                 }
             }
             var header;
+            var description;
             if (!this.state.isNewIssue) {
                 header = <div>
                     <div className="row">
@@ -201,6 +202,18 @@ var IssueEditForm = React.createClass(
                         </div>
                     </div>
                 </div>
+
+                var description = <div>
+                    <div class="row">
+                        <StaticElement
+                            name="description"
+                            label="Description"
+                            ref="description"
+                            text={this.state.issueData.desc}
+                        />
+                    </div>
+                </div>
+
             }
 
             return (
@@ -232,14 +245,9 @@ var IssueEditForm = React.createClass(
                                         required={true}
                                     />
                                 </div>
-                                <div class="row">
-                                    <StaticElement
-                                        name="description"
-                                        label="Description"
-                                        ref="description"
-                                        text={this.state.issueData.desc}
-                                    />
-                                </div>
+
+                                {description}
+
                                 <div class="row">
                                     <SelectElement
                                         name="assignee"
