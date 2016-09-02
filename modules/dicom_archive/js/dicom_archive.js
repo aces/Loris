@@ -100,14 +100,14 @@ var DicomArchive = React.createClass({
   render: function render() {
     // Defining element names here ensures that `name` and `ref`
     // properties of the element are always kept in sync
-    var patientID = "patientID";
+    var patientID = "patientId";
     var patientName = "patientName";
     var site = "site";
     var gender = "gender";
     var dateOfBirth = "dateOfBirth";
     var acquisition = "acquisition";
     var archiveLocation = "archiveLocation";
-    var seriesUID = "seriesUID";
+    var seriesUID = "seriesuid";
 
     return React.createElement(
       'div',
