@@ -31,13 +31,18 @@ require_once 'NDB_Menu_Filter.class.inc';
 */
 class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
 {
-    var $AjaxModule = false;
     /**
      * Variables to enable special filter behaviour -
      * Show brief results or show full results (all available fields)
      * used in (overridden) _addValidFilters function below
      */
     var $_displayBrief = true;  // default: display only Brief results
+
+    /**
+     * Tell the Caller that data will be queried using ajax and after
+     * the HTML page rendering.
+     */
+    var $AjaxModule = true;
 
     /**
      * Overloading this method to allow access to site users (own site only)
@@ -123,7 +128,7 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             $this->query .= $DB->quote($user->getCenterID());
         }
 
-        $this->group_by     = 'candidate.CandID';
+        $this->group_by     = '';
         $this->order_by     = 'psc.Name, candidate.CandID DESC';
         $this->validFilters = array(
                                'candidate.CenterID',

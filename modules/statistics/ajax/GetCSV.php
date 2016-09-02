@@ -47,7 +47,7 @@ if($FieldX == 'Candidate_Age') {
 }
 $QueryCondition = "$Field IS NOT NULL AND $FieldX IS NOT NULL AND c.Active='Y' and c.Cancelled='N' and s.Active='Y' and s.Cancelled='N'";
 if(isset($_REQUEST['site']) && !empty($_REQUEST['site'])) {
-    $QueryCondition .= " AND c.CenterID=:Site";
+    $QueryCondition           .= " AND c.CenterID=:Site";
     $ConditionBindings['Site'] = $_REQUEST['site'];
 
 }
@@ -67,7 +67,7 @@ if(isset($InstrumentX)) {
 
 
 $FullQuery = "SELECT c.PSCID as ID, $FieldX as X, $Field as Y, s.SubprojectID as Category, c.CandID, s.ID as SessionID, i.CommentID FROM $QueryTable WHERE $QueryCondition AND c.CenterID <> 1";
-$rows = $DB->pselect($FullQuery, $ConditionBindings);
+$rows      = $DB->pselect($FullQuery, $ConditionBindings);
 foreach($rows as $row) {
     foreach($row as $key => $val) {
         print "\"$val\",";

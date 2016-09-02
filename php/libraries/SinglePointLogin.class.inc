@@ -251,10 +251,44 @@ class SinglePointLogin
         // Reset passwordExpired flag
         $this->_passwordExpired = false;
 
+        if (!function_exists('getallheaders')) {
+            /**
+             * In case unable to detect getallheaders function
+             *
+             * @return array headers
+             */
+            function getallheaders()
+            {
+                $headers = '';
+                foreach ($_SERVER as $name => $value) {
+                    if (substr($name, 0, 5) == 'HTTP_') {
+                        $headers[str_replace(
+                            ' ',
+                            '-',
+                            ucwords(
+                                strtolower(
+                                    str_replace(
+                                        '_',
+                                        ' ',
+                                        substr(
+                                            $name,
+                                            5
+                                        )
+                                    )
+                                )
+                            )
+                        )] = $value;
+                    }
+                }
+                return $headers;
+            }
+        }
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
         $headers    = getallheaders();
-        $authHeader = $headers['Authorization'];
+        $authHeader = isset($headers['Authorization'])
+                         ? $headers['Authorization']
+                         : '';
         if (!empty($authHeader)) {
             $token = explode(" ", $authHeader);
             // Index 0 is "Bearer", 1 is the token
@@ -373,7 +407,7 @@ class SinglePointLogin
 
         // create DB object
         $factory = NDB_Factory::singleton();
-        $DB      =& $factory->database();
+        $DB      = $factory->database();
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
@@ -415,7 +449,9 @@ class SinglePointLogin
                     $user->updatePassword($password);
                 }
 
-                if ($row['Active'] == 'N') {
+                if ($row['Active'] == 'N'
+                    || $this->disabledDueToInactivity($username, 365)
+                ) {
                     $this->_lastError = "Your account has been deactivated."
                         . " Please contact your project administrator to"
                         . " reactivate this account.";
@@ -515,5 +551,37 @@ class SinglePointLogin
         $result =  $DB->insert('user_login_history', $setArray);
     }
 
+    /**
+     * Checks if a user has not logged in for a given amount of time
+     * As a side-effect, if true, will also set user field 'active' to 'N'
+     * Need to have already confirmed valid user
+     *
+     * @param String $username            username
+     * @param Int    $maximumDaysInactive Most allowable days for inactivity
+     *
+     * @return bool - true if the user has now been disabled
+     */
+    function disabledDueToInactivity($username, $maximumDaysInactive)
+    {
+        $DB    =& Database::singleton();
+        $query = "SELECT MAX(Login_timestamp) 
+                  FROM user_login_history 
+                  WHERE UserID = :username";
+
+        $row        = $DB->pselectRow($query, array('username' => $username));
+        $last_login = new DateTime($row['Login_timestamp']);
+        $time_now   = new DateTime("now");
+        $interval   = $last_login->diff($time_now);
+
+        if ($interval->days > $maximumDaysInactive) {
+            $DB->update(
+                'users',
+                array('Active' => 'N'),
+                array('UserID' => $username)
+            );
+            return true;
+        }
+        return false;
+    }
 }
 ?>

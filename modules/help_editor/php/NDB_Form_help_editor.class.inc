@@ -173,6 +173,24 @@ class NDB_Form_help_editor extends NDB_Form
         
     }
 
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/help_editor/js/help_editor_helper.js",
+            )
+        );
+    }
 }    
 
 ?>

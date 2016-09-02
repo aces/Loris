@@ -6,7 +6,7 @@
  *
  * @category Test
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -14,37 +14,25 @@
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class finalRadiologicalReviewTestIntegrationTest extends LorisIntegrationTest
 {
-
     /**
-     * Tests that, when loading the final_radiological_review module, some
-     * text appears in the body.
-     *
+     * Tests that the final Radiological Review loads if the user has the correct
+     * permissions (edit_final_radiological_review or view_final_radiological_review)
+     * It should only be able to see the menu item.
      * @return void
      */
-    function testFinalRadiologicalReviewDoespageLoad()
+    function testFinalRadiologicalReviewLoadsWithPermission()
     {
-        $this->markTestSkipped("The radiology_review instrument is missing for final_radiological_review test");
-        /*$this->safeGet($this->url . "?test_name=final_radiological_review");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Final Radiological Review", $bodyText);
-         */
-    }
+        $this->setupPermissions(array("view_final_radiological_review"));
+        $this->safeGet($this->url . "/final_radiological_review/");
 
-    /**
-     * Tests that, when loading the final_radiological_review module > final_radiological_review submodule, some
-     * text appears in the body.
-     *
-     * @return void
-     */
-    function testFinalRadiologicalReviewSubtestDoespageLoad()
-    {
-        $this->markTestSkipped("The radiology_review instrument is missing for final_radiological_review test");
-        /*
-        $this->safeGet($this->url . "?test_name=final_radiological_review&subtest=final_radiological_review");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Final Radiological Review", $bodyText);
-         */
-    }
+    // Test that the Imaging menu appears in the first row
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
 
+        $this->resetPermissions();
+    }
 }
 ?>
+

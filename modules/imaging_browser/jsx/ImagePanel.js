@@ -153,6 +153,22 @@ ImageQCDropdown = React.createClass({
         );
     }
 });
+ImageQCStatic = React.createClass({
+    render: function() {
+        var staticInfo;
+        staticInfo = (
+            <div className="col-xs-12">
+                {this.props.defaultValue}
+            </div>
+        );
+        return (
+            <div className="row">
+                <label>{this.props.Label}</label>
+                {staticInfo}
+            </div>
+        );
+    }
+});
 
 ImagePanelQCStatusSelector = React.createClass({
     render: function() {
@@ -209,6 +225,18 @@ ImagePanelQCCaveatSelector = React.createClass({
         );
     }
 });
+ImagePanelQCSNRValue = React.createClass({
+    render: function () {
+        return (
+            <ImageQCStatic
+                Label="SNR"
+                FormName="snr"
+                FileID={this.props.FileID}
+                defaultValue={this.props.SNR}
+            />
+        );
+    }
+});
 ImagePanelQCPanel = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     render: function() {
@@ -231,7 +259,10 @@ ImagePanelQCPanel = React.createClass({
                     HasQCPerm={this.props.HasQCPerm}
                     Caveat={this.props.Caveat}
                 />
-
+                <ImagePanelQCSNRValue
+                    FileID={this.props.FileID}
+                    SNR={this.props.SNR}
+                />
             </div>
         );
     }
@@ -280,6 +311,34 @@ ImageQCCommentsButton = React.createClass({
         );
     }
 });
+
+LongitudinalViewButton = React.createClass({
+    openWindowHandler: function(e) {
+        e.preventDefault();
+        window.open(
+            this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.OtherTimepoints + "]",
+            "BrainBrowser Volume Viewer",
+            "location = 0,width = auto, height = auto, scrollbars=yes"
+        );
+    },
+    render: function() {
+        if (!this.props.FileID || this.props.FileID == '') {
+            return <span />;
+        };
+        return (
+            <a className="btn btn-default"
+               href="#noID"
+               onClick={this.openWindowHandler}
+            >
+                    <span className="text-default">
+                        <span className="glyphicon glyphicon-eye-open"></span>
+                        <span className="hidden-xs">Longitudinal View</span>
+                    </span>
+            </a>
+        );
+    }
+});
+
 ImageDownloadButtons = React.createClass({
     render: function() {
         return (
@@ -302,6 +361,10 @@ ImageDownloadButtons = React.createClass({
                 <DownloadButton FileName={this.props.NrrdFile} 
                     BaseURL={this.props.BaseURL}
                     Label="Download NRRD"
+                />
+                <LongitudinalViewButton FileID={this.props.FileID}
+                    BaseURL={this.props.BaseURL}
+                    OtherTimepoints={this.props.OtherTimepoints}
                 />
             </div>
         );
@@ -331,6 +394,7 @@ ImagePanelBody = React.createClass({
                                 Caveat={this.props.Caveat}
                                 SelectedOptions={this.props.SelectedOptions}
                                 Selected={this.props.Selected}
+                                SNR={this.props.SNR}
                             />
                          </div>
                     </div>
@@ -341,6 +405,7 @@ ImagePanelBody = React.createClass({
                             XMLProtocol={this.props.XMLProtocol}
                             XMLReport={this.props.XMLReport}
                             NrrdFile={this.props.NrrdFile}
+                            OtherTimepoints={this.props.OtherTimepoints}
                         />
                     {this.props.HeadersExpanded ? <ImagePanelHeadersTable HeaderInfo={this.props.HeaderInfo} /> : ''}
                 </div>
@@ -395,11 +460,13 @@ ImagePanel = React.createClass({
                         Caveat={this.props.Caveat}
                         SelectedOptions={this.props.SelectedOptions}
                         Selected={this.props.Selected}
+                        SNR={this.props.SNR}
 
                         Fullname={this.props.Fullname}
                         XMLProtocol={this.props.XMLProtocol}
                         XMLReport={this.props.XMLReport}
                         NrrdFile={this.props.NrrdFile}
+                        OtherTimepoints={this.props.OtherTimepoints}
                     /> }
                 </div>
             </div>

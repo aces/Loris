@@ -938,5 +938,23 @@ class NDB_Form_candidate_parameters extends NDB_Form
         return $option_array;
     }
 
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/candidate_parameters/js/candidate_parameters_helper.js",
+            )
+        );
+    }
 }
 ?>
