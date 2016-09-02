@@ -457,9 +457,11 @@ function emailUser($issueID, $changed_assignee)
     if (isset($changed_assignee)) {
         $issue_change_emails_assignee = $db->pselect(
             "SELECT u.Email as Email, u.First_name as firstname " .
-            "FROM users u WHERE u.UserID=:assignee",
+            "FROM users u WHERE u.UserID=:assignee
+            AND u.UserID<>:currentUser",
             array(
                 'assignee' => $changed_assignee,
+                'currentUser' => $$user->getUserName()
             )
         );
         $msg_data['firstname'] = $issue_change_emails_assignee[0]['firstname'];
