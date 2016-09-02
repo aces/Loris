@@ -110,7 +110,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             WHERE 
             f.PendingStaging=0 AND 
             f.FileType='mnc' AND 
-            f.OutputType='native' AND 
             f.AcquisitionProtocolID not in (1, 2, 3, 52)";
 
         $config =& NDB_Config::singleton();
