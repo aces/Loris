@@ -171,24 +171,11 @@ var IssueEditForm = React.createClass({
                 alertMessage = errorMessage ? errorMessage : "Invalid input";
             }
         }
-
-        return React.createElement(
-            'div',
-            null,
-            React.createElement(
-                FormElement,
-                {
-                    name: 'issueEdit',
-                    onSubmit: this.handleSubmit,
-                    ref: 'form',
-                    'class': ''
-                },
-                React.createElement(
-                    'h3',
-                    null,
-                    headerText
-                ),
-                React.createElement('br', null),
+        var header;
+        if (!this.state.isNewIssue) {
+            header = React.createElement(
+                'div',
+                null,
                 React.createElement(
                     'div',
                     { className: 'row' },
@@ -236,7 +223,28 @@ var IssueEditForm = React.createClass({
                             text: this.state.issueData.reporter
                         })
                     )
+                )
+            );
+        }
+
+        return React.createElement(
+            'div',
+            null,
+            React.createElement(
+                FormElement,
+                {
+                    name: 'issueEdit',
+                    onSubmit: this.handleSubmit,
+                    ref: 'form',
+                    'class': ''
+                },
+                React.createElement(
+                    'h3',
+                    null,
+                    headerText
                 ),
+                React.createElement('br', null),
+                header,
                 React.createElement('br', null),
                 React.createElement('br', null),
                 React.createElement(

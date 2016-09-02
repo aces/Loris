@@ -161,6 +161,47 @@ var IssueEditForm = React.createClass(
                     alertMessage = errorMessage ? errorMessage : "Invalid input";
                 }
             }
+            var header;
+            if (!this.state.isNewIssue) {
+                header = <div>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <StaticElement
+                                name="lastUpdate"
+                                label={"Last Update: "}
+                                ref="lastUpdate"
+                                text={lastUpdateValue}
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <StaticElement
+                                name="lastUpdatedBy"
+                                label={"Last Updated By: "}
+                                ref="lastUpdatedBy"
+                                text={lastUpdatedByValue}
+                            />
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <StaticElement
+                                name="dateCreated"
+                                label={"Date Created: "}
+                                ref="dateCreated"
+                                text={dateCreated}
+                            />
+                        </div>
+                        <div className="col-md-6">
+                            <StaticElement
+                                name="reporter"
+                                label={"Reporter: "}
+                                ref="reporter"
+                                text={this.state.issueData.reporter}
+                            />
+                        </div>
+                    </div>
+                </div>
+            }
 
             return (
                 <div>
@@ -172,42 +213,9 @@ var IssueEditForm = React.createClass(
                     >
                         <h3>{headerText}</h3>
                         <br />
-                        <div className="row">
-                            <div className="col-md-6">
-                                <StaticElement
-                                    name="lastUpdate"
-                                    label={"Last Update: "}
-                                    ref="lastUpdate"
-                                    text={lastUpdateValue}
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <StaticElement
-                                    name="lastUpdatedBy"
-                                    label={"Last Updated By: "}
-                                    ref="lastUpdatedBy"
-                                    text={lastUpdatedByValue}
-                                />
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-md-6">
-                                <StaticElement
-                                    name="dateCreated"
-                                    label={"Date Created: "}
-                                    ref="dateCreated"
-                                    text={dateCreated}
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <StaticElement
-                                    name="reporter"
-                                    label={"Reporter: "}
-                                    ref="reporter"
-                                    text={this.state.issueData.reporter}
-                                />
-                            </div>
-                        </div>
+
+                        {header}
+
                         <br></br>
                         <br></br>
 
@@ -370,7 +378,7 @@ var IssueEditForm = React.createClass(
 
                                     <div class="col-md-3">
                                         <div className={alertClass} role="alert" ref="alert-message">
-                                        {alertMessage}
+                                            {alertMessage}
                                         </div>
                                     </div>
                                 </div>
@@ -552,7 +560,9 @@ var IssueEditForm = React.createClass(
                         self.showAlertMessage();
 
                         if (self.state.isNewIssue) {
-                            setTimeout(function(){window.location.assign('/issue_tracker')} , 2000);
+                            setTimeout(function () {
+                                window.location.assign('/issue_tracker')
+                            }, 2000);
                         }
                     },
                     error: function (err) {
