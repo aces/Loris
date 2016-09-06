@@ -7,7 +7,7 @@
 	     border-top: none; 
 	 }
 </style>
-<form method="post" name="test_fosrm" id="test_form" {$form.enctype}>
+<form method="post" name="test_form" id="test_form" {$form.enctype}>
 <div class="row">
 	{$form.hidden}
 	{$form.errors.mainError}
