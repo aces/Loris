@@ -32,13 +32,13 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         React.createElement(
           "span",
           { className: "error" },
-          "manual"
+          "(Manual)"
         ),
         " "
       );
     }
     if (row["Invalid"] === 'yes') {
-      var url = loris.BaseURL + "/aosi_reliability?identifier=" + row['Visit Label'] + "&reliability_center_id=" + row['Reliability Center Id'];
+      var url = loris.BaseURL + "/aosi_reliability?identifier=" + row['CommentID'] + "&reliability_center_id=" + row['Reliability Center Id'];
       return React.createElement(
         "td",
         null,
@@ -47,12 +47,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         React.createElement(
           "span",
           { className: "error" },
-          "invalid"
+          "(Invalid)"
         ),
         " "
       );
     }
-    var url = loris.BaseURL + "/aosi_reliability?identifier=" + row['Visit Label'] + "&reliability_center_id=" + row['Reliability Center Id'];
+    var url = loris.BaseURL + "/aosi_reliability?identifier=" + row['CommentID'] + "&reliability_center_id=" + row['Reliability Center Id'];
     return React.createElement(
       "td",
       null,
@@ -62,6 +62,37 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         cell
       )
     );
+  }
+  if (column === 'Cohort') {
+    if (row['Cohort'] == 1) {
+      var sixMonth = "6 month";
+      return React.createElement(
+        "td",
+        null,
+        sixMonth
+      );
+    }
+    if (row['Cohort'] == 2) {
+      var tweleveMonth = "12 month";
+      return React.createElement(
+        "td",
+        null,
+        tweleveMonth
+      );
+    }
+  }
+
+  var reliableStyle = {
+    backgroundColor: '#86BC78'
+  };
+  if (column === 'Reliable') {
+    if (row['Reliable'] > 0) {
+      return React.createElement(
+        "td",
+        { style: reliableStyle },
+        "Yes"
+      );
+    }
   }
 
   return React.createElement(
