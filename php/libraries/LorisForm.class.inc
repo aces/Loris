@@ -850,6 +850,30 @@ class LorisForm
     }
 
     /**
+     * Generates the HTML to add to the page when rendered for a time
+     * element.
+     *
+     * @param array  $el   The element to render from $this->form
+     * @param string $type The HTML input type to user for this input
+     *                     box
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function timeHTML($el, $type='time')
+    {
+        $value = $this->getValue($el['name']);
+        $smarty    = new Smarty_neurodb;
+
+        $smarty->assign('name', $el['name']);
+        $smarty->assign('value', $value);
+        print_r($value);
+
+        $html = $smarty->fetch("time_element.tpl");
+
+        return $html;
+    }
+
+    /**
      * Generates the HTML to add to the page when a file is
      * added to the form.
      *
@@ -1075,6 +1099,8 @@ class LorisForm
             return $this->submitHTML($el);
         case 'hidden':
             return $this->hiddenHTML($el);
+        case 'time':
+            return $this->timeHTML($el);
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
@@ -1146,24 +1172,6 @@ class LorisForm
     function toArray()
     {
         foreach ($this->form as &$el) {
-            switch($el['type']) {
-            case 'date':
-                $el['html'] = $this->dateHTML($el);
-                break;
-            case 'select':
-                $el['html'] = $this->selectHTML($el);
-                break;
-            case 'static':
-                $el['html'] = $this->staticHTML($el);
-                break;
-            case 'text':
-                $el['html'] = $this->textHTML($el);
-                break;
-            case 'file':
-                $el['html'] = $this->fileHTML($el);
-                break;
-
-            }
             $el['html'] = $this->renderElement($el);
         }
 
@@ -1368,6 +1376,7 @@ class LorisForm
             $el         = $this->createBase($elname, $options, $attribs);
             $el['type'] = 'static';
             break;
+        case 'time':
         case 'advcheckbox':
         case 'textarea':
         case 'date':
