@@ -178,15 +178,15 @@ class Installer
     function createMySQLDB($values)
     {
         if (preg_match(
-             '/^[a-zA-Z]+[a-zA-Z0-9_]*$/',
-             $values['dbname']
+            '/^[a-zA-Z]+[a-zA-Z0-9_]*$/',
+            $values['dbname']
         ) == false
         ) {
-		$this->_lastErr = "Database name must only contain letters, "
-			. "numbers and underscores and must be at least 2 "
+            $this->_lastErr = "Database name must only contain letters, "
+            . "numbers and underscores and must be at least 2 "
                         . "characters long.";
-		return false;
-	}
+            return false;
+        }
         $DB = Database::singleton();
         if ($DB->connectAndCreate(
             $values['dbname'],
