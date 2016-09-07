@@ -447,7 +447,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 WHERE ID=:SID", $params
             );
             $old_caveat_status = $this->DB->pselectOne(
-                "SELECT Caveat 
+                "SELECT MRICaveat 
                 FROM session 
                 WHERE ID=:SID", $params
             );
@@ -455,7 +455,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $updateSet = array(
                 'MRIQCPending' => $_POST['visit_pending'], 
                 'MRIQCStatus' => $_POST['visit_status'], 
-                'Caveat' => $_POST['visit_caveat'], 
+                'MRICaveat' => $_POST['visit_caveat'], 
                 'MRIQCLastChangeTime' => date("Y-m-d H:i:s")
             );
             $firstChangeTime = $this->DB->pselectOne(
@@ -561,13 +561,13 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         $subjectData['visitNo'] = $timePoint->getVisitNo();
         $subjectData['site'] = $timePoint->getPSC();
         $qcstatus = $this->DB->pselectRow(
-            "SELECT MRIQCStatus, MRIQCPending, Caveat 
+            "SELECT MRIQCStatus, MRIQCPending, MRICaveat 
             FROM session WHERE ID=:SID", 
             array('SID' => $_REQUEST['sessionID'])
         );
         $subjectData['mriqcstatus'] = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['caveat'] = $qcstatus['Caveat'];
+        $subjectData['mricaveat'] = $qcstatus['MRICaveat'];
         $subjectData['candid'] = $timePoint->getCandID();
         $subjectData['scanner'] = $this->scanner;
 

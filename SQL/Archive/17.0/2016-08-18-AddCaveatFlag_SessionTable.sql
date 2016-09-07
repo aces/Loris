@@ -1,1 +1,1 @@
-ALTER TABLE session ADD `Caveat` enum('true', 'false') NOT NULL default 'false';
+ALTER TABLE session ADD `MRICaveat` enum('true', 'false') NOT NULL default 'false';

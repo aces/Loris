@@ -124,13 +124,13 @@ class Imaging_Session_ControlPanel
                                           );
 
         $qcstatus = $DB->pselectRow(
-            "SELECT MRIQCStatus, MRIQCPending, Caveat FROM session WHERE ID=:sid",
+            "SELECT MRIQCStatus, MRIQCPending, MRICaveat FROM session WHERE ID=:sid",
             array("sid" => $this->sessionID)
         );
 
         $subjectData['mriqcstatus']  = $qcstatus['MRIQCStatus'];
         $subjectData['mriqcpending'] = $qcstatus['MRIQCPending'];
-        $subjectData['caveat'] = $qcstatus['Caveat'];
+        $subjectData['mricaveat'] = $qcstatus['MRICaveat'];
 
 
         $factory = NDB_Factory::singleton();
