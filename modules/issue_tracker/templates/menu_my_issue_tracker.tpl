@@ -164,7 +164,7 @@
                                    name="reset"
                                    value="Clear Form"
                                    class="btn btn-sm btn-primary col-xs-12"
-                                   onclick="location.href='{$baseurl}/issue_tracker/?reset=true'"/></div>
+                                   onclick="location.href='{$baseurl}/issue_tracker/?reset=true&submenu=my_issue_tracker'"/></div>
                     </div>
                 </form>
             </div>

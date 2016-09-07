@@ -3,6 +3,6 @@
     {if $comment.fieldChanged == 'comment'}
         <p> [{$comment.dateAdded}] {$comment.addedBy} commented <i> {$comment.newValue} </i> </p>
     {else}
-        <p> [{$comment.dateAdded}] updated the <b>{$comment.fieldChanged} </b> to {$comment.newValue} </p>
+        <p> [{$comment.dateAdded}] {$comment.addedBy} updated the <b>{$comment.fieldChanged} </b> to {$comment.newValue} </p>
     {/if}
 {/foreach}

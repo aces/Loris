@@ -157,8 +157,6 @@ function editIssue()
         }
     }
 
-    error_log(json_encode($issueValues));
-
     //sending email
     emailUser($issueID, $issueValues['assignee']);
 
@@ -392,6 +390,8 @@ function getComments($issueID)
                 array('centerID' => $comment['newValue'])
             );
             $comment['newValue'] = $site;
+            $comment['site'] = $comment['centerID'];
+            unset($comment['centerID']);
             continue;
         } else if ($comment['fieldChanged'] === 'candID') {
             $PSCID = $db->pselectOne(
@@ -399,6 +399,8 @@ function getComments($issueID)
                 array('candID' => $comment['newValue'])
             );
             $comment['newValue'] = $PSCID;
+            $comment['PSCID'] = $comment['candID'];
+            unset($comment['candID']);
             continue;
         } else if ($comment['fieldChanged'] === 'sessionID') {
             $visitLabel = $db->pselectOne(
@@ -406,6 +408,8 @@ function getComments($issueID)
                 array('sessionID' => $comment['newValue'])
             );
             $comment['newValue'] = $visitLabel;
+            $comment['Visit Label'] = $comment['sessionID'];
+            unset($comment['sessionID']);
         }
     }
     return $unformattedComments; //now formatted I guess
@@ -492,7 +496,7 @@ function emailUser($issueID, $changed_assignee)
     $msg_data['currentUser'] = $user->getUsername();
 
     foreach ($issue_change_emails as $email) {
-        $msg_data['firstname'] = $issue_change_emails['firstname'];
+        $msg_data['firstname'] = $email['firstname'];
         Email::send($email['Email'], 'issue_change.tpl', $msg_data);
     }
 }

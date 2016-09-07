@@ -47,6 +47,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
             "LEFT JOIN LorisMenu l on (i.module=l.ID) " .
             "LEFT JOIN session s ON (i.sessionID = s.ID) " .
             "LEFT JOIN issues_watching w ON (i.issueID = w.issueID) " .
+            "LEFT JOIN issues_comments ic ON(i.issueID = ic.issueID ".
             "WHERE i.status = 'closed'";
 
         if (!$user->hasPermission('access_all_profiles')) {
@@ -117,7 +118,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
             'watching' => 'w.userID',
             'projectID' => 'i.projectID',
             'priority' => 'i.priority',
-            'keyword' => 'i.comment',
+            'keyword' => 'ic.issueComment',
             'minDate' => 'minDate',
             'maxDate' => 'maxDate',
             $user->getData('UserID') => 'watching'
@@ -127,7 +128,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
             'i.issueID',
             'i.centerID',
         );
-        $this->searchKeyword = array('i.comment');
+        $this->searchKeyword = array('ic.issueComment');
     }
 
     /**
@@ -292,13 +293,14 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
                 } else {
                     $query .= " AND $field LIKE CONCAT('%', :v_$prepared_key, '%')";
                 }
-            } else if ($field = 'w.userID' && ($val == 1)) {
+            } else if ($field = "w.userID" && ($val == 1)) {
                 $query .= " AND w.userID = :v_$prepared_key";
-            } else if ($field = 'minDate') {
-                $query .= " AND i.dateCreated > '"
-                    . $val . "00-00-00'"; //yes very hacky
-            } else if ($field = 'maxDate') {
-                $query .= " AND i.dateCreated < " . $val . "00-00-00'";
+            } else if ($field == "w.userID" && ($val == 0)) {
+                    $query .= " AND w.userID <> :v_$prepared_key";
+            } else if ($field === 'minDate') {
+                $query .= " AND i.dateCreated > " . ":v_$prepared_key";
+            } else if ($field === "maxDate") {
+                $query .= " AND i.dateCreated < " . ":v_$prepared_key";
             }
         }
         return $query;
