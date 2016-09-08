@@ -313,7 +313,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $element->sendKeys($elementValue);
         }
         $this->safeClick(WebDriverBy::Name("filter"));
-        $this->__assertUserReactTableContents ($expectedResults);
+        $this->_assertUserReactTableContents ($expectedResults);
     }
     /**
      * Compares the content of the candidate table with an expected content.
