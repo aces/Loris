@@ -72,7 +72,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         
         $this->_populate_reliability_table();
 
-        $query = " FROM candidate, session, flag, reliability LEFT JOIN psc ON (reliability.reliability_center_id = psc.CenterID) WHERE reliability.CommentID=flag.CommentID AND candidate.CandID=session.CandID AND session.ID=flag.SessionID";
+        $query = " FROM candidate LEFT JOIN Project ON (candidate.ProjectID = Project.ProjectID ), session, flag, reliability LEFT JOIN psc ON (reliability.reliability_center_id = psc.CenterID) WHERE reliability.CommentID=flag.CommentID AND candidate.CandID=session.CandID AND session.ID=flag.SessionID";
 
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
@@ -83,7 +83,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         // set the class variables
         $this->columns = array('candidate.PSCID', 'psc.Name', 'reliability.reliability_center_id AS Site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label');
         if ($useProjects === "true") {
-            $this->columns[] = 'candidate.ProjectID as Project';
+            $this->columns[] = 'Project.Name as Project';
         }
         $this->columns=array_merge($this->columns,
              array('reliability.CommentID','reliability.Instrument', 'reliability.Reliability_score', 'reliability.Reliability_score as Reliable', 'reliability.invalid', 'reliability.Manual_Swap' ));
