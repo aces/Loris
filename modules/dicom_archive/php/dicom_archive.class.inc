@@ -86,17 +86,20 @@ class Dicom_Archive extends \NDB_Menu_Filter
             array_push($this->headers, 'Transfer_Status');
         }
 
-        $this->headers = array_merge($this->headers, [
-            'Patient_ID',
-            'Patient_Name',
-            'Gender',
-            'Date_of_birth',
-            'Acquisition',
-            'Archive_Location',
-            'Metadata',
-            'MRI_Browser',
-            'Site'
-        ]);
+        $this->headers = array_merge(
+            $this->headers,
+            [
+             'Patient_ID',
+             'Patient_Name',
+             'Gender',
+             'Date_of_birth',
+             'Acquisition',
+             'Archive_Location',
+             'Metadata',
+             'MRI_Browser',
+             'Site',
+            ]
+        );
 
         // Set header as hidden from the data table
         $this->tpl_data['hiddenHeaders'] = json_encode(['Site']);
@@ -332,9 +335,9 @@ class Dicom_Archive extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/dicom_archive/js/columnFormatter.js",
-                $baseURL . "/dicom_archive/js/dicom_archive.js",
-                $baseURL . "/js/util/queryString.js",
+             $baseURL . "/dicom_archive/js/columnFormatter.js",
+             $baseURL . "/dicom_archive/js/dicom_archive.js",
+             $baseURL . "/js/util/queryString.js",
             )
         );
     }
