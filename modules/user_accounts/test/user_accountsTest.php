@@ -112,19 +112,19 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         );
         $bodyText->getText();
         $this->_assertSearchBy(
-            array('userID' => 'my_nonexistent_user_ID'),
+            array('real_name' => 'my_nonexistent_user_ID'),
             null
         );
         $this->_assertSearchBy(
-            array('userID' => 'UnitTester'),
+            array('real_name' => 'UnitTester'),
             array(self::$_UNIT_TESTER)
         );
         $this->_assertSearchBy(
-            array('userID' => 'unittester'),
+            array('real_name' => 'unittester'),
             array(self::$_UNIT_TESTER)
         );
         $this->_assertSearchBy(
-            array('userID' => 'n'),
+            array('real_name' => 'n'),
             array(
              self::$_ADMIN,
              self::$_UNIT_TESTER,
@@ -313,6 +313,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $element->sendKeys($elementValue);
         }
         $this->safeClick(WebDriverBy::Name("filter"));
+        
         $this->_assertUserReactTableContents ($expectedResults);
     }
     /**
