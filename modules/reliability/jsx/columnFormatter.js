@@ -51,7 +51,7 @@ var reliableStyleGreen = {
   backgroundColor: '#86BC78',
   }
 var reliableStyleRed = {
-  backgroundColor: '#800000',
+  backgroundColor: '#CD5C5C',
   }
 if (column === 'Reliable') {
    if(row['Reliable'] > 0){
