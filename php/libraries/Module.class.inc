@@ -55,7 +55,7 @@ class Module
                 throw new LorisException("No such module: $name", 404);
         }
 
-        if (!file_exists($mpath . "/php/Module.class.inc")) {
+        if (!file_exists($mpath . "/php/module.class.inc")) {
             // Check if there's a module class to see if the module has been
             // updated. This can be removed once support for old Modules has
             // been removed. If it hasn't been updated, fall back on the old
