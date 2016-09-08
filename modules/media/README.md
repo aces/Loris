@@ -3,7 +3,7 @@
 ### 📄 Overview
 
 Media module allows users to **upload**, **search** and **edit** media files associated with a specific candidate timepoint in Loris.
-Any kind of data associated with a candidate timepoint can be uploaded through this module: PDFs, videos, recordings, scripts, log files, etc.
+Any kind of data associated with a candidate timepoint can be uploaded through this module: PDFs, videos, recordings, scripts, log files, etc. Files can optionally be associated to a specific instrument form within a given candidate timepoint.
 
 
 >Note: Currently editing functionality only allows editing of certain metadata fields, such as `Comments` and `Date of Administration`.
