@@ -376,7 +376,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
              $this->assertNotContains('"Data":[]', $dataTable);
 
             }
-        }
     }
     /**
      * Performed after every test.
