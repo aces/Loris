@@ -30,8 +30,7 @@
 
                       'HasQCPerm': {if $has_qc_permission}true{else}false{/if},
                       'FileNew'  : {if $files[file].New}true{else}false{/if},
-                      "Selected" : "{if $files[file].Selected}{$files[file].Selected}{/if}",
-                      "SelectedOptions" : {$selected_options|json_encode},
+                      "Selected" : "{$files[file].Selected}",
 
                       "Caveat" : "{$files[file].Caveat}",
                       "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",

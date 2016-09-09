@@ -412,7 +412,7 @@ ImagePanelQCSelectedSelector = React.createClass({
             FormName: 'selectedvol',
             FileID: this.props.FileID,
             editable: this.props.HasQCPerm,
-            options: this.props.SelectedOptions,
+            options:  { "": "", "true": "True", "false": "False" },
             defaultValue: this.props.Selected
         });
     }
@@ -473,7 +473,6 @@ ImagePanelQCPanel = React.createClass({
             React.createElement(ImagePanelQCSelectedSelector, {
                 FileID: this.props.FileID,
                 HasQCPerm: this.props.HasQCPerm,
-                SelectedOptions: this.props.SelectedOptions,
                 Selected: this.props.Selected
             }),
             React.createElement(ImagePanelQCCaveatSelector, {
@@ -641,7 +640,6 @@ ImagePanelBody = React.createClass({
                         HasQCPerm: this.props.HasQCPerm,
                         QCStatus: this.props.QCStatus,
                         Caveat: this.props.Caveat,
-                        SelectedOptions: this.props.SelectedOptions,
                         Selected: this.props.Selected,
                         SNR: this.props.SNR,
                         SeriesUID: this.props.SeriesUID
@@ -711,7 +709,6 @@ ImagePanel = React.createClass({
                     HasQCPerm: this.props.HasQCPerm,
                     QCStatus: this.props.QCStatus,
                     Caveat: this.props.Caveat,
-                    SelectedOptions: this.props.SelectedOptions,
                     Selected: this.props.Selected,
                     SNR: this.props.SNR,
 
