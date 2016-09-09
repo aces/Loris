@@ -58,10 +58,11 @@ $(function() {
     });
 
     // Should cursors in all panels be synchronized?
-    $("#sync-volumes").change(function() {
-      var synced = $(this).is(":checked");
-
-      viewer.synced = synced;
+    var isChecked = false;
+    $("#sync-volumes").click(function() {
+      isChecked = !isChecked;
+      $(this).toggleClass('isChecked');
+      viewer.synced = isChecked;
     });
 
     // Reset button
@@ -842,7 +843,14 @@ $(function() {
     ////////////////////////////////////////
     // Set the size of slice display panels.
     ////////////////////////////////////////
-    viewer.setDefaultPanelSize(256, 256);
+
+    // Use the size from dropdown as deafault size
+    var panelSize = Number.parseInt($("#panel-size").val(), 10);
+
+    // If not a real size, set to default value
+    if (panelSize < 0) { panelSize = 300; }
+
+    viewer.setDefaultPanelSize(panelSize, panelSize);
 
     ///////////////////
     // Start rendering.
