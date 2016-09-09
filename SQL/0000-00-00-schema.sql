@@ -111,14 +111,13 @@ LOCK TABLES `caveat_options` WRITE;
 /*!40000 ALTER TABLE `caveat_options` ENABLE KEYS */;
 UNLOCK TABLES;
 
--- Table structure for table `FileTypes`
-
-DROP TABLE IF EXISTS `FileTypes`;
-CREATE TABLE `FileTypes` (
+-- Table structure for table `ImagingFileTypes`
+DROP TABLE IF EXISTS `ImagingFileTypes`;
+CREATE TABLE `ImagingFileTypes` (
  `type` varchar(255) NOT NULL PRIMARY KEY
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `FileTypes` VALUES
+INSERT INTO `ImagingFileTypes` VALUES
       ('mnc'),
       ('obj'),
       ('xfm'),
@@ -440,7 +439,7 @@ CREATE TABLE `mri_processing_protocol` (
   `InsertTime` int(10) unsigned NOT NULL DEFAULT '0',
   `md5sum` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`ProcessProtocolID`),
-  CONSTRAINT `FK_mri_processing_protocol_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `FileTypes`(`type`)
+  CONSTRAINT `FK_mri_processing_protocol_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -480,7 +479,7 @@ CREATE TABLE `files` (
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
   CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`),
-  CONSTRAINT `FK_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `FileTypes`(`type`)
+  CONSTRAINT `FK_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `ImaginFileTypes`(`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `files_qcstatus`;
@@ -1993,7 +1992,7 @@ CREATE TABLE `genomic_files` (
   `FileName` varchar(255) NOT NULL,
   `FilePackage` tinyint(1) DEFAULT NULL,
   `Description` varchar(255) NOT NULL,
-  `FileType` varchar(255) default NULL,
+  `FileType` varchar(255) NOT NULL,
   `FileSize` int(20) NOT NULL,
   `Platform` varchar(255) DEFAULT NULL,
   `Batch` varchar(255) DEFAULT NULL,
