@@ -106,30 +106,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function testSearchForUsers()
     {
-        $this->safeGet($this->url . "/user_accounts/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        );
-        $bodyText->getText();
-        $this->_assertSearchBy(
-            array('real_name' => 'my_nonexistent_user_ID'),
-            null
-        );
-        $this->_assertSearchBy(
-            array('real_name' => 'UnitTester'),
-            array(self::$_UNIT_TESTER)
-        );
-        $this->_assertSearchBy(
-            array('real_name' => 'unittester'),
-            array(self::$_UNIT_TESTER)
-        );
-        $this->_assertSearchBy(
-            array('real_name' => 'n'),
-            array(
-             self::$_ADMIN,
-             self::$_UNIT_TESTER,
-            )
-        );
+        $this->_assertSearchBy("userID","my_nonexistent_user_ID",null);
+        $this->_assertSearchBy("userID","UnitTester","UnitTester");
+        $this->_assertSearchBy("userID","unittester","UnitTester");
     }
     /**
      * Tests various user account edit operations.
@@ -303,14 +282,15 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void.
      */
-    private function _assertSearchBy(array $criteria, $expectedResults)
+    private function _assertSearchBy($elementName,$testData,$expectedResults)
     {
-        foreach ($criteria as $elementName => $elementValue) {
+        {
+            $this->safeGet($this->url . "/user_accounts/");
             $element = $this->safeFindElement(
                 WebDriverBy::Name($elementName)
             );
             $element->clear();
-            $element->sendKeys($elementValue);
+            $element->sendKeys($testData);
         }
         $this->safeClick(WebDriverBy::Name("filter"));
         
@@ -367,14 +347,14 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _assertUserReactTableContents($expectedRows)
+    private function _assertUserReactTableContents($testValue,$expectedRows)
     {
         $dataTable =  $this->safeGet($this->url . "/user_accounts/?format=json")->getPageSource();
         if (is_null($expectedRows)) {
             $this->assertContains('"Data":[]', $dataTable);
         } else {
             
-             $this->assertNotContains('"Data":[]', $dataTable);
+             $this->assertContains($testValue, $dataTable);
 
             }
     }
