@@ -84,7 +84,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   var reliableStyleGreen = {
     backgroundColor: '#86BC78',
-    color: '#FFFFFF'
   };
   var reliableStyleRed = {
     backgroundColor: '#CD5C5C',
