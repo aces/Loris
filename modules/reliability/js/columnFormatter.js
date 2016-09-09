@@ -83,10 +83,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   var reliableStyleGreen = {
-    backgroundColor: '#86BC78'
+    backgroundColor: '#86BC78',
+    color: '#FFFFFF'
   };
   var reliableStyleRed = {
-    backgroundColor: '#CD5C5C'
+    backgroundColor: '#CD5C5C',
+    color: '#FFFFFF'
   };
   if (column === 'Reliable') {
     if (row['Reliable'] > 0) {
@@ -95,7 +97,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         { style: reliableStyleGreen },
         "Yes"
       );
-    } else {
+    }
+    if (row['Reliable'] == 0) {
       return React.createElement(
         "td",
         { style: reliableStyleRed },

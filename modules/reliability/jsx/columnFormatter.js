@@ -52,13 +52,16 @@ var reliableStyleGreen = {
   }
 var reliableStyleRed = {
   backgroundColor: '#CD5C5C',
+  color: '#FFFFFF',
   }
 if (column === 'Reliable') {
    if(row['Reliable'] > 0){
      return <td style={reliableStyleGreen}>Yes</td>;
-   }else{
+   }
+   if(row['Reliable'] == 0){
      return <td style={reliableStyleRed}>No</td>;
    }
+     
   }
 
   return <td>{cell}</td>;
