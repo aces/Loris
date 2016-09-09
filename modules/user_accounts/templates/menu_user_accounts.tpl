@@ -93,58 +93,12 @@
 </div>  
 
 <!--  title table with pagination -->
-<table border="0" valign="bottom" width="100%">
-<tr>
-    <!-- title -->
-    <td class="controlPanelSection"></td>
-    <!-- display pagination links -->
-    <td align="right" id="pageLinks"></td>
-</tr>
-</table>
-
-<!-- start data table -->
-    <table border="0" width="100%" class="table table-hover table-primary table-bordered dynamictable">
-        <thead>
-            <tr class="info">
-                <th nowrap="nowrap">No.</th>
-                <!-- print out column headings - quick & dirty hack -->
-                {section name=header loop=$headers}
-                    <th nowrap="nowrap"><a href="{$baseurl}/user_accounts/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                {/section}
-            </tr>
-        </thead>
-        <tbody>
-            {section name=item loop=$items}
-                <tr>
-                <!-- print out data rows -->
-                {section name=piece loop=$items[item]}
-                <td nowrap="nowrap">
-                    {if  $items[item][piece].name == "Username"}
-                    <a href="{$baseurl}/user_accounts/edit_user/?identifier={$items[item][piece].value|escape}">{$items[item][piece].value|escape}</a>
-                    {else}
-                    {$items[item][piece].value|escape}
-                    {/if}
-                </td>
-                {/section}
-                </tr>           
-            {sectionelse}
-                <tr><td colspan="8">No users found</td></tr>
-            {/section}
-        <tbody>
-                        
-    <!-- end data table -->
-    </table>
-
+<div class="dynamictable" id="datatable"></div>
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/user_accounts/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/user_accounts/?format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "PSCID"
+  });
+React.render(table, document.getElementById("datatable"));
 </script>
-
