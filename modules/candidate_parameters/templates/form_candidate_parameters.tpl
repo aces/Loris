@@ -94,7 +94,7 @@
     });
 
     React.render(participantStatus, document.getElementById("participant-status"));
-    
+
     var consentStatus = RConsentStatus({
         "dataURL": "{$baseurl}/candidate_parameters/ajax/getData.php?data=consentStatus&candID=" + {$smarty.get.candID},
         "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
