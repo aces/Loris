@@ -1,4 +1,4 @@
---patch creating FileTypes table for existing projects and adding foreign keys to other tables
+-- patch creating FileTypes table for existing projects and adding foreign keys to other tables
 CREATE TABLE `ImagingFileTypes` (
  `type` varchar(255) NOT NULL PRIMARY KEY
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
