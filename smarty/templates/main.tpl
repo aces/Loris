@@ -11,7 +11,7 @@
            and can access them through the loris global (ie. loris.BaseURL) *}
         <script src="{$baseurl}/js/loris.js" type="text/javascript"></script>
         <script language="javascript" type="text/javascript">
-        var loris = new LorisHelper({$jsonParams}, {$userPerms|json_encode});
+        var loris = new LorisHelper({$jsonParams}, {$userPerms|json_encode}, {$studyParams|json_encode});
         </script>
         {section name=jsfile loop=$jsfiles}
             <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
