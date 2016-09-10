@@ -273,13 +273,16 @@ foreach ($user->getPermissions() as $permName => $hasPerm) {
         $realPerms[] = $permName;
     }
 }
-$tpl_data['userPerms']  = $realPerms;
-$tpl_data['studyParams']  = array (
-    'useEDC' => $config->getSetting('useEDC') ? $config->getSetting('useEDC') : false,
-    'useProband' => $config->getSetting('useProband') ? $config->getSetting('useProband') : false,
-    'useFamilyID' => $config->getSetting('useFamilyID') ?  $config->getSetting('useFamilyID') : false
-);
-$tpl_data['jsonParams'] = json_encode(
+$tpl_data['userPerms']   = $realPerms;
+$tpl_data['studyParams'] = array(
+                            'useEDC'      => $config->getSetting('useEDC') ?
+        $config->getSetting('useEDC') : false,
+                            'useProband'  => $config->getSetting('useProband') ?
+        $config->getSetting('useProband') : false,
+                            'useFamilyID' => $config->getSetting('useFamilyID') ?
+        $config->getSetting('useFamilyID') : false,
+                           );
+$tpl_data['jsonParams']  = json_encode(
     array(
      'BaseURL'   => $tpl_data['baseurl'],
      'TestName'  => $tpl_data['test_name'],
