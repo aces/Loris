@@ -2,17 +2,19 @@ var CollapsibleHistory = React.createClass(
   {
 
     getInitialState: function() {
-      return {'collapsed': true};
+      return {collapsed: true};
     },
     toggleCollapsed: function() {
-      this.setState({'collapsed': !this.state.collapsed});
+      this.setState({collapsed: !this.state.collapsed});
     },
     render: function() {
       return (
                 <div className="row form-group">
                     <div id="comment-history">
                         <div className="col-sm-12">
-                            <div dangerouslySetInnerHTML={{__html: this.props.text}}/>
+                            <div
+                                dangerouslySetInnerHTML={{__html: this.props.text}}
+                            />
                         </div>
                     </div>
                 </div>
@@ -26,12 +28,12 @@ var ParticipantStatus = React.createClass({
 
   getInitialState: function() {
     return {
-      'Data': [],
-      'formData': {},
-      'updateResult': null,
-      'errorMessage': null,
-      'isLoaded': false,
-      'loadedData': 0
+      Data: [],
+      formData: {},
+      updateResult: null,
+      errorMessage: null,
+      isLoaded: false,
+      loadedData: 0
     };
   },
 
@@ -43,20 +45,20 @@ var ParticipantStatus = React.createClass({
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function(evt) {
           that.setState({
-            'loadedData': evt.loaded
+            loadedData: evt.loaded
           });
         });
         return xhr;
       },
       success: function(data) {
         that.setState({
-          'Data': data,
-          'isLoaded': true
+          Data: data,
+          isLoaded: true
         });
       },
       error: function(data, error_code, error_msg) {
         that.setState({
-          'error': 'An error occurred when loading the form!'
+          error: 'An error occurred when loading the form!'
         });
       }
     });
@@ -77,7 +79,7 @@ var ParticipantStatus = React.createClass({
 
   render: function() {
     if (!this.state.isLoaded) {
-      if (this.state.error != undefined) {
+      if (this.state.error !== undefined) {
         return (
                     <div className="alert alert-danger text-center">
                         <strong>
@@ -90,7 +92,11 @@ var ParticipantStatus = React.createClass({
       return (
                 <button className="btn-info has-spinner">
                     Loading
-                    <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                    <span
+                        className="glyphicon glyphicon-refresh
+                        glyphicon-refresh-animate"
+                    >
+                    </span>
                 </button>
             );
     }
@@ -117,7 +123,7 @@ var ParticipantStatus = React.createClass({
         if (participantStatus === null || participantStatus === undefined) {
           participantStatus = this.state.Data.participant_status;
         }
-        if (required[key]["ID"] === participantStatus) {
+        if (required[key].ID === participantStatus) {
           subOptions = this.state.Data.parentIDs[participantStatus];
           setSuboptionsSelect = true;
           suboptionsRequired = true;
@@ -141,10 +147,10 @@ var ParticipantStatus = React.createClass({
     var alertMessage = "";
     var alertClass = "alert text-center hide";
     if (this.state.updateResult) {
-      if (this.state.updateResult == "success") {
+      if (this.state.updateResult === "success") {
         alertClass = "alert alert-success text-center";
         alertMessage = "Update Successful!";
-      } else if (this.state.updateResult == "error") {
+      } else if (this.state.updateResult === "error") {
         var errorMessage = this.state.errorMessage;
         alertClass = "alert alert-danger text-center";
         alertMessage = errorMessage ? errorMessage : "Failed to update!";
@@ -156,7 +162,12 @@ var ParticipantStatus = React.createClass({
                 <div className={alertClass} role="alert" ref="alert-message">
                     {alertMessage}
                 </div>
-            <FormElement name="participantStatus" onSubmit={this.handleSubmit} ref="form" class="col-md-6">
+            <FormElement
+                name="participantStatus"
+                onSubmit={this.handleSubmit}
+                ref="form"
+                class="col-md-6"
+            >
                 <StaticElement
                     label="PSCID"
                     text={this.state.Data.pscid}
@@ -206,13 +217,11 @@ var ParticipantStatus = React.createClass({
     e.preventDefault();
 
     var myFormData = this.state.formData;
-    var formRefs = this.refs;
 
-        // Set form data and upload the media file
     var self = this;
     var formData = new FormData();
     for (var key in myFormData) {
-      if (myFormData[key] != "") {
+      if (myFormData[key] !== "") {
         formData.append(key, myFormData[key]);
       }
     }
@@ -249,7 +258,7 @@ var ParticipantStatus = React.createClass({
   showAlertMessage: function() {
     var self = this;
 
-    if (this.refs["alert-message"] == null) {
+    if (this.refs["alert-message"] === null) {
       return;
     }
 

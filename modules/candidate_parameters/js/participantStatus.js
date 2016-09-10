@@ -1,16 +1,14 @@
-'use strict';
-
 var CollapsibleHistory = React.createClass({
   displayName: 'CollapsibleHistory',
 
 
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return { 'collapsed': true };
   },
-  toggleCollapsed: function toggleCollapsed() {
+  toggleCollapsed: function () {
     this.setState({ 'collapsed': !this.state.collapsed });
   },
-  render: function render() {
+  render: function () {
     return React.createElement(
       'div',
       { className: 'row form-group' },
@@ -31,7 +29,7 @@ var ParticipantStatus = React.createClass({
   displayName: 'ParticipantStatus',
 
 
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       'Data': [],
       'formData': {},
@@ -42,11 +40,11 @@ var ParticipantStatus = React.createClass({
     };
   },
 
-  componentDidMount: function componentDidMount() {
+  componentDidMount: function () {
     var that = this;
     $.ajax(this.props.dataURL, {
       dataType: 'json',
-      xhr: function xhr() {
+      xhr: function () {
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function (evt) {
           that.setState({
@@ -55,13 +53,13 @@ var ParticipantStatus = React.createClass({
         });
         return xhr;
       },
-      success: function success(data) {
+      success: function (data) {
         that.setState({
           'Data': data,
           'isLoaded': true
         });
       },
-      error: function error(data, error_code, error_msg) {
+      error: function (data, error_code, error_msg) {
         that.setState({
           'error': 'An error occurred when loading the form!'
         });
@@ -69,7 +67,7 @@ var ParticipantStatus = React.createClass({
     });
   },
 
-  setFormData: function setFormData(formElement, value) {
+  setFormData: function (formElement, value) {
     var formData = this.state.formData;
     formData[formElement] = value;
 
@@ -78,11 +76,11 @@ var ParticipantStatus = React.createClass({
     });
   },
 
-  onSubmit: function onSubmit(e) {
+  onSubmit: function (e) {
     e.preventDefault();
   },
 
-  render: function render() {
+  render: function () {
     if (!this.state.isLoaded) {
       if (this.state.error != undefined) {
         return React.createElement(
@@ -219,7 +217,7 @@ var ParticipantStatus = React.createClass({
    * Handles form submission
    * @param e
    */
-  handleSubmit: function handleSubmit(e) {
+  handleSubmit: function (e) {
     e.preventDefault();
 
     var myFormData = this.state.formData;
@@ -244,12 +242,12 @@ var ParticipantStatus = React.createClass({
       cache: false,
       contentType: false,
       processData: false,
-      success: function success(data) {
+      success: function (data) {
         self.setState({
           updateResult: "success"
         });
       },
-      error: function error(err) {
+      error: function (err) {
         var errorMessage = JSON.parse(err.responseText).message;
         self.setState({
           updateResult: "error",
@@ -263,7 +261,7 @@ var ParticipantStatus = React.createClass({
   /**
    * Display a success/error alert message after form submission
    */
-  showAlertMessage: function showAlertMessage() {
+  showAlertMessage: function () {
     var self = this;
 
     if (this.refs["alert-message"] == null) {

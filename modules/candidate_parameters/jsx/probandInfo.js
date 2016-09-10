@@ -3,8 +3,8 @@ var ProbandInfo = React.createClass({
   getInitialState: function() {
     return {
       genderOptions: {
-        "Male": "Male",
-        "Female": "Female"
+        Male: "Male",
+        Female: "Female"
       },
       Data: [],
       formData: {},
@@ -70,7 +70,11 @@ var ProbandInfo = React.createClass({
       return (
                 <button className="btn-info has-spinner">
                     Loading
-                    <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                    <span
+                        className="glyphicon glyphicon-refresh
+                        glyphicon-refresh-animate"
+                    >
+                    </span>
                 </button>
             );
     }
@@ -169,7 +173,6 @@ var ProbandInfo = React.createClass({
     e.preventDefault();
 
     var myFormData = this.state.formData;
-    var formRefs = this.refs;
 
     var today = new Date();
     var dd = today.getDate();

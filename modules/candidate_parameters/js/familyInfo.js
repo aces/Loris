@@ -1,10 +1,8 @@
-"use strict";
-
 var FamilyInfo = React.createClass({
   displayName: "FamilyInfo",
 
 
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       relationshipOptions: {
         "full_sibling": "Full Sibling",
@@ -20,11 +18,11 @@ var FamilyInfo = React.createClass({
     };
   },
 
-  componentDidMount: function componentDidMount() {
+  componentDidMount: function () {
     var that = this;
     $.ajax(this.props.dataURL, {
       dataType: 'json',
-      xhr: function xhr() {
+      xhr: function () {
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function (evt) {
           that.setState({
@@ -33,13 +31,13 @@ var FamilyInfo = React.createClass({
         });
         return xhr;
       },
-      success: function success(data) {
+      success: function (data) {
         that.setState({
           Data: data,
           isLoaded: true
         });
       },
-      error: function error(data, error_code, error_msg) {
+      error: function (data, error_code, error_msg) {
         that.setState({
           error: 'An error occurred when loading the form!'
         });
@@ -47,7 +45,7 @@ var FamilyInfo = React.createClass({
     });
   },
 
-  setFormData: function setFormData(formElement, value) {
+  setFormData: function (formElement, value) {
     var formData = this.state.formData;
     formData[formElement] = value;
 
@@ -56,11 +54,11 @@ var FamilyInfo = React.createClass({
     });
   },
 
-  onSubmit: function onSubmit(e) {
+  onSubmit: function (e) {
     e.preventDefault();
   },
 
-  render: function render() {
+  render: function () {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return React.createElement(
@@ -195,7 +193,7 @@ var FamilyInfo = React.createClass({
    * Handles form submission
    * @param e
    */
-  handleSubmit: function handleSubmit(e) {
+  handleSubmit: function (e) {
     e.preventDefault();
 
     var myFormData = this.state.formData;
@@ -220,12 +218,12 @@ var FamilyInfo = React.createClass({
       cache: false,
       contentType: false,
       processData: false,
-      success: function success(data) {
+      success: function (data) {
         self.setState({
           updateResult: "success"
         });
       },
-      error: function error(err) {
+      error: function (err) {
         var errorMessage = JSON.parse(err.responseText).message;
         self.setState({
           updateResult: "error",
@@ -239,7 +237,7 @@ var FamilyInfo = React.createClass({
   /**
    * Display a success/error alert message after form submission
    */
-  showAlertMessage: function showAlertMessage() {
+  showAlertMessage: function () {
     var self = this;
 
     if (this.refs["alert-message"] === null) {
@@ -254,7 +252,7 @@ var FamilyInfo = React.createClass({
     });
   },
 
-  deleteFamilyMember: function deleteFamilyMember(familyMemberID, familyMembers, familyID, e) {
+  deleteFamilyMember: function (familyMemberID, familyMembers, familyID, e) {
     e.preventDefault();
 
     var myFormData = this.state.formData;
@@ -293,12 +291,12 @@ var FamilyInfo = React.createClass({
       cache: false,
       contentType: false,
       processData: false,
-      success: function success(data) {
+      success: function (data) {
         self.setState({
           updateResult: "success"
         });
       },
-      error: function error(err) {
+      error: function (err) {
         var errorMessage = JSON.parse(err.responseText).message;
         self.setState({
           updateResult: "error",

@@ -71,7 +71,11 @@ var FamilyInfo = React.createClass({
       return (
                 <button className="btn-info has-spinner">
                     Loading
-                    <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                    <span
+                        className="glyphicon glyphicon-refresh
+                        glyphicon-refresh-animate"
+                    >
+                    </span>
                 </button>
             );
     }
@@ -92,8 +96,9 @@ var FamilyInfo = React.createClass({
     var relationship = null;
     var familyMember = null;
     for (var key in familyMemberIDs) {
-      if (familyMemberIDs.hasOwnProperty(key) && relationships.hasOwnProperty(key)) {
-        relationship = i+ "_Relationship_type";
+      if (familyMemberIDs.hasOwnProperty(key) &&
+          relationships.hasOwnProperty(key)) {
+        relationship = i + "_Relationship_type";
         familyMember = i + "_Family_member";
 
         familyMembers.push(<TextboxElement
@@ -115,7 +120,17 @@ var FamilyInfo = React.createClass({
                 required={true}
                     />);
         if (loris.userHasPermission('candidate_parameter_edit')) {
-          familyMembers.push(<ButtonElement label="Delete" type="button" onUserInput={this.deleteFamilyMember.bind(null, familyMemberIDs[key].CandID, familyMembers, i)} />);
+          familyMembers.push(
+              <ButtonElement
+                label="Delete"
+                type="button"
+                onUserInput={this.deleteFamilyMember.bind(
+                    null,
+                    familyMemberIDs[key].CandID,
+                    familyMembers,
+                    i
+                )}
+              />);
         }
         familyMembers.push(<hr />);
 
@@ -124,7 +139,8 @@ var FamilyInfo = React.createClass({
     }
 
     var relationshipRequired = false;
-    if (this.state.formData.FamilyCandID !== null && this.state.formData.FamilyCandID !== undefined) {
+    if (this.state.formData.FamilyCandID !== null &&
+        this.state.formData.FamilyCandID !== undefined) {
       relationshipRequired = true;
     }
 
@@ -147,7 +163,12 @@ var FamilyInfo = React.createClass({
                     {alertMessage}
                 </div>
 
-            <FormElement name="familyInfo" onSubmit={this.handleSubmit} ref="form" class="col-md-6">
+            <FormElement
+                name="familyInfo"
+                onSubmit={this.handleSubmit}
+                ref="form"
+                class="col-md-6"
+            >
                 <StaticElement
                     label="PSCID"
                     text={this.state.Data.pscid}
@@ -190,9 +211,7 @@ var FamilyInfo = React.createClass({
     e.preventDefault();
 
     var myFormData = this.state.formData;
-    var formRefs = this.refs;
 
-        // Set form data and upload the media file
     var self = this;
     var formData = new FormData();
     for (var key in myFormData) {
@@ -265,11 +284,10 @@ var FamilyInfo = React.createClass({
 
     for (var field in familyMembers) {
       if (familyMembers.hasOwnProperty(field)) {
-
         console.log(familyMembers[field]);
         if (familyMembers[field].ref !== null) {
           var reference = familyMembers[field].ref.split('_', 1);
-          if (reference == familyID) {
+          if (reference === familyID) {
             // TODO: remove fields immediately after deletion
             familyMembers[field] = null;
           }

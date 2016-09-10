@@ -125,14 +125,13 @@ var CandidateInfo = React.createClass({
             />;
     }
 
-        // TODO: SET VALUES
-
     var extraParameterFields = [];
     var extraParameters = this.state.Data.extra_parameters;
 
     for (var key2 in extraParameters) {
       if (extraParameters.hasOwnProperty(key2)) {
         var name = 'PTID' + extraParameters[key2].ParameterTypeID;
+        var value = this.state.Data.parameter_values[extraParameters[key2].ParameterTypeID];
 
         switch (extraParameters[key2].Type.substring(0, 3)) {
           case "enu":
@@ -151,7 +150,7 @@ var CandidateInfo = React.createClass({
                             label={extraParameters[key2].Description}
                             name={name}
                             options={selectOptions}
-                            value={this.state.Data.parameter_values[extraParameters[key2].ParameterTypeID]}
+                            value={value}
                             onUserInput={this.setFormData}
                             ref={name}
                             disabled={disabled}
@@ -161,7 +160,7 @@ var CandidateInfo = React.createClass({
             extraParameterFields.push(<DateElement
                             label={extraParameters[key2].Description}
                             name={name}
-                            value={this.state.Data.parameter_values[extraParameters[key2].ParameterTypeID]}
+                            value={value}
                             onUserInput={this.setFormData}
                             ref={name}
                             disabled={disabled}
@@ -169,9 +168,9 @@ var CandidateInfo = React.createClass({
             break;
           default:
             extraParameterFields.push(<TextareaElement
-                            label={extraParameters[key2]['Description']}
+                            label={extraParameters[key2].Description}
                             name={name}
-                            value={this.state.Data.parameter_values[extraParameters[key2].ParameterTypeID]}
+                            value={value}
                             onUserInput={this.setFormData}
                             ref={name}
                             disabled={disabled}
@@ -197,7 +196,12 @@ var CandidateInfo = React.createClass({
                 <div className={alertClass} role="alert" ref="alert-message">
                     {alertMessage}
                 </div>
-                <FormElement name="candidateInfo" onSubmit={this.handleSubmit} ref="form" class="col-md-6">
+                <FormElement
+                    name="candidateInfo"
+                    onSubmit={this.handleSubmit}
+                    ref="form"
+                    class="col-md-6"
+                >
                     <StaticElement
                         label="PSCID"
                         text={this.state.Data.pscid}
@@ -233,9 +237,8 @@ var CandidateInfo = React.createClass({
     e.preventDefault();
 
     var myFormData = this.state.formData;
-    var formRefs = this.refs;
 
-        // Set form data and upload the media file
+    // Set form data and upload the media file
     var self = this;
     var formData = new FormData();
     for (var key in myFormData) {
