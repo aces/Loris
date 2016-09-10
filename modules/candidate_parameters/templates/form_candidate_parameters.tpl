@@ -23,7 +23,7 @@
             Participant Status
         </a>
     </li>
-    {if $useConsent}
+    {if $useConsent === "true"}
         <li role="presentation">
             <a href="#consent-status" aria-controls="upload" role="tab" data-toggle="tab" id="consent-status-tab">
                 Consent Status
@@ -66,7 +66,7 @@
     });
     React.render(candidateInfo, document.getElementById("cand-info"));
 
-    if (loris.config('useProband')) {
+    if (loris.config('useProband') === "true") {
         var probandInfo = RProbandInfo({
             "dataURL": "{$baseurl}/candidate_parameters/ajax/getData.php?data=probandInfo&candID=" + {$smarty.get.candID},
             "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
@@ -76,9 +76,10 @@
     }
     else {
         $('#proband-info-tab').hide();
+        console.log(loris.config('useProband'));
     }
 
-    if (loris.config('useFamilyID')) {
+    if (loris.config('useFamilyID') === "true") {
         var familyInfo = RFamilyInfo({
             "dataURL": "{$baseurl}/candidate_parameters/ajax/getData.php?data=familyInfo&candID=" + {$smarty.get.candID},
             "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
