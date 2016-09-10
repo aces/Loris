@@ -1,3 +1,6 @@
+<input class="btn btn-sm btn-primary" onclick="location.href='{$baseurl}/timepoint_list/?candID={$candID}'" value="Return to timepoint list" type="button" />
+<br><br>
+
 <!-- Nav tabs -->
 <ul class="nav nav-tabs nav-tabs-loris" role="tablist">
     <li role="presentation" class="active">
