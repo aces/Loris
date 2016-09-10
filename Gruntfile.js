@@ -37,7 +37,12 @@ module.exports = function(grunt) {
                     'modules/media/js/columnFormatter.js': 'modules/media/jsx/columnFormatter.js',
                     'modules/media/js/editForm.js': 'modules/media/jsx/editForm.js',
                     'modules/media/js/uploadForm.js': 'modules/media/jsx/uploadForm.js',
-                    'modules/survey_accounts/js/columnFormatter.js': 'modules/survey_accounts/jsx/columnFormatter.js'
+                    'modules/survey_accounts/js/columnFormatter.js': 'modules/survey_accounts/jsx/columnFormatter.js',
+                    'modules/candidate_parameters/js/candidateInfo.js': 'modules/candidate_parameters/jsx/candidateInfo.js',
+                    'modules/candidate_parameters/js/consentStatus.js': 'modules/candidate_parameters/jsx/consentStatus.js',
+                    'modules/candidate_parameters/js/familyInfo.js': 'modules/candidate_parameters/jsx/familyInfo.js',
+                    'modules/candidate_parameters/js/participantStatus.js': 'modules/candidate_parameters/jsx/participantStatus.js',
+                    'modules/candidate_parameters/js/probandInfo.js': 'modules/candidate_parameters/jsx/probandInfo.js'
                 }
             }
         },
