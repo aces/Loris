@@ -106,30 +106,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function testSearchForUsers()
     {
-        $this->safeGet($this->url . "/user_accounts/");
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        );
-        $bodyText->getText();
-        $this->_assertSearchBy(
-            array('userID' => 'my_nonexistent_user_ID'),
-            null
-        );
-        $this->_assertSearchBy(
-            array('userID' => 'UnitTester'),
-            array(self::$_UNIT_TESTER)
-        );
-        $this->_assertSearchBy(
-            array('userID' => 'unittester'),
-            array(self::$_UNIT_TESTER)
-        );
-        $this->_assertSearchBy(
-            array('userID' => 'n'),
-            array(
-             self::$_ADMIN,
-             self::$_UNIT_TESTER,
-            )
-        );
+        $this->_assertSearchBy("userID","my_nonexistent_user_ID",null);
+        $this->_assertSearchBy("userID","UnitTester","UnitTester");
+        $this->_assertSearchBy("userID","unittester","UnitTester");
     }
     /**
      * Tests various user account edit operations.
@@ -250,7 +229,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function _verifyUserModification($page, $userId, $fieldName, $newValue)
-    {
+    {  
         $this->_accessUser($page, $userId);
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
         if ($field->getTagName() == 'input') {
@@ -261,6 +240,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $selectField->selectByVisibleText($newValue);
         }
         $this->safeClick(WebDriverBy::Name('fire_away'));
+        
         $this->_accessUser($page, $userId);
         $field = $this->safeFindElement(WebDriverBy::Name($fieldName));
         if ($field->getTagName() == 'input') {
@@ -288,7 +268,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/$page/");
         if ($page == 'user_accounts') {
-            $this->safeClick(WebDriverBy::LinkText($userId));
+       //     $this->safeClick(WebDriverBy::LinkText($userId));
+           $this->safeGet($this->url . "/user_accounts/edit_user/?identifier="."$userId");
+            
         }
     }
     /**
@@ -300,17 +282,19 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void.
      */
-    private function _assertSearchBy(array $criteria, $expectedResults)
+    private function _assertSearchBy($elementName,$testData,$expectedResults)
     {
-        foreach ($criteria as $elementName => $elementValue) {
+        {
+            $this->safeGet($this->url . "/user_accounts/");
             $element = $this->safeFindElement(
                 WebDriverBy::Name($elementName)
             );
             $element->clear();
-            $element->sendKeys($elementValue);
+            $element->sendKeys($testData);
         }
         $this->safeClick(WebDriverBy::Name("filter"));
-        $this->_assertUserTableContents('dynamictable', $expectedResults);
+        
+        $this->_assertUserReactTableContents ($testData,$expectedResults);
     }
     /**
      * Compares the content of the candidate table with an expected content.
@@ -354,6 +338,25 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 );
             }
         }
+    }
+    /**
+     * Compares the content of the candidate table with an expected content.
+     *
+     * @param string $className    class name of the HTML table.
+     * @param string $expectedRows array of candidates that the table should contain.
+     *
+     * @return void
+     */
+    private function _assertUserReactTableContents($testValue,$expectedRows)
+    {
+        $dataTable =  $this->safeGet($this->url . "/user_accounts/?format=json")->getPageSource();
+        if (is_null($expectedRows)) {
+            $this->assertContains('"Data":[]', $dataTable);
+        } else {
+            
+             $this->assertContains($expectedRows, $dataTable);
+
+            }
     }
     /**
      * Performed after every test.
