@@ -93,6 +93,8 @@ var MediaEditForm = React.createClass({
       }
     }
 
+    var backURL = loris.BaseURL.concat('/media/');
+
     return (
       <div>
         <div className={alertClass} role="alert" ref="alert-message">
@@ -100,7 +102,7 @@ var MediaEditForm = React.createClass({
         </div>
         {
           this.state.uploadResult === "success" ?
-          <a className="btn btn-primary" href="/media/">Back to media</a> :
+          <a className="btn btn-primary" href={backURL}>Back to media</a> :
           null
         }
         <FormElement

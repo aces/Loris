@@ -42,15 +42,14 @@ function editFile()
 
     // Process posted data
     $idMediaFile = $_POST['idMediaFile'];
-    $dateTaken   = isset($_POST['dateTaken']) ? $_POST['dateTaken'] : null;
-    $comments    = isset($_POST['comments']) ? $_POST['comments'] : null;
-    $hideFile    = $_POST['hideFile'];
 
-    $updateValues = [
-                     'date_taken' => $dateTaken,
-                     'comments'   => $comments,
-                     'hide_file'  => $hideFile,
-                    ];
+    $updateValues['hide_file'] = $_POST['hideFile'];
+    if (!empty($_POST['dateTaken']) && $_POST['dateTaken'] != 'null') {
+        $updateValues['date_taken'] = $_POST['dateTaken'];
+    }
+    if (!empty($_POST['comments']) && $_POST['comments'] != 'null') {
+        $updateValues['comments'] = $_POST['comments'];
+    }
 
     $db->update('media', $updateValues, ['id' => $idMediaFile]);
 }

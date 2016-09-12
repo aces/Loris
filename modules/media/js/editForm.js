@@ -1,5 +1,3 @@
-'use strict';
-
 /* exported RMediaEditForm */
 
 /**
@@ -21,7 +19,7 @@ var MediaEditForm = React.createClass({
     action: React.PropTypes.string.isRequired
   },
 
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       Data: {},
       formData: {},
@@ -31,11 +29,11 @@ var MediaEditForm = React.createClass({
     };
   },
 
-  componentDidMount: function componentDidMount() {
+  componentDidMount: function () {
     var self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
-      success: function success(data) {
+      success: function (data) {
         var formData = {
           idMediaFile: data.mediaData.id,
           forSite: data.mediaData.forSite,
@@ -51,8 +49,8 @@ var MediaEditForm = React.createClass({
           formData: formData
         });
       },
-      error: function error(_error, errorCode, errorMsg) {
-        console.error(_error, errorCode, errorMsg);
+      error: function (error, errorCode, errorMsg) {
+        console.error(error, errorCode, errorMsg);
         self.setState({
           error: 'An error occurred when loading the form!'
         });
@@ -60,7 +58,7 @@ var MediaEditForm = React.createClass({
     });
   },
 
-  render: function render() {
+  render: function () {
     // Data loading error
     if (this.state.error !== undefined) {
       return React.createElement(
@@ -98,6 +96,8 @@ var MediaEditForm = React.createClass({
       }
     }
 
+    var backURL = loris.BaseURL.concat('/media/');
+
     return React.createElement(
       'div',
       null,
@@ -108,7 +108,7 @@ var MediaEditForm = React.createClass({
       ),
       this.state.uploadResult === "success" ? React.createElement(
         'a',
-        { className: 'btn btn-primary', href: '/media/' },
+        { className: 'btn btn-primary', href: backURL },
         'Back to media'
       ) : null,
       React.createElement(
@@ -206,7 +206,7 @@ var MediaEditForm = React.createClass({
    * Handles form submission
    * @param {event} e - Form submition event
    */
-  handleSubmit: function handleSubmit(e) {
+  handleSubmit: function (e) {
     e.preventDefault();
 
     var self = this;
@@ -229,7 +229,7 @@ var MediaEditForm = React.createClass({
       cache: false,
       contentType: false,
       processData: false,
-      xhr: function xhr() {
+      xhr: function () {
         var xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function (evt) {
           if (evt.lengthComputable) {
@@ -243,14 +243,14 @@ var MediaEditForm = React.createClass({
         }, false);
         return xhr;
       },
-      success: function success(data) {
+      success: function (data) {
         $("#file-progress").addClass('hide');
         self.setState({
           uploadResult: "success"
         });
         self.showAlertMessage();
       },
-      error: function error(err) {
+      error: function (err) {
         console.error(err);
         self.setState({
           uploadResult: "error"
@@ -267,7 +267,7 @@ var MediaEditForm = React.createClass({
    * @param {string} formElement - name of the selected element
    * @param {string} value - selected value for corresponding form element
    */
-  setFormData: function setFormData(formElement, value) {
+  setFormData: function (formElement, value) {
     var formData = this.state.formData;
     formData[formElement] = value;
 
@@ -279,7 +279,7 @@ var MediaEditForm = React.createClass({
   /**
    * Display a success/error alert message after form submission
    */
-  showAlertMessage: function showAlertMessage() {
+  showAlertMessage: function () {
     var self = this;
 
     if (this.refs["alert-message"] === null) {
