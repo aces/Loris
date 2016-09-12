@@ -200,7 +200,7 @@ class TimePoint
         $db      = $factory->database();
 
         // select the candidate data
-        $query = "SELECT c.PSCID, c.CenterID,
+        $query = "SELECT c.CenterID,
                          IFNULL(max(s.VisitNo)+1, 1) AS nextVisitNo
                     FROM candidate AS c
                         LEFT OUTER JOIN session AS s USING (CandID)
