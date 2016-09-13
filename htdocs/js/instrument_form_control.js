@@ -36,15 +36,11 @@ $(document).ready(function () {
         name = name.replace('_status', '');
         index = naList[i].selectedIndex;
         if (name.indexOf('_date') > -1) {
-            if (index === 0) {
-                $('.' + name).prop('disabled', false);
-            } else {
+            if (index !== 0) {
                 $('.' + name).prop('disabled', true);
             }
         } else {
-            if (index === 0) {
-                $('[name=' + name + ']').prop('disabled', false);
-            } else {
+            if (index !== 0) {
                 $('[name=' + name + ']').prop('disabled', true);
             }
         }
