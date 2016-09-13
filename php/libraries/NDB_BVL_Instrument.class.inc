@@ -499,12 +499,6 @@ class NDB_BVL_Instrument extends NDB_Page
         if (empty($this->dateTimeFields)) {
             $this->dateTimeFields = array("Date_taken");
         }
-        foreach ($this->dateTimeFields as $field) {
-            $defaults[$field] = $this->_getQuickformDate($defaults[$field]);
-        }
-        foreach ($this->monthYearFields as $field) {
-            $defaults[$field] = $this->_getQuickformDate($defaults[$field]);
-        }
 
         if (isset($defaults['Window_Difference'])
             && $defaults['Window_Difference'] != 0
@@ -701,29 +695,6 @@ class NDB_BVL_Instrument extends NDB_Page
         //Convet date/timestamps into database format
         if (empty($this->dateTimeFields)) {
             $this->dateTimeFields = array("Date_taken");
-        }
-
-        //Convert date/time fields into database dates/times
-        if (is_array($this->dateTimeFields) && count($this->dateTimeFields) > 0) {
-            foreach ($this->dateTimeFields as $field) {
-                if (isset($values[$field])) {
-                    //Stops it from wiping dates already saved on other pages.
-                    $values[$field] = $this->_getDatabaseDate($values[$field]);
-                }
-            }
-        }
-
-        //Convert date/time fields into database dates/times
-        if (is_array($this->monthYearFields)
-            && count($this->monthYearFields) > 0
-        ) {
-            foreach ($this->monthYearFields as $field) {
-                //Stops it from wiping dates already saved on other pages.
-                if (isset($values[$field])) {
-                    $values[$field]['d'] = 15;
-                    $values[$field]      = $this->_getDatabaseDate($values[$field]);
-                }
-            }
         }
 
         if (strrpos($this->testName, "_proband") === false) {
@@ -1137,27 +1108,8 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _getQuickformDate($databaseValue)
     {
-        $formDateValue = null;
-        if (!empty($databaseValue)) {
-            if (strstr($databaseValue, ":")) {
-                //handle time
-                $formDateValue = explode(":", $databaseValue);
-                $formDateValue = array(
-                                  "H" => $formDateValue[0],
-                                  "i" => $formDateValue[1],
-                                 );
-            } else {
-                //handle date
-                // split mysql Date_taken field into array
-                $formDateValue = explode('-', $databaseValue);
-                $formDateValue = array(
-                                  'Y' => $formDateValue[0],
-                                  'M' => $formDateValue[1],
-                                  'd' => $formDateValue[2],
-                                 );
-            }
-        }
-        return $formDateValue;
+        throw new Exception("The function _getQuickformDate has been depricated. 
+            Please contact LORIS developer mail list for support.");
     }
 
 
