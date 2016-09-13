@@ -142,7 +142,8 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
          $this->safeFindElement(
              WebDriverBy::Name("filter")
          )->click();
-         $bodyText = $this->safeGet($this->url . "/help_editor/?format=json")->getText();
+         $this->safeGet($this->url . "/help_editor/?format=json");
+         $bodyText = $this->webDriver->getPageSource();
          $this->assertContains("Test Topic", $bodyText);
     }
     /**
@@ -160,7 +161,8 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
          $this->safeFindElement(
              WebDriverBy::Name("filter")
          )->click();
-         $bodyText = $this->safeGet($this->url . "/help_editor/?format=json")->getText();
+         $this->safeGet($this->url . "/help_editor/?format=json");
+         $bodyText = $this->webDriver->getPageSource();
          $this->assertContains("test content", $bodyText);
     }
 
