@@ -872,12 +872,20 @@ class LorisForm
      */
     function timeHTML($el, $type='time')
     {
-        $value = $this->getValue($el['name']);
-        $smarty    = new Smarty_neurodb;
+        $timeStamp  = $this->getValue($el['name']);
+        $smarty     = new Smarty_neurodb;
+        $value      = array();
+
+        if (is_array($timeStamp)) {
+            $value = $timeStamp;
+        } else {
+            $timeStamp  = explode(":", $timeStamp);
+            $value['H'] = $timeStamp[0];
+            $value['i'] = $timeStamp[1];
+        }
 
         $smarty->assign('name', $el['name']);
         $smarty->assign('value', $value);
-        print_r($value);
 
         $html = $smarty->fetch("time_element.tpl");
 
