@@ -1065,5 +1065,23 @@ class NDB_Form_statistics extends NDB_Form
             )
         );
     }
+    /**
+     * Include additional CSS files:
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/statistics/css/statistics.css"
+            )
+        );
+    }
+
 } // End class
 ?>
