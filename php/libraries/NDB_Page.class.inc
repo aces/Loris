@@ -575,12 +575,16 @@ class NDB_Page
 
         $TestName = $this->name;
 
+        // Currently jquery-ui is required for dialogs and datepickers to work.
+        // In the future release, dialogs should be replaced with bootstrap dialogs
+        // and datepickers only created by modernizr
+
         $files = array(
                   $baseurl . '/js/jquery/jquery-1.11.0.min.js',
                   $baseurl . '/js/helpHandler.js',
                   $baseurl . '/js/modernizr/modernizr.min.js',
                   $baseurl . '/js/react-with-addons-0.13.3.min.js',
-                  $baseurl . '/js/jquery/datepicker/jquery.datepicker.min.js',
+                  $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
                   $baseurl . '/js/jquery.dynamictable.js',
                   $baseurl . '/js/jquery.fileupload.js',
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
