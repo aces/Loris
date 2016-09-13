@@ -11,8 +11,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once 'NDB_Form.class.inc';
-
 /**
  * Main class for candidate_parameters module corresponding to /candidate_parameters/ URL
  * Child or Clinical section of the LorisMenu.
