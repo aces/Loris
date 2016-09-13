@@ -202,10 +202,10 @@
 		    <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">
-        		  {$form.Validated.label}
+        		  {$form.Minor_Allele.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.Validated.html}
+        		  {$form.Minor_Allele.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
         		  {$form.Genotype_Quality.label}
@@ -219,6 +219,16 @@
                     	<div class="col-sm-12 col-md-2">
         		  {$form.Platform.html}
 			</div>
+		      </div>
+		    </div>
+                    <div class="row">
+                      <div class="form-group col-sm-12">
+                        <label class="col-sm-12 col-md-2">
+                          {$form.Validated.label}
+                        </label>
+                        <div class="col-sm-12 col-md-2">
+                          {$form.Validated.html}
+                        </div>
 		      </div>
 		    </div>
 	          </div> 

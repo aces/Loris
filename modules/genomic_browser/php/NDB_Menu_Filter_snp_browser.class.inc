@@ -90,6 +90,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                           'SNP.SNPExternalSource as External_Source',
                           'SNP_candidate_rel.ObservedBase as Observed_Base',
                           'SNP.ReferenceBase as Reference_Base',
+                          'SNP.MinorAllele as Minor_Allele',
                           'SNP_candidate_rel.ArrayReport as Array_Report',
                           'SNP.Markers as Markers',
                           'SNP_candidate_rel.ValidationMethod as Validation_Method',
@@ -174,6 +175,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'SNP.SNPExternalSource',
                                'SNP_candidate_rel.ObservedBase',
                                'SNP.ReferenceBase',
+                               'SNP.MinorAllele',
                                'SNP_candidate_rel.ArrayReport',
                                'SNP.Markers',
                                'SNP_candidate_rel.ValidationMethod',
@@ -207,6 +209,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                 'SNP_External_Source' => 'SNP.SNPExternalSource',
                 'Observed_Base'       => 'SNP_candidate_rel.ObservedBase',
                 'Reference_Base'      => 'SNP.ReferenceBase',
+                'Minor_Allele'        => 'SNP.MinorAllele',
                 'Array_Report'        => 'SNP.ArrayReport',
                 'Markers'             => 'SNP.Markers',
                 'Validation_Method'   => 'SNP_candidate_rel.ValidationMethod',
@@ -306,6 +309,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                         );
         $this->addSelect('Observed_Base', 'Observed Base:', $Base_options);
         $this->addSelect('Reference_Base', 'Reference Base:', $Base_options);
+        $this->addSelect('Minor_Allele', 'Minor Allele:', $Base_options);
 
         $this->addSelect(
             'Validated',
