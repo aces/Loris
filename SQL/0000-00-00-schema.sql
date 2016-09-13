@@ -111,6 +111,25 @@ LOCK TABLES `caveat_options` WRITE;
 /*!40000 ALTER TABLE `caveat_options` ENABLE KEYS */;
 UNLOCK TABLES;
 
+-- Table structure for table `ImagingFileTypes`
+DROP TABLE IF EXISTS `ImagingFileTypes`;
+CREATE TABLE `ImagingFileTypes` (
+ `type` varchar(255) NOT NULL PRIMARY KEY
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `ImagingFileTypes` VALUES
+      ('mnc'),
+      ('obj'),
+      ('xfm'),
+      ('xfmmnc'),
+      ('imp'),
+      ('vertstat'),
+      ('xml'),
+      ('txt'),
+      ('nii'),
+      ('nii.gz'),
+      ('nrrd');
+
 
 --
 -- Table structure for table `document_repository`
@@ -415,11 +434,12 @@ DROP TABLE IF EXISTS `mri_processing_protocol`;
 CREATE TABLE `mri_processing_protocol` (
   `ProcessProtocolID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `ProtocolFile` varchar(255) NOT NULL DEFAULT '',
-  `FileType` enum('xml','txt') DEFAULT NULL,
+  `FileType` varchar(255) DEFAULT NULL,
   `Tool` varchar(255) NOT NULL DEFAULT '',
   `InsertTime` int(10) unsigned NOT NULL DEFAULT '0',
   `md5sum` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`ProcessProtocolID`)
+  PRIMARY KEY (`ProcessProtocolID`),
+  CONSTRAINT `FK_mri_processing_protocol_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -438,7 +458,7 @@ CREATE TABLE `files` (
   `CoordinateSpace` varchar(255) default NULL,
   `OutputType` varchar(255) NOT NULL default '',
   `AcquisitionProtocolID` int(10) unsigned default NULL,
-  `FileType` enum('mnc','obj','xfm','xfmmnc','imp','vertstat','xml','txt','nii','nii.gz') default NULL,
+  `FileType` varchar(255) default NULL,
   `PendingStaging` tinyint(1) NOT NULL default '0',
   `InsertedByUserID` varchar(255) NOT NULL default '',
   `InsertTime` int(10) unsigned NOT NULL default '0',
@@ -458,7 +478,8 @@ CREATE TABLE `files` (
   CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
-  CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`)
+  CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`),
+  CONSTRAINT `FK_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `files_qcstatus`;
@@ -1552,10 +1573,11 @@ CREATE TABLE `certification` (
   `examinerID` int(10) unsigned NOT NULL DEFAULT '0',
   `date_cert` date DEFAULT NULL,
   `visit_label` varchar(255) DEFAULT NULL,
-  `testID` varchar(255) NOT NULL DEFAULT '',
+  `testID` int(10) UNSIGNED NOT NULL,
   `pass` enum('not_certified','in_training','certified') DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`certID`,`testID`)
+  PRIMARY KEY (`certID`,`testID`),
+  CONSTRAINT `FK_certifcation` FOREIGN KEY (`testID`) REFERENCES `test_names` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
