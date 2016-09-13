@@ -45,6 +45,7 @@ class NDB_Menu_statistics_site extends NDB_Menu
 
     function _CompleteCount($centerID, $projectID, $instrument)
     {
+
         $this->_checkCriteria($centerID, $projectID);
         $DB    =& Database::singleton();
         $count = $DB->pselectOne(
@@ -118,29 +119,32 @@ class NDB_Menu_statistics_site extends NDB_Menu
         $this->_setInstrumentName();
         $data = array();
         foreach($this->instruments as $instrument=>$label){
-            $complete_count = $this->_CompleteCount($centerID, $projectID, $instrument);
 
-            $results = $this->_GetResults($centerID, $projectID, $instrument);
+            if ($DB->tableExists($instrument)) {
+                $complete_count = $this->_CompleteCount($centerID, $projectID, $instrument);
 
-            $test_url = $instrument;
+                $results = $this->_GetResults($centerID, $projectID, $instrument);
 
-            foreach($results as $row) {
-                if(!in_array($row['Visit_label'], $visits)) {
-                    $visits[] = $row['Visit_label'];
+                $test_url = $instrument;
+
+                foreach ($results as $row) {
+                    if (!in_array($row['Visit_label'], $visits)) {
+                        $visits[] = $row['Visit_label'];
+                    }
+                    $results[$row['Visit_label']][] = array(
+                        'test_url' => $test_url,
+                        'CandID' => $row['CandID'],
+                        'SessionID' => $row['SessionID'],
+                        'CommentID' => $row['CommentID'],
+                        'PSCID' => $row['PSCID'],
+                    );
                 }
-                $results[$row['Visit_label']][] = array(
-                                                   'test_url'  => $test_url,
-                                                   'CandID'    => $row['CandID'],
-                                                   'SessionID' => $row['SessionID'],
-                                                   'CommentID' => $row['CommentID'],
-                                                   'PSCID'     => $row['PSCID'],
-                                                  );
+                $data[] = array(
+                    'name' => $label,
+                    'count' => $complete_count,
+                    'incompletes' => $results,
+                );
             }
-            $data[] = array(
-                       'name'        => $label,
-                       'count'       => $complete_count,
-                       'incompletes' => $results,
-                      );
         }
 
         $this->tpl_data["data"]     = $data;

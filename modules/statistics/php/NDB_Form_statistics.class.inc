@@ -149,7 +149,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    PSCArea as LongName,
+                    IFNULL(PSCArea,NAME) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
