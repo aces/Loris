@@ -175,7 +175,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 'c.CenterID as Site',
                 'c.DOB as Birth_Date',
                 'r.Review_Done as Review_Done',
-                "$isT1Acq as T1_Acquired",
+                "$isT1Acq as T1_Inserted",
                 'r.Final_Review_Results as Results',
                 'r.Final_Exclusionary as Exclusionary_Status',
                 'r.sas as SAS',
@@ -202,7 +202,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             array(
                 'Birth_Date',
                 'Review_Done',
-                'T1_Acquired',
+                'T1_Inserted',
                 'Results',
                 'Exclusionary_Status',
                 'SAS',
