@@ -149,7 +149,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    IFNULL(PSCArea,NAME) as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
@@ -414,7 +414,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    IFNULL(PSCArea,NAME) as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
@@ -602,7 +602,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    IFNULL(PSCArea,NAME) as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
@@ -921,7 +921,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    IFNULL(PSCArea,NAME) as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
