@@ -38,7 +38,8 @@ class NDB_Menu_timepoint_list extends NDB_Menu
     {
         // create candidate object
         $candidate =& Candidate::singleton($_REQUEST['candID']);
-        
+        $DB =& Database::singleton();
+
         $numberOfVisits = 0;
         $this->tpl_data['candID'] = $_REQUEST['candID'];
         $this->tpl_data['PSCID'] = $candidate->getPSCID();
@@ -77,6 +78,12 @@ class NDB_Menu_timepoint_list extends NDB_Menu
                 $this->tpl_data['timePoints'][$x]['currentStatus'] = $timePoint->getCurrentStatus();
                 $this->tpl_data['timePoints'][$x]['currentDate'] = $timePoint->getCurrentDate();
                 
+
+                // get Center Name
+		$centerID = $timePoint->getData('CenterID');
+		$center = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID =:cid", array('cid' => $centerID));
+                $this->tpl_data['timePoints'][$x]['CenterName'] = $center['Name'];
+
                 // create feedback object for the time point            
                 $feedback = NDB_BVL_Feedback::singleton($username, null, $timePoint->getData('SessionID'));
 
