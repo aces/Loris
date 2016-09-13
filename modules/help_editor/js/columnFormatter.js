@@ -1,5 +1,3 @@
-"use strict";
-
 /* exported formatColumn */
 
 /**
@@ -11,6 +9,7 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
+
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
   }
@@ -19,8 +18,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   rowHeaders.forEach(function (header, index) {
     row[header] = rowData[index];
   }, this);
+
   if (column === 'Topic') {
-    var url = loris.BaseURL + "/help_editor/edit_help_content/?helpID=" + row["HelpID"] +"&parentID=" + row["ParentID"];
+    var url = loris.BaseURL + "/help_editor/edit_help_content/?helpID=" + row["HelpID"] + "&parentID=" + row["ParentID"];
     return React.createElement(
       "td",
       null,
@@ -32,7 +32,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     );
   }
   if (column === 'Parent Topic') {
-    var url = loris.BaseURL + "/help_editor/edit_help_content/?helpID=" + row["ParentID"] +"&parentID=" + row["ParentTopicID"];
+    var url = loris.BaseURL + "/help_editor/edit_help_content/?helpID=" + row["ParentID"] + "&parentID=" + row["ParentTopicID"];
     return React.createElement(
       "td",
       null,
@@ -43,9 +43,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       )
     );
   }
-    return React.createElement(
-        "td",
-        null,
-        cell
-    );
+
+  return React.createElement(
+    "td",
+    null,
+    cell
+  );
 }
