@@ -191,7 +191,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->tpl_data['hiddenHeaders'] = json_encode(
             array_map(
                 function ($header) {
-                        return ucwords(str_replace('_', ' ', $header));
+                    return ucwords(str_replace('_', ' ', $header));
                 },
                 array('sessionID')
             )
@@ -257,9 +257,9 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 
         //query to get scan types that exist for the project
         $types_q = $DB->pselect(
-                "SELECT ID, Scan_type FROM mri_scan_type mri
+            "SELECT ID, Scan_type FROM mri_scan_type mri
                  JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-                 array()
+            array()
         );
         $scan_types = $allAr;
         foreach ($types_q as $row) {
@@ -308,11 +308,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                 if (in_array($field, $this->CheckboxFilters) && $val) {
                     $query .= " AND $field";
                 } elseif (strtolower(substr($field, -8)) == 'centerid'
-                        || strtolower(substr($field, -10)) == 'categoryid'
-                        || strtolower(substr($field, -6)) == 'gender'
-                        || (isset($this->EqualityFilters)
+                    || strtolower(substr($field, -10)) == 'categoryid'
+                    || strtolower(substr($field, -6)) == 'gender'
+                    || (isset($this->EqualityFilters)
                         && in_array($field, $this->EqualityFilters))
-                        ) {
+                ) {
                     $query .= " AND $field = :v_$prepared_key";
                     // $qparams["v_$prepared_key"] = $val;
                 } else {
@@ -320,19 +320,19 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                 }
             } else if ($field == 'pending') {
                 switch ($val) {
-                case "P":
-                    $query .= " AND s.MRIQCPending='Y'";
-                    break;
-                case "N":
-                    $query .= " AND fqc.QCFirstChangeTime IS NULL";
-                    break;
-                case "PN":
-                    $query .= " AND (s.MRIQCPending='Y' 
+                    case "P":
+                        $query .= " AND s.MRIQCPending='Y'";
+                        break;
+                    case "N":
+                        $query .= " AND fqc.QCFirstChangeTime IS NULL";
+                        break;
+                    case "PN":
+                        $query .= " AND (s.MRIQCPending='Y' 
                         OR fqc.QCFirstChangeTime IS NULL)";
-                    break;
+                        break;
                 }
             } else if ($field == 'AcquisitionProtocolID') {
-                  $query .= " AND $field = :v_$prepared_key";
+                $query .= " AND $field = :v_$prepared_key";
             }
         }
         return $query;
@@ -363,6 +363,24 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
         return $data;
     }
+
+    /**
+     * Include additional CSS files:
+     *  1. imaging_browser.css
+     *
+     * @return array of css to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/imaging_browser/css/imaging_browser.css"]
+        );
+    }
+
 
     /**
      * Include the column formatter
