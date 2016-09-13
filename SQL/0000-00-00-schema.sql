@@ -1925,7 +1925,7 @@ CREATE TABLE `SNP_candidate_rel` (
   `RelationID` bigint(20) NOT NULL AUTO_INCREMENT,
   `SNPID` bigint(20) NOT NULL DEFAULT '0',
   `CandID` int(6) NOT NULL DEFAULT '0',
-  `AlleleA` enum('A','C','T','G') NOT NULL,
+  `AlleleA` enum('A','C','T','G') DEFAULT NULL,
   `AlleleB` enum('A','C','T','G') DEFAULT NULL,
   `ArrayReport` enum('Normal','Uncertain','Pending') DEFAULT NULL,
   `ArrayReportDetail` varchar(255) DEFAULT NULL,
