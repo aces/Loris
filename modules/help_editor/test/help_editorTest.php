@@ -107,9 +107,9 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
          $this->setupPermissions(array("context_help"));
          $this->safeGet($this->url . "/help_editor/");
          $bodyText = $this->safeFindElement(
-             WebDriverBy::XPath("//*[@id='lorisworkspace']/table/tbody/tr/td[1]")
+             WebDriverBy::cssSelector("body")
          )->getText();
-         $this->assertContains("List of Topics", $bodyText);
+         $this->assertNotContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
     }
     /**
@@ -126,6 +126,42 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
          )->getText();
          $this->assertContains("You do not have access to this page.", $bodyText);
          $this->resetPermissions();
+    }
+    /**
+     * Tests that help editor does not load with the permission
+     *
+     * @return void
+     */
+    function testHelpEditorSearchByTopic()
+    {
+         $this->safeGet($this->url . "/help_editor/");
+         $this->safeFindElement(
+             WebDriverBy::Name("topic")
+         )->sendKeys("Test Topic");
+         //click the [show data] button
+         $this->safeFindElement(
+             WebDriverBy::Name("filter")
+         )->click();
+         $bodyText = $this->safeGet($this->url . "/help_editor/?format=json")->getText();
+         $this->assertContains("Test Topic", $bodyText);
+    }
+    /**
+     * Tests that help editor does not load with the permission
+     *
+     * @return void
+     */
+    function testHelpEditorSearchByKeyword()
+    {
+         $this->safeGet($this->url . "/help_editor/");
+         $this->safeFindElement(
+             WebDriverBy::Name("keyword")
+         )->sendKeys("test content");
+         //click the [show data] button
+         $this->safeFindElement(
+             WebDriverBy::Name("filter")
+         )->click();
+         $bodyText = $this->safeGet($this->url . "/help_editor/?format=json")->getText();
+         $this->assertContains("test content", $bodyText);
     }
 
 }
