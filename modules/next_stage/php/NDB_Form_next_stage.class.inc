@@ -128,14 +128,14 @@ class NDB_Form_next_stage extends NDB_Form
 
         $errors = array();
         // check date pairs
-        if (empty($values['date1'])) {
+        if (empty($values['date1']['M']) && empty($values['date1']['d']) && empty($values['date1']['Y'])) {
             $errors['date1'] .= "Date is required. \n";
         }
         elseif (!Utility::_checkDate($values['date1'])) {
             $errors['date1'] .= "Date is not a valid date. \n";
         }
 
-        if (($values['date1'] != $values['date2'] ) ) {
+        if (($values['date1']['M']!= $values['date2']['M']) || ($values['date1']['d']!= $values['date2']['d']) || ($values['date1']['Y']!=$values['date2']['Y'])) {
             $errors['date1'] .= "Both Date fields must match. \n";
         }
 
@@ -146,14 +146,15 @@ class NDB_Form_next_stage extends NDB_Form
         $stage = $timePoint->getNextStage();
         if ($stage == 'Visit') {
             // compare the dates date of MRI must be > DOB - ONLY WHEN starting Visit stage
+            $date = sprintf("%04d-%02d-%02d", $values['date1']['Y'], $values['date1']['M'], $values['date1']['d']);
 
             if (empty($values['scan_done']) && $config->getSetting('useScanDone')!='false') {
                 $errors['scan_done'] = 'Scan done is required';
             }
-            if ($config->getSetting('useScreening')=="true" && $config->getSetting('screeningAfterVisit')!="true" && strcmp($values['date1'], $timePoint->getData('Date_screening')) < 0) {
+            if ($config->getSetting('useScreening')=="true" && $config->getSetting('screeningAfterVisit')!="true" && strcmp($date, $timePoint->getData('Date_screening')) < 0) {
                 $errors['date1'] .= "Date of Visit is less than Date of Screening. \n";
             }
-            if ($config->getSetting('allowPrenatalTimepoints')!="true" && strcmp($values['date1'], $candidateBirthDate) < 1) {
+            if ($config->getSetting('allowPrenatalTimepoints')!="true" && strcmp($date, $candidateBirthDate) < 1) {
                 $errors['date1'] .= "Date of Visit is less than Date of Birth/EDC. \n";
             }
         } 
