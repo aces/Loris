@@ -118,9 +118,7 @@ class NDB_Form_new_profile extends NDB_Form
 
         $config =& NDB_Config::singleton();
 
-        if($values['dob1']['M'] != $values['dob2']['M'] ||
-                $values['dob1']['d'] != $values['dob2']['d'] ||
-                $values['dob1']['Y'] != $values['dob2']['Y'])
+        if($values['dob1'] != $values['dob2'])
         {
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
@@ -128,9 +126,7 @@ class NDB_Form_new_profile extends NDB_Form
             if (strlen(implode($values['edc1'])) > 2 && !Utility::_checkDate($values['edc1'])) {
                 $errors['edc1'] = 'EDC is not a valid date';
             }
-            if($values['edc1']['M'] != $values['edc2']['M'] ||
-                    $values['edc1']['d'] != $values['edc2']['d'] ||
-                    $values['edc1']['Y'] != $values['edc2']['Y'])
+            if($values['edc1'] != $values['edc2'])
             {
                 $errors['edc1'] = 'Estimated Due date fields must match.';
             }
