@@ -248,7 +248,7 @@ var CandidateInfo = React.createClass(
         /**
      * Handles form submission
      *
-     * @param e
+     * @param {event} e - Form submission event
      */
     handleSubmit: function(e) {
       e.preventDefault();

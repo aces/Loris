@@ -42,7 +42,7 @@ var ProbandInfo = React.createClass(
               }
                         );
           },
-          error: function(data, error_code, error_msg) {
+          error: function(data, errorCode, errorMsg) {
             that.setState(
               {
                 error: 'An error occurred when loading the form!'
@@ -177,7 +177,7 @@ var ProbandInfo = React.createClass(
         /**
      * Handles form submission
      *
-     * @param e
+     * @param {event} e - Form submission event
      */
     handleSubmit: function(e) {
       e.preventDefault();

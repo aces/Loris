@@ -43,7 +43,7 @@ var FamilyInfo = React.createClass(
               }
                         );
           },
-          error: function(data, error_code, error_msg) {
+          error: function(data, errorCode, errorMsg) {
             that.setState(
               {
                 error: 'An error occurred when loading the form!'
@@ -104,15 +104,16 @@ var FamilyInfo = React.createClass(
       var relationships = this.state.Data.Relationship_types;
       var i = 0;
       var relationship = null;
-      var familyMember = null;
+      var familyMember = "";
       for (var key in familyMemberIDs) {
-        if (familyMemberIDs.hasOwnProperty(key)
-                    && relationships.hasOwnProperty(key)
+        if (familyMemberIDs.hasOwnProperty(key) &&
+                    relationships.hasOwnProperty(key)
                 ) {
           relationship = i + "_Relationship_type";
           familyMember = i + "_Family_member";
 
-          var link = "?candID=" + familyMemberIDs[key].CandID + "&identifier=" + familyMemberIDs[key].CandID;
+          var link = "?candID=" + familyMemberIDs[key].CandID +
+                        "&identifier=" + familyMemberIDs[key].CandID;
 
           familyMembers.push(
                         <StaticElement
@@ -153,8 +154,8 @@ var FamilyInfo = React.createClass(
       }
 
       var relationshipRequired = false;
-      if (this.state.formData.FamilyCandID !== null
-                && this.state.formData.FamilyCandID !== undefined
+      if (this.state.formData.FamilyCandID !== null &&
+                this.state.formData.FamilyCandID !== undefined
             ) {
         relationshipRequired = true;
       }
@@ -220,7 +221,7 @@ var FamilyInfo = React.createClass(
         /**
      * Handles form submission
      *
-     * @param e
+     * @param {event} e - Form submission event
      */
     handleSubmit: function(e) {
       e.preventDefault();
@@ -290,7 +291,6 @@ var FamilyInfo = React.createClass(
     e) {
       e.preventDefault();
       var myFormData = this.state.formData;
-      var formRefs = this.refs;
       var self = this;
       var formData = new FormData();
       for (var key in myFormData) {
