@@ -3,8 +3,8 @@ var ConsentStatus = React.createClass(
         getInitialState: function() {
             return {
                 consentOptions: {
-                    "yes": "Yes",
-                    "no": "No"
+                    yes: "Yes",
+                    no: "No"
                 },
                 Data: [],
                 formData: {},
@@ -105,8 +105,8 @@ var ConsentStatus = React.createClass(
                     if (this.state.formData[consent] === "yes") {
                         dateRequired[i] = true;
                     }
-                    if (this.state.formData[withdrawal] !== null
-                        && this.state.formData[withdrawal] !== undefined
+                    if (this.state.formData[withdrawal] !== null &&
+                        this.state.formData[withdrawal] !== undefined
                     ) {
                         withdrawalRequired[i] = true;
                     }
