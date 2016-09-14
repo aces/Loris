@@ -131,7 +131,12 @@ class NDB_Client
             if ($auth === true) {
                 $error = $login->setState();
             } elseif ($auth === false) {
-                header("HTTP/1.1 403 Forbidden");
+                // only send a 403 error if they were attempting to log in,
+                // otherwise the login page returns a 403 when first accessing
+                // it.
+                if (!empty($_REQUEST['login'])) {
+                    header("HTTP/1.1 403 Forbidden");
+                }
                 $login->clearState();
             }
         }
