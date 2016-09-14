@@ -96,13 +96,15 @@ var FamilyInfo = React.createClass({
                 relationship = i + "_Relationship_type";
                 familyMember = i + "_Family_member";
 
-                familyMembers.push(React.createElement(TextboxElement, {
+                var link = "?candID=" + familyMemberIDs[key].CandID + "&identifier=" + familyMemberIDs[key].CandID;
+
+                familyMembers.push(React.createElement(StaticElement, {
                     label: "Family Member DCCID",
-                    name: familyMember,
-                    value: familyMemberIDs[key].CandID,
-                    ref: familyMember,
-                    disabled: true,
-                    required: true
+                    text: React.createElement(
+                        "a",
+                        { href: link },
+                        familyMemberIDs[key].CandID
+                    )
                 }));
                 familyMembers.push(React.createElement(SelectElement, {
                     label: "Relation Type",

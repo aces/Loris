@@ -29,7 +29,7 @@
 14. Check that the family panel only shows up if "Use family ID" is set to true in the configuration module.
 15. Check that these family members match what can be found in the family table.
 16. Click on the add family button and ensure that it adds in the front-end and back-end.
-17. Click on the DCCID and check that it takes you to the family member's candidate profile. // TODO
+17. Click on the DCCID and check that it takes you to the family member's candidate profile.
 18. Try changing the family member ID without specifying the relationship type. An error should appear.
 19. Ensure the candidate's DCCID cannot be chosen in the family member ID dropdown.
 20. Try deleting a family member and check it is updated in the front-end and back-end.
