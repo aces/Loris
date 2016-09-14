@@ -872,9 +872,9 @@ class LorisForm
      */
     function timeHTML($el, $type='time')
     {
-        $timeStamp  = $this->getValue($el['name']);
-        $smarty     = new Smarty_neurodb;
-        $value      = array();
+        $timeStamp = $this->getValue($el['name']);
+        $smarty    = new Smarty_neurodb;
+        $value     = array();
 
         if (is_array($timeStamp)) {
             $value = $timeStamp;
