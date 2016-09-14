@@ -56,7 +56,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      *
      * @return void
      */
-    function candidateParameters()
+    function candidate_parameters()
     {
         $config    =& NDB_Config::singleton();
         $candidate =& Candidate::singleton($this->identifier);
@@ -82,8 +82,8 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
             "SELECT ID,Description
-FROM participant_status_options
-WHERE parentID IS NULL",
+            FROM participant_status_options
+            WHERE parentID IS NULL",
             array()
         );
         $option_array = array();
