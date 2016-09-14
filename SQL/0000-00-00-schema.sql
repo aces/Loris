@@ -1914,7 +1914,7 @@ CREATE TABLE `SNP_candidate_rel` (
   PRIMARY KEY (`RelationID`),
   KEY `fk_SNP_candidate_rel_1_idx` (`SNPID`),
   CONSTRAINT `fk_SNP_candidate_rel_1` FOREIGN KEY (`SNPID`) REFERENCES `SNP` (`SNPID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table `CNV`
