@@ -1,3 +1,5 @@
+/* exported RCandidateInfo */
+
 var CandidateInfo = React.createClass(
     {
         getInitialState: function() {
@@ -318,3 +320,5 @@ var CandidateInfo = React.createClass(
 
     }
 );
+
+var RCandidateInfo = React.createFactory(CandidateInfo);

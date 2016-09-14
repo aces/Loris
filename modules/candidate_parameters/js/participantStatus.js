@@ -1,3 +1,5 @@
+/* exported RParticipantStatus */
+
 var ParticipantStatus = React.createClass({
     displayName: 'ParticipantStatus',
 
@@ -279,3 +281,5 @@ var ParticipantStatus = React.createClass({
     }
 
 });
+
+var RParticipantStatus = React.createFactory(ParticipantStatus);

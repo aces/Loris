@@ -1,3 +1,5 @@
+/* exported RFamilyInfo */
+
 var FamilyInfo = React.createClass({
     displayName: "FamilyInfo",
 
@@ -299,3 +301,5 @@ var FamilyInfo = React.createClass({
     }
 
 });
+
+var RFamilyInfo = React.createFactory(FamilyInfo);

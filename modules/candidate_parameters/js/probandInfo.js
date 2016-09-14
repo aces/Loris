@@ -1,3 +1,5 @@
+/* exported RProbandInfo */
+
 var ProbandInfo = React.createClass({
     displayName: "ProbandInfo",
 
@@ -246,3 +248,5 @@ var ProbandInfo = React.createClass({
     }
 
 });
+
+var RProbandInfo = React.createFactory(ProbandInfo);

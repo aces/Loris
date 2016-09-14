@@ -1,3 +1,5 @@
+/* exported RConsentStatus */
+
 var ConsentStatus = React.createClass(
     {
         getInitialState: function() {
@@ -400,3 +402,5 @@ var ConsentStatus = React.createClass(
 
     }
 );
+
+var RConsentStatus = React.createFactory(ConsentStatus);

@@ -1,3 +1,5 @@
+/* exported RConsentStatus */
+
 var ConsentStatus = React.createClass({
     displayName: "ConsentStatus",
 
@@ -365,3 +367,5 @@ var ConsentStatus = React.createClass({
     }
 
 });
+
+var RConsentStatus = React.createFactory(ConsentStatus);

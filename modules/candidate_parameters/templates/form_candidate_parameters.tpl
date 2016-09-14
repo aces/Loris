@@ -59,12 +59,6 @@
 
 <script>
 
-    var RCandidateInfo = React.createFactory(CandidateInfo);
-    var RProbandInfo = React.createFactory(ProbandInfo);
-    var RFamilyInfo = React.createFactory(FamilyInfo);
-    var RParticipantStatus = React.createFactory(ParticipantStatus);
-    var RConsentStatus = React.createFactory(ConsentStatus);
-
     var candidateInfo = RCandidateInfo({
         "dataURL": "{$baseurl}/candidate_parameters/ajax/getData.php?data=candidateInfo&candID=" + {$smarty.get.candID},
         "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",

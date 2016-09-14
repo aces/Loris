@@ -1,3 +1,5 @@
+/* exported RParticipantStatus */
+
 var ParticipantStatus = React.createClass(
     {
         getInitialState: function() {
@@ -297,3 +299,5 @@ var ParticipantStatus = React.createClass(
 
     }
 );
+
+var RParticipantStatus = React.createFactory(ParticipantStatus);

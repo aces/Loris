@@ -1,3 +1,5 @@
+/* exported RFamilyInfo */
+
 var FamilyInfo = React.createClass(
     {
         getInitialState: function() {
@@ -343,3 +345,5 @@ var FamilyInfo = React.createClass(
 
     }
 );
+
+var RFamilyInfo = React.createFactory(FamilyInfo);

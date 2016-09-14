@@ -1,3 +1,5 @@
+/* exported RProbandInfo */
+
 var ProbandInfo = React.createClass(
     {
         getInitialState: function() {
@@ -270,3 +272,5 @@ var ProbandInfo = React.createClass(
 
     }
 );
+
+var RProbandInfo = React.createFactory(ProbandInfo);

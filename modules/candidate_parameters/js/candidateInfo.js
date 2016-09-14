@@ -1,3 +1,5 @@
+/* exported RCandidateInfo */
+
 var CandidateInfo = React.createClass({
     displayName: "CandidateInfo",
 
@@ -286,3 +288,5 @@ var CandidateInfo = React.createClass({
     }
 
 });
+
+var RCandidateInfo = React.createFactory(CandidateInfo);
