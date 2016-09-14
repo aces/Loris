@@ -194,6 +194,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'gene.OfficialSymbol',
                                'gene.OfficialName',
                                'genotyping_platform.Name',
+                               'genomic_range',
                               );
 
         $ftf = array(
@@ -361,7 +362,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
 
         $DB = Database::singleton();
         $platform_results
-            = $DB->select("SELECT distinct Name FROM genotyping_platform ");
+            = $DB->pselect("SELECT distinct Name FROM genotyping_platform ", array());
 
         $platform_options = array('' => 'Any');
         foreach ($platform_results as $row => $result ) {
@@ -428,8 +429,8 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                     $temp_array = explode('-', $temp_array[1]);
                     $from       = $temp_array[0];
                     $to         = $temp_array[1];
-                    $query     .= " AND genome_loc.StartLoc < $to";
-                    $query     .= " AND genome_loc.EndLoc > $from";
+                    $query     .= " AND genome_loc.StartLoc <= $to";
+                    $query     .= " AND genome_loc.EndLoc >= $from";
                 }
                 $query .= " AND :v_$prepared_key IS NOT NULL";
 
