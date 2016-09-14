@@ -1,35 +1,3 @@
-var CollapsibleHistory = React.createClass(
-    {
-
-        getInitialState: function() {
-            return {
-                collapsed: true
-            };
-        },
-        toggleCollapsed: function() {
-            this.setState(
-                {
-                    collapsed: !this.state.collapsed
-                }
-            );
-        },
-        render: function() {
-            return (
-                <div className         ="row form-group">
-                    <div id            ="comment-history">
-                        <div className ="col-sm-12">
-                            <div
-                                dangerouslySetInnerHTML ={{__html: this.props.text}}
-                            />
-                        </div>
-                    </div>
-                </div>
-
-            );
-        }
-    }
-);
-
 var ConsentStatus = React.createClass(
     {
         getInitialState: function() {
@@ -222,6 +190,54 @@ var ConsentStatus = React.createClass(
                 }
             }
 
+            var formattedHistory = [];
+            for (var consentKey in this.state.Data.history) {
+                if (this.state.Data.history.hasOwnProperty(consentKey)) {
+                    var consentLabel = this.state.Data.history[consentKey].label;
+                    var consentType = this.state.Data.history[consentKey].consentType;
+                    for (var field in this.state.Data.history[consentKey]) {
+                        if (this.state.Data.history[consentKey].hasOwnProperty(field)) {
+                            var line = "";
+                            for (var field2 in this.state.Data.history[consentKey][field]) {
+                                if (this.state.Data.history[consentKey][field].hasOwnProperty(field2)) {
+                                    var current = this.state.Data.history[consentKey][field][field2];
+                                    if (current !== null) {
+                                        switch (field2) {
+                                            case 'data_entry_date':
+                                                line += "[";
+                                                line += current;
+                                                line += "] ";
+                                                break;
+                                            case 'entry_staff':
+                                                line += current;
+                                                line += " ";
+                                                break;
+                                            case consentType:
+                                                line += consentLabel + " Status: ";
+                                                line += current;
+                                                line += " ";
+                                                break;
+                                            case consentType + '_date':
+                                                line += "Date of Consent: ";
+                                                line += current;
+                                                line += " ";
+                                                break;
+                                            case consentType + '_withdrawal':
+                                                line += "Date of Consent Withdrawal: ";
+                                                line += current;
+                                                line += " ";
+                                                break;
+
+                                        }
+                                    }
+                                }
+                            }
+                            formattedHistory.push(<p>{line}</p>);
+                        }
+                    }
+                }
+            }
+
             var alertMessage = "";
             var alertClass   = "alert text-center hide";
             if (this.state.updateResult) {
@@ -256,13 +272,8 @@ var ConsentStatus = React.createClass(
                 />
                 {consents}
                 {updateButton}
-                <div class     ="col-sm-6">
-                    <div class ="row">
-                        <CollapsibleHistory
-                            text ={this.state.Data.history}
-                        />
-                    </div>
-                </div>
+                {formattedHistory}
+
             </FormElement>
                 </div>
             );

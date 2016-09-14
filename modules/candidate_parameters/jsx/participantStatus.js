@@ -1,29 +1,3 @@
-var CollapsibleHistory = React.createClass(
-    {
-
-        getInitialState: function() {
-            return {collapsed: true};
-        },
-        toggleCollapsed: function() {
-            this.setState({collapsed: !this.state.collapsed});
-        },
-        render: function() {
-            return (
-                <div className         ="row form-group">
-                    <div id            ="comment-history">
-                        <div className ="col-sm-12">
-                            <div
-                                dangerouslySetInnerHTML ={{__html: this.props.text}}
-                            />
-                        </div>
-                    </div>
-                </div>
-
-            );
-        }
-    }
-);
-
 var ParticipantStatus = React.createClass(
     {
         getInitialState: function() {
@@ -153,6 +127,47 @@ var ParticipantStatus = React.createClass(
                 />;
             }
 
+            var formattedHistory = [];
+            for (var statusKey in this.state.Data.history) {
+                if (this.state.Data.history.hasOwnProperty(statusKey)) {
+                    var line = "";
+                    for (var field in this.state.Data.history[statusKey]) {
+                        if (this.state.Data.history[statusKey].hasOwnProperty(field)) {
+                            var current = this.state.Data.history[statusKey][field];
+                            if (current !== null) {
+                                switch (field) {
+                                    case 'data_entry_date':
+                                        line += "[";
+                                        line += current;
+                                        line += "] ";
+                                        break;
+                                    case 'entry_staff':
+                                        line += current;
+                                        line += " ";
+                                        break;
+                                    case 'status':
+                                        line += " Status: ";
+                                        line += current;
+                                        line += " ";
+                                        break;
+                                    case 'suboption':
+                                        line += "Details: ";
+                                        line += current;
+                                        line += " ";
+                                        break;
+                                    case 'reason_specify':
+                                        line += "Comments: ";
+                                        line += current;
+                                        line += " ";
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    formattedHistory.push(<p>{line}</p>);
+                }
+            }
+
             var alertMessage = "";
             var alertClass   = "alert text-center hide";
             if (this.state.updateResult) {
@@ -206,13 +221,7 @@ var ParticipantStatus = React.createClass(
                     required     ={false}
                 />
                 {updateButton}
-                <div class       ="col-sm-6">
-                    <div class   ="row">
-                        <CollapsibleHistory
-                            text ={this.state.Data.history}
-                        />
-                    </div>
-                </div>
+                {formattedHistory}
             </FormElement>
                 </div>
             );
