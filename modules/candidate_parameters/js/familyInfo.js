@@ -35,7 +35,7 @@ var FamilyInfo = React.createClass({
                     isLoaded: true
                 });
             },
-            error: function (data, error_code, error_msg) {
+            error: function (data, errorCode, errorMsg) {
                 that.setState({
                     error: 'An error occurred when loading the form!'
                 });
@@ -77,11 +77,9 @@ var FamilyInfo = React.createClass({
         }
 
         var disabled = true;
-        var updateButton = null;
         var addButton = null;
         if (loris.userHasPermission('candidate_parameter_edit')) {
             disabled = false;
-            updateButton = React.createElement(ButtonElement, { label: "Update" });
             addButton = React.createElement(ButtonElement, { label: "Add" });
         }
 
@@ -90,7 +88,7 @@ var FamilyInfo = React.createClass({
         var relationships = this.state.Data.Relationship_types;
         var i = 0;
         var relationship = null;
-        var familyMember = null;
+        var familyMember = "";
         for (var key in familyMemberIDs) {
             if (familyMemberIDs.hasOwnProperty(key) && relationships.hasOwnProperty(key)) {
                 relationship = i + "_Relationship_type";
@@ -190,15 +188,14 @@ var FamilyInfo = React.createClass({
                     disabled: disabled,
                     required: relationshipRequired
                 }),
-                addButton,
-                updateButton
+                addButton
             )
         );
     },
     /**
     * Handles form submission
     *
-    * @param e
+    * @param {event} e - Form submission event
     */
     handleSubmit: function (e) {
         e.preventDefault();
@@ -254,7 +251,6 @@ var FamilyInfo = React.createClass({
     deleteFamilyMember: function (familyMemberID, familyMembers, familyID, e) {
         e.preventDefault();
         var myFormData = this.state.formData;
-        var formRefs = this.refs;
         var self = this;
         var formData = new FormData();
         for (var key in myFormData) {
@@ -303,5 +299,3 @@ var FamilyInfo = React.createClass({
     }
 
 });
-
-var RFamilyInfo = React.createFactory(FamilyInfo);

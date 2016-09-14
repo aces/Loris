@@ -4,8 +4,8 @@ var ConsentStatus = React.createClass({
     getInitialState: function () {
         return {
             consentOptions: {
-                "yes": "Yes",
-                "no": "No"
+                yes: "Yes",
+                no: "No"
             },
             Data: [],
             formData: {},
@@ -34,7 +34,7 @@ var ConsentStatus = React.createClass({
                     isLoaded: true
                 });
             },
-            error: function (data, error_code, error_msg) {
+            error: function (data, errorCode, errorMsg) {
                 that.setState({
                     error: 'An error occurred when loading the form!'
                 });
@@ -201,7 +201,7 @@ var ConsentStatus = React.createClass({
                                             line += current;
                                             line += " ";
                                             break;
-
+                                        default:
                                     }
                                 }
                             }
@@ -262,7 +262,7 @@ var ConsentStatus = React.createClass({
     /**
     * Handles form submission
     *
-    * @param e
+    * @param {event} e - Form submission event
     */
     handleSubmit: function (e) {
         e.preventDefault();
@@ -365,5 +365,3 @@ var ConsentStatus = React.createClass({
     }
 
 });
-
-var RConsentStatus = React.createFactory(ConsentStatus);

@@ -34,7 +34,7 @@ var CandidateInfo = React.createClass({
                     isLoaded: true
                 });
             },
-            error: function (data, error_code, error_msg) {
+            error: function (data, errorCode, errorMsg) {
                 that.setState({
                     error: 'An error occurred when loading the form!'
                 });
@@ -228,7 +228,7 @@ var CandidateInfo = React.createClass({
     /**
     * Handles form submission
     *
-    * @param e
+    * @param {event} e - Form submission event
     */
     handleSubmit: function (e) {
         e.preventDefault();
@@ -286,5 +286,3 @@ var CandidateInfo = React.createClass({
     }
 
 });
-
-var RCandidateInfo = React.createFactory(CandidateInfo);
