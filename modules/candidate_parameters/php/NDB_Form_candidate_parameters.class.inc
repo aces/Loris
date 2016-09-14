@@ -4,29 +4,30 @@
  *
  * PHP Version 5
  *
- * @category Module
- * @package  Candidate Parameter
+ * @category Main
+ * @package  Candidate_Parameters
  * @author   MOB <slee.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
 
 /**
- * Main class for candidate_parameters module corresponding to /candidate_parameters/ URL
+ * Main class for candidate_parameters module
+ * corresponding to /candidate_parameters/ URL
  * Child or Clinical section of the LorisMenu.
  *
- * Displays a list of candidate_parameters files and control panel to search them and upload
- * new ones.
+ * Displays a list of candidate_parameter categories
+ * and tabs to view them.
  *
  * PHP Version 5
  *
- * @category Module
- * @package  Candidate Parameter
+ * @category Main
+ * @package  Candidate_Parameters
  * @author   MOB <slee.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Form_candidate_parameters extends NDB_Form
+class NDB_Form_Candidate_Parameters extends NDB_Form
 {
     public $hasWritePermission = false;
 
@@ -41,20 +42,23 @@ class NDB_Form_candidate_parameters extends NDB_Form
         //create user object
         $user =& User::singleton();
 
-        // Set global permission to control access to different modules of candidate_parameters page
+        // Set global permission to control access
+        // to different modules of candidate_parameters page
         $this->hasWritePermission = $user->hasPermission('candidate_parameter_edit');
 
         return $user->hasPermission('candidate_parameter_view');
     }
 
     /**
+     * Gets CandID and whether the consent tab should be displayed
+     *
      * @throws DatabaseException
+     *
+     * @return void
      */
-    function candidate_parameters()
+    function candidateParameters()
     {
-        $DB =& Database::singleton();
-        $config =& NDB_Config::singleton();
-
+        $config    =& NDB_Config::singleton();
         $candidate =& Candidate::singleton($this->identifier);
 
         // candID
@@ -75,9 +79,11 @@ class NDB_Form_candidate_parameters extends NDB_Form
      */
     function getParticipantStatusOptions()
     {
-        $DB =& Database::singleton();
-        $options = $DB->pselect(
-            "SELECT ID,Description FROM participant_status_options WHERE parentID IS NULL",
+        $DB           =& Database::singleton();
+        $options      = $DB->pselect(
+            "SELECT ID,Description
+FROM participant_status_options
+WHERE parentID IS NULL",
             array()
         );
         $option_array = array();
@@ -91,15 +97,19 @@ class NDB_Form_candidate_parameters extends NDB_Form
      * Gets the participant_status options suboptions from participant_status_options
      * getParticipantStatusSubOptions()
      *
+     * @param int $parentID parent ID of the participant status option
+     *
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
     function getParticipantStatusSubOptions($parentID)
     {
-        $DB =& Database::singleton();
-        $options = $DB->pselect(
-            "SELECT ID,Description FROM participant_status_options WHERE parentID=:pid",
-            array('pid'=>$parentID)
+        $DB           =& Database::singleton();
+        $options      = $DB->pselect(
+            "SELECT ID,Description 
+            FROM participant_status_options 
+            WHERE parentID=:pid",
+            array('pid' => $parentID)
         );
         $option_array = array();
         foreach ($options as $option) {
@@ -140,15 +150,15 @@ class NDB_Form_candidate_parameters extends NDB_Form
     {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $deps = parent::getJSDependencies();
+        $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
             array(
-                $baseURL . "/candidate_parameters/js/candidateInfo.js",
-                $baseURL . "/candidate_parameters/js/probandInfo.js",
-                $baseURL . "/candidate_parameters/js/familyInfo.js",
-                $baseURL . "/candidate_parameters/js/participantStatus.js",
-                $baseURL . "/candidate_parameters/js/consentStatus.js"
+             $baseURL . "/candidate_parameters/js/candidateInfo.js",
+             $baseURL . "/candidate_parameters/js/probandInfo.js",
+             $baseURL . "/candidate_parameters/js/familyInfo.js",
+             $baseURL . "/candidate_parameters/js/participantStatus.js",
+             $baseURL . "/candidate_parameters/js/consentStatus.js",
             )
         );
     }

@@ -1,40 +1,55 @@
 <?php
-
+/**
+ * Candidate parameters data fetch
+ *
+ * Gets data to populate the front-end form fields
+ *
+ * PHP Version 5
+ *
+ * @category Loris
+ * @package  Media
+ * @author   Stella L. <slee.mcin@gmail.com>
+ * @license  Loris license
+ * @link     https://github.com/aces/Loris-Trunk
+ */
 if (isset($_GET['data'])) {
     $data = $_GET['data'];
     if ($data == "candidateInfo") {
         echo json_encode(getCandInfoFields());
-    }
-    else if ($data == "probandInfo") {
+    } else if ($data == "probandInfo") {
         echo json_encode(getProbandInfoFields());
-    }
-    else if ($data == "familyInfo") {
+    } else if ($data == "familyInfo") {
         echo json_encode(getFamilyInfoFields());
-    }
-    else if ($data == "participantStatus") {
+    } else if ($data == "participantStatus") {
         echo json_encode(getParticipantStatusFields());
-    }
-    else if ($data == "consentStatus") {
+    } else if ($data == "consentStatus") {
         echo json_encode(getConsentStatusFields());
-    }
-    else {
+    } else {
         header("HTTP/1.1 404 Not Found");
         exit;
     }
 }
 
-function getCandInfoFields() {
+/**
+ * Handles the fetching of Candidate Info fields
+ *
+ * @throws DatabaseException
+ *
+ * @return array
+ */
+function getCandInfoFields()
+{
     $candID = $_GET['candID'];
 
     $db =& Database::singleton();
 
     // get caveat options
     $caveat_options = [];
-    $options = $db->pselect(
+    $options        = $db->pselect(
         "SELECT ID, Description FROM caveat_options",
         array()
     );
-    foreach($options as $row) {
+    foreach ($options as $row) {
         $caveat_options[$row['ID']] = $row['Description'];
     }
 
@@ -59,7 +74,8 @@ function getCandInfoFields() {
         array('candid' => $candID)
     );
 
-    $extra_parameters = $db->pselect("SELECT pt.ParameterTypeID, pt.Name, pt.Type, pt.Description 
+    $extra_parameters = $db->pselect(
+        "SELECT pt.ParameterTypeID, pt.Name, pt.Type, pt.Description 
                      FROM parameter_type pt
                      JOIN parameter_type_category_rel ptcr USING (ParameterTypeID) 
                      JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
@@ -79,20 +95,28 @@ function getCandInfoFields() {
     }
 
     $result = [
-        'pscid' => $pscid,
-        'candID' => $candID,
-        'caveatReasonOptions' => $caveat_options,
-        'flagged_caveatemptor' => $flag,
-        'flagged_reason' => $reason,
-        'flagged_other' => $other,
-        'extra_parameters' => $extra_parameters,
-        'parameter_values' => $parameter_values
-    ];
+               'pscid'                => $pscid,
+               'candID'               => $candID,
+               'caveatReasonOptions'  => $caveat_options,
+               'flagged_caveatemptor' => $flag,
+               'flagged_reason'       => $reason,
+               'flagged_other'        => $other,
+               'extra_parameters'     => $extra_parameters,
+               'parameter_values'     => $parameter_values,
+              ];
 
     return $result;
 }
 
-function getProbandInfoFields() {
+/**
+ * Handles the fetching of Proband Info fields
+ *
+ * @throws DatabaseException
+ *
+ * @return array
+ */
+function getProbandInfoFields()
+{
     $candID = $_GET['candID'];
 
     $db =& Database::singleton();
@@ -115,29 +139,40 @@ function getProbandInfoFields() {
 
     // Calculate age difference
     $ageDifference = "Could not calculate age";
-    $candidateDOB = $db->pselectOne(
+    $candidateDOB  = $db->pselectOne(
         "SELECT DoB FROM candidate WHERE CandID=:CandidateID",
-        array('CandidateID' => $candID));
+        array('CandidateID' => $candID)
+    );
     if (!empty($candidateDOB) && !empty($dob)) {
         $age = Utility::calculateAge($dob, $candidateDOB);
 
         if ($age !== null) {
-            $ageDifference = $age['year'] * 12 + $age['mon'] + round($age['day'] / 30, 2);
+            $ageDifference = $age['year'] * 12
+                + $age['mon']
+                + round($age['day'] / 30, 2);
         }
     }
 
     $result = [
-        'pscid' => $pscid,
-        'candID' => $candID,
-        'ProbandGender' => $gender,
-        'ProbandDoB' => $dob,
-        'ageDifference' => $ageDifference
-    ];
+               'pscid'         => $pscid,
+               'candID'        => $candID,
+               'ProbandGender' => $gender,
+               'ProbandDoB'    => $dob,
+               'ageDifference' => $ageDifference,
+              ];
 
     return $result;
 }
 
-function getFamilyInfoFields() {
+/**
+ * Handles the fetching of Family Info fields
+ *
+ * @throws DatabaseException
+ *
+ * @return array
+ */
+function getFamilyInfoFields()
+{
     $candID = $_GET['candID'];
 
     $db =& Database::singleton();
@@ -148,13 +183,15 @@ function getFamilyInfoFields() {
         array('candid' => $candID)
     );
 
-    $candidatesList  = $db->pselect(
+    $candidatesList = $db->pselect(
         "SELECT CandID FROM candidate ORDER BY CandID",
         array()
     );
 
     $siblingsList = $db->pselect(
-        "SELECT CandID FROM family WHERE FamilyID=(SELECT FamilyID FROM family WHERE CandID=:candid)",
+        "SELECT CandID 
+        FROM family 
+        WHERE FamilyID=(SELECT FamilyID FROM family WHERE CandID=:candid)",
         array('candid' => $candID)
     );
 
@@ -171,35 +208,60 @@ function getFamilyInfoFields() {
         foreach ($candidate as $ID) {
             if ($ID == $candID || in_array($ID, $siblings)) {
                 unset($candidatesList[$key]);
-            }
-            else {
+            } else {
                 $candidates[$ID] = $ID;
             }
         }
     }
 
     $familyCandIDs = $db->pselect(
-        "SELECT CandID FROM family WHERE FamilyID=(SELECT FamilyID FROM family WHERE CandID = :candid) AND CandID <> :candid2 ORDER BY CandID",
-        array('candid' => $candID, 'candid2' => $candID)
+        "SELECT CandID 
+        FROM family 
+        WHERE FamilyID=(
+          SELECT FamilyID 
+          FROM family 
+          WHERE CandID = :candid) AND CandID <> :candid2 
+          ORDER BY CandID",
+        array(
+         'candid'  => $candID,
+         'candid2' => $candID,
+        )
     );
 
     $relationships = $db->pselect(
-        "SELECT Relationship_type FROM family WHERE FamilyID=(SELECT FamilyID FROM family WHERE CandID = :candid) AND CandID <> :candid2 ORDER BY CandID",
-        array('candid' => $candID, 'candid2' => $candID)
+        "SELECT Relationship_type 
+        FROM family 
+        WHERE FamilyID=(
+          SELECT FamilyID 
+          FROM family 
+          WHERE CandID = :candid) AND CandID <> :candid2 
+          ORDER BY CandID",
+        array(
+         'candid'  => $candID,
+         'candid2' => $candID,
+        )
     );
 
     $result = [
-        'pscid' => $pscid,
-        'candID' => $candID,
-        'candidates' => $candidates,
-        'familyCandIDs' => $familyCandIDs,
-        'Relationship_types' => $relationships
-    ];
+               'pscid'              => $pscid,
+               'candID'             => $candID,
+               'candidates'         => $candidates,
+               'familyCandIDs'      => $familyCandIDs,
+               'Relationship_types' => $relationships,
+              ];
 
     return $result;
 }
 
-function getParticipantStatusFields() {
+/**
+ * Handles the fetching of Participant Status fields
+ *
+ * @throws DatabaseException
+ *
+ * @return array
+ */
+function getParticipantStatusFields()
+{
     include_once __DIR__
         . "/../../candidate_parameters/php/"
         . "NDB_Form_candidate_parameters.class.inc";
@@ -217,8 +279,14 @@ function getParticipantStatusFields() {
     $statusOptions = NDB_Form_candidate_parameters::getParticipantStatusOptions();
     $reasonOptions = array();
 
-    $required = $db->pselect('SELECT ID from participant_status_options where Required=1', array());
-    $parentIDs = $db->pselect('SELECT distinct(parentID) from participant_status_options', array());
+    $required    = $db->pselect(
+        'SELECT ID from participant_status_options where Required=1',
+        array()
+    );
+    $parentIDs   = $db->pselect(
+        'SELECT distinct(parentID) from participant_status_options',
+        array()
+    );
     $parentIDMap = array();
 
     foreach ($parentIDs as $ID) {
@@ -226,7 +294,9 @@ function getParticipantStatusFields() {
         foreach ($ID as $parentID) {
             if ($parentID != null) {
                 $options = $db->pselect(
-                    "SELECT ID, Description FROM participant_status_options WHERE parentID=:pid",
+                    "SELECT ID, Description 
+                    FROM participant_status_options 
+                    WHERE parentID=:pid",
                     array('pid' => $parentID)
                 );
                 foreach ($options as $option) {
@@ -237,54 +307,90 @@ function getParticipantStatusFields() {
         }
     }
 
-    $status = $db->pselectOne("SELECT participant_status FROM participant_status WHERE CandID=:candid", array('candid' => $candID));
-    $suboption = $db->pselectOne("SELECT participant_suboptions FROM participant_status WHERE CandID=:candid", array('candid' => $candID));
-    $reason = $db->pselectOne("SELECT reason_specify FROM participant_status WHERE CandID=:candid", array('candid' => $candID));
+    $status    = $db->pselectOne(
+        "SELECT participant_status 
+        FROM participant_status WHERE CandID=:candid",
+        array('candid' => $candID)
+    );
+    $suboption = $db->pselectOne(
+        "SELECT participant_suboptions 
+        FROM participant_status WHERE CandID=:candid",
+        array('candid' => $candID)
+    );
+    $reason    = $db->pselectOne(
+        "SELECT reason_specify 
+        FROM participant_status WHERE CandID=:candid",
+        array('candid' => $candID)
+    );
 
+    /**
+     * Handles the fetching of Participant Status History
+     *
+     * @param int $candID current candidate's ID
+     *
+     * @throws DatabaseException
+     *
+     * @return array
+     */
+    function getParticipantStatusHistory($candID)
+    {
+        $db =& Database::singleton();
+        $unformattedComments = $db->pselect(
+            "SELECT (SELECT Description 
+        FROM participant_status_options pso 
+        WHERE ID=psh.participant_status) AS status, 
+        (SELECT Description from participant_status_options pso 
+        WHERE ID=psh.participant_subOptions) 
+        AS suboption, entry_staff, data_entry_date, reason_specify 
+        FROM participant_status_history psh WHERE CandID=:cid",
+            array('cid' => $candID)
+        );
+
+        $commentHistory = '';
+        foreach ($unformattedComments as $comment) {
+            $commentString  = '';
+            $commentString .= '[' . $comment['data_entry_date'] . '] ';
+            $commentString .= '<i>Updated by ' . $comment['entry_staff'] . '. </i>';
+            $commentString .= '<b>Status:</b> ' . $comment['status'] . '.';
+            if (!empty($comment['suboption'])) {
+                $commentString .= ' <b>Details:</b> ' . $comment['suboption'] . '.';
+            }
+            if (!empty($comment['reason_specify'])) {
+                $commentString .= ' <b>Comments:</b> ' . $comment['reason_specify'];
+            }
+            $commentHistory .= $commentString . '<br/>';
+        }
+
+        return $commentHistory;
+    }
     $history = getParticipantStatusHistory($candID);
 
     $result = [
-        'pscid' => $pscid,
-        'candID' => $candID,
-        'statusOptions' => $statusOptions,
-        'required' => $required,
-        'reasonOptions' => $reasonOptions,
-        'parentIDs' => $parentIDMap,
-        'participant_status' => $status,
-        'participant_suboptions' => $suboption,
-        'reason_specify' => $reason,
-        'history' => $history
-    ];
+               'pscid'                  => $pscid,
+               'candID'                 => $candID,
+               'statusOptions'          => $statusOptions,
+               'required'               => $required,
+               'reasonOptions'          => $reasonOptions,
+               'parentIDs'              => $parentIDMap,
+               'participant_status'     => $status,
+               'participant_suboptions' => $suboption,
+               'reason_specify'         => $reason,
+               'history'                => $history,
+              ];
 
     return $result;
 }
 
-function getParticipantStatusHistory($candID) {
-    $db =& Database::singleton();
-    $unformattedComments = $db->pselect(
-        "SELECT (SELECT Description FROM participant_status_options pso WHERE ID=psh.participant_status) AS status, (SELECT Description from participant_status_options pso WHERE ID=psh.participant_subOptions) AS suboption, entry_staff, data_entry_date, reason_specify FROM participant_status_history psh WHERE CandID=:cid",
-        array('cid' => $candID)
-    );
 
-    $commentHistory = '';
-    foreach ($unformattedComments as $comment) {
-        $commentString = '';
-        $commentString .= '[' . $comment['data_entry_date'] . '] ';
-        $commentString .= '<i>Updated by ' . $comment['entry_staff'] . '. </i>';
-        $commentString .= '<b>Status:</b> ' . $comment['status'] . '.';
-        if (!empty($comment['suboption'])) {
-            $commentString .= ' <b>Details:</b> ' . $comment['suboption'] . '.';
-        }
-        if (!empty($comment['reason_specify'])) {
-            $commentString .= ' <b>Comments:</b> ' . $comment['reason_specify'];
-        }
-        $commentHistory .= $commentString . '<br/>';
-    }
-
-    return $commentHistory;
-}
-
-function getConsentStatusFields() {
+/**
+ * Handles the fetching of Consent Status fields
+ *
+ * @throws DatabaseException
+ *
+ * @return array
+ */
+function getConsentStatusFields()
+{
     $candID = $_GET['candID'];
 
     $db =& Database::singleton();
@@ -295,55 +401,84 @@ function getConsentStatusFields() {
         array('candid' => $candID)
     );
 
-    $config  =& NDB_Config::singleton();
-    $consent = $config->getSetting('ConsentModule');
-    $consents = [];
+    $config        =& NDB_Config::singleton();
+    $consent       = $config->getSetting('ConsentModule');
+    $consents      = [];
     $consentStatus = [];
-    $date = [];
-    $withdrawal = [];
+    $date          = [];
+    $withdrawal    = [];
     foreach (Utility::asArray($consent['Consent']) as $consentType) {
-        $consents[$consentType['name']] = $consentType['label'];
-        $consentStatus[$consentType['name']] = $db->pselectOne('SELECT ' . $db->escape($consentType['name']) . ' FROM participant_status WHERE CandID=:candid', array('candid' => $candID));
-        $date[$consentType['name']] = $db->pselectOne('SELECT ' . $db->escape($consentType['name'] . '_date') . ' FROM participant_status WHERE CandID=:candid', array('candid' => $candID));
-        $withdrawal[$consentType['name']] = $db->pselectOne('SELECT ' . $db->escape($consentType['name'] . '_withdrawal') . ' FROM participant_status WHERE CandID=:candid', array('candid' => $candID));
+        $consents[$consentType['name']]      = $consentType['label'];
+        $consentStatus[$consentType['name']] = $db->pselectOne(
+            'SELECT ' . $db->escape($consentType['name'])
+            . ' FROM participant_status WHERE CandID=:candid',
+            array('candid' => $candID)
+        );
+        $date[$consentType['name']]          = $db->pselectOne(
+            'SELECT ' . $db->escape($consentType['name'] . '_date')
+            . ' FROM participant_status WHERE CandID=:candid',
+            array('candid' => $candID)
+        );
+        $withdrawal[$consentType['name']]    = $db->pselectOne(
+            'SELECT ' . $db->escape($consentType['name'] . '_withdrawal')
+            . ' FROM participant_status WHERE CandID=:candid',
+            array('candid' => $candID)
+        );
     }
 
     $history = getConsentStatusHistory($candID, $consents);
 
     $result = [
-        'pscid' => $pscid,
-        'candID' => $candID,
-        'consentStatuses' => $consentStatus,
-        'consentDates'   => $date,
-        'withdrawals'   => $withdrawal,
-        'consents' => $consents,
-        'history' => $history
-    ];
+               'pscid'           => $pscid,
+               'candID'          => $candID,
+               'consentStatuses' => $consentStatus,
+               'consentDates'    => $date,
+               'withdrawals'     => $withdrawal,
+               'consents'        => $consents,
+               'history'         => $history,
+              ];
 
     return $result;
 }
 
-function getConsentStatusHistory($candID, $consents) {
+/**
+ * Handles the fetching of Consent Status history
+ *
+ * @param int   $candID   current candidate's ID
+ * @param array $consents consent values
+ *
+ * @throws DatabaseException
+ *
+ * @return array
+ */
+function getConsentStatusHistory($candID, $consents)
+{
     $db =& Database::singleton();
 
     $commentHistory = '';
 
     foreach ($consents as $consent => $label) {
         $unformattedComments = $db->pselect(
-            "SELECT entry_staff, data_entry_date, " . $db->escape($consent) . ", " . $db->escape($consent . '_date') . ", " . $db->escape($consent . '_withdrawal') ." FROM consent_info_history WHERE CandID=:cid",
+            "SELECT entry_staff, data_entry_date, "
+            . $db->escape($consent) . ", "
+            . $db->escape($consent . '_date') . ", "
+            . $db->escape($consent . '_withdrawal')
+            ." FROM consent_info_history WHERE CandID=:cid",
             array('cid' => $candID)
         );
 
         foreach ($unformattedComments as $comment) {
-            $commentString = '';
+            $commentString  = '';
             $commentString .= '[' . $comment['data_entry_date'] . '] ';
             $commentString .= '<i>Updated by ' . $comment['entry_staff'] . '. </i>';
             $commentString .= "<b>$label Status:</b> " . $comment[$consent] . '.';
             if (!empty($comment[$consent . '_date'])) {
-                $commentString .= ' <b>Date of Consent:</b> ' . $comment[$consent . '_date'];
+                $commentString .= ' <b>Date of Consent:</b> '
+                    . $comment[$consent . '_date'];
             }
             if (!empty($comment[$consent . '_withdrawal'])) {
-                $commentString .= '<b>Date of Withdrawal:</b> ' . $comment[$consent . '_withdrawal'];
+                $commentString .= '<b>Date of Withdrawal:</b> '
+                    . $comment[$consent . '_withdrawal'];
             }
             $commentHistory .= $commentString . '<br/>';
         }
