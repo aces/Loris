@@ -279,11 +279,11 @@ function getParticipantStatusFields()
     $statusOptions = NDB_Form_candidate_parameters::getParticipantStatusOptions();
     $reasonOptions = array();
 
-    $required = $db->pselect(
+    $required    = $db->pselect(
         'SELECT ID from participant_status_options where Required=1',
         array()
     );
-    $parentIDs = $db->pselect(
+    $parentIDs   = $db->pselect(
         'SELECT distinct(parentID) from participant_status_options',
         array()
     );
@@ -307,7 +307,7 @@ function getParticipantStatusFields()
         }
     }
 
-    $status = $db->pselectOne(
+    $status    = $db->pselectOne(
         "SELECT participant_status 
         FROM participant_status WHERE CandID=:candid",
         array('candid' => $candID)
@@ -317,7 +317,7 @@ function getParticipantStatusFields()
         FROM participant_status WHERE CandID=:candid",
         array('candid' => $candID)
     );
-    $reason = $db->pselectOne(
+    $reason    = $db->pselectOne(
         "SELECT reason_specify 
         FROM participant_status WHERE CandID=:candid",
         array('candid' => $candID)
@@ -326,17 +326,17 @@ function getParticipantStatusFields()
     $history = getParticipantStatusHistory($candID);
 
     $result = [
-        'pscid' => $pscid,
-        'candID' => $candID,
-        'statusOptions' => $statusOptions,
-        'required' => $required,
-        'reasonOptions' => $reasonOptions,
-        'parentIDs' => $parentIDMap,
-        'participant_status' => $status,
-        'participant_suboptions' => $suboption,
-        'reason_specify' => $reason,
-        'history' => $history,
-    ];
+               'pscid'                  => $pscid,
+               'candID'                 => $candID,
+               'statusOptions'          => $statusOptions,
+               'required'               => $required,
+               'reasonOptions'          => $reasonOptions,
+               'parentIDs'              => $parentIDMap,
+               'participant_status'     => $status,
+               'participant_suboptions' => $suboption,
+               'reason_specify'         => $reason,
+               'history'                => $history,
+              ];
 
     return $result;
 }
@@ -350,11 +350,11 @@ function getParticipantStatusFields()
      *
      * @return array
      */
-    function getParticipantStatusHistory($candID)
-    {
-        $db =& Database::singleton();
-        $unformattedComments = $db->pselect(
-            "SELECT entry_staff, data_entry_date,
+function getParticipantStatusHistory($candID)
+{
+    $db =& Database::singleton();
+    $unformattedComments = $db->pselect(
+        "SELECT entry_staff, data_entry_date,
             (SELECT Description 
               FROM participant_status_options pso 
               WHERE ID=psh.participant_status) AS status, 
@@ -362,10 +362,10 @@ function getParticipantStatusFields()
               WHERE ID=psh.participant_subOptions) 
               AS suboption,  reason_specify 
             FROM participant_status_history psh WHERE CandID=:cid",
-            array('cid' => $candID)
-        );
+        array('cid' => $candID)
+    );
 
-        return $unformattedComments;
+    return $unformattedComments;
 }
 
 
@@ -454,7 +454,7 @@ function getConsentStatusHistory($candID, $consents)
             array('cid' => $candID)
         );
 
-        $unformattedComments['label'] = $label;
+        $unformattedComments['label']       = $label;
         $unformattedComments['consentType'] = $consent;
 
         array_push($commentHistory, $unformattedComments);

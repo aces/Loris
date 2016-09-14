@@ -310,7 +310,11 @@ function editParticipantStatusFields()
     if ($exists === null) {
         $this->db->insert('participant_status', $updateValues);
     } else {
-        $this->db->update('participant_status', $updateValues, ['CandID' => $candID]);
+        $this->db->update(
+            'participant_status',
+            $updateValues,
+            ['CandID' => $candID]
+        );
     }
 
     $this->db->insert('participant_status_history', $updateValues);
