@@ -143,22 +143,29 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         }
 
         $this->columns = array(
-            'v.PatientName',
-            'v.Site',
-            'v.TimeRun',
-            'v.MincFile',
+            'v.Resolved as Resolution_status',
+            'v.PatientName as PatientName',
+            'site.Name as Site',
+            'v.TimeRun as TimeRun',
+            'v.MincFile as MincFile',
             'v.Series_Description as Series_Description_Or_Scan_Type',
-            'v.Problem',
-            'v.SeriesUID',
-            'v.hash',
-            'v.join_id',
-            'v.Resolved'
+            'v.Problem as Problem',
+            'v.SeriesUID as SeriesUID',
+            'v.hash as Hash',
+            'v.join_id as JoinID',
+            'v.Site as SiteID'
         );
+        $this->headers  = array('Resolution_status','PatientName','Site','TimeRun','MincFile','Series_Description_Or_Scan_Type','Problem','SeriesUID','Hash','JoinID','SiteID');
         if ($useProjects) {
-            array_splice($this->columns, 1, 0, 'v.Project');
-            array_splice($this->columns, 2, 0, 'v.Subproject');
+            array_splice($this->columns, 1, 0, 'v.Project as Project');
+            array_splice($this->columns, 2, 0, 'v.Subproject as Subproject');
+            array_splice($this->headers, 1, 0, 'Project');
+            array_splice($this->headers, 2, 0, 'Subproject');
+            
         }
 
+        $this->tpl_data['hiddenHeaders'] = json_encode(['SeriesUID','Hash','JoinID','SiteID']);
+        
         $this->query = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
@@ -233,7 +240,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved <> '0')
-            as v WHERE 1=1";
+            as v LEFT JOIN psc site ON (site.CenterID = v.Site) WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
@@ -431,6 +438,22 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         }
         return true;
     }
-
+   /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+   function getJSDependencies()
+   {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/mri_violations/js/columnFormatter.js"
+            )
+        );
+    }
 }
 ?>
