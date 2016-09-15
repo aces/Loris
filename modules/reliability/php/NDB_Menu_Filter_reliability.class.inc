@@ -243,74 +243,6 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         }
         return $list_of_thresholds;
     }
-    function _setDataTableRows($count)
-    {
-       $projectlist=Utility::getProjectList();
-       $threshold = $this->getThreshholds();
-        // print out
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            // $identifier = $item['Tracking_log_ID'];
-            $comment_id = $item['CommentID'];
-            $site_id = $item['Site'];
-            $current_stage = $item['Current_stage'];
-            $invalid = $item['invalid'];
-            $manual= $item['Manual_Swap'];
-            if($item['Manual_Swap'] == 'yes' && $item['invalid'] == 'yes') {
-                continue;
-            }
-            foreach ($item as $key => $val) {
-
-                // Confused about this line
-                if ($key =='Tracking_log_ID') continue;
-                if ($key == 'CommentID') continue;
-                if ($key == 'Current_stage') continue;
-                if ($key == 'invalid') continue;
-                if ($key == 'Manual_Swap') continue;
-                // {
-                //                    $this->tpl_data['items'][$x][$i]['CommentID'] = $item['CommentID'];
-                //               $this->tpl_data['items'][$x][$i]['Instrument'] = $item['Instrument'];
-                //                   }
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-                if ($key == 'PSCID'){
-                   $this->tpl_data['items'][$x][$i]['CommentID'] = $comment_id;
-                   $this->tpl_data['items'][$x][$i]['SiteID'] = $item['Site'];
-                   $this->tpl_data['items'][$x][$i]['Instrument'] = $item['Instrument'];
-                   $this->tpl_data['items'][$x][$i]['Current_stage'] = $current_stage;
-                   $this->tpl_data['items'][$x][$i]['invalid'] = $invalid;
-                   $this->tpl_data['items'][$x][$i]['manual'] = $manual;
-                }
-                elseif ($key == 'Site')
-                {
-                   $this->tpl_data['items'][$x][$i]['value'] = $this->centerIDMap[$item['Site']];
-                }
-                elseif ($key=='Project') {
-                    $this->tpl_data['items'][$x][$i]['value'] = $projectlist[$val];
-                }
-                elseif($key == 'Reliability_score'){
-                  $this->tpl_data['items'][$x][$i+1]['name'] = 'Reliability';
-                  if(is_null($val))
-                    $reliable = null;
-                  else if($val >= $threshold[$item['Instrument']])
-                    $reliable = 'Yes';
-                  else
-                    $reliable = 'No';
-                  $this->tpl_data['items'][$x][$i+1]['value'] = $reliable;
-                }
-
-               $i++;
-            }
-            $x++;
-        }
-
-        return true;
-    }
 
     function _populate_reliability_table()
     {
@@ -530,8 +462,8 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         foreach($tableData['Data'] as $key => $record) {
 
             // Calculate and set `Reliable` column
-            $instrumentThreshold = $threshold[$record[8]];
-            $instrumentScore = $record[9];
+            $instrumentThreshold = $threshold[$record[9]];
+            $instrumentScore = $record[10];
 
             if ($instrumentScore == null) {
                 $isReliable = "";
