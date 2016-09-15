@@ -184,6 +184,7 @@
             <div class="btn-group">
                 <select id="panel-size" class="form-control panel-size clickable">
                     <option value="256" SELECTED>Choose Panel Size</option>
+                    <option value="-1">Auto</option>
                     <option value="100">100 Pixels</option>
                     <option value="200">200 Pixels</option>
                     <option value="256">256 Pixels (Default)</option>

@@ -60,6 +60,9 @@ class LorisForm
         if (isset($attribs['class'])) {
             $el['class'] = $attribs['class'];
         }
+        if (isset($attribs['id'])) {
+            $el['id'] = $attribs['id'];
+        }
         if (isset($attribs['onchange'])) {
             $el['onchange'] = $attribs['onchange'];
         }
@@ -562,6 +565,8 @@ class LorisForm
         $cls           = '';
         $changehandler = '';
         $multiple      = '';
+        $id            = '';
+        $disabled      = '';
 
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
@@ -587,7 +592,9 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        $disabled = '';
+        if (isset($el['id'])) {
+            $id = "id=\"$el[id]\"";
+        }
         if (isset($el['disabled'])) {
             $disabled = 'disabled';
         }
@@ -597,8 +604,10 @@ class LorisForm
         if (isset($el['multiple'])) {
             $multiple = "multiple=\"multiple\"";
         }
-        $retVal = "<select name=\"$el[name]\" $cls $changehandler $multiple "
+
+        $retVal = "<select name=\"$el[name]\" $cls $id $changehandler $multiple "
             . $disabled;
+
         if (isset($el['required']) && $el['required']) {
             $retVal .= ' required';
             if ($el['requireMsg']) {
@@ -659,9 +668,17 @@ class LorisForm
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
         $value    = $this->getValue($el['name']);
-        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear "
-            . $disabled
-            . " onChange=\"this.setCustomValidity($required)\""
+        if (array_key_exists('options', $el)
+            && ((strtolower($el['options']['format']) == 'my')
+            || (strtolower($el['options']['format']) == 'ym'))
+        ) {
+            $format = 'month';
+        } else {
+            $format = 'date';
+        }
+        $elmnt = "<input name=\"$el[name]\" type=\"$format\" $cls "
+            . "$minYear $maxYear "
+            . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
             . (
             !empty($value)
