@@ -24,6 +24,7 @@ before_install:
 install:
     # Install composer modules
     - composer install
+    - pear install HTML_QuickForm
     - phpenv rehash
 
     # Install jslint
