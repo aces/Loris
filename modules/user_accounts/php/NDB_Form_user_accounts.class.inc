@@ -922,7 +922,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     private function _getEmailError($DB, $email)
     {
         // check email address' uniqueness
-        $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
+        $query  = "SELECT COUNT(*) FROM users WHERE BINARY Email = BINARY :VEmail ";
         $params = array('VEmail' => $email);
         if (!is_null($this->identifier)) {
             $query        .= " AND userID <> :UID";
