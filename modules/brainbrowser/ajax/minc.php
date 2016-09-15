@@ -30,7 +30,7 @@ $minc_file = getMincLocation() . $minc_file;
 $header      = $_REQUEST['minc_headers'];
 $header_data = $_REQUEST['raw_data'];
 if ($header_data) {
-    passthru("minctoraw -byte -unsigned -normalize $minc_file");
+    passthru("minctoraw -double -normalize $minc_file");
 }
 if ($header=='true' && $minc_file !=null) {
     print initialize($minc_file);
@@ -70,9 +70,10 @@ function extractDimension($dimension, $minc_file)
 function initialize($minc_file)
 {
     $headers = array(
-                'xspace' => extractDimension("xspace", $minc_file),
-                'yspace' => extractDimension("yspace", $minc_file),
-                'zspace' => extractDimension("zspace", $minc_file),
+                'xspace'   => extractDimension("xspace", $minc_file),
+                'yspace'   => extractDimension("yspace", $minc_file),
+                'zspace'   => extractDimension("zspace", $minc_file),
+                'datatype' => 'float64',
                );
 
     //minc2.0, if there's a time component
