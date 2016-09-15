@@ -1,15 +1,27 @@
 function formatColumn(column, cell, rowData) {
     if (column === 'PSCID') {
-        var url = loris.BaseURL + "/" + rowData[1] + "/";
-        return React.createElement(
-            "td",
-            null,
-            React.createElement(
-                "a",
-                { href: url },
+        if (loris.userHasPermission('access_all_profiles')) {
+            var url = loris.BaseURL + "/" + rowData[1] + "/";
+            return React.createElement(
+                "td",
+                null,
+
+                    React.createElement(
+                        "a",
+                        {href: url},
+                        cell
+                    )
+            );
+        }
+        else
+        {
+            return React.createElement(
+                "td",
+                null,
                 cell
-            )
-        );
+            );
+        }
+
     }
     if (column === 'Feedback') {
         switch (cell) {
