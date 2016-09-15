@@ -151,10 +151,10 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
 
         $isT1Acq = "CASE
            COALESCE((
-                SELECT SessionID
-                FROM files 
-                WHERE files.SessionID=s.ID AND files.AcquisitionProtocolID=44
-                GROUP BY files.SessionID),'')
+                SELECT fi.FileID
+                FROM files fi
+                WHERE fi.SessionID=s.ID AND fi.AcquisitionProtocolID=44
+                GROUP BY fi.SessionID),'')
             WHEN '' THEN 'No'
             ELSE 'Yes'
             END
