@@ -39,12 +39,10 @@ $(function() {
     // Change viewer panel canvas size.
     $("#panel-size").change(function() {
       var size = parseInt($(this).val(), 10);
-
       if (size < 0) {
         viewer.setAutoResize(true, 'volume-controls');
         viewer.doAutoResize();
-      }
-      else {
+      } else {
         viewer.setAutoResize(false, 'volume-controls');
         viewer.setPanelSize(size, size, { scale_image: true });
       }
@@ -829,6 +827,8 @@ $(function() {
     loading_div.show();
     bboptions.complete = function() {
       loading_div.hide();
+      // Trigger change event when page is loaded to auto-resize panels if necessary
+      $("#panel-size").change();
     }
 
     //////////////////////////////
