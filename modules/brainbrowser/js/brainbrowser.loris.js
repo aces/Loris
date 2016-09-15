@@ -42,17 +42,10 @@ $(function() {
 
       if (size < 0) {
         viewer.setAutoResize(true, 'volume-controls');
-        $('#brainbrowser-wrapper').css("width", "90%");
-        $('#volume-viewer').css("width", "100%");
-        $('#brainbrowser').css("width", "100%");
         viewer.doAutoResize();
       }
       else {
-        viewer.setAutoResize(false);
-        $('#brainbrowser-wrapper').css("width", "60em");
-        $('#volume-viewer').css("width", "");
-        $('#brainbrowser').css("width", "");
-        $('.volume-controls').css("width", "");
+        viewer.setAutoResize(false, 'volume-controls');
         viewer.setPanelSize(size, size, { scale_image: true });
       }
     });
@@ -219,9 +212,11 @@ $(function() {
       var n = Math.max(viewer.volumes.length, 3);
       var ml = getIntProperty('.slice-display', 'margin-left');
       var mr = getIntProperty('.slice-display', 'margin-right');
-      var vv = getIntProperty('.volume-viewer-controls', 'width');
+      var vv = getIntProperty('.volume-viewer-display', 'width');
 
-      var size = ($('#' + viewer.dom_element.id).width() / n) - ((ml * 2) + (mr * 2) + (vv / n));
+      // Divide panel container size (.volume-viewer-display) by
+      // number of panels and subtract the margins for each panel.
+      var size = (vv / n) - (ml + mr);
 
       viewer.setDefaultPanelSize(size, size);
       viewer.setPanelSize(size, size, { scale_image: true });
