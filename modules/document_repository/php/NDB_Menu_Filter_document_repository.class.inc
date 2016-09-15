@@ -339,9 +339,8 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
 
     /**
      * Include additional CSS files:
-     *  1. brainbrowser.css
-     *  2. volume-viewer-demo.css
-     *  3. surface-viewer-demo.css
+     *  1. jQuery UI
+     *  2. document_repository.css
      *
      * @return array of javascript to be inserted
      */
