@@ -6,14 +6,12 @@
  *
  * @category Test
  * @package  Loris
- * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
 require_once __DIR__ .
-    "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-
+"/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
  * Dashboard module automated integration tests
  *
@@ -21,7 +19,7 @@ require_once __DIR__ .
  *
  * @category Test
  * @package  Loris
- * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -30,16 +28,35 @@ class DashboardTest extends LorisIntegrationTest
     /**
      * Tests that, when loading the Dashboard, the word "Welcome" appears
      * in the welcome panel
+     * Test Data: admin account
      *
      * @return void
      */
     public function testDashboardPageLoads()
     {
         $this->safeGet($this->url . '/dashboard/');
-
         $welcomeText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
         $this->assertContains("Welcome", $welcomeText);
+    }
+
+    /**
+     * Click the stie all button of
+     * Accounts pending approval in the My tasks panel,
+     * it relocates to Mri Violations.
+     * author : Wang Shen
+     *
+     * @return void
+     */
+    public function testDashboardMyTasksAccountsPendingApproval()
+    {
+        $this->safeGet($this->url . '/dashboard/');
+        $siteAll = $this->webDriver
+            ->findElement(WebDriverBy::xpath("d('overall-recruitment')/x:h5"))
+            ->getText();
+
+        $this->assertContains("Overall Recuritment", $siteAll);
+
     }
 }
 ?>
