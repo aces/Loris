@@ -819,6 +819,21 @@ class NDB_Form_User_Accounts extends NDB_Form
             $errors['Email_Group'] = 'You must enter an email address';
         }
 
+        //======================================
+        //           Validate Text
+        //======================================
+
+        // For each text fields, check if quotes or if some HTML/PHP
+        // tags have been entered
+        foreach ($values as $key => $value) {
+            if (preg_match('/["]/', html_entity_decode($value))) {
+                $errors[$key] = "You can't use quotes";
+            }
+            if (strlen($value) > strlen(strip_tags($value))) {
+                $errors[$key] = "You can't use tags";
+            }
+        }
+
         return $errors;
     }
 
