@@ -2,7 +2,7 @@
 <div class="col-sm-8">
     <div class="panel panel-primary">
         <div class="panel-heading" id="swap" onclick="hideFilter();">
-            Selection Filter  
+            Selection Filter
             <label id="advanced-label" style="display:none">(Advanced Options)</label>
             <span class="glyphicon glyphicon-chevron-down pull-right" style="display:none" id="down"></span>
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
@@ -57,7 +57,7 @@
                         <label class="col-sm-12 col-md-4">{$form.Visit_label.label}</label>
                         <div class="col-sm-12 col-md-8">{$form.Visit_label.html}</div>
                     </div>
-                </div>    
+                </div>
                 <div class="row">
                     <div class="form-group col-sm-6">
                         <label class="col-sm-12 col-md-4 label-control">{$form.Invalid.label}</label>
@@ -78,15 +78,15 @@
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="visible-xs col-xs-12"> </div>
-                    
+
                     <div class="col-sm-4 col-md-3 col-xs-12">
                         <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/reliability/?reset=true'" />
                     </div>
-                </div> 
+                </div>
             </form>
         </div>
     </div>
-</div>    
+</div>
 
 
 
@@ -138,7 +138,7 @@
                     </div>
                 </form>
             </div>
-        </div>   
+        </div>
 </div>
 {/if}
 {if $EARLI_Reliability}
@@ -211,7 +211,7 @@
         <tr>
         <!-- print out data rows -->
         {section name=piece loop=$items[item]}
-        
+
 
     	{if $items[item][piece].name == "PSCID"}
     	   <td>
@@ -219,8 +219,8 @@
             {$items[item][piece].value} <font color="red">(Recycling Bin)</font>
          {elseif $items[item][piece].invalid == "yes"}
             {$items[item][piece].value} <font color="red">(Invalid)</font>
-         {else}     
-              <a href="{$baseurl}/main.php?test_name={$items[item][piece].Instrument}_reliability&subtest={$items[item][piece].Instrument}_reliability&identifier={$items[item][piece].CommentID}&reliability_center_id={$items[item][piece].SiteID}">{$items[item][piece].value}</a> 
+         {else}
+              <a href="{$baseurl}/main.php?test_name={$items[item][piece].Instrument}_reliability&subtest={$items[item][piece].Instrument}_reliability&identifier={$items[item][piece].CommentID}&reliability_center_id={$items[item][piece].SiteID}">{$items[item][piece].value}</a>
            {/if}
             {if $items[item][piece].manual == "yes"}
                 <font color="red">(Manual)</font>
@@ -248,13 +248,16 @@
         {/if}
        </td>
         {/section}
-        </tr>           
+        </tr>
     {sectionelse}
         <tr><td colspan="15">No reliability entries found</td></tr>
     {/section}
-                        
+
     <!-- end data table -->
     </table>
+
+<p>List of candidates flagged for reliability</p>
+<div id="datatable"></div>
 
 <script>
 var pageLinks = RPaginationLinks(
@@ -267,5 +270,14 @@ var pageLinks = RPaginationLinks(
     Active: {$pageID}
 });
 React.render(pageLinks, document.getElementById("pageLinks"));
+
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+  "DataURL" : "{$baseurl}/reliability/?format=json",
+  "getFormattedCell" : formatColumn,
+  "freezeColumn" : "PSCID"
+});
+React.render(table, document.getElementById("datatable"));
+
 </script>
 
