@@ -41,5 +41,37 @@ class DashboardTest extends LorisIntegrationTest
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
         $this->assertContains("Welcome", $welcomeText);
     }
+    /**
+     * Tests css, when loading Document Repository, the word "Document" appears
+     * in the Document Repository panel
+     *
+     * @return void
+     */
+    public function testDashboardByCssSelector()
+    {
+        $this->safeGet($this->url . '/document_repository/');
+
+        $welcomeText = $this->webDriver
+            ->findElement(
+                WebDriverBy::cssSelector(
+                    "body"
+                )
+            )->getText();
+        $this->assertContains("Document Repository", $welcomeText);
+    }
+    /**
+     * Tests logout, when logout this page, the login button appears
+     * in the login page.
+     *
+     * @return void
+     */
+    public function testLogout()
+    {
+        $this->safeGet($this->url . '/dashboard/');
+        $this->safeGet($this->url . '/main.php?logout=true');
+        $LoginBtn = $this->webDriver
+            ->findElement(WebDriverBy::Id("loginAPI"))->getAttribute("value");
+        $this->assertContains("Login", $LoginBtn);
+    }
 }
 ?>
