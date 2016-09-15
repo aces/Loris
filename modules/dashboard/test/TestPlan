@@ -55,3 +55,4 @@
     that there are no candidates in the DB yet instead of showing the candidates chart.
 22. When there are no scans done, the system shoudl display a message indicating that no scans were made instead of 
     showing the scans chart.
+
