@@ -11,35 +11,17 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ .
-    "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-
-/**
- * Dashboard module automated integration tests
- *
- * PHP Version 5
- *
- * @category Test
- * @package  Loris
- * @author   Tara Campbell <tara.campbell@mail.mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris
- */
-class DashboardTest extends LorisIntegrationTest
+require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
+class dashboardTest extends LorisIntegrationTestWithCandidate
 {
     /**
-     * Tests that, when loading the Dashboard, the word "Welcome" appears
-     * in the welcome panel
+     * Tests that, when loading the Instrument list module, some
+     * text appears in the body.
      *
      * @return void
      */
-    public function testDashboardPageLoads()
+    function testInstrumentListDoespageLoad()
     {
-        $this->safeGet($this->url . '/dashboard/');
-
-        $welcomeText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
-        $this->assertContains("Welcome", $welcomeText);
+      
     }
-}
 ?>
