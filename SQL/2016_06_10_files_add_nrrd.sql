@@ -1,0 +1,1 @@
+ALTER TABLE files CHANGE FileType FileType enum('mnc','obj','xfm','xfmmnc','imp','vertstat','xml','txt','nii','nii.gz','nrrd') default NULL;
