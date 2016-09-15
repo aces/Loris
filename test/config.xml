@@ -16,10 +16,10 @@
 
     <!-- database settings -->
     <database>
-        <host>%HOSTNAME%</host>
-        <username>%USERNAME%</username>
-        <password>%PASSWORD%</password>
-        <database>%DATABASE%</database>
+        <host>ace-db-1.cbrain.mcgill.ca</host>
+        <username>wangshen</username>
+        <password>123456</password>
+        <database>wangshen_sandbox</database>
         <quatUser>SQLTestUser</quatUser>
         <quatPassword>TestPassword</quatPassword>
         <name>Test database</name>

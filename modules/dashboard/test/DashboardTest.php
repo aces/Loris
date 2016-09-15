@@ -41,5 +41,23 @@ class DashboardTest extends LorisIntegrationTest
             ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
         $this->assertContains("Welcome", $welcomeText);
     }
+    /**
+     * Tests css, when loading Document Repository, the word "Document" appears
+     * in the Document Repository panel
+     *
+     * @return void
+     */
+    public function testDashboardByCssSelector()
+    {
+        $this->safeGet($this->url . '/document_repository/');
+
+        $welcomeText = $this->webDriver
+            ->findElement(
+                WebDriverBy::cssSelector(
+                    "body"
+                )
+            )->getText();
+        $this->assertContains("Document Repository", $welcomeText);
+    }
 }
 ?>
