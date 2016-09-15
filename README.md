@@ -55,7 +55,7 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
     Download the latest release from the [releases page](https://github.com/aces/Loris/releases) and
     extract it to `/var/www/$projectname`
 
-3. Run installer script to install core code, libraries, and MySQL schema (see LORIS Setup Schematic). The script will prompt for information, including usernames and folders which it will create automatically.
+3. Run installer script to install core code, libraries, and MySQL schema (see [LORIS Installation Schematic] (https://demo.loris.ca/LORIS_Installation_schematic.14-10.PDF)). The script will prompt for information, including usernames and folders which it will create automatically.
 
     For more information, please read the [Install Script wiki page](https://github.com/aces/Loris/wiki/Install-Script).
 
