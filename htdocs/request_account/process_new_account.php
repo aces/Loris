@@ -82,6 +82,7 @@ try {
 
 $err = array();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
     if (!checkLen('name')) {
         $err[] = 'The minimum length for First Name field is 3 characters';
     }
@@ -143,6 +144,28 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                      'Email'            => $from,
                      'CenterID'         => $site,
                     );
+        /*
+        foreach($_REQUEST as $k=>$v) {
+            error_log($k." -->  ".$v);
+        }
+*/
+        if ($_REQUEST['examiner']=='on') {
+            $rad=0;
+            if($_REQUEST['radiologist']=='on') {
+                $rad=1;
+            }
+            //insert in DB as inactive untill account approved
+            $DB->insert(
+                'examiners',
+                array(
+                    'full_name' => $fullname,
+                    'centerID' => $site,
+                    'radiologist' => $rad,
+                    'Active' => 'N',
+                )
+            );
+        }
+
         // check email address' uniqueness
         $result = $DB->pselectOne(
             "SELECT COUNT(*) FROM users WHERE Email = :VEmail",

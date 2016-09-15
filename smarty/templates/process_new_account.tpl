@@ -73,6 +73,16 @@
         </select>
     </div>
 </div>
+    <div class="form-group">
+        <label class="col-sm-4 control-label">Examiner Role: </label>
+        <div class="col-sm-1">
+            <input name="examiner" type="checkbox" id="examiner"/>
+        </div>
+        <label class="col-sm-4 control-label">Radiologist: </label>
+        <div class="col-sm-1">
+            <input name="radiologist" type="checkbox" id="radiologist"/>
+        </div>
+    </div>
 <div class="form-group">
 <label class="col-sm-4 control-label">Type verification code:</label>
  <div class="col-sm-6">
