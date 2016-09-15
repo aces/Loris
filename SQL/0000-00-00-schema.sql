@@ -2071,7 +2071,7 @@ CREATE TABLE `certification_training` (
     `TestID` int(10) UNSIGNED NOT NULL,
     `Title` varchar(255) NOT NULL,
     `Content` text,
-    `TrainingType` enum('text', 'pdf', 'video', 'quiz') NOT NULL,
+    `TrainingType` enum('text', 'pdf', 'video', 'quiz', 'vimeo') NOT NULL,
     `OrderNumber` INTEGER UNSIGNED NOT NULL,
     PRIMARY KEY (`ID`),
     CONSTRAINT `FK_certification_training` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
@@ -2134,9 +2134,9 @@ CREATE TABLE ExternalLinks (
 );
 INSERT INTO ExternalLinks (LinkTypeID, LinkText, LinkURL) VALUES 
     (1,  'Loris Website', 'http://www.loris.ca'),
-    (1,  'GitHub', 'https://github.com/aces'),
+    (1,  'GitHub', 'https://github.com/aces/Loris'),
     (2,  'Loris Website', 'http://www.loris.ca'),
-    (2,  'GitHub', 'https://github.com/aces'),
+    (2,  'GitHub', 'https://github.com/aces/Loris'),
     (3,  'Loris Website', 'http://www.loris.ca');
 
 DROP TABLE IF EXISTS empty_queries;

@@ -108,5 +108,23 @@ class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
 
         return true;
     }
+
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseurl . "/survey_accounts/js/survey_accounts_helper.js",
+            )
+        );
+    }
 }
 ?>
