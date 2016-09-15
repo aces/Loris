@@ -297,6 +297,23 @@ $(document).ready(function() {
     		{$form.CenterID.html}
     	</div>
     </div>
+        {if $form.errors.examiner_group}
+        <div class="row form-group form-inline form-inline has-error">
+            {else}
+            <div class="row form-group form-inline form-inline">
+                {/if}
+                <label class="col-sm-2">
+                    {$form.examiner_group.label}
+                </label>
+                <div class="col-sm-10">
+                    {$form.examiner_group.html}
+                </div>
+                {if $form.errors.examiner_group}
+                    <div class="col-sm-offset-2 col-xs-12">
+                        <font class="form-error">{$form.errors.examiner_group}</font>
+                    </div>
+                {/if}
+            </div>
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.Active.label}

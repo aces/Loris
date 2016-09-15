@@ -135,6 +135,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _process($values)
     {
         $config = NDB_Config::singleton();
+        $DB     = Database::singleton();
 
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
@@ -172,6 +173,32 @@ class NDB_Form_User_Accounts extends NDB_Form
             $send = $values['SendEmail'];
         }
         unset($values['SendEmail']);
+
+        if (!empty($values['examiner'])) {
+            $examiner=$values['examiner'];
+            //print_r($values['Real_name']."   ".$values['CenterID']."  ".$values['radiologist']);
+            //Check if examiner already in db
+            $result = $DB->pselectOne("
+                          SELECT full_name 
+                          FROM examiners 
+                          WHERE full_name=:fn",
+                array("fn"=>$values['Real_name'])
+            );
+            if (empty($result) || is_null($result)) {
+                $DB->insert(
+                    'examiners',
+                    array(
+                        'full_name' => $values['Real_name'],
+                        'centerID' => $values['CenterID'],
+                        'radiologist' => $values['radiologist'],
+                    )
+                );
+            }
+        } else {
+            $DB->delete('examiners', array("full_name"=>$values['Real_name']));
+        }
+        unset($values['examiner']);
+        unset($values['radiologist']);
 
         //store the supervisors emails
         if (!empty($values['supervisorEmail'])) {
@@ -451,6 +478,24 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
         $this->addSelect('CenterID', 'Site', $siteOptions);
 
+        // add to examiner table
+        $group[] = $this->createCheckbox('examiner', 'Add to examiner list', array());
+        $group[] = $this->createLabel("&nbsp;&nbsp;&nbsp;&nbsp; <b>Radiologist:</b>");
+        $group[] = $this->createSelect(
+            "radiologist",
+            "Radiologist",
+            array(null=>"", '1' => 'Yes', '0' => 'No')
+        );
+        $this->addGroup(
+            $group,
+            'examiner_group',
+            'Examiner Status',
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+
         // active
         $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
         $this->addSelect(
@@ -461,6 +506,7 @@ class NDB_Form_User_Accounts extends NDB_Form
              'N' => 'No',
             )
         );
+
 
         //------------------------------------------------------------
 
@@ -817,6 +863,13 @@ class NDB_Form_User_Accounts extends NDB_Form
         } else {
             // No email entered: error
             $errors['Email_Group'] = 'You must enter an email address';
+        }
+        //======================================
+        //        Validate Examiner Status
+        //======================================
+        if ($values['examiner'] == 'on' && $values['radiologist'] == '') {
+            $errors['examiner_group'] = "Please specify if examiner is a ".
+                "radiologist";
         }
 
         return $errors;
