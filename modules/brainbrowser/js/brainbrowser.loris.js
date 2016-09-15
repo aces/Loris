@@ -216,7 +216,8 @@ $(function() {
 
       // Divide panel container size (.volume-viewer-display) by
       // number of panels and subtract the margins for each panel.
-      var size = (vv / n) - (ml + mr);
+      // Note: (Subtract 1, because float widths are rounded up by jQuery)
+      var size = ((vv - 1) / n) - (ml + mr);
 
       viewer.setDefaultPanelSize(size, size);
       viewer.setPanelSize(size, size, { scale_image: true });
