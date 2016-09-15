@@ -108,7 +108,8 @@ class NDB_Caller
             // Only supports Menu_Filters and Forms.
             // Modules can not have instruments or reliability.
             set_include_path(
-                "$ModuleDir/php:"
+                $base . "project/libraries:"
+                . "$ModuleDir/php:"
                 . get_include_path()
             );
 
