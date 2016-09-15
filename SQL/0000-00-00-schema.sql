@@ -885,6 +885,7 @@ CREATE TABLE `parameter_type` (
   KEY `name` (`Name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='dictionary of all the variables in the project';
 
+
 --
 -- Dumping data for table `parameter_type`
 --
