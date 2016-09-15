@@ -194,6 +194,7 @@ CREATE TABLE `examiners` (
   `full_name` varchar(255) default NULL,
   `centerID` tinyint(2) unsigned default NULL,
   `radiologist` tinyint(1) default NULL,
+  `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
   PRIMARY KEY  (`examinerID`),
   UNIQUE KEY `full_name` (`full_name`,`centerID`),
   KEY `FK_examiners_1` (`centerID`),

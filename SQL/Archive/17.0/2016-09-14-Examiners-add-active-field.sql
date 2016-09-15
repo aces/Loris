@@ -1,0 +1,1 @@
+ALTER TABLE examiners ADD COLUMN `Active` enum('Y','N') NOT NULL DEFAULT 'Y';
