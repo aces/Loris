@@ -1493,6 +1493,18 @@ class LorisForm
             ) {
                   $arr[$name] = $this->getValue($name);
             }
+
+            if ($el['type'] === 'date') {
+                 // Convert dates to the type of group that was used
+                 // by HTML_QuickForm. This should eventually be modified
+                 // to just use a normal HTML5 date.
+                 $vals       = explode("-", $arr[$name]);
+                 $arr[$name] = array(
+                                'Y' => $vals[0],
+                                'M' => $vals[1],
+                                'd' => $vals[2],
+                               );
+             }
         }
     }
 
