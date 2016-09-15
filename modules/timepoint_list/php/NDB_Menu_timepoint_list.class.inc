@@ -169,7 +169,7 @@ class NDB_Menu_timepoint_list extends NDB_Menu
         return array_merge(
             $deps,
             array(
-                $baseURL . "/timepoint_list/js/timepoint_list.js",
+                $baseURL . "/timepoint_list/js/timepoint_list_helper.js",
             )
         );
     }

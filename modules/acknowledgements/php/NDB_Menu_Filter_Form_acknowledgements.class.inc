@@ -225,7 +225,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
         return array_merge(
             $baseDeps,
             array(
-             $baseurl . '/acknowledgements/js/acknowledgements.js',
+             $baseurl . '/acknowledgements/js/acknowledgements_helper.js',
             )
         );
 
