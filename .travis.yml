@@ -14,6 +14,11 @@ addons:
     firefox: "44.0"
 
 before_install:
+    - echo "HELLO";
+    - echo "$TRAVIS_BRANCH";
+    - if [ "$TRAVIS_BRANCH" == "master" ]; then
+        echo "Do not send pull requests to the master branch, send them to VERSION-dev branches" && exit 1;
+      fi
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
     # are hidden when Selenium tries to find them.
