@@ -32,4 +32,3 @@ Incorrect PSCID/DCCID combinations in the filter form should not give such an er
 It should return that no results were found.
 17. Enter correct PSCID/DCCID combination and ensure that it loads correct timepoint_list page
 18. Remove access_all_profiles permission and ensure that PSCID links are still clickable.
-19. Change useEDC and useProjects config variables to false and ensure filters are removed from menu.
