@@ -119,7 +119,7 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function testdicomArchivFilterClearBtn()
     {   
-        $this->markTestSkipped("This method isn't working properly on travis.");
+      //  $this->markTestSkipped("This method isn't working properly on travis.");
         
         //testing the Patient Name
         $this->safeGet($this->url . "/dicom_archive/");
@@ -164,14 +164,14 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
         function testdicomArchiveFileterByName()
     {   
-        $this->markTestSkipped("This method isn't working properly on travis.");
        
         //testing the Patient Name
         $this->safeGet($this->url . "/dicom_archive/");
         $nameElement =  $this->safeFindElement(WebDriverBy::Name("PatientName"));
         $nameElement->sendKeys("TestTestTest");
         $this->safeClick(WebDriverBy::Name("filter"));
-        $name =$this->safeFindElement(WebDriverBy::cssSelector("tbody"))->getText();
+        $this->safeGet($this->url . "/dicom_archive/?format=json");
+        $name = $this->webDriver->getPageSource();
         $this->assertContains('TestTestTest',$name);
   
     }
@@ -182,14 +182,14 @@ class dicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
      function testdicomArchiveFileterByDateOfBirth()
     {
-        $this->markTestSkipped("This method isn't working properly on travis.");
     
          //testing the Patient's date of birth
         $this->safeGet($this->url . "/dicom_archive/");
         $DoBElement =  $this->safeFindElement(WebDriverBy::Name("DoB"));
         $DoBElement->sendKeys("1900-01-01");
         $this->safeClick(WebDriverBy::Name("filter"));
-        $DoB = $this->safeFindElement(WebDriverBy::cssSelector("tbody"))->getText();
+        $this->safeGet($this->url . "/dicom_archive/?format=json");
+        $DoB = $this->webDriver->getPageSource();
         $this->assertContains('1900-01-01',$DoB);
     }
 
