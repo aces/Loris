@@ -445,6 +445,33 @@ CREATE TABLE `mri_processing_protocol` (
 
 
 --
+-- Table structure for table `mri_scanner`
+--
+
+DROP TABLE IF EXISTS `mri_scanner`;
+CREATE TABLE `mri_scanner` (
+  `ID` int(11) unsigned NOT NULL auto_increment,
+  `Manufacturer` varchar(255) default NULL,
+  `Model` varchar(255) default NULL,
+  `Serial_number` varchar(255) default NULL,
+  `Software` varchar(255) default NULL,
+  `CandID` int(11) default NULL,
+  PRIMARY KEY  (`ID`),
+  KEY `FK_mri_scanner_1` (`CandID`),
+  CONSTRAINT `FK_mri_scanner_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `mri_scanner`
+--
+
+LOCK TABLES `mri_scanner` WRITE;
+/*!40000 ALTER TABLE `mri_scanner` DISABLE KEYS */;
+INSERT INTO `mri_scanner` VALUES (0,NULL,NULL,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `mri_scanner` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `files`
 --
 
@@ -707,33 +734,6 @@ INSERT INTO `mri_scan_type` VALUES
     (999,'unknown'),
     (1000,'NA');
 /*!40000 ALTER TABLE `mri_scan_type` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `mri_scanner`
---
-
-DROP TABLE IF EXISTS `mri_scanner`;
-CREATE TABLE `mri_scanner` (
-  `ID` int(11) unsigned NOT NULL auto_increment,
-  `Manufacturer` varchar(255) default NULL,
-  `Model` varchar(255) default NULL,
-  `Serial_number` varchar(255) default NULL,
-  `Software` varchar(255) default NULL,
-  `CandID` int(11) default NULL,
-  PRIMARY KEY  (`ID`),
-  KEY `FK_mri_scanner_1` (`CandID`),
-  CONSTRAINT `FK_mri_scanner_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `mri_scanner`
---
-
-LOCK TABLES `mri_scanner` WRITE;
-/*!40000 ALTER TABLE `mri_scanner` DISABLE KEYS */;
-INSERT INTO `mri_scanner` VALUES (0,NULL,NULL,NULL,NULL,NULL);
-/*!40000 ALTER TABLE `mri_scanner` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
