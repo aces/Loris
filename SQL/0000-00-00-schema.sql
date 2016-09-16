@@ -476,12 +476,13 @@ CREATE TABLE `files` (
   KEY `filetype_outputtype` (`FileType`,`OutputType`),
   KEY `staging_filetype_outputtype` (`PendingStaging`,`FileType`,`OutputType`),
   KEY `AcquiIndex` (`AcquisitionProtocolID`,`SessionID`),
+  KEY `ScannerID` (`ScannerID`),
   CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
   CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`),
   CONSTRAINT `FK_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`),
-  CONSTRAINT `files_scannerID_fk` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`)
+  CONSTRAINT `FK_files_scannerID` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `files_qcstatus`;
