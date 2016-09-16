@@ -107,7 +107,12 @@ class NDB_Form_User_Accounts extends NDB_Form
             $defaults['Zip_code']    = htmlspecialchars($defaults['Zip_code']);
             $defaults['Country']     = htmlspecialchars($defaults['Country']);
             $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
-
+            $defaults['examiner']    = htmlspecialchars(
+                $defaults['examiner_ownsite_yn']
+            );
+            $defaults['radiologist'] = htmlspecialchars(
+                $defaults['radiologist_ownsite']
+            );
         }
 
         return $defaults;
@@ -175,27 +180,41 @@ class NDB_Form_User_Accounts extends NDB_Form
         unset($values['SendEmail']);
 
         if (!empty($values['examiner'])) {
-            $examiner=$values['examiner'];
-            //print_r($values['Real_name']."   ".$values['CenterID']."  ".$values['radiologist']);
-            //Check if examiner already in db
-            $result = $DB->pselectOne("
-                          SELECT full_name 
+            $examiner =$values['examiner'];
+            //Check if examiner already in db for own site
+            $result = $DB->pselectRow(
+                "
+                          SELECT full_name, centerID
                           FROM examiners 
-                          WHERE full_name=:fn",
-                array("fn"=>$values['Real_name'])
+                          WHERE full_name=:fn AND centerID=:cid",
+                array(
+                 "fn"  => $values['Real_name'],
+                 "cid" => $values['CenterID'],
+                )
             );
+            // examiner was not previously added, add and set to active
             if (empty($result) || is_null($result)) {
                 $DB->insert(
                     'examiners',
                     array(
-                        'full_name' => $values['Real_name'],
-                        'centerID' => $values['CenterID'],
-                        'radiologist' => $values['radiologist'],
+                     'full_name'   => $values['Real_name'],
+                     'centerID'    => $values['CenterID'],
+                     'radiologist' => $values['radiologist'],
+                     'Active'      => 'Y',
                     )
                 );
             }
         } else {
-            $DB->delete('examiners', array("full_name"=>$values['Real_name']));
+            // if examiner not in taable, do nothing.
+            // if examiner in table set as inactive
+            $DB->update(
+                'examiners',
+                array("Active" => 'N'),
+                array(
+                 "full_name" => $values['Real_name'],
+                 "centerID"  => $values['CenterID'],
+                )
+            );
         }
         unset($values['examiner']);
         unset($values['radiologist']);
@@ -478,23 +497,34 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
         $this->addSelect('CenterID', 'Site', $siteOptions);
 
-        // add to examiner table
-        $group[] = $this->createCheckbox('examiner', 'Add to examiner list', array());
-        $group[] = $this->createLabel("&nbsp;&nbsp;&nbsp;&nbsp; <b>Radiologist:</b>");
-        $group[] = $this->createSelect(
-            "radiologist",
-            "Radiologist",
-            array(null=>"", '1' => 'Yes', '0' => 'No')
-        );
-        $this->addGroup(
-            $group,
-            'examiner_group',
-            'Examiner Status',
-            $this->_GUIDelimiter,
-            false
-        );
-        unset($group);
-
+        if ($editor->hasPermission('examiner_multisite')) {
+            // add to examiner table
+            $group[] = $this->createCheckbox(
+                'examiner',
+                'Add to examiner list for site above',
+                array()
+            );
+            $group[] = $this->createLabel(
+                "&nbsp;&nbsp;&nbsp;&nbsp; <b>Radiologist:</b>"
+            );
+            $group[] = $this->createSelect(
+                "radiologist",
+                "Radiologist",
+                array(
+                 null => "",
+                 '1'  => 'Yes',
+                 '0'  => 'No',
+                )
+            );
+            $this->addGroup(
+                $group,
+                'examiner_group',
+                'Examiner Status',
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+        }
 
         // active
         $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
@@ -506,7 +536,6 @@ class NDB_Form_User_Accounts extends NDB_Form
              'N' => 'No',
             )
         );
-
 
         //------------------------------------------------------------
 
@@ -627,7 +656,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
-        $fistNameInvalidMsg = "First name is required and "
+        $firstNameInvalidMsg = "First name is required and "
             . "should not exceed 120 characters";
         $this->addBasicText(
             'First_name',
