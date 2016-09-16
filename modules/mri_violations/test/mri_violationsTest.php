@@ -19,7 +19,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
      * Insert testing data
      *
      * @return void
-     */
+     */     
     public function setUp()
     {
         parent::setUp();
@@ -241,8 +241,8 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/mri_violations/?submenu=resolved_violations");
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector
-                ("#violationsTable > thead > tr > th:nth-child(1) > a"))->getText();
-        $this->assertContains("Resolution status", $bodyText);
+                ("#tabs > ul > li.statsTab.active > a"))->getText();
+        $this->assertContains("Resolved", $bodyText);
     }
     /**
      * Tests clear button in the filter section, input some data, then click the clear button,
