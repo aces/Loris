@@ -182,7 +182,8 @@ class NDB_Form_User_Accounts extends NDB_Form
         if (!empty($values['examiner'])) {
             $examiner =$values['examiner'];
             //Check if examiner already in db for own site
-            $result = $DB->pselectRow("
+            $result = $DB->pselectRow(
+                "
                           SELECT full_name, centerID
                           FROM examiners 
                           WHERE full_name=:fn AND centerID=:cid",
@@ -206,12 +207,12 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $DB->update(
                     'examiners',
                     array(
-                        'radiologist' => $values['radiologist'],
-                        'Active'      => 'Y'
+                     'radiologist' => $values['radiologist'],
+                     'Active'      => 'Y',
                     ),
                     array(
-                        "full_name" => $values['Real_name'],
-                        "centerID"  => $values['CenterID'],
+                     "full_name" => $values['Real_name'],
+                     "centerID"  => $values['CenterID'],
                     )
                 );
             }
