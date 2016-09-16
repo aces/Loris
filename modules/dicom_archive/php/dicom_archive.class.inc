@@ -10,9 +10,10 @@
  * @package    Main
  * @subpackage Imaging
  * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license    @GPLv3
- * @link       https://www.github.com/olgatsib/Loris-Trunk/
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
+namespace LORIS\dicom_archive;
 
 /**
  * Provides the PHP code for the menu filter for the dicom archive
@@ -21,10 +22,10 @@
  * @package    Main
  * @subpackage Imaging
  * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license    @GPLv3
- * @link       https://www.github.com/olgatsib/Loris-Trunk/
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
+class Dicom_Archive extends \NDB_Menu_Filter
 {
     var $dicomArchiveSettings;
 
@@ -35,7 +36,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
      */
     function _hasAccess()
     {
-        $user = User::singleton();
+        $user = \User::singleton();
         return $user->hasPermission('dicom_archive_view_allsites');
     }
 
@@ -53,33 +54,31 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             LEFT JOIN session s ON (s.ID=t.SessionID)
             LEFT JOIN candidate c ON (c.CandID=s.CandID) WHERE 1=1";
 
-        $colsFirst = array(
-        );
+        $colsFirst = array();
 
         $TransferStatus = $this->_getTransferStatusFromQuery();
-        $arrayTransfer = array($TransferStatus . " as Transfer_Status");
+        $arrayTransfer  = array($TransferStatus . " as Transfer_Status");
 
         $colsFirst = array_merge($colsFirst, $arrayTransfer);
 
         $colsLast = array(
-            't.PatientID as Patient_ID',
-            't.PatientName as Patient_Name',
-            't.PatientGender as Gender',
-            't.PatientDoB as Date_of_birth',
-            't.DateAcquired as Acquisition',
-            't.ArchiveLocation as Archive_Location',
-            "'View Details' as Metadata",
-            "'View Images' as MRI_Browser",
+                     't.PatientID as Patient_ID',
+                     't.PatientName as Patient_Name',
+                     't.PatientGender as Gender',
+                     't.PatientDoB as Date_of_birth',
+                     't.DateAcquired as Acquisition',
+                     't.ArchiveLocation as Archive_Location',
+                     "'View Details' as Metadata",
+                     "'View Images' as MRI_Browser",
             // For constructing links, not in headers array
-            's.CenterID as site',
-            't.TarchiveID as TarchiveID',
-            's.ID as SessionID'
-        );
+                     's.CenterID as site',
+                     't.TarchiveID as TarchiveID',
+                     's.ID as SessionID',
+                    );
 
         $this->columns = array_merge($colsFirst, $colsLast);
 
         $this->order_by = 't.DateAcquired';
-
 
         $this->headers = [];
 
@@ -87,40 +86,43 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             array_push($this->headers, 'Transfer_Status');
         }
 
-        $this->headers = array_merge($this->headers, [
-            'Patient_ID',
-            'Patient_Name',
-            'Gender',
-            'Date_of_birth',
-            'Acquisition',
-            'Archive_Location',
-            'Metadata',
-            'MRI_Browser',
-            'Site'
-        ]);
+        $this->headers = array_merge(
+            $this->headers,
+            [
+             'Patient_ID',
+             'Patient_Name',
+             'Gender',
+             'Date_of_birth',
+             'Acquisition',
+             'Archive_Location',
+             'Metadata',
+             'MRI_Browser',
+             'Site',
+            ]
+        );
 
         // Set header as hidden from the data table
         $this->tpl_data['hiddenHeaders'] = json_encode(['Site']);
 
         $this->validFilters = array(
-            'c.CenterID',
-            't.PatientID',
-            't.PatientGender',
-            't.DateAcquired',
-            't.PatientName',
-            't.PatientDoB',
-            't.ArchiveLocation'
-        );
+                               'c.CenterID',
+                               't.PatientID',
+                               't.PatientGender',
+                               't.DateAcquired',
+                               't.PatientName',
+                               't.PatientDoB',
+                               't.ArchiveLocation',
+                              );
 
         $this->formToFilter = array(
-            'SiteID' => 'c.CenterID',
-            'PatientID' => 't.PatientID',
-            'Gender'=> 't.PatientGender',
-            'Acquisition' => 't.DateAcquired',
-            'PatientName' => 't.PatientName',
-            'DoB' => 't.PatientDoB',
-            'Location' => 't.ArchiveLocation'
-        );
+                               'SiteID'      => 'c.CenterID',
+                               'PatientID'   => 't.PatientID',
+                               'Gender'      => 't.PatientGender',
+                               'Acquisition' => 't.DateAcquired',
+                               'PatientName' => 't.PatientName',
+                               'DoB'         => 't.PatientDoB',
+                               'Location'    => 't.ArchiveLocation',
+                              );
 
     }
     /**
@@ -131,7 +133,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
     */
     function _setDicomArchiveSettings()
     {
-        $config =& NDB_Config::singleton();
+        $config =& \NDB_Config::singleton();
         $this->dicomArchiveSettings = $config->getSetting('dicom_archive');
     }
 
@@ -167,7 +169,7 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
-        $this->tpl_data['Sites'] = Utility::getSiteList();
+        $this->tpl_data['Sites'] = \Utility::getSiteList();
     }
 
     /**
@@ -177,7 +179,6 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
      *
      * @return null
      */
-
     function _setDataTableRows($count)
     {
         $x = 0;
@@ -221,7 +222,6 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
                     $this->tpl_data['items'][$x][$i]['sessionID'] = $sessionID;
                 }
 
-
                 // check if names and ids are valid
                 if ($key == 'Patient_ID') {
                     $regex = 'patientIDRegex';
@@ -235,10 +235,20 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
                     } else {
                         $this->tpl_data['items'][$x][$i]['value'] = $val;
                     }
-                } elseif ($key == 'Patient_Name'){
-                   if (!preg_match($this->dicomArchiveSettings['patientNameRegex'], $val) &&
-                       !preg_match($this->dicomArchiveSettings['LegoPhantomRegex'], $val) &&
-                       !preg_match($this->dicomArchiveSettings['LivingPhantomRegex'], $val)) {
+                } elseif ($key == 'Patient_Name') {
+                    if (!preg_match(
+                        $this->dicomArchiveSettings['patientNameRegex'],
+                        $val
+                    )
+                        && !preg_match(
+                            $this->dicomArchiveSettings['LegoPhantomRegex'],
+                            $val
+                        )
+                        && !preg_match(
+                            $this->dicomArchiveSettings['LivingPhantomRegex'],
+                            $val
+                        )
+                    ) {
                         $this->tpl_data['items'][$x][$i]['class'] = "error";
                         $this->tpl_data['items'][$x][$i]['value']
                             = "INVALID - HIDDEN";
@@ -265,18 +275,29 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
         return true;
     }
 
-    function toArray() {
+    /**
+     * Converts the data from the data table to an array suitable for JSON
+     * serialiation. Overrides the base class in order to enforce name regex
+     * rules.
+     *
+     * @return array of data from dicom_archive menu filter
+     */
+    function toArray()
+    {
         $unanonymized = parent::toArray();
-        $retVal = array(
-            'Headers' => $unanonymized['Headers'],
-        );
-        $data = array();
+        $retVal       = array(
+                         'Headers' => $unanonymized['Headers'],
+                        );
+        $data         = array();
 
         foreach ($unanonymized['Data'] as &$row) {
             $val = $row[2];
-            if (!preg_match($this->dicomArchiveSettings['patientNameRegex'], $val) &&
-                !preg_match($this->dicomArchiveSettings['LegoPhantomRegex'], $val) &&
-                !preg_match($this->dicomArchiveSettings['LivingPhantomRegex'], $val)
+            if (!preg_match($this->dicomArchiveSettings['patientNameRegex'], $val)
+                && !preg_match($this->dicomArchiveSettings['LegoPhantomRegex'], $val)
+                && !preg_match(
+                    $this->dicomArchiveSettings['LivingPhantomRegex'],
+                    $val
+                )
             ) {
                 $row[2] = "INVALID - HIDDEN";
             }
@@ -294,21 +315,29 @@ class NDB_Menu_Filter_Dicom_Archive extends NDB_Menu_Filter
             $data[] = $row;
         }
         return array(
-            'Headers' => $unanonymized['Headers'],
-            'Data' => $data,
-        );
+                'Headers' => $unanonymized['Headers'],
+                'Data'    => $data,
+               );
 
     }
-    function getJSDependencies() {
-        $factory = NDB_Factory::singleton();
+
+    /**
+     * Overrides base getJSDependencies() to add support for dicom specific
+     * React column formatters.
+     *
+     * @return an array of extra JS files that this page depends on
+     */
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
             array(
-                $baseURL . "/dicom_archive/js/columnFormatter.js",
-                $baseURL . "/dicom_archive/js/dicom_archive.js",
-                $baseURL . "/js/util/queryString.js",
+             $baseURL . "/dicom_archive/js/columnFormatter.js",
+             $baseURL . "/dicom_archive/js/dicom_archive.js",
+             $baseURL . "/js/util/queryString.js",
             )
         );
     }

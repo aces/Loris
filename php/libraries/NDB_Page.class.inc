@@ -611,5 +611,14 @@ class NDB_Page
         return $files;
     }
 
+    /**
+     * Does any setup required for this page. This is generally overridden
+     * by NDB_Page subtypes.
+     *
+     * @return none, but may have side-effects
+     */
+    function setup()
+    {
+    }
 }
 ?>
