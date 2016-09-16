@@ -39,20 +39,11 @@ $(function() {
     // Change viewer panel canvas size.
     $("#panel-size").change(function() {
       var size = parseInt($(this).val(), 10);
-
       if (size < 0) {
         viewer.setAutoResize(true, 'volume-controls');
-        $('#brainbrowser-wrapper').css("width", "90%");
-        $('#volume-viewer').css("width", "100%");
-        $('#brainbrowser').css("width", "100%");
         viewer.doAutoResize();
-      }
-      else {
-        viewer.setAutoResize(false);
-        $('#brainbrowser-wrapper').css("width", "60em");
-        $('#volume-viewer').css("width", "");
-        $('#brainbrowser').css("width", "");
-        $('.volume-controls').css("width", "");
+      } else {
+        viewer.setAutoResize(false, 'volume-controls');
         viewer.setPanelSize(size, size, { scale_image: true });
       }
     });
@@ -219,9 +210,12 @@ $(function() {
       var n = Math.max(viewer.volumes.length, 3);
       var ml = getIntProperty('.slice-display', 'margin-left');
       var mr = getIntProperty('.slice-display', 'margin-right');
-      var vv = getIntProperty('.volume-viewer-controls', 'width');
+      var vv = getIntProperty('.volume-viewer-display', 'width');
 
-      var size = ($('#' + viewer.dom_element.id).width() / n) - ((ml * 2) + (mr * 2) + (vv / n));
+      // Divide panel container size (.volume-viewer-display) by
+      // number of panels and subtract the margins for each panel.
+      // Note: (Subtract 1, because float widths are rounded up by jQuery)
+      var size = ((vv - 1) / n) - (ml + mr);
 
       viewer.setDefaultPanelSize(size, size);
       viewer.setPanelSize(size, size, { scale_image: true });
@@ -833,6 +827,8 @@ $(function() {
     loading_div.show();
     bboptions.complete = function() {
       loading_div.hide();
+      // Trigger change event when page is loaded to auto-resize panels if necessary
+      $("#panel-size").change();
     }
 
     //////////////////////////////
