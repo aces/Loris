@@ -59,7 +59,23 @@ class User extends UserPermissions
             LEFT JOIN psc ON (users.centerID=psc.CenterID)
             WHERE users.UserID = :UID";
 
-        $row = $DB->pselectRow($query, array('UID' => $username));
+        $row            = $DB->pselectRow($query, array('UID' => $username));
+        $examiner_check = $DB->pselectRow(
+            "
+                  SELECT full_name, radiologist 
+                  FROM examiners 
+                  WHERE full_name=:fn
+                    AND centerID=:cid",
+            array(
+             "fn"  => $row['Real_name'],
+             "cid" => $row["CenterID"],
+            )
+        );
+
+        if (!empty($examiner_check) && !is_null($examiner_check)) {
+            $row['examiner_ownsite_yn'] = 'on';
+            $row['radiologist_ownsite'] = $examiner_check['radiologist'];
+        }
 
         // store user data in object property
         $obj->userInfo = $row;
