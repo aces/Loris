@@ -62,7 +62,7 @@ class User extends UserPermissions
         $row            = $DB->pselectRow($query, array('UID' => $username));
         $examiner_check = $DB->pselectRow(
             "
-                  SELECT full_name, radiologist 
+                  SELECT full_name, radiologist, Active 
                   FROM examiners 
                   WHERE full_name=:fn
                     AND centerID=:cid",
@@ -73,8 +73,10 @@ class User extends UserPermissions
         );
 
         if (!empty($examiner_check) && !is_null($examiner_check)) {
-            $row['examiner_ownsite_yn'] = 'on';
-            $row['radiologist_ownsite'] = $examiner_check['radiologist'];
+            if ($examiner_check['Active'] == 'Y') {
+                $row['examiner_ownsite_yn'] = 'on';
+                $row['radiologist_ownsite'] = $examiner_check['radiologist'];
+            }
         }
 
         // store user data in object property
