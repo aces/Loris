@@ -148,20 +148,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         foreach($_REQUEST as $k=>$v) {
             error_log($k." -->  ".$v);
         }
-*/
+        */
         if ($_REQUEST['examiner']=='on') {
-            $rad=0;
-            if($_REQUEST['radiologist']=='on') {
-                $rad=1;
+            $rad =0;
+            if ($_REQUEST['radiologist']=='on') {
+                $rad =1;
             }
             //insert in DB as inactive untill account approved
             $DB->insert(
                 'examiners',
                 array(
-                    'full_name' => $fullname,
-                    'centerID' => $site,
-                    'radiologist' => $rad,
-                    'Active' => 'N',
+                 'full_name'   => $fullname,
+                 'centerID'    => $site,
+                 'radiologist' => $rad,
+                 'Active'      => 'N',
                 )
             );
         }
