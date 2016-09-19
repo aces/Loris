@@ -351,7 +351,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         return true;
     }
 
-    /*st*
+    /**
      * Overwrite the setDataTableRows function to exclude fields
      * which were only selected for generating a link, and aren't
      * used for display to the user

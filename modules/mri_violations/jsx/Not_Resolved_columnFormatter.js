@@ -19,6 +19,21 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this);
 
+  if (column === "Problem" &&  row["Problem"] === "Protocol Violation" ) {
+  var patientname = row["PatientName"];
+  var uid = row["SeriesUID"];
+  var url = loris.BaseURL +
+            "/mri_violations/?submenu=mri_protocol_check_violations&patientname="
+            + patientname + "&SeriesUID=" + uid;
+     return <td>
+            <a href= {url}
+            className="mri_violations"
+            id="mri_protocol_check_violations" 
+            data-patientname= {patientname} 
+            data-seriesuid={uid}
+            >Protocol Violation</a>
+           </td>;      
+  }
   if (column === 'Resolution Status') {
       var  hashName = "resolvable[" + row["Hash"] +"]";
       return <td>
