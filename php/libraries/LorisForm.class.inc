@@ -1493,7 +1493,7 @@ class LorisForm
                                 'M' => $vals[1],
                                 'd' => $vals[2],
                                );
-             }
+            }
         }
     }
 
