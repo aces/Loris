@@ -1,0 +1,1 @@
+INSERT INTO ConfigSettings (Name,Description,Visible,AllowMultiple,DataType,Parent,Label,OrderNumber) Values ("clientAdditionalHeaders","Extensions to the Content-security policy allow only for self-hosted content", 1, 0, "text", 1, "Content-Security Extentions:", 23);
