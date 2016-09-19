@@ -10,9 +10,9 @@
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
 
-  if (loris.hiddenHeaders.indexOf(column) > -1) {
-    return null;
- }
+   if (loris.hiddenHeaders.indexOf(column) > -1) {
+      return null;
+   }
    // Create the mapping between rowHeaders and rowData in a row object.
    var row = {};
    rowHeaders.forEach(function (header, index) {
@@ -58,15 +58,22 @@ function formatColumn(column, cell, rowData, rowHeaders) {
          resolution_status
       );
    }
-   if (column === 'Problem') {
+   if (column === "Problem" && row["Problem"] === "Protocol Violation") {
+      var patientname = row["PatientName"];
+      var uid = row["SeriesUID"];
+      var url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_check_violations&patientname=" + patientname + "&SeriesUID=" + uid;
       return React.createElement(
          "td",
          null,
          React.createElement(
             "a",
-            { href: "#" },
-            " ",
-            cell
+            { href: url,
+               className: "mri_violations",
+               id: "mri_protocol_check_violations",
+               "data-patientname": patientname,
+               "data-seriesuid": uid
+            },
+            "Protocol Violation"
          )
       );
    }
