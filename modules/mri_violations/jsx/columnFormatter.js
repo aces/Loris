@@ -60,7 +60,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var patientname = row["PatientName"];
   var uid = row["SeriesUID"];
   var url = loris.BaseURL +
-            "/mri_violations/?submenu=mri_protocol_check_violations&patientname="
+            "/mri_violations/?submenu=mri_protocol_check_violations&PatientName="
             + patientname + "&SeriesUID=" + uid;
      return <td>
             <a href= {url}
@@ -75,7 +75,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var patientname = row["PatientName"];
   var uid = row["SeriesUID"];
   var url = loris.BaseURL +
-            "/mri_violations/?submenu=mri_protocol_violations&patientname="
+            "/mri_violations/?submenu=mri_protocol_violations&PatientName="
             + patientname + "&SeriesUID=" + uid;
      return <td>
             <a href= {url}

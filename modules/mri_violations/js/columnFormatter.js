@@ -61,7 +61,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
    if (column === "Problem" && row["Problem"] === "Protocol Violation") {
       var patientname = row["PatientName"];
       var uid = row["SeriesUID"];
-      var url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_check_violations&patientname=" + patientname + "&SeriesUID=" + uid;
+      var url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" + patientname + "&SeriesUID=" + uid;
       return React.createElement(
          "td",
          null,
@@ -80,7 +80,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
    if (column === "Problem" && row["Problem"] === "Could not identify scan type") {
       var patientname = row["PatientName"];
       var uid = row["SeriesUID"];
-      var url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_violations&patientname=" + patientname + "&SeriesUID=" + uid;
+      var url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_violations&PatientName=" + patientname + "&SeriesUID=" + uid;
       return React.createElement(
          "td",
          null,
