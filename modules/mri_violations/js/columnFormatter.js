@@ -77,6 +77,25 @@ function formatColumn(column, cell, rowData, rowHeaders) {
          )
       );
    }
+   if (column === "Problem" && row["Problem"] === "Could not identify scan type") {
+      var patientname = row["PatientName"];
+      var uid = row["SeriesUID"];
+      var url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_violations&patientname=" + patientname + "&SeriesUID=" + uid;
+      return React.createElement(
+         "td",
+         null,
+         React.createElement(
+            "a",
+            { href: url,
+               className: "mri_violations",
+               id: "mri_protocol_violations",
+               "data-patientname": patientname,
+               "data-seriesuid": uid
+            },
+            "Could not identify scan type"
+         )
+      );
+   }
    return React.createElement(
       "td",
       null,
