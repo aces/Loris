@@ -668,8 +668,8 @@ tr.directentry {
 }
 .help-content {
     max-height: 94%;
-    background: #064785;
     width: 30%;
+    background: #064785;
     height: auto;
     position: fixed;
     top: 50px;
@@ -683,10 +683,12 @@ tr.directentry {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     color: #FFFFFF;
+    padding: 9.5px;
 }
 .help-content pre#help-wrapper {
     white-space: pre-wrap;
     word-break: normal;
+    background: #064785;
 }
 #help-seperator {
    margin-top: 50px;
