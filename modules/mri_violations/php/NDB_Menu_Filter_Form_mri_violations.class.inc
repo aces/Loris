@@ -166,8 +166,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
           'JoinID','Resolution_status');
 
         if ($useProjects) {
-            array_splice($this->columns, 1, 0, 'v.Project as Project');
-            array_splice($this->columns, 2, 0, 'v.Subproject as Subproject');
+            array_splice($this->columns, 1, 0, 'pjct.Name as Project');
+            array_splice($this->columns, 2, 0, 'subpjct.title as Subproject');
             array_splice($this->headers, 1, 0, 'Project');
             array_splice($this->headers, 2, 0, 'Subproject');
         }
@@ -246,7 +246,10 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved is NULL)
-            as v LEFT JOIN psc site ON (site.CenterID = v.Site) WHERE 1=1";
+            as v LEFT JOIN psc site ON (site.CenterID = v.Site) 
+            LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
+            LEFT JOIN subproject as subpjct ON (v.Subproject = subpjct.SubprojectID)
+            WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
@@ -348,7 +351,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         return true;
     }
 
-    /**
+    /*st*
      * Overwrite the setDataTableRows function to exclude fields
      * which were only selected for generating a link, and aren't
      * used for display to the user
