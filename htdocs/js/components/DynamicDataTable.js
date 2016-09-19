@@ -1,5 +1,3 @@
-'use strict';
-
 /* exported RDynamicDataTable */
 
 var DynamicDataTable = React.createClass({
@@ -9,7 +7,7 @@ var DynamicDataTable = React.createClass({
     DataURL: React.PropTypes.string.isRequired
   },
 
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       Headers: [],
       Data: [],
@@ -17,26 +15,26 @@ var DynamicDataTable = React.createClass({
       loadedData: 0
     };
   },
-  getDefaultProps: function getDefaultProps() {
+  getDefaultProps: function () {
     return {
       DataURL: ''
     };
   },
-  componentDidMount: function componentDidMount() {
+  componentDidMount: function () {
     this.fetchData();
     // Listen for update event to update data table on outside changes
     window.addEventListener('update-datatable', this.fetchData);
   },
-  componentWillUnmount: function componentWillUnmount() {
+  componentWillUnmount: function () {
     // Unsubscribe from the event before component is destroyed
     window.removeEventListener('update-datatable', this.fetchData);
   },
-  fetchData: function fetchData() {
+  fetchData: function () {
     var that = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       cache: false,
-      xhr: function xhr() {
+      xhr: function () {
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function (evt) {
           console.log(evt);
@@ -46,20 +44,20 @@ var DynamicDataTable = React.createClass({
         });
         return xhr;
       },
-      success: function success(data) {
+      success: function (data) {
         that.setState({
           Headers: data.Headers,
           Data: data.Data,
           isLoaded: true
         });
       },
-      error: function error(data, errorCode, errorMsg) {
+      error: function (data, errorCode, errorMsg) {
         console.error(errorCode + ': ' + errorMsg);
         that.setState({ error: "Error loading data" });
       }
     });
   },
-  render: function render() {
+  render: function () {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return React.createElement(

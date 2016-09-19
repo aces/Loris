@@ -172,7 +172,6 @@ UploadForm = React.createClass({
             useColumnHeaders: true };
     },
 
-    // Change this to false when we are ready to use Mapping files
     getDefaultProps: function () {
         return {
             validate: null
