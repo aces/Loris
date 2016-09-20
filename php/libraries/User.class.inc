@@ -63,10 +63,10 @@ class User extends UserPermissions
 
         // Get examiner information
         $examiner_check = $DB->pselect(
-            "
-                  SELECT full_name, centerID, radiologist, active, pending_approval 
+            "SELECT full_name, centerID, radiologist, active, pending_approval 
                   FROM examiners 
-                  WHERE full_name=:fn",
+                  WHERE full_name=:fn 
+                    AND (active='Y' OR (active='N' AND pending_approval='Y'))",
             array(
              "fn" => $row['Real_name'],
             )
@@ -75,13 +75,13 @@ class User extends UserPermissions
         $examiner_info =array();
         if (!empty($examiner_check) && !is_null($examiner_check)) {
             foreach ($examiner_check as $rw=>$val) {
+                if ($val['centerID'] == $row['CenterID']) {
+                    $examiner_info['pending'] = $val['pending_approval'];
+                }
                 $examiner_info[$val['centerID']] =array(
                                                    $val['active'],
                                                    $val['radiologist'],
                                                   );
-                if ($val['centerID'] == $row['CenterID']) {
-                     $examiner_info['pending'] = $val['pending_approval'];
-                }
             }
         }
         // store user data in object property

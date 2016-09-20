@@ -108,8 +108,8 @@ class NDB_Form_User_Accounts extends NDB_Form
             $defaults['Country']     = htmlspecialchars($defaults['Country']);
             $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
             $defaults['examiner']    = $defaults['examiner'];
-	    
-            foreach($defaults['examiner'] as $cid=>$vals) {
+
+            foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
                 if ($cid=='pending') {
                     $defaults['examiner_pending'] = $vals;
@@ -117,14 +117,15 @@ class NDB_Form_User_Accounts extends NDB_Form
                 }
                 //sets radiologist Y/N to value at examiner's site
                 if ($cid==$defaults['CenterID']) {
-                    $defaults['examiner_radiologist']=$vals[1];
+                    $defaults['examiner_radiologist'] =$vals[1];
                 }
-                if ($vals[0]=='Y') {
-                    $defaults['ex_'.$cid]='on';
+                if ($vals[0]=='Y'
+                    || ($vals[0]=='N' && $defaults['examiner_pending']=='Y')
+                ) {
+                    $defaults['ex_'.$cid] ='on';
                 }
             }
         }
-        //print_r($defaults);
         return $defaults;
     }
 
@@ -189,7 +190,6 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
         unset($values['SendEmail']);
 
-
         //store the supervisors emails
         if (!empty($values['supervisorEmail'])) {
             $supervisorEmails = $values['supervisorEmail'];
@@ -220,30 +220,30 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // EXAMINER UPDATE
-        $ex_curr_sites=array();
-        $ex_prev_sites=array();
+        $ex_curr_sites =array();
+        $ex_prev_sites =array();
 
         //get sites where user is already an examiner at for compare
-        $prev_sites = $DB->pselect("
+        $prev_sites = $DB->pselect(
+            "
                         SELECT centerID
                         FROM examiners
                         WHERE full_name=:fn",
             array(
-                "fn"  => $values['Real_name'])
+             "fn" => $values['Real_name'],
+            )
         );
         foreach ($prev_sites as $row=>$center) {
-            array_push($ex_prev_sites,$center['centerID']);
+            array_push($ex_prev_sites, $center['centerID']);
         }
-
-        print_r($values);
         foreach ($values as $k=>$v) {
             //examiner fields
-            if (preg_match("/^ex_[1-9]+$/",$k)) {
+            if (preg_match("/^ex_[0-9]+$/", $k)) {
                 //get centerID
-                $parse_key=explode('_',$k);
-                $cid = $parse_key[1];
-                array_push($ex_curr_sites,$cid);
-                //print_r("\n\n".."\n\n");
+                $parse_key =explode('_', $k);
+                $cid       = $parse_key[1];
+                array_push($ex_curr_sites, $cid);
+
                 //Check if examiner already in db for own site
                 $result = $DB->pselectRow(
                     "
@@ -251,8 +251,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                           FROM examiners 
                           WHERE full_name=:fn AND centerID=:cid",
                     array(
-                        "fn"  => $values['Real_name'],
-                        "cid" => $cid,
+                     "fn"  => $values['Real_name'],
+                     "cid" => $cid,
                     )
                 );
 
@@ -261,47 +261,41 @@ class NDB_Form_User_Accounts extends NDB_Form
                     $DB->insert(
                         'examiners',
                         array(
-                            'full_name'   => $values['Real_name'],
-                            'centerID'    => $cid,
-                            'radiologist' => $values['examiner_radiologist'],
-                            'active'      => 'Y',
-                            'pending_approval' => $values['examiner_pending'],
+                         'full_name'        => $values['Real_name'],
+                         'centerID'         => $cid,
+                         'radiologist'      => $values['examiner_radiologist'],
+                         'active'           => 'Y',
+                         'pending_approval' => $values['examiner_pending'],
                         )
                     );
-                    //print_r("inserted 1");
                 } else {
                     $DB->update(
                         'examiners',
                         array(
-                            'radiologist' => $values['examiner_radiologist'],
-                            'Active'      => 'Y',
-                            'pending_approval' => $values['examiner_pending']
+                         'radiologist'      => $values['examiner_radiologist'],
+                         'Active'           => 'Y',
+                         'pending_approval' => $values['examiner_pending'],
                         ),
                         array(
-                            "full_name" => $values['Real_name'],
-                            "centerID"  => $cid,
+                         "full_name" => $values['Real_name'],
+                         "centerID"  => $cid,
                         )
                     );
                 }
-                print_r("done loop");
                 unset($values[$k]);
             }
         }
 
         //de-activate examiner if sites where no longer checked
-        $ex_inactive=array_diff($ex_prev_sites,$ex_curr_sites);
-        print_r($prev_sites);
-        print_r($ex_prev_sites);
-        print_r($ex_curr_sites);
-        print_r($ex_inactive);
+        $ex_inactive =array_diff($ex_prev_sites, $ex_curr_sites);
 
         foreach ($ex_inactive as $cid) {
             $DB->update(
                 'examiners',
                 array("Active" => 'N'),
                 array(
-                    "full_name" => $values['Real_name'],
-                    "centerID"  => $cid,
+                 "full_name" => $values['Real_name'],
+                 "centerID"  => $cid,
                 )
             );
         }
@@ -560,7 +554,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases
-            $DB =& Database::singleton();
+            $DB      =& Database::singleton();
             $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", array());
 
             foreach ($aliases as $row) {
@@ -589,9 +583,9 @@ class NDB_Form_User_Accounts extends NDB_Form
                 "examiner_pending",
                 "Pending Approval: ",
                 array(
-                    null => "",
-                    'Y'  => 'Yes',
-                    'N'  => 'No',
+                 null => "",
+                 'Y'  => 'Yes',
+                 'N'  => 'No',
                 )
             );
             $this->addGroup(
@@ -984,7 +978,9 @@ class NDB_Form_User_Accounts extends NDB_Form
         //======================================
 
         foreach ($values as $k=>$v) {
-            if (preg_match("/^ex_[1-9]+$/",$k) && $values['examiner_radiologist'] == '') {
+            if (preg_match("/^ex_[1-9]+$/", $k)
+                && $values['examiner_radiologist'] == ''
+            ) {
                 $errors['examiner_group'] = "Please specify if examiner is a ".
                     "radiologist";
             }
