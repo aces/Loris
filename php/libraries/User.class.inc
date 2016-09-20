@@ -59,29 +59,34 @@ class User extends UserPermissions
             LEFT JOIN psc ON (users.centerID=psc.CenterID)
             WHERE users.UserID = :UID";
 
-        $row            = $DB->pselectRow($query, array('UID' => $username));
-        $examiner_check = $DB->pselectRow(
+        $row = $DB->pselectRow($query, array('UID' => $username));
+
+        // Get examiner information
+        $examiner_check = $DB->pselect(
             "
-                  SELECT full_name, radiologist, Active 
+                  SELECT full_name, centerID, radiologist, active, pending_approval 
                   FROM examiners 
-                  WHERE full_name=:fn
-                    AND centerID=:cid",
+                  WHERE full_name=:fn",
             array(
-             "fn"  => $row['Real_name'],
-             "cid" => $row["CenterID"],
+             "fn" => $row['Real_name'],
             )
         );
 
+        $examiner_info =array();
         if (!empty($examiner_check) && !is_null($examiner_check)) {
-            if ($examiner_check['Active'] == 'Y') {
-                $row['examiner_ownsite_yn'] = 'on';
-                $row['radiologist_ownsite'] = $examiner_check['radiologist'];
+            foreach ($examiner_check as $rw=>$val) {
+                $examiner_info[$val['centerID']] =array(
+                                                   $val['active'],
+                                                   $val['radiologist'],
+                                                  );
+                if ($val['centerID'] == $row['CenterID']) {
+                     $examiner_info['pending'] = $val['pending_approval'];
+                }
             }
         }
-
         // store user data in object property
-        $obj->userInfo = $row;
-
+        $row['examiner'] =$examiner_info;
+        $obj->userInfo   = $row;
         return $obj;
     }
 
@@ -223,6 +228,18 @@ class User extends UserPermissions
             $this->userInfo['CenterID'],
             $config->getSetting('multiSiteEnabledCenters')
         );
+    }
+
+    /**
+     * Returns all sites where Examiner is active
+     *
+     * @return array
+     */
+    function getExaminerSites()
+    {
+        $site_list = $this->userInfo['examiner'];
+        unset($site_list['pending']);
+        return $site_list;
     }
 
     /**

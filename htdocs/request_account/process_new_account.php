@@ -158,10 +158,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $DB->insert(
                 'examiners',
                 array(
-                 'full_name'   => $fullname,
-                 'centerID'    => $site,
-                 'radiologist' => $rad,
-                 'Active'      => 'N',
+                 'full_name'        => $fullname,
+                 'centerID'         => $site,
+                 'radiologist'      => $rad,
+                 'active'           => 'N',
+                 'pending_approval' => 'Y',
                 )
             );
         }
