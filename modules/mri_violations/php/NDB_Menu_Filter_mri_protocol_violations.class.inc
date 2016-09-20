@@ -74,7 +74,8 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
             'mpv.ystep_range',
             'mpv.zstep_range',
             'mpv.time_range',
-            'mpv.SeriesUID'
+            'mpv.SeriesUID',
+            'tarchive.TarchiveID'
         );
         $config=&NDB_Config::singleton();
         $this->validFilters = array(
@@ -85,8 +86,14 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
             'mpv.series_description',
             'mpv.time_run'
         );
-        $this->query = " FROM mri_protocol_violated_scans mpv WHERE 1=1";
-
+        $this->headers  = array('CandID','PSCID','Time_Run','Series_Description',
+              'Minc_Location','PatientName','TR_Range','TE_Range','TI_Range',
+              'Slice_Thickness_Range','Xspace_Range','Yspace_Range','Zspace_Range',
+              'Xstep_Range','Ystep_Range','Zstep_Range','Time_Range','SeriesUID',
+              'TarchiveID');
+        $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
+        $this->query = " FROM mri_protocol_violated_scans mpv LEFT JOIN tarchive ON
+                (mpv.PatientName = tarchive.PatientName) WHERE 1=1";
         $this->formToFilter = array(
                 'CandID' => 'mpv.CandID',
                 'PSCID' => 'mpv.PSCID',
@@ -153,6 +160,23 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
             ON p.Scan_type=s.ID", array()
         );
         return $mri_protocols;
+    }
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseurl . "/mri_violations/js/mri_protocol_violations_columnFormatter.js",
+            )
+        );
     }
 }
 ?>

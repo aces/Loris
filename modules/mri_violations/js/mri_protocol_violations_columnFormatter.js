@@ -15,18 +15,26 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
-  rowHeaders.forEach(function(header, index) {
+  rowHeaders.forEach(function (header, index) {
     row[header] = rowData[index];
   }, this);
 
   if (column === 'PatientName') {
-      var url = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" + row["TarchiveID"];
-      return <td>
-                <a href ={url}>{cell}</a>
-             </td>;
-
+    var url = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" + row["TarchiveID"];
+    return React.createElement(
+      "td",
+      null,
+      React.createElement(
+        "a",
+        { href: url },
+        cell
+      )
+    );
   }
 
-  return <td>{cell}</td>;
-
+  return React.createElement(
+    "td",
+    null,
+    cell
+  );
 }
