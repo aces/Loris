@@ -82,8 +82,8 @@ class Module
         // namespacing
         //require_once $mpath . "/php/Module.class.inc";
         $className = "\LORIS\\$name\Module";
-	$cls = new $className($name);
-	$cls->dir = $mpath;
+        $cls       = new $className($name);
+        $cls->dir  = $mpath;
 
         return $cls;
     }
@@ -147,11 +147,12 @@ class Module
      *
      * @return string the content of the page help.
      */
-    public function getHelp($page) {
-	$helpFile = $this->dir . "/help/$page.md";
-	if (file_exists($helpFile)) {
-        	return file_get_contents($helpFile);
-	}
-	return "No help available for $page ($helpFile)";
+    public function getHelp($page)
+    {
+        $helpFile = $this->dir . "/help/$page.md";
+        if (file_exists($helpFile)) {
+                return file_get_contents($helpFile);
+        }
+        return "No help available for $page ($helpFile)";
     }
 }
