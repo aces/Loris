@@ -45,8 +45,11 @@
             // jquery date-picker
             if (!Modernizr.inputtypes.date) {
               $('input[type=date]').datepicker({
-                dateFormat: 'yy-mm-dd'
+                dateFormat: 'yy-mm-dd',
+                changeMonth: true,
+                changeYear: true
               });
+              $('input[type=date]').attr('placeholder', 'yyyy-mm-dd');
             }
 
           });
