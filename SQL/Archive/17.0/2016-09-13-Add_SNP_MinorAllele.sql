@@ -8,9 +8,19 @@ ADD COLUMN `AlleleB` ENUM('A','C','T','G') NULL DEFAULT NULL AFTER `AlleleA`,
 DROP PRIMARY KEY,
 ADD PRIMARY KEY (`RelationID`);
 
-ALTER TABLE `epigenomics`.`SNP_candidate_rel` 
+ALTER TABLE `SNP_candidate_rel` 
 ADD CONSTRAINT `fk_SNP_candidate_rel_1`
   FOREIGN KEY (`SNPID`)
-  REFERENCES `epigenomics`.`SNP` (`SNPID`)
+  REFERENCES `SNP` (`SNPID`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
+ALTER TABLE `SNP_candidate_rel`              
+ADD CONSTRAINT `fk_SNP_candidate_rel_2`
+  FOREIGN KEY (`CandID`)
+  REFERENCES `candidate` (`CandID`)
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
+CREATE UNIQUE INDEX `uniq_snp` 
+  ON `SNP` (`rsID`, `SNPExternalSource`);

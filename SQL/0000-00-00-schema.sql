@@ -1913,6 +1913,7 @@ CREATE TABLE `SNP` (
   `ExonicFunction` enum('nonsynonymous','unknown') DEFAULT NULL,
   `GenomeLocID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`SNPID`),
+  UNIQUE KEY `uniq_snp` (`rsID`,`SNPExternalSource`),
   CONSTRAINT `SNP_ibfk_2` FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1934,8 +1935,10 @@ CREATE TABLE `SNP_candidate_rel` (
   `GenotypeQuality` int(4) DEFAULT NULL,
   `PlatformID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`RelationID`),
+  KEY `fk_SNP_candidate_rel_2` (`CandID`),
   KEY `fk_SNP_candidate_rel_1_idx` (`SNPID`),
-  CONSTRAINT `fk_SNP_candidate_rel_1` FOREIGN KEY (`SNPID`) REFERENCES `SNP` (`SNPID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_SNP_candidate_rel_1` FOREIGN KEY (`SNPID`) REFERENCES `SNP` (`SNPID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_SNP_candidate_rel_2` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

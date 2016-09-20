@@ -310,14 +310,14 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->DB->delete("CNV", array("CNVID" => '9999999997'));
         $this->DB->delete("CNV", array("CNVID" => '9999999996'));
         $this->DB->delete("CNV", array("CNVID" => '9999999995'));
+        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999999'));
+        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999998'));
+        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999997'));
         $this->DB->delete("SNP", array("SNPID" => '9999999999'));
         $this->DB->delete("SNP", array("SNPID" => '9999999998'));
         $this->DB->delete("SNP", array("SNPID" => '9999999997'));
         $this->DB->delete("SNP", array("SNPID" => '9999999996'));
         $this->DB->delete("SNP", array("SNPID" => '9999999995'));
-        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999999'));
-        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999998'));
-        $this->DB->delete("SNP_candidate_rel", array("SNPID" => '9999999997'));
         $this->DB->delete("candidate", array('CandID' => '000771'));
         $this->DB->delete("candidate", array('CandID' => '000772'));
         $this->DB->delete("psc", array('CenterID' => 92));
