@@ -128,7 +128,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         // $pscid->sendKeys("Control");
 
         $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-        $startVisit->click();
+        $this->safeClick($startVisit);
 
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Estimated Due date fields must match.", $bodyText);
@@ -155,7 +155,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         // $gender->sendKeys("Male");
 
         // $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-        // $startVisit->click();
+        // $this->safeClick($startVisit);
 
         // $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         // $this->assertContains("PSCID must be specified", $bodyText);
@@ -181,7 +181,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         // $pscid->sendKeys("Control");
 
         $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-        $startVisit->click();
+        $this->safeClick($startVisit);
 
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Date of Birth fields must match.", $bodyText);
@@ -205,7 +205,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $gender->sendKeys("Male");
 
         $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-        $startVisit->click();
+        $this->safeClick($startVisit);
 
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("PSCID: BBQ0000", $bodyText);
@@ -232,7 +232,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $gender->sendKeys("Male");
 
         $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-        $startVisit->click();
+        $this->safeClick($startVisit);
 
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("PSCID: BBQ0000", $bodyText);
@@ -247,7 +247,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $gender->sendKeys("Male");
 
         $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-        $startVisit->click();
+        $this->safeClick($startVisit);
 
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("PSCID: BBQ0001", $bodyText);
