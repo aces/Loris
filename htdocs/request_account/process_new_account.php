@@ -144,11 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                      'Email'            => $from,
                      'CenterID'         => $site,
                     );
-        /*
-        foreach($_REQUEST as $k=>$v) {
-            error_log($k." -->  ".$v);
-        }
-        */
+
         if ($_REQUEST['examiner']=='on') {
             $rad =0;
             if ($_REQUEST['radiologist']=='on') {
