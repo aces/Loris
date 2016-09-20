@@ -206,14 +206,17 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
         $dates[0]->sendKeys("01/01/2015");
         $dates[1]->sendKeys("01/01/2015");
-        $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
+        $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
+        sleep(1);
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
-
+        $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
+                 ->click();
+        sleep(1);
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-
+        sleep(3);
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("PSCID: BBQ0000", $bodyText);
 
