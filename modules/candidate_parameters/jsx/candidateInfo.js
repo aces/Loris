@@ -95,20 +95,11 @@ var CandidateInfo = React.createClass(
         disabled = false;
         updateButton = <ButtonElement label ="Update" />;
       }
-      var reasonSelect = null;
+      var reasonDisabled = true;
       if (this.state.formData.flagged_caveatemptor === "true" ||
                 this.state.Data.flagged_reason !== null
             ) {
-        reasonSelect = <SelectElement
-                label ="Reason for Caveat Emptor Flag"
-                name ="flagged_reason"
-                options ={this.state.Data.caveatReasonOptions}
-                value ={this.state.Data.flagged_reason}
-                onUserInput ={this.setFormData}
-                ref ="flagged_reason"
-                disabled ={false}
-                required ={true}
-                />;
+        reasonDisabled = false;
       }
       var reasonKey;
       for (var key in this.state.Data.caveatReasonOptions) {
@@ -239,7 +230,16 @@ var CandidateInfo = React.createClass(
                         disabled ={disabled}
                         required ={true}
                     />
-                    {reasonSelect}
+                    <SelectElement
+                        label ="Reason for Caveat Emptor Flag"
+                        name ="flagged_reason"
+                        options ={this.state.Data.caveatReasonOptions}
+                        value ={this.state.Data.flagged_reason}
+                        onUserInput ={this.setFormData}
+                        ref ="flagged_reason"
+                        disabled ={reasonDisabled}
+                        required ={!reasonDisabled}
+                    />
                     {otherText}
                     {extraParameterFields}
                     {updateButton}
