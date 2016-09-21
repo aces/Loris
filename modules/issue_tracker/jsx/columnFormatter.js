@@ -1,4 +1,4 @@
-function formatColumn(column, cell, rowData, rowHeaders) {
+function formatColumn(column, cell, rowData, rowHeaders, issueID) {
     // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
   rowHeaders.forEach(
@@ -8,15 +8,26 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         this
     );
 
-  if (column === 'Issue ID') {
+  if (column === 'Title') {
     var cellLinks = [];
     cellLinks.push(<a
-            href={loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/"}>{cell}</a>);
+            href={loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/"}>{row['Title']}</a>);
     return (
             <td>
                 {cellLinks}
             </td>
         );
+  }
+
+  if (column === 'Issue ID') {
+    var cellLinks = [];
+    cellLinks.push(<a
+        href={loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/"}>{cell}</a>);
+    return (
+        <td>
+          {cellLinks}
+        </td>
+    );
   }
 
   if (column === 'Priority') {

@@ -121,6 +121,13 @@ var IssueEditForm = React.createClass(
                 dateCreated = this.state.issueData.dateCreated;
             }
 
+            var isWatching = "";
+            if (this.state.issueData.watching){
+                isWatching = "Yes";
+            } else {
+                isWatching = "No";
+            }
+
             var submitButtonValue = "";
             if (this.state.isNewIssue) {
                 submitButtonValue = "Submit Issue";
@@ -351,10 +358,10 @@ var IssueEditForm = React.createClass(
                                         name="watching"
                                         label="Watching?"
                                         emptyOption={false}
-                                        options={{true: 'No', false: 'Yes'}}
+                                        options={{'No': 'No', 'Yes': 'Yes'}}
                                         onUserInput={this.setFormData}
                                         ref="watching"
-                                        value={"No"}
+                                        value={isWatching}
                                     />
                                 </div>
 

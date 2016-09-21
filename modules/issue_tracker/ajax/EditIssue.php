@@ -126,14 +126,15 @@ function editIssue()
         $db->replace('issues_watching', $nowWatching);
     }
 
+    error_log($_POST['watching']);
     //adding editor to the watching table unless they don't want to be added.
-    if ($_POST['watching'] != 'no') {
+    if ($_POST['watching'] == 'Yes') {
         $nowWatching = array(
             'userID' => $user->getData('UserID'),
             'issueID' => $issueID,
         );
         $db->replace('issues_watching', $nowWatching);
-    } else if ($_POST['watching'] == 'no') {
+    } else if ($_POST['watching'] == "No") {
         $db->delete(
             'issues_watching',
             array(
@@ -516,7 +517,7 @@ function getIssueFields()
     //get field options
     if ($user->hasPermission('access_all_profiles')) {
         // get the list of study sites - to be replaced by the Site object
-        $sites = Utility::getSiteList();
+        $sites = Utility::getAssociativeSiteList();
     } else {
         // allow only to view own site data
         $site =& Site::singleton($user->getData('CenterID'));

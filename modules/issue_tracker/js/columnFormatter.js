@@ -1,11 +1,26 @@
 'use strict';
 
-function formatColumn(column, cell, rowData, rowHeaders) {
+function formatColumn(column, cell, rowData, rowHeaders, issueID) {
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
   rowHeaders.forEach(function (header, index) {
     row[header] = rowData[index];
   }, this);
+
+  if (column === 'Title') {
+    var cellLinks = [];
+    cellLinks.push(React.createElement(
+      'a',
+      {
+        href: loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/" },
+      row['Title']
+    ));
+    return React.createElement(
+      'td',
+      null,
+      cellLinks
+    );
+  }
 
   if (column === 'Issue ID') {
     var cellLinks = [];

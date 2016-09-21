@@ -48,7 +48,7 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
             "LEFT JOIN LorisMenu l on (i.module=l.ID) ".
             "LEFT JOIN session s ON (i.sessionID = s.ID) ".
             "LEFT JOIN issues_watching w ON (i.issueID = w.issueID) ".
-            "LEFT JOIN issues_comments ic ON(i.issueID = ic.issueID ".
+            "LEFT JOIN issues_comments ic ON(i.issueID = ic.issueID) ".
             "WHERE i.status != 'closed' ".
             "AND i.assignee=" . $db->quote($user->getData('UserID')); //yup
 
@@ -129,7 +129,7 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
                                   'i.centerID',
                                   'i.status',
                                  );
-        $this->searchKeyword   = array('ic.issueComment');
+        $this->searchKeyword   = array('ic.issueComment', 'i.title');
     }
 
     /**

@@ -130,7 +130,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             'i.centerID',
             'i.status',
         );
-        $this->searchKeyword = array('ic.issueComment');
+        $this->searchKeyword = array('ic.issueComment', 'i.title');
     }
 
     /**

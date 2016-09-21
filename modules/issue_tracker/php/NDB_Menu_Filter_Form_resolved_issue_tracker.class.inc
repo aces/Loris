@@ -47,7 +47,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
             "LEFT JOIN LorisMenu l on (i.module=l.ID) " .
             "LEFT JOIN session s ON (i.sessionID = s.ID) " .
             "LEFT JOIN issues_watching w ON (i.issueID = w.issueID) " .
-            "LEFT JOIN issues_comments ic ON(i.issueID = ic.issueID ".
+            "LEFT JOIN issues_comments ic ON(i.issueID = ic.issueID) ".
             "WHERE i.status = 'closed'";
 
         if (!$user->hasPermission('access_all_profiles')) {
@@ -128,7 +128,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
             'i.issueID',
             'i.centerID',
         );
-        $this->searchKeyword = array('ic.issueComment');
+        $this->searchKeyword = array('ic.issueComment', 'i.title');
     }
 
     /**
