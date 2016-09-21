@@ -68,5 +68,16 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
 
         return true;
     }
+       function getJSDependencies() {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/user_accounts/js/columnFormatter.js",
+            )
+        );
+    }
 }
 ?>
