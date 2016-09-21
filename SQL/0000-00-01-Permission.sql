@@ -63,7 +63,9 @@ INSERT INTO `permissions` VALUES
     (43,'dataquery_view','View Data Query Tool','2'),
     (44,'genomic_data_manager','Manage the genomic files','2'),
     (45,'media_write','Media files: Uploading/Downloading/Editing','2'),
-    (46,'media_read','Media files: Browsing','2');
+    (46,'media_read','Media files: Browsing','2'),
+    (47,'issue_tracker_reporter', 'Can add a new issue, edit own issue, comment on all', 2),
+    (48,'issue_tracker_developer', 'Can re-assign issues, mark issues as closed, comment on all, edit issues.', 2);
 
 /*!40000 ALTER TABLE `permissions` ENABLE KEYS */;
 UNLOCK TABLES;
