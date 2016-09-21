@@ -1494,6 +1494,7 @@ class LorisForm
                   $arr[$name] = $this->getValue($name);
             }
 
+/*
             if ($el['type'] === 'date') {
                  // Convert dates to the type of group that was used
                  // by HTML_QuickForm. This should eventually be modified
@@ -1505,6 +1506,7 @@ class LorisForm
                                 'd' => $vals[2],
                                );
             }
+*/
         }
     }
 
