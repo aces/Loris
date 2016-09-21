@@ -73,7 +73,7 @@ class NDB_Form_create_timepoint extends NDB_Form
             }
         }
         
-        $attributes=array("onchange"=>"location.href='?test_name=create_timepoint&candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value;");
+        $attributes=array("onchange"=>"location.href='?candID=".$this->identifier."&identifier=".$this->identifier."&subprojectID='+this[this.selectedIndex].value;");
         $this->addSelect('subprojectID', 'Subproject', $sp_labelOptions, $attributes);
         $this->addRule('subprojectID', 'A Subproject ID is required', 'required');
         $this->_setDefaults(array("subprojectID"=>$this->subprojectID));
@@ -148,6 +148,23 @@ class NDB_Form_create_timepoint extends NDB_Form
 
         return $errors;
     }
-
+    /** 
+     * Include the column formatter required to make the content editable in
+     * the datadict menu
+     * 
+     * @return array of javascript to be inserted
+     **/
+    function getJSDependencies()
+    {   
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/create_timepoint/js/ValidationCheck.js"
+            )   
+        );  
+    } 
 }
 ?>

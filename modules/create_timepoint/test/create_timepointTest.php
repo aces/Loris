@@ -153,7 +153,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         );
         $this->webDriver->findElement(WebDriverBy::Name("fire_away"))->click();
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("A visit label is required for creating a timepoint.", $bodyText);
+        $this->assertContains("Create Time Point", $bodyText);
 
     }
     /**
