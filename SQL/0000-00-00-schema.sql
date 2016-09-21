@@ -1273,12 +1273,14 @@ INSERT INTO test_subgroups VALUES (1, 'Instruments', NULL);
 UNLOCK TABLES;
 
 CREATE TABLE `Visit_Windows` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Visit_label` varchar(255) DEFAULT NULL,
   `WindowMinDays` int(11) DEFAULT NULL,
   `WindowMaxDays` int(11) DEFAULT NULL,
   `OptimumMinDays` int(11) DEFAULT NULL,
   `OptimumMaxDays` int(11) DEFAULT NULL,
-  `WindowMidpointDays` int(11) DEFAULT NULL
+  `WindowMidpointDays` int(11) DEFAULT NULL,
+   PRIMARY KEY (`ID`)
 );
 --
 -- Table structure for table `users`

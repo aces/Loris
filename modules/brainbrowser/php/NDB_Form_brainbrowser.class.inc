@@ -71,9 +71,9 @@ class NDB_Form_Brainbrowser extends NDB_Form
 
     /**
      * Include additional CSS files:
-     *  1. brainbrowser.css
+     *  1. jQuery UI
      *  2. volume-viewer-demo.css
-     *  3. surface-viewer-demo.css
+     *  3. brainbrowser.css
      *
      * @return array of javascript to be inserted
      */
@@ -85,6 +85,7 @@ class NDB_Form_Brainbrowser extends NDB_Form
         return array_merge(
             $deps,
             [
+             $baseURL . "/css/loris-jquery/jquery-ui-1.10.4.custom.min.css",
              $baseURL . "/brainbrowser/css/volume-viewer-demo.css",
              $baseURL . "/brainbrowser/css/brainbrowser.css",
             ]
