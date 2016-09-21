@@ -2211,3 +2211,17 @@ CREATE TABLE `media` (
   FOREIGN KEY (`session_id`) REFERENCES `session` (`ID`),
   FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `reliability_instruments`;
+CREATE TABLE `reliability_instruments` (
+  `Rel_instID` int(11) NOT NULL AUTO_INCREMENT,
+  `TestID` int(11) NOT NULL,
+  `Visit_label` varchar(255) DEFAULT NULL,
+  `Target_scope` enum('Cross','Within') NOT NULL,
+  `Target_siteID` int(11) DEFAULT NULL,
+  `Threshold` float(4,2) NOT NULL,
+  `Reliability_ratio` float (2,2) NOT NULL,
+  `ProjectID`  int(11) DEFAULT NULL,
+  PRIMARY KEY (`rel_instID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

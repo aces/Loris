@@ -224,6 +224,8 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
      */
     function testReliabilityShowDataButton()
     {
+        $this->markTestSkipped("Pending Module Revamp");
+
         //testing search by PSCID
         $this->safeGet($this->url . "/reliability/");
         $this->webDriver->findElement(WebDriverBy::Name("PSCID"))->sendKeys
@@ -256,6 +258,8 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
      */
     function testReliabilityClearFormButton()
     {
+        $this->markTestSkipped("Pending Module Revamp");
+
         //testing search by PSCID
         $this->safeGet($this->url . "/reliability/");
         $this->webDriver->findElement(WebDriverBy::Name("PSCID"))->sendKeys
