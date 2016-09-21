@@ -98,20 +98,63 @@ class NDB_Caller
         // get the files path, aka the base directory
         $base = $config->getSetting('base');
 
+        if (!empty($_REQUEST['Module'])) {
+             // TODO: We should transition our code to refer to
+             //       $_REQUEST['Module'] instead of test_name for modules.
+             //       test_name only makes sense in the context of
+             //       instruments. It's only for legacy reasons that there's
+             //       no way to distinguish them. After transitioning our
+             //       code, module detection can be simplified and remove
+             //       the magic is_dir guessing.
+             $mname = $_REQUEST['Module'];
+        } else {
+             // For legacy reasons, we still need to support test_name. We
+             // should eventually rename the parameters to NDB_Caller..
+             $mname = $test_name;
+        }
+        try {
+
+            // This will throw an exception if the module name doesn't exist, so
+            // below this we can assume a valid module.
+            $m = Module::factory($mname);
+            if (!empty($subtest)) {
+                // We shouldn't care what type of page something is, we should
+                // just load it and let the module do whatever it wants.
+                $p = $subtest;
+            } else {
+                // There was no subtest, so load the page with the same name as the
+                // module.
+                $p = $mname;
+            }
+            $this->page = $m->LoadPage($p);
+            return $this->page->display();
+        } catch (Exception $e) {
+            //print_r($e);
+            // There was no module, so fall back on the old way of doing things.
+        }
         if (is_dir($base . "project/modules/$test_name")
             || is_dir($base . "modules/$test_name")
         ) {
+            // Modules should be updated to use the (much simpler!)
+            // Module->LoadPage() above. Since it's new and work hasn't even
+            // started yet, we need to keep compatability. Uncomment this error
+            // sometime in the 17.x line, so by LORIS 18.0 we can remove all
+            // this code. If we do it right now, absolutely every page will
+            // include an error.. at the very least, this should be uncommented
+            // in 18.0 so that we can delete the old code for 19.0.
+            //error_log("Module $mname is missing Module class descriptor. " .
+            //     . "Modules missing a Module file will stop working in a future"
+            //     . "version of LORIS.");
             $ModuleDir = is_dir($base . "project/modules/$test_name")
                 ? $base . "project/modules/$test_name"
                 : $base . "modules/$test_name";
-            // New module style
+            // Newer module style
             // Only supports Menu_Filters and Forms.
             // Modules can not have instruments or reliability.
             set_include_path(
                 "$ModuleDir/php:"
                 . get_include_path()
             );
-
             $submenu = null;
             if (!empty($_REQUEST['submenu'])) {
                 $submenu = $_REQUEST['submenu'];
@@ -160,6 +203,16 @@ class NDB_Caller
             exit(-1);
         } else {
             // Old precedence style for "modules"
+            // This (except for instruments and reliability) should be removed
+            // in LORIS 18.0 now that all modules are updated, but we forgot
+            // to include a warning in the 16.x line so that we could have
+            // removed it in 17.0.
+            error_log(
+                "php/libraries 'modules' are deprecated and will be "
+                . " removed in a future release. Please update your code to use"
+                . " proper LORIS style modules. See the loris-dev mailing list"
+                . " for help if required."
+            );
             // it is a menu
             $proj_menu = $base . "project/libraries/NDB_Menu_$test_name.class.inc";
             $php_menu  = $base . "php/libraries/NDB_Menu_$test_name.class.inc";

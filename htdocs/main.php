@@ -295,10 +295,15 @@ $tpl_data['css'] = $config->getSetting('css');
 $tpl_data['console'] = htmlspecialchars(ob_get_contents());
 ob_end_clean();
 
-$smarty = new Smarty_neurodb;
-$smarty->assign($tpl_data);
-$smarty->display('main.tpl');
-
+switch(isset($_REQUEST['format']) ? $_REQUEST['format'] : '') {
+case 'json':
+    print $tpl_data['workspace'];
+    break;
+default:
+    $smarty = new Smarty_neurodb;
+    $smarty->assign($tpl_data);
+    $smarty->display('main.tpl');
+}
 
 
 

@@ -295,7 +295,24 @@ ImagePanelHeadersTable = React.createClass({
 ImageQCDropdown = React.createClass({
     displayName: 'ImageQCDropdown',
 
+
     render: function () {
+        var label = React.createElement(
+            'label',
+            null,
+            this.props.Label
+        );
+        if (this.props.url) {
+            label = React.createElement(
+                'label',
+                null,
+                React.createElement(
+                    'a',
+                    { href: this.props.url },
+                    this.props.Label
+                )
+            );
+        }
         var dropdown;
         if (this.props.editable) {
             var options = [];
@@ -326,11 +343,7 @@ ImageQCDropdown = React.createClass({
         return React.createElement(
             'div',
             { className: 'row' },
-            React.createElement(
-                'label',
-                null,
-                this.props.Label
-            ),
+            label,
             dropdown
         );
     }
@@ -340,11 +353,11 @@ ImageQCStatic = React.createClass({
 
     render: function () {
         var staticInfo;
-            staticInfo = React.createElement(
-                'div',
-                { className: 'col-xs-12' },
-                this.props.defaultValue
-            );
+        staticInfo = React.createElement(
+            'div',
+            { className: 'col-xs-12' },
+            this.props.defaultValue
+        );
         return React.createElement(
             'div',
             { className: 'row' },
@@ -399,7 +412,7 @@ ImagePanelQCSelectedSelector = React.createClass({
             FormName: 'selectedvol',
             FileID: this.props.FileID,
             editable: this.props.HasQCPerm,
-            options: this.props.SelectedOptions,
+            options:  { "": "", "true": "True", "false": "False" },
             defaultValue: this.props.Selected
         });
     }
@@ -408,6 +421,14 @@ ImagePanelQCCaveatSelector = React.createClass({
     displayName: 'ImagePanelQCCaveatSelector',
 
     render: function () {
+        // Link caveat to MRI Violations if set true
+        var mriViolationsLink = null;
+        if (this.props.SeriesUID && this.props.Caveat === "1") {
+            mriViolationsLink = '/mri_violations/?' +
+              'submenu=mri_protocol_check_violations&SeriesUID=' +
+              this.props.SeriesUID + '&filter=true';
+        }
+
         return React.createElement(ImageQCDropdown, {
             Label: 'Caveat',
             FormName: 'caveat',
@@ -418,7 +439,8 @@ ImagePanelQCCaveatSelector = React.createClass({
                 "1": "True",
                 "0": "False"
             },
-            defaultValue: this.props.Caveat
+            defaultValue: this.props.Caveat,
+            url: mriViolationsLink
         });
     }
 });
@@ -451,13 +473,13 @@ ImagePanelQCPanel = React.createClass({
             React.createElement(ImagePanelQCSelectedSelector, {
                 FileID: this.props.FileID,
                 HasQCPerm: this.props.HasQCPerm,
-                SelectedOptions: this.props.SelectedOptions,
                 Selected: this.props.Selected
             }),
             React.createElement(ImagePanelQCCaveatSelector, {
                 FileID: this.props.FileID,
                 HasQCPerm: this.props.HasQCPerm,
-                Caveat: this.props.Caveat
+                Caveat: this.props.Caveat,
+                SeriesUID: this.props.SeriesUID
             }),
             React.createElement(ImagePanelQCSNRValue, {
                 FileID: this.props.FileID,
@@ -618,9 +640,9 @@ ImagePanelBody = React.createClass({
                         HasQCPerm: this.props.HasQCPerm,
                         QCStatus: this.props.QCStatus,
                         Caveat: this.props.Caveat,
-                        SelectedOptions: this.props.SelectedOptions,
                         Selected: this.props.Selected,
-                        SNR: this.props.SNR
+                        SNR: this.props.SNR,
+                        SeriesUID: this.props.SeriesUID
                     })
                 )
             ),
@@ -687,7 +709,6 @@ ImagePanel = React.createClass({
                     HasQCPerm: this.props.HasQCPerm,
                     QCStatus: this.props.QCStatus,
                     Caveat: this.props.Caveat,
-                    SelectedOptions: this.props.SelectedOptions,
                     Selected: this.props.Selected,
                     SNR: this.props.SNR,
 
@@ -695,7 +716,8 @@ ImagePanel = React.createClass({
                     XMLProtocol: this.props.XMLProtocol,
                     XMLReport: this.props.XMLReport,
                     NrrdFile: this.props.NrrdFile,
-                    OtherTimepoints: this.props.OtherTimepoints
+                    OtherTimepoints: this.props.OtherTimepoints,
+                    SeriesUID: this.props.SeriesUID
                 })
             )
         );
