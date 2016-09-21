@@ -173,99 +173,15 @@
 <!-- <h2><font color="red">Note: Phase 2 reliability forms are unavailable at the moment as the system is being upgraded.</font></h2> -->
 
 <!--  title table with pagination -->
-<table id="LogEntries" border="0" valign="bottom" width="100%">
-<tr>
-    <!-- title -->
-    <td class="controlPanelSection">List of candidates flagged for reliability</td>
-
-    <!-- display pagination links -->
-    <td align="right" id="pageLinks"></td>
-</tr>
-</table>
-
-<!-- start data table -->
-    <table border="0" width="100%" class ="table table-hover table-primary table-bordered dynamictable">
-        <thead>
-            <tr class="info">
-             <th>No.</th>
-                <!-- print out column headings - quick & dirty hack -->
-                {section name=header loop=$headers}
-                    <th>
-                      {if $headers[header].displayName != "Reliable"}
-                        <a href="{$baseurl}/reliability/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
-                          {if $headers[header].displayName == "Reliability Center Id"}
-                            Site of Reliability Test
-                          {else}
-                            {$headers[header].displayName}
-                          {/if}
-                        </a>
-                      {else}
-                        {$headers[header].displayName}
-                      {/if}
-                    </th>
-                {/section}
-            </tr>
-        </thead>
-
-    {section name=item loop=$items}
-        <tr>
-        <!-- print out data rows -->
-        {section name=piece loop=$items[item]}
-        
-
-    	{if $items[item][piece].name == "PSCID"}
-    	   <td>
-    	   {if $items[item][piece].Current_stage == 'Recycling Bin'}
-            {$items[item][piece].value} <font color="red">(Recycling Bin)</font>
-         {elseif $items[item][piece].invalid == "yes"}
-            {$items[item][piece].value} <font color="red">(Invalid)</font>
-         {else}     
-              <a href="{$baseurl}/main.php?test_name={$items[item][piece].Instrument}_reliability&subtest={$items[item][piece].Instrument}_reliability&identifier={$items[item][piece].CommentID}&reliability_center_id={$items[item][piece].SiteID}">{$items[item][piece].value}</a> 
-           {/if}
-            {if $items[item][piece].manual == "yes"}
-                <font color="red">(Manual)</font>
-            {/if}
-          </td>
-    	{elseif  $items[item][piece].name == "Cohort"}
-    	      <td>
-      	    {if $items[item][piece].value== "1"}
-          					6 month
-          	{elseif $items[item][piece].value== "2"}
-          					12 month
-          	{elseif $items[item][piece].value== "3"}
-          					Control
-          		{/if}</td>
-      	{elseif  $items[item][piece].name == "Reliability"}
-      	  {if $items[item][piece].value== "Yes"}
-      	  <td style="background-color:#86BC78;">{$items[item][piece].value}</td>
-      	  {elseif $items[item][piece].value== "No"}
-      	  <td style="background-color:#C43120;color:white">{$items[item][piece].value}</td>
-      	  {else}
-      	  <td></td>
-      	  {/if}
-    	  {else}
-    	     <td>{$items[item][piece].value}</td>
-        {/if}
-       </td>
-        {/section}
-        </tr>           
-    {sectionelse}
-        <tr><td colspan="15">No reliability entries found</td></tr>
-    {/section}
-                        
-    <!-- end data table -->
-    </table>
-
+<div class="dynamictable" id="datatable"></div>
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/reliability/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
+ loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var hasWritePermission = {json_encode($hasWritePermission)};
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/reliability/?format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "PSCID"
+     
+  });
+React.render(table, document.getElementById("datatable"));
 </script>
-

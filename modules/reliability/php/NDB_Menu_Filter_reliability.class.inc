@@ -72,7 +72,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         
         $this->_populate_reliability_table();
 
-        $query = " FROM candidate, session, flag, reliability WHERE reliability.CommentID=flag.CommentID AND candidate.CandID=session.CandID AND session.ID=flag.SessionID";
+        $query = " FROM candidate LEFT JOIN Project ON (candidate.ProjectID = Project.ProjectID ), session, flag, reliability LEFT JOIN psc ON (reliability.reliability_center_id = psc.CenterID) WHERE reliability.CommentID=flag.CommentID AND candidate.CandID=session.CandID AND session.ID=flag.SessionID";
 
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
@@ -81,20 +81,21 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $config=&NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         // set the class variables
-        $this->columns = array('candidate.PSCID', 'reliability.reliability_center_id AS Site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label');
+        $this->columns = array('candidate.PSCID', 'psc.Name', 'reliability.reliability_center_id AS Site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label');
         if ($useProjects === "true") {
-            $this->columns[] = 'candidate.ProjectID as Project';
+            $this->columns[] = 'Project.Name as Project';
         }
         $this->columns=array_merge($this->columns,
-             array('reliability.CommentID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid', 'reliability.Manual_Swap' ));
+             array('reliability.CommentID','reliability.Instrument', 'reliability.Reliability_score', 'reliability.Reliability_score as Reliable', 'reliability.invalid', 'reliability.Manual_Swap' ));
         $this->query = $query;
         $this->group_by = '';
         $this->order_by = 'reliability.Instrument, session.CandID, session.Visit_label';
-        $this->headers = array('PSCID', 'reliability_center_id','Cohort', 'DCCID', 'Gender', 'Visit_label');
+        $this->headers = array('PSCID', 'Site of Reliability Test', 'reliability_center_id','Cohort', 'DCCID', 'Gender', 'Visit_label');
         if ($useProjects === "true") {
             $this->headers[] = 'Project';
         }
-        $this->headers=array_merge($this->headers,array('Instrument', 'reliability_score', 'Reliable'));
+        $this->headers=array_merge($this->headers,array('CommentID', 'Instrument', 'reliability_score', 'Reliable', 'invalid' , 'Manual_Swap'));
+        $this->tpl_data['hiddenHeaders'] = json_encode(['Reliability Center Id', 'CommentID', 'Invalid','Manual Swap']);
         $this->validFilters = array('reliability.CommentID','reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid','candidate.CandID');
 
         $this->formToFilter = array(
@@ -527,6 +528,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $deps,
             array(
              $baseURL . "/reliability/js/reliability_helper.js",
+             $baseURL . "/reliability/js/columnFormatter.js",
             )
         );
     }
