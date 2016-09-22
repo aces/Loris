@@ -62,21 +62,19 @@ class Dicom_Archive extends \NDB_Menu_Filter
         $colsFirst = array_merge($colsFirst, $arrayTransfer);
 
         $colsLast = array(
-            't.PatientID as Patient_ID',
-            't.PatientName as Patient_Name',
-            't.PatientGender as Gender',
-            't.PatientDoB as Date_of_birth',
-            't.DateAcquired as Acquisition',
-            't.ArchiveLocation as Archive_Location',
-            "'View Details' as Metadata",
-            "'View Images' as MRI_Browser",
-            // For constructing links, not in headers array
-            "(SELECT GROUP_CONCAT(SeriesUID) FROM tarchive_series e WHERE " .
-                "e.TarchiveID=t.TarchiveID GROUP BY e.TarchiveID) as SeriesUID",
-            's.CenterID as site',
-            't.TarchiveID as TarchiveID',
-            's.ID as SessionID',
-        );
+                     't.PatientID as Patient_ID',
+                     't.PatientName as Patient_Name',
+                     't.PatientGender as Gender',
+                     't.PatientDoB as Date_of_birth',
+                     't.DateAcquired as Acquisition',
+                     't.ArchiveLocation as Archive_Location',
+                     "'View Details' as Metadata",
+                     "'View Images' as MRI_Browser",
+                     // For constructing links, not in headers array
+                     's.CenterID as site',
+                     't.TarchiveID as TarchiveID',
+                     's.ID as SessionID',
+                    );
 
         $this->columns = array_merge($colsFirst, $colsLast);
 
@@ -91,53 +89,48 @@ class Dicom_Archive extends \NDB_Menu_Filter
         $this->headers = array_merge(
             $this->headers,
             [
-                'Patient_ID',
-                'Patient_Name',
-                'Gender',
-                'Date_of_birth',
-                'Acquisition',
-                'Archive_Location',
-                'Metadata',
-                'MRI_Browser',
-                'SeriesUID',
-                'Site',
-                'TarchiveID',
-                'SessionID'
+             'Patient_ID',
+             'Patient_Name',
+             'Gender',
+             'Date_of_birth',
+             'Acquisition',
+             'Archive_Location',
+             'Metadata',
+             'MRI_Browser',
+             'Site',
             ]
         );
 
         // Set header as hidden from the data table
-        $this->tpl_data['hiddenHeaders'] = json_encode(
-            ['SeriesUID', 'Site', 'TarchiveID', 'SessionID']
-        );
+        $this->tpl_data['hiddenHeaders'] = json_encode(['Site']);
 
         $this->validFilters = array(
-            'c.CenterID',
-            't.PatientID',
-            't.PatientGender',
-            't.DateAcquired',
-            't.PatientName',
-            't.PatientDoB',
-            't.ArchiveLocation',
-        );
+                               'c.CenterID',
+                               't.PatientID',
+                               't.PatientGender',
+                               't.DateAcquired',
+                               't.PatientName',
+                               't.PatientDoB',
+                               't.ArchiveLocation',
+                              );
 
         $this->formToFilter = array(
-            'SiteID'      => 'c.CenterID',
-            'PatientID'   => 't.PatientID',
-            'Gender'      => 't.PatientGender',
-            'Acquisition' => 't.DateAcquired',
-            'PatientName' => 't.PatientName',
-            'DoB'         => 't.PatientDoB',
-            'Location'    => 't.ArchiveLocation',
-        );
+                               'SiteID'      => 'c.CenterID',
+                               'PatientID'   => 't.PatientID',
+                               'Gender'      => 't.PatientGender',
+                               'Acquisition' => 't.DateAcquired',
+                               'PatientName' => 't.PatientName',
+                               'DoB'         => 't.PatientDoB',
+                               'Location'    => 't.ArchiveLocation',
+                              );
 
     }
     /**
-     * Sets transfer status according to the data in the
-     * config file.
-     *
-     * @return null
-     */
+    * Sets transfer status according to the data in the
+    * config file.
+    *
+    * @return null
+    */
     function _setDicomArchiveSettings()
     {
         $config =& \NDB_Config::singleton();
@@ -145,12 +138,12 @@ class Dicom_Archive extends \NDB_Menu_Filter
     }
 
     /**
-     * Retrieves Transfer status.
-     * Queued if pending, date of sending if sent,
-     * else not transferred
-     *
-     * @return string $query with a status string
-     */
+    * Retrieves Transfer status.
+    * Queued if pending, date of sending if sent,
+    * else not transferred
+    *
+    * @return string $query with a status string
+    */
     function _getTransferStatusFromQuery()
     {
         if ($this->dicomArchiveSettings['showTransferStatus'] == 'true') {
@@ -209,17 +202,17 @@ class Dicom_Archive extends \NDB_Menu_Filter
             foreach ($item as $key => $val) {
                 if ($key == 'Transfer_Status') {
                     switch ($val) {
-                        case 'Queued':
-                            $this->tpl_data['items'][$x][$i]['class']
-                                = "tarchivePendingTransfer";
-                            break;
-                        case 'Not Transferred':
-                            $this->tpl_data['items'][$x][$i]['class']
-                                = "tarchiveNotTransferred";
-                            break;
-                        default:
-                            $this->tpl_data['items'][$x][$i]['class']
-                                = "tarchiveTransferred";
+                    case 'Queued':
+                        $this->tpl_data['items'][$x][$i]['class']
+                            = "tarchivePendingTransfer";
+                        break;
+                    case 'Not Transferred':
+                        $this->tpl_data['items'][$x][$i]['class']
+                            = "tarchiveNotTransferred";
+                        break;
+                    default:
+                        $this->tpl_data['items'][$x][$i]['class']
+                            = "tarchiveTransferred";
                     }
                 }
                 if ($key == 'Metadata') {
@@ -244,9 +237,9 @@ class Dicom_Archive extends \NDB_Menu_Filter
                     }
                 } elseif ($key == 'Patient_Name') {
                     if (!preg_match(
-                            $this->dicomArchiveSettings['patientNameRegex'],
-                            $val
-                        )
+                        $this->dicomArchiveSettings['patientNameRegex'],
+                        $val
+                    )
                         && !preg_match(
                             $this->dicomArchiveSettings['LegoPhantomRegex'],
                             $val
@@ -293,8 +286,8 @@ class Dicom_Archive extends \NDB_Menu_Filter
     {
         $unanonymized = parent::toArray();
         $retVal       = array(
-            'Headers' => $unanonymized['Headers'],
-        );
+                         'Headers' => $unanonymized['Headers'],
+                        );
         $data         = array();
 
         foreach ($unanonymized['Data'] as &$row) {
@@ -322,9 +315,9 @@ class Dicom_Archive extends \NDB_Menu_Filter
             $data[] = $row;
         }
         return array(
-            'Headers' => $unanonymized['Headers'],
-            'Data'    => $data,
-        );
+                'Headers' => $unanonymized['Headers'],
+                'Data'    => $data,
+               );
 
     }
 
@@ -342,9 +335,9 @@ class Dicom_Archive extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/dicom_archive/js/columnFormatter.js",
-                $baseURL . "/dicom_archive/js/dicom_archive.js",
-                $baseURL . "/js/util/queryString.js",
+             $baseURL . "/dicom_archive/js/columnFormatter.js",
+             $baseURL . "/dicom_archive/js/dicom_archive.js",
+             $baseURL . "/js/util/queryString.js",
             )
         );
     }
