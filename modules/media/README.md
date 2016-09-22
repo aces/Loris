@@ -17,9 +17,11 @@ In order to use the media module the user needs one or both of the following per
 
 >**Note**: superusers have both of the aforementioned permissions by default! 💪
 
-### Default upload path
+### Upload path
 
 By default, all files are uploaded under `/data/uploads/`.
+*(Note this directory is not created by the Loris install script and should be manually created by the admin.)*
+
 The upload path is configurable in `Paths` section of `Configuration` module.
 
 >**Important** 
