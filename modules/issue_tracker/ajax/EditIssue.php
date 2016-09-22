@@ -361,7 +361,7 @@ function getWatching($issueID)
  *
  * @throws DatabaseException
  *
- * @return string $commentHistory html
+ * @return array $commentHistory
  */
 function getComments($issueID)
 {
@@ -413,6 +413,7 @@ function getComments($issueID)
             unset($comment['sessionID']);
         }
     }
+    error_log(json_encode($unformattedComments));
     return $unformattedComments; //now formatted I guess
 
 }
@@ -620,7 +621,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
             "WHERE issueID = $issueID",
             []
         );
-        $issueData['history'] = display_comments($issueID);
+        $issueData['commentHistory'] = getComments($issueID);
         $issueData['whoIsWatching'] = getWatching($issueID);
         $issueData['desc'] = $db->pSelectOne("SELECT issueComment 
 FROM issues_comments WHERE issueID=:issueID 

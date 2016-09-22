@@ -20,7 +20,40 @@ var CollapsibleComment = React.createClass({
         this.setState({ 'collapsed': !this.state.collapsed });
     },
     render: function render() {
+        var history_text = [];
         var comment_hist_bool = this.state.collapsed ? "Show Comment History" : "Hide Comment History";
+        var commentHistory = this.props.commentHistory;
+        for (var comment in commentHistory) {
+            if (commentHistory[comment]["fieldChanged"] == 'comment') {
+                history_text.push("  [" + commentHistory[comment]["dateAdded"] + "] ", React.createElement(
+                    'b',
+                    null,
+                    ' ',
+                    commentHistory[comment]["addedBy"],
+                    ' '
+                ), " commented", React.createElement(
+                    'i',
+                    null,
+                    ' ',
+                    commentHistory[comment]["newValue"],
+                    ' '
+                ), React.createElement('br', null));
+            } else {
+                history_text.push("  [" + commentHistory[comment]["dateAdded"] + "] ", React.createElement(
+                    'b',
+                    null,
+                    ' ',
+                    commentHistory[comment]["addedBy"],
+                    ' '
+                ), " updated the " + commentHistory[comment]["fieldChanged"] + " to", React.createElement(
+                    'i',
+                    null,
+                    ' ',
+                    commentHistory[comment]["newValue"],
+                    ' '
+                ), React.createElement('br', null));
+            }
+        }
         return React.createElement(
             'div',
             { className: 'row form-group' },
@@ -43,8 +76,8 @@ var CollapsibleComment = React.createClass({
                 { id: 'comment-history' },
                 React.createElement(
                     'div',
-                    { className: 'col-sm-12' },
-                    React.createElement('div', { dangerouslySetInnerHTML: { __html: this.props.text } })
+                    { className: 'col-sm-9' },
+                    history_text
                 )
             )
         );
@@ -131,6 +164,13 @@ var IssueEditForm = React.createClass({
             dateCreated = this.state.issueData.dateCreated;
         }
 
+        var isWatching = "";
+        if (this.state.issueData.watching) {
+            isWatching = "Yes";
+        } else {
+            isWatching = "No";
+        }
+
         var submitButtonValue = "";
         if (this.state.isNewIssue) {
             submitButtonValue = "Submit Issue";
@@ -147,7 +187,7 @@ var IssueEditForm = React.createClass({
         var commentHistory;
         if (!this.state.isNewIssue) {
             commentHistory = React.createElement(CollapsibleComment, {
-                text: this.state.issueData.history
+                commentHistory: this.state.issueData.commentHistory
             });
         } else {
             commentHistory = React.createElement(
@@ -400,10 +440,10 @@ var IssueEditForm = React.createClass({
                                 name: 'watching',
                                 label: 'Watching?',
                                 emptyOption: false,
-                                options: { true: 'No', false: 'Yes' },
+                                options: { 'No': 'No', 'Yes': 'Yes' },
                                 onUserInput: this.setFormData,
                                 ref: 'watching',
-                                value: "No"
+                                value: isWatching
                             })
                         ),
                         React.createElement(

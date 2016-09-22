@@ -18,7 +18,30 @@ var CollapsibleComment = React.createClass(
             );
         },
         render: function () {
-            var comment_hist_bool = (this.state.collapsed ? "Show Comment History" : "Hide Comment History");
+            var history_text = [];
+            var comment_hist_bool = this.state.collapsed ? "Show Comment History" : "Hide Comment History";
+            var commentHistory = this.props.commentHistory;
+            for (var comment in commentHistory) {
+                if (commentHistory[comment]["fieldChanged"] == 'comment') {
+                    history_text.push("  [" +
+                        commentHistory[comment]["dateAdded"] +
+                        "] ",
+                        <b> {commentHistory[comment]["addedBy"]} </b>,
+                        " commented",
+                        <i> {commentHistory[comment]["newValue"]} </i>,
+                        <br/>)
+                } else {
+                    history_text.push("  [" +
+                        commentHistory[comment]["dateAdded"] +
+                        "] ",
+                        <b> {commentHistory[comment]["addedBy"]} </b>,
+                        " updated the " +
+                        commentHistory[comment]["fieldChanged"] +
+                        " to",
+                        <i> {commentHistory[comment]["newValue"]} </i>,
+                        <br/>)
+                }
+            }
             return (
                 <div className="row form-group">
                     <div className="col-sm-9">
@@ -32,16 +55,15 @@ var CollapsibleComment = React.createClass(
                     </div>
                     <br></br>
                     <div id="comment-history">
-                        <div className="col-sm-12">
-                            <div dangerouslySetInnerHTML={{__html: this.props.text}}/>
+                        <div className="col-sm-9">
+                        {history_text}
                         </div>
+
                     </div>
                 </div>
-
-            );
+            )
         }
-    }
-);
+    });
 
 var IssueEditForm = React.createClass(
     {
@@ -144,7 +166,7 @@ var IssueEditForm = React.createClass(
             var commentHistory;
             if (!this.state.isNewIssue) {
                 commentHistory = <CollapsibleComment
-                    text={this.state.issueData.history}
+                    commentHistory={this.state.issueData.commentHistory}
                 />;
             } else {
                 commentHistory = <div class="form-group">
