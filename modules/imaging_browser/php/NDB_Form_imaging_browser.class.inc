@@ -140,7 +140,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             }
         }
         $files = $this->DB->pselect(
-            "SELECT files.FileID FROM files LEFT JOIN files_qcstatus as sel on (
+            "SELECT files.FileID, files.ScannerID FROM files LEFT JOIN files_qcstatus as sel on (
             files.FileID=sel.FileID) 
             WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL 
             OR AcquisitionProtocolID not in (1, 2, 3, 52)) 
@@ -154,7 +154,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         foreach ($files as $fileRow) {
             $FileObj = new MRIFile($fileRow['FileID']);
             if (empty($scannerID)) {
-                $scannerID = $FileObj->getParameter('ScannerID');
+                $scannerID = $fileRow['ScannerID'];
                 if (!empty($scannerID)) {
                     $query = "SELECT 
                         CONCAT_WS(' ', Manufacturer, Model, Serial_number) 
@@ -222,7 +222,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 'Xstep' => number_format($FileObj->getParameter('xstep'), 2),
                 'Ystep' => number_format($FileObj->getParameter('ystep'), 2),
                 'Zstep' => number_format($FileObj->getParameter('zstep'), 2),
-                'Selected' => $this->_getSelected((int)$FileObj->getParameter('FileID')),
+		 'Selected' => $this->_getSelected((int)$FileObj->getParameter('FileID')),
                 'QCStatus' => $FileObj->getParameter('QCStatus'),
                 'QCDate' => $FileObj->getParameter('QCLastChangeTime'),
                 'Caveat' => $FileObj->getParameter('Caveat'),
