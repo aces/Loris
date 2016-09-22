@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
         <link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 
-        {* 
+        {*
         This can't be loaded from getJSDependencies(), because it's needs access to smarty
            variables to be instantiated, so that other js files don't need access to smarty variables
            and can access them through the loris global (ie. loris.BaseURL) *}
@@ -16,17 +16,10 @@
         {section name=jsfile loop=$jsfiles}
             <script src="{$jsfiles[jsfile]}" type="text/javascript"></script>
         {/section}
-        <script>
-            $.webshims.polyfill();
-        </script>
 
-        <!-- Custom JavaScript for the Menu Toggle -->
-   
-        <link type="text/css" href="{$baseurl}/css/loris-jquery/jquery-ui-1.10.4.custom.min.css" rel="Stylesheet" />
-
-	{section name=cssfile loop=$cssfiles}
-		<link rel="stylesheet" href="{$cssfiles[cssfile]}">
-	{/section}
+        {section name=cssfile loop=$cssfiles}
+            <link rel="stylesheet" href="{$cssfiles[cssfile]}">
+        {/section}
 
         <title>
             {$study_title}
@@ -36,19 +29,28 @@
                 {/section}
             {/if}
         </title>
-            <script language="javascript" type="text/javascript">
-                $(document).ready(function(){
-                    {if $crumbs != "" && empty($error_message)}
-                        var crumbs = {$crumbs|@json_encode},
-                            baseurl = "{$baseurl}",
-                            breadcrumbs = RBreadcrumbs({
-                                breadcrumbs: crumbs,
-                                baseURL: baseurl
-                            });
-                        React.render(breadcrumbs, document.getElementById("breadcrumbs"));
-                    {/if}
-                })
-            </script>
+        <script type="text/javascript">
+          $(document).ready(function() {
+            {if $crumbs != "" && empty($error_message)}
+              var crumbs = {$crumbs|@json_encode},
+                      baseurl = "{$baseurl}",
+                      breadcrumbs = RBreadcrumbs({
+                        breadcrumbs: crumbs,
+                        baseURL: baseurl
+                      });
+              React.render(breadcrumbs, document.getElementById("breadcrumbs"));
+            {/if}
+
+            // If <input type="date/> is not supported (i.e. Firefox), load
+            // jquery date-picker
+            if (!Modernizr.inputtypes.date) {
+              $('input[type=date]').datepicker({
+                dateFormat: 'yy-mm-dd'
+              });
+            }
+
+          });
+        </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
         <link href="{$baseurl}/css/simple-sidebar.css" rel="stylesheet">
 
@@ -61,10 +63,10 @@
        and the workspace. This let's us put controls for the main
        page inside of the side panel.
     *}
-        {if $FormAction} 
+        {if $FormAction}
         <form action="{$FormAction}" method="post">
         {/if}
-	    
+
     <div id="wrap">
         {if $dynamictabs neq "dynamictabs"}
             <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="nav-left">
@@ -125,7 +127,7 @@
                                             {/if}
                                         {/foreach}
                                     </ul>
-                                </li> 
+                                </li>
                             {/if}
                         {/foreach}
                     </ul>
@@ -203,7 +205,7 @@
             {if $dynamictabs neq "dynamictabs"}
             {* Add enough spacing to get below the menu *}
                 <br><br><br>
-            <div class="page-content inset">  
+            <div class="page-content inset">
 
                 {if $console}
                     <div class="alert alert-warning" role="alert">
@@ -231,7 +233,7 @@
                                         {/section}
                                     </ul>
 
-                                    If this error persists, please 
+                                    If this error persists, please
                                     <a target="mantis" href="{$mantis_url}">
                                         report a bug to your administrator
                                     </a>.
@@ -289,10 +291,10 @@
                                                             <th>
                                                                 MR Scan Done
                                                             </th>
-                                                            {* 
+                                                            {*
                                                                 <th>
                                                                     Age During Visit
-                                                                </th> 
+                                                                </th>
                                                             *}
                                                             <th>
                                                                 Within Optimal
@@ -310,8 +312,8 @@
                                                         {/if}
                                                 </tr>
                                             </thead>
-                                            <!-- candidate data --> 
-                                            <tbody>   
+                                            <!-- candidate data -->
+                                            <tbody>
                                                     <tr>
                                                         <td>
                                                             {$candidate.DoB}
@@ -349,10 +351,10 @@
                                                             <td>
                                                                 {$timePoint.Scan_done|default:"<img alt=\"Data Missing\" src=\"$baseurl/images/help2.gif\" width=\"12\" height=\"12\" />"}
                                                             </td>
-                                                            {* 
+                                                            {*
                                                                 <td>
                                                                     {$timePoint.WindowInfo.AgeDays}
-                                                                </td> 
+                                                                </td>
                                                             *}
                                                             <td>
                                                                 {if $timePoint.WindowInfo.Optimum}
@@ -377,7 +379,7 @@
                                                             {/if}
                                                         {/if}
                                                     </tr>
-                                            </tbody>  
+                                            </tbody>
                                         </table>
 
                                     {if $sessionID != ""}
@@ -438,7 +440,7 @@
                                 {/if}
                                 <div id="lorisworkspace">
                                     {$workspace}
-                                </div>  
+                                </div>
                             {/if}
                         </div>
                     </div>
@@ -477,7 +479,7 @@
                                     |
                                 </li>
                         {/foreach}
-                    </ul>    
+                    </ul>
                 </center>
                 <div align="center" colspan="1">
                     Powered by LORIS &copy; {$currentyear}. All rights reserved.
@@ -489,8 +491,8 @@
                 </div>
             </div>
         {/if}
-        {if $FormAction} 
-        </form> 
+        {if $FormAction}
+        </form>
         {/if}
     </body>
 </html>

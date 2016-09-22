@@ -6,7 +6,7 @@
  * quickform_parser.php and outputs an sql build file for the table of each
  * instrument it finds in the ip_output.txt file.  These sql files are output
  * to the tables_sql/ subdirectory.
- * 
+ *
  * ex cmd:  php generate_tables_sql.php
  *
  * @package behavioural
@@ -34,7 +34,7 @@ foreach($instruments AS $instrument){
     foreach($items AS $item){
         $paramId="";
         $bits=explode("{@}",trim($item));
-        if(ereg("Examiner[0-9]*" , $bits[1])){
+        if(preg_match("/Examiner[0-9]*/" , $bits[1])){
             continue;
         }
         switch($bits[0]){
@@ -67,7 +67,7 @@ foreach($instruments AS $instrument){
                     continue;
                 }
                 if($bits[0]=="select"){
-                    $bits[0]=enumizeOptions($bits[3], $table, $bits[1]);
+                    $bits[0]=enumizeOptions($bits[3], isset($tablename) ? $tablename : null, $bits[1]);
                 } else if($bits[0]=="selectmultiple"){
                     $bits[0]="varchar(255)";
                 } else if($bits[0]=="textarea"){
@@ -79,7 +79,7 @@ foreach($instruments AS $instrument){
                 } else if ($bits[0]=="static") {
                     $bits[0]="varchar(255)";
                 }
-                
+
                 $bits[2]=htmlspecialchars($bits[2]);
                 $output.="`$bits[1]` $bits[0] default NULL,\n";
         }

@@ -132,6 +132,12 @@
                 <td>
                     {if $items[item][piece].name == "PSCID"}
                         <a href="{$baseurl}/final_radiological_review/final_radiological_review/?identifier={$items[item][piece].CommentID}">{$items[item][piece].value}</a>
+                    {elseif $items[item][piece].name == "T1_Inserted"}
+			{if (($items[item][piece].value) == 'Yes')}
+	                        <a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$items[item][piece].SessionID}"> Yes </a>
+                        {else}
+                        	No
+			{/if}
                     {else}
                         {$items[item][piece].value}
                     {/if}

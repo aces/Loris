@@ -1,6 +1,6 @@
 <?php
 /**
- * form_dicom_archive class file
+ * Implements the ViewDetails subpage of the dicom_archive module.
  *
  * PHP version 5
  *
@@ -8,24 +8,22 @@
  * @package    Main
  * @subpackage Imaging
  * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license    @GPLv3
- * @link       https://github.com/aces/Loris-Trunk
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris-Trunk/
 */
+namespace LORIS\dicom_archive;
 
 /**
- * NDB_Form_Dicom_Archive Class
- *
- * This class is dicom archive Form
+ * Implements the ViewDetails subpage of the dicom_archive module.
  *
  * @category   Behavioural
  * @package    Main
  * @subpackage Imaging
  * @author     Olga Tsibulevskaya <olgatsib@gmail.com>
- * @license    @GPLv3
- * @link       https://github.com/aces/Loris-Trunk
-*/
-
-class NDB_Form_Dicom_Archive extends NDB_Form
+ * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link       https://www.github.com/aces/Loris-Trunk/
+ */
+class ViewDetails extends \NDB_Form
 {
     /**
      * Keeps array of protocols from mri_protocol
@@ -39,7 +37,7 @@ class NDB_Form_Dicom_Archive extends NDB_Form
      */
     function _hasAccess()
     {
-        $user = User::singleton();
+        $user = \User::singleton();
         return $user->hasPermission('dicom_archive_view_allsites');
     }
 
@@ -48,20 +46,26 @@ class NDB_Form_Dicom_Archive extends NDB_Form
     *
     * @return NULL
     */
-    function viewDetails()
+    function __construct()
     {
-        $this->DB = Database::singleton();
+        $this->DB = \Database::singleton();
 
         if ((!empty($_REQUEST['tarchiveID'])) && ($this->_hasAccess())) {
             $tarchiveID = $_REQUEST['tarchiveID'];
-            $this->tpl_data['archive'] = $this->_getTarchiveData(
-                $tarchiveID, 'tarchive'
+            $this->tpl_data['archive']        = $this->_getTarchiveData(
+                $tarchiveID,
+                'tarchive',
+                'LastUpdate'
             );
             $this->tpl_data['archive_series'] = $this->_getTarchiveData(
-                $tarchiveID, 'tarchive_series', 'TarchiveSeriesID'
+                $tarchiveID,
+                'tarchive_series',
+                'TarchiveSeriesID'
             );
-            $this->tpl_data['archive_files'] = $this->_getTarchiveData(
-                $tarchiveID, 'tarchive_files', 'TarchiveFileID'
+            $this->tpl_data['archive_files']  = $this->_getTarchiveData(
+                $tarchiveID,
+                'tarchive_files',
+                'TarchiveFileID'
             );
 
             $this->_validateNamesIDs();
@@ -69,14 +73,14 @@ class NDB_Form_Dicom_Archive extends NDB_Form
     }
     /**
     * Retrieves data for the template from the database
-    * 
+    *
     * @param int    $tarchiveID tarchiveID
     * @param string $table      name of the table to retrieve the data from
     * @param string $order      column by which to order the query
-    * 
+    *
     * @return array $array contains all data
     */
-    function _getTarchiveData($tarchiveID, $table, $order) 
+    function _getTarchiveData($tarchiveID, $table, $order)
     {
         switch ($table) {
         case "tarchive":
@@ -87,12 +91,16 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             $query = "SELECT * FROM $table WHERE TarchiveID =:ID 
                 ORDER BY :OField";
             $array = $this->DB->pselect(
-                $query, array('ID' => $tarchiveID, "OField" => $order)
+                $query,
+                array(
+                 'ID'     => $tarchiveID,
+                 "OField" => $order,
+                )
             );
-            
+
             if ($this->_setProtocols()) {
                 $previousSeriesDescription = '';
-                $previousProtocolName = '';
+                $previousProtocolName      = '';
                 foreach ($array as &$series) {
                     $seriesDescription = $series['SeriesDescription'];
                     // if the same series, do not compute the protocol name again,
@@ -100,10 +108,10 @@ class NDB_Form_Dicom_Archive extends NDB_Form
                     if ($previousSeriesDescription === $seriesDescription) {
                         $series['ProtocolName'] = $previousProtocolName;
                     } else {
-                        $protocolName = $this->_getProtocolName($series);
+                        $protocolName           = $this->_getProtocolName($series);
                         $series['ProtocolName'] = $protocolName;
                         $previousSeriesDescription = $seriesDescription;
-                        $previousProtocolName = $protocolName;
+                        $previousProtocolName      = $protocolName;
                     }
                 }
             }
@@ -112,11 +120,15 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             $query = "SELECT * FROM $table WHERE TarchiveID =:ID
                 ORDER BY :OField";
             $array = $this->DB->pselect(
-                $query, array('ID' => $tarchiveID, 'OField' => $order)
+                $query,
+                array(
+                 'ID'     => $tarchiveID,
+                 'OField' => $order,
+                )
             );
             break;
         }
-        
+
         return $array;
     }
     /**
@@ -125,13 +137,13 @@ class NDB_Form_Dicom_Archive extends NDB_Form
     *
     * @return null
     */
-    function _validateNamesIds() 
+    function _validateNamesIds()
     {
-        $config =& NDB_Config::singleton();
+        $config =& \NDB_Config::singleton();
         $dicomArchiveSettings = $config->getSetting('dicom_archive');
-        
+
         if ((preg_match(
-            $dicomArchiveSettings['patientNameRegex'], 
+            $dicomArchiveSettings['patientNameRegex'],
             $this->tpl_data['archive']['PatientName']
         )) || (preg_match(
             $dicomArchiveSettings['LegoPhantomRegex'],
@@ -143,9 +155,9 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             $this->tpl_data['archive']['patientNameValid'] = 1;
         } else {
             $this->tpl_data['archive']['patientNameValid'] = 0;
-            $this->tpl_data['archive']['PatientName'] = "INVALID - HIDDEN";
+            $this->tpl_data['archive']['PatientName']      = "INVALID - HIDDEN";
         }
-        
+
         if (preg_match(
             $dicomArchiveSettings['patientIDRegex'],
             $this->tpl_data['archive']['PatientID']
@@ -153,20 +165,20 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             $this->tpl_data['archive']['patientIDValid'] = 1;
         } else {
             $this->tpl_data['archive']['patientIDValid'] = 0;
-            $this->tpl_data['archive']['PatientID'] = "INVALID - HIDDEN";
+            $this->tpl_data['archive']['PatientID']      = "INVALID - HIDDEN";
         }
     }
 
     /**
-     * Gets protocol data from mri_protocol table and 
+     * Gets protocol data from mri_protocol table and
      * registers it into class variable $protocols.
      *
      * @return bool false if couldn't retrieve data from the table, else true
      */
-    function _setProtocols() 
+    function _setProtocols()
     {
         try {
-            $query = "SELECT Scan_type, TR_range, TE_range, TI_range, 
+            $query           = "SELECT Scan_type, TR_range, TE_range, TI_range, 
                 slice_thickness_range FROM mri_protocol";
             $this->protocols = $this->DB->pselect($query, array());
             return true;
@@ -176,7 +188,7 @@ class NDB_Form_Dicom_Archive extends NDB_Form
     }
     /**
      * Finds the protocol name by comparing parameters of a series.
-     * 
+     *
      * @param array $series series for which the protocol is to be found
      *
      * @return string name of the protocol, "Unknown" if protocol for
@@ -190,33 +202,34 @@ class NDB_Form_Dicom_Archive extends NDB_Form
         $sliceThickness = $series['SliceThickness'];
 
         foreach ($this->protocols as $protocol) {
-            if ((! $protocol['TR_range'] 
+            if ((! $protocol['TR_range']
                 || $this->_inRange($tr, $protocol['TR_range']))
-                && (! $protocol['TE_range'] 
+                && (! $protocol['TE_range']
                 || $this->_inRange($te, $protocol['TE_range']))
-                && (! $protocol['TI_range'] 
+                && (! $protocol['TI_range']
                 || $this->_inRange($ti, $protocol['TI_range']))
-                && (! $protocol['slice_thickness_range'] 
+                && (! $protocol['slice_thickness_range']
                 || $this->_inRange(
-                    $sliceThickness, $protocol['slice_thickness_range']
+                    $sliceThickness,
+                    $protocol['slice_thickness_range']
                 ))) {
                 return $this->_getProtocolNameFromID($protocol['Scan_type']);
-            } 
+            }
         }
-        return "Unknown"; 
+        return "Unknown";
     }
 
     /**
      * Compares parameters of a series and of the protocols
-     * 
-     * @param string $seriesRange    series parameter to be compared
-     * @param string $protocolRange protocol's parameter 
+     *
+     * @param string $seriesRange   series parameter to be compared
+     * @param string $protocolRange protocol's parameter
      *        to be compared with
      *
-     * @return bool true if series parameter is in range with 
+     * @return bool true if series parameter is in range with
      *         the protocol's one, false otherwise
      */
-    function _inRange($seriesRange, $protocolRange) 
+    function _inRange($seriesRange, $protocolRange)
     {
         if (! isset($seriesRange)) {
             return false;
@@ -224,15 +237,15 @@ class NDB_Form_Dicom_Archive extends NDB_Form
             return false;
         } else {
             $seriesRangeTrimmed = (float)trim($seriesRange);
-            $protocolRanges = explode(",", $protocolRange);
-            
+            $protocolRanges     = explode(",", $protocolRange);
+
             foreach ($protocolRanges as $range) {
                 $rangeTrimmed = trim($range);
                 if (strpos($rangeTrimmed, "-")) { // range X-Y
                     $array = explode("-", $rangeTrimmed);
-                    $left = (float)trim($array[0]);
+                    $left  = (float)trim($array[0]);
                     $right = (float)trim($array[1]);
-                    if ($left <= $seriesRangeTrimmed 
+                    if ($left <= $seriesRangeTrimmed
                         && $seriesRangeTrimmed <= $right
                     ) {
                         return true;
@@ -252,10 +265,10 @@ class NDB_Form_Dicom_Archive extends NDB_Form
      *
      * @param string $id id of the protocol
      *
-     * @return string name of the protocol, "Unknown" if 
+     * @return string name of the protocol, "Unknown" if
      *         protocol with the given id doesn't exist.
      */
-    function _getProtocolNameFromID($id) 
+    function _getProtocolNameFromID($id)
     {
         try {
             $query = "SELECT Scan_type FROM mri_scan_type WHERE ID=:ID";
@@ -264,6 +277,22 @@ class NDB_Form_Dicom_Archive extends NDB_Form
         } catch (LorisException $e) {
             return "Unknown";
         }
+    }
+
+    /**
+     * Adds custom CSS for the viewdetails table styling.
+     *
+     * @return array of CSS to include in the page
+     */
+    function getCSSDependencies()
+    {
+        $depends = parent::getCSSDependencies();
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        return array_merge(
+            $depends,
+            [$baseURL . "/dicom_archive/css/dicom_archive.css"]
+        );
     }
 }
 ?>

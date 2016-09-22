@@ -93,7 +93,7 @@ class CouchDBMRIImporter
         $Query .= " FROM session s JOIN candidate c USING (CandID)
                     LEFT JOIN feedback_mri_comments fmric
                     ON (fmric.CommentTypeID=7 AND fmric.SessionID=s.ID)
-                    WHERE c.PSCID <> 'scanner' AND c.PSCID NOT LIKE '%9999'
+                    WHERE c.Entity_type != 'Scanner' AND c.PSCID NOT LIKE '%9999'
                           AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1";
         return $Query;
     }

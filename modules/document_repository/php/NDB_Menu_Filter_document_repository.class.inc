@@ -338,6 +338,27 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
     }
 
     /**
+     * Include additional CSS files:
+     *  1. jQuery UI
+     *  2. document_repository.css
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+                $baseURL . "/css/loris-jquery/jquery-ui-1.10.4.custom.min.css",
+                $baseURL . "/document_repository/css/document_repository.css"
+            ]
+        );
+    }
+
+    /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
      *
@@ -355,6 +376,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
             )
         );
     }
+
 }
 
 ?>
