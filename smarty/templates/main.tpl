@@ -52,6 +52,17 @@
               $('input[type=date]').attr('placeholder', 'yyyy-mm-dd');
             }
 
+            if (!Modernizr.inputtypes.month) {
+              $('input[type=month]').datepicker({
+                dateFormat: 'MM yy',
+                changeMonth: true,
+                changeYear: true
+              });
+
+              var placeholder = $.datepicker.formatDate('MM yy', new Date());
+              $('input[type=month]').attr('placeholder', placeholder);
+            }
+
           });
         </script>
         <link type="text/css" href="{$baseurl}/css/jqueryslidemenu.css" rel="Stylesheet" />
