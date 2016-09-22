@@ -235,7 +235,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         conflicts_unresolved.CommentId2
                     )
                 )
-                as Hash"
+                as Hash",
             )
         );
 
@@ -273,12 +273,12 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
              'conflicts_unresolved.Fieldname',
             )
         );
-        $this->headers = array(
-                          'Instrument',
-                          'CandID',
-                          'PSCID',
-                          'Visit_label',
-                         );
+        $this->headers      = array(
+                               'Instrument',
+                               'CandID',
+                               'PSCID',
+                               'Visit_label',
+                              );
 
         if ($useProjects) {
             $this->headers = array_merge(
@@ -287,8 +287,17 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
             );
         }
 
-        $this->headers =array_merge($this->headers,array('Question','Correct Answer','Value1','Value2','Hash'));
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Value1','Value2','Hash']);
+        $this->headers =array_merge(
+            $this->headers,
+            array(
+             'Question',
+             'Correct Answer',
+             'Value1',
+             'Value2',
+             'Hash',
+            )
+        );
+        $this->tpl_data['hiddenHeaders'] = json_encode(['Value1', 'Value2', 'Hash']);
         $this->formToFilter = array(
                                'Instrument' => 'conflicts_unresolved.TableName',
                                'site'       => 'session.CenterID',
@@ -461,21 +470,19 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         }
         return true;
     }
-   /**
+    /**
      * Gathers JS dependecies and merge them with the parent
      *
      * @return array of javascript to be inserted
      */
-   function getJSDependencies()
-   {
+    function getJSDependencies()
+    {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . "/conflict_resolver/js/unresolved_columnFormatter.js"
-            )
+            array($baseURL . "/conflict_resolver/js/unresolved_columnFormatter.js")
         );
     }
 }
