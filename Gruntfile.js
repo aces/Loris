@@ -37,13 +37,10 @@ module.exports = function(grunt) {
                     'modules/media/js/columnFormatter.js': 'modules/media/jsx/columnFormatter.js',
                     'modules/media/js/editForm.js': 'modules/media/jsx/editForm.js',
                     'modules/media/js/uploadForm.js': 'modules/media/jsx/uploadForm.js',
-<<<<<<< HEAD
 		    'modules/issue_tracker/js/columnFormatter.js': 'modules/issue_tracker/jsx/columnFormatter.js',
 		    'modules/issue_tracker/js/editIssue.js': 'modules/issue_tracker/jsx/editIssue.js'
-=======
                     'modules/survey_accounts/js/columnFormatter.js': 'modules/survey_accounts/jsx/columnFormatter.js',
 		    'modules/server_processes_manager/js/columnFormatter.js': 'modules/server_processes_manager/jsx/columnFormatter.js'
->>>>>>> aces/17.0-dev
                 }
             }
         },
