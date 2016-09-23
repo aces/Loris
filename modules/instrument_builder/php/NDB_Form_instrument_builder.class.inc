@@ -24,7 +24,7 @@ class NDB_Form_instrument_builder extends NDB_Form
      * Include additional CSS files:
      *  1. instrument_builder.css
      *
-     * @return array of javascript to be inserted
+     * @return array of CSS to be inserted
      */
     function getCSSDependencies()
     {
@@ -37,6 +37,11 @@ class NDB_Form_instrument_builder extends NDB_Form
         );
     }
 
+    /**
+     * Include additional JS files
+     *
+     * @return array of JS to be inserted
+     */
     function getJSDependencies() {
         $factory = NDB_Factory::singleton();
         $baseurl = $factory->settings()->getBaseURL();
