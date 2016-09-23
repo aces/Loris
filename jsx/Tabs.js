@@ -1,3 +1,18 @@
+/* exported RTabs, TabPane */
+
+/**
+ * This file contains React components for Tabs component.
+ *
+ * @author Loris Team
+ * @version 1.0.0
+ *
+ */
+
+/**
+ * Tabs Component.
+ * React wrapper for Bootstrap tabs. Allows to dynamically render tabs
+ * and corresponding tab panes.
+ */
 var Tabs = React.createClass({
   propTypes: {
     tabs: React.PropTypes.array.isRequired,
@@ -10,77 +25,78 @@ var Tabs = React.createClass({
     } else if (this.props.tabs.length > 0) {
       activeTab = this.props.tabs[0].id;
     }
+
     return {
-      "activeTab": activeTab
+      activeTab: activeTab
     };
   },
   componentDidMount: function() {
-    var e = new CustomEvent("tab-changed",
-      {
-        "activeTab": this.state.activeTab
+    this.setActiveTab(this.state.activeTab);
+  },
+  setActiveTab: function(tabId) {
+    var e = new CustomEvent("tab-changed", {
+      detail: {
+        activeTab: tabId
       }
-        );
+    });
     window.dispatchEvent(e);
   },
-  handleClick: function(id) {
-    this.setState({
-      "activeTab": id
-    });
-    var e = new CustomEvent("tab-changed",
-      {
-        "activeTab": id
-      });
-    window.dispatchEvent(e);
+  handleClick: function(tabId) {
+    this.setActiveTab(tabId);
+    this.setState({activeTab: tabId});
   },
   render: function() {
+    // Build a list of tabs
     var tabs = this.props.tabs.map(function(tab) {
       var tabClass;
-      if (this.state.activeTab == tab.id) {
+      if (this.state.activeTab === tab.id) {
         tabClass = "active";
       }
       var href = "#" + tab.id;
       var tabID = "tab-" + tab.id;
       return (
-                <li role="presentation" className={tabClass} onClick={this.handleClick.bind(tab.id)}>
-                    <a id={tabID} href={href} role="tab" data-toggle="tab">{tab.label}</a>
-                </li>
-                );
+        <li role="presentation"
+            className={tabClass}
+            onClick={this.handleClick.bind(tab.id)}
+        >
+            <a id={tabID} href={href} role="tab" data-toggle="tab">
+              {tab.label}
+            </a>
+        </li>
+      );
     }, this);
 
     return (
-            // each tab is an li
-            <div>
-            <ul className="nav nav-tabs nav-tabs-loris" role="tablist">
-                {tabs}
-            </ul>
-            <div className="tab-content">
-                {this.props.children}
-            </div>
-            </div>
-            );
+      <div>
+        <ul className="nav nav-tabs nav-tabs-loris" role="tablist">
+          {tabs}
+        </ul>
+        <div className="tab-content">
+            {this.props.children}
+        </div>
+      </div>
+    );
   }
 });
 
-TabPane = React.createClass({
-  getDefaultProps: function() {
-    return {
-      "DefaultTab": false
-    };
+var TabPane = React.createClass({
+  propTypes: {
+    TabId: React.PropTypes.string.isRequired,
+    Title: React.PropTypes.string
   },
   getInitialState: function() {
     return {
-      "isActive": this.props.DefaultTab
+      isActive: this.props.TabId
     };
   },
   componentWillMount: function() {
-    var that = this;
     window.addEventListener("tab-changed", function(e) {
-      if (e.activeTab === this.props.TabId) {
-        that.setState({isActive: true});
+      if (e.detail.activeTab === this.props.TabId) {
+        this.setState({isActive: true});
       } else {
-        that.setState({isActive: false});
+        this.setState({isActive: false});
       }
-    });
+    }.bind(this), false);
   },
   render: function() {
     var classList = "tab-pane";
@@ -93,13 +109,15 @@ TabPane = React.createClass({
     if (this.props.Title) {
       title = <h1>{this.props.Title}</h1>;
     }
-        // Render the HTML
+
+    // Render the HTML
     return (
-            <div role="tabpanel" className={classList} id={this.props.TabId}>
-                    {title}
-                	{this.props.children}
-            </div>
-        );
+      <div role="tabpanel" className={classList} id={this.props.TabId}>
+        {title}
+        {this.props.children}
+      </div>
+    );
   }
 });
+
 var RTabs = React.createFactory(Tabs);
