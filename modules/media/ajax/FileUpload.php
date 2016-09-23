@@ -86,9 +86,6 @@ function uploadFile()
         exit;
     }
 
-    // Make sure folder is writable
-    chmod($mediaPath, 0777);
-
     // Process posted data
     $pscid      = isset($_POST['pscid']) ? $_POST['pscid'] : null;
     $visit      = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null;
