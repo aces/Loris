@@ -1,5 +1,3 @@
-"use strict";
-
 var StaticDataTable = React.createClass({
     displayName: "StaticDataTable",
 
@@ -12,7 +10,39 @@ var StaticDataTable = React.createClass({
         // parameters of the form: func(ColumnName, CellData, EntireRowData)
         getFormattedCell: React.PropTypes.func
     },
-    componentDidMount: function componentDidMount() {
+    componentDidMount: function () {
+        if (jQuery.fn.DynamicTable) {
+            if (this.props.freezeColumn) {
+                $("#dynamictable").DynamicTable({ "freezeColumn": this.props.freezeColumn });
+            } else {
+                $("#dynamictable").DynamicTable();
+            }
+        }
+
+        // Retrieve module preferences
+        var modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
+
+        // Init modulePrefs object
+        if (modulePrefs === null) {
+            modulePrefs = {};
+        }
+
+        // Init modulePrefs for current module
+        if (modulePrefs[loris.TestName] === undefined) {
+            modulePrefs[loris.TestName] = {};
+            modulePrefs[loris.TestName].rowsPerPage = this.state.rowsPerPage;
+        }
+
+        // Set rows per page
+        var rowsPerPage = modulePrefs[loris.TestName].rowsPerPage;
+        this.setState({
+            RowsPerPage: rowsPerPage
+        });
+
+        // Make prefs accesible within component
+        this.modulePrefs = modulePrefs;
+    },
+    componentDidUpdate: function () {
         if (jQuery.fn.DynamicTable) {
             if (this.props.freezeColumn) {
                 $("#dynamictable").DynamicTable({ "freezeColumn": this.props.freezeColumn });
@@ -21,16 +51,7 @@ var StaticDataTable = React.createClass({
             }
         }
     },
-    componentDidUpdate: function componentDidUpdate() {
-        if (jQuery.fn.DynamicTable) {
-            if (this.props.freezeColumn) {
-                $("#dynamictable").DynamicTable({ "freezeColumn": this.props.freezeColumn });
-            } else {
-                $("#dynamictable").DynamicTable();
-            }
-        }
-    },
-    getInitialState: function getInitialState() {
+    getInitialState: function () {
         return {
             'PageNumber': 1,
             'SortColumn': -1,
@@ -38,7 +59,7 @@ var StaticDataTable = React.createClass({
             'RowsPerPage': 20
         };
     },
-    getDefaultProps: function getDefaultProps() {
+    getDefaultProps: function () {
         return {
             Headers: [],
             Data: {},
@@ -46,12 +67,12 @@ var StaticDataTable = React.createClass({
             Filter: {}
         };
     },
-    changePage: function changePage(pageNo) {
+    changePage: function (pageNo) {
         this.setState({
             PageNumber: pageNo
         });
     },
-    setSortColumn: function setSortColumn(colNumber) {
+    setSortColumn: function (colNumber) {
         var that = this;
         return function (e) {
             if (that.state.SortColumn === colNumber) {
@@ -65,13 +86,22 @@ var StaticDataTable = React.createClass({
             }
         };
     },
-    changeRowsPerPage: function changeRowsPerPage(val) {
+    changeRowsPerPage: function (val) {
+        var rowsPerPage = val.target.value;
+        var modulePrefs = this.modulePrefs;
+
+        // Save current selection
+        modulePrefs[loris.TestName].rowsPerPage = rowsPerPage;
+
+        // Update localstorage
+        localStorage.setItem('modulePrefs', JSON.stringify(modulePrefs));
+
         this.setState({
-            'RowsPerPage': val.target.value,
+            'RowsPerPage': rowsPerPage,
             'PageNumber': 1
         });
     },
-    downloadCSV: function downloadCSV() {
+    downloadCSV: function () {
         var headers = this.props.Fields,
             csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
@@ -96,7 +126,7 @@ var StaticDataTable = React.createClass({
             identifiers: this.props.RowNameMap
         });
     },
-    countFilteredRows: function countFilteredRows() {
+    countFilteredRows: function () {
 
         var filterMatchCount = 0;
         var filterValuesCount = this.props.Filter ? Object.keys(this.props.Filter).length : 0;
@@ -126,7 +156,7 @@ var StaticDataTable = React.createClass({
 
         return filterMatchCount === 0 ? tableData.length : filterMatchCount;
     },
-    toCamelCase: function toCamelCase(str) {
+    toCamelCase: function (str) {
         return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
             if (Number(match) === 0) return "";
             return index === 0 ? match.toLowerCase() : match.toUpperCase();
@@ -142,7 +172,7 @@ var StaticDataTable = React.createClass({
      * @param data
      * @returns {boolean}
      */
-    hasFilterKeyword: function hasFilterKeyword(headerData, data) {
+    hasFilterKeyword: function (headerData, data) {
 
         var header = this.toCamelCase(headerData);
         var filterData = this.props.Filter[header] ? this.props.Filter[header] : null;
@@ -167,7 +197,7 @@ var StaticDataTable = React.createClass({
 
         return false;
     },
-    render: function render() {
+    render: function () {
         if (this.props.Data == null || this.props.Data.length == 0) {
             return React.createElement(
                 "div",
@@ -301,7 +331,7 @@ var StaticDataTable = React.createClass({
                 // Get custom cell formatting if available
                 if (this.props.getFormattedCell) {
                     data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[i].RowIdx], this.props.Headers);
-                    curRow.push({ data: data });
+                    curRow.push({ data });
                 } else {
                     curRow.push(React.createElement(
                         "td",
@@ -331,7 +361,7 @@ var StaticDataTable = React.createClass({
 
         var RowsPerPageDropdown = React.createElement(
             "select",
-            { className: "input-sm perPage", onChange: this.changeRowsPerPage },
+            { className: "input-sm perPage", onChange: this.changeRowsPerPage, value: this.state.RowsPerPage },
             React.createElement(
                 "option",
                 null,

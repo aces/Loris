@@ -10,12 +10,35 @@ var StaticDataTable = React.createClass({
     },
     componentDidMount: function() {
         if (jQuery.fn.DynamicTable) {
-            if(this.props.freezeColumn) {
-                $("#dynamictable").DynamicTable({"freezeColumn" : this.props.freezeColumn});
-            } else {
-                $("#dynamictable").DynamicTable();
-            }
+          if (this.props.freezeColumn) {
+            $("#dynamictable").DynamicTable({"freezeColumn": this.props.freezeColumn});
+          } else {
+            $("#dynamictable").DynamicTable();
+          }
         }
+
+        // Retrieve module preferences
+        var modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
+
+        // Init modulePrefs object
+        if (modulePrefs === null) {
+          modulePrefs = {};
+        }
+
+        // Init modulePrefs for current module
+        if (modulePrefs[loris.TestName] === undefined) {
+          modulePrefs[loris.TestName] = {};
+          modulePrefs[loris.TestName].rowsPerPage = this.state.rowsPerPage;
+        }
+
+        // Set rows per page
+        var rowsPerPage = modulePrefs[loris.TestName].rowsPerPage;
+        this.setState({
+          RowsPerPage: rowsPerPage
+        });
+
+        // Make prefs accesible within component
+        this.modulePrefs = modulePrefs;
     },
     componentDidUpdate: function() {
         if (jQuery.fn.DynamicTable) {
@@ -62,10 +85,19 @@ var StaticDataTable = React.createClass({
         }
     },
     changeRowsPerPage: function(val) {
-       this.setState({
-           'RowsPerPage' : val.target.value,
-           'PageNumber' : 1
-       });
+        var rowsPerPage = val.target.value;
+        var modulePrefs = this.modulePrefs;
+
+        // Save current selection
+        modulePrefs[loris.TestName].rowsPerPage = rowsPerPage;
+
+        // Update localstorage
+        localStorage.setItem('modulePrefs', JSON.stringify(modulePrefs));
+
+        this.setState({
+          'RowsPerPage': rowsPerPage,
+          'PageNumber': 1
+        });
     },
     downloadCSV: function() {
         var headers = this.props.Fields,
@@ -300,7 +332,7 @@ var StaticDataTable = React.createClass({
         }
 
         var RowsPerPageDropdown = (
-            <select className="input-sm perPage" onChange={this.changeRowsPerPage}>
+            <select className="input-sm perPage" onChange={this.changeRowsPerPage} value={this.state.RowsPerPage}>
                 <option>20</option>
                 <option>50</option>
                 <option>100</option>
