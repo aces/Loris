@@ -70,7 +70,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
                      't.ArchiveLocation as Archive_Location',
                      "'View Details' as Metadata",
                      "'View Images' as MRI_Browser",
-            // For constructing links, not in headers array
+                     // For constructing links, not in headers array
                      's.CenterID as site',
                      't.TarchiveID as TarchiveID',
                      's.ID as SessionID',
