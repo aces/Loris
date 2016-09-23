@@ -1923,7 +1923,7 @@ CREATE TABLE `SNP` (
 --
 DROP TABLE IF EXISTS `SNP_candidate_rel`;
 CREATE TABLE `SNP_candidate_rel` (
-  `RelationID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `SNPID` bigint(20) NOT NULL DEFAULT '0',
   `CandID` int(6) NOT NULL DEFAULT '0',
   `AlleleA` enum('A','C','T','G') DEFAULT NULL,
@@ -1934,7 +1934,7 @@ CREATE TABLE `SNP_candidate_rel` (
   `Validated` enum('0','1') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
   `PlatformID` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`RelationID`),
+  PRIMARY KEY (`ID`),
   KEY `fk_SNP_candidate_rel_2` (`CandID`),
   KEY `fk_SNP_candidate_rel_1_idx` (`SNPID`),
   CONSTRAINT `fk_SNP_candidate_rel_1` FOREIGN KEY (`SNPID`) REFERENCES `SNP` (`SNPID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
