@@ -7,7 +7,7 @@
  *	This is the React class for loading in a previously
  *	made instrument.
  */
-LoadPane = React.createClass({
+var LoadPane = React.createClass({
 	getInitialState: function() {
 	 	return {
 	 		// This is used to alert the user if the file was
@@ -89,7 +89,7 @@ LoadPane = React.createClass({
 /**
  *	This is the React class for saving the instrument
  */
-SavePane = React.createClass({
+var SavePane = React.createClass({
 	getInitialState: function() {
 	 	return {
 	 		fileName: '',
@@ -163,7 +163,7 @@ SavePane = React.createClass({
  *  This is the React class displaying the questions
  *  in the table.
  */
-DisplayElements = React.createClass({
+var DisplayElements = React.createClass({
   // Used for the drag and drop rows
   getPlaceholder: function() {
     if (!this.placeholder) {
@@ -305,7 +305,7 @@ DisplayElements = React.createClass({
 /**
  *	This is the React class for building the instrument
  */
-BuildPane = React.createClass({
+var BuildPane = React.createClass({
 	getInitialState: function() {
 	 	return {
 	 		// Keep track of the page groups
@@ -458,8 +458,7 @@ BuildPane = React.createClass({
 			                );
 			        	}));
 		return (
-			<TabPane Title="Build your Instrument"
-                TabId={this.props.TabId} DefaultTab={true}>
+			<TabPane Title="Build your Instrument" TabId={this.props.TabId}>
                 	<div className="form-group col-xs-12">
 					    <label for="selected-input" className="col-xs-2 col-sm-1 control-label">Page:</label>
 			            <div className="col-sm-4">
@@ -492,7 +491,7 @@ BuildPane = React.createClass({
 /**
  *	This is the React class for the instrument builder
  */
-InstrumentBuilderApp = React.createClass({
+var InstrumentBuilderApp = React.createClass({
 	// Save the instrument
 	saveInstrument: function(){
 		// Call to external function, passing it the save information and the elements
@@ -508,53 +507,53 @@ InstrumentBuilderApp = React.createClass({
 		// Set the alert state to success in the loadPane
 		this.refs.loadPane.setAlert('success');
 	},
-	// Render the HTML
-	render: function () {
-		var tabs = [];
-		tabs.push(
-			<LoadPane
-				TabId="Load"
-				ref="loadPane"
-				loadCallback={this.loadCallback}
-			/>
-		);
-		tabs.push(
-			<BuildPane
-				TabId="Build"
-				ref="buildPane"
-			/>
-		);
-		tabs.push(
-			<SavePane
-				TabId="Save"
-				ref="savePane"
-				save={this.saveInstrument}
-			/>
-		);
+  // Render the HTML
+  render: function () {
+    var tabs = [];
+    tabs.push(
+      <LoadPane
+        TabId="Load"
+        ref="loadPane"
+        loadCallback={this.loadCallback}
+      />
+    );
+    tabs.push(
+      <BuildPane
+        TabId="Build"
+        ref="buildPane"
+      />
+    );
+    tabs.push(
+      <SavePane
+        TabId="Save"
+        ref="savePane"
+        save={this.saveInstrument}
+      />
+    );
 
-        var tabList = [
-                        {
-                            "id" : "Load",
-                            "label" : "Load"
-                        },
-                        {
-                            "id" : "Build",
-                            "label" : "Build"
-                        },
-                        {
-                            "id" : "Save",
-                            "label" : "Save"
-                        }
-        ];
+    var tabList = [
+      {
+          "id" : "Load",
+          "label" : "Load"
+      },
+      {
+          "id" : "Build",
+          "label" : "Build"
+      },
+      {
+          "id" : "Save",
+          "label" : "Save"
+      }
+    ];
 
-		return (
-			<div>
-                <Tabs tabs={tabList} defaultTab="Build">
-                    {tabs}
-                </Tabs>
-			</div>
-		)
-	}
+    return (
+      <div>
+        <Tabs tabs={tabList} defaultTab="Build">
+            {tabs}
+        </Tabs>
+      </div>
+    );
+  }
 });
 
 RInstrumentBuilderApp = React.createFactory(InstrumentBuilderApp);

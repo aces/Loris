@@ -7,7 +7,7 @@
  *	This is the React class for loading in a previously
  *	made instrument.
  */
-LoadPane = React.createClass({
+var LoadPane = React.createClass({
 	displayName: 'LoadPane',
 
 	getInitialState: function () {
@@ -119,7 +119,7 @@ LoadPane = React.createClass({
 /**
  *	This is the React class for saving the instrument
  */
-SavePane = React.createClass({
+var SavePane = React.createClass({
 	displayName: 'SavePane',
 
 	getInitialState: function () {
@@ -217,7 +217,7 @@ SavePane = React.createClass({
  *  This is the React class displaying the questions
  *  in the table.
  */
-DisplayElements = React.createClass({
+var DisplayElements = React.createClass({
 	displayName: 'DisplayElements',
 
 	// Used for the drag and drop rows
@@ -388,7 +388,7 @@ DisplayElements = React.createClass({
 /**
  *	This is the React class for building the instrument
  */
-BuildPane = React.createClass({
+var BuildPane = React.createClass({
 	displayName: 'BuildPane',
 
 	getInitialState: function () {
@@ -551,8 +551,7 @@ BuildPane = React.createClass({
 		});
 		return React.createElement(
 			TabPane,
-			{ Title: 'Build your Instrument',
-				TabId: this.props.TabId, DefaultTab: true },
+			{ Title: 'Build your Instrument', TabId: this.props.TabId },
 			React.createElement(
 				'div',
 				{ className: 'form-group col-xs-12' },
@@ -604,7 +603,7 @@ BuildPane = React.createClass({
 /**
  *	This is the React class for the instrument builder
  */
-InstrumentBuilderApp = React.createClass({
+var InstrumentBuilderApp = React.createClass({
 	displayName: 'InstrumentBuilderApp',
 
 	// Save the instrument
