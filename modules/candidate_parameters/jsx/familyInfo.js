@@ -301,7 +301,6 @@ var FamilyInfo = React.createClass(
       formData.append('familyDCCID', familyMemberID);
       for (var field in familyMembers) {
         if (familyMembers.hasOwnProperty(field)) {
-          console.log(familyMembers[field]);
           if (familyMembers[field].ref !== null) {
             var reference = familyMembers[field].ref.split('_', 1);
             if (reference === familyID) {

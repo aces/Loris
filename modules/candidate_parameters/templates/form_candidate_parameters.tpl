@@ -76,7 +76,6 @@
     }
     else {
         $('#proband-info-tab').hide();
-        console.log(loris.config('useProband'));
     }
 
     if (loris.config('useFamilyID') === "true") {
