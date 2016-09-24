@@ -340,11 +340,13 @@ var ConsentStatus = React.createClass({
         });
       },
       error: function (err) {
-        var errorMessage = JSON.parse(err.responseText).message;
-        self.setState({
-          updateResult: "error",
-          errorMessage: errorMessage
-        });
+        if (err.responseText !== "") {
+          var errorMessage = JSON.parse(err.responseText).message;
+          self.setState({
+            updateResult: "error",
+            errorMessage: errorMessage
+          });
+        }
       }
 
     });

@@ -285,14 +285,14 @@ var CandidateInfo = React.createClass(
           },
           error: function(err) {
             if (err.responseText !== "") {
-                var errorMessage = JSON.parse(err.responseText).message;
+              var errorMessage = JSON.parse(err.responseText).message;
+              self.setState(
+                {
+                  updateResult: "error",
+                  errorMessage: errorMessage
+                }
+                );
             }
-            self.setState(
-              {
-                updateResult: "error",
-                errorMessage: errorMessage
-              }
-                        );
           }
 
         }
