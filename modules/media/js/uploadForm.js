@@ -15,7 +15,6 @@
 var MediaUploadForm = React.createClass({
   displayName: 'MediaUploadForm',
 
-
   propTypes: {
     DataURL: React.PropTypes.string.isRequired,
     action: React.PropTypes.string.isRequired
@@ -56,7 +55,7 @@ var MediaUploadForm = React.createClass({
     if (this.state.error !== undefined) {
       return React.createElement(
         'div',
-        { className: 'alert alert-danger text-center' },
+        {className: 'alert alert-danger text-center'},
         React.createElement(
           'strong',
           null,
@@ -69,14 +68,34 @@ var MediaUploadForm = React.createClass({
     if (!this.state.isLoaded) {
       return React.createElement(
         'button',
-        { className: 'btn-info has-spinner' },
+        {className: 'btn-info has-spinner'},
         'Loading',
         React.createElement('span', {
-          className: 'glyphicon glyphicon-refresh glyphicon-refresh-animate' })
+          className: 'glyphicon glyphicon-refresh glyphicon-refresh-animate'})
       );
     }
 
-    var helpText = "File name should begin with " + "<b>[PSCID]_[Visit Label]_[Instrument]</b><br> For example, " + "for candidate <i>ABC123</i>, visit <i>V1</i> for " + "<i>Body Mass Index</i> the file name should be prefixed by: " + "<b>ABC123_V1_Body_Mass_Index</b>";
+    var helpText = ["File name should begin with ", React.createElement(
+      'b',
+      null,
+      '[PSCID]_[Visit Label]_[Instrument]'
+    ), React.createElement('br', null), " For example, for candidate ", React.createElement(
+      'i',
+      null,
+      'ABC123'
+    ), ", visit ", React.createElement(
+      'i',
+      null,
+      'V1'
+    ), " for ", React.createElement(
+      'i',
+      null,
+      'Body Mass Index'
+    ), " the file name should be prefixed by: ", React.createElement(
+      'b',
+      null,
+      'ABC123_V1_Body_Mass_Index'
+    )];
     var alertMessage = "";
     var alertClass = "alert text-center hide";
 
@@ -96,7 +115,7 @@ var MediaUploadForm = React.createClass({
       null,
       React.createElement(
         'div',
-        { className: alertClass, role: 'alert', ref: 'alert-message' },
+        {className: alertClass, role: 'alert', ref: 'alert-message'},
         alertMessage
       ),
       React.createElement(
@@ -113,7 +132,10 @@ var MediaUploadForm = React.createClass({
           'Upload a media file'
         ),
         React.createElement('br', null),
-        React.createElement(HelpTextElement, { label: 'Note', html: true, text: helpText }),
+        React.createElement(StaticElement, {
+          label: 'Note',
+          text: helpText
+        }),
         React.createElement(SelectElement, {
           name: 'pscid',
           label: 'PSCID',
@@ -168,7 +190,7 @@ var MediaUploadForm = React.createClass({
           label: 'File to upload',
           required: true
         }),
-        React.createElement(ButtonElement, { label: 'Upload File' })
+        React.createElement(ButtonElement, {label: 'Upload File'})
       )
     );
   },
@@ -238,7 +260,7 @@ var MediaUploadForm = React.createClass({
       processData: false,
       xhr: function xhr() {
         var xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener("progress", function (evt) {
+        xhr.upload.addEventListener("progress", function(evt) {
           if (evt.lengthComputable) {
             var progressbar = $("#progressbar");
             var progresslabel = $("#progresslabel");
@@ -265,7 +287,7 @@ var MediaUploadForm = React.createClass({
 
         // Iterates through child components and resets state
         // to initial state in order to clear the form
-        Object.keys(formRefs).map(function (ref) {
+        Object.keys(formRefs).map(function(ref) {
           if (formRefs[ref].state && formRefs[ref].state.value) {
             formRefs[ref].state.value = "";
           }
@@ -315,7 +337,7 @@ var MediaUploadForm = React.createClass({
       file: null
     };
 
-    Object.keys(requiredFields).map(function (field) {
+    Object.keys(requiredFields).map(function(field) {
       if (formData[field]) {
         requiredFields[field] = formData[field];
       } else if (formRefs[field]) {
@@ -360,7 +382,7 @@ var MediaUploadForm = React.createClass({
     }
 
     var alertMsg = this.refs["alert-message"].getDOMNode();
-    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function () {
+    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
       self.setState({
         uploadResult: null
       });

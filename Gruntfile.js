@@ -43,7 +43,8 @@ module.exports = function(grunt) {
                     'modules/candidate_parameters/js/familyInfo.js': 'modules/candidate_parameters/jsx/familyInfo.js',
                     'modules/candidate_parameters/js/participantStatus.js': 'modules/candidate_parameters/jsx/participantStatus.js',
                     'modules/candidate_parameters/js/probandInfo.js': 'modules/candidate_parameters/jsx/probandInfo.js',
-                    'modules/server_processes_manager/js/columnFormatter.js': 'modules/server_processes_manager/jsx/columnFormatter.js'
+                    'modules/server_processes_manager/js/columnFormatter.js': 'modules/server_processes_manager/jsx/columnFormatter.js',
+                    'modules/mri_violations/js/mri_protocol_violations_columnFormatter.js': 'modules/mri_violations/jsx/mri_protocol_violations_columnFormatter.js'
                 }
             }
         },

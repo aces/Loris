@@ -1,5 +1,3 @@
-'use strict';
-
 /* exported formatColumn */
 
 /**
@@ -12,60 +10,30 @@
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
 
-  // If a column if set as hidden, don't display it
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
   }
-
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
   rowHeaders.forEach(function (header, index) {
     row[header] = rowData[index];
   }, this);
 
-  if (column === 'Metadata') {
-    var metadataURL = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" + row['TarchiveID'];
+  if (column === 'PatientName') {
+    var url = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" + row["TarchiveID"];
     return React.createElement(
-      'td',
+      "td",
       null,
       React.createElement(
-        'a',
-        { href: metadataURL },
+        "a",
+        { href: url },
         cell
       )
-    );
-  }
-
-  if (column === 'MRI Browser') {
-    if (row['SessionID'] === null || row['SessionID'] === '') {
-      return React.createElement(
-        'td',
-        null,
-        ' '
-      );
-    }
-    var mrlURL = loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row['SessionID'];
-    return React.createElement(
-      'td',
-      null,
-      React.createElement(
-        'a',
-        { href: mrlURL },
-        cell
-      )
-    );
-  }
-
-  if (cell === "INVALID - HIDDEN") {
-    return React.createElement(
-      'td',
-      { className: 'text-danger' },
-      cell
     );
   }
 
   return React.createElement(
-    'td',
+    "td",
     null,
     cell
   );
