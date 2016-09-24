@@ -261,7 +261,9 @@ var CandidateInfo = React.createClass({
         });
       },
       error: function (err) {
-        var errorMessage = JSON.parse(err.responseText).message;
+        if (err.responseText !== "") {
+          var errorMessage = JSON.parse(err.responseText).message;
+        }
         self.setState({
           updateResult: "error",
           errorMessage: errorMessage

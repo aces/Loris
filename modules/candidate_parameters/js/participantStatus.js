@@ -82,11 +82,7 @@ var ParticipantStatus = React.createClass({
 
     var required = this.state.Data.required;
     var subOptions = [];
-    var setSuboptionsSelect = false;
     var suboptionsRequired = false;
-    if (this.state.Data.participant_suboptions !== null) {
-      setSuboptionsSelect = true;
-    }
     for (var key in required) {
       if (required.hasOwnProperty(key)) {
         var participantStatus = this.state.formData.participant_status;
@@ -95,7 +91,6 @@ var ParticipantStatus = React.createClass({
         }
         if (required[key].ID === participantStatus) {
           subOptions = this.state.Data.parentIDs[participantStatus];
-          setSuboptionsSelect = true;
           suboptionsRequired = true;
           break;
         }
