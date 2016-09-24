@@ -14,26 +14,29 @@
  */
 if (isset($_POST['tab'])) {
     $tab = $_POST['tab'];
+
+    $db   =& Database::singleton();
+    $user =& User::singleton();
+
     if ($tab == "candidateInfo") {
-        editCandInfoFields();
+        editCandInfoFields($db, $user);
     } else if ($tab == "probandInfo") {
-        editProbandInfoFields();
+        editProbandInfoFields($db, $user);
     } else if ($tab == "familyInfo") {
-        editFamilyInfoFields();
+        editFamilyInfoFields($db, $user);
     } else if ($tab == "deleteFamilyMember") {
-        deleteFamilyMember();
+        deleteFamilyMember($db, $user);
     } else if ($tab == "participantStatus") {
-        editParticipantStatusFields();
+        editParticipantStatusFields($db, $user);
     } else if ($tab == "consentStatus") {
-        editConsentStatusFields();
+        editConsentStatusFields($db, $user);
     } else {
         header("HTTP/1.1 404 Not Found");
         exit;
     }
 }
 
-$db   =& Database::singleton();
-$user =& User::singleton();
+
 
 /**
  * Handles the updating of Candidate Info
@@ -42,9 +45,9 @@ $user =& User::singleton();
  *
  * @return void
  */
-function editCandInfoFields()
+function editCandInfoFields($db, $user)
 {
-    if (!$this->user->hasPermission('candidate_parameter_edit')) {
+    if (!$user->hasPermission('candidate_parameter_edit')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
@@ -65,7 +68,7 @@ function editCandInfoFields()
                      'flagged_other'        => $other,
                     ];
 
-    $this->db->update('candidate', $updateValues, ['CandID' => $candID]);
+    $db->update('candidate', $updateValues, ['CandID' => $candID]);
 
     foreach (array_keys($_POST) as $field) {
         if (!empty($_POST[$field])) {
@@ -79,7 +82,7 @@ function editCandInfoFields()
                                  'InsertTime'      => time(),
                                 ];
 
-                $result = $this->db->pselectOne(
+                $result = $db->pselectOne(
                     'SELECT * from parameter_candidate 
                     WHERE CandID=:cid 
                     AND ParameterTypeID=:ptid',
@@ -90,9 +93,9 @@ function editCandInfoFields()
                 );
 
                 if (empty($result)) {
-                    $this->db->insert('parameter_candidate', $updateValues);
+                    $db->insert('parameter_candidate', $updateValues);
                 } else {
-                    $this->db->update(
+                    $db->update(
                         'parameter_candidate',
                         $updateValues,
                         [
@@ -113,9 +116,9 @@ function editCandInfoFields()
  *
  * @return void
  */
-function editProbandInfoFields()
+function editProbandInfoFields($db, $user)
 {
-    if (!$this->user->hasPermission('candidate_parameter_edit')) {
+    if (!$user->hasPermission('candidate_parameter_edit')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
@@ -131,7 +134,7 @@ function editProbandInfoFields()
                      'ProbandDoB'    => $dob,
                     ];
 
-    $this->db->update('candidate', $updateValues, ['CandID' => $candID]);
+    $db->update('candidate', $updateValues, ['CandID' => $candID]);
 }
 
 /**
@@ -141,9 +144,9 @@ function editProbandInfoFields()
  *
  * @return void
  */
-function editFamilyInfoFields()
+function editFamilyInfoFields($db, $user)
 {
-    if (!$this->user->hasPermission('candidate_parameter_edit')) {
+    if (!$user->hasPermission('candidate_parameter_edit')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
@@ -156,7 +159,7 @@ function editFamilyInfoFields()
     $relationship  = isset($_POST['Relationship_type']) ?
         $_POST['Relationship_type'] : null;
 
-    $familyID = $this->db->pselectOne(
+    $familyID = $db->pselectOne(
         "SELECT FamilyID from family WHERE CandID=:candid",
         array('candid' => $candID)
     );
@@ -172,7 +175,7 @@ function editFamilyInfoFields()
 
         if ($familyID != null) {
 
-            $siblingID = $this->db->pselectOne(
+            $siblingID = $db->pselectOne(
                 "SELECT ID from family WHERE CandID=:candid and FamilyID=:familyid",
                 array(
                  'candid'   => $siblingCandID,
@@ -181,22 +184,22 @@ function editFamilyInfoFields()
             );
 
             if ($siblingID == null) {
-                $this->db->insert('family', $updateValues);
+                $db->insert('family', $updateValues);
             } else {
-                $this->db->update('family', $updateValues, ['ID' => $siblingID]);
+                $db->update('family', $updateValues, ['ID' => $siblingID]);
             }
         } else {
-            $familyID    = $this->db->pselectOne(
+            $familyID    = $db->pselectOne(
                 "SELECT max(FamilyID) from family",
                 array()
             );
             $newFamilyID = $familyID + 1;
 
             $updateValues['FamilyID'] = $newFamilyID;
-            $this->db->insert('family', $updateValues);
+            $db->insert('family', $updateValues);
 
             $updateValues['CandID'] = $candID;
-            $this->db->insert('family', $updateValues);
+            $db->insert('family', $updateValues);
         }
     }
 
@@ -211,7 +214,7 @@ function editFamilyInfoFields()
 
     while ($siblingCandID != null ) {
 
-        $siblingID = $this->db->pselectOne(
+        $siblingID = $db->pselectOne(
             "SELECT ID from family WHERE CandID=:candid and FamilyID=:familyid",
             array(
              'candid'   => $siblingCandID,
@@ -225,7 +228,7 @@ function editFamilyInfoFields()
                          'FamilyID'          => $familyID,
                         ];
 
-        $this->db->update('family', $updateValues, ['ID' => $siblingID]);
+        $db->update('family', $updateValues, ['ID' => $siblingID]);
 
         $i++;
     }
@@ -238,9 +241,9 @@ function editFamilyInfoFields()
  *
  * @return void
  */
-function deleteFamilyMember()
+function deleteFamilyMember($db, $user)
 {
-    if (!$this->user->hasPermission('candidate_parameter_edit')) {
+    if (!$user->hasPermission('candidate_parameter_edit')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
@@ -248,7 +251,7 @@ function deleteFamilyMember()
     $candID         = $_POST['candID'];
     $familyMemberID = $_POST['familyDCCID'];
 
-    $familyID = $this->db->pselectOne(
+    $familyID = $db->pselectOne(
         'SELECT FamilyID 
         FROM family 
         WHERE CandID=:cid',
@@ -260,7 +263,7 @@ function deleteFamilyMember()
               'CandID'   => $familyMemberID,
              ];
 
-    $this->db->delete('family', $where);
+    $db->delete('family', $where);
 
 }
 
@@ -271,9 +274,9 @@ function deleteFamilyMember()
  *
  * @return void
  */
-function editParticipantStatusFields()
+function editParticipantStatusFields($db, $user)
 {
-    if (!$this->user->hasPermission('candidate_parameter_edit')) {
+    if (!$user->hasPermission('candidate_parameter_edit')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
@@ -302,22 +305,22 @@ function editParticipantStatusFields()
                      'entry_staff'            => $id,
                     ];
 
-    $exists = $this->db->pselectOne(
+    $exists = $db->pselectOne(
         "SELECT * from participant_status WHERE CandID=:candid",
         array('candid' => $candID)
     );
 
     if ($exists === null) {
-        $this->db->insert('participant_status', $updateValues);
+        $db->insert('participant_status', $updateValues);
     } else {
-        $this->db->update(
+        $db->update(
             'participant_status',
             $updateValues,
             ['CandID' => $candID]
         );
     }
 
-    $this->db->insert('participant_status_history', $updateValues);
+    $db->insert('participant_status_history', $updateValues);
 }
 
 /**
@@ -327,9 +330,9 @@ function editParticipantStatusFields()
  *
  * @return void
  */
-function editConsentStatusFields()
+function editConsentStatusFields($db, $user)
 {
-    if (!$this->user->hasPermission('candidate_parameter_edit')) {
+    if (!$user->hasPermission('candidate_parameter_edit')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
     }
@@ -366,32 +369,31 @@ function editConsentStatusFields()
             $toUpdate = true;
         }
         if ($date != null) {
-            $updateValues[$consentType['name' . '_date']] = $date;
+            $updateValues[$consentType['name'] . '_date'] = $date;
             $toUpdate = true;
         }
         if ($withdrawal != null) {
-            $updateValues[$consentType['name' . '_withdrawal']] = $withdrawal;
+            $updateValues[$consentType['name'] . '_withdrawal'] = $withdrawal;
             $toUpdate = true;
         }
 
         if ($toUpdate) {
-
-            $exists = $this->db->pselectOne(
+            $exists = $db->pselectOne(
                 "SELECT * from participant_status WHERE CandID=:candid",
                 array('candid' => $candID)
             );
 
             if ($exists === null) {
-                $this->db->insert('participant_status', $updateValues);
+                $db->insert('participant_status', $updateValues);
             } else {
-                $this->db->update(
+                $db->update(
                     'participant_status',
                     $updateValues,
-                    array('CandID' => $candID)
+                    ['CandID' => $candID]
                 );
             }
 
-            $this->db->insert('consent_info_history', $updateValues);
+            $db->insert('consent_info_history', $updateValues);
         }
     }
 }
