@@ -41,6 +41,9 @@ if (isset($_POST['tab'])) {
 /**
  * Handles the updating of Candidate Info
  *
+ * @param Database $db   database object
+ * @param User     $user user object
+ *
  * @throws DatabaseException
  *
  * @return void
@@ -112,6 +115,9 @@ function editCandInfoFields($db, $user)
 /**
  * Handles the updating of Proband Info
  *
+ * @param Database $db   database object
+ * @param User     $user user object
+ *
  * @throws DatabaseException
  *
  * @return void
@@ -139,6 +145,9 @@ function editProbandInfoFields($db, $user)
 
 /**
  * Handles the updating of Family Info
+ *
+ * @param Database $db   database object
+ * @param User     $user user object
  *
  * @throws DatabaseException
  *
@@ -237,6 +246,9 @@ function editFamilyInfoFields($db, $user)
 /**
  * Handles the deletion of a family member
  *
+ * @param Database $db   database object
+ * @param User     $user user object
+ *
  * @throws DatabaseException
  *
  * @return void
@@ -269,6 +281,9 @@ function deleteFamilyMember($db, $user)
 
 /**
  * Handles the updating of Participant Status
+ *
+ * @param Database $db   database object
+ * @param User     $user user object
  *
  * @throws DatabaseException
  *
@@ -325,6 +340,9 @@ function editParticipantStatusFields($db, $user)
 
 /**
  * Handles the updating of Consent Status
+ *
+ * @param Database $db   database object
+ * @param User     $user user object
  *
  * @throws DatabaseException
  *
