@@ -96,7 +96,7 @@ class NDB_Client
 		FROM Config c
 			JOIN ConfigSettings cs ON (c.ConfigID=cs.ID)
 		WHERE cs.Name=:nm",
-            array("nm" => "clientAdditionalHeaders")
+            array("nm" => "CSPAdditionalHeaders")
         );
         // Content-Security policy for LORIS
         // 1. By default, only allow things that are self-hosted
