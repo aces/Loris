@@ -390,8 +390,7 @@ function getComments($issueID)
                 array('centerID' => $comment['newValue'])
             );
             $comment['newValue'] = $site;
-            $comment['site'] = $comment['centerID'];
-            unset($comment['centerID']);
+            $comment['fieldChanged'] = 'site';
             continue;
         } else if ($comment['fieldChanged'] === 'candID') {
             $PSCID = $db->pselectOne(
@@ -399,8 +398,7 @@ function getComments($issueID)
                 array('candID' => $comment['newValue'])
             );
             $comment['newValue'] = $PSCID;
-            $comment['PSCID'] = $comment['candID'];
-            unset($comment['candID']);
+            $comment['fieldChanged'] = 'PSCID';
             continue;
         } else if ($comment['fieldChanged'] === 'sessionID') {
             $visitLabel = $db->pselectOne(
@@ -408,8 +406,7 @@ function getComments($issueID)
                 array('sessionID' => $comment['newValue'])
             );
             $comment['newValue'] = $visitLabel;
-            $comment['Visit Label'] = $comment['sessionID'];
-            unset($comment['sessionID']);
+            $comment['fieldChanged'] = 'Visit Label';
         }
     }
     return $unformattedComments; //now formatted I guess
