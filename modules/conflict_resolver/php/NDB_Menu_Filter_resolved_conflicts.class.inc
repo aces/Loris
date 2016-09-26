@@ -57,11 +57,11 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         }
 
         $this->columns = array(
-                          'conflicts_resolved.TableName',
-                          'session.CandID',
-                          'candidate.PSCID',
-                          'session.Visit_label',
-                          'conflicts_resolved.ResolutionTimestamp',
+                          'conflicts_resolved.TableName as Instrument',
+                          'session.CandID as CandID',
+                          'candidate.PSCID as PSCID',
+                          'session.Visit_label as Visit_Lable',
+                          'conflicts_resolved.ResolutionTimestamp as Timestamp',
                          );
 
         if ($useProjects) {
@@ -71,11 +71,8 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $this->columns = array_merge(
             $this->columns,
             array(
-             'conflicts_resolved.FieldName',
-             'conflicts_resolved.NewValue',
-             'conflicts_resolved.OldValue1',
-             'conflicts_resolved.OldValue2',
-             'session.CenterID',
+             'conflicts_resolved.FieldName as Question',
+             'conflicts_resolved.OldValue1 as Corrected_Answer',
             )
         );
         $this->query   = " FROM conflicts_resolved
@@ -113,11 +110,11 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         );
 
         $this->headers = array(
-                          'TableName',
+                          'Instrument',
                           'CandID',
                           'PSCID',
                           'Visit_label',
-                          'ResolutionTimestamp',
+                          'Timestamp',
                          );
 
         if ($useProjects) {
@@ -126,8 +123,13 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                 array('candidate.ProjectID' => 'Project')
             );
         }
-
-        $this->headers[] = 'FieldName';
+        $this->headers =array_merge(
+           $this->headers,
+           array(
+                 'Question',
+                 'Correct_Answer',
+                )
+        );
         $con = "conflicts_resolved";
 
         $this->formToFilter = array(
@@ -283,6 +285,21 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         }
 
         return true;
+    }
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/conflict_resolver/js/resolved_conflicts_columnFormatter.js")
+        );
     }
 }
 

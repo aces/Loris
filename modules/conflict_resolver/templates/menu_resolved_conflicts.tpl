@@ -82,70 +82,16 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane active">
-            <table id="LogEntries" border="0" valign="bottom" width="100%">
-                <tr>
-                    <!-- display pagination links -->
-                    <td align="right" id="pageLinks"></td>
-                </tr>
-            </table>
-            <table class="table table-hover table-primary table-bordered dynamictable" border="0">
-                <thead>
-
-                {foreach from=$form.errors item=error}
-                    <tr>
-                        <td nowrap="nowrap" colspan="6" class="error">{$error}</td>
-                    </tr>
-                {/foreach}
-
-                <tr class="info">
-                    <th>No.</th>
-                    {section name=header loop=$headers}
-                        <th><a href="{$baseurl}/conflict_resolver/?submenu=resolved_conflicts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
-                                {if $headers[header].displayName == "TableName"}
-                                    Instrument
-                                {else if $headers[header].displayName == "CandID"}
-                                    DCCID
-                                {else if $headers[header].displayName == "ProjectID"}
-                                    Project
-                                {else if $headers[header].displayName == "FieldName"}
-                                    Question
-                                {else}
-                                    {$headers[header].displayName}
-                                {/if}
-                            </a></th>
-                    {/section}
-                    <th>Corrected Answer</th>
-                </tr>
-                </thead>
-                <tbody>
-                {section name=item loop=$items}
-                <tr>
-                    {section name=piece loop=$items[item]}
-                        <td>
-                            {$items[item][piece].value}
-                        </td>
-                    {/section}
-                </tr>
-                {sectionelse}
-                    <tr>
-                        <tr><td colspan="8">No resolved conflicts found.</td></tr>
-                    </tr>
-                {/section}
-                </tbody>
-            </table>
+            <div class="dynamictable" id="datatable"></div> 
         </div>
     </div>
 </div>
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-       location.href="{$baseurl}/conflict_resolver/?submenu=resolved_conflicts&filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
+//loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/conflict_resolver/?submenu=resolved_conflicts&format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "PSCID"
+  });
+React.render(table, document.getElementById("datatable"));
 </script>
-
