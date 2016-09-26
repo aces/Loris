@@ -11,17 +11,14 @@
 function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (loris.hiddenHeaders.indexOf(column) > -1) {
-    return null;
+     return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
-  rowHeaders.forEach(function (header, index) {
+  rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
-  return React.createElement(
-    "td",
-    null,
-    cell
-  );
+  return <td>{cell}</td>;
+
 }

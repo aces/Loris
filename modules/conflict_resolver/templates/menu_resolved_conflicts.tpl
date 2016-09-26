@@ -87,7 +87,7 @@
     </div>
 </div>
 <script>
-//loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
 var table = RDynamicDataTable({
      "DataURL" : "{$baseurl}/conflict_resolver/?submenu=resolved_conflicts&format=json",
      "getFormattedCell" : formatColumn,

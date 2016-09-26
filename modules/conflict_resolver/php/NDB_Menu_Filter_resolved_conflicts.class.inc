@@ -60,12 +60,12 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                           'conflicts_resolved.TableName as Instrument',
                           'session.CandID as CandID',
                           'candidate.PSCID as PSCID',
-                          'session.Visit_label as Visit_Lable',
+                          'session.Visit_label as Visit_Label',
                           'conflicts_resolved.ResolutionTimestamp as Timestamp',
                          );
 
         if ($useProjects) {
-            $this->columns[] = 'candidate.ProjectID as Project';
+            $this->columns[] = 'Project.Name as Project';
         }
 
         $this->columns = array_merge(
@@ -78,7 +78,9 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $this->query   = " FROM conflicts_resolved
             LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
-            LEFT JOIN candidate ON (candidate.CandID=session.CandID) WHERE 1=1";
+            LEFT JOIN candidate ON (candidate.CandID=session.CandID) 
+            LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
+            WHERE 1=1";
 
         $user = User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
@@ -120,7 +122,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         if ($useProjects) {
             $this->headers = array_merge(
                 $this->headers,
-                array('candidate.ProjectID' => 'Project')
+                array('Project')
             );
         }
         $this->headers =array_merge(
@@ -130,6 +132,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                  'Correct_Answer',
                 )
         );
+        $this->tpl_data['hiddenHeaders'] = json_encode(['Timestamp']);
         $con = "conflicts_resolved";
 
         $this->formToFilter = array(
