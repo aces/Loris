@@ -613,8 +613,8 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
             "SELECT i.*, c.PSCID, s.Visit_label FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
             "LEFT JOIN session s ON (i.sessionID=s.ID) " .
-            "WHERE issueID = $issueID",
-            []
+            "WHERE issueID=:issueID",
+            array('issueID' => $issueID)
         );
         $issueData['commentHistory'] = getComments($issueID);
         $issueData['whoIsWatching'] = getWatching($issueID);
