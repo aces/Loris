@@ -587,16 +587,16 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
         'immediate' => 'Immediate',
     );
 
-    $categories = array(
-        'Behavioural Instruments' => 'Behavioural Instruments',
-        'Behavioural Battery' => 'Behavioural Battery',
-        'Data Entry' => 'Data Entry',
-        'Database Problems' => 'Database Problems',
-        'Examiners' => 'Examiners',
-        'SubprojectID/Project/Plan Changes' => 'SubprojectID' .
-            '/Project/Plan Changes',
-        'Imaging' => 'Imaging'
-    );
+    $unorgCategories = $db -> pselect( "SELECT categoryName
+        FROM issues_categories", []);
+    $categories = array('' => "All");
+    foreach ($unorgCategories as $r_row) {
+        $categoryName = $r_row['categoryName'];
+        if ($categoryName) {
+            $categories[$categoryName] = $categoryName;
+        }
+    }
+
 
     $modules = array();
     $modules_expanded = $db->pselect(

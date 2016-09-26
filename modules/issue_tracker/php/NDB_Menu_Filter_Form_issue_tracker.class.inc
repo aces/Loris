@@ -212,18 +212,15 @@ WHERE Parent IS NOT NULL ORDER BY Label",
             'closed' => 'Closed',
         );
 
-        $categories = array(
-            '' => 'All',
-            'Behavioural Instruments' => 'Behavioural ' .
-                'Instruments',
-            'Behavioural Battery' => 'Behavioural Battery',
-            'Data Entry' => 'Data Entry',
-            'Database Problems' => 'Database Problems',
-            'Examiners' => 'Examiners',
-            'SubprojectID/Project/Plan Changes' => 'SubprojectID/' .
-                'Project/Plan Changes',
-            'Imaging' => 'Imaging',
-        );
+        $unorgCategories = $db -> pselect( "SELECT categoryName
+        FROM issues_categories", []);
+        $categories = array('' => "All");
+        foreach ($unorgCategories as $r_row) {
+            $categoryName = $r_row['categoryName'];
+            if ($categoryName) {
+                $categories[$categoryName] = $categoryName;
+            }
+        }
 
         $dateOptions = array(
             'language' => 'en',
@@ -319,28 +316,6 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         return $query;
     }
 
-
-    /**
-     * Utility function to re-organize query results for selects.
-     * Key and value are equal.
-     *
-     * @param array $queryResult query result
-     * @param string $key key needed to extract appropriate result column
-     *
-     * @return array
-     */
-    function reorganizeQueryResults($queryResult, $key)
-    {
-        $result = array('' => "All");
-        foreach ($queryResult as $r_row) {
-            $resultValue = $r_row[$key];
-            if ($resultValue) {
-                $result[$resultValue] = $resultValue;
-            }
-        }
-        return $result;
-    }
-
     /**
      * Converts this menu filter to an array of the form
      *
@@ -367,6 +342,26 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         return $data;
     }
 
+    /**
+     * Utility function to re-organize query results for selects.
+     * Key and value are equal.
+     *
+     * @param array $queryResult query result
+     * @param string $key key needed to extract appropriate result column
+     *
+     * @return array
+     */
+    function reorganizeQueryResults($queryResult, $key)
+    {
+        $result = array('' => "All");
+        foreach ($queryResult as $r_row) {
+            $resultValue = $r_row[$key];
+            if ($resultValue) {
+                $result[$resultValue] = $resultValue;
+            }
+        }
+        return $result;
+    }
 
     /**
      * Include the column formatter
