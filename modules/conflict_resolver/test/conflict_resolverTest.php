@@ -187,7 +187,8 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $keywordElement->sendkeys('TestTestTest');
          //click show data button
          $this->webDriver->findElement(WebDriverBy::ID("testShowData1"))->click();
-         $this->safeGet($this->url . "/conflict_resolver/?submenu=resolved_conflicts&format=json");
+         $this->safeGet($this->url .
+                    "/conflict_resolver/?submenu=resolved_conflicts&format=json");
          $bodyText = $this->webDriver->getPageSource();
          $this->assertContains("TestTestTest", $bodyText);
     }
