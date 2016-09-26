@@ -42,13 +42,13 @@ CREATE TABLE `issues` (
   `status` enum('new','acknowledged','feedback','assigned','resolved','closed') NOT NULL DEFAULT 'new',
   `priority` enum('low','normal','high','urgent','immediate') NOT NULL DEFAULT 'low',
   `module` int(10) unsigned DEFAULT NULL,
-  `category` enum('Behavioural Instruments','Behavioural Battery','Data Entry','Database Problems','Examiners','SubprojectID/Project/Plan Changes') DEFAULT NULL,
   `dateCreated` datetime DEFAULT NULL,
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `lastUpdatedBy` varchar(255) DEFAULT NULL,
   `sessionID` int(10) unsigned DEFAULT NULL,
   `centerID` tinyint(2) unsigned DEFAULT NULL,
   `candID` int(6) DEFAULT NULL,
+  `category` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`issueID`),
   KEY `fk_issues_1` (`reporter`),
   KEY `fk_issues_2` (`assignee`),
@@ -57,13 +57,13 @@ CREATE TABLE `issues` (
   KEY `fk_issues_5` (`centerID`),
   KEY `fk_issues_6` (`lastUpdatedBy`),
   KEY `fk_issues_8` (`category`),
+  CONSTRAINT `fk_issues_8` FOREIGN KEY (`category`) REFERENCES `issues_categories` (`categoryName`),
   CONSTRAINT `fk_issues_1` FOREIGN KEY (`reporter`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_2` FOREIGN KEY (`assignee`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_3` FOREIGN KEY (`candID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `fk_issues_4` FOREIGN KEY (`sessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `fk_issues_5` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
-  CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`),
-  CONSTRAINT `fk_issues_8` FOREIGN KEY (`category`) REFERENCES `issues_categories` (`categoryName`)
+  CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- issues_history table
