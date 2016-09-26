@@ -126,11 +126,11 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             );
         }
         $this->headers =array_merge(
-           $this->headers,
-           array(
-                 'Question',
-                 'Correct_Answer',
-                )
+            $this->headers,
+            array(
+             'Question',
+             'Correct_Answer',
+            )
         );
         $this->tpl_data['hiddenHeaders'] = json_encode(['Timestamp']);
         $con = "conflicts_resolved";
@@ -299,9 +299,10 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
+        $url     = "/conflict_resolver/js/resolved_conflicts_columnFormatter.js"
         return array_merge(
             $deps,
-            array($baseURL . "/conflict_resolver/js/resolved_conflicts_columnFormatter.js")
+            array($baseURL . $url)
         );
     }
 }
