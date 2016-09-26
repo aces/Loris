@@ -126,7 +126,6 @@ function editIssue()
         $db->replace('issues_watching', $nowWatching);
     }
 
-    error_log($_POST['watching']);
     //adding editor to the watching table unless they don't want to be added.
     if ($_POST['watching'] == 'Yes') {
         $nowWatching = array(
@@ -413,7 +412,6 @@ function getComments($issueID)
             unset($comment['sessionID']);
         }
     }
-    error_log(json_encode($unformattedComments));
     return $unformattedComments; //now formatted I guess
 
 }

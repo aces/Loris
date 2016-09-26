@@ -128,10 +128,9 @@ class NDB_Form_Issue_Tracker extends NDB_Form
             return true;
         }
 
-        //you could do this query after checking for other conditions
         $issueData = $db->pselectRow(
-            "SELECT centerID FROM issues WHERE issueID = $issueID",
-            []
+            "SELECT centerID FROM issues WHERE issueID=:issueID",
+            ['issueID' => $issueID]
         );
 
         if (($issueData['centerID'] == $user->getData('CenterID'))

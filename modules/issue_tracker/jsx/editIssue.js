@@ -440,13 +440,6 @@ var IssueEditForm = React.createClass(
 
             var dataURL = this.props.DataURL;
 
-            // replacing with the new issueID value
-            if (this.state.isNewIssue) {
-                var dataURL = this.props.DataURL;
-                dataURL = dataURL.substring(0, dataURL.length - 2);
-                dataURL = dataURL + this.state.issueID.toString();
-            }
-
             $.ajax(
                 dataURL,
                 {
@@ -530,8 +523,6 @@ var IssueEditForm = React.createClass(
             var formRefs = this.refs;
             var formData = new FormData();
             var issueData = this.state.issueData;
-
-            console.log(myFormData);
 
             // Validate the form
             if (!this.isValidForm(formRefs, myFormData)) {
