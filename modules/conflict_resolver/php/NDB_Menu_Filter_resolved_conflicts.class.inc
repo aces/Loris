@@ -300,7 +300,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         $urls    = $baseURL .
-                "/conflict_resolver/js/resolved_conflicts_columnFormatter.js"
+                "/conflict_resolver/js/resolved_conflicts_columnFormatter.js";
         return array_merge(
             $deps,
             array($urls)
