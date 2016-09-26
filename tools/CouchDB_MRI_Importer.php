@@ -1,4 +1,8 @@
 <?php
+require_once __DIR__ . "/../vendor/autoload.php";
+require_once 'generic_includes.php';
+require_once 'CouchDB.class.inc';
+require_once 'Database.class.inc';
 
 /**
  * Wrapper around CouchDB MRI functions
@@ -545,4 +549,10 @@ class CouchDBMRIImporter
             }
         }
     }
+}
+
+// Don't run if we're doing the unit tests; the unit test will call run.
+if(!class_exists('UnitTestCase')) {
+    $Runner = new CouchDBMRIImporter();
+    $Runner->run();
 }
