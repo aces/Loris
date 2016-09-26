@@ -25,7 +25,15 @@ INSERT IGNORE INTO user_perm_rel (`userID`, `permID`) VALUES (
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='issue_tracker_reporter' AND m.Label='Issue Tracker';
 
--- Issues Table
+-- issuesCategories
+CREATE TABLE `issues_categories` (
+  `categoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `categoryName` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  PRIMARY KEY (`categoryID`),
+  UNIQUE KEY `categoryName` (`categoryName`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=latin1;
+
+-- issuesTable
 CREATE TABLE `issues` (
   `issueID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL DEFAULT '',
@@ -34,7 +42,7 @@ CREATE TABLE `issues` (
   `status` enum('new','acknowledged','feedback','assigned','resolved','closed') NOT NULL DEFAULT 'new',
   `priority` enum('low','normal','high','urgent','immediate') NOT NULL DEFAULT 'low',
   `module` int(10) unsigned DEFAULT NULL,
-  `category` enum('Behavioural Instruments','Behavioural Battery','Data Entry','Database Problems','Examiners','SubprojectID/Project/Plan Changes','Imaging') DEFAULT NULL,
+  `category` enum('Behavioural Instruments','Behavioural Battery','Data Entry','Database Problems','Examiners','SubprojectID/Project/Plan Changes') DEFAULT NULL,
   `dateCreated` datetime DEFAULT NULL,
   `lastUpdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `lastUpdatedBy` varchar(255) DEFAULT NULL,
@@ -48,14 +56,14 @@ CREATE TABLE `issues` (
   KEY `fk_issues_4` (`sessionID`),
   KEY `fk_issues_5` (`centerID`),
   KEY `fk_issues_6` (`lastUpdatedBy`),
-  KEY `fk_issues_7` (`module`),
+  KEY `fk_issues_8` (`category`),
   CONSTRAINT `fk_issues_1` FOREIGN KEY (`reporter`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_2` FOREIGN KEY (`assignee`) REFERENCES `users` (`UserID`),
   CONSTRAINT `fk_issues_3` FOREIGN KEY (`candID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `fk_issues_4` FOREIGN KEY (`sessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `fk_issues_5` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `fk_issues_6` FOREIGN KEY (`lastUpdatedBy`) REFERENCES `users` (`UserID`),
-  CONSTRAINT `fk_issues_7` FOREIGN KEY (`module`) REFERENCES `LorisMenu` (`ID`)
+  CONSTRAINT `fk_issues_8` FOREIGN KEY (`category`) REFERENCES `issues_categories` (`categoryName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 -- issues_history table
