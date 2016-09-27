@@ -417,7 +417,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         }
 
         else{
-            $query = "SELECT COUNT(*), s.ID, s.visit_label, c.PSCID,s.candid, f.SessionID, f.test_name,f.data_entry,f.commentid, t.Full_name FROM session s
+            $query = "SELECT COUNT(*) FROM session s
             JOIN flag f ON (f.sessionid = s.id)
             JOIN candidate c ON (c.candid = s.candid)
             JOIN test_names t ON (t.Test_name = f.Test_name)
