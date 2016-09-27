@@ -144,6 +144,8 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             JOIN flag f ON (f.CommentID=orig.CommentID)
             JOIN session s ON (s.ID=f.SessionID)
             JOIN candidate c ON (c.CandID=s.CandID)
+            LEFT JOIN Project pjct ON (pjct.ProjectID=c.ProjectID)
+            LEFT JOIN psc ON (c.CenterID=psc.CenterID)
             WHERE orig.commentid NOT LIKE 'DDE_%' AND orig.commentid IS NOT NULL
             AND s.active='Y' AND NOT (f.Administration='None')
             AND f.Data_entry='Complete'
@@ -166,13 +168,13 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             's.visit_label as Visit_Label',
         );
         if($useProjects) {
-            $this->columns[] = 'c.ProjectID as Project';
+            $this->columns[] = 'pjct.Name as Project';
         }
 
         $this->columns = array_merge(
             $this->columns,
             array(
-                'c.CenterID as Site',
+                'psc.Name as Site',
                 'c.DOB as Birth_Date',
                 'r.Review_Done as Review_Done',
                 "$isT1Acq as T1_Inserted",
@@ -200,6 +202,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         }
         $this->headers = array_merge($this->headers,
             array(
+                'Site',
                 'Birth_Date',
                 'Review_Done',
                 'T1_Inserted',
@@ -207,11 +210,16 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 'Exclusionary_Status',
                 'SAS',
                 'PVS',
+                'CommentID',
                 'Conflict',
+                'Conflict2',
                 'Finalized',
                 'Comments',
+                'SessionID',
+                'CandID'
             )
-        );
+        );  
+        $this->tpl_data['hiddenHeaders'] = json_encode(['T1_Inserted','CommentID','Conflict2','SessionID','CandID']);
         $this->validFilters = array('c.CandID',
             'r.DICOM_ID',
             's.visit_label',
@@ -381,8 +389,6 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 if ($key == 'Conflict2') {
                     continue;
                 }
-
-
                 $this->tpl_data['items'][$x][$i]['value'] = _makePretty($key, $val);
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
                 if(isset($item['CandID'])) {
@@ -398,5 +404,23 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             }
             $x++;
         }
+    }
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/final_radiological_review/js/columnFormatter.js",
+            )
+        );
     }
 }
