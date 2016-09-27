@@ -68,6 +68,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
              'SessionID'              => '44',
              'uploadAttempt'          => '0',
              'CreateInfo'             => 'NULL',
+             'AcquisitionMetadata'    => 'A really long text that can not be null.'
             )
         );
     }
