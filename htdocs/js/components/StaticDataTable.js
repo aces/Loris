@@ -30,7 +30,7 @@ var StaticDataTable = React.createClass({
         // Init modulePrefs for current module
         if (modulePrefs[loris.TestName] === undefined) {
             modulePrefs[loris.TestName] = {};
-            modulePrefs[loris.TestName].rowsPerPage = this.state.rowsPerPage;
+            modulePrefs[loris.TestName].rowsPerPage = this.state.RowsPerPage;
         }
 
         // Set rows per page
