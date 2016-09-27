@@ -56,6 +56,8 @@ before_script:
     - mkdir -p project smarty/templates_c
     - chmod 777 smarty/templates_c
 
+    - bash .travis.install-mysql-5.7.sh
+
     # Set up the MySQL database, install the Schema, create a MySQL user
     # for the config file, and reset the Loris user's password for testing
     - mysql -e 'CREATE DATABASE LorisTest'
