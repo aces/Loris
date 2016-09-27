@@ -50,7 +50,6 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
              'uploaded_by'   => 'admin',
              'For_site'      => '3',
              'comments'      => 'tester',
-             'multipart'     => 'NULL',
              'EARLI'         => '0',
              'hide_video'    => '0',
              'File_category' => '9999999',
