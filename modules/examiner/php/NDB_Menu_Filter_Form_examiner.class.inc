@@ -302,5 +302,23 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             return true;
         }
     }
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/examiner/js/columnFormatter.js",
+            )
+        );
+    }
 }
 ?>
