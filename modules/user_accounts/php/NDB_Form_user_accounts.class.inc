@@ -191,7 +191,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         // generate new password
         if (!empty($values['NA_Password'])) {
             $values['Password_md5']    = User::newPassword();
-            $values['Password_expiry'] = '0000-00-00';
+            $values['Password_expiry'] = '1990-10-22';
         }
         unset($values['NA_Password']);
 
