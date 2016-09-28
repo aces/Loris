@@ -48,7 +48,7 @@ class ExaminerTest extends LorisIntegrationTest
              'Study_site' => 'Y',
              'StateID'    => '0',
              'Alias'      => 'DDD',
-             'MRI_alias'  => 'TESTTEST',
+             'MRI_alias'  => 'TEST',
             )
         );
     }

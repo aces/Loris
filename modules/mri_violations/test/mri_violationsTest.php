@@ -84,6 +84,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "violations_resolved",
             array(
              'ExtID'         => '1001',
+             'hash'          => 'not null value',
              'TypeTable'     => 'mri_protocol_violated_scans',
              'Resolved'      => 'other'
             )
@@ -92,6 +93,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             "violations_resolved",
             array(
              'ExtID'         => '1002',
+             'hash'          => 'not null value',
              'TypeTable'     => 'MRICandidateErrors',
              'Resolved'      => 'unresolved'
             )
