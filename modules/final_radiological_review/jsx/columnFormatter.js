@@ -20,14 +20,95 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
 
   if (column === 'PSCID') {
-      var url  = loris.BaseURL + "final_radiological_review/final_radiological_review/?identifier=" + row["CommentID"];
+      var url  = loris.BaseURL + "/final_radiological_review/final_radiological_review/?identifier=" + row["CommentID"];
       return <td>
                 <a href ={url}>{cell}</a>
              </td>;
+     }
+  if (column === 'Review Done') {
 
-  }
+     var reviewDone = " ";
 
-  return <td>{cell}</td>;
+     if (row["Review Done"]=='1'){
+         reviewDone = 'Yes';
+        }
+
+     if (row["Review Done"]=='0'){
+         reviewDone = 'No';
+        }
+       return <td>{reviewDone}</td>;
+      }
+  
+  if (column === 'SAS') {
+
+     var sas;
+
+     switch(row["SAS"]) {
+        case "0":
+              sas = "None";
+              break;
+        case "1":
+              sas = "Minimal";
+              break;
+        case "2":
+              sas = "Mild";
+          break;
+        case "3":
+              sas = "Moderate";
+              break;
+        case "4":
+              sas = "Marked";
+              break;
+        default:
+              sas = "Not Answered";
+      
+       }
+
+       return <td>{sas}</td>;
+      }
+
+  if (column === 'PVS') {
+  
+     var pvs;
+
+     switch(row["PVS"]) {
+        case "0":
+              pvs = "None";
+              break;
+        case "1":
+              pvs = "Minimal";
+              break;
+        case "2":
+              pvs = "Mild";
+          break;
+        case "3":
+              pvs = "Moderate";
+              break;
+        case "4":
+              pvs = "Marked";
+              break;
+        default:
+              pvs = "Not Answered";
+
+       }
+       return <td>{pvs}</td>;
+      }
+
+   if (column === 'Finalized') {
+
+     var finalizedvar;
+
+     if (row["Finalized"]=='1'){
+         finalizedvar = "Yes";
+        }
+
+     if (row["Finalized"]=='0'){
+         finalizedvar = "No";
+        }
+       return <td>{finalizedvar}</td>;
+      }
+  
+ return <td>{cell}</td>;
 
 }
 

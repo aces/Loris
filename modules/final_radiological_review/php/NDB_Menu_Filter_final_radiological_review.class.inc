@@ -231,6 +231,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             'r.Final_Exclusionary',
             $conflict_condition1,
             $conflict_condition2,
+            'r.Finalized',
             "COALESCE(r.Finalized, 'no')",
             'c.CenterID',
             'c.ProjectID',
@@ -253,6 +254,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'SAS'         => 'r.sas',
                                     'Conflict'    => $conflict_condition1,
                                     'Conflict2'   => $conflict_condition2,
+//                                    'Finalized'   => "r.Finalized",
                                     'Finalized'   => "COALESCE(r.Finalized, 'no')",
                                     'keyword'     => 'r.Final_Incidental_Findings'
         );
