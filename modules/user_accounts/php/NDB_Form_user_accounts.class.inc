@@ -43,11 +43,11 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _hasAccess()
     {
         // create user object
-        $editor =& User::singleton();
+        $editor = User::singleton();
 
         if ($this->page == 'edit_user') {
             if (!$this->isCreatingNewUser()) {
-                $user =& User::factory($this->identifier);
+                $user = User::factory($this->identifier);
             }
 
             if ($editor->hasPermission('user_accounts')) {
@@ -79,7 +79,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $defaults = array();
 
         if (!$this->isCreatingNewUser()) {
-            $user =& User::factory($this->identifier);
+            $user = User::factory($this->identifier);
             // get the user defaults
             $defaults = $user->getData();
             // remove the password hash
@@ -140,21 +140,21 @@ class NDB_Form_User_Accounts extends NDB_Form
         $permissionsRemoved = array();
         $permissionsAdded   = array();
 
-        $editor =& User::singleton();
+        $editor = User::singleton();
 
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
 
         //create the user
         if (!is_null($this->identifier)) {
-            $user =& User::factory($this->identifier);
+            $user = User::factory($this->identifier);
         } else {
             // Since the form has been validated there are two possibilities:
             //    - UID is set
             //    - UID is not set but the "Match UID to email" checkbox is checked
             $effectiveUID = $values['NA_UserID'] == 'on'
                 ? $values['Email'] : $values['UserID'];
-            $user         =& User::factory($effectiveUID);
+            $user         = User::factory($effectiveUID);
         }
 
         ////Get the current permissions/////
@@ -211,10 +211,10 @@ class NDB_Form_User_Accounts extends NDB_Form
         if ($this->isCreatingNewUser()) {
             // insert a new user
             $success = User::insert($set);
-            $user    =& User::factory($set['UserID']);
+            $user    = User::factory($set['UserID']);
         } else {
             // update the user
-            $user    =& User::factory($this->identifier);
+            $user    = User::factory($this->identifier);
             $success = $user->update($set);
         }
 
@@ -291,7 +291,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         // send the user an email
         if (!empty($send)) {
             // create an instance of the config object
-            $config =& NDB_Config::singleton();
+            $config = NDB_Config::singleton();
 
             // send the user an email
             $msg_data['study']    = $config->getSetting('title');
@@ -322,7 +322,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $this->redirect = "test_name=$this->name";
 
         ///get the value for additional_user_info flag
-        $config =& NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $additional_user_info = $config->getSetting('additional_user_info');
 
         //------------------------------------------------------------
@@ -436,7 +436,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //------------------------------------------------------------
 
         // get user permissions
-        $editor =& User::singleton();
+        $editor = User::singleton();
 
         // center ID
         if ($editor->hasPermission('user_accounts_multisite')) {
@@ -502,7 +502,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         //getting users name and emails to create checkboxes
         // to email supervisors on permissions changes
-        $DB_factory =& NDB_Factory::singleton();
+        $DB_factory = NDB_Factory::singleton();
         $DB         = $DB_factory->database();
 
         $query = "SELECT u.Real_Name, u.email FROM permissions p
@@ -536,7 +536,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         unset($group);
 
         if (!$this->isCreatingNewUser()) {
-            $user =& User::factory($this->identifier);
+            $user = User::factory($this->identifier);
 
             // add hidden permissions if editor has less permissions than user
             // being edited
@@ -568,7 +568,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $this->identifier = $_SESSION['State']->getUsername();
 
         ///get the value for additional_user_info flag
-        $config =& NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $additional_user_info = $config->getSetting('additional_user_info');
 
         //------------------------------------------------------------
@@ -650,7 +650,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
 
         // document repository notifications
-        $editor =& User::singleton();
+        $editor = User::singleton();
         if ($editor->hasPermission('document_repository_view')
             || $editor->hasPermission('document_repository_delete')
         ) {
@@ -683,7 +683,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _validateEditUser($values)
     {
         // create DB object
-        $DB     =& Database::singleton();
+        $DB     = Database::singleton();
         $errors = array();
 
         //============================================
@@ -871,7 +871,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _validateMyPreferences($values)
     {
         // create DB object
-        $DB     =& Database::singleton();
+        $DB     = Database::singleton();
         $errors = array();
 
         // if password is user-defined, and user wants to change password
@@ -954,7 +954,7 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     function getDescriptionUsingPermID($permID)
     {
-        $db_factory =& NDB_Factory::singleton();
+        $db_factory = NDB_Factory::singleton();
         $db         = $db_factory->database();
 
         $permission = $db->pselectOne(
