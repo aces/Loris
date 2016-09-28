@@ -4,36 +4,11 @@
  */
 
 /**
- *	Base class for tabs within the UI of the instrument builder
- */
-TabPane = React.createClass({
-	displayName: "TabPane",
-
-	render: function () {
-		var classList = "tab-pane";
-		if (this.props.Active) {
-			classList += " active";
-		}
-		// Render the HTML
-		return React.createElement(
-			"div",
-			{ className: classList, id: this.props.TabId },
-			React.createElement(
-				"h1",
-				{ className: "tabHeader" },
-				this.props.Title
-			),
-			this.props.children
-		);
-	}
-});
-
-/**
  *	This is the React class for loading in a previously
  *	made instrument.
  */
-LoadPane = React.createClass({
-	displayName: "LoadPane",
+var LoadPane = React.createClass({
+	displayName: 'LoadPane',
 
 	getInitialState: function () {
 		return {
@@ -79,61 +54,61 @@ LoadPane = React.createClass({
 		switch (this.state.alert) {
 			case 'success':
 				alert = React.createElement(
-					"div",
-					{ className: "alert alert-success alert-dismissible", role: "alert" },
+					'div',
+					{ className: 'alert alert-success alert-dismissible', role: 'alert' },
 					React.createElement(
-						"button",
-						{ type: "button", className: "close", onClick: this.resetAlert },
+						'button',
+						{ type: 'button', className: 'close', onClick: this.resetAlert },
 						React.createElement(
-							"span",
-							{ "aria-hidden": "true" },
-							"×"
+							'span',
+							{ 'aria-hidden': 'true' },
+							'×'
 						)
 					),
 					React.createElement(
-						"strong",
+						'strong',
 						null,
-						"Success!"
+						'Success!'
 					),
-					" Instrument Loaded"
+					' Instrument Loaded'
 				);
 				break;
 			case 'typeError':
 				alert = React.createElement(
-					"div",
-					{ className: "alert alert-danger alert-dismissible", role: "alert" },
+					'div',
+					{ className: 'alert alert-danger alert-dismissible', role: 'alert' },
 					React.createElement(
-						"button",
-						{ type: "button", className: "close", onClick: this.resetAlert },
+						'button',
+						{ type: 'button', className: 'close', onClick: this.resetAlert },
 						React.createElement(
-							"span",
-							{ "aria-hidden": "true" },
-							"×"
+							'span',
+							{ 'aria-hidden': 'true' },
+							'×'
 						)
 					),
 					React.createElement(
-						"strong",
+						'strong',
 						null,
-						"Error!"
+						'Error!'
 					),
-					" Wrong file format"
+					' Wrong file format'
 				);
 				break;
 		}
 		return React.createElement(
 			TabPane,
-			{ Title: "Load Instrument", TabId: this.props.TabId },
+			{ Title: 'Load Instrument', TabId: this.props.TabId },
 			React.createElement(
-				"div",
-				{ className: "col-sm-6 col-xs-12" },
+				'div',
+				{ className: 'col-sm-6 col-xs-12' },
 				alert,
-				React.createElement("input", { className: "fileUpload",
-					type: "file", id: "instfile",
+				React.createElement('input', { className: 'fileUpload',
+					type: 'file', id: 'instfile',
 					onChange: this.chooseFile
 				}),
-				React.createElement("input", { className: "btn btn-primary spacingTop",
-					type: "button", id: "load",
-					value: "Load Instrument",
+				React.createElement('input', { className: 'btn btn-primary spacingTop',
+					type: 'button', id: 'load',
+					value: 'Load Instrument',
 					onClick: this.loadFile
 				})
 			)
@@ -144,8 +119,8 @@ LoadPane = React.createClass({
 /**
  *	This is the React class for saving the instrument
  */
-SavePane = React.createClass({
-	displayName: "SavePane",
+var SavePane = React.createClass({
+	displayName: 'SavePane',
 
 	getInitialState: function () {
 		return {
@@ -180,55 +155,55 @@ SavePane = React.createClass({
 		var value = this.state.fileName;
 		return React.createElement(
 			TabPane,
-			{ Title: "Save Instrument",
+			{ Title: 'Save Instrument',
 				TabId: this.props.TabId },
 			React.createElement(
-				"div",
-				{ className: "form-group" },
+				'div',
+				{ className: 'form-group' },
 				React.createElement(
-					"div",
-					{ className: "col-xs-12" },
+					'div',
+					{ className: 'col-xs-12' },
 					React.createElement(
-						"label",
-						{ className: "col-sm-2 control-label" },
-						"Filename: "
+						'label',
+						{ className: 'col-sm-2 control-label' },
+						'Filename: '
 					),
 					React.createElement(
-						"div",
-						{ className: "col-sm-4" },
-						React.createElement("input", { className: "form-control",
-							type: "text", id: "filename",
+						'div',
+						{ className: 'col-sm-4' },
+						React.createElement('input', { className: 'form-control',
+							type: 'text', id: 'filename',
 							value: value,
 							onChange: this.onChangeFile
 						})
 					)
 				),
 				React.createElement(
-					"div",
-					{ className: "col-xs-12 spacingTop" },
+					'div',
+					{ className: 'col-xs-12 spacingTop' },
 					React.createElement(
-						"label",
-						{ className: "col-sm-2 control-label" },
-						"Instrument Name: "
+						'label',
+						{ className: 'col-sm-2 control-label' },
+						'Instrument Name: '
 					),
 					React.createElement(
-						"div",
-						{ className: "col-sm-4" },
-						React.createElement("input", { className: "form-control",
-							type: "text", id: "longname",
+						'div',
+						{ className: 'col-sm-4' },
+						React.createElement('input', { className: 'form-control',
+							type: 'text', id: 'longname',
 							value: this.state.instrumentName,
 							onChange: this.onChangeInst
 						})
 					)
 				),
 				React.createElement(
-					"div",
-					{ className: "col-xs-12 spacingTop" },
+					'div',
+					{ className: 'col-xs-12 spacingTop' },
 					React.createElement(
-						"div",
-						{ className: "col-xs-12 col-sm-4 col-sm-offset-2" },
-						React.createElement("input", { className: "btn btn-primary col-xs-12",
-							type: "submit", value: "Save",
+						'div',
+						{ className: 'col-xs-12 col-sm-4 col-sm-offset-2' },
+						React.createElement('input', { className: 'btn btn-primary col-xs-12',
+							type: 'submit', value: 'Save',
 							onClick: this.props.save
 						})
 					)
@@ -242,8 +217,8 @@ SavePane = React.createClass({
  *  This is the React class displaying the questions
  *  in the table.
  */
-DisplayElements = React.createClass({
-	displayName: "DisplayElements",
+var DisplayElements = React.createClass({
+	displayName: 'DisplayElements',
 
 	// Used for the drag and drop rows
 	getPlaceholder: function () {
@@ -319,15 +294,15 @@ DisplayElements = React.createClass({
 			if (element.editing) {
 				// If you are editing an element, show element as an AddElement object
 				row = React.createElement(
-					"tr",
-					{ "data-id": i,
+					'tr',
+					{ 'data-id': i,
 						key: i,
 						draggable: this.props.draggable,
 						onDragEnd: this.dragEnd,
 						onDragStart: this.dragStart },
 					React.createElement(
-						"td",
-						{ className: "col-xs-2", colSpan: "3" },
+						'td',
+						{ className: 'col-xs-2', colSpan: '3' },
 						React.createElement(AddElement, { updateQuestions: this.props.updateElement,
 							element: element, index: i })
 					)
@@ -335,34 +310,34 @@ DisplayElements = React.createClass({
 			} else {
 				// Else display element in regular way
 				row = React.createElement(
-					"tr",
-					{ "data-id": i,
+					'tr',
+					{ 'data-id': i,
 						key: i,
 						draggable: this.props.draggable,
 						onDragEnd: this.dragEnd,
 						onDragStart: this.dragStart },
 					React.createElement(
-						"td",
+						'td',
 						{ style: colStyles },
 						element.Name
 					),
 					React.createElement(
-						"td",
+						'td',
 						{ style: colStyles },
 						React.createElement(LorisElement, { element: element })
 					),
 					React.createElement(
-						"td",
+						'td',
 						{ style: colStyles },
 						React.createElement(
-							"button",
-							{ onClick: this.props.editElement.bind(this, i), className: "button" },
-							"Edit"
+							'button',
+							{ onClick: this.props.editElement.bind(this, i), className: 'button' },
+							'Edit'
 						),
 						React.createElement(
-							"button",
-							{ onClick: this.props.deleteElement.bind(this, i), className: "button" },
-							"Delete"
+							'button',
+							{ onClick: this.props.deleteElement.bind(this, i), className: 'button' },
+							'Delete'
 						)
 					)
 				);
@@ -376,33 +351,33 @@ DisplayElements = React.createClass({
 		};
 
 		return React.createElement(
-			"table",
-			{ id: "sortable", className: "table table-hover", style: tableStyles },
+			'table',
+			{ id: 'sortable', className: 'table table-hover', style: tableStyles },
 			React.createElement(
-				"thead",
+				'thead',
 				null,
 				React.createElement(
-					"tr",
+					'tr',
 					null,
 					React.createElement(
-						"th",
-						{ className: "col-xs-2" },
-						"Database Name"
+						'th',
+						{ className: 'col-xs-2' },
+						'Database Name'
 					),
 					React.createElement(
-						"th",
-						{ className: "col-xs-6" },
-						"Question Display (Front End)"
+						'th',
+						{ className: 'col-xs-6' },
+						'Question Display (Front End)'
 					),
 					React.createElement(
-						"th",
-						{ className: "col-xs-4" },
-						"Edit"
+						'th',
+						{ className: 'col-xs-4' },
+						'Edit'
 					)
 				)
 			),
 			React.createElement(
-				"tbody",
+				'tbody',
 				{ onDragOver: this.dragOver },
 				temp
 			)
@@ -413,8 +388,8 @@ DisplayElements = React.createClass({
 /**
  *	This is the React class for building the instrument
  */
-BuildPane = React.createClass({
-	displayName: "BuildPane",
+var BuildPane = React.createClass({
+	displayName: 'BuildPane',
 
 	getInitialState: function () {
 		return {
@@ -565,10 +540,10 @@ BuildPane = React.createClass({
 		// List the pages
 		pages = this.state.Elements.map(function (element, i) {
 			return React.createElement(
-				"li",
+				'li',
 				{ onClick: that.selectPage.bind(this, i) },
 				React.createElement(
-					"a",
+					'a',
 					null,
 					that.state.Elements[i].Description
 				)
@@ -576,35 +551,34 @@ BuildPane = React.createClass({
 		});
 		return React.createElement(
 			TabPane,
-			{ Title: "Build your Instrument",
-				TabId: this.props.TabId, Active: true },
+			{ Title: 'Build your Instrument', TabId: this.props.TabId },
 			React.createElement(
-				"div",
-				{ className: "form-group col-xs-12" },
+				'div',
+				{ className: 'form-group col-xs-12' },
 				React.createElement(
-					"label",
-					{ "for": "selected-input", className: "col-xs-2 col-sm-1 control-label" },
-					"Page:"
+					'label',
+					{ 'for': 'selected-input', className: 'col-xs-2 col-sm-1 control-label' },
+					'Page:'
 				),
 				React.createElement(
-					"div",
-					{ className: "col-sm-4" },
+					'div',
+					{ className: 'col-sm-4' },
 					React.createElement(
-						"div",
-						{ className: "btn-group" },
+						'div',
+						{ className: 'btn-group' },
 						React.createElement(
-							"button",
-							{ id: "selected-input", type: "button", className: "btn btn-default dropdown-toggle", "data-toggle": "dropdown" },
+							'button',
+							{ id: 'selected-input', type: 'button', className: 'btn btn-default dropdown-toggle', 'data-toggle': 'dropdown' },
 							React.createElement(
-								"span",
-								{ id: "search_concept" },
+								'span',
+								{ id: 'search_concept' },
 								this.state.Elements[this.state.currentPage].Description
 							),
-							React.createElement("span", { className: "caret" })
+							React.createElement('span', { className: 'caret' })
 						),
 						React.createElement(
-							"ul",
-							{ className: "dropdown-menu", role: "menu" },
+							'ul',
+							{ className: 'dropdown-menu', role: 'menu' },
 							pages
 						)
 					)
@@ -618,8 +592,8 @@ BuildPane = React.createClass({
 				draggable: draggable
 			}),
 			React.createElement(
-				"div",
-				{ className: "row" },
+				'div',
+				{ className: 'row' },
 				React.createElement(AddElement, { updateQuestions: this.addQuestion, addPage: this.addPage })
 			)
 		);
@@ -629,8 +603,8 @@ BuildPane = React.createClass({
 /**
  *	This is the React class for the instrument builder
  */
-InstrumentBuilderApp = React.createClass({
-	displayName: "InstrumentBuilderApp",
+var InstrumentBuilderApp = React.createClass({
+	displayName: 'InstrumentBuilderApp',
 
 	// Save the instrument
 	saveInstrument: function () {
@@ -651,61 +625,38 @@ InstrumentBuilderApp = React.createClass({
 	render: function () {
 		var tabs = [];
 		tabs.push(React.createElement(LoadPane, {
-			TabId: "Load",
-			ref: "loadPane",
+			TabId: 'Load',
+			ref: 'loadPane',
 			loadCallback: this.loadCallback
 		}));
 		tabs.push(React.createElement(BuildPane, {
-			TabId: "Build",
-			ref: "buildPane"
+			TabId: 'Build',
+			ref: 'buildPane'
 		}));
 		tabs.push(React.createElement(SavePane, {
-			TabId: "Save",
-			ref: "savePane",
+			TabId: 'Save',
+			ref: 'savePane',
 			save: this.saveInstrument
 		}));
+
+		var tabList = [{
+			"id": "Load",
+			"label": "Load"
+		}, {
+			"id": "Build",
+			"label": "Build"
+		}, {
+			"id": "Save",
+			"label": "Save"
+		}];
+
 		return React.createElement(
-			"div",
+			'div',
 			null,
 			React.createElement(
-				"ul",
-				{ className: "nav nav-tabs", role: "tablist" },
-				React.createElement(
-					"li",
-					{ role: "presentation" },
-					React.createElement(
-						"a",
-						{ href: "#Load", "aria-controls": "home", role: "tab", "data-toggle": "tab" },
-						"Load"
-					)
-				),
-				React.createElement(
-					"li",
-					{ role: "presentation", className: "active" },
-					React.createElement(
-						"a",
-						{ href: "#Build", "aria-controls": "build", role: "tab", "data-toggle": "tab" },
-						"Build"
-					)
-				),
-				React.createElement(
-					"li",
-					{ role: "presentation" },
-					React.createElement(
-						"a",
-						{ href: "#Save", "aria-controls": "messages", role: "tab", "data-toggle": "tab" },
-						"Save"
-					)
-				)
-			),
-			React.createElement(
-				"div",
-				{ className: "row" },
-				React.createElement(
-					"div",
-					{ className: "tab-content col-xs-12" },
-					tabs
-				)
+				Tabs,
+				{ tabs: tabList, defaultTab: 'Build' },
+				tabs
 			)
 		);
 	}
