@@ -587,6 +587,7 @@ class NDB_Page
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
                   $baseurl . '/js/components/react.breadcrumb.js',
                   $baseurl . '/js/components/Form.js',
+                  $baseurl . '/js/components/Markdown.js',
                  );
         return $files;
     }

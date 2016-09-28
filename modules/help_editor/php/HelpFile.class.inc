@@ -30,7 +30,7 @@ class HelpFile
      * @return HelpFile
      * @access public
      */
-    function &factory($helpID)
+    static function &factory($helpID)
     {
         // create DB object
         $DB =& Database::singleton();
@@ -521,7 +521,7 @@ class HelpFile
      *
      * @return integer of HelpID
      */
-    function hashToID($hash)
+    static function hashToID($hash)
     {
         // create DB object
         $DB =& Database::singleton();
