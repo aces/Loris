@@ -441,7 +441,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         // center ID
         if ($editor->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
-            $siteOptions =& Utility::getSiteList(false);
+            $siteOptions = Utility::getSiteList(false);
         } else {
             // allow only to add to their own site
             $siteOptions
