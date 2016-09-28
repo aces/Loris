@@ -495,7 +495,7 @@ CREATE TABLE `files` (
   `Caveat` tinyint(1) default NULL,
   `TarchiveSource` int(11) default NULL,
   `ScannerID` int(10) unsigned default NULL,
-  `ModalityOrder` int(11) default NULL,
+  `AcqOrderPerModality` int(11) default NULL,
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
