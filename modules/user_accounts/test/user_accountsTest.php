@@ -211,7 +211,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         // Click somehow does not work but this should be
         // equivalent
         $element = $this->safeFindElement(WebDriverBy::Name('NA_Password'));
-        $element->sendKeys(WebDriverKeys::RETURN_KEY);
+        $element->sendKeys(WebDriverKeys::SPACE);
 
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $field->clear();
