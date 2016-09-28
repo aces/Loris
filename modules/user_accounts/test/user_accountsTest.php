@@ -229,7 +229,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->safeClick(WebDriverBy::Name('fire_away'));
          $bodyText = $this->safeFindElement(
              WebDriverBy::cssSelector("body")
-             WebDriverBy::cssSelector("body")
          )->getText();
          $this->assertContains('p8yuidabhs97cph0a9x72bdh',$bodyText);
         $this->_accessUser('user_accounts', 'userid');
