@@ -37,7 +37,7 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
              array(
               'CenterID' => '55',
               'Name' => 'TESTinPSC',
-              'Alias' => 'test',
+              'Alias' => 'tst',
               'MRI_alias' => 'test'
              )
 

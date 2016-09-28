@@ -211,7 +211,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         // Click somehow does not work but this should be
         // equivalent
         $element = $this->safeFindElement(WebDriverBy::Name('NA_Password'));
-        $element->sendKeys(WebDriverKeys::RETURN_KEY);
+        $element->sendKeys(WebDriverKeys::SPACE);
 
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $field->clear();
@@ -227,6 +227,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field->sendKeys('email@gmail.com');
         $this->safeClick(WebDriverBy::Name('SendEmail'));
         $this->safeClick(WebDriverBy::Name('fire_away'));
+/*
+         $bodyText = $this->safeFindElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertContains('p8yuidabhs97cph0a9x72bdh',$bodyText);
+*/
         $this->_accessUser('user_accounts', 'userid');
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $this->assertEquals($field->getAttribute('value'), 'first');

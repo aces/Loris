@@ -43,12 +43,12 @@ class ExaminerTest extends LorisIntegrationTest
         $this->DB->insert(
             "psc",
             array(
-             'CenterID'   => '9999999',
+             'CenterID'   => '99',
              'Name'       => 'TEST_Site',
              'Study_site' => 'Y',
              'StateID'    => '0',
              'Alias'      => 'DDD',
-             'MRI_alias'  => 'TESTTEST',
+             'MRI_alias'  => 'TEST',
             )
         );
     }
