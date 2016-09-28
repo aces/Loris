@@ -3,7 +3,7 @@
   loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
   var dicomArchivePage = RDicomArchive({
     "Sites": {$Sites|@json_encode},
-    "DataURL": "{$baseurl}/dicom_archive/?format=json",
+    "DataURL": loris.BaseURL + "/dicom_archive/?format=json",
     "getFormattedCell": formatColumn,
     "Module": "dicom_archive"
   });

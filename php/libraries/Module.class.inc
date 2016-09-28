@@ -82,7 +82,10 @@ class Module
         // namespacing
         //require_once $mpath . "/php/Module.class.inc";
         $className = "\LORIS\\$name\Module";
-        return new $className($name);
+        $cls       = new $className($name);
+        $cls->dir  = $mpath;
+
+        return $cls;
     }
 
     /**
@@ -135,5 +138,21 @@ class Module
         $cls->setup();
         $cls->_setupPage($this->name, $page, $identifier, $commentID, $formname);
         return $cls;
+    }
+
+    /**
+     * Returns help content for a page in the module.
+     *
+     * @param string $page The module subpage to get help for.
+     *
+     * @return string the content of the page help.
+     */
+    public function getHelp($page)
+    {
+        $helpFile = $this->dir . "/help/$page.md";
+        if (file_exists($helpFile)) {
+                return file_get_contents($helpFile);
+        }
+        return "No help available for $page ($helpFile)";
     }
 }

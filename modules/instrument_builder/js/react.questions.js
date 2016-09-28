@@ -132,7 +132,9 @@ BasicOptions = React.createClass({
 
     // Keep track of the current input
     onChange: function (e) {
-        this.props.updateState({ Name: e.target.value });
+        // replace whitespaces with underscores
+        var questionName = e.target.value.trim().split(' ').join('_');
+        this.props.updateState({ Name: questionName });
     },
     // Render the HTML
     render: function () {
@@ -752,6 +754,11 @@ AddElement = React.createClass({
             questionName = this.state.Name,
             hasError = false,
             element;
+
+        if (questionName && questionName.indexOf('status') > -1) {
+            alert("Question name can't contain 'status' as part of the name!");
+            return;
+        }
 
         if (!selected) {
             // Error, no element selected, alert the user and return

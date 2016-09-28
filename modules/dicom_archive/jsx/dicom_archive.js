@@ -93,22 +93,17 @@ var DicomArchive = React.createClass({
     // Clear filter
     this.setState({Filter: {}});
   },
-  toCamelCase: function(str) {
-    return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
-      if (+match === 0) return "";
-      return index == 0 ? match.toLowerCase() : match.toUpperCase();
-    });
-  },
   render: function() {
     // Defining element names here ensures that `name` and `ref`
     // properties of the element are always kept in sync
-    var patientID = "patientID";
+    var patientID = "patientId";
     var patientName = "patientName";
     var site = "site";
     var gender = "gender";
     var dateOfBirth = "dateOfBirth";
     var acquisition = "acquisition";
     var archiveLocation = "archiveLocation";
+    var seriesUID = "seriesuid";
 
     return (
       <div>
@@ -183,6 +178,15 @@ var DicomArchive = React.createClass({
                 onUserInput={this.setFilter}
                 value={this.state.Filter.archiveLocation}
                 ref={archiveLocation}
+              />
+            </div>
+            <div className="col-md-6">
+              <TextboxElement
+                name={seriesUID}
+                label="Series UID"
+                onUserInput={this.setFilter}
+                value={this.state.Filter.seriesUID}
+                ref={seriesUID}
               />
             </div>
           </div>
