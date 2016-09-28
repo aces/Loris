@@ -525,7 +525,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND c.Active='Y'
                 $suproject_query
                 $Param_Project
-                GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID;",
+                GROUP BY s.CenterID, VLabel, f.Data_Entry",
             $this->params
         );
         foreach($result as $row) {
