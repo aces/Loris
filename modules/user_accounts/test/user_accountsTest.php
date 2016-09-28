@@ -231,8 +231,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-var_dump($bodyText);
-
+$this->assertContains('p8yuidabhs97cph0a9x72bdh',$bodyText);
         $this->_accessUser('user_accounts', 'userid');
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $this->assertEquals($field->getAttribute('value'), 'first');
