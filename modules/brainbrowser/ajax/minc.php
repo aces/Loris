@@ -22,10 +22,10 @@ require_once "MincEnv.php.inc";
 
 $headers = array();
 
-$query     = "select File from files where FileID = :MincID";
+$query = "select File from files where FileID = :MincID";
 
 if (isset($_REQUEST['minc_location'])) {
-    $minc_file  =  ($_REQUEST['minc_location']);
+    $minc_file =  ($_REQUEST['minc_location']);
 } else {
     $minc_file = $DB->pselectOne($query, array('MincID' => $_REQUEST['minc_id']));
     $minc_file = getMincLocation() . $minc_file;
