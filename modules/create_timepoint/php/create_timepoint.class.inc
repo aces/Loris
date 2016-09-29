@@ -85,9 +85,16 @@ class Create_Timepoint extends \NDB_Form
     }
 
     /**
-     * Entry point for /create_timepoint/
+     * Does the setup required for this page.
+     * Particularly creates all the form elements.
      *
-     * @return void
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
@@ -177,7 +184,6 @@ class Create_Timepoint extends \NDB_Form
         }
 
         $this->form->addFormRule(array(&$this, '_validate'));
-
 
     }
 
