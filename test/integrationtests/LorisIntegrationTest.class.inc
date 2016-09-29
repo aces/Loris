@@ -461,7 +461,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      *
      * @return WebDriverElement the element found.
      */
-    function safeFindElement(WebDriverBy $by, $waitPeriod=15)
+    function safeFindElement(WebDriverBy $by, $waitPeriod=1)
     {
         $wait = new WebDriverWait($this->webDriver, $waitPeriod);
         $wait->until(

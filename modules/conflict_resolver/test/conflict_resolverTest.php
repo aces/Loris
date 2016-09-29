@@ -55,7 +55,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
              'OldValue1'           => 'Mother',
              'OldValue2'           => 'Father',
              'NewValue'            => 'NULL',
-             'ConflictID'          => 'NULL',
             )
         );
          $this->DB->insert(
