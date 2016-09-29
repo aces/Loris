@@ -72,7 +72,11 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 
         $this->_populate_reliability_table();
 
-        $query = " FROM candidate, session, flag, reliability WHERE reliability.CommentID=flag.CommentID AND candidate.CandID=session.CandID AND session.ID=flag.SessionID";
+        $query = " FROM session, flag, " .
+            "reliability LEFT JOIN psc p ON reliability.reliability_center_id=p.CenterID, " .
+            "candidate LEFT JOIN Project pr ON candidate.ProjectID=pr.ProjectID " .
+            "WHERE reliability.CommentID=flag.CommentID AND " .
+            "candidate.CandID=session.CandID AND session.ID=flag.SessionID";
 
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
@@ -81,9 +85,9 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $config=&NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         // set the class variables
-        $this->columns = array('candidate.PSCID', 'reliability.reliability_center_id', '(SELECT name FROM psc WHERE CenterID=reliability.reliability_center_id) as site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label');
+        $this->columns = array('candidate.PSCID', 'reliability.reliability_center_id', 'p.name as site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label');
         if ($useProjects === "true") {
-            $this->columns[] = '(SELECT Name FROM Project WHERE ProjectID=candidate.ProjectID) as Project';
+            $this->columns[] = 'pr.Name as Project';
         }
         $this->columns=array_merge($this->columns,
              array('reliability.CommentID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid', 'reliability.Manual_Swap'));
