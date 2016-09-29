@@ -22,14 +22,14 @@ $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$factory = NDB_Factory::singleton();
-$db      = $factory->database();
+$factory     = NDB_Factory::singleton();
+$db          = $factory->database();
 $ProjectList = Utility::getProjectList();
 
 // if a new project is created add the new project.
 // Otherwise, update the existing project.
 if ($_POST['ProjectID'] === 'new') {
-    if (!in_array($_POST['Name'],$ProjectList) && !empty($_POST['Name'])) {
+    if (!in_array($_POST['Name'], $ProjectList) && !empty($_POST['Name'])) {
         $db->insert(
             "Project",
             array(
@@ -40,7 +40,7 @@ if ($_POST['ProjectID'] === 'new') {
     } else {
         header("HTTP/1.1 409 Conflict");
         print '{ "error" : "Conflict" }';
-        exit();  
+        exit();
     }
 } else {
     $db->update(

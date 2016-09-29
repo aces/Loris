@@ -28,7 +28,7 @@ $db      = $factory->database();
 $SubprojectList = Utility::getSubprojectList();
 
 if ($_POST['subprojectID'] === 'new') {
-    if (!in_array($_POST['title'],$SubprojectList) && !empty($_POST['title'])) {
+    if (!in_array($_POST['title'], $SubprojectList) && !empty($_POST['title'])) {
         $db->insert(
             "subproject",
             array(
@@ -41,7 +41,7 @@ if ($_POST['subprojectID'] === 'new') {
     } else {
         header("HTTP/1.1 409 Conflict");
         print '{ "error" : "Conflict" }';
-        exit();          
+        exit();
     }
 } else {
     $db->update(
