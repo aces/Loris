@@ -10,31 +10,51 @@
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
 
-  if (loris.hiddenHeaders.indexOf(column) > -1) {
-    return null;
-  }
-  // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
-  rowHeaders.forEach(function (header, index) {
-    row[header] = rowData[index];
-  }, this);
+   if (loris.hiddenHeaders.indexOf(column) > -1) {
+      return null;
+   }
+   // Create the mapping between rowHeaders and rowData in a row object.
+   var row = {};
+   rowHeaders.forEach(function (header, index) {
+      row[header] = rowData[index];
+   }, this);
+   console.log(rowData);
 
-  if (column === 'Examiner') {
-    var url = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
-    return React.createElement(
+   if (column === 'Examiner') {
+      var url = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
+      return React.createElement(
+         "td",
+         null,
+         React.createElement(
+            "a",
+            { href: url },
+            cell
+         )
+      );
+   }
+
+   if (column === 'Radiologist') {
+      var radiologist = 'No';
+      if (row['Radiologist'] == '1') radiologist = 'Yes';
+
+      return React.createElement(
+         "td",
+         null,
+         radiologist
+      );
+   }
+
+   if (column === 'Certification' && row['Certification'] == null) {
+      return React.createElement(
+         "td",
+         null,
+         "None"
+      );
+   }
+
+   return React.createElement(
       "td",
       null,
-      React.createElement(
-        "a",
-        { href: url },
-        cell
-      )
-    );
-  }
-
-  return React.createElement(
-    "td",
-    null,
-    cell
-  );
+      cell
+   );
 }

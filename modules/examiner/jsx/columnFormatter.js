@@ -18,11 +18,30 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
+  console.log(rowData);
 
   if (column === 'Examiner'){
       var url  = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
       return <td>
                 <a href ={url}>{cell}</a>
+             </td>;
+     }
+
+  if (column === 'Radiologist'){
+      var radiologist = 'No';
+      if (row['Radiologist']=='1')
+            radiologist = 'Yes';
+      
+      return <td>
+                {radiologist}
+             </td>;
+     }
+
+
+
+  if (column === 'Certification' && row['Certification']==null){
+      return <td>
+                None
              </td>;
      }
   
