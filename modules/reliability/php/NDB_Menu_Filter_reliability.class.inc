@@ -450,7 +450,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     }
 
     /**
-     * Override toJSON to append a calculated field to the standard output
+     * Override toJSON to append a calculated field to the default JSON object
      *
      * @return a json encoded string of the headers and data from this table
      */
