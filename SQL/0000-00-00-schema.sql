@@ -1909,12 +1909,14 @@ CREATE TABLE `SNP` (
   `SNPExternalName` varchar(255) DEFAULT NULL,
   `SNPExternalSource` varchar(255) DEFAULT NULL,
   `ReferenceBase` enum('A','C','T','G') DEFAULT NULL,
+  `MinorAllele` enum('A','C','T','G') DEFAULT NULL,
   `Markers` varchar(255) DEFAULT NULL,
   `FunctionPrediction` enum('exonic','ncRNAexonic','splicing','UTR3','UTR5') DEFAULT NULL,
   `Damaging` enum('D','NA') DEFAULT NULL,
   `ExonicFunction` enum('nonsynonymous','unknown') DEFAULT NULL,
   `GenomeLocID` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`SNPID`),
+  UNIQUE KEY `uniq_snp` (`rsID`,`SNPExternalSource`),
   CONSTRAINT `SNP_ibfk_2` FOREIGN KEY (`GenomeLocID`) REFERENCES genome_loc(`GenomeLocID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1924,16 +1926,22 @@ CREATE TABLE `SNP` (
 --
 DROP TABLE IF EXISTS `SNP_candidate_rel`;
 CREATE TABLE `SNP_candidate_rel` (
+  `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `SNPID` bigint(20) NOT NULL DEFAULT '0',
   `CandID` int(6) NOT NULL DEFAULT '0',
-  `ObservedBase` enum('A','C','T','G') DEFAULT NULL,
+  `AlleleA` enum('A','C','T','G') DEFAULT NULL,
+  `AlleleB` enum('A','C','T','G') DEFAULT NULL,
   `ArrayReport` enum('Normal','Uncertain','Pending') DEFAULT NULL,
   `ArrayReportDetail` varchar(255) DEFAULT NULL,
   `ValidationMethod` varchar(50) DEFAULT NULL,
   `Validated` enum('0','1') DEFAULT NULL,
   `GenotypeQuality` int(4) DEFAULT NULL,
   `PlatformID` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`SNPID`,`CandID`)
+  PRIMARY KEY (`ID`),
+  KEY `fk_SNP_candidate_rel_2` (`CandID`),
+  KEY `fk_SNP_candidate_rel_1_idx` (`SNPID`),
+  CONSTRAINT `fk_SNP_candidate_rel_1` FOREIGN KEY (`SNPID`) REFERENCES `SNP` (`SNPID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_SNP_candidate_rel_2` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
