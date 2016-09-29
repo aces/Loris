@@ -175,7 +175,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
         $dates[0]->sendKeys("2015-01-01");
-        $dates[1]->sendKeys("2015-01-01");
+        $dates[1]->sendKeys("2015-02-01");
         $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
