@@ -9,7 +9,6 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
-
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
   }
@@ -18,66 +17,80 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
+  var resolutionStatusStyle;
+  var resolutionStatus;
+  var fontColor = {color: "#FFFFFF"};
+  var patientname;
+  var uid;
+  var url;
 
-  var fontColor = {color: "#FFFFFF",}
   if (column === 'Resolution Status') {
-        switch (row["Resolution Status"]) {
-     case "unresolved":
-        resolution_status_Style = "label-danger";
-        resolution_status ='Unresolved';
+    switch (row["Resolution Status"]) {
+      case "unresolved":
+        resolutionStatusStyle = "label-danger";
+        resolutionStatus = 'Unresolved';
         break;
-     case "reran":
-        resolution_status_Style = "label-success";
-        resolution_status ='Reran';
-        break;
-     case "emailed":
-        resolution_status_Style = "label-info";
-        resolution_status ='Emailed site/pending';
-        break;
-     case "rejected":
-        resolution_status_Style = "label-danger";
-        resolution_status ='Rejected';
-        break;
-     case "inserted":
-        resolution_status_Style = "label-warning";
-        resolution_status ='Inserted';
-        break;
-     case "other":
-        resolution_status_Style = "label-primary";
-        resolution_status ='Other';
-        break;
-     case "inserted_flag":
-        resolution_status_Style = "label-default";
-        resolution_status ='Inserted with flag';
-        break;
-        }
 
-      return <td className= {resolution_status_Style} style={fontColor}>
-                {resolution_status}
+      case "reran":
+        resolutionStatusStyle = "label-success";
+        resolutionStatus = 'Reran';
+        break;
+
+      case "emailed":
+        resolutionStatusStyle = "label-info";
+        resolutionStatus = 'Emailed site/pending';
+        break;
+
+      case "rejected":
+        resolutionStatusStyle = "label-danger";
+        resolutionStatus = 'Rejected';
+        break;
+
+      case "inserted":
+        resolutionStatusStyle = "label-warning";
+        resolutionStatus = 'Inserted';
+        break;
+
+      case "other":
+        resolutionStatusStyle = "label-primary";
+        resolutionStatus = 'Other';
+        break;
+
+      case "inserted_flag":
+        resolutionStatusStyle = "label-default";
+        resolutionStatus = 'Inserted with flag';
+        break;
+
+           /* no default */
+
+    }
+
+    return <td className= {resolutionStatusStyle} style={fontColor}>
+                {resolutionStatus}
              </td>;
   }
-   if (column === "Problem" &&  row["Problem"] === "Protocol Violation" ) {
-  var patientname = row["PatientName"];
-  var uid = row["SeriesUID"];
-  var url = loris.BaseURL +
-            "/mri_violations/?submenu=mri_protocol_check_violations&PatientName="
-            + patientname + "&SeriesUID=" + uid;
-     return <td>
+  if (column === "Problem" && row.Problem === "Protocol Violation") {
+    patientname = row.PatientName;
+    uid = row.SeriesUID;
+    url = loris.BaseURL +
+     "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" +
+          patientname + "&SeriesUID=" + uid;
+    return <td>
             <a href= {url}
             className="mri_violations"
-            id="mri_protocol_check_violations" 
-            data-patientname= {patientname} 
+            id="mri_protocol_check_violations"
+            data-patientname= {patientname}
             data-seriesuid={uid}
             >Protocol Violation</a>
-           </td>;      
+           </td>;
   }
-   if (column === "Problem" &&  row["Problem"] === "Could not identify scan type" ) {
-  var patientname = row["PatientName"];
-  var uid = row["SeriesUID"];
-  var url = loris.BaseURL +
-            "/mri_violations/?submenu=mri_protocol_violations&PatientName="
-            + patientname + "&SeriesUID=" + uid;
-     return <td>
+  if (column === "Problem" && row.Problem === "Could not identify scan type") {
+    patientname = row.PatientName;
+    uid = row.SeriesUID;
+    url = loris.BaseURL +
+            "/mri_violations/?submenu=mri_protocol_violations&PatientName=" +
+            patientname + "&SeriesUID=" + uid;
+    return <td>
             <a href= {url}
             className="mri_violations"
             id="mri_protocol_violations"
@@ -85,7 +98,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
             data-seriesuid={uid}
             >Could not identify scan type</a>
            </td>;
-  } 
- return <td>{cell}</td>;
-
+  }
+  return <td>{cell}</td>;
 }

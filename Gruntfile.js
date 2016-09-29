@@ -39,7 +39,6 @@ module.exports = function(grunt) {
                     'modules/media/js/uploadForm.js': 'modules/media/jsx/uploadForm.js',
                     'modules/survey_accounts/js/columnFormatter.js': 'modules/survey_accounts/jsx/columnFormatter.js',
 		    'modules/server_processes_manager/js/columnFormatter.js': 'modules/server_processes_manager/jsx/columnFormatter.js',
-                    'modules/mri_violations/js/columnFormatter.js': 'modules/mri_violations/jsx/columnFormatter.js',
                 }
             }
         },
