@@ -11,30 +11,22 @@
 function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (loris.hiddenHeaders.indexOf(column) > -1) {
-    return null;
+     return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
-  rowHeaders.forEach(function (header, index) {
+  rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
-  if (column === 'Examiner') {
-    var url = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
-    return React.createElement(
-      "td",
-      null,
-      React.createElement(
-        "a",
-        { href: url },
-        cell
-      )
-    );
-  }
+  if (column === 'Examiner'){
+      var url  = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
+      return <td>
+                <a href ={url}>{cell}</a>
+             </td>;
+     }
+  
+ return <td>{cell}</td>;
 
-  return React.createElement(
-    "td",
-    null,
-    cell
-  );
 }
+
