@@ -174,8 +174,8 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . "/new_profile/");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/02/2015");
+        $dates[0]->sendKeys("2015-01-01");
+        $dates[1]->sendKeys("2015-01-01");
         $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
@@ -204,8 +204,8 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . "/new_profile/");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/01/2015");
+        $dates[0]->sendKeys("2015-01-01");
+        $dates[1]->sendKeys("2015-01-01");
         $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
         sleep(1);
@@ -235,8 +235,8 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . "/new_profile/");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/01/2015");
+        $dates[0]->sendKeys("2015-01-01");
+        $dates[1]->sendKeys("2015-01-01");
         $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
         sleep(1);
@@ -254,8 +254,8 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . "/new_profile/");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/01/2015");
+        $dates[0]->sendKeys("2015-01-01");
+        $dates[1]->sendKeys("2015-01-01");
         $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
         sleep(1);
