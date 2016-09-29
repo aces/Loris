@@ -86,7 +86,7 @@ loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
 var table = RDynamicDataTable({
      "DataURL" : "{$baseurl}/mri_violations/?submenu=resolved_violations&format=json",
      "getFormattedCell" : formatColumn,
-     "freezeColumn" : "PSCID"
+     "freezeColumn" : "PatientName"
   });
 React.render(table, document.getElementById("datatable"));
 </script>
