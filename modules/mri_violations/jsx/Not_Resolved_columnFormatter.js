@@ -9,38 +9,41 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
-
   if (loris.hiddenHeaders.indexOf(column) > -1) {
-     return null;
+    return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
+  var hashName;
+  var patientname;
+  var uid;
+  var url;
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
-  if (column === "Problem" &&  row["Problem"] === "Protocol Violation" ) {
-  var patientname = row["PatientName"];
-  var uid = row["SeriesUID"];
-  var url = loris.BaseURL +
-            "/mri_violations/?submenu=mri_protocol_check_violations&PatientName="
-            + patientname + "&SeriesUID=" + uid;
-     return <td>
+  if (column === "Problem" && row.Problem === "Protocol Violation") {
+    patientname = row.PatientName;
+    uid = row.SeriesUID;
+    url = loris.BaseURL +
+        "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" +
+             patientname + "&SeriesUID=" + uid;
+    return <td>
             <a href= {url}
             className="mri_violations"
-            id="mri_protocol_check_violations" 
-            data-patientname= {patientname} 
+            id="mri_protocol_check_violations"
+            data-patientname= {patientname}
             data-seriesuid={uid}
             >Protocol Violation</a>
-           </td>;      
+           </td>;
   }
-  if (column === "Problem" &&  row["Problem"] === "Could not identify scan type" ) {
-  var patientname = row["PatientName"];
-  var uid = row["SeriesUID"];
-  var url = loris.BaseURL +
-            "/mri_violations/?submenu=mri_protocol_violations&PatientName="
-            + patientname + "&SeriesUID=" + uid;
-     return <td>
+  if (column === "Problem" && row.Problem === "Could not identify scan type") {
+    patientname = row.PatientName;
+    uid = row.SeriesUID;
+    url = loris.BaseURL +
+            "/mri_violations/?submenu=mri_protocol_violations&PatientName=" +
+            patientname + "&SeriesUID=" + uid;
+    return <td>
             <a href= {url}
             className="mri_violations"
             id="mri_protocol_violations"
@@ -50,21 +53,19 @@ function formatColumn(column, cell, rowData, rowHeaders) {
            </td>;
   }
   if (column === 'Resolution Status') {
-      var  hashName = "resolvable[" + row["Hash"] +"]";
-      return <td>
+    hashName = "resolvable[" + row.Hash + "]";
+    return <td>
                 <select name= {hashName} className="form-control input-sm" >
-                     <option value='unresolved' >Unresolved</option>
-                     <option value='reran' >Reran</option>
-                     <option value='emailed' >Emailed site/pending</option>
-                     <option value='inserted' >Inserted</option>
-                     <option value='rejected' >Rejected</option>
-                     <option value='inserted_flag' >Inserted with flag</option>
-                     <option value='other' >Other</option>
+                     <option value="unresolved" >Unresolved</option>
+                     <option value="reran" >Reran</option>
+                     <option value="emailed" >Emailed site/pending</option>
+                     <option value="inserted" >Inserted</option>
+                     <option value="rejected" >Rejected</option>
+                     <option value="inserted_flag" >Inserted with flag</option>
+                     <option value="other" >Other</option>
                 </select>
              </td>;
-
   }
 
   return <td>{cell}</td>;
-
 }

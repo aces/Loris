@@ -9,20 +9,23 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
-
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
+  var hashName;
+  var patientname;
+  var uid;
+  var url;
   rowHeaders.forEach(function (header, index) {
     row[header] = rowData[index];
   }, this);
 
-  if (column === "Problem" && row["Problem"] === "Protocol Violation") {
-    var patientname = row["PatientName"];
-    var uid = row["SeriesUID"];
-    var url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" + patientname + "&SeriesUID=" + uid;
+  if (column === "Problem" && row.Problem === "Protocol Violation") {
+    patientname = row.PatientName;
+    uid = row.SeriesUID;
+    url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" + patientname + "&SeriesUID=" + uid;
     return React.createElement(
       "td",
       null,
@@ -38,10 +41,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       )
     );
   }
-  if (column === "Problem" && row["Problem"] === "Could not identify scan type") {
-    var patientname = row["PatientName"];
-    var uid = row["SeriesUID"];
-    var url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_violations&PatientName=" + patientname + "&SeriesUID=" + uid;
+  if (column === "Problem" && row.Problem === "Could not identify scan type") {
+    patientname = row.PatientName;
+    uid = row.SeriesUID;
+    url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_violations&PatientName=" + patientname + "&SeriesUID=" + uid;
     return React.createElement(
       "td",
       null,
@@ -58,7 +61,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     );
   }
   if (column === 'Resolution Status') {
-    var hashName = "resolvable[" + row["Hash"] + "]";
+    hashName = "resolvable[" + row.Hash + "]";
     return React.createElement(
       "td",
       null,
