@@ -11,6 +11,8 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
+namespace LORIS\create_timepoint;
+
 /**
  * The forms for the new profile menu
  *
@@ -20,7 +22,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class NDB_Form_Create_Timepoint extends NDB_Form
+class Create_Timepoint extends \NDB_Form
 {
     /**
      * The subprojectID being created
@@ -36,9 +38,9 @@ class NDB_Form_Create_Timepoint extends NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
-        $candidate =& Candidate::singleton($this->identifier);
+        $candidate =& \Candidate::singleton($this->identifier);
 
         // check user permissions
         return (
@@ -54,7 +56,7 @@ class NDB_Form_Create_Timepoint extends NDB_Form
      */
     function _getDefaults()
     {
-        $candidate =& Candidate::singleton($this->identifier);
+        $candidate =& \Candidate::singleton($this->identifier);
 
         $defaults['visitLabel'] = $candidate->getNextVisitLabel();
         return $defaults;
@@ -70,7 +72,7 @@ class NDB_Form_Create_Timepoint extends NDB_Form
      */
     function _process($values)
     {
-        $success = TimePoint::createNew(
+        $success = \TimePoint::createNew(
             $this->identifier,
             $values['subprojectID'],
             $values['visitLabel']
@@ -87,17 +89,21 @@ class NDB_Form_Create_Timepoint extends NDB_Form
      *
      * @return void
      */
-    function create_timepoint()
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $config =& NDB_Config::singleton();
+        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
+
+        $config =& \NDB_Config::singleton();
         if (!empty($_GET['subprojectID']) && is_numeric($_GET['subprojectID'])) {
             $this->subprojectID =$_GET['subprojectID'];
         }
 
         // cand ID
         $this->tpl_data['candID'] = $this->identifier;
+
         $this->addHidden('candID', $this->identifier);
-        $candidate   =& Candidate::singleton($this->identifier);
+
+        $candidate   =& \Candidate::singleton($this->identifier);
         $subprojList = null;
         //List of valid subprojects for a given project
         if ($config->getSetting('useProjects') === 'true') {
@@ -107,7 +113,7 @@ class NDB_Form_Create_Timepoint extends NDB_Form
 
         // Loop through the subprojects to get an id out and to create
         // the subproject drop down.
-        $allSubprojects  = Utility::getSubprojectList();
+        $allSubprojects  = \Utility::getSubprojectList();
         $sp_labelOptions = array(null => '');
 
         foreach ($allSubprojects as $subprojectID => $title) {
@@ -139,7 +145,7 @@ class NDB_Form_Create_Timepoint extends NDB_Form
         $visitLabelSettings = $config->getSetting('visitLabel');
         $visitLabelAdded    = false;
 
-        foreach (Utility::toArray($visitLabelSettings) as $visitLabel) {
+        foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
             if ($visitLabel['@']['subprojectID']==$this->subprojectID) {
                 if ($visitLabel['generation'] == 'user') {
                     $this->addBasicText(
@@ -153,7 +159,7 @@ class NDB_Form_Create_Timepoint extends NDB_Form
                     $visitLabelAdded = true;
                 } elseif ($visitLabel['generation'] == 'sequence') {
                     $labelOptions[''] = null;
-                    $items            = Utility::toArray(
+                    $items            = \Utility::toArray(
                         $visitLabel['labelSet']['item']
                     );
                     foreach ($items as $item) {
@@ -171,6 +177,8 @@ class NDB_Form_Create_Timepoint extends NDB_Form
         }
 
         $this->form->addFormRule(array(&$this, '_validate'));
+
+
     }
 
 
@@ -183,9 +191,9 @@ class NDB_Form_Create_Timepoint extends NDB_Form
      */
     function _validate($values)
     {
-        $config =& NDB_Config::singleton();
+        $config =& \NDB_Config::singleton();
         $visitLabelSettings = $config->getSetting('visitLabel');
-        foreach (Utility::toArray($visitLabelSettings) as $visitLabel) {
+        foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
             if ($visitLabel['@']['subprojectID'] == $values['subprojectID']) {
                 $visitLabelSettings =$visitLabel;
                 break;
@@ -209,7 +217,7 @@ class NDB_Form_Create_Timepoint extends NDB_Form
             }
         }
 
-        $candidate =& Candidate::singleton($this->identifier);
+        $candidate =& \Candidate::singleton($this->identifier);
 
         $timePointArray = $candidate->getListOfVisitLabels();
 
