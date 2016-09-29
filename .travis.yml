@@ -122,6 +122,3 @@ script:
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
-
-after_success:
-    - bash <(curl -s https://codecov.io/bash)
