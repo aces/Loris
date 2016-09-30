@@ -105,17 +105,27 @@ var CandidateInfo = React.createClass(
       }
 
       var reasonKey;
+      var specifyOther = null;
+      var otherDisabled = true;
+      var otherRequired = false;
       for (var key in this.state.Data.caveatReasonOptions) {
         if (this.state.Data.caveatReasonOptions.hasOwnProperty(key)) {
           if (this.state.Data.caveatReasonOptions[key] === "Other") {
             reasonKey = key;
+            specifyOther = <TextareaElement
+                  label ="If Other, please specify"
+                  name ="flagged_other"
+                  value ={this.state.Data.flagged_other}
+                  onUserInput ={this.setFormData}
+                  ref ="flagged_other"
+                  disabled ={otherDisabled}
+                  required ={otherRequired}
+              />;
             break;
           }
         }
       }
 
-      var otherDisabled = true;
-      var otherRequired = false;
       if (this.state.formData.flagged_reason === reasonKey &&
                 this.state.Data.flagged_other !== null
             ) {
@@ -246,15 +256,7 @@ var CandidateInfo = React.createClass(
                         disabled ={reasonDisabled}
                         required ={reasonRequired}
                     />
-                    <TextareaElement
-                        label ="If Other, please specify"
-                        name ="flagged_other"
-                        value ={this.state.Data.flagged_other}
-                        onUserInput ={this.setFormData}
-                        ref ="flagged_other"
-                        disabled ={otherDisabled}
-                        required ={otherRequired}
-                    />
+                    {specifyOther}
                     {extraParameterFields}
                     {updateButton}
                 </FormElement>

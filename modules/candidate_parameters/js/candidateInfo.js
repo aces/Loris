@@ -89,10 +89,20 @@ var CandidateInfo = React.createClass({
     }
 
     var reasonKey;
+    var specifyOther = null;
     for (var key in this.state.Data.caveatReasonOptions) {
       if (this.state.Data.caveatReasonOptions.hasOwnProperty(key)) {
         if (this.state.Data.caveatReasonOptions[key] === "Other") {
           reasonKey = key;
+          specifyOther = React.createElement(TextareaElement, {
+            label: "If Other, please specify",
+            name: "flagged_other",
+            value: this.state.Data.flagged_other,
+            onUserInput: this.setFormData,
+            ref: "flagged_other",
+            disabled: otherDisabled,
+            required: otherRequired
+          });
           break;
         }
       }
@@ -227,15 +237,7 @@ var CandidateInfo = React.createClass({
           disabled: reasonDisabled,
           required: reasonRequired
         }),
-        React.createElement(TextareaElement, {
-          label: "If Other, please specify",
-          name: "flagged_other",
-          value: this.state.Data.flagged_other,
-          onUserInput: this.setFormData,
-          ref: "flagged_other",
-          disabled: otherDisabled,
-          required: otherRequired
-        }),
+        specifyOther,
         extraParameterFields,
         updateButton
       )
