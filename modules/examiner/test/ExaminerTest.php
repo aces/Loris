@@ -178,11 +178,11 @@ class ExaminerTest extends LorisIntegrationTest
     function testResultTableLoadsWithPermission()
     {
         $this->setupPermissions(array("examiner_view"));
-        $this->safeGet($this->url . "/examiner/");
+        $this->safeGet($this->url . "/examiner/?format=json");
 
         // Check the table column headers
         $tableText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".table-responsive")
+            WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("No.", $tableText);
         $this->assertContains("Examiner", $tableText);

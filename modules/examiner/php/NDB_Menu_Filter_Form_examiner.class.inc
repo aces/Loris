@@ -57,11 +57,11 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         // base query
         $query = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
-              if ($this->useCertification == '1') {
-         $query .= " LEFT JOIN certification c ON 
+        if ($this->useCertification == '1') {
+            $query .= " LEFT JOIN certification c ON 
                    (c.examinerID=e.examinerID and c.pass = 'certified')
                    LEFT JOIN test_names tn ON (tn.ID = c.testID) ";
-                 }
+        }
          $query .= " WHERE 1=1 ";
 
         $user = User::singleton();
@@ -70,12 +70,12 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         }
 
         // set the class variables
-        $this->columns      = array(
-                               'e.full_name as Examiner',
-                               'e.examinerID as ID',
-                               'psc.Name as Site',
-                               'e.radiologist as Radiologist',
-                              );
+        $this->columns = array(
+                          'e.full_name as Examiner',
+                          'e.examinerID as ID',
+                          'psc.Name as Site',
+                          'e.radiologist as Radiologist',
+                         );
         if ($this->useCertification == '1') {
             array_push($this->columns, 'tn.Full_name');
         }
@@ -105,7 +105,6 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             array_push($this->headers, 'Certification');
         }
         $this->tpl_data['hiddenHeaders'] = json_encode(['ID']);
-
 
         return true;
     }
