@@ -116,7 +116,7 @@ var CandidateInfo = React.createClass(
 
       var otherDisabled = true;
       var otherRequired = false;
-      if (this.state.formData.flagged_reason === reasonKey ||
+      if (this.state.formData.flagged_reason === reasonKey &&
                 this.state.Data.flagged_other !== null
             ) {
         if (this.state.formData.flagged_reason === reasonKey) {
