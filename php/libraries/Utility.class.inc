@@ -266,13 +266,20 @@ class Utility
     {
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
-        // get the list of projects
-        $projects = $DB->pselect("SELECT * FROM Project", array());
-        $project  = array();
-        foreach ($projects as $row) {
-            $project[$row['ProjectID']] = $row['Name'];
+
+        $config      =& NDB_Config::singleton();
+        $useProjects = $config->getSetting('useProjects');
+
+        if ($useProjects) {
+            // get the list of projects
+            $projects = $DB->pselect("SELECT * FROM Project", array());
+            $project  = array();
+            foreach ($projects as $row) {
+                $project[$row['ProjectID']] = $row['Name'];
+            }
+            return $project;
         }
-        return $project;
+        return array();
     }
 
     /**
