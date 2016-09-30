@@ -97,9 +97,7 @@ var CandidateInfo = React.createClass(
       }
       var reasonDisabled = true;
       var reasonRequired = false;
-      if (this.state.formData.flagged_caveatemptor === "true" ||
-                this.state.Data.flagged_reason !== null
-            ) {
+      if (this.state.formData.flagged_caveatemptor === "true") {
         reasonDisabled = false;
         reasonRequired = true;
       }
@@ -112,31 +110,14 @@ var CandidateInfo = React.createClass(
         if (this.state.Data.caveatReasonOptions.hasOwnProperty(key)) {
           if (this.state.Data.caveatReasonOptions[key] === "Other") {
             reasonKey = key;
-            specifyOther = <TextareaElement
-                  label ="If Other, please specify"
-                  name ="flagged_other"
-                  value ={this.state.Data.flagged_other}
-                  onUserInput ={this.setFormData}
-                  ref ="flagged_other"
-                  disabled ={otherDisabled}
-                  required ={otherRequired}
-              />;
             break;
           }
         }
       }
 
-      if (this.state.formData.flagged_reason === reasonKey &&
-                this.state.Data.flagged_other !== null
-            ) {
-        if (this.state.formData.flagged_reason === reasonKey) {
-          otherRequired = true;
-        }
-        if (reasonDisabled === false) {
-          otherDisabled = false;
-        } else {
-          otherRequired = false;
-        }
+      if (this.state.formData.flagged_reason === reasonKey) {
+        otherRequired = true;
+        otherDisabled = false;
       }
 
       if (this.state.formData.flagged_caveatemptor === "false") {
@@ -146,6 +127,17 @@ var CandidateInfo = React.createClass(
         otherRequired = false;
       }
 
+      if (reasonKey !== null) {
+        specifyOther = <TextareaElement
+              label ="If Other, please specify"
+              name ="flagged_other"
+              value ={this.state.Data.flagged_other}
+              onUserInput ={this.setFormData}
+              ref ="flagged_other"
+              disabled ={otherDisabled}
+              required ={otherRequired}
+          />;
+      }
       var extraParameterFields = [];
       var extraParameters = this.state.Data.extra_parameters;
       for (var key2 in extraParameters) {
