@@ -179,7 +179,7 @@ var CandidateInfo = React.createClass({
     }
     return React.createElement(
       "div",
-      null,
+      { "class": "row" },
       React.createElement(
         "div",
         { className: alertClass, role: "alert", ref: "alert-message" },
