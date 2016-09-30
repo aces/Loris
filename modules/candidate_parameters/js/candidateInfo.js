@@ -111,6 +111,8 @@ var CandidateInfo = React.createClass({
       reasonRequired = false;
       otherDisabled = true;
       otherRequired = false;
+      this.state.formData.flagged_reason = '';
+      this.state.formData.flagged_other = '';
     }
 
     if (reasonKey !== null) {
