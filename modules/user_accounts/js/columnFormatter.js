@@ -1,5 +1,3 @@
-"use strict";
-
 /* exported formatColumn */
 
 /**
@@ -17,9 +15,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   rowHeaders.forEach(function (header, index) {
     row[header] = rowData[index];
   }, this);
-
+  var url;
   if (column === 'Username') {
-    var url = loris.BaseURL + "/user_accounts/edit_user/?identifier=" + row["Username"];
+    url = loris.BaseURL + "/user_accounts/edit_user/?identifier=" + row.Username;
     return React.createElement(
       "td",
       null,
