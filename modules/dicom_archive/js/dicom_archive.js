@@ -1,5 +1,3 @@
-'use strict';
-
 /* exported RDicomArchive */
 /* global QueryString  */
 
@@ -20,12 +18,12 @@ var DicomArchive = React.createClass({
     Module: React.PropTypes.string.isRequired
   },
   mixins: [React.addons.PureRenderMixin],
-  getInitialState: function getInitialState() {
+  getInitialState: function () {
     return {
       Filter: {}
     };
   },
-  getDefaultProps: function getDefaultProps() {
+  getDefaultProps: function () {
     return {
       Gender: {
         M: 'Male',
@@ -34,7 +32,7 @@ var DicomArchive = React.createClass({
       }
     };
   },
-  componentDidMount: function componentDidMount() {
+  componentDidMount: function () {
     var formRefs = this.refs;
     var queryString = new QueryString();
     var queryStringObj = queryString.get();
@@ -51,7 +49,7 @@ var DicomArchive = React.createClass({
       QueryString: queryString
     });
   },
-  setFilter: function setFilter(fieldName, fieldValue) {
+  setFilter: function (fieldName, fieldValue) {
     // Create deep copy of a current filter
     var Filter = JSON.parse(JSON.stringify(this.state.Filter));
     var queryString = this.state.QueryString;
@@ -80,7 +78,7 @@ var DicomArchive = React.createClass({
 
     this.setState({ Filter: Filter });
   },
-  clearFilter: function clearFilter() {
+  clearFilter: function () {
     var queryString = this.state.QueryString;
     var formRefs = this.refs;
 
@@ -97,7 +95,7 @@ var DicomArchive = React.createClass({
     // Clear filter
     this.setState({ Filter: {} });
   },
-  render: function render() {
+  render: function () {
     // Defining element names here ensures that `name` and `ref`
     // properties of the element are always kept in sync
     var patientID = "patientId";

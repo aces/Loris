@@ -45,8 +45,22 @@
             // jquery date-picker
             if (!Modernizr.inputtypes.date) {
               $('input[type=date]').datepicker({
-                dateFormat: 'yy-mm-dd'
+                dateFormat: 'yy-mm-dd',
+                changeMonth: true,
+                changeYear: true
               });
+              $('input[type=date]').attr('placeholder', 'yyyy-mm-dd');
+            }
+
+            if (!Modernizr.inputtypes.month) {
+              $('input[type=month]').datepicker({
+                dateFormat: 'MM yy',
+                changeMonth: true,
+                changeYear: true
+              });
+
+              var placeholder = $.datepicker.formatDate('MM yy', new Date());
+              $('input[type=month]').attr('placeholder', placeholder);
             }
 
           });

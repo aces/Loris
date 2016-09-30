@@ -412,7 +412,7 @@ ImagePanelQCSelectedSelector = React.createClass({
             FormName: 'selectedvol',
             FileID: this.props.FileID,
             editable: this.props.HasQCPerm,
-            options:  { "": "", "true": "True", "false": "False" },
+            options: { "": "", "true": "True", "false": "False" },
             defaultValue: this.props.Selected
         });
     }
@@ -421,12 +421,11 @@ ImagePanelQCCaveatSelector = React.createClass({
     displayName: 'ImagePanelQCCaveatSelector',
 
     render: function () {
+
         // Link caveat to MRI Violations if set true
         var mriViolationsLink = null;
         if (this.props.SeriesUID && this.props.Caveat === "1") {
-            mriViolationsLink = '/mri_violations/?' +
-              'submenu=mri_protocol_check_violations&SeriesUID=' +
-              this.props.SeriesUID + '&filter=true';
+            mriViolationsLink = '/mri_violations/?' + 'submenu=mri_protocol_check_violations&SeriesUID=' + this.props.SeriesUID + '&filter=true';
         }
 
         return React.createElement(ImageQCDropdown, {

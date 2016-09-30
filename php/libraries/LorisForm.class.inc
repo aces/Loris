@@ -717,7 +717,7 @@ class LorisForm
             $maxYear = "max=\"" . $el['options']['maxYear'] . "-12-31\"";
         }
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
+        $required = isset($el['required']) ? "this.value === '' ? '$msg':''" : "''";
         $value    = $this->getValue($el['name']);
         $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear "
             . $disabled
