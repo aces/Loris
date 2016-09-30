@@ -184,7 +184,6 @@ class ExaminerTest extends LorisIntegrationTest
         $tableText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("No.", $tableText);
         $this->assertContains("Examiner", $tableText);
         $this->assertContains("Site", $tableText);
         $this->assertContains("Radiologist", $tableText);
