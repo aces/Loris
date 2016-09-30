@@ -239,33 +239,32 @@ var ParticipantStatus = React.createClass(
       formData.append('tab', this.props.tabName);
       formData.append('candID', this.state.Data.candID);
       $.ajax(
-          {
-              type: 'POST',
-              url: self.props.action,
-              data: formData,
-              cache: false,
-              contentType: false,
-              processData: false,
-              success: function (data) {
-                  self.setState(
-                      {
-                          updateResult: "success"
-                      }
-                  );
-              },
-              error: function (err) {
-                  if (err.responseText !== "") {
-                      var errorMessage = JSON.parse(err.responseText).message;
-                      self.setState(
-                          {
-                              updateResult: "error",
-                              errorMessage: errorMessage
-                          }
-                      );
-                  }
-
+        {
+          type: 'POST',
+          url: self.props.action,
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function(data) {
+            self.setState(
+              {
+                updateResult: "success"
               }
+                  );
+          },
+          error: function(err) {
+            if (err.responseText !== "") {
+              var errorMessage = JSON.parse(err.responseText).message;
+              self.setState(
+                {
+                  updateResult: "error",
+                  errorMessage: errorMessage
+                }
+                      );
+            }
           }
+        }
             );
     },
         /**

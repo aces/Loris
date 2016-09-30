@@ -96,12 +96,12 @@ var CandidateInfo = React.createClass(
         updateButton = <ButtonElement label ="Update" />;
       }
       var reasonDisabled = true;
-        var reasonRequired = false;
+      var reasonRequired = false;
       if (this.state.formData.flagged_caveatemptor === "true" ||
                 this.state.Data.flagged_reason !== null
             ) {
         reasonDisabled = false;
-          reasonRequired = true;
+        reasonRequired = true;
       }
 
       var reasonKey;
@@ -123,18 +123,17 @@ var CandidateInfo = React.createClass(
           otherRequired = true;
         }
         if (reasonDisabled === false) {
-            otherDisabled = false;
-        }
-        else {
-            otherRequired = false;
+          otherDisabled = false;
+        } else {
+          otherRequired = false;
         }
       }
 
       if (this.state.formData.flagged_caveatemptor === "false") {
-          reasonDisabled = true;
-          reasonRequired = false;
-          otherDisabled = true;
-          otherRequired = false;
+        reasonDisabled = true;
+        reasonRequired = false;
+        otherDisabled = true;
+        otherRequired = false;
       }
 
       var extraParameterFields = [];
@@ -300,12 +299,12 @@ var CandidateInfo = React.createClass(
           },
           error: function(err) {
             if (err.responseText !== "") {
-                var errorMessage = JSON.parse(err.responseText).message;
-                self.setState(
-                    {
-                        updateResult: "error",
-                        errorMessage: errorMessage
-                    }
+              var errorMessage = JSON.parse(err.responseText).message;
+              self.setState(
+                {
+                  updateResult: "error",
+                  errorMessage: errorMessage
+                }
                 );
             }
           }

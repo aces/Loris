@@ -365,21 +365,21 @@ var ConsentStatus = React.createClass(
               }
                         );
           },
-            error: function(err) {
-                if (err.responseText !== "") {
-                    var errorMessage = JSON.parse(err.responseText).message;
-                    self.setState(
-                        {
-                            updateResult: "error",
-                            errorMessage: errorMessage
-                        }
-                    );
+          error: function(err) {
+            if (err.responseText !== "") {
+              var errorMessage = JSON.parse(err.responseText).message;
+              self.setState(
+                {
+                  updateResult: "error",
+                  errorMessage: errorMessage
                 }
+                    );
             }
+          }
 
         }
       );
-        },
+    },
         /**
      * Display a success/error alert message after form submission
      */

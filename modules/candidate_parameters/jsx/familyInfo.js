@@ -312,33 +312,32 @@ var FamilyInfo = React.createClass(
       }
 
       $.ajax(
-          {
-              type: 'POST',
-              url: self.props.action,
-              data: formData,
-              cache: false,
-              contentType: false,
-              processData: false,
-              success: function (data) {
-                  self.setState(
-                      {
-                          updateResult: "success"
-                      }
-                  );
-              },
-              error: function (err) {
-                  if (err.responseText !== "") {
-                      var errorMessage = JSON.parse(err.responseText).message;
-                      self.setState(
-                          {
-                              updateResult: "error",
-                              errorMessage: errorMessage
-                          }
-                      );
-                  }
-
+        {
+          type: 'POST',
+          url: self.props.action,
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function(data) {
+            self.setState(
+              {
+                updateResult: "success"
               }
+                  );
+          },
+          error: function(err) {
+            if (err.responseText !== "") {
+              var errorMessage = JSON.parse(err.responseText).message;
+              self.setState(
+                {
+                  updateResult: "error",
+                  errorMessage: errorMessage
+                }
+                      );
+            }
           }
+        }
             );
     }
 
