@@ -14,7 +14,7 @@
 		allow from all
 	</Directory>
 
-	php_value include_path .:/usr/share/php:/usr/share/pear:%LORISROOT%/project/libraries:%LORISROOT%/php/libraries
+	php_value include_path .:/usr/share/php:%LORISROOT%/project/libraries:%LORISROOT%/php/libraries
 
 	DirectoryIndex main.php index.html
 
