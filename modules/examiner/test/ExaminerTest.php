@@ -298,7 +298,7 @@ class ExaminerTest extends LorisIntegrationTest
         $this->webDriver->findElement(
             WebDriverBy::Name("filter")
         )->click();
-      
+
         $this->safeGet($this->url . "/examiner/?format=json");
 
         $bodyText = $this->webDriver->findElement(
