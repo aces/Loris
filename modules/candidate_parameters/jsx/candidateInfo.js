@@ -96,11 +96,14 @@ var CandidateInfo = React.createClass(
         updateButton = <ButtonElement label ="Update" />;
       }
       var reasonDisabled = true;
+        var reasonRequired = false;
       if (this.state.formData.flagged_caveatemptor === "true" ||
                 this.state.Data.flagged_reason !== null
             ) {
         reasonDisabled = false;
+          reasonRequired = true;
       }
+
       var reasonKey;
       for (var key in this.state.Data.caveatReasonOptions) {
         if (this.state.Data.caveatReasonOptions.hasOwnProperty(key)) {
@@ -111,7 +114,7 @@ var CandidateInfo = React.createClass(
         }
       }
 
-      var otherText = null;
+      var otherDisabled = true;
       var otherRequired = false;
       if (this.state.formData.flagged_reason === reasonKey ||
                 this.state.Data.flagged_other !== null
@@ -119,15 +122,19 @@ var CandidateInfo = React.createClass(
         if (this.state.formData.flagged_reason === reasonKey) {
           otherRequired = true;
         }
-        otherText = <TextareaElement
-                label ="If Other, please specify"
-                name ="flagged_other"
-                value ={this.state.Data.flagged_other}
-                onUserInput ={this.setFormData}
-                ref ="flagged_other"
-                disabled ={false}
-                required ={otherRequired}
-                />;
+        if (reasonDisabled === false) {
+            otherDisabled = false;
+        }
+        else {
+            otherRequired = false;
+        }
+      }
+
+      if (this.state.formData.flagged_caveatemptor === "false") {
+          reasonDisabled = true;
+          reasonRequired = false;
+          otherDisabled = true;
+          otherRequired = false;
       }
 
       var extraParameterFields = [];
@@ -238,9 +245,17 @@ var CandidateInfo = React.createClass(
                         onUserInput ={this.setFormData}
                         ref ="flagged_reason"
                         disabled ={reasonDisabled}
-                        required ={!reasonDisabled}
+                        required ={reasonRequired}
                     />
-                    {otherText}
+                    <TextareaElement
+                        label ="If Other, please specify"
+                        name ="flagged_other"
+                        value ={this.state.Data.flagged_other}
+                        onUserInput ={this.setFormData}
+                        ref ="flagged_other"
+                        disabled ={otherDisabled}
+                        required ={otherRequired}
+                    />
                     {extraParameterFields}
                     {updateButton}
                 </FormElement>
