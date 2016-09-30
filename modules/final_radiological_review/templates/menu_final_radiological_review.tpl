@@ -101,7 +101,7 @@
 </div>
 <div class="dynamictable" id="datatable"></div> 
 <script>
-loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };i
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
 var table = RDynamicDataTable({
      "DataURL" : "{$baseurl}/final_radiological_review/?format=json",
      "getFormattedCell" : formatColumn,

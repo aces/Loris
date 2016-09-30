@@ -18,22 +18,26 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
-
+  var url;
+  var reviewDone;
+  var finalizedvar;
+  var sas;
+  var pvs;
   if (column === 'PSCID') {
-      var url  = loris.BaseURL + "/final_radiological_review/final_radiological_review/?identifier=" + row["CommentID"];
+       url  = loris.BaseURL + "/final_radiological_review/final_radiological_review/?identifier=" + row.CommentID;
       return <td>
                 <a href ={url}>{cell}</a>
              </td>;
      }
   if (column === 'Review Done') {
 
-     var reviewDone = " ";
+      reviewDone = " ";
 
-     if (row["Review Done"]=='1'){
+     if (row.ReviewDone == '1'){
          reviewDone = 'Yes';
         }
 
-     if (row["Review Done"]=='0'){
+     if (row.ReviewDone == '0'){
          reviewDone = 'No';
         }
        return <td>{reviewDone}</td>;
@@ -41,9 +45,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   
   if (column === 'SAS') {
 
-     var sas;
-
-     switch(row["SAS"]) {
+     switch(row.SAS) {
         case "0":
               sas = "None";
               break;
@@ -69,9 +71,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (column === 'PVS') {
   
-     var pvs;
-
-     switch(row["PVS"]) {
+     switch(row.PVS) {
         case "0":
               pvs = "None";
               break;
@@ -93,16 +93,14 @@ function formatColumn(column, cell, rowData, rowHeaders) {
        }
        return <td>{pvs}</td>;
       }
+  if (column === 'Finalized') {
 
-   if (column === 'Finalized') {
 
-     var finalizedvar;
-
-     if (row["Finalized"]=='1'){
+     if (row.Finalized == '1'){
          finalizedvar = "Yes";
         }
 
-     if (row["Finalized"]=='0'){
+     if (row.Finalized == '0'){
          finalizedvar = "No";
         }
        return <td>{finalizedvar}</td>;
