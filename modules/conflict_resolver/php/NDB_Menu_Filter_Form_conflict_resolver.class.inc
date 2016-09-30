@@ -206,20 +206,23 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
 
         // set the class variables
         $this->columns = array(
-                          'conflicts_unresolved.TableName',
-                          'session.CandID',
-                          'candidate.PSCID',
-                          'session.Visit_label',
+                          'conflicts_unresolved.TableName as Instrument',
+                          'session.CandID as CandID',
+                          'candidate.PSCID as PSCID',
+                          'session.Visit_label as Visit_Lable',
                          );
 
         if ($useProjects) {
-            $this->columns[] = 'candidate.ProjectID as Project';
+            $this->columns[] = 'Project.Name as Project';
         }
 
         $this->columns = array_merge(
             $this->columns,
             array(
-             'conflicts_unresolved.FieldName',
+             'conflicts_unresolved.FieldName as Question',
+             '"" as Correct_Answer',
+             'conflicts_unresolved.Value1 as Value1',
+             'conflicts_unresolved.Value2 as Value2',
              "MD5(
                     CONCAT_WS(
                         ':',
@@ -232,15 +235,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                         conflicts_unresolved.CommentId2
                     )
                 )
-                AS hash",
-             'conflicts_unresolved.ExtraKeyColumn',
-             'conflicts_unresolved.ExtraKey1',
-             'conflicts_unresolved.ExtraKey2',
-             'conflicts_unresolved.CommentId1',
-             'conflicts_unresolved.CommentId2',
-             'conflicts_unresolved.Value1',
-             'conflicts_unresolved.Value2',
-             'session.CenterID',
+                as Hash",
             )
         );
 
@@ -248,6 +243,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
             LEFT JOIN flag ON (conflicts_unresolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
+            LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
             WHERE 1=1";
 
         $user = User::singleton();
@@ -277,23 +273,31 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
              'conflicts_unresolved.Fieldname',
             )
         );
-
-        $this->headers = array(
-                          'TableName',
-                          'CandID',
-                          'PSCID',
-                          'Visit_label',
-                         );
+        $this->headers      = array(
+                               'Instrument',
+                               'CandID',
+                               'PSCID',
+                               'Visit_label',
+                              );
 
         if ($useProjects) {
             $this->headers = array_merge(
                 $this->headers,
-                array('candidate.ProjectID' => 'Project')
+                array('Project')
             );
         }
 
-        $this->headers[] = 'FieldName';
-
+        $this->headers =array_merge(
+            $this->headers,
+            array(
+             'Question',
+             'Correct Answer',
+             'Value1',
+             'Value2',
+             'Hash',
+            )
+        );
+        $this->tpl_data['hiddenHeaders'] = json_encode(['Value1', 'Value2', 'Hash']);
         $this->formToFilter = array(
                                'Instrument' => 'conflicts_unresolved.TableName',
                                'site'       => 'session.CenterID',
@@ -465,6 +469,21 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
             $x++;
         }
         return true;
+    }
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/conflict_resolver/js/unresolved_columnFormatter.js")
+        );
     }
 }
 
