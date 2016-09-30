@@ -14,8 +14,6 @@
 /**
  * Base class for all NeuroDB behavioural instruments
  *
- * Throws PEAR errors. Also requires PEAR HTML_Quickform.
- *
  * @category Main
  * @package  Behavioural
  * @author   Unknown <example@example.com>
