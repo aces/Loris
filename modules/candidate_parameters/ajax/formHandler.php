@@ -41,8 +41,8 @@ if (isset($_POST['tab'])) {
 /**
  * Handles the updating of Candidate Info
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database   $db   database object
+ * @param User $user user object
  *
  * @throws DatabaseException
  *
@@ -115,8 +115,8 @@ function editCandInfoFields($db, $user)
 /**
  * Handles the updating of Proband Info
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database   $db   database object
+ * @param User $user user object
  *
  * @throws DatabaseException
  *
@@ -146,8 +146,8 @@ function editProbandInfoFields($db, $user)
 /**
  * Handles the updating of Family Info
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database   $db   database object
+ * @param User $user user object
  *
  * @throws DatabaseException
  *
@@ -246,8 +246,8 @@ function editFamilyInfoFields($db, $user)
 /**
  * Handles the deletion of a family member
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database   $db   database object
+ * @param User $user user object
  *
  * @throws DatabaseException
  *
@@ -282,8 +282,8 @@ function deleteFamilyMember($db, $user)
 /**
  * Handles the updating of Participant Status
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database   $db   database object
+ * @param User $user user object
  *
  * @throws DatabaseException
  *
@@ -325,7 +325,7 @@ function editParticipantStatusFields($db, $user)
         array('candid' => $candID)
     );
 
-    if ($exists === null) {
+    if ($exists === null || empty($exists)) {
         $db->insert('participant_status', $updateValues);
     } else {
         $db->update(
@@ -341,8 +341,8 @@ function editParticipantStatusFields($db, $user)
 /**
  * Handles the updating of Consent Status
  *
- * @param Database $db   database object
- * @param User     $user user object
+ * @param Database   $db   database object
+ * @param User $user user object
  *
  * @throws DatabaseException
  *
@@ -401,7 +401,7 @@ function editConsentStatusFields($db, $user)
                 array('candid' => $candID)
             );
 
-            if ($exists === null) {
+            if ($exists === null || empty($exists)) {
                 $db->insert('participant_status', $updateValues);
             } else {
                 $db->update(
