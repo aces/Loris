@@ -55,7 +55,7 @@ var CandidateInfo = React.createClass({
     formData[formElement] = value;
 
     // Reset 'reason' field
-    if (formElement === "flagged_caveatemptor" && value === "false") {
+    if (formElement === "flaggedCaveatemptor" && value === "false") {
       formData.flaggedReason = '';
       formData.flaggedOther = '';
       this.refs.flagged_reason.state.value = "";
@@ -64,7 +64,7 @@ var CandidateInfo = React.createClass({
     }
 
     // Reset 'other' field
-    if (formElement === "flagged_reason" && value !== "2") {
+    if (formElement === "flaggedReason" && value !== "2") {
       formData.flaggedOther = '';
       this.refs.flagged_other.state.value = "";
     }
@@ -106,7 +106,7 @@ var CandidateInfo = React.createClass({
     }
     var reasonDisabled = true;
     var reasonRequired = false;
-    if (this.state.formData.flagged_caveatemptor === "true") {
+    if (this.state.formData.flaggedCaveatemptor === "true") {
       reasonDisabled = false;
       reasonRequired = true;
     }
@@ -124,12 +124,12 @@ var CandidateInfo = React.createClass({
       }
     }
 
-    if (this.state.formData.flagged_reason === reasonKey) {
+    if (this.state.formData.flaggedReason === reasonKey) {
       otherRequired = true;
       otherDisabled = false;
     }
 
-    if (this.state.formData.flagged_caveatemptor === "false") {
+    if (this.state.formData.flaggedCaveatemptor === "false") {
       reasonDisabled = true;
       reasonRequired = false;
       otherDisabled = true;
@@ -140,7 +140,7 @@ var CandidateInfo = React.createClass({
       specifyOther = React.createElement(TextareaElement, {
         label: "If Other, please specify",
         name: "flagged_other",
-        value: this.state.formData.flagged_other,
+        value: this.state.formData.flaggedOther,
         onUserInput: this.setFormData,
         ref: "flagged_other",
         disabled: otherDisabled,
@@ -241,7 +241,7 @@ var CandidateInfo = React.createClass({
           label: "Caveat Emptor Flag for Candidate",
           name: "flagged_caveatemptor",
           options: this.state.caveatOptions,
-          value: this.state.formData.flagged_caveatemptor,
+          value: this.state.formData.flaggedCaveatemptor,
           onUserInput: this.setFormData,
           ref: "flagged_caveatemptor",
           disabled: disabled,
@@ -251,7 +251,7 @@ var CandidateInfo = React.createClass({
           label: "Reason for Caveat Emptor Flag",
           name: "flagged_reason",
           options: this.state.Data.caveatReasonOptions,
-          value: this.state.formData.flagged_reason,
+          value: this.state.formData.flaggedReason,
           onUserInput: this.setFormData,
           ref: "flagged_reason",
           disabled: reasonDisabled,
