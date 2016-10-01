@@ -203,8 +203,10 @@ var FamilyInfo = React.createClass({
     var self = this;
     var formData = new FormData();
     for (var key in myFormData) {
-      if (myFormData[key] !== "") {
-        formData.append(key, myFormData[key]);
+      if (myFormData.hasOwnProperty(key)) {
+        if (myFormData[key] !== "") {
+          formData.append(key, myFormData[key]);
+        }
       }
     }
 

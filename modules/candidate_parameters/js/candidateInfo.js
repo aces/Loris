@@ -32,9 +32,9 @@ var CandidateInfo = React.createClass({
       },
       success: function (data) {
         var formData = {
-          flagged_caveatemptor: data.flagged_caveatemptor,
+          flaggedCaveatemptor: data.flagged_caveatemptor,
           caveatReasonOptions: data.caveatReasonOptions,
-          flagged_reason: data.flagged_reason
+          flaggedReason: data.flagged_reason
         };
 
         that.setState({
@@ -56,17 +56,17 @@ var CandidateInfo = React.createClass({
 
     // Reset 'reason' field
     if (formElement === "flagged_caveatemptor" && value === "false") {
-      formData.flagged_reason = '';
-      formData.flagged_other = '';
-      this.refs['flagged_reason'].state.value = "";
-      this.refs['flagged_reason'].state.hasError = false;
-      this.refs['flagged_other'].state.value = "";
+      formData.flaggedReason = '';
+      formData.flaggedOther = '';
+      this.refs.flagged_reason.state.value = "";
+      this.refs.flagged_reason.state.hasError = false;
+      this.refs.flagged_other.state.value = "";
     }
 
     // Reset 'other' field
     if (formElement === "flagged_reason" && value !== "2") {
-      formData.flagged_other = '';
-      this.refs['flagged_other'].state.value = "";
+      formData.flaggedOther = '';
+      this.refs.flagged_other.state.value = "";
     }
 
     this.setState({
