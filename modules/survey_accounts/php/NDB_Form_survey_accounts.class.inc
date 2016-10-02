@@ -87,7 +87,7 @@ class NDB_Form_survey_accounts extends NDB_Form
                 'VL' => "Visit ". $values['VL']." does not exist for given candidate"
             );
         }
-        //print_r($values);
+        
         $instrument_list = $db->pselect( 
             "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
@@ -227,7 +227,6 @@ class NDB_Form_survey_accounts extends NDB_Form
      */
     function add_survey()
     {
-        print_r($this->template);
         $this->redirect = "test_name=$this->name";
         $this->addBasicText("CandID", "DCCID");
         $this->addBasicText("PSCID", "PSCID");
