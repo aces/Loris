@@ -238,5 +238,24 @@ class NDB_Form_survey_accounts extends NDB_Form
 
         $this->form->addFormRule(array(&$this, '_validate_add_survey'));
     }
+
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
+                $baseURL . "/survey_accounts/js/columnFormatter.js"
+            )
+        );
+    }
 }
 ?>
