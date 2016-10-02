@@ -67,7 +67,7 @@
                     <h3 class="modal-title">Email to Study Participant</h3>
                 </div>
             <div class="modal-body">
-                <textarea class="form-control" id="emailContent" name="email_dialog" rows="24" cols="80">This is where your message goes.</textarea>
+                <textarea class="form-control" id="emailContent" name="email_dialog" rows="24" cols="80" placeholder="Optionally enter a customized message here. A default email will be sent if left blank.">This is where your message goes.</textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
