@@ -87,7 +87,6 @@ class NDB_Form_survey_accounts extends NDB_Form
                 'VL' => "Visit ". $values['VL']." does not exist for given candidate"
             );
         }
-        
         $instrument_list = $db->pselect( 
             "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
