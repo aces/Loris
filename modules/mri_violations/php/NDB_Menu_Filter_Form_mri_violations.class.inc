@@ -199,7 +199,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
-                IF(INSTR(`MincFile`, 'assembly'), `MincFile`, CONCAT_WS('','" . $dir_path . "','trashbin/',SUBSTRING_INDEX(MincFile, '/', -2))) as MincFileViolated,
+                IF(INSTR(`MincFile`, 'assembly'), IF(LEFT(`MincFile`, 8) = 'assembly',CONCAT_WS('','" . $dir_path . "',`MincFile`),`MincFile`), CONCAT_WS('','" . $dir_path . "','trashbin/',SUBSTRING_INDEX(MincFile, '/', -2))) as MincFileViolated,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
                 SeriesUID,
