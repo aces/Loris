@@ -639,6 +639,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         );
     }
 
+    /**
+     * Include additional CSS files:
+     *  imaging_uploader.css
+     *
+     * @return array of css to be inserted
+     */
     function getCSSDependencies()
     {
         $factory = NDB_Factory::singleton();
