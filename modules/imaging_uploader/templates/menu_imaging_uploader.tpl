@@ -157,7 +157,7 @@
                             <label class="col-sm-4 col-md-4">
                                 Logs to display:
                             </label>
-                            <div class="col-sm-4 col-md-4">
+                            <div class="col-sm-5 col-md-5">
                                 {$form.LogType.html}
                             </div>
                         </div>

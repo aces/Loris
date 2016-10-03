@@ -639,5 +639,15 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         );
     }
 
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/imaging_uploader/css/imaging_uploader.css"]
+        );
+    }
 }
 ?>
