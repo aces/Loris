@@ -32,9 +32,9 @@ var CandidateInfo = React.createClass({
       },
       success: function (data) {
         var formData = {
-          flaggedCaveatemptor: data.flagged_caveatemptor,
-          caveatReasonOptions: data.caveatReasonOptions,
-          flaggedReason: data.flagged_reason
+          flagged_caveatemptor: data.flagged_caveatemptor,
+          flagged_other: data.flagged_other,
+          flagged_reason: data.flagged_reason
         };
 
         that.setState({
@@ -56,8 +56,8 @@ var CandidateInfo = React.createClass({
 
     // Reset 'reason' field
     if (formElement === "flagged_caveatemptor" && value === "false") {
-      formData.flaggedReason = '';
-      formData.flaggedOther = '';
+      formData.flagged_reason = '';
+      formData.flagged_other = '';
       this.refs.flagged_reason.state.value = "";
       this.refs.flagged_reason.state.hasError = false;
       this.refs.flagged_other.state.value = "";
@@ -65,7 +65,7 @@ var CandidateInfo = React.createClass({
 
     // Reset 'other' field
     if (formElement === "flagged_reason" && value !== "2") {
-      formData.flaggedOther = '';
+      formData.flagged_other = '';
       this.refs.flagged_other.state.value = "";
     }
 
@@ -106,7 +106,7 @@ var CandidateInfo = React.createClass({
     }
     var reasonDisabled = true;
     var reasonRequired = false;
-    if (this.state.formData.flaggedCaveatemptor === "true") {
+    if (this.state.formData.flagged_caveatemptor === "true") {
       reasonDisabled = false;
       reasonRequired = true;
     }
@@ -124,12 +124,12 @@ var CandidateInfo = React.createClass({
       }
     }
 
-    if (this.state.formData.flaggedReason === reasonKey) {
+    if (this.state.formData.flagged_reason === reasonKey) {
       otherRequired = true;
       otherDisabled = false;
     }
 
-    if (this.state.formData.flaggedCaveatemptor === "false") {
+    if (this.state.formData.flagged_caveatemptor === "false") {
       reasonDisabled = true;
       reasonRequired = false;
       otherDisabled = true;
@@ -140,7 +140,7 @@ var CandidateInfo = React.createClass({
       specifyOther = React.createElement(TextareaElement, {
         label: "If Other, please specify",
         name: "flagged_other",
-        value: this.state.formData.flaggedOther,
+        value: this.state.formData.flagged_other,
         onUserInput: this.setFormData,
         ref: "flagged_other",
         disabled: otherDisabled,
@@ -241,7 +241,7 @@ var CandidateInfo = React.createClass({
           label: "Caveat Emptor Flag for Candidate",
           name: "flagged_caveatemptor",
           options: this.state.caveatOptions,
-          value: this.state.formData.flaggedCaveatemptor,
+          value: this.state.formData.flagged_caveatemptor,
           onUserInput: this.setFormData,
           ref: "flagged_caveatemptor",
           disabled: disabled,
@@ -251,7 +251,7 @@ var CandidateInfo = React.createClass({
           label: "Reason for Caveat Emptor Flag",
           name: "flagged_reason",
           options: this.state.Data.caveatReasonOptions,
-          value: this.state.formData.flaggedReason,
+          value: this.state.formData.flagged_reason,
           onUserInput: this.setFormData,
           ref: "flagged_reason",
           disabled: reasonDisabled,
