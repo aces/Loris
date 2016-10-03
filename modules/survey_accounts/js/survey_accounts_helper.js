@@ -31,7 +31,6 @@ $(document).ready(function () {
             if (email.length > 0 && email2.length > 0 )
             {
                 $('#email_survey').removeAttr('disabled');
-                $('#create_survey').attr('disabled','disabled');
             }
             if (email2.length == 0 || email.length == 0 || email != email2)
             {
