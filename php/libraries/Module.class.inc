@@ -137,6 +137,12 @@ class Module
         $formname   = $page;
         $cls->setup();
         $cls->_setupPage($this->name, $page, $identifier, $commentID, $formname);
+
+        // Handles form submission
+        if (method_exists($cls, 'save')) {
+            $cls->save();
+        }
+
         return $cls;
     }
 
