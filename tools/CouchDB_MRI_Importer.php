@@ -1,8 +1,6 @@
 <?php
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
-require_once 'CouchDB.class.inc';
-require_once 'Database.class.inc';
 
 /**
  * Wrapper around CouchDB MRI functions
