@@ -66,7 +66,7 @@ var CandidateInfo = React.createClass(
       formData[formElement] = value;
 
       // Reset 'reason' field
-      if (formElement === "flaggedCaveatemptor" && value === "false") {
+      if (formElement === "flagged_caveatemptor" && value === "false") {
         formData.flaggedReason = '';
         formData.flaggedOther = '';
         this.refs.flagged_reason.state.value = "";
@@ -75,7 +75,7 @@ var CandidateInfo = React.createClass(
       }
 
       // Reset 'other' field
-      if (formElement === "flaggedReason" && value !== "2") {
+      if (formElement === "flagged_reason" && value !== "2") {
         formData.flaggedOther = '';
         this.refs.flagged_other.state.value = "";
       }
