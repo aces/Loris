@@ -34,7 +34,7 @@ class MediaTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testLoadsWithPermission()
+    function testLoadsWithPermissionWrite()
     {
         $this->setupPermissions(array("media_write"));
         $this->safeGet($this->url . "/media/");
@@ -50,7 +50,7 @@ class MediaTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testLoadsWithPermission()
+    function testLoadsWithPermissionRead()
     {
         $this->setupPermissions(array("media_read"));
         $this->safeGet($this->url . "/media/");
