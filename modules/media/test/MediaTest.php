@@ -1,6 +1,6 @@
 <?php
 /**
- * Training module automated integration tests
+ * Media module automated integration tests
  *
  * PHP Version 5
  *
