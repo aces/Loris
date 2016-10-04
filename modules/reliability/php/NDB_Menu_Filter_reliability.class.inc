@@ -133,7 +133,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     	// create user object
         $user =& User::singleton();
 
-           // allow to view all sites data through filter
+        // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles') || $user->hasPermission('reliability_edit_all')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList(false);
@@ -465,12 +465,16 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     {
         $tableData = $this->toArray();
         $threshold = $this->getThreshholds();
+        $cohort = Utility::getSubprojectList();
 
         foreach($tableData['Data'] as $key => $record) {
 
             // Calculate and set `Reliable` column
             $instrumentThreshold = $threshold[$record[9]];
             $instrumentScore = $record[10];
+
+            // Map cohort id to a string value
+            $record[3] = $cohort[$record[3]];
 
             if ($instrumentScore == null) {
                 $isReliable = "";

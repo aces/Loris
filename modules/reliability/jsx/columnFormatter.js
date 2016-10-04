@@ -56,16 +56,5 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     }
   }
 
-  if (column === 'Cohort') {
-    var cohort = row['Cohort'];
-    if (cohort === "1") {
-      return <td>6 month</td>;
-    } else if (cohort === "2") {
-      return <td>12 month</td>;
-    } else if (cohort === "3") {
-      return <td>Control</td>;
-    }
-  }
-
   return <td>{cell}</td>;
 }

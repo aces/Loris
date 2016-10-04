@@ -97,29 +97,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     }
   }
 
-  if (column === 'Cohort') {
-    var cohort = row['Cohort'];
-    if (cohort === "1") {
-      return React.createElement(
-        "td",
-        null,
-        "6 month"
-      );
-    } else if (cohort === "2") {
-      return React.createElement(
-        "td",
-        null,
-        "12 month"
-      );
-    } else if (cohort === "3") {
-      return React.createElement(
-        "td",
-        null,
-        "Control"
-      );
-    }
-  }
-
   return React.createElement(
     "td",
     null,
