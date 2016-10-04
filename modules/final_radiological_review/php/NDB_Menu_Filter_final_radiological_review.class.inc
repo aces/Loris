@@ -347,57 +347,6 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         $this->addBasicText('keyword','Search keyword in Comments', array("size"=>10,"maxlength"=>25));
     }
 
-
-    /**
-     * Overrides the NDB_Menu's setDataTableRows function in order to
-     * not show the variables that were selected because the information
-     * is needed to construct the url for the NDB_Form.
-     *
-     * Also uses makePretty function to make some variables more human
-     * readable
-     *
-     * @param integer $count Page offset
-     *
-     * @return null
-     */
-    function _setDataTableRows($count)
-    {
-        $x = 0;
-        foreach ($this->list as $item) {
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-
-                if ($key == 'CommentID') {
-                    continue;
-                }
-                if ($key == 'SessionID') {
-                    continue;
-                }
-                if ($key == 'Site') {
-                    continue;
-                }
-                if ($key == 'Conflict2') {
-                    continue;
-                }
-                $this->tpl_data['items'][$x][$i]['value'] = _makePretty($key, $val);
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                if(isset($item['CandID'])) {
-                    $this->tpl_data['items'][$x][$i]['CandID'] = $item['CandID'];
-                }
-                if(isset($item['CommentID'])) {
-                    $this->tpl_data['items'][$x][$i]['CommentID'] = $item['CommentID'];
-                }
-                if(isset($item['SessionID'])) {
-                    $this->tpl_data['items'][$x][$i]['SessionID'] = $item['SessionID'];
-                }
-                $i++;
-            }
-            $x++;
-        }
-    }
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
