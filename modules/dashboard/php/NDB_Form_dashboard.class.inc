@@ -241,6 +241,26 @@ class NDB_Form_Dashboard extends NDB_Form
             $this->tpl_data['document_repository_notifications']
                 = $document_repository;
         }
+
+        // Issue Tracker Assigned Issues
+        if ($user->hasPermission('issue_tracker_developer')) {
+            $issue_tracker = $DB->pselectOne(
+                "SELECT COUNT(*) FROM issues
+                 WHERE status !='closed'
+                 AND assignee=:userID",
+                array('userID' => $user->getData('UserID'))
+            );
+            $this->tpl_data['issues_assigned']
+                = $issue_tracker;
+
+            // I suppose you could also base it on your query
+            if ($user->hasPermission('access_all_profiles')) {
+                $this->tpl_data['issues_assigned_site'] = 'Site: all';
+            } else {
+                $this->tpl_data['issues_assigned_site'] = 'Site: '.
+                    $user->getSiteName();
+            }
+        }
     }
 
     /**
@@ -376,6 +396,22 @@ class NDB_Form_Dashboard extends NDB_Form
         }
     }
 
+    /**
+     * Include additional CSS files:
+     *  1. dashboard.css
+     *
+     * @return array of css to be included
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/dashboard/css/dashboard.css"]
+        );
+    }
 
     /**
      * Add dependency on D3 and C3 javascript libraries

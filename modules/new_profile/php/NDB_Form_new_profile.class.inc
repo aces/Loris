@@ -11,7 +11,7 @@ class NDB_Form_new_profile extends NDB_Form
         $user =& User::singleton();
 
         $site =& Site::singleton($user->getData('CenterID'));
-        
+
         if ($site->isStudySite() or ($site->getCenterName() == "DCC")) {
             return $user->hasPermission('data_entry');
         }
@@ -25,7 +25,7 @@ class NDB_Form_new_profile extends NDB_Form
         $user =& User::singleton();
         $config =& NDB_Config::singleton();
         $dob = sprintf("%04d-%02d-%02d", $values['dob1']['Y'], $values['dob1']['M'], $values['dob1']['d']);
-        
+
         if($config->getSetting('useEDC') == "true"){
             $edc = sprintf("%04d-%02d-%02d", $values['edc1']['Y'], $values['edc1']['M'], $values['edc1']['d']);
             if($edc == '0000-00-00') {
@@ -68,10 +68,11 @@ class NDB_Form_new_profile extends NDB_Form
                              'minYear'         => $startYear - $ageMax,
                              'maxYear'         => $endYear - $ageMin
                              );
+        $dateAttributes = ['class' => 'form-control input-sm input-date'];
 
         // add date of birth
-        $this->addBasicDate('dob1', 'Date of Birth', $dateOptions);
-        $this->addBasicDate('dob2', 'Confirm Date of Birth', $dateOptions);
+        $this->addBasicDate('dob1', 'Date of Birth', $dateOptions, $dateAttributes);
+        $this->addBasicDate('dob2', 'Confirm Date of Birth', $dateOptions, $dateAttributes);
         $this->addRule(array('dob1', 'dob2'), 'Date of birth fields must match', 'compare');
 
 
@@ -81,8 +82,8 @@ class NDB_Form_new_profile extends NDB_Form
 
         if($config->getSetting('useEDC') == "true"){
             // add expected date of confinement
-            $this->addBasicDate('edc1', 'Expected Date of Confinement', $dateOptions);
-            $this->addBasicDate('edc2', 'Confirm EDC', $dateOptions);
+            $this->addBasicDate('edc1', 'Expected Date of Confinement', $dateOptions, $dateAttributes);
+            $this->addBasicDate('edc2', 'Confirm EDC', $dateOptions, $dateAttributes);
 
             // expected date of confinement rules
             $this->addRule(array('edc1', 'edc2'), 'EDC fields must match', 'compare');
@@ -134,8 +135,8 @@ class NDB_Form_new_profile extends NDB_Form
 
         if (empty($values['gender'])) {
             $errors['gender'] = 'Gender is required.';
-        } 
-    
+        }
+
         $PSCIDsettings = $config->getSetting('PSCID');
         if($PSCIDsettings['generation'] == 'user') {
             $db =& Database::singleton();
@@ -147,7 +148,7 @@ class NDB_Form_new_profile extends NDB_Form
                 $errors['PSCID'] = 'PSCID must be specified';
             } elseif(!Candidate::validatePSCID($values['PSCID'], $site->getSiteAlias())) {
                 $errors['PSCID'] = 'PSCID does not match the required structure';
-            } elseif($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID", 
+            } elseif($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
                 array('V_PSCID' => $values[PSCID])) > 0
             ) {
                     $errors['PSCID'] = 'PSCID has already been registered';

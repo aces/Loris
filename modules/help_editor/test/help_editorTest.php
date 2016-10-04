@@ -45,7 +45,6 @@ class HelpEditorTestIntegrationTest extends LorisIntegrationTest
              'topic'    => 'Test Topic',
              'content'  => 'This is a test content.',
              'created'  => '2013-04-05 00:00:00',
-             'updated'  => 'NULL',
             )
         );
     }

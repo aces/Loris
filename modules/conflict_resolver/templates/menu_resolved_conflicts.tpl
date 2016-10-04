@@ -40,6 +40,12 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.ResolutionTimestamp.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.ResolutionTimestamp.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group col-sm-6 col-sm-offset-6 hidden-sm">
                             <div class="col-sm-5 col-xs-12">
                                 <input type="submit" name="filter" id="testShowData1"  value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>

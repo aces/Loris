@@ -148,6 +148,18 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             AND s.active='Y' AND NOT (f.Administration='None')
             AND f.Data_entry='Complete'
             AND (orig.Scan_done IS NULL OR orig.Scan_done <> 'no')";
+
+        $isT1Acq = "CASE
+           COALESCE((
+                SELECT fi.FileID
+                FROM files fi
+                WHERE fi.SessionID=s.ID AND fi.AcquisitionProtocolID=44
+                GROUP BY fi.SessionID),'')
+            WHEN '' THEN 'No'
+            ELSE 'Yes'
+            END
+            ";
+
         $this->columns = array(
             'c.PSCID as PSCID',
             'c.CandID as DCCID',
@@ -163,6 +175,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 'c.CenterID as Site',
                 'c.DOB as Birth_Date',
                 'r.Review_Done as Review_Done',
+                "$isT1Acq as T1_Inserted",
                 'r.Final_Review_Results as Results',
                 'r.Final_Exclusionary as Exclusionary_Status',
                 'r.sas as SAS',
@@ -171,7 +184,9 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 "$conflict_condition1 as Conflict",
                 "$conflict_condition2 as Conflict2",
                 'r.Finalized as Finalized',
-                'r.Final_Incidental_Findings as Comments'
+                'r.Final_Incidental_Findings as Comments',
+                's.ID as SessionID',
+                's.CandID as CandID'
             )
         );
         $this->order_by = 'PSCID';
@@ -187,6 +202,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             array(
                 'Birth_Date',
                 'Review_Done',
+                'T1_Inserted',
                 'Results',
                 'Exclusionary_Status',
                 'SAS',
@@ -352,6 +368,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             //print out data rows
             $i = 1;
             foreach ($item as $key => $val) {
+
                 if ($key == 'CommentID') {
                     continue;
                 }

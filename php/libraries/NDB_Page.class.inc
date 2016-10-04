@@ -243,14 +243,15 @@ class NDB_Page
      * Adds a hidden element to the current page. Note if the hidden element
      * needs a value it should be added to the defaults.
      *
-     * @param string $name  The name of the hidden element to add
-     * @param array  $value The value of the hidden element to add
+     * @param string $name       The name of the hidden element to add
+     * @param array  $value      The value of the hidden element to add
+     * @param array  $attributes Additional html attributes for element
      *
      * @return none
      */
-    function addHidden($name, $value=null)
+    function addHidden($name, $value=null, $attributes=array())
     {
-        $this->form->addElement('hidden', $name, $value);
+        $this->form->addElement('hidden', $name, $value, $attributes);
     }
 
     /**
@@ -569,23 +570,24 @@ class NDB_Page
 
         $www     = $config->getSetting('www');
         $baseurl = $www['url'];
+        $min     = ($config->getSetting("sandbox") === '1') ? '' : '.min';
 
-        $paths = $config->getSetting("paths");
-
-        $TestName = $this->name;
+        // Currently jquery-ui is required for dialogs and datepickers to work.
+        // In the future release, dialogs should be replaced with bootstrap dialogs
+        // and datepickers only created by modernizr
 
         $files = array(
                   $baseurl . '/js/jquery/jquery-1.11.0.min.js',
                   $baseurl . '/js/helpHandler.js',
-                  $baseurl . '/js/modernizr.min.js',
+                  $baseurl . '/js/modernizr/modernizr.min.js',
                   $baseurl . '/js/react-with-addons-0.13.3.min.js',
                   $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
                   $baseurl . '/js/jquery.dynamictable.js',
                   $baseurl . '/js/jquery.fileupload.js',
-                  $baseurl . '/js/polyfiller.js',
                   $baseurl . '/bootstrap/js/bootstrap.min.js',
                   $baseurl . '/js/components/react.breadcrumb.js',
                   $baseurl . '/js/components/Form.js',
+                  $baseurl . '/js/components/Markdown.js',
                  );
         return $files;
     }
@@ -606,27 +608,22 @@ class NDB_Page
         $www     = $config->getSetting('www');
         $baseurl = $www['url'];
 
-        $paths = $config->getSetting("paths");
-
-        $TestName = $this->name;
-
         $files = array(
                   $baseurl . "/bootstrap/css/bootstrap.min.css",
                   $baseurl . "/bootstrap/css/custom-css.css",
+                  $baseurl . "/js/jquery/datepicker/datepicker.css",
                  );
-
-        if (file_exists($paths['base'] . "modules/$TestName/css/$TestName.css")) {
-            error_log(
-                "WARNING: Relying on $TestName.css getting automatically loaded will"
-                . " soon be removed. "
-                . "Override getCSSDependencies() instead"
-            );
-
-            $files[] = $baseurl . "/$TestName/css/$TestName.css";
-        }
-
         return $files;
     }
 
+    /**
+     * Does any setup required for this page. This is generally overridden
+     * by NDB_Page subtypes.
+     *
+     * @return none, but may have side-effects
+     */
+    function setup()
+    {
+    }
 }
 ?>

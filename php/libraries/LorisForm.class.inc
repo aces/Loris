@@ -173,14 +173,19 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addHidden" API.
      *
-     * @param string $name  The element name.
-     * @param string $value The element value.
+     * @param string $name       The element name.
+     * @param string $value      The element value.
+     * @param array  $attributes Additional html attributes for element
      *
      * @return &array
      */
-    public function addHidden($name, $value)
+    public function addHidden($name, $value, $attributes=array())
     {
-        $el         =& $this->addBase($name, null, array('value' => $value));
+        $el         =& $this->addBase(
+            $name,
+            null,
+            array_merge(array('value' => $value), $attributes)
+        );
         $el['type'] = 'hidden';
         return $el;
     }
@@ -374,7 +379,7 @@ class LorisForm
             $el = $this->addCheckbox($name, $label, $options);
             break;
         case 'hidden':
-            $el = $this->addHidden($name, $label);
+            $el = $this->addHidden($name, $label, $options);
             break;
         case 'text':
         default:
@@ -716,7 +721,7 @@ class LorisForm
             $maxYear = "max=\"" . $el['options']['maxYear'] . "-12-31\"";
         }
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
+        $required = isset($el['required']) ? "this.value === '' ? '$msg':''" : "''";
         $value    = $this->getValue($el['name']);
         $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear "
             . $disabled
@@ -842,11 +847,17 @@ class LorisForm
      */
     function hiddenHTML($el, $type='hidden')
     {
-        $value = '';
-        if (isset($el['value'])) {
-            $value = "value=\"$el[value]\"";
+        $attributes = '';
+        foreach ($el as $key=>$value) {
+            if ($key=='type') {
+                $value = $type;
+            }
+            if (isset($value)) {
+                $attributes .= " $key=\"$value\"";
+            }
+
         }
-        return "<input name=\"$el[name]\" type=\"$type\" $value>";
+        return "<input $attributes>";
     }
 
     /**

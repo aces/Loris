@@ -11,34 +11,38 @@ class CouchDBDemographicsImporter {
     // this is just in an instance variable to make
     // the code a little more readable.
     var $Dictionary = array(
+        'DoB' => array(
+            'Description' => 'Date of Birth',
+            'Type' => 'varchar(255)'
+        ),
         'CandID' => array(
             'Description' => 'DCC Candidate Identifier',
             'Type' => 'varchar(255)'
-        ),  
+        ),
         'PSCID' => array(
             'Description' => 'Project Candidate Identifier',
             'Type' => 'varchar(255)'
-        ),  
+        ),
         'Visit_label' => array(
             'Description' => 'Visit of Candidate',
             'Type' => 'varchar(255)'
-        ),  
+        ),
         'Cohort' => array(
             'Description' => 'Cohort of this session',
             'Type' => 'varchar(255)'
-        ),  
+        ),
         'Gender' => array(
             'Description' => 'Candidate\'s gender',
             'Type' => "enum('Male', 'Female')"
-        ),  
+        ),
         'Site' => array(
             'Description' => 'Site that this visit took place at',
             'Type' => "varchar(3)",
-        ),  
+        ),
         'Current_stage' => array(
             'Description' => 'Current stage of visit',
             'Type' => "enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin')"
-        ),  
+        ),
         'Failure' =>  array(
             'Description' => 'Whether Recycling Bin Candidate was failure or withdrawal',
             'Type' => "enum('Failure','Withdrawal','Neither')",
@@ -119,7 +123,7 @@ class CouchDBDemographicsImporter {
 
     function _generateQuery() {
         $config = NDB_Config::singleton();
-        $fieldsInQuery = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID, p.Alias as Site, c.Gender, s.Current_stage, CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, c.ProjectID, c.flagged_caveatemptor as CEF, c.flagged_caveatemptor as CEF, c_o.Description as CEF_reason, c.flagged_other as CEF_comment, pc_comment.Value as Comment, COALESCE(pso.Description,'Active') as Status, ps.participant_suboptions as Status_reason, ps.reason_specify as Status_comments, ps.study_consent as Study_consent, COALESCE(ps.study_consent_withdrawal,'0000-00-00') AS Study_consent_withdrawal";
+        $fieldsInQuery = "SELECT c.DoB, c.CandID, c.PSCID, s.Visit_label, s.SubprojectID, p.Alias as Site, c.Gender, s.Current_stage, CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, c.ProjectID, c.flagged_caveatemptor as CEF, c.flagged_caveatemptor as CEF, c_o.Description as CEF_reason, c.flagged_other as CEF_comment, pc_comment.Value as Comment, COALESCE(pso.Description,'Active') as Status, ps.participant_suboptions as Status_reason, ps.reason_specify as Status_comments, ps.study_consent as Study_consent, COALESCE(ps.study_consent_withdrawal,'0000-00-00') AS Study_consent_withdrawal";
         $tablesToJoin = " FROM session s JOIN candidate c USING (CandID) LEFT JOIN psc p ON (p.CenterID=s.CenterID) LEFT JOIN caveat_options c_o ON (c_o.ID=c.flagged_reason) LEFT JOIN parameter_candidate AS pc_comment ON (pc_comment.CandID=c.CandID) AND pc_comment.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_comment') LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)";
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
@@ -131,7 +135,7 @@ class CouchDBDemographicsImporter {
             $EDCFields = ", c.EDC as EDC";
             $fieldsInQuery .= $EDCFields;
         }
-        $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND c.PSCID <> 'scanner'";
+        $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
         return $concatQuery;
     }
 
