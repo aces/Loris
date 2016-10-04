@@ -150,7 +150,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
 
         $this->columns = array(
             'v.PatientName',
-            'v.Site',
+            'site.Name as Site',
             'v.TimeRun',
             'v.MincFile',
             'v.Series_Description as Series_Description_Or_Scan_Type',
@@ -160,11 +160,18 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             'v.join_id',
             'v.Resolved'
         );
-        if ($useProjects) {
-            array_splice($this->columns, 1, 0, 'v.Project');
-            array_splice($this->columns, 2, 0, 'v.Subproject');
-        }
 
+        $this->headers  = array('PatientName','Site','TimeRun',
+          'MincFile','Series_Description_Or_Scan_Type','Problem','SeriesUID','Hash',
+          'JoinID','Resolution_status');
+
+        if ($useProjects) {
+            array_splice($this->columns, 1, 0, 'pjct.Name as Project');
+            array_splice($this->columns, 2, 0, 'subpjct.title as Subproject');
+            array_splice($this->headers, 1, 0, 'Project');
+            array_splice($this->headers, 2, 0, 'Subproject');
+        }
+        $this->tpl_data['hiddenHeaders'] = json_encode(['SeriesUID','Hash','JoinID']);
         $this->query = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
@@ -239,7 +246,10 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved is NULL)
-            as v WHERE 1=1";
+            as v LEFT JOIN psc site ON (site.CenterID = v.Site) 
+            LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
+            LEFT JOIN subproject as subpjct ON (v.Subproject = subpjct.SubprojectID)
+            WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
@@ -432,6 +442,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
+                $baseurl . "/mri_violations/js/Not_Resolved_columnFormatter.js",
                 $baseurl . "/mri_violations/js/mri_violations_helper.js",
             )
         );
