@@ -64,19 +64,22 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 
         // create the centerID map
         $db =& Database::singleton();
-        $pscRows = array();
+
         $pscRows = $db->pselect("SELECT CenterID, Name FROM psc", array());
-        foreach($pscRows AS $row) {
+        foreach ($pscRows as $row) {
             $this->centerIDMap[$row['CenterID']] = $row['Name'];
         }
 
         $this->_populate_reliability_table();
 
-        $query = " FROM session, flag, " .
-            "reliability LEFT JOIN psc p ON reliability.reliability_center_id=p.CenterID, " .
-            "candidate LEFT JOIN Project pr ON candidate.ProjectID=pr.ProjectID " .
-            "WHERE reliability.CommentID=flag.CommentID AND " .
-            "candidate.CandID=session.CandID AND session.ID=flag.SessionID";
+        $query = " FROM reliability ".
+                "LEFT JOIN psc p ON (reliability.reliability_center_id=p.CenterID) ".
+                "LEFT JOIN flag ON (reliability.CommentID=flag.CommentID), ".
+            "candidate " .
+                "LEFT JOIN Project pr ON (candidate.ProjectID=pr.ProjectID) ".
+                "LEFT JOIN session ON (candidate.CandID=session.CandID) ".
+            "WHERE ".
+                "session.ID=flag.SessionID";
 
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
