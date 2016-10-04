@@ -94,8 +94,8 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/02/2015");
+        $dates[0]->sendKeys("01-01-2015");
+        $dates[1]->sendKeys("01-02-2015");
 
         $scanDone = $this->webDriver->findElement(WebDriverBy::Name("scan_done"));
         $scanDone->sendKeys("No");
@@ -120,8 +120,8 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".ws-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/01/2015");
+        $dates[0]->sendKeys("01-01-2015");
+        $dates[1]->sendKeys("01-01-2015");
 
         $scanDone = $this->webDriver->findElement(WebDriverBy::Name("scan_done"));
         $scanDone->sendKeys("No");
