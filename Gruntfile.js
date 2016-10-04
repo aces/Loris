@@ -43,7 +43,16 @@ module.exports = function(grunt) {
 		    'modules/issue_tracker/js/editIssue.js': 'modules/issue_tracker/jsx/editIssue.js'
                     'modules/survey_accounts/js/columnFormatter.js': 'modules/survey_accounts/jsx/columnFormatter.js',
 		    'modules/server_processes_manager/js/columnFormatter.js': 'modules/server_processes_manager/jsx/columnFormatter.js',
-                    'modules/mri_violations/js/mri_protocol_check_violations_columnFormatter.js': 'modules/mri_violations/jsx/mri_protocol_check_violations_columnFormatter.js'
+                    'modules/mri_violations/js/mri_protocol_check_violations_columnFormatter.js': 'modules/mri_violations/jsx/mri_protocol_check_violations_columnFormatter.js',
+                    'modules/mri_violations/js/columnFormatter.js': 'modules/mri_violations/jsx/columnFormatter.js',
+                    'modules/mri_violations/js/Not_Resolved_columnFormatter.js': 'modules/mri_violations/jsx/Not_Resolved_columnFormatter.js',
+                    'modules/mri_violations/js/mri_protocol_violations_columnFormatter.js': 'modules/mri_violations/jsx/mri_protocol_violations_columnFormatter.js',
+                    'modules/help_editor/js/columnFormatter.js': 'modules/help_editor/jsx/columnFormatter.js',
+                    'modules/conflict_resolver/js/resolved_conflicts_columnFormatter.js': 'modules/conflict_resolver/jsx/resolved_conflicts_columnFormatter.js',
+                    'modules/conflict_resolver/js/unresolved_columnFormatter.js': 'modules/conflict_resolver/jsx/unresolved_columnFormatter.js',
+                    'modules/final_radiological_review/js/columnFormatter.js': 'modules/final_radiological_review/jsx/columnFormatter.js',
+                    'modules/examiner/js/columnFormatter.js': 'modules/examiner/jsx/columnFormatter.js',
+                    'modules/user_accounts/js/columnFormatter.js': 'modules/user_accounts/jsx/columnFormatter.js'
                 }
             }
         },
