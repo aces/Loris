@@ -259,8 +259,7 @@ $(function() {
           viewer.volumes.forEach(function(volume) {
             volume.setWorldCoords(x, y, z);
           });
-        }
-        else {
+        } else {
           viewer.volumes[vol_id].setWorldCoords(x, y, z);
         }
 
@@ -788,10 +787,7 @@ $(function() {
         minc_ids = getQueryVariable("minc_location");
         minc_ids_arr = [minc_ids];
         minc_tag = "minc_location";
-    }
-
-
-    else {
+    } else {
 
         minc_ids = getQueryVariable("minc_id");
         minc_tag = "minc_id";

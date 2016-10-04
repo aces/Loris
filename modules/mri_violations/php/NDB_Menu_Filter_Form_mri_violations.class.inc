@@ -63,17 +63,16 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                             break;
                         }
                         // user input doesn't match DB, so we update the DB
-                        else{
+                        else {
                             $setArray = array('Resolved'=>(string)$val,'ChangeDate'=>date("Y-m-d H:i:s"));
                             $whereArray = array('hash'=>$hash);
                             $DB->update('violations_resolved', $setArray, $whereArray);
                         }
                     }
                 }
-            }
-            //if row is not found no resolve status was assigned,
-            // if selection<>0, then insert new row.
-            else{
+            } else {
+                //if row is not found no resolve status was assigned,
+                // if selection<>0, then insert new row.
                 // no need to insert to DB for Unresolved value.
                 if($val=='unresolved'){
                     continue;
@@ -144,8 +143,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
-        }
-        else{
+        } else {
             $useProjects = true;
         }
 
@@ -340,8 +338,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             if(is_array($sites)){
                 $sites = array('' => 'All') + $sites;
             }
-        }
-        else {
+        } else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
@@ -407,20 +404,17 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     $this->form->form[$hash]['name'] = "resolvable[$hash]";
                 }
                 if ($key === 'Problem') {
-                    if($val === "Could not identify scan type"){
+                    if ($val === "Could not identify scan type") {
                         $this->tpl_data['join_tbl'] = "mri_protocol_violated_scans";
-                    }
-                    elseif($val === "Protocol Violation"){
+                    } elseif ($val === "Protocol Violation") {
                         $this->tpl_data['join_tbl'] = "mri_violations_log";
-                    }
-                    else{
+                    } else {
                         $this->tpl_data['join_tbl'] = "MRICandidateErrors";
                     }
                 }
                 if ($key === 'SeriesUID') {
                     $this->tpl_data['items'][$x]['series'] = $val;
-                }
-                else {
+                } else {
                     $this->tpl_data['items'][$x][$i]['name'] = $key;
                     $this->tpl_data['items'][$x][$i]['value'] = $val;
                 }            
