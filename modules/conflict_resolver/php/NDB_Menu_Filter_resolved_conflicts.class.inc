@@ -231,65 +231,6 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
     }
 
     /**
-     * Overrides the default setDataTableRows in order to not
-     * show the elements that are only selected to add them to
-     * a form, but aren't part of the table itself.
-     *
-     * @param integer $count The number of rows
-     *
-     * @return none
-     */
-    function _setDataTableRows($count)
-    {
-        $DB =& Database::singleton();
-
-        $config =& NDB_Config::singleton();
-
-        if ($config->getSetting("useProjects")==="true") {
-            $projectList = Utility::getProjectList();
-        }
-
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                if ($key=='TableName'
-                    || $key=='CandID'
-                    || $key=='PSCID'
-                    || $key=='Visit_label'
-                    || $key=='ResolutionTimestamp'
-                    || $key=='FieldName'
-                ) {
-                    $this->tpl_data['items'][$x][$i]['name']  = $key;
-                    $this->tpl_data['items'][$x][$i]['value'] = $val;
-                } else if ($key=='Project') {
-                    $this->tpl_data['items'][$x][$i]['name']  = $key;
-                    $this->tpl_data['items'][$x][$i]['value'] = (isset(
-                        $projectList[$val]
-                    )
-                        ? $projectList[$val] : ""
-                    );
-                } else if ($key=='NewValue') {
-                    if ($item['NewValue'] == 1) {
-                        $NewValue = $item['OldValue1'];
-                    } elseif ($item['NewValue'] == 2) {
-                        $NewValue = $item['OldValue2'];
-                    }
-                    $this->tpl_data['items'][$x][$i]['name']  = $key;
-                    $this->tpl_data['items'][$x][$i]['value'] = $NewValue;
-                }
-                $i++;
-            }
-            $x++;
-        }
-
-        return true;
-    }
-    /**
      * Gathers JS dependecies and merge them with the parent
      *
      * @return array of javascript to be inserted
