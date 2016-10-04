@@ -177,7 +177,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         //   1. if the Mincfile starts with "assembly" then we need to add the directory path in front of it.
         //   2. if the word "assembly" is there but not at the beginning, then uses it as is, the path is correct.
         //   3. if it is not in the assembly dir, then it is in the trashbin, so we fix the path with that in mind.
-
         $this->query = " FROM (
             SELECT PatientName as PatientName,
                 time_run as TimeRun,
