@@ -177,6 +177,18 @@ class MriUploadServerProcess extends AbstractServerProcess
     {
         return self::PROCESS_TYPE;
     }
+
+    /**
+     * Whether $outfile, $_errfile and $_exitCodeFile should be deleted once the
+     * process is finished. These files will be deleted only if the pipeline
+     * executed successfully (i.e. with exit code 0).
+     *
+     * @return boolean true if the files should be deleted, false otherwise
+     */
+    public function deleteProcessFiles()
+    {
+        return !is_null($exitCode) && is_numeric($exitCode) && $exitCode == 0;
+    }
 }
 
 ?>
