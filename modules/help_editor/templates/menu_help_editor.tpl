@@ -44,7 +44,6 @@
 <div class="dynamictable" id="datatable"></div>
 <script>
 loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
-var hasWritePermission = {json_encode($hasWritePermission)};
 var table = RDynamicDataTable({
      "DataURL" : "{$baseurl}/help_editor/?format=json",
      "getFormattedCell" : formatColumn,
