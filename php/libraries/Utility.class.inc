@@ -756,7 +756,7 @@ class Utility
     {
         $Factory       = NDB_Factory::singleton();
         $DB            = $Factory->Database();
-        $config        =& NDB_Config::singleton();
+        $config        = $Factory->config();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
             array()
