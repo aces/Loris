@@ -37,7 +37,7 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
              array(
               'CenterID' => '55',
               'Name' => 'TESTinPSC',
-              'Alias' => 'test',
+              'Alias' => 'tst',
               'MRI_alias' => 'test'
              )
 
@@ -229,6 +229,7 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->findElement(WebDriverBy::Name("PSCID"))->sendKeys
             ("8888");
         $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
+        $this->safeGet($this->url . "/reliability/?format=json");
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("8888", $bodyText);
 
@@ -237,6 +238,7 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->findElement(WebDriverBy::Name("DCCID"))->sendKeys
             ("999888");
         $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
+        $this->safeGet($this->url . "/reliability/?format=json");
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("8888", $bodyText);
 
@@ -246,6 +248,7 @@ class reliabilityTestIntegrationTest extends LorisIntegrationTest
         $gender = new WebDriverSelect($genderElement);
         $gender->selectByVisibleText("Male");
         $this->webDriver->findElement(WebDriverBy::Name("filter"))->click();
+        $this->safeGet($this->url . "/reliability/?format=json");
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("8888", $bodyText);
      }

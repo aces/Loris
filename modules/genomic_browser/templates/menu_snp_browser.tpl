@@ -158,10 +158,10 @@
 		    <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">
-        		  {$form.Observed_Base.label}
+        		  {$form.Allele_A.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.Observed_Base.html}
+        		  {$form.Allele_A.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
         		  {$form.Function_Prediction.label}
@@ -180,10 +180,10 @@
 		    <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">
-        		  {$form.Reference_Base.label}
+        		  {$form.Allele_B.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.Reference_Base.html}
+        		  {$form.Allele_B.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
         		  {$form.Exonic_Function.label}
@@ -202,10 +202,10 @@
 		    <div class="row">
                       <div class="form-group col-sm-12">
                         <label class="col-sm-12 col-md-2">
-        		  {$form.Validated.label}
+        		  {$form.Reference_Base.label}
                         </label>
                     	<div class="col-sm-12 col-md-2">
-        		  {$form.Validated.html}
+        		  {$form.Reference_Base.html}
 			</div>
                         <label class="col-sm-12 col-md-2">
         		  {$form.Genotype_Quality.label}
@@ -219,6 +219,22 @@
                     	<div class="col-sm-12 col-md-2">
         		  {$form.Platform.html}
 			</div>
+		      </div>
+		    </div>
+                    <div class="row">
+                      <div class="form-group col-sm-12">
+                        <label class="col-sm-12 col-md-2">
+        		  {$form.Minor_Allele.label}
+                        </label>
+                    	<div class="col-sm-12 col-md-2">
+        		  {$form.Minor_Allele.html}
+			</div>
+                        <label class="col-sm-12 col-md-2">
+                          {$form.Validated.label}
+                        </label>
+                        <div class="col-sm-12 col-md-2">
+                          {$form.Validated.html}
+                        </div>
 		      </div>
 		    </div>
 	          </div> 

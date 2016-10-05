@@ -241,6 +241,26 @@ class NDB_Form_Dashboard extends NDB_Form
             $this->tpl_data['document_repository_notifications']
                 = $document_repository;
         }
+
+        // Issue Tracker Assigned Issues
+        if ($user->hasPermission('issue_tracker_developer')) {
+            $issue_tracker = $DB->pselectOne(
+                "SELECT COUNT(*) FROM issues
+                 WHERE status !='closed'
+                 AND assignee=:userID",
+                array('userID' => $user->getData('UserID'))
+            );
+            $this->tpl_data['issues_assigned']
+                = $issue_tracker;
+
+            // I suppose you could also base it on your query
+            if ($user->hasPermission('access_all_profiles')) {
+                $this->tpl_data['issues_assigned_site'] = 'Site: all';
+            } else {
+                $this->tpl_data['issues_assigned_site'] = 'Site: '.
+                    $user->getSiteName();
+            }
+        }
     }
 
     /**
