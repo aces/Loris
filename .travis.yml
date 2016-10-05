@@ -60,7 +60,7 @@ before_script:
     # for the config file, and reset the Loris user's password for testing
     - mysql -e 'CREATE DATABASE LorisTest'
     - mysql LorisTest < SQL/0000-00-00-schema.sql
-    - mysql LorisTest < SQL/Archive/16.1/2016-06-27-Media.sql
+    - mysql LorisTest < SQL/Release_patches/160_to_161_upgrad.sql
     - mysql LorisTest < SQL/0000-00-01-Permission.sql
     - mysql LorisTest < SQL/0000-00-02-Menus.sql
     - mysql LorisTest < SQL/0000-00-03-ConfigTables.sql
