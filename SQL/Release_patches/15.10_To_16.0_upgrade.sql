@@ -1,3 +1,4 @@
+SET foreign_key_checks = 0;
 DROP TABLE IF EXISTS ExternalLinkTypes;
 CREATE TABLE ExternalLinkTypes (
     LinkTypeID int NOT NULL AUTO_INCREMENT PRIMARY KEY,
