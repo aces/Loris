@@ -84,7 +84,7 @@ abstract class APIBase
 
         $this->DB = $this->Factory->database();
 
-        $this->config = \NDB_Config::singleton();
+        $this->config = $this->Factory->config();
 
         if ($this->AutoHandleRequestDelegation) {
             $this->handleRequest();
