@@ -75,7 +75,8 @@ class Create_Timepoint extends \NDB_Form
         $success = \TimePoint::createNew(
             $this->identifier,
             $values['subprojectID'],
-            $values['visitLabel']
+            $values['visitLabel'],
+            $values['psc']
         );
 
         $this->tpl_data['success'] = true;
@@ -181,6 +182,15 @@ class Create_Timepoint extends \NDB_Form
         // label rules
         if ($visitLabelAdded) {
             $this->addRule('visitLabel', 'Visit label is required', 'required');
+	    // List of sites
+            $list_of_sites = \Utility::getSiteList();
+            $psc_labelOptions = array(null => '');
+            foreach($list_of_sites as $psc => $siteAlias) {
+                    $psc_labelOptions[$psc] = $siteAlias;
+            }
+            $this->addSelect('psc', 'Site', $psc_labelOptions);
+            $this->addRule('psc', 'Site Alias is required', 'required');
+            $this->_setDefaults(array("psc"=>$this->psc));
         }
 
         $this->form->addFormRule(array(&$this, '_validate'));
