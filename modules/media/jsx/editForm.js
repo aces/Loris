@@ -82,6 +82,7 @@ var MediaEditForm = React.createClass({
 
     var alertMessage = "";
     var alertClass = "alert text-center hide";
+    var backURL = loris.BaseURL.concat('/media/');
 
     if (this.state.uploadResult) {
       if (this.state.uploadResult === "success") {
@@ -100,7 +101,7 @@ var MediaEditForm = React.createClass({
         </div>
         {
           this.state.uploadResult === "success" ?
-          <a className="btn btn-primary" href="/media/">Back to media</a> :
+          <a className="btn btn-primary" href={backURL}>Back to media</a> :
           null
         }
         <FormElement

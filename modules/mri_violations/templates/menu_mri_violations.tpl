@@ -135,6 +135,10 @@
                                                         {$items[item][piece].value}
                                                     </a>
                                                 </td>
+                                            {elseif $items[item][piece].name eq 'MincFileViolated'}
+                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+						                            <a href="#noID" onclick="window.open('{$baseurl}/brainbrowser/?minc_location={$items[item][piece].value}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto, scrollbars=yes')">{$items[item][piece].value}</a>
+                                                </td>
                                             {elseif $items[item][piece].value eq 'Protocol Violation'}
                                                 <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
                                                     <a href="#" class="mri_violations" id="mri_protocol_check_violations" data-PatientName="{$items[item].PatientName}" "{if $items[item].series}" data-SeriesUID="{$items[item].series}{/if}">{{$items[item][piece].value}}</a>

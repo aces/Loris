@@ -1,150 +1,122 @@
-<form method="post" name="candidate_parameters" id="candidate_parameters">
-
 <input class="btn btn-sm btn-primary" onclick="location.href='{$baseurl}/timepoint_list/?candID={$candID}'" value="Return to timepoint list" type="button" />
 <br><br>
-<div class="panel panel-primary">
-    <div class="panel-heading">
-        Candidate Information
-    </div>
-    <div class="panel-body">
-        {foreach from=$form.errors item=error}
-            <font class="error">{$error}</font>
-        {/foreach}
-        {if $form.dob_error}
-            <font class="error">{$form.dob_error.label}</font>
-        {/if}
-        <div class="row">
-            <label class="col-sm-2">{$form.pscid.label}</label>
-            <div class="col-sm-10" id="pscid">
-                {$pscid}
-            </div>
-        </div>
-        {foreach from=$params_list item=value key=name}
-            <div class="row">
-                <label class="col-sm-2">{$form.$name.label}</label>
-                <div class="col-sm-10">
-                    {$value}
-                </div>
-            </div>
-        {/foreach}
-        <br>
-        {if $candidate_parameter_edit}
-            <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_candidate_info/?candID={$candID}&identifier={$candID}'" value="Update Candidate Info" type="button" />
-        {/if}
-    </div>
-    {if $display_proband}
-        <div class="panel-heading">
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs nav-tabs-loris" role="tablist">
+    <li role="presentation" class="active">
+        <a href="#cand-info" aria-controls="browse" role="tab" data-toggle="tab" id="cand-info-tab">
+            Candidate Information
+        </a>
+    </li>
+    <li role="presentation">
+        <a href="#proband-info" aria-controls="upload" role="tab" data-toggle="tab" id="proband-info-tab">
             Proband Information
-        </div>
-        <div class="panel-body">
-            {foreach from=$proband_info item=value key=name}
-                <div class="row">
-                    <label class="col-sm-2">{$form.$name.label}</label>
-                    <div class="col-sm-10">
-                        {$value}
-                    </div>
-                </div>
-            {/foreach}
-            <div class="row">
-                <label class="col-sm-2">{$form.Age_Difference.label}</label>
-                <div class="col-sm-8">
-                    {$form.Age_Difference.html}
-                </div>
-            </div>
-            <br>
-            {if $candidate_parameter_edit}
-                <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_proband_info/?candID={$candID}&identifier={$candID}'" value="Update Proband Info" type="button" />
-            {/if}
-        </div>
-    {/if}
-    {if $display_family}
-        <div class="panel-heading">
+        </a>
+    </li>
+    <li role="presentation">
+        <a href="#family-info" aria-controls="upload" role="tab" data-toggle="tab" id="family-info-tab">
             Family Information
-        </div>
-        <div class="panel-body">
-            {foreach from=$sibling_list item=sibling key=keyid}
-                <div class="row">
-                    <label class="col-sm-2">{$form.SiblingcID.label}</label>
-                    <div class="col-sm-10">
-                       <a href="{$baseurl}/candidate_parameters/?candID={$sibling.CandID}&identifier={$sibling.CandID}">{$sibling.CandID}</a>
-                    </div>
-                </div>
-            {/foreach}
-        </div>
-        <br>
-        {if $candidate_parameter_edit}
-            <input class="btn btn-sm btn-primary col-sm-offset-2" colspan="2" onclick="location.href='{$baseurl}/candidate_parameters/add_family/?candID={$candID}&identifier={$candID}'" value="Add Family Info" type="button" />
-        {/if}
-        <br><br>
-    </td>
+        </a>
+    </li>
+    <li role="presentation">
+        <a href="#participant-status" aria-controls="upload" role="tab" data-toggle="tab" id="participant-status-tab">
+            Participant Status
+        </a>
+    </li>
+    {if $useConsent === "true"}
+        <li role="presentation">
+            <a href="#consent-status" aria-controls="upload" role="tab" data-toggle="tab" id="consent-status-tab">
+                Consent Status
+            </a>
+        </li>
     {/if}
-    <div class="panel-heading">
-        Participant Status
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+
+    <div role="tabpanel" class="tab-pane active" id="cand-info">
+        Candidate info
     </div>
-    <div class="table-responsive">
-    <table class="table">
-        <thead>
-            <tr>
-                <td><b>Status</b></td>
-                <td><b>Details</b></td>
-                <td><b>Data Entry Staff</b></td>
-                <td><b>Date Updated</b></td>
-                <td><b>Comments</b></td>
-            </tr>
-        </thead>
-        <tbody>
-            {foreach from=$history_list item=row}
-                <tr>
-                    {foreach from=$row item=value key=name}
-                        <td>{$value}</td>
-                    {/foreach}
-                </tr>
-            {/foreach}
-        </tbody>
-        
-    </table>
+
+    <div role="tabpanel" class="tab-pane" id="proband-info">
+        Proband info
     </div>
-    <div class="panel-body">
-        {if $candidate_parameter_edit}
-            <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_participant_status/?candID={$candID}&identifier={$candID}'" value="Update Participant Status" type="button" />
-        {/if}
+
+    <div role="tabpanel" class="tab-pane" id="family-info">
+        Family info
     </div>
-    {if $display_consent}
-        <div class="panel-heading">
-            Participation Consent Status
-        </div>
-        <div class="table-responsive">
-        <table class="table">
-            {foreach from=$consent_list item=list}
-                {foreach from=$list item=consent key=listname}
-                    {if $listname=='label'}
-                        {foreach from=$consent item=row}
-                            <td><b>{$row}</b></td>
-                        {/foreach}
-                    {/if}
-                    {if $listname=='history'}
-                        {foreach from=$consent item=row}
-                            <tr>
-                                {foreach from=$row item=value key=name}
-                                    <td>{$value}</td>
-                                {/foreach}
-                            </tr>
-                        {/foreach}
-                    {/if}
-                {/foreach}
-            {/foreach}
-        </table>
-        </div>
-        <div class="panel-body">
-            {if $form.$row.error}
-                <span class="error">{$form.$row.error}</span>
-            {/if}
-            {if $candidate_parameter_edit}
-                <input class="btn btn-sm btn-primary col-sm-offset-2" onclick="location.href='{$baseurl}/candidate_parameters/update_consent_info/?candID={$candID}&identifier={$candID}'" value="Update Consent Info" type="button" />
-            {/if}
-        </div>
-    {/if}
+
+    <div role="tabpanel" class="tab-pane" id="participant-status">
+        Participant info
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="consent-status">
+        Consent Status info
+    </div>
+
 </div>
 
-{$form.hidden}
-</form>
+<script>
+
+    var candidateInfo = RCandidateInfo({
+        "dataURL": "{$baseurl}/candidate_parameters/ajax/getData.php?data=candidateInfo&candID=" + {$smarty.get.candID},
+        "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
+        "tabName": "candidateInfo"
+    });
+    React.render(candidateInfo, document.getElementById("cand-info"));
+
+    if (loris.config('useProband') === "true") {
+        var probandInfo = RProbandInfo({
+            "dataURL": "{$baseurl}/candidate_parameters/ajax/getData.php?data=probandInfo&candID=" + {$smarty.get.candID},
+            "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
+            "tabName": "probandInfo"
+        });
+        React.render(probandInfo, document.getElementById("proband-info"));
+    }
+    else {
+        $('#proband-info-tab').hide();
+    }
+
+    if (loris.config('useFamilyID') === "true") {
+        var familyInfo = RFamilyInfo({
+            "dataURL": "{$baseurl}/candidate_parameters/ajax/getData.php?data=familyInfo&candID=" + {$smarty.get.candID},
+            "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
+            "tabName": "familyInfo"
+        });
+        React.render(familyInfo, document.getElementById("family-info"));
+    }
+    else {
+        $('#family-info-tab').hide();
+    }
+
+    var participantStatus = RParticipantStatus({
+        "dataURL": "{$baseurl}/candidate_parameters/ajax/getData.php?data=participantStatus&candID=" + {$smarty.get.candID},
+        "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
+        "tabName": "participantStatus"
+    });
+
+    React.render(participantStatus, document.getElementById("participant-status"));
+
+    var consentStatus = RConsentStatus({
+        "dataURL": "{$baseurl}/candidate_parameters/ajax/getData.php?data=consentStatus&candID=" + {$smarty.get.candID},
+        "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
+        "tabName": "consentStatus"
+    });
+    React.render(consentStatus, document.getElementById("consent-status"));
+
+    // Adds tab href to url + opens tab based on hash on page load
+    // See: http://bit.ly/292MDI8
+    $(function(){
+        var hash = window.location.hash;
+        hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+
+        $('.nav-tabs a').click(function (e) {
+            $(this).tab('show');
+            var scrollmem = $('body').scrollTop() || $('html').scrollTop();
+            window.location.hash = this.hash;
+            $('html,body').scrollTop(scrollmem);
+        });
+    });
+
+</script>
