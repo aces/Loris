@@ -33,7 +33,6 @@ abstract class APIBase
     var $AllowedMethods = [];
     var $AutoHandleRequestDelegation = true;
     var $HTTPMethod;
-    var $config;
 
     var $Factory;
     var $Headers;
@@ -83,8 +82,6 @@ abstract class APIBase
         }
 
         $this->DB = $this->Factory->database();
-
-        $this->config = $this->Factory->config();
 
         if ($this->AutoHandleRequestDelegation) {
             $this->handleRequest();
