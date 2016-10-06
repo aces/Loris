@@ -267,7 +267,7 @@ class Utility
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $config      =& NDB_Config::singleton();
+        $config      = $factory->config();
         $useProjects = $config->getSetting('useProjects');
 
         if ($useProjects) {
@@ -756,7 +756,7 @@ class Utility
     {
         $Factory       = NDB_Factory::singleton();
         $DB            = $Factory->Database();
-        $config        = $Factory->config();
+        $config        =& NDB_Config::singleton();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
             array()
