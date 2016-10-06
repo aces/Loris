@@ -57,14 +57,33 @@ $(document).ready(function () {
     });
     $("input[type=submit]").click(function (e) {
         if(e.currentTarget.classList.contains('email')) {
-            $("#emailModal").modal();
+            $.get(loris.BaseURL + "/survey_accounts/ajax/ValidateEmailSubmitInput.php", {
+                dccid: $("input[name=CandID]").val(),
+                pscid: $("input[name=PSCID]").val(),
+                VL: $("select[name=VL]").val(),
+                TN: $("select[name=Test_name]").val(),
+                Email: $("input[name=Email").val(),
+                Email2: $("input[name=Email]").val()
+            },
+            function(result) {
+                //console.log(result);
+                if (result) {
+                    result = JSON.parse(result);
+                    $("#email-error").show();
+                    $("#email-error").html(result.error_msg);
+                }
+                else {
+                    $("#emailModal").modal();
+                }
+            }
+            );
+
             // $("#email_dialog").dialog("open");
             return false;
         }
     });
     $("select[name=Test_name]").change(function (e) {
         var testname = $(this).val();
-
         $.get(loris.BaseURL + "/survey_accounts/ajax/GetEmailContent.php", {
             test_name: testname
         },

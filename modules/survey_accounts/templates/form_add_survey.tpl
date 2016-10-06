@@ -27,6 +27,10 @@
         {/foreach}
 
         <tr>
+            <td id="email-error" nowrap="nowrap" colspan="2" style="display: none;" class="error"></td>
+        </tr>
+
+        <tr>
             <td nowrap="nowrap">{$form.CandID.label}</td>
             <td nowrap="nowrap">{$form.CandID.html}</td>
         </tr>
@@ -53,7 +57,7 @@
         <tr>
             <td nowrap="nowrap" colspan="2">
                 <input class="btn btn-sm btn-primary" name="fire_away" value="Create survey" id="create_survey" type="submit" />
-                <input class="btn btn-sm btn-primary email" name="fire_away" value="Email survey" id="email_survey" type="submit">
+                <input class="btn btn-sm btn-primary email" name="fire_away" value="Email survey" id="email_survey" type="submit" />
         {/if}
             </td>
         </tr>

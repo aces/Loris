@@ -87,12 +87,7 @@ class NDB_Form_survey_accounts extends NDB_Form
                 'VL' => "Visit ". $values['VL']." does not exist for given candidate"
             );
         }
-
-        if (empty($values['Test_name'])) {
-            return array(
-                'Test_name' => 'Please select an instrument'
-            );
-        }
+        
 
         $instruments_in_battery = $db->pselectOne(
             "SELECT COUNT(*) FROM test_battery ".
