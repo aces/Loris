@@ -36,6 +36,7 @@ class LorisForm
     var $errors        = array();
     var $filters       = array();
     var $frozen        = false;
+    var $enctype       = '';
 
     /**
      * Creates and returns an element that can be added
@@ -53,10 +54,12 @@ class LorisForm
      */
     protected function &createBase($name, $label, $attribs=array())
     {
-        $el = array(
-               'label' => $label,
-               'name'  => $name,
-              );
+        $el = array('label' => $label);
+
+        if (!empty($name)) {
+            $el['name'] = $name;
+        }
+
         if (isset($attribs['class'])) {
             $el['class'] = $attribs['class'];
         }
@@ -102,7 +105,8 @@ class LorisForm
      */
     protected function &addBase($name, $label, $attribs = array())
     {
-        $el = $this->createBase($name, $label, $attribs);
+        $el   = $this->createBase($name, $label, $attribs);
+        $name = $this->_generateName($name);
         $this->form[$name] =& $el;
         return $el;
     }
@@ -265,6 +269,8 @@ class LorisForm
      */
     function addFile($name, $label, $options)
     {
+        $this->enctype = 'enctype="multipart/form-data"';
+
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'file';
         return $el;
@@ -299,8 +305,6 @@ class LorisForm
      */
     function addHeader($name, $label, $options = array())
     {
-        $name = $this->_generateName($name);
-
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'header';
         return $el;
@@ -478,7 +482,7 @@ class LorisForm
                     // This is more for consistency since it would be odd to apply a
                     // filter to a checkbox value
                     $filteredValues[$k]
-                        = $this->_getFilteredValue("[$name}[$k]", $rawValue);
+                        = $this->_getFilteredValue("{$name}[$k]", $rawValue);
                 }
 
                 return $filteredValues;
@@ -646,7 +650,7 @@ class LorisForm
         if (isset($el['id'])) {
             $id = "id=\"$el[id]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         if (isset($el['onchange'])) {
@@ -684,7 +688,7 @@ class LorisForm
     function staticHTML($el)
     {
         if (empty($el['name'])) {
-            return $el['label'];
+            return '';
         }
         $val = $this->getValue($el['name']);
 
@@ -707,7 +711,7 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         if (isset($el['options']['minYear'])) {
@@ -778,7 +782,7 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         $value = $this->getValue($el['name']);
@@ -857,6 +861,38 @@ class LorisForm
     }
 
     /**
+     * Generates the HTML to add to the page when rendered for a time
+     * element.
+     *
+     * @param array  $el   The element to render from $this->form
+     * @param string $type The HTML input type to user for this input
+     *                     box
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function timeHTML($el, $type='time')
+    {
+        $timeStamp = $this->getValue($el['name']);
+        $smarty    = new Smarty_neurodb;
+        $value     = array();
+
+        if (is_array($timeStamp)) {
+            $value = $timeStamp;
+        } else {
+            $timeStamp  = explode(":", $timeStamp);
+            $value['H'] = $timeStamp[0];
+            $value['i'] = $timeStamp[1];
+        }
+
+        $smarty->assign('name', $el['name']);
+        $smarty->assign('value', $value);
+
+        $html = $smarty->fetch("time_element.tpl");
+
+        return $html;
+    }
+
+    /**
      * Generates the HTML to add to the page when a file is
      * added to the form.
      *
@@ -866,13 +902,10 @@ class LorisForm
      */
     function fileHTML($el)
     {
-        $cls      = '';
+        $cls      = "class=\"$el[class]\"";
         $disabled = '';
         $val      = $this->getValue($el['name']);
-        if (isset($el['class'])) {
-            $cls = "class=\"$el[class]\"";
-        }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"file\" $cls"
@@ -901,7 +934,7 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         if (isset($el['rows'])) {
@@ -1085,6 +1118,8 @@ class LorisForm
             return $this->submitHTML($el);
         case 'hidden':
             return $this->hiddenHTML($el);
+        case 'time':
+            return $this->timeHTML($el);
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
@@ -1134,7 +1169,7 @@ class LorisForm
         if (isset($el['value'])) {
             $value = "value=\"$el[value]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value "
@@ -1156,24 +1191,6 @@ class LorisForm
     function toArray()
     {
         foreach ($this->form as &$el) {
-            switch($el['type']) {
-            case 'date':
-                $el['html'] = $this->dateHTML($el);
-                break;
-            case 'select':
-                $el['html'] = $this->selectHTML($el);
-                break;
-            case 'static':
-                $el['html'] = $this->staticHTML($el);
-                break;
-            case 'text':
-                $el['html'] = $this->textHTML($el);
-                break;
-            case 'file':
-                $el['html'] = $this->fileHTML($el);
-                break;
-
-            }
             $el['html'] = $this->renderElement($el);
         }
 
@@ -1221,10 +1238,13 @@ class LorisForm
             }
         }
         if (empty($retVal['elements'])) {
+            $curPage['enctype'] = $this->enctype;
             return $curPage;
         }
 
         $retVal['elements'][] = $curPage;
+        $retVal['enctype']    = $this->enctype;
+
         return $retVal;
     }
     /**
@@ -1317,6 +1337,7 @@ class LorisForm
      */
     function addGroup($array, $name, $label, $delimiter, $options = array())
     {
+        $name = $this->_generateName($name);
         $this->form[$name] = array(
                               'type'      => 'group',
                               'name'      => $name,
@@ -1340,9 +1361,6 @@ class LorisForm
      */
     function addPageBreak($name, $label, $attribs)
     {
-        $el   =& $this->createBase($name, $label, $attribs);
-        $name = $this->_generateName($name);
-
         $el         =& $this->addBase($name, $label, $attribs);
         $el['type'] = 'page';
     }
@@ -1377,6 +1395,7 @@ class LorisForm
             $el         = $this->createBase($elname, $options, $attribs);
             $el['type'] = 'static';
             break;
+        case 'time':
         case 'advcheckbox':
         case 'textarea':
         case 'date':
@@ -1460,6 +1479,12 @@ class LorisForm
                 continue;
             }
 
+            if ($el['type'] === 'file') {
+                $file       = $this->getElement($name);
+                $arr[$name] = $file->getValue();
+                continue;
+            }
+
             // Check to see it the element type is a header or is a static
             // element without a request variable. If so do not add to the
             // reference array
@@ -1469,17 +1494,19 @@ class LorisForm
                   $arr[$name] = $this->getValue($name);
             }
 
+            /*
             if ($el['type'] === 'date') {
-                // Convert dates to the type of group that was used
-                // by HTML_QuickForm. This should eventually be modified
-                // to just use a normal HTML5 date.
-                $vals       = explode("-", $arr[$name]);
-                $arr[$name] = array(
-                               'Y' => $vals[0],
-                               'M' => $vals[1],
-                               'd' => $vals[2],
-                              );
+                 // Convert dates to the type of group that was used
+                 // by HTML_QuickForm. This should eventually be modified
+                 // to just use a normal HTML5 date.
+                 $vals       = explode("-", $arr[$name]);
+                 $arr[$name] = array(
+                                'Y' => $vals[0],
+                                'M' => $vals[1],
+                                'd' => $vals[2],
+                               );
             }
+            */
         }
     }
 
@@ -1492,8 +1519,10 @@ class LorisForm
      */
     function getSubmitValues()
     {
-        $retVal = array();
-        $this->getGroupValues(array_keys($_POST), $retVal);
+        $retVal     = array();
+        $submitKeys = array_merge($_POST, $_FILES);
+
+        $this->getGroupValues(array_keys($submitKeys), $retVal);
         return $retVal;
     }
 
