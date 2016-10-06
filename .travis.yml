@@ -119,6 +119,9 @@ script:
     # Run ESLint on specific modules
     - eslint modules/media/
 
+    # Run ESLint on generic React components
+    - eslint jsx/
+
     # Run ESLint on specific scripts
     - eslint htdocs/js/util/
 
