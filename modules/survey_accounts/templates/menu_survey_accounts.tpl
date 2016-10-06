@@ -45,7 +45,7 @@
                         </div>
                     </div>
                     <div class="row visible-sm">
-                        <div cladd="col-sm-4">
+                        <div class="col-sm-4">
                             <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/survey_accounts/add_survey/'"/>
                         </div>
                         <div class="col-sm-4">
