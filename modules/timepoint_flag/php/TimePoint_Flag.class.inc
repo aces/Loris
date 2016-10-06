@@ -124,7 +124,7 @@ Class TimePoint_Flag extends TimePoint
     /**
     * sets the [@link $this->flagTypes] property
     * 
-    * @throws PEAR error
+    * @throws LorisException
     * @return void
     */
     function setFlagTypes()
@@ -154,7 +154,7 @@ Class TimePoint_Flag extends TimePoint
     /**
     * returns an array of flag types, keyed by TypeID
     * 
-    * @throws PEAR error
+    * @throws LorisException
     * @return array list of types keyed by typeID
     */
     function getFlagTypes()
@@ -169,7 +169,7 @@ Class TimePoint_Flag extends TimePoint
     /**
     * returns an inverse array of @link $this->flagTypes ; array Name=>TypeID
     * 
-    * @throws PEAR error
+    * @throws LorisException
     * @return array $list list of type IDs keyed by type name
     */
     function getFlagTypeIDs()
@@ -204,7 +204,7 @@ Class TimePoint_Flag extends TimePoint
     /**
     * sets the [@link $this->flagList] property, array w/ Name and Type elements
     * 
-    * @throws PEAR error
+    * @throws LorisException
     * @return void
     */
     function setListOfFlags()
@@ -247,7 +247,7 @@ Class TimePoint_Flag extends TimePoint
     * retrieves the list of flags
     * 
     * @return array list of flags w/ Name and Type elements
-    * @throws PEAR error
+    * @throws LorisException
     */
     function getListOfFlags()
     {
@@ -405,7 +405,7 @@ Class TimePoint_Flag extends TimePoint
     * returns the list of ALL instruments/sources used to evaluate the flags
     * 
     * @return array list of instruments
-    * @throws PEAR error
+    * @throws LorisException
     */
     function setListOfSources()
     {
@@ -431,7 +431,7 @@ Class TimePoint_Flag extends TimePoint
     * returns the list of ALL instruments/sources used for the flag
     * 
     * @return array list of instruments for the flag
-    * @throws PEAR error
+    * @throws LorisException
     */
     function getListOfSources()
     {
@@ -450,7 +450,7 @@ Class TimePoint_Flag extends TimePoint
     * test_battery table
     * 
     * @return array list of instruments
-    * @throws PEAR error
+    * @throws LorisException
     */
     function setProjectBvlInstruments()
     {
@@ -474,7 +474,7 @@ Class TimePoint_Flag extends TimePoint
     * returns the list of all active bvl instruments in project
     * 
     * @return array list of instruments
-    * @throws PEAR error
+    * @throws LorisException
     */
     function getProjectBvlInstruments()
     {
@@ -488,7 +488,7 @@ Class TimePoint_Flag extends TimePoint
     * returns the list of instruments in a timepoint battery
     * 
     * @return void
-    * @throws PEAR error
+    * @throws LorisException
     */
     function setTimepointBvlBattery()
     {
@@ -514,7 +514,7 @@ Class TimePoint_Flag extends TimePoint
     * returns the list of instruments in a timepoint battery
     * 
     * @return array list of instruments
-    * @throws PEAR error
+    * @throws LorisException
     */
     function getTimepointBvlBattery()
     {
@@ -527,7 +527,7 @@ Class TimePoint_Flag extends TimePoint
     /**
     * sets the list of NA instruments for the timepoint
     * 
-    * @throws PEAR error
+    * @throws LorisException
     * @return void
     */
     function setListOfNonAdministeredInstrumentsForTimePoint()
@@ -569,7 +569,7 @@ Class TimePoint_Flag extends TimePoint
     *  query (eg. WHERE Test_name NOT IN ($list))
     *
     * @return string list of NA instruments
-    * @throws PEAR error
+    * @throws LorisException
     **/
     function getListOfNonAdministeredInstrumentsForTimePointAsString()
     {
@@ -583,7 +583,7 @@ Class TimePoint_Flag extends TimePoint
     /**
     * wraps the [@link $this->evaluateFlag()] and tests all flag for the timepoint
     * 
-    * @throws PEAR error
+    * @throws LorisException
     * @return void
     */
     function evaluateTimepointFlags()
@@ -614,7 +614,7 @@ Class TimePoint_Flag extends TimePoint
     * 
     * TimePoing_Flag::TIMEPOINT_FLAG_NA_INSTRUMENT
     * |TimePoing_Flag::TIMEPOINT_FLAG_NULL
-    * @throws PEAR error
+    * @throws LorisException
     */
     function evaluateFlag($flagName)
     {
@@ -666,7 +666,7 @@ Class TimePoint_Flag extends TimePoint
     * @param string $flagName flag name
     * 
     * @return array list of triggers w/ values that tested positive
-    * @throws PEAR error
+    * @throws LorisException
     */
     function evaluateFlagTriggers($flagName)
     {
@@ -766,7 +766,7 @@ Class TimePoint_Flag extends TimePoint
     * 
     * @param stirng $flagName name of flag
     * 
-    * @throws PEAR error
+    * @throws LorisException
     * @return array list of triggers w/ values, keyed by trigger name
     *
     */
@@ -819,7 +819,7 @@ Class TimePoint_Flag extends TimePoint
     * @param string $flagName    name of flag
     * @param string $triggerName name of the trigger the value of which we need
     * 
-    * @throws PEAR error
+    * @throws LorisException
     * @return mixed value, null, numeric, string
     *
     */
@@ -859,7 +859,7 @@ Class TimePoint_Flag extends TimePoint
     * 
     * @param stirng $flagName name of flag
     * 
-    * @throws PEAR error
+    * @throws LorisException
     * @return array list of triggers w/ values, keyed by trigger name
     *
     */
@@ -918,7 +918,7 @@ Class TimePoint_Flag extends TimePoint
     * @param string $flagName name of the flag
     * @param string $typeID   flag type ID
     * 
-    * @throws PEAR Error
+    * @throws LorisException
     * @return mixed true if OK
     */
     function insertFlag($flagName, $typeID)
@@ -955,7 +955,7 @@ Class TimePoint_Flag extends TimePoint
     * @param string $pending        flag to mark if there's an issue (Y/N)
     * @param string $pendingComment comment for the issue
     * 
-    * @throws PEAR Error
+    * @throws LorisException
     * @return mixed
     */
     function updateFlag($flagName, $userID, $flagStatus=null, $comment = null,
@@ -1027,7 +1027,7 @@ Class TimePoint_Flag extends TimePoint
     * @param string $flagName  name of flag
     * 
     * @return array flag details
-    * @throws PEAR error
+    * @throws LorisException
     * @static
     */
     function getFlag($sessionID, $flagName)
@@ -1066,7 +1066,7 @@ Class TimePoint_Flag extends TimePoint
     * wraps the [@link $this->getFlag()] and gets the flag data for the timepoint
     * 
     * @return array list of flag records from parameter_timepoint_flag_session table
-    * @throws PEAR error
+    * @throws LorisException
     * @see $this->getListOfFlags()
     */
     function getTimepointFlags()
