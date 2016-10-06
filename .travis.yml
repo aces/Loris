@@ -65,7 +65,6 @@ before_script:
     - mysql LorisTest < SQL/0000-00-03-ConfigTables.sql
     - mysql LorisTest < SQL/0000-00-04-Help.sql
     - mysql LorisTest < docs/instruments/radiology_review.sql
-    - mysql LorisTest < SQL/Release_patches/14.12_To_15.04_upgrade.sql
     - mysql LorisTest < SQL/Release_patches/15.04_To_15.10_upgrade.sql
     - mysql LorisTest < SQL/Release_patches/15.10_To_16.0_upgrade.sql
     - mysql LorisTest < SQL/Release_patches/16.0_To_16.1_upgrade.sql
