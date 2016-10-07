@@ -98,11 +98,13 @@ class Dicom_Archive extends \NDB_Menu_Filter
              'Metadata',
              'MRI_Browser',
              'Site',
+             'TarchiveID',
+             'SessionID'
             ]
         );
 
         // Set header as hidden from the data table
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Site']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(['Site', 'TarchiveID', 'SessionID']);
 
         $this->validFilters = array(
                                'c.CenterID',
