@@ -187,6 +187,8 @@ class MriUploadServerProcess extends AbstractServerProcess
      */
     public function deleteProcessFiles()
     {
+        $exitCode = parent::getExitCode();
+
         return !is_null($exitCode) && is_numeric($exitCode) && $exitCode == 0;
     }
 }
