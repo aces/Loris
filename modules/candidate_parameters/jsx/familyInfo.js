@@ -306,7 +306,7 @@ var FamilyInfo = React.createClass(
           if (familyMembers[field].ref !== null) {
             var reference = familyMembers[field].ref.split('_', 1);
             if (reference === familyID) {
-                            // TODO: remove fields immediately after deletion
+              // TODO: remove fields immediately after deletion
               familyMembers[field] = null;
             }
           }

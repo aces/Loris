@@ -128,7 +128,8 @@ var ConsentStatus = React.createClass(
           var consentWithdrawal = consentStatus + "_withdrawal";
           var consentWithdrawal2 = consentStatus + "_withdrawal2";
           var consentWithdrawalLabel = "Date of Withdrawal of " + label;
-          var consentWithdrawalConfirmationLabel = "Confirmation Date of Withdrawal of " + label;
+          var consentWithdrawalConfirmationLabel =
+            "Confirmation Date of Withdrawal of " + label;
 
           consents.push(
                         <SelectElement
@@ -200,9 +201,10 @@ var ConsentStatus = React.createClass(
           for (var field in this.state.Data.history[consentKey]) {
             if (this.state.Data.history[consentKey].hasOwnProperty(field)) {
               var line = "";
-              for (var field2 in this.state.Data.history[consentKey][field]) {
-                if (this.state.Data.history[consentKey][field].hasOwnProperty(field2)) {
-                  var current = this.state.Data.history[consentKey][field][field2];
+              var historyConsent = this.state.Data.history[consentKey][field];
+              for (var field2 in historyConsent) {
+                if (historyConsent.hasOwnProperty(field2)) {
+                  var current = historyConsent[field2];
                   if (current !== null) {
                     switch (field2) {
                       case 'data_entry_date':
