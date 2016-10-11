@@ -1,3 +1,5 @@
+"use strict";
+
 /* exported RMarkdown */
 
 /**
@@ -24,7 +26,7 @@ var Markdown = React.createClass({
   propTypes: {
     content: React.PropTypes.string.isRequired
   },
-  render: function () {
+  render: function render() {
     // Fix stupid-style newlines to be just \n.
     var fixedNewlines = this.props.content.replace("\r\n", "\n");
 
@@ -37,21 +39,21 @@ var Markdown = React.createClass({
     // start and want the callback to reference the same index
     var boldRe1 = /(\*\*)(.+?)(\*\*)/g;
     var boldRe2 = /(__)(.+?)(__)/g;
-    var boldCallback = function (match, start, content, end, offset, val) {
+    var boldCallback = function boldCallback(match, start, content, end, offset, val) {
       return "<b>" + content + "</b>";
     };
 
     var italRe1 = /(\*)(.+?)(\*)/g;
     var italRe2 = /(_)(.+?)(_)/g;
-    var italCallback = function (match, start, content, end, offset, val) {
+    var italCallback = function italCallback(match, start, content, end, offset, val) {
       return "<i>" + content + "</i>";
     };
 
     var linkRe = /\[(.+?)\]\((.+?)\)/g;
-    var linkCallback = function (match, text, link, offset, val) {
+    var linkCallback = function linkCallback(match, text, link, offset, val) {
       return '<a href="' + link + '">' + text + '</a>';
     };
-    for (let i = 0; i < paragraphs.length; i++) {
+    for (var i = 0; i < paragraphs.length; i++) {
       // For now, assume that there's an empty line between
       // any headers. It's not true of strict markdown, but
       // it's true enough to enforce for the help pages.

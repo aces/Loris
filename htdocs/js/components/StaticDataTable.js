@@ -1,3 +1,5 @@
+"use strict";
+
 /* exported RStaticDataTable */
 
 /**
@@ -24,7 +26,7 @@ var StaticDataTable = React.createClass({
     // parameters of the form: func(ColumnName, CellData, EntireRowData)
     getFormattedCell: React.PropTypes.func
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
         $("#dynamictable").DynamicTable({
@@ -58,7 +60,7 @@ var StaticDataTable = React.createClass({
     // Make prefs accesible within component
     this.modulePrefs = modulePrefs;
   },
-  componentDidUpdate: function () {
+  componentDidUpdate: function componentDidUpdate() {
     if (jQuery.fn.DynamicTable) {
       if (this.props.freezeColumn) {
         $("#dynamictable").DynamicTable({
@@ -69,7 +71,7 @@ var StaticDataTable = React.createClass({
       }
     }
   },
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       PageNumber: 1,
       SortColumn: -1,
@@ -77,7 +79,7 @@ var StaticDataTable = React.createClass({
       RowsPerPage: 20
     };
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       Headers: [],
       Data: {},
@@ -85,12 +87,12 @@ var StaticDataTable = React.createClass({
       Filter: {}
     };
   },
-  changePage: function (pageNo) {
+  changePage: function changePage(pageNo) {
     this.setState({
       PageNumber: pageNo
     });
   },
-  setSortColumn: function (colNumber) {
+  setSortColumn: function setSortColumn(colNumber) {
     var that = this;
     return function (e) {
       if (that.state.SortColumn === colNumber) {
@@ -104,7 +106,7 @@ var StaticDataTable = React.createClass({
       }
     };
   },
-  changeRowsPerPage: function (val) {
+  changeRowsPerPage: function changeRowsPerPage(val) {
     var rowsPerPage = val.target.value;
     var modulePrefs = this.modulePrefs;
 
@@ -119,7 +121,7 @@ var StaticDataTable = React.createClass({
       PageNumber: 1
     });
   },
-  downloadCSV: function () {
+  downloadCSV: function downloadCSV() {
     var csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
     csvworker.addEventListener('message', function (e) {
@@ -145,7 +147,7 @@ var StaticDataTable = React.createClass({
       identifiers: this.props.RowNameMap
     });
   },
-  countFilteredRows: function () {
+  countFilteredRows: function countFilteredRows() {
     var filterMatchCount = 0;
     var filterValuesCount = this.props.Filter ? Object.keys(this.props.Filter).length : 0;
     var tableData = this.props.Data;
@@ -173,7 +175,7 @@ var StaticDataTable = React.createClass({
 
     return filterMatchCount === 0 ? tableData.length : filterMatchCount;
   },
-  toCamelCase: function (str) {
+  toCamelCase: function toCamelCase(str) {
     return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
       if (Number(match) === 0) return "";
       return index === 0 ? match.toLowerCase() : match.toUpperCase();
@@ -189,7 +191,7 @@ var StaticDataTable = React.createClass({
    * @return {boolean} true, if filter value is found to be a substring
    * of one of the column values, false otherwise.
    */
-  hasFilterKeyword: function (headerData, data) {
+  hasFilterKeyword: function hasFilterKeyword(headerData, data) {
     var header = this.toCamelCase(headerData);
     var filterData = this.props.Filter[header] ? this.props.Filter[header] : null;
 
@@ -213,7 +215,7 @@ var StaticDataTable = React.createClass({
 
     return false;
   },
-  render: function () {
+  render: function render() {
     if (this.props.Data === null || this.props.Data.length === 0) {
       return React.createElement(
         "div",
@@ -231,20 +233,20 @@ var StaticDataTable = React.createClass({
       { onClick: this.setSortColumn(-1) },
       this.props.RowNumLabel
     )];
-    for (let i = 0; i < this.props.Headers.length; i += 1) {
-      if (typeof loris.hiddenHeaders === "undefined" || loris.hiddenHeaders.indexOf(this.props.Headers[i]) === -1) {
-        if (this.props.Headers[i] === this.props.freezeColumn) {
+    for (var _i = 0; _i < this.props.Headers.length; _i += 1) {
+      if (typeof loris.hiddenHeaders === "undefined" || loris.hiddenHeaders.indexOf(this.props.Headers[_i]) === -1) {
+        if (this.props.Headers[_i] === this.props.freezeColumn) {
           headers.push(React.createElement(
             "th",
             { id: this.props.freezeColumn,
-              onClick: this.setSortColumn(i) },
-            this.props.Headers[i]
+              onClick: this.setSortColumn(_i) },
+            this.props.Headers[_i]
           ));
         } else {
           headers.push(React.createElement(
             "th",
-            { onClick: this.setSortColumn(i) },
-            this.props.Headers[i]
+            { onClick: this.setSortColumn(_i) },
+            this.props.Headers[_i]
           ));
         }
       }
@@ -315,7 +317,7 @@ var StaticDataTable = React.createClass({
     var currentPageRow = rowsPerPage * (this.state.PageNumber - 1);
 
     // Push rows to data table
-    for (let i = 0; i < this.props.Data.length && rows.length < rowsPerPage; i++) {
+    for (var _i2 = 0; _i2 < this.props.Data.length && rows.length < rowsPerPage; _i2++) {
       curRow = [];
 
       // Counts filter matches
@@ -327,8 +329,8 @@ var StaticDataTable = React.createClass({
         var data = "Unknown";
 
         // Set column data
-        if (this.props.Data[index[i].RowIdx]) {
-          data = this.props.Data[index[i].RowIdx][j];
+        if (this.props.Data[index[_i2].RowIdx]) {
+          data = this.props.Data[index[_i2].RowIdx][j];
         }
 
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
@@ -337,8 +339,8 @@ var StaticDataTable = React.createClass({
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
-          data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[i].RowIdx], this.props.Headers);
-          curRow.push({ data });
+          data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[_i2].RowIdx], this.props.Headers);
+          curRow.push({ data: data });
         } else {
           curRow.push(React.createElement(
             "td",
@@ -358,7 +360,7 @@ var StaticDataTable = React.createClass({
             React.createElement(
               "td",
               null,
-              index[i].Content
+              index[_i2].Content
             ),
             curRow
           ));

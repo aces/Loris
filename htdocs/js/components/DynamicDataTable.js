@@ -1,3 +1,5 @@
+'use strict';
+
 /* exported RDynamicDataTable */
 
 var DynamicDataTable = React.createClass({
@@ -7,7 +9,7 @@ var DynamicDataTable = React.createClass({
     DataURL: React.PropTypes.string.isRequired
   },
 
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       Headers: [],
       Data: [],
@@ -15,26 +17,26 @@ var DynamicDataTable = React.createClass({
       loadedData: 0
     };
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       DataURL: ''
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     this.fetchData();
     // Listen for update event to update data table on outside changes
     window.addEventListener('update-datatable', this.fetchData);
   },
-  componentWillUnmount: function () {
+  componentWillUnmount: function componentWillUnmount() {
     // Unsubscribe from the event before component is destroyed
     window.removeEventListener('update-datatable', this.fetchData);
   },
-  fetchData: function () {
+  fetchData: function fetchData() {
     var that = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       cache: false,
-      xhr: function () {
+      xhr: function xhr() {
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function (evt) {
           console.log(evt);
@@ -44,20 +46,20 @@ var DynamicDataTable = React.createClass({
         });
         return xhr;
       },
-      success: function (data) {
+      success: function success(data) {
         that.setState({
           Headers: data.Headers,
           Data: data.Data,
           isLoaded: true
         });
       },
-      error: function (data, errorCode, errorMsg) {
+      error: function error(data, errorCode, errorMsg) {
         console.error(errorCode + ': ' + errorMsg);
         that.setState({ error: "Error loading data" });
       }
     });
   },
-  render: function () {
+  render: function render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return React.createElement(

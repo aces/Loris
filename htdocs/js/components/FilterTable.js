@@ -1,3 +1,5 @@
+"use strict";
+
 /* exported RFilterTable */
 
 /**
@@ -19,18 +21,18 @@ var FilterTable = React.createClass({
   propTypes: {
     Module: React.PropTypes.string.isRequired
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       filterClass: "col-md-9"
     };
   },
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return { collapsed: false };
   },
-  toggleCollapsed: function () {
+  toggleCollapsed: function toggleCollapsed() {
     this.setState({ collapsed: !this.state.collapsed });
   },
-  render: function () {
+  render: function render() {
     // Selection filter open by default
     var glyphClass = "glyphicon pull-right glyphicon-chevron-up";
     var panelClass = "panel-collapse collapse in";

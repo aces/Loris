@@ -1,3 +1,5 @@
+"use strict";
+
 /* exported RBreadcrumbs */
 
 /**
@@ -15,7 +17,7 @@
 var Breadcrumbs = React.createClass({
   displayName: "Breadcrumbs",
 
-  render: function () {
+  render: function render() {
     var baseurl = this.props.baseURL;
     var breadcrumbs = this.props.breadcrumbs.map(function (element, i) {
       var url = baseurl + element.query;

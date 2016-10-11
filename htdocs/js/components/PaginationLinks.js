@@ -1,3 +1,5 @@
+"use strict";
+
 /* exported RPaginationLinks */
 
 var PaginationLinks = React.createClass({
@@ -8,13 +10,13 @@ var PaginationLinks = React.createClass({
     onChangePage: React.PropTypes.func,
     Total: React.PropTypes.number.isRequired
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       RowsPerPage: 10,
       Active: 1
     };
   },
-  changePage: function (i) {
+  changePage: function changePage(i) {
     var that = this;
     return function (evt) {
       // Don't jump to the top of the page
@@ -25,7 +27,7 @@ var PaginationLinks = React.createClass({
       }
     };
   },
-  render: function () {
+  render: function render() {
     var rowsPerPage = this.props.RowsPerPage;
     var pageLinks = [];
     var classList;
