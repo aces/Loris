@@ -21,7 +21,7 @@
     "no-implicit-globals": 0,
     "array-callback-return": 0,
     "new-cap": ["error", {
-        "capIsNewExceptions": ["DynamicTable"] // Allows DynamicTable to be invoked without new keyword
+        "capIsNewExceptions": ["DynamicTable"]
     }]
   },
   "globals": {
