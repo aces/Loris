@@ -10,7 +10,8 @@
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
   // If a column if set as hidden, don't display it
-  if (loris.hiddenHeaders !== undefined && loris.hiddenHeaders.indexOf(column) > -1) {
+  if (loris.hiddenHeaders !== undefined &&
+    loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
   }
 
@@ -22,10 +23,14 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (column === "PSCID") {
     if (row["Current Stage"] === "Recycling Bin") {
-      return (<td>{cell} <span className="text-danger">(Recycling Bin)</span></td>);
+      return (
+        <td>{cell}
+          <span className="text-danger">(Recycling Bin)</span>
+        </td>
+      );
     }
 
-    if (row["Invalid"] === "yes") {
+    if (row.Invalid === "yes") {
       return (<td>{cell} <span className="text-danger">(Invalid)</span></td>);
     }
 
@@ -33,9 +38,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       return (<td>{cell} <span className="text-danger">(Manual)</span></td>);
     }
 
-    var testName = '/' + row["Instrument"] + '_reliability';
-    var commentID = row['CommentID'];
-    var siteID = row['SiteID'];
+    var testName = '/' + row.Instrument + '_reliability';
+    var commentID = row.CommentID;
+    var siteID = row.SiteID;
     var url = loris.BaseURL + testName +
       '?identifier=' + commentID + '&reliability_center_id=' + siteID;
 
@@ -47,7 +52,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Reliable') {
-    var reliable = row['Reliable'];
+    var reliable = row.Reliable;
 
     if (reliable === "Yes") {
       return <td className="bg-success">Yes</td>;

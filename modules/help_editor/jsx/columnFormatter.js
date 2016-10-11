@@ -27,7 +27,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
              </td>;
   }
   if (column === 'Parent Topic') {
-    url = loris.BaseURL + "/help_editor/edit_help_content/?helpID=" + 
+    url = loris.BaseURL + "/help_editor/edit_help_content/?helpID=" +
            row.ParentID + "&parentID=" + row.ParentTopicID;
     return <td>
                 <a href ={url}>{cell}</a>
