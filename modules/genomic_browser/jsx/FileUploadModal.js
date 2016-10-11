@@ -39,7 +39,9 @@ GenomicFileUploadModal = React.createClass({
 
         var xhr = new XMLHttpRequest();
         xhr.previous_text = '';
-        xhr.onerror = function() { console.error("[XHR] Fatal Error."); };
+        xhr.onerror = function() { 
+          console.error("[XHR] Fatal Error."); 
+        };
         xhr.onreadystatechange = function() {
             try{
                 switch (xhr.readyState) {
@@ -57,13 +59,13 @@ GenomicFileUploadModal = React.createClass({
 
                         var new_response = xhr.responseText.substring(xhr.previous_text.length);
                         var result = JSON.parse( new_response );
-                        console.log(result);
 
-                        //document.getElementById("uploadStatus").innerHTML = result.message + '';
-                        //document.getElementById('progressBar').style.width = result.progress + "%";
-                        //if (result.error != undefined) {
-                        //    document.getElementById('progressBar').style.backgroundColor = 'red';
-                        //}
+                        var bar = document.getElementById("progressBar");
+                        bar.innerHTML = result.message + '';
+                        bar.style.width = result.progress + "%";
+                        if (result.error != undefined) {
+                          bar.className = 'progress-bar progress-bar-danger';
+                        }
 
                         xhr.previous_text = xhr.responseText;
                         break;
@@ -78,6 +80,10 @@ GenomicFileUploadModal = React.createClass({
             }
             catch (e){
                 console.error("[XHR STATECHANGE] Exception: " + e);
+                var bar = document.getElementById("progressBar");
+                bar.innerHTML = 'An error occured';
+                bar.className = 'progress-bar progress-bar-danger';
+                bar.style.width = "100%";  
             }
         };
         var url = this.props.baseURL + "/genomic_browser/ajax/genomic_file_upload.php";
@@ -166,10 +172,12 @@ UploadForm = React.createClass({
                     inputs.push(<FileInput name='fileMapping' label='Mapping :'/>);
                 }
                 inputs.push(<CheckboxInput handleChange={this.handleCheckboxChange} checked={this.state.useColumnHeaders} name='pscidColumn' />);
+                inputs.push(<ProgressBar name='progressbar' label='Progress :' />);
                 break;
             case 'Other':
                 inputs.push(<FileInput name='fileData' label='File :'/>);
                 inputs.push(<TextAreaInput name='description' label='Description :' />);
+                inputs.push(<ProgressBar name='progressbar' label='Progress :' />);
                 break;
         }
 
@@ -327,3 +335,23 @@ CheckboxInput = React.createClass({
     }
 });
 
+ProgressBar = React.createClass({
+
+    propTypes: {
+        name: React.PropTypes.string,
+        label: React.PropTypes.string
+    },
+
+    render: function () {
+        return (
+            <div className="col-xs-12 form-group">
+                <label className="col-xs-3" for={this.props.name}>{this.props.label}</label>
+                <div className="col-xs-9">
+                    <div className="progress" style={{"height" : "20px"}}>
+                        <div className="progress-bar progress-bar-success" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"/>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+});

@@ -49,7 +49,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $this->commentID = $commentID;
         $this->page      = $page;
 
-        $this->form = new \HTML_Quickform('test_form');
+        $this->form = new \LorisForm('test_form');
     }
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the

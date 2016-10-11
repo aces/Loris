@@ -2,9 +2,8 @@
 
 #
 # This will:
-#   1. Install PEAR libraries
-#   2. Set up the LORIS DB schema
-#   3. Log the installation in the logs directory
+#   1. Set up the LORIS DB schema
+#   2. Log the installation in the logs directory
 # This will only install the database components and LORIS config file.
 #
 

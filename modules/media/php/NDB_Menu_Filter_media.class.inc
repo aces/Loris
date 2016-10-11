@@ -11,8 +11,6 @@
  * @link     https://www.github.com/aces/CCNA/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Main class for media module corresponding to /media/ URL
  * Child or Clinical section of the LorisMenu.
