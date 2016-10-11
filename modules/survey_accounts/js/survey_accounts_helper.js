@@ -68,6 +68,9 @@ $(document).ready(function () {
             function(result) {
                 //console.log(result);
                 if (result) {
+                    // if an error was already thrown,
+                    // hide it to avoid stacking error messages
+                    $(".error").hide();
                     result = JSON.parse(result);
                     $("#email-error").show();
                     $("#email-error").html(result.error_msg);
