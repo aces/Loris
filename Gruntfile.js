@@ -4,7 +4,7 @@ module.exports = function(grunt) {
 
   /**
    * Important: all files that pass ESLint should be added to transpileES6 list.
-   * Remaining files will eventuallt be linted and transfered as well.
+   * Remaining files will eventually be linted and converted to ES6 as well.
    */
   grunt.initConfig({
     babel: {
