@@ -195,7 +195,7 @@ CREATE TABLE `examiners` (
   `centerID` tinyint(2) unsigned default NULL,
   `radiologist` tinyint(1) default NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `pending_approval` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `pending_approval` enum('Y','N') NOT NULL DEFAULT 'N',
   PRIMARY KEY  (`examinerID`),
   UNIQUE KEY `full_name` (`full_name`,`centerID`),
   KEY `FK_examiners_1` (`centerID`),
