@@ -1,35 +1,40 @@
-ImagePanelHeader = React.createClass({
-    mixins: [React.addons.PureRenderMixin],
-    render: function() {
-        var QCStatusLabel;
-        if(this.props.QCStatus == 'Pass') {
-            QCStatusLabel = <span className="label label-success">{this.props.QCStatus}</span>;
+/* exported ImagePanelHeader, ImagePanelHeadersTable, ImageQCDropdown, ImageQCStatic,
+ ImagePanelQCStatusSelector, ImagePanelQCSelectedSelector, ImagePanelQCCaveatSelector,
+ ImagePanelQCSNRValue, ImagePanelQCPanel, DownloadButton, ImageQCCommentsButton.
+ LongitudinalViewButton, ImageDownloadButtons, ImagePanelBody, RImagePanel
+* */
 
-        } else if(this.props.QCStatus == 'Fail') {
-            QCStatusLabel = <span className="label label-danger">{this.props.QCStatus}</span>;
-        }
+var ImagePanelHeader = React.createClass({
+  mixins: [React.addons.PureRenderMixin],
+  render: function() {
+    var QCStatusLabel;
+    if (this.props.QCStatus === 'Pass') {
+      QCStatusLabel = <span className="label label-success">{this.props.QCStatus}</span>;
+    } else if (this.props.QCStatus === 'Fail') {
+      QCStatusLabel = <span className="label label-danger">{this.props.QCStatus}</span>;
+    }
 
-        var arrow;
-        if(this.props.Expanded) {
-            arrow = <span onClick={this.props.onToggleBody} className="pull-right clickable glyphicon arrow glyphicon-chevron-up"></span>;
-        }    else {
-            arrow = <span onClick={this.props.onToggleBody} className="pull-right clickable glyphicon arrow glyphicon-chevron-down"></span>;
-        }
-        var headerButton = (
+    var arrow;
+    if (this.props.Expanded) {
+      arrow = <span onClick={this.props.onToggleBody} className="pull-right clickable glyphicon arrow glyphicon-chevron-up"></span>;
+    } else {
+      arrow = <span onClick={this.props.onToggleBody} className="pull-right clickable glyphicon arrow glyphicon-chevron-down"></span>;
+    }
+    var headerButton = (
             <div className="pull-right">
                 <div className="btn-group views">
                     <button
                         type="button"
                         className="btn btn-default btn-xs dropdown-toggle"
                         onClick={this.props.onToggleHeaders}
-                        aria-expanded={this.props.HeadersExpanded ? true : false}>
+                        aria-expanded={this.props.HeadersExpanded}>
                         Header Info
                         </button>
                     <span className="caret"></span>
                 </div>
             </div>
             );
-        return (
+    return (
 
             <div className="panel-heading">
                 <input type="checkbox" data-file-id={this.props.FileID} className="mripanel user-success" />
@@ -39,23 +44,23 @@ ImagePanelHeader = React.createClass({
                 {headerButton}
             </div>
         );
-    }
+  }
 
 });
 
-ImagePanelHeadersTable = React.createClass({
-    componentDidMount: function() {
-        $(this.getDOMNode()).DynamicTable();
-    },
-    render: function() {
-        return (
+var ImagePanelHeadersTable = React.createClass({
+  componentDidMount: function() {
+    $(this.getDOMNode()).DynamicTable();
+  },
+  render: function() {
+    return (
             <table className="table table-hover table-bordered header-info col-xs-12 dynamictable">
                 <tr>
                     <th className="info col-xs-2">Voxel Size</th>
                     <td className="col-xs-6" colSpan="3">
-                        {this.props.HeaderInfo.XStep != '' ? 'X: ' + this.props.HeaderInfo.XStep + " mm ": ' '}
-                        {this.props.HeaderInfo.YStep != '' ? 'Y: ' + this.props.HeaderInfo.YStep + " mm ": ' '}
-                        {this.props.HeaderInfo.ZStep != '' ? 'Z: ' + this.props.HeaderInfo.ZStep + " mm ": ' '}
+                        {this.props.HeaderInfo.XStep === '' ? ' ' : 'X: ' + this.props.HeaderInfo.XStep + " mm "}
+                        {this.props.HeaderInfo.YStep === '' ? ' ' : 'Y: ' + this.props.HeaderInfo.YStep + " mm "}
+                        {this.props.HeaderInfo.ZStep === '' ? ' ' : 'Z: ' + this.props.HeaderInfo.ZStep + " mm "}
                     </td>
                     <th className="col-xs-2 info">Output Type</th>
                     <td className="col-xs-2">{this.props.HeaderInfo.OutputType}</td>
@@ -118,24 +123,24 @@ ImagePanelHeadersTable = React.createClass({
 
             </table>
         );
-    }
+  }
 });
-ImageQCDropdown = React.createClass({
+var ImageQCDropdown = React.createClass({
 
-    render: function() {
-        var label = <label>{this.props.Label}</label>;
-        if (this.props.url) {
-          label = <label><a href={this.props.url}>{this.props.Label}</a></label>;
+  render: function() {
+    var label = <label>{this.props.Label}</label>;
+    if (this.props.url) {
+      label = <label><a href={this.props.url}>{this.props.Label}</a></label>;
+    }
+    var dropdown;
+    if (this.props.editable) {
+      var options = [];
+      for (var key in this.props.options) {
+        if (this.props.options.hasOwnProperty(key)) {
+          options.push(<option key={this.props.FormName + this.props.FileID + key} className="form-control input-sm option" value={key}>{this.props.options[key]}</option>);
         }
-        var dropdown;
-        if(this.props.editable) {
-            var options = [];
-            for (var key in this.props.options) {
-                if(this.props.options.hasOwnProperty(key)) {
-                    options.push(<option key={this.props.FormName + this.props.FileID + key} className="form-control input-sm option" value={key}>{this.props.options[key]}</option>);
-                }
-            }
-            dropdown = (
+      }
+      dropdown = (
                 <select name={this.props.FormName + "[" + this.props.FileID + "]"}
                     defaultValue={this.props.defaultValue}
                     className="form-control input-sm"
@@ -143,106 +148,105 @@ ImageQCDropdown = React.createClass({
                     {options}
                 </select>
                 );
-        } else {
-            dropdown = (
+    } else {
+      dropdown = (
                 <div className="col-xs-12">
                     {this.props.defaultValue}
                 </div>
             );
-        }
-        return (
+    }
+    return (
             <div className="row">
                 {label}
                 {dropdown}
             </div>
         );
-    }
+  }
 });
-ImageQCStatic = React.createClass({
-    render: function() {
-        var staticInfo;
-        staticInfo = (
+var ImageQCStatic = React.createClass({
+  render: function() {
+    var staticInfo;
+    staticInfo = (
             <div className="col-xs-12">
                 {this.props.defaultValue}
             </div>
         );
-        return (
+    return (
             <div className="row">
                 <label>{this.props.Label}</label>
                 {staticInfo}
             </div>
         );
-    }
+  }
 });
 
-ImagePanelQCStatusSelector = React.createClass({
-    render: function() {
-        var qcStatusLabel;
-        if(this.props.HasQCPerm && this.props.FileNew) {
-            qcStatusLabel = <span>QC Status <span className="text-info">( <span className="glyphicon glyphicon-star"></span> New )</span></span>
-        } else {
-            qcStatusLabel = "QC Status";
-        }
+var ImagePanelQCStatusSelector = React.createClass({
+  render: function() {
+    var qcStatusLabel;
+    if (this.props.HasQCPerm && this.props.FileNew) {
+      qcStatusLabel = <span>QC Status <span className="text-info">( <span className="glyphicon glyphicon-star"></span> New )</span></span>;
+    } else {
+      qcStatusLabel = "QC Status";
+    }
 
-        return (
+    return (
             <ImageQCDropdown
                     Label={qcStatusLabel}
                     FormName="status"
                     FileID={this.props.FileID}
                     editable={this.props.HasQCPerm}
                     defaultValue={this.props.QCStatus}
-                    options={ { "" : "", "Pass" : "Pass", "Fail" : "Fail" } }
+                    options={ {"": "", "Pass": "Pass", "Fail": "Fail"} }
             />
         );
-    }
+  }
 });
-ImagePanelQCSelectedSelector = React.createClass({
-    render: function () {
-        return (
+var ImagePanelQCSelectedSelector = React.createClass({
+  render: function() {
+    return (
             <ImageQCDropdown
                 Label="Selected"
                 FormName="selectedvol"
                 FileID={this.props.FileID}
                 editable={this.props.HasQCPerm}
-                options={ { "" : "", "true" : "True", "false" : "False" } }
+                options={ {"": "", "true": "True", "false": "False"} }
                 defaultValue={this.props.Selected}
             />
         );
-    }
+  }
 });
-ImagePanelQCCaveatSelector = React.createClass({
-    render: function () {
-
+var ImagePanelQCCaveatSelector = React.createClass({
+  render: function() {
         // Link caveat to MRI Violations if set true
-        var mriViolationsLink = null;
-        if (this.props.SeriesUID && this.props.Caveat === "1") {
-          mriViolationsLink = '/mri_violations/?' +
+    var mriViolationsLink = null;
+    if (this.props.SeriesUID && this.props.Caveat === "1") {
+      mriViolationsLink = '/mri_violations/?' +
             'submenu=mri_protocol_check_violations&SeriesUID=' +
             this.props.SeriesUID + '&filter=true';
-        }
+    }
 
-        return (
+    return (
             <ImageQCDropdown
                 Label="Caveat"
                 FormName="caveat"
                 FileID={this.props.FileID}
                 editable={this.props.HasQCPerm}
                 options={
-                    {
-                        "" : "",
-                        "1" : "True",
-                        "0" : "False"
-                    }
+                {
+                  "": "",
+                  "1": "True",
+                  "0": "False"
+                }
                 }
                 defaultValue={this.props.Caveat}
                 url={mriViolationsLink}
             />
         );
-    }
+  }
 });
-ImagePanelQCSNRValue = React.createClass({
-    render: function () {
-        return (
+var ImagePanelQCSNRValue = React.createClass({
+  render: function() {
+    return (
             <ImageQCStatic
                 Label="SNR"
                 FormName="snr"
@@ -250,12 +254,12 @@ ImagePanelQCSNRValue = React.createClass({
                 defaultValue={this.props.SNR}
             />
         );
-    }
+  }
 });
-ImagePanelQCPanel = React.createClass({
-    mixins: [React.addons.PureRenderMixin],
-    render: function() {
-        return (
+var ImagePanelQCPanel = React.createClass({
+  mixins: [React.addons.PureRenderMixin],
+  render: function() {
+    return (
             <div className="form-group">
                 <ImagePanelQCStatusSelector
                     FileID={this.props.FileID}
@@ -280,40 +284,40 @@ ImagePanelQCPanel = React.createClass({
                 />
             </div>
         );
-    }
+  }
 });
 
-DownloadButton = React.createClass({
-    render: function() {
-        if (!this.props.FileName || this.props.FileName == '') {
-            return <span />;
-        };
-        var style = {
-            margin: 6
-        }
-        return (
+var DownloadButton = React.createClass({
+  render: function() {
+    if (!this.props.FileName || this.props.FileName === '') {
+      return <span />;
+    }
+    var style = {
+      margin: 6
+    };
+    return (
             <a href={this.props.BaseURL + "/mri/jiv/get_file.php?file=" + this.props.FileName} className="btn btn-default" style={style}>
                 <span className="glyphicon glyphicon-download-alt"></span>
                 <span className="hidden-xs">{this.props.Label}</span>
             </a>
         );
-    }
+  }
 });
 
-ImageQCCommentsButton = React.createClass({
-    openWindowHandler: function(e) {
-        e.preventDefault();
-        window.open(
+var ImageQCCommentsButton = React.createClass({
+  openWindowHandler: function(e) {
+    e.preventDefault();
+    window.open(
             this.props.BaseURL + "/feedback_mri_popup.php?fileID=" + this.props.FileID,
             "feedback_mri",
             "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes"
         );
-    },
-    render: function() {
-        if (!this.props.FileID || this.props.FileID == '') {
-            return <span />;
-        };
-        return (
+  },
+  render: function() {
+    if (!this.props.FileID || this.props.FileID === '') {
+      return <span />;
+    }
+    return (
             <a className="btn btn-default"
                 href="#noID"
                 onClick={this.openWindowHandler}
@@ -324,23 +328,23 @@ ImageQCCommentsButton = React.createClass({
                     </span>
             </a>
         );
-    }
+  }
 });
 
-LongitudinalViewButton = React.createClass({
-    openWindowHandler: function(e) {
-        e.preventDefault();
-        window.open(
+var LongitudinalViewButton = React.createClass({
+  openWindowHandler: function(e) {
+    e.preventDefault();
+    window.open(
             this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.OtherTimepoints + "]",
             "BrainBrowser Volume Viewer",
             "location = 0,width = auto, height = auto, scrollbars=yes"
         );
-    },
-    render: function() {
-        if (!this.props.FileID || this.props.FileID == '') {
-            return <span />;
-        };
-        return (
+  },
+  render: function() {
+    if (!this.props.FileID || this.props.FileID === '') {
+      return <span />;
+    }
+    return (
             <a className="btn btn-default"
                href="#noID"
                onClick={this.openWindowHandler}
@@ -351,12 +355,12 @@ LongitudinalViewButton = React.createClass({
                     </span>
             </a>
         );
-    }
+  }
 });
 
-ImageDownloadButtons = React.createClass({
-    render: function() {
-        return (
+var ImageDownloadButtons = React.createClass({
+  render: function() {
+    return (
             <div className="row mri-second-row-panel col-xs-12">
                 <ImageQCCommentsButton FileID={this.props.FileID}
                     BaseURL={this.props.BaseURL}
@@ -383,16 +387,16 @@ ImageDownloadButtons = React.createClass({
                 />
             </div>
         );
-    }
+  }
 });
-ImagePanelBody = React.createClass({
-    mixins: [React.addons.PureRenderMixin],
-    openWindowHandler: function (e) {
-        e.preventDefault();
-        window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.FileID + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
-    },
-    render: function() {
-        return (
+var ImagePanelBody = React.createClass({
+  mixins: [React.addons.PureRenderMixin],
+  openWindowHandler: function(e) {
+    e.preventDefault();
+    window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.FileID + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
+  },
+  render: function() {
+    return (
                 <div className="panel-body">
                     <div className="row">
                         <div className="col-xs-9 imaging_browser_pic">
@@ -425,28 +429,28 @@ ImagePanelBody = React.createClass({
                     {this.props.HeadersExpanded ? <ImagePanelHeadersTable HeaderInfo={this.props.HeaderInfo} /> : ''}
                 </div>
         );
-    }
+  }
 });
 
-ImagePanel = React.createClass({
-    getInitialState: function() {
-        return {
-            'BodyCollapsed' : false,
-            'HeadersCollapsed' : true
-        }
-    },
-    toggleBody: function(e) {
-        this.setState({
-            'BodyCollapsed' : !this.state.BodyCollapsed
-        });
-    },
-    toggleHeaders: function(e) {
-        this.setState({
-            'HeadersCollapsed' : !this.state.HeadersCollapsed
-        });
-    },
-    render: function() {
-        return (
+var ImagePanel = React.createClass({
+  getInitialState: function() {
+    return {
+      BodyCollapsed: false,
+      HeadersCollapsed: true
+    };
+  },
+  toggleBody: function(e) {
+    this.setState({
+      BodyCollapsed: !this.state.BodyCollapsed
+    });
+  },
+  toggleHeaders: function(e) {
+    this.setState({
+      HeadersCollapsed: !this.state.HeadersCollapsed
+    });
+  },
+  render: function() {
+    return (
             <div className="col-xs-12 col-md-6">
                 <div className="panel panel-default">
                 <ImagePanelHeader
@@ -486,7 +490,7 @@ ImagePanel = React.createClass({
                 </div>
             </div>
         );
-    }
+  }
 });
-RImagePanel = React.createFactory(ImagePanel);
+var RImagePanel = React.createFactory(ImagePanel);
 
