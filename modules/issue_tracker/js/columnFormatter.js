@@ -1,3 +1,5 @@
+'use strict';
+
 /* exported formatColumn */
 
 /**
@@ -16,7 +18,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
 
   if (column === 'Title') {
-    let cellLinks = [];
+    var cellLinks = [];
     cellLinks.push(React.createElement(
       'a',
       { href: loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/" },
@@ -30,8 +32,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Issue ID') {
-    let cellLinks = [];
-    cellLinks.push(React.createElement(
+    var _cellLinks = [];
+    _cellLinks.push(React.createElement(
       'a',
       { href: loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/" },
       cell
@@ -39,7 +41,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return React.createElement(
       'td',
       null,
-      cellLinks
+      _cellLinks
     );
   }
 

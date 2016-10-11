@@ -1,3 +1,5 @@
+"use strict";
+
 /* exported RIssueEditForm */
 
 /**
@@ -13,13 +15,13 @@
 var CollapsibleComment = React.createClass({
   displayName: "CollapsibleComment",
 
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return { collapsed: true };
   },
-  toggleCollapsed: function () {
+  toggleCollapsed: function toggleCollapsed() {
     this.setState({ collapsed: !this.state.collapsed });
   },
-  render: function () {
+  render: function render() {
     var historyText = [];
     var commentHistBool = this.state.collapsed ? "Show Comment History" : "Hide Comment History";
     var commentHistory = this.props.commentHistory;
@@ -93,7 +95,7 @@ var IssueEditForm = React.createClass({
     action: React.PropTypes.string.isRequired
   },
 
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       Data: [],
       formData: {},
@@ -106,11 +108,11 @@ var IssueEditForm = React.createClass({
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     this.getDataAndChangeState();
   },
 
-  render: function () {
+  render: function render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return React.createElement(
@@ -189,7 +191,7 @@ var IssueEditForm = React.createClass({
       commentHistory = React.createElement(
         "div",
         { "class": "form-group" },
-        "\xA0"
+        " "
       );
     } else {
       commentHistory = React.createElement(CollapsibleComment, {
@@ -202,13 +204,13 @@ var IssueEditForm = React.createClass({
         alertClass = "alert alert-success text-center";
         alertMessage = "Submission Successful!";
       } else if (this.state.submissionResult === "error") {
-        let errorMessage = this.state.errorMessage;
+        var errorMessage = this.state.errorMessage;
         alertClass = "alert alert-danger text-center";
         alertMessage = errorMessage ? errorMessage : "Failed to submit issue :(";
       } else if (this.state.submissionResult === "invalid") {
-        let errorMessage = this.state.errorMessage;
+        var _errorMessage = this.state.errorMessage;
         alertClass = "alert alert-danger text-center";
-        alertMessage = errorMessage ? errorMessage : "Invalid input";
+        alertMessage = _errorMessage ? _errorMessage : "Invalid input";
       }
     }
     var header;
@@ -509,14 +511,14 @@ var IssueEditForm = React.createClass({
   /**
    * Creates an ajax request and sets the state with the result
    */
-  getDataAndChangeState: function () {
+  getDataAndChangeState: function getDataAndChangeState() {
     var that = this;
 
     var dataURL = this.props.DataURL;
 
     $.ajax(dataURL, {
       dataType: 'json',
-      xhr: function () {
+      xhr: function xhr() {
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function (evt) {
           that.setState({
@@ -526,7 +528,7 @@ var IssueEditForm = React.createClass({
         return xhr;
       },
 
-      success: function (data) {
+      success: function success(data) {
         if (!data.issueData.issueID) {
           that.setState({ isNewIssue: true });
         }
@@ -562,7 +564,7 @@ var IssueEditForm = React.createClass({
           error: "finished success"
         });
       },
-      error: function (data, errorCode, errorMsg) {
+      error: function error(data, errorCode, errorMsg) {
         that.setState({
           error: errorMsg
         });
@@ -575,7 +577,7 @@ var IssueEditForm = React.createClass({
    *
    * @param {event} e form submit event
    */
-  handleSubmit: function (e) {
+  handleSubmit: function handleSubmit(e) {
     e.preventDefault();
 
     var self = this;
@@ -605,7 +607,7 @@ var IssueEditForm = React.createClass({
       dataType: 'json',
       contentType: false,
       processData: false,
-      xhr: function () {
+      xhr: function xhr() {
         var xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function (evt) {
           if (evt.lengthComputable) {
@@ -620,7 +622,7 @@ var IssueEditForm = React.createClass({
         return xhr;
       },
 
-      success: function (data) {
+      success: function success(data) {
         if (!data.isValidSubmission) {
           self.setState({
             errorMessage: data.invalidMessage,
@@ -643,7 +645,7 @@ var IssueEditForm = React.createClass({
           }, 2000);
         }
       },
-      error: function (err) {
+      error: function error(err) {
         console.error(err);
         self.setState({
           submissionResult: "error"
@@ -660,7 +662,7 @@ var IssueEditForm = React.createClass({
    * @param {string} formElement - name of the selected element
    * @param {string} value - selected value for corresponding form element
    */
-  setFormData: function (formElement, value) {
+  setFormData: function setFormData(formElement, value) {
     // todo: only give valid inputs for fields given previous input to other fields
 
     var formDataUpdate = this.state.formData;
@@ -679,7 +681,7 @@ var IssueEditForm = React.createClass({
    * @param {object} formDataToCheck - Object containing form data inputed by user
    * @return {boolean} - true if all required fields are filled, false otherwise
    */
-  isValidForm: function (formRefs, formDataToCheck) {
+  isValidForm: function isValidForm(formRefs, formDataToCheck) {
     var isValidForm = true;
     var requiredFields = {
       title: null,
@@ -702,7 +704,7 @@ var IssueEditForm = React.createClass({
   /**
    * Display a success/error alert message after form submission
    */
-  showAlertMessage: function () {
+  showAlertMessage: function showAlertMessage() {
     var self = this;
 
     if (this.refs["alert-message"] === null) {
