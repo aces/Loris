@@ -117,15 +117,15 @@ script:
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
 
-    # Run ESLint on specific modules
-    - eslint modules/media/
-    - eslint modules/candidate_parameters/
+    # Run ESLint on Loris modules
+    - eslint modules/
 
     # Run ESLint on generic React components
     - eslint jsx/
 
     # Run ESLint on specific scripts
     - eslint htdocs/js/util/
+    - eslint Gruntfile.js
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
