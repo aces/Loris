@@ -36,7 +36,7 @@ class MediaTest extends LorisIntegrationTest
      */
     function testLoadsWithPermissionWrite()
     {
-        $this->setupPermissions(array("media_write"));
+        $this->setupPermissions(array("media_write","media_read"));
         $this->safeGet($this->url . "/media/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
