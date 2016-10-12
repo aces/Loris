@@ -905,7 +905,7 @@ class LorisForm
         $cls      = "class=\"$el[class]\"";
         $disabled = '';
         $val      = $this->getValue($el['name']);
-        if (isset($el['disabled']) || $this->frozen) { 
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"file\" $cls"
