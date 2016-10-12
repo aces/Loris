@@ -18,7 +18,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
    rowHeaders.forEach(function (header, index) {
       row[header] = rowData[index];
    }, this);
-   console.log(rowData);
 
    if (column === 'Examiner') {
       var url = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];

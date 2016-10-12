@@ -18,7 +18,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
-  console.log(rowData);
 
   if (column === 'Examiner'){
       var url  = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
@@ -45,7 +44,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
              </td>;
      }
   
- return <td>{cell}</td>;
+ return <td>
+             {cell}
+        </td>;
 
 }
 
