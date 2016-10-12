@@ -66,7 +66,6 @@ $(document).ready(function () {
                 Email2: $("input[name=Email]").val()
             },
             function(result) {
-                //console.log(result);
                 if (result) {
                     // if an error was already thrown,
                     // hide it to avoid stacking error messages
