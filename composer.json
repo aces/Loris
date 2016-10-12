@@ -15,6 +15,6 @@
         "facebook/webdriver" : "dev-master"
     },
     "autoload" : {
-        "classmap": ["php/libraries", "php/exceptions"]
+        "classmap": ["project/libraries", "php/libraries", "php/exceptions"]
     }
 }

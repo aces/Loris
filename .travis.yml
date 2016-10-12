@@ -22,6 +22,7 @@ before_install:
     #- "sh -e /etc/init.d/xvfb start"
     # Ensure node version is up to date
     - nvm install node
+    - mkdir -p project project/libraries
 
 install:
     # Install composer modules
