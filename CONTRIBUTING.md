@@ -31,8 +31,8 @@ If you'd like to contribute code, here are some things to keep in mind.
   tag it with "Caveat For Existing Projects" so that we know that the change needs
   to be mentioned in release notes. Non-backwards-compatible changes should be sent
   to the next major release(eg. 16.X -> 17.0) while backwards-compatible changes should
-  be sent to the next minor release(eg. 16.1.0 -> 16.2.0 or 16.1.0 -> 16.1.1 depending
-  on how minor the changes are)
+  be sent to the next minor release(eg. 16.1.0 -> 16.2.0) and backwards-compatible bug
+  fixes should be sent to the next minor release update(eg. 16.1.0 -> 16.1.1)
 
 ## Ways To Get Started
 
