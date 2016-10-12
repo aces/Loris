@@ -72,11 +72,8 @@ Vagrant.configure("2") do |config|
     sudo add-apt-repository ppa:ondrej/php
     sudo apt-get -q update
 
-    apt-get install -yq libapache2-mod-php libmysqlclient-dev mysql-client mysql-server php5.6 php5.6-mysql php5.6-gd php5.6-json php5.6-xml
+    apt-get install -yq libapache2-mod-php libmysqlclient-dev mysql-client mysql-server php php-mysql php-gd php-json php-xml
 
-    # LORIS needs PHP 5.6 until QuickForm is completely replaced :(
-    a2dismod php7.0 && a2enmod php5.6 && service apache2 restart
-    ln -sfn /usr/bin/php5.6 /etc/alternatives/php
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     php -r "if (hash_file('SHA384', 'composer-setup.php') === 'e115a8dc7871f15d853148a7fbac7da27d6c0030b848d9b3dc09e2a0388afed865e6a3d6b3c0fad45c48e2b5fc1196ae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
     php composer-setup.php
@@ -86,7 +83,10 @@ Vagrant.configure("2") do |config|
 
     mv composer.phar /usr/local/bin/composer
 
-    git clone -b VagrantUp https://github.com/driusan/Loris /var/www/loris
+    # For testing pull request before it gets merged
+    # git clone -b VagrantUp https://github.com/driusan/Loris /var/www/loris
+    # Use the latest LORIS release.
+    git clone -b master https://github.com/driusan/Loris /var/www/loris
     cd /var/www/loris
     /usr/local/bin/composer install --no-dev
 
