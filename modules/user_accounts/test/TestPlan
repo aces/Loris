@@ -41,29 +41,33 @@ When creating or editing a user: (subtest: edit_user)
 15. Check that if the 'Display additional information' entry is set to false in the admin module, fields Degree,  
     Academic Position, Institution, Department, Street Address, City, State/Province, Zip/Postal Code, Country and 
     FAX are not shown.
-16. Setting the Pending Approval for user X prevents user X from logging in until his/her account is approved.
-17. Setting the Active=”No” for user X prevents user X from logging in until his/her account is active again.
-18 Check that modifications made to the basic user infos are displayed when the user table is reloaded.
-19. When editing an existing user: Check that Reset button restores previous settings (does not wipe all settings, or
+16. Check that selecting sites for the "Examiner At:" Section and saving, adds user X to the Examiner list.
+17. Check that de-selecting sites from the "Examiner At:" section and saving, does NOT delete X from the Examiner table but rather sets them as inactive for that site.
+18. Check that setting the radiologist to Yes/No changes the values for X for all sites
+19. Check that by removing the "examiner_multisite" permission, the user(editor) can not modify X's Examiner Status.
+20. Setting the Pending Approval for user X prevents user X from logging in until his/her account is approved.
+21. Setting the Active=”No” for user X prevents user X from logging in until his/her account is active again.
+22 Check that modifications made to the basic user infos are displayed when the user table is reloaded.
+23. When editing an existing user: Check that Reset button restores previous settings (does not wipe all settings, or
     retain any changes).
-20. When editing an existing user: Check that Back button takes you to the User Account page and does not save any 
+24. When editing an existing user: Check that Back button takes you to the User Account page and does not save any
     changes. 
-21. When editing an existing user: Clicking on the 'User Account' breadcrumb takes you to the User Account page 
+25. When editing an existing user: Clicking on the 'User Account' breadcrumb takes you to the User Account page
     without saving any changes to the user profile.
 
 On the My Preferences page:
 ==========================
 
-22. Check that all users (even those with NO permissions) have access to the My Preferences page.
-23. Change the user’s password.  Check that the password rules are enforced..
-24. Check that if password and confirmed password do not match you get an error.
-25. Check that saving fails if any field is left blank (except password). 
-26. Check that if you do not enter an email address that is syntactically valid you get an error.
-27. Modify any field on the page and save, and go to the User Account page. Check that the modifications are 
+26. Check that all users (even those with NO permissions) have access to the My Preferences page.
+27. Change the user’s password.  Check that the password rules are enforced..
+28. Check that if password and confirmed password do not match you get an error.
+29. Check that saving fails if any field is left blank (except password).
+30. Check that if you do not enter an email address that is syntactically valid you get an error.
+31. Modify any field on the page and save, and go to the User Account page. Check that the modifications are
     displayed when looking at the modified user account.  
-28. Set the 'Receive doc repo notifications' to No. Upload a new document (any). Check that no email is sent to the 
+32. Set the 'Receive doc repo notifications' to No. Upload a new document (any). Check that no email is sent to the
     user.
-29. Set the 'Receive doc repo notifications' to Yes. Upload a new document (any). Check that an email is sent to the
+33. Set the 'Receive doc repo notifications' to Yes. Upload a new document (any). Check that an email is sent to the
     user (requires email server).
-30. Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes. If you 
+34. Clicking on the 'User Account' breadcrumb takes you to the User Account page without saving any changes. If you
     do not have access to the user account module, the system should tell you so.
