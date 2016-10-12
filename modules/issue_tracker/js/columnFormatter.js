@@ -1,6 +1,16 @@
 'use strict';
 
-function formatColumn(column, cell, rowData, rowHeaders, issueID) {
+/* exported formatColumn */
+
+/**
+ * Modify behaviour of specified column cells in the Data Table component
+ * @param {string} column - column name
+ * @param {string} cell - cell content
+ * @param {arrray} rowData - array of cell contents for a specific row
+ * @param {arrray} rowHeaders - array of table headers (column names)
+ * @return {*} a formated table cell for a given column
+ */
+function formatColumn(column, cell, rowData, rowHeaders) {
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
   rowHeaders.forEach(function (header, index) {
@@ -11,9 +21,8 @@ function formatColumn(column, cell, rowData, rowHeaders, issueID) {
     var cellLinks = [];
     cellLinks.push(React.createElement(
       'a',
-      {
-        href: loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/" },
-      row['Title']
+      { href: loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/" },
+      row.Title
     ));
     return React.createElement(
       'td',
@@ -23,17 +32,16 @@ function formatColumn(column, cell, rowData, rowHeaders, issueID) {
   }
 
   if (column === 'Issue ID') {
-    var cellLinks = [];
-    cellLinks.push(React.createElement(
+    var _cellLinks = [];
+    _cellLinks.push(React.createElement(
       'a',
-      {
-        href: loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/" },
+      { href: loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/" },
       cell
     ));
     return React.createElement(
       'td',
       null,
-      cellLinks
+      _cellLinks
     );
   }
 
