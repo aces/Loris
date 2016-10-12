@@ -639,10 +639,10 @@ DataQueryApp = React.createClass({
                 DocTypes.push(category);
                 // Split the sessions to be queried into subqueries so that they don't exceed the defualt
                 // php defualt setting for maximum variables allowed in a single request
-                for (var j = 0; j < sessionInfo.length; j += 999) {
+                for (var j = 0; j < sessionInfo.length; j += 400) {
                     // keep track of the number of requests waiting for a response
                     semaphore++;
-                    sectionedSessions = sessionInfo.slice(j, j + 999);
+                    sectionedSessions = sessionInfo.slice(j, j + 400);
                     $.ajax({
                         type: "POST",
                         url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
