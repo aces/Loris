@@ -87,20 +87,6 @@ class NDB_Form_survey_accounts extends NDB_Form
                 'VL' => "Visit ". $values['VL']." does not exist for given candidate"
             );
         }
-        
-
-        $instruments_in_battery = $db->pselectOne(
-            "SELECT COUNT(*) FROM test_battery ".
-            "WHERE Test_name =:t_TN ".
-            "AND UPPER(Visit_label)=UPPER(:v_VL)",
-            array('t_TN' => $values['Test_name'], 'v_VL' => $values['VL'])
-        );
-
-        if ($instruments_in_battery < 1) {
-            return array(
-                'Test_name' => "Instrument ".$values['Test_name']. " is not part of visit ".$values['VL']
-            );
-        }
 
         $instrument_list = $db->pselect( 
             "SELECT f.Test_name FROM flag f

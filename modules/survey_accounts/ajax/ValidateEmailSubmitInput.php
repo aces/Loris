@@ -68,20 +68,6 @@ if (empty($_REQUEST['TN'])) {
     exit;
 }
 
-$instruments_in_battery = $db->pselectOne(
-    "SELECT COUNT(*) FROM test_battery ".
-    "WHERE Test_name =:t_TN ".
-    "AND UPPER(Visit_label)=UPPER(:v_VL)",
-    array('t_TN' => $_REQUEST['TN'], 'v_VL' => $_REQUEST['VL'])
-);
-
-if ($instruments_in_battery < 1) {
-    echo json_encode(
-        array('error_msg' => "Instrument ".$_REQUEST['TN']. " is not part of visit ".$_REQUEST['VL'])
-    );
-    exit;
-}
-
 $instrument_list = $db->pselect(
     "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
