@@ -99,63 +99,13 @@
     </form>
 </div>
 </div>
-
-<!--  title table with pagination -->
-
-<div id="pagelinks">
-<table border="0" valign="bottom" width="100%">
-<tr>
-    <!-- display pagination links -->
-    <td align="right" id="pageLinks"></td>
-</tr>
-</table>
-</div>
-
-
-<!-- start data table -->
-<div id="datatable">
-    <table border="0" class="table table-hover table-primary table-bordered dynamictable">
-        <thead>
-            <tr class="info">
-                <th>No.</th>
-                <!-- print out column headings - quick & dirty hack -->
-                {section name=header loop=$headers}
-                    <th><a href="{$baseurl}/final_radiological_review/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                {/section}
-            </tr>
-        </thead>
-        <tbody>
-            {section name=item loop=$items}
-                <tr>
-                <!-- print out data rows -->
-                {section name=piece loop=$items[item]}
-                <td>
-                    {if $items[item][piece].name == "PSCID"}
-                        <a href="{$baseurl}/final_radiological_review/final_radiological_review/?identifier={$items[item][piece].CommentID}">{$items[item][piece].value}</a>
-                    {else}
-                        {$items[item][piece].value}
-                    {/if}
-                </td>
-                {/section}
-                </tr>           
-            {sectionelse}
-                <tr><td colspan="14">Nothing found</td></tr>
-            {/section}
-        </tbody>        
-    <!-- end data table -->
-    </table>
-</div>
-
+<div class="dynamictable" id="datatable"></div> 
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/final_radiological_review/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/final_radiological_review/?format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "PSCID"
+  });
+React.render(table, document.getElementById("datatable"));
 </script>
-

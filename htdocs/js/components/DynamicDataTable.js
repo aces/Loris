@@ -1,4 +1,6 @@
-DynamicDataTable = React.createClass({
+/* exported RDynamicDataTable */
+
+var DynamicDataTable = React.createClass({
   displayName: 'DynamicDataTable',
 
   propTypes: {
@@ -7,25 +9,25 @@ DynamicDataTable = React.createClass({
 
   getInitialState: function () {
     return {
-      'Headers': [],
-      'Data': [],
-      'isLoaded': false,
-      'loadedData': 0
+      Headers: [],
+      Data: [],
+      isLoaded: false,
+      loadedData: 0
     };
   },
   getDefaultProps: function () {
     return {
-      'DataURL': ''
+      DataURL: ''
     };
   },
   componentDidMount: function () {
-    var self = this;
-    self.fetchData();
-
+    this.fetchData();
     // Listen for update event to update data table on outside changes
-    $(document).on('update', function (e) {
-      self.fetchData();
-    });
+    window.addEventListener('update-datatable', this.fetchData);
+  },
+  componentWillUnmount: function () {
+    // Unsubscribe from the event before component is destroyed
+    window.removeEventListener('update-datatable', this.fetchData);
   },
   fetchData: function () {
     var that = this;
@@ -37,28 +39,27 @@ DynamicDataTable = React.createClass({
         xhr.addEventListener("progress", function (evt) {
           console.log(evt);
           that.setState({
-            'loadedData': evt.loaded
+            loadedData: evt.loaded
           });
         });
         return xhr;
       },
       success: function (data) {
         that.setState({
-          'Headers': data.Headers,
-          'Data': data.Data,
-          'isLoaded': true
+          Headers: data.Headers,
+          Data: data.Data,
+          isLoaded: true
         });
       },
-      error: function (data, error_code, error_msg) {
-        console.error(error_code + ': ' + error_msg);
-        that.setState({ "error": "Error loading data" });
+      error: function (data, errorCode, errorMsg) {
+        console.error(errorCode + ': ' + errorMsg);
+        that.setState({ error: "Error loading data" });
       }
     });
   },
   render: function () {
     if (!this.state.isLoaded) {
-
-      if (this.state.error != undefined) {
+      if (this.state.error !== undefined) {
         return React.createElement(
           'div',
           { className: 'alert alert-danger' },
@@ -87,4 +88,4 @@ DynamicDataTable = React.createClass({
   }
 });
 
-RDynamicDataTable = React.createFactory(DynamicDataTable);
+var RDynamicDataTable = React.createFactory(DynamicDataTable);

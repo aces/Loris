@@ -173,14 +173,19 @@ class LorisForm
     /**
      * Reimplementation of HTML_QuickForm's "addHidden" API.
      *
-     * @param string $name  The element name.
-     * @param string $value The element value.
+     * @param string $name       The element name.
+     * @param string $value      The element value.
+     * @param array  $attributes Additional html attributes for element
      *
      * @return &array
      */
-    public function addHidden($name, $value)
+    public function addHidden($name, $value, $attributes=array())
     {
-        $el         =& $this->addBase($name, null, array('value' => $value));
+        $el         =& $this->addBase(
+            $name,
+            null,
+            array_merge(array('value' => $value), $attributes)
+        );
         $el['type'] = 'hidden';
         return $el;
     }
@@ -374,7 +379,7 @@ class LorisForm
             $el = $this->addCheckbox($name, $label, $options);
             break;
         case 'hidden':
-            $el = $this->addHidden($name, $label);
+            $el = $this->addHidden($name, $label, $options);
             break;
         case 'text':
         default:
@@ -645,7 +650,7 @@ class LorisForm
         if (isset($el['id'])) {
             $id = "id=\"$el[id]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         if (isset($el['onchange'])) {
@@ -706,7 +711,7 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         if (isset($el['options']['minYear'])) {
@@ -716,7 +721,7 @@ class LorisForm
             $maxYear = "max=\"" . $el['options']['maxYear'] . "-12-31\"";
         }
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
-        $required = isset($el['required']) ? "this.value === '' ? '$msg' : ''" : '';
+        $required = isset($el['required']) ? "this.value === '' ? '$msg':''" : "''";
         $value    = $this->getValue($el['name']);
         $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear "
             . $disabled
@@ -777,7 +782,7 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         $value = $this->getValue($el['name']);
@@ -842,11 +847,49 @@ class LorisForm
      */
     function hiddenHTML($el, $type='hidden')
     {
-        $value = '';
-        if (isset($el['value'])) {
-            $value = "value=\"$el[value]\"";
+        $attributes = '';
+        foreach ($el as $key=>$value) {
+            if ($key=='type') {
+                $value = $type;
+            }
+            if (isset($value)) {
+                $attributes .= " $key=\"$value\"";
+            }
+
         }
-        return "<input name=\"$el[name]\" type=\"$type\" $value>";
+        return "<input $attributes>";
+    }
+
+    /**
+     * Generates the HTML to add to the page when rendered for a time
+     * element.
+     *
+     * @param array  $el   The element to render from $this->form
+     * @param string $type The HTML input type to user for this input
+     *                     box
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function timeHTML($el, $type='time')
+    {
+        $timeStamp = $this->getValue($el['name']);
+        $smarty    = new Smarty_neurodb;
+        $value     = array();
+
+        if (is_array($timeStamp)) {
+            $value = $timeStamp;
+        } else {
+            $timeStamp  = explode(":", $timeStamp);
+            $value['H'] = $timeStamp[0];
+            $value['i'] = $timeStamp[1];
+        }
+
+        $smarty->assign('name', $el['name']);
+        $smarty->assign('value', $value);
+
+        $html = $smarty->fetch("time_element.tpl");
+
+        return $html;
     }
 
     /**
@@ -862,7 +905,7 @@ class LorisForm
         $cls      = "class=\"$el[class]\"";
         $disabled = '';
         $val      = $this->getValue($el['name']);
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) { 
             $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"file\" $cls"
@@ -891,7 +934,7 @@ class LorisForm
         if (isset($el['class'])) {
             $cls = "class=\"$el[class]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         if (isset($el['rows'])) {
@@ -1075,6 +1118,8 @@ class LorisForm
             return $this->submitHTML($el);
         case 'hidden':
             return $this->hiddenHTML($el);
+        case 'time':
+            return $this->timeHTML($el);
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
@@ -1124,7 +1169,7 @@ class LorisForm
         if (isset($el['value'])) {
             $value = "value=\"$el[value]\"";
         }
-        if (isset($el['disabled'])) {
+        if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"checkbox\" $checked $value "
@@ -1146,24 +1191,6 @@ class LorisForm
     function toArray()
     {
         foreach ($this->form as &$el) {
-            switch($el['type']) {
-            case 'date':
-                $el['html'] = $this->dateHTML($el);
-                break;
-            case 'select':
-                $el['html'] = $this->selectHTML($el);
-                break;
-            case 'static':
-                $el['html'] = $this->staticHTML($el);
-                break;
-            case 'text':
-                $el['html'] = $this->textHTML($el);
-                break;
-            case 'file':
-                $el['html'] = $this->fileHTML($el);
-                break;
-
-            }
             $el['html'] = $this->renderElement($el);
         }
 
@@ -1368,6 +1395,7 @@ class LorisForm
             $el         = $this->createBase($elname, $options, $attribs);
             $el['type'] = 'static';
             break;
+        case 'time':
         case 'advcheckbox':
         case 'textarea':
         case 'date':
@@ -1464,18 +1492,6 @@ class LorisForm
                 || ($el['type'] === 'static' && empty($_REQUEST[$name])))
             ) {
                   $arr[$name] = $this->getValue($name);
-            }
-
-            if ($el['type'] === 'date') {
-                // Convert dates to the type of group that was used
-                // by HTML_QuickForm. This should eventually be modified
-                // to just use a normal HTML5 date.
-                $vals       = explode("-", $arr[$name]);
-                $arr[$name] = array(
-                               'Y' => $vals[0],
-                               'M' => $vals[1],
-                               'd' => $vals[2],
-                              );
             }
         }
     }

@@ -6,7 +6,7 @@ GenomicFileUploadModal = React.createClass({
         baseURL: React.PropTypes.string.isRequired
     },
 
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         return {
             readyForUpload: false,
             submited: false,
@@ -14,11 +14,11 @@ GenomicFileUploadModal = React.createClass({
         };
     },
 
-    shouldComponentUpdate: function (nextProps, nextState) {
+    shouldComponentUpdate: function shouldComponentUpdate(nextProps, nextState) {
         return nextState.readyForUpload !== this.state.readyForUpload || nextState.submited !== this.state.submited || nextProps.id !== this.props.id;
     },
 
-    validateForm: function (requiredInputs) {
+    validateForm: function validateForm(requiredInputs) {
         // this is always returning true... for now
         requiredInputs = requiredInputs || [];
         this.setState({ readyForUpload: requiredInputs.reduce(function (previousValue, currentValue, currentIndex, array) {
@@ -27,12 +27,12 @@ GenomicFileUploadModal = React.createClass({
             }, true) });
     },
 
-    reloadPage: function () {
+    reloadPage: function reloadPage() {
         $('#modalContainer').modal('hide');
         $('#showdata').click();
     },
 
-    handleUploadSubmit: function (event) {
+    handleUploadSubmit: function handleUploadSubmit(event) {
         event.preventDefault();
         var self = this;
         var formData = new FormData(document.getElementById('uploadForm'));
@@ -59,13 +59,13 @@ GenomicFileUploadModal = React.createClass({
 
                         var new_response = xhr.responseText.substring(xhr.previous_text.length);
                         var result = JSON.parse(new_response);
-                        console.log(result);
 
-                        //document.getElementById("uploadStatus").innerHTML = result.message + '';
-                        //document.getElementById('progressBar').style.width = result.progress + "%";
-                        //if (result.error != undefined) {
-                        //    document.getElementById('progressBar').style.backgroundColor = 'red';
-                        //}
+                        var bar = document.getElementById("progressBar");
+                        bar.innerHTML = result.message + '';
+                        bar.style.width = result.progress + "%";
+                        if (result.error != undefined) {
+                            bar.className = 'progress-bar progress-bar-danger';
+                        }
 
                         xhr.previous_text = xhr.responseText;
                         break;
@@ -79,6 +79,10 @@ GenomicFileUploadModal = React.createClass({
                 }
             } catch (e) {
                 console.error("[XHR STATECHANGE] Exception: " + e);
+                var bar = document.getElementById("progressBar");
+                bar.innerHTML = 'An error occured';
+                bar.className = 'progress-bar progress-bar-danger';
+                bar.style.width = "100%";
             }
         };
         var url = this.props.baseURL + "/genomic_browser/ajax/genomic_file_upload.php";
@@ -86,7 +90,7 @@ GenomicFileUploadModal = React.createClass({
         xhr.send(formData);
     },
 
-    render: function () {
+    render: function render() {
         var footerButtons = [];
 
         if (this.state.submited) {
@@ -165,7 +169,7 @@ UploadForm = React.createClass({
     displayName: 'UploadForm',
 
 
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         return {
             baseURL: '',
             fileType: "",
@@ -173,28 +177,28 @@ UploadForm = React.createClass({
     },
 
     // Change this to false when we are ready to use Mapping files
-    getDefaultProps: function () {
+    getDefaultProps: function getDefaultProps() {
         return {
             validate: null
         };
     },
 
-    handleFileTypeChange: function (event) {
+    handleFileTypeChange: function handleFileTypeChange(event) {
         event.preventDefault();
         this.setState({ 'fileType': event.target.value });
     },
 
-    handleCheckboxChange: function (event) {
+    handleCheckboxChange: function handleCheckboxChange(event) {
         if (event.target.name == 'pscidColumn') {
             this.setState({ 'useColumnHeaders': !this.state.useColumnHeaders });
         }
     },
 
-    componentWillUpdate: function (prevProps, prevState) {
+    componentWillUpdate: function componentWillUpdate(prevProps, prevState) {
         this.props.validate();
     },
 
-    render: function () {
+    render: function render() {
         var instructions = [];
         var inputs = [];
 
@@ -208,10 +212,12 @@ UploadForm = React.createClass({
                     inputs.push(React.createElement(FileInput, { name: 'fileMapping', label: 'Mapping :' }));
                 }
                 inputs.push(React.createElement(CheckboxInput, { handleChange: this.handleCheckboxChange, checked: this.state.useColumnHeaders, name: 'pscidColumn' }));
+                inputs.push(React.createElement(ProgressBar, { name: 'progressbar', label: 'Progress :' }));
                 break;
             case 'Other':
                 inputs.push(React.createElement(FileInput, { name: 'fileData', label: 'File :' }));
                 inputs.push(React.createElement(TextAreaInput, { name: 'description', label: 'Description :' }));
+                inputs.push(React.createElement(ProgressBar, { name: 'progressbar', label: 'Progress :' }));
                 break;
         }
 
@@ -231,7 +237,7 @@ UploadForm = React.createClass({
 FileTypeSelect = React.createClass({
     displayName: 'FileTypeSelect',
 
-    getDefaultProps: function () {
+    getDefaultProps: function getDefaultProps() {
         return {
             baseURL: '',
             onFileTypeChange: null,
@@ -239,17 +245,17 @@ FileTypeSelect = React.createClass({
         };
     },
 
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         return {
             availableFileType: []
         };
     },
 
-    componentDidMount: function () {
+    componentDidMount: function componentDidMount() {
         this.getGenomicFileType();
     },
 
-    getGenomicFileType: function () {
+    getGenomicFileType: function getGenomicFileType() {
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function () {
@@ -288,7 +294,7 @@ FileTypeSelect = React.createClass({
         xhr.send();
     },
 
-    render: function () {
+    render: function render() {
 
         var options = this.state.availableFileType.map(function (e) {
             return React.createElement(
@@ -337,7 +343,7 @@ FileInput = React.createClass({
         label: React.PropTypes.string
     },
 
-    render: function () {
+    render: function render() {
 
         return React.createElement(
             'div',
@@ -365,7 +371,7 @@ TextAreaInput = React.createClass({
         label: React.PropTypes.string
     },
 
-    render: function () {
+    render: function render() {
         return React.createElement(
             'div',
             { className: 'col-xs-12 form-group' },
@@ -389,12 +395,12 @@ CheckboxInput = React.createClass({
     propTypes: {
         name: React.PropTypes.string
     },
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         return {
             checked: this.props.checked || false
         };
     },
-    render: function () {
+    render: function render() {
         // Add onClick={this.props.handleChange}  and checked={this.state.checked} when we support Mapping files
         return React.createElement(
             'div',
@@ -408,6 +414,37 @@ CheckboxInput = React.createClass({
                     { className: 'user-success', name: this.props.name, id: this.props.name, type: 'checkbox', checked: 'true', style: { 'margin-right': '1em' } },
                     'Use PSCID in column headers',
                     this.props.label
+                )
+            )
+        );
+    }
+});
+
+ProgressBar = React.createClass({
+    displayName: 'ProgressBar',
+
+
+    propTypes: {
+        name: React.PropTypes.string,
+        label: React.PropTypes.string
+    },
+
+    render: function render() {
+        return React.createElement(
+            'div',
+            { className: 'col-xs-12 form-group' },
+            React.createElement(
+                'label',
+                { className: 'col-xs-3', 'for': this.props.name },
+                this.props.label
+            ),
+            React.createElement(
+                'div',
+                { className: 'col-xs-9' },
+                React.createElement(
+                    'div',
+                    { className: 'progress', style: { "height": "20px" } },
+                    React.createElement('div', { className: 'progress-bar progress-bar-success', id: 'progressBar', role: 'progressbar', 'aria-valuenow': '0', 'aria-valuemin': '0', 'aria-valuemax': '100' })
                 )
             )
         );

@@ -89,7 +89,9 @@ class NDB_Breadcrumb
         $this->_lastIndex++;
 
         $tn = $this->_parameters['test_name'];
-        $st = $this->_parameters['subtest'];
+        $st = isset($this->_parameters['subtest'])
+        ? $this->_parameters['subtest']
+        : '';
 
         unset($this->_parameters['test_name']);
         unset($this->_parameters['subtest']);
