@@ -84,13 +84,13 @@ Vagrant.configure("2") do |config|
     mv composer.phar /usr/local/bin/composer
 
     # For testing pull request before it gets merged
-    # git clone -b VagrantUp https://github.com/driusan/Loris /var/www/loris
+    git clone -b VagrantUp https://github.com/driusan/Loris /var/www/loris
     # Use the latest LORIS release.
-    git clone -b master https://github.com/driusan/Loris /var/www/loris
+    # git clone -b master https://github.com/driusan/Loris /var/www/loris
     cd /var/www/loris
     /usr/local/bin/composer install --no-dev
 
-    mkdir -p project smarty/templates_c
+    mkdir -p project/libraries smarty/templates_c
     chmod 777 smarty/templates_c
     chmod 777 project
 
