@@ -565,7 +565,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                 );
             }
             $groupB[] = $this->createLabel(
-                "&nbsp;&nbsp;&nbsp;&nbsp; <b>Radiologist: </b>"
+                "Radiologist: "
             );
             $groupB[] = $this->createSelect(
                 "examiner_radiologist",
@@ -577,7 +577,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                 )
             );
             $groupB[] = $this->createLabel(
-                "&nbsp;&nbsp;&nbsp;&nbsp; <b>Pending Approval: </b>"
+                "Pending Approval:"
             );
             $groupB[] = $this->createSelect(
                 "examiner_pending",

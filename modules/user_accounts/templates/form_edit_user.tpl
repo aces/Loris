@@ -324,7 +324,7 @@ $(document).ready(function() {
                     {$form.examiner_group.label}
                 </label>
                 <div class="col-sm-10">
-                    {$form.examiner_group.html}
+                    <b>{$form.examiner_group.html}<b>
                 </div>
                 {if $form.errors.examiner_group}
                     <div class="col-sm-offset-2 col-xs-12">
