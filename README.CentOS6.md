@@ -22,7 +22,6 @@ The following should be installed with yum:
 ```bash
 yum install httpd
 yum install php
-yum install php-pear
 yum install php-pdo
 yum install php-mysql
 yum install mysql

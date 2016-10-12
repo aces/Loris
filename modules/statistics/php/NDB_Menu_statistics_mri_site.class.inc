@@ -117,7 +117,7 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                         LEFT JOIN mri_parameter_form mpf ON (mpf.CommentID=f.CommentID)
                         LEFT JOIN candidate c ON (c.CandID=s.CandID)
                         WHERE s.Active='Y' 
-                           AND c.PSCID <> 'scanner'
+                           AND c.Entity_type != 'Scanner'
                            AND (f.ID IS NULL OR
                            f.Data_entry <> 'Complete' OR
                            f.Data_entry IS NULL)
@@ -189,5 +189,22 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
 
     }
 
+    /**
+     * Include additional CSS files:
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/statistics/css/statistics.css"
+            )
+        );
+    }
 } // End class
 ?>

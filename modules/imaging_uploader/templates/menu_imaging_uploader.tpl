@@ -157,7 +157,7 @@
                             <label class="col-sm-4 col-md-4">
                                 Logs to display:
                             </label>
-                            <div class="col-sm-4 col-md-4">
+                            <div class="col-sm-5 col-md-5">
                                 {$form.LogType.html}
                             </div>
                         </div>
@@ -201,7 +201,7 @@
                     {section name=piece loop=$items[item]}
                         {if $items[item][piece].name eq 'Progress'}
                             {if $items[item][piece].value}
-                                <td nowrap="nowrap">
+                                <td nowrap="nowrap" style="background-color:{$items[item][piece].bgcolor}">
                                         {if {$items[item][piece].value} eq 'Success'}
                                             {$items[item][piece].value} ({$items[item][11].value} out of {$items[item][10].value})
                                         {else}
@@ -223,8 +223,9 @@
                             {/if}
                         {elseif $items[item][piece].name eq 'number_of_mincInserted'}
                             {if (!empty($items[item][piece].value)) and $items[item][piece].value >0}
+                                {assign var="dccid" value=$items[item][3].value}
                                 <td nowrap="nowrap">
-                                    <a href="{$baseurl}/imaging_browser/?DCCID={$items[item][3].value}&filter=true">
+                                    <a class="image-link" href="#" data-dccid="{$items[item][3].value}">
                                         {$items[item][piece].value}
                                     </a>
                                 </td>
@@ -232,7 +233,7 @@
                                 <td nowrap="nowrap"> </td>
                             {/if}
                         {else}
-                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                            <td nowrap="nowrap">
                                 {$items[item][piece].value}
                             </td>
                         {/if}

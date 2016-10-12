@@ -357,14 +357,13 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
 
             ///////////////////////////////////////////////////////////////////////
             ////////////// Make sure the file name matches the format   ///////////
+            /////////// $candid and $visit_label can be of variable length ////////
             ///////////////////////////////////////////////////////////////////////
-            if (($file_name != $pscid."_". $candid ."_". $visit_label . ".zip")
-                && ($file_name != $pscid."_". $candid ."_". $visit_label . ".tgz")
-                && ($file_name != $pscid."_". $candid ."_". $visit_label . ".tar.gz")
-            ) {
-                $errors[] = "Make sure the file name matches this format:  " .
-                "\"". $pscid ."_". $candid ."_". $visit_label .
-                ".(tgz or tar.gz or .zip)\"";
+            $pcv = "{$pscid}_{$candid}_{$visit_label}";
+            if (!preg_match("/^{$pcv}.*(zip|tgz|tar.gz)/", $file_name)) {
+                $errors[] = "File name must begin with " .
+                "\"". $pscid ."_". $candid ."_". $visit_label . "\"" .
+                " and have the extension of .tgz, tar.gz or .zip";
             }
 
             ///////////////////////////////////////////////////////////////////////
@@ -640,5 +639,21 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         );
     }
 
+    /**
+     * Include additional CSS files:
+     *  imaging_uploader.css
+     *
+     * @return array of css to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/imaging_uploader/css/imaging_uploader.css"]
+        );
+    }
 }
 ?>

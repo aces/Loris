@@ -1,16 +1,22 @@
-ImagePanelHeader = React.createClass({
+/* exported ImagePanelHeader, ImagePanelHeadersTable, ImageQCDropdown, ImageQCStatic,
+ ImagePanelQCStatusSelector, ImagePanelQCSelectedSelector, ImagePanelQCCaveatSelector,
+ ImagePanelQCSNRValue, ImagePanelQCPanel, DownloadButton, ImageQCCommentsButton.
+ LongitudinalViewButton, ImageDownloadButtons, ImagePanelBody, RImagePanel
+* */
+
+var ImagePanelHeader = React.createClass({
     displayName: 'ImagePanelHeader',
 
     mixins: [React.addons.PureRenderMixin],
     render: function () {
         var QCStatusLabel;
-        if (this.props.QCStatus == 'Pass') {
+        if (this.props.QCStatus === 'Pass') {
             QCStatusLabel = React.createElement(
                 'span',
                 { className: 'label label-success' },
                 this.props.QCStatus
             );
-        } else if (this.props.QCStatus == 'Fail') {
+        } else if (this.props.QCStatus === 'Fail') {
             QCStatusLabel = React.createElement(
                 'span',
                 { className: 'label label-danger' },
@@ -36,7 +42,7 @@ ImagePanelHeader = React.createClass({
                         type: 'button',
                         className: 'btn btn-default btn-xs dropdown-toggle',
                         onClick: this.props.onToggleHeaders,
-                        'aria-expanded': this.props.HeadersExpanded ? true : false },
+                        'aria-expanded': this.props.HeadersExpanded },
                     'Header Info'
                 ),
                 React.createElement('span', { className: 'caret' })
@@ -60,7 +66,7 @@ ImagePanelHeader = React.createClass({
 
 });
 
-ImagePanelHeadersTable = React.createClass({
+var ImagePanelHeadersTable = React.createClass({
     displayName: 'ImagePanelHeadersTable',
 
     componentDidMount: function () {
@@ -81,9 +87,9 @@ ImagePanelHeadersTable = React.createClass({
                 React.createElement(
                     'td',
                     { className: 'col-xs-6', colSpan: '3' },
-                    this.props.HeaderInfo.XStep != '' ? 'X: ' + this.props.HeaderInfo.XStep + " mm " : ' ',
-                    this.props.HeaderInfo.YStep != '' ? 'Y: ' + this.props.HeaderInfo.YStep + " mm " : ' ',
-                    this.props.HeaderInfo.ZStep != '' ? 'Z: ' + this.props.HeaderInfo.ZStep + " mm " : ' '
+                    this.props.HeaderInfo.XStep === '' ? ' ' : 'X: ' + this.props.HeaderInfo.XStep + " mm ",
+                    this.props.HeaderInfo.YStep === '' ? ' ' : 'Y: ' + this.props.HeaderInfo.YStep + " mm ",
+                    this.props.HeaderInfo.ZStep === '' ? ' ' : 'Z: ' + this.props.HeaderInfo.ZStep + " mm "
                 ),
                 React.createElement(
                     'th',
@@ -212,7 +218,7 @@ ImagePanelHeadersTable = React.createClass({
                 React.createElement(
                     'td',
                     { className: 'col-xs-2' },
-                    this.props.HeaderInfo.Time,
+                    this.props.HeaderInfo.NumVolumes,
                     ' volumes'
                 ),
                 React.createElement(
@@ -286,16 +292,33 @@ ImagePanelHeadersTable = React.createClass({
                 React.createElement(
                     'td',
                     { className: 'col-xs-4', colSpan: '4' },
-                    ' '
+                    '\xA0'
                 )
             )
         );
     }
 });
-ImageQCDropdown = React.createClass({
+var ImageQCDropdown = React.createClass({
     displayName: 'ImageQCDropdown',
 
+
     render: function () {
+        var label = React.createElement(
+            'label',
+            null,
+            this.props.Label
+        );
+        if (this.props.url) {
+            label = React.createElement(
+                'label',
+                null,
+                React.createElement(
+                    'a',
+                    { href: this.props.url },
+                    this.props.Label
+                )
+            );
+        }
         var dropdown;
         if (this.props.editable) {
             var options = [];
@@ -326,25 +349,21 @@ ImageQCDropdown = React.createClass({
         return React.createElement(
             'div',
             { className: 'row' },
-            React.createElement(
-                'label',
-                null,
-                this.props.Label
-            ),
+            label,
             dropdown
         );
     }
 });
-ImageQCStatic = React.createClass({
+var ImageQCStatic = React.createClass({
     displayName: 'ImageQCStatic',
 
     render: function () {
         var staticInfo;
-            staticInfo = React.createElement(
-                'div',
-                { className: 'col-xs-12' },
-                this.props.defaultValue
-            );
+        staticInfo = React.createElement(
+            'div',
+            { className: 'col-xs-12' },
+            this.props.defaultValue
+        );
         return React.createElement(
             'div',
             { className: 'row' },
@@ -358,7 +377,7 @@ ImageQCStatic = React.createClass({
     }
 });
 
-ImagePanelQCStatusSelector = React.createClass({
+var ImagePanelQCStatusSelector = React.createClass({
     displayName: 'ImagePanelQCStatusSelector',
 
     render: function () {
@@ -390,7 +409,7 @@ ImagePanelQCStatusSelector = React.createClass({
         });
     }
 });
-ImagePanelQCSelectedSelector = React.createClass({
+var ImagePanelQCSelectedSelector = React.createClass({
     displayName: 'ImagePanelQCSelectedSelector',
 
     render: function () {
@@ -399,15 +418,21 @@ ImagePanelQCSelectedSelector = React.createClass({
             FormName: 'selectedvol',
             FileID: this.props.FileID,
             editable: this.props.HasQCPerm,
-            options: this.props.SelectedOptions,
+            options: { "": "", "true": "True", "false": "False" },
             defaultValue: this.props.Selected
         });
     }
 });
-ImagePanelQCCaveatSelector = React.createClass({
+var ImagePanelQCCaveatSelector = React.createClass({
     displayName: 'ImagePanelQCCaveatSelector',
 
     render: function () {
+        // Link caveat to MRI Violations if set true
+        var mriViolationsLink = null;
+        if (this.props.SeriesUID && this.props.Caveat === "1") {
+            mriViolationsLink = '/mri_violations/?' + 'submenu=mri_protocol_check_violations&SeriesUID=' + this.props.SeriesUID + '&filter=true';
+        }
+
         return React.createElement(ImageQCDropdown, {
             Label: 'Caveat',
             FormName: 'caveat',
@@ -418,11 +443,12 @@ ImagePanelQCCaveatSelector = React.createClass({
                 "1": "True",
                 "0": "False"
             },
-            defaultValue: this.props.Caveat
+            defaultValue: this.props.Caveat,
+            url: mriViolationsLink
         });
     }
 });
-ImagePanelQCSNRValue = React.createClass({
+var ImagePanelQCSNRValue = React.createClass({
     displayName: 'ImagePanelQCSNRValue',
 
     render: function () {
@@ -434,7 +460,7 @@ ImagePanelQCSNRValue = React.createClass({
         });
     }
 });
-ImagePanelQCPanel = React.createClass({
+var ImagePanelQCPanel = React.createClass({
     displayName: 'ImagePanelQCPanel',
 
     mixins: [React.addons.PureRenderMixin],
@@ -451,13 +477,13 @@ ImagePanelQCPanel = React.createClass({
             React.createElement(ImagePanelQCSelectedSelector, {
                 FileID: this.props.FileID,
                 HasQCPerm: this.props.HasQCPerm,
-                SelectedOptions: this.props.SelectedOptions,
                 Selected: this.props.Selected
             }),
             React.createElement(ImagePanelQCCaveatSelector, {
                 FileID: this.props.FileID,
                 HasQCPerm: this.props.HasQCPerm,
-                Caveat: this.props.Caveat
+                Caveat: this.props.Caveat,
+                SeriesUID: this.props.SeriesUID
             }),
             React.createElement(ImagePanelQCSNRValue, {
                 FileID: this.props.FileID,
@@ -467,13 +493,13 @@ ImagePanelQCPanel = React.createClass({
     }
 });
 
-DownloadButton = React.createClass({
+var DownloadButton = React.createClass({
     displayName: 'DownloadButton',
 
     render: function () {
-        if (!this.props.FileName || this.props.FileName == '') {
+        if (!this.props.FileName || this.props.FileName === '') {
             return React.createElement('span', null);
-        };
+        }
         var style = {
             margin: 6
         };
@@ -490,7 +516,7 @@ DownloadButton = React.createClass({
     }
 });
 
-ImageQCCommentsButton = React.createClass({
+var ImageQCCommentsButton = React.createClass({
     displayName: 'ImageQCCommentsButton',
 
     openWindowHandler: function (e) {
@@ -498,9 +524,9 @@ ImageQCCommentsButton = React.createClass({
         window.open(this.props.BaseURL + "/feedback_mri_popup.php?fileID=" + this.props.FileID, "feedback_mri", "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes");
     },
     render: function () {
-        if (!this.props.FileID || this.props.FileID == '') {
+        if (!this.props.FileID || this.props.FileID === '') {
             return React.createElement('span', null);
-        };
+        }
         return React.createElement(
             'a',
             { className: 'btn btn-default',
@@ -521,7 +547,7 @@ ImageQCCommentsButton = React.createClass({
     }
 });
 
-LongitudinalViewButton = React.createClass({
+var LongitudinalViewButton = React.createClass({
     displayName: 'LongitudinalViewButton',
 
     openWindowHandler: function (e) {
@@ -529,9 +555,9 @@ LongitudinalViewButton = React.createClass({
         window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.OtherTimepoints + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
     },
     render: function () {
-        if (!this.props.FileID || this.props.FileID == '') {
+        if (!this.props.FileID || this.props.FileID === '') {
             return React.createElement('span', null);
-        };
+        }
         return React.createElement(
             'a',
             { className: 'btn btn-default',
@@ -552,7 +578,7 @@ LongitudinalViewButton = React.createClass({
     }
 });
 
-ImageDownloadButtons = React.createClass({
+var ImageDownloadButtons = React.createClass({
     displayName: 'ImageDownloadButtons',
 
     render: function () {
@@ -585,7 +611,7 @@ ImageDownloadButtons = React.createClass({
         );
     }
 });
-ImagePanelBody = React.createClass({
+var ImagePanelBody = React.createClass({
     displayName: 'ImagePanelBody',
 
     mixins: [React.addons.PureRenderMixin],
@@ -618,9 +644,9 @@ ImagePanelBody = React.createClass({
                         HasQCPerm: this.props.HasQCPerm,
                         QCStatus: this.props.QCStatus,
                         Caveat: this.props.Caveat,
-                        SelectedOptions: this.props.SelectedOptions,
                         Selected: this.props.Selected,
-                        SNR: this.props.SNR
+                        SNR: this.props.SNR,
+                        SeriesUID: this.props.SeriesUID
                     })
                 )
             ),
@@ -638,23 +664,23 @@ ImagePanelBody = React.createClass({
     }
 });
 
-ImagePanel = React.createClass({
+var ImagePanel = React.createClass({
     displayName: 'ImagePanel',
 
     getInitialState: function () {
         return {
-            'BodyCollapsed': false,
-            'HeadersCollapsed': true
+            BodyCollapsed: false,
+            HeadersCollapsed: true
         };
     },
     toggleBody: function (e) {
         this.setState({
-            'BodyCollapsed': !this.state.BodyCollapsed
+            BodyCollapsed: !this.state.BodyCollapsed
         });
     },
     toggleHeaders: function (e) {
         this.setState({
-            'HeadersCollapsed': !this.state.HeadersCollapsed
+            HeadersCollapsed: !this.state.HeadersCollapsed
         });
     },
     render: function () {
@@ -687,7 +713,6 @@ ImagePanel = React.createClass({
                     HasQCPerm: this.props.HasQCPerm,
                     QCStatus: this.props.QCStatus,
                     Caveat: this.props.Caveat,
-                    SelectedOptions: this.props.SelectedOptions,
                     Selected: this.props.Selected,
                     SNR: this.props.SNR,
 
@@ -695,10 +720,11 @@ ImagePanel = React.createClass({
                     XMLProtocol: this.props.XMLProtocol,
                     XMLReport: this.props.XMLReport,
                     NrrdFile: this.props.NrrdFile,
-                    OtherTimepoints: this.props.OtherTimepoints
+                    OtherTimepoints: this.props.OtherTimepoints,
+                    SeriesUID: this.props.SeriesUID
                 })
             )
         );
     }
 });
-RImagePanel = React.createFactory(ImagePanel);
+var RImagePanel = React.createFactory(ImagePanel);

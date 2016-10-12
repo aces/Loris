@@ -39,29 +39,21 @@ $(function() {
     // Change viewer panel canvas size.
     $("#panel-size").change(function() {
       var size = parseInt($(this).val(), 10);
-
       if (size < 0) {
         viewer.setAutoResize(true, 'volume-controls');
-        $('#brainbrowser-wrapper').css("width", "90%");
-        $('#volume-viewer').css("width", "100%");
-        $('#brainbrowser').css("width", "100%");
         viewer.doAutoResize();
-      }
-      else {
-        viewer.setAutoResize(false);
-        $('#brainbrowser-wrapper').css("width", "60em");
-        $('#volume-viewer').css("width", "");
-        $('#brainbrowser').css("width", "");
-        $('.volume-controls').css("width", "");
+      } else {
+        viewer.setAutoResize(false, 'volume-controls');
         viewer.setPanelSize(size, size, { scale_image: true });
       }
     });
 
     // Should cursors in all panels be synchronized?
-    $("#sync-volumes").change(function() {
-      var synced = $(this).is(":checked");
-
-      viewer.synced = synced;
+    var isChecked = false;
+    $("#sync-volumes").click(function() {
+      isChecked = !isChecked;
+      $(this).toggleClass('isChecked');
+      viewer.synced = isChecked;
     });
 
     // Reset button
@@ -218,9 +210,12 @@ $(function() {
       var n = Math.max(viewer.volumes.length, 3);
       var ml = getIntProperty('.slice-display', 'margin-left');
       var mr = getIntProperty('.slice-display', 'margin-right');
-      var vv = getIntProperty('.volume-viewer-controls', 'width');
+      var vv = getIntProperty('.volume-viewer-display', 'width');
 
-      var size = ($('#' + viewer.dom_element.id).width() / n) - ((ml * 2) + (mr * 2) + (vv / n));
+      // Divide panel container size (.volume-viewer-display) by
+      // number of panels and subtract the margins for each panel.
+      // Note: (Subtract 1, because float widths are rounded up by jQuery)
+      var size = ((vv - 1) / n) - (ml + mr);
 
       viewer.setDefaultPanelSize(size, size);
       viewer.setPanelSize(size, size, { scale_image: true });
@@ -264,8 +259,7 @@ $(function() {
           viewer.volumes.forEach(function(volume) {
             volume.setWorldCoords(x, y, z);
           });
-        }
-        else {
+        } else {
           viewer.volumes[vol_id].setWorldCoords(x, y, z);
         }
 
@@ -786,24 +780,39 @@ $(function() {
     });      // Should cursors in all panels be synchronized?
 
     link = window.location.search;
+    var minc_tag;
 
-    minc_ids = getQueryVariable("minc_id");
-    if (minc_ids[0] === '[') {
-        // An array was passed. Get rid of the brackets and then split on ","
-        minc_ids = minc_ids.substring(1, minc_ids.length - 1);
-        minc_ids_arr = minc_ids.split(",");
+    if (getQueryVariable("minc_location")) {
 
-    } else {
-        // Only one passed
+        minc_ids = getQueryVariable("minc_location");
         minc_ids_arr = [minc_ids];
+        minc_tag = "minc_location";
+    } else {
+
+        minc_ids = getQueryVariable("minc_id");
+        minc_tag = "minc_id";
+
+        if (minc_ids[0] === '[') {
+
+            // An array was passed. Get rid of the brackets and then split on ","
+            minc_ids = minc_ids.substring(1, minc_ids.length - 1);
+            minc_ids_arr = minc_ids.split(",");
+
+        } else {
+
+            // Only one passed
+            minc_ids_arr = [minc_ids];
+        }
     }
+
+
 
     for (i = 0; i < minc_ids_arr.length; i += 1) {
 
         minc_volumes.push({
             type: 'minc',
-	    header_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i] + "&minc_headers=true",
-	    raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?minc_id=" + minc_ids_arr[i] + "&raw_data=true",
+	    header_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?" + minc_tag + "=" + minc_ids_arr[i] + "&minc_headers=true",
+	    raw_data_url: loris.BaseURL + "/brainbrowser/ajax/minc.php?" + minc_tag + "=" + minc_ids_arr[i] + "&raw_data=true",
             template: {
                 element_id: "volume-ui-template4d",
                 viewer_insert_class: "volume-viewer-display"
@@ -832,6 +841,8 @@ $(function() {
     loading_div.show();
     bboptions.complete = function() {
       loading_div.hide();
+      // Trigger change event when page is loaded to auto-resize panels if necessary
+      $("#panel-size").change();
     }
 
     //////////////////////////////
@@ -842,7 +853,14 @@ $(function() {
     ////////////////////////////////////////
     // Set the size of slice display panels.
     ////////////////////////////////////////
-    viewer.setDefaultPanelSize(256, 256);
+
+    // Use the size from dropdown as deafault size
+    var panelSize = Number.parseInt($("#panel-size").val(), 10);
+
+    // If not a real size, set to default value
+    if (panelSize < 0) { panelSize = 300; }
+
+    viewer.setDefaultPanelSize(panelSize, panelSize);
 
     ///////////////////
     // Start rendering.

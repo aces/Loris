@@ -38,6 +38,12 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
     var $_displayBrief = true;  // default: display only Brief results
 
     /**
+     * Tell the Caller that data will be queried using ajax and after
+     * the HTML page rendering.
+     */
+    var $AjaxModule = true;
+
+    /**
      * Overloading this method to allow access to site users (own site only)
      * and users w/ multisite privileges
      *
@@ -82,8 +88,10 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                           'SNP.SNPExternalName as SNP_Name',
                           'SNP.Description as SNP_Description',
                           'SNP.SNPExternalSource as External_Source',
-                          'SNP_candidate_rel.ObservedBase as Observed_Base',
+                          'SNP_candidate_rel.AlleleA as Allele_A',
+                          'SNP_candidate_rel.AlleleB as Allele_B',
                           'SNP.ReferenceBase as Reference_Base',
+                          'SNP.MinorAllele as Minor_Allele',
                           'SNP_candidate_rel.ArrayReport as Array_Report',
                           'SNP.Markers as Markers',
                           'SNP_candidate_rel.ValidationMethod as Validation_Method',
@@ -166,8 +174,10 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'SNP.SNPExternalName',
                                'SNP.Description',
                                'SNP.SNPExternalSource',
-                               'SNP.ObservedBase',
-                               'SNP_candidate_rel.ReferenceBase',
+                               'SNP_candidate_rel.AlleleA',
+                               'SNP_candidate_rel.AlleleB',
+                               'SNP.ReferenceBase',
+                               'SNP.MinorAllele',
                                'SNP_candidate_rel.ArrayReport',
                                'SNP.Markers',
                                'SNP_candidate_rel.ValidationMethod',
@@ -184,6 +194,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'gene.OfficialSymbol',
                                'gene.OfficialName',
                                'genotyping_platform.Name',
+                               'genomic_range',
                               );
 
         $ftf = array(
@@ -199,8 +210,10 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                 'SNP_Name'            => 'SNP.SNPExternalName',
                 'SNP_Description'     => 'SNP.Description',
                 'SNP_External_Source' => 'SNP.SNPExternalSource',
-                'Observed_Base'       => 'SNP_candidate_rel.ObservedBase',
+                'Allele_A'            => 'SNP_candidate_rel.AlleleA',
+                'Allele_B'            => 'SNP_candidate_rel.AlleleB',
                 'Reference_Base'      => 'SNP.ReferenceBase',
+                'Minor_Allele'        => 'SNP.MinorAllele',
                 'Array_Report'        => 'SNP.ArrayReport',
                 'Markers'             => 'SNP.Markers',
                 'Validation_Method'   => 'SNP_candidate_rel.ValidationMethod',
@@ -298,8 +311,10 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                          'T'  => 'T',
                          'G'  => 'G',
                         );
-        $this->addSelect('Observed_Base', 'Observed Base:', $Base_options);
+        $this->addSelect('Allele_A', 'Allele A:', $Base_options);
+        $this->addSelect('Allele_B', 'Allele B:', $Base_options);
         $this->addSelect('Reference_Base', 'Reference Base:', $Base_options);
+        $this->addSelect('Minor_Allele', 'Minor Allele:', $Base_options);
 
         $this->addSelect(
             'Validated',
@@ -347,7 +362,10 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
 
         $DB = Database::singleton();
         $platform_results
-            = $DB->select("SELECT distinct Name FROM genotyping_platform ");
+            = $DB->pselect(
+                "SELECT distinct Name FROM genotyping_platform ",
+                array()
+            );
 
         $platform_options = array('' => 'Any');
         foreach ($platform_results as $row => $result ) {
@@ -414,8 +432,8 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                     $temp_array = explode('-', $temp_array[1]);
                     $from       = $temp_array[0];
                     $to         = $temp_array[1];
-                    $query     .= " AND genome_loc.StartLoc < $to";
-                    $query     .= " AND genome_loc.EndLoc > $from";
+                    $query     .= " AND genome_loc.StartLoc <= $to";
+                    $query     .= " AND genome_loc.EndLoc >= $from";
                 }
                 $query .= " AND :v_$prepared_key IS NOT NULL";
 

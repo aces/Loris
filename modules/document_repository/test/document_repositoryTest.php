@@ -26,9 +26,9 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-         $window = new WebDriverWindow($this->webDriver);
-         $size = new WebDriverDimension(1024,1768);
-         $window->setSize($size);
+        $window = new WebDriverWindow($this->webDriver);
+        $size   = new WebDriverDimension(1024,1768);
+        $window->setSize($size);
         $this->DB->insert(
             "document_repository_categories",
             array(
@@ -50,7 +50,6 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
              'uploaded_by'   => 'admin',
              'For_site'      => '3',
              'comments'      => 'tester',
-             'multipart'     => 'NULL',
              'EARLI'         => '0',
              'hide_video'    => '0',
              'File_category' => '9999999',
@@ -126,8 +125,7 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/document_repository/");
         $this->safeFindElement(
             WebDriverBy::Name("addCategory"),
-            3000
-        )->click();
+            3000)->click();
         sleep(10);
         $this->safeFindElement(
             WebDriverBy::Name(
@@ -154,9 +152,9 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(WebDriverBy::Id("postCategory"))->click();
         sleep(10);
         $this->safeFindElement(
-            WebDriverBy::Xpath("//*[@id='TestTestTesta']/td/span"),3000
-        )
-            ->click();
+            WebDriverBy::Xpath("//*[@id='TestTestTesta']/td/span"),
+            3000
+        )->click();
         $test = $this->safeFindElement(WebDriverBy::Id("testa"))
             ->getText();
         $this->assertContains("test", $test);
@@ -173,11 +171,12 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $this->markTestSkipped("This method isn't working properly on travis.");
         $this->safeGet($this->url . "/document_repository/");
         $this->safeFindElement(
-            WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span"),3000
-        )
-            ->click();
-        $test = $this->safeFindElement(WebDriverBy::linkText("README.md"))
-            ->getText();
+            WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span"),
+            3000
+        )->click();
+        $test = $this->safeFindElement(
+            WebDriverBy::linkText("README.md")
+        )->getText();
         $this->assertContains("README.md", $test);
 
     }
@@ -191,8 +190,7 @@ class documentRepositoryTestIntegrationTest extends LorisIntegrationTest
          $this->safeGet($this->url . "/document_repository/");
          $this->safeFindElement(
              WebDriverBy::Xpath("//*[@id='TESTTESTTESTTESTa']/td/span")
-         )
-             ->click();
+         )->click();
          $this->safeFindElement(
              WebDriverBy::Id("9999999")
          )->click();

@@ -4,6 +4,7 @@ LORIS (Longitudinal Online Research and Imaging System) is a web-based data and 
 
 <hr>
 NEW <b>⇾  Try LORIS on Heroku</b> before installing it on your system<br>
+Test out the project management and clinical data management side of LORIS (complete Imaging features not yet available)<br>
 Deploy and log in with username <i>admin</i> and the password that's set up during deployment via ClearDB.
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/17.0-dev)
 <hr>
@@ -55,7 +56,7 @@ Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this 
     Download the latest release from the [releases page](https://github.com/aces/Loris/releases) and
     extract it to `/var/www/$projectname`
 
-3. Run installer script to install core code, libraries, and MySQL schema (see LORIS Setup Schematic). The script will prompt for information, including usernames and folders which it will create automatically.
+3. Run installer script to install core code, and libraries. The script will prompt for information and so that it can create directories automatically.
 
     For more information, please read the [Install Script wiki page](https://github.com/aces/Loris/wiki/Install-Script).
 
@@ -72,8 +73,7 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
     sudo service apache2 reload
     ```
 
-5. Go to http://localhost to verify that the LORIS core database has been successfully installed. Congratulations!
-Log in with the username "admin" and the password you supplied for this user while running the Install script.
+5. Go to http://localhost/installdb.php and follow the instructions to finalize LORIS installation.
 
     _Note_: Apache config files will be installed as *.conf, per Ubuntu 14.04. If running an earlier version of Ubuntu, rename these files, then run the following commands. After, restart Apache.
 
@@ -82,18 +82,8 @@ Log in with the username "admin" and the password you supplied for this user whi
     sudo a2dissite default
     sudo a2ensite $projectname
     ```
-6. Note that the default Loris setup assumes that Loris is running on localhost. If this
-is not the case, you'll have to manually update the URL and Host config variables in the
-ConfigSettings table by running the following SQL commands from a MySQL prompt:
 
-    ```SQL
-    UPDATE Config SET Value='$yourURL' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url');
-    UPDATE Config SET Value='$yourHostname' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='host');
-    ```
-
-    Make sure that `$yourURL` above contains the "http://" or "https://" and `$yourHostname` does not. If your server is only being accessed from localhost, you can skip this step.
-
-7. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
+6. Follow the [Setup Guide in the LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) to complete your post-installation setup and configuration, and for more documentation.
 
 # Community
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions.

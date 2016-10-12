@@ -324,9 +324,9 @@ ViewDataTabPane = React.createClass({
                     progress.textContent = "Finished generating zip files";
                     //this.terminate();
                 } else if (e.data.cmd === 'CreatingZip') {
-                        progress = that.getOrCreateProgressElement("zip_progress");
-                        progress.textContent = "Creating a zip file with current batch of downloaded files. Process may be slow before proceeding.";
-                    }
+                    progress = that.getOrCreateProgressElement("zip_progress");
+                    progress.textContent = "Creating a zip file with current batch of downloaded files. Process may be slow before proceeding.";
+                }
             });
 
             saveworker.postMessage({ Files: FileList });
@@ -750,7 +750,7 @@ StatsVisualizationTabPane = React.createClass({
         // if(this.state.displayed === false) {
         //     var content = <div>Statistics not yet calculated.</div>;
         //     // return <TabPane content={content} TabId={this.props.TabId} />;
-        // } else
+        // } else 
         if (this.props.Data.length === 0) {
             var content = React.createElement(
                 "div",
@@ -759,156 +759,156 @@ StatsVisualizationTabPane = React.createClass({
             );
             // return <TabPane content={content} TabId={this.props.TabId} />;
         } else {
-                var stats = jStat(this.props.Data),
-                    min = stats.min(),
-                    max = stats.max(),
-                    stddev = stats.stdev(),
-                    mean = stats.mean(),
-                    meandev = stats.meandev(),
-                    meansqerr = stats.meansqerr(),
-                    quartiles = stats.quartiles(),
-                    rows = [];
+            var stats = jStat(this.props.Data),
+                min = stats.min(),
+                max = stats.max(),
+                stddev = stats.stdev(),
+                mean = stats.mean(),
+                meandev = stats.meandev(),
+                meansqerr = stats.meansqerr(),
+                quartiles = stats.quartiles(),
+                rows = [];
 
-                for (var i = 0; i < this.props.Fields.length; i += 1) {
-                    rows.push(React.createElement(
-                        "tr",
-                        null,
-                        React.createElement(
-                            "td",
-                            null,
-                            this.props.Fields[i]
-                        ),
-                        React.createElement(
-                            "td",
-                            null,
-                            min[i]
-                        ),
-                        React.createElement(
-                            "td",
-                            null,
-                            max[i]
-                        ),
-                        React.createElement(
-                            "td",
-                            null,
-                            stddev[i]
-                        ),
-                        React.createElement(
-                            "td",
-                            null,
-                            mean[i]
-                        ),
-                        React.createElement(
-                            "td",
-                            null,
-                            meandev[i]
-                        ),
-                        React.createElement(
-                            "td",
-                            null,
-                            meansqerr[i]
-                        ),
-                        React.createElement(
-                            "td",
-                            null,
-                            quartiles[i][0]
-                        ),
-                        React.createElement(
-                            "td",
-                            null,
-                            quartiles[i][1]
-                        ),
-                        React.createElement(
-                            "td",
-                            null,
-                            quartiles[i][2]
-                        )
-                    ));
-                }
-
-                var statsTable = React.createElement(
-                    "table",
-                    { className: "table table-hover table-primary table-bordered colm-freeze" },
-                    React.createElement(
-                        "thead",
-                        null,
-                        React.createElement(
-                            "tr",
-                            { className: "info" },
-                            React.createElement(
-                                "th",
-                                null,
-                                "Measure"
-                            ),
-                            React.createElement(
-                                "th",
-                                null,
-                                "Min"
-                            ),
-                            React.createElement(
-                                "th",
-                                null,
-                                "Max"
-                            ),
-                            React.createElement(
-                                "th",
-                                null,
-                                "Standard Deviation"
-                            ),
-                            React.createElement(
-                                "th",
-                                null,
-                                "Mean"
-                            ),
-                            React.createElement(
-                                "th",
-                                null,
-                                "Mean Deviation"
-                            ),
-                            React.createElement(
-                                "th",
-                                null,
-                                "Mean Squared Error"
-                            ),
-                            React.createElement(
-                                "th",
-                                null,
-                                "First Quartile"
-                            ),
-                            React.createElement(
-                                "th",
-                                null,
-                                "Second Quartile"
-                            ),
-                            React.createElement(
-                                "th",
-                                null,
-                                "Third Quartile"
-                            )
-                        )
-                    ),
-                    React.createElement(
-                        "tbody",
-                        null,
-                        rows
-                    )
-                );
-
-                var content = React.createElement(
-                    "div",
+            for (var i = 0; i < this.props.Fields.length; i += 1) {
+                rows.push(React.createElement(
+                    "tr",
                     null,
                     React.createElement(
-                        "h2",
+                        "td",
                         null,
-                        "Basic Statistics"
+                        this.props.Fields[i]
                     ),
-                    statsTable,
-                    React.createElement(ScatterplotGraph, {
-                        Fields: this.props.Fields,
-                        Data: this.props.Data
-                    })
-                );
+                    React.createElement(
+                        "td",
+                        null,
+                        min[i]
+                    ),
+                    React.createElement(
+                        "td",
+                        null,
+                        max[i]
+                    ),
+                    React.createElement(
+                        "td",
+                        null,
+                        stddev[i]
+                    ),
+                    React.createElement(
+                        "td",
+                        null,
+                        mean[i]
+                    ),
+                    React.createElement(
+                        "td",
+                        null,
+                        meandev[i]
+                    ),
+                    React.createElement(
+                        "td",
+                        null,
+                        meansqerr[i]
+                    ),
+                    React.createElement(
+                        "td",
+                        null,
+                        quartiles[i][0]
+                    ),
+                    React.createElement(
+                        "td",
+                        null,
+                        quartiles[i][1]
+                    ),
+                    React.createElement(
+                        "td",
+                        null,
+                        quartiles[i][2]
+                    )
+                ));
             }
+
+            var statsTable = React.createElement(
+                "table",
+                { className: "table table-hover table-primary table-bordered colm-freeze" },
+                React.createElement(
+                    "thead",
+                    null,
+                    React.createElement(
+                        "tr",
+                        { className: "info" },
+                        React.createElement(
+                            "th",
+                            null,
+                            "Measure"
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            "Min"
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            "Max"
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            "Standard Deviation"
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            "Mean"
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            "Mean Deviation"
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            "Mean Squared Error"
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            "First Quartile"
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            "Second Quartile"
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            "Third Quartile"
+                        )
+                    )
+                ),
+                React.createElement(
+                    "tbody",
+                    null,
+                    rows
+                )
+            );
+
+            var content = React.createElement(
+                "div",
+                null,
+                React.createElement(
+                    "h2",
+                    null,
+                    "Basic Statistics"
+                ),
+                statsTable,
+                React.createElement(ScatterplotGraph, {
+                    Fields: this.props.Fields,
+                    Data: this.props.Data
+                })
+            );
+        }
         return React.createElement(
             TabPane,
             { TabId: this.props.TabId },
