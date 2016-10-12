@@ -86,11 +86,11 @@ Vagrant.configure("2") do |config|
     # For testing pull request before it gets merged
     git clone -b VagrantUp https://github.com/driusan/Loris /var/www/loris
     # Use the latest LORIS release.
-    # git clone -b master https://github.com/driusan/Loris /var/www/loris
+    # git clone -b master https://github.com/aces/Loris /var/www/loris
     cd /var/www/loris
+    mkdir -p project/libraries smarty/templates_c
     /usr/local/bin/composer install --no-dev
 
-    mkdir -p project/libraries smarty/templates_c
     chmod 777 smarty/templates_c
     chmod 777 project
 
