@@ -72,10 +72,14 @@ else
     exit 2;
 fi
 
-if [[ -n $(which composer) ]] || [[ -x ../composer ]]; then
+if [[ -n $(which composer) ]]; then
     echo ""
     echo "PHP Composer appears to be installed."
     composer_scr="composer install --no-dev"
+elif [[ -x ../composer ]]; then
+    echo ""
+    echo "PHP Composer appears to be installed."
+    composer_scr="./composer install --no-dev"
 else
     echo "PHP Composer does not appear to be installed. Attempting to install now..."
     curl -sS https://getcomposer.org/installer | php
