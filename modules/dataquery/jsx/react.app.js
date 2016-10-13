@@ -705,7 +705,7 @@ DataQueryApp = React.createClass({
                 Identifiers.push(session);
             }
         } else {
-            // Displaying the data in the longitudial way
+            // Displaying the data in the longitudinal way
 
             var Visits = {},
                 visit, identifier, temp, colHeader, index, instrument, fieldSplit;
@@ -836,7 +836,7 @@ DataQueryApp = React.createClass({
         );
 
         // Define the data displayed type and add the view data tab
-        var displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudial";
+        var displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudinal";
         tabs.push(<ViewDataTabPane
                 TabId="ViewData"
                 Fields={this.state.fields}
