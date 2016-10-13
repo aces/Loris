@@ -116,7 +116,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                           'CandID',
                           'PSCID',
                           'Visit_label',
-                          'Timestamp',
+                          'Resolution_Timestamp',
                          );
 
         if ($useProjects) {
@@ -132,7 +132,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
              'Correct_Answer',
             )
         );
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Timestamp']);
+        $this->tpl_data['hiddenHeaders'] = json_encode("");
         $con = "conflicts_resolved";
 
         $this->formToFilter = array(
