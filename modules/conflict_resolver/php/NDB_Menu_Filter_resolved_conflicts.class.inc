@@ -133,10 +133,10 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
              'Question',
              'Correct_Answer',
              'New_Value',
-             'OldValue2'
+             'OldValue2',
             )
         );
-        $this->tpl_data['hiddenHeaders'] = json_encode(['New Value','OldValue2']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(['New Value', 'OldValue2']);
         $con = "conflicts_resolved";
 
         $this->formToFilter = array(
