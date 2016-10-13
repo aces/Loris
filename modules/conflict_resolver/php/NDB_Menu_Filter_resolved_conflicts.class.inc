@@ -73,6 +73,8 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             array(
              'conflicts_resolved.FieldName as Question',
              'conflicts_resolved.OldValue1 as Corrected_Answer',
+             'conflicts_resolved.NewValue  as New_Value',
+             'conflicts_resolved.OldValue2 as OldValue2',
             )
         );
         $this->query   = " FROM conflicts_resolved
@@ -130,9 +132,11 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             array(
              'Question',
              'Correct_Answer',
+             'New_Value',
+             'OldValue2'
             )
         );
-        $this->tpl_data['hiddenHeaders'] = json_encode("");
+        $this->tpl_data['hiddenHeaders'] = json_encode(['New Value','OldValue2']);
         $con = "conflicts_resolved";
 
         $this->formToFilter = array(
