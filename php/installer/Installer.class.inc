@@ -587,7 +587,13 @@ class Installer
      */
     function writeConfig($values)
     {
-        $contents = $this->getConfigContent($values);
+        $escapedValues = array_map(
+            function ($val) {
+                return htmlspecialchars($val, ENT_XML1, 'ISO-8859-1');
+            },
+            $values
+        );
+        $contents = $this->getConfigContent($escapedValues);
         file_put_contents(__DIR__ . "/../../project/config.xml", $contents);
         return true;
     }
