@@ -22,6 +22,9 @@
     "array-callback-return": 0,
     "new-cap": ["error", {
         "capIsNewExceptions": ["DynamicTable"]
+    }],
+    "no-console": ["error", {
+      "allow": ["info", "warn", "error"]
     }]
   },
   "globals": {

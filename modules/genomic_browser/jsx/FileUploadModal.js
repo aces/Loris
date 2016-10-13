@@ -53,16 +53,16 @@ var GenomicFileUploadModal = React.createClass({
       try {
         switch (xhr.readyState) {
           case 0:
-            console.log('0: request not initialized');
+            console.info('0: request not initialized');
             break;
           case 1:
-            console.log('1: server connection established');
+            console.info('1: server connection established');
             break;
           case 2:
-            console.log('2: request received');
+            console.info('2: request received');
             break;
           case 3:
-            console.log('3: processing request');
+            console.info('3: processing request');
 
             var newResponse = xhr.responseText.substring(xhr.previousText.length);
             var result = JSON.parse(newResponse);
@@ -75,11 +75,11 @@ var GenomicFileUploadModal = React.createClass({
             xhr.previousText = xhr.responseText;
             break;
           case 4:
-            console.log('4: request finished and response is ready');
+            console.info('4: request finished and response is ready');
             self.setState({submited: true});
             break;
           default:
-            console.log('?');
+            console.info('?');
             break;
         }
       } catch (e) {
@@ -222,27 +222,27 @@ var FileTypeSelect = React.createClass({
       try {
         switch (xhr.readyState) {
           case 0:
-            console.log('0: request not initialized');
+            console.info('0: request not initialized');
             break;
           case 1:
-            console.log('1: server connection established');
+            console.info('1: server connection established');
             break;
           case 2:
-            console.log('2: request received');
+            console.info('2: request received');
             break;
           case 3:
-            console.log('3: processing request');
+            console.info('3: processing request');
             var result = JSON.parse(xhr.responseText);
-            console.log(result);
+            console.info(result);
             xhr.previousText = xhr.responseText;
             break;
           case 4:
-            console.log('4: request finished and response is ready');
+            console.info('4: request finished and response is ready');
             var fileType = [{genomicFileType: ''}].concat(JSON.parse(xhr.responseText));
             self.setState({availableFileType: fileType});
             break;
           default:
-            console.log('?');
+            console.info('?');
             break;
         }
       } catch (e) {
