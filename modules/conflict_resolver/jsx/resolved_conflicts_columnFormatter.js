@@ -9,9 +9,8 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
-
   if (loris.hiddenHeaders.indexOf(column) > -1) {
-     return null;
+    return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
@@ -20,5 +19,4 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
 
   return <td>{cell}</td>;
-
 }
