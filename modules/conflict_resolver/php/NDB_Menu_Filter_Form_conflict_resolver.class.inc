@@ -209,7 +209,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                           'conflicts_unresolved.TableName as Instrument',
                           'session.CandID as CandID',
                           'candidate.PSCID as PSCID',
-                          'session.Visit_label as Visit_Lable',
+                          'session.Visit_label as Visit_Label',
                          );
 
         if ($useProjects) {
