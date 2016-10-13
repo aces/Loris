@@ -568,7 +568,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         return $test_names;
     }
-    
+
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
@@ -587,4 +587,21 @@ class NDB_Form_data_team_helper extends NDB_Form
             )
         );
     }
+
+     /**
+        * Include additional CSS files:
+        *  1. data_team_helper
+        *
+        * @return array of CSS to be inserted
+        */
+       function getCSSDependencies()
+       {
+           $factory = NDB_Factory::singleton();
+           $baseURL = $factory->settings()->getBaseURL();
+           $deps    = parent::getCSSDependencies();
+           return array_merge(
+               $deps,
+               [$baseURL . "/data_team_helper/css/data_team_helper.css"]
+           );
+       }
 }
