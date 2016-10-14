@@ -9,9 +9,8 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
-
   if (loris.hiddenHeaders.indexOf(column) > -1) {
-     return null;
+    return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
@@ -19,48 +18,49 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this);
 
-  switch(column){
-    
-     case 'Examiner':
-         var url  = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
-      return (
-             <td>
-                <a href ={url}>{cell}</a>
-             </td>
-             );
-        break;
-     
-     case 'Radiologist':
-         var url  = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
-      return (
-             <td>
-                <a href ={url}>{cell}</a>
-             </td>
-             );
-        break;
+  switch (column) {
 
-     case 'Certification':
-         if (row['Certification']==null){
-              return (
+    case 'Examiner':
+      var url = loris.BaseURL + "/examiner/editExaminer/?identifier=" +
+                row.ID;
+      return (
+             <td>
+                <a href ={url}>{cell}</a>
+             </td>
+             );
+
+    case 'Radiologist':
+      var radiologist = 'No';
+      if (row.Radiologist === '1') {
+        radiologist = 'Yes';
+      }
+
+      return (<td>
+                 {radiologist}
+              </td>
+              );
+
+    case 'Certification':
+      if (row.Certification === null) {
+        return (
                      <td>
                         None
                      </td>
                     );
-         } else {
-                return (
+      }
+      return (
                    <td>
                       {cell}
                    </td>
                    );
-                }
-        break;
-      default:
-            return (
+
+    default:
+      return (
                    <td>
                       {cell}
                    </td>
                    );
-          
+
   }
 }
 
