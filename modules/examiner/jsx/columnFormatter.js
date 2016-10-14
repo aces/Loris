@@ -19,40 +19,48 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this);
 
-  if (column === 'Examiner'){
-      var url  = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
+  switch(column){
+    
+     case 'Examiner':
+         var url  = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
       return (
              <td>
                 <a href ={url}>{cell}</a>
              </td>
              );
-     }
-
-  if (column === 'Radiologist'){
-      var radiologist = 'No';
-      if (row['Radiologist']=='1')
-            radiologist = 'Yes';
-      
+        break;
+     
+     case 'Radiologist':
+         var url  = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
       return (
              <td>
-                {radiologist}
+                <a href ={url}>{cell}</a>
              </td>
              );
-     }
+        break;
 
-
-
-  if (column === 'Certification' && row['Certification']==null){
-      return <td>
-                None
-             </td>;
-     }
-  
- return (
-        <td>
-             {cell}
-        </td>
-        );
-
+     case 'Certification':
+         if (row['Certification']==null){
+              return (
+                     <td>
+                        None
+                     </td>
+                    );
+         } else {
+                return (
+                   <td>
+                      {cell}
+                   </td>
+                   );
+                }
+        break;
+      default:
+            return (
+                   <td>
+                      {cell}
+                   </td>
+                   );
+          
+  }
 }
 

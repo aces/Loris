@@ -19,41 +19,55 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       row[header] = rowData[index];
    }, this);
 
-   if (column === 'Examiner') {
-      var url = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
-      return React.createElement(
-         "td",
-         null,
-         React.createElement(
-            "a",
-            { href: url },
+   switch (column) {
+
+      case 'Examiner':
+         var url = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
+         return React.createElement(
+            "td",
+            null,
+            React.createElement(
+               "a",
+               { href: url },
+               cell
+            )
+         );
+         break;
+
+      case 'Radiologist':
+         var url = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
+         return React.createElement(
+            "td",
+            null,
+            React.createElement(
+               "a",
+               { href: url },
+               cell
+            )
+         );
+         break;
+
+      case 'Certification':
+         if (row['Certification'] == null) {
+            return React.createElement(
+               "td",
+               null,
+               "None"
+            );
+         } else {
+            return React.createElement(
+               "td",
+               null,
+               cell
+            );
+         }
+         break;
+      default:
+         return React.createElement(
+            "td",
+            null,
             cell
-         )
-      );
+         );
+
    }
-
-   if (column === 'Radiologist') {
-      var radiologist = 'No';
-      if (row['Radiologist'] == '1') radiologist = 'Yes';
-
-      return React.createElement(
-         "td",
-         null,
-         radiologist
-      );
-   }
-
-   if (column === 'Certification' && row['Certification'] == null) {
-      return React.createElement(
-         "td",
-         null,
-         "None"
-      );
-   }
-
-   return React.createElement(
-      "td",
-      null,
-      cell
-   );
 }
