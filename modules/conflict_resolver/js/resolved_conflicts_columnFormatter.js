@@ -15,17 +15,22 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
 
-  var correctAnswer;
-
   rowHeaders.forEach(function (header, index) {
     row[header] = rowData[index];
   }, this);
-  // If OldValue1 == null, then send OldValue2's value to correctAnswer
-  if (column === 'Correct_Answer') {
-    correctAnswer = row.Correct_Answer;
 
-    if (correctAnswer === null) {
-      correctAnswer = row.OldValue2;
+  if (column === 'Correct Answer') {
+    var correctAnswer = '';
+    var newValue = row['New Value'];
+    var oldValue1 = row['Correct Answer'];
+    var oldValue2 = row.OldValue2;
+
+    if (newValue === '1' && oldValue1 !== null) {
+      correctAnswer = oldValue1;
+    }
+
+    if (newValue === '2' && oldValue2 !== null) {
+      correctAnswer = oldValue2;
     }
 
     return React.createElement(
