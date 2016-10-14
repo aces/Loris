@@ -47,6 +47,7 @@
             <directory>../modules/timepoint_list/test/</directory>
             <directory>../modules/training/test/</directory>
             <directory>../modules/user_accounts/test/</directory>
+            <directory>../modules/media/test/</directory>
         </testsuite>
 
     </testsuites>
