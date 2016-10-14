@@ -9,9 +9,7 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
-
   if (loris.hiddenHeaders.indexOf(column) > -1) {
-
     return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
@@ -23,13 +21,11 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this);
   // If OldValue1 == null, then send OldValue2's value to correctAnswer
-  if (column == 'Correct Answer') {
+  if (column === 'Correct_Answer') {
+    correctAnswer = row.Correct_Answer;
 
-    correctAnswer = row['Correct Answer'];
-
-    if (correctAnswer == null) {
-
-      correctAnswer = row['OldValue2'];
+    if (correctAnswer === null) {
+      correctAnswer = row.OldValue2;
     }
 
     return React.createElement(

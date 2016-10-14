@@ -72,7 +72,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             $this->columns,
             array(
              'conflicts_resolved.FieldName as Question',
-             'conflicts_resolved.OldValue1 as Correct_Answer',
+             'conflicts_resolved.OldValue1 as CorrectAnswer',
              'conflicts_resolved.NewValue  as New_Value',
              'conflicts_resolved.OldValue2 as OldValue2',
              'session.CenterID as CenterID',
