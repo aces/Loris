@@ -5,6 +5,10 @@
 				<tr><th colspan="2">{$element.html}</th></tr>
 			{elseif $element.type eq hidden}
 				{$element.html}
+			{elseif $element.name eq lorisSubHeader}
+				<tr>
+                    <td colspan="2">{$element.label}</td>
+                </tr>
 			{elseif $element.type eq static AND $element.error}
 				<tr>
 					<td class="lab">

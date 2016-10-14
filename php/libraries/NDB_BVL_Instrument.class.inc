@@ -407,7 +407,7 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->form->setDefaults($defaults);
 
         if ($this->DataEntryType == 'DirectEntry') {
-            $smarty   = new Smarty_neurodb;
+            $smarty = new Smarty_neurodb;
 
             $formArray = $this->form->toElementArray();
             if (isset($this->testName)) {
