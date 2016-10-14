@@ -67,6 +67,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           'c.CandID AS DCCID',
                           'c.PSCID',
                           'c.Gender',
+                          'c.Entity_type',
                           "COALESCE(pso.Description,'Active') "
                           . " AS Participant_Status",
                          );
@@ -126,7 +127,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                 ON (ps.participant_status=pso.ID)
             LEFT JOIN Project p ON (c.ProjectID=p.ProjectID)
             LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
-            WHERE c.Active = 'Y'";
+            WHERE c.Entity_type = 'Human' and c.Active = 'Y'";
 
         if (!$user->hasPermission('access_all_profiles')) {
             $this->query .= " AND c.CenterID=" . $user->getCenterID();
@@ -149,6 +150,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              $FeedbackSQL,
              's.Scan_done',
              's.Visit_label',
+             'c.Entity_type',
              'COALESCE(pso.ID, 1)',
             )
         );
@@ -183,6 +185,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              'Participant_Status'  => 'COALESCE(pso.ID, 1)',
              'scan_done'           => 's.Scan_done',
              'Visit_label'         => 's.Visit_label',
+             'Entity_type'         => 'c.Entity_type',
             )
         );
 
@@ -275,6 +278,15 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             )
         );
         $this->addSelect(
+           'Entity_type',		
+           'Entity Type',		
+            array(		
+              ''        => '',		
+              'Human'   => 'Human',		
+              'Scanner' => 'Scanner',		
+             )		
+         );		
+         $this->addSelect(
             'SubprojectID',
             'Subproject',
             array('' => 'All') + $list_of_subprojects
