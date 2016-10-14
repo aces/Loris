@@ -21,9 +21,11 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (column === 'Examiner'){
       var url  = loris.BaseURL + "/examiner/editExaminer/?identifier=" + row["ID"];
-      return <td>
+      return (
+             <td>
                 <a href ={url}>{cell}</a>
-             </td>;
+             </td>
+             );
      }
 
   if (column === 'Radiologist'){
@@ -31,9 +33,11 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       if (row['Radiologist']=='1')
             radiologist = 'Yes';
       
-      return <td>
+      return (
+             <td>
                 {radiologist}
-             </td>;
+             </td>
+             );
      }
 
 
@@ -44,9 +48,11 @@ function formatColumn(column, cell, rowData, rowHeaders) {
              </td>;
      }
   
- return <td>
+ return (
+        <td>
              {cell}
-        </td>;
+        </td>
+        );
 
 }
 
