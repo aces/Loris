@@ -469,12 +469,13 @@ class Installer
 
         // The user does not exist and needs to be created
         $DB->PDO->exec(
-            "CREATE USER IF NOT EXISTS $quotedUser IDENTIFIED BY " .
+            "CREATE USER $quotedUser IDENTIFIED BY " .
             $DB->PDO->quote($values['lorismysqlpassword'])
         );
+
         $DB->PDO->exec(
-            "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES 
-			ON `$values[dbname]`.* TO $quotedUser"
+            "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES
+            ON `$values[dbname]`.* TO $quotedUser"
         );
         return true;
     }
