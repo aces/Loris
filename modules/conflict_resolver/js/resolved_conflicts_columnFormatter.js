@@ -11,16 +11,36 @@
 function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (loris.hiddenHeaders.indexOf(column) > -1) {
+
     return null;
   }
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
+
+  var correctAnswer;
+
   rowHeaders.forEach(function (header, index) {
     row[header] = rowData[index];
   }, this);
+  // If OldValue1 == null, then send OldValue2's value to correctAnswer
+  if (column == 'Correct Answer') {
+
+    correctAnswer = row['Correct Answer'];
+
+    if (correctAnswer == null) {
+
+      correctAnswer = row['OldValue2'];
+    }
+
+    return React.createElement(
+      'td',
+      null,
+      correctAnswer
+    );
+  }
 
   return React.createElement(
-    "td",
+    'td',
     null,
     cell
   );
