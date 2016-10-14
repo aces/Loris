@@ -72,7 +72,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             $this->columns,
             array(
              'conflicts_resolved.FieldName as Question',
-             'conflicts_resolved.OldValue1 as Corrected_Answer',
+             'conflicts_resolved.OldValue1 as Correct_Answer',
              'conflicts_resolved.NewValue  as New_Value',
              'conflicts_resolved.OldValue2 as OldValue2',
              'session.CenterID as CenterID',
@@ -81,7 +81,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $this->query   = " FROM conflicts_resolved
             LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
-            LEFT JOIN candidate ON (candidate.CandID=session.CandID) 
+            LEFT JOIN candidate ON (candidate.CandID=session.CandID)
             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
             WHERE 1=1";
 
@@ -135,10 +135,16 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
              'Correct_Answer',
              'New_Value',
              'OldValue2',
-             'CenterID'
+             'CenterID',
             )
         );
-        $this->tpl_data['hiddenHeaders'] = json_encode(['New Value', 'OldValue2','CenterID']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            [
+             'New Value',
+             'OldValue2',
+             'CenterID',
+            ]
+        );
         $con = "conflicts_resolved";
 
         $this->formToFilter = array(
