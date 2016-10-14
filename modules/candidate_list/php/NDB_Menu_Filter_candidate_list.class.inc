@@ -278,15 +278,15 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             )
         );
         $this->addSelect(
-           'Entity_type',		
-           'Entity Type',		
-            array(		
-              ''        => '',		
-              'Human'   => 'Human',		
-              'Scanner' => 'Scanner',		
-             )		
-         );		
-         $this->addSelect(
+            'Entity_type',
+            'Entity Type',
+            array(
+             ''        => '',
+             'Human'   => 'Human',
+             'Scanner' => 'Scanner',
+            )
+        );
+        $this->addSelect(
             'SubprojectID',
             'Subproject',
             array('' => 'All') + $list_of_subprojects
