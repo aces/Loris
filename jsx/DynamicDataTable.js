@@ -35,7 +35,6 @@ var DynamicDataTable = React.createClass({
       xhr: function() {
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function(evt) {
-          console.log(evt);
           that.setState({
             loadedData: evt.loaded
           });
