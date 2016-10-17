@@ -11,6 +11,7 @@
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Methylation</strong></a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=genomic_file_uploader">Files</a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=lite_viewer">Viewer</a></li>
       </ul>
       <br>
     </div>

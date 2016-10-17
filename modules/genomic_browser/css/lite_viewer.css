@@ -1,0 +1,153 @@
+/*
+    Chart
+*/
+.chart-placeholder {
+    border: thick solid #dddddd;
+    border-width: 0px;
+}
+
+#chart-container {
+    background-color: #FFFFFF;
+    position: relative;
+}
+
+#info-panel {
+    background-color: white;
+    position: relative;
+    top: 10px;
+    left: 10px;
+}
+
+#info-panel div {
+    margin-left: 30px;
+}
+
+#info-panel table caption {
+    font-size: 12px;
+    color: #222222
+}
+
+.chart {
+    background-color: white;
+    position: relative;
+}
+
+.legend {
+    stroke: #333;
+    stroke-width: 1px;
+    fill: white;
+}
+
+#legend-female {
+    fill: #ff7f0e;
+}
+
+#legend-male {
+    fill: #1f77b4;
+}
+
+/*
+    Axis
+*/
+.x-axis-ticks-label {
+    font-family: sans-serif;
+    font-size: 10px;
+    color: #333;
+}
+
+.x-axis-label {
+    font-family: sans-serif;
+    font-size: 1em;
+    color: #333
+}
+
+.y-axis-label {
+    font-family: sans-serif;
+    font-size: 1em;
+    color: #333
+}
+
+.y-axis-ticks-label {
+    font-family: sans-serif;
+    font-size: 10px;
+    color: #333
+}
+
+/*
+    Boxes
+*/
+
+.group-box {
+    stroke: #333;
+    stroke-width: 1px;
+}
+
+.selected,
+.group-box:hover {
+    stroke: red;
+    stroke-width: 1px;
+}
+
+.center-line {
+    stroke-dasharray: 3,3;
+}
+
+.median {
+    stroke: white;
+}
+
+/*
+    Summary table
+*/
+
+#info-panel table {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
+}
+
+#info-panel table th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
+}
+
+#info-panel table td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
+}
+
+.snp {
+    fill: white;
+    fill-opacity: 0;
+    stroke: red;
+    stroke-width: 2px;
+    stroke-opacity: 40;
+}
+
+.chip-peak {
+    fill: yellow;
+    fill-opacity: 0.4;
+    stroke: grey;
+    stroke-opacity: 0.4;
+}
+
+.chip-peak > rect {
+    z-index: -2;
+}
+
+.genes {
+    fill: green;
+    fill-opacity: 50%;
+    stroke: grey;
+    stroke-opacity: 20%;
+    z-index: -1;
+}

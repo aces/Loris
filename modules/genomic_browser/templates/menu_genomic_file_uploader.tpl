@@ -7,6 +7,7 @@
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cnv_browser">CNV</a></li>
         <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=cpg_browser">Methylation</a></li>
         <li class="statsTab active"><a class="statsTabLink" id="onLoad"><strong>Files</strong></a></li>
+        <li class="statsTab"><a class="statsTabLink" href="{$baseurl}/genomic_browser/?submenu=lite_viewer">Viewer</a></li>
       </ul>
       <br>
     </div>
