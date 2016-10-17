@@ -909,7 +909,6 @@ class NDB_BVL_Instrument extends NDB_Page
                  WHERE testID =:tid
                     AND pass =:cert_id
                     AND centerID =:cid
-                    AND examiners.active='Y'
                  ORDER BY full_name",
                 array(
                  'tid'     => $test_id,
@@ -922,7 +921,6 @@ class NDB_BVL_Instrument extends NDB_Page
                 "SELECT examinerID, full_name
                      FROM examiners
                  WHERE centerID=:centID
-                      AND active='Y'
                      ORDER BY full_name",
                 array('centID' => $centerID)
             );
