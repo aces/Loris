@@ -63,7 +63,7 @@ $(document).ready(function () {
                 VL: $("select[name=VL]").val(),
                 TN: $("select[name=Test_name]").val(),
                 Email: $("input[name=Email").val(),
-                Email2: $("input[name=Email]").val()
+                Email2: $("input[name=Email2]").val()
             },
             function(result) {
                 if (result) {
