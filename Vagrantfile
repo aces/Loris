@@ -65,7 +65,7 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    PASSWORD=`date | md5sum | cut -c1-12`
+    PASSWORD=`date | md5sum | cut -c1-12` 
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $PASSWORD"
     sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $PASSWORD"
 
@@ -84,9 +84,9 @@ Vagrant.configure("2") do |config|
     mv composer.phar /usr/local/bin/composer
 
     # For testing pull request before it gets merged
-    git clone -b VagrantUp https://github.com/driusan/Loris /var/www/loris
+    # git clone -b VagrantUp https://github.com/driusan/Loris /var/www/loris
     # Use the latest LORIS release.
-    # git clone -b master https://github.com/aces/Loris /var/www/loris
+    git clone -b master https://github.com/aces/Loris /var/www/loris
     cd /var/www/loris
     mkdir -p project/libraries smarty/templates_c
     /usr/local/bin/composer install --no-dev
