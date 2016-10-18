@@ -1,4 +1,4 @@
-Data Team Helper Test Plan:
+ # Data Team Helper Test Plan:
 
 1. Access data_team_helper module
 2. Choose a visit label and instrument and click "Show Data"
