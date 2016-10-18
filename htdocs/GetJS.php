@@ -18,6 +18,7 @@
  *  @license  Loris license
  *  @link     https://github.com/aces/Loris-Trunk
  */
+session_cache_limiter('public');
 
 
 // Load config file and ensure paths are correct
@@ -53,12 +54,28 @@ if (!isset($_GET['file']) || empty($_GET['file'])) {
 } else {
     $File = $_GET['file'];
 }
+
 if (empty($Module) || empty($File)) {
     error_log("Missing required parameters for request");
     header("HTTP/1.1 400 Bad Request");
     exit(2);
 }
 
+if (is_dir($basePath . "project/modules/$Module")
+    || is_dir($basePath . "modules/$Module")
+) {
+    $ModuleDir = is_dir($basePath . "project/modules/$Module")
+        ? $basePath . "project/modules/$Module"
+        : $basePath . "modules/$Module";
+    set_include_path(
+        get_include_path() . ':' .
+        $ModuleDir . "/php"
+    );
+} else {
+    error_log("ERROR: Module does not exist");
+    header("HTTP/1.1 400 Bad Request");
+    exit(5);
+}
 // File validation
 if (strpos($File, ".js") === false) {
     error_log("ERROR: Not a javascript file.");
@@ -76,7 +93,7 @@ if (strpos("..", $File) !== false) {
 }
 
 
-$FullPath = $basePath . "/modules/$Module/js/$File";
+$FullPath = "$ModuleDir/js/$File";
 
 if (!file_exists($FullPath)) {
     error_log("ERROR: File $File does not exist");
@@ -86,6 +103,29 @@ if (!file_exists($FullPath)) {
 
 $MimeType = "application/javascript";
 header("Content-type: $MimeType");
+
+$mtime = new DateTime();
+$mtime->setTimestamp(filemtime($FullPath));
+header("Last-Modified: " . $mtime->format(DateTime::RFC822));
+
+if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+    $ifmodifiedsince = new DateTime($_SERVER['HTTP_IF_MODIFIED_SINCE']);
+    if (!($mtime > $ifmodifiedsince)) {
+        header("HTTP/1.1 304 Not Modified");
+        exit(0);
+    }
+
+};
+
+
+$etag = md5(filemtime($FullPath));
+header("ETag: $etag");
+if (isset($_SERVER['HTTP_IF_NONE_MATCH'])
+    && $_SERVER['HTTP_IF_NONE_MATCH'] === $etag
+) {
+    header("HTTP/1.1 304 Not Modified");
+    exit(0);
+}
 $fp = fopen($FullPath, 'r');
 fpassthru($fp);
 fclose($fp);

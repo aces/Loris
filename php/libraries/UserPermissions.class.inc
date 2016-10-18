@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once 'PEAR.php';
 
 /**
  * Manages user permissions
@@ -25,6 +24,7 @@ class UserPermissions
 {
     /**
      * User's ID
+     *
      * @var    int
      * @access private
      */
@@ -32,6 +32,7 @@ class UserPermissions
 
     /**
      * Stores the permissions
+     *
      * @var    array
      * @access private
      */

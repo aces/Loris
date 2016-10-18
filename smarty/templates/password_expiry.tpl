@@ -2,9 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8"/>
-<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
 <!-- shortcut icon that displays on the browser window -->
-<link rel="shortcut icon" href="images/mni_icon.ico" type="image/ico" />
+<link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <!-- page title -->
 <title>{$title}</title>
@@ -25,7 +25,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="col-sm-2 col-xs-3 col-sm-offset-2">
-                <img src="images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" align="left">
+                <img src="{$baseurl}/images/LORIS_logo.svg" class="img-responsive" alt="Responsive image" align="left" onerror="this.src='{$baseurl}/images/LORIS_logo.png'">
             </div>
             <div class="col-sm-6 col-xs-9">
                 <strong>

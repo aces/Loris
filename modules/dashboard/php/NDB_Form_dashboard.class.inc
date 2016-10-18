@@ -12,9 +12,6 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-require_once "NDB_Form.class.inc";
-require_once "Utility.class.inc";
-
 /**
  * Dashboard: displays recruitment and study progression charts,
  * user tasks and document repository notifications
@@ -39,6 +36,7 @@ class NDB_Form_Dashboard extends NDB_Form
         $DB     = Database::singleton();
         $user   = User::singleton();
         $config = NDB_Config::singleton();
+        $site   = $user->getSiteName();
 
         $userID     = $user->getUsername();
         $last_login = $DB->pselectOne(
@@ -59,21 +57,14 @@ class NDB_Form_Dashboard extends NDB_Form
         $this->tpl_data['last_login']          = $last_login;
         $this->tpl_data['project_description']
             = $config->getSetting('projectDescription');
-        $dashboard_links = $config->getSetting('dashboardLinks');
+        $dashboard_links = $config->getExternalLinks('dashboard');
         if (!empty($dashboard_links)) {
-            foreach (Utility::toArray($dashboard_links['link']) AS $link) {
-                $LinkArgs = '';
-                $BaseURL  = $link['@']['url'];
-                if (isset($link['@']['args'])) {
-                    $LinkArgs = $link_args[$link['@']['args']];
-                }
-                $LinkLabel  = $link['#'];
-                $WindowName = md5($link['@']['url']);
+            foreach ($dashboard_links as $text => $url) {
                 $this->tpl_data['dashboard_links'][]
                     = array(
-                       'url'        => $BaseURL . $LinkArgs,
-                       'label'      => $LinkLabel,
-                       'windowName' => $WindowName,
+                       'url'        => $url,
+                       'label'      => $text,
+                       'WindowName' => md5($url),
                       );
             }
         }
@@ -89,20 +80,25 @@ class NDB_Form_Dashboard extends NDB_Form
         $useProjects = $config->getSetting('useProjects');
         $this->tpl_data['useProjects'] = $useProjects;
         if ($useProjects == "true") {
-            $projects = $config->getSetting('Projects');
-            foreach ($projects['project'] as $project) {
+            $projects = Utility::getProjectList();
+            foreach ($projects as $projectID => $project) {
+                $projectInfo = $config->getProjectSettings($projectID);
                 $this->createProjectProgressBar(
-                    $project['id'],
-                    $project['title'],
-                    $project['recruitmentTarget'],
-                    $this->getTotalRecruitmentByProject($project['id'])
+                    $projectID,
+                    $projectInfo['Name'],
+                    $projectInfo['recruitmentTarget'],
+                    $this->getTotalRecruitmentByProject($projectID)
                 );
             }
         }
 
         // Charts
         $this->tpl_data['total_scans'] = $DB->pselectOne(
-            "SELECT COUNT(*) FROM files f",
+            "SELECT COUNT(*) FROM files f
+		LEFT JOIN session s ON (s.ID=f.SessionID)
+		LEFT JOIN candidate c ON (s.CandID=c.CandID)
+		WHERE s.Active='Y' AND c.Active='Y'
+			AND s.CenterID <> 1",
             array()
         );
 
@@ -115,7 +111,10 @@ class NDB_Form_Dashboard extends NDB_Form
                  FROM files f 
                  LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID)
                  LEFT JOIN session s ON (s.ID=f.SessionID)
-                 WHERE fqc.QCStatus IS NULL",
+		LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                 WHERE fqc.QCStatus IS NULL
+			AND s.Active='Y' AND c.Active='Y'
+			AND s.CenterID <> 1",
                 array()
             );
             $this->tpl_data['new_scans_site'] = 'Site: all';
@@ -125,7 +124,12 @@ class NDB_Form_Dashboard extends NDB_Form
         if ($user->hasPermission('conflict_resolver')) {
             if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['conflicts']      = $DB->pselectOne(
-                    "SELECT COUNT(*) FROM conflicts_unresolved",
+                    "SELECT COUNT(*) FROM conflicts_unresolved cu
+                    LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
+                     LEFT JOIN session s ON (flag.SessionID=s.ID)
+			LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                      WHERE s.CenterID <> 1
+			AND s.Active='Y' AND c.Active='Y'",
                     array()
                 );
                 $this->tpl_data['conflicts_site'] = 'Site: all';
@@ -133,9 +137,11 @@ class NDB_Form_Dashboard extends NDB_Form
                 $this->tpl_data['conflicts']      = $DB->pselectOne(
                     "SELECT COUNT(*) FROM conflicts_unresolved cu 
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
-                     LEFT JOIN session s ON (flag.SessionID=s.ID) 
+                     LEFT JOIN session s ON (flag.SessionID=s.ID)
+		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
                      LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-                     WHERE psc.Name=:Site",
+                     WHERE psc.Name=:Site
+			            AND s.Active='Y' AND c.Active='Y'",
                     array('Site' => $site)
                 );
                 $this->tpl_data['conflicts_site'] = 'Site: ' . $site;
@@ -146,16 +152,22 @@ class NDB_Form_Dashboard extends NDB_Form
         if ($user->hasPermission('data_entry')) {
             if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['incomplete_forms']      = $DB->pselectOne(
-                    "SELECT COUNT(*) FROM flag WHERE Data_entry='In Progress'",
+                    "SELECT COUNT(*) FROM flag
+			LEFT JOIN session s ON (s.ID=flag.SessionID)
+			LEFT JOIN candidate c ON (s.CandID=c.CandID)
+		     WHERE flag.Data_entry='In Progress'
+			AND s.Active='Y' AND c.Active='Y' AND s.CenterID <> 1",
                     array()
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Site: all';
             } else {
                 $this->tpl_data['incomplete_forms']      = $DB->pselectOne(
                     "SELECT COUNT(*) FROM flag 
-                    LEFT JOIN session s ON (flag.SessionID=s.ID) 
+                    LEFT JOIN session s ON (flag.SessionID=s.ID)
+			LEFT JOIN candidate c ON (s.CandID=c.CandID)
                     LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-                    WHERE Data_entry='In Progress' AND psc.Name=:Site",
+                    WHERE Data_entry='In Progress' AND psc.Name=:Site
+			          AND s.Active='Y' AND c.Active='Y'",
                     array('Site' => $site)
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Site: ' . $site;
@@ -163,10 +175,16 @@ class NDB_Form_Dashboard extends NDB_Form
         }
 
         // Final radiological review
-        if ($user->hasPermission('edit_final_radiological_review')) {
+        if ($user->hasPermission('edit_final_radiological_review')
+            && $user->hasPermission('view_final_radiological_review')
+        ) {
             $this->tpl_data['radiology_review']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM final_radiological_review f 
-                WHERE Review_Done IS NULL",
+                "SELECT COUNT(*) FROM final_radiological_review f
+			LEFT JOIN flag fg ON (fg.CommentID=f.CommentID)
+			LEFT JOIN session s ON (s.ID=fg.SessionID)
+			LEFT JOIN candidate c ON (c.CandID=s.CandID)
+                WHERE Review_Done IS NULL
+			AND c.Active='Y' AND s.Active='Y'",
                 array()
             );
             $this->tpl_data['radiology_review_site'] = 'Site: all';
@@ -177,7 +195,8 @@ class NDB_Form_Dashboard extends NDB_Form
             && $user->hasPermission('user_accounts')
         ) {
             $this->tpl_data['pending_users']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM users WHERE Pending_approval='Y'",
+                "SELECT COUNT(*) FROM users
+		WHERE Pending_approval='Y' AND (CenterID <> 1 OR CenterID IS NULL)",
                 array()
             );
             $this->tpl_data['pending_users_site'] = 'Site: all';
@@ -192,8 +211,12 @@ class NDB_Form_Dashboard extends NDB_Form
 
         // Violated scans
         if ($user->hasPermission('violated_scans_view_allsites')) {
-            $this->tpl_data['violated_scans']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM mri_protocol_violated_scans",
+            $this->tpl_data['violated_scans'] = $DB->pselectOne(
+                "SELECT COUNT(*) FROM mri_protocol_violated_scans
+			LEFT JOIN candidate c USING (CandID)
+		WHERE COALESCE(c.CenterID, 0) <> 1",
+                /* include null CenterIDs so we don't accidentally
+                filter things out */
                 array()
             );
             $this->tpl_data['violated_scans_site'] = 'Site: all';
@@ -218,6 +241,26 @@ class NDB_Form_Dashboard extends NDB_Form
             $this->tpl_data['document_repository_notifications']
                 = $document_repository;
         }
+
+        // Issue Tracker Assigned Issues
+        if ($user->hasPermission('issue_tracker_developer')) {
+            $issue_tracker = $DB->pselectOne(
+                "SELECT COUNT(*) FROM issues
+                 WHERE status !='closed'
+                 AND assignee=:userID",
+                array('userID' => $user->getData('UserID'))
+            );
+            $this->tpl_data['issues_assigned']
+                = $issue_tracker;
+
+            // I suppose you could also base it on your query
+            if ($user->hasPermission('access_all_profiles')) {
+                $this->tpl_data['issues_assigned_site'] = 'Site: all';
+            } else {
+                $this->tpl_data['issues_assigned_site'] = 'Site: '.
+                    $user->getSiteName();
+            }
+        }
     }
 
     /**
@@ -230,7 +273,7 @@ class NDB_Form_Dashboard extends NDB_Form
         $DB = Database::singleton();
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*) FROM candidate c
-             WHERE c.Active='Y' AND c.Entity_type='Human' AND c.CenterID!=1",
+             WHERE c.Active='Y' AND c.Entity_type='Human' AND c.CenterID <> 1",
             array()
         );
         return $totalRecruitment;
@@ -250,7 +293,7 @@ class NDB_Form_Dashboard extends NDB_Form
             "SELECT COUNT(*)
              FROM candidate c
              WHERE c.Active='Y' AND c.ProjectID=:PID AND c.Entity_type='Human'
-             AND c.CenterID!=1",
+             AND c.CenterID <> 1",
             array('PID' => $projectID)
         );
         return $totalRecruitment;
@@ -270,7 +313,7 @@ class NDB_Form_Dashboard extends NDB_Form
             "SELECT COUNT(c.CandID)
              FROM candidate c
              WHERE c.Gender=:Gender AND c.Active='Y' AND c.Entity_type='Human'
-             AND c.CenterID!=1",
+             AND c.CenterID <> 1",
             array('Gender' => $gender)
         );
         return $total;
@@ -292,7 +335,7 @@ class NDB_Form_Dashboard extends NDB_Form
             "SELECT COUNT(c.CandID)
              FROM candidate c
              WHERE c.Gender=:Gender AND c.Active='Y' AND c.ProjectID=:PID
-             AND c.Entity_type='Human' AND c.CenterID!=1",
+             AND c.Entity_type='Human' AND c.CenterID <> 1",
             array(
              'Gender' => $gender,
              'PID'    => $projectID,
@@ -315,6 +358,7 @@ class NDB_Form_Dashboard extends NDB_Form
         $ID, $title, $recruitmentTarget, $totalRecruitment
     ) {
         $this->tpl_data['recruitment'][$ID]['total_recruitment'] = $totalRecruitment;
+        $this->tpl_data['recruitment'][$ID]['title'] = $title;
         $this->tpl_data['recruitment'][$ID]['title'] = $title;
 
         if (!empty($recruitmentTarget)) {
@@ -350,6 +394,50 @@ class NDB_Form_Dashboard extends NDB_Form
                     = round($totalMales / $totalRecruitment * 100);
             }
         }
+    }
+
+    /**
+     * Include additional CSS files:
+     *  1. dashboard.css
+     *
+     * @return array of css to be included
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/dashboard/css/dashboard.css"]
+        );
+    }
+
+    /**
+     * Add dependency on D3 and C3 javascript libraries
+     * for the pretty dashboards in the chart
+     *
+     * @return array of javascript files to be included
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $www     = $config->getSetting('www');
+        $baseurl = $www['url'];
+
+        $baseDeps = parent::getJSDependencies();
+
+        return array_merge(
+            $baseDeps,
+            array(
+             $baseurl . '/js/d3.min.js',
+             $baseurl . '/js/c3.min.js',
+             $baseurl . '/dashboard/js/dashboard-helper.js',
+            )
+        );
+
     }
 }
 ?>

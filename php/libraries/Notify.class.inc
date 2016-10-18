@@ -11,7 +11,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once 'PEAR.php';
 /**
  * A static class to encapsulate the notification spooling system
  *
@@ -21,7 +20,7 @@ require_once 'PEAR.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Notify extends PEAR
+class Notify
 {
     /**
      * Spools a new notification message for sending, unless the exact
@@ -39,8 +38,8 @@ class Notify extends PEAR
         $db =& Database::singleton();
 
         $typeID = Notify::getTypeID($type);
-        if (empty($typeID) || Notify::isError($typeID)) {
-            throw new Exception(
+        if (empty($typeID)) {
+            throw new LorisException(
                 "Could not retrieve notification type id for type '$type'"
             );
         }

@@ -2,7 +2,7 @@
     <div class="row hidden-xs">
         {if isset($certifications['content'])}
         <div class="col-sm-4">
-            <h3>Online training completed</h3>
+            <h3>Online training to be completed</h3>
             <p>Select an instrument below to review the training content.</p>
         </div>
         <div class="col-sm-4 col-sm-offset-1">
@@ -98,7 +98,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="window.location.href='main.php?test_name=training'">Return to training center</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href='{$baseurl}/training/'">Return to training center</button>
             </div>
         </div>
     </div>
@@ -111,7 +111,7 @@
                 <p>Your answers were not correct. You can repeat the training and try again to get certified.</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" onclick="window.location.href='main.php?test_name=training'">Return to training center</button>
+                <button type="button" class="btn btn-default" onclick="window.location.href='{$baseurl}/training/'">Return to training center</button>
                 <button type="button" class="btn btn-primary" onclick="tryAgain()">Try again</button>
             </div>
         </div>

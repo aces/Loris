@@ -2,6 +2,7 @@
      <thead>
         <tr class="info">
             <th>QC Status</th>
+            <th>Patient Name</th>
             <th>PSCID</th>
             <th>DCCID</th>
             <th>Visit Label</th>
@@ -20,11 +21,12 @@
     <tbody>
         <tr>
             <td>{$subject.mriqcstatus}</td>
+            <td>{$subject.pscid}_{$subject.candid}_{$subject.visitLabel}</td>
             <td>{$subject.pscid}</td>
             <td>{$subject.candid}</td>
             <td>{$subject.visitLabel}</td>
             <td>{$subject.site}</td>
-            <td>{if $subject.mriqcpending=="Y"}<img src="images/check_blue.gif" width="12" height="12">{else}&nbsp;{/if}</td>
+            <td>{if $subject.mriqcpending=="Y"}<img src="{$baseurl}/images/check_blue.gif" width="12" height="12">{else}&nbsp;{/if}</td>
             <td>{$subject.dob}</td>
             <td>{$subject.gender}</td>
             <td>{$outputType}</td>

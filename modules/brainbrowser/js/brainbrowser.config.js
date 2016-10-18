@@ -54,27 +54,27 @@
   BrainBrowser.config.set("color_maps", [
     {
       name: "Gray",
-      url: "GetStatic.php?Module=brainbrowser&file=color_maps/gray_scale.txt",
+      url: loris.BaseURL + "/brainbrowser/static/color_maps/gray_scale.txt",
       cursor_color: "#FF0000"
     },
     {
       name: "Spectral",
-      url: "GetStatic.php?Module=brainbrowser&file=color_maps/spectral.txt",
+      url: loris.BaseURL + "/brainbrowser/static/color_maps/spectral.txt",
       cursor_color: "#FFFFFF"
     },
     {
       name: "Thermal",
-      url: "GetStatic.php?Module=brainbrowser&file=color_maps/thermal.txt",
+      url: loris.BaseURL + "/brainbrowser/static/color_maps/thermal.txt",
       cursor_color: "#FFFFFF"
     },
     {
       name: "Blue",
-      url: "GetStatic.php?Module=brainbrowser&file=color_maps/blue.txt",
+      url: loris.BaseURL + "/brainbrowser/static/color_maps/blue.txt",
       cursor_color: "#FFFFFF"
     },
     {
       name: "Green",
-      url: "GetStatic.php?Module=brainbrowser&file=color_maps/green.txt",
+      url: loris.BaseURL + "/brainbrowser/static/color_maps/green.txt",
       cursor_color: "#FF0000"
     }
   ]);

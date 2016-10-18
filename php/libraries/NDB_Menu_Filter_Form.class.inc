@@ -12,8 +12,6 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Menu_Filter_Form Class
  *
@@ -48,14 +46,6 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
         ) {
             if ($this->form->validate()) {
                 $success = $this->form->process(array(&$this, "_save"), false);
-                // QuickForm may have returned a PEAR error, so convert it
-                // to an exception. If this is ever upgraded to QF2, this
-                // if statement can probably be removed.
-                if (Utility::isErrorX($success) ) {
-                    throw new Exception(
-                        "NDB_Form::save(): ". $success->getMessage()
-                    );
-                }
             }
         }
     }
@@ -73,8 +63,12 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
      */
     function _save($values)
     {
-        unset($values['test_name'], $values['subtest'],
-        $values['identifier'], $values['fire_away']);
+        unset(
+            $values['test_name'],
+            $values['subtest'],
+            $values['identifier'],
+            $values['fire_away']
+        );
 
         // clear any fields starting with __
         foreach (array_keys($values) AS $key) {
@@ -84,12 +78,6 @@ class NDB_Menu_Filter_Form extends NDB_Menu_Filter
         }
 
         $success = $this->_process($values);
-
-        // Who knows what lurks in the hearts of overridden methods.
-        // Convert PEAR errors to exceptions.
-        if (Utility::isErrorX($success)) {
-            throw new Exception("NDB_Form::_save(): ".$success->getMessage());
-        }
     }
 
 

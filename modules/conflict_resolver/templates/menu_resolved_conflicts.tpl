@@ -1,8 +1,7 @@
-<script src="js/filterControl.js" type="text/javascript"></script>
-
+<script src="{$baseurl}/js/filterControl.js" type="text/javascript"></script>
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
-        <form method="post" action="main.php?test_name=conflict_resolver&submenu=resolved_conflicts">
+        <form method="post" action="{$baseurl}/conflict_resolver/?submenu=resolved_conflicts">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -16,7 +15,7 @@
                             <div class="col-sm-12 col-md-9">{$form.Instrument.html}</div>
                         </div>
                     </div>
-                    <div class="row">    
+                    <div class="row">
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.CandID.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.CandID.html}</div>
@@ -28,27 +27,35 @@
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.PSCID.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.PSCID.html}</div>
-                            <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.Project.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.Project.html}</div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.Question.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.Question.html}</div>
+                            <label class="col-sm-12 col-md-1">{$form.visit.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.visit.html}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12">
+                            <label class="col-sm-12 col-md-2">{$form.ResolutionTimestamp.label}</label>
+                            <div class="col-sm-12 col-md-4">{$form.ResolutionTimestamp.html}</div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-6 col-sm-offset-6 hidden-sm">
                             <div class="col-sm-5 col-xs-12">
-                                <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
+                                <input type="submit" name="filter" id="testShowData1"  value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-5 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=conflict_resolver&submenu=resolved_conflicts&reset=true'">
+                                <input type="button" name="reset" value="Clear Form" id="testClearForm1" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/conflict_resolver/?submenu=resolved_conflicts&reset=true'">
                             </div>
                         </div>
                     </div>
@@ -57,7 +64,7 @@
                             <input type="submit" name="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12"/>
                         </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=resolved_conflicts&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/conflict_resolver/?submenu=resolved_conflicts&reset=true'">
                         </div>
                     </div>
                     <input type="hidden" name="test_name" value="conflict_resolver" />
@@ -70,60 +77,21 @@
 
 <div id="tabs" style="background: white">
     <ul class="nav nav-tabs">
-        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="main.php?test_name=conflict_resolver">Unresolved Conflicts</a></li>
+        <li class="statsTab"><a class="statsTabLink" id="onLoad" href="{$baseurl}/conflict_resolver/">Unresolved Conflicts</a></li>
         <li class="statsTab active"><a class="statsTabLink">Resolved Conflicts</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active">
-            <table id="LogEntries" border="0" valign="bottom" width="100%">
-                <tr>
-                    <!-- display pagination links -->
-                    <td align="right">{$page_links}</td>
-                </tr>
-            </table>
-            <table class="table table-hover table-primary table-bordered dynamictable" border="0">
-                <thead>
-
-                    {foreach from=$form.errors item=error}
-                    <tr>
-                        <td nowrap="nowrap" colspan="5" class="error">{$error}</td>
-                    </tr>
-                    {/foreach}
-                    
-                    <tr class="info">
-                        <th>No.</th>
-                        {section name=header loop=$headers}
-                        <th><a href="main.php?test_name=conflict_resolver&submenu=resolved_conflicts&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
-                        {if $headers[header].displayName == "TableName"}
-                            Instrument
-                        {else if $headers[header].displayName == "CandID"}
-                            DCCID
-                        {else if $headers[header].displayName == "FieldName"}
-                            Question                    
-                        {else}
-                            {$headers[header].displayName}
-                        {/if}
-                        </a></th>
-                        {/section}
-                        <th>Corrected Answer</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {section name=item loop=$items}
-                    <tr>
-                        {section name=piece loop=$items[item]}
-                            <td>
-                                {$items[item][piece].value}
-                            </td>
-                        {/section}
-                    </tr>
-                    {sectionelse}
-                        <tr>
-                            <tr><td colspan="7">No resolved conflicts found.</td></tr>
-                        </tr>
-                    {/section}
-                </tbody>
-            </table>
+            <div class="dynamictable" id="datatable"></div> 
         </div>
     </div>
 </div>
+<script>
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/conflict_resolver/?submenu=resolved_conflicts&format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "Instrument"
+  });
+React.render(table, document.getElementById("datatable"));
+</script>

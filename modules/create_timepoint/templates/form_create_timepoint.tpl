@@ -1,6 +1,6 @@
 {if $success}
 
-<p>New time point successfully registered. <a href="main.php?test_name=timepoint_list&candID={$candID}">Click here to continue.</a></p>
+<p>New time point successfully registered. <a href="?test_name=timepoint_list&candID={$candID}">Click here to continue.</a></p>
 
 {else}
 
@@ -31,7 +31,7 @@
 	<div class="form-group col-sm-12">
 		<div class="col-sm-2 col-sm-offset-2"><input class="btn btn-primary col-sm-12" name="fire_away" value="Create Time Point" type="submit" /></div>
 	</div>
-</table>
+
 {$form.hidden}
 </form>
 

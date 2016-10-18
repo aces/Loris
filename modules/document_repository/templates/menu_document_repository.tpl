@@ -1,9 +1,5 @@
+<script type="text/javascript" src="{$baseurl}/js/modules/mustache.js"></script>
 {literal}
-<style type="text/css">
-
-</style>
-<script type="text/javascript" src="js/modules/mustache.js"></script>
-
 <script id="json_data" type="text/json">
     {/literal}{$File_categories|json_encode}{literal}
 </script>
@@ -21,7 +17,7 @@
 
 <script id="dir" type="x-tmpl-mustache">
     <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
-        <td class="fileColumn">
+        <td class="fileColumn" colspan="10">
             {{ #depth }}
                 {{ #first }}
                     <div class="spacer" style="border-left: none;"> </div>
@@ -43,11 +39,10 @@
                 </span>
             {{ /indent }}
         </td>
-        <td colspan="9"></td>
     </tr>
 </script>
 <script id="file" type="x-tmpl-mustache">
-    <tr class="{{ parentID }}a" {{ ^filtered }}style="display:none" {{ /filtered }}>
+    <tr class="{{ parentID }}a fileRow" {{ ^filtered }}style="display:none" {{ /filtered }}>
         <td class="blah fileColumn">
             {{ #depth }}
                 {{ #first }}
@@ -58,7 +53,7 @@
                 {{ /first }}
             {{ /depth }}
             <div {{ ^filtered }}class="fileDDD"{{ /filtered }}><div style="padding-top: 8px">
-                <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
+                <a href="{/literal}{$baseurl}{literal}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
                         {{ File_name }}
                 </a>({{ File_size }})
             </div></div>
@@ -97,7 +92,7 @@
 <div class="row">
 <div class="col-sm-12">
     <div class="col-xs-12">
-        <form method="post" action="main.php?filtered=true&test_name=document_repository" id = "filterForm">
+        <form method="post" action="{$baseurl}/document_repository/?filtered=true" id = "filterForm">
             <div class="panel panel-primary">
                 <div class="panel-heading" onclick="hideFilter();">
                     Selection Filter
@@ -133,7 +128,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-2">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=document_repository&reset=true'" />
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseURL}/document_repository/?reset=true'" />
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
@@ -207,7 +202,7 @@
                 {if $headers[header].displayName == "Edit" || $headers[header].displayName == "Delete"}
                     {$headers[header].displayName}
                 {else}
-                    <a href="main.php?openAccordion=true&test_name=document_repository&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}" class = "sortHeaders">
+                    <a href="{$baseurl}/document_repository/?openAccordion=true&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}" class = "sortHeaders">
                         {$headers[header].displayName}
                     </a>
                 {/if}
@@ -247,7 +242,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h3 class="modal-title" id="myModalLabel">Upload File</h3>
             </div>
-            <form id="addCategoryForm" action="AjaxHelper.php?Module=document_repository&script=addCategory.php" method="POST">
+            <form id="addCategoryForm" action="{$baseurl}/document_repository/ajax/addCategory.php" method="POST">
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-xs-12">
@@ -305,7 +300,7 @@
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h3 class="modal-title" id="myModalLabel">Upload File</h3>
             </div>
-            <form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="AjaxHelper.php?Module=document_repository&script=documentEditUpload.php">
+            <form name = "uploadForm" id = "uploadForm" method = "POST" enctype="multipart/form-data" action="{$baseurl}/document_repository/ajax/documentEditUpload.php">
                 <div class="modal-body">
                     <div class="row">
                         <div class = "upload-error col-xs-12">

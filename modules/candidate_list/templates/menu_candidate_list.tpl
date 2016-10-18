@@ -5,7 +5,6 @@
     });
 </script>
 {/literal}
-<script type="text/javascript" src="{$baseurl}/js/advancedMenu.js"></script>
 
 <div class="row">
 <div class="col-sm-9">
@@ -16,7 +15,7 @@
         <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
     </div>
     <div class="panel-body">
-        <form method="post" action="{$baseurl}/main.php?test_name=candidate_list">
+        <form method="post" action="{$baseurl}/candidate_list/">
             <div class="row">
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
@@ -44,6 +43,7 @@
                 </div>
             </div>
             <div class="row">
+                {if count($form.centerID.options) > 1}
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
                         {$form.centerID.label}
@@ -52,6 +52,7 @@
                         {$form.centerID.html}
                     </div>
                 </div>
+                {/if}
                 <div class="form-group col-sm-4">
                     <label class="col-sm-12 col-md-4">
                         {$form.SubprojectID.label}
@@ -70,6 +71,14 @@
                     </div>
                   </div>
              {/if}
+                <div class="form-group col-sm-4">
+                    <label class="col-sm-12 col-md-4">
+                        {$form.Entity_type.label}
+                    </label>
+                    <div class="col-sm-12 col-md-8">
+                        {$form.Entity_type.html}
+                    </div>
+                </div>
             </div>
             <div class="advancedOptions" id="advanced-options" style="display:none">
                 <div class="row">
@@ -117,12 +126,13 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-4">
-                            {$form.edc.label}
+                            {$form.Feedback.label}
                         </label>
                         <div class="col-sm-12 col-md-8">
-                            {$form.edc.html}
+                            {$form.Feedback.html}
                         </div>
                     </div>
+
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-4">
@@ -135,18 +145,10 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-4">
-                            &nbsp;
+                            {$form.edc.label}
                         </label>
                         <div class="col-sm-12 col-md-8">
-                            &nbsp;
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-4">
-                            {$form.Feedback.label}
-                        </label>
-                        <div class="col-sm-12 col-md-8">
-                            {$form.Feedback.html}
+                            {$form.edc.html}
                         </div>
                     </div>
                 </div>
@@ -164,7 +166,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="col-sm-4 col-md-3 col-xs-12">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/main.php?test_name=candidate_list&reset=true'" />
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/candidate_list/?reset=true'" />
                             </div>
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
@@ -189,7 +191,7 @@
         <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
     </div>
     <div class="panel-body" id="panel-body">
-    <form class="form-horizontal" id="accessProfileForm" name="accessProfileForm" method="get" action="main.php">
+    <form class="form-horizontal" id="accessProfileForm" name="accessProfileForm" method="get" action="#">
         <input type="hidden" name="test_name" value="timepoint_list">
         <div class="form-group col-sm-12">
             <label class="col-sm-12 col-md-4">
@@ -214,60 +216,13 @@
 </div>
 {/if}
 </div>
-<div class="row">
-<table border="0" valign="bottom" width="100%">
-<tr>
-    <!-- title -->
-    <td class="controlPanelSection">{$numCandidates} subject(s) selected.</td>
-    <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
-</tr>
-</table>
-<table id="cand" class="table table-hover table-primary table-bordered colm-freeze" border="0" width="100%">
-    <thead>
-        <tr class="info">
-         <th id="number">No.</th>
-            <!-- print out column headings - quick & dirty hack -->
-            {section name=header loop=$headers}
-                {if $headers[header].displayName == 'PSCID'}
-                    <th id="pscid">
-                {else}
-                    <th>
-                {/if}
-                <a href="{$baseurl}/main.php?test_name=candidate_list&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-            {/section}
-        </tr>
-    </thead>
-    <tbody>
-        {section name=item loop=$items}
-            <tr>
-            <!-- print out data rows -->
-            {section name=piece loop=$items[item]}
-                {if $items[item][piece].bgcolor != ''}
-                    <td style="background-color:{$items[item][piece].bgcolor}">
-                {else}
-                    <td>
-                {/if}
-                {if $items[item][piece].DCCID != "" AND $items[item][piece].name == "PSCID"}
-                    {assign var="PSCID" value=$items[item][piece].value}
-                    <a href="{$baseurl}/main.php?test_name=timepoint_list&candID={$items[item][piece].DCCID}">{$items[item][piece].value}</a>
-                {elseif $items[item][piece].name == "scan_Done"}
-                    {if $items[item][piece].value == 'Y'}
-                        {assign var="scan_done" value="Yes"}
-                        <a class="scanDoneLink" data-pscid="{$PSCID}" href="{$baseurl}/main.php?test_name=imaging_browser&pscid={$PSCID}&filter=Show%20Data">{$scan_done}</a>
-                    {else}
-                        {assign var="scan_done" value="No"}
-                        {$scan_done}
-                    {/if}
-                {else}
-                    {$items[item][piece].value}
-                {/if}
-                </td>
-            {/section}
-            </tr>
-        {sectionelse}
-            <tr><td colspan="12">No candidates found</td></tr>
-        {/section}
-    </tbody>
-<!-- end data table -->
-</table>
+<div id="datatable" />
+<script>
+var table = RDynamicDataTable({
+    "DataURL" : "{$baseurl}/candidate_list/?format=json",
+    "getFormattedCell" : formatColumn,
+    "freezeColumn" : "PSCID"
+});
+
+React.render(table, document.getElementById("datatable"));
+</script>

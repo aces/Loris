@@ -1,5 +1,5 @@
 {if $success}
-<p>Survey was added successfully.<br/> Click here to go back to view the list of survey's created : <a href=main.php?test_name=survey_accounts> Survey List</a><br /></p>
+<p>Survey was added successfully.<br/> Click here to go back to view the list of survey's created : <a href="{$baseurl}/survey_accounts/">Survey List</a><br /></p>
 <br />
 {/if}
 <br />
@@ -25,6 +25,10 @@
             <td nowrap="nowrap" colspan="2" class="error">{$error}</td>
         </tr>
         {/foreach}
+
+        <tr>
+            <td id="email-error" nowrap="nowrap" colspan="2" style="display: none;" class="error"></td>
+        </tr>
 
         <tr>
             <td nowrap="nowrap">{$form.CandID.label}</td>
@@ -53,7 +57,7 @@
         <tr>
             <td nowrap="nowrap" colspan="2">
                 <input class="btn btn-sm btn-primary" name="fire_away" value="Create survey" id="create_survey" type="submit" />
-                <input class="btn btn-sm btn-primary email" name="fire_away" value="Email survey" id="email_survey" type="submit">
+                <input class="btn btn-sm btn-primary email" name="fire_away" value="Email survey" id="email_survey" type="submit" />
         {/if}
             </td>
         </tr>
@@ -67,7 +71,7 @@
                     <h3 class="modal-title">Email to Study Participant</h3>
                 </div>
             <div class="modal-body">
-                <textarea class="form-control" id="emailContent" name="email_dialog" rows="24" cols="80">This is where your message goes.</textarea>
+                <textarea class="form-control" id="emailContent" name="email_dialog" rows="24" cols="80" placeholder="Optionally enter a customized message here. A default email will be sent if left blank.">This is where your message goes.</textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

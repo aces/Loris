@@ -22,9 +22,11 @@
  */
 class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 {
+    var $AjaxModule = true;
     /**
      * Overloading this method to allow access to site users (their own site only)
      * and users w/ multisite privs
+     *
      * @return true if user has access, false otherwise
      */
     function _hasAccess()
@@ -32,8 +34,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         // create user object
         $user =& User::singleton();
         $site =& Site::singleton($user->getData('CenterID'));
-        $this->tpl_data['access_all_profiles']
-            = $user->hasPermission('access_all_profiles');
+        $aap  = $user->hasPermission('access_all_profiles');
+        $this->tpl_data['access_all_profiles'] = $aap;
         return (
             $user->hasPermission('access_all_profiles')
             || ($site->isStudySite() && $user->hasPermission('data_entry'))
@@ -65,20 +67,37 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           'c.CandID AS DCCID',
                           'c.PSCID',
                           'c.Gender',
-                          'COALESCE(pso.ID,1) AS Participant_Status',
+                          'c.Entity_type',
+                          "COALESCE(pso.Description,'Active') "
+                          . " AS Participant_Status",
                          );
         if ($useProjects) {
-            $this->columns[] = 'min(c.ProjectID) as Project';
+            $this->columns[] = 'p.Name as Project';
         }
         $this->columns =array_merge(
             $this->columns,
             array(
-             'min(s.SubprojectID) as Subproject',
+             'GROUP_CONCAT(DISTINCT sp.title) as Subproject',
              'DATE_FORMAT(c.DoB,\'%Y-%m-%d\') AS DoB',
-             's.Scan_done as scan_Done',
+             'MAX(s.Scan_done) as scan_Done',
             )
         );
 
+        $this->formToFilter = array(
+                               'centerID'     => 'c.CenterID',
+                               'DCCID'        => 'c.CandID',
+                               'PSCID'        => 'c.PSCID',
+                               'gender'       => 'c.Gender',
+                               'SubprojectID' => 's.SubprojectID',
+                              );
+
+        $this->validFilters = array(
+                               'pso.ID',
+                               'c.CenterID',
+                               'c.CandID',
+                               'c.PSCID',
+                               'c.Gender',
+                              );
         if ($config->getSetting("useEDC")==="true") {
             $this->columns[]           ='DATE_FORMAT((c.EDC),\'%Y-%m-%d\') AS EDC';
             $this->formToFilter['edc'] = 'c.EDC';
@@ -87,7 +106,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
         // Need distinct because of joining with feedback_bvl_thread
         $VisitCountSQL = 'COUNT(DISTINCT s.Visit_label)';
-        $FeedbackSQL   = 'MIN(feedback_bvl_thread.Status+0)';
+        $FeedbackSQL   = 'IFNULL(MIN(feedback_bvl_thread.Status+0),0)';
 
         $this->columns = array_merge(
             $this->columns,
@@ -106,22 +125,18 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
             LEFT JOIN participant_status_options pso
                 ON (ps.participant_status=pso.ID)
-            WHERE c.Entity_type = 'Human' AND c.Active = 'Y'";
+            LEFT JOIN Project p ON (c.ProjectID=p.ProjectID)
+            LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
+            WHERE c.Active = 'Y'";
 
         if (!$user->hasPermission('access_all_profiles')) {
             $this->query .= " AND c.CenterID=" . $user->getCenterID();
         }
 
-        $this->group_by = 'c.CandID';
-        $this->order_by = 'psc.Name, c.CandID DESC, s.VisitNo';
+                          //'COALESCE(pso.ID,1) AS Participant_Status',
+        $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Gender';
+        $this->order_by = 'c.PSCID ASC';
 
-        $this->validFilters = array(
-                               'pso.ID',
-                               'c.CenterID',
-                               'c.CandID',
-                               'c.PSCID',
-                               'c.Gender',
-                              );
         if ($useProjects) {
             $this->validFilters[] = 'c.ProjectID';
         }
@@ -135,6 +150,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              $FeedbackSQL,
              's.Scan_done',
              's.Visit_label',
+             'c.Entity_type',
+             'COALESCE(pso.ID, 1)',
             )
         );
 
@@ -143,15 +160,15 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                      'max(s.Current_stage)',
                                      $FeedbackSQL,
                                     );
-        $this->EqualityFilters    = array('session.SubprojectID');
+        $this->EqualityFilters    = array(
+                                     's.SubprojectID',
+                                     'c.CenterID',
+                                     'c.ProjectID',
+                                     's.Scan_done',
+                                     's.Visit_label',
+                                     'c.Gender',
+                                    );
 
-        $this->formToFilter = array(
-                               'centerID'     => 'c.CenterID',
-                               'DCCID'        => 'c.CandID',
-                               'PSCID'        => 'c.PSCID',
-                               'gender'       => 'c.Gender',
-                               'SubprojectID' => 's.SubprojectID',
-                              );
         if ($useProjects) {
             $this->formToFilter = array_merge(
                 $this->formToFilter,
@@ -165,9 +182,10 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              'Visit_Count'         => $VisitCountSQL,
              'Latest_Visit_Status' => 'max(s.Current_stage)',
              'Feedback'            => $FeedbackSQL,
-             'Participant_Status'  => 'pso.ID',
+             'Participant_Status'  => 'COALESCE(pso.ID, 1)',
              'scan_done'           => 's.Scan_done',
              'Visit_label'         => 's.Visit_label',
+             'Entity_type'         => 'c.Entity_type',
             )
         );
 
@@ -202,8 +220,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
                 $list_of_sites = array();
-                $list_of_sites[$user->getData('CenterID')]
-                    = $user->getData('Site');
+                $list_of_sites[$user->getData('CenterID')] = $user->getData('Site');
             }
         }
 
@@ -258,6 +275,15 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              ''       => 'All',
              'Male'   => 'Male',
              'Female' => 'Female',
+            )
+        );
+        $this->addSelect(
+            'Entity_type',
+            'Entity Type',
+            array(
+             ''        => '',
+             'Human'   => 'Human',
+             'Scanner' => 'Scanner',
             )
         );
         $this->addSelect(
@@ -323,8 +349,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $subprojectlist = Utility::getSubprojectList();
         $projectlist    = Utility::getProjectList();
 
-        $participantOptions
-            = NDB_Form_candidate_parameters::getParticipantStatusOptions();
+        $pOptions = NDB_Form_candidate_parameters::getParticipantStatusOptions();
         // print out
         $x = 0;
         foreach ($this->list as $item) {
@@ -367,7 +392,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                         $itemi['value'] = '';
                     }
                 } else if ($key == 'Participant_Status' && !empty($val)) {
-                    $itemi['value'] = $participantOptions[$val];
+                    $itemi['value'] = $pOptions[$val];
                 } else if ($key=='scan_done') {
                     $itemi['value'] = $val;
                 }
@@ -379,6 +404,27 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         }
         $this->tpl_data['numCandidates'] = $this->TotalItems;
         return true;
+    }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/js/advancedMenu.js",
+             $baseURL . "/candidate_list/js/columnFormatter.js",
+             $baseURL . "/candidate_list/js/candidate_list_helper.js",
+            )
+        );
     }
 }
 ?>

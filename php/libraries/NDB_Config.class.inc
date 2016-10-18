@@ -10,8 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "PEAR.php";
-require_once "Utility.class.inc";
+
 /**
  * This class provides a generic interface to Loris configuration.
  * Generally, the way to use it is to use NDB_Config::singleton() to
@@ -34,12 +33,14 @@ class NDB_Config
 {
     /**
      * The raw array of settings
+     *
      * @access private
      */
     var $_settings = array();
 
     /**
      * The merged array of study and site-specific settings
+     *
      * @access private
      */
     var $_siteSettings = array();
@@ -47,6 +48,7 @@ class NDB_Config
     /**
      * An optional override for the location of the config file.
      * (default is ../project/config.xml)
+     *
      * @access public
      */
     var $configFilePath;
@@ -260,7 +262,9 @@ class NDB_Config
             return null;
         }
 
-        $db = Database::singleton();
+        $factory = NDB_Factory::singleton();
+
+        $db = $factory->database();
         if ($db->isConnected() !== true) {
             // no database connection, fall back on config.xml
             throw new DatabaseException(
@@ -411,6 +415,35 @@ class NDB_Config
     }
 
     /**
+    * Get list of projects for this projects, given a ProjectID.
+    *
+    * @param integer $ProjectID The ProjectID we want settings for
+    *
+    * @return an array of settings for this project.
+    */
+    function getProjectSettings($ProjectID)
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+        try
+        {
+             $info =$DB->pselectRow(
+                 "SELECT * FROM Project WHERE ProjectID=:sp",
+                 array('sp' => $ProjectID)
+             );
+        } catch (DatabaseException $e)
+        {
+            return null;
+        }
+        //Format the result into config.xml format.
+        return array(
+                'id'                => $info['ProjectID'],
+                'Name'              => $info['Name'],
+                'recruitmentTarget' => $info['recruitmentTarget'],
+               );
+    }
+
+    /**
      * Get list of Subprojects for this project, given a subprojectID.
      * This is differentiated from the default getSetting() because
      * Subprojects will probably eventually get their own table instead
@@ -423,20 +456,32 @@ class NDB_Config
      */
     function getSubprojectSettings($subprojectID)
     {
-        // Sub Project
-        $subprojectSettings =$this->getSetting('subprojects');
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
 
-        //Loop through the subprojects to get an id out and to create
-        //the subproject drop down.
-        foreach (Utility::toArray($subprojectSettings['subproject'])
-            AS $subproject
-        ) {
-            if ($subproject['id']==$subprojectID) {
-                return $subproject;
-            }
+        try {
+            $info = $DB->pselectRow(
+                "SELECT * FROM subproject WHERE SubprojectID=:sp",
+                array('sp' => $subprojectID)
+            );
+        } catch(DatabaseException $e) {
+            return null;
         }
-        // no nodes found - returning null
-        return null;
+        // Format the results the same way it was formatted in config.xml
+        // This variable assignment was done for phpcs... if anyone figures out
+        // a way around this, please correct it
+        if (!empty($info)) {
+            $x = $info['WindowDifference'];
+            return array(
+                    'id'                => $info['SubprojectID'],
+                    'title'             => $info['title'],
+                    'options'           => array(
+                                            'useEDC'           => $info['useEDC'],
+                                            'WindowDifference' => $x,
+                                           ),
+                    'RecruitmentTarget' => $info['RecruitmentTarget'],
+                   );
+        }
     }
 
     /**
@@ -494,7 +539,7 @@ class NDB_Config
                        Link,
                        ID
                   FROM LorisMenu
-                  WHERE Parent IS NULL",
+                  WHERE Parent IS NULL ORDER BY OrderNumber",
                 array()
             );
         } else {
@@ -504,7 +549,7 @@ class NDB_Config
                         Link,
                         ID
                   FROM LorisMenu
-                  WHERE Parent=:ParentID",
+                  WHERE Parent=:ParentID ORDER BY OrderNumber",
                 array('ParentID' => $parent)
             );
 
@@ -532,6 +577,33 @@ class NDB_Config
         }
 
         return $thisLevel;
+    }
+
+    /**
+     * Retrieve a set of links to display to the user
+     *
+     * @param string $type The type of links to show
+     *
+     * @return associative array of Label => URL
+     */
+    function getExternalLinks($type)
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $results = $db->pselect(
+            "SELECT LinkText, LinkURL
+                FROM ExternalLinks l JOIN ExternalLinkTypes lt
+                    ON (l.LinkTypeID=lt.LinkTypeID)
+                WHERE lt.LinkType=:name",
+            array('name' => $type)
+        );
+
+        $mapped = array();
+        foreach ($results as $row) {
+            $mapped[$row['LinkText']] = $row['LinkURL'];
+        }
+        return $mapped;
     }
 
 }

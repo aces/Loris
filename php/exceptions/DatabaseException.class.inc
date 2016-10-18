@@ -41,6 +41,9 @@ class DatabaseException extends LorisException
         parent::__construct($msg);
         $this->query  = $query;
         $this->params = $bindparams;
+        error_log(
+            "Could not execute $query. Stack trace" . $this->getTraceAsString()
+        );
     }
 }
 ?>

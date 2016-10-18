@@ -10,9 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "PEAR.php";
-
-/* Constants used in the file */
 define("DEBUG", false);
 
 /**
@@ -29,11 +26,12 @@ define("DEBUG", false);
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Database extends PEAR
+class Database
 {
     /**
      * The database handle, created by the connect() method
      *
+     * @var    PDO
      * @access private
      */
     var $_PDO = null;
@@ -79,7 +77,8 @@ class Database extends PEAR
      * @param boolean $trackChanges boolean determining if changes should be
      *                              logged to the history table
      *
-     * @return object
+     * @return Database
+     * @throws DatabaseException
      * @access public
      */
     static function &singleton(
@@ -118,12 +117,6 @@ class Database extends PEAR
                     $host,
                     $trackChanges
                 );
-                if ($connections[$connection]->isError($ok)) {
-                    unset($connections[$connection]);
-                    throw new DatabaseException(
-                        'Could not connect to database: '.$ok->getMessage()
-                    );
-                }
             }
 
             // return the connection
@@ -177,6 +170,8 @@ class Database extends PEAR
             $username,
             $password
         );
+        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+
         $this->_preparedStoreHistory = $this->_PDO->prepare(
             "INSERT INTO history (tbl, col, new, old,"
             ." primaryCols, primaryVals, userID, type)"
@@ -233,18 +228,71 @@ class Database extends PEAR
     }
 
     /**
-     * Inserts a row
+     * Insert a row into the database
      *
-     * Inserts a single row into the specified table, containing the values specified
+     * This will insert a row. HTML from any field in the row will be automatically
+     * escaped to avoid injection.
      *
      * @param string $table the table into which to insert the row
      * @param array  $set   the values with which to fill the new row
      *
      * @return none
-     * @access public
      */
-    function insert($table, $set)
+    public function insert($table, $set)
     {
+        return $this->_realinsert($table, $set, true);
+    }
+
+    /**
+     * Insert a row into the database without validating input.
+     *
+     * This will insert a row. HTML from any field in the row will *not* be
+     * automatically escaped. This should only be called when we know the source of
+     * the input is trustworthy and must contain HTML.
+     *
+     * @param string $table the table into which to insert the row
+     * @param array  $set   the values with which to fill the new row
+     *
+     * @return none
+     */
+    public function unsafeinsert($table, $set)
+    {
+        return $this->_realinsert($table, $set, false);
+    }
+
+    /**
+     * Escapes the HTML from an array that is about to be inserted into the database
+     *
+     * @param array $set The array to be inserted as a new row
+     *
+     * @return A copy of $set with the HTML characters escaped
+     */
+    private function _HTMLEscapeArray($set)
+    {
+        $retVal = array();
+        foreach ($set as $key => $val) {
+            $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
+        }
+        return $retVal;
+    }
+
+    /**
+     * Inserts a row
+     *
+     * Inserts a single row into the specified table, containing the values specified
+     *
+     * @param string $table      the table into which to insert the row
+     * @param array  $set        the values with which to fill the new row
+     * @param bool   $autoescape determines whether the values to be set should
+     *                           automatically have the html escaped
+     *
+     * @return none
+     */
+    private function _realinsert($table, $set, $autoescape = true)
+    {
+        if ($autoescape === true) {
+            $set = $this->_HTMLEscapeArray($set);
+        }
         $query  = "INSERT INTO $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set);
 
@@ -259,7 +307,6 @@ class Database extends PEAR
 
         // There is no where clause for an insert, so add a fake
         // one.
-
         $this->_printQuery($query);
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
@@ -276,11 +323,19 @@ class Database extends PEAR
         $this->lastInsertID = $this->_PDO->lastInsertId();
 
         // Track changes must be called after last insertId is set
-        $err = $this->_trackChanges($table, $set, '2=1', 'I');
-        if ($this->isError($err)) {
-            return $err;
-        }
+        $err = $this->trackChanges($table, $set, '2=1', 'I');
         return true;
+    }
+
+    /**
+     * Get last insert ID.
+     * Will return a valid insert ID only if called after Database::insert() method.
+     *
+     * @return string ID of the last inserted row
+     */
+    public function getLastInsertId()
+    {
+        return $this->lastInsertID;
     }
 
     /**
@@ -306,23 +361,72 @@ class Database extends PEAR
         }
 
         $this->_printQuery($query);
-        $this->affected = $this->_PDO->exec($query);
+        $result = $this->_PDO->exec($query);
+        if ($result === false) {
+            throw new DatabaseException(
+                "Replace statement did not execute successfully.",
+                $query
+            );
+        } elseif ($result === 0) {
+            $this->insert('empty_queries', array('query' => $query));
+        }
+
+        $this->affected = $result;
     }
 
     /**
      * Updates a row
      *
-     * Updates a single row in the specified table
+     * Updates a single row in the specified table. This will automatically escape
+     * any HTML in the data being inserted for security.
      *
      * @param string $table   the table into which to insert the row
      * @param array  $set     the values with which to fill the new row
      * @param array  $i_where the selection filter, joined as a boolean and
      *
      * @return none
+     */
+    public function update($table, $set, $i_where)
+    {
+        return $this->_realupdate($table, $set, $i_where, true);
+    }
+
+    /**
+     * Updates a row
+     *
+     * Updates a single row in the specified table. This will *not* automatically
+     * escape and should be used with caution, only when you know you need to
+     * insert HTML and know that you can trust it.
+     *
+     * @param string $table   the table into which to insert the row
+     * @param array  $set     the values with which to fill the new row
+     * @param array  $i_where the selection filter, joined as a boolean and
+     *
+     * @return none
+     */
+    public function unsafeupdate($table, $set, $i_where)
+    {
+        return $this->_realupdate($table, $set, $i_where, false);
+    }
+    /**
+     * Updates a row
+     *
+     * Updates a single row in the specified table
+     *
+     * @param string $table      the table into which to insert the row
+     * @param array  $set        the values with which to fill the new row
+     * @param array  $i_where    the selection filter, joined as a boolean and
+     * @param bool   $autoescape determines whether the values to be set should
+     *                           automatically have the html escaped
+     *
+     * @return none
      * @access public
      */
-    function update($table, $set, $i_where)
+    private function _realupdate($table, $set, $i_where, $autoescape = true)
     {
+        if ($autoescape === true) {
+            $set = $this->_HTMLEscapeArray($set);
+        }
         /* This is still here to print the easily readable version on
          * the top of the page when showDatabaseQueries is on. It isn't
          * actually executed. */
@@ -356,10 +460,7 @@ class Database extends PEAR
             );
         }
 
-        $err = $this->_trackChanges($table, $set, $where);
-        if ($this->isError($err)) {
-            return $err;
-        }
+        $err = $this->trackChanges($table, $set, $where);
         $this->_printQuery($query.$where);
 
         $prep   = $this->_PDO->prepare($prepQ);
@@ -406,26 +507,22 @@ class Database extends PEAR
 
         // There is no set clause for a delete, so add a fake
         // one.
-        $err = $this->_trackChanges($table, array(), $where, 'D');
-        if ($this->isError($err)) {
-            throw new DatabaseException(
-                "Unable to track changes for delete statement.",
-                $query,
-                $where
-            );
-        }
+        $err = $this->trackChanges($table, array(), $where, 'D');
 
         $this->_printQuery($query);
-        $this->affected = $this->_PDO->exec($query);
-        if ($this->affected === false) {
+        $result = $this->_PDO->exec($query);
+        if ($result === false) {
             throw new DatabaseException(
                 "Database DELETE did not execute successfully."
                 . print_r($this->_PDO->errorInfo(), true),
                 $query,
                 $where
             );
-
+        } elseif ($result === 0) {
+            $this->insert('empty_queries', array('query' => $query));
         }
+
+        $this->affected = $result;
     }
 
     /**
@@ -446,6 +543,11 @@ class Database extends PEAR
      */
     function select($query, &$result)
     {
+        error_log(
+            "LORIS's Database::select() wrappers are deprecated and will be "
+            . "removed in a future version of LORIS. Please use prepared statements "
+            . " in the Database::pselect() variety instead."
+        );
         $result = array();
 
         if (strpos(strtoupper($query), 'SELECT') !== 0
@@ -495,7 +597,7 @@ class Database extends PEAR
     function selectRow($query, &$result)
     {
         $this->select($query, $result);
-        if (!$this->isError($result) && is_array($result) && isset($result[0])) {
+        if (is_array($result) && isset($result[0])) {
             $result = $result[0];
         }
     }
@@ -518,7 +620,7 @@ class Database extends PEAR
     {
         $result = null;
         $this->select($query, $result);
-        if (!$this->isError($result) && is_array($result) && count($result)) {
+        if (is_array($result) && count($result)) {
             list(,$result) = each($result[0]);
         }
         return $result;
@@ -535,14 +637,19 @@ class Database extends PEAR
     function run($query)
     {
         $this->_printQuery($query);
-        $this->affected = $this->_PDO->exec($query);
+        $result = $this->_PDO->exec($query);
 
-        if ($this->affected === false) {
+        if ($result === false) {
             throw new DatabaseException(
                 "Could not run query $query"
                 . print_r($this->_PDO->errorInfo(), true)
             );
+        } elseif ($result === 0) {
+            $this->insert('empty_queries', array('query' => $query));
         }
+
+        $this->affected = $result;
+
         $this->lastInsertID = $this->_PDO->lastInsertId();
     }
 
@@ -568,16 +675,24 @@ class Database extends PEAR
      * @param PDOStatement $prepared The prepared statement
      * @param array        $params   The values to bind to the statement
      *                               while executing it
+     * @param array        $options  A list of key=>value pairs.
+     *                               - nofetch : to prevent the fetchAll
+     *                                 function to be excuted. Useful for
+     *                                 insert or update prepared statements.
      *
      * @return array An array of rows in the format ColName => Value after
      *               executing the statement.
      */
-    function execute($prepared, $params)
+    function execute($prepared, $params, $options = array())
     {
         $execRun = $prepared->execute($params);
         if ($execRun === false) {
             $err = $prepared->errorInfo();
             throw new DatabaseException($err[2], $prepared->queryString, $params);
+        }
+
+        if (!empty($options['nofetch']) && $options['nofetch'] == true) {
+            return;
         }
 
         $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
@@ -634,7 +749,7 @@ class Database extends PEAR
     function pselectOne($query, $params)
     {
         $result = $this->pselectRow($query, $params);
-        if (!$this->isError($result) && is_array($result) && count($result)) {
+        if (is_array($result) && count($result)) {
 
             list(,$result) = each($result);
         }
@@ -685,8 +800,9 @@ class Database extends PEAR
      * @return string A string that can be used to generate a prepared statement with
      *                appropriate variable names generated for data binding.
      */
-    function _implodeAsPrepared($glue, $dataArray, &$exec_vals = null, $prefix='')
-    {
+    private function _implodeAsPrepared(
+        $glue, $dataArray, &$exec_vals = null, $prefix=''
+    ) {
         if (!is_array($dataArray) || count($dataArray)==0) {
             return '';
         }
@@ -729,7 +845,7 @@ class Database extends PEAR
      *
      * @return none As a side-effect populates history table
      */
-    private function _trackChanges($table, $set, $where, $type='U')
+    protected function trackChanges($table, $set, $where, $type='U')
     {
         // Tracking changes on the history table would result in an
         // infinite loop
@@ -738,15 +854,14 @@ class Database extends PEAR
         }
 
         // get the table description
-        $this->select("SHOW INDEX FROM $table", $description);
-        if ($this->isError($description)) {
-            return $description;
-        }
+        $description = $this->pselect("SHOW INDEX FROM $table", array());
 
         // find the primary key columns
-        foreach ($description AS $column) {
-            if ($column['Key_name']=='PRIMARY') {
-                $primaryKeys[] = $column['Column_name'];
+        if (is_array($description)) {
+            foreach ($description AS $column) {
+                if ($column['Key_name']=='PRIMARY') {
+                    $primaryKeys[] = $column['Column_name'];
+                }
             }
         }
 
@@ -803,10 +918,7 @@ class Database extends PEAR
             $query = "SELECT * FROM $table WHERE $where";
 
             // select the database data
-            $this->select($query, $oldRows);
-            if ($this->isError($oldRows)) {
-                return $oldRows;
-            }
+            $oldRows = $this->pselect($query, array());
 
             // track history for all affected rows
             foreach ($oldRows AS $oldRow) {
@@ -919,7 +1031,7 @@ class Database extends PEAR
             $this->run($createStmt);
 
             foreach ($rowData as $row) {
-                $this->insert($tableName, $row);
+                $this->unsafeinsert($tableName, $row);
             }
         } else {
             throw new DatabaseException(
@@ -927,5 +1039,126 @@ class Database extends PEAR
             );
         };
     }
+
+    /**
+     * Database class no longer extends PEAR
+     *
+     * @param mixed $data    The variable to check
+     * @param mixed $msgcode Additional error message / error code to check
+     *
+     * @return     none
+     * @deprecated Database class no longer extends PEAR
+     */
+    function isError($data, $msgcode)
+    {
+        throw new DatabaseException(
+            "Database class no longer extends PEAR"
+        );
+    }
+    /**
+     * Checks to see if a table exists in the Database
+     *
+     * @param string $test_name The table to check for.
+     *
+     * @return boolean true if the table exists
+     */
+    function tableExists($test_name)
+    {
+        $config   =& NDB_Config::singleton();
+        $database = $config->getSetting('database');
+        $query    = "SELECT table_name
+            FROM information_schema.tables
+            WHERE TABLE_SCHEMA=:db
+            AND table_name=:tn";
+
+        $result = $this->pselectOne(
+            $query,
+            array(
+             'tn' => $test_name,
+             'db' => $database['database'],
+            )
+        );
+
+        if (!empty($result)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks to see if a table contains a specified column
+     *
+     * @param string $test_name The table to check for a column.
+     * @param string $column    The column name to check the table for.
+     *
+     * @return boolean true if the table has a the given column
+     */
+    function columnExists($test_name,$column)
+    {
+        $config   =& NDB_Config::singleton();
+        $database = $config->getSetting('database');
+        $query    = "SELECT DISTINCT table_name
+            FROM information_schema.columns
+            WHERE table_name = :tn
+            AND COLUMN_NAME = :cn
+            AND TABLE_SCHEMA = :db";
+
+        $effected = $this->pselectOne(
+            $query,
+            array(
+             'tn' => $test_name,
+             'cn' => $column,
+             'db' => $database,
+            )
+        );
+        if ($effected) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Escapes a string properly for mysql and appends and prepends backticks.
+     * Any backticks you append or prepend will be escaped.
+     *
+     * @param string $tableName The column or table name that needs to be escaped
+     *
+     * @return string surrounded by backticks and with special characters escaped.
+     */
+    function escape($tableName)
+    {
+        //with help from
+        // http://php.net/manual/en/function.mysql-real-escape-string.php
+        if (!empty($tableName) && is_string($tableName)) {
+            $stringWithEscapedChars = str_replace(
+                array(
+                 '\\',
+                 "\0",
+                 "\n",
+                 "\r",
+                 "'",
+                 '"',
+                 "\x1a",
+                 "`",
+                ),
+                array(
+                 '\\\\',
+                 '\\0',
+                 '\\n',
+                 '\\r',
+                 "\\'",
+                 '\\"',
+                 '\\Z',
+                 "\\`",
+                ),
+                $tableName
+            );
+            $fullyEscapedString     = "`".$stringWithEscapedChars."`";
+            return $fullyEscapedString;
+        } else {
+            return $tableName;
+        }
+    }
+
 }
 ?>

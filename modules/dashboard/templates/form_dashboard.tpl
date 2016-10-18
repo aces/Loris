@@ -1,6 +1,4 @@
-<link rel="stylesheet" href="css/c3.css">
-<script src="js/d3.min.js" charset="utf-8"></script>
-<script src="js/c3.min.js"></script>
+<link rel="stylesheet" href="{$baseurl}/css/c3.css">
 
 <div class="row">
     <div class="col-lg-8">
@@ -11,14 +9,15 @@
                 <h3 class="welcome">Welcome, {$username}.</h3>
                 <p class="pull-right small login-time">Last login: {$last_login}</p>
                 {if !is_null($project_description)}
-                <p class="project-description">{$project_description}</p>
+                    <p class="project-description">{$project_description}</p>
                 {/if}
             </div>
             <!-- Only add the welcome panel footer if there are links -->
             {if $dashboard_links neq ""}
-                <div class="panel-footer">| 
+                <div class="panel-footer">|
                     {foreach from=$dashboard_links item=link}
-                        <a href="{$link.url}" target="{$link.windowName}">{$link.label}</a> |
+                        <a href="{$link.url}" target="{$link.windowName}">{$link.label}</a>
+                        |
                     {/foreach}
                 </div>
             {/if}
@@ -39,7 +38,7 @@
                             <li class="active"><a data-target="overall-recruitment">View overall recruitment</a></li>
                             <li><a data-target="recruitment-site-breakdown">View site breakdown</a></li>
                             {if $useProjects eq "true"}
-                            <li><a data-target="recruitment-project-breakdown">View project breakdown</a></li>
+                                <li><a data-target="recruitment-project-breakdown">View project breakdown</a></li>
                             {/if}
                         </ul>
                     </div>
@@ -68,13 +67,13 @@
                     {/if}
                 </div>
                 {if $useProjects eq "true"}
-                <div class="recruitment-panel hidden" id="recruitment-project-breakdown">
-                    {foreach from=$recruitment key=ID item=project}
-                        {if $ID != "overall"}
-                        {include file='progress_bar.tpl' project=$project}
-                        {/if}
-                    {/foreach}
-                </div>
+                    <div class="recruitment-panel hidden" id="recruitment-project-breakdown">
+                        {foreach from=$recruitment key=ID item=project}
+                            {if $ID != "overall"}
+                                {include file='progress_bar.tpl' project=$project}
+                            {/if}
+                        {/foreach}
+                    </div>
                 {/if}
             </div>
         </div>
@@ -98,14 +97,14 @@
                 </div>
             </div>
             <div class="panel-body">
-                    <div id="scans-line-chart-panel">
-                        <h5 class="chart-title">Scan sessions per site</h5>
-                        {if $total_scans neq 0}
-                            <div id="scanChart"></div>
-                        {else}
-                            <p>There have been no scans yet.</p>
-                        {/if}
-                    </div>
+                <div id="scans-line-chart-panel">
+                    <h5 class="chart-title">Scan sessions per site</h5>
+                    {if $total_scans neq 0}
+                        <div id="scanChart"></div>
+                    {else}
+                        <p>There have been no scans yet.</p>
+                    {/if}
+                </div>
                 <div id="recruitment-line-chart-panel" class="hidden">
                     <h5 class="chart-title">Recruitment per site</h5>
                     {if $recruitment['overall']['total_recruitment'] neq 0}
@@ -131,25 +130,26 @@
                     <div class="panel-body">
                         <div class="list-group tasks">
                             {if $conflicts neq "" and $conflicts neq 0}
-                            <a href="main.php?test_name=conflict_resolver" class="list-group-item">
-                                <div class="row">
-                                    <div class="col-xs-8 text-left">
-                                        <div class="huge">{$conflicts}</div>
-                                        Data entry conflict{if $conflicts neq 1}s{/if}
+                                <a href="{$baseURL}/conflict_resolver/" class="list-group-item conflict_resolver">
+                                    <div class="row">
+                                        <div class="col-xs-8 text-left">
+                                            <div class="huge">{$conflicts}</div>
+                                            Data entry conflict{if $conflicts neq 1}s{/if}
+                                        </div>
+                                        <div class="col-xs-4 text-right alert-chevron">
+                                            <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                            <p class="small task-site">{$conflicts_site}</p>
+                                        </div>
                                     </div>
-                                    <div class="col-xs-4 text-right alert-chevron">
-                                        <span class="glyphicon glyphicon-chevron-right medium"></span>
-                                        <p class="small task-site">{$conflicts_site}</p>
-                                    </div>
-                                </div>
-                            </a>
+                                </a>
                             {/if}
                             {if $incomplete_forms neq "" and $incomplete_forms neq 0}
-                                {if $incomplete_forms_site eq "Site: all"}
-                                <a href="main.php?test_name=statistics&submenu=statistics_site" class="list-group-item">
+                            {if $incomplete_forms_site eq "Site: all"}
+                            <a href="{$baseURL}/statistics/statistics_site/" class="list-group-item statistics">
                                 {else}
-                                <a href="main.php?test_name=statistics&submenu=statistics_site&CenterID={$user_site}" class="list-group-item">
-                                {/if}
+                                <a href="{$baseURL}/statistics/statistics_site/?CenterID={$user_site}"
+                                   class="list-group-item">
+                                    {/if}
                                     <div class="row">
                                         <div class="col-xs-8 text-left">
                                             <div class="huge">{$incomplete_forms}</div>
@@ -161,64 +161,80 @@
                                         </div>
                                     </div>
                                 </a>
-                            {/if}
-                            {if $new_scans neq "" and $new_scans neq 0}
-                                <a href="main.php?test_name=imaging_browser" class="list-group-item new-scans">
-                                    <div class="row">
-                                        <div class="col-xs-8 text-left">
-                                            <div class="huge">{$new_scans}</div>
-                                            New and pending scan{if $new_scans neq 1}s{/if}
+                                {/if}
+                                {if $new_scans neq "" and $new_scans neq 0}
+                                    <a href="{$baseURL}/imaging_browser/" class="list-group-item new-scans">
+                                        <div class="row">
+                                            <div class="col-xs-8 text-left">
+                                                <div class="huge">{$new_scans}</div>
+                                                New and pending scan{if $new_scans neq 1}s{/if}
+                                            </div>
+                                            <div class="col-xs-4 text-right alert-chevron">
+                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                                <p class="small task-site">{$new_scans_site}</p>
+                                            </div>
                                         </div>
-                                        <div class="col-xs-4 text-right alert-chevron">
-                                            <span class="glyphicon glyphicon-chevron-right medium"></span>
-                                            <p class="small task-site">{$new_scans_site}</p>
+                                    </a>
+                                {/if}
+                                {if $violated_scans neq "" and $violated_scans neq 0}
+                                    <a href="{$baseURL}/mri_violations/" class="list-group-item mri_violations">
+                                        <div class="row">
+                                            <div class="col-xs-8 text-left">
+                                                <div class="huge">{$violated_scans}</div>
+                                                Violated scan{if $violated_scans neq 1}s{/if}
+                                            </div>
+                                            <div class="col-xs-4 text-right alert-chevron">
+                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                                <p class="small task-site">{$violated_scans_site}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
-                            {/if}
-                            {if $violated_scans neq "" and $violated_scans neq 0}
-                                <a href="main.php?test_name=mri_violations" class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-xs-8 text-left">
-                                            <div class="huge">{$violated_scans}</div>
-                                            Violated scan{if $violated_scans neq 1}s{/if}
+                                    </a>
+                                {/if}
+                                {if $radiology_review neq "" and $radiology_review neq 0}
+                                    <a href="{$baseURL}/final_radiological_review/"
+                                       class="list-group-item radiological-review">
+                                        <div class="row">
+                                            <div class="col-xs-8 text-left">
+                                                <div class="huge">{$radiology_review}</div>
+                                                Final radiological review{if $radiology_review neq 1}s{/if}
+                                            </div>
+                                            <div class="col-xs-4 text-right alert-chevron">
+                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                                <p class="small task-site">{$radiology_review_site}</p>
+                                            </div>
                                         </div>
-                                        <div class="col-xs-4 text-right alert-chevron">
-                                            <span class="glyphicon glyphicon-chevron-right medium"></span>
-                                            <p class="small task-site">{$violated_scans_site}</p>
+                                    </a>
+                                {/if}
+                                {if $pending_users neq "" and $pending_users neq 0}
+                                    <a href="{$baseURL}/user_accounts/" class="list-group-item pending-accounts">
+                                        <div class="row">
+                                            <div class="col-xs-8 text-left">
+                                                <div class="huge">{$pending_users}</div>
+                                                Account{if $pending_users neq 1}s{/if} pending approval
+                                            </div>
+                                            <div class="col-xs-4 text-right alert-chevron">
+                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                                <p class="small task-site">{$pending_users_site}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </a>
-                            {/if}
-                            {if $radiology_review neq "" and $radiology_review neq 0}
-                            <a href="main.php?test_name=final_radiological_review" class="list-group-item radiological-review">
-                                <div class="row">
-                                    <div class="col-xs-8 text-left">
-                                        <div class="huge">{$radiology_review}</div>
-                                        Final radiological review{if $radiology_review neq 1}s{/if}
-                                    </div>
-                                    <div class="col-xs-4 text-right alert-chevron">
-                                        <span class="glyphicon glyphicon-chevron-right medium"></span>
-                                        <p class="small task-site">{$radiology_review_site}</p>
-                                    </div>
-                                </div>
-                            </a>
-                            {/if}
-                            {if $pending_users neq "" and $pending_users neq 0}
-                            <a href="main.php?test_name=user_accounts" class="list-group-item pending-accounts">
-                                <div class="row">
-                                    <div class="col-xs-8 text-left">
-                                        <div class="huge">{$pending_users}</div>
-                                        Account{if $pending_users neq 1}s{/if} pending approval
-                                    </div>
-                                    <div class="col-xs-4 text-right alert-chevron">
-                                        <span class="glyphicon glyphicon-chevron-right medium"></span>
-                                        <p class="small task-site">{$pending_users_site}</p>
-                                    </div>
-                                </div>
-                            </a>
-                            {/if}
-                        </div>  
+                                    </a>
+                                {/if}
+                                {if $issues_assigned neq "" and $issues_assigned neq 0}
+                                    {*submit a post request here so its already filtered?*}
+                                    <a href="{$baseURL}/issue_tracker/?submenu=my_issue_tracker" class="list-group-item mri_violations">
+                                        <div class="row">
+                                            <div class="col-xs-8 text-left">
+                                                <div class="huge">{$issues_assigned}</div>
+                                                Issue{if $issues_assigned neq 1}s{/if} assigned to you
+                                            </div>
+                                            <div class="col-xs-4 text-right alert-chevron">
+                                                <span class="glyphicon glyphicon-chevron-right medium"></span>
+                                                <p class="small task-site">{$issues_assigned_site}</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                {/if}
+                        </div>
                     </div>
                     <!-- /.panel-body -->
                 </div>
@@ -237,18 +253,20 @@
                     <div class="panel-body">
                         <div class="list-group document-repository-item">
                             {foreach from=$document_repository_notifications item=link}
-                            <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$link.Data_dir}" download="{$link.File_name}" class="list-group-item">
-                                {if $link.new eq 1}
-                                    <span class="pull-left new-flag">NEW</span>
-                                {/if}
-                                <span class="pull-right text-muted small">Uploaded: {$link.Date_uploaded}</span>
-                                <br>
-                                {$link.File_name}
-                            </a>
+                                <a href="AjaxHelper.php?Module=document_repository&script=GetFile.php&File={$link.Data_dir}"
+                                   download="{$link.File_name}" class="list-group-item">
+                                    {if $link.new eq 1}
+                                        <span class="pull-left new-flag">NEW</span>
+                                    {/if}
+                                    <span class="pull-right text-muted small">Uploaded: {$link.Date_uploaded}</span>
+                                    <br>
+                                    {$link.File_name}
+                                </a>
                             {/foreach}
                         </div>
                         <!-- /.list-group -->
-                        <a href="main.php?test_name=document_repository" class="btn btn-default btn-block">Document Repository <span class="glyphicon glyphicon-chevron-right"></span></a>
+                        <a href="{$baseURL}/document_repository/" class="btn btn-default btn-block">Document Repository
+                            <span class="glyphicon glyphicon-chevron-right"></span></a>
                     </div>
                     <!-- /.panel-body -->
                 </div>

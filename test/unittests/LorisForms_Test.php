@@ -99,6 +99,34 @@ class LorisForms_Test extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test that the addSelect wrapper adds an element of the appropriate
+     * type to the page
+     *
+     * @return none
+     */
+    function testAddMultiSelect()
+    {
+        $this->form->addSelect("abc", "Hello", array('3' => 'Option 3'), array('multiple' => 'multiple'));
+
+        $this->assertTrue(isset($this->form->form['abc']));
+        $this->assertType("abc", "select");
+        $this->assertLabel("abc", "Hello");
+
+        $rendered = $this->form->renderElement($this->form->form['abc']);
+
+        $html = new DOMDocument();
+        // Add the HTML/body tags, because loadHTML will implicitly add them anyways
+        // and this makes it a little clearer how the DOM will be parsed.
+        $html->loadHTML("<html><body>$rendered</body></html>");
+
+        // documentElement is the <html> element, first child of that is the <body>, and
+        // first child of that is the rendered element
+        $element = $html->documentElement->firstChild->firstChild;
+
+        $this->assertEquals($element->nodeName, "select");
+        $this->assertTrue($element->hasAttribute("multiple"));
+    }
+    /**
      * Test that the addText wrapper adds an element of the appropriate
      * type to the page
      *
@@ -151,9 +179,6 @@ class LorisForms_Test extends PHPUnit_Framework_TestCase
         $this->assertType("abc", "password");
         $this->assertLabel("abc", "Hello");
     }
-
-
-
 
 
     /**

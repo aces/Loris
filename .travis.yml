@@ -5,15 +5,13 @@ cache:
         - vendor
 
 php:
-    - 5.4
-    - 5.6
-    - '7'
-
-matrix:
-    allow_failures:
-        - php: '7'
+    - "5.6"
+    - "7"
 
 sudo: false
+
+addons:
+    firefox: "44.0"
 
 before_install:
     # Start Xvfb in a desktop screen size,
@@ -22,24 +20,37 @@ before_install:
     - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1600x1200x16"
     #- "export DISPLAY=:99.0"
     #- "sh -e /etc/init.d/xvfb start"
+    # Ensure node version is up to date
+    - nvm install node
+    - mkdir -p project project/libraries
 
 install:
     # Install composer modules
-    - composer install --dev
+    - composer install
     - phpenv rehash
 
     # Install jslint
     - npm install -g jslint
 
-      # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.45/selenium-server-standalone-2.45.0.jar"
+    # Install ESLint and plugins
+    - npm -g install eslint
+    - npm -g install eslint-config-google
+    - npm -g install eslint-plugin-react
 
-    - php -S localhost:8000 -t htdocs 2>1 > /dev/null &
+    # Download a Selenium Web Driver release
+    - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
+
+    - PHP_INI_SCAN_DIR=":test/" php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
+
+    # Extracting firefox and setting PATH variable...
+    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
+    - export PATH="/tmp/firefox:$PATH"
+    - echo "Using firefox version `firefox --version`"
 
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.45.0.jar > /dev/null &
+    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
 
 before_script:
     # Set up the Loris environment
@@ -50,15 +61,22 @@ before_script:
     # for the config file, and reset the Loris user's password for testing
     - mysql -e 'CREATE DATABASE LorisTest'
     - mysql LorisTest < SQL/0000-00-00-schema.sql
-    - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
+    - mysql LorisTest < SQL/0000-00-01-Permission.sql
+    - mysql LorisTest < SQL/0000-00-02-Menus.sql
+    - mysql LorisTest < SQL/0000-00-03-ConfigTables.sql
+    - mysql LorisTest < SQL/0000-00-04-Help.sql
+    - mysql LorisTest < docs/instruments/radiology_review.sql
+    - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE,DROP,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
     - mysql LorisTest -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aatestpass')), Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
-    - sed -e "s/%HOSTNAME%/localhost/g"
-          -e "s/%USERNAME%/SQLTestUser/g"
-          -e "s/%PASSWORD%/TestPassword/g"
-          -e "s/%DATABASE%/LorisTest/g"
-          < docs/config/config.xml > project/config.xml
+    - cp docs/config/config.xml project/config.xml
+    - cp docs/config/config.xml test/config.xml
+    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" project/config.xml
+    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" test/config.xml
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
     - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
+
+#env:
+ # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
     # Run PHP -l on everything to ensure there's no syntax
@@ -67,62 +85,47 @@ script:
       do
         php -l $i || exit $?;
       done
-    # Run unit tests to make sure functions still do what they should.
-    - vendor/bin/phpunit test/unittests/
 
-    # Run integration tests to make sure everything didn't just
-    # break
-    - vendor/bin/phpunit test/integrationtests/
-
-    # Run integration tests for specific modules
-    - vendor/bin/phpunit modules/brainbrowser/test
-    - vendor/bin/phpunit modules/candidate_list/test
-    - vendor/bin/phpunit modules/candidate_parameters/test
-    - vendor/bin/phpunit modules/configuration/test
-    - vendor/bin/phpunit modules/conflict_resolver/test
-    - vendor/bin/phpunit modules/create_timepoint/test
-    - vendor/bin/phpunit modules/dashboard/test
-    - vendor/bin/phpunit modules/data_integrity_flag/test
-    - vendor/bin/phpunit modules/data_team_helper/test
-    - vendor/bin/phpunit modules/datadict/test
-    - vendor/bin/phpunit modules/dicom_archive/test
-    - vendor/bin/phpunit modules/document_repository/test
-    - vendor/bin/phpunit modules/examiner/test
-    - vendor/bin/phpunit modules/final_radiological_review/test
-    - vendor/bin/phpunit modules/genomic_browser/test
-    - vendor/bin/phpunit modules/help_editor/test
-    - vendor/bin/phpunit modules/imaging_browser/test
-    - vendor/bin/phpunit modules/instrument_builder/test
-    - vendor/bin/phpunit modules/instrument_list/test
-    - vendor/bin/phpunit modules/instrument_manager/test
-    - vendor/bin/phpunit modules/mri_upload/test
-    - vendor/bin/phpunit modules/mri_violations/test
-    - vendor/bin/phpunit modules/new_profile/test
-    - vendor/bin/phpunit modules/next_stage/test
-    - vendor/bin/phpunit modules/reliability/test
-    - vendor/bin/phpunit modules/statistics/test
-    - vendor/bin/phpunit modules/survey_accounts/test
-    - vendor/bin/phpunit modules/timepoint_flag/test
-    - vendor/bin/phpunit modules/timepoint_list/test
-    - vendor/bin/phpunit modules/training/test
-    - vendor/bin/phpunit modules/user_accounts/test
-
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     # Run PHPCS on the entire libraries directory.
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions php/installer
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs
 
     # Run PHPCS on some scripts
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/CouchDB_Import_MRI.php
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
     - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/data_dictionary_builder.php
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml tools/generic_includes.php
 
     # Run PHPCS on specific modules
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/NDB_Menu_Filter_mri_upload.class.inc
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/mri_upload/php/File_Decompress.class.inc
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/imaging_uploader/php/NDB_Menu_Filter_imaging_uploader.class.inc
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml modules/imaging_uploader/php/File_Decompress.class.inc
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/genomic_browser
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_list
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/conflict_resolver
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/dashboard
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/examiner
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/training
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/brainbrowser
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/configuration
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/acknowledgements
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/data_release
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/media
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_parameters/ajax
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/dicom_archive
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/create_timepoint
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
+
+    # Run ESLint on Loris modules
+    - eslint modules/
+
+    # Run ESLint on generic React components
+    - eslint jsx/
+
+    # Run ESLint on specific scripts
+    - eslint htdocs/js/util/
+    - eslint Gruntfile.js
+
+    # Run unit tests to make sure functions still do what they should.
+    - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml

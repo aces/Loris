@@ -36,6 +36,6 @@ foreach ($list_of_sites as $siteID => $siteName) {
 
 print json_encode($recruitmentBySiteData);
 
-exit();
+return 0;
 
 ?>

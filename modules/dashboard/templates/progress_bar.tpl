@@ -1,4 +1,4 @@
-{if $project['recruitment_target'] neq ""}
+  {if $project['recruitment_target'] neq ""}
     <h5>{$project['title']}</h5>
     {if $project['surpassed_recruitment'] eq "true"}
         <p>The recruitment target ({$project['recruitment_target']}) has been passed.</p>

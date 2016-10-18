@@ -12,8 +12,6 @@
  *   @license    @GPLv3
  *   @link       https://www.github.com/aces/Loris-Trunk/
  */
-require_once "NDB_Form.class.inc";
-require_once "NDB_Menu_Filter_final_radiological_review.class.inc";
 
 /**
  * Generates the form for user input in the final_radiological_review
@@ -25,6 +23,9 @@ require_once "NDB_Menu_Filter_final_radiological_review.class.inc";
  *   @license    @GPLv3
  *   @link       https://www.github.com/aces/Loris-Trunk/
  */
+
+require_once "NDB_Form.class.inc";
+require_once "NDB_Menu_Filter_final_radiological_review.class.inc";
 class NDB_Form_final_radiological_review extends NDB_Form
 {
     /**
@@ -40,7 +41,11 @@ class NDB_Form_final_radiological_review extends NDB_Form
      */
     function _hasAccess() 
     {
-        return $this->_has_perm('view_final_radiological_review');
+        $user =& User::singleton();
+        return (
+            $user->hasPermission('view_final_radiological_review') ||
+            $user->hasPermission('edit_final_radiological_review')
+        );
     }
     /**
      * Wrapper to get the user object and check the permission.
@@ -55,9 +60,6 @@ class NDB_Form_final_radiological_review extends NDB_Form
     function _has_perm($perm)
     {
         $user =& User::singleton();
-        if (PEAR::isError($user)) {
-            return PEAR::raiseError("User Error: " .$user->getMessage());
-        }
         return $user->hasPermission($perm);
     }
 
@@ -172,7 +174,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
             $original_review = $DB->pselectRow(
                 "SELECT r.Scan_done as Original_Scan_Done, 
                 r.review_results as Original_Review_Results, 
-                r.abnormal_atypical_exculsionary as Original_Exclusionary, 
+                r.abnormal_atypical_exclusionary as Original_Exclusionary,
                 r.Incidental_findings as Original_Incidental_Findings, 
                 e.full_name as Original_Examiner, 
                 c.PSCID as PSCID, 
@@ -286,18 +288,6 @@ class NDB_Form_final_radiological_review extends NDB_Form
         $this->stripEmpty($values, 'Final_Examiner2');
         $this->stripEmpty($values, 'Review_Done2');
         $this->stripEmpty($values, 'Finalized');
-
-        /* With the Loris Forms all the static elements on the page are submitted
-         * in the post request. This should be fixed in the base class but doing
-         * this temporary fix in the module for the 15.04 release.
-         */
-        $to_unset = array('DICOM_Folder_Name','DICOM_ID','Original_Scan_Done',
-                          'Visit_label','CandID','PSCID','history','CommentID',
-                          'Original_Review_Results','SessionID','Original_Examiner',
-                          'Original_Exclusionary','Original_Incidental_Findings');
-        foreach($to_unset as $key) {
-            unset($values[$key]);
-        }
 
         if (!(is_null($_SESSION['State']))) {
             $currentUser           = User::singleton($_SESSION['State']->getUsername());

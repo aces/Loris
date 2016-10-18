@@ -25,23 +25,6 @@
         <name>Example database</name>
     </database>
 
-    <!-- Following links will appear on the footer of the home page of loris installation -->
-    <Studylinks>
-        <link url='http://www.loris.ca'>Loris Website</link>
-        <link url='https://github.com/aces'>GitHub</link>
-    </Studylinks>
-
-    <links>
-        <link url='http://www.loris.ca'>Loris Website</link>
-        <link url='https://github.com/aces'>GitHub</link>
-    </links>
-
-    <dashboard>
-        <!-- The dashboard links will appear just below the project description on the Dashboard. -->
-        <dashboardLinks>
-            <link url='http://www.loris.ca'>Important Website</link>
-        </dashboardLinks>
-    </dashboard>
     <CouchDB>
         <SyncAccounts>false</SyncAccounts>
     </CouchDB>
@@ -50,8 +33,9 @@
     <study>
         <PSCID>
             <!-- PSCID (Study Center ID) generation method possible options: sequential/random/user -->
-            <generation>user</generation>
+            <generation>sequential</generation>
             <structure>
+                <seq type="siteAbbrev"/>
                 <seq type="alphanumeric" minLength="4"/> <!-- Ex: AAA1-->
             </structure>
         </PSCID>
@@ -70,37 +54,6 @@
             <candidate>ProbandDoB</candidate>
             <parameter_session>MRI_Done</parameter_session>
         </HeaderTable>
-        <Projects>
-            <project>
-                <id>1</id>
-                <title>Sample Project</title>
-                <recruitmentTarget>50</recruitmentTarget>
-            </project>
-            <project>
-                <id>2</id>
-                <title>Another Sample Project</title>
-                <recruitmentTarget>50</recruitmentTarget>
-            </project>
-        </Projects>
-        <!-- number of subprojects in the project - corresponds to the list of subpojects below -->
-        <!-- max number of timepoints per subject (integer)-->
-        <subprojects>
-            <subproject>
-                <id>1</id>
-                <title>Control</title>
-                <options>
-                    <useEDC>false</useEDC>
-                </options>
-            </subproject>
-            <subproject>
-                <id>2</id>
-                <title>Experimental</title>
-                <options>
-                    <useEDC>false</useEDC>
-                </options>
-            </subproject>
-        </subprojects>
-
         <!-- defines how visit labels are assigned -->
         <visitLabel subprojectID="1">
             <!-- generation can have either 'user' or 'sequence' to denote user entered or a pre-defined sequence -->
@@ -211,4 +164,8 @@
             <permission>sampleInstrument2PermissionName</permission>
         </instrument>
     </instrumentPermissions>
+
+    <!-- MINC TOOLS PATH -->
+    <MINCToolsPath>%MINCTOOLSPATH%</MINCToolsPath>
+
 </config>

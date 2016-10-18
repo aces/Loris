@@ -1,12 +1,11 @@
 <?php
-require_once 'PEAR.php';
 
 /**
  * HelpFile class
  * @package main
  * @subpackage unused
  */
-class HelpFile extends PEAR
+class HelpFile
 {
     /**
      * Identifies the help file
@@ -31,7 +30,7 @@ class HelpFile extends PEAR
      * @return HelpFile
      * @access public
      */
-    function &factory($helpID)
+    static function &factory($helpID)
     {
         // create DB object
         $DB =& Database::singleton();
@@ -522,7 +521,7 @@ class HelpFile extends PEAR
      *
      * @return integer of HelpID
      */
-    function hashToID($hash)
+    static function hashToID($hash)
     {
         // create DB object
         $DB =& Database::singleton();

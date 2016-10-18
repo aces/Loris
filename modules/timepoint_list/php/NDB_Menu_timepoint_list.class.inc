@@ -1,7 +1,5 @@
 <?php
-require_once 'NDB_Menu.class.inc';
-require_once 'TimePoint_List_ControlPanel.class.inc';
-
+require_once __DIR__ . '/TimePoint_List_ControlPanel.class.inc';
 /**
  * The timepoint list menu
  * @package main
@@ -12,14 +10,8 @@ class NDB_Menu_timepoint_list extends NDB_Menu
     {
         // create user object
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         $candidate =& Candidate::singleton($_REQUEST['candID']);
-        if (Utility::isErrorX($candidate)) {
-            return PEAR::raiseError("Candidate Error (".$_REQUEST['candID']."): ".$candidate->getMessage());
-        }
 
         // check user permissions
     	if ($user->hasPermission('access_all_profiles') || $user->getData('CenterID') == $candidate->getData('CenterID')) {
@@ -33,10 +25,6 @@ class NDB_Menu_timepoint_list extends NDB_Menu
         foreach ($listOfTimePoints as $sessionID) {
             // create timepoint object
             $timePoint =& TimePoint::singleton($sessionID);
-            if(Utility::isErrorX($timePoint)) {
-                return PEAR::raiseError("TimePoint Error ($sessionID): ".$timePoint->getMessage());
-            }
-
             // check if at least one timepoint belongs to the user's site
             if ($user->getData('CenterID') == $timePoint->getData('CenterID')) {
                 return true;
@@ -50,10 +38,8 @@ class NDB_Menu_timepoint_list extends NDB_Menu
     {
         // create candidate object
         $candidate =& Candidate::singleton($_REQUEST['candID']);
-        if (Utility::isErrorX($candidate)) {
-            return PEAR::raiseError("Candidate Error (".$_REQUEST['candID']."): ".$candidate->getMessage());
-        }
-        
+        $DB =& Database::singleton();
+
         $numberOfVisits = 0;
         $this->tpl_data['candID'] = $_REQUEST['candID'];
         $this->tpl_data['PSCID'] = $candidate->getPSCID();
@@ -61,9 +47,6 @@ class NDB_Menu_timepoint_list extends NDB_Menu
     
         if (!empty($listOfTimePoints)) {
             $user =& User::singleton();
-            if (Utility::isErrorX($user)) {
-                return PEAR::raiseError("User Error: ".$user->getMessage());
-            }
             $username = $user->getData('UserID');
 
             $feedback_select_inactive = null;
@@ -77,9 +60,6 @@ class NDB_Menu_timepoint_list extends NDB_Menu
             $x = 0;
             foreach ($listOfTimePoints as $currentTimePoint) {
                 $timePoint =& TimePoint::singleton($currentTimePoint);
-                if (Utility::isErrorX($timePoint)) {
-                    return PEAR::raiseError("TimePoint Error ($currentTimePoint): ".$timePoint->getMessage());
-                }
             
                 // get the first date of visit in order to
                 // turn on the future time points bit if we have a date of visit
@@ -98,21 +78,18 @@ class NDB_Menu_timepoint_list extends NDB_Menu
                 $this->tpl_data['timePoints'][$x]['currentStatus'] = $timePoint->getCurrentStatus();
                 $this->tpl_data['timePoints'][$x]['currentDate'] = $timePoint->getCurrentDate();
                 
+
+                // get Center Name
+		$centerID = $timePoint->getData('CenterID');
+		$center = $DB->pselectRow("SELECT CenterID as ID, Alias FROM psc WHERE CenterID =:cid", array('cid' => $centerID));
+               $this->tpl_data['timePoints'][$x]['CenterName'] = $center['Alias'];
+
                 // create feedback object for the time point            
                 $feedback = NDB_BVL_Feedback::singleton($username, null, $timePoint->getData('SessionID'));
-                if (Utility::isErrorX($feedback)) {
-                    return PEAR::raiseError("Feedback Error (".$timePoint->getData('SessionID')."): ".$feedback->getMessage());
-                }
 
                 $feedback_status = $feedback->getMaxThreadStatus($feedback_select_inactive);
-                if (Utility::isErrorX($feedback_status)) {
-                    return PEAR::raiseError("timepoint_list::setup() feedback status: ".$feedback_status->getMessage());
-                }
 
                 $feedback_count = $feedback->getThreadCount();
-                if (Utility::isErrorX($feedback_count)) {
-                    return PEAR::raiseError("timepoint_list::setup() feedback count: ".$feedback_count->getMessage());
-                }
 
                 $this->tpl_data['timePoints'][$x]['feedbackCount'] = (empty($feedback_count)) ? $feedback_status : $feedback_count;
                 $this->tpl_data['timePoints'][$x]['feedbackStatus'] = $feedback_status;
@@ -124,9 +101,6 @@ class NDB_Menu_timepoint_list extends NDB_Menu
 
                     // get the outcome data
                     $outcomeStage = $this->_determinePreviousStage($currentTimePoint);
-                    if (Utility::isErrorX($outcomeStage)) {
-                        return PEAR::raiseError("timepoint_list::setup() outcome stage: ".$outcomeStage->getMessage());
-                    }
                     $getStatusMethod = 'get'.$outcomeStage.'Status';
                     $getDateMethod = 'getDateOf'.$outcomeStage;
 
@@ -147,9 +121,6 @@ class NDB_Menu_timepoint_list extends NDB_Menu
              */
             if (isset($firstDateOfVisit)) {
                 $timePoint = TimePoint::singleton($listOfTimePoints[0]);
-                if (Utility::isErrorX($timePoint)) {
-                    return PEAR::raiseError("TimePoint Error ($listOfTimePoints[0]): ".$timePoint->getMessage());
-                }
 
                 $this->tpl_data['SubprojectID'] = $timePoint->getSubprojectID();
 				
@@ -163,9 +134,6 @@ class NDB_Menu_timepoint_list extends NDB_Menu
     {
         // create timepoint object
         $timePoint =& TimePoint::singleton($sessionID);
-        if (Utility::isErrorX($timePoint)) {
-            return PEAR::raiseError("TimePoint Error ($sessionID): ".$timePoint->getMessage());
-        }
 
         // outcome stage is the last stage (approval || visit || screening || not started, in that order) with a non-null status
         if($timePoint->getData('Approval') != NULL) {
@@ -177,10 +145,40 @@ class NDB_Menu_timepoint_list extends NDB_Menu
         }
         return  'Not Started';
     }
+    /**
+     * Used by the NDB_caller class when loading a page. 
+     * Call the display function of the appropriate modules feedback panel.
+     *
+     * @author Evan McIlroy <evanmcilroy@gmail.com>
+     */ 
+    
+    function getFeedbackPanel($candID, $sessionID = null){
+        $feedbackPanel = new BVL_Feedback_Panel($candID);
+        $html = $feedbackPanel->display();
+        return $html;
+    }
 
     function getActionButtons() {
         $controlPanel = new TimePoint_List_ControlPanel($_REQUEST['candID']);
         return $controlPanel->display();
+    }
+
+    /**
+     * Get dependencies to timepoint_list for image browsing link
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/timepoint_list/js/timepoint_list_helper.js",
+            )
+        );
     }
 }
 ?>

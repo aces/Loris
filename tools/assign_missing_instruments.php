@@ -39,7 +39,11 @@
 //foreach candidate we need to look at each timepoint
 //compare the looked up battery to the actual assigned battery
 //add missing instruments.
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+set_include_path(
+    get_include_path().":".
+    __DIR__."/../project/libraries:".
+    __DIR__."/../php/libraries:"
+);
 
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
@@ -54,10 +58,9 @@ if ((isset($argv[1]) && $argv[1] === "confirm")
     $confirm = true;
 }
 
-$DB    = Database::singleton();
-$query = "SELECT ID, subprojectID from session";
+$DB = Database::singleton();
 if (!empty($argv[1]) && $argv[1]!="confirm") {
-    $query .=" WHERE visit_label='$argv[1]'";
+    $visit_label = $argv[1];
 } else {
     $visit_labels = $DB->pselect(
         "SELECT DISTINCT Visit_label FROM session
@@ -66,6 +69,7 @@ if (!empty($argv[1]) && $argv[1]!="confirm") {
         array()
     );
 }
+
 /**
  * Adds the missing instruments based on the visit_label
  *
@@ -103,7 +107,8 @@ function populateVisitLabel($result, $visit_label)
     );
     $actual_battery  =$battery->getBattery(
         $timePoint->getCurrentStage(),
-        $result['subprojectID']
+        $result['subprojectID'],
+        $visit_label
     );
 
     $diff =array_diff($defined_battery, $actual_battery);
@@ -124,11 +129,12 @@ function populateVisitLabel($result, $visit_label)
 }
 
 if (isset($visit_label)) {
-    $query   ="SELECT s.ID, s.subprojectID, s.CandID from session 
+    $query ="SELECT s.ID, s.subprojectID, s.CandID from session 
             s LEFT JOIN candidate c USING (CandID) 
             WHERE s.Active='Y'
             AND c.Active='Y' AND s.visit_label=:vl";
-    $where   = array('vl' => "'".$argv[1]."'");
+    $where = array('vl' => $argv[1]);
+
     $results = $DB->pselect($query, $where);
     foreach ($results AS $result) {
         populateVisitLabel($result, $visit_label);

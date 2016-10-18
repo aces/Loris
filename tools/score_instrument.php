@@ -85,11 +85,6 @@ if($test_name != 'all') {
 }
 
 $db =& Database::singleton();
-if(PEAR::isError($db)) {
-    fwrite(STDERR, "Could not connect to database: ".$db->getMessage());
-    return false;
-}
-
 
 // check that the $test_name is a valid instrument
 if($test_name== 'all') {
@@ -98,10 +93,6 @@ if($test_name== 'all') {
     $query = "SELECT DISTINCT test_name FROM test_battery WHERE Active='Y' AND Test_name ='$test_name'";
 }
 $db->select($query, $result);
-if (PEAR::isError($result)) {
-    fwrite(STDERR, "DBError, failed to get the list of instruments: \n".$result->getMessage()."\n");
-    return false;
-}
 // if nothing is returned than the instrument DNE
 if (!is_array($result) || count($result)==0) {
     fwrite(STDERR, "Invalid Instrument ($test_name)!\n");
@@ -126,10 +117,6 @@ foreach($result as $test) {
         $query .= " AND s.ID = '$sessionID' AND s.CandID='$candID'";
     }
     $db->select($query, $result);
-    if (PEAR::isError($result)) {
-        fwrite(STDERR, "Dberror, failed to get the list of visits: \n".$result->getMessage()."\n");
-        return false;
-    }
     // return error if no candidates/timepoint matched the args
     if (!is_array($result) || count($result)==0) {
         fwrite(STDERR, "No records match the criteria returned for candidate ($candID), timepoint ($sessionID)!\n");
@@ -142,9 +129,6 @@ foreach($result as $test) {
     foreach ($result as $record) {
         // make an instance of the instrument's object
         $instrument =& NDB_BVL_Instrument::factory($test_name, $record['CommentID'],null);
-        if (PEAR::isError($instrument)) {
-            fwrite(STDERR, $instrument->getMessage()."\n");
-        }
 
         // check if the instrument has a scoring method
         if (!method_exists($instrument, "score")) {
@@ -159,10 +143,6 @@ foreach($result as $test) {
         // call the score function
         $db->selectRow("SELECT * FROM $test_name WHERE CommentID='$record[CommentID]'", $oldRecord);
         $success = $instrument->score();
-        if (PEAR::isError($success)) {
-            fwrite(STDERR, "Error, failed to score the instrument ($test_name) for CommentID (".$record['CommentID']."):\n".$success->getMessage()."\n");
-            return false;
-        }
         $db->selectRow("SELECT * FROM $test_name WHERE CommentID='$record[CommentID]'", $newRecord);
         unset($oldRecord['Testdate']);
         unset($newRecord['Testdate']);

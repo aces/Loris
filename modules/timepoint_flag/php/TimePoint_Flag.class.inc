@@ -1,20 +1,41 @@
 <?php
 /**
-*
-* This class provides methods to 'flag' any data records in the schema.
-* Structure:
-* Data is overlayed by flags. Flags are defined in the parameter_timepoint_flag table. 
-* A flag has a set of triggers, tests defined for a db field. Triggers are defined in the parameter_timepoint_flag_triggers table.
-* A flag may also have a set of review fields that are looked up and displayed in the GUI to provide additional info about the flag. The review fields are defined in the parameter_timepoint_flag_review_fields table. Te review fields are not used/evaluated to trigger flags.
-*
-* A flag is represented by a record in the parameter_timepoint_flag_session table. It is raised when one or more of it's triggers return TRUE for their tests. Each flag/record has a type,category, and a status (NULL/ON/OFF). Default status is always NULL and it can updated from the web GUI. A comment is required when setting the status to OFF to enforce user to provide a reason for disabling the flag.
-*
-* Modules,menus,tools:
-* Flags are triggered by a cmd-line tool and updateds via the web GUI's menu_filter class, both of which are written separately for each project. 
-* This class provides methods needed to evaluate, trigger, and update flag records in the system.
-* There are three 'classes' of methods
-* @package timepoint_flag
-*/
+ * TimePoint_Flag.call.inc File Doc Comment
+ *
+ * This class provides methods to 'flag' any data records in the schema.
+ * Structure:
+ * Data is overlayed by flags. Flags are defined in the parameter_timepoint_flag
+ * table. 
+ * A flag has a set of triggers, tests defined for a db field. Triggers are defined
+ * in the parameter_timepoint_flag_triggers table.
+ * A flag may also have a set of review fields that are looked up and displayed in
+ * the GUI to provide additional info about the flag. The review fields are defined
+ * in the parameter_timepoint_flag_review_fields table. Te review fields are not
+ * used/evaluated to trigger flags.
+ *
+ * A flag is represented by a record in the parameter_timepoint_flag_session table.
+ * It is raised when one or more of it's triggers return TRUE for their tests.
+ * Each flag/record has a type,category, and a status (NULL/ON/OFF). Default status
+ * is always NULL and it can updated from the web GUI. A comment is required when
+ * setting the status to OFF to enforce user to provide a reason for disabling the
+ * flag.
+ *
+ * Modules,menus,tools:
+ * Flags are triggered by a cmd-line tool and updateds via the web GUI's menu_filter
+ * class, both of which are written separately for each project. 
+ * This class provides methods needed to evaluate, trigger, and update flag records
+ * in the system.
+ * There are three 'classes' of methods
+ * 
+ * PHP Version 5
+ * 
+ *  @category Main
+ *  @package  TimePoint_Flag
+ *  @author   jharlap <username@example.com>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ *  @version  GIT: <git_id>
+ *  @link     https://www.github.com/aces/Loris-Trunk/
+ **/
 
 /**
 * CONSTANTS
@@ -39,6 +60,18 @@ if (!defined('TIMEPOINT_FLAG_NULL_STATUS')) {
     define('TIMEPOINT_FLAG_NULL_STATUS', 'NULLme');
 }
 
+ /**
+ * Comments
+ *
+ * PHP Version 5
+ * 
+ *  @category Main
+ *  @package  TimePoint_Flag
+ *  @author   jharlap <username@example.com>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ *  @version  Release: <package_version>
+ *  @link     https://www.github.com/aces/Loris-Trunk/
+ */
 Class TimePoint_Flag extends TimePoint
 {
     // array of flags w/ elements Name and Type
@@ -46,7 +79,7 @@ Class TimePoint_Flag extends TimePoint
 
     // list of instruments assigned to a timepoint
     var $timepointBattery = array();
-    
+
     // list of instruments used for the flag
     var $listOfInstruments = array();
 
@@ -58,16 +91,23 @@ Class TimePoint_Flag extends TimePoint
 
     // list of flag types
     var $flagTypes = array();
-    
+
     // list of all active bvl instruments for project
     var $projectBvlInstruments = array();
 
+    /**
+    * Comments
+    * 
+    * @param int $sessionID sessionID
+    * 
+    * @return object $flagList[$sessionID] flagList
+    */
     static function &singleton($sessionID)
     {
         // instantiate new TimePoint_Flag object
         static $flagList;
 
-        if(!isset($flagList[$sessionID])) {
+        if (!isset($flagList[$sessionID])) {
 
             // create timepointFlag object
             $flagList[$sessionID] = new TimePoint_Flag();
@@ -83,7 +123,8 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * sets the [@link $this->flagTypes] property
-    * @throws PEAR error
+    * 
+    * @throws LorisException
     * @return void
     */
     function setFlagTypes()
@@ -98,7 +139,9 @@ Class TimePoint_Flag extends TimePoint
 
         // there must be at least on registered type
         if (count($result) == 0) {
-            throw new Exception("Timepoint_Flag::setFlagTypes(): no types in the database");
+            throw new Exception(
+                "Timepoint_Flag::setFlagTypes(): no types in the database"
+            );
         }
 
         foreach ($result as $record) {
@@ -110,7 +153,8 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * returns an array of flag types, keyed by TypeID
-    * @throws PEAR error
+    * 
+    * @throws LorisException
     * @return array list of types keyed by typeID
     */
     function getFlagTypes()
@@ -124,8 +168,9 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * returns an inverse array of @link $this->flagTypes ; array Name=>TypeID
-    * @throws PEAR error
-    * @return array list of type IDs keyed by type name
+    * 
+    * @throws LorisException
+    * @return array $list list of type IDs keyed by type name
     */
     function getFlagTypeIDs()
     {
@@ -142,6 +187,9 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * return the hex code of the type color defined in default.conf
+    * 
+    * @param string $type type
+    * 
     * @return string color hex code
     * @access public
     * @static
@@ -155,7 +203,8 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * sets the [@link $this->flagList] property, array w/ Name and Type elements
-    * @throws PEAR error
+    * 
+    * @throws LorisException
     * @return void
     */
     function setListOfFlags()
@@ -163,20 +212,27 @@ Class TimePoint_Flag extends TimePoint
         // new DB Object
         $db =& Database::singleton();
 
-        // get the timepoint subprojectid to query only the flags that belong to the subproject
+        // get the timepoint subprojectid to query only the flags that belong to
+        // the subproject
         // the method was inherited from the parent class
         $subproject = $this->getSubprojectID();
 
         // select only the flags that have a valid type
-        $query = "SELECT f.Flag_name FROM parameter_timepoint_flag as f, parameter_timepoint_flag_type as ft WHERE f.TypeID = ft.TypeID AND f.Active='Y'";
-        if (!empty($subproject)) $query .= " AND SubprojectID  = '$subproject'";
+        $query = "SELECT f.Flag_name FROM parameter_timepoint_flag as f,"
+            . " parameter_timepoint_flag_type as ft WHERE f.TypeID = ft.TypeID"
+            . " AND f.Active='Y'";
+        if (!empty($subproject)) {
+            $query .= " AND SubprojectID  = '$subproject'";
+        }
         $query .= " ORDER BY f.ID";
 
         $result = array();
         $db->select($query, $result);
 
         if (count($result) == 0) {
-            throw new Exception("Timepoint_Flag::setListOfFlags(): no flags are available!");
+            throw new Exception(
+                "Timepoint_Flag::setListOfFlags(): no flags are available!"
+            );
         }
 
         foreach ($result as $record) {
@@ -189,8 +245,9 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * retrieves the list of flags
+    * 
     * @return array list of flags w/ Name and Type elements
-    * @throws PEAR error
+    * @throws LorisException
     */
     function getListOfFlags()
     {
@@ -203,7 +260,9 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * returns full record for the flag from the flag and type table
-    * @param string name of the flag
+    * 
+    * @param string $flagName name of the flag
+    * 
     * @return array
     * @throws PEAR::error
     * @static
@@ -213,12 +272,18 @@ Class TimePoint_Flag extends TimePoint
         // DB Object
         $db =& Database::singleton();
 
-        $query = "SELECT f.Flag_name, f.TypeID, f.Description, ft.Name as Type, f.SubprojectID FROM parameter_timepoint_flag as f, parameter_timepoint_flag_type as ft WHERE f.TypeID = ft.TypeID AND f.Flag_name = '$flagName'";
+        $query = "SELECT f.Flag_name, f.TypeID, f.Description, ft.Name as Type,"
+            . " f.SubprojectID FROM parameter_timepoint_flag as f, parameter"
+            . "_timepoint_flag_type as ft WHERE f.TypeID = ft.TypeID AND"
+            . " f.Flag_name = '$flagName'";
 
         $db->selectRow($query, $result);
 
         if (count($result) == 0) {
-            throw new Exception("Timepoint_Flag::getFlagMetadata(): no data available for flag ($flagName)");
+            throw new Exception(
+                "Timepoint_Flag::getFlagMetadata(): no data"
+                . " available for flag ($flagName)"
+            );
         }
 
         return $result;
@@ -226,7 +291,9 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * returns the flag's type
-    * @param string flag name
+    * 
+    * @param string $flagName flag name
+    * 
     * @return string flag type
     * @access public
     * @static
@@ -236,16 +303,20 @@ Class TimePoint_Flag extends TimePoint
         // DB Object
         $db =& Database::singleton();
 
-        $query = "SELECT ft.Name as Type FROM parameter_timepoint_flag as f, parameter_timepoint_flag_type as ft WHERE f.TypeID = ft.TypeID AND f.Flag_name = '$flagName'";
+        $query = "SELECT ft.Name as Type FROM parameter_timepoint_flag as f,"
+            . " parameter_timepoint_flag_type as ft WHERE f.TypeID = ft.TypeID"
+            . " AND f.Flag_name = '$flagName'";
 
         $result = $db->selectOne($query);
 
         return $result;
     }
-    
+
     /**
     * returns the flag's description
-    * @param string flag name
+    * 
+    * @param string $flagName flag name
+    * 
     * @return string flag description
     * @access public
     * @static
@@ -255,16 +326,19 @@ Class TimePoint_Flag extends TimePoint
         // DB Object
         $db =& Database::singleton();
 
-        $query = "SELECT Description FROM parameter_timepoint_flag WHERE Flag_name = '$flagName'";
+        $query = "SELECT Description FROM parameter_timepoint_flag WHERE"
+            . " Flag_name = '$flagName'";
 
         $result = $db->selectOne($query);
 
         return $result;
     }
-    
+
     /**
     * returns the flag's subproject
-    * @param string flag name
+    * 
+    * @param string $flagName flag name
+    * 
     * @return string flag subproject
     * @access public
     * @static
@@ -274,7 +348,8 @@ Class TimePoint_Flag extends TimePoint
         // DB Object
         $db =& Database::singleton();
 
-        $query = "SELECT SubProjectID FROM parameter_timepoint_flag WHERE Flag_name = '$flagName'";
+        $query = "SELECT SubProjectID FROM parameter_timepoint_flag WHERE"
+            . " Flag_name = '$flagName'";
 
         $result = $db->selectOne($query);
 
@@ -282,9 +357,11 @@ Class TimePoint_Flag extends TimePoint
     }
 
     /**
-    * Sets a listOfTriggers property, an array triggers' meta-data keyed by the flag name
+    * Sets a listOfTriggers property, an array triggers' meta-data keyed by
+    *  the flag name
     *
-    * @param  string name of the flag
+    * @param string $flagName name of the flag
+    * 
     * @return void
     */
     function setFlagTriggers($flagName)
@@ -293,22 +370,29 @@ Class TimePoint_Flag extends TimePoint
         $db =& Database::singleton();
 
         // get the list of records(triggers for the flag) from the delt table
-        $query = "SELECT Trigger_name, Source, Table_name, Field_name, Conditional_operator, Value FROM parameter_timepoint_flag_trigger WHERE Flag_name = '$flagName' AND Active = 'Y'";
+        $query = "SELECT Trigger_name, Source, Table_name, Field_name,"
+            . " Conditional_operator, Value FROM parameter_timepoint_flag_trigger"
+            . " WHERE Flag_name = '$flagName' AND Active = 'Y'";
 
         $db->select($query, $result);
 
-        $this->listOfTriggers[$flagName]= $result;
+        $this->listOfTriggers[$flagName] = $result;
     }
 
     /**
     * Sets the list of trigger values for the flag
-    * @param  string name of the flag
+    * 
+    * @param string $flagName name of the flag
+    * 
     * @return array list of flag's triggers
     */
     function getFlagTriggers($flagName)
     {
         if (empty($flagName)) {
-            throw new Exception("Timepoint_Flag::getFlagTriggers(): missing flag name to get the flag triggers!");
+            throw new Exception(
+                "Timepoint_Flag::getFlagTriggers(): missing flag"
+                . " name to get the flag triggers!"
+            );
         }
 
         if (count($this->listOfTriggers[$flagName]) == 0) {
@@ -319,8 +403,9 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * returns the list of ALL instruments/sources used to evaluate the flags
+    * 
     * @return array list of instruments
-    * @throws PEAR error
+    * @throws LorisException
     */
     function setListOfSources()
     {
@@ -328,7 +413,8 @@ Class TimePoint_Flag extends TimePoint
         $db =& Database::singleton();
 
         //get the list
-        $query = "SELECT DISTINCT Source FROM parameter_timepoint_flag_trigger WHERE Flag_name <> '0_missing_instruments'";
+        $query = "SELECT DISTINCT Source FROM parameter_timepoint_flag_trigger"
+            . " WHERE Flag_name <> '0_missing_instruments'";
 
         $db->select($query, $result);
 
@@ -343,8 +429,9 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * returns the list of ALL instruments/sources used for the flag
+    * 
     * @return array list of instruments for the flag
-    * @throws PEAR error
+    * @throws LorisException
     */
     function getListOfSources()
     {
@@ -354,27 +441,20 @@ Class TimePoint_Flag extends TimePoint
         return $this->listOfInstruments;
     }
 
-    
-    
-    
-    
-    
-
     // METHODS to evaluate and create the flags,
     // used by the cmd-line tools
 
-    
-    
-    
-    
-        // BEHAVIORAL - related methods
+    // BEHAVIORAL - related methods
     /**
-    * sets a list of all active bvl instruments in project, registered in test_battery table
+    * sets a list of all active bvl instruments in project, registered in
+    * test_battery table
+    * 
     * @return array list of instruments
-    * @throws PEAR error
+    * @throws LorisException
     */
-    function setProjectBvlInstruments() {
-        
+    function setProjectBvlInstruments()
+    {
+
         // DB Object
         $db =& Database::singleton();
 
@@ -389,11 +469,12 @@ Class TimePoint_Flag extends TimePoint
 
         $this->projectBvlInstruments = $list;
     }
-    
+
     /**
     * returns the list of all active bvl instruments in project
+    * 
     * @return array list of instruments
-    * @throws PEAR error
+    * @throws LorisException
     */
     function getProjectBvlInstruments()
     {
@@ -405,8 +486,9 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * returns the list of instruments in a timepoint battery
+    * 
     * @return void
-    * @throws PEAR error
+    * @throws LorisException
     */
     function setTimepointBvlBattery()
     {
@@ -414,7 +496,8 @@ Class TimePoint_Flag extends TimePoint
         $db =& Database::singleton();
 
         //get the list
-        $query = "SELECT DISTINCT Test_name FROM flag WHERE SessionID = '".$this->getSessionID()."'";
+        $query = "SELECT DISTINCT Test_name FROM flag WHERE SessionID = '"
+            . $this->getSessionID()."'";
 
         $db->select($query, $result);
 
@@ -429,8 +512,9 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * returns the list of instruments in a timepoint battery
+    * 
     * @return array list of instruments
-    * @throws PEAR error
+    * @throws LorisException
     */
     function getTimepointBvlBattery()
     {
@@ -442,7 +526,8 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * sets the list of NA instruments for the timepoint
-    * @throws PEAR error
+    * 
+    * @throws LorisException
     * @return void
     */
     function setListOfNonAdministeredInstrumentsForTimePoint()
@@ -450,7 +535,9 @@ Class TimePoint_Flag extends TimePoint
         // new DB Object
         $db =& Database::singleton();
 
-        $query = "SELECT Test_name as Instrument FROM flag WHERE SessionID = '".$this->getSessionID()."' AND Data_entry = 'Complete' AND Administration = 'None'";
+        $query = "SELECT Test_name as Instrument FROM flag WHERE SessionID = '"
+            . $this->getSessionID()."' AND Data_entry = 'Complete' AND"
+            . " Administration = 'None'";
         $db->select($query, $result);
 
         foreach ($result as $record) {
@@ -463,6 +550,7 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * returns the list of NA instrumetns
+    * 
     * @return array list of NA instruments
     * @throws PEARR error
     */
@@ -475,12 +563,14 @@ Class TimePoint_Flag extends TimePoint
         return $this->listOfNonAdministeredInstrumentsForTimepoint;
     }
 
-    /*
+    /**
     * returns the list of Na instruments as a string (entries separated by "','")
-    * this is useful if you want to include the list in the WHERE consition of a query (eg. WHERE Test_name NOT IN ($list))
+    * this is useful if you want to include the list in the WHERE consition of a
+    *  query (eg. WHERE Test_name NOT IN ($list))
+    *
     * @return string list of NA instruments
-    * @throws PEAR error
-    */
+    * @throws LorisException
+    **/
     function getListOfNonAdministeredInstrumentsForTimePointAsString()
     {
         $listTests = $this->getListOfNonAdministeredInstrumentsForTimePoint();
@@ -488,18 +578,12 @@ Class TimePoint_Flag extends TimePoint
         return join("','", $listTests);
     }
 
-    
-    
-    
-    
     // METHODS TO evaluate FLAGS AND GET VALUES FOR TRIGGERS
-
-    
-    
 
     /**
     * wraps the [@link $this->evaluateFlag()] and tests all flag for the timepoint
-    * @throws PEAR error
+    * 
+    * @throws LorisException
     * @return void
     */
     function evaluateTimepointFlags()
@@ -513,16 +597,24 @@ Class TimePoint_Flag extends TimePoint
             $status = $this->evaluateFlag($currentFlag);
 
             // add the flag to the array of timepoint's flags
-            if (!empty($status)) $listOfFlags[$currentFlag] = $status;
+            if (!empty($status)) {
+                $listOfFlags[$currentFlag] = $status;
+            }
         }
         return $listOfFlags;
     }
 
     /**
-    * Evaluates the flag's triggers values against the benchmark, returns flag status (typeID) as a class constant
-    * @param string name of the flag
-    * @return mixed typeid of the flag if triggered or a constant TimePoing_Flag::TIMEPOINT_FLAG_NA_INSTRUMENT|TimePoing_Flag::TIMEPOINT_FLAG_NULL
-    * @throws PEAR error
+    * Evaluates the flag's triggers values against the benchmark, returns flag
+    *  status (typeID) as a class constant
+    * 
+    * @param string $flagName name of the flag
+    * 
+    * @return mixed typeid of the flag if triggered or a constant
+    * 
+    * TimePoing_Flag::TIMEPOINT_FLAG_NA_INSTRUMENT
+    * |TimePoing_Flag::TIMEPOINT_FLAG_NULL
+    * @throws LorisException
     */
     function evaluateFlag($flagName)
     {
@@ -532,12 +624,15 @@ Class TimePoint_Flag extends TimePoint
         // get the list of triggers that tested positive
         $flagPositiveTriggers = $this->evaluateFlagTriggers($flagName);
 
-        // default flag status, will remain such in case no triggers have tested positive
+        // default flag status, will remain such in case no triggers have tested
+        // positive
         $flagStatus = TIMEPOINT_FLAG_NULL;
 
-        // run the flag evaluation test in case at least one of the triggers tested positive
+        // run the flag evaluation test in case at least one of the triggers tested
+        // positive
         // check if the instrument is NA
-        // PRECENDENCE RULES; Positive trigger (administered instrument); Missing Data; NA instrument; no flag
+        // PRECENDENCE RULES; Positive trigger (administered instrument);
+        // Missing Data; NA instrument; no flag
         foreach ($flagPositiveTriggers as $triggerName=>$triggerStatus) {
 
             // trigger the flag, stop the loop
@@ -550,22 +645,28 @@ Class TimePoint_Flag extends TimePoint
             if ($flagPositiveTriggers[$triggerName]==TIMEPOINT_FLAG_MISSING_DATA) {
                 $flagStatus = TIMEPOINT_FLAG_MISSING_DATA;
             }
-                
-            // NEW: ignore this setting since for all flags except the flag "0_missing_instruments" which was created to be triggered in case of NA instruments...
-            if ($flagName=='0_missing_instruments' && $triggerStatus == TIMEPOINT_FLAG_NA_INSTRUMENT) {
+
+            // NEW: ignore this setting since for all flags except the flag
+            //  "0_missing_instruments" which was created to be triggered in case
+            //   of NA instruments...
+            if ($flagName=='0_missing_instruments'
+                && $triggerStatus == TIMEPOINT_FLAG_NA_INSTRUMENT
+            ) {
                 $flagStatus = TIMEPOINT_FLAG_NA_INSTRUMENT;
             }
         }
-        
+
         // return the flag status, see CONSTANTS
         return $flagStatus;
     }
 
     /**
     * returns an array of triggers that tested positive
+    * 
+    * @param string $flagName flag name
+    * 
     * @return array list of triggers w/ values that tested positive
-    * @param string flag name
-    * @throws PEAR error
+    * @throws LorisException
     */
     function evaluateFlagTriggers($flagName)
     {
@@ -573,40 +674,53 @@ Class TimePoint_Flag extends TimePoint
         $db =& Database::singleton();
 
         $list = array();
-        
+
         // get the full list of bvl instruments in the project
         $bvlInstruments = $this->getProjectBvlInstruments();
-                
-        // get the BVL battery and list of NA bvl tests as a string to be able to evaluate BVL flags
-        $bvlBattery = $this->getTimepointBvlBattery();
-        
-        $listOfNAInstruments = $this->getListOfNonAdministeredInstrumentsForTimePoint();
 
-        // get the list of triggers for the flag and their records from the trigger table
+        // get the BVL battery and list of NA bvl tests as a string to be able to
+        //  evaluate BVL flags
+        $bvlBattery = $this->getTimepointBvlBattery();
+
+        $listOfNAIs = $this->getListOfNonAdministeredInstrumentsForTimePoint();
+
+        // get the list of triggers for the flag and their records from the
+        // trigger table
         $flagTriggers = $this->getFlagTriggers($flagName);
 
         //loop the result set and check if any value corresponds to the record
         foreach ($flagTriggers as $currentTrigger) {
             // map to local vars - easier to read the $query string
             $triggerName = $currentTrigger['Trigger_name'];
-//            $table = $currentTrigger['Table_name'];
-            $source = $currentTrigger['Source'];
-            $field = $currentTrigger['Field_name'];
+            // $table = $currentTrigger['Table_name'];
+            $source   = $currentTrigger['Source'];
+            $field    = $currentTrigger['Field_name'];
             $operator = $currentTrigger['Conditional_operator'];
-            $value = $currentTrigger['Value'];
+            $value    = $currentTrigger['Value'];
 
             // if the trigger's source is a bvl instrument
             if (in_array($source, $bvlInstruments)) {
 
-                // if a source is a bvl instrument but not part of the timepoint's battery, skip to next
-                if (!in_array($source, $bvlBattery)) continue;
+                // if a source is a bvl instrument but not part of the timepoint's
+                //  battery, skip to next
+                if (!in_array($source, $bvlBattery)) {
+                    continue;
+                }
 
-                // if the trigger's instrument is part of teimpoint's battery but is marked as Not Administered, assign constant and skip to next
-                // NOTE: trigger cannot raise a flag if it's trigger based on the NA Instrument
-                if (is_array($listOfNAInstruments) && count($listOfNAInstruments)>0 && in_array($source, $this->getListOfNonAdministeredInstrumentsForTimePoint())) {
-                    // assign NA status to the current trigger if the Source is part of the exclusionary instruments
+                // if the trigger's instrument is part of teimpoint's battery but
+                // is marked as Not Administered, assign constant and skip to next
+                // NOTE: trigger cannot raise a flag if it's trigger based on the
+                //  NA Instrument
+                if (is_array($listOfNAIs) && count($listOfNAIs)>0
+                    && in_array(
+                        $source,
+                        $this->getListOfNonAdministeredInstrumentsForTimePoint()
+                    )
+                ) {
+                    // assign NA status to the current trigger if the Source is part
+                    //  of the exclusionary instruments
                     if (in_array($source, $this->getListOfSources())) {
-                        $list[$triggerName]=TIMEPOINT_FLAG_NA_INSTRUMENT;
+                        $list[$triggerName] = TIMEPOINT_FLAG_NA_INSTRUMENT;
                     }
                     continue;
                 }
@@ -618,47 +732,41 @@ Class TimePoint_Flag extends TimePoint
             // if NULL/no value was returned
             if (is_null($triggerValue) || $triggerValue=='') {
                 // return Missing Data contant for the trigger
-                $list[$triggerName]=TIMEPOINT_FLAG_MISSING_DATA;
+                $list[$triggerName] = TIMEPOINT_FLAG_MISSING_DATA;
                 continue;
             }
 
             // if a value was returned
             // run the query to test the trigger's returned value vs. the condition
-            if (is_numeric($triggerValue)) $valueToTest = $triggerValue;
-            else $valueToTest = "'".addslashes($triggerValue)."'";
-            if (!is_numeric($value)) $value = "'".$value."'";
-            $query = "SELECT ($valueToTest $operator $value) as Test";
-            $record =array();
+            if (is_numeric($triggerValue)) {
+                $valueToTest = $triggerValue;
+            } else {
+                $valueToTest = "'".addslashes($triggerValue)."'";
+            }
+            if (!is_numeric($value)) {
+                $value = "'".$value."'";
+            }
+            $query  = "SELECT ($valueToTest $operator $value) as Test";
+            $record = array();
             $db->selectRow($query, $record);
             // assign the trigger is tested positive (1)
-            if ($record['Test']==1) { 
-                $list[$triggerName]=TIMEPOINT_FLAG_TRIGGER;
+            if ($record['Test']==1) {
+                $list[$triggerName] = TIMEPOINT_FLAG_TRIGGER;
             }
         }
-        
+
         //return the list
         return $list;
     }
 
-
-    
-    
-    
-    
-    
-    
-    
     // METHODS to work with existing flags - DB records
 
-    
-    
-    
-    
-    
     /**
     * return the values of all fields underlying triggers w/o evaluating them
-    * @param stirng name of flag
-    * @throws PEAR error
+    * 
+    * @param stirng $flagName name of flag
+    * 
+    * @throws LorisException
     * @return array list of triggers w/ values, keyed by trigger name
     *
     */
@@ -669,7 +777,8 @@ Class TimePoint_Flag extends TimePoint
 
         $sessionID = $this->getSessionID();
 
-        // get the list of triggers for the flag and their records from the trigger table
+        // get the list of triggers for the flag and their records from the trigger
+        //  table
         $flagTriggers = $this->getFlagTriggers($flagName);
 
         //loop the result set and check if any value corresponds to the record
@@ -677,17 +786,23 @@ Class TimePoint_Flag extends TimePoint
         foreach ($flagTriggers as $currentTrigger) {
 
             // map to local vars - easier to read the $query string
-            $trigger = $currentTrigger['Trigger_name'];
-            $table = $currentTrigger['Table_name'];
+            $trigger  = $currentTrigger['Trigger_name'];
+            $table    = $currentTrigger['Table_name'];
             $testName = $currentTrigger['Source'];
-            $field = $currentTrigger['Field_name'];
+            $field    = $currentTrigger['Field_name'];
 
-            // query the table: $table to see if there is at least one record satisfying the exclusion criteria
-            $query = "SELECT $field as Value FROM flag as f LEFT JOIN $table as t USING (CommentID) WHERE Test_name = '$testName' AND f.SessionID = '$sessionID'";
+            // query the table: $table to see if there is at least one record
+            //  satisfying the exclusion criteria
+            $query = "SELECT $field as Value FROM flag as f LEFT JOIN $table as t"
+                . " USING (CommentID) WHERE Test_name = '$testName' AND"
+                . " f.SessionID = '$sessionID'";
             // include only completed and administered instruments
             $query .= " AND f.Data_entry = 'Complete'";
-            if ($flagName=='0_missing_instruments') $query .= " AND f.Administration = 'None'";
-            else $query .= " AND f.Administration <> 'None'";
+            if ($flagName=='0_missing_instruments') {
+                $query .= " AND f.Administration = 'None'";
+            } else {
+                $query .= " AND f.Administration <> 'None'";
+            }
             $db->selectRow($query, $fieldValue);
 
             // set the Value element to the actual field value
@@ -700,9 +815,11 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * return a value of a trigger
-    * @param string name of flag
-    * @param string name of the trigger the value of which we need
-    * @throws PEAR error
+    * 
+    * @param string $flagName    name of flag
+    * @param string $triggerName name of the trigger the value of which we need
+    * 
+    * @throws LorisException
     * @return mixed value, null, numeric, string
     *
     */
@@ -716,16 +833,21 @@ Class TimePoint_Flag extends TimePoint
         $db =& Database::singleton();
 
         // get the the trigger's metadata
-        $query = "SELECT Source, Table_name, Field_name FROM parameter_timepoint_flag_trigger WHERE Flag_name = '$flagName' AND Trigger_name  = '$triggerName'";
+        $query = "SELECT Source, Table_name, Field_name FROM"
+            . " parameter_timepoint_flag_trigger WHERE Flag_name = '$flagName'"
+            . " AND Trigger_name  = '$triggerName'";
         $db->selectRow($query, $record);
 
         // map to local vars - easier to read the $query string
-        $table = $record['Table_name'];
+        $table    = $record['Table_name'];
         $testName = $record['Source'];
-        $field = $record['Field_name'];
+        $field    = $record['Field_name'];
 
-        // query the table: $table to see if there is at least one record satisfying the exclusion criteria
-        $query = "SELECT $field as Value FROM flag as f LEFT JOIN $table as t USING (CommentID) WHERE f.Test_name = '$testName' AND f.SessionID = '$sessionID'";
+        // query the table: $table to see if there is at least one record satisfying
+        //  the exclusion criteria
+        $query = "SELECT $field as Value FROM flag as f LEFT JOIN $table as t USING"
+            . " (CommentID) WHERE f.Test_name = '$testName' AND"
+            . " f.SessionID = '$sessionID'";
         $db->selectRow($query, $fieldValue);
 
         //return the list
@@ -734,8 +856,10 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * return the values of all fields underlying triggers w/o evaluating them
-    * @param stirng name of flag
-    * @throws PEAR error
+    * 
+    * @param stirng $flagName name of flag
+    * 
+    * @throws LorisException
     * @return array list of triggers w/ values, keyed by trigger name
     *
     */
@@ -749,7 +873,8 @@ Class TimePoint_Flag extends TimePoint
         // DB Object
         $db =& Database::singleton();
 
-        $query = "SELECT * FROM parameter_timepoint_flag_review_fields WHERE Flag_name = '$flagName'";
+        $query = "SELECT * FROM parameter_timepoint_flag_review_fields WHERE"
+            . " Flag_name = '$flagName'";
 
         $db->select($query, $result);
 
@@ -762,14 +887,18 @@ Class TimePoint_Flag extends TimePoint
 
             // map to local vars - easier to read the $query string
             $fieldLabel = $record['Label'];
-            $table = $record['Table_name'];
-            $testName = $record['Source'];
-            $field = $record['Field_name'];
+            $table      = $record['Table_name'];
+            $testName   = $record['Source'];
+            $field      = $record['Field_name'];
 
-            // query the table: $table to see if there is at least one record satisfying the exclusion criteria
-            $query = "SELECT $field as Value FROM flag as f LEFT JOIN $table as t USING (CommentID) WHERE f.Test_name = '$testName' AND f.SessionID = '$sessionID'";
+            // query the table: $table to see if there is at least one record
+            //  satisfying the exclusion criteria
+            $query = "SELECT $field as Value FROM flag as f LEFT JOIN $table as t"
+                . " USING (CommentID) WHERE f.Test_name = '$testName' AND"
+                . " f.SessionID = '$sessionID'";
             // include only completed and administered instruments
-            $query .= " AND f.Data_entry = 'Complete' AND f.Administration <> 'None'";
+            $query .= " AND f.Data_entry = 'Complete'"
+                . " AND f.Administration <> 'None'";
 
             $db->selectRow($query, $fieldValue);
 
@@ -785,9 +914,11 @@ Class TimePoint_Flag extends TimePoint
     /**
     * insert a new flag record
     * flag table parameter_timepoint_flag_session
-    * @param string name of the flag
-    * @param string flag type ID
-    * @throws PEAR Error
+    * 
+    * @param string $flagName name of the flag
+    * @param string $typeID   flag type ID
+    * 
+    * @throws LorisException
     * @return mixed true if OK
     */
     function insertFlag($flagName, $typeID)
@@ -798,7 +929,11 @@ Class TimePoint_Flag extends TimePoint
         $sessionID = $this->getSessionID();
 
         // prepape the array of fields to insert (default Flag_status = ON)
-        $setArray = array("SessionID"=>$sessionID, 'Flag_name'=>$flagName, 'TypeID'=>$typeID);
+        $setArray = array(
+                     "SessionID" => $sessionID,
+                     'Flag_name' => $flagName,
+                     'TypeID'    => $typeID,
+                    );
 
         // insert the record
         $success = $db->insert('parameter_timepoint_flag_session', $setArray);
@@ -808,19 +943,24 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * updates a flag record in the parameter_exclusion_session table
-    * if the flag was raised, and if there is no record in the tables insert new, otherwise update w/ new value
-    * if the was turned OFF, and the value is changed, than turn the flag back ON so that new value could be reviewed
-    * @param string flagName, name of the flag
-    * @param string userID, system user
-    * @param string flagStatus, ON/OFF
-    * @param string comment, comment for the flag
-    * @param string pending, flag to mark if there's an issue (Y/N)
-    * @param string pendingComment, comment for the issue
-    * @throws PEAR Error
+    * if the flag was raised, and if there is no record in the tables insert new,
+    *  otherwise update w/ new value
+    * if the was turned OFF, and the value is changed, than turn the flag back ON
+    *  so that new value could be reviewed
+    * 
+    * @param string $flagName       name of the flag
+    * @param string $userID         system user
+    * @param string $flagStatus     ON/OFF
+    * @param string $comment        comment for the flag
+    * @param string $pending        flag to mark if there's an issue (Y/N)
+    * @param string $pendingComment comment for the issue
+    * 
+    * @throws LorisException
     * @return mixed
     */
-    function updateFlag($flagName, $userID, $flagStatus=null, $comment = null, $pending=null, $pendingComment=null)
-    {
+    function updateFlag($flagName, $userID, $flagStatus=null, $comment = null,
+        $pending=null, $pendingComment=null
+    ) {
         $sessionID = $this->getSessionID();
 
         // timestamp of the current update
@@ -830,20 +970,51 @@ Class TimePoint_Flag extends TimePoint
         $db =& Database::singleton();
 
         // set of fields to update
-        $setArray = array("UserID"=>$userID, "Last_change"=>$today);
+        $setArray = array(
+                     "UserID"      => $userID,
+                     "Last_change" => $today,
+                    );
         if (!empty($flagStatus)) {
-            if ($flagStatus==TIMEPOINT_FLAG_NULL_STATUS) $setArray = array_merge($setArray, array("Flag_status"=>null));
-            else $setArray = array_merge($setArray, array("Flag_status"=>"$flagStatus"));
+            if ($flagStatus == TIMEPOINT_FLAG_NULL_STATUS) {
+                $setArray = array_merge($setArray, array("Flag_status" => null));
+            } else {
+                $setArray = array_merge(
+                    $setArray,
+                    array("Flag_status" => "$flagStatus")
+                );
+            }
         }
-        if (!empty($comment)) $setArray = array_merge($setArray, array("Comment"=>$comment));
-        if (!empty($pending)) $setArray = array_merge($setArray, array("Pending_issue"=>$pending));
-        if (!empty($pendingComment)) $setArray = array_merge($setArray, array("Comment_pending"=>$pendingComment));
+        if (!empty($comment)) {
+            $setArray = array_merge(
+                $setArray,
+                array("Comment" => $comment)
+            );
+        }
+        if (!empty($pending)) {
+            $setArray = array_merge(
+                $setArray,
+                array("Pending_issue" => $pending)
+            );
+        }
+        if (!empty($pendingComment)) {
+            $setArray = array_merge(
+                $setArray,
+                array("Comment_pending" => $pendingComment)
+            );
+        }
 
         // where constraint
-        $whereArray = array("Flag_name"=>$flagName, "SessionID"=>$sessionID);
+        $whereArray = array(
+                       "Flag_name" => $flagName,
+                       "SessionID" => $sessionID,
+                      );
 
         // update the record
-        $success = $db->update('parameter_timepoint_flag_session', $setArray, $whereArray);
+        $success = $db->update(
+            'parameter_timepoint_flag_session',
+            $setArray,
+            $whereArray
+        );
 
         return true;
     }
@@ -851,17 +1022,21 @@ Class TimePoint_Flag extends TimePoint
     /**
     * returns the flag record from the table parameter_timepoint_flag_session, if any
     * can be use statically, just supply SessionID and FlagName
-    * @param string name of flag
-    * @param int sessionID
+    * 
+    * @param int    $sessionID sessionID
+    * @param string $flagName  name of flag
+    * 
     * @return array flag details
-    * @throws PEAR error
-    * @param string flag name
+    * @throws LorisException
     * @static
     */
     function getFlag($sessionID, $flagName)
     {
         if (empty($sessionID) || empty($flagName)) {
-            throw new Exception("Timepoint_flag::getFlag(): both sessionID and flagName arguments have to be specified!");
+            throw new Exception(
+                "Timepoint_flag::getFlag(): both sessionID and"
+                . " flagName arguments have to be specified!"
+            );
         }
 
         // DB Object
@@ -869,7 +1044,8 @@ Class TimePoint_Flag extends TimePoint
 
         $query = "SELECT
          fs.SessionID, f.Flag_name, f.Flag_label, ft.TypeID, ft.Name as Type_name, 
-         fs.Flag_status, fs.Comment, fs.Pending_issue, fs.Comment_pending, u.Real_name as User, fs.Last_change
+         fs.Flag_status, fs.Comment, fs.Pending_issue, fs.Comment_pending,
+         u.Real_name as User, fs.Last_change
          FROM
          parameter_timepoint_flag as f,
          parameter_timepoint_flag_type as ft,
@@ -888,8 +1064,9 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * wraps the [@link $this->getFlag()] and gets the flag data for the timepoint
+    * 
     * @return array list of flag records from parameter_timepoint_flag_session table
-    * @throws PEAR error
+    * @throws LorisException
     * @see $this->getListOfFlags()
     */
     function getTimepointFlags()
@@ -911,9 +1088,11 @@ Class TimePoint_Flag extends TimePoint
 
     /**
     * returns true if the flag is raised for the timepoint
-    * @param int sessionID 
-    * @param string flag name 
-    * @eturn bool
+    * 
+    * @param int    $sessionID sessionID 
+    * @param string $flagName  flag name 
+    * 
+    * @return bool
     * @throws PEAR::Error
     */
     function timepointFlagExists($sessionID, $flagName)
@@ -921,15 +1100,20 @@ Class TimePoint_Flag extends TimePoint
         // DB Object
         $db =& Database::singleton();
 
-        $query  = "SELECT count(*) as count from parameter_timepoint_flag_session WHERE SessionID = '$sessionID' AND Flag_name = '$flagName'";
+        $query = "SELECT count(*) as count from parameter_timepoint_flag_session"
+            . " WHERE SessionID = '$sessionID' AND Flag_name = '$flagName'";
         $db->selectRow($query, $record);
-        
-        if ($record['count'] > 0) return true;
-        else return false;
+
+        if ($record['count'] > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
     * return name of the  max type of the Active (Flag_status<>OFF) flag
+    * 
     * @return string name of the max flag type
     */
     function getMaxFlagForTimepoint()
@@ -940,14 +1124,25 @@ Class TimePoint_Flag extends TimePoint
         $sessionID = $this->getSessionID();
 
         // select max of all flags that were not turned off
-        $query = "SELECT pt.Name from parameter_timepoint_flag_session as ps, parameter_timepoint_flag_type as pt WHERE pt.TypeID=ps.TypeID AND (ps.Flag_status <> 'OFF' OR ps.Flag_status is null) AND ps.SessionID='".$sessionID."' ORDER BY pt.TypeID DESC LIMIT 1";
-        $result=array();
+        $query  = "SELECT pt.Name from parameter_timepoint_flag_session as ps,"
+            . " parameter_timepoint_flag_type as pt WHERE pt.TypeID=ps.TypeID AND"
+            . " (ps.Flag_status <> 'OFF' OR ps.Flag_status is null) AND"
+            . " ps.SessionID='".$sessionID."' ORDER BY pt.TypeID DESC LIMIT 1";
+        $result = array();
         $db->selectRow($query, $result);
 
         return $result['Name'];
     }
 
-    function showConstant($name) {
+    /**
+    * Comment
+    * 
+    * @param string $name name
+    * 
+    * @return string constant($name)
+    */
+    function showConstant($name)
+    {
         return constant($name);
     }
 

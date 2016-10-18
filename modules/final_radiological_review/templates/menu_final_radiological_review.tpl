@@ -1,9 +1,9 @@
-<script type="text/javascript" src="js/filterControl.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
 
 <div class="row">
 <div class="col-xs-12">
     <!-- start the selection table -->
-    <form method="post" action="main.php?test_name=final_radiological_review">
+    <form method="post" action="{$baseurl}/final_radiological_review/">
         <div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter();">
                 Selection Filter
@@ -90,7 +90,7 @@
                         <div class="visible-xs col-xs-12"> </div>
                         <div class="visible-xs col-xs-12"> </div>
                         <div class="col-sm-6 col-xs-12">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=final_radiological_review&reset=true'">
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/final_radiological_review/?reset=true'">
                         </div>
                     </div>
                 </div>
@@ -99,54 +99,13 @@
     </form>
 </div>
 </div>
-
-<!--  title table with pagination -->
-
-<div id="pagelinks">
-<table border="0" valign="bottom" width="100%">
-<tr>
-    <!-- title -->
-    {* Comment 
-    <td class="controlPanelSection"><a href="main.php?test_name=final_radiological_review&subtest=final_radiological_review">Create new review</a></td>
-    *}
-    <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
-</tr>
-</table>
-</div>
-
-
-<!-- start data table -->
-<div id="datatable">
-    <table border="0" class="table table-hover table-primary table-bordered dynamictable">
-        <thead>
-            <tr class="info">
-                <th>No.</th>
-                <!-- print out column headings - quick & dirty hack -->
-                {section name=header loop=$headers}
-                    <th><a href="main.php?test_name=final_radiological_review&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                {/section}
-            </tr>
-        </thead>
-        <tbody>
-            {section name=item loop=$items}
-                <tr>
-                <!-- print out data rows -->
-                {section name=piece loop=$items[item]}
-                <td>
-                    {if $items[item][piece].name == "PSCID"}
-                        <a href="main.php?test_name=final_radiological_review&subtest=final_radiological_review&identifier={$items[item][piece].CommentID}">{$items[item][piece].value}</a>
-                    {else}
-                        {$items[item][piece].value}
-                    {/if}
-                </td>
-                {/section}
-                </tr>           
-            {sectionelse}
-                <tr><td colspan="14">Nothing found</td></tr>
-            {/section}
-        </tbody>        
-    <!-- end data table -->
-    </table>
-</div>
-
+<div class="dynamictable" id="datatable"></div> 
+<script>
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/final_radiological_review/?format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "PSCID"
+  });
+React.render(table, document.getElementById("datatable"));
+</script>

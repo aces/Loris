@@ -2,37 +2,75 @@
 /**
  * Time Point List control panel class
  *
+ * PHP version 5
+ *
+ * @category Main
+ * @package  Timepoint_List
+ * @author   zijdenbos <username@example.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ * @access   public
+ */
+
+/**
  * This class provides the management GUI for the status flags
- * 
- * @access public
- * @version $Id: TimePoint_List_ControlPanel.class.inc,v 1.11 2006/04/05 17:07:42 sebas Exp $
- * @package main
+ *
+ * @category Main
+ * @package  Timepoint_List
+ * @author   zijdenbos <username@example.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ * @access   public
  */
 
 Class TimePoint_List_ControlPanel extends Candidate
 {
     /**
      * The template data for Smarty
-     * @var    array 
+     * @var    array
      * @access private
      */
     var $tpl_data;
 
-    function TimePoint_List_ControlPanel($candID){
-    	$this->select($candID);
-    }
     /**
-     * generates the HTML to display the set of buttons for the status flags
+     * Fill the candidateInfo and listOfTimePoints variables using the
+     * select function provide by the Candidate class.
+     *
+     * @param integer $candID A 6 digit Loris CandID that matches
+     * a candidate in the candidate table
+     *
+     * @return null As a side-effect loads candidate into current object
+     */
+    function __construct($candID)
+    {
+        $this->select($candID);
+    }
+
+    /**
+     * Generates the HTML to display the set of buttons for the status flags
+     *
      * @return string
      * @access public
      */
-    function display() {
-    	$user =& User::singleton();
-    	
+    function display()
+    {
+        $user =& User::singleton();
+
+        $user_CenterID = $user->getData('CenterID');
+        $cand_CenterID = $this->getData('CenterID');
+
         $this->tpl_data['candID'] = $this->getData('CandID');
-		$isDataEntryPerson=$user->hasPermission('data_entry') 
-                            && ($user->getData('CenterID') == $this->getData('CenterID') || $user->isUserDCC());
-        $this->tpl_data['isDataEntryPerson'] = $isDataEntryPerson;
+
+        $this->tpl_data['isDataEntryPerson'] = $user->hasPermission('data_entry')
+              && ($user_CenterID == $cand_CenterID || $user->isUserDCC());
+
+        $this->tpl_data['candidate_parameters_view'] = $user->hasPermission('candidate_parameter_view');
+        $this->tpl_data['candidate_parameters_edit'] = $user->hasPermission('candidate_parameter_edit');
+
+        //set the baseurl of the tpl_data
+        $factory  = NDB_Factory::singleton();
+        $settings = $factory->settings();
+        $this->tpl_data['baseurl'] = $settings->getBaseURL();
 
         $smarty = new Smarty_neurodb('timepoint_list');
         $smarty->assign($this->tpl_data);

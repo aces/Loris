@@ -12,9 +12,6 @@
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "NDB_Form.class.inc";
-require_once "Email.class.inc";
-
 /**
  * The form which creates the add_survey page for the
  * Loris survey module
@@ -37,9 +34,6 @@ class NDB_Form_survey_accounts extends NDB_Form
     {
         // create user object
         $editor =& User::singleton();
-        if (Utility::isErrorX($editor)) {
-            return PEAR::raiseError("User Error: ".$editor->getMessage());
-        }
 
         return $editor->hasPermission('user_accounts');
     }
@@ -93,6 +87,7 @@ class NDB_Form_survey_accounts extends NDB_Form
                 'VL' => "Visit ". $values['VL']." does not exist for given candidate"
             );
         }
+
         $instrument_list = $db->pselect( 
             "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
@@ -109,6 +104,7 @@ class NDB_Form_survey_accounts extends NDB_Form
                         );
             }
         }
+
         if ( !empty($values['Email']) ) {
             if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
                 return array(
@@ -123,6 +119,13 @@ class NDB_Form_survey_accounts extends NDB_Form
                         );
             }
         }
+
+        if ( !empty($values['Email']) && empty($values['Email2'])) {
+            return array(
+                    'Email2'=> 'Please confirm the email address.'
+            );
+        }
+
         if(empty($values['Test_name'])) {
             return array(
                     'Test_name'=> 'Please choose an instrument.'
@@ -137,7 +140,6 @@ class NDB_Form_survey_accounts extends NDB_Form
 
             }
         }
-
 
         return array();
     }
@@ -203,9 +205,6 @@ class NDB_Form_survey_accounts extends NDB_Form
                 'CommentID'        => $commentID
             )
         );
-        if (Utility::isErrorX($success)) {
-            return PEAR::raiseError("DB Error: ".$success->getMessage());
-        }
         $this->tpl_data['success'] = $success;
  
         if ($email) {
@@ -214,8 +213,8 @@ class NDB_Form_survey_accounts extends NDB_Form
 
             $msg_data = array(
                 'study'     => $config->getSetting("title"),
-                'url'       => $www['url'] . '/survey.php?key=' . $key,
-                'EmailForm' => $values['EmailContent']
+                'url'       => $www['url'] . '/survey.php?key=' . urlencode($key),
+                'EmailForm' => $values['email_dialog']
             );
             Email::send($values['Email'], 'new_survey.tpl', $msg_data);
         }
@@ -238,6 +237,25 @@ class NDB_Form_survey_accounts extends NDB_Form
         $this->addBasicText("Email2", "Confirm Email address");
 
         $this->form->addFormRule(array(&$this, '_validate_add_survey'));
+    }
+
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
+                $baseURL . "/survey_accounts/js/columnFormatter.js"
+            )
+        );
     }
 }
 ?>

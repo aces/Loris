@@ -11,9 +11,7 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once "AbstractServerProcess.class.inc";
-require_once "NDB_Config.class.inc";
-
+require_once __DIR__ . "/AbstractServerProcess.class.inc";
 /**
  * A class for holding a set of functions to perform a complete MRI
  * upload on the server.
@@ -178,6 +176,20 @@ class MriUploadServerProcess extends AbstractServerProcess
     public function getType()
     {
         return self::PROCESS_TYPE;
+    }
+
+    /**
+     * Whether $outfile, $_errfile and $_exitCodeFile should be deleted once the
+     * process is finished. These files will be deleted only if the pipeline
+     * executed successfully (i.e. with exit code 0).
+     *
+     * @return boolean true if the files should be deleted, false otherwise
+     */
+    public function deleteProcessFiles()
+    {
+        $exitCode = parent::getExitCode();
+
+        return !is_null($exitCode) && is_numeric($exitCode) && $exitCode == 0;
     }
 }
 

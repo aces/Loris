@@ -11,8 +11,6 @@
  * @link     https://github.com/aces/IBIS
 */
 
-require_once 'PEAR.php';
-
 /**
  * Log Class
  *
@@ -24,7 +22,7 @@ require_once 'PEAR.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/IBIS
 */
-class Log extends PEAR
+class Log
 {
 
     var $GENERAL_ERROR_DIR;

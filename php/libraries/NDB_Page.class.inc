@@ -37,6 +37,7 @@ class NDB_Page
 
     /**
      * Reference to the HTML QuickForm
+     *
      * @var LorisForm
      */
     var $form;
@@ -80,18 +81,20 @@ class NDB_Page
     /**
      * Wrapper to create a file element and add it to the current page
      *
-     * @param string $name  The name of this file element
-     * @param string $label The label to attach to this element
+     * @param string $name    The name of this file element
+     * @param string $label   The label to attach to this element
+     * @param array  $options Options to pass to the form for this
+     *                        file chooser.
      *
      * @return none
      */
-    function addFile($name, $label)
+    function addFile($name, $label, $options=array())
     {
         $this->form->addElement(
             'file',
             $name,
             $label,
-            array('class' => 'fileUpload')
+            array_merge(array('class' => 'fileUpload'), $options)
         );
     }
 
@@ -216,18 +219,39 @@ class NDB_Page
     }
 
     /**
-     * Adds a hidden element to the current page. Note if the hidden element
-     * needs a value it should be added to the defaults.
+     * Wrapper to create a checkbox
      *
-     * @param string $label      The label to attach to the element
-     * @param array  $attributes List of HTML attributes to add to the
-     *                           element
+     * @param string $name     The field name of this checkbox
+     * @param string $label    The label to attach to this checkbox
+     * @param array  $options  Options to pass to QuickForm for this
+     *                         checkbox
+     * @param array  $optional Optional extra HTML attributes to add
+     *                         to the checkbox
      *
      * @return none
      */
-    function addHidden($label, $attributes=null)
+    function addCheckbox($name, $label, $options, $optional=array())
     {
-        $this->form->addElement('hidden', $label, $attributes);
+        $optional = array_merge(
+            array('class' => 'form-control input-sm'),
+            $optional
+        );
+        $this->form->addElement('advcheckbox', $name, $label, $options, $optional);
+    }
+
+    /**
+     * Adds a hidden element to the current page. Note if the hidden element
+     * needs a value it should be added to the defaults.
+     *
+     * @param string $name       The name of the hidden element to add
+     * @param array  $value      The value of the hidden element to add
+     * @param array  $attributes Additional html attributes for element
+     *
+     * @return none
+     */
+    function addHidden($name, $value=null, $attributes=array())
+    {
+        $this->form->addElement('hidden', $name, $value, $attributes);
     }
 
     /**
@@ -346,6 +370,23 @@ class NDB_Page
         return $this->form->createElement("select", $field, $label, $options, $attr);
     }
 
+    /**
+     * Create a QuickForm label element but does not add it to the form
+     *
+     * @param string $labelString The label to attach to the element
+     *
+     * @return HTML_QuickForm Label element
+     */
+    function createLabel(
+        $labelString
+    ) {
+        return $this->form->createElement(
+            "static",
+            null,
+            null,
+            $labelString
+        );
+    }
     /**
      * Creates a QuickForm text element but does not add it to the form
      *
@@ -513,6 +554,77 @@ class NDB_Page
         $this->defaults = $defaults;
         $this->form->setDefaults($defaults);
         return $defaults;
+    }
+
+    /**
+     * Returns an ordered list of javascript dependencies that this page depends
+     * on.  These will get loaded into the template in order, so that
+     * interdependent files can be included in the correct order.
+     *
+     * @return array of strings with URLs to retrieve JS resources
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $www     = $config->getSetting('www');
+        $baseurl = $www['url'];
+        $min     = ($config->getSetting("sandbox") === '1') ? '' : '.min';
+
+        // Currently jquery-ui is required for dialogs and datepickers to work.
+        // In the future release, dialogs should be replaced with bootstrap dialogs
+        // and datepickers only created by modernizr
+
+        $files = array(
+                  $baseurl . '/js/jquery/jquery-1.11.0.min.js',
+                  $baseurl . '/js/helpHandler.js',
+                  $baseurl . '/js/modernizr/modernizr.min.js',
+                  // Only load minified file on production, not sandboxes
+                  $baseurl . '/js/react-with-addons-0.13.3' . $min . '.js',
+                  $baseurl . '/js/jquery/jquery-ui-1.10.4.custom.min.js',
+                  $baseurl . '/js/jquery.dynamictable.js',
+                  $baseurl . '/js/jquery.fileupload.js',
+                  $baseurl . '/bootstrap/js/bootstrap.min.js',
+                  $baseurl . '/js/components/react.breadcrumb.js',
+                  $baseurl . '/js/components/Form.js',
+                  $baseurl . '/js/components/Markdown.js',
+                 );
+        return $files;
+    }
+
+
+    /**
+     * Returns an ordered list of CSS dependencies that this page depends
+     * on.  These will get loaded into the template in order, so that
+     * interdependent files can be included in the correct order.
+     *
+     * @return array of strings with URLs to retrieve CSS resources
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $www     = $config->getSetting('www');
+        $baseurl = $www['url'];
+
+        $files = array(
+                  $baseurl . "/bootstrap/css/bootstrap.min.css",
+                  $baseurl . "/bootstrap/css/custom-css.css",
+                  $baseurl . "/js/jquery/datepicker/datepicker.css",
+                 );
+        return $files;
+    }
+
+    /**
+     * Does any setup required for this page. This is generally overridden
+     * by NDB_Page subtypes.
+     *
+     * @return none, but may have side-effects
+     */
+    function setup()
+    {
     }
 }
 ?>

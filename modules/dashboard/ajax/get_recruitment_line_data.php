@@ -44,7 +44,7 @@ foreach ($list_of_sites as $siteID => $siteName) {
 
 print json_encode($recruitmentData);
 
-exit();
+return 0;
 
 /**
  * Create chart labels (dates)

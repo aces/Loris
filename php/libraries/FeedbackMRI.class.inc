@@ -10,7 +10,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once "MRIFile.class.inc";
 
 /**
  * Class for managing MRI comments
@@ -166,7 +165,7 @@ class FeedbackMRI
                       FROM feedback_mri_comments
                   WHERE ".$this->_buildWhere();
 
-        $DB->select($query, $result);
+        $result = $DB->pselect($query, array());
 
         // build the output array
         if (is_array($result)) {

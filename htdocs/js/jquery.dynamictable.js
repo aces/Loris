@@ -32,10 +32,10 @@
     var setupScrolling = function (wrapper, rightLink, leftLink) {
         var scrolling = false,
             step = 100,
+            scrollAmount = 0,
             scrollContent = function (direction, elem) {
-                var amount = (direction === "left" ? -3 : 3);
                 $(elem).animate({
-                    scrollLeft: $(elem).scrollLeft() + amount
+                    scrollLeft: $(elem).scrollLeft() + scrollAmount
                 }, 1, function () {
                     if (scrolling) {
                         scrollContent(direction, elem);
@@ -50,10 +50,13 @@
             $(wrapper).animate({
                 scrollLeft: $(wrapper).scrollLeft() + step
             });
-        }).bind("mouseover", function (event) {
+        }).bind("mousemove", function (event) {
             event.preventDefault();
-            scrolling = true;
-            scrollContent("right", wrapper);
+            scrollAmount = (event.clientX - $(this).offset().left) / 5;
+            if (!scrolling) {
+                scrolling = true;
+                scrollContent("right", wrapper);
+            }
         }).bind("mouseout", function (event) {
             event.preventDefault();
             scrolling = false;
@@ -66,10 +69,13 @@
             $(wrapper).animate({
                 scrollLeft: $(wrapper).scrollLeft() - step
             });
-        }).bind("mouseover", function (event) {
+        }).bind("mousemove", function (event) {
             event.preventDefault();
-            scrolling = true;
-            scrollContent("left", wrapper);
+            scrollAmount = (-1 * ($(this).offset().left + $(this).outerWidth()) + event.clientX) / 5;
+            if (!scrolling) {
+                scrolling = true;
+                scrollContent("left", wrapper);
+            }
         }).bind("mouseout", function (event) {
             event.preventDefault();
             scrolling = false;
@@ -116,15 +122,25 @@
 
         // Add links for carousel
         $(table).after('<a class="left leftScrollBar carousel-control" href="#"><span class="glyphicon glyphicon-chevron-left"></span></a><a class="right carousel-control" href="#" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>');
+    }, unwrapTable = function (table) {
+        // Delete links for carousel
+        $(table).nextAll().remove();
+        // Remove wrapper necessary for dynamictable code
+        $(table).unwrap();
+        // Remove wrapper code necessary for bootstrap carousel
+        $(table).unwrap();
+        // Remove row wrapper
+        $(table).unwrap();
     }, freezeColm = function (tableID, colm_static) {
         var statColPos = $("." + tableID + "FrozenColumn").offset().left,
             statColWid = $("." + tableID + "FrozenColumn").outerWidth(),
             leftScrollPos = $(".leftScrollBar").offset().left,
             leftScrollWid = $(".leftScrollBar").outerWidth(),
-            nextColPos = $("." + tableID + "Next").offset().left;
+            nextColPos = $("." + tableID + "Next").offset().left,
+            tablePos = $("#" + tableID).offset().left;
 
         if (colm_static === true) {
-            if (nextColPos >= statColPos + statColWid) {
+            if (nextColPos >= statColPos + statColWid || statColPos <= tablePos) {
                 $("." + tableID).each(function (key, value) {
                     if (key >= 0) {
                         $(value).css("height", "");
@@ -156,6 +172,11 @@
                 column,
                 columnNumber,
                 child1;
+
+            // check if table is already scollable, if so delete scroll components
+            if ($(this).parent(".dynamicContentWrapper").length === 1) {
+                unwrapTable(this);
+            }
             // set up table for scrollable side bars
             wrapTable(this);
             // Get references to links to pass to Setup and checkOverflow

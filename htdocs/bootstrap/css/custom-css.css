@@ -3,6 +3,19 @@
  *	to overwrite bootstraps css file
  */
 
+
+/*******************************
+Loris color palette v.0.1
+
+@accent-color: #064785 (blue)
+@accent-color-hover: #042d54 (dark blue)
+
+Note: other colors are currenly inherited from Bootstrap default color palette
+      See: http://getbootstrap.com/css/#less-variables-colors
+
+****************************************/
+
+
 /*
  *	Styling for the navbar dropdowns
  */
@@ -15,6 +28,39 @@
 .navbar-nav>li>.dropdown-menu>li>a {
     color: white;
 }
+
+
+.navbar-default a {
+  -webkit-transition: background-color 0.2s ease-in;
+  transition: background-color 0.2s ease-in;
+}
+
+/* Show submenu when hovering on menu item */
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Loris logo */
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+  background-color: #042d54;
+}
+
+/* Menu items */
+.navbar-default .navbar-nav>li:hover,
+.navbar-default .navbar-nav>li>a:hover,
+.navbar-default .navbar-nav>li>a:focus,
+.navbar-default .navbar-nav>li>a:active{
+  background-color: #042d54;
+}
+
+/* Submenu items*/
+.navbar-nav>li>.dropdown-menu>li>a:hover,
+.navbar-nav>li>.dropdown-menu>li>a:focus{
+  background-color: #042d54;
+}
+
+
 
 /*
  *	Making the table header font colour white
@@ -35,12 +81,12 @@ table th{
 .pis {
     height: 80px;
 }
-.table-scroll { 
+.table-scroll {
     overflow-x:auto;
     padding-bottom:1px;
 }
-.table-scroll-static { 
-    overflow-x:auto;  
+.table-scroll-static {
+    overflow-x:auto;
     margin-left:7em;
     padding-bottom:1px;
 }
@@ -53,11 +99,12 @@ table th{
     margin-left:10em;
 }
 .static-col {
-    position:absolute; 
-    width:7em; 
+    position:absolute;
+    width:7em;
     left:0;
     top:auto;
-    border-right: 0px none black; 
+    word-wrap: break-word;
+    border-right: 0px none black;
     border-top-width:3px; /*only relevant for first row*/
 }
 .colm-static{
@@ -93,7 +140,7 @@ html, body {
     border: 3px solid;
     border-color: #b94a48;
 }
-.has-error .form-error {
+.has-error, .form-error {
 color: #b94a48;
 }
 .has-warning .form-control {
@@ -105,15 +152,14 @@ color: #b94a48;
 }
 
 /*
- *  CSS for login footer
+ *  CSS for Loris footer
  */
-.LoginFooter {
+.LorisFooter {
     bottom:0;
     clear: both;
-    height: 3em;
     width: 100%;
     font-size: 0.9em;
-    color: gray;
+    color: black;
     text-align: center;
     vertical-align: bottom;
 }
@@ -125,7 +171,7 @@ ul#navlist {
 	display: inline;
 	list-style-type: none;
 }
-/* 
+/*
  *  Styling for modals
  */
 .modal-header {
@@ -156,3 +202,243 @@ div.navbar div.container div.navbar-brand {
     background: inherit;
     text-align: center;
 }
+
+.controlPanelSection {
+    padding-bottom: 6px;
+}
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+
+/*
+ *      CSS for alert div
+ */
+.no-result-found-panel {
+    color: #FFFFFF;
+    background-color: #1c70b6;
+}
+
+/*
+ * Styling for the breadcrumbs
+ */
+
+.btn-breadcrumb {
+  width: 100%;
+  background-color: #064785;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+/*
+ * Breadcrumbs from http://bootsnipp.com/snippets/featured/triangle-breadcrumbs-arrows
+ */
+.btn-breadcrumb .btn:not(:last-child):after {
+  content: " ";
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 17px solid transparent;
+  border-bottom: 17px solid transparent;
+  border-left: 10px solid white;
+  position: absolute;
+  top: 50%;
+  margin-top: -17px;
+  left: 100%;
+  z-index: 3;
+}
+.btn-breadcrumb .btn:not(:last-child):before {
+  content: " ";
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 17px solid transparent;
+  border-bottom: 17px solid transparent;
+  border-left: 10px solid rgb(173, 173, 173);
+  position: absolute;
+  top: 50%;
+  margin-top: -17px;
+  margin-left: 2px;
+  left: 100%;
+  z-index: 3;
+}
+
+/** The Spacing **/
+.btn-breadcrumb .btn {
+  padding:6px 12px 6px 24px;
+}
+.btn-breadcrumb .btn:first-child {
+  padding:6px 6px 6px 10px;
+}
+.btn-breadcrumb .btn:last-child {
+  padding:6px 18px 6px 24px;
+}
+
+/** Primary button **/
+.btn-breadcrumb .btn.btn-primary:not(:last-child):after {
+  border-left: 10px solid #064785;
+  -webkit-transition: border-color 0.2s ease-in; /* Safari */
+  transition: border-color 0.2s ease-in;
+}
+.btn-breadcrumb .btn.btn-primary:not(:last-child):before {
+  border-left: 10px solid #042d54;
+  -webkit-transition: border-color 0.2s ease-in; /* Safari */
+  transition: border-color 0.2s ease-in;
+}
+.btn-breadcrumb .btn.btn-primary:hover:not(:last-child):after {
+  border-left: 10px solid #042d54;
+}
+.btn-breadcrumb .btn.btn-primary:hover:not(:last-child):before {
+  border-left: 10px solid #042d54;
+}
+
+a.btn.btn-primary {
+  color: #fff;
+  border-color: transparent;
+  -webkit-transition: background-color 0.2s ease-in; /* Safari */
+  transition: background-color 0.2s ease-in;
+}
+
+/* The responsive part */
+
+.btn-breadcrumb > * > div {
+    /* With less: .text-overflow(); */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-breadcrumb > *:nth-child(n+2) {
+  display:none;
+}
+
+/* For phones */
+@media (max-width: 767px) {
+    .btn-breadcrumb > *:nth-last-child(-n+3) {
+        display:block;
+    }
+    .btn-breadcrumb > * div {
+        max-width: 60px;
+    }
+    #bc2 > a:last-child > div {
+        max-width: 100%
+    }
+    #bc2 > a > div:hover {
+        max-width: 100%
+    }
+}
+
+/* For tablets */
+@media (min-width: 768px) and (max-width:991px) {
+    .btn-breadcrumb > *:nth-last-child(-n+4) {
+        display:block;
+    }
+    .btn-breadcrumb > * div {
+        max-width: 100px;
+    }
+    #bc2 > a:last-child > div {
+        max-width: 100%
+    }
+    #bc2 > a > div:hover {
+        max-width: 100%
+    }
+}
+
+/* For desktops  */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .btn-breadcrumb > *:nth-last-child(-n+4) {
+        display:block;
+    }
+    .btn-breadcrumb > * div {
+        max-width: 170px;
+    }
+    #bc2 > a:last-child > div {
+        max-width: 100%
+    }
+    #bc2 > a > div:hover {
+        max-width: 100%
+    }
+}
+
+/* For desktops */
+@media (min-width: 1200px) {
+    .btn-breadcrumb > *:nth-last-child(-n+4) {
+        display:block;
+    }
+    .btn-breadcrumb > * div:not(:last-child) {
+        max-width: 170px;
+    }
+    .btn-breadcrumb > * div:last-child {
+        width: 100%;
+    }
+}
+
+/*
+ *  CSS for static table
+ *  Styling for the staticTable component
+ */
+.panel>.table-header {
+    background-color: #DCDCDC;
+}
+
+.downloadCSV {
+    margin: 20px 0px;
+}
+.perPage {
+    width: 75px;
+    color: black;
+}
+.table-footer {
+    background-color: #DCDCDC;
+}
+#dynamictable {
+    margin-bottom: 0px;
+}
+.rowsPerPage {
+    color: black;
+}
+.pagination-table {
+  margin: 0px;
+}
+
+.left.carousel-control {
+    margin-left: 15px;
+}
+
+.right.carousel-control {
+    margin-right: 15px;
+}
+
+/*
+ *  CSS for Select Dropdown
+ */
+.dropdownSearch {
+  padding: 10px;
+}
+
+
+/* Style login navbar and logo */
+.navbar {
+  border-radius: 0;
+}
+
+.navbar-brand {
+  height: auto;
+}
+
+.navbar-brand .study-logo {
+  width: 64px;
+  height: 57px;
+  margin-bottom: 10px;
+}
+

@@ -11,10 +11,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once 'PEAR.php';
-require_once "NDB_Config.class.inc";
-require_once 'NDB_Factory.class.inc';
-
 
 
 /**
@@ -27,7 +23,7 @@ require_once 'NDB_Factory.class.inc';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Utility extends PEAR
+class Utility
 {
     /**
      * This is identical to PEAR::isError from PEAR only the function
@@ -46,17 +42,9 @@ class Utility extends PEAR
      */
     static function isErrorX($data, $code=null)
     {
-        if (!is_a($data, 'PEAR_Error')) {
-            return false;
-        }
-
-        if (is_null($code)) {
-            return true;
-        } elseif (is_string($code)) {
-            return $data->getMessage() == $code;
-        }
-
-        return $data->getCode() == $code;
+        throw new LorisException(
+            "Utility::isErrorX has been deprecated. Use PHP5 exceptions instead."
+        );
     }
 
     /**
@@ -153,33 +141,6 @@ class Utility extends PEAR
     }
 
     /**
-     * Returns a list of available ethnicities that can be assigned to subjects
-     *
-     * @return  array       an associative array("ethnicity" => "ethnicity")
-     * @access  public
-     * @static
-     * @note    This is no longer used and should be removed
-     * @cleanup
-     */
-    function getEthnicityList()
-    {
-        $DB =& Database::singleton();
-
-        // get the list of ethnicities
-        $query = "SELECT DISTINCT Race as Ethnicity FROM ethnic WHERE Race <> ''";
-
-        // execute the query
-        $result = $DB->pselect($query, array());
-
-        // fix the array
-        $list = array();
-        foreach ($result as $row) {
-            $list[$row["Ethnicity"]] = $row["Ethnicity"];
-        }
-        return $list;
-    }
-
-    /**
      * Returns a list of existing ethnicities of all candidates
      *
      * @return  array       an associative array("ethnicity" => "ethnicity")
@@ -251,7 +212,7 @@ class Utility extends PEAR
      *         should be interpreted as an associative array since the keys
      *         refer to the centerID, not the array index.
      */
-    function getAssociativeSiteList($study_site = true, $DCC = true)
+    static function getAssociativeSiteList($study_site = true, $DCC = true)
     {
         $DB =& Database::singleton();
 
@@ -295,26 +256,6 @@ class Utility extends PEAR
         return $list;
     }
 
-
-    /**
-     * Returns a list of study Subprojects
-     *
-     * @return array       an associative array("SubprojectID" => "Subproject title")
-     */
-    static function getSubprojectList()
-    {
-        $config =& NDB_Config::singleton();
-
-        // get the list of Subprojects
-        $subprojectSettings = $config->getSetting('subprojects');
-        foreach (Utility::toArray(
-            $subprojectSettings['subproject']
-        ) as $subproject) {
-            $list[$subproject['id']] =$subproject['title'];
-        }
-        return $list;
-    }
-
     /**
      * Returns a list of study Projects
      *
@@ -323,15 +264,46 @@ class Utility extends PEAR
      */
     static function getProjectList()
     {
-        $config =& NDB_Config::singleton();
-
-        // get the list of Subprojects
-        $projectSettings = $config->getSetting('Projects');
-        foreach (Utility::toArray($projectSettings['project']) AS $project) {
-
-            $list[$project['id']] =$project['title'];
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+        // get the list of projects
+        $projects = $DB->pselect("SELECT * FROM Project", array());
+        $project  = array();
+        foreach ($projects as $row) {
+            $project[$row['ProjectID']] = $row['Name'];
         }
-        return $list;
+        return $project;
+    }
+
+    /**
+     * Returns a list of study Subprojects
+     *
+     * @param integer $projectID The project for which you would like
+     *                           to get the subprojects
+     *
+     * @return array       an associative array("SubprojectID" => "Subproject title")
+     */
+    static function getSubprojectList($projectID = null)
+    {
+        $factory = NDB_Factory::singleton();
+        $DB      = $factory->database();
+        $config  = $factory->config();
+
+        if (!is_null($projectID)) {
+            $subprojects = $DB->pselect(
+                "SELECT * FROM subproject " .
+                "JOIN project_rel USING (SubprojectID) WHERE ProjectID=:pID",
+                array('pID' => $projectID)
+            );
+        } else {
+            $subprojects = $DB->pselect("SELECT * FROM subproject", array());
+        }
+
+        $subprojs = array();
+        foreach ($subprojects as $row) {
+            $subprojs[$row['SubprojectID']] = $row['title'];
+        }
+        return $subprojs;
     }
 
     /**
@@ -344,34 +316,7 @@ class Utility extends PEAR
      */
     static function getSubprojectsForProject($projectID = null)
     {
-
-        $db     =& Database::singleton();
-        $config =& NDB_Config::singleton();
-        $subprojectSettings = $config->getSetting('subprojects');
-        foreach (Utility::toArray(
-            $subprojectSettings['subproject']
-        ) AS $subproject) {
-            $allSubprojects[$subproject['id']] =$subproject['title'];
-        }
-        if ($projectID != null) {
-            $query       = "SELECT SubprojectID
-                FROM project_rel
-                WHERE ProjectID=:pID";
-            $subprojList = $db->pselect($query, array('pID' => $projectID));
-
-            foreach ($subprojList as $row) {
-                $subList[] = $row['SubprojectID'];
-            }
-            $list = array();
-            foreach ($subList as $row) {
-                $list[$row] = $allSubprojects[$row];
-            }
-            return $list;
-        } else {
-            return $allSubprojects;
-
-        }
-
+        return self::getSubprojectList($projectID);
     }
 
     /**
@@ -611,7 +556,7 @@ class Utility extends PEAR
      * @cleanup This should be removed and all uses converted to toArray
      *          (or vice versa, but toArray seems to be more common in the code)
      */
-    function asArray($var)
+    static function asArray($var)
     {
         if (!is_array($var)) {
             return array($var);
@@ -706,7 +651,7 @@ class Utility extends PEAR
      *
      * @return array The same array passed in, after modifications.
      */
-    function nullifyEmpty(&$arr, $field)
+    public static function nullifyEmpty(&$arr, $field)
     {
         if ($arr[$field] === '') {
             $arr[$field] = null;
@@ -779,7 +724,7 @@ class Utility extends PEAR
     static function getAllInstruments()
     {
         $Factory       = NDB_Factory::singleton();
-        $DB            = $Factory->Database(); //=& Database::singleton();
+        $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
             array()
@@ -794,6 +739,35 @@ class Utility extends PEAR
         return $instruments;
     }
 
+    /**
+     * Get a list of DDE instruments installed in Loris.
+     *
+     * @return Associative array of the form Test_name => Full Description
+     * @note   Arguably, this should be a static function in NDB_BVL_Instrument
+     */
+    static function getAllDDEInstruments()
+    {
+        $Factory       = NDB_Factory::singleton();
+        $DB            = $Factory->Database();
+        $config        =& NDB_Config::singleton();
+        $instruments_q = $DB->pselect(
+            "SELECT Test_name,Full_name FROM test_names",
+            array()
+        );
+        $doubleDataEntryInstruments = $config->getSetting(
+            'DoubleDataEntryInstruments'
+        );
+
+        $instruments = array();
+        foreach ($instruments_q as $row) {
+            if (isset($row['Test_name']) && isset($row['Full_name'])) {
+                if (in_array($row['Test_name'], $doubleDataEntryInstruments)) {
+                    $instruments[$row['Test_name']] = $row['Full_name'];
+                }
+            }
+        }
+        return $instruments;
+    }
 
     /**
      * Gets a list of all instruments where are administered as direct data
@@ -885,38 +859,27 @@ class Utility extends PEAR
         return $column_threshold;
     }
 
-
     /**
      * Checks to see if a table contains a specified column
      *
-     * @param string $test_name The table to check for a column.
-     * @param string $column    The column name to check the table for.
+     * @param string $table_name The table to check for a column.
+     * @param string $column     The column name to check the table for.
      *
-     * @return  boolean true if the table has a the given column
-     * @note    This should be moved to the Database class and references to it
-     *       updated.
-     * @note    Function comment written by Dave, not the author of this function.
-     * @cleanup
+     * @return boolean true if the table has at least one NULL in the column
      */
-    static function columnExists($test_name,$column)
+    static function columnsHasNull($table_name,$column)
     {
-        $config   =& NDB_Config::singleton();
-        $database = $config->getSetting('database');
-        $query    = "SELECT DISTINCT table_name
-            FROM information_schema.columns
-            WHERE table_name = :tn
-            AND COLUMN_NAME = :cn
-            AND TABLE_SCHEMA = :db";
+        //$config   =& NDB_Config::singleton();
+        //$database = $config->getSetting('database');
+        $query    = "SELECT count(*)
+            FROM {$table_name}
+            WHERE {$column} is NULL";
         $DB       =& Database::singleton();
-        $effected = $DB->pselectOne(
+        $num_null = $DB->pselectOne(
             $query,
-            array(
-             'tn' => $test_name,
-             'cn' => $column,
-             'db' => $database,
-            )
+            array()
         );
-        if ($effected) {
+        if ($num_null > 0) {
             return true;
         }
         return false;
@@ -949,6 +912,40 @@ class Utility extends PEAR
         $visitlabels = $db->pselect($query, array('tn' => $test_name));
         return $visitlabels;
     }
+
+    /**
+     * Looks up visit stage using candidate ID.
+     *
+     * @param string $Cand_id candidate ID
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getStageUsingCandID($Cand_id)
+    {
+        $db    =& Database::singleton();
+        $query = "select DISTINCT Current_stage from session where ".
+            "CandID = :Cand_id";
+        $stage = $db->pselect($query, array('Cand_id' => $Cand_id));
+        return $stage[0]['Current_stage'];
+    }
+
+    /**
+     * Looks up visit stage using candidate ID.
+     *
+     * @param string $Cand_id candidate ID
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getSubprojectIDUsingCandID($Cand_id)
+    {
+        $db    =& Database::singleton();
+        $query = "select DISTINCT SubprojectID from session where CandID = :CandID";
+        $stage = $db->pselect($query, array('CandID' => $Cand_id));
+        return $stage[0]['SubprojectID'];
+    }
+
     /**
      * Looks up the test_name for the current full name
      *
@@ -1077,7 +1074,9 @@ class Utility extends PEAR
      */
     static function getExistingVisitLabels($projectID = null)
     {
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
         if ($projectID != null) {
             $ExtraProject_Criteria
                 = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
@@ -1089,7 +1088,7 @@ class Utility extends PEAR
             JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE c.Active = 'Y'
             AND s.Active = 'Y'
-            AND c.PSCID NOT LIKE '%scanner%'
+            AND c.Entity_type != 'Scanner'
             AND psc.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
         $visitlabels = $db->pselect($query, array());
@@ -1120,7 +1119,7 @@ class Utility extends PEAR
     {
         $DB =& Database::singleton();
 
-        if (Utility::ColumnExists('test_battery', 'Test_name_display')) {
+        if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
                 "SELECT DISTINCT Test_name_display FROM test_battery 
                 WHERE Visit_label=:vl",
@@ -1134,7 +1133,7 @@ class Utility extends PEAR
                 JOIN flag f ON (f.sessionid=s.id)
                 JOIN test_names t ON (f.test_name=t.Test_name)
                 WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl 
-                AND psc.CenterID != '1' AND c.PSCID != '%scanner%'
+                AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
                 ORDER BY t.Full_name",
                 array('vl' => $visit_label)
             );
@@ -1164,5 +1163,106 @@ class Utility extends PEAR
         return isset($arr[0]);
     }
 
+    /**
+     * This function takes two strings. If one string has a
+     * suffix which is a prefix of the other, it will return
+     * the part of the second string minus the common
+     * suffix/prefix.
+     *
+     * This is mostly used for removing pieces of a relative
+     * URL in a way that can be concatinated to an absolute
+     * URL without duplicating components. ie.
+     *
+     * removeCommonAffix("http://localhost/foo", "/foo/bar")
+     *
+     * would return "/bar", which can then be concatenated
+     * to "http://localhost/foo" to form the URL
+     * "http://loclahost/foo/bar"
+     *
+     * @param string $suffixStr The string which may contain a common affix
+     *                          at the end of the string
+     * @param string $prefixStr The string to compare the suffix string to
+     *
+     * @return string $prefixStr minus the largest common piece of $suffixStr
+     */
+    static function removeCommonAffix($suffixStr, $prefixStr)
+    {
+        $lastFound = '';
+        // Start from the end of $suffixStr and work backwords, to make sure
+        // it fails fast in the event that there's nothing in common.
+        for ($i = strlen($suffixStr)-1; $i >= 0; $i -= 1) {
+            $piece = substr($suffixStr, $i);
+            $found = strpos($prefixStr, $piece);
+            if ($found === 0) {
+                // The current substring starts at index 0 in prefixStr, so we
+                // know that it's a prefix. Keep track of it.
+                $lastFound = $piece;
+            } else if ($found === false) {
+                // The current substring doesn't appear anywhere in
+                // $prefixStr, so return the last known complete prefix.
+                // There's no chance that a larger string is going to
+                // be a prefix either.
+                return substr($prefixStr, strlen($lastFound));
+            } else {
+                // Otherwise, the string appears somewhere, but isn't at the
+                // beginning of the string. Keep going because this might be
+                // the middle of a larger prefix.
+            }
+        }
+        return $prefixStr;
+    }
+
+    /**
+    * Coverts array into CSV string
+    *
+    * @param array $array the array to be converted
+    *
+    * @return string CSV string of data
+    */
+    static function arrayToCSV($array)
+    {
+        $fp = fopen("php://temp", 'w+');
+
+        fputcsv($fp, $array['headers']);
+        foreach ($array['data'] as $item) {
+            fputcsv($fp, $item);
+        }
+
+        // Read what we have written.
+        rewind($fp);
+        $csv_string = stream_get_contents($fp);
+
+        fclose($fp);
+        return $csv_string;
+    }
+
+    /**
+     * QuickForm rule to check that a date is valid.
+     * This is used by create timepoint and start timepoint pages,
+     * so it probably shouldn't be in the instrument class.
+     *
+     * @param array $dateElement The date element in QuickForm array format.
+     *
+     * @return True if the date is invalid, false if it's valid.
+     */
+    function _checkDate($dateElement)
+    {
+        if (empty($dateElement['M'])
+            && empty($dateElement['d'])
+            && empty($dateElement['Y'])
+        ) {
+            // if all three elements are empty, return true b/c it'll
+            // save the NULL in date field
+            return true;
+        } elseif (empty($dateElement['M'])
+            || empty($dateElement['d'])
+            || empty($dateElement['Y'])
+        ) {
+            // otherwise, if any of the three elements are empty, return
+            // false b/c date entry has been attempted
+            return false;
+        }
+        return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+    }
 }
 ?>

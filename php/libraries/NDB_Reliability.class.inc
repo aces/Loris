@@ -13,8 +13,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-require_once "NDB_Form.class.inc";
-
+require_once "NDB_BVL_Instrument.class.inc";
 /**
  * The class that implements base functionality for Reliability checking.
  *
@@ -28,10 +27,36 @@ class NDB_Reliability extends NDB_Form
 {
     /**
      * Class name
+     *
      * @var    string
      * @access private
      */
     var $reliability_center_id;
+
+
+    /**
+     * Override the default page form to use HTML_QuickForm instead of
+     * LorisForm. Reliability instruments aren't yet ready to use LorisForm,
+     * as they depend on a type of QuickForm renderer that is not implemented
+     * by LorisForm. This should be removed once that is fixed..
+     *
+     * @param string $name       The test name being accessed
+     * @param string $page       The subtest being accessed (may be null)
+     * @param string $identifier The identifier for the data to load on this page
+     * @param string $commentID  The CommentID to load the data for
+     * @param string $formname   The name to give this form
+     *
+     * @return none
+     */
+    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    {
+        $this->form       = new HTML_QuickForm($formname);
+        $this->name       = $name;
+        $this->page       = $page;
+        $this->identifier = $identifier;
+        $this->commentID  = $commentID;
+        $this->defaults   = array();
+    }
 
 
     /**
@@ -44,8 +69,12 @@ class NDB_Reliability extends NDB_Form
      *
      * @return void
      */
-    static function &factory($name, $page, $identifier, $reliability_center_id)
-    {
+    static function &reliabilityfactory(
+        $name,
+        $page,
+        $identifier,
+        $reliability_center_id
+    ) {
         // check that the form class exists
         if (class_exists("NDB_Reliability_$name")) {
             $class = "NDB_Reliability_$name";
@@ -393,11 +422,6 @@ class NDB_Reliability extends NDB_Form
                 ORDER BY full_name",
             array('CentID' => $centerID)
         );
-        if ($db->isError($results)) {
-            return $this->raiseError(
-                "Could not get examiner names: ".$results->getMessage()
-            );
-        }
 
         $examiners = array('' => '');
 

@@ -11,8 +11,19 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class brainbrowserTestIntegrationTest extends LorisIntegrationTest
+require_once __DIR__ . "/../../../test/integrationtests/"
+    . "LorisIntegrationTest.class.inc";
+
+/**
+ * Implements automated integration tests for BrainBrowser within Loris
+ *
+ * @category Test
+ * @package  Loris
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
 {
     /**
      * Tests that, when loading the Brainbrowser module, some
@@ -22,8 +33,10 @@ class brainbrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function testBrainbrowserDoespageLoad()
     {
-        $this->webDriver->get($this->url . "?test_name=brainbrowser");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->safeGet($this->url . "/brainbrowser/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("Brainbrowser", $bodyText);
     }
 }

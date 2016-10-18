@@ -13,6 +13,16 @@
  */
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+class FakePDO extends PDO
+{
+    public function __construct () {}
+}
+
+class FakeDatabase extends Database {
+    protected function trackChanges($table, $set, $where, $type='U') {
+    }
+}
+
 /**
  * This tests the LorisForm replacement for HTML_QuickForm used by
  * Loris.
@@ -25,6 +35,12 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  */
 class Database_Test extends PHPUnit_Framework_TestCase
 {
+    function _getAllMethodsExcept($methods) {
+        $AllMethods = get_class_methods('Database');
+
+        return array_diff($AllMethods, $methods);
+    }
+
     function testSetFakeData() {
         $client = new NDB_Client();
         $client->makeCommandLine();
@@ -59,5 +75,87 @@ class Database_Test extends PHPUnit_Framework_TestCase
         );
 
     }
+
+
+    function testUpdateEscapesHTML() {
+        $this->_factory   = NDB_Factory::singleton();
+        $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('update')))->getMock();
+
+        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+
+
+        $stmt->expects($this->once())->method("execute")->with(
+            $this->equalTo(array(
+                'set_field' => '&lt;b&gt;Hello&lt;/b&gt;'
+            )
+            )
+        );
+
+        $stub->_PDO->expects($this->once())->method("prepare")->will($this->returnValue($stmt));
+        $stub->update("test", array('field' => '<b>Hello</b>'), array());
+
+    }
+
+    function testUnsafeUpdateDoesntEscapeHTML() {
+        $this->_factory   = NDB_Factory::singleton();
+        $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('unsafeupdate')))->getMock();
+
+        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+
+
+        $stmt->expects($this->once())->method("execute")->with(
+            $this->equalTo(array(
+                'set_field' => '<b>Hello</b>'
+            )
+            )
+        );
+
+        $stub->_PDO->expects($this->once())->method("prepare")->will($this->returnValue($stmt));
+        $stub->unsafeupdate("test", array('field' => '<b>Hello</b>'), array());
+
+    }
+    function testInsertEscapesHTML() {
+        $this->_factory   = NDB_Factory::singleton();
+        $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('insert')))->getMock();
+
+        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+
+
+        $stmt->expects($this->once())->method("execute")->with(
+            $this->equalTo(array(
+                'field' => '&lt;b&gt;Hello&lt;/b&gt;'
+            )
+            )
+        );
+
+        $stub->_PDO->expects($this->once())->method("prepare")->will($this->returnValue($stmt));
+        $stub->insert("test", array('field' => '<b>Hello</b>'), array());
+
+    }
+
+    function testUnsafeInsertDoesntEscapeHTML() {
+        $this->_factory   = NDB_Factory::singleton();
+        $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('unsafeinsert')))->getMock();
+
+        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
+        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+
+
+        $stmt->expects($this->once())->method("execute")->with(
+            $this->equalTo(array(
+                'field' => '<b>Hello</b>'
+            )
+            )
+        );
+
+        $stub->_PDO->expects($this->once())->method("prepare")->will($this->returnValue($stmt));
+        $stub->unsafeinsert("test", array('field' => '<b>Hello</b>'), array());
+
+    }
 }
+
+
 ?>

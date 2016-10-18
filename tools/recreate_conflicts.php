@@ -48,7 +48,7 @@ if (empty($argv[1]) || $argv[1] == 'help') {
 * Get cmd-line arguments
 */
 // get $action argument
-$action         = strtolower($argv[1]);
+$action         = $argv[1];
 $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
 if ($action=='all') {
@@ -70,13 +70,7 @@ foreach ($allInstruments as $instrument=>$Full_name) {
                                            AND c.Active='Y'",
         array('testname' => $instrument)
     );
-    if (Utility::isErrorX($clear_conflicts)) {
-        return PEAR::raiseError(
-            "Error, failed to clear conflicts: ".
-            $clear_conflicts->getMessage()
-        );
-
-    }
+    
     foreach ($clear_conflicts as $conflict) {
         ConflictDetector::clearConflictsForInstance($conflict['CommentID']);
     }

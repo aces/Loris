@@ -11,7 +11,6 @@
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once 'NDB_Menu_Filter.class.inc';
 
 /**
  * Implements menu filter class for survey module.
@@ -33,9 +32,6 @@ class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         return $user->hasPermission('user_accounts');
     }
@@ -49,9 +45,6 @@ class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
     function _setupVariables()
     {
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         // the base query
         $query = " FROM participant_accounts p 
@@ -98,10 +91,6 @@ class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
-
         $this->addBasicText('PSCID', 'PSCID');
         // add form elements
         $this->addSelect(
@@ -118,6 +107,25 @@ class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
         $this->addBasicText('key', 'Key:');
 
         return true;
+    }
+
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+   function getJSDependencies()
+   {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
+                $baseURL . "/survey_accounts/js/columnFormatter.js"
+            )
+        );
     }
 }
 ?>

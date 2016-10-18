@@ -1,8 +1,8 @@
 <!-- start the selection table -->
-{if $writeable}
+{if $writable}
 <div class="row">
     <div class="col-xs-4">
-        <form method="post" action="main.php?test_name=instrument_manager" enctype="multipart/form-data">
+        <form method="post" action="{$baseurl}/instrument_manager/" enctype="multipart/form-data">
             <div class="panel panel-primary">
                 <div class="panel-heading">Upload Instrument</div>
                 <div class="panel-body">
@@ -18,7 +18,7 @@
 </div>
 {else}
 <div class="alert alert-warning">
-Instrument directory or tables_sql not writeable.
+Instrument directory or tables_sql not writable.
 Automatic uploading of instruments has been disabled.
 </div>
 {/if}
@@ -30,7 +30,7 @@ Automatic uploading of instruments has been disabled.
 <tr>
     <!-- title -->
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
 </div>
@@ -43,7 +43,7 @@ Automatic uploading of instruments has been disabled.
      <th nowrap="nowrap">No.</th>
         <!-- print out column headings - quick & dirty hack -->
         {section name=header loop=$headers}
-            <th nowrap="nowrap"><a href="main.php?test_name=instrument_manager&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+            <th nowrap="nowrap"><a href="{$baseurl}/instrument_manager/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
         {/section}
     </tr>
     </thead>
@@ -64,3 +64,17 @@ Automatic uploading of instruments has been disabled.
     </tbody>
 <!-- end data table -->
 </table>
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$TotalItems},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/instrument_manager/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
+
+

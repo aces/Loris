@@ -44,14 +44,11 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         );
         
         $db =& Database::singleton();
-        if(PEAR::isError($db)) {
-            return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
-        }
         
         $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
         $db->selectRow($query, $record);
         
-        if (PEAR::isError($record)) {
+        if (!is_array($record)) {
            $record = array();
         }
         
@@ -440,10 +437,6 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
     ////////////////////////////////////////////////////////////////
 
               $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
-              if($this->isError($result)) {
-                  print $result->getMessage();
-                  return $this->raiseError('Could not save to database');
-              }
               return true;
           }
 

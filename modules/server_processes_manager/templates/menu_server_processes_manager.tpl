@@ -29,7 +29,7 @@
                                 <input type="submit" name="filter" id="filter" value="Show Data" class="btn btn-sm btn-primary col-xs-12" />
                             </div>
                             <div class="col-sm-6">
-                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/main.php?test_name=server_processes_manager&reset=true'" />
+                                <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/server_processes_manager/?reset=true'" />
                             </div>
                         </div>
                     </div>
@@ -39,36 +39,11 @@
         </div>
     </div>
 </div>
-
-
-<div class='row'>
-    <table class="table table-hover table-primary table-bordered dynamictable" border="0" width="100%">
-        <thead>
-            <tr class="info">
-                <th>No.</th>
-                <!-- print out column headings - quick & dirty hack -->
-                {section name=header loop=$headers}
-                    <th><a href="{$baseurl}/main.php?test_name=server_processes_manager&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                {/section}
-            </tr>
-        </thead>
-
-        <tbody>
-            {section name=item loop=$items}
-            <tr>
-            {section name=piece loop=$items[item]}
-                {if $items[item][piece].bgcolor != ''}
-                <td style="background-color:{$items[item][piece].bgcolor}">
-                {else}
-                <td>
-                {/if}
-                    {$items[item][piece].value}
-                </td>
-            {/section}
-            </tr>
-            {sectionelse}
-            <tr><td colspan="12">No server processes found</td></tr>
-            {/section}
-        </tbody>
-    </table>
-</div>
+<div id="datatable"/>
+<script>
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/server_processes_manager/?format=json",
+     "getFormattedCell" : formatColumn
+     });
+React.render(table, document.getElementById("datatable"));
+</script>

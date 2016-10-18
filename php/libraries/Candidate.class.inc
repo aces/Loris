@@ -12,8 +12,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once "PEAR.php";
-
 /* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
@@ -31,7 +29,7 @@ define('CANDIDATE_MAX_PSCID', 9999);
  * Wrapper around a candidate in Loris. Mostly, it gets information
  * from the candidate table, but this class is abstract enough that
  * it could get information from other places too such as parameter_candidate
- * if relevent.
+ * if relevant.
  *
  * @category Main
  * @package  Loris
@@ -59,7 +57,7 @@ class Candidate
         $candidateList =& $GLOBALS['__candidateObjects'];
         if (!isset($candidateList[$candID])) {
             $candidateList[$candID] = new Candidate();
-            $success = $candidateList[$candID]->select($candID);
+            $candidateList[$candID]->select($candID);
         }
 
         return $candidateList[$candID];
@@ -74,17 +72,18 @@ class Candidate
      *
      * @return null As a side-effect loads candidate into current
      *              object
-     * @throws DatabaseException
-     * @throws Exception
+     * @throws DatabaseException | LorisException
      */
-    function select($candID)
+    public function select($candID)
     {
-        $config    = NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
         $candID    = trim($candID);
         $CandArray = array('Candidate' => $candID);
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $db = $factory->database();
 
         // get candidate data from database
         $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender,
@@ -98,7 +97,7 @@ class Candidate
         $row = $db->pselectRow($query, $CandArray);
 
         if (!is_array($row) || sizeof($row) == 0) {
-            throw new Exception(
+            throw new LorisException(
                 "Could not select Candidate data from the database (DCCID: $candID)",
                 CANDIDATE_INVALID
             );
@@ -156,7 +155,7 @@ class Candidate
                 trim($_REQUEST['PSCID'])
             ) != strtolower($this->getPSCID())
             ) {
-                throw new Exception("IDs do not match");
+                throw new LorisException("IDs do not match");
             }
         }
 
@@ -171,6 +170,7 @@ class Candidate
         foreach ($row AS $value) {
             $this->listOfTimePoints[] = $value["ID"];
         }
+
     }
 
     /**
@@ -184,11 +184,14 @@ class Candidate
      * @param string $PSCID       PSCID specified by the user, if available
      *
      * @return int   $candID      candidate id of the new candidate
+     * @throws Exception
      * @static
      */
-    static function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null)
-    {
-        $db =& Database::singleton();
+    static public function createNew(
+        $centerID, $dateOfBirth, $edc, $gender, $PSCID = null
+    ) {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $site =& Site::singleton($centerID);
 
@@ -198,7 +201,7 @@ class Candidate
         $candID = Candidate::_generateCandID();
 
         // figure out how to generate PSCID
-        $config        =& NDB_Config::singleton();
+        $config        = $factory->config();
         $PSCIDSettings = $config->getSetting('PSCID');
 
         if ($PSCIDSettings['generation'] == 'user') {
@@ -212,7 +215,7 @@ class Candidate
 
             // check pscid structure
             if (!Candidate::validatePSCID($PSCID, $site->getSiteAlias())) {
-                throw new Exception(
+                throw new LorisException(
                     "PSCID has an invalid structure",
                     PSCID_INVALID_STRUCTURE
                 );
@@ -270,7 +273,8 @@ class Candidate
     static function candidateExists($candID, $PSCID)
     {
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $candidateIDs = array(
                          ':candidate_id' => $candID,
@@ -310,11 +314,15 @@ class Candidate
      * @param integer $visitNo The visit number for which you
      *                         want the SessionID
      *
-     * @return integer SessionID of candidate's nth visit
+     * @return int SessionID of candidate's nth visit, NULL if none found
      */
     function getSessionID($visitNo)
     {
-        return $this->listOfTimePoints[$visitNo-1];
+        if (isset($this->listOfTimePoints[$visitNo-1]) ) {
+            return $this->listOfTimePoints[$visitNo-1];
+        }
+
+        return null;
     }
 
     /**
@@ -325,12 +333,15 @@ class Candidate
      *
      * @return mixed The info requested
      */
-    function getData($var = null)
+    public function getData($var = null)
     {
         if (is_null($var)) {
             return $this->candidateInfo;
         } else {
-            return $this->candidateInfo[$var];
+            if (isset($this->candidateInfo[$var])) {
+                return $this->candidateInfo[$var];
+            }
+            return null;
         }
     }
 
@@ -339,11 +350,12 @@ class Candidate
      * database
      *
      * @param string $var   The variable to be set
-     * @param any    $value The value to be set to
+     * @param mixed  $value The value to be set to
      *
-     * @return true on success, PEAR Error otherwise
+     * @return true on success
+     * @throws DatabaseException
      */
-    function setData($var, $value=null)
+    public function setData($var, $value=null)
     {
         if (!is_array($var)) {
             $setData = array($var => $value);
@@ -353,9 +365,10 @@ class Candidate
 
         $this->candidateInfo = array_merge($this->candidateInfo, $setData);
 
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
-        $success = $db->update(
+        $db->update(
             'candidate',
             $setData,
             array('CandID' => $this->getData('CandID'))
@@ -452,7 +465,7 @@ class Candidate
     /**
      * Return the candidate's gender
      *
-     * @return Male|Female String describing the gender
+     * @return string Male|Female String describing the gender
      */
     function getCandidateGender()
     {
@@ -473,7 +486,7 @@ class Candidate
     /**
      * Return whether the candidate is active
      *
-     * @return Y|N|null Active flag for this candidate
+     * @return string Y|N|null Active flag for this candidate
      */
     function isActive()
     {
@@ -503,17 +516,20 @@ class Candidate
     /**
      * Returns the list of visit labels w/ corresponding SessionID as key
      *
-     *@return array Associative array in the format SessionID=>Visit_label
+     * @return array Associative array in the format SessionID=>Visit_label
+     * @throws DatabaseException
      */
-    function getListOfVisitLabels()
+    public function getListOfVisitLabels()
     {
+        $factory = NDB_Factory::singleton();
         //make sure it returns an array
         $visitLabelArray = array();
 
         $candID = $this->getCandID();
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        //
+        $db = $factory->database();
 
         $query  = "SELECT ID, Visit_label FROM session
             WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
@@ -528,7 +544,7 @@ class Candidate
 
     /**
      * Return the next visit number for the time point you are
-     * trying to register can be called statically
+     * trying to register
      *
      * @return     integer Next visit number for candidate
      * @deprecated
@@ -538,7 +554,8 @@ class Candidate
         $candID = $this->getCandID();
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo
             FROM session
@@ -553,13 +570,14 @@ class Candidate
     /**
      * Return the suggested visit label for the time point you are
      * trying to register
-     * can be called statically
      *
      * @return string Next suggested visit label
+     * @throws DatabaseException
      */
-    function getNextVisitLabel()
+    public function getNextVisitLabel()
     {
-        $config =& NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
 
         $visitLabelSettings = $config->getSetting('visitLabel');
         $nextVisitLabel     = null;
@@ -567,7 +585,7 @@ class Candidate
         $candID = $this->getCandID();
 
         // make a local reference to the Database object
-        $db =& Database::singleton();
+        $db = $factory->database();
 
         if ($visitLabelSettings['generation'] == 'user'
             && !empty($visitLabelSettings['suggest'])
@@ -606,10 +624,15 @@ class Candidate
      * project
      *
      * @return array Array of the form SubprojectID => SubprojectID
+     *               or NULL if none exist
+     * @throws DatabaseException
      */
-    function getValidSubprojects()
+    public function getValidSubprojects()
     {
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $subprojList = null;
 
         $projID  = $this->getProjectID();
         $query   = "SELECT SubprojectID from project_rel where ProjectID = :prj";
@@ -623,6 +646,7 @@ class Candidate
                 }
             }
         }
+
         return $subprojList;
     }
     /**
@@ -630,9 +654,10 @@ class Candidate
      *
      * @return string The visit label for the candidate's first visit
      */
-    function getFirstVisit()
+    public function getFirstVisit()
     {
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $candID = $this->getCandID();
 
@@ -655,7 +680,8 @@ class Candidate
     static function _generateCandID()
     {
         // get a database connection
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         // generate a candidate id
         $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
@@ -682,9 +708,10 @@ class Candidate
     static function _generatePSCID($prefix)
     {
         // get a database connection
-        $db =& Database::singleton();
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
-        $config =& NDB_Config::singleton();
+        $config = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
         $pscidArrays   = Candidate::generateArrays($PSCIDSettings, $prefix);
@@ -719,17 +746,18 @@ class Candidate
      *
      * @return string Anonymized ExternalID for distributing data
      */
-    function _generateExternalID()
+    static function _generateExternalID()
     {
-        $config =& NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
 
         $ExternalIDSettings = $config->getSetting('ExternalID');
         $ExternalIDArrays   = Candidate::generateArrays($ExternalIDSettings);
 
-        $db =& Database::singleton();
+        $db = $factory->database();
 
         do {
-            // genereate a new external ID
+            // generate a new external ID
             if ($ExternalIDSettings['generation'] == 'sequential') {
                 if (!empty($externalID)) {
                     $externalID++;
@@ -766,9 +794,10 @@ class Candidate
      *
      * @return boolean True if PSCID is valid
      */
-    static function validatePSCID($PSCID, $siteAbbrev=null)
+    static public function validatePSCID($PSCID, $siteAbbrev=null)
     {
-        $config =& NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
         $regex         = Utility::structureToPCRE(

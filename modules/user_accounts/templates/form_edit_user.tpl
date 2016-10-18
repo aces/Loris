@@ -1,10 +1,7 @@
 <br />
+<script type="text/javascript" src="{$baseurl}/js/invalid_form_scroll.js"></script>
 {literal}
 <script>
-
-// Flag that indicates whether we already scrolled the browser window
-// to make an invalid field visible for the current submit event
-var scrolledToInvalidField;
 
 $(document).ready(function() {
     function toggleGroup(group) {
@@ -28,46 +25,13 @@ $(document).ready(function() {
         section = id.substring(7);
         section_el = $("#perms_" + section + " br:nth-child(1)").hide();
     });
-    
-    // This will make sure that the flag indicating whether we scrolled
-    // to an invalid element when the form is submitted is reset
-    document.getElementsByName('fire_away')[0].addEventListener("click", function () {
-       scrolledToInvalidField = false;
-    });
-    
-    // Override default event handler for invalid input elements
-    // This will make sure that the invalid element appears at the top
-    // of the page.  
-    var elements = document.querySelectorAll('input,select,textarea');
-    var navbarHeader = document.getElementsByClassName("navbar-header");
-    for(var i = elements.length; i--;){
-        elements[i].addEventListener('invalid',function(){
-            // Only make the first invalid element visible when the
-            // form is submitted. 
-            // If this is not done we have no guarantee that the error message
-            // displayed will be for the element that we scrolled to (i.e we
-            // might ensure invalid element #10 is visible while the error
-            // message that is displayed by the page is for element #1, which 
-            // might be way higher up, and thus hidden from the view)
-            if(!scrolledToInvalidField) {
-                this.scrollIntoView(true);
-            
-                // scrollingIntoView is not enough: the navigation bar will appear
-                // over the invalid element and hide it.
-                // We have to scroll an additional number of pixels down so that 
-                // the elements becomes visible. 
-                window.scrollBy(0,- $(navbarHeader).height()- 10);
-                scrolledToInvalidField = true;
-            }
-        });
-    }
 });
 </script>
 {/literal}
 <form method="post" name="edit_user">
     {if $form.errors}
         <div class="alert alert-danger" role="alert">
-            Please ensure that all required fields are filled
+            The form you submitted contains data entry errors
         </div>
     {/if}
    <div class="panel panel-default">
@@ -306,6 +270,25 @@ $(document).ready(function() {
             </div>
         {/if}
     </div>
+    {if $form.__ConfirmEmail}
+    {if $form.errors.__ConfirmEmail}
+    <div class="row form-group form-inline form-inline has-error">
+    {else}
+    <div class="row form-group form-inline form-inline">
+    {/if}
+    	<label class="col-sm-2">
+    		{$form.__ConfirmEmail.label}
+    	</label>
+    	<div class="col-sm-10">
+    		{$form.__ConfirmEmail.html}
+    	</div>
+        {if $form.errors.__ConfirmEmail}
+            <div class="col-sm-offset-2 col-xs-12">
+                <font class="form-error">{$form.errors.__ConfirmEmail}</font>
+            </div>
+        {/if}
+    </div>
+    {/if}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.CenterID.label}
@@ -341,6 +324,17 @@ $(document).ready(function() {
     	</div>
     </div>
     <div class="row form-group form-inline">
+        <label class="col-sm-2">
+          {$form.Supervisors_Group.label}
+        </label>
+        <div class="col-sm-10 col-xs-12">
+          <div>
+            {$form.Supervisors_Group.html}
+          </div>
+        </div>
+     </div>
+
+    <div class="row form-group form-inline">
     	<div class="col-sm-2">
     		<input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
     	</div>
@@ -348,7 +342,7 @@ $(document).ready(function() {
     		<input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" />
     	</div>
     	<div class="col-sm-2">
-    		<input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=user_accounts'" value="Back" type="button" />
+    		<input class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/user_accounts/'" value="Back" type="button" />
     	</div>
     </div>
 <!-- </form> -->

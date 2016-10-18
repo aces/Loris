@@ -11,9 +11,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-require_once 'NDB_Form.class.inc';
-
 /**
  * This file contains code for editing context help section 
  *
@@ -32,9 +29,6 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
     {
         // create user object
         $user = User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         return $user->hasPermission('context_help');
     }
@@ -42,26 +36,23 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
     function _setupVariables()
     {
         $user = User::singleton();
-        if (Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
         // the base query
-        $query = " FROM help WHERE hash IS NOT NULL AND topic IS NOT NULL";
+        $query = " FROM help helpChild LEFT JOIN help helpParent ON (helpChild.parentID = helpParent.helpID )WHERE helpChild.hash IS NOT NULL AND helpChild.topic IS NOT NULL";
 
 
         // set the class variables
-        $this->columns      = array('topic as Topic', 'parentID as Parent_Topic',
-                               'COALESCE(projectContent,content) as Content' );
+        $this->columns      = array('helpChild.helpID as helpID','helpChild.topic as Topic', 'helpChild.parentID as Parent_ID','helpParent.parentID as ParentTopic_ID','helpParent.topic as Parent_Topic','COALESCE(helpChild.projectContent, helpChild.content) as Content' );
         $this->query        = $query;
-        $this->order_by     = 'helpID';
-        //$this->headers      = array('Topic','Parent Topic', 'Content');
-        $this->validFilters = array('topic');
+        $this->order_by     = 'helpChild.helpID';
+        $this->headers      = array('HelpID','Topic','ParentID','ParentTopicID','Parent_Topic','Content');
+        $this->tpl_data['hiddenHeaders'] = json_encode(['HelpID','ParentID','ParentTopicID']);
+        $this->validFilters = array('helpChild.topic');
 
         $this->formToFilter = array(
-                'topic' => 'topic'
+                'topic' => 'helpChild.topic'
                 );
-        $this->searchKeyword = array('topic','content');
+        $this->searchKeyword = array('helpChild.topic','helpChild.content');
         return true;
     }
 
@@ -80,10 +71,6 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
     {
         $DB = Database::singleton();
         //Get the default values
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".
-                                     $DB->getMessage());
-        }
         $help = $DB->pselect("SELECT helpID, topic from help", array());
         foreach ($help as $row) {
             $help_section[$row['helpID']] = $row['topic'];
@@ -121,5 +108,25 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
         return true;
 
     } 
+    
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/help_editor/js/help_editor_helper.js",
+             $baseURL . "/help_editor/js/columnFormatter.js",
+            )
+        );
+    }
 }
 ?>
