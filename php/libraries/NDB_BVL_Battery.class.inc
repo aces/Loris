@@ -200,7 +200,6 @@ class NDB_BVL_Battery
              'Test_name' => $testName,
              'CommentID' => $commentID,
              'UserID'    => $sessionData['UserID'],
-             'Testdate'  => null,
             )
         );
 
@@ -218,7 +217,6 @@ class NDB_BVL_Battery
              'Test_name' => $testName,
              'CommentID' => $ddeCommentID,
              'UserID'    => $sessionData['UserID'],
-             'Testdate'  => null,
             )
         );
 
@@ -330,7 +328,7 @@ class NDB_BVL_Battery
                 )";
                 $qparams['SubprojID'] = $SubprojectID;
         }
-        $query .= " GROUP BY t.Full_name";
+        $query .= "";
 
         if (Utility::columnsHasNull('test_subgroups', 'group_order')) {
             $query .= " ORDER BY Subgroup_name";
