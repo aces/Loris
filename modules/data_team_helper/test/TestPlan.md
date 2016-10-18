@@ -1,4 +1,4 @@
-# Data Team Helper Test Plan:
+# Data Team Helper Test Plan
 
 ## Automated testing covers:
 * Permissions (both present and absent)
