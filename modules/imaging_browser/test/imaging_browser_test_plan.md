@@ -24,15 +24,16 @@
 16. Selected:  can be set back to Null (blank)
 17. BrainBrowser link works (launches window)
 18. Link to Comments link works (launches window)
+19. Longitudinal View button launches BrainBrowser with images of the chosen modality for that specific candidate across visits/timepoints
 
 #D. MRI-QC : Scan-level (Link to Comments) dialog window
-19. Viewable by all, editable IFF permission imaging_browser_qc
-20. Comments save, checkboxes save, dropdown values save
-21. Save button works
-22. Comments can be deleted (field cleared). checkboxes, dropdown values too. 
+20. Viewable by all, editable IFF permission imaging_browser_qc
+21. Comments save, checkboxes save, dropdown values save
+22. Save button works
+23. Comments can be deleted (field cleared). checkboxes, dropdown values too. 
 
 #E. Visit-level QC feedback dialog window
-23. editable IFF permission imaging_browser_qc
-24. Comments save
-25. Save button works
-26. Comments can be deleted (field cleared). 
+24. editable IFF permission imaging_browser_qc
+25. Comments save
+26. Save button works
+27. Comments can be deleted (field cleared). 
