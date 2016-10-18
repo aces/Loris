@@ -102,33 +102,6 @@ ViewDataTabPane = React.createClass({
             this.props.onRunQueryClicked(this.props.Fields, this.props.Sessions);
         }
     },
-    downloadCSV: function() {
-        // Downloads the current loaded data into a CSV formatted file.
-        // Makes use of a web worker to format and download the data
-        var headers = this.props.Fields,
-            csvworker = new Worker(loris.BaseURL + '/GetJS.php?Module=dataquery&file=workers/savecsv.js');
-
-
-        csvworker.addEventListener('message', function (e) {
-            var dataURL, dataDate, link;
-            if (e.data.cmd === 'SaveCSV') {
-                dataDate = new Date().toISOString();
-                dataURL = window.URL.createObjectURL(e.data.message);
-                link = document.createElement("a");
-                link.download = "data-" + dataDate + ".csv";
-                link.type = "text/csv";
-                link.href = dataURL;
-                $(link)[0].click();
-
-            }
-        });
-        csvworker.postMessage({
-            cmd: 'SaveFile',
-            data: this.props.Data,
-            headers: headers,
-            identifiers: this.props.Sessions
-        });
-    },
     changeDataDisplay: function(displayID) {
         // Wrapper function to change the data display type
         this.props.changeDataDisplay(displayID);
@@ -270,7 +243,6 @@ ViewDataTabPane = React.createClass({
             <div className="row">
                 <div className="commands col-xs-12 form-group">
                     <button className="btn btn-primary" onClick={this.runQuery}>Run Query</button>
-                    <button className="btn btn-primary" onClick={this.downloadCSV}>Download Table as CSV</button>
                     <button className="btn btn-primary" onClick={this.downloadData}>Download Data as ZIP</button>
                 </div>
                 <div id="progress" className="col-xs-12"></div>
