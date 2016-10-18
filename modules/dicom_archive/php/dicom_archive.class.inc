@@ -99,7 +99,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
              'Archive_Location',
              'Metadata',
              'MRI_Browser',
-             'seriesuid',
+             'Seriesuid',
              'Site',
              'TarchiveID',
              'SessionID',
@@ -109,7 +109,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
         // Set header as hidden from the data table
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
-             'seriesuid',
+             'Seriesuid',
              'Site',
              'TarchiveID',
              'SessionID',
