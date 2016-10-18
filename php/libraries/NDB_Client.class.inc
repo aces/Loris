@@ -98,7 +98,7 @@ class NDB_Client
 		WHERE cs.Name=:nm",
             array("nm" => "CSPAdditionalHeaders")
         );
-        if (count($config_additions) < 1) {
+        if (count($config_additions) < 1 || is_null($config_additions) || empty($config_additions)) {
             $config_additions = "";
         }
         // Content-Security policy for LORIS
