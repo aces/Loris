@@ -1,6 +1,6 @@
 # Data Team Helper Test Plan
 
-## Automated testing covers:
+## [Automated testing](https://github.com/aces/Loris/blob/17.1-dev/modules/data_team_helper/test/data_team_helperTest.php) covers:
 * Permissions (both present and absent)
 * That body text exists
 
