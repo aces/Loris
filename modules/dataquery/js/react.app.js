@@ -453,7 +453,7 @@ DataQueryApp = React.createClass({
                 }
             }
         }
-        if (filterState.children) {
+        if (filterState.children && filterState.children.length > 0) {
             filterState = this.loadFilterGroup(filterState);
         } else {
             filterState.children = [{
