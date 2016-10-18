@@ -180,15 +180,6 @@ var DicomArchive = React.createClass({
                 ref={archiveLocation}
               />
             </div>
-            <div className="col-md-6">
-              <TextboxElement
-                name={seriesUID}
-                label="Series UID"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.seriesUID}
-                ref={seriesUID}
-              />
-            </div>
           </div>
           <div className="row">
             <div className="col-md-6">

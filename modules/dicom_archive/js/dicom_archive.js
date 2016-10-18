@@ -1,3 +1,5 @@
+'use strict';
+
 /* exported RDicomArchive */
 /* global QueryString  */
 
@@ -18,12 +20,12 @@ var DicomArchive = React.createClass({
     Module: React.PropTypes.string.isRequired
   },
   mixins: [React.addons.PureRenderMixin],
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       Filter: {}
     };
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       Gender: {
         M: 'Male',
@@ -32,7 +34,7 @@ var DicomArchive = React.createClass({
       }
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     var formRefs = this.refs;
     var queryString = new QueryString();
     var queryStringObj = queryString.get();
@@ -49,7 +51,7 @@ var DicomArchive = React.createClass({
       QueryString: queryString
     });
   },
-  setFilter: function (fieldName, fieldValue) {
+  setFilter: function setFilter(fieldName, fieldValue) {
     // Create deep copy of a current filter
     var Filter = JSON.parse(JSON.stringify(this.state.Filter));
     var queryString = this.state.QueryString;
@@ -78,7 +80,7 @@ var DicomArchive = React.createClass({
 
     this.setState({ Filter: Filter });
   },
-  clearFilter: function () {
+  clearFilter: function clearFilter() {
     var queryString = this.state.QueryString;
     var formRefs = this.refs;
 
@@ -95,7 +97,7 @@ var DicomArchive = React.createClass({
     // Clear filter
     this.setState({ Filter: {} });
   },
-  render: function () {
+  render: function render() {
     // Defining element names here ensures that `name` and `ref`
     // properties of the element are always kept in sync
     var patientID = "patientId";
@@ -205,17 +207,6 @@ var DicomArchive = React.createClass({
               onUserInput: this.setFilter,
               value: this.state.Filter.archiveLocation,
               ref: archiveLocation
-            })
-          ),
-          React.createElement(
-            'div',
-            { className: 'col-md-6' },
-            React.createElement(TextboxElement, {
-              name: seriesUID,
-              label: 'Series UID',
-              onUserInput: this.setFilter,
-              value: this.state.Filter.seriesUID,
-              ref: seriesUID
             })
           )
         ),
