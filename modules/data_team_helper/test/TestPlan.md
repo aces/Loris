@@ -1,5 +1,10 @@
- # Data Team Helper Test Plan:
+# Data Team Helper Test Plan:
 
+## Automated testing covers:
+* Permissions (both present and absent)
+* That body text exists
+
+## Must be manually tested:
 1. Access data_team_helper module
 2. Choose a visit label and instrument and click "Show Data"
 3. Ensure that Conflict/Incomplete Candidate/Link to BVL Feedback links point to the correct place.
