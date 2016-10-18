@@ -75,7 +75,7 @@ class NDB_Menu_Filter_Form_Acknowledgements extends NDB_Menu_Filter_Form
 
             if (empty($values['present'])) {
                 $values['present'] = null;
-            } 
+            }
 
             if (empty($values['end_date'])) {
                 $values['end_date'] = null;
