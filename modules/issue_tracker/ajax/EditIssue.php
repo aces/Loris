@@ -69,13 +69,16 @@ function editIssue()
     );
 
     foreach ($fields as $field) {
-        if (isset($_POST[$field])) {
-            $issueValues[$field] = $_POST[$field];
+        $value = $_POST[$field];
+        if (strcmp($_POST[$field], "null") == 0) {
+            $value = null;
+        }
+        if (isset($field) && isset($value)) {
+            $issueValues[$field] = $value;
         }
     }
-
     foreach ($fieldsToValidateFirst as $vField) {
-        if (isset($_POST[$vField])) {
+        if (isset($_POST[$vField]) && strcmp($_POST[$vField], "null") != 0) {
             $validateValues[$vField] = $_POST[$vField];
         }
     }
@@ -454,7 +457,7 @@ function emailUser($issueID, $changed_assignee)
     $msg_data['issueID'] = $issueID;
     $msg_data['currentUser'] = $user->getUsername();
     $msg_data['title'] = $title;
-    
+
     if (isset($changed_assignee)) {
         $issue_change_emails_assignee = $db->pselect(
             "SELECT u.Email as Email, u.First_name as firstname " .
@@ -586,7 +589,7 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
 
     $unorgCategories = $db -> pselect( "SELECT categoryName
         FROM issues_categories", []);
-    $categories = array('' => "All");
+    $categories = [];
     foreach ($unorgCategories as $r_row) {
         $categoryName = $r_row['categoryName'];
         if ($categoryName) {
@@ -610,7 +613,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
     if (!empty($_GET['issueID'])) { //if an existing issue
         $issueID = $_GET['issueID'];
         $issueData = $db->pselectRow(
-            "SELECT i.*, c.PSCID, s.Visit_label FROM issues as i " .
+            "SELECT i.*, c.PSCID, s.Visit_label as visitLabel FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
             "LEFT JOIN session s ON (i.sessionID=s.ID) " .
             "WHERE issueID=:issueID",
@@ -621,7 +624,6 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $issueData['desc'] = $db->pSelectOne("SELECT issueComment 
 FROM issues_comments WHERE issueID=:issueID 
 ORDER BY dateAdded", array('issueID' => $issueID));
-
     } else { //just setting the default values
         $issueData['reporter'] = $user->getData('UserID');
         $issueData['dateCreated'] = date('Y-m-d H:i:s');
