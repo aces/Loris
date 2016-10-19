@@ -165,25 +165,4 @@ class Module
         }
         return "No help available for $page ($helpFile)";
     }
-
-    /**
-     * Returns false if user does not have access to this module.
-     *
-     * Usage: the hasAccess() function in a child class should contain
-     * something like:
-     *
-     *     // create user object
-     *     $user =& User::singleton();
-     *
-     *     return $user->hasPermission('superuser');
-     *
-     * You do not need to overload hasAccess() if there are no access restrictions
-     *
-     * @return bool
-     * @access private
-     */
-    private function _hasAccess()
-    {
-        return true;
-    }
 }
