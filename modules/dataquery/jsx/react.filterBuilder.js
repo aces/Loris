@@ -124,7 +124,7 @@ FilterRule = React.createClass({
 					};
 		            rule.session = Object.keys(allCandiates);
 		            rule.visit = "All";
-		            that.props.updateSessions(rule);
+		            that.props.updateSessions(that.props.index, rule);
 		        },
 				ajaxRetrieve = function(script) {
 		            $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script,
