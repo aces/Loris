@@ -194,3 +194,9 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 -- Issue Tracker
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
     SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='issue_tracker_reporter' AND m.Label='Issue Tracker';
+
+-- Media
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='media_read' AND m.Label='Media';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='media_write' AND m.Label='Media';
