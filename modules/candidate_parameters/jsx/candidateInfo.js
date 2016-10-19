@@ -122,7 +122,7 @@ var CandidateInfo = React.createClass(
         reasonRequired = true;
       }
 
-      var reasonKey;
+      var reasonKey = null;
       var specifyOther = null;
       var otherDisabled = true;
       var otherRequired = false;
@@ -312,6 +312,7 @@ var CandidateInfo = React.createClass(
                 updateResult: "success"
               }
             );
+              self.showAlertMessage();
           },
           error: function(err) {
             if (err.responseText !== "") {
@@ -322,6 +323,7 @@ var CandidateInfo = React.createClass(
                   errorMessage: errorMessage
                 }
               );
+                self.showAlertMessage();
             }
           }
 
