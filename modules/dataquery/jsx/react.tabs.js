@@ -234,7 +234,7 @@ ViewDataTabPane = React.createClass({
 
             });
 
-            saveworker.postMessage({ Files: FileList });
+            saveworker.postMessage({ Files: FileList, BaseURL: loris.BaseURL });
         }
     },
     render: function() {
