@@ -312,7 +312,6 @@ var CandidateInfo = React.createClass(
                 updateResult: "success"
               }
             );
-              self.showAlertMessage();
           },
           error: function(err) {
             if (err.responseText !== "") {
@@ -323,7 +322,6 @@ var CandidateInfo = React.createClass(
                   errorMessage: errorMessage
                 }
               );
-                self.showAlertMessage();
             }
           }
 

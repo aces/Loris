@@ -299,7 +299,6 @@ var CandidateInfo = React.createClass({
         self.setState({
           updateResult: "success"
         });
-        self.showAlertMessage();
       },
       error: function error(err) {
         if (err.responseText !== "") {
@@ -308,7 +307,6 @@ var CandidateInfo = React.createClass({
             updateResult: "error",
             errorMessage: errorMessage
           });
-          self.showAlertMessage();
         }
       }
 
