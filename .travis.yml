@@ -34,7 +34,7 @@ install:
 
     # Install ESLint and plugins
     - npm -g install eslint
-    - npm -g install eslint-config-google
+    - npm -g install eslint-config-google@0.6.0
     - npm -g install eslint-plugin-react
 
     # Download a Selenium Web Driver release
