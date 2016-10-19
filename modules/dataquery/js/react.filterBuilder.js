@@ -179,12 +179,12 @@ FilterRule = React.createClass({
 
 		if (event.target.value === "all") {
 			// If all visits, use keys of master list
-			rule.sessions = Object.keys(rule.candidates.allCandiates);
+			rule.session = Object.keys(rule.candidates.allCandiates);
 		} else {
 			// Else use list of PSCIDs for given vist
-			rule.sessions = rule.candidates.allSessions[event.target.value];
+			rule.session = rule.candidates.allSessions[event.target.value];
 		}
-		this.props.updateRule(this.props.index, rule);
+		this.props.updateSessions(this.props.index, rule);
 	},
 	render: function () {
 		// Renders the html for the component
