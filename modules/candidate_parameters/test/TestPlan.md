@@ -15,7 +15,7 @@
 	* Reason for Caveat Emptor flag
 	* Comment
 6. Change each field and click on Update and make sure it updates in the front-end and back-end
-7. If you set the Caveat Emptor flag to Yes, check that a reason must be specified. If the reason is set to other, check that an explanation must be provided.
+7. If you set the Caveat Emptor flag to Yes, check that a reason must be specified. If the reason is set to 'Other', check that an explanation must be provided. If 'Other' does not exist as an option in the caveat_options table, the field should not show up in the front-end.
 8. Add fields to the parameter_candidate table and check if it shows up on this page
 
 ### Proband Information Tab
