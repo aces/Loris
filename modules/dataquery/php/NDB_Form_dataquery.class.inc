@@ -87,7 +87,8 @@ class NDB_Form_dataquery extends NDB_Form
                 "group" => "true",
             )
         );
-        $this->tpl_data['visits'] = Utility::getExistingVisitLabels();
+        // $this->tpl_data['visits'] = Utility::getExistingVisitLabels();
+        $this->tpl_data['visits'] = array("V1" => "V1", "V2" => "V2", "V3" => "V3");
 
         $sessions = array_map(function($element) { return $element['key']; }, $sessionResults);
 
@@ -120,6 +121,25 @@ class NDB_Form_dataquery extends NDB_Form
              $baseURL . '/js/components/PaginationLinks.js',
              $baseURL . "/js/jszip/jszip.min.js",
              $baseURL . "/js/components/MultiSelectDropdown.js"
+            )
+        );
+    }
+
+    /**
+     * Include additional CSS files:
+     *  1. dataquery.css
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/dataquery/css/dataquery.css",
             )
         );
     }
