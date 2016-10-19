@@ -2,12 +2,13 @@
 2-  Click on 'Selection Filter' to show and hide the Filter options
 3-  Choose a parameter from the 'Selection Filter' that applies:
      - Select the right 'Site'
+     - Input the right 'Patient ID'
      - Input the right 'Patient Name'
      - Input the right 'Date of Birth'
      - Input the right 'Archive Location'
-     - Input the right 'PatientID'
      - Input the right 'Gender'
      - Input the right 'Acquisition Date'
+     - Input the right 'Series UID'
     Check the results in the table.
 4-  Click on 'Clear Filters' to make sure the previously entered data can be erased
 5-  Click on 'View Details' under Metadata to view the Details of MRI Scan
