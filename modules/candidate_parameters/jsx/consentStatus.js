@@ -112,6 +112,12 @@ var ConsentStatus = React.createClass(
                     ) {
             withdrawalRequired[i] = true;
           }
+          if (this.state.formData[withdrawal] === null ||
+                        this.state.formData[withdrawal] === undefined ||
+              this.state.formData[withdrawal] === ''
+                    ) {
+            withdrawalRequired[i] = false;
+          }
           i++;
         }
       }

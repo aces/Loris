@@ -1,9 +1,11 @@
+"use strict";
+
 /* exported RConsentStatus */
 
 var ConsentStatus = React.createClass({
   displayName: "ConsentStatus",
 
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       consentOptions: {
         yes: "Yes",
@@ -17,11 +19,11 @@ var ConsentStatus = React.createClass({
       loadedData: 0
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     var that = this;
     $.ajax(this.props.dataURL, {
       dataType: 'json',
-      xhr: function () {
+      xhr: function xhr() {
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function (evt) {
           that.setState({
@@ -30,30 +32,30 @@ var ConsentStatus = React.createClass({
         });
         return xhr;
       },
-      success: function (data) {
+      success: function success(data) {
         that.setState({
           Data: data,
           isLoaded: true
         });
       },
-      error: function (data, errorCode, errorMsg) {
+      error: function error(data, errorCode, errorMsg) {
         that.setState({
           error: 'An error occurred when loading the form!'
         });
       }
     });
   },
-  setFormData: function (formElement, value) {
+  setFormData: function setFormData(formElement, value) {
     var formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
       formData: formData
     });
   },
-  onSubmit: function (e) {
+  onSubmit: function onSubmit(e) {
     e.preventDefault();
   },
-  render: function () {
+  render: function render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return React.createElement(
@@ -95,6 +97,9 @@ var ConsentStatus = React.createClass({
         }
         if (this.state.formData[withdrawal] !== null && this.state.formData[withdrawal] !== undefined) {
           withdrawalRequired[i] = true;
+        }
+        if (this.state.formData[withdrawal] === null || this.state.formData[withdrawal] === undefined || this.state.formData[withdrawal] === '') {
+          withdrawalRequired[i] = false;
         }
         i++;
       }
@@ -267,7 +272,7 @@ var ConsentStatus = React.createClass({
   *
   * @param {event} e - Form submission event
   */
-  handleSubmit: function (e) {
+  handleSubmit: function handleSubmit(e) {
     e.preventDefault();
     var myFormData = this.state.formData;
     var today = new Date();
@@ -335,12 +340,12 @@ var ConsentStatus = React.createClass({
       cache: false,
       contentType: false,
       processData: false,
-      success: function (data) {
+      success: function success(data) {
         self.setState({
           updateResult: "success"
         });
       },
-      error: function (err) {
+      error: function error(err) {
         if (err.responseText !== "") {
           var errorMessage = JSON.parse(err.responseText).message;
           self.setState({
@@ -355,7 +360,7 @@ var ConsentStatus = React.createClass({
   /**
   * Display a success/error alert message after form submission
   */
-  showAlertMessage: function () {
+  showAlertMessage: function showAlertMessage() {
     var self = this;
     if (this.refs["alert-message"] === null) {
       return;
