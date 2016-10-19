@@ -431,6 +431,22 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         }
         return true;
     }
-
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseurl . "/mri_violations/js/mri_violations_helper.js",
+            )
+        );
+    }
 }
 ?>
