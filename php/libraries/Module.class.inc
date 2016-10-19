@@ -60,7 +60,7 @@ class Module
             // updated. This can be removed once support for old Modules has
             // been removed. If it hasn't been updated, fall back on the old
             // style.
-            throw new LorisException("Module is missing Module class");
+            throw new LorisModuleMissingException("$name is missing Module class");
         }
         // Manually do dependency injection for the module's php/ directory,
         // since composer doesn't know anything about our modules and we only
@@ -138,6 +138,10 @@ class Module
         $cls->setup();
         $cls->_setupPage($this->name, $page, $identifier, $commentID, $formname);
 
+        if (!$cls->_hasAccess()) {
+            throw new \LorisException("You do not have access to this page.", 403);
+        }
+
         // Handles form submission
         if (method_exists($cls, 'save')) {
             $cls->save();
@@ -160,5 +164,26 @@ class Module
                 return file_get_contents($helpFile);
         }
         return "No help available for $page ($helpFile)";
+    }
+
+    /**
+     * Returns false if user does not have access to this module.
+     *
+     * Usage: the hasAccess() function in a child class should contain
+     * something like:
+     *
+     *     // create user object
+     *     $user =& User::singleton();
+     *
+     *     return $user->hasPermission('superuser');
+     *
+     * You do not need to overload hasAccess() if there are no access restrictions
+     *
+     * @return bool
+     * @access private
+     */
+    private function _hasAccess()
+    {
+        return true;
     }
 }
