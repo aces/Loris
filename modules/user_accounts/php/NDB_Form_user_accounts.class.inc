@@ -1062,7 +1062,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             } else {
                 // New password must be different than current one
                 if (!$this->_passwordChanged($DB, $values['Password_md5'])) {
-                    $errors['Password_Group'] = 'New and old passwords '
+                    $errors['Password_md5'] = 'New and old passwords '
                         . 'are identical: please choose another one';
                 }
             }
