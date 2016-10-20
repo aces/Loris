@@ -66,7 +66,7 @@ var CollapsibleComment = React.createClass({
         { className: "col-sm-9" },
         React.createElement(
           "div",
-          { className: "btn btn-primary padding",
+          { className: "btn btn-primary",
             onClick: this.toggleCollapsed,
             "data-toggle": "collapse",
             "data-target": "#comment-history",
