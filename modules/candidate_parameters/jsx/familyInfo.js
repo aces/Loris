@@ -249,7 +249,7 @@ var FamilyInfo = React.createClass(
                 updateResult: "success"
               }
                         );
-              self.showAlertMessage();
+            self.showAlertMessage();
           },
           error: function(err) {
             var errorMessage = JSON.parse(err.responseText).message;
@@ -259,7 +259,7 @@ var FamilyInfo = React.createClass(
                 errorMessage: errorMessage
               }
                         );
-              self.showAlertMessage();
+            self.showAlertMessage();
           }
 
         }
@@ -329,7 +329,7 @@ var FamilyInfo = React.createClass(
                 updateResult: "success"
               }
                   );
-              self.showAlertMessage();
+            self.showAlertMessage();
           },
           error: function(err) {
             if (err.responseText !== "") {
@@ -340,7 +340,7 @@ var FamilyInfo = React.createClass(
                   errorMessage: errorMessage
                 }
                       );
-                self.showAlertMessage();
+              self.showAlertMessage();
             }
           }
         }

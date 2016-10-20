@@ -252,7 +252,7 @@ var ParticipantStatus = React.createClass(
                 updateResult: "success"
               }
                   );
-              self.showAlertMessage();
+            self.showAlertMessage();
           },
           error: function(err) {
             if (err.responseText !== "") {
@@ -263,7 +263,7 @@ var ParticipantStatus = React.createClass(
                   errorMessage: errorMessage
                 }
                       );
-                self.showAlertMessage();
+              self.showAlertMessage();
             }
           }
         }
