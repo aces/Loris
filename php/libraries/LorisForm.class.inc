@@ -688,7 +688,7 @@ class LorisForm
     function staticHTML($el)
     {
         if (empty($el['name'])) {
-            return '';
+            return $el['label'];
         }
         $val = $this->getValue($el['name']);
 
