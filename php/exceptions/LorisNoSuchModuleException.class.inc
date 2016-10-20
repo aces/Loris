@@ -1,7 +1,8 @@
 <?php
 /**
  * This class is an Exception extension created to distinguish any
- * Exception from the case when a module can't be loaded because it is an instrument
+ * Exception from the case when a module can't be loaded because it is not a module
+ * (instruments, forms, reliability forms,...)
  *
  * PHP Version 5
  *
@@ -13,7 +14,7 @@
  */
 
 /**
- * The LorisNotModuleException class.
+ * The LorisNoSuchModuleException class.
  *
  * @category Errors
  * @package  Loris
@@ -22,7 +23,7 @@
  * @link     https://github.com/aces/Loris
  */
 
-class LorisNotModuleException extends LorisException
+class LorisNoSuchModuleException extends LorisException
 {
 }
 ?>

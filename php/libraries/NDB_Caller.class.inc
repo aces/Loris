@@ -131,7 +131,7 @@ class NDB_Caller
         } catch (LorisModuleMissingException $e) {
             //print_r($e);
             // There was no module, so fall back on the old way of doing things.
-        } catch (LorisNotModuleException $e) {
+        } catch (LorisNoSuchModuleException $e) {
             // Its an instrument, not a module
         }
         if (is_dir($base . "project/modules/$test_name")
