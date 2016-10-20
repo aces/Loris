@@ -1,6 +1,6 @@
 <?php
 /**
- * This class is an Exception extention created to distinguish any 
+ * This class is an Exception extention created to distinguish any
  * Exception from the case when a module can't be load via the Module class
  *
  * PHP Version 5
