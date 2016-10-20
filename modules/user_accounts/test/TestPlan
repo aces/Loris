@@ -38,16 +38,16 @@ When creating or editing a user: (subtest: edit_user)
 13. Check that if modifying a password for a user an email is sent to that user containing the new password (requires
     email server).
 14. Check that when editing a user account it is not possible to set the password to its actual value (i.e. it needs to change).
-15. Check that if the 'Display additional information' entry is set to false in the admin module, fields Degree,  
+15. Check that if the 'Display additional information' entry is set to false in the Configuration module, fields Degree,
     Academic Position, Institution, Department, Street Address, City, State/Province, Zip/Postal Code, Country and 
     FAX are not shown.
-16. Check that selecting sites for the "Examiner At:" Section and saving, adds user X to the Examiner list.
+16. Check that selecting sites for the "Examiner At:" Section and saving, adds user X to the Examiner list (and in examiners table).
 17. Check that de-selecting sites from the "Examiner At:" section and saving, does NOT delete X from the Examiner table but rather sets them as inactive for that site.
 18. Check that setting the radiologist to Yes/No changes the values for X for all sites
 19. Check that by removing the "examiner_multisite" permission, the user(editor) can not modify X's Examiner Status.
 20. Setting the Pending Approval for user X prevents user X from logging in until his/her account is approved.
 21. Setting the Active=”No” for user X prevents user X from logging in until his/her account is active again.
-22 Check that modifications made to the basic user infos are displayed when the user table is reloaded.
+22. Check that modifications made to the basic user infos are displayed when the user table is reloaded.
 23. When editing an existing user: Check that Reset button restores previous settings (does not wipe all settings, or
     retain any changes).
 24. When editing an existing user: Check that Back button takes you to the User Account page and does not save any
@@ -59,7 +59,7 @@ On the My Preferences page:
 ==========================
 
 26. Check that all users (even those with NO permissions) have access to the My Preferences page.
-27. Change the user’s password.  Check that the password rules are enforced..
+27. Change the user’s password.  Check that the password rules are enforced.
 28. Check that if password and confirmed password do not match you get an error.
 29. Check that saving fails if any field is left blank (except password).
 30. Check that if you do not enter an email address that is syntactically valid you get an error.
