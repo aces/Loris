@@ -569,7 +569,7 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
                   );
 
     $unorgCategories = $db->pselect(
-        "SELECT categoryNameFROM issues_categories",
+        "SELECT categoryName FROM issues_categories",
         []
     );
     $categories      = [];
