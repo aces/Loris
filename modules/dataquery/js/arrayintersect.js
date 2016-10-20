@@ -91,8 +91,8 @@ var getSessions = function(group) {
     var sessions = [],
         session = []
     for(var i = 0; i < group.children.length; i++) {
-        if(group.children[i].sessions) {
-            sessions.push(group.children[i].sessions);
+        if(group.children[i].session) {
+            sessions.push(group.children[i].session);
         }
     }
     if(group.activeOperator == 0) {
