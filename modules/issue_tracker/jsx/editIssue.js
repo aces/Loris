@@ -20,9 +20,10 @@ var CollapsibleComment = React.createClass({
   },
   render: function() {
     var historyText = [];
-    var commentHistBool = (this.state.collapsed ?
+    var btnCommentsLabel = (this.state.collapsed ?
       "Show Comment History" :
       "Hide Comment History");
+
     var commentHistory = this.props.commentHistory;
     for (var comment in commentHistory) {
       if (commentHistory[comment].fieldChanged === 'comment') {
@@ -45,23 +46,23 @@ var CollapsibleComment = React.createClass({
           <br/>);
       }
     }
+
     return (
       <div className="row form-group">
         <div className="col-sm-9">
-          <div className="btn btn-primary"
+          <div className="btn btn-primary padding"
                onClick={this.toggleCollapsed}
                data-toggle="collapse"
                data-target="#comment-history"
+               style={{margin: '10px 0'}}
           >
-            {commentHistBool}
+            {btnCommentsLabel}
           </div>
         </div>
-        <br></br>
-        <div id="comment-history">
-          <div className="col-sm-9">
+        <div className="col-sm-9">
+          <div id="comment-history" className="collapse">
             {historyText}
           </div>
-
         </div>
       </div>
     );
@@ -149,12 +150,7 @@ var IssueEditForm = React.createClass({
       dateCreated = this.state.formData.dateCreated;
     }
 
-    var isWatching = "";
-    if (this.state.formData.watching) {
-      isWatching = "Yes";
-    } else {
-      isWatching = "No";
-    }
+    var isWatching = this.state.formData.watching;
 
     var submitButtonValue = "";
     if (this.state.isNewIssue) {
@@ -247,7 +243,11 @@ var IssueEditForm = React.createClass({
                 name="description"
                 label="Description"
                 ref="description"
-                text={this.state.formData.desc}
+                text={
+                  (this.state.formData.desc === "null" ?
+                    "" :
+                    this.state.formData.desc)
+                }
               />
             </div>
           </div>
@@ -423,8 +423,7 @@ var IssueEditForm = React.createClass({
                 </div>
 
                 <div class="row submit-area">
-                  <ButtonElement label={submitButtonValue}/>
-
+                  <ButtonElement label={submitButtonValue} />
                   <div class="col-md-3">
                     <div className={alertClass}
                          role="alert"
@@ -442,8 +441,7 @@ var IssueEditForm = React.createClass({
               </div>
             </div>
           </FormElement>
-        </
-          div >
+        </div>
       );
   },
 
@@ -502,12 +500,17 @@ var IssueEditForm = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
 
-    var self = this;
+    // Prevent submissions while pending
+    if (this.state.submissionResult === "pending") {
+      return;
+    }
+    this.setState({submissionResult: "pending"});
+
     var myFormData = this.state.formData;
     var formRefs = this.refs;
     var formData = new FormData();
 
-      // Validate the form
+    // Validate the form
     if (!this.isValidForm(formRefs, myFormData)) {
       return;
     }
@@ -520,7 +523,7 @@ var IssueEditForm = React.createClass({
 
     $.ajax({
       type: 'POST',
-      url: self.props.action,
+      url: this.props.action,
       data: formData,
       cache: false,
       dataType: 'json',
@@ -547,39 +550,34 @@ var IssueEditForm = React.createClass({
 
       success: function(data) {
         if (!data.isValidSubmission) {
-          self.setState({
+          this.setState({
             errorMessage: data.invalidMessage,
             submissionResult: "invalid"
           });
-          self.showAlertMessage();
+          this.showAlertMessage();
           return;
         }
 
-        self.setState({
+        this.setState({
           submissionResult: "success",
           issueID: data.issueID
         });
-        self.getDataAndChangeState();
-        self.showAlertMessage();
+        this.showAlertMessage();
 
-        if (self.state.isNewIssue) {
+        if (this.state.isNewIssue) {
           setTimeout(function() {
             window.location.assign('/issue_tracker');
           }, 2000);
         }
-      },
+      }.bind(this),
       error: function(err) {
         console.error(err);
-        self.setState(
-          {
-            submissionResult: "error"
-          }
-            );
-        self.showAlertMessage();
-      }
-
-    }
-      );
+        this.setState({
+          submissionResult: "error"
+        });
+        this.showAlertMessage();
+      }.bind(this)
+    });
   },
 
     /**

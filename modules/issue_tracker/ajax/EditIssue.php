@@ -7,7 +7,7 @@
  * PHP Version 5
  *
  * @category Loris
- * @package  Issue Tracker
+ * @package  Issue_Tracker
  * @author   Caitrin Armstrong <caitrin.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
@@ -149,18 +149,22 @@ function editIssue()
     if (isset($_POST['othersWatching'])) {
 
         // Clear the list of current watchers
-        $db->delete('issues_watching', [
-            'issueID' => $issueID
-        ]);
+        $db->delete(
+            'issues_watching',
+            ['issueID' => $issueID]
+        );
 
         // Add new watchers (if any)
         $usersWatching = explode(',', $_POST['othersWatching']);
         foreach ($usersWatching as $usersWatching) {
             if ($usersWatching) {
-                $db->insert('issues_watching', [
-                    'userID'  => $usersWatching,
-                    'issueID' => $issueID
-                ]);
+                $db->insert(
+                    'issues_watching',
+                    [
+                     'userID'  => $usersWatching,
+                     'issueID' => $issueID,
+                    ]
+                );
             }
         }
     }
@@ -177,8 +181,7 @@ function editIssue()
 /**
  * Validate PSCID and Visit Label
  *
- * @param array $values  values to be validated
- * @param int   $issueID issue ID
+ * @param array $values values to be validated
  *
  * @throws DatabaseException
  *
@@ -186,15 +189,17 @@ function editIssue()
  */
 function validateInput($values)
 {
-    $db     =& Database::singleton();
-    $result = [
-               'PSCID'             => (isset($values['PSCID']) ? $values['PSCID'] : null),
-               'visit'             => (isset($values['visitLabel']) ? $values['visitLabel'] : null),
-               'candID'            => null,
-               'sessionID'         => null,
-               'isValidSubmission' => true,
-               'invalidMessage'    => null,
-              ];
+    $db         =& Database::singleton();
+    $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
+    $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
+    $result     = [
+                   'PSCID'             => $pscid,
+                   'visit'             => $visitLabel,
+                   'candID'            => null,
+                   'sessionID'         => null,
+                   'isValidSubmission' => true,
+                   'invalidMessage'    => null,
+                  ];
 
     // If both are set, return SessionID and CandID
     if (isset($result['PSCID']) && isset($result['visit'])) {
@@ -213,8 +218,8 @@ function validateInput($values)
             $result['candID']    = $session[0]['candID'];
         } else {
             $result['isValidSubmission'] = false;
-            $result['invalidMessage']    =
-                "PSCID and Visit Label do not match a valid candidate session!";
+            $result['invalidMessage']    = "PSCID and Visit Label do not " .
+                "match a valid candidate session!";
         }
 
         return $result;
@@ -245,7 +250,7 @@ function validateInput($values)
     // If only visit label is set, return an error
     if (isset($result['visit'])) {
         $result['isValidSubmission'] = false;
-        $result['invalidMessage']    = "A Visit Label must be accompanied by a PSCID";
+        $result['invalidMessage']    = "Visit Label must be accompanied by a PSCID";
         return $result;
     }
 
@@ -355,7 +360,7 @@ function getComments($issueID)
         "UNION " .
         "SELECT issueComment, 'comment', dateAdded, addedBy " .
         "FROM issues_comments where issueID=:issueID " .
-        "ORDER BY dateAdded",
+        "ORDER BY dateAdded DESC",
         array('issueID' => $issueID)
     );
 
@@ -398,25 +403,10 @@ function getComments($issueID)
 }
 
 /**
- * Returns HTML of comment history
- *
- * @param int $issueID the issueID
- *
- * @return string
- */
-function display_comments($issueID)
-{
-    $tpl_data['commentHistory'] = getComments($issueID);
-    $smarty = new Smarty_neurodb("issue_tracker");
-    $smarty->assign($tpl_data);
-    $html = $smarty->fetch("issue_tracker_comment_history.tpl");
-    return $html;
-}
-
-/**
  * Emails all users that are watching the issue with the changes.
  *
- * @param int $issueID the issueID
+ * @param int    $issueID          the issueID
+ * @param string $changed_assignee changed assignee
  *
  * @return array
  * @throws DatabaseException
@@ -442,7 +432,7 @@ function emailUser($issueID, $changed_assignee)
     $msg_data['title']       = $title;
 
     if (isset($changed_assignee)) {
-        $issue_change_emails_assignee = $db->pselect(
+        $issueChangeEmailsAssignee = $db->pselect(
             "SELECT u.Email as Email, u.First_name as firstname " .
             "FROM users u WHERE u.UserID=:assignee
             AND u.UserID<>:currentUser",
@@ -451,10 +441,10 @@ function emailUser($issueID, $changed_assignee)
              'currentUser' => $user->getUserName(),
             )
         );
-        $msg_data['firstname']        = $issue_change_emails_assignee[0]['firstname'];
+        $msg_data['firstname']     = $issueChangeEmailsAssignee[0]['firstname'];
 
         Email::send(
-            $issue_change_emails_assignee[0]['Email'],
+            $issueChangeEmailsAssignee[0]['Email'],
             'issue_assigned.tpl',
             $msg_data
         );
@@ -607,6 +597,16 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
             "WHERE issueID=:issueID",
             array('issueID' => $issueID)
         );
+
+        $isWatching            = $db->pselectOne(
+            "SELECT * FROM issues_watching WHERE 
+                issueID=:issueID AND userID=:userID",
+            array(
+             'issueID' => $issueID,
+             'userID'  => $user->getData('UserID'),
+            )
+        );
+        $issueData['watching'] = is_array($isWatching) ? "No" : "Yes";
         $issueData['commentHistory'] = getComments($issueID);
         $issueData['whoIsWatching']  = getWatching($issueID);
         $issueData['desc']           = $db->pSelectOne(
@@ -627,22 +627,13 @@ ORDER BY dateAdded",
         $issueData['PSCID']         = null;
         $issueData['assignee']      = null;
         $issueData['history']       = null;
-        $issueData['watching']      = null;
+        $issueData['watching']      = "Yes";
         $issueData['visitLabel']    = null;
         $issueData['category']      = null;
         $issueData['lastUpdatedBy'] = null;
     }
 
-    $isWatching = $db->pselectOne(
-        "SELECT * FROM issues_watching WHERE issueID=:issueID AND userID=:userID",
-        array(
-         'issueID' => $issueID,
-         'userID'  => $user->getData('UserID'),
-        )
-    );
-
-    $issueData['watching'] = $isWatching;
-    $issueData['comment']  = null;
+    $issueData['comment'] = null;
 
     if ($issueData['reporter'] == $user->getData('UserID')) {
         $isOwnIssue = true;

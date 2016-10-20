@@ -23,7 +23,8 @@ var CollapsibleComment = React.createClass({
   },
   render: function render() {
     var historyText = [];
-    var commentHistBool = this.state.collapsed ? "Show Comment History" : "Hide Comment History";
+    var btnCommentsLabel = this.state.collapsed ? "Show Comment History" : "Hide Comment History";
+
     var commentHistory = this.props.commentHistory;
     for (var comment in commentHistory) {
       if (commentHistory[comment].fieldChanged === 'comment') {
@@ -56,6 +57,7 @@ var CollapsibleComment = React.createClass({
         ), React.createElement("br", null));
       }
     }
+
     return React.createElement(
       "div",
       { className: "row form-group" },
@@ -64,21 +66,21 @@ var CollapsibleComment = React.createClass({
         { className: "col-sm-9" },
         React.createElement(
           "div",
-          { className: "btn btn-primary",
+          { className: "btn btn-primary padding",
             onClick: this.toggleCollapsed,
             "data-toggle": "collapse",
-            "data-target": "#comment-history"
+            "data-target": "#comment-history",
+            style: { margin: '10px 0' }
           },
-          commentHistBool
+          btnCommentsLabel
         )
       ),
-      React.createElement("br", null),
       React.createElement(
         "div",
-        { id: "comment-history" },
+        { className: "col-sm-9" },
         React.createElement(
           "div",
-          { className: "col-sm-9" },
+          { id: "comment-history", className: "collapse" },
           historyText
         )
       )
@@ -166,12 +168,7 @@ var IssueEditForm = React.createClass({
       dateCreated = this.state.formData.dateCreated;
     }
 
-    var isWatching = "";
-    if (this.state.formData.watching) {
-      isWatching = "Yes";
-    } else {
-      isWatching = "No";
-    }
+    var isWatching = this.state.formData.watching;
 
     var submitButtonValue = "";
     if (this.state.isNewIssue) {
@@ -279,7 +276,7 @@ var IssueEditForm = React.createClass({
             name: "description",
             label: "Description",
             ref: "description",
-            text: this.state.formData.desc
+            text: this.state.formData.desc === "null" ? "" : this.state.formData.desc
           })
         )
       );
@@ -559,7 +556,12 @@ var IssueEditForm = React.createClass({
   handleSubmit: function handleSubmit(e) {
     e.preventDefault();
 
-    var self = this;
+    // Prevent submissions while pending
+    if (this.state.submissionResult === "pending") {
+      return;
+    }
+    this.setState({ submissionResult: "pending" });
+
     var myFormData = this.state.formData;
     var formRefs = this.refs;
     var formData = new FormData();
@@ -577,7 +579,7 @@ var IssueEditForm = React.createClass({
 
     $.ajax({
       type: 'POST',
-      url: self.props.action,
+      url: this.props.action,
       data: formData,
       cache: false,
       dataType: 'json',
@@ -598,37 +600,35 @@ var IssueEditForm = React.createClass({
         return xhr;
       },
 
-      success: function success(data) {
+      success: function (data) {
         if (!data.isValidSubmission) {
-          self.setState({
+          this.setState({
             errorMessage: data.invalidMessage,
             submissionResult: "invalid"
           });
-          self.showAlertMessage();
+          this.showAlertMessage();
           return;
         }
 
-        self.setState({
+        this.setState({
           submissionResult: "success",
           issueID: data.issueID
         });
-        self.getDataAndChangeState();
-        self.showAlertMessage();
+        this.showAlertMessage();
 
-        if (self.state.isNewIssue) {
+        if (this.state.isNewIssue) {
           setTimeout(function () {
             window.location.assign('/issue_tracker');
           }, 2000);
         }
-      },
-      error: function error(err) {
+      }.bind(this),
+      error: function (err) {
         console.error(err);
-        self.setState({
+        this.setState({
           submissionResult: "error"
         });
-        self.showAlertMessage();
-      }
-
+        this.showAlertMessage();
+      }.bind(this)
     });
   },
 
