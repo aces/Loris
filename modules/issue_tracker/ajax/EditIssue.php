@@ -49,24 +49,24 @@ if ($_SERVER['REQUEST_METHOD'] === "GET") {
  */
 function editIssue()
 {
-    $db =& Database::singleton();
+    $db   =& Database::singleton();
     $user =& User::singleton();
 
-    $issueValues = array();
+    $issueValues    = array();
     $validateValues = array();
-    $fields = array(
-        'assignee',
-        'status',
-        'priority',
-        'centerID',
-        'title',
-        'category',
-        'module',
-    );
+    $fields         = array(
+                       'assignee',
+                       'status',
+                       'priority',
+                       'centerID',
+                       'title',
+                       'category',
+                       'module',
+                      );
     $fieldsToValidateFirst = array(
-        'PSCID',
-        'visitLabel',
-    );
+                              'PSCID',
+                              'visitLabel',
+                             );
 
     foreach ($fields as $field) {
         $value = $_POST[$field];
@@ -86,8 +86,7 @@ function editIssue()
     $issueID = $_POST['issueID'];
     $issueValues['lastUpdatedBy'] = $user->getData('UserID');
 
-    //this whole validation thing really needs some best practice love
-    $validatedInput = validateInput($validateValues, $issueID);
+    $validatedInput = validateInput($validateValues);
     if ($validatedInput['isValidSubmission']) {
         if (array_key_exists('sessionID', $validatedInput)) {
             $issueValues['sessionID'] = $validatedInput['sessionID'];
@@ -102,7 +101,7 @@ function editIssue()
     if (!empty($issueID) || $issueID != 0) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
     } else {
-        $issueValues['reporter'] = $user->getData('UserID');
+        $issueValues['reporter']    = $user->getData('UserID');
         $issueValues['dateCreated'] = date('Y-m-d H:i:s');
         $db->insert('issues', $issueValues);
         $issueID = $db->getLastInsertId();
@@ -113,35 +112,35 @@ function editIssue()
     //adding comment in now that I have an issueID for both new and old.
     if ($_POST['comment'] != null) {
         $commentValues = array(
-            'issueComment' => $_POST['comment'],
-            'addedBy' => $user->getData('UserID'),
-            'issueID' => $issueID,
-        );
+                          'issueComment' => $_POST['comment'],
+                          'addedBy'      => $user->getData('UserID'),
+                          'issueID'      => $issueID,
+                         );
         $db->insert('issues_comments', $commentValues);
     }
 
     //adding new assignee to watching
     if (isset($issueValues['assignee'])) {
         $nowWatching = array(
-            'userID' => $issueValues['assignee'],
-            'issueID' => $issueID,
-        );
+                        'userID'  => $issueValues['assignee'],
+                        'issueID' => $issueID,
+                       );
         $db->replace('issues_watching', $nowWatching);
     }
 
     //adding editor to the watching table unless they don't want to be added.
     if ($_POST['watching'] == 'Yes') {
         $nowWatching = array(
-            'userID' => $user->getData('UserID'),
-            'issueID' => $issueID,
-        );
+                        'userID'  => $user->getData('UserID'),
+                        'issueID' => $issueID,
+                       );
         $db->replace('issues_watching', $nowWatching);
     } else if ($_POST['watching'] == "No") {
         $db->delete(
             'issues_watching',
             array(
-                'issueID' => $issueID,
-                'userID' => $user->getData('UserID'),
+             'issueID' => $issueID,
+             'userID'  => $user->getData('UserID'),
             )
         );
     }
@@ -152,9 +151,9 @@ function editIssue()
         foreach ($othersNowWatching as $userWatching) {
             if ($userWatching) { //cause sometimes it sends null
                 $nowWatching = array(
-                    'userID' => $userWatching,
-                    'issueID' => $issueID,
-                );
+                                'userID'  => $userWatching,
+                                'issueID' => $issueID,
+                               );
                 $db->replace('issues_watching', $nowWatching);
             }
         }
@@ -164,120 +163,94 @@ function editIssue()
     emailUser($issueID, $issueValues['assignee']);
 
     return array(
-        'isValidSubmission' => true,
-        'issueID' => $issueID,
-    );
+            'isValidSubmission' => true,
+            'issueID'           => $issueID,
+           );
 }
 
-//also make this better
 /**
- * Validates those fields that need it
- * Currently PSCID and visitLabel as fk to session
+ * Validate PSCID and Visit Label
  *
- * @param array $validateValues values to be validated
- * @param int $issueID issue ID
+ * @param array $values  values to be validated
+ * @param int   $issueID issue ID
  *
  * @throws DatabaseException
  *
  * @return array success with values, or error with message.
  */
-function validateInput($validateValues, $issueID)
+function validateInput($values)
 {
-    $db =& Database::singleton();
-    $user =& User::singleton();
+    $db     =& Database::singleton();
+    $result = [
+               'PSCID'             => (isset($values['PSCID']) ? $values['PSCID'] : null),
+               'visit'             => (isset($values['visitLabel']) ? $values['visitLabel'] : null),
+               'candID'            => null,
+               'sessionID'         => null,
+               'isValidSubmission' => true,
+               'invalidMessage'    => null,
+              ];
 
-    $old = null;
-    if ($issueID) {
-        $old = $db->pSelect(
-            "SELECT c.PSCID, s.Visit_label from candidate c 
-LEFT JOIN issues i ON (i.candID = c.CandID) 
-LEFT JOIN session s ON (i.sessionID = s.ID) 
-WHERE i.issueID=:issueID",
-            array('issueID' => $issueID)
-        );//inner join because you only want if it has these values.
+    // If both are set, return SessionID and CandID
+    if (isset($result['PSCID']) && isset($result['visit'])) {
+        $session = $db->pSelect(
+            "SELECT s.ID as sessionID, c.candID as candID FROM candidate c 
+            INNER JOIN session s on (c.CandID = s.CandID) 
+            WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
+            [
+             'PSCID'      => $result['PSCID'],
+             'visitLabel' => $result['visit'],
+            ]
+        );
+
+        if (isset($session[0]['sessionID'])) {
+            $result['sessionID'] = $session[0]['sessionID'];
+            $result['candID']    = $session[0]['candID'];
+        } else {
+            $result['isValidSubmission'] = false;
+            $result['invalidMessage']    =
+                "PSCID and Visit Label do not match a valid candidate session!";
+        }
+
+        return $result;
     }
 
-    $oldPSCID = $old[0]['PSCID'];
-    $oldVisitLabel = $old['Visit_label'];
-    if ((isset($validateValues['visitLabel']) && $oldPSCID)
-        || (isset($validateValues['PSCID']) && $oldVisitLabel)
-    ) {
-        $PSCID = $oldPSCID;
-        $visitLabel = $oldVisitLabel;
-        if (isset($validateValues['PSCID'])) {
-            $PSCID = $validateValues['PSCID'];
+    // If only PSCID is set, return CandID
+    if (isset($result['PSCID'])) {
+        $query  = "SELECT CandID FROM candidate WHERE PSCID=:PSCID";
+        $params = ['PSCID' => $result['PSCID']];
+
+        $user =& User::singleton();
+        if (!$user->hasPermission('access_all_profiles')) {
+            $params['CenterID'] = $user->getCenterID();
+            $query .= " AND CenterID=:CenterID";
         }
-        if (isset($validateValues['visitLabel'])) {
-            $visitLabel = $validateValues['visitLabel'];
-        }
-        $isValidSession = $db->pSelectOne(
-            "SELECT s.ID FROM candidate c 
-INNER JOIN session s on (c.CandID = s.CandID) 
-WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
-            array(
-                'PSCID' => $PSCID,
-                'visitLabel' => $visitLabel,
-            )
-        );
-        if (!$isValidSession) {
-            return array(
-                'isValidSubmission' => false,
-                'invalidMessage' => 'PSCID and Visit Label '
-                    . 'do not match a valid candidate session',
-            );
-        } else if (!isset($validateValues['PSCID'])) {
-            return array(
-                'isValidSubmission' => true,
-                'sessionID' => $isValidSession,
-            );
-        }
-        //return here ^ if you're not evaluating a new PSCID.
-        //Otherwise you need to go onto the else if below
-        //To check that the user has permissions on that PSCID
-    } else if (isset($validateValues['PSCID'])) {
-        if ($user->hasPermission('access_all_profiles')) {
-            $isValidCandidate = $db->pSelectOne(
-                "SELECT CandID FROM candidate WHERE PSCID=:PSCID",
-                array(
-                    'PSCID' => $validateValues['PSCID'],
-                )
-            );
+
+        $candidate = $db->pSelectOne($query, $params);
+        if ($candidate) {
+            $result['candID'] = $candidate;
         } else {
-            $isValidCandidate = $db->pSelectOne(
-                "SELECT CandID FROM candidate WHERE PSCID=:PSCID
-                 AND CenterID=:CenterID",
-                array(
-                    'PSCID' => $validateValues['PSCID'],
-                    'CenterID' => $user->getCenterID()
-                )
-            );
+            $result['isValidSubmission'] = false;
+            $result['invalidMessage']    = "PSCID does not match a valid candidate!";
         }
-        if (!$isValidCandidate) {
-            return array(
-                'isValidSubmission' => false,
-                'invalidMessage' => 'PSCID does not match a valid candidate',
-            );
-        } else {
-            return array(
-                'isValidSubmission' => true,
-                'candID' => $isValidCandidate,
-            );
-        }
-    } else if (isset($validateValues['visitLabel'])) {
-        return array(
-            'isValidSubmission' => false,
-            'invalidMessage' => 'A Visit Label must be accompanied by a PSCID',
-        );
-    } else {
-        return array('isValidSubmission' => true);
-    } //phew
+
+        return $result;
+    }
+
+    // If only visit label is set, return an error
+    if (isset($result['visit'])) {
+        $result['isValidSubmission'] = false;
+        $result['invalidMessage']    = "A Visit Label must be accompanied by a PSCID";
+        return $result;
+    }
+
+    return $result;
 }
 
 /**
  * Puts updated fields into the issues_history table.
  *
- * @param array $issueValues the new values
- * @param string $issueID the issue ID
+ * @param array  $issueValues the new values
+ * @param string $issueID     the issue ID
  *
  * @throws DatabaseException
  *
@@ -286,12 +259,12 @@ WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
 function updateHistory($issueValues, $issueID)
 {
     $user =& User::singleton();
-    $db =& Database::singleton();
+    $db   =& Database::singleton();
     $undesiredFields = array(
-        'lastUpdatedBy',
-        'reporter',
-        'dateCreated'
-    );
+                        'lastUpdatedBy',
+                        'reporter',
+                        'dateCreated',
+                       );
 
     foreach ($issueValues as $key => $value) {
         if (in_array($key, $undesiredFields)) {
@@ -299,11 +272,11 @@ function updateHistory($issueValues, $issueID)
         }
         if (!empty($value)) { //check that all kinds of nulls are being dealt with
             $changedValues = [
-                'newValue' => $value,
-                'fieldChanged' => $key,
-                'issueID' => $issueID,
-                'addedBy' => $user->getData('UserID'),
-            ];
+                              'newValue'     => $value,
+                              'fieldChanged' => $key,
+                              'issueID'      => $issueID,
+                              'addedBy'      => $user->getData('UserID'),
+                             ];
             $db->insert('issues_history', $changedValues);
         }
     }
@@ -312,7 +285,7 @@ function updateHistory($issueValues, $issueID)
 /**
  * Will keep track of comment edit history
  *
- * @param int $issueCommentID the comment that is being edited
+ * @param int    $issueCommentID  the comment that is being edited
  * @param string $newCommentValue the new comment
  *
  * @throws DatabaseException
@@ -322,13 +295,13 @@ function updateHistory($issueValues, $issueID)
 function updateCommentHistory($issueCommentID, $newCommentValue)
 {
     $user =& User::singleton();
-    $db =& Database::singleton();
+    $db   =& Database::singleton();
 
     $changedValue = array(
-        'issueCommentID' => $issueCommentID,
-        'newValue' => $newCommentValue,
-        'editedBy' => $user->getData('UserID'),
-    );
+                     'issueCommentID' => $issueCommentID,
+                     'newValue'       => $newCommentValue,
+                     'editedBy'       => $user->getData('UserID'),
+                    );
 
     $db->insert('issues_comments_history', $changedValue);
 }
@@ -346,8 +319,10 @@ function getWatching($issueID)
 {
     $db =& Database::singleton();
 
-    $watching = $db->pselect("SELECT userID from issues_watching WHERE issueID=:issueID",
-        array('issueID' => $issueID));
+    $watching = $db->pselect(
+        "SELECT userID from issues_watching WHERE issueID=:issueID",
+        array('issueID' => $issueID)
+    );
 
     $whoIsWatching = array();
     foreach ($watching as $watcher) {
@@ -392,7 +367,7 @@ function getComments($issueID)
                 "SELECT Name FROM psc WHERE CenterID=:centerID",
                 array('centerID' => $comment['newValue'])
             );
-            $comment['newValue'] = $site;
+            $comment['newValue']     = $site;
             $comment['fieldChanged'] = 'site';
             continue;
         } else if ($comment['fieldChanged'] === 'candID') {
@@ -400,11 +375,11 @@ function getComments($issueID)
                 "SELECT PSCID FROM candidate WHERE CandID=:candID",
                 array('candID' => $comment['newValue'])
             );
-            $comment['newValue'] = $PSCID;
+            $comment['newValue']     = $PSCID;
             $comment['fieldChanged'] = 'PSCID';
             continue;
         } else if ($comment['fieldChanged'] === 'sessionID') {
-            $visitLabel = $db->pselectOne(
+            $visitLabel          = $db->pselectOne(
                 "SELECT Visit_label FROM session WHERE ID=:sessionID",
                 array('sessionID' => $comment['newValue'])
             );
@@ -443,20 +418,22 @@ function display_comments($issueID)
 function emailUser($issueID, $changed_assignee)
 {
     $user =& User::singleton();
-    $db =& Database::singleton();
+    $db   =& Database::singleton();
     //not sure if this is necessary
     $factory = NDB_Factory::singleton();
     $baseurl = $factory->settings()->getBaseURL();
 
-    $title = $db->pSelectOne("SELECT title FROM issues 
+    $title = $db->pSelectOne(
+        "SELECT title FROM issues 
         WHERE issueID=:issueID",
-        array('issueID' => $issueID));
+        array('issueID' => $issueID)
+    );
 
-    $msg_data['url'] = $baseurl .
+    $msg_data['url']         = $baseurl .
         "/issue_tracker/edit/?backURL=/issue_tracker/&issueID=" . $issueID;
-    $msg_data['issueID'] = $issueID;
+    $msg_data['issueID']     = $issueID;
     $msg_data['currentUser'] = $user->getUsername();
-    $msg_data['title'] = $title;
+    $msg_data['title']       = $title;
 
     if (isset($changed_assignee)) {
         $issue_change_emails_assignee = $db->pselect(
@@ -464,11 +441,11 @@ function emailUser($issueID, $changed_assignee)
             "FROM users u WHERE u.UserID=:assignee
             AND u.UserID<>:currentUser",
             array(
-                'assignee' => $changed_assignee,
-                'currentUser' => $user->getUserName()
+             'assignee'    => $changed_assignee,
+             'currentUser' => $user->getUserName(),
             )
         );
-        $msg_data['firstname'] = $issue_change_emails_assignee[0]['firstname'];
+        $msg_data['firstname']        = $issue_change_emails_assignee[0]['firstname'];
 
         Email::send(
             $issue_change_emails_assignee[0]['Email'],
@@ -484,15 +461,15 @@ function emailUser($issueID, $changed_assignee)
         "FROM users u INNER JOIN issues_watching w ON (w.userID = u.userID) WHERE ".
         "w.issueID=:issueID AND u.UserID<>:uid AND u.UserID<>:assignee",
         array(
-            'issueID' => $issueID,
-            'uid' => $user->getUsername(),
-            'assignee' => $changed_assignee
+         'issueID'  => $issueID,
+         'uid'      => $user->getUsername(),
+         'assignee' => $changed_assignee,
         )
     );
 
-    $msg_data['url'] = $baseurl .
+    $msg_data['url']         = $baseurl .
         "/issue_tracker/edit/?backURL=/issue_tracker/&issueID=" . $issueID;
-    $msg_data['issueID'] = $issueID;
+    $msg_data['issueID']     = $issueID;
     $msg_data['currentUser'] = $user->getUsername();
 
     foreach ($issue_change_emails as $email) {
@@ -510,7 +487,7 @@ function emailUser($issueID, $changed_assignee)
 function getIssueFields()
 {
 
-    $db =& Database::singleton();
+    $db   =& Database::singleton();
     $user =& User::singleton();
 
     //get field options
@@ -534,13 +511,17 @@ function getIssueFields()
         );
     } else {
         $CenterID = $user->getCenterID();
-        $DCCID = $db->pselectOne("SELECT CenterID from psc where Name='DCC'",
-            array());
+        $DCCID    = $db->pselectOne(
+            "SELECT CenterID from psc where Name='DCC'",
+            array()
+        );
         $assignee_expanded = $db->pselect(
             "SELECT u.Real_name, u.UserID FROM users u 
 WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
-            array('CenterID' => $CenterID,
-                'DCC' => $DCCID)
+            array(
+             'CenterID' => $CenterID,
+             'DCC'      => $DCCID,
+            )
         );
     }
 
@@ -562,34 +543,36 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
     //can't set to closed if not developer.
     if ($user->hasPermission('issue_tracker_developer')) {
         $statuses = array(
-            'new' => 'New',
-            'acknowledged' => 'Acknowledged',
-            'assigned' => 'Assigned',
-            'feedback' => 'Feedback',
-            'resolved' => 'Resolved',
-            'closed' => 'Closed',
-        );
+                     'new'          => 'New',
+                     'acknowledged' => 'Acknowledged',
+                     'assigned'     => 'Assigned',
+                     'feedback'     => 'Feedback',
+                     'resolved'     => 'Resolved',
+                     'closed'       => 'Closed',
+                    );
     } else {
         $statuses = array(
-            'new' => 'New',
-            'acknowledged' => 'Acknowledged',
-            'assigned' => 'Assigned',
-            'feedback' => 'Feedback',
-            'resolved' => 'Resolved',
-        );
+                     'new'          => 'New',
+                     'acknowledged' => 'Acknowledged',
+                     'assigned'     => 'Assigned',
+                     'feedback'     => 'Feedback',
+                     'resolved'     => 'Resolved',
+                    );
     }
 
     $priorities = array(
-        'low' => 'Low',
-        'normal' => 'Normal',
-        'high' => 'High',
-        'urgent' => 'Urgent',
-        'immediate' => 'Immediate',
-    );
+                   'low'       => 'Low',
+                   'normal'    => 'Normal',
+                   'high'      => 'High',
+                   'urgent'    => 'Urgent',
+                   'immediate' => 'Immediate',
+                  );
 
-    $unorgCategories = $db -> pselect( "SELECT categoryName
-        FROM issues_categories", []);
-    $categories = [];
+    $unorgCategories = $db->pselect(
+        "SELECT categoryNameFROM issues_categories",
+        []
+    );
+    $categories      = [];
     foreach ($unorgCategories as $r_row) {
         $categoryName = $r_row['categoryName'];
         if ($categoryName) {
@@ -597,8 +580,7 @@ WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
         }
     }
 
-
-    $modules = array();
+    $modules          = array();
     $modules_expanded = $db->pselect(
         "SELECT DISTINCT Label, ID FROM LorisMenu 
 WHERE Parent IS NOT NULL ORDER BY Label ",
@@ -611,7 +593,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
     //Now get issue values
     $issueData = null;
     if (!empty($_GET['issueID'])) { //if an existing issue
-        $issueID = $_GET['issueID'];
+        $issueID   = $_GET['issueID'];
         $issueData = $db->pselectRow(
             "SELECT i.*, c.PSCID, s.Visit_label as visitLabel FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
@@ -620,38 +602,41 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
             array('issueID' => $issueID)
         );
         $issueData['commentHistory'] = getComments($issueID);
-        $issueData['whoIsWatching'] = getWatching($issueID);
-        $issueData['desc'] = $db->pSelectOne("SELECT issueComment 
+        $issueData['whoIsWatching']  = getWatching($issueID);
+        $issueData['desc']           = $db->pSelectOne(
+            "SELECT issueComment 
 FROM issues_comments WHERE issueID=:issueID 
-ORDER BY dateAdded", array('issueID' => $issueID));
+ORDER BY dateAdded",
+            array('issueID' => $issueID)
+        );
     } else { //just setting the default values
-        $issueData['reporter'] = $user->getData('UserID');
-        $issueData['dateCreated'] = date('Y-m-d H:i:s');
-        $issueData['centerID'] = $user->getData('CenterID');
-        $issueData['status'] = "new";
-        $issueData['priority'] = "normal";
-        $issueData['issueID'] = 0; //TODO: this is dumb
-        $issueData['title'] = null;
-        $issueData['lastUpdate'] = null;
-        $issueData['PSCID'] = null;
-        $issueData['assignee'] = null;
-        $issueData['history'] = null;
-        $issueData['watching'] = null;
-        $issueData['visitLabel'] = null;
-        $issueData['category'] = null;
+        $issueData['reporter']      = $user->getData('UserID');
+        $issueData['dateCreated']   = date('Y-m-d H:i:s');
+        $issueData['centerID']      = $user->getData('CenterID');
+        $issueData['status']        = "new";
+        $issueData['priority']      = "normal";
+        $issueData['issueID']       = 0; //TODO: this is dumb
+        $issueData['title']         = null;
+        $issueData['lastUpdate']    = null;
+        $issueData['PSCID']         = null;
+        $issueData['assignee']      = null;
+        $issueData['history']       = null;
+        $issueData['watching']      = null;
+        $issueData['visitLabel']    = null;
+        $issueData['category']      = null;
         $issueData['lastUpdatedBy'] = null;
     }
 
     $isWatching = $db->pselectOne(
         "SELECT * FROM issues_watching WHERE issueID=:issueID AND userID=:userID",
         array(
-            'issueID' => $issueID,
-            'userID' => $user->getData('UserID'),
+         'issueID' => $issueID,
+         'userID'  => $user->getData('UserID'),
         )
     );
 
     $issueData['watching'] = $isWatching;
-    $issueData['comment'] = null;
+    $issueData['comment']  = null;
 
     if ($issueData['reporter'] == $user->getData('UserID')) {
         $isOwnIssue = true;
@@ -660,19 +645,19 @@ ORDER BY dateAdded", array('issueID' => $issueID));
     }
 
     $result = [
-        'assignees' => $assignees,
-        'sites' => $sites,
-        'statuses' => $statuses,
-        'priorities' => $priorities,
-        'categories' => $categories,
-        'modules' => $modules,
-        'otherWatchers' => $otherWatchers,
-        'issueData' => $issueData,
-        'hasEditPermission' => $user->hasPermission(
-            'issue_tracker_developer'
-        ),
-        'isOwnIssue' => $isOwnIssue,
-    ];
+               'assignees'         => $assignees,
+               'sites'             => $sites,
+               'statuses'          => $statuses,
+               'priorities'        => $priorities,
+               'categories'        => $categories,
+               'modules'           => $modules,
+               'otherWatchers'     => $otherWatchers,
+               'issueData'         => $issueData,
+               'hasEditPermission' => $user->hasPermission(
+                   'issue_tracker_developer'
+               ),
+               'isOwnIssue'        => $isOwnIssue,
+              ];
 
     return $result;
 }
