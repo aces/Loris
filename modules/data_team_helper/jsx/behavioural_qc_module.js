@@ -121,6 +121,7 @@ var IncompleteCandidatesRow = React.createClass({
 
 var InstrumentConflictsRow = React.createClass({
     handleClick: function(event){
+        return;
         //faking a form which posts to conflict_resolver
         event.preventDefault();
         var link = React.findDOMNode(this.refs.conflict);
@@ -164,7 +165,7 @@ var InstrumentConflictsRow = React.createClass({
                 </a>
             </td>
             <td>
-                <a href="conflict" onClick={this.handleClick} href={this.props.BaseURL + "/conflict_resolver/"} className="conflict_resolver_link" data-pscid = {row.PSCID} data-question = {row.FieldName} data-instrument = {row.TableName} data-visits = {row.visit_label}>
+                <a href="conflict" onClick={this.handleClick} href={this.props.BaseURL + "/conflict_resolver/?CandID=" + row.CandID} className="conflict_resolver_link" data-pscid = {row.PSCID} data-question = {row.FieldName} data-instrument = {row.TableName} data-visits = {row.visit_label}>
 		      {row.test_name_display}
                 </a>
             </td>
