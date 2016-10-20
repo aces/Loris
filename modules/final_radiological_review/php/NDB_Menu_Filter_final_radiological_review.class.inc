@@ -236,6 +236,10 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             'c.ProjectID',
             'keyword'
         );
+
+        $this->EqualityFilters = array(
+            'r.Final_Exclusionary'
+        );
         
         $this->formToFilter = array (
                                     'dccid'       => 'c.CandID',
