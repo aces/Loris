@@ -134,7 +134,7 @@ var InstrumentConflictsRow = React.createClass({
                 </a>
             </td>
             <td>
-                <a href="conflict" onClick={this.handleClick} href={this.props.BaseURL + "/conflict_resolver/?CandID=" + row.CandID} className="conflict_resolver_link" data-pscid = {row.PSCID} data-question = {row.FieldName} data-instrument = {row.TableName} data-visits = {row.visit_label}>
+                <a href="conflict" href={this.props.BaseURL + "/conflict_resolver/?CandID=" + row.CandID} className="conflict_resolver_link" data-pscid = {row.PSCID} data-question = {row.FieldName} data-instrument = {row.TableName} data-visits = {row.visit_label}>
 		      {row.test_name_display}
                 </a>
             </td>
