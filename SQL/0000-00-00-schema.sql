@@ -2233,6 +2233,16 @@ CREATE TABLE `issues_categories` (
   UNIQUE KEY `categoryName` (`categoryName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
+INSERT INTO issues_categories (categoryName) VALUES
+    ('Behavioural Battery'), 
+    ('Behavioural Instruments'), 
+    ('Data Entry'), 
+    ('Examiners'),
+    ('Imaging'),
+    ('Technical Issue'),
+    ('User Accounts'),
+    ('Other');
+
 DROP TABLE IF EXISTS `issues`;
 CREATE TABLE `issues` (
   `issueID` int(11) unsigned NOT NULL AUTO_INCREMENT,
