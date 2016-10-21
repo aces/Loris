@@ -71,9 +71,9 @@ function editIssue()
     foreach ($fields as $field) {
         $value = $_POST[$field];
         if (strcmp($_POST[$field], "null") == 0) {
-            $value = null;
+            $value = NULL;
         }
-        if (isset($field) && isset($value)) {
+        if (isset($field)) {
             $issueValues[$field] = $value;
         }
     }
