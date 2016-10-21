@@ -52,7 +52,7 @@ class Module
         } else if (is_dir($base . "modules/$name")) {
             $mpath = $base . "modules/$name";
         } else {
-                throw new LorisException("No such module: $name", 404);
+                throw new LorisNoSuchModuleException("No such module: $name");
         }
 
         if (!file_exists($mpath . "/php/module.class.inc")) {
