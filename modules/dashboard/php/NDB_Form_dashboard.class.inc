@@ -54,7 +54,11 @@ class NDB_Form_Dashboard extends NDB_Form
 
         // Welcome panel
         $this->tpl_data['username']            = $user->getFullname();
-        $this->tpl_data['last_login']          = $last_login;
+        if ($last_login) {
+            $this->tpl_data['last_login']      = $last_login;
+        } else {
+            $this->tpl_data['last_login']      = "...never. Welcome!";
+        }
         $this->tpl_data['project_description']
             = $config->getSetting('projectDescription');
         $dashboard_links = $config->getExternalLinks('dashboard');
