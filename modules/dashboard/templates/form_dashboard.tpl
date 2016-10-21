@@ -115,6 +115,7 @@
                 </div>
             </div>
         </div>
+        <small><i>Note that the Recruitment and Study Progression charts include data from ineligible, excluded, and consent withdrawn candidates.</i></small>
     </div>
 
     <div class="col-lg-4">
