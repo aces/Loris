@@ -70,7 +70,7 @@ function editIssue()
 
     foreach ($fields as $field) {
         $value = $_POST[$field];
-        if (strcmp($_POST[$field], "null") == 0) {
+        if ($_POST[$field] === "null") {
             $value = NULL;
         }
         if (isset($field)) {
@@ -78,7 +78,7 @@ function editIssue()
         }
     }
     foreach ($fieldsToValidateFirst as $vField) {
-        if (isset($_POST[$vField]) && strcmp($_POST[$vField], "null") != 0) {
+        if (isset($_POST[$vField]) && $_POST[$vField] !== "null") {
             $validateValues[$vField] = $_POST[$vField];
         }
     }
