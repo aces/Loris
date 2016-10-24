@@ -58,12 +58,12 @@ function editCandInfoFields($db, $user)
     $candID = $_POST['candID'];
 
     // Process posted data
-    $caveatEmptor = isset($_POST['flagged_caveatemptor']) ?
-        $_POST['flagged_caveatemptor'] : null;
-    $reason       = isset($_POST['flagged_reason']) ?
-        $_POST['flagged_reason'] : null;
-    $other        = isset($_POST['flagged_other']) ?
-        $_POST['flagged_other'] : null;
+    $caveatEmptor = isset($_POST['flaggedCaveatemptor']) ?
+        $_POST['flaggedCaveatemptor'] : null;
+    $reason       = isset($_POST['flaggedReason']) ?
+        $_POST['flaggedReason'] : null;
+    $other        = isset($_POST['flaggedOther']) ?
+        $_POST['flaggedOther'] : null;
 
     $updateValues = [
                      'flagged_caveatemptor' => $caveatEmptor,

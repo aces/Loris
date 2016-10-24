@@ -1,4 +1,4 @@
-<script src="js/filterControl.js" type="text/javascript"></script>
+<script src="{$baseurl}/js/filterControl.js" type="text/javascript"></script>
 
 <div class="row">
 <div class="col-sm-12">
