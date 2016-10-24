@@ -126,11 +126,24 @@ var ImagePanelHeadersTable = React.createClass({
   }
 });
 var ImageQCDropdown = React.createClass({
-
+   
+    handleClick: function handleClick(e) {
+        e.preventDefault();
+        $.ajax({
+        type: "POST",
+        url: '/mri_violations/?submenu=mri_protocol_check_violations',
+        data: {
+          SeriesUID:this.props.SeriesUID
+        },
+        success: function(){
+             window.location.href ="/mri_violations/?submenu=mri_protocol_check_violations";
+        }
+    });
+    },
   render: function() {
     var label = <label>{this.props.Label}</label>;
     if (this.props.url) {
-      label = <label><a href={this.props.url}>{this.props.Label}</a></label>;
+      label = <label><a onClick={this.handleClick.bind(this)}>{this.props.Label}</a></label>;
     }
     var dropdown;
     if (this.props.editable) {
