@@ -71,6 +71,8 @@ class Dicom_Archive extends \NDB_Menu_Filter
                      "'View Details' as Metadata",
                      "'View Images' as MRI_Browser",
                      // For constructing links, not in headers array
+                     "(SELECT GROUP_CONCAT(SeriesUID) FROM tarchive_series e WHERE ".
+                     "e.TarchiveID=t.TarchiveID GROUP BY e.TarchiveID) as SeriesUID",
                      's.CenterID as site',
                      't.TarchiveID as TarchiveID',
                      's.ID as SessionID',
@@ -97,6 +99,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
              'Archive_Location',
              'Metadata',
              'MRI_Browser',
+             'Seriesuid',
              'Site',
              'TarchiveID',
              'SessionID',
@@ -106,6 +109,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
         // Set header as hidden from the data table
         $this->tpl_data['hiddenHeaders'] = json_encode(
             [
+             'Seriesuid',
              'Site',
              'TarchiveID',
              'SessionID',

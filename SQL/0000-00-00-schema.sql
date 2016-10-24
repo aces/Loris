@@ -194,6 +194,8 @@ CREATE TABLE `examiners` (
   `full_name` varchar(255) default NULL,
   `centerID` tinyint(2) unsigned default NULL,
   `radiologist` tinyint(1) default NULL,
+  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `pending_approval` enum('Y','N') NOT NULL DEFAULT 'N',
   PRIMARY KEY  (`examinerID`),
   UNIQUE KEY `full_name` (`full_name`,`centerID`),
   KEY `FK_examiners_1` (`centerID`),
@@ -2230,6 +2232,16 @@ CREATE TABLE `issues_categories` (
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `categoryName` (`categoryName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+INSERT INTO issues_categories (categoryName) VALUES
+    ('Behavioural Battery'), 
+    ('Behavioural Instruments'), 
+    ('Data Entry'), 
+    ('Examiners'),
+    ('Imaging'),
+    ('Technical Issue'),
+    ('User Accounts'),
+    ('Other');
 
 DROP TABLE IF EXISTS `issues`;
 CREATE TABLE `issues` (

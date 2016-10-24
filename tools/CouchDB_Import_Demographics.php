@@ -47,10 +47,6 @@ class CouchDBDemographicsImporter {
             'Description' => 'Whether Recycling Bin Candidate was failure or withdrawal',
             'Type' => "enum('Failure','Withdrawal','Neither')",
         ),
-       'Project' => array(
-            'Description' => 'Project for which the candidate belongs',
-            'Type' => "enum('IBIS1','IBIS2','Fragile X', 'EARLI Collaboration')",
-        ),
         'CEF' => array(
             'Description' => 'Caveat Emptor flag',
             'Type' => "enum('true','false')",
@@ -157,6 +153,16 @@ class CouchDBDemographicsImporter {
             $this->Dictionary["EDC"] = array(
                 'Description' => 'Expected Date of Confinement (Due Date)',
                 'Type' => "varchar(255)"
+            );
+        }
+        if ($config->getSetting("useProjects") === "true") {
+            $projects = Utility::getProjectList();
+            $projectsEnum = "enum('";
+            $projectsEnum .= implode("', '", $projects);
+            $projectsEnum .= "')";
+            $this->Dictionary["Project"] = array(
+                'Description' => 'Expected Date of Confinement (Due Date)',
+                'Type' => $projects
             );
         }
         /*

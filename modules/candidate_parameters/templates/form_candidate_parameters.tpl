@@ -98,12 +98,14 @@
 
     React.render(participantStatus, document.getElementById("participant-status"));
 
+{if $useConsent === "true"}
     var consentStatus = RConsentStatus({
         "dataURL": "{$baseurl}/candidate_parameters/ajax/getData.php?data=consentStatus&candID=" + {$smarty.get.candID},
         "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
         "tabName": "consentStatus"
     });
     React.render(consentStatus, document.getElementById("consent-status"));
+{/if}
 
     // Adds tab href to url + opens tab based on hash on page load
     // See: http://bit.ly/292MDI8
