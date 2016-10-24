@@ -28,9 +28,11 @@ var ImagePanelHeader = React.createClass({
 
         var arrow;
         if (this.props.Expanded) {
-            arrow = React.createElement('span', { onClick: this.props.onToggleBody, className: 'pull-right clickable glyphicon arrow glyphicon-chevron-up' });
+            arrow = React.createElement('span', { onClick: this.props.onToggleBody,
+                className: 'pull-right clickable glyphicon arrow glyphicon-chevron-up' });
         } else {
-            arrow = React.createElement('span', { onClick: this.props.onToggleBody, className: 'pull-right clickable glyphicon arrow glyphicon-chevron-down' });
+            arrow = React.createElement('span', { onClick: this.props.onToggleBody,
+                className: 'pull-right clickable glyphicon arrow glyphicon-chevron-down' });
         }
         var headerButton = React.createElement(
             'div',
@@ -53,7 +55,8 @@ var ImagePanelHeader = React.createClass({
         return React.createElement(
             'div',
             { className: 'panel-heading' },
-            React.createElement('input', { type: 'checkbox', 'data-file-id': this.props.FileID, className: 'mripanel user-success' }),
+            React.createElement('input', { type: 'checkbox', 'data-file-id': this.props.FileID,
+                className: 'mripanel user-success' }),
             React.createElement(
                 'h3',
                 { className: 'panel-title' },
@@ -341,7 +344,9 @@ var ImageQCDropdown = React.createClass({
                 if (this.props.options.hasOwnProperty(key)) {
                     options.push(React.createElement(
                         'option',
-                        { key: this.props.FormName + this.props.FileID + key, className: 'form-control input-sm option', value: key },
+                        { key: this.props.FormName + this.props.FileID + key,
+                            className: 'form-control input-sm option',
+                            value: key },
                         this.props.options[key]
                     ));
                 }
@@ -520,7 +525,8 @@ var DownloadButton = React.createClass({
         };
         return React.createElement(
             'a',
-            { href: this.props.BaseURL + "/mri/jiv/get_file.php?file=" + this.props.FileName, className: 'btn btn-default', style: style },
+            { href: this.props.BaseURL + "/mri/jiv/get_file.php?file=" + this.props.FileName,
+                className: 'btn btn-default', style: style },
             React.createElement('span', { className: 'glyphicon glyphicon-download-alt' }),
             React.createElement(
                 'span',
@@ -536,7 +542,7 @@ var ImageQCCommentsButton = React.createClass({
 
     openWindowHandler: function openWindowHandler(e) {
         e.preventDefault();
-        window.open(this.props.BaseURL + "/feedback_mri_popup.php?fileID=" + this.props.FileID, "feedback_mri", "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes");
+        window.open(this.props.BaseURL + "/feedback_mri_popup.php?fileID=" + this.props.FileID, "feedback_mri", "width=500,height=800,toolbar=no,location=no," + "status=yes,scrollbars=yes,resizable=yes");
     },
     render: function render() {
         if (!this.props.FileID || this.props.FileID === '') {
@@ -647,7 +653,8 @@ var ImagePanelBody = React.createClass({
                     React.createElement(
                         'a',
                         { href: '#noID', onClick: this.openWindowHandler },
-                        React.createElement('img', { className: 'img-checkpic img-responsive', src: this.props.Checkpic })
+                        React.createElement('img', { className: 'img-checkpic img-responsive',
+                            src: this.props.Checkpic })
                     )
                 ),
                 React.createElement(
@@ -674,7 +681,8 @@ var ImagePanelBody = React.createClass({
                 NrrdFile: this.props.NrrdFile,
                 OtherTimepoints: this.props.OtherTimepoints
             }),
-            this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, { HeaderInfo: this.props.HeaderInfo }) : ''
+            this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, {
+                HeaderInfo: this.props.HeaderInfo }) : ''
         );
     }
 });
