@@ -107,9 +107,25 @@ class NDB_Form_User_Accounts extends NDB_Form
             $defaults['Zip_code']    = htmlspecialchars($defaults['Zip_code']);
             $defaults['Country']     = htmlspecialchars($defaults['Country']);
             $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
+            $defaults['examiner']    = $defaults['examiner'];
 
+            foreach ($defaults['examiner'] as $cid=>$vals) {
+                //sets pending approval info
+                if ($cid=='pending') {
+                    $defaults['examiner_pending'] = $vals;
+                    continue;
+                }
+                //sets radiologist Y/N to value at examiner's site
+                if ($cid==$defaults['CenterID']) {
+                    $defaults['examiner_radiologist'] =$vals[1];
+                }
+                if ($vals[0]=='Y'
+                    || ($vals[0]=='N' && $defaults['examiner_pending']=='Y')
+                ) {
+                    $defaults['ex_'.$cid] ='on';
+                }
+            }
         }
-
         return $defaults;
     }
 
@@ -135,6 +151,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _process($values)
     {
         $config = NDB_Config::singleton();
+        $DB     = Database::singleton();
 
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
@@ -201,6 +218,90 @@ class NDB_Form_User_Accounts extends NDB_Form
         if ($values['Password_md5'] == '' && !$this->isCreatingNewUser()) {
             unset($values['Password_md5']);
         }
+
+        // EXAMINER UPDATE
+        $ex_curr_sites =array();
+        $ex_prev_sites =array();
+
+        //get sites where user is already an examiner at for compare
+        $prev_sites = $DB->pselect(
+            "
+                        SELECT centerID
+                        FROM examiners
+                        WHERE full_name=:fn",
+            array(
+             "fn" => $values['Real_name'],
+            )
+        );
+        foreach ($prev_sites as $row=>$center) {
+            array_push($ex_prev_sites, $center['centerID']);
+        }
+        foreach ($values as $k=>$v) {
+            //examiner fields
+            if (preg_match("/^ex_[0-9]+$/", $k)) {
+                //get centerID
+                $parse_key =explode('_', $k);
+                $cid       = $parse_key[1];
+                array_push($ex_curr_sites, $cid);
+
+                //Check if examiner already in db for own site
+                $result = $DB->pselectRow(
+                    "
+                          SELECT full_name, centerID
+                          FROM examiners 
+                          WHERE full_name=:fn AND centerID=:cid",
+                    array(
+                     "fn"  => $values['Real_name'],
+                     "cid" => $cid,
+                    )
+                );
+
+                // examiner was not previously added, add and set to active
+                if (empty($result) || is_null($result)) {
+                    $DB->insert(
+                        'examiners',
+                        array(
+                         'full_name'        => $values['Real_name'],
+                         'centerID'         => $cid,
+                         'radiologist'      => $values['examiner_radiologist'],
+                         'active'           => 'Y',
+                         'pending_approval' => $values['examiner_pending'],
+                        )
+                    );
+                } else {
+                    $DB->update(
+                        'examiners',
+                        array(
+                         'radiologist'      => $values['examiner_radiologist'],
+                         'Active'           => 'Y',
+                         'pending_approval' => $values['examiner_pending'],
+                        ),
+                        array(
+                         "full_name" => $values['Real_name'],
+                         "centerID"  => $cid,
+                        )
+                    );
+                }
+                unset($values[$k]);
+            }
+        }
+
+        //de-activate examiner if sites where no longer checked
+        $ex_inactive =array_diff($ex_prev_sites, $ex_curr_sites);
+
+        foreach ($ex_inactive as $cid) {
+            $DB->update(
+                'examiners',
+                array("Active" => 'N'),
+                array(
+                 "full_name" => $values['Real_name'],
+                 "centerID"  => $cid,
+                )
+            );
+        }
+        unset($values['examiner_pending']);
+        unset($values['examiner_radiologist']);
+        //END EXAMINER UPDATE
 
         // make the set
         foreach ($values as $key => $value) {
@@ -451,6 +552,60 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
         $this->addSelect('CenterID', 'Site', $siteOptions);
 
+        if ($editor->hasPermission('examiner_multisite')) {
+            //get site aliases
+            $DB      =& Database::singleton();
+            $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", array());
+
+            foreach ($aliases as $row) {
+                $groupA[] = $this->createCheckbox(
+                    'ex_'.$row['CenterID'],
+                    $row['Alias'],
+                    array()
+                );
+            }
+            $groupB[] = $this->createLabel(
+                "Radiologist: "
+            );
+            $groupB[] = $this->createSelect(
+                "examiner_radiologist",
+                "Radiologist: ",
+                array(
+                 null => "",
+                 '1'  => 'Yes',
+                 '0'  => 'No',
+                )
+            );
+            $groupB[] = $this->createLabel(
+                "Pending Approval:"
+            );
+            $groupB[] = $this->createSelect(
+                "examiner_pending",
+                "Pending Approval: ",
+                array(
+                 null => "",
+                 'Y'  => 'Yes',
+                 'N'  => 'No',
+                )
+            );
+            $this->addGroup(
+                $groupA,
+                'examiner_sites',
+                'Examiner At:',
+                $this->_GUIDelimiter,
+                false
+            );
+            $this->addGroup(
+                $groupB,
+                'examiner_group',
+                'Examiner Status',
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($groupA);
+            unset($groupB);
+        }
+
         // active
         $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
         $this->addSelect(
@@ -581,7 +736,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
-        $fistNameInvalidMsg = "First name is required and "
+        $firstNameInvalidMsg = "First name is required and "
             . "should not exceed 120 characters";
         $this->addBasicText(
             'First_name',
@@ -818,7 +973,18 @@ class NDB_Form_User_Accounts extends NDB_Form
             // No email entered: error
             $errors['Email_Group'] = 'You must enter an email address';
         }
+        //======================================
+        //        Validate Examiner Status
+        //======================================
 
+        foreach ($values as $k=>$v) {
+            if (preg_match("/^ex_[1-9]+$/", $k)
+                && $values['examiner_radiologist'] == ''
+            ) {
+                $errors['examiner_group'] = "Please specify if examiner is a ".
+                    "radiologist";
+            }
+        }
         return $errors;
     }
 

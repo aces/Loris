@@ -327,13 +327,22 @@ var BuildPane = React.createClass({
 	 		elementDBNames : {}
 	 	};
 	},
-	// Load in a group of elements, replacing any that
-	// were already present
-	loadElements: function(elements) {
-		this.setState({
-			Elements: elements
-		});
-	},
+  // Load in a group of elements, replacing any that
+  // were already present
+  loadElements: function(elements) {
+
+    // Populate existing DB names
+    var elContent = elements[this.state.currentPage].Elements;
+    var elNames = {};
+    elContent.forEach(function(el) {
+       elNames[el.Name] = "";
+    });
+
+    this.setState({
+      Elements: elements,
+      elementDBNames: elNames
+    });
+  },
 	// Set the element editing flag to true to render the element
 	// as an AddQuestion object. Increase the number of editing to
 	// disable drag and drop
@@ -396,6 +405,7 @@ var BuildPane = React.createClass({
 	},
 	// Add a new question to the page's elements
 	addQuestion: function(element){
+
 		if (element.Name && element.Name in this.state.elementDBNames){
 			// If the DB name already exists return false.
 			return false;

@@ -9,7 +9,6 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
-
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
   rowHeaders.forEach(function(header, index) {
@@ -17,13 +16,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
   var url;
   if (column === 'Username') {
-       url  = loris.BaseURL + "/user_accounts/edit_user/?identifier=" + row.Username;
-      return <td>
-                <a href ={url}>{cell}</a>
-             </td>;
-
+    url = loris.BaseURL + "/user_accounts/edit_user/?identifier=" +
+      row.Username;
+    return (<td><a href ={url}>{cell}</a></td>);
   }
 
   return <td>{cell}</td>;
-
 }

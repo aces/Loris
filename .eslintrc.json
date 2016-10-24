@@ -19,7 +19,13 @@
     "react/jsx-uses-vars": "error",
     "no-alert": 0,
     "no-implicit-globals": 0,
-    "array-callback-return": 0
+    "array-callback-return": 0,
+    "new-cap": ["error", {
+        "capIsNewExceptions": ["DynamicTable"]
+    }],
+    "no-console": ["error", {
+      "allow": ["info", "warn", "error"]
+    }]
   },
   "globals": {
     "React": true,

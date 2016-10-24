@@ -639,10 +639,10 @@ DataQueryApp = React.createClass({
                 DocTypes.push(category);
                 // Split the sessions to be queried into subqueries so that they don't exceed the defualt
                 // php defualt setting for maximum variables allowed in a single request
-                for (var j = 0; j < sessionInfo.length; j += 999) {
+                for (var j = 0; j < sessionInfo.length; j += 400) {
                     // keep track of the number of requests waiting for a response
                     semaphore++;
-                    sectionedSessions = sessionInfo.slice(j, j + 999);
+                    sectionedSessions = sessionInfo.slice(j, j + 400);
                     $.ajax({
                         type: "POST",
                         url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
@@ -739,7 +739,7 @@ DataQueryApp = React.createClass({
                 Identifiers.push(session);
             }
         } else {
-            // Displaying the data in the longitudial way
+            // Displaying the data in the longitudinal way
 
             var Visits = {},
                 visit,
@@ -877,7 +877,7 @@ DataQueryApp = React.createClass({
         }));
 
         // Define the data displayed type and add the view data tab
-        var displayType = this.state.grouplevel === 0 ? "Cross-sectional" : "Longitudial";
+        var displayType = this.state.grouplevel === 0 ? "Cross-sectional" : "Longitudinal";
         tabs.push(React.createElement(ViewDataTabPane, {
             TabId: "ViewData",
             Fields: this.state.fields,

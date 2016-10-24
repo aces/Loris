@@ -38,9 +38,9 @@ var CandidateInfo = React.createClass(
           },
           success: function(data) {
             var formData = {
-              flagged_caveatemptor: data.flagged_caveatemptor,
-              flagged_other: data.flagged_other,
-              flagged_reason: data.flagged_reason
+              flaggedCaveatemptor: data.flagged_caveatemptor,
+              flaggedOther: data.flagged_other,
+              flaggedReason: data.flagged_reason
             };
 
             that.setState(
@@ -64,20 +64,20 @@ var CandidateInfo = React.createClass(
     setFormData: function(formElement, value) {
       var formData = this.state.formData;
       formData[formElement] = value;
-        
+
       // Reset 'reason' field
-      if (formElement === "flagged_caveatemptor" && value === "false") {
-        formData.flagged_reason = '';
-        formData.flagged_other = '';
-        this.refs.flagged_reason.state.value = "";
-        this.refs.flagged_reason.state.hasError = false;
-        this.refs.flagged_other.state.value = "";
+      if (formElement === "flaggedCaveatemptor" && value === "false") {
+        formData.flaggedReason = '';
+        formData.flaggedOther = '';
+        this.refs.flaggedReason.state.value = "";
+        this.refs.flaggedReason.state.hasError = false;
+        this.refs.flaggedOther.state.value = "";
       }
 
       // Reset 'other' field
-      if (formElement === "flagged_reason" && value !== "2") {
-        formData.flagged_other = '';
-        this.refs.flagged_other.state.value = "";
+      if (formElement === "flaggedReason" && value !== "2") {
+        formData.flaggedOther = '';
+        this.refs.flaggedOther.state.value = "";
       }
 
       this.setState({
@@ -102,7 +102,8 @@ var CandidateInfo = React.createClass(
         return (
           <button className="btn-info has-spinner">
             Loading
-            <span className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+            <span
+              className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
             </span>
           </button>
         );
@@ -116,7 +117,7 @@ var CandidateInfo = React.createClass(
       }
       var reasonDisabled = true;
       var reasonRequired = false;
-      if (this.state.formData.flagged_caveatemptor === "true") {
+      if (this.state.formData.flaggedCaveatemptor === "true") {
         reasonDisabled = false;
         reasonRequired = true;
       }
@@ -134,12 +135,12 @@ var CandidateInfo = React.createClass(
         }
       }
 
-      if (this.state.formData.flagged_reason === reasonKey) {
+      if (this.state.formData.flaggedReason === reasonKey) {
         otherRequired = true;
         otherDisabled = false;
       }
 
-      if (this.state.formData.flagged_caveatemptor === "false") {
+      if (this.state.formData.flaggedCaveatemptor === "false") {
         reasonDisabled = true;
         reasonRequired = false;
         otherDisabled = true;
@@ -149,10 +150,10 @@ var CandidateInfo = React.createClass(
       if (reasonKey !== null) {
         specifyOther = <TextareaElement
           label="If Other, please specify"
-          name="flagged_other"
-          value={this.state.formData.flagged_other}
+          name="flaggedOther"
+          value={this.state.formData.flaggedOther}
           onUserInput={this.setFormData}
-          ref="flagged_other"
+          ref="flaggedOther"
           disabled={otherDisabled}
           required={otherRequired}
         />;
@@ -161,8 +162,9 @@ var CandidateInfo = React.createClass(
       var extraParameters = this.state.Data.extra_parameters;
       for (var key2 in extraParameters) {
         if (extraParameters.hasOwnProperty(key2)) {
-          var name = 'PTID' + extraParameters[key2].ParameterTypeID;
-          var value = this.state.Data.parameter_values[extraParameters[key2].ParameterTypeID];
+          var paramTypeID = extraParameters[key2].ParameterTypeID;
+          var name = 'PTID' + paramTypeID;
+          var value = this.state.Data.parameter_values[paramTypeID];
 
           switch (extraParameters[key2].Type.substring(0, 3)) {
             case "enu":
@@ -250,21 +252,21 @@ var CandidateInfo = React.createClass(
             />
             <SelectElement
               label="Caveat Emptor Flag for Candidate"
-              name="flagged_caveatemptor"
+              name="flaggedCaveatemptor"
               options={this.state.caveatOptions}
-              value={this.state.formData.flagged_caveatemptor}
+              value={this.state.formData.flaggedCaveatemptor}
               onUserInput={this.setFormData}
-              ref="flagged_caveatemptor"
+              ref="flaggedCaveatemptor"
               disabled={disabled}
               required={true}
             />
             <SelectElement
               label="Reason for Caveat Emptor Flag"
-              name="flagged_reason"
+              name="flaggedReason"
               options={this.state.Data.caveatReasonOptions}
-              value={this.state.formData.flagged_reason}
+              value={this.state.formData.flaggedReason}
               onUserInput={this.setFormData}
-              ref="flagged_reason"
+              ref="flaggedReason"
               disabled={reasonDisabled}
               required={reasonRequired}
             />
