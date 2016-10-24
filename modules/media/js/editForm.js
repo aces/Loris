@@ -97,6 +97,8 @@ var MediaEditForm = React.createClass({
       }
     }
 
+    var backURL = loris.BaseURL.concat('/media/');
+
     return React.createElement(
       'div',
       null,

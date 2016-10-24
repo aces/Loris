@@ -94,6 +94,8 @@ var MediaEditForm = React.createClass({
       }
     }
 
+    var backURL = loris.BaseURL.concat('/media/');
+
     return (
       <div>
         <div className={alertClass} role="alert" ref="alert-message">
