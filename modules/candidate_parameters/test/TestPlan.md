@@ -9,11 +9,12 @@
 4. Make sure all tabs render. Ensure you stay on the same tab when you refresh.
 
 ### Candidate Information Tab
-5. Confirm that all the fields in this panel correspond to what's stored in the candidate table.
+5. Confirm that all the fields in this panel correspond to what's stored in the candidate table and the corresponding parameter_candidate.
 	* PSCID
 	* Caveat Emptor flag for Candidate
 	* Reason for Caveat Emptor flag
-	* Comment
+	* Comment (if it exists in parameter_type)
+        * Plan (if it exists in parameter_type)
 6. Change each field and click on Update and make sure it updates in the front-end and back-end
 7. If you set the Caveat Emptor flag to Yes, check that a reason must be specified. If the reason is set to other, check that an explanation must be provided.
 8. Add fields to the parameter_candidate table and check if it shows up on this page
