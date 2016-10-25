@@ -37,9 +37,27 @@ var ConsentStatus = React.createClass(
             return xhr;
           },
           success: function(data) {
+
+            var formData = {};
+            var consents = data.consents;
+            for (var consentStatus in consents) {
+              if (consents.hasOwnProperty(consentStatus)) {
+                var consentDate = consentStatus + "_date";
+                var consentDate2 = consentStatus + "_date2";
+                var consentWithdrawal = consentStatus + "_withdrawal";
+                var consentWithdrawal2 = consentStatus + "_withdrawal2";
+                formData[consentStatus] = data.consentStatuses[consentStatus];
+                formData[consentDate] = data.consentDates[consentStatus];
+                formData[consentDate2] = data.consentDates[consentStatus];
+                formData[consentWithdrawal] = data.withdrawals[consentStatus];
+                formData[consentWithdrawal2] = data.withdrawals[consentStatus];
+              }
+            }
+
             that.setState(
               {
                 Data: data,
+                formData: formData,
                 isLoaded: true
               }
                         );
