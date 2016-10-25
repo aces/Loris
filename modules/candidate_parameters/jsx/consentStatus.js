@@ -109,8 +109,7 @@ var ConsentStatus = React.createClass(
           }
           if (this.state.formData[withdrawal]) {
             withdrawalRequired[i] = true;
-          }
-          else {
+          } else {
             withdrawalRequired[i] = false;
           }
           i++;
