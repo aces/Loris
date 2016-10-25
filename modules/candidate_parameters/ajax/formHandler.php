@@ -356,7 +356,8 @@ function editConsentStatusFields($db, $user)
     }
 
     $candIDParam = $_POST['candID'];
-    $candID = (isset($candIDParam) && $candIDParam !== "null") ? $candIDParam : null;
+    $candID      = (isset($candIDParam) && $candIDParam !== "null") ?
+        $candIDParam : null;
 
     $id = null;
     if (!(is_null($_SESSION['State']))) {
@@ -369,24 +370,24 @@ function editConsentStatusFields($db, $user)
 
     foreach (Utility::asArray($consent['Consent']) as $consentType) {
 
-        $consentName = $_POST[$consentType['name']];
-        $consentDate = $_POST[$consentType['name'] . '_date'];
+        $consentName       = $_POST[$consentType['name']];
+        $consentDate       = $_POST[$consentType['name'] . '_date'];
         $consentWithdrawal = $_POST[$consentType['name'] . '_withdrawal'];
 
         // Process posted data
-        $consent = (isset($consentName) && $consentName !== "null") ?
+        $consent    = (isset($consentName) && $consentName !== "null") ?
             $consentName : null;
-        $date = (isset($consentDate) && $consentDate !== "null") ?
+        $date       = (isset($consentDate) && $consentDate !== "null") ?
             $consentDate : null;
         $withdrawal = (isset($consentWithdrawal) && $consentWithdrawal !== "null") ?
             $consentWithdrawal : null;
 
         $updateValues = [
-                         'CandID'      => $candID,
-                         'entry_staff' => $id,
-                        $consentType['name']                   => $consent,
-                        ($consentType['name'] . '_date')       => $date,
-                        ($consentType['name'] . '_withdrawal') => $withdrawal
+                         'CandID'                               => $candID,
+                         'entry_staff'                          => $id,
+                         $consentType['name']                   => $consent,
+                         ($consentType['name'] . '_date')       => $date,
+                         ($consentType['name'] . '_withdrawal') => $withdrawal,
                         ];
 
         $newRecord = true;
@@ -403,7 +404,11 @@ function editConsentStatusFields($db, $user)
             if ($newRecord) {
                 $db->insert('participant_status', $updateValues);
             } else {
-                $db->update('participant_status', $updateValues, ['CandID' => $candID]);
+                $db->update(
+                    'participant_status',
+                    $updateValues,
+                    ['CandID' => $candID]
+                );
             }
 
             $db->insert('consent_info_history', $updateValues);
