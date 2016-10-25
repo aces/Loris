@@ -311,12 +311,14 @@ var ImageQCDropdown = React.createClass({
         e.preventDefault();
         $.ajax({
             type: "POST",
-            url: '/mri_violations/?submenu=mri_protocol_check_violations',
+            url: loris.BaseURL + 
+                '/mri_violations/?submenu=mri_protocol_check_violations',
             data: {
                 SeriesUID: this.props.SeriesUID
             },
             success: function success() {
-                window.location.href = "/mri_violations/?submenu=mri_protocol_check_violations";
+                window.location.href = loris.BaseURL +
+                 "/mri_violations/?submenu=mri_protocol_check_violations";
             }
         });
     },
