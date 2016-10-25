@@ -37,7 +37,6 @@ var ConsentStatus = React.createClass(
             return xhr;
           },
           success: function(data) {
-
             var formData = {};
             var consents = data.consents;
             for (var consentStatus in consents) {
