@@ -122,7 +122,7 @@ var CandidateInfo = React.createClass(
         reasonRequired = true;
       }
 
-      var reasonKey;
+      var reasonKey = null;
       var specifyOther = null;
       var otherDisabled = true;
       var otherRequired = false;
