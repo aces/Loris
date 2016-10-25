@@ -341,7 +341,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".statistics",
             "1",
-            "General Description"
+            "All Completion Statistics"
         );
         $this->resetPermissions();
     }
