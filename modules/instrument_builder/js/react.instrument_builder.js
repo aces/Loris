@@ -455,6 +455,8 @@ var BuildPane = React.createClass({
 		// setting any values
 		this.setState(function (state) {
 			var temp = state.Elements;
+			var dbNames = state.elementDBNames;
+			delete dbNames[temp[state.currentPage].Elements[elementIndex].Name];
 			temp[state.currentPage].Elements.splice(elementIndex, 1);
 			return {
 				Elements: temp

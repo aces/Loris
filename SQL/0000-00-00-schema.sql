@@ -1555,7 +1555,7 @@ CREATE TABLE participant_status (
         UserID varchar(255) default NULL,
         Examiner varchar(255) default NULL,
         entry_staff varchar(255) default NULL,
-        data_entry_date timestamp NOT NULL,
+        data_entry_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
         participant_status integer DEFAULT NULL REFERENCES participant_status_options(ID),
         participant_suboptions integer DEFAULT NULL REFERENCES participant_status_options(ID),
         reason_specify text default NULL,
@@ -2232,6 +2232,16 @@ CREATE TABLE `issues_categories` (
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `categoryName` (`categoryName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+INSERT INTO issues_categories (categoryName) VALUES
+    ('Behavioural Battery'), 
+    ('Behavioural Instruments'), 
+    ('Data Entry'), 
+    ('Examiners'),
+    ('Imaging'),
+    ('Technical Issue'),
+    ('User Accounts'),
+    ('Other');
 
 DROP TABLE IF EXISTS `issues`;
 CREATE TABLE `issues` (

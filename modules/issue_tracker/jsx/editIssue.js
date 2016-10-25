@@ -20,9 +20,10 @@ var CollapsibleComment = React.createClass({
   },
   render: function() {
     var historyText = [];
-    var commentHistBool = (this.state.collapsed ?
+    var btnCommentsLabel = (this.state.collapsed ?
       "Show Comment History" :
       "Hide Comment History");
+
     var commentHistory = this.props.commentHistory;
     for (var comment in commentHistory) {
       if (commentHistory[comment].fieldChanged === 'comment') {
@@ -45,6 +46,7 @@ var CollapsibleComment = React.createClass({
           <br/>);
       }
     }
+
     return (
       <div className="row form-group">
         <div className="col-sm-9">
@@ -52,16 +54,15 @@ var CollapsibleComment = React.createClass({
                onClick={this.toggleCollapsed}
                data-toggle="collapse"
                data-target="#comment-history"
+               style={{margin: '10px 0'}}
           >
-            {commentHistBool}
+            {btnCommentsLabel}
           </div>
         </div>
-        <br></br>
-        <div id="comment-history">
-          <div className="col-sm-9">
+        <div className="col-sm-9">
+          <div id="comment-history" className="collapse">
             {historyText}
           </div>
-
         </div>
       </div>
     );
@@ -125,36 +126,31 @@ var IssueEditForm = React.createClass({
     if (this.state.isNewIssue) {
       headerText = "Create New Issue";
     } else {
-      headerText = "Edit Issue #" + this.state.issueData.issueID;
+      headerText = "Edit Issue #" + this.state.formData.issueID;
     }
 
     var lastUpdateValue = " ";
     if (this.state.isNewIssue) {
       lastUpdateValue = "Never!";
     } else {
-      lastUpdateValue = this.state.issueData.lastUpdate;
+      lastUpdateValue = this.state.formData.lastUpdate;
     }
 
     var lastUpdatedByValue = " ";
     if (this.state.isNewIssue) {
       lastUpdatedByValue = "No-one!";
     } else {
-      lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
+      lastUpdatedByValue = this.state.formData.lastUpdatedBy;
     }
 
     var dateCreated = " ";
     if (this.state.isNewIssue) {
       dateCreated = "Sometime Soon!";
     } else {
-      dateCreated = this.state.issueData.dateCreated;
+      dateCreated = this.state.formData.dateCreated;
     }
 
-    var isWatching = "";
-    if (this.state.issueData.watching) {
-      isWatching = "Yes";
-    } else {
-      isWatching = "No";
-    }
+    var isWatching = this.state.formData.watching;
 
     var submitButtonValue = "";
     if (this.state.isNewIssue) {
@@ -174,7 +170,7 @@ var IssueEditForm = React.createClass({
       commentHistory = <div class="form-group">&nbsp;</div>;
     } else {
       commentHistory = <CollapsibleComment
-          commentHistory={this.state.issueData.commentHistory}
+          commentHistory={this.state.formData.commentHistory}
         />;
     }
 
@@ -233,7 +229,7 @@ var IssueEditForm = React.createClass({
                   name="reporter"
                   label={"Reporter: "}
                   ref="reporter"
-                  text={this.state.issueData.reporter}
+                  text={this.state.formData.reporter}
                 />
               </div>
             </div>
@@ -247,7 +243,11 @@ var IssueEditForm = React.createClass({
                 name="description"
                 label="Description"
                 ref="description"
-                text={this.state.issueData.desc}
+                text={
+                  (this.state.formData.desc === "null" ?
+                    "" :
+                    this.state.formData.desc)
+                }
               />
             </div>
           </div>
@@ -278,7 +278,7 @@ var IssueEditForm = React.createClass({
                     label="Title"
                     onUserInput={this.setFormData}
                     ref="title"
-                    value={this.state.issueData.title}
+                    value={this.state.formData.title}
                     disabled={!hasEditPermission}
                     required={true}
                   />
@@ -295,7 +295,7 @@ var IssueEditForm = React.createClass({
                     onUserInput={this.setFormData}
                     ref="assignee"
                     disabled={!hasEditPermission}
-                    value={this.state.issueData.assignee}
+                    value={this.state.formData.assignee}
                     required={true}
                   />
                 </div>
@@ -308,7 +308,7 @@ var IssueEditForm = React.createClass({
                     onUserInput={this.setFormData}
                     ref="centerID"
                     disabled={!hasEditPermission}
-                    value={this.state.issueData.centerID}
+                    value={this.state.formData.centerID}
                   />
                 </div>
 
@@ -321,7 +321,7 @@ var IssueEditForm = React.createClass({
                     onUserInput={this.setFormData}
                     ref="status"
                     disabled={!hasEditPermission}
-                    value={this.state.issueData.status} // todo: edit this so the
+                    value={this.state.formData.status} // todo: edit this so the
                                                         // options are different if
                                                         // the user doesn't have
                                                         // permission
@@ -337,7 +337,7 @@ var IssueEditForm = React.createClass({
                     ref="priority"
                     required={false}
                     disabled={!hasEditPermission}
-                    value={this.state.issueData.priority}
+                    value={this.state.formData.priority}
                   />
                 </div>
 
@@ -350,7 +350,7 @@ var IssueEditForm = React.createClass({
                     onUserInput={this.setFormData}
                     ref="category"
                     disabled={!hasEditPermission}
-                    value={this.state.issueData.category}
+                    value={this.state.formData.category}
                   />
                 </div>
                 <div class="row">
@@ -362,7 +362,7 @@ var IssueEditForm = React.createClass({
                     onUserInput={this.setFormData}
                     ref="module"
                     disabled={!hasEditPermission}
-                    value={this.state.issueData.module}
+                    value={this.state.formData.module}
                   />
                 </div>
 
@@ -373,7 +373,7 @@ var IssueEditForm = React.createClass({
                     onUserInput={this.setFormData}
                     ref="PSCID"
                     disabled={!hasEditPermission}
-                    value={this.state.issueData.PSCID}
+                    value={this.state.formData.PSCID}
                   />
                 </div>
                 <div class="row">
@@ -383,7 +383,7 @@ var IssueEditForm = React.createClass({
                     onUserInput={this.setFormData}
                     ref="visitLabel"
                     disabled={!hasEditPermission}
-                    value={this.state.issueData.visitLabel}
+                    value={this.state.formData.visitLabel}
                   />
                 </div>
 
@@ -408,7 +408,7 @@ var IssueEditForm = React.createClass({
                     onUserInput={this.setFormData}
                     ref="watching"
                     multiple={true}
-                    value={this.state.issueData.whoIsWatching}
+                    value={this.state.formData.whoIsWatching}
                   />
                 </div>
 
@@ -423,8 +423,7 @@ var IssueEditForm = React.createClass({
                 </div>
 
                 <div class="row submit-area">
-                  <ButtonElement label={submitButtonValue}/>
-
+                  <ButtonElement label={submitButtonValue} />
                   <div class="col-md-3">
                     <div className={alertClass}
                          role="alert"
@@ -442,8 +441,7 @@ var IssueEditForm = React.createClass({
               </div>
             </div>
           </FormElement>
-        </
-          div >
+        </div>
       );
   },
 
@@ -455,71 +453,42 @@ var IssueEditForm = React.createClass({
 
     var dataURL = this.props.DataURL;
 
-    $.ajax(
-        dataURL,
-      {
-        dataType: 'json',
-        xhr: function() {
-          var xhr = new window.XMLHttpRequest();
-          xhr.addEventListener(
+    $.ajax(dataURL, {
+      dataType: 'json',
+      xhr: function() {
+        var xhr = new window.XMLHttpRequest();
+        xhr.addEventListener(
               "progress",
               function(evt) {
-                that.setState(
-                  {
-                    loadedData: evt.loaded
-                  }
-                );
+                that.setState({
+                  loadedData: evt.loaded
+                });
               }
             );
-          return xhr;
-        },
-
-        success: function(data) {
-          if (!data.issueData.issueID) {
-            that.setState({isNewIssue: true});
-          }
-
-          var formData = {
-            issueID: data.issueData.issueID,
-            title: data.issueData.title,
-            lastUpdate: data.issueData.lastUpdate,
-            centerID: data.issueData.centerID,
-            PSCID: data.issueData.PSCID,
-            reporter: data.issueData.reporter,
-            assignee: data.issueData.assignee,
-            status: data.issueData.status,
-            priority: data.issueData.priority,
-            watching: data.issueData.watching,
-            visitLabel: data.issueData.visitLabel,
-            dateCreated: data.issueData.dateCreated,
-            category: data.issueData.category,
-            lastUpdatedBy: data.issueData.lastUpdatedBy,
-            history: data.issueData.history,
-            comment: data.issueData.comment,
-            otherWatchers: data.issueData.whoIsWatching
-          };
-
-          that.setState(
-            {
-              Data: data,
-              isLoaded: true,
-              issueData: data.issueData,
-              formData: formData
-            }
-            );
-
-          that.setState(
-            {
-              error: "finished success"
-            }
-            );
-        },
-        error: function(data, errorCode, errorMsg) {
-          that.setState({
-            error: errorMsg
-          });
+        return xhr;
+      },
+      success: function(data) {
+        if (!data.issueData.issueID) {
+          that.setState({isNewIssue: true});
         }
+
+        that.setState({
+          Data: data,
+          isLoaded: true,
+          issueData: data.issueData,
+          formData: data.issueData
+        });
+
+        that.setState({
+          error: "finished success"
+        });
+      },
+      error: function(data, errorCode, errorMsg) {
+        that.setState({
+          error: errorMsg
+        });
       }
+    }
       );
   },
 
@@ -531,37 +500,38 @@ var IssueEditForm = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
 
-    var self = this;
+    // Prevent submissions while pending
+    if (this.state.submissionResult === "pending") {
+      return;
+    }
+    this.setState({submissionResult: "pending"});
+
     var myFormData = this.state.formData;
     var formRefs = this.refs;
     var formData = new FormData();
-    var issueData = this.state.issueData;
 
-      // Validate the form
+    // Validate the form
     if (!this.isValidForm(formRefs, myFormData)) {
       return;
     }
 
     for (var key in myFormData) {
-      if (myFormData[key] !== "" && myFormData[key] !== issueData[key]) {
+      if (myFormData[key] !== "") {
         formData.append(key, myFormData[key]);
       }
     }
 
-    formData.append('issueID', this.state.Data.issueData.issueID);
-
-    $.ajax(
-      {
-        type: 'POST',
-        url: self.props.action,
-        data: formData,
-        cache: false,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        xhr: function() {
-          var xhr = new window.XMLHttpRequest();
-          xhr.upload.addEventListener(
+    $.ajax({
+      type: 'POST',
+      url: this.props.action,
+      data: formData,
+      cache: false,
+      dataType: 'json',
+      contentType: false,
+      processData: false,
+      xhr: function() {
+        var xhr = new window.XMLHttpRequest();
+        xhr.upload.addEventListener(
               "progress",
               function(evt) {
                 if (evt.lengthComputable) {
@@ -575,48 +545,39 @@ var IssueEditForm = React.createClass({
               },
               false
             );
-          return xhr;
-        },
+        return xhr;
+      },
 
-        success: function(data) {
-          if (!data.isValidSubmission) {
-            self.setState(
-              {
-                errorMessage: data.invalidMessage,
-                submissionResult: "invalid"
-              }
-              );
-            self.showAlertMessage();
-            return;
-          }
-
-          self.setState(
-            {
-              submissionResult: "success",
-              issueID: data.issueID
-            }
-            );
-          self.getDataAndChangeState();
-          self.showAlertMessage();
-
-          if (self.state.isNewIssue) {
-            setTimeout(function() {
-              window.location.assign('/issue_tracker');
-            }, 2000);
-          }
-        },
-        error: function(err) {
-          console.error(err);
-          self.setState(
-            {
-              submissionResult: "error"
-            }
-            );
-          self.showAlertMessage();
+      success: function(data) {
+        if (!data.isValidSubmission) {
+          this.setState({
+            errorMessage: data.invalidMessage,
+            submissionResult: "invalid"
+          });
+          this.showAlertMessage();
+          return;
         }
 
-      }
-      );
+        this.setState({
+          submissionResult: "success",
+          issueID: data.issueID
+        });
+        this.showAlertMessage();
+
+        if (this.state.isNewIssue) {
+          setTimeout(function() {
+            window.location.assign('/issue_tracker');
+          }, 2000);
+        }
+      }.bind(this),
+      error: function(err) {
+        console.error(err);
+        this.setState({
+          submissionResult: "error"
+        });
+        this.showAlertMessage();
+      }.bind(this)
+    });
   },
 
     /**

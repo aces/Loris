@@ -39,7 +39,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
     {
 
         $user =& User::singleton();
-        $db = Database::singleton();
+        $db   = Database::singleton();
 
         $this->query = " FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID) " .
@@ -56,81 +56,84 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 
         //note that this needs to be in the same order as the headers array
         $this->columns = array(
-            'i.issueID as Issue_ID',
-            'i.title as Title',
-            'l.Label as Module',
-            'i.category as Category',
-            'i.reporter as Reporter',
-            'i.assignee as Assignee',
-            'i.status as Status',
-            'i.priority as Priority',
-            'p.Name as Site',
-            'c.PSCID as PSCID',
-            's.Visit_label as Visit_Label',
-            'i.lastUpdate as Last_Update',
-        );
+                          'i.issueID as Issue_ID',
+                          'i.title as Title',
+                          'l.Label as Module',
+                          'i.category as Category',
+                          'i.reporter as Reporter',
+                          'i.assignee as Assignee',
+                          'i.status as Status',
+                          'i.priority as Priority',
+                          'p.Name as Site',
+                          'c.PSCID as PSCID',
+                          's.Visit_label as Visit_Label',
+                          'i.lastUpdate as Last_Update',
+                         );
 
         $this->order_by = 'i.issueID DESC';
         $this->group_by = 'i.issueID';
 
         //NDB filter will remove underscores
         $this->headers = array(
-            'Issue_ID',
-            'Title',
-            'Module',
-            'Category',
-            'Reporter',
-            'Assignee',
-            'Status',
-            'Priority',
-            'Site',
-            'PSCID',
-            'Visit_Label',
-            'Last_Update',
-        );
+                          'Issue_ID',
+                          'Title',
+                          'Module',
+                          'Category',
+                          'Reporter',
+                          'Assignee',
+                          'Status',
+                          'Priority',
+                          'Site',
+                          'PSCID',
+                          'Visit_Label',
+                          'Last_Update',
+                         );
 
         $this->validFilters = array(
-            'i.issueID',
-            'l.Label',
-            'i.category',
-            'c.PSCID',
-            's.Visit_label',
-            'i.reporter',
-            'i.assignee',
-            'i.centerID',
-            'w.userID',
-            'i.projectID',
-            'i.status',
-            'i.priority',
-            'keyword',
-            'minDate',
-            'maxDate',
-        );
+                               'i.issueID',
+                               'l.Label',
+                               'i.category',
+                               'c.PSCID',
+                               's.Visit_label',
+                               'i.reporter',
+                               'i.assignee',
+                               'i.centerID',
+                               'w.userID',
+                               'i.projectID',
+                               'i.status',
+                               'i.priority',
+                               'keyword',
+                               'minDate',
+                               'maxDate',
+                              );
 
         $this->formToFilter = array(
-            'issueID' => 'i.issueID',
-            'category' => 'i.category',
-            'module' => 'l.Label',
-            'PSCID' => 'c.PSCID',
-            'visitLabel' => 's.Visit_label',
-            'reporter' => 'i.reporter',
-            'assignee' => 'i.assignee',
-            'site' => 'i.centerID',
-            'projectID' => 'i.projectID',
-            'status' => 'i.status',
-            'priority' => 'i.priority',
-            'keyword' => 'ic.issueComment',
-            'minDate' => 'minDate',
-            'maxDate' => 'maxDate',
-            $user->getData('UserID') => 'watching',
-        );
+                               'issueID'                => 'i.issueID',
+                               'category'               => 'i.category',
+                               'module'                 => 'l.Label',
+                               'PSCID'                  => 'c.PSCID',
+                               'visitLabel'             => 's.Visit_label',
+                               'reporter'               => 'i.reporter',
+                               'assignee'               => 'i.assignee',
+                               'site'                   => 'i.centerID',
+                               'projectID'              => 'i.projectID',
+                               'status'                 => 'i.status',
+                               'priority'               => 'i.priority',
+                               'keyword'                => 'ic.issueComment',
+                               'minDate'                => 'minDate',
+                               'maxDate'                => 'maxDate',
+                               $user->getData('UserID') => 'watching',
+                              );
 
         $this->EqualityFilters = array(
-            'i.issueID',
-            'i.centerID',
-            'i.status',
-        );
-        $this->searchKeyword = array('ic.issueComment', 'i.title');
+                                  'i.issueID',
+                                  'i.centerID',
+                                  'i.status',
+                                 );
+        $this->searchKeyword   = array(
+                                  'ic.issueComment',
+                                  'i.title',
+                                 );
     }
 
     /**
@@ -141,7 +144,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
     function _setFilterForm()
     {
         $user =& User::singleton();
-        $db = Database::singleton();
+        $db   = Database::singleton();
 
         //sites
         if ($user->hasPermission('access_all_profiles')) {
@@ -153,15 +156,15 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
                 $list_of_sites = array(
-                    $user->getData('CenterID') => $user->getData(
-                        'Site'
-                    ),
-                );
+                                  $user->getData('CenterID') => $user->getData(
+                                      'Site'
+                                  ),
+                                 );
             }
         }
 
         //reporters
-        $reporters = array('' => 'All');
+        $reporters         = array('' => 'All');
         $reporter_expanded = $db->pselect(
             "SELECT u.UserID, u.Real_name FROM issues i " .
             "INNER JOIN users u ON(i.assignee=u.UserID)",
@@ -172,7 +175,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         }
 
         //assignees
-        $assignees = array('' => 'All');
+        $assignees         = array('' => 'All');
         $assignee_expanded = $db->pselect(
             "SELECT u.UserID, u.Real_name FROM issues i " .
             "INNER JOIN users u ON(i.assignee=u.UserID)",
@@ -188,33 +191,36 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
 WHERE Parent IS NOT NULL ORDER BY Label",
             []
         );
-        $modules = $this->reorganizeQueryResults(
+        $modules          = $this->reorganizeQueryResults(
             $modules_expanded,
             'Label'
         );
 
         $priorities = array(
-            '' => 'All',
-            'low' => 'Low',
-            'normal' => 'Normal',
-            'high' => 'High',
-            'urgent' => 'Urgent',
-            'immediate' => 'Immediate',
-        );
+                       ''          => 'All',
+                       'low'       => 'Low',
+                       'normal'    => 'Normal',
+                       'high'      => 'High',
+                       'urgent'    => 'Urgent',
+                       'immediate' => 'Immediate',
+                      );
 
         $statuses = array(
-            '' => 'All',
-            'new' => 'New',
-            'acknowledged' => 'Acknowledged',
-            'feedback' => 'Feedback',
-            'assigned' => 'Assigned',
-            'resolved' => 'Resolved',
-            'closed' => 'Closed',
-        );
+                     ''             => 'All',
+                     'new'          => 'New',
+                     'acknowledged' => 'Acknowledged',
+                     'feedback'     => 'Feedback',
+                     'assigned'     => 'Assigned',
+                     'resolved'     => 'Resolved',
+                     'closed'       => 'Closed',
+                    );
 
-        $unorgCategories = $db -> pselect( "SELECT categoryName
-        FROM issues_categories", []);
-        $categories = array('' => "All");
+        $unorgCategories = $db -> pselect(
+            "SELECT categoryName
+        FROM issues_categories",
+            []
+        );
+        $categories      = array('' => "All");
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
@@ -223,25 +229,25 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         }
 
         $dateOptions = array(
-            'language' => 'en',
-            'format' => 'YMdHis',
-            'addEmptyOption' => true,
-        );
+                        'language'       => 'en',
+                        'format'         => 'YMdHis',
+                        'addEmptyOption' => true,
+                       );
 
         $this->addBasicText(
             'keyword',
             'Keyword',
             array(
-                "size" => 10,
-                "maxlength" => 50,
+             "size"      => 10,
+             "maxlength" => 50,
             )
         );
         $this->addBasicText(
             'issueID',
             'Issue ID',
             array(
-                "size" => 10,
-                "maxlength" => 25,
+             "size"      => 10,
+             "maxlength" => 25,
             )
         );
         $this->addSelect('module', 'Module', $modules);
@@ -250,16 +256,16 @@ WHERE Parent IS NOT NULL ORDER BY Label",
             'PSCID',
             'PSCID',
             array(
-                "size" => 10,
-                "maxlength" => 25,
+             "size"      => 10,
+             "maxlength" => 25,
             )
         );
         $this->addBasicText(
             'visitLabel',
             'Visit Label',
             array(
-                'size' => "5",
-                "maxlength" => "15",
+             'size'      => "5",
+             "maxlength" => "15",
             )
         );
         $this->addSelect('site', 'Site', $list_of_sites);
@@ -280,14 +286,14 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      * for watching and include closed
      *
      * @param string $prepared_key filter key
-     * @param string $field filter field
-     * @param string $val filter value
+     * @param string $field        filter field
+     * @param string $val          filter value
      *
      * @return null
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
-        $user =& User::singleton();
+        $user  =& User::singleton();
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if (($field != 'w.userID')
@@ -331,7 +337,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      */
     function toArray()
     {
-        $data = parent::toArray();
+        $data  = parent::toArray();
         $index = array_search('Issue ID', $data['Headers']);
         if ($index !== false) {
             $_SESSION['State']->setProperty(
@@ -346,8 +352,8 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      * Utility function to re-organize query results for selects.
      * Key and value are equal.
      *
-     * @param array $queryResult query result
-     * @param string $key key needed to extract appropriate result column
+     * @param array  $queryResult query result
+     * @param string $key         key needed to extract appropriate result column
      *
      * @return array
      */

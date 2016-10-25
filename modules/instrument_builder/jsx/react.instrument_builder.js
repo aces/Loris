@@ -364,18 +364,20 @@ var BuildPane = React.createClass({
 		});
 	},
 	// Remove an element from the current page's elements.
-	deleteElement: function(elementIndex){
-		// Use a function to update the state to enqueue an atomic
-		// update that consults the previous value of state before
-		// setting any values
-		this.setState(function(state){
-			var temp = state.Elements;
-			temp[state.currentPage].Elements.splice(elementIndex, 1);
-			return {
-				Elements: temp
-			};
-		});
-	},
+  deleteElement: function(elementIndex) {
+    // Use a function to update the state to enqueue an atomic
+    // update that consults the previous value of state before
+    // setting any values
+    this.setState(function(state) {
+      var temp = state.Elements;
+      var dbNames = state.elementDBNames;
+      delete dbNames[temp[state.currentPage].Elements[elementIndex].Name];
+      temp[state.currentPage].Elements.splice(elementIndex, 1);
+      return {
+        Elements: temp
+      };
+    });
+  },
 	// Update an element. Returns true on success, false otherwise
 	updateElement: function(element, index){
 		if (element.Name && element.Name in this.state.elementDBNames){

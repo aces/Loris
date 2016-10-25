@@ -1,3 +1,5 @@
+'use strict';
+
 /* exported ImagePanelHeader, ImagePanelHeadersTable, ImageQCDropdown, ImageQCStatic,
  ImagePanelQCStatusSelector, ImagePanelQCSelectedSelector, ImagePanelQCCaveatSelector,
  ImagePanelQCSNRValue, ImagePanelQCPanel, DownloadButton, ImageQCCommentsButton.
@@ -8,7 +10,7 @@ var ImagePanelHeader = React.createClass({
     displayName: 'ImagePanelHeader',
 
     mixins: [React.addons.PureRenderMixin],
-    render: function () {
+    render: function render() {
         var QCStatusLabel;
         if (this.props.QCStatus === 'Pass') {
             QCStatusLabel = React.createElement(
@@ -26,9 +28,11 @@ var ImagePanelHeader = React.createClass({
 
         var arrow;
         if (this.props.Expanded) {
-            arrow = React.createElement('span', { onClick: this.props.onToggleBody, className: 'pull-right clickable glyphicon arrow glyphicon-chevron-up' });
+            arrow = React.createElement('span', { onClick: this.props.onToggleBody,
+                className: 'pull-right clickable glyphicon arrow glyphicon-chevron-up' });
         } else {
-            arrow = React.createElement('span', { onClick: this.props.onToggleBody, className: 'pull-right clickable glyphicon arrow glyphicon-chevron-down' });
+            arrow = React.createElement('span', { onClick: this.props.onToggleBody,
+                className: 'pull-right clickable glyphicon arrow glyphicon-chevron-down' });
         }
         var headerButton = React.createElement(
             'div',
@@ -51,7 +55,8 @@ var ImagePanelHeader = React.createClass({
         return React.createElement(
             'div',
             { className: 'panel-heading' },
-            React.createElement('input', { type: 'checkbox', 'data-file-id': this.props.FileID, className: 'mripanel user-success' }),
+            React.createElement('input', { type: 'checkbox', 'data-file-id': this.props.FileID,
+                className: 'mripanel user-success' }),
             React.createElement(
                 'h3',
                 { className: 'panel-title' },
@@ -69,10 +74,10 @@ var ImagePanelHeader = React.createClass({
 var ImagePanelHeadersTable = React.createClass({
     displayName: 'ImagePanelHeadersTable',
 
-    componentDidMount: function () {
+    componentDidMount: function componentDidMount() {
         $(this.getDOMNode()).DynamicTable();
     },
-    render: function () {
+    render: function render() {
         return React.createElement(
             'table',
             { className: 'table table-hover table-bordered header-info col-xs-12 dynamictable' },
@@ -292,7 +297,7 @@ var ImagePanelHeadersTable = React.createClass({
                 React.createElement(
                     'td',
                     { className: 'col-xs-4', colSpan: '4' },
-                    '\xA0'
+                    ' '
                 )
             )
         );
@@ -302,7 +307,22 @@ var ImageQCDropdown = React.createClass({
     displayName: 'ImageQCDropdown',
 
 
-    render: function () {
+    handleClick: function handleClick(e) {
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: loris.BaseURL + 
+                '/mri_violations/?submenu=mri_protocol_check_violations',
+            data: {
+                SeriesUID: this.props.SeriesUID
+            },
+            success: function success() {
+                window.location.href = loris.BaseURL +
+                 "/mri_violations/?submenu=mri_protocol_check_violations";
+            }
+        });
+    },
+    render: function render() {
         var label = React.createElement(
             'label',
             null,
@@ -314,7 +334,7 @@ var ImageQCDropdown = React.createClass({
                 null,
                 React.createElement(
                     'a',
-                    { href: this.props.url },
+                    { onClick: this.handleClick.bind(this) },
                     this.props.Label
                 )
             );
@@ -326,7 +346,9 @@ var ImageQCDropdown = React.createClass({
                 if (this.props.options.hasOwnProperty(key)) {
                     options.push(React.createElement(
                         'option',
-                        { key: this.props.FormName + this.props.FileID + key, className: 'form-control input-sm option', value: key },
+                        { key: this.props.FormName + this.props.FileID + key,
+                            className: 'form-control input-sm option',
+                            value: key },
                         this.props.options[key]
                     ));
                 }
@@ -357,7 +379,7 @@ var ImageQCDropdown = React.createClass({
 var ImageQCStatic = React.createClass({
     displayName: 'ImageQCStatic',
 
-    render: function () {
+    render: function render() {
         var staticInfo;
         staticInfo = React.createElement(
             'div',
@@ -380,7 +402,7 @@ var ImageQCStatic = React.createClass({
 var ImagePanelQCStatusSelector = React.createClass({
     displayName: 'ImagePanelQCStatusSelector',
 
-    render: function () {
+    render: function render() {
         var qcStatusLabel;
         if (this.props.HasQCPerm && this.props.FileNew) {
             qcStatusLabel = React.createElement(
@@ -412,7 +434,7 @@ var ImagePanelQCStatusSelector = React.createClass({
 var ImagePanelQCSelectedSelector = React.createClass({
     displayName: 'ImagePanelQCSelectedSelector',
 
-    render: function () {
+    render: function render() {
         return React.createElement(ImageQCDropdown, {
             Label: 'Selected',
             FormName: 'selectedvol',
@@ -426,7 +448,7 @@ var ImagePanelQCSelectedSelector = React.createClass({
 var ImagePanelQCCaveatSelector = React.createClass({
     displayName: 'ImagePanelQCCaveatSelector',
 
-    render: function () {
+    render: function render() {
         // Link caveat to MRI Violations if set true
         var mriViolationsLink = null;
         if (this.props.SeriesUID && this.props.Caveat === "1") {
@@ -451,7 +473,7 @@ var ImagePanelQCCaveatSelector = React.createClass({
 var ImagePanelQCSNRValue = React.createClass({
     displayName: 'ImagePanelQCSNRValue',
 
-    render: function () {
+    render: function render() {
         return React.createElement(ImageQCStatic, {
             Label: 'SNR',
             FormName: 'snr',
@@ -464,7 +486,7 @@ var ImagePanelQCPanel = React.createClass({
     displayName: 'ImagePanelQCPanel',
 
     mixins: [React.addons.PureRenderMixin],
-    render: function () {
+    render: function render() {
         return React.createElement(
             'div',
             { className: 'form-group' },
@@ -496,7 +518,7 @@ var ImagePanelQCPanel = React.createClass({
 var DownloadButton = React.createClass({
     displayName: 'DownloadButton',
 
-    render: function () {
+    render: function render() {
         if (!this.props.FileName || this.props.FileName === '') {
             return React.createElement('span', null);
         }
@@ -505,7 +527,8 @@ var DownloadButton = React.createClass({
         };
         return React.createElement(
             'a',
-            { href: this.props.BaseURL + "/mri/jiv/get_file.php?file=" + this.props.FileName, className: 'btn btn-default', style: style },
+            { href: this.props.BaseURL + "/mri/jiv/get_file.php?file=" + this.props.FileName,
+                className: 'btn btn-default', style: style },
             React.createElement('span', { className: 'glyphicon glyphicon-download-alt' }),
             React.createElement(
                 'span',
@@ -519,11 +542,11 @@ var DownloadButton = React.createClass({
 var ImageQCCommentsButton = React.createClass({
     displayName: 'ImageQCCommentsButton',
 
-    openWindowHandler: function (e) {
+    openWindowHandler: function openWindowHandler(e) {
         e.preventDefault();
-        window.open(this.props.BaseURL + "/feedback_mri_popup.php?fileID=" + this.props.FileID, "feedback_mri", "width=500,height=800,toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes");
+        window.open(this.props.BaseURL + "/feedback_mri_popup.php?fileID=" + this.props.FileID, "feedback_mri", "width=500,height=800,toolbar=no,location=no," + "status=yes,scrollbars=yes,resizable=yes");
     },
-    render: function () {
+    render: function render() {
         if (!this.props.FileID || this.props.FileID === '') {
             return React.createElement('span', null);
         }
@@ -550,11 +573,11 @@ var ImageQCCommentsButton = React.createClass({
 var LongitudinalViewButton = React.createClass({
     displayName: 'LongitudinalViewButton',
 
-    openWindowHandler: function (e) {
+    openWindowHandler: function openWindowHandler(e) {
         e.preventDefault();
         window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.OtherTimepoints + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
     },
-    render: function () {
+    render: function render() {
         if (!this.props.FileID || this.props.FileID === '') {
             return React.createElement('span', null);
         }
@@ -581,7 +604,7 @@ var LongitudinalViewButton = React.createClass({
 var ImageDownloadButtons = React.createClass({
     displayName: 'ImageDownloadButtons',
 
-    render: function () {
+    render: function render() {
         return React.createElement(
             'div',
             { className: 'row mri-second-row-panel col-xs-12' },
@@ -615,11 +638,11 @@ var ImagePanelBody = React.createClass({
     displayName: 'ImagePanelBody',
 
     mixins: [React.addons.PureRenderMixin],
-    openWindowHandler: function (e) {
+    openWindowHandler: function openWindowHandler(e) {
         e.preventDefault();
         window.open(this.props.BaseURL + "/brainbrowser/?minc_id=[" + this.props.FileID + "]", "BrainBrowser Volume Viewer", "location = 0,width = auto, height = auto, scrollbars=yes");
     },
-    render: function () {
+    render: function render() {
         return React.createElement(
             'div',
             { className: 'panel-body' },
@@ -632,7 +655,8 @@ var ImagePanelBody = React.createClass({
                     React.createElement(
                         'a',
                         { href: '#noID', onClick: this.openWindowHandler },
-                        React.createElement('img', { className: 'img-checkpic img-responsive', src: this.props.Checkpic })
+                        React.createElement('img', { className: 'img-checkpic img-responsive',
+                            src: this.props.Checkpic })
                     )
                 ),
                 React.createElement(
@@ -659,7 +683,8 @@ var ImagePanelBody = React.createClass({
                 NrrdFile: this.props.NrrdFile,
                 OtherTimepoints: this.props.OtherTimepoints
             }),
-            this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, { HeaderInfo: this.props.HeaderInfo }) : ''
+            this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, {
+                HeaderInfo: this.props.HeaderInfo }) : ''
         );
     }
 });
@@ -667,23 +692,23 @@ var ImagePanelBody = React.createClass({
 var ImagePanel = React.createClass({
     displayName: 'ImagePanel',
 
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         return {
             BodyCollapsed: false,
             HeadersCollapsed: true
         };
     },
-    toggleBody: function (e) {
+    toggleBody: function toggleBody(e) {
         this.setState({
             BodyCollapsed: !this.state.BodyCollapsed
         });
     },
-    toggleHeaders: function (e) {
+    toggleHeaders: function toggleHeaders(e) {
         this.setState({
             HeadersCollapsed: !this.state.HeadersCollapsed
         });
     },
-    render: function () {
+    render: function render() {
         return React.createElement(
             'div',
             { className: 'col-xs-12 col-md-6' },

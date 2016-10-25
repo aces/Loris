@@ -224,7 +224,8 @@ DataQueryApp = React.createClass({
                 session: this.props.AllSessions
             },
             selectedFields : {},
-            downloadableFields : {}
+            downloadableFields : {},
+            loading : false
         };
     },
     loadFilterRule: function(rule) {
@@ -345,6 +346,7 @@ DataQueryApp = React.createClass({
         var filterState = {},
             selectedFields = {},
             fieldsList = [];
+        this.setState({"loading" : true});
         if(Array.isArray(criteria)){
             // This is used to load a query that is saved in the old format
             // so translate it into the new format, grouping the given critiras
@@ -418,7 +420,7 @@ DataQueryApp = React.createClass({
                 }
             }
         }
-        if(filterState.children){
+        if(filterState.children && filterState.children.length > 0){
             filterState = this.loadFilterGroup(filterState);
         } else {
             filterState.children = [
@@ -434,7 +436,8 @@ DataQueryApp = React.createClass({
                 selectedFields: selectedFields,
                 filter: filterState,
                 alertLoaded: true,
-                alertSaved: false
+                alertSaved: false,
+                loading: false
             }
         });
     },
@@ -520,11 +523,9 @@ DataQueryApp = React.createClass({
                 }
             } else {
                 // The category already has fields but not the desired one, add it
-                // var selectedVisits = Object.keys(selectedFields[category].allVisits);
                 if(!selectedFields[category][fieldName]) {
                     selectedFields[category][fieldName] = {};
                 }
-                // selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
 
                 // Increment the visit count for the visit, setting it to 1 if doesn't exist
                 for(var key in selectedFields[category].allVisits){
@@ -568,14 +569,18 @@ DataQueryApp = React.createClass({
                 // Wait until all ajax calls have completed before computing the rowdata
                 if(semaphore == 0){
                     var rowdata = that.getRowData(that.state.grouplevel);
-                    that.setState({'rowData': rowdata});
+                    that.setState({
+                        'rowData': rowdata,
+                        "loading" : false
+                    });
                 }
             };
 
         // Reset the rowData and sessiondata
         this.setState({
             "rowData" : {},
-            "sessiondata" : {}
+            "sessiondata" : {},
+            "loading" : true
         });
 
         // Get list of DocTypes to be retrieved
@@ -813,6 +818,7 @@ DataQueryApp = React.createClass({
         tabs.push(<InfoTabPane
                 TabId="Info"
                 UpdatedTime={this.props.UpdatedTime}
+                Loading={this.state.loading}
         />);
 
         // Add the field select tab
@@ -823,6 +829,7 @@ DataQueryApp = React.createClass({
                 selectedFields={this.state.selectedFields}
                 Visits={this.props.Visits}
                 fieldVisitSelect = {this.fieldVisitSelect}
+                Loading={this.state.loading}
         />);
 
         // Add the filter builder tab
@@ -832,6 +839,7 @@ DataQueryApp = React.createClass({
                 filter={this.state.filter}
                 updateFilter={this.updateFilter}
                 Visits={this.props.Visits}
+                Loading={this.state.loading}
             />
         );
 
@@ -849,12 +857,16 @@ DataQueryApp = React.createClass({
                 onRunQueryClicked={this.runQuery}
                 displayType={displayType}
                 changeDataDisplay={this.changeDataDisplay}
+                Loading={this.state.loading}
         />);
 
         // Add the stats tab
-        tabs.push(<StatsVisualizationTabPane TabId="Statistics"
+        tabs.push(<StatsVisualizationTabPane
+                TabId="Statistics"
                 Fields={this.state.rowData.RowHeaders}
-                Data={this.state.rowData.rowdata} />);
+                Data={this.state.rowData.rowdata}
+                Loading={this.state.loading}
+        />);
 
         // Add the manage saved queries tab
         tabs.push(<ManageSavedQueriesTabPane TabId="SavedQueriesTab"
@@ -863,6 +875,7 @@ DataQueryApp = React.createClass({
                         onSaveQuery={this.saveCurrentQuery}
                         queryDetails={this.state.savedQueries}
                         queriesLoaded={this.state.queriesLoaded}
+                        Loading={this.state.loading}
                 />);
 
         // Display load alert if alert is present

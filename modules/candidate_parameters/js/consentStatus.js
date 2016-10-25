@@ -344,6 +344,7 @@ var ConsentStatus = React.createClass({
         self.setState({
           updateResult: "success"
         });
+        self.showAlertMessage();
       },
       error: function error(err) {
         if (err.responseText !== "") {
@@ -352,6 +353,7 @@ var ConsentStatus = React.createClass({
             updateResult: "error",
             errorMessage: errorMessage
           });
+          self.showAlertMessage();
         }
       }
 
