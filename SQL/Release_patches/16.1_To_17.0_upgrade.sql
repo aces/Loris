@@ -34,7 +34,6 @@ WHERE content='In many cases, the candidate`s profile will already be created. T
 UPDATE `help` SET content='The database facilitates data collection of longitudinal studies; following the same candidates at various intervals for long periods of time. Each candidate may have several time-points stretching the duration of the study. Each time-point will be given a name called a \"Visit Label\". The time-points refer to data collection on different visits for the same candidate. Every time-point contains a subset of data collected in a given time frame with the intention of keeping this subset in a tightly related group. \r\n\r\nA new candidate time-point can be created from the Candidate Profile page by opening a specific profile and clicking \"Create Time Point\" among the Actions buttons visible above the \"List of Visits\" table. Authorized users may also edit general information about the candidate, such as adding comments and updating participant status, by clicking the \"Edit Candidate Info\" button.\r\n\r\nOnce a candidate’s profile has been opened, the PSCID and DCCID will remain at the top of the screen in white text on a banner for reference. Clicking on the candidate’s IDs in white will return the user to the Candidate Profile. \r\nBelow the candidate’s information, the user will find a list of time points under \"Visit Label (Click to Open)\". Clicking on the time point itself in navy text can open the profile for the candidate at that time point.\r\n'
 WHERE content='The database facilitates data collection of longitudinal studies; following the same candidates at various intervals for long periods of time. Each candidate may have several time-points stretching the duration of the study. Each time-point will be given a name called a \"Visit Label\". The time-points refer to data collection on different visits for the same candidate. Every time-point contains a subset of data collected in a given time frame with the intention of keeping this subset in a tightly related group. \r\n\r\nA new candidate time-point can be created from the Candidate Profile page by opening a specific profile and clicking \"Create Time Point\" among the Actions buttons visible above the \"List of Visits\" table. Authorized users may also edit general information about the candidate, such as adding comments and updating participant status, by clicking the \"Edit Candidate Info\" button.\r\n\r\nOnce a candidate’s profile has been opened, the PSC-ID and DCC-ID will remain at the top of the screen in white text on a banner for reference. Clicking on the candidate’s IDs in white will return the user to the Candidate Profile. \r\nBelow the candidate’s information, the user will find a list of time points under \"Visit Label (Click to Open)\". Clicking on the time point itself in navy text can open the profile for the candidate at that time point.\r\n';
 ALTER TABLE session ADD `MRICaveat` enum('true', 'false') NOT NULL default 'false';
-
 SET SESSION sql_mode = 'ALLOW_INVALID_DATES';
 ALTER TABLE help CHANGE `created` `created` DATETIME DEFAULT NULL;
 ALTER TABLE help CHANGE `updated` `updated` DATETIME DEFAULT NULL;
@@ -153,16 +152,13 @@ CREATE TABLE `issues_watching` (
   KEY `fk_issues_watching_2` (`issueID`),
   CONSTRAINT `fk_issues_watching_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 UPDATE files_qcstatus as fqc SET fqc.Selected='true' WHERE fqc.Selected <> '';
-ALTER TABLE files_qcstatus CHANGE `Selected` `Selected` enum('true','false') DEFAULT NULL;
-
+ALTER TABLE files_qcstatus CHANGE `Selected` `Selected` enum('true','false') DEFAULT NULL; 
 -- Add ScannerCandID column to files, back-populate the newly added column from parameter_file table, then add foreign key constraints 
 ALTER TABLE files ADD `ScannerID` int(10) unsigned default NULL;
 CREATE TEMPORARY TABLE ScannerIDs AS SELECT pf.FileID, pf.Value AS ScannerID FROM parameter_file AS pf LEFT JOIN parameter_type AS pt ON pf.ParameterTypeID=pt.ParameterTypeID WHERE pt.Name='ScannerID';
 UPDATE files AS f, ScannerIDs AS S SET f.ScannerID=S.ScannerID where f.FileID=S.FileID;
 ALTER TABLE files ADD CONSTRAINT `FK_files_scannerID` FOREIGN KEY (`ScannerID`) REFERENCES mri_scanner (`ID`);
-
 ALTER TABLE SNP 
 ADD COLUMN `MinorAllele` enum('A','C','T','G') DEFAULT NULL AFTER `ReferenceBase`;
 
@@ -189,12 +185,33 @@ ADD CONSTRAINT `fk_SNP_candidate_rel_2`
 
 CREATE UNIQUE INDEX `uniq_snp` 
   ON `SNP` (`rsID`, `SNPExternalSource`);
-
-
 ALTER TABLE Visit_Windows ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY;
-
+ALTER TABLE examiners ADD COLUMN `active` enum('Y','N') NOT NULL DEFAULT 'Y';
+ALTER TABLE examiners ADD COLUMN `pending_approval` enum('Y','N') NOT NULL DEFAULT 'N';
 -- Insert necessary values into configsettings and config
 
 INSERT INTO ConfigSettings (Name,Description,Visible,AllowMultiple,DataType,Parent,Label,OrderNumber) Values ("CSPAdditionalHeaders","Extensions to the Content-security policy allow only for self-hosted content", 1, 0, "text", 1, "Content-Security Extentions:", 23);
 INSERT INTO Config (ConfigID,Value) VALUES ((SELECT ID FROM ConfigSettings WHERE Name='CSPAdditionalHeaders'),"");
- 
+ALTER TABLE `users` 
+CHANGE COLUMN `Password_expiry` `Password_expiry` DATE NOT NULL DEFAULT '1990-04-01' ;
+ALTER TABLE `tarchive` 
+CHANGE COLUMN `PatientDoB` `PatientDoB` DATE NULL DEFAULT NULL ,
+CHANGE COLUMN `LastUpdate` `LastUpdate` DATETIME NULL DEFAULT NULL ,
+CHANGE COLUMN `DateAcquired` `DateAcquired` DATE NULL DEFAULT NULL ;
+-- Insert necessary values into LorisMenuPermissions.
+
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='media_read' AND m.Label='Media';
+INSERT INTO LorisMenuPermissions (MenuID, PermID)
+   SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='media_write' AND m.Label='Media';
+INSERT INTO issues_categories (categoryName) VALUES
+    ('Behavioural Battery'),
+    ('Behavioural Instruments'),
+    ('Data Entry'),
+    ('Examiners'),
+    ('Imaging'),
+    ('Technical Issue'),
+    ('User Accounts'),
+    ('Other');
+
+INSERT INTO help (parentID, hash, topic, content, created, updated) VALUES (-1, md5('issue_tracker'), 'Issue Tracker', 'The Issue Tracker module allows users to report bugs and flag data concerns within a given LORIS. <br>Click the "Add Issue" button to register a new issue. Use the All Issues, Closed Issues, and My Issues tabs, in combination with the Selection filters, to build a custom view of issues of interest. Optionally, a PSCID can be associated to an issue, to link it to a specific subject record.  If PSCID is provided, a Visit label can also be specified for cases where an issue relates to a subject-timepoint.<br>Clicking on any issue will load a page displaying the Issue Details, enabling the user to edit or update the issue given appropriate user permissions.  This form can be used to re-assign an issue, change its status, and add further comments.  Email notifications are sent when a given issue is updated, to any user who is added to the list of those "watching" the issue. The history of all comments and updates to the issue is also visible at the end of the Issue page.', '2016-10-25 00:00:00', NULL);
