@@ -1506,7 +1506,11 @@ class LorisForm
 
             if ($el['type'] === 'time') {
                 $value      = $this->getValue($name);
-                $arr[$name] = sprintf("%s:%s:00", $value['H'], $value['i']);
+                if($value['H'] && $value['i']) {
+                    $arr[$name] = sprintf("%s:%s:00", $value['H'], $value['i']);
+                } else {
+                    $arr[$name] = '';
+                }
                 continue;
             }
 
