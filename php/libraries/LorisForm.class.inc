@@ -37,6 +37,7 @@ class LorisForm
     var $filters       = array();
     var $frozen        = false;
     var $enctype       = '';
+    var $groupMapping  = array();
 
     /**
      * Creates and returns an element that can be added
@@ -1346,6 +1347,12 @@ class LorisForm
     function addGroup($array, $name, $label, $delimiter, $options = array())
     {
         $name = $this->_generateName($name);
+        foreach($array as $key => $value) {
+            $this->groupMapping[$value['name']] = array(
+                'groupName' => $name,
+                'index'     => $key,
+            );
+        }
         $this->form[$name] = array(
                               'type'      => 'group',
                               'name'      => $name,
@@ -1461,10 +1468,14 @@ class LorisForm
     {
         foreach ($submitKeys as $key) {
             if (!isset($this->form[$key])) {
-                $arr[$key] = $_REQUEST[$key];
-                continue;
+                $el = $this->form[$this->groupMapping[$key]['groupName']]['elements'][$this->groupMapping[$key]['index']];
+                if(!$el) {
+                    $arr[$key] = $_REQUEST[$key];
+                    continue;
+                }
+            } else {
+                $el = $this->form[$key];
             }
-            $el = $this->form[$key];
             // If it's a group, recursively go through the elements
             // of that group.
             if ($el['type'] === 'group') {
@@ -1490,6 +1501,12 @@ class LorisForm
             if ($el['type'] === 'file') {
                 $file       = $this->getElement($name);
                 $arr[$name] = $file->getValue();
+                continue;
+            }
+
+            if ($el['type'] === 'time') {
+                $value      = $this->getValue($name);
+                $arr[$name] = sprintf("%s:%s:00", $value['H'], $value['i']);
                 continue;
             }
 
