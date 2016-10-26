@@ -18,6 +18,10 @@
 				<div class="col-xs-12">
 					{$element.html}
 				</div>
+			{elseif $element.type eq static}
+				<label class="lab col-sm-4 col-xs-12">
+					{$element.label}
+				</label>
 			{elseif $element.type eq hidden}
 				{$element.html}
 			{elseif $element.name eq lorisSubHeader}
