@@ -159,6 +159,7 @@ function getProbandInfoFields()
                'ProbandGender' => $gender,
                'ProbandDoB'    => $dob,
                'ageDifference' => $ageDifference,
+                'candidateDOB' => $candidateDOB,
               ];
 
     return $result;
