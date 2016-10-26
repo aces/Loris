@@ -1344,7 +1344,7 @@ class LorisForm
      *
      * Adds a rule to a group.
      * @param    string     $group         Form group name
-     * @param    mixed      $arg1          Array for multiple elements or error message string for one element
+     * @param    array      $arg1          Array for multiple elements or error message string for one element
      * @param    string     $type          (optional)Rule type use getRegisteredRules() to get types
      *
      * @return none.
@@ -1374,7 +1374,7 @@ class LorisForm
                 }
             }
         } else {
-
+            throw new InvalidArgumentException('Invalid argument passed to addGroupRule for group: ' . $group);
         }
     }
 
