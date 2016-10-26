@@ -219,3 +219,7 @@ INSERT INTO help (parentID, hash, topic, content, created, updated) VALUES (-1, 
 
 ALTER TABLE `issues_history`
   CHANGE COLUMN `fieldChanged` `fieldChanged` enum('assignee','status','comment','sessionID','centerID','title','category','module','lastUpdatedBy','priority','candID') NOT NULL DEFAULT 'comment';
+
+--ensure 'admin' has all the available permissions
+INSERT IGNORE INTO `user_perm_rel` (userID, permID) SELECT DISTINCT 1, permID FROM permissions;
+
