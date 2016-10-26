@@ -261,6 +261,11 @@ var ProbandInfo = React.createClass({
 
   /**
    * Calculates the age difference between the candidate and proband
+   *
+   * @param {string} dob - date of birth of proband
+   * @param {string} candidateDOB - date of birth of candidate
+   *
+   * @return {float} ageDifference - age difference between candidate and proband
    */
   calculateAgeDifference: function (dob, candidateDOB) {
     if (dob && candidateDOB) {
@@ -268,11 +273,11 @@ var ProbandInfo = React.createClass({
       var splitCandidateDOB = candidateDOB.split("-");
 
       if (splitCandidateDOB[2] < splitDOB[2]) {
-        splitCandidateDOB[2] = +splitCandidateDOB[2] + 30;
+        splitCandidateDOB[2] = Number(splitCandidateDOB[2]) + 30;
         splitCandidateDOB[1]--;
       }
       if (splitCandidateDOB[1] < splitDOB[1]) {
-        splitCandidateDOB[1] = +splitCandidateDOB[1] + 12;
+        splitCandidateDOB[1] = Number(splitCandidateDOB[1]) + 12;
         splitCandidateDOB[0]--;
       }
 
