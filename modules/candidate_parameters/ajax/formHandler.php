@@ -62,8 +62,16 @@ function editCandInfoFields($db, $user)
         $_POST['flaggedCaveatemptor'] : null;
     $reason       = isset($_POST['flaggedReason']) ?
         $_POST['flaggedReason'] : null;
-    $other        = isset($_POST['flaggedOther']) ?
-        $_POST['flaggedOther'] : null;
+    $other        = null;
+
+    $options = $db->pselect("SELECT ID, Description FROM caveat_options", []);
+    foreach ($options as $row) {
+        if ($row['Description'] === "Other" && $row['ID'] === $reason) {
+            if (isset($_POST['flaggedOther'])) {
+                $other = $_POST['flaggedOther'];
+            }
+        };
+    }
 
     $updateValues = [
                      'flagged_caveatemptor' => $caveatEmptor,
