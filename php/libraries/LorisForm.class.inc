@@ -1015,6 +1015,15 @@ class LorisForm
                 // but don't call setElementError..
                 $errors[$el['name']] = "comparison fail";
             }
+
+            if (isset($el['numeric'])
+                && $el['numeric'] === true
+                && !is_numeric($value)
+            ) {
+                $this->setElementError($el['name'], "$el[numericMsg]");
+                
+                $errors[$el['name']] = "numeric fail";
+            }
         }
         foreach ($this->formRules as $rule) {
             $violations = call_user_func($rule, $values);
@@ -1289,6 +1298,11 @@ class LorisForm
         if ($type === 'required') {
             $this->form[$element]['required']   = true;
             $this->form[$element]['requireMsg'] = $message;
+        }
+
+        if ($type === 'numeric') {
+            $this->form[$element]['numeric']    = true;
+            $this->form[$element]['numericMsg'] = $message;
         }
     }
 
