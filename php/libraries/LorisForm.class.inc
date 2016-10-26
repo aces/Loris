@@ -734,6 +734,10 @@ class LorisForm
             || (strtolower($el['options']['format']) == 'ym'))
         ) {
             $format = 'month';
+            if($value) {
+                $value = explode("-", $value);
+                $value = sprintf("%s-%s", $value[0], $value[1]);
+            }
         } else {
             $format = 'date';
         }
@@ -743,7 +747,7 @@ class LorisForm
             . (isset($el['required']) ? "required" : '')
             . (
             !empty($value)
-                ? ' value="' . $this->getValue($el['name']) . '" '
+                ? ' value="' . $value . '" '
                 : ''
             )
             . ">";
@@ -928,7 +932,6 @@ class LorisForm
         $html = $smarty->fetch("year_html.tpl");
 
         return $html;
-        // return "SDKJHSKJDH";
     }
 
     /**
@@ -1615,6 +1618,21 @@ class LorisForm
                     $value = $this->getValue($name);
                     if ($value) {
                         $arr[$name] = sprintf("%s-00-00", $value);
+                    } else {
+                        $arr[$name] = '';
+                    }
+                    continue;
+            }
+
+            if ($el['type'] === 'date'
+                && array_key_exists('options', $el)
+                && ((strtolower($el['options']['format']) == 'my')
+                || (strtolower($el['options']['format']) == 'ym'))
+            ) {
+                    $value = $this->getValue($name);
+                    if($value) {
+                        $arr[$name] = sprintf("%s-00", $value);
+                        print "$arr[$name]\n";
                     } else {
                         $arr[$name] = '';
                     }
