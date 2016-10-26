@@ -407,7 +407,6 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         $this->tpl_data['success'] = true;
-        $this->form->freeze();
     }
 
     /**
