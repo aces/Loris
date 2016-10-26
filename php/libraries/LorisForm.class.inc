@@ -998,31 +998,53 @@ class LorisForm
         $values = $this->getSubmitValues();
         $errors = array();
         foreach ($this->form as $elName => $el) {
-            $value = $this->getValue($el['name']);
-            if (isset($el['required'])
-                && $el['required'] === true
-                && empty($value)
-            ) {
-                //$this->setElementError($el['name'], "$el[name] required.");
-                $errors[$el['name']] = "required fail";
-            }
+            if ($el['type'] === 'group') {
+                if (isset($el['required'])) {
+                    foreach ($el['required'] as $elementIndex) {
+                        $childEl = $el['elements'][$elementIndex];
+                        if (!is_numeric(($this->getValue($childEl['name'])))) {
+                            $this->setElementError($el['name'], "$childEl[requireMsg]");
+                            $errors[$el['name']] = "require fail";
+                        }
+                    }
+                }
 
-            if (isset($el['compare'])
-                && $value != $this->getValue($el['compare'])
-            ) {
-                // These don't seem to show up in the original, so just make
-                // the validation fail by adding something to the errors array
-                // but don't call setElementError..
-                $errors[$el['name']] = "comparison fail";
-            }
+                if (isset($el['numeric'])) {
+                    foreach ($el['numeric'] as $elementIndex) {
+                        $childEl = $el['elements'][$elementIndex];
+                        if (!is_numeric(($this->getValue($childEl['name'])))) {
+                            $this->setElementError($el['name'], "$childEl[numericMsg]");
+                            $errors[$el['name']] = "numeric fail";
+                        }
+                    }
+                }
+            } else {
+                $value = $this->getValue($el['name']);
+                if (isset($el['required'])
+                    && $el['required'] === true
+                    && empty($value)
+                ) {
+                    //$this->setElementError($el['name'], "$el[name] required.");
+                    $errors[$el['name']] = "required fail";
+                }
 
-            if (isset($el['numeric'])
-                && $el['numeric'] === true
-                && !is_numeric($value)
-            ) {
-                $this->setElementError($el['name'], "$el[numericMsg]");
-                
-                $errors[$el['name']] = "numeric fail";
+                if (isset($el['compare'])
+                    && $value != $this->getValue($el['compare'])
+                ) {
+                    // These don't seem to show up in the original, so just make
+                    // the validation fail by adding something to the errors array
+                    // but don't call setElementError..
+                    $errors[$el['name']] = "comparison fail";
+                }
+
+                if (isset($el['numeric'])
+                    && $el['numeric'] === true
+                    && !is_numeric($value)
+                ) {
+                    $this->setElementError($el['name'], "$el[numericMsg]");
+                    
+                    $errors[$el['name']] = "numeric fail";
+                }
             }
         }
         foreach ($this->formRules as $rule) {
@@ -1268,14 +1290,14 @@ class LorisForm
     /**
      * Reimplement Smarty's addRule API.
      *
-     * Only 'require' and 'compare' will be implemented
+     * Only 'require', 'compare' and 'numeric' will be implemented
      * since those are the only ones we used.
      *
      * @param string $element The element name to add the rule to.
      *                        If this is a 'compare' rule, it will
      *                        be an array of 2 element names.
      * @param string $message The message to display if the rule is violated
-     * @param string $type    The rule type. 'compare' or 'required'
+     * @param string $type    The rule type. 'compare', 'required' or 'numeric'
      *
      * @return none
      */
@@ -1320,12 +1342,39 @@ class LorisForm
      * Reimplementation of QuickForm API.
      *
      * Adds a rule to a group.
-     * TODO: Implement this so that instruments can use LorisForm.
+     * @param    string     $group         Form group name
+     * @param    mixed      $arg1          Array for multiple elements or error message string for one element
+     * @param    string     $type          (optional)Rule type use getRegisteredRules() to get types
      *
      * @return none.
      */
-    function addGroupRule()
+    function addGroupRule($group, $arg1, $type='')
     {
+        if (is_array($arg1)) {
+            foreach ($arg1 as $elementIndex => $rules) {
+                $elementName = $this->form[$group]['elements'][$elementIndex]['name'];
+                foreach ($rules as $rule) {
+                    $message  = $rule[0];
+                    $ruleType = $rule[1];
+
+                    if ($ruleType === 'required') {
+                        $this->form[$group]['elements'][$elementIndex]['required']   = true;
+                        $this->form[$group]['elements'][$elementIndex]['requireMsg'] = $message;
+
+                        $this->form[$group]['required'][] = $elementIndex;
+                    } else if ($ruleType === 'numeric') {
+                        $this->form[$group]['elements'][$elementIndex]['numeric']    = true;
+                        $this->form[$group]['elements'][$elementIndex]['numericMsg'] = $message;
+
+                        $this->form[$group]['numeric'][] = $elementIndex;
+                    } else {
+                        throw new \LorisException("Group Rule Error: element rule type doesn't exist");
+                    }
+                }
+            }
+        } else {
+
+        }
     }
 
     /**
