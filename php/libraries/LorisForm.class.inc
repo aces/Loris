@@ -130,8 +130,8 @@ class LorisForm
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-        if (isset($attribs['multiple'])) {
-            $el['multiple'] = $attribs['multiple'];
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
+            $el['multiple'] = 'multiple';
         }
         return $el;
     }
@@ -623,6 +623,7 @@ class LorisForm
         $multiple      = '';
         $id            = '';
         $disabled      = '';
+        $name          = $el['name'];
 
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
@@ -631,13 +632,19 @@ class LorisForm
                 $optionKey = (string) $optionKey;
             }
 
-            if ($optionKey === $this->getValue($el['name'])) {
-                $selected = 'selected="selected"';
-            } elseif (isset($el['selected'])
-                && $optionKey === $el['selected']
-                && $this->getValue($el['name']) === null
-            ) {
-                $selected = 'selected="selected"';
+            if (isset($el['multiple'])) {
+                if(in_array($optionKey, $this->getValue($el['name']))) {
+                    $selected = 'selected="selected"';
+                }
+            } else {
+                if ($optionKey === $this->getValue($el['name'])) {
+                    $selected = 'selected="selected"';
+                } elseif (isset($el['selected'])
+                    && $optionKey === $el['selected']
+                    && $this->getValue($el['name']) === null
+                ) {
+                    $selected = 'selected="selected"';
+                }
             }
 
             $strOptions .= "<option value='$optionKey' $selected>"
@@ -658,10 +665,11 @@ class LorisForm
             $changehandler = "onchange=\"$el[onchange]\"";
         }
         if (isset($el['multiple'])) {
+            $name     = $name . '[]';
             $multiple = "multiple=\"multiple\"";
         }
 
-        $retVal = "<select name=\"$el[name]\" $cls $id $changehandler $multiple "
+        $retVal = "<select name=\"$name\" $cls $id $changehandler $multiple "
             . $disabled;
 
         if (isset($el['required']) && $el['required']) {
@@ -1632,7 +1640,6 @@ class LorisForm
                     $value = $this->getValue($name);
                     if($value) {
                         $arr[$name] = sprintf("%s-00", $value);
-                        print "$arr[$name]\n";
                     } else {
                         $arr[$name] = '';
                     }
