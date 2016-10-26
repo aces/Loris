@@ -159,7 +159,6 @@ function getProbandInfoFields()
                'ProbandGender' => $gender,
                'ProbandDoB'    => $dob,
                'ageDifference' => $ageDifference,
-                'candidateDOB' => $candidateDOB,
               ];
 
     return $result;
@@ -401,8 +400,6 @@ function getConsentStatusFields()
     }
 
     foreach (Utility::asArray($consent['Consent']) as $consentType) {
-
-        error_log("CONSENT TYPE " . $consentType);
 
         $consents[$consentType['name']]      = $consentType['label'];
         $consentStatus[$consentType['name']] = $db->pselectOne(
