@@ -1336,6 +1336,7 @@ class LorisForm
      */
     function registerRule()
     {
+        throw new \DeprecatedException("LorisForm RegisterRule is no longer supported");
     }
 
     /**
