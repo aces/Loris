@@ -705,6 +705,11 @@ class LorisForm
      */
     function dateHTML($el)
     {
+        if (array_key_exists('options', $el)
+            && ((strtolower($el['options']['format']) == 'y'))
+        ) {
+            return $this->yearHTML($el);
+        }
         $cls      = '';
         $minYear  = '';
         $maxYear  = '';
@@ -899,6 +904,31 @@ class LorisForm
         $html = $smarty->fetch("time_element.tpl");
 
         return $html;
+    }
+
+    /**
+     * Generates the HTML to add to the page when rendered for a date
+     * element with the year formate only
+     *
+     * @param array  $el   The element to render from $this->form
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function yearHTML($el)
+    {
+        $year    = $this->getValue($el['name']);
+        $smarty  = new Smarty_neurodb;
+        $value   = explode('-', $year)[0];
+
+        $smarty->assign('name', $el['name']);
+        $smarty->assign('minYear', $el['options']['minYear']);
+        $smarty->assign('maxYear', $el['options']['maxYear']);
+        $smarty->assign('value', $value);
+
+        $html = $smarty->fetch("year_html.tpl");
+
+        return $html;
+        // return "SDKJHSKJDH";
     }
 
     /**
@@ -1576,6 +1606,19 @@ class LorisForm
                     $arr[$name] = '';
                 }
                 continue;
+            }
+
+            if ($el['type'] === 'date'
+                && array_key_exists('options', $el)
+                && ((strtolower($el['options']['format']) == 'y'))
+            ) {
+                    $value = $this->getValue($name);
+                    if ($value) {
+                        $arr[$name] = sprintf("%s-00-00", $value);
+                    } else {
+                        $arr[$name] = '';
+                    }
+                    continue;
             }
 
             // Check to see it the element type is a header or is a static
