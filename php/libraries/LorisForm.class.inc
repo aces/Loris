@@ -1105,7 +1105,6 @@ class LorisForm
             }
         }
 
-print_r($errors);
         return empty($errors);
     }
 
