@@ -55,10 +55,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         $comment = $values['comment'];
 
 
-        $date = sprintf("%04d-%02d-%02d", $values['date']['Y'], $values['date']['M'], $values['date']['d']);
-        if($date == '0000-00-00') {
-            $date = NULL;
-        }
+        $date = empty($values['date']) ? null : $values['date'];
 
         $flag = $values['flag_status'];
 
@@ -79,7 +76,8 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         $conflicts = array();
         $smarty = new Smarty_neurodb();
         $config =& NDB_Config::singleton();
-        $study = $config->getSetting('study');
+        $startYear = $config->getSetting('startYear');
+        $endYear = $config->getSetting('endYear');
         $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //converts the full_name into the test_name
 
         $visit_array=Utility::getExistingVisitLabels();
@@ -121,8 +119,8 @@ class NDB_Form_data_integrity_flag extends NDB_Form
                 'language'        => 'en',
                 'format'          => 'YMd',
                 'addEmptyOption'  => true,
-                'minYear'         => $study['startYear'],
-                'maxYear'         => $study['endYear']
+                'minYear'         => $startYear,
+                'maxYear'         => $endYear
                 );
 
         $this->addBasicDate('date', "Date:", $dateOptions); //date drop down
@@ -215,25 +213,19 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         foreach ($fields as $field=>$value){
 
             if (preg_match('/date/',$field,$matches)){
-                if((($value['Y'] == "")&&($value['M'] == "")&&($value['d'] == ""))){
-                    $errors[$field]= 'Date is required';
-                }
-                if ($value !=null){
-                    // if not answered is not selected, time cannot be empty
 
-                    if((($value['Y'] != "")||($value['M'] != "")||($value['d'] != ""))){
-                        if($value['Y'] == ""){
-                            $errors[$field] .= "$field_name: Please fill in the administration date for all 3 fields";
-                        } else if($value['M'] == ""){
-                            $errors[$field] .= "$field_name: Please fill in the administration date for all 3 fields";
-                        } else if($value['d'] == ""){
-                            $errors[$field] .= "$field_name: Please fill in the administration date for all 3 fields";
-                        }
-
-                        if(!(checkdate($value['M'], $value['d'], $value['Y']))){
-                            $errors[$field]= 'Date is not a valid date';
-                        }
-                    }
+                $date_array = array_combine(array('Y','M','d'), explode('-',$value));
+                
+                if( empty($date_array)
+                    || empty($date_array['Y']) 
+                    || empty($date_array['M'])
+                    || empty($date_array['d'])
+                    || !checkdate(
+                        $date_array['M'],
+                        $date_array['d'],
+                        $date_array['Y']
+                    )) {
+                    $errors[$field]= 'A valid date must be provided';
                 }
             }
 
