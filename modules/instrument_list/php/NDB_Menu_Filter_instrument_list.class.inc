@@ -166,12 +166,13 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         }
         $query  .= " FROM flag f
             	JOIN test_names t ON (f.Test_name=t.Test_name)
-            	JOIN test_subgroups ts ON (ts.ID = t.Sub_group) ";
+            	JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
+            	LEFT JOIN session s ON (s.ID=f.SessionID) ";
         $qparams = array('SID' => $_REQUEST['sessionID']);
 
         if (!is_null($stage)) {
             $query .= "
-            	LEFT JOIN test_battery b ON (t.Test_name=b.Test_name) ";
+            	LEFT JOIN test_battery b ON (t.Test_name=b.Test_name AND s.SubprojectID=b.SubprojectID) ";
         }
         $query .= " WHERE f.SessionID=:SID
             AND LEFT(f.CommentID, 3) != 'DDE'";
