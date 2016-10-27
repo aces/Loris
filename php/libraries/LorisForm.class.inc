@@ -634,7 +634,9 @@ class LorisForm
             }
 
             if (isset($el['multiple'])) {
-                if (in_array($optionKey, $this->getValue($el['name']))) {
+                if (!empty($this->getValue($el['name']))
+                    && in_array($optionKey, $this->getValue($el['name']))
+                ) {
                     $selected = 'selected="selected"';
                 }
             } else {
