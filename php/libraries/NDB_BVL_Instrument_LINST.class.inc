@@ -91,7 +91,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $examiners = $this->_getExaminerNames();
         $this->addSelect('Examiner', 'Examiner', $examiners);
 
-        $this->addGroupRule(
+        $this->addRule(
             'Date_taken',
             'Date of Administration is required',
             'required'
