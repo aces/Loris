@@ -19,4 +19,5 @@ INSERT INTO `ImagingFileTypes` VALUES
 ALTER TABLE `mri_processing_protocol` MODIFY `FileType` VARCHAR(255) DEFAULT NULL;
 ALTER TABLE `mri_processing_protocol` ADD FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`);
 ALTER TABLE `files` MODIFY `FileType` VARCHAR(255) DEFAULT NULL;
+UPDATE files SET FileType = SUBSTRING_INDEX(File,'.',-1) WHERE FileType = '';
 ALTER TABLE `files` ADD FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`);
