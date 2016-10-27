@@ -1105,6 +1105,7 @@ class LorisForm
             }
         }
 
+print_r($errors);
         return empty($errors);
     }
 
@@ -1406,7 +1407,7 @@ class LorisForm
     {
         if (is_array($arg1)) {
             foreach ($arg1 as $elementIndex => $rules) {
-                $element    &= $this->form[$group]['elements'][$elementIndex];
+                $element     =& $this->form[$group]['elements'][$elementIndex];
                 $elementName = $element['name'];
                 foreach ($rules as $rule) {
                     $message  = $rule[0];
@@ -1591,8 +1592,8 @@ class LorisForm
     {
         foreach ($submitKeys as $key) {
             if (!isset($this->form[$key])) {
-                $tp &= $this->groupMapping[$key];
-                $el  = $this->form[$tp['groupName']]['elements'][$tp['index']];
+                $tp = $this->groupMapping[$key];
+                $el = $this->form[$tp['groupName']]['elements'][$tp['index']];
                 if (!$el) {
                     $arr[$key] = $_REQUEST[$key];
                     continue;
