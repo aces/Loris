@@ -634,7 +634,7 @@ class LorisForm
             }
 
             if (isset($el['multiple'])) {
-                if(in_array($optionKey, $this->getValue($el['name']))) {
+                if (in_array($optionKey, $this->getValue($el['name']))) {
                     $selected = 'selected="selected"';
                 }
             } else {
@@ -743,7 +743,7 @@ class LorisForm
             || (strtolower($el['options']['format']) == 'ym'))
         ) {
             $format = 'month';
-            if($value) {
+            if ($value) {
                 $value = explode("-", $value);
                 $value = sprintf("%s-%s", $value[0], $value[1]);
             }
@@ -923,15 +923,15 @@ class LorisForm
      * Generates the HTML to add to the page when rendered for a date
      * element with the year formate only
      *
-     * @param array  $el   The element to render from $this->form
+     * @param array $el The element to render from $this->form
      *
      * @return string A string of the HTML markup to render
      */
     function yearHTML($el)
     {
-        $year    = $this->getValue($el['name']);
-        $smarty  = new Smarty_neurodb;
-        $value   = explode('-', $year)[0];
+        $year   = $this->getValue($el['name']);
+        $smarty = new Smarty_neurodb;
+        $value  = explode('-', $year)[0];
 
         $smarty->assign('name', $el['name']);
         $smarty->assign('minYear', $el['options']['minYear']);
@@ -1045,7 +1045,10 @@ class LorisForm
                     foreach ($el['required'] as $elementIndex) {
                         $childEl = $el['elements'][$elementIndex];
                         if (!is_numeric(($this->getValue($childEl['name'])))) {
-                            $this->setElementError($el['name'], "$childEl[requireMsg]");
+                            $this->setElementError(
+                                $el['name'],
+                                "$childEl[requireMsg]"
+                            );
                             $errors[$el['name']] = "require fail";
                         }
                     }
@@ -1055,7 +1058,10 @@ class LorisForm
                     foreach ($el['numeric'] as $elementIndex) {
                         $childEl = $el['elements'][$elementIndex];
                         if (!is_numeric(($this->getValue($childEl['name'])))) {
-                            $this->setElementError($el['name'], "$childEl[numericMsg]");
+                            $this->setElementError(
+                                $el['name'],
+                                "$childEl[numericMsg]"
+                            );
                             $errors[$el['name']] = "numeric fail";
                         }
                     }
@@ -1084,7 +1090,7 @@ class LorisForm
                     && !is_numeric($value)
                 ) {
                     $this->setElementError($el['name'], "$el[numericMsg]");
-                    
+
                     $errors[$el['name']] = "numeric fail";
                 }
             }
@@ -1378,16 +1384,21 @@ class LorisForm
      */
     function registerRule()
     {
-        throw new \DeprecatedException("LorisForm RegisterRule is no longer supported");
+        throw new \DeprecatedException(
+            "LorisForm RegisterRule is no longer supported"
+        );
     }
 
     /**
      * Reimplementation of QuickForm API.
      *
      * Adds a rule to a group.
-     * @param    string     $group         Form group name
-     * @param    array      $arg1          Array for multiple elements or error message string for one element
-     * @param    string     $type          (optional)Rule type use getRegisteredRules() to get types
+     *
+     * @param string $group Form group name
+     * @param array  $arg1  Array for multiple elements or error
+     *                      message string for one element
+     * @param string $type  (optional)Rule type use getRegisteredRules()
+     *                      to get types
      *
      * @return none.
      */
@@ -1395,28 +1406,34 @@ class LorisForm
     {
         if (is_array($arg1)) {
             foreach ($arg1 as $elementIndex => $rules) {
-                $elementName = $this->form[$group]['elements'][$elementIndex]['name'];
+                $element    &= $this->form[$group]['elements'][$elementIndex];
+                $elementName = $element['name'];
                 foreach ($rules as $rule) {
                     $message  = $rule[0];
                     $ruleType = $rule[1];
 
                     if ($ruleType === 'required') {
-                        $this->form[$group]['elements'][$elementIndex]['required']   = true;
-                        $this->form[$group]['elements'][$elementIndex]['requireMsg'] = $message;
+                        $element['required']   = true;
+                        $element['requireMsg'] = $message;
 
                         $this->form[$group]['required'][] = $elementIndex;
                     } else if ($ruleType === 'numeric') {
-                        $this->form[$group]['elements'][$elementIndex]['numeric']    = true;
-                        $this->form[$group]['elements'][$elementIndex]['numericMsg'] = $message;
+                        $element['numeric']    = true;
+                        $element['numericMsg'] = $message;
 
                         $this->form[$group]['numeric'][] = $elementIndex;
                     } else {
-                        throw new \LorisException("Group Rule Error: element rule type doesn't exist");
+                        throw new \LorisException(
+                            "Group Rule Error: element rule type doesn't exist"
+                        );
                     }
                 }
             }
         } else {
-            throw new InvalidArgumentException('Invalid argument passed to addGroupRule for group: ' . $group);
+            throw new InvalidArgumentException(
+                'Invalid argument passed to addGroupRule for group: '
+                . $group
+            );
         }
     }
 
@@ -1453,11 +1470,11 @@ class LorisForm
     function addGroup($array, $name, $label, $delimiter, $options = array())
     {
         $name = $this->_generateName($name);
-        foreach($array as $key => $value) {
+        foreach ($array as $key => $value) {
             $this->groupMapping[$value['name']] = array(
-                'groupName' => $name,
-                'index'     => $key,
-            );
+                                                   'groupName' => $name,
+                                                   'index'     => $key,
+                                                  );
         }
         $this->form[$name] = array(
                               'type'      => 'group',
@@ -1574,8 +1591,9 @@ class LorisForm
     {
         foreach ($submitKeys as $key) {
             if (!isset($this->form[$key])) {
-                $el = $this->form[$this->groupMapping[$key]['groupName']]['elements'][$this->groupMapping[$key]['index']];
-                if(!$el) {
+                $tp &= $this->groupMapping[$key];
+                $el  = $this->form[$tp['groupName']]['elements'][$tp['index']];
+                if (!$el) {
                     $arr[$key] = $_REQUEST[$key];
                     continue;
                 }
@@ -1611,8 +1629,8 @@ class LorisForm
             }
 
             if ($el['type'] === 'time') {
-                $value      = $this->getValue($name);
-                if($value['H'] && $value['i']) {
+                $value = $this->getValue($name);
+                if ($value['H'] && $value['i']) {
                     $arr[$name] = sprintf("%s:%s:00", $value['H'], $value['i']);
                 } else {
                     $arr[$name] = '';
@@ -1625,11 +1643,11 @@ class LorisForm
                 && ((strtolower($el['options']['format']) == 'y'))
             ) {
                     $value = $this->getValue($name);
-                    if ($value) {
-                        $arr[$name] = sprintf("%s-00-00", $value);
-                    } else {
-                        $arr[$name] = '';
-                    }
+                if ($value) {
+                    $arr[$name] = sprintf("%s-00-00", $value);
+                } else {
+                    $arr[$name] = '';
+                }
                     continue;
             }
 
@@ -1639,11 +1657,11 @@ class LorisForm
                 || (strtolower($el['options']['format']) == 'ym'))
             ) {
                     $value = $this->getValue($name);
-                    if($value) {
-                        $arr[$name] = sprintf("%s-00", $value);
-                    } else {
-                        $arr[$name] = '';
-                    }
+                if ($value) {
+                    $arr[$name] = sprintf("%s-00", $value);
+                } else {
+                    $arr[$name] = '';
+                }
                     continue;
             }
 
