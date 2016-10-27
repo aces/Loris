@@ -97,13 +97,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             'required'
         );
 
-        $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
-        $this->addRule(
-            'Date_taken',
-            'Date of Administration is invalid',
-            'checkdate'
-        );
-
         $this->addRule('Examiner', 'Examiner is required', 'required');
     }
 
