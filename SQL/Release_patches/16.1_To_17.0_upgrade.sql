@@ -18,7 +18,9 @@ INSERT INTO `ImagingFileTypes` VALUES
 
 ALTER TABLE `mri_processing_protocol` MODIFY `FileType` VARCHAR(255) DEFAULT NULL;
 ALTER TABLE `mri_processing_protocol` ADD FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`);
+INSERT IGNORE INTO ImagingFileTypes (TYPE) SELECT DISTINCT FileType FROM files;
 ALTER TABLE `files` MODIFY `FileType` VARCHAR(255) DEFAULT NULL;
+UPDATE files SET FileType = SUBSTRING_INDEX(File,'.',-1) WHERE FileType = '';
 ALTER TABLE `files` ADD FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`);
 ALTER TABLE tarchive_files ADD `TarchiveSeriesID` INT(11) DEFAULT NULL;
 ALTER TABLE tarchive_files ADD CONSTRAINT `tarchive_files_TarchiveSeriesID_fk` FOREIGN KEY (`TarchiveSeriesID`) REFERENCES tarchive_series(`TarchiveSeriesID`);
