@@ -102,12 +102,13 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             ";
 
         $this->query = " FROM psc AS p 
-            JOIN session s ON (s.CenterID=p.CenterID AND s.Active = 'Y') 
+            JOIN session s ON (s.CenterID=p.CenterID) 
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
             JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
             WHERE 
+            s.Active = 'Y' AND
             f.PendingStaging=0 AND 
             f.FileType='mnc' AND 
             f.AcquisitionProtocolID not in (1, 2, 3, 52)";
