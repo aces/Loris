@@ -306,22 +306,6 @@ var ImagePanelHeadersTable = React.createClass({
 var ImageQCDropdown = React.createClass({
     displayName: 'ImageQCDropdown',
 
-
-    handleClick: function handleClick(e) {
-        e.preventDefault();
-        $.ajax({
-            type: "POST",
-            url: loris.BaseURL + 
-                '/mri_violations/?submenu=mri_protocol_check_violations',
-            data: {
-                SeriesUID: this.props.SeriesUID
-            },
-            success: function success() {
-                window.location.href = loris.BaseURL +
-                 "/mri_violations/?submenu=mri_protocol_check_violations";
-            }
-        });
-    },
     render: function render() {
         var label = React.createElement(
             'label',
@@ -334,7 +318,7 @@ var ImageQCDropdown = React.createClass({
                 null,
                 React.createElement(
                     'a',
-                    { onClick: this.handleClick.bind(this) },
+                    { href: this.props.url },
                     this.props.Label
                 )
             );
