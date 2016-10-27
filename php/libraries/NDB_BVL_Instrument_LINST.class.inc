@@ -689,7 +689,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     $pieces[1],
                                     $pieces[2],
                                     $opt,
-                                    "multiple"
+                                    array("multiple" => "multiple")
                                 );
                             } else {
                                 $this->form->addElement(
