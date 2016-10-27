@@ -38,6 +38,7 @@ class LorisForm
     var $frozen        = false;
     var $enctype       = '';
     var $groupMapping  = array();
+    var $action        = '';
 
     /**
      * Creates and returns an element that can be added
@@ -1722,6 +1723,26 @@ class LorisForm
         }
 
         return;
+    }
+
+    /**
+     * Update form attributes
+     *
+     * @param array $attribs List of form attributes to update
+     *
+     * @return none
+     */
+    function updateAttributes($attribs)
+    {
+        foreach ($attribs as $attrib => $value) {
+            if ($attrib === 'action') {
+                $this->action = "action='$value'";
+            } else if ($attrib === 'encrypt') {
+                $this->encrypt = "encrypt='$value'";
+            } else {
+                throw new LorisException("Form attribute $attrib is not supported");
+            }
+        }
     }
 }
 
