@@ -102,7 +102,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             ";
 
         $this->query = " FROM psc AS p 
-            JOIN session s ON (s.CenterID=p.CenterID) 
+            JOIN session s ON (s.CenterID=p.CenterID AND s.Active = 'Y') 
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
