@@ -141,7 +141,7 @@ var FamilyInfo = React.createClass({
           for (var key2 in existingFamilyMembers) {
               if (existingFamilyMembers.hasOwnProperty(key2)) {
 
-                  console.log(existingFamilyMembers[key2]);
+                  // console.log(existingFamilyMembers[key2]);
 
                   var candID = existingFamilyMembers[key2].CandID;
                   var relationship = existingFamilyMembers[key2].Relationship_type;
@@ -273,8 +273,6 @@ var FamilyInfo = React.createClass({
 
         // TODO : reset form
 
-
-
       $.ajax(
         {
           type: 'POST',
@@ -285,7 +283,8 @@ var FamilyInfo = React.createClass({
           processData: false,
           success: function(data) {
             self.setState({
-              updateResult: "success"
+              updateResult: "success",
+                formData: {}
             });
           },
           error: function(err) {
@@ -324,7 +323,7 @@ var FamilyInfo = React.createClass({
     },
     deleteFamilyMember: function(candID, key) {
 
-      console.log(candID, key);
+      // console.log(candID, key);
       var familyMembers = this.state.familyMembers;
       delete familyMembers[0];
 
@@ -343,26 +342,26 @@ var FamilyInfo = React.createClass({
         }
       }
 
-      return;
+      // return;
         
       formData.append('tab', 'deleteFamilyMember');
       formData.append('candID', this.state.Data.candID);
-      formData.append('familyDCCID', familyMemberID);
-      console.log("FAM " + familyMemberID);
-      for (var field in this.state.familyMembers[familyMemberID]) {
+      formData.append('familyDCCID', candID);
+      // console.log("FAM " + candID);
+      for (var field in familyMembers[candID]) {
 
-        if (this.state.familyMembers[familyMemberID].hasOwnProperty(field)) {
-          if (this.state.familyMembers[familyMemberID][field].ref !== null) {
-            var reference = this.state.familyMembers[familyMemberID][field].ref.split('_', 1);
+        if (familyMembers[candID].hasOwnProperty(field)) {
+          if (familyMembers[candID][field].ref !== null) {
+            var reference = familyMembers[candID][field].ref.split('_', 1);
             if (reference === familyID) {
-              this.state.familyMembers[familyMemberID][field] = null;
+              familyMembers[candID][field] = null;
             }
           }
         }
       }
 
-      var updatedFamilyMembers = this.state.familyMembers;
-      updatedFamilyMembers[familyMemberID] = null;
+      // var updatedFamilyMembers = this.state.familyMembers;
+      // updatedFamilyMembers[familyMemberID] = null;
 
       $.ajax(
         {
@@ -376,7 +375,7 @@ var FamilyInfo = React.createClass({
             self.setState(
               {
                 updateResult: "success",
-                familyMembers: updatedFamilyMembers
+
               }
             );
           },
