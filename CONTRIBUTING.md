@@ -22,7 +22,7 @@ If you'd like to contribute code, here are some things to keep in mind.
   If you have questions, feel free to mail the mailing list.
 * Add your new tests to get auto-run by Travis in the .travis.yml to make sure that
   other people don't accidentally break your module.
-* Check out our Coding Standards in the [docs/ directory](https://github.com/aces/Loris/tree/master/docs) and also our [Code Review Checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist) in the [GitHub Wiki](https://github.com/aces/Loris/wiki)
+* Check out our Coding Standards in the [docs/ directory](https://github.com/aces/Loris/tree/master/docs) and also our [Code Review Checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist) in the [GitHub Wiki](https://github.com/aces/Loris/wiki) and the Pull Request guidelines Readme in this directory. 
 * Try and make sure you run PHP codesniffer using the standards file in
   docs/LorisCS.xml before sending any pull request, otherwise the Loris tests may
   fail and we won't be able to merge your pull request.
