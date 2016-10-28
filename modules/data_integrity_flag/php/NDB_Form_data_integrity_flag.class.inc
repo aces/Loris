@@ -23,6 +23,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         /////////////////////////////////////////////////////
         ///////////////Constructs the where clause...
         ////////////////////////////////////////////////////////
+        $extra_where = "";
         $extra_where .= $this->AddWhere("dataflag_visitlabel", 'visit_label');
         $extra_where .= $this->AddWhere("dataflag_instrument", 'instrument');
         $extra_where .= $this->AddWhere("dataflag_userid", 'users');
@@ -31,7 +32,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         if (($extra_where) !=null){
             $query = "SELECT * FROM data_integrity_flag
                 WHERE 1=1 $extra_where ORDER BY dataflag_date";
-            $DB->select($query,  $info);
+            $info = $DB->pselect($query, array());
 
             $defaults["instrument"] = $_REQUEST['instrument'];
             $defaults["visit_label"] = $_REQUEST['visit_label'];
@@ -107,7 +108,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         //if (($extra_where) !=null){
         $query = "SELECT * FROM data_integrity_flag
             WHERE 1=1 $extra_where ORDER BY dataflag_date desc";
-        $DB->select($query,  $info);
+        $info = $DB->pselect($query, array());
         //}
 
 
