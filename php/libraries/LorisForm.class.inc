@@ -1047,7 +1047,7 @@ class LorisForm
                 if (isset($el['required'])) {
                     foreach ($el['required'] as $elementIndex) {
                         $childEl = $el['elements'][$elementIndex];
-                        if (!is_numeric(($this->getValue($childEl['name'])))) {
+                        if (empty(($this->getValue($childEl['name'])))) {
                             $this->setElementError(
                                 $el['name'],
                                 "$childEl[requireMsg]"
@@ -1636,8 +1636,11 @@ class LorisForm
 
             if ($el['type'] === 'time') {
                 $value = $this->getValue($name);
-                if ($value['H'] && $value['i']) {
+                if (($value['H'] || $value['H'] === '0')
+                    && ($value['i'] || $value['i'] === '0')
+                ) {
                     $arr[$name] = sprintf("%s:%s:00", $value['H'], $value['i']);
+                    print "$arr[$name]\n";
                 } else {
                     $arr[$name] = '';
                 }
