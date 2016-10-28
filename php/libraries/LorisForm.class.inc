@@ -703,8 +703,6 @@ class LorisForm
             return $el['label'];
         }
         $val = $this->getValue($el['name']);
-        // print "$el[name] $el[label] $val\n";
-
         return $val;
     }
     /**
@@ -1640,7 +1638,6 @@ class LorisForm
                     && ($value['i'] || $value['i'] === '0')
                 ) {
                     $arr[$name] = sprintf("%s:%s:00", $value['H'], $value['i']);
-                    print "$arr[$name]\n";
                 } else {
                     $arr[$name] = '';
                 }
