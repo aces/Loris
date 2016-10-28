@@ -1,7 +1,6 @@
 /* exported RFamilyInfo */
 
-var FamilyInfo = React.createClass(
-  {
+var FamilyInfo = React.createClass({
     getInitialState: function() {
       return {
         relationshipOptions: {
@@ -11,7 +10,7 @@ var FamilyInfo = React.createClass(
         },
         Data: [],
         formData: {},
-          familyMembers: [],
+        familyMembers: [],
         updateResult: null,
         errorMessage: null,
         isLoaded: false,
@@ -21,21 +20,21 @@ var FamilyInfo = React.createClass(
     componentDidMount: function() {
       var that = this;
       $.ajax(
-                this.props.dataURL,
+        this.props.dataURL,
         {
           dataType: 'json',
           xhr: function() {
             var xhr = new window.XMLHttpRequest();
             xhr.addEventListener(
-                            "progress",
-                            function(evt) {
-                              that.setState(
-                                {
-                                  loadedData: evt.loaded
-                                }
-                                );
-                            }
-                        );
+              "progress",
+              function(evt) {
+                that.setState(
+                  {
+                    loadedData: evt.loaded
+                  }
+                );
+              }
+            );
             return xhr;
           },
           success: function(data) {
@@ -44,27 +43,26 @@ var FamilyInfo = React.createClass(
                 Data: data,
                 isLoaded: true
               }
-                        );
+            );
           },
           error: function(data, errorCode, errorMsg) {
             that.setState(
               {
                 error: 'An error occurred when loading the form!'
               }
-                        );
+            );
           }
         }
-            );
+      );
     },
-    setFormData: function(formElement,
-    value) {
+    setFormData: function(formElement, value) {
       var formData = this.state.formData;
       formData[formElement] = value;
       this.setState(
         {
           formData: formData
         }
-            );
+      );
     },
     onSubmit: function(e) {
       e.preventDefault();
@@ -73,90 +71,128 @@ var FamilyInfo = React.createClass(
       if (!this.state.isLoaded) {
         if (this.state.error !== undefined) {
           return (
-                    <div className ="alert alert-danger text-center">
-                        <strong>
-                            {this.state.error}
-                        </strong>
-                    </div>
-                    );
+            <div className="alert alert-danger text-center">
+              <strong>
+                {this.state.error}
+              </strong>
+            </div>
+          );
         }
 
         return (
-                <button className ="btn-info has-spinner">
-                    Loading
-                    <span
-                        className ="glyphicon glyphicon-refresh
+          <button className="btn-info has-spinner">
+            Loading
+            <span
+              className="glyphicon glyphicon-refresh
                         glyphicon-refresh-animate"
-                    >
+            >
                     </span>
-                </button>
-                );
+          </button>
+        );
       }
 
       var disabled = true;
       var addButton = null;
       if (loris.userHasPermission('candidate_parameter_edit')) {
         disabled = false;
-        addButton = <ButtonElement label ="Add" />;
+        addButton = <ButtonElement label="Add"/>;
       }
 
-      var familyMemberIDs = this.state.Data.familyCandIDs;
-      var relationships = this.state.Data.Relationship_types;
-      var i = 0;
-      var relationship = null;
-      for (var key in familyMemberIDs) {
-        if (familyMemberIDs.hasOwnProperty(key) &&
-                    relationships.hasOwnProperty(key)
-                ) {
-          relationship = i + "_Relationship_type";
+      var familyMembers = this.state.familyMembers;
+      var familyMembersHTML = null;
 
-          var link = "?candID=" + familyMemberIDs[key].CandID +
-                        "&identifier=" + familyMemberIDs[key].CandID;
+      for (var key in familyMembers) {
+        if (familyMembers.hasOwnProperty(key)) {
 
-            var familyMember = [];
+          var candID = familyMembers[key].FamilyCandID;
+          var relationship = familyMembers[key].Relationship_type;
+          var relationshipID = relationship + " " + key;
+          var link = "?candID=" + candID + "&identifier=" + candID;
 
-          familyMember.push(
-                        <StaticElement
-                        label ="Family Member DCCID"
-                        text ={<a href={link}>{familyMemberIDs[key].CandID}</a>}
-                        />
-                    );
-          familyMember.push(
-                        <SelectElement
-                        label ="Relation Type"
-                        name ={relationship}
-                        options ={this.state.relationshipOptions}
-                        value ={relationships[key].Relationship_type}
-                        onUserInput ={this.setFormData}
-                        ref ={relationship}
-                        disabled ={true}
-                        required ={true}
-                        />
-                    );
-          if (loris.userHasPermission('candidate_parameter_edit')) {
-            familyMember.push(
-                            <ButtonElement
-                            label ="Delete"
-                            type ="button"
-                            onUserInput ={this.deleteFamilyMember.bind(
-                                null,
-                                familyMemberIDs[key].CandID,
-                                i
-                            )}
-                            />
-                        );
-          }
-          familyMember.push(<hr />);
-            this.state.familyMembers[familyMemberIDs[key].CandID] = familyMember;
+          familyMembersHTML = (
+            <div>
+              <StaticElement
+                label="Family Member DCCID"
+                text={<a href={link}>{candID}</a>}
+              />
+              <SelectElement
+                label="Relation Type"
+                name={relationshipID}
+                options={this.state.relationshipOptions}
+                value={relationship}
+                onUserInput={this.setFormData}
+                ref={relationshipID}
+                disabled={true}
+                required={true}
+              />
+              <ButtonElement
+                label="Delete"
+                type="button"
+                onUserInput={this.deleteFamilyMember.bind(null, candID, key)}
+              />
+            </div>
+          );
 
-          i++;
         }
       }
 
+      // var familyMemberIDs = this.state.Data.familyCandIDs;
+      // var relationships = this.state.Data.Relationship_types;
+      // var i = 0;
+      // var relationship = null;
+      // for (var key in familyMemberIDs) {
+      //   if (familyMemberIDs.hasOwnProperty(key) &&
+      //     relationships.hasOwnProperty(key)
+      //   ) {
+      //     relationship = i + "_Relationship_type";
+      //
+      //     var link = "?candID=" + familyMemberIDs[key].CandID +
+      //       "&identifier=" + familyMemberIDs[key].CandID;
+      //
+      //     var familyMember = [];
+      //
+      //     familyMember.push(
+      //       <StaticElement
+      //         label="Family Member DCCID"
+      //         text={<a href={link}>{familyMemberIDs[key].CandID}</a>}
+      //       />
+      //     );
+      //     familyMember.push(
+      //       <SelectElement
+      //         label="Relation Type"
+      //         name={relationship}
+      //         options={this.state.relationshipOptions}
+      //         value={relationships[key].Relationship_type}
+      //         onUserInput={this.setFormData}
+      //         ref={relationship}
+      //         disabled={true}
+      //         required={true}
+      //       />
+      //     );
+      //     if (loris.userHasPermission('candidate_parameter_edit')) {
+      //       familyMember.push(
+      //         <ButtonElement
+      //           label="Delete"
+      //           type="button"
+      //           onUserInput={this.deleteFamilyMember.bind(
+      //             null,
+      //             familyMemberIDs[key].CandID,
+      //             i
+      //           )}
+      //         />
+      //       );
+      //     }
+      //     familyMember.push(<hr />);
+      //     this.state.familyMembers[familyMemberIDs[key].CandID] = familyMember;
+      //
+      //     i++;
+      //   }
+      // }
+
       var relationshipRequired = false;
       if (this.state.formData.FamilyCandID !== null &&
-                this.state.formData.FamilyCandID !== undefined
-            ) {
+        this.state.formData.FamilyCandID !== undefined
+      ) {
         relationshipRequired = true;
       }
 
@@ -174,56 +210,140 @@ var FamilyInfo = React.createClass(
       }
 
       return (
-          <div class="row">
-                <div className ={alertClass} role ="alert" ref ="alert-message">
-                    {alertMessage}
-                </div>
+        <div class="row">
+          <div className={alertClass} role="alert" ref="alert-message">
+            {alertMessage}
+          </div>
 
-            <FormElement
-                name ="familyInfo"
-                onSubmit ={this.handleSubmit}
-                ref ="form"
-                class ="col-md-6"
-            >
-                <StaticElement
-                    label ="PSCID"
-                    text ={this.state.Data.pscid}
-                />
-                <StaticElement
-                    label ="DCCID"
-                    text ={this.state.Data.candID}
-                />
-                {this.state.familyMembers}
-                <SelectElement
-                    label ="Family Member ID (DCCID)"
-                    name ="FamilyCandID"
-                    options ={this.state.Data.candidates}
-                    onUserInput ={this.setFormData}
-                    ref ="FamilyCandID"
-                    disabled ={disabled}
-                    required ={false}
-                />
-                <SelectElement
-                label ="Relation Type"
-                name ="Relationship_type"
-                options ={this.state.relationshipOptions}
-                onUserInput ={this.setFormData}
-                ref ="Relationship_type"
-                disabled ={disabled}
-                required ={relationshipRequired}
+          <FormElement
+            name="familyInfo"
+            onSubmit={this.handleSubmit}
+            ref="form"
+            class="col-md-6"
+          >
+            <StaticElement
+              label="PSCID"
+              text={this.state.Data.pscid}
             />
-                {addButton}
-            </FormElement>
-                </div>
-            );
+            <StaticElement
+              label="DCCID"
+              text={this.state.Data.candID}
+            />
+            <SelectElement
+              label="Family Member ID (DCCID)"
+              name="FamilyCandID"
+              options={this.state.Data.candidates}
+              onUserInput={this.setFormData}
+              ref="FamilyCandID"
+              disabled={disabled}
+              required={false}
+            />
+            <SelectElement
+              label="Relation Type"
+              name="Relationship_type"
+              options={this.state.relationshipOptions}
+              onUserInput={this.setFormData}
+              ref="Relationship_type"
+              disabled={disabled}
+              required={relationshipRequired}
+            />
+            {addButton}
+            {familyMembersHTML}
+          </FormElement>
+        </div>
+      );
     },
-        /**
+    /**
      * Handles form submission
      *
      * @param {event} e - Form submission event
      */
     handleSubmit: function(e) {
       e.preventDefault();
+      var myFormData = this.state.formData;
+      var self = this;
+      var formData = new FormData();
+
+      var familyMembers = this.state.familyMembers;
+      var familyMember = {};
+
+      for (var key in myFormData) {
+        if (myFormData.hasOwnProperty(key)) {
+          if (myFormData[key] !== "") {
+            familyMember[key] = myFormData[key];
+            formData.append(key, myFormData[key]);
+          }
+        }
+      }
+
+      formData.append('tab', this.props.tabName);
+      formData.append('candID', this.state.Data.candID);
+
+      familyMembers.push(familyMember);
+
+      this.setState({
+        familyMembers: familyMembers
+      });
+
+
+      return;
+      $.ajax(
+        {
+          type: 'POST',
+          url: self.props.action,
+          data: formData,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function(data) {
+            self.setState({
+              updateResult: "success"
+            });
+          },
+          error: function(err) {
+            var errorMessage = JSON.parse(err.responseText).message;
+            self.setState(
+              {
+                updateResult: "error",
+                errorMessage: errorMessage
+              }
+            );
+          }
+
+        }
+      );
+    },
+    /**
+     * Display a success/error alert message after form submission
+     */
+    showAlertMessage: function() {
+      var self = this;
+      if (this.refs["alert-message"] === null) {
+        return;
+      }
+
+      var alertMsg = this.refs["alert-message"].getDOMNode();
+      $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
+        500,
+        function() {
+          self.setState(
+            {
+              updateResult: null
+            }
+          );
+        }
+      );
+    },
+    deleteFamilyMember: function(candID, key) {
+
+      console.log(candID, key);
+      var familyMembers = this.state.familyMembers;
+      delete familyMembers[0];
+
+      this.setState({
+        familyMembers: familyMembers
+      });
+
       var myFormData = this.state.formData;
       var self = this;
       var formData = new FormData();
@@ -235,94 +355,29 @@ var FamilyInfo = React.createClass(
         }
       }
 
-      formData.append('tab', this.props.tabName);
-      formData.append('candID', this.state.Data.candID);
-      $.ajax(
-        {
-          type: 'POST',
-          url: self.props.action,
-          data: formData,
-          cache: false,
-          contentType: false,
-          processData: false,
-          success: function(data) {
-            self.setState(
-              {
-                updateResult: "success"
-              }
-                        );
-          },
-          error: function(err) {
-            var errorMessage = JSON.parse(err.responseText).message;
-            self.setState(
-              {
-                updateResult: "error",
-                errorMessage: errorMessage
-              }
-                        );
-          }
+      return;
 
-        }
-            );
-    },
-        /**
-     * Display a success/error alert message after form submission
-     */
-    showAlertMessage: function() {
-      var self = this;
-      if (this.refs["alert-message"] === null) {
-        return;
-      }
-
-      var alertMsg = this.refs["alert-message"].getDOMNode();
-      $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
-                500,
-                function() {
-                  self.setState(
-                    {
-                      updateResult: null
-                    }
-                    );
-                }
-            );
-    },
-    deleteFamilyMember: function(familyMemberID,
-    familyID,
-    e) {
-      e.preventDefault();
-      var myFormData = this.state.formData;
-      var self = this;
-      var formData = new FormData();
-      for (var key in myFormData) {
-          if (myFormData.hasOwnProperty(key)) {
-              if (myFormData[key] !== "") {
-                  formData.append(key, myFormData[key]);
-              }
-          }
-      }
-
-
-        // console.log(this.state.familyMembers.splice(familyMemberID, 1));
-        // this.state.familyMembers.shift();
+      // console.log(this.state.familyMembers.splice(familyMemberID, 1));
+      // this.state.familyMembers.shift();
 
       formData.append('tab', 'deleteFamilyMember');
       formData.append('candID', this.state.Data.candID);
       formData.append('familyDCCID', familyMemberID);
-         console.log("FAM " + familyMemberID);
-        for (var field in this.state.familyMembers[familyMemberID]) {
+      console.log("FAM " + familyMemberID);
+      for (var field in this.state.familyMembers[familyMemberID]) {
 
-            if (this.state.familyMembers[familyMemberID].hasOwnProperty(field)) {
-                if (this.state.familyMembers[familyMemberID][field].ref !== null) {
-                    var reference = this.state.familyMembers[familyMemberID][field].ref.split('_', 1);
-                    if (reference === familyID) {
-                        this.state.familyMembers[familyMemberID][field] = null;
-                    }
-                }
+        if (this.state.familyMembers[familyMemberID].hasOwnProperty(field)) {
+          if (this.state.familyMembers[familyMemberID][field].ref !== null) {
+            var reference = this.state.familyMembers[familyMemberID][field].ref.split('_', 1);
+            if (reference === familyID) {
+              this.state.familyMembers[familyMemberID][field] = null;
             }
+          }
         }
+      }
 
-        var updatedFamilyMembers = this.state.familyMembers;
-        updatedFamilyMembers[familyMemberID] = null;
+      var updatedFamilyMembers = this.state.familyMembers;
+      updatedFamilyMembers[familyMemberID] = null;
 
       $.ajax(
         {
@@ -336,9 +391,9 @@ var FamilyInfo = React.createClass(
             self.setState(
               {
                 updateResult: "success",
-                  familyMembers: updatedFamilyMembers
+                familyMembers: updatedFamilyMembers
               }
-                  );
+            );
           },
           error: function(err) {
             if (err.responseText !== "") {
@@ -348,11 +403,11 @@ var FamilyInfo = React.createClass(
                   updateResult: "error",
                   errorMessage: errorMessage
                 }
-                      );
+              );
             }
           }
         }
-            );
+      );
     }
 
   }
