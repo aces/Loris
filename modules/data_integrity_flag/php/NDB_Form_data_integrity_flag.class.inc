@@ -79,15 +79,20 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         $config =& NDB_Config::singleton();
         $startYear = $config->getSetting('startYear');
         $endYear = $config->getSetting('endYear');
-        $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //converts the full_name into the test_name
-
+        $instrument = '';
+        if (!empty($_REQUEST['instrument'])) {
+            $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //converts the full_name into the test_name
+        }
         $visit_array=Utility::getExistingVisitLabels();
         $visit_array = array_combine($visit_array,$visit_array);
         $visit_array = array_merge(array('all_visits'=>"All Visits"),$visit_array);
 
         //Menu Filters
         $this->tpl_data['visitLabels'] = $visit_array;
-        $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
+        $this->tpl_data['visit_label'] = '';
+        if (!empty($_REQUEST['visit_label'])) {
+            $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
+        }
         $this->tpl_data['test_name'] = $instrument;
         $this->addSelect('users','Users',array_merge(array(''=>'All Users'),$this->getDIUsers()),array('id'=>'users'));
 
@@ -202,7 +207,9 @@ class NDB_Form_data_integrity_flag extends NDB_Form
      */
     function _validate($fields){
         $errors=array();
-        if ((preg_match('/All/',$_REQUEST['instrument'],$matches)) || (preg_match('/All/',$_REQUEST['visit_label'],$matches))){
+        $inst = empty($_REQUEST['instrument']) ? '' : $_REQUEST['instrument'];
+        $vl   = empty($_REQUEST['visit_label']) ? '' : $_REQUEST['visit_label'];
+        if ((preg_match('/All/',$inst,$matches)) || (preg_match('/All/',$vl,$matches))){
             $errors['comment']= 'An Instrument/Vist must be selected';
         }
 
@@ -214,8 +221,11 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         foreach ($fields as $field=>$value){
 
             if (preg_match('/date/',$field,$matches)){
+                $bits = explode('-',$value);
 
-                $date_array = array_combine(array('Y','M','d'), explode('-',$value));
+                if (count($bits) === 3) {
+                    $date_array = array_combine(array('Y','M','d'), $bits);
+                }
                 
                 if( empty($date_array)
                     || empty($date_array['Y']) 

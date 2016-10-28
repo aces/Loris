@@ -959,6 +959,7 @@ class Utility
      */
     static function getTestNameUsingFullName($fullname)
     {
+        $test_name = '';
         $db =& Database::singleton();
         //print_r($instument);
         $instrument = $db->pselect(
