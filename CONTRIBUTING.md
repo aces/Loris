@@ -7,7 +7,7 @@ before contributing is probably sign up for the [LORIS developers' mailing list]
 
 Pull requests should be based on and sent to the VERSIONNUMBER-dev branch of the version that you are targeting. The master branch is reserved for stable releases.
 
-Your current version number can be found in the VERSION file under the LORIS root (as of version 15.10).
+Your current version number can be found in the VERSION file under the LORIS root.
 
 ## Code Contributions
 
@@ -22,6 +22,7 @@ If you'd like to contribute code, here are some things to keep in mind.
   If you have questions, feel free to mail the mailing list.
 * Add your new tests to get auto-run by Travis in the .travis.yml to make sure that
   other people don't accidentally break your module.
+* Check out our Coding Standards in the [docs/ directory](https://github.com/aces/Loris/tree/master/docs) and also our [Code Review Checklist](https://github.com/aces/Loris/wiki/Code-Review-Checklist) in the [GitHub Wiki](https://github.com/aces/Loris/wiki) and the Pull Request guidelines Readme in this directory. 
 * Try and make sure you run PHP codesniffer using the standards file in
   docs/LorisCS.xml before sending any pull request, otherwise the Loris tests may
   fail and we won't be able to merge your pull request.
@@ -30,9 +31,9 @@ If you'd like to contribute code, here are some things to keep in mind.
   in a non-backwards-compatible way, document it in your pull request description and
   tag it with "Caveat For Existing Projects" so that we know that the change needs
   to be mentioned in release notes. Non-backwards-compatible changes should be sent
-  to the next major release(eg. 16.X -> 17.0) while backwards-compatible changes should
-  be sent to the next minor release(eg. 16.1.0 -> 16.2.0) and backwards-compatible bug
-  fixes should be sent to the next minor release update(eg. 16.1.0 -> 16.1.1)
+  to the next major release (e.g. 17.X -> 18.0) while backwards-compatible changes should
+  be sent to the next minor release (e.g. 17.1.0 -> 17.2.0) and backwards-compatible bug
+  fixes should be sent to the next minor release update (e.g. 17.1.0 -> 17.1.1)
 
 ## Ways To Get Started
 
@@ -41,10 +42,6 @@ started, some ideas to get you started:
 
 * You can browse some of our public [Issues](https://github.com/aces/Loris/issues)
 * You can run PHP CodeSniffer on modules that haven't had it run yet.
-* You can go through modules and convert any old SQL statements to prepared
-  statements
-* You can go through modules and remove old PEAR exception handling (PEAR::isError
-  calls) since we now use PHP5 exceptions
 * You can help improve our documentation if you find any parts of it confusing or
   lacking
 * You can try and track down any bugs
