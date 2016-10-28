@@ -182,26 +182,11 @@ var ImagePanelHeadersTable = React.createClass({
 });
 var ImageQCDropdown = React.createClass({
 
-  handleClick: function handleClick(e) {
-    e.preventDefault();
-    $.ajax({
-      type: "POST",
-      url: loris.BaseURL +
-             '/mri_violations/?submenu=mri_protocol_check_violations',
-      data: {
-        SeriesUID: this.props.SeriesUID
-      },
-      success: function() {
-        window.location.href = loris.BaseURL +
-             "/mri_violations/?submenu=mri_protocol_check_violations";
-      }
-    });
-  },
   render: function() {
     var label = <label>{this.props.Label}</label>;
     if (this.props.url) {
       label = <label>
-                 <a onClick={this.handleClick.bind(this)}>{this.props.Label}</a>
+                 <a href={this.props.url}>{this.props.Label}</a>
               </label>;
     }
     var dropdown;
