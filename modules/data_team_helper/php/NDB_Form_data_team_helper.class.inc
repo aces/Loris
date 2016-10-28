@@ -146,6 +146,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         $bvlFeedback = $this
             ->getFeedbacks($instrument, $candID, $_REQUEST['visit_label']);
+        
 
         $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
 
@@ -222,6 +223,14 @@ class NDB_Form_data_team_helper extends NDB_Form
             $flattened_result = $DB->pselect($query, $qparams);
         }
 
+        // Search for null instruments and remove them
+        foreach ($flattened_result as $k => $v) {
+            if ($v['Feedback_level'] == 'instrument'
+                && !isset($v['Test_name'])) {
+                unset($flattened_result[$k]);
+            }
+        }
+        $flattened_result = array_values($flattened_result);
         return $flattened_result;
     }
 
