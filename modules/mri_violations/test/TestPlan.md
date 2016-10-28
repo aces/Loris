@@ -5,7 +5,7 @@ MRI Violations Module Test Plan:
     Series Description or Scan Type, Time Run, Type of Problem, SeriesUID
 3.  Filter for scans that violate MRI Protocol violation (For each type of Problem : Could not identify scan type, Visit Label does not exist, MRI Protocol Check Violation, Candidate mismatch)
     Ensure link under Problem column goes to MRI Protocol Violations page with correct scan information 
-    set in the filters, and parameters showing when could not identify scacn type, or MRI Protocol Check Violation are the type of problem
+    set in the filters, and parameters showing when could not identify scan type, or MRI Protocol Check Violation are the type of problem
 4.  MRI Protocol Violations page check Selection Filter results for each of DCCID, PSCID, PatientName, SeriesUID,
     Time Run, Series Description
 5.  MRI Protocol Violations page - ensure first table displays all valid protocols
@@ -25,3 +25,5 @@ MRI Violations Module Test Plan:
 14. Resolve issues with each of the different types of resolutions, and ensure that they show up in the resolved tab, and are no longer in the unresolved tab
 15. Ensure that the link to the protocol violation works within the resolved tab 
 16. Ensure all filters and sorting work in the unresolved tab
+17. Change user access to: Take away permission for - `Violated Scans: View all-sites Violated Scans`
+18. Ensure that now you can not see this module
