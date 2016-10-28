@@ -12,9 +12,9 @@ $(window).resize(function(){
     // checkOverflow();
 });
 $(window).ready(function () {
-       
-       var filter = getParameterByName('filter');
-     
+       var qs = new QueryString();
+       var qsObj = qs.get();
+       var filter = qsObj['filter'];
        if(filter==="true"){
          
             $( "input[name ='filter']" ).click();
@@ -22,17 +22,3 @@ $(window).ready(function () {
         }
  });
 
-function getParameterByName(name, url) {
-    
-   if (!url) {
-      url = window.location.href;
-    }
-
-    name = name.replace(/[\[\]]/g, "\\$&");
-    
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),       
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
