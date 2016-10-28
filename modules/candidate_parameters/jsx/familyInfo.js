@@ -11,6 +11,7 @@ var FamilyInfo = React.createClass(
         },
         Data: [],
         formData: {},
+          familyMembers: [],
         updateResult: null,
         errorMessage: null,
         isLoaded: false,
@@ -99,7 +100,6 @@ var FamilyInfo = React.createClass(
         addButton = <ButtonElement label ="Add" />;
       }
 
-      var familyMembers = [];
       var familyMemberIDs = this.state.Data.familyCandIDs;
       var relationships = this.state.Data.Relationship_types;
       var i = 0;
@@ -113,13 +113,15 @@ var FamilyInfo = React.createClass(
           var link = "?candID=" + familyMemberIDs[key].CandID +
                         "&identifier=" + familyMemberIDs[key].CandID;
 
-          familyMembers.push(
+            var familyMember = [];
+
+          familyMember.push(
                         <StaticElement
                         label ="Family Member DCCID"
                         text ={<a href={link}>{familyMemberIDs[key].CandID}</a>}
                         />
                     );
-          familyMembers.push(
+          familyMember.push(
                         <SelectElement
                         label ="Relation Type"
                         name ={relationship}
@@ -132,20 +134,20 @@ var FamilyInfo = React.createClass(
                         />
                     );
           if (loris.userHasPermission('candidate_parameter_edit')) {
-            familyMembers.push(
+            familyMember.push(
                             <ButtonElement
                             label ="Delete"
                             type ="button"
                             onUserInput ={this.deleteFamilyMember.bind(
                                 null,
                                 familyMemberIDs[key].CandID,
-                                familyMembers,
                                 i
                             )}
                             />
                         );
           }
-          familyMembers.push(<hr />);
+          familyMember.push(<hr />);
+            this.state.familyMembers[familyMemberIDs[key].CandID] = familyMember;
 
           i++;
         }
@@ -191,7 +193,7 @@ var FamilyInfo = React.createClass(
                     label ="DCCID"
                     text ={this.state.Data.candID}
                 />
-                {familyMembers}
+                {this.state.familyMembers}
                 <SelectElement
                     label ="Family Member ID (DCCID)"
                     name ="FamilyCandID"
@@ -285,7 +287,6 @@ var FamilyInfo = React.createClass(
             );
     },
     deleteFamilyMember: function(familyMemberID,
-    familyMembers,
     familyID,
     e) {
       e.preventDefault();
@@ -293,25 +294,35 @@ var FamilyInfo = React.createClass(
       var self = this;
       var formData = new FormData();
       for (var key in myFormData) {
-        if (myFormData[key] !== "") {
-          formData.append(key, myFormData[key]);
-        }
+          if (myFormData.hasOwnProperty(key)) {
+              if (myFormData[key] !== "") {
+                  formData.append(key, myFormData[key]);
+              }
+          }
       }
+
+
+        // console.log(this.state.familyMembers.splice(familyMemberID, 1));
+        // this.state.familyMembers.shift();
 
       formData.append('tab', 'deleteFamilyMember');
       formData.append('candID', this.state.Data.candID);
       formData.append('familyDCCID', familyMemberID);
-      for (var field in familyMembers) {
-        if (familyMembers.hasOwnProperty(field)) {
-          if (familyMembers[field].ref !== null) {
-            var reference = familyMembers[field].ref.split('_', 1);
-            if (reference === familyID) {
-                            // TODO: remove fields immediately after deletion
-              familyMembers[field] = null;
+         console.log("FAM " + familyMemberID);
+        for (var field in this.state.familyMembers[familyMemberID]) {
+
+            if (this.state.familyMembers[familyMemberID].hasOwnProperty(field)) {
+                if (this.state.familyMembers[familyMemberID][field].ref !== null) {
+                    var reference = this.state.familyMembers[familyMemberID][field].ref.split('_', 1);
+                    if (reference === familyID) {
+                        this.state.familyMembers[familyMemberID][field] = null;
+                    }
+                }
             }
-          }
         }
-      }
+
+        var updatedFamilyMembers = this.state.familyMembers;
+        updatedFamilyMembers[familyMemberID] = null;
 
       $.ajax(
         {
@@ -324,7 +335,8 @@ var FamilyInfo = React.createClass(
           success: function(data) {
             self.setState(
               {
-                updateResult: "success"
+                updateResult: "success",
+                  familyMembers: updatedFamilyMembers
               }
                   );
           },
