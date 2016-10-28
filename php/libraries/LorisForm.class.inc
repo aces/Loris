@@ -1060,7 +1060,9 @@ class LorisForm
                 if (isset($el['numeric'])) {
                     foreach ($el['numeric'] as $elementIndex) {
                         $childEl = $el['elements'][$elementIndex];
-                        if (!is_numeric(($this->getValue($childEl['name'])))) {
+                        if (!is_numeric($this->getValue($childEl['name']))
+                            && !empty($this->getValue($childEl['name']))
+                        ) {
                             $this->setElementError(
                                 $el['name'],
                                 "$childEl[numericMsg]"
@@ -1091,6 +1093,7 @@ class LorisForm
                 if (isset($el['numeric'])
                     && $el['numeric'] === true
                     && !is_numeric($value)
+                    && !empty($value)
                 ) {
                     $this->setElementError($el['name'], "$el[numericMsg]");
 
