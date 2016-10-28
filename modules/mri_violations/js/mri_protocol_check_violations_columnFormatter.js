@@ -9,7 +9,6 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
-
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
   }
@@ -20,7 +19,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
 
   if (column === 'PatientName') {
-    var url = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" + row["TarchiveID"];
+    var url = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" + row.TarchiveID;
     return React.createElement(
       "td",
       null,

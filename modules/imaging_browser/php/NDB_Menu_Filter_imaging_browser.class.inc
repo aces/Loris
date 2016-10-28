@@ -108,6 +108,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
             JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
             WHERE 
+            s.Active = 'Y' AND
             f.PendingStaging=0 AND 
             f.FileType='mnc' AND 
             f.AcquisitionProtocolID not in (1, 2, 3, 52)";

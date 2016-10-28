@@ -87,6 +87,7 @@ class NDB_Form_survey_accounts extends NDB_Form
                 'VL' => "Visit ". $values['VL']." does not exist for given candidate"
             );
         }
+
         $instrument_list = $db->pselect( 
             "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
@@ -103,6 +104,7 @@ class NDB_Form_survey_accounts extends NDB_Form
                         );
             }
         }
+
         if ( !empty($values['Email']) ) {
             if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
                 return array(
@@ -117,6 +119,13 @@ class NDB_Form_survey_accounts extends NDB_Form
                         );
             }
         }
+
+        if ( !empty($values['Email']) && empty($values['Email2'])) {
+            return array(
+                    'Email2'=> 'Please confirm the email address.'
+            );
+        }
+
         if(empty($values['Test_name'])) {
             return array(
                     'Test_name'=> 'Please choose an instrument.'
@@ -131,7 +140,6 @@ class NDB_Form_survey_accounts extends NDB_Form
 
             }
         }
-
 
         return array();
     }
@@ -229,6 +237,25 @@ class NDB_Form_survey_accounts extends NDB_Form
         $this->addBasicText("Email2", "Confirm Email address");
 
         $this->form->addFormRule(array(&$this, '_validate_add_survey'));
+    }
+
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
+                $baseURL . "/survey_accounts/js/columnFormatter.js"
+            )
+        );
     }
 }
 ?>

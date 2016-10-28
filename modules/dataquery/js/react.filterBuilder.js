@@ -92,7 +92,7 @@ FilterRule = React.createClass({
 			rule.field = rule.fields[event.target.value].key[1];
 			rule.fieldType = rule.fields[event.target.value].value.Type;
 		}
-		this.props.updateRule(that.props.index, rule);
+		this.props.updateRule(this.props.index, rule);
 	},
 	operatorSelect: function (event) {
 		// Update the desired rule operation for the selected field
@@ -104,7 +104,7 @@ FilterRule = React.createClass({
 		if (event.target.value) {
 			rule.operator = event.target.value;
 		}
-		this.props.updateRule(that.props.index, rule);
+		this.props.updateRule(this.props.index, rule);
 	},
 	valueSet: function (event) {
 		// Update the value to filter for, and runs the query for the rules parameters
@@ -136,7 +136,7 @@ FilterRule = React.createClass({
 				};
 				rule.session = Object.keys(allCandiates);
 				rule.visit = "All";
-				that.props.updateSessions(rule);
+				that.props.updateSessions(that.props.index, rule);
 			},
 			    ajaxRetrieve = function (script) {
 				$.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script, {
@@ -170,7 +170,7 @@ FilterRule = React.createClass({
 
 			rule.value = event.target.value;
 		}
-		this.props.updateRule(that.props.index, rule);
+		this.props.updateRule(this.props.index, rule);
 	},
 	updateVisit: function (event) {
 		// Update rule to filter for specified visit
@@ -179,12 +179,12 @@ FilterRule = React.createClass({
 
 		if (event.target.value === "all") {
 			// If all visits, use keys of master list
-			rule.sessions = Object.keys(rule.candidates.allCandiates);
+			rule.session = Object.keys(rule.candidates.allCandiates);
 		} else {
 			// Else use list of PSCIDs for given vist
-			rule.sessions = rule.candidates.allSessions[event.target.value];
+			rule.session = rule.candidates.allSessions[event.target.value];
 		}
-		this.props.updateRule(that.props.index, rule);
+		this.props.updateSessions(this.props.index, rule);
 	},
 	render: function () {
 		// Renders the html for the component

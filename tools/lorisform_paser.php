@@ -13,7 +13,6 @@
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 
 require_once __DIR__ . "/../vendor/autoload.php";
-include_once 'HTML/QuickForm.php';
 
 $client = new NDB_Client();
 $client->makeCommandLine();
@@ -40,7 +39,7 @@ foreach($files AS $file){
     $fp=fopen($file, "r");
     $data=fread($fp, filesize($file));
     fclose($fp);
-    ereg("class (.+) extends NDB_BVL_Instrument", $data, $matches);
+    preg_match("/class (.+) extends NDB_BVL_Instrument/", $data, $matches);
     if(empty($matches[1])){
         echo "File '$file' does not contain an instrument.\n";
         continue;
@@ -68,7 +67,11 @@ foreach($files AS $file){
         $obj->_setupForm();
     }
     
-    if(!empty($output)){$output.="{-@-}";}
+    if(!empty($output)){
+        $output.="{-@-}";
+    } else {
+        $output = '';
+    }
     
     echo "Parsing instrument object...\n";
     
@@ -76,7 +79,8 @@ foreach($files AS $file){
     
     $output.="title{@}".$obj->getFullName()."\n";
     
-    $output.=parseElements($obj->form->_elements);
+    $formElements = $obj->form->toElementArray();
+    $output.=parseElements($formElements["elements"]);
     echo "Parsing complete\n---------------------------------------------------------------------\n\n";
 }
 $fp=fopen("ip_output.txt","w");
@@ -85,71 +89,77 @@ fclose($fp);
     
 function parseElements($elements, $groupLabel=""){
     global $obj;
+    $output = '';
     foreach($elements AS $element){
-        $label=$element->_label!="" ? str_replace("&nbsp;","",$element->_label) : $groupLabel;
-        switch(strtolower(get_class($element))){
-            case "html_quickform_select":
+        $label=$element['label']!="" ? str_replace("&nbsp;","",$element['label']) : $groupLabel;
+        switch($element['type']){
+            case "select":
                 $output.="select";
-                if($element->getMultiple()) {
+                if(array_key_exists('multiple', $element)) {
                     $output.="multiple";
-                } 
-                $output.="{@}".$element->_attributes['name']."{@}".$label."{@}";
+                }
+                $output.="{@}".$element['name']."{@}".$label."{@}";
                 $optionsOutput="";
-                foreach($element->_options AS $option){
-                    if(!empty($optionsOutput)){$optionsOutput.="{-}";}
-                    if(is_null($option['text']) || $option['text']===''){
+                foreach($element['options'] AS $key => $option){
+                    if (!empty($optionsOutput)) {
+                        $optionsOutput.="{-}";
+                    }
+                    if(is_null($option) || $option===''){
                         $optionsOutput.="NULL";
                     } else {
-                        $optionsOutput.="'".$option['attr']['value']."'";
+                        $optionsOutput.="'".$key."'";
                     }
-                    $optionsOutput.="=>'".addslashes($option['text'])."'";
+                    $optionsOutput.="=>'".addslashes($option)."'";
                 }
                 $output.=$optionsOutput."\n";
             break;
             
-            case "html_quickform_text":
-                $output.="text{@}".$element->_attributes['name']."{@}".$label."\n";
+            case "text":
+                $output.="text{@}".$element['name']."{@}".$label."\n";
             break;
             
-            case "html_quickform_textarea":
-                $output.="textarea{@}".$element->_attributes['name']."{@}".$label."\n";
+            case "textarea":
+                $output.="textarea{@}".$element['name']."{@}".$label."\n";
             break;
             
-            case "html_quickform_date":
-                if($element->_options['format']=="H:i"){
-                    $type="time";
-                } else {
-                    $type="date";
+            case "date":
+                $options = "{@}";
+                if (array_key_exists('options', $element)) {
+                    $options = $element['options']['minYear']."{@}".$element['options']['maxYear'];
                 }
-                $output.="$type{@}".$element->_name."{@}".$label."{@}".$element->_options['minYear']."{@}".$element->_options['maxYear']."\n";
+                $output.="date{@}".$element['name']."{@}".$label."{@}".$options."\n";
             break;
             
-            case "html_quickform_group":
-                $output.=parseElements($element->_elements, $label);
+            case "group":
+                $output.=parseElements($element['elements'], $label);
             break;
             
-            case "html_quickform_header":
-                $output.="header{@}".$element->_attributes['name']."{@}".$element->_text."\n";
+            case "header":
+                $name = '';
+                if (array_key_exists('name', $element)) {
+                    $name = $element['name'];
+                }
+                $output.="header{@}".$name."{@}".$element['label']."\n";
             break;
             
-            case "html_quickform_static":
+            case "static":
                 //see how static element is used...
-                if(($element->_attributes['name'] == null) || array_key_exists($element->_attributes['name'], $obj->localDefaults)
-                    || $element->_attributes['name'] =='lorisSubHeader') {
+                if(!array_key_exists('name', $element)) {
+                    $output.="header{@}{@}".$label."\n";
+                } elseif (($element['name'] == null) || array_key_exists($element['name'], $obj->localDefaults)
+                    || $element['name'] =='lorisSubHeader') {
                     //element is plain form text, or a header.
-                    $output.="header{@}";
+                    $output.="header{@}".$element['name']."{@}".$label."\n";
                 }
                 else{
                     //element reports a database score
-                    $output.="static{@}";
+                    $output.="static{@}".$element['name']."{@}".$label."\n";
                 }
-                //add the element info
-                $output.=$element->_attributes['name']."{@}".$element->_label."\n";
                 
             break;
             
-            case "html_quickform_advcheckbox":
-                $output.="checkbox{@}".$element->_attributes['name']."{@}".$element->_label."\n";
+            case "advcheckbox":
+                $output.="checkbox{@}".$element['name']."{@}".$label."\n";
             break;
             
         case "html_quickform_radio":
@@ -169,20 +179,19 @@ function parseElements($elements, $groupLabel=""){
             }
         break;
 
-            case "html_quickform_html":
-            case "html_quickform_file":
-            case "html_quickform_hidden":
+            case "html":
+            case "file":
+            case "hidden":
                     // skip because it's useless
-                    echo "SKIP: skipping quickform element type: ".get_class($element)."\n";
+                    echo "SKIP: skipping quickform element type: ".$element['type']."\n";
             break;
             
             default:
-                echo "WARNING:  Unknown quickform element type: ".get_class($element)."\n";
+                echo "WARNING:  Unknown quickform element type: ".$element['type']."\n";
             break;
         }
     }
     return $output;
-    //print_r($obj->form);
 }
 
 /**

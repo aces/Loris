@@ -98,6 +98,9 @@ class NDB_Client
 		WHERE cs.Name=:nm",
             array("nm" => "CSPAdditionalHeaders")
         );
+        if (empty($config_additions)) {
+            $config_additions = "";
+        }
         // Content-Security policy for LORIS
         // 1. By default, only allow things that are self-hosted
         // 2. Allow inline CSS and JS (inline JS is required for
