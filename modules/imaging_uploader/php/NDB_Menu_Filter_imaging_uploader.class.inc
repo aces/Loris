@@ -356,14 +356,19 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             }
 
             ///////////////////////////////////////////////////////////////////////
-            ////////////// Make sure the file name matches the format   ///////////
-            /////////// $candid and $visit_label can be of variable length ////////
+            ///////////    Make sure the file name matches the format   ///////////
+            ///////////         $pscid_$candid_$visit_label             ///////////
+            ///////////              OR starts with                     ///////////
+            ///////////         $pscid_$candid_$visit_label_            ///////////
             ///////////////////////////////////////////////////////////////////////
-            $pcv = "{$pscid}_{$candid}_{$visit_label}";
-            if (!preg_match("/^{$pcv}.*(zip|tgz|tar.gz)/", $file_name)) {
-                $errors[] = "File name must begin with " .
-                "\"". $pscid ."_". $candid ."_". $visit_label . "\"" .
-                " and have the extension of .tgz, tar.gz or .zip";
+            $pcv  = $pscid . "_" . $candid . "_" . $visit_label;
+            $pcvu = $pcv . "_";
+            if ((!preg_match("/{$pcv}.(zip|tgz|tar.gz)/", $file_name))
+                && (!preg_match("/^{$pcvu}.*(zip|tgz|tar.gz)/", $file_name))
+            ) {
+                    $errors[] = "File name must match " . $pcv .
+                    " or begin with " . "\"". $pcvu . "\"" .
+                    ", and have the extension of .tgz, tar.gz or .zip";
             }
 
             ///////////////////////////////////////////////////////////////////////

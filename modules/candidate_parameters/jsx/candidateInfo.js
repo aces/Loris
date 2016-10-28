@@ -43,6 +43,18 @@ var CandidateInfo = React.createClass(
               flaggedReason: data.flagged_reason
             };
 
+            // Figure out what is the index of Other option
+            that.otherOption = null;
+            var caveatReasonOptions = data.caveatReasonOptions;
+            if (caveatReasonOptions) {
+              for (var reason in caveatReasonOptions) {
+                if (caveatReasonOptions[reason] === "Other") {
+                  that.otherOption = reason;
+                  break;
+                }
+              }
+            }
+
             that.setState(
               {
                 Data: data,
@@ -75,7 +87,7 @@ var CandidateInfo = React.createClass(
       }
 
       // Reset 'other' field
-      if (formElement === "flaggedReason" && value !== "2") {
+      if (formElement === "flaggedReason" && value !== this.otherOption) {
         formData.flaggedOther = '';
         this.refs.flaggedOther.state.value = "";
       }
@@ -122,7 +134,7 @@ var CandidateInfo = React.createClass(
         reasonRequired = true;
       }
 
-      var reasonKey;
+      var reasonKey = null;
       var specifyOther = null;
       var otherDisabled = true;
       var otherRequired = false;

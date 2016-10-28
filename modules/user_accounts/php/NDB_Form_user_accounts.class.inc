@@ -115,8 +115,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                     $defaults['examiner_pending'] = $vals;
                     continue;
                 }
-                //sets radiologist Y/N to value at examiner's site
-                if ($cid==$defaults['CenterID']) {
+                //gets radiologist Y/N from any of the acctive sites
+                if ($vals[0]=='Y') {
                     $defaults['examiner_radiologist'] =$vals[1];
                 }
                 if ($vals[0]=='Y'
@@ -244,7 +244,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $cid       = $parse_key[1];
                 array_push($ex_curr_sites, $cid);
 
-                //Check if examiner already in db for own site
+                //Check if examiner already in db for site
                 $result = $DB->pselectRow(
                     "
                           SELECT full_name, centerID
@@ -407,7 +407,6 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         $this->tpl_data['success'] = true;
-        $this->form->freeze();
     }
 
     /**

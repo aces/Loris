@@ -75,7 +75,7 @@ class User extends UserPermissions
         $examiner_info =array();
         if (!empty($examiner_check) && !is_null($examiner_check)) {
             foreach ($examiner_check as $rw=>$val) {
-                if ($val['centerID'] == $row['CenterID']) {
+                if ($val['active'] == 'Y') {
                     $examiner_info['pending'] = $val['pending_approval'];
                 }
                 $examiner_info[$val['centerID']] =array(

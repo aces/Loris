@@ -93,7 +93,7 @@ class SinglePointLogin
         $study_title       = $config->getSetting('title');
         $study_description = $config->getSetting('StudyDescription');
         $tpl_data['study_title']       = $study_title;
-        $tpl_data['study_description'] = $study_description;
+        $tpl_data['study_description'] = html_entity_decode($study_description);
         try {
             $tpl_data['study_logo'] = $config->getSetting('studylogo');
         } catch(ConfigurationException $e) {

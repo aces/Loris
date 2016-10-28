@@ -1555,7 +1555,7 @@ CREATE TABLE participant_status (
         UserID varchar(255) default NULL,
         Examiner varchar(255) default NULL,
         entry_staff varchar(255) default NULL,
-        data_entry_date timestamp NOT NULL,
+        data_entry_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
         participant_status integer DEFAULT NULL REFERENCES participant_status_options(ID),
         participant_suboptions integer DEFAULT NULL REFERENCES participant_status_options(ID),
         reason_specify text default NULL,
