@@ -154,7 +154,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         }
 
         // craft the select query
-        $query = "SELECT f.Test_name,
+        $query = "SELECT DISTINCT f.Test_name,
                     t.Full_name,
                     f.CommentID,
                     CONCAT('DDE_', f.CommentID) AS DDECommentID,
@@ -172,7 +172,11 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 
         if (!is_null($stage)) {
             $query .= "
-            	LEFT JOIN test_battery b ON (t.Test_name=b.Test_name AND s.SubprojectID=b.SubprojectID) ";
+            	LEFT JOIN test_battery b 
+            	        ON ((t.Test_name=b.Test_name OR b.Test_name=NULL) 
+            	        AND (s.SubprojectID=b.SubprojectID OR b.SubprojectID=NULL) 
+            	        AND (s.Visit_label=b.Visit_label OR b.Visit_label=NULL) 
+            	        AND (s.CenterID=b.CenterID OR b.CenterID)) ";
         }
         $query .= " WHERE f.SessionID=:SID
             AND LEFT(f.CommentID, 3) != 'DDE'";
