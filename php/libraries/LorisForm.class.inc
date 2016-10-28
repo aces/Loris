@@ -703,6 +703,7 @@ class LorisForm
             return $el['label'];
         }
         $val = $this->getValue($el['name']);
+        // print "$el[name] $el[label] $val\n";
 
         return $val;
     }
@@ -1724,7 +1725,9 @@ class LorisForm
      */
     function setElementError($el, $error)
     {
-        $this->form[$el]["error"] = $error;
+        if ($this->form[$el]) {
+            $this->form[$el]["error"] = $error;
+        }
         $this->errors[$el]        = $error;
     }
 
