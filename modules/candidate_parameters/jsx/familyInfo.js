@@ -45,6 +45,12 @@ var FamilyInfo = React.createClass({
                 isLoaded: true
               }
             );
+              var initialFamilyMembers = that.initializeFamilyMembers();
+              that.setState(
+                  {
+                      familyMembers: initialFamilyMembers
+                  }
+              );
           },
           error: function(data, errorCode, errorMsg) {
             that.setState(
@@ -55,6 +61,7 @@ var FamilyInfo = React.createClass({
           }
         }
       );
+
     },
     setFormData: function(formElement, value) {
       var formData = this.state.formData;
@@ -107,7 +114,6 @@ var FamilyInfo = React.createClass({
 
               var candID = familyMembers[key].FamilyCandID;
               var relationship = familyMembers[key].Relationship_type;
-              var relationshipID = relationship + " " + key;
               var link = "?candID=" + candID + "&identifier=" + candID;
 
               familyMembersHTML.push(
@@ -116,64 +122,23 @@ var FamilyInfo = React.createClass({
                           label="Family Member DCCID"
                           text={<a href={link}>{candID}</a>}
                       />
-                      <SelectElement
+                      <StaticElement
                           label="Relation Type"
-                          name={relationshipID}
-                          options={this.state.relationshipOptions}
-                          value={relationship}
-                          onUserInput={this.setFormData}
-                          ref={relationshipID}
-                          disabled={true}
-                          required={true}
+                          text={this.state.relationshipOptions[relationship]}
                       />
                       <ButtonElement
                           label="Delete"
                           type="button"
                           onUserInput={this.deleteFamilyMember.bind(null, candID, key)}
                       />
+                      <hr />
                   </div>
               );
 
           }
       }
 
-      var existingFamilyMembers = this.state.Data.existingFamilyMembers;
-          for (var key2 in existingFamilyMembers) {
-              if (existingFamilyMembers.hasOwnProperty(key2)) {
 
-                  // console.log(existingFamilyMembers[key2]);
-
-                  var candID = existingFamilyMembers[key2].CandID;
-                  var relationship = existingFamilyMembers[key2].Relationship_type;
-                  var relationshipID = relationship + " " + key2;
-                  var link = "?candID=" + candID + "&identifier=" + candID;
-
-                  familyMembersHTML.push(
-                      <div>
-                          <StaticElement
-                              label="Family Member DCCID"
-                              text={<a href={link}>{candID}</a>}
-                          />
-                          <SelectElement
-                              label="Relation Type"
-                              name={relationshipID}
-                              options={this.state.relationshipOptions}
-                              value={relationship}
-                              onUserInput={this.setFormData}
-                              ref={relationshipID}
-                              disabled={true}
-                              required={true}
-                          />
-                          <ButtonElement
-                              label="Delete"
-                              type="button"
-                              onUserInput={this.deleteFamilyMember.bind(null, candID, key2)}
-                          />
-                      </div>
-                  );
-
-              }
-      }
 
       var relationshipRequired = false;
       if (this.state.formData.FamilyCandID !== null &&
@@ -240,6 +205,12 @@ var FamilyInfo = React.createClass({
       );
     },
     /**
+     * Initializes family members state variable with existing family member information
+     */
+    initializeFamilyMembers: function() {
+        return this.state.Data.existingFamilyMembers;
+    },
+    /**
      * Handles form submission
      *
      * @param {event} e - Form submission event
@@ -249,6 +220,7 @@ var FamilyInfo = React.createClass({
       var myFormData = this.state.formData;
       var self = this;
       var formData = new FormData();
+        var formRefs = this.refs;
 
       var familyMembers = this.state.familyMembers;
       var familyMember = {};
@@ -271,8 +243,6 @@ var FamilyInfo = React.createClass({
         familyMembers: familyMembers
       });
 
-        // TODO : reset form
-
       $.ajax(
         {
           type: 'POST',
@@ -286,6 +256,16 @@ var FamilyInfo = React.createClass({
               updateResult: "success",
                 formData: {}
             });
+
+              // Iterates through child components and resets state
+              // to initial state in order to clear the form
+              Object.keys(formRefs).map(function(ref) {
+                  if (formRefs[ref].state && formRefs[ref].state.value) {
+                      formRefs[ref].state.value = "";
+                  }
+              });
+              // rerender components
+              self.forceUpdate();
           },
           error: function(err) {
             var errorMessage = JSON.parse(err.responseText).message;
@@ -323,9 +303,8 @@ var FamilyInfo = React.createClass({
     },
     deleteFamilyMember: function(candID, key) {
 
-      // console.log(candID, key);
       var familyMembers = this.state.familyMembers;
-      delete familyMembers[0];
+      delete familyMembers[key];
 
       this.setState({
         familyMembers: familyMembers
@@ -334,22 +313,18 @@ var FamilyInfo = React.createClass({
       var myFormData = this.state.formData;
       var self = this;
       var formData = new FormData();
-      for (var key in myFormData) {
-        if (myFormData.hasOwnProperty(key)) {
-          if (myFormData[key] !== "") {
-            formData.append(key, myFormData[key]);
+      for (var key1 in myFormData) {
+        if (myFormData.hasOwnProperty(key1)) {
+          if (myFormData[key1] !== "") {
+            formData.append(key1, myFormData[key1]);
           }
         }
       }
-
-      // return;
         
       formData.append('tab', 'deleteFamilyMember');
       formData.append('candID', this.state.Data.candID);
       formData.append('familyDCCID', candID);
-      // console.log("FAM " + candID);
       for (var field in familyMembers[candID]) {
-
         if (familyMembers[candID].hasOwnProperty(field)) {
           if (familyMembers[candID][field].ref !== null) {
             var reference = familyMembers[candID][field].ref.split('_', 1);
@@ -359,9 +334,6 @@ var FamilyInfo = React.createClass({
           }
         }
       }
-
-      // var updatedFamilyMembers = this.state.familyMembers;
-      // updatedFamilyMembers[familyMemberID] = null;
 
       $.ajax(
         {
