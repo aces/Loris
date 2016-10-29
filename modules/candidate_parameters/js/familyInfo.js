@@ -96,7 +96,6 @@ var FamilyInfo = React.createClass({
 
     for (var key in familyMembers) {
       if (familyMembers.hasOwnProperty(key)) {
-
         var candID = familyMembers[key].FamilyCandID;
         var relationship = familyMembers[key].Relationship_type;
         var link = "?candID=" + candID + "&identifier=" + candID;
@@ -168,6 +167,7 @@ var FamilyInfo = React.createClass({
           label: "DCCID",
           text: this.state.Data.candID
         }),
+        React.createElement("hr", null),
         familyMembersHTML,
         React.createElement(SelectElement, {
           label: "Family Member ID (DCCID)",
@@ -192,7 +192,10 @@ var FamilyInfo = React.createClass({
     );
   },
   /**
-   * Initializes family members state variable with existing family member information
+   * Initializes family members state variable
+   * with existing family member information
+   *
+   * @return {array} existingFamilyMembers - current family members
    */
   initializeFamilyMembers: function () {
     return this.state.Data.existingFamilyMembers;
@@ -280,7 +283,6 @@ var FamilyInfo = React.createClass({
     });
   },
   deleteFamilyMember: function (candID, key) {
-
     var familyMembers = this.state.familyMembers;
     delete familyMembers[key];
 
@@ -302,16 +304,6 @@ var FamilyInfo = React.createClass({
     formData.append('tab', 'deleteFamilyMember');
     formData.append('candID', this.state.Data.candID);
     formData.append('familyDCCID', candID);
-    for (var field in familyMembers[candID]) {
-      if (familyMembers[candID].hasOwnProperty(field)) {
-        if (familyMembers[candID][field].ref !== null) {
-          var reference = familyMembers[candID][field].ref.split('_', 1);
-          if (reference === familyID) {
-            familyMembers[candID][field] = null;
-          }
-        }
-      }
-    }
 
     $.ajax({
       type: 'POST',
