@@ -1,9 +1,10 @@
 # Candidate Parameters Test Plan
 
-1. Check Permissions. You should not be able to access the page
-    * without _candidate_parameter_view_ (_Edit Candidate Parameters_) permission (you should be able to edit fields)
-	* without _candidate_parameter_edit_ (_View Candidate Parameters_) permission (you should not be able to edit fields)
-	* if you don't belong to the same site as the candidate you are accessing	
+1. Check Permissions:
+    * _candidate_parameter_view_ (_Edit Candidate Parameters_) permission (you should be able to edit fields)
+	* _candidate_parameter_edit_ (_View Candidate Parameters_) permission (you should not be able to edit fields)
+	* You need to belong to the same site as the candidate you are accessing, unless...
+	* If you have _access_all_profiles_ you should be able to access all candidate profiles
 2. Make sure that the candidate date of birth and gender in the table at the top of the page, match what is stored in the candidate table for this given candidate.
 3. Click on the *Return to Timepoint List* button and ensure it goes to the correct timepoint list page.
 4. Make sure all tabs render. 
