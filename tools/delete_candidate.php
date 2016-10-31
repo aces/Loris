@@ -26,6 +26,8 @@ require_once "Utility.class.inc";
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
+echo "Dropping all DB entries for candidate DCCID: " . $DCCID . "And PSCID:" .
+$PSCID. "\n";
 
 //define the command line parameters
 if (count($argv)!=3) {
@@ -51,7 +53,7 @@ if ($DB->pselectOne(
 $candidate = new Candidate();
 $candidate->select($DCCID); //find the candidate with the given DCCID
 
-//Find Issues id with candidate frorign key
+//Find Issues id with candidate frreign key
 $issueIDs = $DB->pselect("SELECT issueID 
                 FROM issues 
                 WHERE candID=:candID",
@@ -76,9 +78,6 @@ if (is_null($sessions) || empty($sessions)) {
 $DB->delete("issues", array("CandID" => $DCCID));
 echo "----------------------delete  issues---------------------------\n";
 
-echo "Dropping all DB entries for candidate DCCID: " . $DCCID . "And PSCID:" .
-$PSCID. "\n";
-
 //find the test_names and commentIDs
 $query = "SELECT ID, Test_name, CommentID FROM flag WHERE SessionID in (" . 
          implode(" , ", $sessions) . ")";
@@ -86,6 +85,21 @@ $instruments = $DB->pselect($query, array());
 //delete from genomic_candidate_files_rel
 $DB->delete("genomic_candidate_files_rel", array("CandID" => $DCCID));
 echo "----------------------delete genomic_candidate_files_rel-------\n";
+
+//delete from genomic_cpg
+$sample_labels = $DB->pselect("SELECT sample_label 
+                FROM genomic_sample_candidate_rel 
+                WHERE candID=:candID",
+                array('candID' => $DCCID)
+                );
+
+foreach ($sample_labels as $sample_label) {
+         $DB->delete("genomic_cpg", 
+                 array("sample_label" => $sample_label['sample_label']));      
+};
+echo "----------------------delete genomic_sample_candidate_rel------\n";
+
+
 //delete from genomic_sample_candidate_rel
 $DB->delete("genomic_sample_candidate_rel", array("CandID" => $DCCID));
 echo "----------------------delete genomic_sample_candidate_rel------\n";
