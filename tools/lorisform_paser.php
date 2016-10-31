@@ -92,6 +92,7 @@ function parseElements($elements, $groupLabel=""){
     $output = '';
     foreach($elements AS $element){
         $label=$element['label']!="" ? str_replace("&nbsp;","",$element['label']) : $groupLabel;
+        $label=trim(preg_replace('/\s+/', ' ',$label));
         switch($element['type']){
             case "select":
                 $output.="select";
