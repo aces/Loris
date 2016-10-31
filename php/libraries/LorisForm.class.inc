@@ -1731,7 +1731,7 @@ class LorisForm
         if ($this->form[$el]) {
             $this->form[$el]["error"] = $error;
         }
-        $this->errors[$el]        = $error;
+        $this->errors[$el] = $error;
     }
 
     /**
