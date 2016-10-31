@@ -960,7 +960,7 @@ class Utility
     static function getTestNameUsingFullName($fullname)
     {
         $test_name = '';
-        $db =& Database::singleton();
+        $db        =& Database::singleton();
         //print_r($instument);
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",
