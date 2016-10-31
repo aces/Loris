@@ -1,6 +1,6 @@
 <select name='{$name}[H]'>
 	<option value=""></option>
-	{for $index = 0 to 24}
+	{for $index = 0 to 23}
 		{if $index < 10}
 			{assign var="displayValue" value="0$index"}
 			{if $displayValue eq $value['H']}
@@ -19,7 +19,7 @@
 </select>
 <select name='{$name}[i]'>
 	<option value=""></option>
-	{for $index = 0 to 60}
+	{for $index = 0 to 59}
 		{if $index < 10}
 			{assign var="displayValue" value="0$index"}
 			{if $displayValue eq $value['i']}
