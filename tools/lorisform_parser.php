@@ -208,7 +208,7 @@ function parseElements($elements, $groupLabel="")
             break;
 
         default:
-            echo "WARNING:  Unknown quickform element type: ".$element['type']."\n";
+            echo "WARNING:  Unknown form element type: ".$element['type']."\n";
             break;
         }
     }
