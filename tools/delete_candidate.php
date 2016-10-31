@@ -65,6 +65,20 @@ $PSCID. "\n";
 $query = "SELECT ID, Test_name, CommentID FROM flag WHERE SessionID in (" . 
          implode(" , ", $sessions) . ")";
 $instruments = $DB->pselect($query, array()); 
+//delete from genomic_candidate_files_rel
+$DB->delete("genomic_candidate_files_rel", array("CandID" => $DCCID));
+
+//delete from genomic_sample_candidate_rel
+$DB->delete("genomic_sample_candidate_rel", array("CandID" => $DCCID));
+
+//delete from issues
+$DB->delete("issues", array("CandID" => $DCCID));
+
+//delete from mri_scanner
+$DB->delete("mri_scanner", array("CandID" => $DCCID));
+
+//delete from parameter_candidate
+$DB->delete("parameter_candidate", array("CandID" => $DCCID));
 
 //delete the sessions
 $DB->delete("session", array("CandID" => $DCCID));
