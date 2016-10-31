@@ -1,4 +1,4 @@
-<select name='{$name}[H]'>
+<select name='{$name}[H]' {$disabled}>
 	<option value=""></option>
 	{for $index = 0 to 23}
 		{if $index < 10}
@@ -17,7 +17,7 @@
 		{/if}
 	{/for}
 </select>
-<select name='{$name}[i]'>
+<select name='{$name}[i]' {$disabled}>
 	<option value=""></option>
 	{for $index = 0 to 59}
 		{if $index < 10}

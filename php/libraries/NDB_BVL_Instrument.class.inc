@@ -1595,8 +1595,8 @@ class NDB_BVL_Instrument extends NDB_Page
             "time",
             $field,
             null,
-            $dateOptions,
-            $attr
+            null,
+            null
         );
 
         $group[] =& $this->createSelect(
