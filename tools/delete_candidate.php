@@ -58,15 +58,13 @@ $issueIDs = $DB->pselect("SELECT issueID
                 array('candID' => $DCCID)
 		);
 
-//delete issues_comments 
-foreach ($issueIDs as $issueID) {
-$DB->delete("issues_comments", array("issueID" => $issueID['issueID']));   
-};
-echo "----------------------delete issues_comments-------------------";  
+//delete issues_comments
 //delete issues_history
 foreach ($issueIDs as $issueID) {
-$DB->delete("issues_history", array("issueID" => $issueID['issueID']));
+$DB->delete("issues_comments", array("issueID" => $issueID['issueID']));  
+$DB->delete("issues_history", array("issueID" => $issueID['issueID'])); 
 };
+echo "----------------------delete issues_comments-------------------";  
 echo "-----------------delete issues_history---------------------------";
 //find sessions
 $sessions = $candidate->getListOfTimePoints();
@@ -104,15 +102,10 @@ $sessionIDs = $DB->pselect("SELECT ID
                 array('candID' => $DCCID)
                 );
 
-
+foreach ($sessionIDs as $sessionID) {
 //delete from media
-foreach ($sessionIDs as $sessionID) {
 $DB->delete("media", array("session_id" => $sessionID['ID']));
-};
-echo "----------------------delete media------------------------------";
 
-//delete from feedback_mri_comments
-foreach ($sessionIDs as $sessionID) {
 $fileIDs = $DB->pselect("SELECT FileID 
                 FROM files 
                 WHERE SessionID=:SessionID",
@@ -127,13 +120,12 @@ $fileIDs = $DB->pselect("SELECT FileID
          $DB->delete("feedback_mri_comments", 
                       array("FileID" => $fileID['FileID']));
           };
-};
-echo "----------------------delete parameter_file----------------------";
-echo "----------------------delete feedback_mri_comments---------------";
 //delete from files
-foreach ($sessionIDs as $sessionID) {
 $DB->delete("files", array("SessionID" => $sessionID['ID']));
 };
+echo "----------------------delete media------------------------------";
+echo "----------------------delete parameter_file----------------------";
+echo "----------------------delete feedback_mri_comments---------------";
 echo "----------------------delete files--------------------------------";
 //delete the sessions
 $DB->delete("session", array("CandID" => $DCCID));
