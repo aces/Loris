@@ -904,11 +904,11 @@ class LorisForm
         $timeStamp = $this->getValue($el['name']);
         $smarty    = new Smarty_neurodb;
         $value     = array(
-            'H'    => null,
-            'i'    => null
-        );
-        $bits = array();
-         
+                      'H' => null,
+                      'i' => null,
+                     );
+        $bits      = array();
+
         if (is_array($timeStamp)) {
             $value = $timeStamp;
         } else if (preg_match(
@@ -919,7 +919,7 @@ class LorisForm
             $value['H'] = $bits[1];
             $value['i'] = $bits[2];
         }
- 
+
         $disabled = '';
         if (isset($el['disabled']) || $this->frozen) {
             $disabled = 'disabled';
@@ -968,7 +968,7 @@ class LorisForm
      */
     function fileHTML($el)
     {
-        $cls = empty($el['class']) ? "" : "class=\"$el[class]\"";
+        $cls      = empty($el['class']) ? "" : "class=\"$el[class]\"";
         $disabled = '';
         $val      = $this->getValue($el['name']);
         if (isset($el['disabled']) || $this->frozen) {
