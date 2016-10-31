@@ -103,11 +103,11 @@ function parseElements($elements, $groupLabel="")
     global $obj;
     $output = '';
     foreach ($elements AS $element) {
-
         if ($element['label'] != "" ) {
             $label = str_replace("&nbsp;", "", $element['label']);
+            $label = trim(preg_replace('/\s+/', ' ', $label));
         } else {
-            $label = $groupLabel;
+            $label = trim(preg_replace('/\s+/', ' ', $groupLabel));
         }
 
         switch ($element['type']) {
