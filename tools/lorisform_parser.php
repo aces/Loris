@@ -199,7 +199,9 @@ function parseElements($elements, $groupLabel="")
                 $output .="{-}";
             }
             break;
-
+        case "time": 
+            $output.="time{@}".$element['name']."{@}".$label."\n";
+        break;
         case "html":
         case "file":
         case "hidden":

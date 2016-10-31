@@ -755,6 +755,7 @@ class LorisForm
             . "$minYear $maxYear "
             . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
+            . (!empty($disabled) ? "disabled" : '')
             . (
             !empty($value)
                 ? ' value="' . $value . '" '
@@ -902,17 +903,30 @@ class LorisForm
     {
         $timeStamp = $this->getValue($el['name']);
         $smarty    = new Smarty_neurodb;
-        $value     = array();
-
+        $value     = array(
+            'H'    => null,
+            'i'    => null
+        );
+        $bits = array();
+         
         if (is_array($timeStamp)) {
             $value = $timeStamp;
-        } else {
-            $timeStamp  = explode(":", $timeStamp);
-            $value['H'] = $timeStamp[0];
-            $value['i'] = $timeStamp[1];
+        } else if (preg_match(
+            '/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/',
+            $timeStamp,
+            $bits
+        )) {
+            $value['H'] = $bits[1];
+            $value['i'] = $bits[2];
+        }
+ 
+        $disabled = '';
+        if (isset($el['disabled']) || $this->frozen) {
+            $disabled = 'disabled';
         }
 
         $smarty->assign('name', $el['name']);
+        $smarty->assign('disabled', $disabled);
         $smarty->assign('value', $value);
 
         $html = $smarty->fetch("time_element.tpl");
@@ -954,7 +968,7 @@ class LorisForm
      */
     function fileHTML($el)
     {
-        $cls      = "class=\"$el[class]\"";
+        $cls = empty($el['class']) ? "" : "class=\"$el[class]\"";
         $disabled = '';
         $val      = $this->getValue($el['name']);
         if (isset($el['disabled']) || $this->frozen) {
