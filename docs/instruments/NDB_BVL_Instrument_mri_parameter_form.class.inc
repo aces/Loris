@@ -35,33 +35,35 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
 
         $config =& NDB_Config::singleton();
         $this->dateOptions = array(
-        'language' => 'en',
-        'format'   => 'YMd',
-        'minYear'  => $config->getSetting('startYear'),
-        'maxYear'  => $config->getSetting('endYear'),
-        'addEmptyOption' => true,
-        'emptyOptionValue' => null
+            'language' => 'en',
+            'format'   => 'YMd',
+            'minYear'  => $config->getSetting('startYear'),
+            'maxYear'  => $config->getSetting('endYear'),
+            'addEmptyOption' => true,
+            'emptyOptionValue' => null
         );
         
-        $db =& Database::singleton();
-        
-        $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-        $db->selectRow($query, $record);
-        
-        if (!is_array($record)) {
-           $record = array();
-        }
-        
-        for($i=0; $i < 25; $i++){
-            $vector_x = number_format($record["vector{$i}_x"], 5);
-            $vector_y = number_format($record["vector{$i}_y"], 5);
-            $vector_z = number_format($record["vector{$i}_z"], 5);
+        if (!empty($commentID)) {
+            $db =& Database::singleton();
 
-            $this->localDefaults["vector{$i}"] = "({$vector_x}, {$vector_y}, {$vector_z})";
-        }
+            $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
+            $db->selectRow($query, $record);
         
-        // setup the form
-        $this->_setupForm();
+            if (!is_array($record)) {
+                $record = array();
+            }
+        
+            for($i=0; $i < 25; $i++){
+                $vector_x = number_format($record["vector{$i}_x"], 5);
+                $vector_y = number_format($record["vector{$i}_y"], 5);
+                $vector_z = number_format($record["vector{$i}_z"], 5);
+
+                $this->localDefaults["vector{$i}"] = "({$vector_x}, {$vector_y}, {$vector_z})";
+            }
+         }
+        
+         // setup the form
+         $this->_setupForm();
     }
 
     /**
