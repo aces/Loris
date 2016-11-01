@@ -974,9 +974,11 @@ class Database
         if ($params) {
             $query = str_replace(array_keys($params), array_values($params), $query);
         }
-        print "$this->_databaseName:"
+        $query = json_encode($query);
+        print "console.log('"
+            . "$this->_databaseName:"
             . date("j-M-Y G:i:s", time())
-            .": $query<br>\n";
+            .": $query');";
     }
 
     /**
