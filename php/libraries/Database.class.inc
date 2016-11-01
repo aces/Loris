@@ -978,7 +978,7 @@ class Database
         print "console.log('"
             . "$this->_databaseName:"
             . date("j-M-Y G:i:s", time())
-            .": $query');";
+            . ": $query');";
     }
 
     /**
