@@ -53,7 +53,7 @@ if ($DB->pselectOne(
 $candidate = new Candidate();
 $candidate->select($DCCID); //find the candidate with the given DCCID
 
-//Find Issues id with candidate frreign key
+//Find Issues id with candidate foreign key
 $issueIDs = $DB->pselect("SELECT issueID 
                 FROM issues 
                 WHERE candID=:candID",
@@ -193,7 +193,7 @@ $DB->delete("parameter_session",
 $DB->delete("issues",
                     array("SessionID" => $sessionID['ID']));
 
-////////////
+//delete all foreign constraint of files
 
 $fileIDs = $DB->pselect("SELECT FileID 
                 FROM files 
@@ -214,8 +214,6 @@ $fileIDs = $DB->pselect("SELECT FileID
                            array("FileID" => $FileID['FileID']));
 
       };
-
-/////////////
 
 //delete from files
 $DB->delete("files", array("SessionID" => $sessionID['ID']));
