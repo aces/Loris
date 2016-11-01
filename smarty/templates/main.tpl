@@ -4,7 +4,9 @@
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
         <link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
-
+        {if $console}
+            <script type="text/javascript">{$console}</script>
+        {/if}
         {*
         This can't be loaded from getJSDependencies(), because it's needs access to smarty
            variables to be instantiated, so that other js files don't need access to smarty variables
@@ -205,31 +207,11 @@
                     if not then just put page content in the div #page    -->
         <div id="page-content-wrapper">
             {/if}
-            {if $dynamictabs eq "dynamictabs"}
-                {if $console}
-                    <div class="alert alert-warning" role="alert">
-                        <h3>Console Output</h3>
-                        <div>
-                        <pre>{$console}</pre>
-                        </div>
-                    </div>
-                {/if}
-
-            {/if}
             {if $dynamictabs neq "dynamictabs"}
             {* Add enough spacing to get below the menu *}
                 <br><br><br>
             <div class="page-content inset">
 
-                {if $console}
-                    <div class="alert alert-warning" role="alert">
-                        <h3>Console Output</h3>
-                        <div>
-                        <pre>{$console}</pre>
-                        </div>
-                    </div>
-
-                {/if}
                 {if $crumbs != "" && empty($error_message)}
                     <div id="breadcrumbs"></div>
                 {/if}
