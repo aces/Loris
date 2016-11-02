@@ -1318,8 +1318,8 @@ class LorisForm
             $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"hidden\" value=\"$value[0]\">"
-            . "<input name=\"$el[name]\" type=\"checkbox\" $checked value=\"$value[1]\" "
-            . "$disabled/>"
+            . "<input name=\"$el[name]\" type=\"checkbox\" $checked "
+            . "value=\"$value[1]\" $disabled/>"
             . " $el[_text]";
     }
 
