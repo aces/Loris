@@ -1593,6 +1593,33 @@ class LorisForm
             $el['type'] = 'static';
             break;
         case 'advcheckbox':
+            $args = func_get_args();
+            if (count($args) === 6) {
+                /**
+                 * With quickform creating advcheckboxs too in 6 args
+                 * setting up a special case to handle this.
+                 * array (
+                 *     [0] => element type
+                 *     [1] => element name
+                 *     [2] => element label
+                 *     [3] => element text to append after checkbox
+                 *     [4] => attributes
+                 *     [5] => array (
+                 *                [0] => custom off option
+                 *                [1] => custom on option
+                 *            )
+                 * )
+                 */
+                $el = $this->createBase($args[1], $args[2], $args[4]);
+
+                $el['type']        = $type;
+                $el['checkStates'] = $args[5];
+                $el['_text']       = $args[3];
+            } else {
+                $el         = $this->createBase($elname, $label, $options);
+                $el['type'] = $type;
+            }
+            break;
         case 'time':
         case 'textarea':
         case 'date':
