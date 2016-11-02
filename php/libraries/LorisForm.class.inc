@@ -289,7 +289,7 @@ class LorisForm
      *
      * @return &array
      */
-    function addCheckbox($name, $label, $options)
+    function &addCheckbox($name, $label, $options)
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'advcheckbox';
@@ -378,7 +378,30 @@ class LorisForm
             $el = $this->addHeader($name, $label, $options);
             break;
         case 'advcheckbox':
-            $el = $this->addCheckbox($name, $label, $options);
+            $args = func_get_args();
+            if (count($args) === 6) {
+                /**
+                 * With quickform creating advcheckboxs too in 6 args
+                 * setting up a special case to handle this.
+                 * array (
+                 *     [0] => element type
+                 *     [1] => element name
+                 *     [2] => element label
+                 *     [3] => element text to append after checkbox
+                 *     [4] => attributes
+                 *     [5] => array (
+                 *                [0] => custom off option
+                 *                [1] => custom on option
+                 *            )
+                 * )
+                 */
+                $el =& $this->addCheckbox($args[1], $args[2], $args[4]);
+
+                $el['checkStates'] = $args[5];
+                $el['_text']       = $args[3];
+            } else {
+                $el = $this->addCheckbox($name, $label, $options);
+            }
             break;
         case 'hidden':
             $el = $this->addHidden($name, $label, $options);
@@ -1265,6 +1288,10 @@ class LorisForm
      */
     function checkboxHTML($el)
     {
+        if (isset($el['checkStates'])) {
+            // Quickform advanced checkbox
+            return $this->advCheckboxHTML($el);
+        }
         $val      = $this->getValue($el['name']);
         $checked  = '';
         $value    = '';
@@ -1282,6 +1309,34 @@ class LorisForm
             . "$disabled/>"
             . " $el[label]";
     }
+
+    /**
+     * Generates the HTML for an advcheckbox type element like quickform
+     *
+     * @param array $el An array of the form used by $this->form
+     *                  for a checkbox
+     *
+     * @return string the HTML for the given checkbox element.
+     */
+    function advCheckboxHTML($el)
+    {
+        $val      = $this->getValue($el['name']);
+        $checked  = '';
+        $value    = '';
+        $disabled = '';
+        $value    = $el["checkStates"];
+        if ($val === $value[1]) {
+            $checked = 'checked="checked"';
+        }
+        if (isset($el['disabled']) || $this->frozen) {
+            $disabled = 'disabled';
+        }
+        return "<input name=\"$el[name]\" type=\"hidden\" value=\"$value[0]\">"
+            . "<input name=\"$el[name]\" type=\"checkbox\" $checked "
+            . "value=\"$value[1]\" $disabled/>"
+            . " $el[_text]";
+    }
+
     /**
      * This is a slight difference from the HTML_QuickForm API.
      * Whereas in HTML_QuickForm, you instantiated an array renderer,
@@ -1551,8 +1606,35 @@ class LorisForm
             $el         = $this->createBase($elname, $options, $attribs);
             $el['type'] = 'static';
             break;
-        case 'time':
         case 'advcheckbox':
+            $args = func_get_args();
+            if (count($args) === 6) {
+                /**
+                 * With quickform creating advcheckboxs too in 6 args
+                 * setting up a special case to handle this.
+                 * array (
+                 *     [0] => element type
+                 *     [1] => element name
+                 *     [2] => element label
+                 *     [3] => element text to append after checkbox
+                 *     [4] => attributes
+                 *     [5] => array (
+                 *                [0] => custom off option
+                 *                [1] => custom on option
+                 *            )
+                 * )
+                 */
+                $el = $this->createBase($args[1], $args[2], $args[4]);
+
+                $el['type']        = $type;
+                $el['checkStates'] = $args[5];
+                $el['_text']       = $args[3];
+            } else {
+                $el         = $this->createBase($elname, $label, $options);
+                $el['type'] = $type;
+            }
+            break;
+        case 'time':
         case 'textarea':
         case 'date':
         case 'password':
