@@ -192,7 +192,7 @@ ALTER TABLE examiners ADD COLUMN `active` enum('Y','N') NOT NULL DEFAULT 'Y';
 ALTER TABLE examiners ADD COLUMN `pending_approval` enum('Y','N') NOT NULL DEFAULT 'N';
 -- Insert necessary values into configsettings and config
 
-INSERT INTO ConfigSettings (Name,Description,Visible,AllowMultiple,DataType,Parent,Label,OrderNumber) Values ("CSPAdditionalHeaders","Extensions to the Content-security policy allow only for self-hosted content", 1, 0, "text", 1, "Content-Security Extentions:", 23);
+INSERT INTO ConfigSettings (Name,Description,Visible,AllowMultiple,DataType,Parent,Label,OrderNumber) Values ("CSPAdditionalHeaders","Extensions to the Content-security policy allow only for self-hosted content", 1, 0, "text", 1, "Content-Security Extensions", 23);
 INSERT INTO Config (ConfigID,Value) VALUES ((SELECT ID FROM ConfigSettings WHERE Name='CSPAdditionalHeaders'),"");
 ALTER TABLE `users` 
 CHANGE COLUMN `Password_expiry` `Password_expiry` DATE NOT NULL DEFAULT '1990-04-01' ;
