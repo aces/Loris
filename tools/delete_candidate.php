@@ -76,7 +76,7 @@ if (is_null($sessions) || empty($sessions)) {
 }
 //delete from issues
 $DB->delete("issues", array("CandID" => $DCCID));
-echo "----------------------delete  issues---------------------------\n";
+echo "----------------------delete issues----------------------------\n";
 
 //find the test_names and commentIDs
 $query = "SELECT ID, Test_name, CommentID FROM flag WHERE SessionID in (" . 
