@@ -26,7 +26,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         "td",
         null,
         cell,
-        " ",
         React.createElement(
           "span",
           { className: "text-danger" },
@@ -35,7 +34,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       );
     }
 
-    if (row["Invalid"] === "yes") {
+    if (row.Invalid === "yes") {
       return React.createElement(
         "td",
         null,
@@ -63,9 +62,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       );
     }
 
-    var testName = '/' + row["Instrument"] + '_reliability';
-    var commentID = row['CommentID'];
-    var siteID = row['SiteID'];
+    var testName = '/' + row.Instrument + '_reliability';
+    var commentID = row.CommentID;
+    var siteID = row.SiteID;
     var url = loris.BaseURL + testName + '?identifier=' + commentID + '&reliability_center_id=' + siteID;
 
     return React.createElement(
@@ -80,7 +79,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Reliable') {
-    var reliable = row['Reliable'];
+    var reliable = row.Reliable;
 
     if (reliable === "Yes") {
       return React.createElement(

@@ -37,6 +37,8 @@ class LorisForm
     var $filters       = array();
     var $frozen        = false;
     var $enctype       = '';
+    var $groupMapping  = array();
+    var $action        = '';
 
     /**
      * Creates and returns an element that can be added
@@ -129,8 +131,8 @@ class LorisForm
         $el            =& $this->addBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-        if (isset($attribs['multiple'])) {
-            $el['multiple'] = $attribs['multiple'];
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
+            $el['multiple'] = 'multiple';
         }
         return $el;
     }
@@ -287,7 +289,7 @@ class LorisForm
      *
      * @return &array
      */
-    function addCheckbox($name, $label, $options)
+    function &addCheckbox($name, $label, $options)
     {
         $el         =& $this->addBase($name, $label, $options);
         $el['type'] = 'advcheckbox';
@@ -376,7 +378,30 @@ class LorisForm
             $el = $this->addHeader($name, $label, $options);
             break;
         case 'advcheckbox':
-            $el = $this->addCheckbox($name, $label, $options);
+            $args = func_get_args();
+            if (count($args) === 6) {
+                /**
+                 * With quickform creating advcheckboxs too in 6 args
+                 * setting up a special case to handle this.
+                 * array (
+                 *     [0] => element type
+                 *     [1] => element name
+                 *     [2] => element label
+                 *     [3] => element text to append after checkbox
+                 *     [4] => attributes
+                 *     [5] => array (
+                 *                [0] => custom off option
+                 *                [1] => custom on option
+                 *            )
+                 * )
+                 */
+                $el =& $this->addCheckbox($args[1], $args[2], $args[4]);
+
+                $el['checkStates'] = $args[5];
+                $el['_text']       = $args[3];
+            } else {
+                $el = $this->addCheckbox($name, $label, $options);
+            }
             break;
         case 'hidden':
             $el = $this->addHidden($name, $label, $options);
@@ -622,6 +647,7 @@ class LorisForm
         $multiple      = '';
         $id            = '';
         $disabled      = '';
+        $name          = $el['name'];
 
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
@@ -630,13 +656,21 @@ class LorisForm
                 $optionKey = (string) $optionKey;
             }
 
-            if ($optionKey === $this->getValue($el['name'])) {
-                $selected = 'selected="selected"';
-            } elseif (isset($el['selected'])
-                && $optionKey === $el['selected']
-                && $this->getValue($el['name']) === null
-            ) {
-                $selected = 'selected="selected"';
+            if (isset($el['multiple'])) {
+                if (!empty($this->getValue($el['name']))
+                    && in_array($optionKey, $this->getValue($el['name']))
+                ) {
+                    $selected = 'selected="selected"';
+                }
+            } else {
+                if ($optionKey === $this->getValue($el['name'])) {
+                    $selected = 'selected="selected"';
+                } elseif (isset($el['selected'])
+                    && $optionKey === $el['selected']
+                    && $this->getValue($el['name']) === null
+                ) {
+                    $selected = 'selected="selected"';
+                }
             }
 
             $strOptions .= "<option value='$optionKey' $selected>"
@@ -657,10 +691,11 @@ class LorisForm
             $changehandler = "onchange=\"$el[onchange]\"";
         }
         if (isset($el['multiple'])) {
+            $name     = $name . '[]';
             $multiple = "multiple=\"multiple\"";
         }
 
-        $retVal = "<select name=\"$el[name]\" $cls $id $changehandler $multiple "
+        $retVal = "<select name=\"$name\" $cls $id $changehandler $multiple "
             . $disabled;
 
         if (isset($el['required']) && $el['required']) {
@@ -688,10 +723,9 @@ class LorisForm
     function staticHTML($el)
     {
         if (empty($el['name'])) {
-            return '';
+            return $el['label'];
         }
         $val = $this->getValue($el['name']);
-
         return $val;
     }
     /**
@@ -704,6 +738,11 @@ class LorisForm
      */
     function dateHTML($el)
     {
+        if (array_key_exists('options', $el)
+            && ((strtolower($el['options']['format']) == 'y'))
+        ) {
+            return $this->yearHTML($el);
+        }
         $cls      = '';
         $minYear  = '';
         $maxYear  = '';
@@ -723,13 +762,26 @@ class LorisForm
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg':''" : "''";
         $value    = $this->getValue($el['name']);
-        $elmnt    = "<input name=\"$el[name]\" type=\"date\" $cls $minYear $maxYear "
-            . $disabled
-            . " onChange=\"this.setCustomValidity($required)\""
+        if (array_key_exists('options', $el)
+            && ((strtolower($el['options']['format']) == 'my')
+            || (strtolower($el['options']['format']) == 'ym'))
+        ) {
+            $format = 'month';
+            if ($value) {
+                $value = explode("-", $value);
+                $value = sprintf("%s-%s", $value[0], $value[1]);
+            }
+        } else {
+            $format = 'date';
+        }
+        $elmnt = "<input name=\"$el[name]\" type=\"$format\" $cls "
+            . "$minYear $maxYear "
+            . "onChange=\"this.setCustomValidity($required)\""
             . (isset($el['required']) ? "required" : '')
+            . (!empty($disabled) ? "disabled" : '')
             . (
             !empty($value)
-                ? ' value="' . $this->getValue($el['name']) . '" '
+                ? ' value="' . $value . '" '
                 : ''
             )
             . ">";
@@ -874,20 +926,57 @@ class LorisForm
     {
         $timeStamp = $this->getValue($el['name']);
         $smarty    = new Smarty_neurodb;
-        $value     = array();
+        $value     = array(
+                      'H' => null,
+                      'i' => null,
+                     );
+        $bits      = array();
 
         if (is_array($timeStamp)) {
             $value = $timeStamp;
-        } else {
-            $timeStamp  = explode(":", $timeStamp);
-            $value['H'] = $timeStamp[0];
-            $value['i'] = $timeStamp[1];
+        } else if (preg_match(
+            '/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/',
+            $timeStamp,
+            $bits
+        )) {
+            $value['H'] = $bits[1];
+            $value['i'] = $bits[2];
+        }
+
+        $disabled = '';
+        if (isset($el['disabled']) || $this->frozen) {
+            $disabled = 'disabled';
         }
 
         $smarty->assign('name', $el['name']);
+        $smarty->assign('disabled', $disabled);
         $smarty->assign('value', $value);
 
         $html = $smarty->fetch("time_element.tpl");
+
+        return $html;
+    }
+
+    /**
+     * Generates the HTML to add to the page when rendered for a date
+     * element with the year formate only
+     *
+     * @param array $el The element to render from $this->form
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function yearHTML($el)
+    {
+        $year   = $this->getValue($el['name']);
+        $smarty = new Smarty_neurodb;
+        $value  = explode('-', $year)[0];
+
+        $smarty->assign('name', $el['name']);
+        $smarty->assign('minYear', $el['options']['minYear']);
+        $smarty->assign('maxYear', $el['options']['maxYear']);
+        $smarty->assign('value', $value);
+
+        $html = $smarty->fetch("year_html.tpl");
 
         return $html;
     }
@@ -902,7 +991,7 @@ class LorisForm
      */
     function fileHTML($el)
     {
-        $cls      = "class=\"$el[class]\"";
+        $cls      = empty($el['class']) ? "" : "class=\"$el[class]\"";
         $disabled = '';
         $val      = $this->getValue($el['name']);
         if (isset($el['disabled']) || $this->frozen) {
@@ -989,22 +1078,62 @@ class LorisForm
         $values = $this->getSubmitValues();
         $errors = array();
         foreach ($this->form as $elName => $el) {
-            $value = $this->getValue($el['name']);
-            if (isset($el['required'])
-                && $el['required'] === true
-                && empty($value)
-            ) {
-                //$this->setElementError($el['name'], "$el[name] required.");
-                $errors[$el['name']] = "required fail";
-            }
+            if ($el['type'] === 'group') {
+                if (isset($el['required'])) {
+                    foreach ($el['required'] as $elementIndex) {
+                        $childEl = $el['elements'][$elementIndex];
+                        if (empty(($this->getValue($childEl['name'])))) {
+                            $this->setElementError(
+                                $el['name'],
+                                "$childEl[requireMsg]"
+                            );
+                            $errors[$el['name']] = "require fail";
+                        }
+                    }
+                }
 
-            if (isset($el['compare'])
-                && $value != $this->getValue($el['compare'])
-            ) {
-                // These don't seem to show up in the original, so just make
-                // the validation fail by adding something to the errors array
-                // but don't call setElementError..
-                $errors[$el['name']] = "comparison fail";
+                if (isset($el['numeric'])) {
+                    foreach ($el['numeric'] as $elementIndex) {
+                        $childEl = $el['elements'][$elementIndex];
+                        if (!is_numeric($this->getValue($childEl['name']))
+                            && !empty($this->getValue($childEl['name']))
+                        ) {
+                            $this->setElementError(
+                                $el['name'],
+                                "$childEl[numericMsg]"
+                            );
+                            $errors[$el['name']] = "numeric fail";
+                        }
+                    }
+                }
+            } else {
+                $value = $this->getValue($el['name']);
+                if (isset($el['required'])
+                    && $el['required'] === true
+                    && empty($value)
+                ) {
+                    //$this->setElementError($el['name'], "$el[name] required.");
+                    $errors[$el['name']] = "required fail";
+                }
+
+                if (isset($el['compare'])
+                    && $value != $this->getValue($el['compare'])
+                ) {
+                    // These don't seem to show up in the original, so just make
+                    // the validation fail by adding something to the errors array
+                    // but don't call setElementError..
+                    $errors[$el['name']] = "comparison fail";
+                }
+
+                if (isset($el['numeric'])
+                    && $el['numeric'] === true
+                    && !is_numeric($value)
+                    && !empty($value)
+                ) {
+                    $this->setElementError($el['name'], "$el[numericMsg]");
+
+                    $errors[$el['name']] = "numeric fail";
+                }
             }
         }
         foreach ($this->formRules as $rule) {
@@ -1159,6 +1288,10 @@ class LorisForm
      */
     function checkboxHTML($el)
     {
+        if (isset($el['checkStates'])) {
+            // Quickform advanced checkbox
+            return $this->advCheckboxHTML($el);
+        }
         $val      = $this->getValue($el['name']);
         $checked  = '';
         $value    = '';
@@ -1176,6 +1309,34 @@ class LorisForm
             . "$disabled/>"
             . " $el[label]";
     }
+
+    /**
+     * Generates the HTML for an advcheckbox type element like quickform
+     *
+     * @param array $el An array of the form used by $this->form
+     *                  for a checkbox
+     *
+     * @return string the HTML for the given checkbox element.
+     */
+    function advCheckboxHTML($el)
+    {
+        $val      = $this->getValue($el['name']);
+        $checked  = '';
+        $value    = '';
+        $disabled = '';
+        $value    = $el["checkStates"];
+        if ($val === $value[1]) {
+            $checked = 'checked="checked"';
+        }
+        if (isset($el['disabled']) || $this->frozen) {
+            $disabled = 'disabled';
+        }
+        return "<input name=\"$el[name]\" type=\"hidden\" value=\"$value[0]\">"
+            . "<input name=\"$el[name]\" type=\"checkbox\" $checked "
+            . "value=\"$value[1]\" $disabled/>"
+            . " $el[_text]";
+    }
+
     /**
      * This is a slight difference from the HTML_QuickForm API.
      * Whereas in HTML_QuickForm, you instantiated an array renderer,
@@ -1250,14 +1411,14 @@ class LorisForm
     /**
      * Reimplement Smarty's addRule API.
      *
-     * Only 'require' and 'compare' will be implemented
+     * Only 'require', 'compare' and 'numeric' will be implemented
      * since those are the only ones we used.
      *
      * @param string $element The element name to add the rule to.
      *                        If this is a 'compare' rule, it will
      *                        be an array of 2 element names.
      * @param string $message The message to display if the rule is violated
-     * @param string $type    The rule type. 'compare' or 'required'
+     * @param string $type    The rule type. 'compare', 'required' or 'numeric'
      *
      * @return none
      */
@@ -1281,6 +1442,11 @@ class LorisForm
             $this->form[$element]['required']   = true;
             $this->form[$element]['requireMsg'] = $message;
         }
+
+        if ($type === 'numeric') {
+            $this->form[$element]['numeric']    = true;
+            $this->form[$element]['numericMsg'] = $message;
+        }
     }
 
     /**
@@ -1291,18 +1457,57 @@ class LorisForm
      */
     function registerRule()
     {
+        throw new \DeprecatedException(
+            "LorisForm RegisterRule is no longer supported"
+        );
     }
 
     /**
      * Reimplementation of QuickForm API.
      *
      * Adds a rule to a group.
-     * TODO: Implement this so that instruments can use LorisForm.
+     *
+     * @param string $group Form group name
+     * @param array  $arg1  Array for multiple elements or error
+     *                      message string for one element
+     * @param string $type  (optional)Rule type use getRegisteredRules()
+     *                      to get types
      *
      * @return none.
      */
-    function addGroupRule()
+    function addGroupRule($group, $arg1, $type='')
     {
+        if (is_array($arg1)) {
+            foreach ($arg1 as $elementIndex => $rules) {
+                $element     =& $this->form[$group]['elements'][$elementIndex];
+                $elementName = $element['name'];
+                foreach ($rules as $rule) {
+                    $message  = $rule[0];
+                    $ruleType = $rule[1];
+
+                    if ($ruleType === 'required') {
+                        $element['required']   = true;
+                        $element['requireMsg'] = $message;
+
+                        $this->form[$group]['required'][] = $elementIndex;
+                    } else if ($ruleType === 'numeric') {
+                        $element['numeric']    = true;
+                        $element['numericMsg'] = $message;
+
+                        $this->form[$group]['numeric'][] = $elementIndex;
+                    } else {
+                        throw new \LorisException(
+                            "Group Rule Error: element rule type doesn't exist"
+                        );
+                    }
+                }
+            }
+        } else {
+            throw new InvalidArgumentException(
+                'Invalid argument passed to addGroupRule for group: '
+                . $group
+            );
+        }
     }
 
     /**
@@ -1338,6 +1543,12 @@ class LorisForm
     function addGroup($array, $name, $label, $delimiter, $options = array())
     {
         $name = $this->_generateName($name);
+        foreach ($array as $key => $value) {
+            $this->groupMapping[$value['name']] = array(
+                                                   'groupName' => $name,
+                                                   'index'     => $key,
+                                                  );
+        }
         $this->form[$name] = array(
                               'type'      => 'group',
                               'name'      => $name,
@@ -1395,8 +1606,35 @@ class LorisForm
             $el         = $this->createBase($elname, $options, $attribs);
             $el['type'] = 'static';
             break;
-        case 'time':
         case 'advcheckbox':
+            $args = func_get_args();
+            if (count($args) === 6) {
+                /**
+                 * With quickform creating advcheckboxs too in 6 args
+                 * setting up a special case to handle this.
+                 * array (
+                 *     [0] => element type
+                 *     [1] => element name
+                 *     [2] => element label
+                 *     [3] => element text to append after checkbox
+                 *     [4] => attributes
+                 *     [5] => array (
+                 *                [0] => custom off option
+                 *                [1] => custom on option
+                 *            )
+                 * )
+                 */
+                $el = $this->createBase($args[1], $args[2], $args[4]);
+
+                $el['type']        = $type;
+                $el['checkStates'] = $args[5];
+                $el['_text']       = $args[3];
+            } else {
+                $el         = $this->createBase($elname, $label, $options);
+                $el['type'] = $type;
+            }
+            break;
+        case 'time':
         case 'textarea':
         case 'date':
         case 'password':
@@ -1453,10 +1691,15 @@ class LorisForm
     {
         foreach ($submitKeys as $key) {
             if (!isset($this->form[$key])) {
-                $arr[$key] = $_REQUEST[$key];
-                continue;
+                $tp = $this->groupMapping[$key];
+                $el = $this->form[$tp['groupName']]['elements'][$tp['index']];
+                if (!$el) {
+                    $arr[$key] = $_REQUEST[$key];
+                    continue;
+                }
+            } else {
+                $el = $this->form[$key];
             }
-            $el = $this->form[$key];
             // If it's a group, recursively go through the elements
             // of that group.
             if ($el['type'] === 'group') {
@@ -1483,6 +1726,45 @@ class LorisForm
                 $file       = $this->getElement($name);
                 $arr[$name] = $file->getValue();
                 continue;
+            }
+
+            if ($el['type'] === 'time') {
+                $value = $this->getValue($name);
+                if (($value['H'] || $value['H'] === '0')
+                    && ($value['i'] || $value['i'] === '0')
+                ) {
+                    $arr[$name] = sprintf("%s:%s:00", $value['H'], $value['i']);
+                } else {
+                    $arr[$name] = '';
+                }
+                continue;
+            }
+
+            if ($el['type'] === 'date'
+                && array_key_exists('options', $el)
+                && ((strtolower($el['options']['format']) == 'y'))
+            ) {
+                    $value = $this->getValue($name);
+                if ($value) {
+                    $arr[$name] = sprintf("%s-00-00", $value);
+                } else {
+                    $arr[$name] = '';
+                }
+                    continue;
+            }
+
+            if ($el['type'] === 'date'
+                && array_key_exists('options', $el)
+                && ((strtolower($el['options']['format']) == 'my')
+                || (strtolower($el['options']['format']) == 'ym'))
+            ) {
+                    $value = $this->getValue($name);
+                if ($value) {
+                    $arr[$name] = sprintf("%s-00", $value);
+                } else {
+                    $arr[$name] = '';
+                }
+                    continue;
             }
 
             // Check to see it the element type is a header or is a static
@@ -1542,8 +1824,10 @@ class LorisForm
      */
     function setElementError($el, $error)
     {
-        $this->form[$el]["error"] = $error;
-        $this->errors[$el]        = $error;
+        if ($this->form[$el]) {
+            $this->form[$el]["error"] = $error;
+        }
+        $this->errors[$el] = $error;
     }
 
     /**
@@ -1561,6 +1845,26 @@ class LorisForm
         }
 
         return;
+    }
+
+    /**
+     * Update form attributes
+     *
+     * @param array $attribs List of form attributes to update
+     *
+     * @return none
+     */
+    function updateAttributes($attribs)
+    {
+        foreach ($attribs as $attrib => $value) {
+            if ($attrib === 'action') {
+                $this->action = "action='$value'";
+            } else if ($attrib === 'encrypt') {
+                $this->encrypt = "encrypt='$value'";
+            } else {
+                throw new LorisException("Form attribute $attrib is not supported");
+            }
+        }
     }
 }
 

@@ -234,6 +234,7 @@ var ProbandInfo = React.createClass(
                 updateResult: "success"
               }
                   );
+            self.showAlertMessage();
           },
           error: function(err) {
             if (err.responseText !== "") {
@@ -244,6 +245,7 @@ var ProbandInfo = React.createClass(
                   errorMessage: errorMessage
                 }
                       );
+              self.showAlertMessage();
             }
           }
         }

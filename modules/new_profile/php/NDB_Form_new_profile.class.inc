@@ -24,13 +24,10 @@ class NDB_Form_new_profile extends NDB_Form
         // set up the arguments to Candidate::createNew
         $user =& User::singleton();
         $config =& NDB_Config::singleton();
-        $dob = sprintf("%04d-%02d-%02d", $values['dob1']['Y'], $values['dob1']['M'], $values['dob1']['d']);
+        $dob = empty($values['dob1']) ? null : $values['dob1'];
 
         if($config->getSetting('useEDC') == "true"){
-            $edc = sprintf("%04d-%02d-%02d", $values['edc1']['Y'], $values['edc1']['M'], $values['edc1']['d']);
-            if($edc == '0000-00-00') {
-                $edc = NULL;
-            }
+            $edc = empty($values['edc1']) ? null : $values['edc1'];
         }
 
         // create the candidate

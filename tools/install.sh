@@ -72,10 +72,14 @@ else
     exit 2;
 fi
 
-if [[ -n $(which composer) ]] || [[ -x ../composer ]]; then
+if [[ -n $(which composer) ]]; then
     echo ""
     echo "PHP Composer appears to be installed."
     composer_scr="composer install --no-dev"
+elif [[ -x ../composer ]]; then
+    echo ""
+    echo "PHP Composer appears to be installed."
+    composer_scr="./composer install --no-dev"
 else
     echo "PHP Composer does not appear to be installed. Attempting to install now..."
     curl -sS https://getcomposer.org/installer | php
@@ -100,33 +104,8 @@ Please ensure you have the following information ready (if applicable):
   1) Your project directory name.   
      (Will be used to modify the paths for Imaging data in the generated
      config.xml file for LORIS, and may also be used to automatically
-     create/install apache config files.)
-
-  2) MySQL Database name. 
-     If an empty database has not already been created for your project, 
-     choose a simple name such as "LORIS" or "Abc_Def"
-
-  3) Hostname for the machine running MySQL server where the database
-     is or will be located.
-
-  4) A new MySQL username that the LORIS system will use to connect
-     to this server and database to perform frontend-backend transactions.  
-     This script will ask to create this user. 
-     Recommended: "lorisuser"
-
-  5) Host address of this machine - from which LORIS system will be connecting 
-     (Where Apache is installed)
-
-  6) A new password for the "lorisuser" MySQL username
-
-  7) Another new password for the 'admin' frontend Loris user account.
-     This 'admin' account will be the superuser Loris' web-accessible platform.
-
-  8) Credentials of an existing MySQL account with root or superuser privileges, 
-     capable of creating the database, or installing the schema, 
-     or creating users on the given database. 
-     This will only be used to create the database, install the schema, 
-     and/or create and grant privileges to the "lorisuser" MySQL user. 
+     create/install apache config files.) If unsure, a default like "LORIS"
+     should be acceptable.
 
 Please also consult the Loris WIKI on GitHub for more information on these 
 Install Script input parameters.
@@ -166,17 +145,11 @@ if [ -f ../project/config.xml ]; then
     exit 2;
 fi
 
-# Check that we're running in the proper directory structure.
-if [ ! -f ../SQL/0000-00-00-schema.sql ] ; then
-    echo "Could not find schema file; make sure the current directory is in tools/ under the distribution."
-    exit 2
-fi
-
 # Create some subdirectories, if needed.
 mkdir -p ../project ../project/data ../project/libraries ../project/instruments ../project/templates ../project/tables_sql ../project/modules ../smarty/templates_c
 
-# Setting 777 permissions for templates_c
-chmod 777 ../smarty/templates_c
+# Setting 770 permissions for templates_c
+chmod 770 ../smarty/templates_c
 
 # Changing group to 'www-data' or 'apache' to give permission to create directories in Document Repository module
 # Detecting distribution
@@ -190,10 +163,20 @@ fi
 
 if [ $os_distro = "Ubuntu" ]; then
     sudo chown www-data.www-data ../modules/document_repository/user_uploads
+    sudo chown www-data.www-data ../smarty/templates_c
+    # Make Apache the group for project directory, so that the web based install
+    # can write the config.xml file.
+    sudo chgrp www-data ../project
+    sudo chmod 770 ../project
 elif [ $os_distro = "CentOS" ]; then
     sudo chown apache.apache ../modules/document_repository/user_uploads
+    sudo chown apache.apache ../smarty/templates_c
+    # Make Apache the group for project directory, so that the web based install
+    # can write the config.xml file.
+    sudo chgrp apache ../project
+    sudo chmod 770 ../project
 else
-    echo "$os_distro Linux distribution detected. We currently do not support this. Please manually chown/chgrp the user_uploads directory in ../modules/document_repository to the web server"
+    echo "$os_distro Linux distribution detected. We currently do not support this. Please manually chown/chgrp the user_uploads directory in ../modules/document_repository to the web server and ../smarty/templates_c"
 fi
 
 
@@ -209,240 +192,6 @@ if [ -d logs ]; then
         echo "$os_distro Linux distribution detected. We currently do not support this. Please manually set the permissions for user_uploads directory in ../modules/document_repository"
     fi
 fi
-
-
-while [ "$mysqldb" == "" ]; do
-	read -p "What is the database name? " mysqldb
-	echo $mysqldb | tee -a $LOGFILE > /dev/null
-	case $mysqldb in
-		"" )
-			read -p "What is the database name? " mysqldb
-			continue;;
-		* )
-			break;;
-	esac
-done;
-
-while [ "$mysqlhost" == "" ]; do
-        read -p "Database host? " mysqlhost
-	echo $mysqlhost | tee -a $LOGFILE > /dev/null
-       	case $mysqlhost in
-               	"" )
-                       	read -p "Database host? " mysqlhost
-                       	continue;;
-                * )
-       	                break;;
-        esac
-done;
-
-while [ "$mysqluser" == "" ]; do
-        read -p "What MySQL user will LORIS connect as? (Recommended: lorisuser)" mysqluser
-	echo $mysqluser | tee -a $LOGFILE > /dev/null
-       	case $mysqluser in
-               	"" )
-                       	read -p "What MySQL user will LORIS connect as? (Recommended: lorisuser)" mysqluser
-                       	continue;;
-                * )
-       	                break;;
-       	esac
-done;
-
-while [ "$mysqluserhost" == "" ]; do
-        read -p "What is the host from which MySQL user '$mysqluser' will connect? (Where Loris' Apache is hosted)" mysqluserhost
-        echo $mysqluserhost | tee -a $LOGFILE > /dev/null
-        case $mysqluserhost in
-                "" )
-                        read -p "What is the host from which MySQL user '$mysqluser' will connect? (Where Loris' Apache is hosted)" mysqluserhost
-                        continue;;
-                * )
-                        break;;
-        esac
-done;
-
-stty -echo
-
-while true; do
-        read -p "Choose a password for MySQL user '$mysqluser'? " mysqlpass
-	echo ""
-        read -p "Re-enter the password to check for accuracy: " mysqlpass2
-	if [[ "$mysqlpass" == "$mysqlpass2" ]] ; then
-	        break;
-	fi
-	echo ""
-	echo "Passwords did not match. Please try again.";
-done;
-
-stty echo ; echo ""
-stty -echo
-
-while true; do
-        read -p "Choose a different password for the front-end LORIS 'admin' user account: " lorispass
-        echo ""
-        read -p "Re-enter the password to check for accuracy: " lorispass2
-        if [[ "$lorispass" == "$lorispass2" ]] ; then
-                break;
-        fi
-	echo ""
-	echo "Passwords did not match. Please try again.";
-done;
-
-stty echo ; echo ""
-
-while [ "$mysqlrootuser" == "" ]; do
-       	read -p "Existing root or admin-level MySQL username: " mysqlrootuser
-	echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
-       	case $mysqlrootuser in
-               	"" )
-                       	read -p "Existing root MySQL username: " mysqlrootuser
-                       	continue;;
-                * )
-       	                break;;
-       	esac
-done;
-
-stty -echo
-
-while true; do
-        read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
-        echo ""
-        read -p "Re-enter the password to check for accuracy: " mysqlrootpass2
-        if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
-                break;
-        fi
-	echo ""
-	echo "Passwords did not match. Please try again.";
-done;
-
-stty echo
-
-echo ""
-while true; do
-    read -p "Would you like to automatically create the MySQL database for LORIS? [yn] " yn
-    echo $yn | tee -a $LOGFILE > /dev/null
-    case $yn in
-        [Yy]* )
-            while true; do
-                echo ""
-                echo "Attempting to create the MySQL database '$mysqldb' ..."
-                result=$(echo "CREATE DATABASE $mysqldb" | mysql -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1);
-                if [[ $result == *1044* ]] || [[ $result == *1045* ]]; then
-                    echo "Could not connect to database with the credential provided for '$mysqlrootuser' - Please try again.";
-                    read -p "Existing root MySQL username: " mysqlrootuser
-                    echo $mysqlrootuser | tee -a $LOGFILE > /dev/null
-                    stty -echo
-                    while true; do
-                        read -p "MySQL password for user '$mysqlrootuser': " mysqlrootpass
-                        echo ""
-                        read -p "Re-enter the password to check for accuracy: " mysqlrootpass2
-                        if [[ "$mysqlrootpass" == "$mysqlrootpass2" ]] ; then
-                            break;
-                        fi
-                        echo ""
-                        echo "Passwords did not match. Please try again.";
-                     done;
-                     stty echo
-                # Needed for mysql version > 5.6
-                elif [[ $result == *password* ]] && [[ $result != *1007* ]] ; then
-                    echo "Warning: Using a password on the command line interface can be insecure.";
-                    break;
-                elif [[ $result == *1007* ]] ; then
-                    echo "Could not create the database $mysqldb. A database with the name $mysqldb already exists.";
-                    read -p "Choose a different database name: " mysqldb
-                elif [[ $result != '' ]]; then
-                    echo "Could not create the database with the user '$mysqlrootuser' provided.";
-                    exit 1;
-                else
-                    break;
-                fi
-            done;
-            break;;
-        [Nn]* )
-            echo "Not creating MySQL database for LORIS."
-            break;;
-         * ) echo "Please enter 'y' or 'n'."
-    esac
-done;
-
-
-while true; do
-    read -p "Would you like to automatically create and grant privileges to MySQL user '$mysqluser'@'$mysqluserhost'? [yn] " yn
-    echo $yn | tee -a $LOGFILE > /dev/null
-    case $yn in
-        [Yy]* )
-            echo ""
-            echo "Attempting to create and grant privileges to MySQL user '$mysqluser'@'$mysqluserhost' ..."
-            echo "GRANT UPDATE,INSERT,SELECT,DELETE,CREATE TEMPORARY TABLES ON $mysqldb.* TO '$mysqluser'@'$mysqluserhost' IDENTIFIED BY '$mysqlpass' WITH GRANT OPTION" | mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A > /dev/null 2>&1
-            MySQLError=$?;
-            if [ $MySQLError -ne 0 ] ; then
-                echo "Could not connect to database with $mysqlrootuser user provided.";
-                exit 1;
-            fi
-            break;;
-        [Nn]* )
-            echo "Not creating and granting privileges to MySQL user '$mysqluser'@'$mysqluserhost'."
-            break;;
-         * ) echo "Please enter 'y' or 'n'."
-    esac
-done;
-
-
-while true; do
-    read -p "Would you like to automatically create/populate database tables from schema? [yn] " yn
-    echo $yn | tee -a $LOGFILE > /dev/null
-    case $yn in
-        [Yy]* )
-            echo ""
-            echo "Creating/populating database tables from schema."
-            echo ""
-            mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-00-schema.sql
-            mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-01-Permission.sql
-            mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-02-Menus.sql
-            mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-03-ConfigTables.sql
-            mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-04-Help.sql
-            mysql $mysqldb -h$mysqlhost --user=$mysqlrootuser --password="$mysqlrootpass" -A 2>&1 < ../SQL/0000-00-99-indexes.sql
-            echo "Updating Loris admin user's password."
-            pw_expiry=$(date --date="6 month" +%Y-%m-%d)
-            echo "Updating admin password reset date to be $pw_expiry"
-            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$lorispass')), Password_expiry='$pw_expiry', Pending_approval='N' WHERE ID=1"
-            break;;
-        [Nn]* )
-            echo "Not creating/populating database tables from schema."
-            break;;
-         * ) echo "Please enter 'y' or 'n'."
-    esac
-done;
-
-
-echo ""
-echo "Creating config file."
-sed -e "s/%HOSTNAME%/$mysqlhost/g" \
-    -e "s/%USERNAME%/$mysqluser/g" \
-    -e "s/%PASSWORD%/$mysqlpass/g" \
-    -e "s/%DATABASE%/$mysqldb/g" \
-    < ../docs/config/config.xml > ../project/config.xml
-
-
-while true; do
-    read -p "Would you like to automatically populate database config? [yn] " yn
-    echo $yn | tee -a $LOGFILE > /dev/null
-    case $yn in
-        [Yy]* )
-            echo ""
-            echo "Populating database config."
-            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
-            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='$RootDir/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='DownloadPath')"
-            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='imagePath')"
-            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='data')"
-            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='mincPath')"
-            mysql $mysqldb -h$mysqlhost --user=$mysqluser --password="$mysqlpass" -A -e "UPDATE Config SET Value='/data/$projectname/data/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
-            break;;
-        [Nn]* )
-            echo "Not populating database config."
-            break;;
-         * ) echo "Please enter 'y' or 'n'."
-    esac
-done;
-
 
 echo ""
 # Install external libraries using composer

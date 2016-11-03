@@ -18,13 +18,13 @@
 
 	DirectoryIndex main.php index.html
 
-	ErrorLog %LOGDIRECTORY%/%PROJECTNAME%-error.log
+	ErrorLog %LOGDIRECTORY%/loris-error.log
 
 	# Possible values include: debug, info, notice, warn, error, crit,
 	# alert, emerg.
 	LogLevel warn
 
-	CustomLog %LOGDIRECTORY%/%PROJECTNAME%-access.log combined
+	CustomLog %LOGDIRECTORY%/loris-access.log combined
 	ServerSignature Off
 
 	#SSLEngine Off  # change to On to enable, after updating cert paths below

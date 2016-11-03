@@ -44,19 +44,21 @@ var FeedbackPanelContent = React.createClass({
           currentEntryToggled: null
       });
   },
-    render: function(){
-      var table_headers = '';
-    	if (this.props.feedback_level == "instrument") {
-    	  table_headers = <tr className="info"><td>Fieldname</td><td>Author</td></tr>
-    	} else {
-    	    var table_headers = (
-            <tr className="info">
-              <td>Type</td>
-              <td>Author</td>
-              <td>Action</td>
-            </tr>
-          );
-    	}
+    render: function() {
+
+      var headers = ["Type", "Author", "Status"];
+
+      if (this.props.feedback_level === "instrument") {
+        headers[0] = "Fieldname";
+      }
+
+      var table_headers = (
+        <tr className="info">
+          {headers.map(function(header) {
+            return (<td>{header}</td>);
+          })}
+        </tr>
+      );
 
     if (this.props.threads.length){
       var currentEntryToggled = this.state.currentEntryToggled;
@@ -95,8 +97,8 @@ var FeedbackPanelContent = React.createClass({
         </thead>
         {feedbackRows}
         </table>
-	
-	
+
+
       return(
         <div className="panel-collapse collapse in">
         <div className="panel-body">
@@ -321,7 +323,7 @@ var FeedbackPanelRow = React.createClass({
     createNewThread: function(){
 
       var that = this;
-      if(this.state.text_value.length){ 
+      if(this.state.text_value.length){
       request = $.ajax({
         type: "POST",
         url: loris.BaseURL + "/bvl_feedback/ajax/new_bvl_feedback.php",
@@ -348,7 +350,7 @@ var FeedbackPanelRow = React.createClass({
         }
       });
       }
-	
+
     },
     render: function(){
       var options = [];
@@ -361,7 +363,7 @@ var FeedbackPanelRow = React.createClass({
 	if(this.props.feedback_level == "instrument"){
 	          var fieldname_select = <div className="form-group">
 	<div className="row">
-	
+
       <label className="col-xs-4">Field Name</label>
       <div className="col-xs-8">
       <select className="form-control input-sm" name = "input_type" selected={this.state.select_value} onChange={this.handleSelectChange} className="form-control">
@@ -433,7 +435,7 @@ var FeedbackSummaryPanel = React.createClass({
        <th nowrap="nowrap">Visit</th>
 
         <th nowrap="nowrap"># Threads</th>
-	</tr>	
+	</tr>
 	</thead>
 	<tbody>
 	{summary_rows}
@@ -458,7 +460,7 @@ var FeedbackPanel = React.createClass({
     },
       componentDidMount: function(){
 	  this.loadSummaryServerData();
-	  
+
       var that = this;
       request = $.ajax({
         type: "POST",
@@ -500,7 +502,7 @@ var FeedbackPanel = React.createClass({
         error: function (xhr, desc, err){
           console.log(xhr);
           console.log("Details: " + desc + "\nError:" + err);
-        }	    
+        }
 	});
     },
       loadThreadServerState: function(){
@@ -571,7 +573,7 @@ var FeedbackPanel = React.createClass({
         threads.unshift(entry);
 
 	  var that = this;
-	  
+
 	request = $.ajax({
 	    type:"POST",
 	    url: loris.BaseURL + "/bvl_feedback/ajax/open_bvl_feedback_thread.php",
@@ -588,10 +590,10 @@ var FeedbackPanel = React.createClass({
         error: function (xhr, desc, err){
           console.log(xhr);
           console.log("Details: " + desc + "\nError:" + err);
-        }	    
+        }
 	});
 
-	  
+
       },
     render: function(){
       title = "New " + this.props.feedback_level + " level feedback";
