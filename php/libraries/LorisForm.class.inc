@@ -47,6 +47,7 @@ class LorisForm
                           'numeric',
                           'regex',
                           'email',
+                          'maxlength',
                          );
 
     /**
@@ -1165,6 +1166,17 @@ class LorisForm
 
                     $errors[$el['name']] = "email fail";
                 }
+
+                if (isset($el['maxlength'])
+                    && strlen($value) > $el['maxlength']['maxlength']
+                ) {
+                    $this->setElementError(
+                        $el['name'],
+                        $el['maxlength']['message']
+                    );
+
+                    $errors[$el['name']] = "maxlength fail";
+                }
             }
         }
         foreach ($this->formRules as $rule) {
@@ -1576,6 +1588,13 @@ class LorisForm
         if ($type === 'email') {
             $this->form[$element]['email']    = true;
             $this->form[$element]['emailMsg'] = $message;
+        }
+
+        if ($type === 'maxlength') {
+            $this->form[$element]['maxlength'] = array(
+                                                  'message'   => $message,
+                                                  'maxlength' => func_get_arg(3),
+                                                 );
         }
     }
 
