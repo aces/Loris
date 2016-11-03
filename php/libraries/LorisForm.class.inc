@@ -45,6 +45,7 @@ class LorisForm
                           'requiredIf',
                           'required',
                           'numeric',
+                          'regex',
                          );
 
     /**
@@ -1141,6 +1142,18 @@ class LorisForm
 
                     $errors[$el['name']] = "numeric fail";
                 }
+
+                if (isset($el['regex'])) {
+                    foreach ($el['regex'] as $regex) {
+                        if (!empty($value)
+                            && !preg_match($regex['match'], $value)
+                        ) {
+                            $this->setElementError($el['name'], $regex["regexMsg"]);
+                            $errors[$el['name']] = "regex fail";
+                            break;
+                        }
+                    }
+                }
             }
         }
         foreach ($this->formRules as $rule) {
@@ -1540,6 +1553,13 @@ class LorisForm
         if ($type === 'numeric') {
             $this->form[$element]['numeric']    = true;
             $this->form[$element]['numericMsg'] = $message;
+        }
+
+        if ($type === 'regex') {
+            $this->form[$element]['regex'][] = array(
+                                                'regexMsg' => $message,
+                                                'match'    => func_get_arg(3),
+                                               );
         }
     }
 
