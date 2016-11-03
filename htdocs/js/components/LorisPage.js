@@ -75,8 +75,6 @@ var LorisPage = function (_React$Component) {
         }
       });
 
-      this.QueryString = queryString;
-
       this.setState({
         Filter: queryStringObj,
         QueryString: queryString

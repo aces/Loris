@@ -56,8 +56,6 @@ class LorisPage extends React.Component {
       }
     });
 
-    this.QueryString = queryString;
-
     this.setState({
       Filter: queryStringObj,
       QueryString: queryString
