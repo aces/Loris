@@ -1,5 +1,13 @@
-/* exported RDicomArchive */
-/* global QueryString  */
+/* exported DicomArchive */
+/* global LorisPage, formatColumn */
+
+const defaultProps = {
+  Gender: {
+    M: 'Male',
+    F: 'Female',
+    O: 'N/A'
+  }
+};
 
 /**
  * DICOM Archive Page.
@@ -11,55 +19,28 @@
  * @version 1.0.0
  *
  * */
-var DicomArchive = React.createClass({
-  propTypes: {
-    Module: React.PropTypes.string.isRequired
-  },
-  mixins: [React.addons.PureRenderMixin],
-  getInitialState: function() {
-    return {
-      Filter: {}
+class DicomArchive extends LorisPage {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      Sites: {}
     };
-  },
-  getDefaultProps: function() {
-    return {
-      Gender: {
-        M: 'Male',
-        F: 'Female',
-        O: 'N/A'
-      }
-    };
-  },
-  componentDidMount: function() {
-    var formRefs = this.refs;
-    var queryString = new QueryString();
-    var queryStringObj = queryString.get();
 
-    // Populate input fields from query string
-    Object.keys(queryStringObj).map(function(key) {
-      if (formRefs[key].state && queryStringObj[key]) {
-        formRefs[key].state.value = queryStringObj[key];
-      }
-    });
+    // Bind component instance to custom methods
+    this.setFilter = this.setFilter.bind(this);
+    this.loadData = this.loadData.bind(this);
+    this.showSpinner = this.showSpinner.bind(this);
+  }
 
-    this.setState({
-      Filter: queryStringObj,
-      QueryString: queryString
-    });
-  },
-  setFilter: function(fieldName, fieldValue) {
-    // Create deep copy of a current filter
-    var Filter = JSON.parse(JSON.stringify(this.state.Filter));
-    var queryString = this.state.QueryString;
-    var formRefs = this.refs;
-
-    // If fieldName is part of the form, add to querystring
-    if (formRefs.hasOwnProperty(fieldName)) {
-      queryString.set(Filter, fieldName, fieldValue);
-    } else {
-      queryString.clear(this.props.Module);
+  componentDidMount() {
+    super.componentDidMount();
+    if (this.props.DataURL) {
+      this.loadData(this.props.DataURL, null, null);
     }
+  }
 
+  setFilter(fieldName, fieldValue) {
     // Special treatment for site, to explicitly set it as an integer value
     if (fieldName === "site") {
       var number = Number.parseInt(fieldValue, 10);
@@ -67,33 +48,15 @@ var DicomArchive = React.createClass({
         fieldValue = number;
       }
     }
+    super.setFilter(fieldName, fieldValue);
+  }
 
-    if (fieldValue === "") {
-      delete Filter[fieldName];
-    } else {
-      Filter[fieldName] = fieldValue;
+  render() {
+    // Waiting for async data to load
+    if (!this.state.isLoaded) {
+      return super.showSpinner();
     }
 
-    this.setState({Filter: Filter});
-  },
-  clearFilter: function() {
-    var queryString = this.state.QueryString;
-    var formRefs = this.refs;
-
-    // Clear query string
-    queryString.clear(this.props.Module);
-
-    // Reset state of child components of FilterTable
-    Object.keys(formRefs).map(function(ref) {
-      if (formRefs[ref].state && formRefs[ref].state.value) {
-        formRefs[ref].state.value = "";
-      }
-    });
-
-    // Clear filter
-    this.setState({Filter: {}});
-  },
-  render: function() {
     // Defining element names here ensures that `name` and `ref`
     // properties of the element are always kept in sync
     var patientID = "patientID";
@@ -133,9 +96,9 @@ var DicomArchive = React.createClass({
               <SelectElement
                 name={site}
                 label="Sites"
-                options={this.props.Sites}
+                options={this.state.Data.Sites}
                 onUserInput={this.setFilter}
-                value={this.state.Filter.sites}
+                value={this.state.Filter.site}
                 ref={site}
               />
             </div>
@@ -185,7 +148,7 @@ var DicomArchive = React.createClass({
                 name={seriesUID}
                 label="Series UID"
                 onUserInput={this.setFilter}
-                value={this.state.Filter.seriesUID}
+                value={this.state.Filter.seriesuid}
                 ref={seriesUID}
               />
             </div>
@@ -207,6 +170,18 @@ var DicomArchive = React.createClass({
       </div>
     );
   }
-});
+}
 
-var RDicomArchive = React.createFactory(DicomArchive);
+DicomArchive.defaultProps = defaultProps;
+
+window.onload = function() {
+  var dataURL = loris.BaseURL + "/dicom_archive/?format=json";
+  var dicomArchive = (
+    <DicomArchive
+      Module="dicom_archive"
+      DataURL={dataURL}
+      getFormattedCell={formatColumn}
+    />
+  );
+  React.render(dicomArchive, document.getElementById("page-dicom-archive"));
+};
