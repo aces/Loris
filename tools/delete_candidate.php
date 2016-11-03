@@ -124,13 +124,13 @@ foreach ($mri_scannerIDs as $mri_scannerID) {
       foreach ($fileIDs as $fileID) {
       
       $DB->delete("feedback_mri_comments",
-                           array("FileID" => $FileID['FileID']));
+                           array("FileID" => $fileID['FileID']));
       $DB->delete("files_intermediary",
-                           array("Input_FileID" => $FileID['FileID']));
+                           array("Input_FileID" => $fileID['FileID']));
       $DB->delete("files_intermediary",
-                           array("Output_FileID" => $FileID['FileID']));     
+                           array("Output_FileID" => $fileID['FileID']));     
       $DB->delete("parameter_file", 
-                           array("FileID" => $FileID['FileID']));
+                           array("FileID" => $fileID['FileID']));
       
       };       
 
