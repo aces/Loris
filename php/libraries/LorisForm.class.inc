@@ -46,6 +46,7 @@ class LorisForm
                           'required',
                           'numeric',
                           'regex',
+                          'email',
                          );
 
     /**
@@ -1154,6 +1155,16 @@ class LorisForm
                         }
                     }
                 }
+
+                if (isset($el['email'])
+                    && $el['email'] === true
+                    && !filter_var($value, FILTER_VALIDATE_EMAIL)
+                    && !empty($value)
+                ) {
+                    $this->setElementError($el['name'], $el['emailMsg']);
+
+                    $errors[$el['name']] = "email fail";
+                }
             }
         }
         foreach ($this->formRules as $rule) {
@@ -1560,6 +1571,11 @@ class LorisForm
                                                 'regexMsg' => $message,
                                                 'match'    => func_get_arg(3),
                                                );
+        }
+
+        if ($type === 'email') {
+            $this->form[$element]['email']    = true;
+            $this->form[$element]['emailMsg'] = $message;
         }
     }
 
