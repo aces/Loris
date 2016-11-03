@@ -40,6 +40,12 @@ class LorisForm
     var $enctype       = '';
     var $groupMapping  = array();
     var $action        = '';
+    var $allowedRules  = array(
+                          'compare',
+                          'requiredIf',
+                          'required',
+                          'numeric',
+                         );
 
     /**
      * Creates and returns an element that can be added
@@ -1178,7 +1184,7 @@ class LorisForm
         // make sure $format is a properly structure array
         if(!is_array($elements) || count($elements) != 2) {
             throw new InvalidArgumentException(
-                "RequiredIf rule expects two elements\n";
+                "RequiredIf rule expects two elements\n"
             );
         }
 
@@ -1482,6 +1488,11 @@ class LorisForm
      */
     function addRule($element, $message, $type)
     {
+        if (!in_array($type, $this->allowedRules)) {
+            throw new LorisException(
+                "Rule of type $type is not supported"
+            );
+        }
         if (is_array($element)) {
             if ($type === 'compare') {
                 $this->form[$element[0]]['compare'] = $element[1];
