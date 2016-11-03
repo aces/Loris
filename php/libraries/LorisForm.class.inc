@@ -27,6 +27,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+
 class LorisForm
 {
 
@@ -1137,16 +1138,73 @@ class LorisForm
             }
         }
         foreach ($this->formRules as $rule) {
-            $violations = call_user_func($rule, $values);
-            if (!empty($violations)) {
-                foreach ($violations as $element => $msg) {
-                    $this->setElementError($element, $msg);
-                    $errors[$element] = "custom fail";
+            if (is_callable($rule)) {
+                $violations = call_user_func($rule, $values);
+                if (!empty($violations)) {
+                    foreach ($violations as $element => $msg) {
+                        $this->setElementError($element, $msg);
+                        $errors[$element] = "custom fail";
+                    }
+                }
+            } else if (isset($rule["requiredIf"])) {
+                if (!$this->validateRequireIf(
+                        $rule["requiredIf"]["elements"],
+                        $rule["requiredIf"]["format"]
+                    )
+                ) {
+                    $this->setElementError(
+                        $rule["requiredIf"]["elements"][0],
+                        $rule["requiredIf"]["message"]
+                    );
+                    $errors[$rule["requiredIf"]["elements"][0]] = "requiredIf fail";
                 }
             }
         }
 
         return empty($errors);
+    }
+    /**
+     * performs the RequiredIf validation
+     * note that it will print() if you use it badly
+     *
+     * @param array $elements the two element array - [0] is the
+     * element, [1] is the controller
+     * @param array $format   the optional array containing elements 'operator' and 'value'
+     * @return boolean
+     * @access public
+     */
+    function validateRequireIf($elements, $format)
+    {
+        // make sure $format is a properly structure array
+        if(!is_array($elements) || count($elements) != 2) {
+            throw new InvalidArgumentException(
+                "RequiredIf rule expects two elements\n";
+            );
+        }
+
+        // default operator and value to != ''
+        if(empty($format['operator'])) $format['operator'] = '!=';
+        if(!isset($format['value']))    $format['value']    = '';
+
+        // confirm that the operator is in the set of valid operators
+        $validOperators = array('==', '===', '!=', '<>', '!==', '<', '>', '<=', '>=');
+        if(!in_array($format['operator'], $validOperators)) {
+            throw new LorisException(
+                "operator is not a valid operator from the set "
+                . join(', ', $this->validOperators)
+            );
+        }
+
+        // create the comparison function, based on the defined operator
+        $compareFunction = create_function('$a,$b', "return (\$a $format[operator] \$b);");
+
+        // check the case where the controller operator value is true
+        if($compareFunction($this->getValue($elements[1]), $format['value'])) {
+            return $this->getValue($elements[0]) != '';
+        }
+
+        // if controller operator value is false, validate true
+        return true;
     }
 
     /**
@@ -1428,6 +1486,13 @@ class LorisForm
             if ($type === 'compare') {
                 $this->form[$element[0]]['compare'] = $element[1];
                 $this->form[$element[1]]['compare'] = $element[0];
+            } else if ($type === 'requiredIf') {
+                // $this->form->addRule(array('Informant_other', 'Informant'), 'Other is required if available', 'requiredIf', array('operator'=>'==', 'value'=>'Other'));
+                $this->formRules[]['requiredIf'] = array(
+                                                        "elements" => $element,
+                                                        "format"   => func_get_arg(3),
+                                                        "message"  => $message,
+                                                     );
             }
             return;
         }
