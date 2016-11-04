@@ -265,8 +265,11 @@ class NDB_Form_Dashboard extends NDB_Form
         // Document Repository Items
         if ($user->hasPermission('bvl_feedback')) {
             $bvl_feedback = $DB->pselect(
-                "SELECT fbt.Name, fbe.Testdate, fbe.Comment, fbth.FieldName, fbth.CommentID, fbth.SessionID, fbth.CandID, fbth.Feedback_level
-                 FROM feedback_bvl_entry fbe JOIN feedback_bvl_thread fbth USING (FeedbackID) JOIN feedback_bvl_type fbt USING (Feedback_type)
+                "SELECT fbt.Name, fbe.Testdate, fbe.Comment, fbth.FieldName, 
+                fbth.CommentID, fbth.SessionID, fbth.CandID, fbth.Feedback_level
+                 FROM feedback_bvl_entry fbe 
+                 JOIN feedback_bvl_thread fbth USING (FeedbackID) 
+                 JOIN feedback_bvl_type fbt USING (Feedback_type)
                  WHERE fbth.Status='opened' AND fbth.Active='Y'
                  ORDER BY Testdate DESC LIMIT 4",
                 array()
@@ -281,10 +284,14 @@ class NDB_Form_Dashboard extends NDB_Form
                     $bvl_feedback[$i]['URL'] = '/' . $bvl_feedback[$i]['CandID'];
                 } else if ($bvl_feedback[$i]['Feedback_level'] == 'instrument') {
                     $instrument = $DB->pselectOne(
-                        "SELECT Test_name from flag WHERE CommentID=:cid", array('cid' => $bvl_feedback[$i]['CommentID'])
+                        "SELECT Test_name from flag WHERE CommentID=:cid",
+                        array('cid' => $bvl_feedback[$i]['CommentID'])
                     );
                     if ($instrument !== null) {
-                        $bvl_feedback[$i]['URL'] = '/' . $instrument . '/?candID=' . $bvl_feedback[$i]['CandID'] . '&sessionID=' . $bvl_feedback[$i]['SessionID'] . '&commentID=' . $bvl_feedback[$i]['CommentID'];
+                        $bvl_feedback[$i]['URL'] = '/' . $instrument . '/?candID='
+                            . $bvl_feedback[$i]['CandID'] . '&sessionID='
+                            . $bvl_feedback[$i]['SessionID'] . '&commentID='
+                            . $bvl_feedback[$i]['CommentID'];
                     }
                 }
             }
