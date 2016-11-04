@@ -182,7 +182,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
      */
     function toJSON()
     {
-        $result = $this->toArray();
+        $result          = $this->toArray();
         $result['Sites'] = \Utility::getSiteList();
 
         return json_encode($result);
