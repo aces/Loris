@@ -303,6 +303,61 @@ class NDB_Form_User_Accounts extends NDB_Form
         unset($values['examiner_radiologist']);
         //END EXAMINER UPDATE
 
+
+
+        // NOTIFICATIONS
+        foreach ($values as $k=>$v) {
+            if (preg_match("/^notif_[0-9]_[0-9]+$/", $k)) {
+                $eventIDs = $DB->pselect(
+                    'SELECT d.EventID FROM database_events d',
+                    array()
+                );
+                $uid = $values['UserID'];
+                foreach ($eventIDs as $ar) {
+                    foreach ($ar as $eid) {
+                        $parse_key = explode('_', $k);
+                        $nid = $parse_key[2];
+
+                        $result = $DB->pselectRow(
+                            "SELECT *
+                          FROM user_notification_rel 
+                          WHERE UserID=:uid AND EventID=:eid",
+                            array(
+                                "uid" => $uid,
+                                "eid" => $eid,
+                            )
+                        );
+
+                        if (empty($result) || is_null($result)) {
+                            $DB->insert(
+                                'user_notification_rel',
+                                array(
+                                    'UserID' => $uid,
+                                    'NotificationMethodID' => $nid,
+                                    'EventID' => $eid
+                                )
+                            );
+                        } else {
+                            $DB->update(
+                                'user_notification_rel',
+                                array(
+                                    'NotificationMethodID' => $nid
+
+                                ),
+                                array(
+                                    'UserID' => $uid,
+                                    'EventID' => $eid
+                                )
+                            );
+                        }
+                    }
+                    unset($values[$k]);
+                }
+            }
+         }
+        // END NOTIFICATIONS
+
+
         // make the set
         foreach ($values as $key => $value) {
             $set[$key] = $value;
@@ -724,6 +779,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         ///get the value for additional_user_info flag
         $config = NDB_Config::singleton();
         $additional_user_info = $config->getSetting('additional_user_info');
+        $DB      =& Database::singleton();
 
         //------------------------------------------------------------
 
@@ -799,25 +855,50 @@ class NDB_Form_User_Accounts extends NDB_Form
             255
         );
 
+        // TODO: Add phone number
+
         // password
         $this->form->addElement('password', 'Password_md5', 'New Password');
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
 
+        $notificationOptions = array();
+        $notificationMethods
+            = $DB->pselect(
+            'SELECT NotificationMethodID, Method FROM notification_methods',
+            array()
+        );
+        foreach ($notificationMethods as $notificationMethod) {
+            $notificationOptions[$notificationMethod['NotificationMethodID']] = $notificationMethod['Method'];
+        }
+
         // document repository notifications
         $editor = User::singleton();
-        if ($editor->hasPermission('document_repository_view')
-            || $editor->hasPermission('document_repository_delete')
-        ) {
-                $doc_Repo_Notifications_Options
-                    = array(
-                       'N' => 'No',
-                       'Y' => 'Yes',
-                      );
-                $this->addSelect(
-                    'Doc_Repo_Notifications',
-                    'Receive Document Repository email notifications',
-                    $doc_Repo_Notifications_Options
+
+        $databaseEvents = $DB->pselect(
+            'SELECT d.EventID, d.Description, p.code FROM database_events d JOIN permissions p ON d.PermID=p.permID',
+            array()
+        );
+
+        $this->tpl_data['Notifications'] = $databaseEvents;
+
+        foreach ($databaseEvents as $event) {
+            if ($editor->hasPermission($event['code'])) {
+                foreach ($notificationMethods as $row) {
+                    $group_meth[] = $this->createCheckbox(
+                        'notif_'.$event['EventID'].'_'.$row['NotificationMethodID'],
+                        $row['Method'],
+                        array()
+                    );
+                }
+                $this->addGroup(
+                    $group_meth,
+                    $event['code'],
+                    $event['Description'],
+                    $this->_GUIDelimiter,
+                    false
                 );
+                unset($group_meth);
+            }
         }
 
         //------------------------------------------------------------
