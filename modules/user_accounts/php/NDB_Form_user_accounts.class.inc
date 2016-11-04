@@ -304,6 +304,13 @@ class NDB_Form_User_Accounts extends NDB_Form
         //END EXAMINER UPDATE
 
 
+        $user   = User::singleton();
+
+        $username = $user->getUsername();
+
+        $uid = $DB->pselectOne('SELECT ID FROM users WHERE UserID=:uid',
+        array('uid'=>$username)
+        );
 
         // NOTIFICATIONS
         foreach ($values as $k=>$v) {
@@ -312,7 +319,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     'SELECT d.EventID FROM database_events d',
                     array()
                 );
-                $uid = $values['UserID'];
+
                 foreach ($eventIDs as $ar) {
                     foreach ($ar as $eid) {
                         $parse_key = explode('_', $k);
