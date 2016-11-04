@@ -11,6 +11,9 @@
 .document-repository-item {
     word-wrap: break-word;
 }
+.bvl-feedback-item {
+    word-wrap: break-word;
+}
 .huge {
     font-size: 30px;
 }
