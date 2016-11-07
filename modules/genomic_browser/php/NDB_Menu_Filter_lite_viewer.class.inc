@@ -223,6 +223,7 @@ class NDB_Menu_Lite_Viewer extends NDB_Menu_Filter
                 $baseurl . '/js/d3.min.js',
                 $baseurl . '/js/c3.min.js',
                 $baseurl . '/js/util/jstat.min.js',
+                $baseurl . '/genomic_browser/js/Box.js',
                 $baseurl . '/genomic_browser/js/lite_viewer_react_components.js',
                 $baseurl . '/genomic_browser/js/lite_viewer.js',
                 $baseurl . '/genomic_browser/js/genomic_browser.js',

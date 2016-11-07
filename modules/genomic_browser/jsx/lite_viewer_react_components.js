@@ -1053,25 +1053,17 @@ var SNP_track = React.createClass({
             var title = that.props.snpsList[key].rsID;
 
             return(
-                /*
-                <text
-                    className="snp"
-                    x={x}
-                    y={that.props.y}
-                >
-                    <tspan>{alleles[0]}</tspan>
-                    <tspan>{alleles[1]}</tspan>
-                 </text>
-                 */
                 React.createElement(
                     "rect",
                     {
                         className: "snp",
-                        "data-toggle": "tooltip",
+                        "data-toggle": "modal",
                         x: x,
                         y: that.props.y,
                         height: "20",
-                        width: "5"
+                        width: "5",
+                        "data-id": title,
+                        "data-target": "#myModal"
                     },
                     React.createElement(
                         "title",
