@@ -1,11 +1,5 @@
 "use strict";
 
-/* TODO ::
- - axes
- - title
- - boxplot labels
- */
-
 var GenomicViewer = React.createClass({
     displayName: "GenomicViewer",
 
@@ -145,6 +139,9 @@ var GenomicViewer = React.createClass({
             var beta_values = formatedData[group].sort();
             var cardinality = beta_values.length;
             var quartiles = jStat.quartiles(beta_values);
+            if (quartiles[0] === undefined) {
+                quartiles[0] = quartiles[1];
+            }
             var iqr = quartiles[2] - quartiles[0];
             var whiskerUp = jStat.max(beta_values.filter(function (x) {
                 return x < quartiles[2] + 1.5 * iqr;
@@ -166,8 +163,8 @@ var GenomicViewer = React.createClass({
                     q1: quartiles[0].toFixed(3),
                     median: quartiles[1].toFixed(3),
                     q3: quartiles[2].toFixed(3),
-                    whiskerUp: whiskerUp.toFixed(3),
-                    whiskerDown: whiskerDown.toFixed(3),
+                    whiskerUp: whiskerUp !== undefined ? whiskerUp.toFixed(3) : null,
+                    whiskerDown: whiskerDown !== undefined ? whiskerDown.toFixed(3) : null,
                     outliers: outliers.map(function (o) {
                         return o.toFixed(3);
                     })

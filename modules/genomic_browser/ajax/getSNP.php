@@ -31,7 +31,7 @@ if (false) {
 
 // TODO :: Add params from $_SESSION
 $params = array(
-    'v_chromosome' => $_REQUEST['chromosome'],
+    'v_chromosome' => 'chr' . $_REQUEST['chromosome'],
     'v_startloc'   => $_REQUEST['startLoc'],
     'v_endloc'     => $_REQUEST['endLoc']
 );
@@ -53,7 +53,7 @@ LEFT JOIN genome_loc
 LEFT JOIN candidate USING (CandID)
 WHERE  candidate.entity_type = 'Human'
        AND candidate.active = 'Y'
-       AND genome_loc.chromosome = :v_chromosome
+       AND genome_loc.chromosome LIKE :v_chromosome
        AND genome_loc.StartLoc BETWEEN :v_startloc AND :v_endloc
 ORDER  BY rsID,
           gender,
