@@ -1102,6 +1102,7 @@ var BrainMethyl_track = React.createClass({
     componentDidMount: function () {
 
         var that = this;
+/*
         $.ajax('https://genome.ucsc.edu/cgi-bin/das/hg19/features?segment=' + that.props.chromosome + ':' + that.props.from + ',' + that.props.to + ';type=wgEncodeBroadHistoneHsmmH3k4me1StdPk', {
             dataType: 'xml',
             data: null,
@@ -1125,6 +1126,7 @@ var BrainMethyl_track = React.createClass({
                 that.setState({ "error": "Unknown error loading data" });
             }
         });
+*/
     },
 
     render: function () {
@@ -1183,6 +1185,7 @@ var Genes_track = React.createClass({
     componentDidMount: function () {
 
         var that = this;
+/*
         $.ajax('https://genome.ucsc.edu/cgi-bin/das/hg19/features?segment=' + that.props.chromosome + ':' + that.props.from + ',' + that.props.to + ';type=refGene', {
             dataType: 'xml',
             data: null,
@@ -1207,6 +1210,7 @@ var Genes_track = React.createClass({
                 that.setState({ "error": "Unknown error loading data" });
             }
         });
+*/
     },
 
     onClickHandler: function (link) {

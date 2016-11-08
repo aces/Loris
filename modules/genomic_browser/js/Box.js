@@ -284,6 +284,11 @@ d3.box = function() {
     return box;
   };
 
+  box.title = function(x) {
+    if (!arguments.length) return title;
+    title = x;
+    return box;
+  };
   return box;
 };
 
@@ -297,6 +302,10 @@ function boxQuartiles(d) {
     d3.quantile(d, .5),
     d3.quantile(d, .75)
   ];
+}
+
+function boxTitle(d) {
+  return "Title";
 }
 
 })();

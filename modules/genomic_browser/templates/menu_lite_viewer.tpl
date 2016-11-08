@@ -138,19 +138,25 @@ var chart = d3.box()
     .whiskers(iqr(1.5))
     .width(width)
     .height(height);
-
-d3.csv("ajax/morley.csv", function(error, csv) {
+function update () {
+d3.csv(loris.BaseURL + "/genomic_browser/ajax/demo.csv", function(error, csv) {
   if (error) throw error;
 
   var data = [];
+  var labels = [];
 
-  csv.forEach(function(x) {
-    var e = Math.floor(x.Expt -1),
+  csv.forEach(function(x, i) {
+    var e = Math.floor(x.Expt - 1),
         r = Math.floor(x.Run - 1),
         s = Math.floor(x.Speed),
+        l = x.Label,
         d = data[e];
-    if (!d) d = data[e] = [s];
-    else d.push(s);
+    if (!d) {
+      d = data[e] = [s];
+      labels[e] = l;
+    } else {
+      d.push(s);
+    }
     if (s > max) max = s;
     if (s < min) min = s;
   });
@@ -166,9 +172,9 @@ d3.csv("ajax/morley.csv", function(error, csv) {
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .call(chart);
-
-  console.log(svg.datum);
+  
 });
+}
 
 // Returns a function to compute the interquartile range.
 function iqr(k) {

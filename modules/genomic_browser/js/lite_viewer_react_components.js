@@ -843,11 +843,7 @@ var SNP_track = React.createClass({
                 height: "20",
                 width: "5",
                 "data-id": title,
-                "data-target": "#myModal",
-                onClick: function onClick() {
-                    var snp_id = $(this).data('id');
-                    $('#myModalLabel').html(snp_id);
-                }
+                "data-target": "#myModal"
             }, React.createElement("title", null, title));
         });
 
@@ -875,29 +871,31 @@ var BrainMethyl_track = React.createClass({
     componentDidMount: function componentDidMount() {
 
         var that = this;
-        $.ajax('https://genome.ucsc.edu/cgi-bin/das/hg19/features?segment=' + that.props.chromosome + ':' + that.props.from + ',' + that.props.to + ';type=wgEncodeBroadHistoneHsmmH3k4me1StdPk', {
-            dataType: 'xml',
-            data: null,
-            xhr: function xhr() {
-                var xhr = new window.XMLHttpRequest();
-                xhr.addEventListener("progress", function (evt) {
-                    console.log(evt);
+        /*
+                $.ajax('https://genome.ucsc.edu/cgi-bin/das/hg19/features?segment=' + that.props.chromosome + ':' + that.props.from + ',' + that.props.to + ';type=wgEncodeBroadHistoneHsmmH3k4me1StdPk', {
+                    dataType: 'xml',
+                    data: null,
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.addEventListener("progress", function (evt) {
+                            console.log(evt);
+                        });
+                        return xhr;
+                    },
+                    success: function (data) {
+                        var items = data.getElementsByTagName('FEATURE');
+                        var features = Object.keys(items).map(function (key) {
+                            return items[key];
+                        });
+                        that.setState({
+                            features: features
+                        });
+                    },
+                    error: function (data) {
+                        that.setState({ "error": "Unknown error loading data" });
+                    }
                 });
-                return xhr;
-            },
-            success: function success(data) {
-                var items = data.getElementsByTagName('FEATURE');
-                var features = Object.keys(items).map(function (key) {
-                    return items[key];
-                });
-                that.setState({
-                    features: features
-                });
-            },
-            error: function error(data) {
-                that.setState({ "error": "Unknown error loading data" });
-            }
-        });
+        */
     },
 
     render: function render() {
@@ -952,30 +950,32 @@ var Genes_track = React.createClass({
     componentDidMount: function componentDidMount() {
 
         var that = this;
-        $.ajax('https://genome.ucsc.edu/cgi-bin/das/hg19/features?segment=' + that.props.chromosome + ':' + that.props.from + ',' + that.props.to + ';type=refGene', {
-            dataType: 'xml',
-            data: null,
-            xhr: function xhr() {
-                var xhr = new window.XMLHttpRequest();
-                xhr.addEventListener("progress", function (evt) {
-                    console.log(evt);
+        /*
+                $.ajax('https://genome.ucsc.edu/cgi-bin/das/hg19/features?segment=' + that.props.chromosome + ':' + that.props.from + ',' + that.props.to + ';type=refGene', {
+                    dataType: 'xml',
+                    data: null,
+                    xhr: function () {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.addEventListener("progress", function (evt) {
+                            console.log(evt);
+                        });
+                        return xhr;
+                    },
+                    success: function (data) {
+                        var items = data.getElementsByTagName('FEATURE');
+                        var genes = Object.keys(items).map(function (key) {
+                            return items[key];
+                        });
+                        console.log(genes);
+                        that.setState({
+                            genes: genes
+                        });
+                    },
+                    error: function (data) {
+                        that.setState({ "error": "Unknown error loading data" });
+                    }
                 });
-                return xhr;
-            },
-            success: function success(data) {
-                var items = data.getElementsByTagName('FEATURE');
-                var genes = Object.keys(items).map(function (key) {
-                    return items[key];
-                });
-                console.log(genes);
-                that.setState({
-                    genes: genes
-                });
-            },
-            error: function error(data) {
-                that.setState({ "error": "Unknown error loading data" });
-            }
-        });
+        */
     },
 
     onClickHandler: function onClickHandler(link) {
