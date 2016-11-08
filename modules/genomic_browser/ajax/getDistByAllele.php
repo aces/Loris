@@ -48,8 +48,9 @@ $query       = "
   WHERE l1.Chromosome = l2.Chromosome
   AND s.rsID = :v_snp_id
   ORDER BY DistanceAbs
-  LIMIT 10
+  LIMIT 1
 ";
+// TODO :: We could increase the limit and let the user move from cpg to cpg (left <- -> right arrows) creating a new modal window for each.   
 
 $cpgs = $DB->pselect($query, $params );
 
@@ -80,12 +81,19 @@ foreach ($cpgs as $cpg) {
 header("content-type: text/plain");
 ini_set('default_charset', 'utf-8');
 
-echo 'counter,cpg_name,' . implode(',',array('Gender', 'BetaValue', 'Alleles')) . "\n";
+echo 'cpg_num,cpg_name,alleles_num,' . implode(',',array('Gender', 'BetaValue', 'Alleles')) . "\n";
+
 
 $counter = 1;
 foreach ($results as $cpg_name => $cpg) {
+    $alleles = array();
     foreach($cpg as $result) {
-        echo "$counter,$cpg_name," . implode(',',array_values($result)) . "\n";
+        $values = array_values($result);
+        if (array_search($values[2],$alleles) === false) {
+            $alleles[] = $values[2];
+        }
+        $index = array_search($values[2],$alleles);
+        echo "$counter,$cpg_name,$index," . implode(',',$values) . "\n";
     }
     $counter++;
 };

@@ -36,8 +36,6 @@ $params = array(
     'v_cpgendloc'     => $_REQUEST['endLoc']
 );
 
-error_log(print_r($params,true));
-
 $DB          = Database::singleton();
 $query       = "
 SELECT 
