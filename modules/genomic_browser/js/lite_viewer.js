@@ -28,5 +28,5 @@
 $(document).on("click", ".snp", function () {
      var snpId = $(this).data('id');
      $("#myModalLabel").html( snpId );
-     update();
+     update(snpId);
 });

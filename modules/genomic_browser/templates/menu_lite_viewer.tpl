@@ -138,8 +138,8 @@ var chart = d3.box()
     .whiskers(iqr(1.5))
     .width(width)
     .height(height);
-function update () {
-d3.csv(loris.BaseURL + "/genomic_browser/ajax/demo.csv", function(error, csv) {
+function update (snpId) {
+d3.csv(loris.BaseURL + "/genomic_browser/ajax/getDistByAllele.php?snp=" + snpId, function(error, csv) {
   if (error) throw error;
 
   var data = [];
@@ -163,7 +163,7 @@ d3.csv(loris.BaseURL + "/genomic_browser/ajax/demo.csv", function(error, csv) {
 
   chart.domain([min, max]);
 
-  var svg = d3.select(".modal-body").selectAll("svg")
+  var boxes = d3.select(".modal-body").selectAll("svg")
       .data(data)
     .enter().append("svg")
       .attr("class", "box")
@@ -172,6 +172,14 @@ d3.csv(loris.BaseURL + "/genomic_browser/ajax/demo.csv", function(error, csv) {
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .call(chart);
+
+  var title = d3.select(".modal-body").selectAll("svg").append("text")
+      .data(labels)
+      .text(function (d) {return d;})
+      .attr("class", "box-title")
+      .attr("x", (width + margin.left + margin.right)/2)
+      .attr("y", height + margin.bottom + margin.top)
+      .attr("text-anchor","middle");
   
 });
 }
