@@ -29,6 +29,7 @@ var FormElement = React.createClass({
     method: React.PropTypes.oneOf(['POST', 'GET']),
     class: React.PropTypes.string,
     columns: React.PropTypes.number,
+    formElements: React.PropTypes.array,
     onSubmit: React.PropTypes.func,
     onUserInput: React.PropTypes.func
   },
@@ -41,6 +42,7 @@ var FormElement = React.createClass({
       class: 'form-horizontal',
       columns: 1,
       fileUpload: false,
+      formElements: [],
       onSubmit: function() {
         console.warn('onSubmit() callback is not set!');
       },
@@ -50,27 +52,26 @@ var FormElement = React.createClass({
     };
   },
   getFormElements: function() {
-    var formElementsHTML = [];
-    var columns = this.props.columns;
-    var maxColumnSize = 12;
-    var colSize = Math.floor(maxColumnSize / columns);
-    var colClass = "col-xs-12 col-sm-" + colSize + " col-md-" + colSize;
+    const formElementsHTML = [];
+    const columns = this.props.columns;
+    const maxColumnSize = 12;
+    const colSize = Math.floor(maxColumnSize / columns);
+    const colClass = "col-xs-12 col-sm-" + colSize + " col-md-" + colSize;
 
     // Render elements from JSON
-    var filter = this.props.formElements;
-    var userInput = this.props.onUserInput;
-    if (filter) {
-      filter.forEach(function(element) {
-        formElementsHTML.push(
-          <div className={colClass}>
-            <LorisElement
-              element={element}
-              onUserInput={userInput}
-            />
-          </div>
-        );
-      });
-    }
+    const filter = this.props.formElements;
+    const userInput = this.props.onUserInput;
+
+    filter.forEach(function(element) {
+      formElementsHTML.push(
+        <div className={colClass}>
+          <LorisElement
+            element={element}
+            onUserInput={userInput}
+          />
+        </div>
+      );
+    });
 
     // Render elements from React
     React.Children.forEach(this.props.children, function(child) {
@@ -870,34 +871,34 @@ var ButtonElement = React.createClass({
 var LorisElement = React.createClass({
 
   render: function() {
-    var props = this.props.element;
-    props.ref = props.name;
-    props.onUserInput = this.props.onUserInput;
+    var elementProps = this.props.element;
+    elementProps.ref = elementProps.name;
+    elementProps.onUserInput = this.props.onUserInput;
 
     var elementHtml = <div></div>;
 
-    switch (props.type) {
+    switch (elementProps.type) {
       case 'text':
-        elementHtml = (<TextboxElement {...props} />);
+        elementHtml = (<TextboxElement {...elementProps} />);
         break;
       case 'select':
-        elementHtml = (<SelectElement {...props} />);
+        elementHtml = (<SelectElement {...elementProps} />);
         break;
       case 'date':
-        elementHtml = (<DateElement {...props} />);
+        elementHtml = (<DateElement {...elementProps} />);
         break;
       case 'numeric':
-        elementHtml = (<NumericElement {...props} />);
+        elementHtml = (<NumericElement {...elementProps} />);
         break;
       case 'textarea':
-        elementHtml = (<TextareaElement {...props} />);
+        elementHtml = (<TextareaElement {...elementProps} />);
         break;
       case 'file':
-        elementHtml = (<FileElement {...props} />);
+        elementHtml = (<FileElement {...elementProps} />);
         break;
       default:
         console.warn(
-          "Element of type " + props.type + " is not currently implemented!"
+          "Element of type " + elementProps.type + " is not currently implemented!"
         );
         break;
     }

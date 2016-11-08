@@ -33,6 +33,7 @@ var FormElement = React.createClass({
     method: React.PropTypes.oneOf(['POST', 'GET']),
     class: React.PropTypes.string,
     columns: React.PropTypes.number,
+    formElements: React.PropTypes.array,
     onSubmit: React.PropTypes.func,
     onUserInput: React.PropTypes.func
   },
@@ -45,6 +46,7 @@ var FormElement = React.createClass({
       class: 'form-horizontal',
       columns: 1,
       fileUpload: false,
+      formElements: [],
       onSubmit: function onSubmit() {
         console.warn('onSubmit() callback is not set!');
       },
@@ -63,18 +65,17 @@ var FormElement = React.createClass({
     // Render elements from JSON
     var filter = this.props.formElements;
     var userInput = this.props.onUserInput;
-    if (filter) {
-      filter.forEach(function (element) {
-        formElementsHTML.push(React.createElement(
-          'div',
-          { className: colClass },
-          React.createElement(LorisElement, {
-            element: element,
-            onUserInput: userInput
-          })
-        ));
-      });
-    }
+
+    filter.forEach(function (element) {
+      formElementsHTML.push(React.createElement(
+        'div',
+        { className: colClass },
+        React.createElement(LorisElement, {
+          element: element,
+          onUserInput: userInput
+        })
+      ));
+    });
 
     // Render elements from React
     React.Children.forEach(this.props.children, function (child) {
@@ -998,33 +999,33 @@ var LorisElement = React.createClass({
 
 
   render: function render() {
-    var props = this.props.element;
-    props.ref = props.name;
-    props.onUserInput = this.props.onUserInput;
+    var elementProps = this.props.element;
+    elementProps.ref = elementProps.name;
+    elementProps.onUserInput = this.props.onUserInput;
 
     var elementHtml = React.createElement('div', null);
 
-    switch (props.type) {
+    switch (elementProps.type) {
       case 'text':
-        elementHtml = React.createElement(TextboxElement, props);
+        elementHtml = React.createElement(TextboxElement, elementProps);
         break;
       case 'select':
-        elementHtml = React.createElement(SelectElement, props);
+        elementHtml = React.createElement(SelectElement, elementProps);
         break;
       case 'date':
-        elementHtml = React.createElement(DateElement, props);
+        elementHtml = React.createElement(DateElement, elementProps);
         break;
       case 'numeric':
-        elementHtml = React.createElement(NumericElement, props);
+        elementHtml = React.createElement(NumericElement, elementProps);
         break;
       case 'textarea':
-        elementHtml = React.createElement(TextareaElement, props);
+        elementHtml = React.createElement(TextareaElement, elementProps);
         break;
       case 'file':
-        elementHtml = React.createElement(FileElement, props);
+        elementHtml = React.createElement(FileElement, elementProps);
         break;
       default:
-        console.warn("Element of type " + props.type + " is not currently implemented!");
+        console.warn("Element of type " + elementProps.type + " is not currently implemented!");
         break;
     }
 
