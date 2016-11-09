@@ -257,6 +257,7 @@ var FamilyInfo = React.createClass({
             updateResult: "success",
             formData: {}
           });
+            self.showAlertMessage();
 
               // Iterates through child components and resets state
               // to initial state in order to clear the form
@@ -276,6 +277,7 @@ var FamilyInfo = React.createClass({
               errorMessage: errorMessage
             }
             );
+            self.showAlertMessage();
         }
 
       }
@@ -341,6 +343,7 @@ var FamilyInfo = React.createClass({
 
             }
             );
+            self.showAlertMessage();
         },
         error: function(err) {
           if (err.responseText !== "") {
@@ -352,6 +355,7 @@ var FamilyInfo = React.createClass({
               }
 
                   );
+              self.showAlertMessage();
           }
         }
       }
