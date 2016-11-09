@@ -89,21 +89,20 @@ class User extends UserPermissions
         $notification_check = $DB->pselect(
             'SELECT unr.NotificationMethodID, unr.EventID FROM user_notification_rel unr 
             JOIN users u ON u.ID=unr.UserID WHERE u.UserID=:uid',
-            array('uid'=>$username)
+            array('uid' => $username)
         );
 
         $notification_info = array();
         if (!empty($notification_check) && !is_null($notification_check)) {
             foreach ($notification_check as $rw=>$val) {
-//                put vals here
+                //                put vals here
             }
         }
 
-
         // store user data in object property
-        $row['examiner'] =$examiner_info;
+        $row['examiner']     =$examiner_info;
         $row['notification'] = $notification_info;
-        $obj->userInfo   = $row;
+        $obj->userInfo       = $row;
         return $obj;
     }
 
