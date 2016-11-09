@@ -102,7 +102,7 @@ foreach ($instruments as $instrument) {
     
 }
 
-///Delete from the feedback related tables
+//Delete from the feedback related tables
 $Feedbackids = $DB->pselect(
     "SELECT fbt.FeedbackID from feedback_bvl_thread fbt WHERE CandID =:cid",
     array('cid'=>$DCCID)
@@ -116,6 +116,9 @@ $DB->delete("feedback_bvl_thread", array('CandID'=>$DCCID));
 
 //delete from the participant_status table
 $DB->delete("participant_status", array("CandID" => $DCCID));
+
+//delete from the SNP_candidate_rel table
+$DB->delete("SNP_candidate_rel", array("CandID" => $DCCID));
 
 //delete from the participant_status_history table
 $DB->delete("participant_status_history", array("CandID" => $DCCID));

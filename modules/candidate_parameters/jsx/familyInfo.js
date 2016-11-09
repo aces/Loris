@@ -249,6 +249,7 @@ var FamilyInfo = React.createClass(
                 updateResult: "success"
               }
                         );
+            self.showAlertMessage();
           },
           error: function(err) {
             var errorMessage = JSON.parse(err.responseText).message;
@@ -258,6 +259,7 @@ var FamilyInfo = React.createClass(
                 errorMessage: errorMessage
               }
                         );
+            self.showAlertMessage();
           }
 
         }
@@ -306,7 +308,7 @@ var FamilyInfo = React.createClass(
           if (familyMembers[field].ref !== null) {
             var reference = familyMembers[field].ref.split('_', 1);
             if (reference === familyID) {
-                            // TODO: remove fields immediately after deletion
+              // TODO: remove fields immediately after deletion
               familyMembers[field] = null;
             }
           }
@@ -327,6 +329,7 @@ var FamilyInfo = React.createClass(
                 updateResult: "success"
               }
                   );
+            self.showAlertMessage();
           },
           error: function(err) {
             if (err.responseText !== "") {
@@ -337,6 +340,7 @@ var FamilyInfo = React.createClass(
                   errorMessage: errorMessage
                 }
                       );
+              self.showAlertMessage();
             }
           }
         }

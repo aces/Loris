@@ -37,9 +37,26 @@ var ConsentStatus = React.createClass(
             return xhr;
           },
           success: function(data) {
+            var formData = {};
+            var consents = data.consents;
+            for (var consentStatus in consents) {
+              if (consents.hasOwnProperty(consentStatus)) {
+                var consentDate = consentStatus + "_date";
+                var consentDate2 = consentStatus + "_date2";
+                var consentWithdrawal = consentStatus + "_withdrawal";
+                var consentWithdrawal2 = consentStatus + "_withdrawal2";
+                formData[consentStatus] = data.consentStatuses[consentStatus];
+                formData[consentDate] = data.consentDates[consentStatus];
+                formData[consentDate2] = data.consentDates[consentStatus];
+                formData[consentWithdrawal] = data.withdrawals[consentStatus];
+                formData[consentWithdrawal2] = data.withdrawals[consentStatus];
+              }
+            }
+
             that.setState(
               {
                 Data: data,
+                formData: formData,
                 isLoaded: true
               }
                         );
@@ -107,10 +124,10 @@ var ConsentStatus = React.createClass(
           if (this.state.formData[consent] === "yes") {
             dateRequired[i] = true;
           }
-          if (this.state.formData[withdrawal] !== null &&
-                        this.state.formData[withdrawal] !== undefined
-                    ) {
+          if (this.state.formData[withdrawal]) {
             withdrawalRequired[i] = true;
+          } else {
+            withdrawalRequired[i] = false;
           }
           i++;
         }
@@ -128,7 +145,8 @@ var ConsentStatus = React.createClass(
           var consentWithdrawal = consentStatus + "_withdrawal";
           var consentWithdrawal2 = consentStatus + "_withdrawal2";
           var consentWithdrawalLabel = "Date of Withdrawal of " + label;
-          var consentWithdrawalConfirmationLabel = "Confirmation Date of Withdrawal of " + label;
+          var consentWithdrawalConfirmationLabel =
+            "Confirmation Date of Withdrawal of " + label;
 
           consents.push(
                         <SelectElement
@@ -200,9 +218,10 @@ var ConsentStatus = React.createClass(
           for (var field in this.state.Data.history[consentKey]) {
             if (this.state.Data.history[consentKey].hasOwnProperty(field)) {
               var line = "";
-              for (var field2 in this.state.Data.history[consentKey][field]) {
-                if (this.state.Data.history[consentKey][field].hasOwnProperty(field2)) {
-                  var current = this.state.Data.history[consentKey][field][field2];
+              var historyConsent = this.state.Data.history[consentKey][field];
+              for (var field2 in historyConsent) {
+                if (historyConsent.hasOwnProperty(field2)) {
+                  var current = historyConsent[field2];
                   if (current !== null) {
                     switch (field2) {
                       case 'data_entry_date':
@@ -364,6 +383,7 @@ var ConsentStatus = React.createClass(
                 updateResult: "success"
               }
                         );
+            self.showAlertMessage();
           },
           error: function(err) {
             if (err.responseText !== "") {
@@ -374,6 +394,7 @@ var ConsentStatus = React.createClass(
                   errorMessage: errorMessage
                 }
                     );
+              self.showAlertMessage();
             }
           }
 

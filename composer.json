@@ -14,7 +14,10 @@
         "phpunit/dbunit": ">=1.2",
         "facebook/webdriver" : "dev-master"
     },
+    "scripts": {
+      "pre-install-cmd": "mkdir -p project/libraries"
+    },
     "autoload" : {
-        "classmap": ["php/libraries", "php/exceptions"]
+        "classmap": ["project/libraries", "php/libraries", "php/exceptions"]
     }
 }

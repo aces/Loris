@@ -9,7 +9,6 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
-
   // If a column if set as hidden, don't display it
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
@@ -22,7 +21,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
 
   if (column === 'Metadata') {
-    var metadataURL = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" + row['TarchiveID'];
+    var metadataURL = loris.BaseURL + "/dicom_archive/viewDetails/?tarchiveID=" + row.TarchiveID;
     return React.createElement(
       'td',
       null,
@@ -35,14 +34,14 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'MRI Browser') {
-    if (row['SessionID'] === null || row['SessionID'] === '') {
+    if (row.SessionID === null || row.SessionID === '') {
       return React.createElement(
         'td',
         null,
-        ' '
+        '\xA0'
       );
     }
-    var mrlURL = loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row['SessionID'];
+    var mrlURL = loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID;
     return React.createElement(
       'td',
       null,

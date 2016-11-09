@@ -64,7 +64,7 @@ foreach($instruments AS $instrument){
                 $output .= "`CommentID` varchar(255) NOT NULL default '',\n
                             `UserID` varchar(255) default NULL,\n
                             `Examiner` varchar(255) default NULL,\n
-                            `Testdate` timestamp NOT NULL,\n
+                            `Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n
                             `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',\n";
             break;
 
