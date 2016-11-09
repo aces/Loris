@@ -60,7 +60,7 @@ foreach ($cpgs as $cpg) {
     SELECT 
       candidate.Gender,
       c.beta_value,
-      CONCAT(scr.AlleleA, scr.AlleleB) as Alleles
+      CASE WHEN scr.AlleleA < scr.AlleleB THEN CONCAT(scr.AlleleA, scr.AlleleB) ELSE CONCAT(scr.AlleleB, scr.AlleleA) END as Alleles
     FROM genomic_cpg c
     JOIN genomic_sample_candidate_rel gscr
       USING (sample_label)
