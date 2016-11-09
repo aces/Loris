@@ -237,7 +237,7 @@ $.ajax({
     type: 'post',
     success: function(data) {
         var recruitmentLineData = formatLineData(data);
-        var recruitmentLineChart = c3.generate({
+        recruitmentLineChart = c3.generate({
             bindto: '#recruitmentChart',
             data: {
                 x: 'x',

@@ -61,9 +61,32 @@ class User extends UserPermissions
 
         $row = $DB->pselectRow($query, array('UID' => $username));
 
-        // store user data in object property
-        $obj->userInfo = $row;
+        // Get examiner information
+        $examiner_check = $DB->pselect(
+            "SELECT full_name, centerID, radiologist, active, pending_approval 
+                  FROM examiners 
+                  WHERE full_name=:fn 
+                    AND (active='Y' OR (active='N' AND pending_approval='Y'))",
+            array(
+             "fn" => $row['Real_name'],
+            )
+        );
 
+        $examiner_info =array();
+        if (!empty($examiner_check) && !is_null($examiner_check)) {
+            foreach ($examiner_check as $rw=>$val) {
+                if ($val['active'] == 'Y') {
+                    $examiner_info['pending'] = $val['pending_approval'];
+                }
+                $examiner_info[$val['centerID']] =array(
+                                                   $val['active'],
+                                                   $val['radiologist'],
+                                                  );
+            }
+        }
+        // store user data in object property
+        $row['examiner'] =$examiner_info;
+        $obj->userInfo   = $row;
         return $obj;
     }
 
@@ -205,6 +228,18 @@ class User extends UserPermissions
             $this->userInfo['CenterID'],
             $config->getSetting('multiSiteEnabledCenters')
         );
+    }
+
+    /**
+     * Returns all sites where Examiner is active
+     *
+     * @return array
+     */
+    function getExaminerSites()
+    {
+        $site_list = $this->userInfo['examiner'];
+        unset($site_list['pending']);
+        return $site_list;
     }
 
     /**

@@ -1,33 +1,47 @@
-function formatColumn(column, cell, rowData, rowHeaders, issueID) {
-    // Create the mapping between rowHeaders and rowData in a row object.
+/* exported formatColumn */
+
+/**
+ * Modify behaviour of specified column cells in the Data Table component
+ * @param {string} column - column name
+ * @param {string} cell - cell content
+ * @param {arrray} rowData - array of cell contents for a specific row
+ * @param {arrray} rowHeaders - array of table headers (column names)
+ * @return {*} a formated table cell for a given column
+ */
+function formatColumn(column, cell, rowData, rowHeaders) {
+  // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
   rowHeaders.forEach(
-        function(header, index) {
-          row[header] = rowData[index];
-        },
-        this
-    );
+    function(header, index) {
+      row[header] = rowData[index];
+    },
+    this
+  );
 
   if (column === 'Title') {
-    var cellLinks = [];
-    cellLinks.push(<a
-            href={loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/"}>{row['Title']}</a>);
+    let cellLinks = [];
+    cellLinks.push(
+      <a href={loris.BaseURL + "/issue_tracker/edit/?issueID=" +
+      row['Issue ID'] + "&backURL=/issue_tracker/"}>
+        {row.Title}
+      </a>
+    );
     return (
-            <td>
-                {cellLinks}
-            </td>
-        );
+      <td>
+        {cellLinks}
+      </td>
+    );
   }
 
   if (column === 'Issue ID') {
-    var cellLinks = [];
-    cellLinks.push(<a
-        href={loris.BaseURL + "/issue_tracker/edit/?issueID=" + row['Issue ID'] + "&backURL=/issue_tracker/"}>{cell}</a>);
-    return (
-        <td>
-          {cellLinks}
-        </td>
+    let cellLinks = [];
+    cellLinks.push(
+      <a href={loris.BaseURL + "/issue_tracker/edit/?issueID=" +
+      row['Issue ID'] + "&backURL=/issue_tracker/"}>
+        {cell}
+      </a>
     );
+    return (<td>{cellLinks}</td>);
   }
 
   if (column === 'Priority') {

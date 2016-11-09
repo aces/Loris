@@ -107,21 +107,21 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
                               );
 
         $this->formToFilter = array(
-                               'issueID'    => 'i.issueID',
-                               'category'   => 'i.category',
-                               'module'     => 'l.Label',
-                               'PSCID'      => 'c.PSCID',
-                               'visitLabel' => 's.Visit_label',
-                               'reporter'   => 'i.reporter',
-                               'site'       => 'i.centerID',
-                               'watching'   => 'w.userID',
-                               'projectID'  => 'i.projectID',
-                               'status'     => 'i.status',
-                               'priority'   => 'i.priority',
-                               'keyword'    => 'ic.issueComment',
-                               'minDate'    => 'minDate',
-                               'maxDate'    => 'maxDate',
-            $user->getData('UserID') => 'watching',
+                               'issueID'                => 'i.issueID',
+                               'category'               => 'i.category',
+                               'module'                 => 'l.Label',
+                               'PSCID'                  => 'c.PSCID',
+                               'visitLabel'             => 's.Visit_label',
+                               'reporter'               => 'i.reporter',
+                               'site'                   => 'i.centerID',
+                               'watching'               => 'w.userID',
+                               'projectID'              => 'i.projectID',
+                               'status'                 => 'i.status',
+                               'priority'               => 'i.priority',
+                               'keyword'                => 'ic.issueComment',
+                               'minDate'                => 'minDate',
+                               'maxDate'                => 'maxDate',
+                               $user->getData('UserID') => 'watching',
                               );
 
         $this->EqualityFilters = array(
@@ -129,7 +129,10 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
                                   'i.centerID',
                                   'i.status',
                                  );
-        $this->searchKeyword   = array('ic.issueComment', 'i.title');
+        $this->searchKeyword   = array(
+                                  'ic.issueComment',
+                                  'i.title',
+                                 );
     }
 
     /**
@@ -160,7 +163,7 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
         }
 
         //reporters
-        $reporters = array('' => 'All');
+        $reporters         = array('' => 'All');
         $reporter_expanded = $db->pselect(
             "SELECT u.UserID, u.Real_name FROM issues i " .
             "INNER JOIN users u ON(i.assignee=u.UserID)",
@@ -169,7 +172,7 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
         foreach ($reporter_expanded as $r_row) {
             $reporters[$r_row['UserID']] = $r_row['Real_name'];
         }
-        
+
         //modules
         $modules_expanded = $db->pselect(
             "SELECT DISTINCT Label, ID FROM LorisMenu 
@@ -200,9 +203,12 @@ WHERE Parent IS NOT NULL ORDER BY Label",
                      'closed'       => 'Closed',
                     );
 
-        $unorgCategories = $db -> pselect( "SELECT categoryName
-        FROM issues_categories", []);
-        $categories = array('' => "All");
+        $unorgCategories = $db -> pselect(
+            "SELECT categoryName
+        FROM issues_categories",
+            []
+        );
+        $categories      = array('' => "All");
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
@@ -274,7 +280,7 @@ WHERE Parent IS NOT NULL ORDER BY Label",
      */
     function _addValidFilters($prepared_key, $field, $val)
     {
-        $user =& User::singleton();
+        $user  =& User::singleton();
         $query = '';
         if ((!empty($val) || $val === '0') && $field != 'order') {
             if (($field != 'w.userID')

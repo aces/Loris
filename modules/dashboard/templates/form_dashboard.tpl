@@ -115,6 +115,7 @@
                 </div>
             </div>
         </div>
+        <small><i>Note that the Recruitment and Study Progression charts include data from ineligible, excluded, and consent withdrawn candidates.</i></small>
     </div>
 
     <div class="col-lg-4">
@@ -145,9 +146,9 @@
                             {/if}
                             {if $incomplete_forms neq "" and $incomplete_forms neq 0}
                             {if $incomplete_forms_site eq "Site: all"}
-                            <a href="{$baseURL}/statistics/statistics_site/" class="list-group-item statistics">
+                            <a href="{$baseURL}/statistics/?submenu=statistics_site" class="list-group-item statistics">
                                 {else}
-                                <a href="{$baseURL}/statistics/statistics_site/?CenterID={$user_site}"
+                                <a href="{$baseURL}/statistics/?submenu=statistics_site&CenterID={$user_site}"
                                    class="list-group-item">
                                     {/if}
                                     <div class="row">

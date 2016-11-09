@@ -1,7 +1,7 @@
 /*global self: false, Blob: false */
-importScripts(loris.BaseURL + "/js/jszip/jszip.min.js");
 self.addEventListener('message', function (e) {
     "use strict";
+    importScripts(e.data.BaseURL + "/js/jszip/jszip.min.js");
     var i = 0,
         FileList = e.data.Files,
         generateZip = function () {

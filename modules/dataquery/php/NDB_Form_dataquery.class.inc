@@ -123,4 +123,23 @@ class NDB_Form_dataquery extends NDB_Form
             )
         );
     }
+
+    /**
+     * Include additional CSS files:
+     *  1. dataquery.css
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/dataquery/css/dataquery.css",
+            )
+        );
+    }
 }

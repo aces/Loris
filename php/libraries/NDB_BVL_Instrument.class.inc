@@ -407,66 +407,17 @@ class NDB_BVL_Instrument extends NDB_Page
         $this->form->setDefaults($defaults);
 
         if ($this->DataEntryType == 'DirectEntry') {
-            $renderer = new HTML_QuickForm_Renderer_Default();
+            $smarty = new Smarty_neurodb;
+
+            $formArray = $this->form->toElementArray();
             if (isset($this->testName)) {
-                $renderer->setFormTemplate(
-                    "<form{attributes}>
-                        <table id=\"instrument_" . $this->testName . "\"
-                          class=\"instrument\">
-                            {content}
-                        </table>
-                        </form>"
-                );
+                $formArray['tableID'] = "instrument_$this->testName";
             } else {
-                $renderer->setFormTemplate(
-                    "<form{attributes}>
-                        <table class=\"instrument\">{content}</table>
-                    </form>"
-                );
+                $formArray['tableID'] = "instrument";
             }
 
-            $renderer->setElementTemplate(
-                "<tr>
-                    <td class=\"lab\">
-                        <!-- BEGIN required -->
-                        <span style=\"color: #ff0000\">*</span>
-                        <!-- END required -->{label}
-                    </td>
-                    <td class=\"ele\">
-                    <!-- BEGIN error -->
-                    <span style=\"color: #ff0000\">{error}</span>
-                    <br />
-                    <!-- END error -->{element}
-                    </td>
-                </tr>"
-            );
-            $renderer->setElementTemplate(
-                "<tr>
-                    <td class=\"lab\">
-                    <i>{label}</i>
-                    </td>
-                    <td class=\"ele\">\t<i>{element}</i></td>
-                </tr>",
-                "static"
-            );
-            $renderer->setHeaderTemplate(
-                "<tr>
-                    <th colspan=\"2\"><br><b>{header}</b></th>
-                 </tr>"
-            );
-
-            // Any static element with the fieldname of "lorisSubHeader" will
-            // be shown with a colspan of 2 so that we can have instructions/labels
-            // in the direct data entry instruments that span into the column for
-            // data entry.
-            $renderer->setElementTemplate(
-                "<tr>
-                    <td colspan=\"2\"><br>{label}</td>
-                </tr>",
-                'lorisSubHeader'
-            );
-            $this->form->accept($renderer);
-            $html = $renderer->toHtml();
+            $smarty->assign('form', $formArray);
+            $html = $smarty->fetch("directentry_form.tpl");
         } elseif (isset($_REQUEST['json']) == 'true') {
             // Mostly here for debugging. Realisticly, the JSON
             // representation will be retrieved through the API,
@@ -797,17 +748,10 @@ class NDB_BVL_Instrument extends NDB_Page
         $examiners = $this->_getExaminerNames();
         $this->addSelect('Examiner', 'Examiner', $examiners);
 
-        $this->addGroupRule(
+        $this->addRule(
             'Date_taken',
             'Date of Administration is required',
             'required'
-        );
-
-        $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
-        $this->addRule(
-            'Date_taken',
-            'Date of Administration is invalid',
-            'checkdate'
         );
 
         $this->addRule('Examiner', 'Examiner is required', 'required');
@@ -1651,8 +1595,8 @@ class NDB_BVL_Instrument extends NDB_Page
             "time",
             $field,
             null,
-            $dateOptions,
-            $attr
+            null,
+            null
         );
 
         $group[] =& $this->createSelect(

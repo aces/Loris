@@ -1,9 +1,11 @@
+"use strict";
+
 /* exported RFamilyInfo */
 
 var FamilyInfo = React.createClass({
   displayName: "FamilyInfo",
 
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       relationshipOptions: {
         "full_sibling": "Full Sibling",
@@ -20,11 +22,11 @@ var FamilyInfo = React.createClass({
       initialized: false
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     var that = this;
     $.ajax(this.props.dataURL, {
       dataType: 'json',
-      xhr: function () {
+      xhr: function xhr() {
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function (evt) {
           that.setState({
@@ -33,7 +35,7 @@ var FamilyInfo = React.createClass({
         });
         return xhr;
       },
-      success: function (data) {
+      success: function success(data) {
         that.setState({
           Data: data,
           isLoaded: true
@@ -43,24 +45,24 @@ var FamilyInfo = React.createClass({
           familyMembers: initialFamilyMembers
         });
       },
-      error: function (data, errorCode, errorMsg) {
+      error: function error(data, errorCode, errorMsg) {
         that.setState({
           error: 'An error occurred when loading the form!'
         });
       }
     });
   },
-  setFormData: function (formElement, value) {
+  setFormData: function setFormData(formElement, value) {
     var formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
       formData: formData
     });
   },
-  onSubmit: function (e) {
+  onSubmit: function onSubmit(e) {
     e.preventDefault();
   },
-  render: function () {
+  render: function render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return React.createElement(
@@ -197,7 +199,7 @@ var FamilyInfo = React.createClass({
    *
    * @return {array} existingFamilyMembers - current family members
    */
-  initializeFamilyMembers: function () {
+  initializeFamilyMembers: function initializeFamilyMembers() {
     return this.state.Data.existingFamilyMembers;
   },
   /**
@@ -205,7 +207,7 @@ var FamilyInfo = React.createClass({
    *
    * @param {event} e - Form submission event
    */
-  handleSubmit: function (e) {
+  handleSubmit: function handleSubmit(e) {
     e.preventDefault();
     var myFormData = this.state.formData;
     var self = this;
@@ -240,7 +242,7 @@ var FamilyInfo = React.createClass({
       cache: false,
       contentType: false,
       processData: false,
-      success: function (data) {
+      success: function success(data) {
         self.setState({
           updateResult: "success",
           formData: {}
@@ -256,7 +258,7 @@ var FamilyInfo = React.createClass({
         // rerender components
         self.forceUpdate();
       },
-      error: function (err) {
+      error: function error(err) {
         var errorMessage = JSON.parse(err.responseText).message;
         self.setState({
           updateResult: "error",
@@ -269,7 +271,7 @@ var FamilyInfo = React.createClass({
   /**
    * Display a success/error alert message after form submission
    */
-  showAlertMessage: function () {
+  showAlertMessage: function showAlertMessage() {
     var self = this;
     if (this.refs["alert-message"] === null) {
       return;
@@ -279,10 +281,11 @@ var FamilyInfo = React.createClass({
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function () {
       self.setState({
         updateResult: null
+
       });
     });
   },
-  deleteFamilyMember: function (candID, key) {
+  deleteFamilyMember: function deleteFamilyMember(candID, key) {
     var familyMembers = this.state.familyMembers;
     delete familyMembers[key];
 
@@ -312,13 +315,13 @@ var FamilyInfo = React.createClass({
       cache: false,
       contentType: false,
       processData: false,
-      success: function (data) {
+      success: function success(data) {
         self.setState({
           updateResult: "success"
 
         });
       },
-      error: function (err) {
+      error: function error(err) {
         if (err.responseText !== "") {
           var errorMessage = JSON.parse(err.responseText).message;
           self.setState({

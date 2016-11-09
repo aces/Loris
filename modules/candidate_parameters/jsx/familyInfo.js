@@ -297,6 +297,7 @@ var FamilyInfo = React.createClass({
           self.setState(
             {
               updateResult: null
+
             }
           );
         }
@@ -349,7 +350,8 @@ var FamilyInfo = React.createClass({
                 updateResult: "error",
                 errorMessage: errorMessage
               }
-              );
+
+                  );
           }
         }
       }
