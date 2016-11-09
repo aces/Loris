@@ -51,8 +51,11 @@ class NDB_Menu_Lite_Viewer extends NDB_Menu_Filter
      */
     function _getDefaults()
     {
+//TODO remove those default values
         $defaults = array(
             'Chromosome' => '14',
+            'StartLoc' => '19098000',
+            'EndLoc' => '19111500',
         );
 
         return $defaults;
@@ -224,7 +227,12 @@ class NDB_Menu_Lite_Viewer extends NDB_Menu_Filter
                 $baseurl . '/js/c3.min.js',
                 $baseurl . '/js/util/jstat.min.js',
                 $baseurl . '/genomic_browser/js/Box.js',
-                $baseurl . '/genomic_browser/js/lite_viewer_react_components.js',
+                $baseurl . '/genomic_browser/js/GeneTrack.js',
+                $baseurl . '/genomic_browser/js/InfoPanel.js',
+                $baseurl . '/genomic_browser/js/SNPTrack.js',
+                $baseurl . '/genomic_browser/js/BrainMethylTrack.js',
+                $baseurl . '/genomic_browser/js/Chart.js',
+                $baseurl . '/genomic_browser/js/GenomicViewer.js',
                 $baseurl . '/genomic_browser/js/lite_viewer.js',
                 $baseurl . '/genomic_browser/js/genomic_browser.js',
             )   
