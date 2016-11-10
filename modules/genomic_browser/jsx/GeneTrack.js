@@ -5,6 +5,7 @@ var Genes_track = React.createClass({
 
     getDefaultProps: function () {
         return {
+            dataURL: loris.BaseURL + '/genomic_browser/ajax/getUCSCGenes.php',
             y: 0,
             xscale: null
         };
@@ -15,13 +16,10 @@ var Genes_track = React.createClass({
             genes: []
         };
     },
-
     componentDidMount: function () {
-
         var that = this;
-/*
-        $.ajax('https://genome.ucsc.edu/cgi-bin/das/hg19/features?segment=' + that.props.chromosome + ':' + that.props.from + ',' + that.props.to + ';type=refGene', {
-            dataType: 'xml',
+        $.ajax(that.props.dataURL + '?genomic_range=' + that.props.chromosome + ':' + that.props.from + ',' + that.props.to + ';type=refGene', {
+            dataType: 'json',
             data: null,
             xhr: function () {
                 var xhr = new window.XMLHttpRequest();
@@ -31,26 +29,18 @@ var Genes_track = React.createClass({
                 return xhr;
             },
             success: function (data) {
-                var items = data.getElementsByTagName('FEATURE');
-                var genes = Object.keys(items).map(function (key) {
-                    return items[key];
-                });
-                console.log(genes);
                 that.setState({
-                    genes: genes
+                    genes: data
                 });
             },
             error: function (data) {
                 that.setState({ "error": "Unknown error loading data" });
             }
         });
-*/
     },
-
     onClickHandler: function (link) {
         alert();
     },
-
     render: function () {
 
         console.log('Genes');
