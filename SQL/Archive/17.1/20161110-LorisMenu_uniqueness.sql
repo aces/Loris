@@ -23,6 +23,13 @@ ADD CONSTRAINT `fk_LorisMenuPermissions_2`
 INSERT INTO LorisMenuPermissions SELECT MenuID, PermID FROM tmp_lmp;
 DROP TABLE tmp_lmp;
 
+SELECT MAX(ID) INTO @TDB_ID 
+  FROM LorisMenu
+  GROUP BY Parent, Label 
+  HAVING COUNT(*) > 1;
+
+DELETE FROM LorisMenu WHERE FIND_IN_SET(ID, @TDB_ID);
+
 ALTER TABLE `LORIS`.`LorisMenu` 
 ADD INDEX `fk_LorisMenu_1_idx` (`Parent` ASC),
 ADD UNIQUE INDEX `index3` (`Parent` ASC, `Label` ASC);
