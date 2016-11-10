@@ -21,7 +21,7 @@ ADD CONSTRAINT `fk_LorisMenuPermissions_2`
   ON UPDATE CASCADE;
 
 INSERT INTO LorisMenuPermissions SELECT MenuID, PermID FROM tmp_lmp;
-DROP tmp_lmp;
+DROP TABLE tmp_lmp;
 
 ALTER TABLE `LORIS`.`LorisMenu` 
 ADD INDEX `fk_LorisMenu_1_idx` (`Parent` ASC),
