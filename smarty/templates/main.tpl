@@ -207,6 +207,8 @@
                     if not then just put page content in the div #page    -->
         <div id="page-content-wrapper">
             {/if}
+            {if $dynamictabs eq "dynamictabs"}
+            {/if}
             {if $dynamictabs neq "dynamictabs"}
             {* Add enough spacing to get below the menu *}
                 <br><br><br>
