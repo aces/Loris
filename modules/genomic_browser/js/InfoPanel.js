@@ -32,16 +32,114 @@ var InfoPanel = React.createClass({
                         backgroundColor: groupColors[group.group_label],
                         color: "white"
                     };
-                    return React.createElement("tr", null, React.createElement("td", { style: style }, group.group_label), React.createElement("td", null, group.n), React.createElement("td", null, group.whiskerDown), React.createElement("td", null, group.q1), React.createElement("td", null, group.median), React.createElement("td", null, group.q3), React.createElement("td", null, group.whiskerUp), React.createElement("td", null, group.outliers.join(', ')));
+
+                    return React.createElement(
+                        "tr",
+                        null,
+                        React.createElement(
+                            "td",
+                            { style: style },
+                            group.group_label
+                        ),
+                        React.createElement(
+                            "td",
+                            null,
+                            group.n
+                        ),
+                        React.createElement(
+                            "td",
+                            null,
+                            group.whiskerDown
+                        ),
+                        React.createElement(
+                            "td",
+                            null,
+                            group.q1
+                        ),
+                        React.createElement(
+                            "td",
+                            null,
+                            group.median
+                        ),
+                        React.createElement(
+                            "td",
+                            null,
+                            group.q3
+                        ),
+                        React.createElement(
+                            "td",
+                            null,
+                            group.whiskerUp
+                        ),
+                        React.createElement(
+                            "td",
+                            null,
+                            group.outliers.join(', ')
+                        )
+                    );
                 });
 
-                return React.createElement("div", {
-                    key: String.fromCharCode(65 + i, 65 + j)
-                }, React.createElement("table", null, React.createElement("caption", null, label), React.createElement("th", null, React.createElement("td", null, "n"), React.createElement("td", null, "Low"), React.createElement("td", null, "Q1"), React.createElement("td", null, "Median"), React.createElement("td", null, "Q3"), React.createElement("td", null, "High"), React.createElement("td", null, "Outliers")), rowItems));
+                return React.createElement(
+                    "div",
+                    { key: String.fromCharCode(65 + i, 65 + j) },
+                    React.createElement(
+                        "table",
+                        null,
+                        React.createElement(
+                            "caption",
+                            null,
+                            label
+                        ),
+                        React.createElement(
+                            "th",
+                            null,
+                            React.createElement(
+                                "td",
+                                null,
+                                "n"
+                            ),
+                            React.createElement(
+                                "td",
+                                null,
+                                "Low"
+                            ),
+                            React.createElement(
+                                "td",
+                                null,
+                                "Q1"
+                            ),
+                            React.createElement(
+                                "td",
+                                null,
+                                "Median"
+                            ),
+                            React.createElement(
+                                "td",
+                                null,
+                                "Q3"
+                            ),
+                            React.createElement(
+                                "td",
+                                null,
+                                "High"
+                            ),
+                            React.createElement(
+                                "td",
+                                null,
+                                "Outliers"
+                            )
+                        ),
+                        rowItems
+                    )
+                );
             });
             return content;
         });
 
-        return React.createElement("div", { id: "info-panel" }, info);
+        return React.createElement(
+            "div",
+            { id: "info-panel" },
+            info
+        );
     }
 });

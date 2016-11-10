@@ -37,15 +37,33 @@ var Chart = React.createClass({
             y: this.props.height - this.props.xAxisHeight
         };
 
-        var xScale = d3.scale.linear().domain([this.props.from, this.props.to]).range([origin.x + 15, this.props.width - this.props.margin.left - this.props.leftLegendSpacing - 15]);
-
-        var yScale = d3.scale.linear().domain([0, 1]).range([origin.y, this.props.margin.top + this.props.topTitleHeight]);
-
         var title = "Beta values of participants grouped by gender for CpGs located on Chr" + this.props.chromosome + ":" + this.props.from + "-" + this.props.to;
-
+        var xScale = d3.scale.linear().domain([this.props.from, this.props.to]).range([origin.x + 15, this.props.width - this.props.margin.left - this.props.leftLegendSpacing - 15]);
+        var yScale = d3.scale.linear().domain([0, 1]).range([origin.y, this.props.margin.top + this.props.topTitleHeight]);
         var snpsList = this.props.snpData;
 
-        return React.createElement(
+        return (
+          <svg className="chart" width={this.props.width} height={this.props.height}>
+            <g>
+              <Title
+                text={title}
+                x={(this.props.width - this.props.margin.left - this.props.yAxisWidth - this.props.leftLegendSpacing - this.props.margin.right) / 2 + this.props.margin.left + this.props.yAxisWidth}
+                y={y: this.props.margin.top + this.props.topTitleHeight}
+              />
+              <Legend 
+                
+                
+                
+              /> 
+              <YAxis />
+              <XAxis />
+              <SNPTrack />
+              <Boxplot />
+              <BrainMethyl_track />
+              <Genes_track />
+            </g>
+          </svg>
+        );React.createElement(
             "svg",
             {
                 className: "chart",
@@ -80,7 +98,7 @@ var Chart = React.createClass({
                     xScale: xScale,
                     height: this.props.xAxisHeight
                 }),
-                React.createElement(SNP_track, {
+                React.createElement(SNPTrack, {
                     snpsList: snpsList,
                     xScale: xScale,
                     y: yScale(0.1)

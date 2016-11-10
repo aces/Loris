@@ -70,7 +70,7 @@ var Chart = React.createClass({
             width: this.props.width - this.props.margin.left - this.props.margin.right - this.props.leftLegendSpacing - this.props.yAxisWidth,
             xScale: xScale,
             height: this.props.xAxisHeight
-        }), React.createElement(SNP_track, {
+        }), React.createElement(SNPTrack, {
             snpsList: snpsList,
             xScale: xScale,
             y: yScale(0.1)
