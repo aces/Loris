@@ -5,8 +5,6 @@
 DROP TABLE IF EXISTS `LorisMenuPermissions`;
 DROP TABLE IF EXISTS `LorisMenu`;
 
--- Add somthing about hte foreign key in the issue table.
-
 CREATE TABLE `LorisMenu` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Parent` int(10) unsigned DEFAULT NULL,
