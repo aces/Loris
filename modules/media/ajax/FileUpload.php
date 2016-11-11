@@ -97,7 +97,6 @@ function uploadFile()
     // If required fields are not set, show an error
     if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($site)) {
         showError("Please fill in all required fields!");
-
         return;
     }
 
@@ -141,7 +140,10 @@ function uploadFile()
              ];
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
-        $db->insert('media', $query);
+        $existingFiles = getFilesList();
+        if (!in_array($fileName, $existingFiles)) {
+            $db->insert('media', $query);
+        }
     } else {
         showError("Could not upload the file. Please try again!");
     }
@@ -151,7 +153,7 @@ function uploadFile()
  * Returns a list of fields from database
  *
  * @return array
- * @throws DatabaseExceptionr
+ * @throws DatabaseException
  */
 function getUploadFields()
 {
@@ -240,6 +242,7 @@ function getUploadFields()
                'instruments' => $instrumentsList,
                'sites'       => $siteList,
                'mediaData'   => $mediaData,
+               'mediaFiles'  => getFilesList(),
                'sessionData' => $sessionData,
               ];
 
@@ -287,4 +290,21 @@ function toSelect($options, $item, $item2)
     }
 
     return $selectOptions;
+}
+
+/**
+ * Returns a list of media files in from media table
+ *
+ * @return array
+ * @throws DatabaseException
+ */
+function getFilesList() {
+    $db   =& Database::singleton();
+    $fileList = $db->pselect("SELECT file_name FROM media", []);
+
+    $mediaFiles = array_map(function($row) {
+        return $row['file_name'];
+    }, $fileList);
+
+    return $mediaFiles;
 }
