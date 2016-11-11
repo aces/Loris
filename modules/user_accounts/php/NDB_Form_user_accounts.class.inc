@@ -219,6 +219,77 @@ class NDB_Form_User_Accounts extends NDB_Form
             unset($values['Password_md5']);
         }
 
+        // multi-site UPDATE
+        $uid = $user->getData('ID');
+
+        $us_curr_sites =array();
+        $us_prev_sites =array();
+        //get sites where user is already at for compare
+        $prev_sites = $DB->pselect(
+            "
+                        SELECT CenterID
+                        FROM user_psc_rel
+                        WHERE UserID=:uid",
+            array(
+                "uid" => $uid,
+            )
+        );
+
+        foreach ($prev_sites as $row=>$center) {
+            $pr_cid = $center['CenterID'];
+            array_push($us_prev_sites, $pr_cid);
+        }
+        $curr_sites = $values['SiteID'];
+print_r($values);
+        foreach ($curr_sites as $key=>$val) {
+            //get MultiSelected CenterID
+            array_push($us_curr_sites, $val);
+            //Check if CenterID already in user_psc_rel for that user
+            $result = $DB->pselectRow(
+                "
+                          SELECT CenterID
+                          FROM user_psc_rel
+                          WHERE UserID=:uid",
+                array(
+                    "uid" => $uid,
+                )
+            );
+            // Center was not previously added
+            if (empty($result) || is_null($result) || (!(in_array($val, $us_prev_sites)))) {
+                print_r ("In empty or NOT in_array loop");
+                print_r ("\n");
+                $DB->insert(
+                    'user_psc_rel',
+                    array(
+                        'UserID'    => $uid,
+                        'CenterID'  => $val,
+                    )
+                );
+            } elseif (in_array($val, $us_prev_sites)) {
+                unset($values['CenterID'][$key]);
+            }
+        }
+        // Delete all entries from user_psc_rel in
+        // previous and not in current sites
+        $old_sites = array_diff($us_prev_sites, $us_curr_sites);
+
+        if ((!empty($old_sites)) && (!(is_null($old_sites)))) {
+            // There is some difference, so delete those in the old sites
+            foreach ($old_sites as $key=>$val) {
+                $DB->delete(
+                    'user_psc_rel',
+                    array(
+                        'CenterID'  => $val,
+                    ),
+                    array(
+                        'UserID'    => $uid,
+                    )
+                );
+            }
+        }
+        //END MULTI-SITE
+        unset($values['SiteID']);
+        print_r($values);
         // EXAMINER UPDATE
         $ex_curr_sites =array();
         $ex_prev_sites =array();
@@ -549,7 +620,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                    $editor->getData('CenterID') => $editor->getData('Site'),
                   );
         }
-        $this->addSelect('CenterID', 'Site', $siteOptions);
+        $this->addSelect('SiteID', 'Sitesss', $siteOptions, array("multiple"=>"multiple"));
 
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases
