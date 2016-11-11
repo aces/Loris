@@ -298,13 +298,17 @@ function toSelect($options, $item, $item2)
  * @return array
  * @throws DatabaseException
  */
-function getFilesList() {
-    $db   =& Database::singleton();
+function getFilesList()
+{
+    $db       =& Database::singleton();
     $fileList = $db->pselect("SELECT file_name FROM media", []);
 
-    $mediaFiles = array_map(function($row) {
-        return $row['file_name'];
-    }, $fileList);
+    $mediaFiles = array_map(
+        function ($row) {
+            return $row['file_name'];
+        },
+        $fileList
+    );
 
     return $mediaFiles;
 }
