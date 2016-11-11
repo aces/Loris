@@ -87,7 +87,8 @@ class User extends UserPermissions
 
         //get notification info
         $notification_check = $DB->pselect(
-            'SELECT unr.NotificationMethodID, unr.EventID FROM user_notification_rel unr 
+            'SELECT unr.NotificationMethodID, unr.EventID 
+            FROM user_notification_rel unr 
             JOIN users u ON u.ID=unr.UserID WHERE u.UserID=:uid',
             array('uid' => $username)
         );
