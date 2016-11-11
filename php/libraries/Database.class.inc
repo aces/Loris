@@ -976,9 +976,9 @@ class Database
         }
         $query = json_encode($query);
         print "console.info('"
-            . "$this->_databaseName:"
-            . date("j-M-Y G:i:s", time())
-            . ": $query');";
+            ."$this->_databaseName:"
+            .date("j-M-Y G:i:s", time())
+            .": $query');";
     }
 
     /**
