@@ -223,15 +223,15 @@ function getFamilyInfoFields()
           WHERE CandID = :candid) AND CandID <> :candid2 
           ORDER BY CandID",
         array(
-            'candid'  => $candID,
-            'candid2' => $candID,
+         'candid'  => $candID,
+         'candid2' => $candID,
         )
     );
 
     $result = [
-               'pscid'              => $pscid,
-               'candID'             => $candID,
-               'candidates'         => $candidates,
+               'pscid'                 => $pscid,
+               'candID'                => $candID,
+               'candidates'            => $candidates,
                'existingFamilyMembers' => $familyMembers,
               ];
 
