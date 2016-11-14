@@ -1277,7 +1277,7 @@ INSERT INTO test_subgroups VALUES (1, 'Instruments', NULL);
 /*!40000 ALTER TABLE `test_subgroups` ENABLE KEYS */;
 UNLOCK TABLES;
 
-DROP TABLE IF EXISTS 'Visit_Windows';
+DROP TABLE IF EXISTS `Visit_Windows`;
 CREATE TABLE `Visit_Windows` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Visit_label` varchar(255) DEFAULT NULL,
