@@ -52,7 +52,12 @@ function editFile()
                      'hide_file'  => $hideFile,
                     ];
 
-    $db->update('media', $updateValues, ['id' => $idMediaFile]);
+    try {
+        $db->update('media', $updateValues, ['id' => $idMediaFile]);
+    } catch (DatabaseException $e) {
+        showError("Could not update the file. Please try again!");
+    }
+
 }
 
 
@@ -142,10 +147,14 @@ function uploadFile()
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         $existingFiles = getFilesList();
         $idMediaFile = array_search($fileName, $existingFiles);
-        if ($idMediaFile) {
-            $db->update('media', $query, ['id' => $idMediaFile]);
-        } else {
-            $db->insert('media', $query);
+        try {
+            if ($idMediaFile) {
+                $db->update('media', $query, ['id' => $idMediaFile]);
+            } else {
+                $db->insert('media', $query);
+            }
+        } catch (DatabaseException $e) {
+            showError("Could not upload the file. Please try again!");
         }
     } else {
         showError("Could not upload the file. Please try again!");
