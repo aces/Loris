@@ -241,26 +241,22 @@ var GenomicViewer = React.createClass({
     render: function () {
 
         var groupColors = this.getGroupColors();
-        return React.createElement(
-            "div",
-            { id: "chart-container" },
-            React.createElement(Chart, {
-                className: "chart",
-                width: this.props.width,
-                height: this.props.height,
-                data: this.state.data,
-                snpData: this.state.snpData,
-                groupColors: groupColors,
-                chromosome: this.props.chromosome,
-                from: this.props.startLoc,
-                to: this.props.endLoc,
-                onClickHandler: this.showBoxSummary
-            }),
-            React.createElement(InfoPanel, {
-                id: "infoPannel",
-                data: this.state.summaryItems,
-                groupColors: groupColors
-            })
+        return (
+          <div id="chart-container">
+            <Chart
+              className="chart"
+              width={this.props.width}
+              height={this.props.height}
+              data={this.state.data}
+              snpData={this.state.snpData}
+              groupColors={groupColors}
+              chromosome={this.props.chromosome}
+              from={this.props.startLoc}
+              to={this.props.endLoc}
+              onClickHandler={this.showBoxSummary}
+            />
+            <InfoPanel id="infoPanel" data={this.state.summaryItems} groupColors={groupColors}/>
+          </div>
         );
     }
 });

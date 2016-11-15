@@ -64,22 +64,10 @@ var BrainMethyl_track = React.createClass({
             var height = that.props.origin.y - that.props.yScale(f.getElementsByTagName("SCORE")[0].textContent / 1000);
             var x = that.props.xScale(f.getElementsByTagName("START")[0].textContent);
             if (that.props.origin.x <= x) {
-                return React.createElement("rect", {
-                    x: x,
-                    y: y,
-                    height: height,
-                    width: width
-                });
+              return (<rect x={x} y={y} height={height} width={width} />); 
             }
         });
 
-        return React.createElement(
-            "g",
-            {
-                id: "wgEncodeBroadHistoneHsmmH3k4me1StdPk",
-                className: "chip-peak"
-            },
-            features
-        );
+        return (<g id="wgEncodeBroadHistoneHsmmH3k4me1StdPk" className="chip-peak">{features}</g>);
     }
 });

@@ -18,7 +18,7 @@ var Genes_track = React.createClass({
     },
     componentDidMount: function () {
         var that = this;
-        $.ajax(that.props.dataURL + '?genomic_range=' + that.props.chromosome + ':' + that.props.from + ',' + that.props.to + ';type=refGene', {
+        $.ajax(that.props.dataURL + '?genomic_range=' + that.props.chromosome + ':' + that.props.from + '-' + that.props.to + '&type=refGene', {
             dataType: 'json',
             data: null,
             xhr: function () {
@@ -59,33 +59,12 @@ var Genes_track = React.createClass({
             min = min < f.getElementsByTagName("START")[0].textContent ? min : f.getElementsByTagName("START")[0].textContent;
             max = max > f.getElementsByTagName("END")[0].textContent ? min : f.getElementsByTagName("END")[0].textContent;
 
-            //if ( that.props.origin.x <= x) {
-            return React.createElement("rect", {
-                x: x,
-                y: y,
-                height: height,
-                width: width,
-                onClick: that.onClickHandler
-            });
-            //}
+            return (<rect x={x} y={y} height={height} width={width} onClick={that.onClickHandler}/>);
         });
 
         min = min < that.props.from ? that.props.from : min;
         max = max > that.props.to ? that.props.to : max;
 
-        return React.createElement(
-            "g",
-            {
-                id: "refGene",
-                className: "genes"
-            },
-            React.createElement("line", {
-                x1: this.props.xScale(min),
-                x2: this.props.xScale(max),
-                y1: that.props.yScale(1) + 10,
-                y2: that.props.yScale(1) + 10
-            }),
-            exons
-        );
+        return (<g id="refGene" className="genes"><line x1={this.props.xScale(min)} x2={this.props.xScale(max)} y1={that.props.yScale(1) + 10} y2={that.props.yScale(1) + 10}/>{exons}</g>);
     }
 });

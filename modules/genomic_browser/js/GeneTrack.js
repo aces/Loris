@@ -5,6 +5,7 @@ var Genes_track = React.createClass({
 
     getDefaultProps: function getDefaultProps() {
         return {
+            dataURL: loris.BaseURL + '/genomic_browser/ajax/getUCSCGenes.php',
             y: 0,
             xscale: null
         };
@@ -15,42 +16,31 @@ var Genes_track = React.createClass({
             genes: []
         };
     },
-
     componentDidMount: function componentDidMount() {
-
         var that = this;
-        /*
-                $.ajax('https://genome.ucsc.edu/cgi-bin/das/hg19/features?segment=' + that.props.chromosome + ':' + that.props.from + ',' + that.props.to + ';type=refGene', {
-                    dataType: 'xml',
-                    data: null,
-                    xhr: function () {
-                        var xhr = new window.XMLHttpRequest();
-                        xhr.addEventListener("progress", function (evt) {
-                            console.log(evt);
-                        });
-                        return xhr;
-                    },
-                    success: function (data) {
-                        var items = data.getElementsByTagName('FEATURE');
-                        var genes = Object.keys(items).map(function (key) {
-                            return items[key];
-                        });
-                        console.log(genes);
-                        that.setState({
-                            genes: genes
-                        });
-                    },
-                    error: function (data) {
-                        that.setState({ "error": "Unknown error loading data" });
-                    }
+        $.ajax(that.props.dataURL + '?genomic_range=' + that.props.chromosome + ':' + that.props.from + '-' + that.props.to + '&type=refGene', {
+            dataType: 'json',
+            data: null,
+            xhr: function xhr() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.addEventListener("progress", function (evt) {
+                    console.log(evt);
                 });
-        */
+                return xhr;
+            },
+            success: function success(data) {
+                that.setState({
+                    genes: data
+                });
+            },
+            error: function error(data) {
+                that.setState({ "error": "Unknown error loading data" });
+            }
+        });
     },
-
     onClickHandler: function onClickHandler(link) {
         alert();
     },
-
     render: function render() {
 
         console.log('Genes');
@@ -69,28 +59,17 @@ var Genes_track = React.createClass({
             min = min < f.getElementsByTagName("START")[0].textContent ? min : f.getElementsByTagName("START")[0].textContent;
             max = max > f.getElementsByTagName("END")[0].textContent ? min : f.getElementsByTagName("END")[0].textContent;
 
-            //if ( that.props.origin.x <= x) {
-            return React.createElement("rect", {
-                x: x,
-                y: y,
-                height: height,
-                width: width,
-                onClick: that.onClickHandler
-            });
-            //}
+            return React.createElement("rect", { x: x, y: y, height: height, width: width, onClick: that.onClickHandler });
         });
 
         min = min < that.props.from ? that.props.from : min;
         max = max > that.props.to ? that.props.to : max;
 
-        return React.createElement("g", {
-            id: "refGene",
-            className: "genes"
-        }, React.createElement("line", {
-            x1: this.props.xScale(min),
-            x2: this.props.xScale(max),
-            y1: that.props.yScale(1) + 10,
-            y2: that.props.yScale(1) + 10
-        }), exons);
+        return React.createElement(
+            "g",
+            { id: "refGene", className: "genes" },
+            React.createElement("line", { x1: this.props.xScale(min), x2: this.props.xScale(max), y1: that.props.yScale(1) + 10, y2: that.props.yScale(1) + 10 }),
+            exons
+        );
     }
 });
