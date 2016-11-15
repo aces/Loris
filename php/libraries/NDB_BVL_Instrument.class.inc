@@ -704,7 +704,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 Utility::nullifyEmpty($values, $key);
             }
             if (in_array($key, $this->dateTimeFields) && $values[$key] === '') {
-                unset($values[$key]);
+                Utility::nullifyEmpty($values, $key);
             }
         }
         $db     =& Database::singleton();
