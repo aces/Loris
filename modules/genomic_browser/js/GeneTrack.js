@@ -50,14 +50,14 @@ var Genes_track = React.createClass({
         var max = that.props.from;
         var exons = this.state.genes.map(function (f) {
 
-            var width = that.props.xScale(f.getElementsByTagName("END")[0].textContent) - that.props.xScale(f.getElementsByTagName("START")[0].textContent);
+            var width = that.props.xScale(f.cdsEnd) - that.props.xScale(f.cdsStart);
             var y = that.props.yScale(1);
             var height = "20";
-            var x = that.props.xScale(f.getElementsByTagName("START")[0].textContent);
+            var x = that.props.xScale(f.cdsStart);
             var link = "";
 
-            min = min < f.getElementsByTagName("START")[0].textContent ? min : f.getElementsByTagName("START")[0].textContent;
-            max = max > f.getElementsByTagName("END")[0].textContent ? min : f.getElementsByTagName("END")[0].textContent;
+            min = min < f.cdsStart ? min : f.cdsStart;
+            max = max > f.cdsEnd ? min : f.cdsEnd;
 
             return React.createElement("rect", { x: x, y: y, height: height, width: width, onClick: that.onClickHandler });
         });
