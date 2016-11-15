@@ -32,7 +32,9 @@ require_once __DIR__ . "/../vendor/autoload.php";
 // Ensures the user is logged in, and parses the config file.
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
-$client->initialize("../project/config.xml");
+if ($client->initialize("../project/config.xml") == false) {
+    return false;
+}
 
 // Checks that config settings are set
 $config =& NDB_Config::singleton();
