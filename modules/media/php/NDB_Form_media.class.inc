@@ -11,8 +11,6 @@
  * @link     https://www.github.com/aces/CCNA/
  */
 
-require_once "NDB_Form.class.inc";
-
 /**
  * Creates the form for NDB_Form_media
  *

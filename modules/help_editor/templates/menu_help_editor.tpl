@@ -40,76 +40,15 @@
 
 
 
-
 <!--  title table with pagination -->
-<table border="0" valign="bottom" width="100%">
-<tr>
-    <!-- title -->
-    <td class="controlPanelSection">List of Topics</td>
-    <!-- display pagination links -->
-    <td align="right" id="pageLinks"></td>
-</tr>
-</table>
-
-<br>
-<!-- start data table -->
-<div class="table-responsive">
-    <table  class="table table-hover table-primary table-bordered" border="0" width="100%">
-        <thead>
-            <tr class="info">
-             <th>No.</th>
-                {section name=header loop=$headers}
-                    <th><a href="{$baseurl}/help_editor/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>                
-                    
-                {/section}
-                
-
-            </tr>
-        </thead>
-        <tbody>
-            {section name=item loop=$items} 
-                <tr>
-                <!-- print out data rows -->
-                {section name=piece loop=$items[item]} 
-                    {if substr_count($items[item][piece].name, "Topic")}
-                     
-                        <td id ='{$items[item][piece].name}' class='description' bgcolor="{$items[item][piece].bgcolor}">
-                          {if $items[item][piece].parentID eq -1 && $items[item][piece].name eq 'Parent_Topic' && $items[item][piece].value eq '-'}
-                           {$items[item][piece].value}
-                           {else}
-                           <a href="{$baseurl}/help_editor/edit_help_content/?helpID={$items[item][piece].helpID}&parentID={$items[item][piece].parentID}">
-                           {$items[item][piece].value}</a>
-                          {/if}
-                        </td>
-                    {else}
-                        {**if $items[item][piece].name != "Name"**}
-                            <td bgcolor="{$items[item][piece].bgcolor}"> 
-                            {$items[item][piece].value}
-                            </td>
-                        {**/if***}
-                        
-                    {/if}
-                {/section}
-                </tr>           
-            {sectionelse}
-
-                <tr><td colspan="12">No data found</td></tr>
-            {/section}
-        </tbody>
-                        
-    <!-- end data table -->
-    </table>
-</div>
+<div class="dynamictable" id="datatable"></div>
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/help_editor/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/help_editor/?format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "PSCID"
+     
+  });
+React.render(table, document.getElementById("datatable"));
 </script>
-

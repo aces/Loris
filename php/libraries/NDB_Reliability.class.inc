@@ -381,8 +381,6 @@ class NDB_Reliability extends NDB_Form
           $examiners = $this->_getExaminerNames();
           $this->addSelect('Examiner', 'Reliability Coder', $examiners);
 
-          $this->form->registerRule('checkdate', 'callback', '_checkDate');
-
           $this->addSelect(
               'invalid',
               '<font color="red">Mark as invalid</font>',

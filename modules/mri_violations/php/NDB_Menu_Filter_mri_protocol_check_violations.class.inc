@@ -60,7 +60,7 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
             'l.ValidRange',
             'l.ValidRegex',
             'l.SeriesUID',
-            'l.TarchiveID'
+            'l.TarchiveID as TarchiveID'
         );
         $this->order_by = 'PatientName';
         $this->headers = array('PatientName',
@@ -72,8 +72,10 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
             'Value',
             'ValidRange',
             'ValidRegex',
-            'SeriesUID'
+            'SeriesUID',
+            'TarchiveID'
         );
+        $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
         $this->validFilters = array(
             'l.TarchiveID',
             'l.SeriesUID',
@@ -86,6 +88,7 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
             'PatientName' => 'l.PatientName',
             'CandID' => 'l.CandID'
         );
+        $this->tpl_data['hiddenHeaders'] = json_encode(['TarchiveID']);
     }
 
     /**
@@ -172,7 +175,9 @@ class NDB_Menu_Filter_mri_protocol_check_violations extends NDB_Menu_Filter
         return array_merge(
             $depends,
             array(
+             $baseurl . "/mri_violations/js/mri_protocol_check_violations_columnFormatter.js",
              $baseurl . "/mri_violations/js/mri_protocol_check_violations.js",
+             $baseURL . "/js/util/queryString.js"
             )
         );
     }

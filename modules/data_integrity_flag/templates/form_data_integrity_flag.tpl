@@ -126,7 +126,7 @@
                             <div class="visible-xs col-xs-12"> </div>
                             <div class="visible-xs col-xs-12"> </div>
 	                        <div class="col-sm-6">
-	                        	<input class="btn btn-sm btn-primary col-xs-12" id="update_data" name="update_data" value="Show updated Data" type="submit"/>
+	                        	<input class="btn btn-sm btn-primary col-xs-12" id="set_data" name="set_data" value="Show updated Data" type="submit"/>
 	                        </div>
 	                    </div>
 	                </div>

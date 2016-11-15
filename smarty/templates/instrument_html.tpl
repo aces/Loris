@@ -7,7 +7,7 @@
 	     border-top: none; 
 	 }
 </style>
-<form {$form.attributes}>
+<form method="post" name="test_form" id="test_form" {$form.enctype} {$form.action}>
 <div class="row">
 	{$form.hidden}
 	{$form.errors.mainError}
@@ -18,6 +18,12 @@
 				<div class="col-xs-12">
 					{$element.html}
 				</div>
+			{elseif $element.label eq $element.html}
+				<label class="lab col-xs-12">
+					{$element.label}
+				</label>
+			{elseif $element.type eq hidden}
+				{$element.html}
 			{elseif $element.name eq lorisSubHeader}
 				<div class="col-xs-12">
 					{$element.label}

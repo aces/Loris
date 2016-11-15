@@ -146,6 +146,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         $bvlFeedback = $this
             ->getFeedbacks($instrument, $candID, $_REQUEST['visit_label']);
+        
 
         $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
 
@@ -222,6 +223,14 @@ class NDB_Form_data_team_helper extends NDB_Form
             $flattened_result = $DB->pselect($query, $qparams);
         }
 
+        // Search for null instruments and remove them
+        foreach ($flattened_result as $k => $v) {
+            if ($v['Feedback_level'] == 'instrument'
+                && !isset($v['Test_name'])) {
+                unset($flattened_result[$k]);
+            }
+        }
+        $flattened_result = array_values($flattened_result);
         return $flattened_result;
     }
 
@@ -286,7 +295,7 @@ class NDB_Form_data_team_helper extends NDB_Form
                 AND ca.Active = 'Y'
                 AND s.Active = 'Y'
                 AND psc.Centerid!= '1'
-                AND ca.PSCID not like '%scanner%'";
+                AND ca.Entity_type != 'Scanner'";
 
         } else {
             $query = "SELECT distinct s.CandID,ca.PSCID, c.FieldName,
@@ -297,7 +306,7 @@ class NDB_Form_data_team_helper extends NDB_Form
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN test_names t ON (t.test_name = f.test_name)
                 JOIN psc ON (s.CenterID = psc.CenterID)";
-            $where = " WHERE ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.PSCID NOT LIKE '%scanner%'";
+            $where = " WHERE ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.Entity_type != 'Scanner'";
         }
 
         //filter for testname
@@ -344,7 +353,7 @@ class NDB_Form_data_team_helper extends NDB_Form
                 AND ca.Active = 'Y'
                 AND s.Active = 'Y'
                 AND psc.Centerid!= '1'
-                AND ca.PSCID NOT LIKE '%scanner%'";
+                AND ca.Entity_type != 'Scanner'";
         } else {
             $query = "SELECT DISTINCT s.CandID, ca.PSCID, c.FieldName,
                 c.TableName,t.full_name AS test_name_display, s.visit_label
@@ -359,7 +368,7 @@ class NDB_Form_data_team_helper extends NDB_Form
                 AND ca.Active = 'Y'
                 AND s.Active = 'Y'
                 AND psc.Centerid!= '1'
-                AND ca.PSCID NOT LIKE '%scanner%'";
+                AND ca.Entity_type != 'Scanner'";
         }
         $conflicts = $DB->pselect($query, array('TN' => $test_name, 'FN' => $field_name));
         return $conflicts;
@@ -375,7 +384,7 @@ class NDB_Form_data_team_helper extends NDB_Form
             JOIN test_names t ON (t.Test_name = f.Test_name)
             JOIN psc ON (s.CenterID = psc.CenterID)	";
 
-        $where   = " WHERE s.Active = 'Y' AND c.Active = 'Y' AND coalesce(f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' AND c.candid NOT LIKE '%scanner%'";
+        $where   = " WHERE s.Active = 'Y' AND c.Active = 'Y' AND coalesce(f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'";
         $qparams = array();
 
         //filter for testname
@@ -417,7 +426,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         }
 
         else{
-            $query = "SELECT COUNT(*), s.ID, s.visit_label, c.PSCID,s.candid, f.SessionID, f.test_name,f.data_entry,f.commentid, t.Full_name FROM session s
+            $query = "SELECT COUNT(*) FROM session s
             JOIN flag f ON (f.sessionid = s.id)
             JOIN candidate c ON (c.candid = s.candid)
             JOIN test_names t ON (t.Test_name = f.Test_name)
@@ -459,7 +468,7 @@ class NDB_Form_data_team_helper extends NDB_Form
             JOIN psc ON (s.CenterID = psc.CenterID)	";
         }
         else{
-            $query = "SELECT COUNT(*), s.ID, s.visit_label, c.PSCID,s.candid, f.SessionID, f.test_name,f.data_entry,f.commentid, t.Full_name FROM session s
+            $query = "SELECT COUNT(*) FROM session s
             JOIN flag f ON (f.sessionid = s.id)
             JOIN candidate c ON (c.candid = s.candid)
             JOIN test_names t ON (t.Test_name = f.Test_name)
@@ -473,7 +482,7 @@ class NDB_Form_data_team_helper extends NDB_Form
             AND f.Administration <> 'None'
             AND f.Data_entry = 'Complete'
             AND psc.Centerid!= '1'
-            AND c.PSCID NOT LIKE '%scanner%'";
+            AND c.Entity_type != 'Scanner'";
         $qparams = array();
 
         if (($visit_label !=null)&&($visit_label!='All Visits')) {
@@ -561,14 +570,14 @@ class NDB_Form_data_team_helper extends NDB_Form
 			JOIN psc ON (s.CenterID = psc.CenterID)
 			JOIN flag f ON (f.sessionid=s.id)
 			JOIN test_names t ON (f.test_name=t.Test_name)
-			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND psc.CenterID != '1' AND c.PSCID != '%scanner%' ORDER BY t.Full_name ",
+			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND psc.CenterID != '1' AND c.Entity_type != 'Scanner' ORDER BY t.Full_name ",
                 array('vl' => $visit_label)
             );
         }
 
         return $test_names;
     }
-    
+
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
@@ -587,4 +596,21 @@ class NDB_Form_data_team_helper extends NDB_Form
             )
         );
     }
+
+     /**
+        * Include additional CSS files:
+        *  1. data_team_helper
+        *
+        * @return array of CSS to be inserted
+        */
+       function getCSSDependencies()
+       {
+           $factory = NDB_Factory::singleton();
+           $baseURL = $factory->settings()->getBaseURL();
+           $deps    = parent::getCSSDependencies();
+           return array_merge(
+               $deps,
+               [$baseURL . "/data_team_helper/css/data_team_helper.css"]
+           );
+       }
 }

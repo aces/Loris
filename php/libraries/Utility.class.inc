@@ -556,7 +556,7 @@ class Utility
      * @cleanup This should be removed and all uses converted to toArray
      *          (or vice versa, but toArray seems to be more common in the code)
      */
-    function asArray($var)
+    static function asArray($var)
     {
         if (!is_array($var)) {
             return array($var);
@@ -859,48 +859,6 @@ class Utility
         return $column_threshold;
     }
 
-
-    /**
-     * Checks to see if a table contains a specified column
-     *
-     * @param string $test_name The table to check for a column.
-     * @param string $column    The column name to check the table for.
-     *
-     * @return  boolean true if the table has a the given column
-     * @note    This should be moved to the Database class and references to it
-     *       updated.
-     * @note    Function comment written by Dave, not the author of this function.
-     * @cleanup
-     */
-    static function columnExists($test_name,$column)
-    {
-        error_log(
-            "WARNING: ColumnExists function will soon be moved to the Database " .
-            "class. Please replace any static reference to Utility::ColumnExists() ".
-            "by Database->ColumnExists() calls."
-        );
-        $config   =& NDB_Config::singleton();
-        $database = $config->getSetting('database');
-        $query    = "SELECT DISTINCT table_name
-            FROM information_schema.columns
-            WHERE table_name = :tn
-            AND COLUMN_NAME = :cn
-            AND TABLE_SCHEMA = :db";
-        $DB       =& Database::singleton();
-        $effected = $DB->pselectOne(
-            $query,
-            array(
-             'tn' => $test_name,
-             'cn' => $column,
-             'db' => $database,
-            )
-        );
-        if ($effected) {
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Checks to see if a table contains a specified column
      *
@@ -1001,7 +959,8 @@ class Utility
      */
     static function getTestNameUsingFullName($fullname)
     {
-        $db =& Database::singleton();
+        $test_name = '';
+        $db        =& Database::singleton();
         //print_r($instument);
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",
@@ -1130,7 +1089,7 @@ class Utility
             JOIN psc ON (s.CenterID = psc.CenterID)
             WHERE c.Active = 'Y'
             AND s.Active = 'Y'
-            AND c.PSCID NOT LIKE '%scanner%'
+            AND c.Entity_type != 'Scanner'
             AND psc.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
         $visitlabels = $db->pselect($query, array());
@@ -1175,7 +1134,7 @@ class Utility
                 JOIN flag f ON (f.sessionid=s.id)
                 JOIN test_names t ON (f.test_name=t.Test_name)
                 WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl 
-                AND psc.CenterID != '1' AND c.PSCID != '%scanner%'
+                AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
                 ORDER BY t.Full_name",
                 array('vl' => $visit_label)
             );

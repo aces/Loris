@@ -71,11 +71,19 @@ var MediaUploadForm = React.createClass({
       );
     }
 
-    var helpText = "File name should begin with " +
-      "<b>[PSCID]_[Visit Label]_[Instrument]</b><br> For example, " +
-      "for candidate <i>ABC123</i>, visit <i>V1</i> for " +
-      "<i>Body Mass Index</i> the file name should be prefixed by: " +
-      "<b>ABC123_V1_Body_Mass_Index</b>";
+    var helpText = [
+      "File name should begin with ",
+      <b>[PSCID]_[Visit Label]_[Instrument]</b>,
+      <br/>,
+      " For example, for candidate ",
+      <i>ABC123</i>,
+      ", visit ",
+      <i>V1</i>,
+      " for ",
+      <i>Body Mass Index</i>,
+      " the file name should be prefixed by: ",
+      <b>ABC123_V1_Body_Mass_Index</b>
+    ];
     var alertMessage = "";
     var alertClass = "alert text-center hide";
 
@@ -103,7 +111,10 @@ var MediaUploadForm = React.createClass({
         >
           <h3>Upload a media file</h3>
           <br />
-          <HelpTextElement label="Note" html={true} text={helpText} />
+          <StaticElement
+            label="Note"
+            text={helpText}
+          />
           <SelectElement
             name="pscid"
             label="PSCID"
@@ -206,7 +217,7 @@ var MediaUploadForm = React.createClass({
     );
 
     if (!this.isValidFileName(requiredFileName, fileName)) {
-      alert("File name should start with: " + requiredFileName);
+      alert("File name should begin with: " + requiredFileName);
       return;
     }
 
@@ -283,14 +294,14 @@ var MediaUploadForm = React.createClass({
    *
    * @param {string} requiredFileName - Required file name
    * @param {string} fileName - Provided file name
-   * @return {boolean} - true if file names match and false otherwise
+   * @return {boolean} - true if fileName starts with requiredFileName, false otherwise
    */
   isValidFileName: function(requiredFileName, fileName) {
     if (fileName === null || requiredFileName === null) {
       return false;
     }
 
-    return (fileName.indexOf(requiredFileName) > -1);
+    return (fileName.indexOf(requiredFileName) === 0);
   },
 
   /**

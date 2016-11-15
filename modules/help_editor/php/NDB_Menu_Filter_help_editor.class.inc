@@ -38,21 +38,21 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
         $user = User::singleton();
 
         // the base query
-        $query = " FROM help WHERE hash IS NOT NULL AND topic IS NOT NULL";
+        $query = " FROM help helpChild LEFT JOIN help helpParent ON (helpChild.parentID = helpParent.helpID )WHERE helpChild.hash IS NOT NULL AND helpChild.topic IS NOT NULL";
 
 
         // set the class variables
-        $this->columns      = array('topic as Topic', 'parentID as Parent_Topic',
-                               'COALESCE(projectContent,content) as Content' );
+        $this->columns      = array('helpChild.helpID as helpID','helpChild.topic as Topic', 'helpChild.parentID as Parent_ID','helpParent.parentID as ParentTopic_ID','helpParent.topic as Parent_Topic','COALESCE(helpChild.projectContent, helpChild.content) as Content' );
         $this->query        = $query;
-        $this->order_by     = 'helpID';
-        //$this->headers      = array('Topic','Parent Topic', 'Content');
-        $this->validFilters = array('topic');
+        $this->order_by     = 'helpChild.helpID';
+        $this->headers      = array('HelpID','Topic','ParentID','ParentTopicID','Parent_Topic','Content');
+        $this->tpl_data['hiddenHeaders'] = json_encode(['HelpID','ParentID','ParentTopicID']);
+        $this->validFilters = array('helpChild.topic');
 
         $this->formToFilter = array(
-                'topic' => 'topic'
+                'topic' => 'helpChild.topic'
                 );
-        $this->searchKeyword = array('topic','content');
+        $this->searchKeyword = array('helpChild.topic','helpChild.content');
         return true;
     }
 
@@ -124,6 +124,7 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
             $deps,
             array(
              $baseURL . "/help_editor/js/help_editor_helper.js",
+             $baseURL . "/help_editor/js/columnFormatter.js",
             )
         );
     }

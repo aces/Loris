@@ -16,57 +16,57 @@ class NDB_Form_next_stage extends NDB_Form
     	if (!$user->hasPermission('data_entry') || $user->getData('CenterID') != $timePoint->getData('CenterID')) {
             return false;
         }
-		
+
         return $timePoint->isStartable();
     }
-    
-    
+
+
     function _process($values)
     {
         $timePoint =& TimePoint::singleton($this->identifier);
-        
+
         // figure out what the next stage should be
         $newStage = $timePoint->getNextStage();
-        
+
         // start that stage
         $timePoint->startStage($newStage);
-        
+
         // set the date for the new stage
-        $timePoint->setData("Date_".$newStage, $values['date1']['Y'].'-'.$values['date1']['M'].'-'.$values['date1']['d']);
-        
+        $timePoint->setData("Date_".$newStage, $values['date1']);
+
         // set SubprojectID if applicable
         if(isset($values['SubprojectID'])) {
             $timePoint->setData('SubprojectID', $values['SubprojectID']);
         }
-        
+
         // set scan done if applicable
         if(isset($values['scan_done'])) {
             $timePoint->setData('Scan_done', $values['scan_done']);
         }
-        
+
         // create a new battery object && new battery
         $battery = new NDB_BVL_Battery;
         $candidate =& Candidate::singleton($timePoint->getCandID() );
 
         $firstVisit = false;
-        $vLabel = $candidate->getFirstVisit();//get first visit for candidate 
+        $vLabel = $candidate->getFirstVisit();//get first visit for candidate
         if($vLabel ==  $timePoint->getVisitLabel()){
-            $firstVisit = true; //if current visit label is same as visit label returned must be first visit   
-        }  
-        
+            $firstVisit = true; //if current visit label is same as visit label returned must be first visit
+        }
+
          // select a specific time point (sessionID) for the battery
         $battery->selectBattery($timePoint->getData('SessionID'));
-        
+
         // add instruments to the time point (lower case stage)
-        $battery->createBattery($timePoint->getSubprojectID(), $newStage, $timePoint->getVisitLabel(), 
+        $battery->createBattery($timePoint->getSubprojectID(), $newStage, $timePoint->getVisitLabel(),
                                 $timePoint->getCenterID(), $firstVisit);
-        
+
         //------------------------------------------------------------
 
         $this->tpl_data['success'] = true;
         $this->tpl_data['sessionID'] = $this->identifier;
         $this->tpl_data['candID'] = $timePoint->getCandID();
-        
+
         // freeze it, just in case
         //$this->form->freeze();
     }
@@ -75,7 +75,7 @@ class NDB_Form_next_stage extends NDB_Form
     {
         $timePoint =& TimePoint::singleton($this->identifier);
         $config =& NDB_Config::singleton();
-        
+
         $study = $config->getSetting('study');
         $dateOptions = array(
                              'language'        => 'en',
@@ -97,9 +97,11 @@ class NDB_Form_next_stage extends NDB_Form
             $this->addRule('scan_done', 'Scan done is required', 'required');
         }
 
+        $dateAttributes = ['class' => 'form-control input-sm input-date'];
+
         // add dates
-        $this->addBasicDate('date1', "Date of $stage", $dateOptions);
-        $this->addBasicDate('date2', "Retype Date of $stage", $dateOptions);
+        $this->addBasicDate('date1', "Date of $stage", $dateOptions, $dateAttributes);
+        $this->addBasicDate('date2', "Retype Date of $stage", $dateOptions, $dateAttributes);
 
         // let user select subproject *only* if subprojectid is not > 0
         if(!($timePoint->getSubprojectID() > 0)) {
@@ -124,18 +126,16 @@ class NDB_Form_next_stage extends NDB_Form
 
         $candidate =& Candidate::singleton($candID);
 
-        
-
         $errors = array();
         // check date pairs
-        if (empty($values['date1']['M']) && empty($values['date1']['d']) && empty($values['date1']['Y'])) {
+        if (empty($values['date1'])) {
             $errors['date1'] .= "Date is required. \n";
         }
         elseif (!Utility::_checkDate($values['date1'])) {
             $errors['date1'] .= "Date is not a valid date. \n";
         }
 
-        if (($values['date1']['M']!= $values['date2']['M']) || ($values['date1']['d']!= $values['date2']['d']) || ($values['date1']['Y']!=$values['date2']['Y'])) {
+        if ($values['date1'] != $values['date2']) {
             $errors['date1'] .= "Both Date fields must match. \n";
         }
 
@@ -146,7 +146,7 @@ class NDB_Form_next_stage extends NDB_Form
         $stage = $timePoint->getNextStage();
         if ($stage == 'Visit') {
             // compare the dates date of MRI must be > DOB - ONLY WHEN starting Visit stage
-            $date = sprintf("%04d-%02d-%02d", $values['date1']['Y'], $values['date1']['M'], $values['date1']['d']);
+            $date = $values['date1']; 
 
             if (empty($values['scan_done']) && $config->getSetting('useScanDone')!='false') {
                 $errors['scan_done'] = 'Scan done is required';
@@ -157,7 +157,7 @@ class NDB_Form_next_stage extends NDB_Form
             if ($config->getSetting('allowPrenatalTimepoints')!="true" && strcmp($date, $candidateBirthDate) < 1) {
                 $errors['date1'] .= "Date of Visit is less than Date of Birth/EDC. \n";
             }
-        } 
+        }
 
         if(empty($errors)) return true;
         return $errors;
