@@ -2221,6 +2221,7 @@ CREATE TABLE `media` (
   `hide_file` tinyint(1) DEFAULT '0',
   `date_uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `file_name` (`file_name`),
   FOREIGN KEY (`session_id`) REFERENCES `session` (`ID`),
   FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2234,9 +2235,9 @@ CREATE TABLE `issues_categories` (
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 INSERT INTO issues_categories (categoryName) VALUES
-    ('Behavioural Battery'), 
-    ('Behavioural Instruments'), 
-    ('Data Entry'), 
+    ('Behavioural Battery'),
+    ('Behavioural Instruments'),
+    ('Data Entry'),
     ('Examiners'),
     ('Imaging'),
     ('Technical Issue'),
