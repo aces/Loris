@@ -146,7 +146,7 @@ function uploadFile()
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         $existingFiles = getFilesList();
-        $idMediaFile = array_search($fileName, $existingFiles);
+        $idMediaFile   = array_search($fileName, $existingFiles);
         try {
             // Override db record if file_name already exists
             if ($idMediaFile) {
