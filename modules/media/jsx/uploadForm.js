@@ -266,7 +266,13 @@ var MediaUploadForm = React.createClass({
       },
       success: function(data) {
         $("#file-progress").addClass('hide');
+
+        // Add file to the list of exiting files
+        var mediaFiles = self.state.Data.mediaFiles;
+        mediaFiles.push(myFormData.file.name);
+
         self.setState({
+          mediaFiles: mediaFiles,
           uploadResult: "success",
           formData: {} // reset form data after successful file upload
         });
@@ -288,10 +294,11 @@ var MediaUploadForm = React.createClass({
         self.forceUpdate();
       },
       error: function(err) {
-        var errorMessage = JSON.parse(err.responseText).message;
+        console.error(err);
+        let msg = err.responseJSON ? err.responseJSON.message : "Upload error!";
         self.setState({
           uploadResult: "error",
-          errorMessage: errorMessage
+          errorMessage: msg
         });
         self.showAlertMessage();
       }
