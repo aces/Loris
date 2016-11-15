@@ -70,6 +70,7 @@ class DashboardTest extends LorisIntegrationTest
              'PSCID'       => '8888',
              'ProjectID'   => '7777',
              'Entity_type' => 'Human',
+             'Active'      => 'Yes',
             )
         );
         $this->DB->insert(
@@ -81,6 +82,7 @@ class DashboardTest extends LorisIntegrationTest
              'UserID'       => '1',
              'MRIQCStatus'  => 'Pass',
              'SubprojectID' => '6666',
+             'Active'       => 'Yes',
             )
         );
         $this->DB->insert(
@@ -167,6 +169,22 @@ class DashboardTest extends LorisIntegrationTest
               'Value2'         => 'no',
              )
          );
+         $this->DB->insert(
+             "files",
+             array(
+              'ID'         => '111111',
+              'SessionID'  => '222222',
+              'FileID'     => '333333',
+             )
+         );
+         $this->DB->insert(
+             "files_qcstatus",
+             array(
+              'FileQCID'         => '999111',
+              'SeriesUID'        => '222222',
+              'FileID'           => '333333',
+             )
+         );
 
     }
     /**
@@ -247,6 +265,13 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->update("Config", array("Value" => null), 
             array("ConfigID" => 48));
+        
+        $this->DB->delete(
+             "files",
+             array('ID'         => '111111',));
+         $this->DB->insert(
+             "files_qcstatus",
+             array('FileQCID'         => '999111',));
         parent::tearDown();
     }
 
