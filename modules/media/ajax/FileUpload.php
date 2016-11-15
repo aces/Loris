@@ -148,6 +148,7 @@ function uploadFile()
         $existingFiles = getFilesList();
         $idMediaFile = array_search($fileName, $existingFiles);
         try {
+            // Override db record if file_name already exists
             if ($idMediaFile) {
                 $db->update('media', $query, ['id' => $idMediaFile]);
             } else {
@@ -305,7 +306,7 @@ function toSelect($options, $item, $item2)
 }
 
 /**
- * Returns a list of media files in from media table
+ * Returns an array of (id, file_name) pairs from media table
  *
  * @return array
  * @throws DatabaseException
