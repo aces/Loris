@@ -141,7 +141,10 @@ function uploadFile()
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         $existingFiles = getFilesList();
-        if (!in_array($fileName, $existingFiles)) {
+        $idMediaFile = array_search($fileName, $existingFiles);
+        if ($idMediaFile) {
+            $db->update('media', $query, ['id' => $idMediaFile]);
+        } else {
             $db->insert('media', $query);
         }
     } else {
@@ -242,7 +245,7 @@ function getUploadFields()
                'instruments' => $instrumentsList,
                'sites'       => $siteList,
                'mediaData'   => $mediaData,
-               'mediaFiles'  => getFilesList(),
+               'mediaFiles'  => array_values(getFilesList()),
                'sessionData' => $sessionData,
               ];
 
@@ -301,14 +304,12 @@ function toSelect($options, $item, $item2)
 function getFilesList()
 {
     $db       =& Database::singleton();
-    $fileList = $db->pselect("SELECT file_name FROM media", []);
+    $fileList = $db->pselect("SELECT id, file_name FROM media", []);
 
-    $mediaFiles = array_map(
-        function ($row) {
-            return $row['file_name'];
-        },
-        $fileList
-    );
+    $mediaFiles = [];
+    foreach ($fileList as $row) {
+        $mediaFiles[$row['id']] = $row['file_name'];
+    }
 
     return $mediaFiles;
 }
