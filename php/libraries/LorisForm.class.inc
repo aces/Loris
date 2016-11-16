@@ -1884,7 +1884,7 @@ class LorisForm
                 ) {
                     $arr[$name] = sprintf("%s:%s:00", $value['H'], $value['i']);
                 } else {
-                    $arr[$name] = '';
+                    $arr[$name] = null;
                 }
                 continue;
             }
