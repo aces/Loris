@@ -2018,14 +2018,14 @@ class NDB_BVL_Instrument extends NDB_Page
         $values = array();
         foreach ($columns as $row) {
             switch ($row['COLUMN_NAME']) {
-                case 'CommentID':
-                case 'UserID':
-                    continue;
-                case 'Data_entry_completion_status':
-                    $values[$row['COLUMN_NAME']] = 'Incomplete';
-                    break;
-                default:
-                    $values[$row['COLUMN_NAME']] = null;
+            case 'CommentID':
+            case 'UserID':
+                continue;
+            case 'Data_entry_completion_status':
+                $values[$row['COLUMN_NAME']] = 'Incomplete';
+                break;
+            default:
+                $values[$row['COLUMN_NAME']] = null;
             }
         }
         $db->update($this->table, $values, array('CommentID' => $this->commentID));
