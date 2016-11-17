@@ -70,6 +70,7 @@ class DashboardTest extends LorisIntegrationTest
              'PSCID'       => '8888',
              'ProjectID'   => '7777',
              'Entity_type' => 'Human',
+             'Active'      => 'Y',
             )
         );
         $this->DB->insert(
@@ -81,6 +82,7 @@ class DashboardTest extends LorisIntegrationTest
              'UserID'       => '1',
              'MRIQCStatus'  => 'Pass',
              'SubprojectID' => '6666',
+             'Active'       => 'Y',
             )
         );
         $this->DB->insert(
@@ -167,7 +169,72 @@ class DashboardTest extends LorisIntegrationTest
               'Value2'         => 'no',
              )
          );
-
+         $this->DB->insert(
+             "files",
+             array(
+              'FileID'         => '1111112',
+              'SessionID'      => '222222',
+              'SourceFileID'   => '1111112',
+             )
+         );
+        
+         $this->DB->insert(
+             "files_qcstatus",
+             array(
+              'FileID'         => '1111112',
+              'FileQCID'       => '2222221',
+             )
+         );
+       $this->DB->insert(
+            "conflicts_resolved",
+            array(
+             'ResolvedID'          => '999999',
+             'UserID'              => 'demo',
+             'ResolutionTimestamp' => '2015-11-03 16:21:49',
+             'User1'               => 'Null',
+             'User2'               => 'Null',
+             'TableName'           => 'Test',
+             'ExtraKey1'           => 'NULL',
+             'ExtraKey2'           => 'NULL',
+             'FieldName'           => 'TestTestTest',
+             'CommentId1'          => '589569DCC000012291366553230',
+             'CommentId2'          => 'DDE_589569DCC000012291366653254',
+             'OldValue1'           => 'Mother',
+             'OldValue2'           => 'Father',
+             'NewValue'            => 'NULL',
+            )
+        );
+         $this->DB->insert(
+             "conflicts_unresolved",
+             array(
+              'TableName'      => 'TestTestTest',
+              'ExtraKeyColumn' => 'Test',
+              'ExtraKey1'      => 'Null',
+              'ExtraKey2'      => 'Null',
+              'FieldName'      => 'TestTestTest',
+              'CommentId1'     => 'commentID111',
+              'Value1'         => 'no',
+              'CommentId2'     => 'DDE_963443000111271151398976899',
+              'Value2'         => 'no',
+             )
+         );
+          $this->DB->insert(
+             "final_radiological_review",
+             array(
+              'CommentID'      => 'CommentID111',
+              'Final_Review_Results'  => 'not_answered',
+             )
+         );
+          $this->DB->insert(
+             "issues",
+             array(
+              'issueID'      => '999999',
+              'assignee'  => 'UnitTester',
+              'status'    => 'new',
+              'reporter'  => 'UnitTester',
+             )
+         ); 
+         
     }
     /**
      * Delete the test data
@@ -175,7 +242,33 @@ class DashboardTest extends LorisIntegrationTest
      * @return void
      */
     public function tearDown()
-    {
+    {    
+        $this->DB->run('SET foreign_key_checks =0');
+        $this->DB->delete(
+            "issues", 
+            array('issueID' => '999999')
+        ); 
+        $this->DB->delete(
+            "final_radiological_review", 
+            array('CommentID' => 'CommentID111')
+        );        
+        $this->DB->delete(
+            "conflicts_resolved", 
+            array('ResolvedID' => '999999')
+        );
+        $this->DB->delete(
+            "conflicts_unresolved",
+            array('TableName' => 'TestTestTest')
+        );
+        $this->DB->delete(
+            "files_qcstatus",
+            array('FileID' => '1111112')
+        );
+        $this->DB->delete(
+            "files",
+            array('FileID' => '1111112')
+        );
+
         $this->DB->delete(
             "users",
             array('UserID' => 'testUser1')
@@ -183,8 +276,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->delete(
             "session",
             array(
-             'CandID'   => '999888',
-             'CenterID' => '55',
+             'ID'   => '222222',
             )
         );
         $this->DB->delete(
@@ -245,6 +337,9 @@ class DashboardTest extends LorisIntegrationTest
             "conflicts_unresolved",
             array('TableName' => 'TestTestTest')
         );
+        $this->DB->update("Config", array("Value" => null),
+            array("ConfigID" => 48));
+        $this->DB->run('SET foreign_key_checks =1');
         parent::tearDown();
     }
 
@@ -316,6 +411,113 @@ class DashboardTest extends LorisIntegrationTest
             array("violated_scans_view_allsites")
         );
         $this->_testMytaskPanelAndLink(".mri_violations", "2", "[Test]PatientName");
+        $this->resetPermissions();
+    }
+    /**
+     * Check that for a user with 'Data Entry' permission, the number of incomplete
+     * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
+     * Tasks panel. If the user also has 'Across all sites access candidates
+     * profiles' then the site displayed is 'All', otherwise it is set to the site
+     * the user belongs to and only the candidates that belong to the user's site
+     * are considered for the computation of the number of incomplete forms.
+     *
+     *  @return void
+     */
+    public function testNewScans()
+    {
+
+        $this->setupPermissions(
+            array(
+             "imaging_browser_qc",
+             "imaging_browser_view_allsites"
+            )
+        );
+        $this->safeGet($this->url . '/dashboard/');
+        $this->_testMytaskPanelAndLink(
+            ".new-scans",
+            "1",
+            "Imaging  Browser"
+        );
+        $this->resetPermissions();
+    }
+    /**
+     * Check that for a user with 'Data Entry' permission, the number of incomplete
+     * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
+     * Tasks panel. If the user also has 'Across all sites access candidates
+     * profiles' then the site displayed is 'All', otherwise it is set to the site
+     * the user belongs to and only the candidates that belong to the user's site
+     * are considered for the computation of the number of incomplete forms.
+     *
+     *  @return void
+     */
+    public function testConflictResolver()
+    {
+
+        $this->setupPermissions(
+            array(
+             "conflict_resolver",
+             "access_all_profiles"
+            )
+        );
+        $this->safeGet($this->url . '/dashboard/');
+        $this->_testMytaskPanelAndLink(
+            ".conflict_resolver",
+            "1",
+            "-  Conflict  Resolver"
+        );
+        $this->resetPermissions();
+    }
+    /**
+     * Check that for a user with 'Data Entry' permission, the number of incomplete
+     * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
+     * Tasks panel. If the user also has 'Across all sites access candidates
+     * profiles' then the site displayed is 'All', otherwise it is set to the site
+     * the user belongs to and only the candidates that belong to the user's site
+     * are considered for the computation of the number of incomplete forms.
+     *
+     *  @return void
+     */
+    public function testFinalRadioReview()
+    {
+
+        $this->setupPermissions(
+            array(
+             "edit_final_radiological_review",
+             "view_final_radiological_review"
+            )
+        );
+        $this->safeGet($this->url . '/dashboard/');
+        $this->_testMytaskPanelAndLink(
+            ".radiological-review",
+            "1",
+            "-  Final  Radiological  Review"
+        );
+        $this->resetPermissions();
+    }
+    /**
+     * Check that for a user with 'Data Entry' permission, the number of incomplete
+     * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
+     * Tasks panel. If the user also has 'Across all sites access candidates
+     * profiles' then the site displayed is 'All', otherwise it is set to the site
+     * the user belongs to and only the candidates that belong to the user's site
+     * are considered for the computation of the number of incomplete forms.
+     *
+     *  @return void
+     */
+    public function testIssues()
+    {
+
+        $this->setupPermissions(
+            array(
+             "issue_tracker_developer"
+            )
+        );
+        $this->safeGet($this->url . '/dashboard/');
+        $this->_testMytaskPanelAndLink(
+            ".issue_tracker",
+            "1",
+            "-  Issue  Tracker"
+        );
         $this->resetPermissions();
     }
     /**
