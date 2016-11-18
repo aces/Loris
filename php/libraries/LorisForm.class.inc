@@ -945,7 +945,7 @@ class LorisForm
         if (is_array($timeStamp)) {
             $value = $timeStamp;
         } else if (preg_match(
-            '/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/',
+            '/^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])($|:00$)/',
             $timeStamp,
             $bits
         )) {
@@ -1884,7 +1884,7 @@ class LorisForm
                 ) {
                     $arr[$name] = sprintf("%s:%s:00", $value['H'], $value['i']);
                 } else {
-                    $arr[$name] = '';
+                    $arr[$name] = null;
                 }
                 continue;
             }
