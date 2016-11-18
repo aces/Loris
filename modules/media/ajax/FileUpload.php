@@ -40,16 +40,19 @@ function editFile()
         exit;
     }
 
-    // Process posted data
-    $idMediaFile = $_POST['idMediaFile'];
-    $dateTaken   = isset($_POST['dateTaken']) ? $_POST['dateTaken'] : null;
-    $comments    = isset($_POST['comments']) ? $_POST['comments'] : null;
-    $hideFile    = $_POST['hideFile'];
+    // Read JSON from STDIN
+    $stdin = file_get_contents('php://input');
+    $req = json_decode($stdin, true);
+    $idMediaFile = $req['idMediaFile'];
+
+    if (!$idMediaFile) {
+        showError("Error! Invalid media file ID!");
+    }
 
     $updateValues = [
-                     'date_taken' => $dateTaken,
-                     'comments'   => $comments,
-                     'hide_file'  => $hideFile,
+                     'date_taken' => $req['dateTaken'],
+                     'comments'   => $req['comments'],
+                     'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
                     ];
 
     $db->update('media', $updateValues, ['id' => $idMediaFile]);
