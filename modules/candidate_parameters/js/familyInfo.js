@@ -93,8 +93,9 @@ var FamilyInfo = React.createClass({
       addButton = React.createElement(ButtonElement, { label: "Add" });
     }
 
+    var candidateList = this.state.Data.candidates;
+
     var familyMembers = this.state.familyMembers;
-    var familyMembersHTML = [];
 
     for (var key in familyMembers) {
       if (familyMembers.hasOwnProperty(key)) {
@@ -124,6 +125,8 @@ var FamilyInfo = React.createClass({
           }),
           React.createElement("hr", null)
         ));
+        // remove from list of candidates because it can only be added once
+        delete candidateList[candID];
       }
     }
 
@@ -174,7 +177,7 @@ var FamilyInfo = React.createClass({
         React.createElement(SelectElement, {
           label: "Family Member ID (DCCID)",
           name: "FamilyCandID",
-          options: this.state.Data.candidates,
+          options: candidateList,
           onUserInput: this.setFormData,
           ref: "FamilyCandID",
           disabled: disabled,
@@ -320,7 +323,6 @@ var FamilyInfo = React.createClass({
       success: function success(data) {
         self.setState({
           updateResult: "success"
-
         });
         self.showAlertMessage();
       },
