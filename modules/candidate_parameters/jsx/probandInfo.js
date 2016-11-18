@@ -37,8 +37,15 @@ var ProbandInfo = React.createClass(
             return xhr;
           },
           success: function(data) {
+            const formData = {
+              ProbandGender: data.ProbandGender,
+              ProbandDoB: data.ProbandDoB,
+              ProbandDoB2: data.ProbandDoB
+            };
+
             that.setState(
               {
+                formData,
                 Data: data,
                 isLoaded: true
               }
