@@ -697,7 +697,13 @@ class NDB_BVL_Instrument extends NDB_Page
             if (strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
+            if (strpos($key, '_status') !== false) {
+                Utility::nullifyEmpty($values, $key);
+            }
             if (array_key_exists($key, $this->WrapperNumericElements)) {
+                Utility::nullifyEmpty($values, $key);
+            }
+            if (in_array($key, $this->dateTimeFields) && $values[$key] === '') {
                 Utility::nullifyEmpty($values, $key);
             }
         }
@@ -2011,12 +2017,16 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $values = array();
         foreach ($columns as $row) {
-            if ($row['COLUMN_NAME'] == 'CommentID'
-                || $row['COLUMN_NAME'] == 'UserID'
-            ) {
+            switch ($row['COLUMN_NAME']) {
+            case 'CommentID':
+            case 'UserID':
                 continue;
+            case 'Data_entry_completion_status':
+                $values[$row['COLUMN_NAME']] = 'Incomplete';
+                break;
+            default:
+                $values[$row['COLUMN_NAME']] = null;
             }
-            $values[$row['COLUMN_NAME']] = null;
         }
         $db->update($this->table, $values, array('CommentID' => $this->commentID));
         $prepQ = $db->prepare(
