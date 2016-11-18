@@ -175,7 +175,7 @@ WHERE content='The database facilitates data collection of longitudinal studies;
 ALTER TABLE session ADD `MRICaveat` enum('true', 'false') NOT NULL default 'false';
 
 -- 2016-08-18-DataReleaseHelpContent.sql
-INSERT INTO help (helpID, parentID, hash, topic, content, created, updated) VALUES (51,-1,md5('data_release'),'Data Release','The Data Release Module can be used to easily distribute packaged data releases of your study. Use the "Upload File" button to upload your file and tag it with a version based on your own version convention. Grant access to any of your users using the "Add Permission" button. These buttons will be visible only if you have the "superuser" permission.','2016-11-04 00:00:00',NULL);
+INSERT INTO help (parentID, hash, topic, content, created, updated) VALUES (-1,md5('data_release'),'Data Release','The Data Release Module can be used to easily distribute packaged data releases of your study. Use the "Upload File" button to upload your file and tag it with a version based on your own version convention. Grant access to any of your users using the "Add Permission" button. These buttons will be visible only if you have the "superuser" permission.','2016-11-04 00:00:00',NULL);
 
 -- 2016-08-18-HelpTableDefaultCreatedValue.sql
 SET SESSION sql_mode = 'ALLOW_INVALID_DATES';
