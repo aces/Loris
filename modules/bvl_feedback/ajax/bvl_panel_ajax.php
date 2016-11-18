@@ -15,9 +15,6 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-$client = new NDB_Client;
-$client->initialize();
-
 $user     =& User::singleton();
 $username = $user->getUsername();
 
