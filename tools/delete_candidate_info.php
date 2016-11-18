@@ -208,26 +208,34 @@ function deleteCandidate($DCCID, $PSCID, $confirm) {
         array('cid' => $DCCID)
     );
 
+    echo "Behavioural Feedback\n";
     foreach ($Feedbackids as $Feedbackid) {
-        $result = $DB->pselect('SELECT * FROM feedback_bvl_entry WHERE FeedbackID=:fid', array('fid' => $Feedbackid['FeedbackID']));
+        $result = $DB->pselect(
+            'SELECT * FROM feedback_bvl_entry WHERE FeedbackID=:fid',
+            array('fid' => $Feedbackid['FeedbackID'])
+        );
         print_r($result);
     }
     $result = $DB->pselect('SELECT * FROM feedback_bvl_thread WHERE CandID=:cid', array('cid' => $DCCID));
     print_r($result);
 
     // Print participant_status
+    echo "Participant Status\n";
     $result = $DB->pselect('SELECT * FROM participant_status WHERE CandID=:cid', array('cid' => $DCCID));
     print_r($result);
 
     // Print participant_status_history
+    echo "Participant Status History\n";
     $result = $DB->pselect('SELECT * FROM participant_status_history WHERE CandID=:cid', array('cid' => $DCCID));
     print_r($result);
 
     // Print parameter_candidate
+    echo "Parameter Candidate\n";
     $result = $DB->pselect('SELECT * FROM parameter_candidate WHERE CandID=:cid', array('cid' => $DCCID));
     print_r($result);
 
     // Print candidate
+    echo "Candidate\n";
     $result = $DB->pselect('SELECT * FROM candidate WHERE CandID=:cid', array('cid' => $DCCID));
     print_r($result);
 
@@ -304,14 +312,17 @@ function deleteTimepoint($sessionID, $confirm) {
             'SELECT * FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
             array('cid' => $instrument['CommentID'])
         );
+        echo "$instrument\n";
         print_r($result);
 
         // Print from conflicts
+        echo "Conflicts Unresolved\n";
         $result = $DB->pselect(
             'SELECT * FROM conflicts_unresolved WHERE CommentId1=:cid OR CommentId2=:cid',
             array('cid' => $instrument['CommentID'])
         );
         print_r($result);
+        echo "Conflicts Resolved\n";
         $result = $DB->pselect(
             'SELECT * FROM conflicts_resolved WHERE CommentId1=:cid OR CommentId2=:cid',
             array('cid' => $instrument['CommentID'])
@@ -319,14 +330,17 @@ function deleteTimepoint($sessionID, $confirm) {
         print_r($result);
     }
     // Print from flag
+    echo "Flag\n";
     $result = $DB->pselect('SELECT * FROM flag WHERE SessionID=:sid', array('sid' => $sessionID));
     print_r($result);
 
     // Print from session
+    echo "Session\n";
     $result = $DB->pselect('SELECT * FROM session WHERE ID=:id', array('id' => $sessionID));
     print_r($result);
 
     // Print from feedback
+    echo "Behavioural Feedback\n";
     $result = $DB->pselect(
         'SELECT * from feedback_bvl_thread WHERE SessionID =:sid',
         array('sid' => $sessionID)
