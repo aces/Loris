@@ -108,6 +108,7 @@ var FamilyInfo = React.createClass({
     var candidateList = this.state.Data.candidates;
 
     var familyMembers = this.state.familyMembers;
+    var familyMembersHTML = [];
 
     for (var key in familyMembers) {
       if (familyMembers.hasOwnProperty(key)) {
@@ -129,14 +130,14 @@ var FamilyInfo = React.createClass({
                           label="Delete"
                           type="button"
                           onUserInput={
-                              this.deleteFamilyMember.bind(null, candID, key)
+                              this.deleteFamilyMember.bind(null, candID, key, candidateList)
                           }
                       />
                       <hr />
                   </div>
               );
           // remove from list of candidates because it can only be added once
-          delete candidateList[candID];
+        delete candidateList[candID];
       }
     }
 
@@ -260,7 +261,7 @@ var FamilyInfo = React.createClass({
             updateResult: "success",
             formData: {}
           });
-            self.showAlertMessage();
+          self.showAlertMessage();
 
               // Iterates through child components and resets state
               // to initial state in order to clear the form
@@ -280,7 +281,7 @@ var FamilyInfo = React.createClass({
               errorMessage: errorMessage
             }
             );
-            self.showAlertMessage();
+          self.showAlertMessage();
         }
 
       }
@@ -308,9 +309,12 @@ var FamilyInfo = React.createClass({
         }
       );
   },
-  deleteFamilyMember: function(candID, key) {
+  deleteFamilyMember: function(candID, key, candidateList) {
     var familyMembers = this.state.familyMembers;
     delete familyMembers[key];
+
+      // readd to list of possible family members
+    candidateList[candID] = candID;
 
     this.setState({
       familyMembers: familyMembers
@@ -345,7 +349,7 @@ var FamilyInfo = React.createClass({
               updateResult: "success"
             }
             );
-            self.showAlertMessage();
+          self.showAlertMessage();
         },
         error: function(err) {
           if (err.responseText !== "") {
@@ -357,7 +361,7 @@ var FamilyInfo = React.createClass({
               }
 
                   );
-              self.showAlertMessage();
+            self.showAlertMessage();
           }
         }
       }

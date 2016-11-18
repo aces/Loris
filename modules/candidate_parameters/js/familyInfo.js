@@ -96,6 +96,7 @@ var FamilyInfo = React.createClass({
     var candidateList = this.state.Data.candidates;
 
     var familyMembers = this.state.familyMembers;
+    var familyMembersHTML = [];
 
     for (var key in familyMembers) {
       if (familyMembers.hasOwnProperty(key)) {
@@ -121,7 +122,7 @@ var FamilyInfo = React.createClass({
           React.createElement(ButtonElement, {
             label: "Delete",
             type: "button",
-            onUserInput: this.deleteFamilyMember.bind(null, candID, key)
+            onUserInput: this.deleteFamilyMember.bind(null, candID, key, candidateList)
           }),
           React.createElement("hr", null)
         ));
@@ -290,9 +291,12 @@ var FamilyInfo = React.createClass({
       });
     });
   },
-  deleteFamilyMember: function deleteFamilyMember(candID, key) {
+  deleteFamilyMember: function deleteFamilyMember(candID, key, candidateList) {
     var familyMembers = this.state.familyMembers;
     delete familyMembers[key];
+
+    // readd to list of possible family members
+    candidateList[candID] = candID;
 
     this.setState({
       familyMembers: familyMembers
