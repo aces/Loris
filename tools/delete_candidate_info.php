@@ -4,19 +4,19 @@
  * This script deletes the specified candidate information.
  *
  * Delete all table rows for a given candidate
- * "Usage 1: php delete_candidate_info.php delete_candidate DCCID PSCID [confirm]\n";
- * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007\n";
- * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007 confirm\n\n";
+ * "Usage 1: php delete_candidate_info.php delete_candidate DCCID PSCID [confirm]";
+ * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007";
+ * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007 confirm";
  *
  * Delete all timepoint rows for a given candidate
- * echo "Usage 2: php delete_candidate_info.php delete_timepoint DCCID PSCID SessionID [confirm]\n";
- * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482\n";
- * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482 confirm\n\n";
+ * echo "Usage 2: php delete_candidate_info.php delete_timepoint DCCID PSCID SessionID [confirm]";
+ * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482";
+ * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482 confirm";
  *
  * Nullify instrument fields for a given instrument
- * echo "Usage 3: php delete_candidate_info.php reset_instrument DCCID PSCID SessionID instrument [confirm]\n";
- * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 482 tsi\n";
- * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 482 tsi confirm\n\n";
+ * echo "Usage 3: php delete_candidate_info.php reset_instrument DCCID PSCID CommentID [confirm]";
+ * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121";
+ * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121 confirm";
  *
  * PHP Version 5
  *
@@ -35,19 +35,19 @@ require_once "Utility.class.inc";
  * This script deletes the specified candidate information.
  *
  * Delete all table rows for a given candidate
- * "Usage 1: php delete_candidate_info.php delete_candidate DCCID PSCID [confirm]\n";
- * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007\n";
- * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007 confirm\n\n";
+ * "Usage 1: php delete_candidate_info.php delete_candidate DCCID PSCID [confirm]";
+ * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007";
+ * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007 confirm";
  *
  * Delete all timepoint rows for a given candidate
- * echo "Usage 2: php delete_candidate_info.php delete_timepoint DCCID PSCID SessionID [confirm]\n";
- * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482\n";
- * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482 confirm\n\n";
+ * echo "Usage 2: php delete_candidate_info.php delete_timepoint DCCID PSCID SessionID [confirm]";
+ * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482";
+ * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482 confirm";
  *
  * Nullify instrument fields for a given instrument
- * echo "Usage 3: php delete_candidate_info.php reset_instrument DCCID PSCID SessionID instrument [confirm]\n";
- * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 482 tsi\n";
- * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 482 tsi confirm\n\n";
+ * echo "Usage 3: php delete_candidate_info.php reset_instrument DCCID PSCID CommentID [confirm]";
+ * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121";
+ * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121 confirm";
  *
  * @category Main
  * @package  Loris
@@ -69,7 +69,7 @@ $action = $argv[1];
 $DCCID = $argv[2];
 $PSCID = $argv[3];
 $sessionID = null;
-$testName = null;
+$commentID = null;
 $confirm = false;
 
 // get the rest of the arguments
@@ -81,27 +81,27 @@ switch ($action) {
         if (!empty($argv[4])) {
             $sessionID = $argv[4];
         } else {
+            echo "Missing SessionID parameter\n\n";
             showHelp();
         }
         if (!empty($argv[5]) && $argv[5] == 'confirm') $confirm = true;
         break;
     case 'reset_instrument':
         if (!empty($argv[4])) {
-            $sessionID = $argv[4];
+            $commentID = $argv[4];
         } else {
+            echo "Missing CommentID parameter\n\n";
             showHelp();
         }
-        if (!empty($argv[5])) {
-            $testName = $argv[5];
-        } else {
-            showHelp();
-        }
-        if (!empty($argv[6]) && $argv[6] == 'confirm') $confirm = true;
+        if (!empty($argv[5]) && $argv[5] == 'confirm') $confirm = true;
         break;
 }
 
 $DB =& Database::singleton();
 
+/*
+ * Perform validations on arguments
+ */
 if ($DB->pselectOne(
     "SELECT COUNT(*) FROM candidate WHERE CandID = :cid AND PSCID = :pid ",
     array('cid'=>$DCCID, 'pid'=>$PSCID)
@@ -110,6 +110,22 @@ if ($DB->pselectOne(
     echo "The Candid : $DCCID  AND PSCID : $PSCID Doesn't Exist in " .
     "the database\n";
     die();
+}
+
+if ($commentID != null) {
+    if ($DB->pselectOne('SELECT COUNT(*) FROM flag f JOIN session s WHERE f.CommentID=:comid AND s.CandID=:cid',
+        array('comid' => $commentID, 'cid' => $DCCID)) == 0) {
+        echo "CommentID $commentID for candidate $DCCID does not exist in the database\n";
+        die();
+    }
+}
+
+if ($sessionID != null) {
+    if ($DB->pselectOne('SELECT COUNT(*) FROM session WHERE ID=:sid and CandID=:cid',
+        array('sid' => $sessionID, 'cid' => $DCCID)) == 0) {
+        echo "Session ID $sessionID for candidate $DCCID does not exist in the database\n";
+        die();
+    }
 }
 
 /*
@@ -123,10 +139,13 @@ switch ($action) {
         deleteTimepoint($sessionID, $confirm);
         break;
     case 'reset_instrument':
-        resetInstrument($sessionID, $testName, $confirm);
+        resetInstrument($commentID, $confirm);
         break;
 }
 
+/*
+ * Prints the usage and example help text and stop program
+ */
 function showHelp() {
     echo "*** Delete Candidate Info ***\n\n";
 
@@ -138,9 +157,9 @@ function showHelp() {
     echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482\n";
     echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482 confirm\n\n";
 
-    echo "Usage 3: php delete_candidate_info.php reset_instrument DCCID PSCID SessionID instrument [confirm]\n";
-    echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 482 tsi\n";
-    echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 482 tsi confirm\n\n";
+    echo "Usage 3: php delete_candidate_info.php reset_instrument DCCID PSCID CommentID [confirm]\n";
+    echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121\n";
+    echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121 confirm\n\n";
 
     die();
 }
@@ -154,7 +173,7 @@ function deleteCandidate($DCCID, $PSCID, $confirm) {
     //find sessions
     $sessions = $candidate->getListOfTimePoints();
     if (is_null($sessions) || empty($sessions)) {
-        echo "There are no coressponding session for Candid : $DCCID \n";
+        echo "There are no corresponding session for Candid : $DCCID \n";
         die();
     }
 
@@ -166,7 +185,7 @@ function deleteCandidate($DCCID, $PSCID, $confirm) {
     $instruments = $DB->pselect($query, array());
 
     // Print sessions to delete
-    $result = $DB->pselect("SELECT * FROM session WHERE CandID=:cid", array('cid' => $DCCID));
+    $result = $DB->pselect('SELECT * FROM session WHERE CandID=:cid', array('cid' => $DCCID));
     echo $result . "\n";
 
     // Print instruments to delete
@@ -185,32 +204,32 @@ function deleteCandidate($DCCID, $PSCID, $confirm) {
 
     // Print feedback related tables
     $Feedbackids = $DB->pselect(
-        "SELECT fbt.FeedbackID from feedback_bvl_thread fbt WHERE CandID =:cid",
+        "SELECT fbt.FeedbackID from feedback_bvl_thread fbt WHERE CandID=:cid",
         array('cid' => $DCCID)
     );
 
     foreach ($Feedbackids as $Feedbackid) {
         $result = $DB->pselect('SELECT * FROM feedback_bvl_entry WHERE FeedbackID=:fid', array('fid' => $Feedbackid['FeedbackID']));
-        echo $result . "\n";
+        print_r($result);
     }
-    $result = $DB->pselect('SELECT * FROM feedback_bvl_thread WHERE CandID=:cid', array('CandID' => $DCCID));
-    echo $result . "\n";
+    $result = $DB->pselect('SELECT * FROM feedback_bvl_thread WHERE CandID=:cid', array('cid' => $DCCID));
+    print_r($result);
 
     // Print participant_status
-    $result = $DB->pselect('SELECT * FROM participant_status WHERE CandID=:cid', array('CandID' => $DCCID));
-    echo $result . "\n";
+    $result = $DB->pselect('SELECT * FROM participant_status WHERE CandID=:cid', array('cid' => $DCCID));
+    print_r($result);
 
     // Print participant_status_history
-    $result = $DB->pselect('SELECT * FROM participant_status_history WHERE CandID=:cid', array('CandID' => $DCCID));
-    echo $result . "\n";
+    $result = $DB->pselect('SELECT * FROM participant_status_history WHERE CandID=:cid', array('cid' => $DCCID));
+    print_r($result);
 
     // Print parameter_candidate
-    $result = $DB->pselect('SELECT * FROM parameter_candidate WHERE CandID=:cid', array('CandID' => $DCCID));
-    echo $result . "\n";
+    $result = $DB->pselect('SELECT * FROM parameter_candidate WHERE CandID=:cid', array('cid' => $DCCID));
+    print_r($result);
 
     // Print candidate
-    $result = $DB->pselect('SELECT * FROM candidate WHERE CandID=:cid', array('CandID' => $DCCID));
-    echo $result . "\n";
+    $result = $DB->pselect('SELECT * FROM candidate WHERE CandID=:cid', array('cid' => $DCCID));
+    print_r($result);
 
     // IF CONFIRMED, DELETE CANDIDATE
     if ($confirm) {
@@ -274,46 +293,45 @@ function deleteCandidate($DCCID, $PSCID, $confirm) {
     }
 }
 
-//TODO: feedback -- session level
 function deleteTimepoint($sessionID, $confirm) {
     $DB =& Database::singleton();
 
-    $instruments = $DB->pselect('SELECT Test_name, CommentID FROM flag WHERE SessionID:=sid', array('sid' => $sessionID));
+    $instruments = $DB->pselect('SELECT Test_name, CommentID FROM flag WHERE SessionID=:sid', array('sid' => $sessionID));
 
     // Print each instrument instance
     foreach ($instruments as $instrument) {
         $result = $DB->pselect(
-            'SELECT * FROM ' . $DB->escape($instrument['Test_name']) . 'WHERE CommentID=:cid',
+            'SELECT * FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
             array('cid' => $instrument['CommentID'])
         );
-        echo $result . "\n";
+        print_r($result);
 
         // Print from conflicts
         $result = $DB->pselect(
             'SELECT * FROM conflicts_unresolved WHERE CommentId1=:cid OR CommentId2=:cid',
             array('cid' => $instrument['CommentID'])
         );
-        echo $result . "\n";
+        print_r($result);
         $result = $DB->pselect(
             'SELECT * FROM conflicts_resolved WHERE CommentId1=:cid OR CommentId2=:cid',
             array('cid' => $instrument['CommentID'])
         );
-        echo $result . "\n";
+        print_r($result);
     }
     // Print from flag
     $result = $DB->pselect('SELECT * FROM flag WHERE SessionID=:sid', array('sid' => $sessionID));
-    echo $result . "\n";
+    print_r($result);
 
     // Print from session
     $result = $DB->pselect('SELECT * FROM session WHERE ID=:id', array('id' => $sessionID));
-    echo $result . "\n";
+    print_r($result);
 
     // Print from feedback
     $result = $DB->pselect(
         'SELECT * from feedback_bvl_thread WHERE SessionID =:sid',
         array('sid' => $sessionID)
     );
-    echo $result . "\n";
+    print_r($result);
     $feedbackIDs = $DB->pselect(
         'SELECT FeedbackID from feedback_bvl_thread WHERE SessionID =:sid',
         array('sid' => $sessionID)
@@ -323,13 +341,14 @@ function deleteTimepoint($sessionID, $confirm) {
             'SELECT * from feedback_bvl_entry WHERE FeedbackID=:fid',
             array('fid' => $id['FeedbackID'])
         );
-        echo $result . "\n";
+        print_r($result);
     }
 
     // IF CONFIRMED, DELETE TIMEPOINT
     if ($confirm) {
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
+            echo "Deleting $instrument.\n";
             $DB->delete($instrument['Test_name'], array('CommentID' => $instrument['CommentID']));
 
             // Delete from conflicts
@@ -339,12 +358,15 @@ function deleteTimepoint($sessionID, $confirm) {
             $DB->delete('conflicts_resolved', array('CommentId2' => $instrument['CommentID']));
         }
         // Delete from flag
+        echo "Deleting from flag.\n";
         $DB->delete('flag', array('SessionID' => $sessionID));
 
         // Delete from session
+        echo "Deleting from session.\n";
         $DB->delete('session', array('ID' => $sessionID));
 
         // Delete from feedback
+        echo "Deleting from feedback.\n";
         $DB->delete('feedback_bvl_thread', array('SessionID' => $sessionID));
         foreach ($feedbackIDs as $id) {
             $DB->delete('feedback_bvl_entry', array('FeedbackID' => $id));
@@ -352,9 +374,14 @@ function deleteTimepoint($sessionID, $confirm) {
     }
 }
 
-function resetInstrument($sessionID, $testName, $confirm) {
+function resetInstrument($commentID, $confirm) {
 
     $DB =& Database::singleton();
+
+    $testName = $DB->pselectOne(
+        'SELECT Test_name FROM flag WHERE CommentID=:cid',
+        array('cid' => $commentID)
+    );
 
     $columns = $DB->pselect(
         'SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`=:test',
@@ -364,19 +391,15 @@ function resetInstrument($sessionID, $testName, $confirm) {
     // Fields from the $testName table to NOT reset
     $excluded = array('CommentID');
 
-    $commentID = $DB->pselectOne(
-        'SELECT CommentID FROM flag f JOIN session s ON (s.ID=f.SessionID) WHERE s.ID=:sid AND f.Test_name=:test',
-        array('sid' => $sessionID, 'test' => $testName)
-    );
-
     $set = array();
     $where = array('CommentID' => $commentID);
 
     echo "Fields in $testName to set to null: \n";
     foreach ($columns as $column) {
-        if (!in_array($column, $excluded)) {
-            array_merge($set, array($column => NULL));
-            echo $column . "\n";
+        if (!in_array($column['COLUMN_NAME'], $excluded)) {
+            $current = array($column['COLUMN_NAME'] => NULL);
+            $set = array_merge($set, $current);
+            echo $column['COLUMN_NAME'] . "\n";
         }
     }
 
@@ -386,12 +409,11 @@ function resetInstrument($sessionID, $testName, $confirm) {
         'Validity' => NULL,
         'Exclusion' => NULL,
         'Flag_status' => NULL
-        // TODO: should UserID and Testdate also be reset?
     );
 
-    echo "Fields in flag to set to null: \n";
+    echo "\nFields in flag to set to null: \n";
     foreach ($setFlag as $key => $value) {
-        echo $key . '\n';
+        echo $key . "\n";
     }
 
     // IF CONFIRMED, SET SELECT TEST AND FLAG VALUES TO NULL
