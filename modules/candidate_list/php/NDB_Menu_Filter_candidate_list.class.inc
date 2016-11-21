@@ -33,12 +33,20 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        $site =& Site::singleton($user->getData('CenterID'));
+//        $site=& Site::singleton($user->getData('SiteID'));
+        $site_arr = $user->getData('SiteID');
+        foreach ($site_arr as $key=>$val) {
+            $site[$key] = & Site::singleton($val);
+            $isStudySite[$key] = $site[$key]->isStudySite();
+        }
+        $oneIsStudySite = in_array("1", $isStudySite);
         $aap  = $user->hasPermission('access_all_profiles');
         $this->tpl_data['access_all_profiles'] = $aap;
         return (
             $user->hasPermission('access_all_profiles')
-            || ($site->isStudySite() && $user->hasPermission('data_entry'))
+//            || ($site->isStudySite() && $user->hasPermission('data_entry'))
+            || ($oneIsStudySite && $user->hasPermission('data_entry'))
+
         );
     }
 
@@ -129,11 +137,24 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
             WHERE c.Active = 'Y'";
 
+
         if (!$user->hasPermission('access_all_profiles')) {
-            $this->query .= " AND c.CenterID=" . $user->getCenterID();
+
+//            $this->query .= " AND c.CenterID=" . $user->getCenterID();
+            $this->query .= " AND c.CenterID=";
+            $site_arr = $user->getCenterID();
+            $last_key = end(array_keys($site_arr));
+            foreach ($site_arr as $key=>$val) {
+                if ($key == $last_key) {
+                    $this->query .= $val;
+                }
+                else {
+                    $this->query .= $val . " OR c.CenterID=";
+                }
+            }
         }
 
-                          //'COALESCE(pso.ID,1) AS Participant_Status',
+        //'COALESCE(pso.ID,1) AS Participant_Status',
         $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Gender';
         $this->order_by = 'c.PSCID ASC';
 
@@ -217,10 +238,13 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $list_of_sites = array();
-                $list_of_sites[$user->getData('CenterID')] = $user->getData('Site');
+//            $site =& Site::singleton($user->getData('CenterID'));
+            $site_arr = $user->getData('SiteID');
+            foreach ($site_arr as $key=>$val) {
+                $site[$key] = & Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$val] = $site[$key]->getCenterName();
+                }
             }
         }
 
