@@ -524,7 +524,7 @@ class DashboardTest extends LorisIntegrationTest
     }
     /**
      *  Check user has 'superuser' permission, user can see the issue panel.
-     *  Click the issue link can access issue moduel.
+     *  Click the issue link can access issue module.
      *
      *  @return void
      */
