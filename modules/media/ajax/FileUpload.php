@@ -41,8 +41,8 @@ function editFile()
     }
 
     // Read JSON from STDIN
-    $stdin = file_get_contents('php://input');
-    $req = json_decode($stdin, true);
+    $stdin       = file_get_contents('php://input');
+    $req         = json_decode($stdin, true);
     $idMediaFile = $req['idMediaFile'];
 
     if (!$idMediaFile) {
