@@ -38,9 +38,15 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $user =& User::singleton();
 
         // allow only to view own site data
-        $site =& Site::singleton($user->getData('CenterID'));
+//        $site =& Site::singleton($user->getData('CenterID'));
+        $site_arr = $user->getData('SiteID');
+        foreach ($site_arr as $key=>$val) {
+            $site[$key] = & Site::singleton($val);
+            $isStudySite[$key] = $site[$key]->isStudySite();
+        }
+        $oneIsStudySite = in_array("1", $isStudySite);
 
-        return ($user->hasPermission('imaging_browser_view_allsites') || ($site->isStudySite() && $user->hasPermission('imaging_browser_view_site')));
+        return ($user->hasPermission('imaging_browser_view_allsites') || ($oneIsStudySite && $user->hasPermission('imaging_browser_view_site')));
     }
 
     /**
@@ -99,7 +105,18 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $user =& User::singleton();
         $DB = Database::singleton();
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
-            $this->query .= " AND c.CenterID=" . $DB->quote($user->getCenterID());
+            //$this->query .= " AND c.CenterID=" . $DB->quote($user->getCenterID());
+            $this->query .= " AND c.CenterID=";
+            $site_arr = $user->getCenterID();
+            $last_key = end(array_keys($site_arr));
+            foreach ($site_arr as $key=>$val) {
+                if ($key == $last_key) {
+                    $this->query .= $val;
+                }
+                else {
+                    $this->query .= $val . " OR c.CenterID=";
+                }
+            }
         }
 
         $this->columns = array(
