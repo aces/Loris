@@ -172,38 +172,38 @@ class DashboardTest extends LorisIntegrationTest
          $this->DB->insert(
              "files",
              array(
-              'FileID'         => '1111112',
-              'SessionID'      => '222222',
-              'SourceFileID'   => '1111112',
+              'FileID'       => '1111112',
+              'SessionID'    => '222222',
+              'SourceFileID' => '1111112',
              )
          );
-        
+
          $this->DB->insert(
              "files_qcstatus",
              array(
-              'FileID'         => '1111112',
-              'FileQCID'       => '2222221',
+              'FileID'   => '1111112',
+              'FileQCID' => '2222221',
              )
          );
-       $this->DB->insert(
-            "conflicts_resolved",
-            array(
-             'ResolvedID'          => '999999',
-             'UserID'              => 'demo',
-             'ResolutionTimestamp' => '2015-11-03 16:21:49',
-             'User1'               => 'Null',
-             'User2'               => 'Null',
-             'TableName'           => 'Test',
-             'ExtraKey1'           => 'NULL',
-             'ExtraKey2'           => 'NULL',
-             'FieldName'           => 'TestTestTest',
-             'CommentId1'          => '589569DCC000012291366553230',
-             'CommentId2'          => 'DDE_589569DCC000012291366653254',
-             'OldValue1'           => 'Mother',
-             'OldValue2'           => 'Father',
-             'NewValue'            => 'NULL',
-            )
-        );
+         $this->DB->insert(
+             "conflicts_resolved",
+             array(
+              'ResolvedID'          => '999999',
+              'UserID'              => 'demo',
+              'ResolutionTimestamp' => '2015-11-03 16:21:49',
+              'User1'               => 'Null',
+              'User2'               => 'Null',
+              'TableName'           => 'Test',
+              'ExtraKey1'           => 'NULL',
+              'ExtraKey2'           => 'NULL',
+              'FieldName'           => 'TestTestTest',
+              'CommentId1'          => '589569DCC000012291366553230',
+              'CommentId2'          => 'DDE_589569DCC000012291366653254',
+              'OldValue1'           => 'Mother',
+              'OldValue2'           => 'Father',
+              'NewValue'            => 'NULL',
+             )
+         );
          $this->DB->insert(
              "conflicts_unresolved",
              array(
@@ -219,38 +219,38 @@ class DashboardTest extends LorisIntegrationTest
              )
          );
           $this->DB->insert(
-             "final_radiological_review",
-             array(
-              'CommentID'      => 'CommentID111',
-              'Final_Review_Results'  => 'not_answered',
-             )
-         );
+              "final_radiological_review",
+              array(
+               'CommentID'            => 'CommentID111',
+               'Final_Review_Results' => 'not_answered',
+              )
+          );
           $this->DB->insert(
-             "issues",
-             array(
-              'issueID'      => '999999',
-              'assignee'  => 'UnitTester',
-              'status'    => 'new',
-              'reporter'  => 'UnitTester',
-             )
-         ); 
+              "issues",
+              array(
+               'issueID'  => '999999',
+               'assignee' => 'UnitTester',
+               'status'   => 'new',
+               'reporter' => 'UnitTester',
+              )
+          );
           $this->DB->insert(
-             "users",
-             array(
-              'ID'      => '9999991',
-              'UserID'  => 'Tester1',
-              'CenterID'    => null,
-             )
-         );
+              "users",
+              array(
+               'ID'       => '9999991',
+               'UserID'   => 'Tester1',
+               'CenterID' => null,
+              )
+          );
           $this->DB->insert(
-             "document_repository",
-             array(
-              'record_id'      => '9999997',
-              'visitLabel'  => null,
-              'Date_taken'    => '2016-07-27 18:00:10',
-              'File_name'    => 'test.jpg',
-             )
-         ); 
+              "document_repository",
+              array(
+               'record_id'  => '9999997',
+               'visitLabel' => null,
+               'Date_taken' => '2016-07-27 18:00:10',
+               'File_name'  => 'test.jpg',
+              )
+          );
     }
     /**
      * Delete the test data
@@ -258,26 +258,26 @@ class DashboardTest extends LorisIntegrationTest
      * @return void
      */
     public function tearDown()
-    {    
+    {
         $this->DB->run('SET foreign_key_checks =0');
         $this->DB->delete(
             "document_repository",
             array('record_id' => '9999997')
-        );   
+        );
         $this->DB->delete(
-            "users", 
+            "users",
             array('ID' => '9999991')
-        ); 
+        );
         $this->DB->delete(
-            "issues", 
+            "issues",
             array('issueID' => '999999')
-        ); 
+        );
         $this->DB->delete(
-            "final_radiological_review", 
+            "final_radiological_review",
             array('CommentID' => 'CommentID111')
-        );        
+        );
         $this->DB->delete(
-            "conflicts_resolved", 
+            "conflicts_resolved",
             array('ResolvedID' => '999999')
         );
         $this->DB->delete(
@@ -299,9 +299,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->DB->delete(
             "session",
-            array(
-             'ID'   => '222222',
-            )
+            array('ID' => '222222')
         );
         $this->DB->delete(
             "candidate",
@@ -361,8 +359,11 @@ class DashboardTest extends LorisIntegrationTest
             "conflicts_unresolved",
             array('TableName' => 'TestTestTest')
         );
-        $this->DB->update("Config", array("Value" => null),
-            array("ConfigID" => 48));
+        $this->DB->update(
+            "Config",
+            array("Value" => null),
+            array("ConfigID" => 48)
+        );
         $this->DB->run('SET foreign_key_checks =1');
         parent::tearDown();
     }
@@ -420,7 +421,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->assertContains("View overall recruitment", $assertText1);
         $this->assertContains("View site breakdown", $assertText2);
     }
-     
+
     /**
      * Verify that a user with 'Violated Scans: View all-sites Violated Scans'
      * permission has a task with the number of violated scans displayed.
@@ -453,7 +454,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->setupPermissions(
             array(
              "imaging_browser_qc",
-             "imaging_browser_view_allsites"
+             "imaging_browser_view_allsites",
             )
         );
         $this->safeGet($this->url . '/dashboard/');
@@ -469,7 +470,7 @@ class DashboardTest extends LorisIntegrationTest
      * of data entry conflicts is reported in the My Task panel.
      * If the user also has 'Across all sites access candidates profiles' then
      * the site displayed is 'All', otherwise it is set to the site the user
-     * belongs to. The number of data entry conflicts is the number of 
+     * belongs to. The number of data entry conflicts is the number of
      * entries in the Unresolved tab of the Conflict Resolver page.
      * Click on this task and check that you go to the Conflict Resolver page.
      *
@@ -481,7 +482,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->setupPermissions(
             array(
              "conflict_resolver",
-             "access_all_profiles"
+             "access_all_profiles",
             )
         );
         $this->safeGet($this->url . '/dashboard/');
@@ -495,13 +496,13 @@ class DashboardTest extends LorisIntegrationTest
     /**
      *  Verify that for a user with 'Can edit final radiological reviews' and
      * 'Can view final radiological reviews' permission, the number of
-     * radiological reviews to do is displayed in the My Task panel. 
+     * radiological reviews to do is displayed in the My Task panel.
      * Site displayed is always 'All'. The number of radiological reviews is
-     * the number of entries on the Radiological Review page for which Review 
-     * Done is not set (i.e. 'No' is chosen in the Selection Filter for the 
+     * the number of entries on the Radiological Review page for which Review
+     * Done is not set (i.e. 'No' is chosen in the Selection Filter for the
      * Review Done entry). Clicking on the task should take you to that page,
      * with the Selection Filter set correctly.
-     * 
+     *
      * @return void
      */
     public function testFinalRadioReview()
@@ -510,7 +511,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->setupPermissions(
             array(
              "edit_final_radiological_review",
-             "view_final_radiological_review"
+             "view_final_radiological_review",
             )
         );
         $this->safeGet($this->url . '/dashboard/');
@@ -531,9 +532,7 @@ class DashboardTest extends LorisIntegrationTest
     {
 
         $this->setupPermissions(
-            array(
-            "superuser"
-            )
+            array("superuser")
         );
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
@@ -548,9 +547,9 @@ class DashboardTest extends LorisIntegrationTest
      * incomplete forms (instruments with Data Entry  set to 'In Progress')
      * is displayed in the My Tasks panel. If the user also has 'Across all
      * sites access candidates profiles' then the site displayed is 'All',
-     * otherwise it is set to the site the user belongs to and only the 
+     * otherwise it is set to the site the user belongs to and only the
      * candidates that belong to the user's site are considered for the
-     * computation of the number of incomplete forms. 
+     * computation of the number of incomplete forms.
      * Clicking on this task should take you to the BVL statistics page,
      * with the stats filtered according to the user's site (or without
      * any filter if the user has 'Across all sites access candidates
@@ -578,12 +577,12 @@ class DashboardTest extends LorisIntegrationTest
     /**
      * Verify that if a user has 'User Management / Survey Participant
      * Management' permission, the number of pending account approvals
-     * is displayed in the My Task panel. This should be the number of 
+     * is displayed in the My Task panel. This should be the number of
      * entries in the User Account page with the following Selection Filter:
      * Site set to the user's site and Pending Approval set to 'Yes'. The
      * Site displayed will be the user's site. Check that you are taken to
      * that page (with the Selection Filter correctly set) when you click
-     * on the task. 
+     * on the task.
      *
      *  @return void
      */
@@ -605,7 +604,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-     * Verify that if a user has the 'View and upload files in Document 
+     * Verify that if a user has the 'View and upload files in Document
      * Repository' or 'Delete files in Document Repository' permission,
      * the latest documents to have been edited or uploaded in the document
      * repository are displayed (4 at most) in the Document Repository panel.
@@ -621,7 +620,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->setupPermissions(
             array(
              "document_repository_delete",
-             "document_repository_view"
+             "document_repository_view",
             )
         );
         $this->safeGet($this->url . '/dashboard/');
@@ -654,14 +653,15 @@ class DashboardTest extends LorisIntegrationTest
     }
     /**
      *  If test on local machine, then run this function.
+     *
      *  @return void
      */
-    public function test_Local()
+    public function testLocal()
     {
-        $config =& NDB_Config::singleton();
-        $dev  = $config->getSetting("dev");
+        $config  =& NDB_Config::singleton();
+        $dev     = $config->getSetting("dev");
         $sandbox = $dev['sandbox'];
-        if ($sandbox == '1'){
+        if ($sandbox == '1') {
 
             $this->_testPlan_1();
             $this->_testPlan_2();
@@ -674,11 +674,11 @@ class DashboardTest extends LorisIntegrationTest
     }
     /**
      * Log in. Note the time. Log out and log back in after 2 minutes.
-     * Check that welcome panel info is correct. 
+     * Check that welcome panel info is correct.
      *
      * @return void
      */
-    private function _testPlan_1()
+    private function _testPlan1()
     {
         $this->safeGet($this->url . '/main.php?logout=true');
         sleep(120);
@@ -694,14 +694,15 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _testPlan_2()
+    private function _testPlan2()
     {
-      $this->safeGet($this->url . '/dashboard/');
-      $testText = $this->webDriver
+        $this->safeGet($this->url . '/dashboard/');
+        $testText = $this->webDriver
             ->findElement(WebDriverBy::Id("overall-recruitment"))->getText();
-      $this->assertContains(
-          "Please add a recruitment target for Overall Recruitment.",
-                $testText);
+        $this->assertContains(
+            "Please add a recruitment target for Overall Recruitment.",
+            $testText
+        );
     }
     /**
      * Put a recruitment target in the configuration module and check that
@@ -709,23 +710,37 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _testPlan_3()
+    private function _testPlan3()
     {
-      $this->safeGet($this->url . '/configuration/');
-      $this->webDriver->findElement(WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"))->click();
-      
-      $this->webDriver->findElement(WebDriverBy::Xpath(
-                "//*[@id='48']/input"))->clear();
-      $this->webDriver->findElement(WebDriverBy::Xpath(
-                "//*[@id='48']/input"))->sendKeys('888');
-      $this->webDriver->findElement(WebDriverBy::Xpath(
-                "//*[@id='dashboard']/div/form/div[3]/div/button[1]"))->click();
-      $this->safeGet($this->url . '/dashboard/');
-      $testText = $this->webDriver
+        $this->safeGet($this->url . '/configuration/');
+        $this->webDriver->findElement(
+            WebDriverBy::Xpath(
+                "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
+            )
+        )->click();
+
+        $this->webDriver->findElement(
+            WebDriverBy::Xpath(
+                "//*[@id='48']/input"
+            )
+        )->clear();
+        $this->webDriver->findElement(
+            WebDriverBy::Xpath(
+                "//*[@id='48']/input"
+            )
+        )->sendKeys('888');
+        $this->webDriver->findElement(
+            WebDriverBy::Xpath(
+                "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
+            )
+        )->click();
+        $this->safeGet($this->url . '/dashboard/');
+        $testText = $this->webDriver
             ->findElement(WebDriverBy::Id("overall-recruitment"))->getText();
-      $this->assertContains(
-          "888", $testText);
+        $this->assertContains(
+            "888",
+            $testText
+        );
     }
     /**
      * 5. Create a candidate and assign it to any site. Inactivate it.
@@ -735,34 +750,46 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _testPlan_5_6()
+    private function _testPlan5And6()
     {
-      $this->safeGet($this->url . '/dashboard/');
-      $testText = $this->webDriver
-            ->findElement(WebDriverBy::Xpath(
-             "//*[@id='lorisworkspace']/div/div[1]/div[2]"))->getText();
-      $this->assertNotContains(
-          "There have been no candidates registered yet.", $testText);
+        $this->safeGet($this->url . '/dashboard/');
+        $testText = $this->webDriver
+            ->findElement(
+                WebDriverBy::Xpath(
+                    "//*[@id='lorisworkspace']/div/div[1]/div[2]"
+                )
+            )->getText();
+        $this->assertNotContains(
+            "There have been no candidates registered yet.",
+            $testText
+        );
     }
     /**
      * 7. Check that scans per site (study progression panel) view is correct
      * (scan dates and scan numbers).
-     * 8. Check that recruitment per site view is correct 
+     * 8. Check that recruitment per site view is correct
      * (study progression panel).
      *
      * @return void
      */
-    private function _testPlan_7_8()
+    private function _testPlan7And8()
     {
-      $this->safeGet($this->url . '/dashboard/');
-      $testText = $this->webDriver
-            ->findElement(WebDriverBy::Xpath(
-             "//*[@id='lorisworkspace']/div/div[1]/div[3]"))->getText();
-      $this->assertContains(
-          "There have been no scans yet.", $testText);
+        $this->safeGet($this->url . '/dashboard/');
+        $testText = $this->webDriver
+            ->findElement(
+                WebDriverBy::Xpath(
+                    "//*[@id='lorisworkspace']/div/div[1]/div[3]"
+                )
+            )->getText();
+        $this->assertContains(
+            "There have been no scans yet.",
+            $testText
+        );
 
-      $this->assertNotContains(
-          "There have been no candidates registered yet.", $testText);
+        $this->assertNotContains(
+            "There have been no candidates registered yet.",
+            $testText
+        );
     }
 
 }
