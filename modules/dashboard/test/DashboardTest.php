@@ -367,6 +367,22 @@ class DashboardTest extends LorisIntegrationTest
         $this->assertContains($dataSeed, $bodyText);
 
     }
-
+   public function testFinalRadioReview()
+     {
+ 
+         $this->setupPermissions(
+             array(
+              "edit_final_radiological_review",
+              "view_final_radiological_review"
+             )
+         );
+         $this->safeGet($this->url . '/dashboard/');
+         $this->_testMytaskPanelAndLink(
+             ".radiological-review",
+             "1",
+             "-  Final  Radiological  Review"
+         );
+         $this->resetPermissions();
+     }
 }
 ?>
