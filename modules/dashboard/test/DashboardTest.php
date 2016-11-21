@@ -390,7 +390,7 @@ class DashboardTest extends LorisIntegrationTest
       * author : Wang Shen
       *
       * @return void
-      *
+      */
     public function testDashboardRecruitmentView()
     {
         $this->safeGet($this->url . '/dashboard/');
@@ -420,7 +420,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->assertContains("View overall recruitment", $assertText1);
         $this->assertContains("View site breakdown", $assertText2);
     }
-     */
+     
     /**
      * Verify that a user with 'Violated Scans: View all-sites Violated Scans'
      * permission has a task with the number of violated scans displayed.
@@ -428,7 +428,7 @@ class DashboardTest extends LorisIntegrationTest
      * Check that clicking on the task takes you to the Violated Scans page.
      *
      * @return void
-     *
+     */
     public function testMriViolations()
     {
         $this->setupPermissions(
@@ -436,7 +436,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->_testMytaskPanelAndLink(".mri_violations", "2", "[Test]PatientName");
         $this->resetPermissions();
-    }*/
+    }
     /**
      * Check that for a user with 'Data Entry' permission, the number of incomplete
      * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
@@ -446,7 +446,7 @@ class DashboardTest extends LorisIntegrationTest
      * are considered for the computation of the number of incomplete forms.
      *
      *  @return void
-     *
+     */
     public function testNewScans()
     {
 
@@ -463,17 +463,18 @@ class DashboardTest extends LorisIntegrationTest
             "Imaging  Browser"
         );
         $this->resetPermissions();
-    }*/
+    }
     /**
-     * Check that for a user with 'Data Entry' permission, the number of incomplete
-     * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
-     * Tasks panel. If the user also has 'Across all sites access candidates
-     * profiles' then the site displayed is 'All', otherwise it is set to the site
-     * the user belongs to and only the candidates that belong to the user's site
-     * are considered for the computation of the number of incomplete forms.
+     * Verify that for a user with 'Resolving conflicts' permission the number
+     * of data entry conflicts is reported in the My Task panel.
+     * If the user also has 'Across all sites access candidates profiles' then
+     * the site displayed is 'All', otherwise it is set to the site the user
+     * belongs to. The number of data entry conflicts is the number of 
+     * entries in the Unresolved tab of the Conflict Resolver page.
+     * Click on this task and check that you go to the Conflict Resolver page.
      *
      *  @return void
-     *
+     */
     public function testConflictResolver()
     {
 
@@ -490,17 +491,19 @@ class DashboardTest extends LorisIntegrationTest
             "-  Conflict  Resolver"
         );
         $this->resetPermissions();
-    }*/
+    }
     /**
-     * Check that for a user with 'Data Entry' permission, the number of incomplete
-     * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
-     * Tasks panel. If the user also has 'Across all sites access candidates
-     * profiles' then the site displayed is 'All', otherwise it is set to the site
-     * the user belongs to and only the candidates that belong to the user's site
-     * are considered for the computation of the number of incomplete forms.
-     *
-     *  @return void
-     *
+     *  Verify that for a user with 'Can edit final radiological reviews' and
+     * 'Can view final radiological reviews' permission, the number of
+     * radiological reviews to do is displayed in the My Task panel. 
+     * Site displayed is always 'All'. The number of radiological reviews is
+     * the number of entries on the Radiological Review page for which Review 
+     * Done is not set (i.e. 'No' is chosen in the Selection Filter for the 
+     * Review Done entry). Clicking on the task should take you to that page,
+     * with the Selection Filter set correctly.
+     * 
+     * @return void
+     */
     public function testFinalRadioReview()
     {
 
@@ -517,17 +520,13 @@ class DashboardTest extends LorisIntegrationTest
             "-  Final  Radiological  Review"
         );
         $this->resetPermissions();
-    }*/
+    }
     /**
-     * Check that for a user with 'Data Entry' permission, the number of incomplete
-     * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
-     * Tasks panel. If the user also has 'Across all sites access candidates
-     * profiles' then the site displayed is 'All', otherwise it is set to the site
-     * the user belongs to and only the candidates that belong to the user's site
-     * are considered for the computation of the number of incomplete forms.
+     *  Check user has 'superuser' permission, user can see the issue panel.
+     *  Click the issue link can access issue moduel.
      *
      *  @return void
-     *
+     */
     public function testIssues()
     {
 
@@ -543,17 +542,22 @@ class DashboardTest extends LorisIntegrationTest
             "-  Issue  Tracker"
         );
         $this->resetPermissions();
-    }*/
+    }
     /**
-     * Check that for a user with 'Data Entry' permission, the number of incomplete
-     * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
-     * Tasks panel. If the user also has 'Across all sites access candidates
-     * profiles' then the site displayed is 'All', otherwise it is set to the site
-     * the user belongs to and only the candidates that belong to the user's site
-     * are considered for the computation of the number of incomplete forms.
+     * Check that for a user with 'Data Entry' permission, the number of
+     * incomplete forms (instruments with Data Entry  set to 'In Progress')
+     * is displayed in the My Tasks panel. If the user also has 'Across all
+     * sites access candidates profiles' then the site displayed is 'All',
+     * otherwise it is set to the site the user belongs to and only the 
+     * candidates that belong to the user's site are considered for the
+     * computation of the number of incomplete forms. 
+     * Clicking on this task should take you to the BVL statistics page,
+     * with the stats filtered according to the user's site (or without
+     * any filter if the user has 'Across all sites access candidates
+     * profiles' permission).
      *
      *  @return void
-     *
+     */
     public function testIncompleteForm()
     {
 
@@ -570,17 +574,19 @@ class DashboardTest extends LorisIntegrationTest
             "All Completion Statistics"
         );
         $this->resetPermissions();
-    }*/
+    }
     /**
-     * Check that for a user with 'Data Entry' permission, the number of incomplete
-     * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
-     * Tasks panel. If the user also has 'Across all sites access candidates
-     * profiles' then the site displayed is 'All', otherwise it is set to the site
-     * the user belongs to and only the candidates that belong to the user's site
-     * are considered for the computation of the number of incomplete forms.
+     * Verify that if a user has 'User Management / Survey Participant
+     * Management' permission, the number of pending account approvals
+     * is displayed in the My Task panel. This should be the number of 
+     * entries in the User Account page with the following Selection Filter:
+     * Site set to the user's site and Pending Approval set to 'Yes'. The
+     * Site displayed will be the user's site. Check that you are taken to
+     * that page (with the Selection Filter correctly set) when you click
+     * on the task. 
      *
      *  @return void
-     *
+     */
     public function testPendingUser()
     {
 
@@ -591,25 +597,25 @@ class DashboardTest extends LorisIntegrationTest
             )
         );
         $this->safeGet($this->url . '/dashboard/');
-        sleep(50);
         $this->_testMytaskPanelAndLink(
             ".pending-accounts",
             "1",
             "-  User  Accounts"
         );
         $this->resetPermissions();
-    }*/
+    }
     /**
-     * Check that for a user with 'Data Entry' permission, the number of incomplete
-     * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
-     * Tasks panel. If the user also has 'Across all sites access candidates
-     * profiles' then the site displayed is 'All', otherwise it is set to the site
-     * the user belongs to and only the candidates that belong to the user's site
-     * are considered for the computation of the number of incomplete forms.
+     * Verify that if a user has the 'View and upload files in Document 
+     * Repository' or 'Delete files in Document Repository' permission,
+     * the latest documents to have been edited or uploaded in the document
+     * repository are displayed (4 at most) in the Document Repository panel.
+     * Clicking on a document will display it in the browser.
+     * Clicking on the Document Repository button takes you to the Document
+     * Repository page.
      *
-     *  @return void
+     * @return void
      */
-    public function testPendingUser()
+    public function testDocumentRepository()
     {
 
         $this->setupPermissions(
@@ -622,12 +628,6 @@ class DashboardTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains("test.jpg", $bodyText);
         $this->assertContains("NEW", $bodyText);
-        $this->safeFindElement(
-             WebDriverBy::cssSelector('.list-group-item'))->click();
-        $this->webDriver->get($this->url . '/dashboard/');
-        //todo();
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertNotContains("test.jpg", $bodyText); 
         $this->resetPermissions();
     }
     /**
@@ -651,6 +651,118 @@ class DashboardTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains($dataSeed, $bodyText);
 
+    }
+    /**
+     *  If test on local machine, then run this function.
+     *  @return void
+     */
+    public function test_Local()
+    {
+        $config =& NDB_Config::singleton();
+        $dev  = $config->getSetting("dev");
+        $sandbox = $dev['sandbox'];
+        if ($sandbox == '1'){
+
+            $this->_testPlan_1();
+            $this->_testPlan_2();
+            $this->_testPlan_3();
+            $this->_testPlan_5_6();
+            $this->_testPlan_7_8();
+
+        }
+
+    }
+    /**
+     * Log in. Note the time. Log out and log back in after 2 minutes.
+     * Check that welcome panel info is correct. 
+     *
+     * @return void
+     */
+    private function _testPlan_1()
+    {
+        $this->safeGet($this->url . '/main.php?logout=true');
+        sleep(120);
+         $this->login("UnitTester", "4test4");
+        $welcomeText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
+        $this->assertContains("Unit Tester", $welcomeText);
+    }
+    /**
+     * Make sure there is no recruitment target set in the configuration
+     * module. Check that an incentive to define a recruitment target is
+     * displayed in recruitment panel.
+     *
+     * @return void
+     */
+    private function _testPlan_2()
+    {
+      $this->safeGet($this->url . '/dashboard/');
+      $testText = $this->webDriver
+            ->findElement(WebDriverBy::Id("overall-recruitment"))->getText();
+      $this->assertContains(
+          "Please add a recruitment target for Overall Recruitment.",
+                $testText);
+    }
+    /**
+     * Put a recruitment target in the configuration module and check that
+     * the info in the recruitment panel is correct.
+     *
+     * @return void
+     */
+    private function _testPlan_3()
+    {
+      $this->safeGet($this->url . '/configuration/');
+      $this->webDriver->findElement(WebDriverBy::Xpath(
+                "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"))->click();
+      
+      $this->webDriver->findElement(WebDriverBy::Xpath(
+                "//*[@id='48']/input"))->clear();
+      $this->webDriver->findElement(WebDriverBy::Xpath(
+                "//*[@id='48']/input"))->sendKeys('888');
+      $this->webDriver->findElement(WebDriverBy::Xpath(
+                "//*[@id='dashboard']/div/form/div[3]/div/button[1]"))->click();
+      $this->safeGet($this->url . '/dashboard/');
+      $testText = $this->webDriver
+            ->findElement(WebDriverBy::Id("overall-recruitment"))->getText();
+      $this->assertContains(
+          "888", $testText);
+    }
+    /**
+     * 5. Create a candidate and assign it to any site. Inactivate it.
+     * Make sure it is NOT taken into account in the gender
+     * breakdown view (recruitment panel).
+     * 6. Check that site breakdown view (recruitment panel) is correct.
+     *
+     * @return void
+     */
+    private function _testPlan_5_6()
+    {
+      $this->safeGet($this->url . '/dashboard/');
+      $testText = $this->webDriver
+            ->findElement(WebDriverBy::Xpath(
+             "//*[@id='lorisworkspace']/div/div[1]/div[2]"))->getText();
+      $this->assertNotContains(
+          "There have been no candidates registered yet.", $testText);
+    }
+    /**
+     * 7. Check that scans per site (study progression panel) view is correct
+     * (scan dates and scan numbers).
+     * 8. Check that recruitment per site view is correct 
+     * (study progression panel).
+     *
+     * @return void
+     */
+    private function _testPlan_7_8()
+    {
+      $this->safeGet($this->url . '/dashboard/');
+      $testText = $this->webDriver
+            ->findElement(WebDriverBy::Xpath(
+             "//*[@id='lorisworkspace']/div/div[1]/div[3]"))->getText();
+      $this->assertContains(
+          "There have been no scans yet.", $testText);
+
+      $this->assertNotContains(
+          "There have been no candidates registered yet.", $testText);
     }
 
 }
