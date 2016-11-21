@@ -782,7 +782,7 @@ class DashboardTest extends LorisIntegrationTest
                 )
             )->getText();
         $this->assertContains(
-            "There have been no scans yet.",
+            "Scan sessions per site",
             $testText
         );
 
