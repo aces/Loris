@@ -41,11 +41,13 @@ class Create_Timepoint extends \NDB_Form
         $user =& \User::singleton();
 
         $candidate =& \Candidate::singleton($this->identifier);
+        print_r ($user->getData('SiteID'));
 
         // check user permissions
         return (
             $user->hasPermission('data_entry') &&
-            $user->getData('CenterID') == $candidate->getData('CenterID')
+  //          $user->getData('CenterID') == $candidate->getData('CenterID')
+            (in_array($candidate->getData('CenterID'), $user->getData('SiteID')))
         );
     }
 
