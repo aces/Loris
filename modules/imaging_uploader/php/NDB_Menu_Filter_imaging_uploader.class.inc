@@ -390,7 +390,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                                     " PSCID: $pscid and the corresponding".
                                     " Visit-label: $visit_label which".
                                     " already exist. <br>Please refresh this page".
-                                    "to return to the Imaging Uploader module";
+                                    " to return to the Imaging Uploader module";
                 }
             }
         }
