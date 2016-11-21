@@ -225,8 +225,10 @@ class User extends UserPermissions
      */
     function getCenterID()
     {
-        return $this->userInfo['CenterID'];
+//        return $this->userInfo['CenterID'];
+        return $this->userInfo['SiteID'];
     }
+
 
     /**
      * Unknown what this does. Maybe it should be removed?
