@@ -663,11 +663,11 @@ class DashboardTest extends LorisIntegrationTest
         $sandbox = $dev['sandbox'];
         if ($sandbox == '1') {
 
-            $this->_testPlan_1();
-            $this->_testPlan_2();
-            $this->_testPlan_3();
-            $this->_testPlan_5_6();
-            $this->_testPlan_7_8();
+            $this->_testPlan1();
+            $this->_testPlan2();
+            $this->_testPlan3();
+            $this->_testPlan5And6();
+            $this->_testPlan7And8();
 
         }
 
