@@ -164,7 +164,7 @@ class NDB_Client
             // Check to see if passwordExpired flag is set
             if (!$login->passwordExpired()) {
                 // If not show login page
-                $login->showLoginScreen();
+                header("HTTP/1.1 401 Unauthorized");
             }
             //terminate script
             return false;

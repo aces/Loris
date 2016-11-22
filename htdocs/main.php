@@ -27,6 +27,8 @@ ob_start();
 // load the client
 $client = new NDB_Client;
 if ($client->initialize() == false) {
+    $login = $_SESSION['State']->getProperty('login');
+    $login->showLoginScreen();
     return false;
 }
 
