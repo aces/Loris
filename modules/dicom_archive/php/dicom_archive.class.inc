@@ -184,6 +184,12 @@ class Dicom_Archive extends \NDB_Menu_Filter
     {
         $result          = $this->toArray();
         $result['Sites'] = \Utility::getSiteList();
+        $result['hiddenHeaders'] = [
+                                    'Seriesuid',
+                                    'Site',
+                                    'TarchiveID',
+                                    'SessionID',
+                                   ];
 
         return json_encode($result);
     }
