@@ -38,8 +38,8 @@ install:
     - npm -g install eslint-plugin-react
 
     - wget "http://download.oracle.com/otn-pub/java/jdk/8u71-b15/jdk-8u71-linux-x64.tar.gz"
-    - mkdir /opt/jdk
-    - tar -zxf jdk-8u71-linux-x64.tar.gz -C /opt/jdk/
+    - sudo mkdir /opt/jdk
+    - sudo tar -zxf jdk-8u71-linux-x64.tar.gz -C /opt/jdk/
     - rm jdk-8u71-linux-x64.tar.gz
 
     - sudo update-alternatives --install /usr/bin/java java /opt/jdk/jdk1.8.0_71/bin/java 1
