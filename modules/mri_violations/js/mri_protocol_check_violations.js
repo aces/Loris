@@ -12,13 +12,12 @@ $(window).resize(function(){
     // checkOverflow();
 });
 $(window).ready(function () {
-       var qs = new QueryString();
-       var qsObj = qs.get();
+       var qsObj = QueryString.get();
        var filter = qsObj['filter'];
        if(filter==="true"){
-         
+
             $( "input[name ='filter']" ).click();
-       
+
         }
  });
 
