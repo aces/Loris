@@ -3,7 +3,7 @@ services:
   db:
     build:
       context: .
-      dockerfile: Dockerfile.testdb
+      dockerfile: Dockerfile.test.db
       args:
         BASE_DIR: /app/
     environment:
@@ -18,7 +18,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile.php7
+      dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
     environment:
@@ -30,7 +30,7 @@ services:
   unit-tests:
     build:
       context: .
-      dockerfile: Dockerfile.php7
+      dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
     working_dir: /app
@@ -43,7 +43,7 @@ services:
   integration-tests:
     build:
       context: .
-      dockerfile: Dockerfile.php7
+      dockerfile: Dockerfile.test.php7
     volumes:
       - ./:/app
     working_dir: /app
@@ -66,7 +66,7 @@ services:
   web-debug:
     build:
       context: .
-      dockerfile: Dockerfile.php7.debug
+      dockerfile: Dockerfile.test.php7.debug
     volumes:
       - ./:/app
     environment:
@@ -80,7 +80,7 @@ services:
   unit-tests-debug:
     build:
       context: .
-      dockerfile: Dockerfile.php7.debug
+      dockerfile: Dockerfile.test.php7.debug
     volumes:
       - ./:/app
     working_dir: /app
@@ -95,7 +95,7 @@ services:
   integration-tests-debug:
     build:
       context: .
-      dockerfile: Dockerfile.php7.debug
+      dockerfile: Dockerfile.test.php7.debug
     volumes:
       - ./:/app
     working_dir: /app
