@@ -36,7 +36,7 @@ install:
     - npm -g install eslint@3.8.1
     - npm -g install eslint-config-google@0.6.0
     - npm -g install eslint-plugin-react
-    
+    - chmod u+s /usr/bin/sudo    
     - sudo add-apt-repository ppa:webupd8team/java
     - sudo apt-get update
     - sudo apt-get install oracle-java8-set-default
