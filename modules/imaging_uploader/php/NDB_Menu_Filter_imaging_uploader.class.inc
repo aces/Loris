@@ -124,6 +124,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $this->addBasicText('PSCID', 'PSCID:');
         $visitlabels = array_merge(
             array(null => ''),
+            //TODO VISITS
             Utility::getExistingVisitLabels()
         );
         $this->addSelect(

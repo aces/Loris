@@ -61,13 +61,16 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
             }
         }
         switch($issue) {
+            //TODO VISITS patientname pattern match of hell
         case 'Tarchive_Missing':
             $query = "SELECT DISTINCT f.CommentID as CommentID, 
                             c.PSCID, s.ID as SessionID, s.CandID as CandID,
-                            s.Visit_label
+                            s.VisitID,
+                            v.label as vlabel
                     FROM flag f JOIN session s ON (f.SessionID=s.ID)
+                        LEFT JOIN visits v ON (v.ID=s.VisitID)
                         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
-                        LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6) AND MID(t.PatientName, 16, 7)=s.Visit_label)
+                        LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6) AND MID(t.PatientName, 16, 7)=v.legacy_label)
                         LEFT JOIN candidate c ON (s.CandID=c.CandID)
                         $where
                             AND f.CommentID NOT LIKE 'DDE%'
@@ -95,7 +98,7 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
                 }
             }
 
-            $query = "SELECT DISTINCT f.CommentID as CommentID, s.ID as SessionID, c.PSCID, s.CandID, s.Visit_label
+            $query = "SELECT DISTINCT f.CommentID as CommentID, s.ID as SessionID, c.PSCID, s.CandID, s.VisitID
                     FROM mri_parameter_form m LEFT JOIN flag f ON
                                         (f.CommentID=m.CommentID)
                     LEFT JOIN session s ON (s.ID=f.SessionID)
@@ -111,8 +114,11 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
             break;
         case 'PF_Missing': $query =
             "SELECT DISTINCT c.PSCID, s.ID as SessionID,
-                        s.Visit_label
-                    FROM files LEFT JOIN session s ON (files.SessionID=s.ID)
+                        s.VisitID
+                        v.label as vlabel
+                    FROM files 
+                        LEFT JOIN session s ON (files.SessionID=s.ID)
+                        LEFT JOIN visits v ON (v.ID=s.VisitID)
                         LEFT JOIN flag f on (f.SessionID=s.ID AND f.Test_name='mri_parameter_form' AND f.CommentID NOT LIKE 'DDE%')
                         LEFT JOIN mri_parameter_form mpf ON (mpf.CommentID=f.CommentID)
                         LEFT JOIN candidate c ON (c.CandID=s.CandID)
@@ -144,7 +150,7 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
         }
         $DB     =& Database::singleton();
         $center = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID=:cid", array('cid' => $_REQUEST['CenterID']));
-        $id     = $center['ID'];
+        $centerID     = $center['ID'];
         $name   = $center['Name'];
         // List of all visits. Add to it any time a new one is seen, so
         // that we can iterate over it to display later, and leave blank
@@ -161,15 +167,16 @@ class NDB_Menu_statistics_mri_site extends NDB_Menu_statistics_site
 
             $test_url = $issue;
             foreach($results as $row) {
-                if(!in_array($row['Visit_label'], $visits)) {
+                if(!in_array($row['VisitID'], $visits)) {
                     $visits[] = $row['Visit_label'];
                 }
-                $results[$row['Visit_label']][] = array(
+                $results[$row['VisitID']][] = array(
                                                    'test_url'  => $test_url,
                                                    'CandID'    => $row['CandID'],
                                                    'SessionID' => $row['SessionID'],
                                                    'CommentID' => $row['CommentID'],
                                                    'PSCID'     => $row['PSCID'],
+                                                   'vlabel'    => $row['vlabel'],
                                                   );
             }
             $data[] = array(

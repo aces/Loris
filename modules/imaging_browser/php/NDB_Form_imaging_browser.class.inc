@@ -336,7 +336,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $user = User::singleton();
             $timePoint =& TimePoint::singleton($this->sessionID);
             $candid = $timePoint->getCandID();
-            $visit_label = $timePoint->getData('Visit_label');
+            $visitid = $timePoint->getData('VisitID');
 
             foreach ($values['caveat'] as $curFileID => $curCaveat) {
                 if ($curCaveat === '') {
@@ -357,7 +357,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     $insertSet['MincFile'] = $file->getParameter('File');
                     $insertSet['PatientName'] = $file->getParameter('patient_name');
                     $insertSet['CandID'] = $candid;
-                    $insertSet['Visit_label'] = $visit_label;
+                    $insertSet['VisitID'] = $visitid;
                     $insertSet['CheckID'] = null;
                     $insertSet['Severity'] = 'warning';
                     $insertSet['Header'] = 'Manual Caveat Set by '
@@ -564,6 +564,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         $subjectData['SubprojectID'] = $timePoint->getSubprojectID();
         $subjectData['SubprojectTitle'] = $timePoint->getData('SubprojectTitle');
         $subjectData['visitLabel'] = $timePoint->getVisitLabel();
+        $subjectData['visitID'] = $timePoint->getVisitID();
         $subjectData['visitNo'] = $timePoint->getVisitNo();
         $subjectData['site'] = $timePoint->getPSC();
         $qcstatus = $this->DB->pselectRow(
@@ -592,10 +593,13 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $ID = ":PPSCID";
             $params['PPSCID'] = $timePoint->getData('PSCID');
         } else {
-            $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%'))";
+            $ID = "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVL, '%')) OR ".
+            "LOWER(CONCAT(:PPSCID, '_', :PCandID, '_', :PVID, '%'))";
             $params['PPSCID'] = $candidate->getPSCID();
             $params['PCandID'] = $timePoint->getCandID();
             $params['PVL'] = $timePoint->getVisitLabel();
+            $params['PVID'] = $timePoint->getVisitID();
+
         }
         $tarchiveIDs = $this->DB->pselect(
             "SELECT TarchiveID 

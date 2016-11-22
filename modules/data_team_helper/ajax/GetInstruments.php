@@ -51,6 +51,7 @@ if ($_REQUEST['visit_label'] == 'All Visits') {
     print json_encode($flattened_result);
     exit();
 } else {
+    //TODO VISITS
     $instruments = Utility::getVisitInstruments($_REQUEST['visit_label']);
     //flattening the array result for proper json encoding
     if ($instruments == null) {

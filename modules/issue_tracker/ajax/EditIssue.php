@@ -191,10 +191,10 @@ function validateInput($values)
 {
     $db         =& Database::singleton();
     $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
-    $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
+    $visitid = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
     $result     = [
                    'PSCID'             => $pscid,
-                   'visit'             => $visitLabel,
+                   'visit'             => $visitid,
                    'candID'            => null,
                    'sessionID'         => null,
                    'isValidSubmission' => true,
@@ -206,10 +206,10 @@ function validateInput($values)
         $session = $db->pSelect(
             "SELECT s.ID as sessionID, c.candID as candID FROM candidate c 
             INNER JOIN session s on (c.CandID = s.CandID) 
-            WHERE c.PSCID=:PSCID and s.Visit_label=:visitLabel",
+            WHERE c.PSCID=:PSCID and s.VisitID=:vid",
             [
              'PSCID'      => $result['PSCID'],
-             'visitLabel' => $result['visit'],
+             'vid'        => $result['visit'],
             ]
         );
 
@@ -390,8 +390,11 @@ function getComments($issueID)
             $comment['fieldChanged'] = 'PSCID';
             continue;
         } else if ($comment['fieldChanged'] === 'sessionID') {
-            $visitLabel          = $db->pselectOne(
-                "SELECT Visit_label FROM session WHERE ID=:sessionID",
+            $visitLabel        = $db->pselectOne(
+                "SELECT v.label 
+                 FROM session s 
+                 LEFT JOIN visits v ON (v.ID=s.VisitID)
+                 WHERE s.ID=:sessionID",
                 array('sessionID' => $comment['newValue'])
             );
             $comment['newValue'] = $visitLabel;
@@ -486,7 +489,12 @@ function getIssueFields()
     $db   =& Database::singleton();
     $user =& User::singleton();
 
+    // Get visits
+    $visits = Utility::getVisitList();
+
+
     //get field options
+    $sites=array();
     if ($user->hasPermission('access_all_profiles')) {
         // get the list of study sites - to be replaced by the Site object
         $sites = Utility::getAssociativeSiteList();
@@ -594,7 +602,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
     if (!empty($_GET['issueID'])) { //if an existing issue
         $issueID   = $_GET['issueID'];
         $issueData = $db->pselectRow(
-            "SELECT i.*, c.PSCID, s.Visit_label as visitLabel FROM issues as i " .
+            "SELECT i.*, c.PSCID, s.VisitID as visitLabel FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
             "LEFT JOIN session s ON (i.sessionID=s.ID) " .
             "WHERE issueID=:issueID",
@@ -651,6 +659,7 @@ ORDER BY dateAdded",
                'priorities'        => $priorities,
                'categories'        => $categories,
                'modules'           => $modules,
+               'visits'            => $visits,
                'otherWatchers'     => $otherWatchers,
                'issueData'         => $issueData,
                'hasEditPermission' => $user->hasPermission(

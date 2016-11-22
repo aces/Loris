@@ -137,6 +137,7 @@ class Project extends \Loris\API\APIBase
 
         if ($this->bVisits) {
             $Visits     = \Utility::getExistingVisitLabels($this->project->getId());
+            //TODO VISITS
             $VisitNames = array_keys($Visits);
 
             $JSONArray['Visits'] = $VisitNames;

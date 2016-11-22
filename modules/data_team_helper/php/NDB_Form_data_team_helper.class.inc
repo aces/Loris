@@ -124,6 +124,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
          /* Visit_labels
          */
+        //TODO VISITS
         $visit_array =Utility::getExistingVisitLabels();
         $visit_array = array_combine($visit_array, $visit_array);
         $this->tpl_data['visitLabels'] = $visit_array;

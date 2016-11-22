@@ -55,9 +55,9 @@ if(isset($_REQUEST['Administration']) && !empty($_REQUEST['Administration'])) {
     $QueryCondition .= " AND f.Administration=:Administration";
     $ConditionBindings['Administration'] = $_REQUEST['Administration'];
 }
-if(isset($_REQUEST['Visit_label']) && !empty($_REQUEST['Visit_label'])) {
-        $QueryCondition .= " AND s.Visit_label=:Visit_label";
-        $ConditionBindings['Visit_label'] = $_REQUEST['Visit_label'];
+if(isset($_REQUEST['VisitID']) && !empty($_REQUEST['VisitID'])) {
+        $QueryCondition .= " AND s.VisitID=:vid";
+        $ConditionBindings['vid'] = $_REQUEST['VisitID'];
 }
 $QueryTable = "$Instrument i join flag f ON (i.CommentID=f.CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c USING (CandID)";
 if(isset($InstrumentX)) {

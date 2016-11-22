@@ -143,6 +143,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             LEFT JOIN final_radiological_review r ON (r.CommentID=orig.CommentID)
             JOIN flag f ON (f.CommentID=orig.CommentID)
             JOIN session s ON (s.ID=f.SessionID)
+            LEFT JOIN visits v ON (v.ID=s.VisitID)
             JOIN candidate c ON (c.CandID=s.CandID)
             LEFT JOIN Project pjct ON (pjct.ProjectID=c.ProjectID)
             LEFT JOIN psc ON (c.CenterID=psc.CenterID)
@@ -165,7 +166,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         $this->columns = array(
             'c.PSCID as PSCID',
             'c.CandID as DCCID',
-            's.visit_label as Visit_Label',
+            'v.label as Visit_Label',
         );
         if($useProjects) {
             $this->columns[] = 'pjct.Name as Project';
@@ -222,7 +223,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         $this->tpl_data['hiddenHeaders'] = json_encode(['CommentID','Conflict2','SessionID','CandID']);
         $this->validFilters = array('c.CandID',
             'r.DICOM_ID',
-            's.visit_label',
+            's.VisitID',
             'c.PSCID',
             'r.Final_Review_Results',
             "COALESCE(r.Review_Done, 'no')",
@@ -244,8 +245,8 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         $this->formToFilter = array (
                                     'dccid'       => 'c.CandID',
                                     'site'        => 'c.CenterID',
-                                    'Visit_label' => 's.visit_label',
-                                    'Project'   => 'c.ProjectID',
+                                    'Visit_label' => 's.VisitID',
+                                    'Project'     => 'c.ProjectID',
                                     'pscid'       => 'c.PSCID',
                                     'Review_Done' => "COALESCE(r.Review_Done, 0)",
                                     'Results'     => 'r.Final_Review_Results',
@@ -276,10 +277,10 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             $useProjects = false;
         }
 
-        $list_of_visit_labels = array(null => 'All' );
+        $list_of_visits = array(null => 'All' );
         $visitList = Utility::getVisitList();
         foreach ($visitList as $key=>$value) {
-            $list_of_visit_labels[$key] = $value;
+            $list_of_visits[$key] = $value;
         }
         $list_of_sites = array(null =>'All');
         $sitesList = Utility::getSiteList(false);
@@ -324,7 +325,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         );
         $this->addBasicText('pscid', 'PSCID:', array("size"=>9, "maxlength"=>11));
         $this->addBasicText('dccid', 'DCCID:', array("size"=>9, "maxlength"=>6));
-        $this->addSelect('Visit_label', 'Visit Label:', $list_of_visit_labels);
+        $this->addSelect('Visit_label', 'Visit Label:', $list_of_visits);
         $this->addSelect('site', 'Site', $list_of_sites);
         $this->addSelect('Review_Done', 'Review Done:', $options_boolean);
         $this->addSelect(

@@ -466,6 +466,7 @@ class CandidateTest extends PHPUnit_Framework_TestCase
             ->willReturn('V01');
 
         $this->_candidate->select(969664);
+        //TODO VISITS
         $this->assertEquals('V01', $this->_candidate->getFirstVisit());
     }
 

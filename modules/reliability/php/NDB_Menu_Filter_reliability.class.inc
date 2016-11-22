@@ -78,6 +78,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             "candidate " .
                 "LEFT JOIN Project pr ON (candidate.ProjectID=pr.ProjectID) ".
                 "LEFT JOIN session ON (candidate.CandID=session.CandID) ".
+                "LEFT JOIN visits v ON (v.ID=session.VisitID) ".
             "WHERE ".
                 "session.ID=flag.SessionID";
 
@@ -90,7 +91,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $config=&NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         // set the class variables
-        $this->columns = array('candidate.PSCID', 'reliability.reliability_center_id', 'p.name as site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label');
+        $this->columns = array('candidate.PSCID', 'reliability.reliability_center_id', 'p.name as site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'v.label');
         if ($useProjects === "true") {
             $this->columns[] = 'pr.Name as Project';
         }
@@ -98,7 +99,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
              array('reliability.CommentID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid', 'reliability.Manual_Swap'));
         $this->query = $query;
         $this->group_by = '';
-        $this->order_by = 'reliability.Instrument, session.CandID, session.Visit_label';
+        $this->order_by = 'reliability.Instrument, session.CandID, session.VisitID';
         $this->headers = array('PSCID', 'SiteID', 'Site of Reliability Test','Cohort', 'DCCID', 'Gender', 'Visit_label');
         if ($useProjects === "true") {
             $this->headers[] = 'Project';
@@ -109,7 +110,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $this->tpl_data['hiddenHeaders'] = json_encode(['SiteID', 'CommentID', 'Current Stage', 'Invalid', 'Manual Swap']);
 
 
-        $this->validFilters = array('reliability.CommentID','reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid','candidate.CandID');
+        $this->validFilters = array('reliability.CommentID','reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.VisitID', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid','candidate.CandID');
 
         $this->formToFilter = array(
                                     'SubprojectID' => 'session.SubprojectID',
@@ -118,7 +119,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                                     'DCCID' => 'candidate.CandID',
                                     'PSCID' => 'candidate.PSCID',
                                     'Gender' => 'candidate.Gender',
-                                    'Visit_label' => 'session.Visit_label',
+                                    'Visit_label' => 'session.VisitID',
                                     'Instrument' => 'reliability.Instrument',
                                     'reliability_score'=>'reliability.Reliability_score',
                                     'Current_stage'=>'session.Current_stage',
@@ -159,12 +160,8 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
-        /// hack for Visit Labels... maybe get all the real visit labels from DB?
-        $list_of_visit_labels = array(null=>'All');
         $visitLabel = Utility::getVisitList();
-        foreach($visitLabel as $key => $value){
-            $list_of_visit_labels[$key]= $value;
-        }
+        $list_of_visit_labels = array(null=>'All') + $visitLabel;
         $list_of_visit_labels_only = $visitLabel;
         $projects = Utility::getProjectList();
         $list_of_projects = array(null=>'All');
@@ -380,7 +377,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $params_new['id_Replace']= $_POST['Cand2PSCID'];
         $params_new['id_replaceV'] = $_POST['Cand2Visit_label'];
 
-        $query="SELECT reliability.CommentID as OldID, reliability.reliability_center_id as CenterID, reliability.Reliability_score as Score, candidate.CenterID as OldCenterID  FROM candidate JOIN session ON (session.CandID = candidate.CandID) JOIN flag ON (flag.SessionID = session.ID) JOIN reliability ON ( reliability.CommentID=flag.CommentID) WHERE candidate.PSCID=:pid AND reliability.Instrument=:measure and session.Visit_label=:id_V AND flag.Data_entry IS NOT NULL and flag.Data_entry <> 'None'";
+        $query="SELECT reliability.CommentID as OldID, reliability.reliability_center_id as CenterID, reliability.Reliability_score as Score, candidate.CenterID as OldCenterID  FROM candidate JOIN session ON (session.CandID = candidate.CandID) JOIN flag ON (flag.SessionID = session.ID) JOIN reliability ON ( reliability.CommentID=flag.CommentID) WHERE candidate.PSCID=:pid AND reliability.Instrument=:measure and session.VisitID=:id_V AND flag.Data_entry IS NOT NULL and flag.Data_entry <> 'None'";
 
         $CommentID = $DB->pselectRow($query,$params );
         if(!$CommentID) {
@@ -388,7 +385,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 
         }
         $params_new['Instrument'] = $_POST['SwapInstrument'];
-        $query="SELECT f.CommentID as NewID, c.CenterID as NewCenterID FROM session s join flag f ON (f.SessionID=s.ID) JOIN candidate c ON (c.CandID=s.CandID)  WHERE f.Test_name=:Instrument and c.PSCID=:id_Replace AND s.Visit_label=:id_replaceV AND f.Data_entry IS NOT NULL and f.Data_entry <> 'None'";
+        $query="SELECT f.CommentID as NewID, c.CenterID as NewCenterID FROM session s join flag f ON (f.SessionID=s.ID) JOIN candidate c ON (c.CandID=s.CandID)  WHERE f.Test_name=:Instrument and c.PSCID=:id_Replace AND s.VisitID=:id_replaceV AND f.Data_entry IS NOT NULL and f.Data_entry <> 'None'";
         $newCommentID = $DB->pselectRow($query, $params_new);
         if(!$newCommentID) {
             $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." did not complete". $params_new['Instrument']." or data not entered. Cannot swap candidates.";
@@ -434,7 +431,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $DB =& Database::singleton();
         $params = array();
         $params['Instrument'] = $_POST['AddInstrument'];
-        $params['Visit_label']= $_POST['AddVisit_label'];
+        $params['Visitid']= $_POST['AddVisit_label'];
         $params['PSCID'] = $_POST['AddPSCID'];
         if(!$params['Visit_label']) {
             return array("error" => "You must specify a visit label");
@@ -447,9 +444,9 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             return array("error" => "You must specify a center for reliability testing");
         }
 
-        $CommentID = $DB->pselectOne("SELECT CommentID FROM flag f JOIN session s ON (s.ID=f.SessionID) JOIN candidate c USING (CandID) WHERE f.Test_name=:Instrument AND c.PSCID=:PSCID AND s.Visit_label=:Visit_label", $params);
+        $CommentID = $DB->pselectOne("SELECT CommentID FROM flag f JOIN session s ON (s.ID=f.SessionID) JOIN candidate c USING (CandID) WHERE f.Test_name=:Instrument AND c.PSCID=:PSCID AND s.VisitID=:Visitid", $params);
         if(!$CommentID) {
-            $error_msg = $params['PSCID']."/".$params['Visit_label']." does not have data entered for".$params['Instrument'];
+            $error_msg = $params['PSCID']."/".$params['Visitid']." does not have data entered for".$params['Instrument'];
             return array("error" =>$error_msg);
 
         }
@@ -459,7 +456,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                'Instrument'=>$params['Instrument'],
                'Manual_Swap'=>'no')
         );
-        return array("message" => "Inserted new reliability candidate".$params['PSCID']."/".$params['Visit_label'] );
+        return array("message" => "Inserted new reliability candidate".$params['PSCID']."/".$params['Visitid'] );
     }
 
     /**

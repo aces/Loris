@@ -453,7 +453,7 @@ class NDB_BVL_Feedback
                     c.Ethnicity,
                     c.Gender,
                     s.ID as SessionID,
-                    s.Visit_label as Visit,
+                    v.label as Visit,
                     ft.Feedback_level as QC_Class,
                     COUNT(ft.FeedbackID) as No_Threads";
         if (empty($this->_feedbackObjectInfo['CandID'])) {
@@ -461,7 +461,8 @@ class NDB_BVL_Feedback
         }
         $query  .= " FROM candidate as c
                         JOIN feedback_bvl_thread as ft ON (c.CandID=ft.CandID)
-                        LEFT JOIN session as s ON (s.ID = ft.SessionID)";
+                        LEFT JOIN session as s ON (s.ID = ft.SessionID)
+                        LEFT JOIN visits as v ON (s.VisitID=v.ID)";
         $qparams = array();
         if (empty($this->_feedbackObjectInfo['CandID'])) {
             $query .= " LEFT JOIN flag as f ON (ft.CommentID = f.CommentID)";

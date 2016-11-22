@@ -87,6 +87,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 
         $this->query = " FROM psc AS p 
             JOIN session s ON (s.CenterID=p.CenterID) 
+            LEFT JOIN visits v ON (v.ID=s.VisitID)
             JOIN candidate c ON (c.CandID=s.CandID) 
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
@@ -112,7 +113,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'p.MRI_alias as Site',
             'c.PSCID as PSCID',
             'c.CandID as DCCID',
-            's.visit_label as Visit_Label',
+            'v.label as Visit_Label',
             "$PendingFailSubquery as QC_Status",
             'MIN(md.AcquisitionDate) as First_Acq_Date',
             'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion_Date',
@@ -124,7 +125,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             's.ID as sessionID'
         );
 
-        $this->order_by = 'c.PSCID, s.Visit_label';
+        $this->order_by = 'c.PSCID, s.VisitID';
         $this->group_by = 's.ID';
         $this->headers = array(
             'Site',
@@ -151,7 +152,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 
         $this->validFilters = array(
             'c.PSCID',
-            's.Visit_label',
+            's.VisitID',
             'c.CandID',
             'c.ProjectID',
             's.CenterID',
@@ -162,7 +163,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 
         $this->formToFilter = array(
             'pscid' => 'c.PSCID',
-            'VL'    => 's.Visit_label',
+            'VL'    => 's.VisitID',
             'DCCID'=> 'c.CandID',
             'ProjectID' => 'c.ProjectID',
             'SiteID' => 's.CenterID',
@@ -216,10 +217,13 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
 
         $DB = Database::singleton();
+
         $allAr = array('' => 'All');
+        $imaging_visits=$allAr + Utility::getImagingVisitList();
+
         $this->addBasicText('pscid', 'PSCID', array("size"=>10,"maxlength"=>25));
-        $this->addBasicText(
-            'VL', 'Visit Label', array('size' => "10", "maxlength"=>"25")
+        $this->addSelect(
+            'VL', 'Visit Label', $imaging_visits
         );
         $this->addBasicText(
             'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)

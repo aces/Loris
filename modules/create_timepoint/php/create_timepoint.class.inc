@@ -76,7 +76,8 @@ class Create_Timepoint extends \NDB_Form
             $this->identifier,
             $values['subprojectID'],
             $values['visitLabel'],
-            $values['psc']
+            $values['psc'],
+            $values['visitID']
         );
 
         $this->tpl_data['success'] = true;
@@ -95,7 +96,7 @@ class Create_Timepoint extends \NDB_Form
      * @param string $commentID  The CommentID to load the data for
      * @param string $formname   The name to give this form
      *
-     * @return none
+     * @return void
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
@@ -149,69 +150,38 @@ class Create_Timepoint extends \NDB_Form
         $this->addRule('subprojectID', 'A Subproject ID is required', 'required');
         $this->_setDefaults(array("subprojectID" => $this->subprojectID));
 
-        // visit label
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        $visitLabelAdded    = false;
+        if (!empty($this->subprojectID)){
+            // visit label
+            $visitList= array(''=>null) +
+                \Utility::getVisitsForSubprojectProject($this->subprojectID);
+            $this->addSelect('visitID', 'Visit label', $visitList);
 
-        foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
-            if ($visitLabel['@']['subprojectID']==$this->subprojectID) {
-                if ($visitLabel['generation'] == 'user') {
-                    error_log(
-                        "DEPRECATION WARNING: User generated visit labels will ".
-                        "no longer be supported in the next release of Loris. ".
-                        "Please add the necessary entries to the config.xml file ".
-                        "and set the generation to 'sequence'"
-                    );
-                    $this->addBasicText(
-                        'visitLabel',
-                        'Visit label',
-                        array(
-                         'size'      => $visitLabel['length'] + 1,
-                         'maxlength' => $visitLabel['length'],
-                        )
-                    );
-                    $visitLabelAdded = true;
-                } elseif ($visitLabel['generation'] == 'sequence') {
-                    $labelOptions[''] = null;
-                    $items            = \Utility::toArray(
-                        $visitLabel['labelSet']['item']
-                    );
-                    foreach ($items as $item) {
-                        $labelOptions[$item['@']['value']] = $item['#'];
-                    }
-                    $this->addSelect('visitLabel', 'Visit label', $labelOptions);
-                    $visitLabelAdded = true;
-                }
-            }
-        }
+            // label rules
+            $this->tpl_data['idAdded']=true;
 
-        // label rules
-        if ($visitLabelAdded) {
-            $this->addRule('visitLabel', 'Visit label is required', 'required');
-             // List of sites for the user
-             $user = \User::singleton();
-             $DB   = \Database::singleton();
-             $user_list_of_sites = $user->getData('CenterIDs');
-             $num_sites          = count($user_list_of_sites);
+            $this->addRule('visitID', 'Visit label is required', 'required');
+            // List of sites for the user
+            $user = \User::singleton();
+            $DB   = \Database::singleton();
+            $user_list_of_sites = $user->getData('CenterIDs');
+            $num_sites          = count($user_list_of_sites);
 
             if ($num_sites >1) {
                 $pscLabelAdded =true;
                 $this->tpl_data['pscLabelAdded'] = true;
                 $psc_labelOptions = array(null => '');
                 foreach ($user_list_of_sites as $key => $siteID) {
-                        $center = $DB->pselectRow(
-                            "SELECT CenterID as ID, Name FROM psc 
+                    $center = $DB->pselectRow(
+                        "SELECT CenterID as ID, Name FROM psc 
                         WHERE CenterID =:cid",
-                            array('cid' => $siteID)
-                        );
-                        $psc_labelOptions[$siteID] = $center['Name'];
+                        array('cid' => $siteID)
+                    );
+                    $psc_labelOptions[$siteID] = $center['Name'];
                 }
             }
             $this->addSelect('psc', 'Site', $psc_labelOptions);
         }
-
         $this->form->addFormRule(array(&$this, '_validate'));
-
     }
 
 
@@ -224,41 +194,20 @@ class Create_Timepoint extends \NDB_Form
      */
     function _validate($values)
     {
-        $config =& \NDB_Config::singleton();
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
-            if ($visitLabel['@']['subprojectID'] == $values['subprojectID']) {
-                $visitLabelSettings =$visitLabel;
-                break;
-            }
-        }
-
         $errors = array();
 
         // This can happen if the user quickly clicks "Create Time Point" before the
         // page has loaded and the Visit Label dropdown hasn't been selected yet.
         // The page will create "V1" when this is the case without this check.
-        if (empty($values['visitLabel'])) {
+        if (empty($values['visitLabel']) && empty($values['visitID'])) {
             $errors['visitLabel']
                 = 'A visit label is required for creating a timepoint.';
         }
-        // make sure the user entered a valid visit label
-        if ($visitLabelSettings['generation'] == 'user') {
-            if (!preg_match($visitLabelSettings['regex'], $values['visitLabel'])) {
-                $errors['visitLabel'] = 'This visit label does not match the ' .
-                    'required structure. See your project manual for more details.';
-            }
-        }
 
         $candidate =& \Candidate::singleton($this->identifier);
-
-        $timePointArray = $candidate->getListOfVisitLabels();
-
-        //If the visitLabel is already in use then let the user pick another
-        foreach ($timePointArray AS $used_label) {
-            if (strcasecmp($values['visitLabel'], $used_label) == 0) {
-                $errors['visitLabel'] = 'This visit label is not unique.';
-            }
+        $timePointIDArray = $candidate->getListOfVisitID();
+        if (in_array($values['visitID'], $timePointIDArray)) {
+            $errors['visitLabel'] = 'This visit label is not unique.';
         }
 
         return $errors;

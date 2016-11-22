@@ -80,10 +80,10 @@
         <th>{$center.LongName}</th>
         <th colspan="{$colspan}" width="50%"><br></th>
     </tr>
-    {foreach item=visit from=$Visits key=title}
+    {foreach from=$Visits key=title item=visit}
         <tr id="visitrow">
             {assign var="rowtotal" value="0"}
-            <td>{$title}</td>
+            <td>{$visit}</td>
             {foreach key="proj" item="value" from=$Subprojects}
                 {assign var="subtotal" value="0" }
                 {foreach key=sub item=subcat from=$Subcategories}
@@ -165,7 +165,7 @@
     </tr>
     {foreach from=$Visits item=visit key=title}
         <tr id="visitrow">
-            <td>{$title}</td>
+            <td>{$visit}</td>
             {foreach from=$Subprojects key=proj item=value}
                 {assign var="subtotal" value="0" }
                 {foreach key=sub item=subcat from=$Subcategories}

@@ -49,7 +49,7 @@ class NDB_Form_next_stage extends NDB_Form
 
         $firstVisit = false;
         $vLabel = $candidate->getFirstVisit();//get first visit for candidate
-        if($vLabel ==  $timePoint->getVisitLabel()){
+        if($vLabel ==  $timePoint->getVisitID()){
             $firstVisit = true; //if current visit label is same as visit label returned must be first visit
         }
 
@@ -57,7 +57,7 @@ class NDB_Form_next_stage extends NDB_Form
         $battery->selectBattery($timePoint->getData('SessionID'));
 
         // add instruments to the time point (lower case stage)
-        $battery->createBattery($timePoint->getSubprojectID(), $newStage, $timePoint->getVisitLabel(),
+        $battery->createBattery($timePoint->getSubprojectID(), $newStage, $timePoint->getVisitID(),
                                 $timePoint->getCenterID(), $firstVisit);
 
         //------------------------------------------------------------

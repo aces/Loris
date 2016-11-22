@@ -42,7 +42,7 @@ class NDB_Form_statistics extends NDB_Form
         $tpl_data['Centers']          = $centres;
         foreach($data as $row) {
             $subproj = $row['SubprojectID'];
-            $vl      = $row['VLabel'];
+            $vl      = $row['Vlabel'];
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
 
@@ -308,7 +308,6 @@ class NDB_Form_statistics extends NDB_Form
         foreach($result as $row) {
             $this->tpl_data['age_avg'][$row['rowid']] = round($row['age']*12/365, 2);
         }
-
         //START BIG TABLE
         $inst_dropdown   = array_merge(
             array( '' => 'Recruit Breakdown by Sex'),
@@ -326,8 +325,11 @@ class NDB_Form_statistics extends NDB_Form
                     f.Data_entry as Subcat,
                     c.CenterID as CenterID,
                     s.SubprojectID as SubprojectID,
-                    s.visit_label as VLabel
-                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+                    s.VisitID as VID,
+                    v.label as Vlabel
+                FROM session s 
+                    LEFT JOIN visits v ON (v.ID=s.VisitID)
+                    JOIN candidate c ON (s.CandID=c.CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
                     JOIN ".$DB->escape($_REQUEST[DemographicInstrument])." i USING(CommentID)
                 WHERE s.Active='Y'
@@ -336,20 +338,22 @@ class NDB_Form_statistics extends NDB_Form
                     AND f.Administration='All'
                     AND f.CommentID NOT LIKE 'DDE%'
                     $Param_Project
-                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
+                GROUP BY c.CenterID, SubprojectID, VID, Subcat
                 UNION
                 SELECT count(*) as val, 'Incomplete' as Subcat,
                     c.CenterID as CenterID,
                     s.SubprojectID as SubprojectID,
-                    s.visit_label as VLabel
+                    s.VisitID as VID,
+                    v.label as Vlabel
                 FROM session s JOIN candidate c USING(CandID)
+                    LEFT JOIN visits v ON (v.ID=s.VisitID)
                     JOIN flag f ON (f.SessionID=s.ID)
                     JOIN ".$DB->escape($_REQUEST[DemographicInstrument])." i USING(CommentID)
                 WHERE s.Active='Y' AND s.CenterID <> 1
                     $Param_Project
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
-                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
+                GROUP BY c.CenterID, SubprojectID, VID, Subcat
                 ",
                 $this->params
             );
@@ -375,16 +379,19 @@ class NDB_Form_statistics extends NDB_Form
             $result        = $DB->pselect(
                 "SELECT c.CenterID as CenterID,
                     s.SubprojectID as SubprojectID,
-                    s.visit_label as VLabel,
+                    s.VisitID as VID,
+                    v.label as Vlabel,
                     c.gender as Subcat,
                     count(s.CandID) as val
-                FROM session s JOIN candidate c ON (s.CandID=c.CandID)
+                FROM session s 
+                    LEFT JOIN visits v ON (v.ID=s.VisitID)
+                    JOIN candidate c ON (s.CandID=c.CandID)
                 WHERE s.active='Y' AND s.CenterID <> '1'
                     AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
                     $suproject_query)
                     AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                     AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat",
+                GROUP BY c.CenterID, SubprojectID, VID, Subcat",
                 array()
             );
             $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
@@ -474,7 +481,7 @@ class NDB_Form_statistics extends NDB_Form
         $result = $DB->pselect(
             "SELECT s.CenterID,
                     f.Data_Entry as Data_Entry,
-                    s.visit_label as VLabel,
+                    s.VisitID as VID,
                     COUNT(s.CandID) as val
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
@@ -485,7 +492,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND s.CenterID <> '1'
                     $suproject_query
                     $Param_Project
-                GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
+                GROUP by s.ID, s.CenterID, VID, f.Data_Entry",
             $this->params
         );
 
@@ -494,7 +501,7 @@ class NDB_Form_statistics extends NDB_Form
             // so that they don't wrap. Note that "c"(enter array) needs to
             // be a reference since we'll be modifying it.
             $center = $row['CenterID'];
-            $vl     = $row['VLabel'];
+            $vl     = $row['VID'];
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
             $c[$vl]['total']   += $row['val'];
@@ -516,7 +523,7 @@ class NDB_Form_statistics extends NDB_Form
         $result = $DB->pselect(
             "SELECT s.CenterID, 
                 f.Data_Entry as Data_Entry, 
-                s.visit_label as VLabel,
+                s.VisitID as VID,
                 COUNT(s.CandID) as val
                 FROM session as s
                     JOIN candidate as c ON (s.CandID=c.CandID)
@@ -528,12 +535,12 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.CenterID <> '1'
                 $suproject_query
                 $Param_Project
-                GROUP BY s.CenterID, VLabel, f.Data_Entry",
+                GROUP BY s.CenterID, VID, f.Data_Entry",
             $this->params
         );
         foreach($result as $row) {
             $center = $row['CenterID'];
-            $vl     = $row['VLabel'];
+            $vl     = $row['VID'];
             $c      =& $this->tpl_data['dde']['C' . $center];
 
             $c[$vl]['total']   += $row['val'];
@@ -702,12 +709,14 @@ class NDB_Form_statistics extends NDB_Form
         $result = $DB->pselect(
             "SELECT s.SubprojectID,
                     c.CenterID,
-                    s.Visit_label as VLabel,
+                    s.VisitID as VID,
+                    v.label as Vlabel,
                     $CaseStatement as Subcat,
                     COUNT(*) as val
               FROM mri_parameter_form m
                     JOIN flag f USING (CommentID)
                     JOIN session s ON (f.SessionID=s.ID)
+                    LEFT JOIN visits v ON (v.ID=s.VisitID)
                     JOIN candidate c ON (c.CandID=s.CandID)
               WHERE s.Current_stage <> 'Recycling Bin'
                     AND f.Administration <> 'None'
@@ -720,7 +729,7 @@ class NDB_Form_statistics extends NDB_Form
               GROUP BY Subcat,
                     s.SubprojectID,
                     c.CenterID,
-                    s.Visit_label",
+                    VID",
             $bigTable_params
         );
 

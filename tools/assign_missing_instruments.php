@@ -11,12 +11,12 @@
  *     confirm mode -> Actually assigns the instruments found missing in the
  *                     database.
  *
- * Usage: php assign_missing_instrument.php [Visit_label] [confirm]
+ * Usage: php assign_missing_instrument.php [VisitID] [confirm]
  *
- * Example: php assign_missing_instrument.php 18month
+ * Example: php assign_missing_instrument.php 2
  * (Will use regular mode and print the missing instruments)
  *
- * Example: php assign_missing_instrument.php 18month confirm
+ * Example: php assign_missing_instrument.php 2 confirm
  * (Will use confirm mode and assign the missing instruments)
  *
  * Note:  As per ... only timepoints in the 'Visit' stage are examined.
@@ -60,25 +60,31 @@ if ((isset($argv[1]) && $argv[1] === "confirm")
 
 $DB = Database::singleton();
 if (!empty($argv[1]) && $argv[1]!="confirm") {
-    $visit_label = $argv[1];
+    $visitID = $argv[1];
 } else {
-    $visit_labels = $DB->pselect(
-        "SELECT DISTINCT Visit_label FROM session
-        WHERE Active='Y' AND Visit_label NOT LIKE '%phantom%' AND Visit_label
-        NOT LIKE 'Vsup%' AND COALESCE(Submitted,'N')='N'  ",
+    $visit_IDs = $DB->pselect(
+        "SELECT DISTINCT s.VisitID 
+         FROM session s
+            LEFT JOIN visits v ON (v.ID=s.VisitID)
+         WHERE s.Active='Y' 
+            AND v.label NOT LIKE '%phantom%' 
+            AND v.legacy_label NOT LIKE '%phantom%'
+            AND v.label NOT LIKE 'Vsup%' 
+            AND v.legacy_label NOT LIKE 'Vsup%' 
+            AND COALESCE(Submitted,'N')='N'  ",
         array()
     );
 }
 
 /**
- * Adds the missing instruments based on the visit_label
+ * Adds the missing instruments based on the visitID
  *
- * @param Array  $result      containing visit_label info
- * @param String $visit_label The name of the visit
+ * @param array  $result      Containing visitID info
+ * @param String $visitID     The ID of the visit
  *
  * @return NULL
  */
-function populateVisitLabel($result, $visit_label)
+function populateVisitLabel($result, $visitID)
 {
     global $argv, $confirm;
     // create a new battery object && new battery
@@ -90,9 +96,10 @@ function populateVisitLabel($result, $visit_label)
 
     $DB        = Database::singleton();
     $candidate = Candidate::singleton($result['CandID']);
+    //TODO VISITS
     $result_firstVisit = $candidate->getFirstVisit();
     $isFirstVisit      = false;//adding check for first visit
-    if ($result_firstVisit == $visit_label) {
+    if ($result_firstVisit == $visitID) {
         $isFirstVisit = true;
     }
 
@@ -101,20 +108,21 @@ function populateVisitLabel($result, $visit_label)
         $battery->age,
         $result['subprojectID'],
         $timePoint->getCurrentStage(),
-        $visit_label,
+        $visitID,
         $timePoint->getCenterID(),
         $isFirstVisit
     );
     $actual_battery  =$battery->getBattery(
         $timePoint->getCurrentStage(),
         $result['subprojectID'],
-        $visit_label
+        $visitID
     );
 
     $diff =array_diff($defined_battery, $actual_battery);
     if (!empty($diff)) {
-        echo "\n CandID: ".$timePoint->getCandID()."  Visit Label:  ".
-        $timePoint->getVisitLabel()."\nMissing Instruments:\n";
+        echo "\n CandID: ".$timePoint->getCandID()."  Visit ID => Label:  ".
+            $timePoint->getVisitID()." => ".$timePoint->getVisitLabel().
+            "\nMissing Instruments:\n";
         print_r($diff);
     }
     if ($confirm === true) {
@@ -128,24 +136,32 @@ function populateVisitLabel($result, $visit_label)
 
 }
 
-if (isset($visit_label)) {
+if (isset($visitID)) {
     $query ="SELECT s.ID, s.subprojectID, s.CandID from session 
             s LEFT JOIN candidate c USING (CandID) 
             WHERE s.Active='Y'
-            AND c.Active='Y' AND s.visit_label=:vl";
-    $where = array('vl' => $argv[1]);
+            AND c.Active='Y' AND s.VisitID=:vid";
+    $where = array('vid' => $argv[1]);
 
     $results = $DB->pselect($query, $where);
     foreach ($results AS $result) {
-        populateVisitLabel($result, $visit_label);
+        populateVisitLabel($result, $visitID);
     }
-} else if (isset($visit_labels)) {
-    $query   ="SELECT s.ID, s.subprojectID, s.Visit_label, s.CandID from session s 
-            LEFT JOIN candidate c USING (CandID) WHERE s.Active='Y' 
-            AND c.Active='Y' AND s.Visit_label NOT LIKE 'Vsup%'";
+} else if (isset($visit_IDs)) {
+    $query   ="SELECT s.ID, s.subprojectID, s.VisitID, s.CandID 
+            FROM session s
+                LEFT JOIN visits ON (v.ID=s.VisitID)
+                LEFT JOIN candidate c USING (CandID) 
+            WHERE s.Active='Y' 
+                AND c.Active='Y' 
+                AND v.label NOT LIKE '%phantom%' 
+                AND v.legacy_label NOT LIKE '%phantom%'
+                AND v.label NOT LIKE 'Vsup%' 
+                AND v.legacy_label NOT LIKE 'Vsup%' 
+                AND COALESCE(Submitted,'N')='N' ";
     $results = $DB->pselect($query, array());
     foreach ($results AS $result) {
-        populateVisitLabel($result, $result['Visit_label']);
+        populateVisitLabel($result, $result['VisitID']);
     }
 }
 

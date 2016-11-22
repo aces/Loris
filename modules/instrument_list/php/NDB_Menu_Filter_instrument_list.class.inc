@@ -175,7 +175,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
             	LEFT JOIN test_battery b 
             	        ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL) 
             	        AND (s.SubprojectID=b.SubprojectID OR b.SubprojectID IS NULL) 
-            	        AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL) 
+            	        AND (s.VisitID=b.VisitID OR b.VisitID IS NULL) 
             	        AND (s.CenterID=b.CenterID OR b.CenterID IS NULL)) ";
         }
         $query .= " WHERE f.SessionID=:SID

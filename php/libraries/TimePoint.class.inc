@@ -119,12 +119,13 @@ class TimePoint
 
         // get user data from database
         $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID,
-                         s.VisitNo, s.Visit_label, s.SubprojectID, s.Submitted,
+                         s.VisitNo, v.label AS Visit_label, s.VisitID, s.SubprojectID, s.Submitted,
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
                          s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done
                     FROM session AS s
+                        LEFT JOIN visits AS v ON (s.VisitID = v.ID)
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
@@ -168,10 +169,9 @@ class TimePoint
                             w.WindowMinDays AND w.WindowMaxDays
                         ) as Permitted
                     FROM session s
+                        JOIN visits AS v ON (s.VisitID = v.ID)
                         JOIN candidate c USING (CandID)
-                        JOIN Visit_Windows w ON (
-                            LOWER(w.Visit_label)=LOWER(s.Visit_label)
-                        )
+                        JOIN Visit_Windows w ON (v.ID=w.VisitID)
                     WHERE s.ID=:sessionID",
                 array(":sessionID" => $sessionID)
             );
@@ -186,15 +186,14 @@ class TimePoint
      *
      * @param integer $candID         6 digit CandID having a timepoint created.
      * @param integer $SubprojectID   The subprojectID of the new timepoint
-     * @param string  $nextVisitLabel The visit label of the timepoint being created
+     * @param int     $VisitID        ID of the visit references visits table
      * @param string  $psc            The centre of the timepoint
      *
      * @return A new TimePoint instance.
      */
-    static function createNew($candID, $SubprojectID,
-        $nextVisitLabel = null, $psc = null
-    ) {
 
+    static function createNew($candID, $SubprojectID, $VisitID = null, $psc = null)
+    {
         // insert into session set CandID=$candID,
         // SubprojectID=$SubprojectID, VisitNo=nextVisitNumber(),
         // UserID=$State->getUsername(), etc...  NO Date_* are
@@ -222,20 +221,14 @@ class TimePoint
 
         // generate today's date for the Date registered field
         $today = date("Y-m-d");
-
         // setup the insert data array
-        $VisitLabel = $nextVisitLabel == null
-            ? 'V' . $row['nextVisitNo']
-            : $nextVisitLabel;
-        $centerID   = $psc == null
-        ? $row['CenterID']
-        : $psc;
+        $centerID   = $psc == null ? $row['CenterID'] : $psc;
         $insertData = array(
                        'CandID'          => $candID,
                        'SubprojectID'    => $SubprojectID,
                        'VisitNo'         => $row['nextVisitNo'],
-                       'Visit_label'     => $VisitLabel,
                        'CenterID'        => $centerID,
+                       'VisitID'         => $VisitID,
                        'Current_stage'   => 'Not Started',
                        'Submitted'       => 'N',
                        'registeredBy'    => $userID,
@@ -356,6 +349,15 @@ class TimePoint
     }
 
     /**
+     * Returns the visit ID of this timepoint.
+     *
+     * @return int the visit ID
+     */
+    function getVisitID()
+    {
+        return $this->_timePointInfo["VisitID"];
+    }
+    /**
      * Returns the SubprojectID of this timepoint.
      *
      * @return integer the SubprojectID
@@ -382,6 +384,7 @@ class TimePoint
      */
     function getVisitStatus()
     {
+        //TODO VISITS
         return $this->_timePointInfo["Visit"];
     }
 
@@ -568,6 +571,8 @@ class TimePoint
      * battery, its status updated, and sent to DCC
      *
      * @param string $stage A study stage, from the field session.Current_stage
+     *
+     * @throws
      *
      * @return bool
      */

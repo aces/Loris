@@ -100,7 +100,7 @@ class NDB_BVL_Battery
      * @param integer $SubprojectID The SubprojectID that we want the battery
      *                              for
      * @param string  $stage        Either 'visit' or 'screening'
-     * @param string  $visit_label  The visit label to create a battery for.
+     * @param string  $visitid      The visit ID to create a battery for.
      * @param integer $center_ID    The centre of the candidate having a battery
      *                              created
      * @param boolean $firstVisit   Whether this is a first visit battery.
@@ -113,8 +113,8 @@ class NDB_BVL_Battery
     function createBattery(
         $SubprojectID,
         $stage=null,
-        $visit_label=null,
-        $center_ID=null,
+        $visitID=null,
+        $centerID=null,
         $firstVisit=null
     ) {
         // assert that a battery has already been selected
@@ -123,7 +123,7 @@ class NDB_BVL_Battery
         // get the current battery (center id is irrelevant here,
         // as is stage probably)
         try {
-            $currentTests = $this->getBattery($stage, $SubprojectID, $visit_label);
+            $currentTests = $this->getBattery($stage, $SubprojectID, $visitID);
         } catch (Exception $e) {
             throw new Exception(
                 "Could not get the current list of instruments, "
@@ -145,8 +145,8 @@ class NDB_BVL_Battery
             $this->age,
             $SubprojectID,
             $stage,
-            $visit_label,
-            $center_ID,
+            $visitID,
+            $centerID,
             $firstVisit
         );
 
@@ -251,23 +251,28 @@ class NDB_BVL_Battery
      *                              whether to register only screening instruments
      *                              or visit instruments
      * @param integer $SubprojectID The SubprojectID of that we want the battery for.
-     * @param string  $visit_label  The visit label of the battery that we want to
+     * @param string  $visitID      The visit ID of the battery that we want to
      *                              retrieve
+     * @note the following note was not written by the author
+     * @note This function does not use any of its parameters
      *
      * @return array    an array of instrument names
+     *
+     * @cleanup
      */
-    function getBattery($stage=null, $SubprojectID=null, $visit_label=null)
+    function getBattery($stage=null, $SubprojectID=null, $visitID=null)
     {
         $DB = Database::singleton();
         // assert that a battery has already been selected
         $error = $this->_assertBatterySelected();
 
         // craft the select query
-        $query   = "SELECT f.Test_name FROM flag f JOIN session s
-            ON (s.ID=f.SessionID)
-            JOIN candidate c ON (c.CandID=s.CandID)
-            WHERE f.SessionID=:SID AND s.Active='Y' AND c.Active='Y'
-               AND f.CommentID NOT LIKE 'DDE%'";
+        $query   = "SELECT f.Test_name 
+                    FROM flag f 
+                        JOIN session s ON (s.ID=f.SessionID)
+                        JOIN candidate c ON (c.CandID=s.CandID)
+                     WHERE f.SessionID=:SID AND s.Active='Y' AND c.Active='Y'
+                        AND f.CommentID NOT LIKE 'DDE%'";
         $qparams = array('SID' => $this->sessionID);
         $rows    = $DB->pselect($query, $qparams);
 
@@ -393,13 +398,13 @@ class NDB_BVL_Battery
      * @param string  $stage        either 'visit' or 'screening' - determines
      *                              whether to register only screening
      *                              instruments or visit instruments
-     * @param string  $visit_label  (optional) The visit label to look up the
+     * @param string  $visitID      (optional) The visit ID to look up the
      *                              battery for. If this is specified the battery
      *                              will use this INSTEAD OF the age of candidate.
-     * @param integer $center_ID    (optional) The center ID to look up the visit
+     * @param integer $centerID    (optional) The center ID to look up the visit
      *                              battery for. If this is specified the lookup
      *                              will use it as an ADDITIONAL condition to
-     *                              $age/$visit_label.
+     *                              $age/$visitID.
      * @param boolean $firstVisit   (optional) Whether or not we want the battery
      *                              for the first visit of the candidate. If this
      *                              is true, it will get instruments for the first
@@ -415,8 +420,8 @@ class NDB_BVL_Battery
         $age,
         $SubprojectID,
         $stage=null,
-        $visit_label=null,
-        $center_ID=null,
+        $visitID=null,
+        $centerID=null,
         $firstVisit=null
     ) {
         $DB = Database::singleton();
@@ -442,21 +447,21 @@ class NDB_BVL_Battery
                     AND b.Active='Y'
                     AND (SubprojectID=:SubprojID OR SubprojectID IS NULL)";
 
-        if (!is_null($visit_label)) {
+        if (!is_null($visitID)) {
             $VisitBatteryExists = $DB->pselectOne(
                 "SELECT COUNT(*)
                     FROM test_battery
-                    WHERE Visit_label =:VL AND SubprojectID=:SubID",
+                    WHERE VisitID =:VL AND SubprojectID=:SubID",
                 array(
-                 'VL'    => $visit_label,
+                 'VL'    => $visitID,
                  'SubID' => $SubprojectID,
                 )
             );
             if ($VisitBatteryExists > 0) {
-                $query        .= " AND b.Visit_label=:VL";
-                $qparams['VL'] = $visit_label;
+                $query        .= " AND b.VisitID=:VL";
+                $qparams['VL'] = $visitID;
             } else {
-                $query .= " AND b.Visit_label IS NULL";
+                $query .= " AND b.VisitID IS NULL";
             }
         }
         if (!is_null($stage)) {
@@ -464,10 +469,10 @@ class NDB_BVL_Battery
             $qparams['stg'] = $stage;
         }
 
-        if (!is_null($center_ID)) {
+        if (!is_null($centerID)) {
             // return all instruments that match this center or all centers (null)
             $query         .= " AND (b.CenterID=:CID OR b.CenterID IS NULL)";
-            $qparams['CID'] = $center_ID;
+            $qparams['CID'] = $centerID;
         } else {
             // Unless the center is specified & matched, don't return
             // site-restricted instruments

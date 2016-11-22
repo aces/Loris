@@ -377,9 +377,11 @@ var IssueEditForm = React.createClass({
                   />
                 </div>
                 <div class="row">
-                  <TextboxElement
+                  <SelectElement
                     name="visitLabel"
                     label="Visit Label"
+                    emptyOption={true}
+                    options={this.state.Data.visits}
                     onUserInput={this.setFormData}
                     ref="visitLabel"
                     disabled={!hasEditPermission}
