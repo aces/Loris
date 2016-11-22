@@ -37,7 +37,7 @@ install:
     - npm -g install eslint-config-google@0.6.0
     - npm -g install eslint-plugin-react
 
-    - wget --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u71-b15/jdk-8u71-linux-x64.tar.gz
+    - wget "http://download.oracle.com/otn-pub/java/jdk/8u71-b15/jdk-8u71-linux-x64.tar.gz"
     - mkdir /opt/jdk
     - tar -zxf jdk-8u71-linux-x64.tar.gz -C /opt/jdk/
     - rm jdk-8u71-linux-x64.tar.gz
