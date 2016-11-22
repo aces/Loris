@@ -312,7 +312,7 @@ function deleteTimepoint($sessionID, $confirm) {
             'SELECT * FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
             array('cid' => $instrument['CommentID'])
         );
-        echo "$instrument\n";
+        echo '$instrument["Test_name"]\n';
         print_r($result);
 
         // Print from conflicts
