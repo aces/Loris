@@ -1,4 +1,4 @@
-<div id="page-dicom-archive"></div>
-<script>
-  loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
-</script>
+{*
+  Everything is rendered in dicom_archvie.js now!
+  I'm here because currently Loris breaks without me :(
+*}
