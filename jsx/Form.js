@@ -1,5 +1,5 @@
 /* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
-NumericElement, FileElement, HelpTextElement, StaticElement, ButtonElement
+NumericElement, FileElement, HelpTextElement, StaticElement, ButtonElement, LorisElement
 */
 
 /**
@@ -13,6 +13,13 @@ NumericElement, FileElement, HelpTextElement, StaticElement, ButtonElement
 /**
  * Form Component.
  * React wrapper for <form> element that accepts children react components
+ *
+ * The form elements can be passed in two ways:
+ * 1. A `this.props.formElements` JSON object
+ * 2. Form components nested directly inside <FormElement></FormElement>
+ *
+ * Note that if both are passed `this.props.formElements` is displayed first.
+ *
  */
 var FormElement = React.createClass({
 
@@ -21,7 +28,10 @@ var FormElement = React.createClass({
     id: React.PropTypes.string,
     method: React.PropTypes.oneOf(['POST', 'GET']),
     class: React.PropTypes.string,
-    onSubmit: React.PropTypes.func
+    columns: React.PropTypes.number,
+    formElements: React.PropTypes.array,
+    onSubmit: React.PropTypes.func,
+    onUserInput: React.PropTypes.func
   },
 
   getDefaultProps: function() {
@@ -30,11 +40,55 @@ var FormElement = React.createClass({
       id: null,
       method: 'POST',
       class: 'form-horizontal',
+      columns: 1,
       fileUpload: false,
+      formElements: [],
       onSubmit: function() {
         console.warn('onSubmit() callback is not set!');
+      },
+      onUserInput: function() {
+        console.warn("onUserInput() callback is not set!");
       }
     };
+  },
+  getFormElements: function() {
+    const formElementsHTML = [];
+    const columns = this.props.columns;
+    const maxColumnSize = 12;
+    const colSize = Math.floor(maxColumnSize / columns);
+    const colClass = "col-xs-12 col-sm-" + colSize + " col-md-" + colSize;
+
+    // Render elements from JSON
+    const filter = this.props.formElements;
+    const userInput = this.props.onUserInput;
+
+    filter.forEach(function(element) {
+      formElementsHTML.push(
+        <div className={colClass}>
+          <LorisElement
+            element={element}
+            onUserInput={userInput}
+          />
+        </div>
+      );
+    });
+
+    // Render elements from React
+    React.Children.forEach(this.props.children, function(child) {
+      if (typeof child.type === 'function') {
+        formElementsHTML.push(
+          <div className={colClass}>{child}</div>
+        );
+      } else {
+        // If child is plain HTML, insert it as full size.
+        // Useful for inserting <hr> to split form sections
+        formElementsHTML.push(
+          <div className="col-xs-12 col-sm-12 col-md-12">{child}</div>
+        );
+      }
+    });
+
+    return formElementsHTML;
   },
   handleSubmit: function(e) {
     // Override default submit if property is set
@@ -46,6 +100,16 @@ var FormElement = React.createClass({
   render: function() {
     var encType = this.props.fileUpload ? 'multipart/form-data' : null;
 
+    // Generate form elements
+    var formElements = this.getFormElements();
+
+    // Flexbox is set to ensure that columns of different heights
+    // are displayed proportionally on the screen
+    var rowStyles = {
+      display: "flex",
+      flexWrap: "wrap"
+    };
+
     return (
       <form
         name={this.props.name}
@@ -55,7 +119,9 @@ var FormElement = React.createClass({
         encType={encType}
         onSubmit={this.handleSubmit}
       >
-        {this.props.children}
+        <div className="row" style={rowStyles}>
+          {formElements}
+        </div>
       </form>
     );
   }
@@ -772,6 +838,8 @@ var ButtonElement = React.createClass({
     return {
       label: 'Submit',
       type: 'submit',
+      buttonClass: 'btn btn-primary',
+      columnSize: 'col-sm-9 col-sm-offset-3',
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       }
@@ -783,14 +851,58 @@ var ButtonElement = React.createClass({
   render: function() {
     return (
       <div className="row form-group">
-        <div className="col-sm-9 col-sm-offset-3">
-          <button type={this.props.type}
-                  className="btn btn-primary"
-                  onClick={this.handleClick}>
+        <div className={this.props.columnSize}>
+          <button
+            type={this.props.type}
+            className={this.props.buttonClass}
+            onClick={this.handleClick}
+          >
             {this.props.label}
           </button>
         </div>
       </div>
     );
+  }
+});
+
+/**
+ * Generic form element.
+ */
+var LorisElement = React.createClass({
+
+  render: function() {
+    var elementProps = this.props.element;
+    elementProps.ref = elementProps.name;
+    elementProps.onUserInput = this.props.onUserInput;
+
+    var elementHtml = <div></div>;
+
+    switch (elementProps.type) {
+      case 'text':
+        elementHtml = (<TextboxElement {...elementProps} />);
+        break;
+      case 'select':
+        elementHtml = (<SelectElement {...elementProps} />);
+        break;
+      case 'date':
+        elementHtml = (<DateElement {...elementProps} />);
+        break;
+      case 'numeric':
+        elementHtml = (<NumericElement {...elementProps} />);
+        break;
+      case 'textarea':
+        elementHtml = (<TextareaElement {...elementProps} />);
+        break;
+      case 'file':
+        elementHtml = (<FileElement {...elementProps} />);
+        break;
+      default:
+        console.warn(
+          "Element of type " + elementProps.type + " is not currently implemented!"
+        );
+        break;
+    }
+
+    return elementHtml;
   }
 });
