@@ -216,9 +216,16 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
         else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
+//            $site =& Site::singleton($user->getData('CenterID'));
+//            if ($site->isStudySite()) {
+//                $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
+//            }
+            $site_arr = $user->getData('SiteID');
+            foreach ($site_arr as $key=>$val) {
+                $site[$key] = & Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$val] = $site[$key]->getCenterName();
+                }
             }
         }
 
