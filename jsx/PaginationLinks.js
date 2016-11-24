@@ -69,7 +69,7 @@ var PaginationLinks = React.createClass({
         classList = "active";
       }
       pageLinks.push(
-        <li onClick={this.changePage(i)} className={classList}>
+        <li key={"table_page_" + i} onClick={this.changePage(i)} className={classList}>
           <a href="#">{i}</a>
         </li>
       );

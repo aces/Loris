@@ -57,7 +57,7 @@ var PaginationLinks = React.createClass({
         React.createElement(
           "a",
           { href: "#" },
-          "«"
+          "\xAB"
         )
       ));
     }
@@ -80,7 +80,7 @@ var PaginationLinks = React.createClass({
       }
       pageLinks.push(React.createElement(
         "li",
-        { onClick: this.changePage(i), className: classList },
+        { key: "table_page_" + i, onClick: this.changePage(i), className: classList },
         React.createElement(
           "a",
           { href: "#" },
@@ -95,7 +95,7 @@ var PaginationLinks = React.createClass({
         React.createElement(
           "a",
           { href: "#" },
-          "»"
+          "\xBB"
         )
       ));
     }
