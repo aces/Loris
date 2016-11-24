@@ -128,7 +128,7 @@ DataQueryApp = React.createClass({
         // The left and right menu items are part of the same menu, but bootstrap considers
         // them two separate ones, so we need to make sure that only one is selected by removing
         // "active" from all the tab classes and only adding it to the really active one
-        var domNode = this.getDOMNode();
+        var domNode = this;
         $(domNode).find('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             $(domNode).find('li').removeClass("active");
             if (e.target) {
