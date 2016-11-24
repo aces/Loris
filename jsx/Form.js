@@ -62,9 +62,9 @@ var FormElement = React.createClass({
     const filter = this.props.formElements;
     const userInput = this.props.onUserInput;
 
-    filter.forEach(function(element) {
+    filter.forEach(function(element, key) {
       formElementsHTML.push(
-        <div className={colClass}>
+        <div key={'el_' + key} className={colClass}>
           <LorisElement
             element={element}
             onUserInput={userInput}
@@ -74,18 +74,18 @@ var FormElement = React.createClass({
     });
 
     // Render elements from React
-    React.Children.forEach(this.props.children, function(child) {
-      if (typeof child.type === 'function') {
-        formElementsHTML.push(
-          <div className={colClass}>{child}</div>
-        );
-      } else {
-        // If child is plain HTML, insert it as full size.
-        // Useful for inserting <hr> to split form sections
-        formElementsHTML.push(
-          <div className="col-xs-12 col-sm-12 col-md-12">{child}</div>
-        );
+    React.Children.forEach(this.props.children, function(child, key) {
+      // If child is plain HTML, insert it as full size.
+      // Useful for inserting <hr> to split form sections
+      var elementClass = "col-xs-12 col-sm-12 col-md-12";
+
+      // If child is form element use appropriate size
+      if (React.isValidElement(child)) {
+        elementClass = colClass;
       }
+      formElementsHTML.push(
+        <div key={'el_' + key} className={elementClass}>{child}</div>
+      );
     });
 
     return formElementsHTML;
@@ -799,13 +799,27 @@ var HelpTextElement = React.createClass({
 /**
  * Static element component.
  * Used to displays plain/formatted text as part of a form
+ *
+ * To pass a formatted text, you need to wrap it in a single parent element.
+ * Example usage:
+ *
+ * ```
+ * var myText = (<span>This is my <b>text</b></span>);
+ * <StaticElement
+ *    text={myText}
+ *    label={note}
+ * />
+ * ```
  */
 var StaticElement = React.createClass({
 
   mixins: [React.addons.PureRenderMixin],
   propTypes: {
     label: React.PropTypes.string,
-    text: React.PropTypes.string.isRequired
+    text: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.element
+    ])
   },
 
   getDefaultProps: function() {

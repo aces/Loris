@@ -227,23 +227,24 @@ var StaticDataTable = React.createClass({
     }
     var rowsPerPage = this.state.RowsPerPage;
     var headers = [
-      <th onClick={this.setSortColumn(-1)}>
+      <th key="th_col_0" onClick={this.setSortColumn(-1)}>
         {this.props.RowNumLabel}
       </th>
     ];
     for (let i = 0; i < this.props.Headers.length; i += 1) {
       if (typeof loris.hiddenHeaders === "undefined" ||
         loris.hiddenHeaders.indexOf(this.props.Headers[i]) === -1) {
+        var colIndex = i + 1;
         if (this.props.Headers[i] === this.props.freezeColumn) {
           headers.push(
-            <th id={this.props.freezeColumn}
+            <th key={"th_col_" + colIndex} id={this.props.freezeColumn}
                 onClick={this.setSortColumn(i)}>
               {this.props.Headers[i]}
             </th>
           );
         } else {
           headers.push(
-            <th onClick={this.setSortColumn(i)}>
+            <th key={"th_col_" + colIndex} onClick={this.setSortColumn(i)}>
               {this.props.Headers[i]}
             </th>
           );
@@ -339,6 +340,8 @@ var StaticDataTable = React.createClass({
           filterMatchCount++;
         }
 
+        var key = 'td_col_' + j;
+
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
           data = this.props.getFormattedCell(
@@ -347,9 +350,13 @@ var StaticDataTable = React.createClass({
             this.props.Data[index[i].RowIdx],
             this.props.Headers
           );
-          curRow.push({data});
+          if (data !== null) {
+            // Note: Can't currently pass a key, need to update columnFormatter
+            // to not return a <td> node
+            curRow.push(data);
+          }
         } else {
-          curRow.push(<td>{data}</td>);
+          curRow.push(<td key={key}>{data}</td>);
         }
       }
 
@@ -357,9 +364,10 @@ var StaticDataTable = React.createClass({
       if (Object.keys(this.props.Filter).length === filterMatchCount) {
         matchesFound++;
         if (matchesFound > currentPageRow) {
+          const rowIndex = index[i].Content;
           rows.push(
-            <tr colSpan={headers.length}>
-              <td>{index[i].Content}</td>
+            <tr key={'tr_' + rowIndex} colSpan={headers.length}>
+              <td>{rowIndex}</td>
               {curRow}
             </tr>
           );
