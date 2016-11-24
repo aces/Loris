@@ -23,7 +23,7 @@ var Breadcrumbs = React.createClass({
       var url = baseurl + element.query;
       var crumb = React.createElement(
         "a",
-        { href: url, className: "btn btn-primary" },
+        { key: 'crumb_' + i, href: url, className: "btn btn-primary" },
         React.createElement(
           "div",
           null,
