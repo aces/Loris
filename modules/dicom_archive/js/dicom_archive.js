@@ -263,8 +263,9 @@ var DicomArchive = function (_React$Component) {
             )
           )
         ),
-        React.createElement(DynamicDataTable, {
-          DataURL: this.props.DataURL,
+        React.createElement(StaticDataTable, {
+          Data: this.state.Data.Data,
+          Headers: this.state.Data.Headers,
           Filter: this.state.Filter,
           getFormattedCell: formatColumn
         })

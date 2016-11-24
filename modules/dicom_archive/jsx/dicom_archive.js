@@ -207,8 +207,9 @@ class DicomArchive extends React.Component {
             </div>
           </div>
         </FilterTable>
-        <DynamicDataTable
-          DataURL={this.props.DataURL}
+        <StaticDataTable
+          Data={this.state.Data.Data}
+          Headers={this.state.Data.Headers}
           Filter={this.state.Filter}
           getFormattedCell={formatColumn}
         />
