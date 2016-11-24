@@ -53,9 +53,9 @@ class NDB_Menu_Lite_Viewer extends NDB_Menu_Filter
     {
 //TODO remove those default values
         $defaults = array(
-            'Chromosome' => '14',
-            'StartLoc' => '19098000',
-            'EndLoc' => '19111500',
+            'Chromosome' => 'Y',
+            'StartLoc' => '15010000',
+            'EndLoc' => '15040000',
         );
 
         return $defaults;

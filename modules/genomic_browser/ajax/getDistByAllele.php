@@ -57,21 +57,37 @@ $cpgs = $DB->pselect($query, $params );
 foreach ($cpgs as $cpg) {
   $params['v_cpg_name'] = $cpg['cpg_name'];
   $query = "
-    SELECT 
-      candidate.Gender,
-      c.beta_value,
-      CASE WHEN scr.AlleleA < scr.AlleleB THEN CONCAT(scr.AlleleA, scr.AlleleB) ELSE CONCAT(scr.AlleleB, scr.AlleleA) END as Alleles
-    FROM genomic_cpg c
-    JOIN genomic_sample_candidate_rel gscr
-      USING (sample_label)
-    JOIN SNP_candidate_rel scr
+    SELECT
+      c.Gender,
+      CPG.beta_value,
+      s.Alleles
+    FROM candidate c 
+    JOIN (
+      SELECT 
+        CandID,
+        beta_value
+      FROM candidate
+      JOIN genomic_sample_candidate_rel
+        USING (CandID)
+      JOIN genomic_cpg
+        USING (sample_label)
+      WHERE cpg_name = :v_cpg_name
+    ) as CPG
       USING (CandID)
-    JOIN SNP
-      USING (SNPID)
-    JOIN candidate
+    JOIN (
+      SELECT 
+        scr.CandID,
+        CASE
+          WHEN scr.AlleleA < scr.AlleleB
+            THEN CONCAT(scr.AlleleA, scr.AlleleB)
+          ELSE CONCAT(scr.AlleleB, scr.AlleleA)
+        END as Alleles
+      FROM SNP_candidate_rel scr
+      JOIN SNP
+        USING (SNPID)
+      WHERE SNP.rsID = :v_snp_id
+    ) s 
       USING (CandID)
-    WHERE c.cpg_name = :v_cpg_name
-    AND SNP.rsID = :v_snp_id
     ORDER BY Alleles
   ";
   $beta_values = $DB->pselect($query, $params);

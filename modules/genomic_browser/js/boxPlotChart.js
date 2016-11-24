@@ -40,10 +40,12 @@ d3.csv(loris.BaseURL + "/genomic_browser/ajax/getDistByAllele.php?snpId=" + snpI
     if (s < min) min = s;
   });
 
+  $("#myModalLabel").append(' - ' + cpg_name);
   chart.domain([0, 1]);
   labels = Object.keys(keyedData);
   data   = Object.keys(keyedData).map(function(k) {return keyedData[k];});
 
+  d3.select(".modal-body").selectAll("svg").remove();
   var boxes = d3.select(".modal-body").selectAll("svg")
       .data(data)
     .enter().append("svg")
@@ -54,7 +56,8 @@ d3.csv(loris.BaseURL + "/genomic_browser/ajax/getDistByAllele.php?snpId=" + snpI
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
       .call(chart);
 
-  var title = d3.select(".modal-body").selectAll("svg").append("text")
+  d3.selectAll('.box-title').remove();
+  d3.select(".modal-body").selectAll("svg").append("text")
       .data(labels)
       .text(function (d) {return d;})
       .attr("class", "box-title")
@@ -62,8 +65,6 @@ d3.csv(loris.BaseURL + "/genomic_browser/ajax/getDistByAllele.php?snpId=" + snpI
       .attr("y", height + margin.bottom + margin.top)
       .attr("text-anchor","middle");
   
-  //var chart_title = d3.select(".modal-body").append('h3')
-  //    .text(cpg_name);
 });
 }
 
