@@ -41,7 +41,6 @@ class Create_Timepoint extends \NDB_Form
         $user =& \User::singleton();
 
         $candidate =& \Candidate::singleton($this->identifier);
-        print_r ($user->getData('SiteID'));
 
         // check user permissions
         return (
@@ -74,10 +73,14 @@ class Create_Timepoint extends \NDB_Form
      */
     function _process($values)
     {
+print_r("\n");
+print_r($values);
+print_r("\n");
         $success = \TimePoint::createNew(
             $this->identifier,
             $values['subprojectID'],
-            $values['visitLabel']
+            $values['visitLabel'],
+            $values['psc']
         );
 
         $this->tpl_data['success'] = true;
@@ -189,6 +192,23 @@ class Create_Timepoint extends \NDB_Form
         // label rules
         if ($visitLabelAdded) {
             $this->addRule('visitLabel', 'Visit label is required', 'required');
+             // List of sites for the user
+             $user = \User::singleton();
+             $DB = \Database::singleton();
+             $user_list_of_sites = $user->getData('SiteID');
+             print_r ($user_list_of_sites);
+             $num_sites = count($user_list_of_sites);
+             print_r ($num_sites);
+
+             if ($num_sites >1) {
+                 $pscLabelAdded=true;
+                 $psc_labelOptions = array(null => '');
+                 foreach ($user_list_of_sites as $key => $siteID) {
+                         $center = $DB->pselectRow("SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid", array('cid' => $siteID));
+                         $psc_labelOptions[$siteID] = $center['Name'];
+                 }
+            }
+            $this->addSelect('psc', 'Site', $psc_labelOptions);
         }
 
         $this->form->addFormRule(array(&$this, '_validate'));
