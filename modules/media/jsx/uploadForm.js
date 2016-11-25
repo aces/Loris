@@ -371,8 +371,8 @@ class MediaUploadForm extends React.Component {
       this.state.Data.visits = this.state.Data.sessionData[value].visits;
       this.state.Data.sites = this.state.Data.sessionData[value].sites;
     }
-    if (formElement === "visitLabel" && value !== "") {
-      this.state.Data.instruments = this.state.Data.sessionData[this.state.formData.pscid][value].instruments;
+    if (formElement === "visitLabel" && value !== "" && this.state.formData.pscid != null) {
+      this.state.Data.instruments = this.state.Data.sessionData[this.state.formData.pscid].instruments[value];
     }
 
     var formData = this.state.formData;
