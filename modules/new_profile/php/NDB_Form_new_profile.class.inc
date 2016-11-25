@@ -31,7 +31,16 @@ class NDB_Form_new_profile extends NDB_Form
         }
 
         // create the candidate
-        $candID = Candidate::createNew($user->getData('CenterID'), $dob, $edc, $values['gender'], $values['PSCID']);
+        $DB = \Database::singleton();
+        $user_list_of_sites = $user->getData('SiteID');
+        $num_sites = count($user_list_of_sites);
+
+        if ($num_sites >1) {
+            $candID = Candidate::createNew($values['psc'], $dob, $edc, $values['gender'], $values['PSCID']);
+        }
+        else {
+            $candID = Candidate::createNew($user->getData('CenterID'), $dob, $edc, $values['gender'], $values['PSCID']);
+        }
 
         // get the candidate
         $candidate =& Candidate::singleton($candID);
@@ -101,6 +110,26 @@ class NDB_Form_new_profile extends NDB_Form
 
         // gender rules
         $this->addRule('gender', 'Gender is required', 'required');
+
+        // add sites for users with more than one site affiliation
+        $user =& User::singleton();
+        $DB = \Database::singleton();
+        $user_list_of_sites = $user->getData('SiteID');
+        $num_sites = count($user_list_of_sites);
+        print_r ($num_sites);
+
+        if ($num_sites >1) {
+            $psc_labelOptions = array(null => '');
+            foreach ($user_list_of_sites as $key => $siteID) {
+                $center = $DB->pselectRow("SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid", array('cid' => $siteID));
+                $psc_labelOptions[$siteID] = $center['Name'];
+            }
+        }
+        $this->addSelect('psc', 'Site', $psc_labelOptions);
+
+        // site rules
+        $this->addRule('psc', 'Site is required', 'required');
+
 
         $PSCIDsettings = $config->getSetting('PSCID');
         if($PSCIDsettings['generation'] == 'user') {
