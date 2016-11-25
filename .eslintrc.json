@@ -29,6 +29,7 @@
   },
   "globals": {
     "React": true,
-    "loris": true
+    "loris": true,
+    "QueryString": true
   }
 }
