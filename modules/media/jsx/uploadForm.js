@@ -23,12 +23,12 @@ class MediaUploadForm extends React.Component {
       loadedData: 0
     };
 
-    this.getValidFileName = this.getValidFileName.bind(this); 
-    this.handleSubmit = this.handleSubmit.bind(this); 
-    this.isValidFileName = this.isValidFileName.bind(this); 
-    this.isValidForm = this.isValidForm.bind(this); 
-    this.setFormData = this.setFormData.bind(this); 
-    this.showAlertMessage = this.showAlertMessage.bind(this); 
+    this.getValidFileName = this.getValidFileName.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.isValidFileName = this.isValidFileName.bind(this);
+    this.isValidForm = this.isValidForm.bind(this);
+    this.setFormData = this.setFormData.bind(this);
+    this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
   componentDidMount() {
@@ -392,7 +392,7 @@ class MediaUploadForm extends React.Component {
     });
   }
 
-};
+}
 
 MediaUploadForm.propTypes = {
   DataURL: React.PropTypes.string.isRequired,

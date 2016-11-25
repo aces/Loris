@@ -320,8 +320,6 @@ var MediaEditForm = function (_React$Component) {
   return MediaEditForm;
 }(React.Component);
 
-;
-
 MediaEditForm.propTypes = {
   DataURL: React.PropTypes.string.isRequired,
   action: React.PropTypes.string.isRequired

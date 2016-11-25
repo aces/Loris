@@ -444,8 +444,6 @@ var MediaUploadForm = function (_React$Component) {
   return MediaUploadForm;
 }(React.Component);
 
-;
-
 MediaUploadForm.propTypes = {
   DataURL: React.PropTypes.string.isRequired,
   action: React.PropTypes.string.isRequired

@@ -280,7 +280,7 @@ class MediaEditForm extends React.Component {
     });
   }
 
-};
+}
 
 MediaEditForm.propTypes = {
   DataURL: React.PropTypes.string.isRequired,
