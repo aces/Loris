@@ -424,6 +424,9 @@ var MediaUploadForm = function (_React$Component) {
         formData: formData
       });
     }
+    if (formElement === "visitLabel" && value !== "") {
+      this.state.Data.instruments = this.state.Data.sessionData[this.state.formData.pscid][value].instruments;
+    }
 
     /**
      * Display a success/error alert message after form submission
