@@ -155,7 +155,10 @@ class Create_Timepoint extends \NDB_Form
         foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
             if ($visitLabel['@']['subprojectID']==$this->subprojectID) {
                 if ($visitLabel['generation'] == 'user') {
-                    throw new \Exception("User generated Visit Labels are not longer supported in loris.");
+                    throw new \Exception(
+                        "User generated Visit Labels are no ".
+                        "longer supported in loris."
+                    );
                 } elseif ($visitLabel['generation'] == 'sequence') {
                     $labelOptions[''] = null;
                     $items            = \Utility::toArray(
