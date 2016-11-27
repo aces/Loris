@@ -425,10 +425,10 @@ var MediaUploadForm = function (_React$Component) {
       });
     }
     var pid = this.state.formData.pscid;
-    if (formElement === "visitLabel"
-        && value !== "" && pid !== null) {
-      this.state.Data.instruments
-          = this.state.Data.sessionData[pid].instruments[value];
+    if (formElement === "visitLabel" &&
+        value !== "" && pid !== null) {
+      this.state.Data.instruments =
+          this.state.Data.sessionData[pid].instruments[value];
     }
 
     /**
