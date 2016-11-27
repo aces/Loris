@@ -424,8 +424,11 @@ var MediaUploadForm = function (_React$Component) {
         formData: formData
       });
     }
-    if (formElement === "visitLabel" && value !== "" && this.state.formData.pscid != null) {
-      this.state.Data.instruments = this.state.Data.sessionData[this.state.formData.pscid].instruments[value];
+    var pid = this.state.formData.pscid;
+    if (formElement === "visitLabel"
+        && value !== "" && pid !== null) {
+      this.state.Data.instruments
+          = this.state.Data.sessionData[pid].instruments[value];
     }
 
     /**
