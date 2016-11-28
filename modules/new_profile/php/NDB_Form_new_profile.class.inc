@@ -10,9 +10,20 @@ class NDB_Form_new_profile extends NDB_Form
         // create user object
         $user =& User::singleton();
 
-        $site =& Site::singleton($user->getData('CenterID'));
+/*        $site =& Site::singleton($user->getData('CenterID'));
 
         if ($site->isStudySite() or ($site->getCenterName() == "DCC")) {
+            return $user->hasPermission('data_entry');
+        }*/
+        $site_arr = $user->getData('SiteID');
+        foreach ($site_arr as $key=>$val) {
+            $site[$key] = & Site::singleton($val);
+            $isStudySite[$key] = $site[$key]->isStudySite();
+            $isDCCSite[$key] = $site[$key]->getCenterName();
+        }
+        $oneIsStudySite = in_array("1", $isStudySite);
+        $oneIsStudySite = in_array("DCC", $isDCCSite);
+        if ($oneIsStudySite or $isDCCSite) {
             return $user->hasPermission('data_entry');
         }
 
@@ -32,8 +43,8 @@ class NDB_Form_new_profile extends NDB_Form
 
         // create the candidate
         $DB = \Database::singleton();
-        $user_list_of_sites = $user->getData('SiteID');
-        $num_sites = count($user_list_of_sites);
+        $site_arr = $user->getData('SiteID');
+        $num_sites = count($site_arr);
 
         if ($num_sites >1) {
             $candID = Candidate::createNew($values['psc'], $dob, $edc, $values['gender'], $values['PSCID']);

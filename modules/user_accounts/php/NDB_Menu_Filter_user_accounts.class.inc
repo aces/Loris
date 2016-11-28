@@ -47,44 +47,39 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
     function _setupVariables()
     {
         $user =& User::singleton();
-
         // the base query
-        $query = " FROM users LEFT JOIN psc ON " .
-                 "(psc.CenterID = users.CenterID) WHERE 1=1 ";
+        $query = " FROM users LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
+            LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
+            WHERE 1=1";
         if (!$user->hasPermission('user_accounts_multisite')) {
-            $query .= " AND users.CenterID = '" . $user->getData('CenterID') .
-                      "' ";
+            //$query .= " AND users.CenterID = '" . $user->getData('CenterID') . "' ";
+            $query .= " AND user_psc_rel.CenterID=";
+            $site_arr = $user->getCenterID();
+            $last_key = end(array_keys($site_arr));
+            foreach ($site_arr as $key=>$val) {
+                if ($key == $last_key) {
+                    $query .= $val;
+                }
+                else {
+                    $query .= $val . " OR user_psc_rel.CenterID=";
+                }
+            }
         }
 
         // set the class variables
-        $this->columns      = array(
-                               "COALESCE(psc.Name,'Not Assigned') AS PSC",
-                               'UserID AS Username',
-                               'Real_name AS Full_name',
-                               'Email',
-                               'Active',
-                               'Pending_approval',
-                              );
-        $this->query        = $query;
-        $this->order_by     = 'Username';
-        $this->validFilters = array(
-                               'users.CenterID',
-                               'users.UserID',
-                               'users.Real_name',
-                               'users.Email',
-                               'users.Active',
-                               'users.Examiner',
-                               'users.Pending_approval',
-                              );
+        $this->columns = array("COALESCE(psc.Name,'Not Assigned') AS PSC", 'users.UserID AS Username', 'Real_name AS Full_name', 'Email', 'Active', 'Pending_approval');
+        $this->query = $query;
+        $this->order_by = 'Username';
+        $this->validFilters = array('user_psc_rel.CenterID', 'users.UserID', 'users.Real_name', 'users.Email', 'users.Active', 'users.Examiner', 'users.Pending_approval');
 
         $this->formToFilter = array(
-                               'centerID'  => 'users.CenterID',
-                               'active'    => 'users.Active',
-                               'userID'    => 'users.UserID',
-                               'real_name' => 'users.Real_name',
-                               'email'     => 'users.Email',
-                               'pending'   => 'users.Pending_approval',
-                              );
+                                    'centerID' => 'user_psc_rel.CenterID',
+                                    'active' => 'users.Active',
+                                    'userID' => 'users.UserID',
+                                    'real_name' => 'users.Real_name',
+                                    'email' => 'users.Email',
+                                    'pending' => 'users.Pending_approval'
+                                    );
         return true;
     }
     /**
@@ -108,10 +103,12 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site          =& Site::singleton($user->getData('CenterID'));
-            $list_of_sites = array(
-                              $user->getData('CenterID') => $user->getData('Site'),
-                             );
+            $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));*/
+            $site_arr = $user->getData('SiteID');
+            foreach ($site_arr as $key=>$val) {
+                $site[$key] = & Site::singleton($val);
+                $list_of_sites[$val] = $site[$key]->getCenterName();
+            }
         }
 
         // add form elements

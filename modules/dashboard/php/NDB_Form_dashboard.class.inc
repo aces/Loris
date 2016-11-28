@@ -50,6 +50,7 @@ class NDB_Form_Dashboard extends NDB_Form
         );
 
         $siteID = $user->getCenterID();
+        print_r($siteID);
         $this->tpl_data['user_site'] = $siteID;
 
         // Welcome panel
