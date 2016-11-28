@@ -28,7 +28,7 @@ require_once __DIR__
  */
 class ConfigurationTest extends LorisIntegrationTest
 {
-   /**
+    /**
      * Insert test data
      *
      * @return void
@@ -42,7 +42,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $this->setUpConfigSetting("useProjects", "false");
     }
 
-   /**
+    /**
      * Delete test data
      *
      * @return void
@@ -56,7 +56,7 @@ class ConfigurationTest extends LorisIntegrationTest
         parent::tearDown();
     }
 
-   /**
+    /**
      * Tests that, when loading the Configuration module, the word
      * "Configuration" appears somewhere on the page
      *
@@ -102,6 +102,7 @@ class ConfigurationTest extends LorisIntegrationTest
     }
     /**
      * Tests that subproject panel in configuration
+     *
      * @return void
      */
     public function testSubproject()
@@ -114,46 +115,22 @@ class ConfigurationTest extends LorisIntegrationTest
     }
     /**
      * Tests that subproject navigate back to config page
+     *
      * @return void
      */
     private function _testSubprojectBreadcrumbs()
     {
          $this->safeGet($this->url . "/configuration/subproject/");
          $webElement = $this->safeFindElement(
-            WebDriverBy::Xpath("//*[@id='bc2']/a[2]/div"))->click();
+             WebDriverBy::Xpath("//*[@id='bc2']/a[2]/div")
+         )->click();
          sleep(2);
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
 
-         $this->assertContains("To configure study subprojects click here.", $bodyText);
-    }
-    /**
-     * Tests that creating a new subproject and giving a name for this subproject
-     * @return void
-     */
-    public function testNewSubproject()
-    {
-         $this->safeGet($this->url . "/configuration/subproject/");
-         $this->safeFindElement(
-                WebDriverBy::linkText("New SubprojectID"))->click();
-         $subprojectTitle = $this->safeFindElement(
-                WebDriverBy::Xpath("//*[@id='form2']/fieldset/div[1]/div/input"));
-         $subprojectTitle->clear();
-         $subprojectTitle->sendKeys("Test Test Test");
-         //click save button
-         $this->safeFindElement(
-                WebDriverBy::Id("savesubprojectnew"))->click();
-         sleep(5);
-
-         $this->safeFindElement(
-                WebDriverBy::linkText("Test Test Test"))->click();
-
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("h2")
-         )->getText();
-
-         $this->assertContains("Test Test Test", $bodyText);
+         $this->assertContains("To configure study subprojects click here.",
+             $bodyText);
     }
     /**
      * Tests links, click each link, the particular content shows on the page.
@@ -200,41 +177,46 @@ class ConfigurationTest extends LorisIntegrationTest
       *
       *  @return void
       */
-     public function testLocal()
-     {
-         $config  =& NDB_Config::singleton();
-         $dev     = $config->getSetting("dev");
-         $sandbox = $dev['sandbox'];
-         if ($sandbox == '1') {
+    public function testLocal()
+    {
+        $config  =& NDB_Config::singleton();
+        $dev     = $config->getSetting("dev");
+        $sandbox = $dev['sandbox'];
+        if ($sandbox == '1') {
 
-             $this->_testSubprojectBreadcrumbs();
+            $this->_testSubprojectBreadcrumbs();
+            $this->_testUseProjects();
 
-         }
-     }
+        }
+    }
     /**
-      * Test setting useProjects , if useProjects =  
+      * Test setting useProjects , if useProjects =
       *
       *  @return void
       */
-     public function testUseProjects()
-     {
-       $this->safeGet($this->url . "/configuration/");  
-       $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
-       $this->assertNotContains("To configure study projects click here.",
-             $bodyText);
+    private function _testUseProjects()
+    {
+        $this->safeGet($this->url . "/configuration/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains(
+            "To configure study projects click here.",
+            $bodyText
+        );
 
-       $this->setUpConfigSetting("useProjects", "true");
-       sleep(5);
-       $this->safeGet($this->url . "/configuration/");
-       $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
-       $this->assertContains("To configure study projects click here.", 
-             $bodyText);
-       $this->setUpConfigSetting("useProjects", "false");
-     }    
-     
+        $this->setUpConfigSetting("useProjects", "true");
+        sleep(5);
+        $this->safeGet($this->url . "/configuration/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains(
+            "To configure study projects click here.",
+            $bodyText
+        );
+        $this->setUpConfigSetting("useProjects", "false");
+    }
+
 }
 ?>
