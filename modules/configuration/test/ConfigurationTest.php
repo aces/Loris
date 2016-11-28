@@ -39,6 +39,7 @@ class ConfigurationTest extends LorisIntegrationTest
         $window = new WebDriverWindow($this->webDriver);
         $size   = new WebDriverDimension(1280, 1024);
         $window->setSize($size);
+        $this->setUpConfigSetting("useProjects", "false");
     }
 
    /**
@@ -210,7 +211,30 @@ class ConfigurationTest extends LorisIntegrationTest
 
          }
      }
-    
+    /**
+      * Test setting useProjects , if useProjects =  
+      *
+      *  @return void
+      */
+     public function testUseProjects()
+     {
+       $this->safeGet($this->url . "/configuration/");  
+       $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+       $this->assertNotContains("To configure study projects click here.",
+             $bodyText);
+
+       $this->setUpConfigSetting("useProjects", "true");
+       sleep(5);
+       $this->safeGet($this->url . "/configuration/");
+       $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+       $this->assertContains("To configure study projects click here.", 
+             $bodyText);
+       $this->setUpConfigSetting("useProjects", "false");
+     }    
      
 }
 ?>
