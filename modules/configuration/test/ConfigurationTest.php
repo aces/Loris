@@ -129,8 +129,10 @@ class ConfigurationTest extends LorisIntegrationTest
              WebDriverBy::cssSelector("body")
          )->getText();
 
-         $this->assertContains("To configure study subprojects click here.",
-             $bodyText);
+         $this->assertContains(
+             "To configure study subprojects click here.",
+             $bodyText
+         );
     }
     /**
      * Tests links, click each link, the particular content shows on the page.
