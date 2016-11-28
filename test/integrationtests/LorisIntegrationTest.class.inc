@@ -185,11 +185,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function setupConfigSetting($configName, $value)
     {
-        if (isset($this->_oldConfig[$configName])) {
+      /*  if (isset($this->_oldConfig[$configName])) {
             throw new LorisException(
                 "Attempted to change already changed config setting"
             );
-        }
+        }*/
 
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
