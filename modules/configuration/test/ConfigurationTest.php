@@ -52,6 +52,7 @@ class ConfigurationTest extends LorisIntegrationTest
             "subproject",
             array('title' => 'Test Test Test')
         );
+        parent::tearDown();
     }
 
    /**
@@ -124,7 +125,7 @@ class ConfigurationTest extends LorisIntegrationTest
              WebDriverBy::cssSelector("body")
          )->getText();
 
-         $this->assertContains("Please enter the various configuration", $bodyText);
+         $this->assertContains("To configure study subprojects click here.", $bodyText);
     }
     /**
      * Tests that creating a new subproject and giving a name for this subproject
@@ -209,5 +210,7 @@ class ConfigurationTest extends LorisIntegrationTest
 
          }
      }
+    
+     
 }
 ?>
