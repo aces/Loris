@@ -1,6 +1,7 @@
 'use strict';
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks('grunt-run');
 
   /**
    * Important: all files that pass ESLint should be added to transpileES6 list.
@@ -51,8 +52,6 @@ module.exports = function(grunt) {
           'modules/dataquery/js/react.paginator.js': 'modules/dataquery/jsx/react.paginator.js',
           'modules/dataquery/js/react.sidebar.js': 'modules/dataquery/jsx/react.sidebar.js',
           'modules/dataquery/js/react.tabs.js': 'modules/dataquery/jsx/react.tabs.js',
-          'modules/dicom_archive/js/columnFormatter.js': 'modules/dicom_archive/jsx/columnFormatter.js',
-          'modules/dicom_archive/js/dicom_archive.js': 'modules/dicom_archive/jsx/dicom_archive.js',
           'modules/genomic_browser/js/FileUploadModal.js': 'modules/genomic_browser/jsx/FileUploadModal.js',
           'modules/imaging_browser/js/ImagePanel.js': 'modules/imaging_browser/jsx/ImagePanel.js',
           'modules/imaging_browser/js/columnFormatter.js': 'modules/imaging_browser/jsx/columnFormatter.js',
@@ -65,8 +64,14 @@ module.exports = function(grunt) {
           'modules/reliability/js/columnFormatter.js': 'modules/reliability/jsx/columnFormatter.js'
         }
       }
+    },
+
+    run: {
+      webpack: {
+        cmd: 'webpack'
+      }
     }
   });
 
-  grunt.registerTask('jsx', ['babel:transpileES6', 'babel:transpileES5']);
+  grunt.registerTask('jsx', ['babel:transpileES6', 'babel:transpileES5', 'run:webpack']);
 };
