@@ -89,8 +89,8 @@
                 </div>
             </div>
         </form>
-    </div> 
-</div>  
+    </div>
+</div>
 <!--  title table with pagination -->
 <div class="dynamictable" id="datatable"></div>
 <script>
@@ -99,5 +99,5 @@ var table = RDynamicDataTable({
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "PSCID"
   });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>
