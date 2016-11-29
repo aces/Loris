@@ -9,6 +9,6 @@
     "DataURL": "{$baseurl}/media/ajax/FileUpload.php?action=getData&idMediaFile=" + {$smarty.get.id},
     "action": "{$baseurl}/media/ajax/FileUpload.php?action=edit"
   });
-  React.render(mediaEditForm, document.getElementById("media-edit-form"));
+  ReactDOM.render(mediaEditForm, document.getElementById("media-edit-form"));
 </script>
 

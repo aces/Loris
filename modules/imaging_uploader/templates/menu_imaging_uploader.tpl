@@ -19,7 +19,7 @@
                 Upload a New File
             </div>
             <div class="panel-body" id="panel-body">
-                <form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data"> 
+                <form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data">
                     <div class="row">
                         {section name=error loop=$error_message}
                             <div class="col-xs-12">
@@ -131,7 +131,7 @@
     <tr>
         <td id='hide' style="font-weight: bold; display: block;" >
             -Hide log file
-        </td> 
+        </td>
         <td id='show' style="font-weight: bold; display: none;" >
             +Show log file
         </td>
@@ -139,7 +139,7 @@
     <tr>
         <td>
             <div id="log_box"></div>
-        </td> 
+        </td>
     </tr>
 </table>
 *}
@@ -169,7 +169,7 @@
         </div>
    </div>
 </div>
-        
+
 <!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
 <tr>
@@ -257,5 +257,5 @@ var pageLinks = RPaginationLinks(
     },
     Active: {$pageID}
 });
-React.render(pageLinks, document.getElementById("pageLinks"));
+ReactDOM.render(pageLinks, document.getElementById("pageLinks"));
 </script>

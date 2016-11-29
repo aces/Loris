@@ -35,5 +35,5 @@ var queryApp = RDataQueryApp(
         AllSessions : {$sessions|json_encode},
         Visits: {$visits|json_encode}
     });
-React.render(queryApp, document.getElementById("reactTest"));
+ReactDOM.render(queryApp, document.getElementById("reactTest"));
 </script>

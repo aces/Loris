@@ -27,8 +27,8 @@ var commentID = {$commentID|@json_encode};
 var select_option = {$FieldNames};
 var feedback_types = {$feedback_types|@json_encode}
 
-  
-  
+
+
   var bvl_panel = RBehaviouralFeedbackPanel({
 	  feedback_level : feedback_level,
 	  candID : candID,
@@ -38,6 +38,6 @@ var feedback_types = {$feedback_types|@json_encode}
 	  select_options: select_option,
 	  feedback_types: feedback_types
   });
-  
-React.render(bvl_panel, document.getElementById("panel_content"));
+
+ReactDOM.render(bvl_panel, document.getElementById("panel_content"));
 </script>
