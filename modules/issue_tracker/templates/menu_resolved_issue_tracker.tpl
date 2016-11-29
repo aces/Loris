@@ -201,7 +201,7 @@
                                     "DataURL": "{$baseurl}/issue_tracker/?format=json&submenu=resolved_issue_tracker",
                                     "getFormattedCell": formatColumn
                                 });
-                                React.render(table, document.getElementById("datatable"));
+                                ReactDOM.render(table, document.getElementById("datatable"));
                             </script>
                         </div>
                     </div>

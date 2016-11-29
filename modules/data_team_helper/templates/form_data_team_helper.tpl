@@ -38,7 +38,7 @@
 								</select>
 							</div>
 						</div>
-					</div>	
+					</div>
 					<div class ="row">
 						<div class ="form-group col-sm-6">
 							<label class ="col-sm-12 col-md-4">DCCID:</label>
@@ -50,8 +50,8 @@
 							<label class ="col-sm-12 col-md-4">PSCID:</label>
 							<div class="col-sm-12 col-md-8">
 								<input name = "PSCID" type="text" class="form-control"/>
-							</div>							
-						</div>					
+							</div>
+						</div>
 					</div>
 					<div class="row">
 						<div id="selction-ajax" class="col-sm-12 col-md-offset-2"></div>
@@ -69,7 +69,7 @@
 					    <div class="col-sm-6 col-md-offset-6">
 					      <input type="submit" name="filter" value="Show Data" id="filter" class="btn btn-sm btn-primary col-xs-12"/>
 					    </div>
-					    
+
 							</div>
 					</div>
 					<input type="hidden" name="test_name" value="data_team_helper" />
@@ -86,14 +86,14 @@
  <ul class="nav nav-tabs" role="tablist">
    <li role="presentation" class="active"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Incomplete Forms <span class="badge">{$Incomplete_candidates_length}</span></a></li>
    <li role="presentation"><a href="#conflicts" aria-controls="conflicts" role="tab" data-toggle="tab">Data Conflicts <span class="badge">{$Conflicts_length}</span></a></li>
-   <li role="presentation"><a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">Behavioural Feedback <span class="badge">{$Bvl_Feedback_length}</span></a></li>    
+   <li role="presentation"><a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">Behavioural Feedback <span class="badge">{$Bvl_Feedback_length}</span></a></li>
   </ul>
 
 
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="incomplete"></div>
     <div role="tabpanel" class="tab-pane" id="conflicts"></div>
-    <div role="tabpanel" class="tab-pane" id="feedback"></div>    
+    <div role="tabpanel" class="tab-pane" id="feedback"></div>
   </div>
 
 
@@ -118,7 +118,7 @@ var ConflictsPanel = InstrumentConflictsPanel({
 	header: ["Visit", "DCCID", "Instrument", "Field Name"],
 	conflicts: conflicts,
     BaseURL : loris.BaseURL
-}); 
+});
 
 var feedback = {$Bvl_Feedback|@json_encode};
 feedback = JSON.parse(feedback);
@@ -141,13 +141,13 @@ var DataTeamGraphics = GraphicsPanel({
     visit: visit,
     instrument: instrument
 });
-	
-React.render(CandiPanel, document.getElementById("incomplete"));
 
-React.render(ConflictsPanel, document.getElementById("conflicts"));
+ReactDOM.render(CandiPanel, document.getElementById("incomplete"));
 
-React.render(FeedbackTab, document.getElementById("feedback"));
+ReactDOM.render(ConflictsPanel, document.getElementById("conflicts"));
 
-React.render(DataTeamGraphics, document.getElementById("graphics"));
+ReactDOM.render(FeedbackTab, document.getElementById("feedback"));
+
+ReactDOM.render(DataTeamGraphics, document.getElementById("graphics"));
 
 </script>

@@ -181,5 +181,5 @@
 
 <script>
   var brainBrowserPage = RBrainBrowser();
-  React.render(brainBrowserPage, document.getElementById('brainbrowserPage'));
+  ReactDOM.render(brainBrowserPage, document.getElementById('brainbrowserPage'));
 </script>

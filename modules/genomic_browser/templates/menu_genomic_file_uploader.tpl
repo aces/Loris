@@ -11,7 +11,7 @@
       <br>
     </div>
   </div>
-  <form method="post" name="genomic_upload" id="genomic_upload" enctype="multipart/form-data"> 
+  <form method="post" name="genomic_upload" id="genomic_upload" enctype="multipart/form-data">
     <div class="row">
       <div class="col-sm-10 col-md-8">
         <div class="panel panel-primary">
@@ -134,14 +134,14 @@
         "getFormattedCell" : formatColumn,
         "freezeColumn" : "file_name"
     });
- 
-    React.render(table, document.getElementById("datatable"));
+
+    ReactDOM.render(table, document.getElementById("datatable"));
 
 {if $upload_allowed}
     var uploadModal = RGenomicFileUploadModal({
             baseURL : "{$baseurl}"
     });
-    React.render(uploadModal, document.getElementById("modalContainer"));
+    ReactDOM.render(uploadModal, document.getElementById("modalContainer"));
 {/if}
 </script>
 
