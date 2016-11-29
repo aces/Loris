@@ -91,7 +91,7 @@ var PaginationLinks = React.createClass({
     if (lastShownPage !== lastPage) {
       pageLinks.push(React.createElement(
         "li",
-        { onClick: this.changePage(lastPage) },
+        { key: "table_page_more", onClick: this.changePage(lastPage) },
         React.createElement(
           "a",
           { href: "#" },
