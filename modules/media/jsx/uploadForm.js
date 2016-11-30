@@ -371,11 +371,11 @@ class MediaUploadForm extends React.Component {
       this.state.Data.visits = this.state.Data.sessionData[value].visits;
       this.state.Data.sites = this.state.Data.sessionData[value].sites;
     }
-    var pid = this.state.formData.pscid;
+    var pscid = this.state.formData.pscid;
     if (formElement === "visitLabel" &&
-        value !== "" && pid !== null) {
+        value !== "" && pscid !== null) {
       this.state.Data.instruments =
-          this.state.Data.sessionData[pid].instruments[value];
+          this.state.Data.sessionData[pscid].instruments[value];
     }
 
     var formData = this.state.formData;
