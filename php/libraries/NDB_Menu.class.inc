@@ -40,15 +40,6 @@ class NDB_Menu extends NDB_Page
     var $mode;
 
     /**
-     * The template data for Smarty
-     *
-     * @var    array
-     * @access private
-     */
-    var $tpl_data;
-
-
-    /**
      * Generates a new menu instance
      *
      * @param string $menu The name of the menu to use

@@ -46,12 +46,6 @@ class NDB_Form extends NDB_Page
     var $_GUIDelimiter = "&nbsp;\n";
 
     /**
-    * Additional template data
-    */
-    var $tpl_data = array();
-
-
-    /**
      * Generates a new form instance and runs the appropriate method
      *
      * @param string $name       Identifies the form

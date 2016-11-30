@@ -50,6 +50,14 @@ class NDB_Page
     var $commentID;
 
     /**
+     * The template data for Smarty
+     *
+     * @var    array
+     * @access private
+     */
+    var $tpl_data;
+
+    /**
      * Form defaults
      */
     var $defaults = array();
