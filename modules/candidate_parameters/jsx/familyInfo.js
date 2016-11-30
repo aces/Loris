@@ -3,19 +3,13 @@
 var FamilyInfo = React.createClass({
   getInitialState: function() {
     return {
-      relationshipOptions: {
-        "full_sibling": "Full Sibling",
-        "half_sibling": "Half Sibling",
-        "1st_cousin": "First Cousin"
-      },
       Data: [],
       formData: {},
       familyMembers: [],
       updateResult: null,
       errorMessage: null,
       isLoaded: false,
-      loadedData: 0,
-      initialized: false
+      loadedData: 0
     };
   },
   componentDidMount: function() {
@@ -29,35 +23,23 @@ var FamilyInfo = React.createClass({
           xhr.addEventListener(
               "progress",
               function(evt) {
-                that.setState(
-                  {
-                    loadedData: evt.loaded
-                  }
-                );
-              }
-            );
+                that.setState({
+                  loadedData: evt.loaded
+                });
+              });
           return xhr;
         },
         success: function(data) {
-          that.setState(
-            {
-              Data: data,
-              isLoaded: true
-            }
-            );
-          var initialFamilyMembers = that.initializeFamilyMembers();
-          that.setState(
-            {
-              familyMembers: initialFamilyMembers
-            }
-              );
+          that.setState({
+            Data: data,
+            isLoaded: true,
+            familyMembers: data.existingFamilyMembers
+          });
         },
         error: function(data, errorCode, errorMsg) {
-          that.setState(
-            {
-              error: 'An error occurred when loading the form!'
-            }
-            );
+          that.setState({
+            error: 'An error occurred when loading the form!'
+          });
         }
       }
       );
@@ -65,11 +47,9 @@ var FamilyInfo = React.createClass({
   setFormData: function(formElement, value) {
     var formData = this.state.formData;
     formData[formElement] = value;
-    this.setState(
-      {
-        formData: formData
-      }
-      );
+    this.setState({
+      formData: formData
+    });
   },
   onSubmit: function(e) {
     e.preventDefault();
@@ -98,6 +78,12 @@ var FamilyInfo = React.createClass({
         );
     }
 
+    var relationshipOptions = {
+      "full_sibling": "Full Sibling",
+      "half_sibling": "Half Sibling",
+      "1st_cousin": "First Cousin"
+    };
+
     var disabled = true;
     var addButton = null;
     if (loris.userHasPermission('candidate_parameter_edit')) {
@@ -124,7 +110,7 @@ var FamilyInfo = React.createClass({
                       />
                       <StaticElement
                           label="Relation Type"
-                          text={this.state.relationshipOptions[relationship]}
+                          text={relationshipOptions[relationship]}
                       />
                       <ButtonElement
                           label="Delete"
@@ -142,9 +128,7 @@ var FamilyInfo = React.createClass({
     }
 
     var relationshipRequired = false;
-    if (this.state.formData.FamilyCandID !== null &&
-        this.state.formData.FamilyCandID !== undefined
-      ) {
+    if (this.state.formData.FamilyCandID) {
       relationshipRequired = true;
     }
 
@@ -195,7 +179,7 @@ var FamilyInfo = React.createClass({
             <SelectElement
               label="Relation Type"
               name="Relationship_type"
-              options={this.state.relationshipOptions}
+              options={relationshipOptions}
               onUserInput={this.setFormData}
               ref="Relationship_type"
               disabled={disabled}
@@ -205,15 +189,6 @@ var FamilyInfo = React.createClass({
           </FormElement>
         </div>
       );
-  },
-    /**
-     * Initializes family members state variable
-     * with existing family member information
-     *
-     * @return {array} existingFamilyMembers - current family members
-     */
-  initializeFamilyMembers: function() {
-    return this.state.Data.existingFamilyMembers;
   },
     /**
      * Handles form submission
@@ -248,44 +223,42 @@ var FamilyInfo = React.createClass({
       familyMembers: familyMembers
     });
 
-    $.ajax(
-      {
-        type: 'POST',
-        url: self.props.action,
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(data) {
-          self.setState({
-            updateResult: "success",
-            formData: {}
-          });
-          self.showAlertMessage();
+    $.ajax({
+      type: 'POST',
+      url: self.props.action,
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function(data) {
+        self.setState({
+          updateResult: "success",
+          formData: {}
+        });
+        self.showAlertMessage();
 
               // Iterates through child components and resets state
               // to initial state in order to clear the form
-          Object.keys(formRefs).map(function(ref) {
-            if (formRefs[ref].state && formRefs[ref].state.value) {
-              formRefs[ref].state.value = "";
-            }
-          });
+        Object.keys(formRefs).map(function(ref) {
+          if (formRefs[ref].state && formRefs[ref].state.value) {
+            formRefs[ref].state.value = "";
+          }
+        });
               // rerender components
-          self.forceUpdate();
-        },
-        error: function(err) {
-          var errorMessage = JSON.parse(err.responseText).message;
-          self.setState(
-            {
-              updateResult: "error",
-              errorMessage: errorMessage
-            }
+        self.forceUpdate();
+      },
+      error: function(err) {
+        var errorMessage = JSON.parse(err.responseText).message;
+        self.setState(
+          {
+            updateResult: "error",
+            errorMessage: errorMessage
+          }
             );
-          self.showAlertMessage();
-        }
-
+        self.showAlertMessage();
       }
-      );
+
+    });
   },
     /**
      * Display a success/error alert message after form submission
@@ -306,8 +279,7 @@ var FamilyInfo = React.createClass({
 
             }
           );
-        }
-      );
+        });
   },
   deleteFamilyMember: function(candID, key, candidateList) {
     var familyMembers = this.state.familyMembers;
@@ -323,10 +295,10 @@ var FamilyInfo = React.createClass({
     var myFormData = this.state.formData;
     var self = this;
     var formData = new FormData();
-    for (var key1 in myFormData) {
-      if (myFormData.hasOwnProperty(key1)) {
-        if (myFormData[key1] !== "") {
-          formData.append(key1, myFormData[key1]);
+    for (let key in myFormData) {
+      if (myFormData.hasOwnProperty(key)) {
+        if (myFormData[key] !== "") {
+          formData.append(key, myFormData[key]);
         }
       }
     }
@@ -335,40 +307,34 @@ var FamilyInfo = React.createClass({
     formData.append('candID', this.state.Data.candID);
     formData.append('familyDCCID', candID);
 
-    $.ajax(
-      {
-        type: 'POST',
-        url: self.props.action,
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
-        success: function(data) {
+    $.ajax({
+      type: 'POST',
+      url: self.props.action,
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function(data) {
+        self.setState(
+          {
+            updateResult: "success"
+          });
+        self.showAlertMessage();
+      },
+      error: function(err) {
+        if (err.responseText !== "") {
+          var errorMessage = JSON.parse(err.responseText).message;
           self.setState(
             {
-              updateResult: "success"
-            }
-            );
+              updateResult: "error",
+              errorMessage: errorMessage
+            });
           self.showAlertMessage();
-        },
-        error: function(err) {
-          if (err.responseText !== "") {
-            var errorMessage = JSON.parse(err.responseText).message;
-            self.setState(
-              {
-                updateResult: "error",
-                errorMessage: errorMessage
-              }
-
-                  );
-            self.showAlertMessage();
-          }
         }
       }
-      );
+    });
   }
 
-}
-);
+});
 
 var RFamilyInfo = React.createFactory(FamilyInfo);

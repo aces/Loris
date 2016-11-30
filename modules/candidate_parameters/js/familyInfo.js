@@ -1,25 +1,19 @@
-"use strict";
+'use strict';
 
 /* exported RFamilyInfo */
 
 var FamilyInfo = React.createClass({
-  displayName: "FamilyInfo",
+  displayName: 'FamilyInfo',
 
   getInitialState: function getInitialState() {
     return {
-      relationshipOptions: {
-        "full_sibling": "Full Sibling",
-        "half_sibling": "Half Sibling",
-        "1st_cousin": "First Cousin"
-      },
       Data: [],
       formData: {},
       familyMembers: [],
       updateResult: null,
       errorMessage: null,
       isLoaded: false,
-      loadedData: 0,
-      initialized: false
+      loadedData: 0
     };
   },
   componentDidMount: function componentDidMount() {
@@ -38,11 +32,8 @@ var FamilyInfo = React.createClass({
       success: function success(data) {
         that.setState({
           Data: data,
-          isLoaded: true
-        });
-        var initialFamilyMembers = that.initializeFamilyMembers();
-        that.setState({
-          familyMembers: initialFamilyMembers
+          isLoaded: true,
+          familyMembers: data.existingFamilyMembers
         });
       },
       error: function error(data, errorCode, errorMsg) {
@@ -66,10 +57,10 @@ var FamilyInfo = React.createClass({
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return React.createElement(
-          "div",
-          { className: "alert alert-danger text-center" },
+          'div',
+          { className: 'alert alert-danger text-center' },
           React.createElement(
-            "strong",
+            'strong',
             null,
             this.state.error
           )
@@ -77,20 +68,26 @@ var FamilyInfo = React.createClass({
       }
 
       return React.createElement(
-        "button",
-        { className: "btn-info has-spinner" },
-        "Loading",
-        React.createElement("span", {
-          className: "glyphicon glyphicon-refresh glyphicon-refresh-animate"
+        'button',
+        { className: 'btn-info has-spinner' },
+        'Loading',
+        React.createElement('span', {
+          className: 'glyphicon glyphicon-refresh glyphicon-refresh-animate'
         })
       );
     }
+
+    var relationshipOptions = {
+      "full_sibling": "Full Sibling",
+      "half_sibling": "Half Sibling",
+      "1st_cousin": "First Cousin"
+    };
 
     var disabled = true;
     var addButton = null;
     if (loris.userHasPermission('candidate_parameter_edit')) {
       disabled = false;
-      addButton = React.createElement(ButtonElement, { label: "Add" });
+      addButton = React.createElement(ButtonElement, { label: 'Add' });
     }
 
     var candidateList = this.state.Data.candidates;
@@ -105,26 +102,26 @@ var FamilyInfo = React.createClass({
         var link = "?candID=" + candID + "&identifier=" + candID;
 
         familyMembersHTML.push(React.createElement(
-          "div",
+          'div',
           null,
           React.createElement(StaticElement, {
-            label: "Family Member DCCID",
+            label: 'Family Member DCCID',
             text: React.createElement(
-              "a",
+              'a',
               { href: link },
               candID
             )
           }),
           React.createElement(StaticElement, {
-            label: "Relation Type",
-            text: this.state.relationshipOptions[relationship]
+            label: 'Relation Type',
+            text: relationshipOptions[relationship]
           }),
           React.createElement(ButtonElement, {
-            label: "Delete",
-            type: "button",
+            label: 'Delete',
+            type: 'button',
             onUserInput: this.deleteFamilyMember.bind(null, candID, key, candidateList)
           }),
-          React.createElement("hr", null)
+          React.createElement('hr', null)
         ));
         // remove from list of candidates because it can only be added once
         delete candidateList[candID];
@@ -132,7 +129,7 @@ var FamilyInfo = React.createClass({
     }
 
     var relationshipRequired = false;
-    if (this.state.formData.FamilyCandID !== null && this.state.formData.FamilyCandID !== undefined) {
+    if (this.state.formData.FamilyCandID) {
       relationshipRequired = true;
     }
 
@@ -150,61 +147,52 @@ var FamilyInfo = React.createClass({
     }
 
     return React.createElement(
-      "div",
-      { "class": "row" },
+      'div',
+      { 'class': 'row' },
       React.createElement(
-        "div",
-        { className: alertClass, role: "alert", ref: "alert-message" },
+        'div',
+        { className: alertClass, role: 'alert', ref: 'alert-message' },
         alertMessage
       ),
       React.createElement(
         FormElement,
         {
-          name: "familyInfo",
+          name: 'familyInfo',
           onSubmit: this.handleSubmit,
-          ref: "form",
-          "class": "col-md-6"
+          ref: 'form',
+          'class': 'col-md-6'
         },
         React.createElement(StaticElement, {
-          label: "PSCID",
+          label: 'PSCID',
           text: this.state.Data.pscid
         }),
         React.createElement(StaticElement, {
-          label: "DCCID",
+          label: 'DCCID',
           text: this.state.Data.candID
         }),
-        React.createElement("hr", null),
+        React.createElement('hr', null),
         familyMembersHTML,
         React.createElement(SelectElement, {
-          label: "Family Member ID (DCCID)",
-          name: "FamilyCandID",
+          label: 'Family Member ID (DCCID)',
+          name: 'FamilyCandID',
           options: candidateList,
           onUserInput: this.setFormData,
-          ref: "FamilyCandID",
+          ref: 'FamilyCandID',
           disabled: disabled,
           required: false
         }),
         React.createElement(SelectElement, {
-          label: "Relation Type",
-          name: "Relationship_type",
-          options: this.state.relationshipOptions,
+          label: 'Relation Type',
+          name: 'Relationship_type',
+          options: relationshipOptions,
           onUserInput: this.setFormData,
-          ref: "Relationship_type",
+          ref: 'Relationship_type',
           disabled: disabled,
           required: relationshipRequired
         }),
         addButton
       )
     );
-  },
-  /**
-   * Initializes family members state variable
-   * with existing family member information
-   *
-   * @return {array} existingFamilyMembers - current family members
-   */
-  initializeFamilyMembers: function initializeFamilyMembers() {
-    return this.state.Data.existingFamilyMembers;
   },
   /**
    * Handles form submission
@@ -305,10 +293,10 @@ var FamilyInfo = React.createClass({
     var myFormData = this.state.formData;
     var self = this;
     var formData = new FormData();
-    for (var key1 in myFormData) {
-      if (myFormData.hasOwnProperty(key1)) {
-        if (myFormData[key1] !== "") {
-          formData.append(key1, myFormData[key1]);
+    for (var _key in myFormData) {
+      if (myFormData.hasOwnProperty(_key)) {
+        if (myFormData[_key] !== "") {
+          formData.append(_key, myFormData[_key]);
         }
       }
     }
