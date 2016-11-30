@@ -232,9 +232,16 @@ function getUploadFields()
                 = $record["Visit_label"];
         }
 
+        // Populate instruments
         $visit = $record["Visit_label"];
         $pscid =$record["PSCID"];
-        // Populate instruments
+
+        if (!isset($sessionData[$pscid]['instruments'][$visit])) {
+            $sessionData[$pscid]['instruments'][$visit] = [];
+        }
+        if (!isset($sessionData[$pscid]['instruments']['all'])) {
+            $sessionData[$pscid]['instruments']['all'] = [];
+        }
 
         if ($record["Test_name"] !== null && !in_array(
             $record["Test_name"],
@@ -244,6 +251,16 @@ function getUploadFields()
         ) {
             $sessionData[$pscid]['instruments'][$visit][$record["Test_name"]]
                 = $record["Test_name"];
+            if (!in_array(
+                $record["Test_name"],
+                $sessionData[$pscid]['instruments']['all'],
+                true
+            )
+            ) {
+                $sessionData[$pscid]['instruments']['all'][$record["Test_name"]]
+                    = $record["Test_name"];
+            }
+
         }
 
     }
