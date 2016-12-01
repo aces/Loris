@@ -74,11 +74,18 @@ Vagrant.configure("2") do |config|
 
     apt-get install -yq libapache2-mod-php libmysqlclient-dev mysql-client mysql-server php php-mysql php-gd php-json php-xml
 
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    php -r "if (hash_file('SHA384', 'composer-setup.php') === 'e115a8dc7871f15d853148a7fbac7da27d6c0030b848d9b3dc09e2a0388afed865e6a3d6b3c0fad45c48e2b5fc1196ae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');
+    \\\$hash = trim(file_get_contents('https://composer.github.io/installer.sig'));
+    \\\$hashed = trim(hash_file('SHA384', 'composer-setup.php'));
+    if (\\\$hashed === \\\$hash) {
+        echo 'Installer verified';
+    } else {
+        echo 'Installer corrupt (Got ' . \\\$hashed . ' want ' . \\\$hash . ')';
+        unlink('composer-setup.php');
+    }
+    echo PHP_EOL;"
     php composer-setup.php
-    php -r "unlink('composer-setup.php');"
-
+    rm composer-setup.php;
     echo "Moving composer.phar to /usr/local/bin/composer such that composer can now be used globally."
 
     mv composer.phar /usr/local/bin/composer
@@ -94,7 +101,7 @@ Vagrant.configure("2") do |config|
     chmod 777 smarty/templates_c
     chmod 777 project
 
-    sed -e "s#%LORISROOT%#/var/www/loris#g" -e "s#%LOGDIRECTORY%#/var/log/apache2/#g" < docs/config/apache2-site | sudo tee /etc/apache2/sites-available/loris.conf
+    sed -e "s#%PROJECTNAME%#loris#g" -e "s#%LORISROOT%#/var/www/loris#g" -e "s#%LOGDIRECTORY%#/var/log/apache2/#g" < docs/config/apache2-site | sudo tee /etc/apache2/sites-available/loris.conf
     sudo a2dissite 000-default
     sudo a2ensite loris.conf    
     sudo a2enmod rewrite
