@@ -243,5 +243,5 @@ window.onload = function() {
   const rootDOM = document.getElementById("lorisworkspace");
   rootDOM.appendChild(dicomArchiveDOM);
 
-  React.render(dicomArchive, document.getElementById("page-dicom-archive"));
+  ReactDOM.render(dicomArchive, document.getElementById("page-dicom-archive"));
 };
