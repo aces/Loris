@@ -109,7 +109,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $Subproject->sendKeys("Control");
 
         $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-        $startVisit->click();
+        $startVisit->submit();
 
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Both Date fields must match.", $bodyText);
@@ -137,7 +137,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $Subproject->sendKeys("Control");
 
         $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
-        $startVisit->click();
+        $startVisit->submit();
 
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Next stage started.", $bodyText);

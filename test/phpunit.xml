@@ -4,16 +4,16 @@
         verbose="true"
         colors="true">
     <testsuites>
-        <testsuite name='LorisUnitTests for php/libraries'>
+        <testsuite name='LorisUnitTests'>
             <directory>./unittests/</directory>
             <directory>./unittests/api</directory>
         </testsuite>
 
-        <testsuite name='Loris Core Integration Tests'>
+        <testsuite name='LorisCoreIntegrationTests'>
             <directory>./integrationtests/</directory>
         </testsuite>
 
-        <testsuite name='Loris Module Integration Tests'>
+        <testsuite name='LorisModuleIntegrationTests'>
             <directory>../modules/candidate_list/test/</directory>
             <directory>../modules/candidate_parameters/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
