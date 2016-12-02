@@ -29,7 +29,9 @@
     "tests:unit": "./test/dockerized-unit-tests.sh",
     "tests:unit:debug": "DEBUG=true ./test/dockerized-unit-tests.sh",
     "tests:integration": "./test/dockerized-integration-tests.sh",
-    "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh"
+    "tests:integration:debug": "DEBUG=true ./test/dockerized-integration-tests.sh",
+    "dev": "WEBPACK_ENV=development webpack --watch",
+    "build": "WEBPACK_ENV=production webpack"
   },
   "repository": {
     "type": "git",
