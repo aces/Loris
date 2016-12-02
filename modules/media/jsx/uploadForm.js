@@ -203,6 +203,7 @@ var MediaUploadForm = React.createClass({
 
     var myFormData = this.state.formData;
     var formRefs = this.refs;
+    var mediaFiles = this.state.Data.mediaFiles ? this.state.Data.mediaFiles : [];
 
     // Validate the form
     if (!this.isValidForm(formRefs, myFormData)) {
@@ -215,10 +216,19 @@ var MediaUploadForm = React.createClass({
     var requiredFileName = this.getValidFileName(
       myFormData.pscid, myFormData.visitLabel, instrument
     );
-
     if (!this.isValidFileName(requiredFileName, fileName)) {
       alert("File name should begin with: " + requiredFileName);
       return;
+    }
+
+    // Check for duplicate file names
+    var isDuplicate = mediaFiles.indexOf(myFormData.file.name);
+    if (isDuplicate >= 0) {
+      var confirmed = confirm(
+        "A file with this name already exists!\n" +
+        "Would you like to override existing file?"
+      );
+      if (!confirmed) return;
     }
 
     // Set form data and upload the media file
@@ -256,7 +266,13 @@ var MediaUploadForm = React.createClass({
       },
       success: function(data) {
         $("#file-progress").addClass('hide');
+
+        // Add file to the list of exiting files
+        var mediaFiles = self.state.Data.mediaFiles;
+        mediaFiles.push(myFormData.file.name);
+
         self.setState({
+          mediaFiles: mediaFiles,
           uploadResult: "success",
           formData: {} // reset form data after successful file upload
         });
@@ -278,10 +294,11 @@ var MediaUploadForm = React.createClass({
         self.forceUpdate();
       },
       error: function(err) {
-        var errorMessage = JSON.parse(err.responseText).message;
+        console.error(err);
+        let msg = err.responseJSON ? err.responseJSON.message : "Upload error!";
         self.setState({
           uploadResult: "error",
-          errorMessage: errorMessage
+          errorMessage: msg
         });
         self.showAlertMessage();
       }
@@ -313,6 +330,7 @@ var MediaUploadForm = React.createClass({
    */
   isValidForm: function(formRefs, formData) {
     var isValidForm = true;
+
     var requiredFields = {
       pscid: null,
       visitLabel: null,
