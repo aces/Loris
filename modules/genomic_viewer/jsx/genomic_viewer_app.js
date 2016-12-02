@@ -16,21 +16,25 @@ class ControlPanel extends React.Component {
     this.handleNavigation = this.handleNavigation.bind(this);
   }
 
+  // Update the state only if a new genomicRange is received.
   componentWillReceiveProps(nextProps) {
     if (nextProps.hasOwnProperty('genomicRange')) { 
       this.setState({genomicRange: nextProps.genomicRange});
     }
   }
 
+  // Update the state on each key sent.
   handleChange(event) {
     this.setState({genomicRange: event.target.value});
   }
 
+  // Submit the new value to the GenomicViewerApp
   handleSubmit(event) {
     event.preventDefault();
     this.props.setGenomicRange(this.state.genomicRange);
   }
 
+  // Function to handle the zomming and the moving.
   handleNavigation(event) {
     event.preventDefault();
 
@@ -149,6 +153,15 @@ class Track extends React.Component {
   }
 }
 
+Track.propTypes = {
+  title:  React.PropTypes.string.isRequired,
+  children: React.PropTypes.arrayOf(React.PropTypes.element)
+};
+
+Track.defaultProps = {
+  children: []
+};
+
 class Gene extends React.Component {
   constructor(props) {
     super(props);
@@ -198,7 +211,23 @@ class GeneTrack extends React.Component {
   }
 }
 
-class CPGTrack extends React.Component {render() {return (<div></div>);}}
+class CPGTrack extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    
+    return (
+      <Track
+        title="refGenes">
+      {genes}
+      </Track>
+    );
+  }
+}
+
 class SNPTrack extends React.Component {render() {return (<div></div>);}}
 class ChIPPeakTrack extends React.Component {render() {return (<div></div>);}}
 
@@ -255,11 +284,10 @@ class GenomicViewerApp extends React.Component {
 
     // Defining element names here ensures that `name` and `ref`
     // properties of the element are always kept in sync
-    const patientID = "patientID";
-
+    const controlPanel = "controlPanel";
     const genomicRange = this.state.genomicRange;
 
-    // Create the tracks according to state
+    // Create control panel and the tracks according to state
     return (
       <table className='col-md-12'>
         <tbody>
@@ -269,7 +297,7 @@ class GenomicViewerApp extends React.Component {
           </tr>
           <tr>
             <td colSpan="2">
-              <ControlPanel genomicRange={genomicRange} setGenomicRange={this.setGenomicRange} />
+              <ControlPanel ref={controlPanel} genomicRange={genomicRange} setGenomicRange={this.setGenomicRange} />
             </td>
           </tr>
           <GeneTrack />

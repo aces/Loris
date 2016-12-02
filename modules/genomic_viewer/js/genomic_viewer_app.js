@@ -32,6 +32,9 @@ var ControlPanel = function (_React$Component) {
     return _this;
   }
 
+  // Update the state only if a new genomicRange is received.
+
+
   _createClass(ControlPanel, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
@@ -39,17 +42,26 @@ var ControlPanel = function (_React$Component) {
         this.setState({ genomicRange: nextProps.genomicRange });
       }
     }
+
+    // Update the state on each key sent.
+
   }, {
     key: 'handleChange',
     value: function handleChange(event) {
       this.setState({ genomicRange: event.target.value });
     }
+
+    // Submit the new value to the GenomicViewerApp
+
   }, {
     key: 'handleSubmit',
     value: function handleSubmit(event) {
       event.preventDefault();
       this.props.setGenomicRange(this.state.genomicRange);
     }
+
+    // Function to handle the zomming and the moving.
+
   }, {
     key: 'handleNavigation',
     value: function handleNavigation(event) {
@@ -203,6 +215,15 @@ var Track = function (_React$Component2) {
   return Track;
 }(React.Component);
 
+Track.propTypes = {
+  title: React.PropTypes.string.isRequired,
+  children: React.PropTypes.arrayOf(React.PropTypes.element)
+};
+
+Track.defaultProps = {
+  children: []
+};
+
 var Gene = function (_React$Component3) {
   _inherits(Gene, _React$Component3);
 
@@ -232,7 +253,14 @@ var Gene = function (_React$Component3) {
   }, {
     key: 'render',
     value: function render() {
-      return React.createElement('canvas', { ref: 'thisCanvas', width: '800', height: '20', onClick: this.showGeneDetails });
+      return React.createElement('canvas', {
+        ref: 'thisCanvas',
+        width: '800',
+        height: '20',
+        onClick: this.showGeneDetails,
+        'data-toggle': 'tooltip',
+        title: 'Gene1'
+      });
     }
   }]);
 
