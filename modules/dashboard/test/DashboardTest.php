@@ -70,6 +70,7 @@ class DashboardTest extends LorisIntegrationTest
              'PSCID'       => '8888',
              'ProjectID'   => '7777',
              'Entity_type' => 'Human',
+             'Active'      => 'Yes',
             )
         );
         $this->DB->insert(
@@ -81,6 +82,7 @@ class DashboardTest extends LorisIntegrationTest
              'UserID'       => '1',
              'MRIQCStatus'  => 'Pass',
              'SubprojectID' => '6666',
+             'Active'       => 'Yes',
             )
         );
         $this->DB->insert(
@@ -167,6 +169,22 @@ class DashboardTest extends LorisIntegrationTest
               'Value2'         => 'no',
              )
          );
+         $this->DB->insert(
+             "files",
+             array(
+              'ID'         => '111111',
+              'SessionID'  => '222222',
+              'FileID'     => '333333',
+             )
+         );
+         $this->DB->insert(
+             "files_qcstatus",
+             array(
+              'FileQCID'         => '999111',
+              'SeriesUID'        => '222222',
+              'FileID'           => '333333',
+             )
+         );
 
     }
     /**
@@ -245,6 +263,15 @@ class DashboardTest extends LorisIntegrationTest
             "conflicts_unresolved",
             array('TableName' => 'TestTestTest')
         );
+        $this->DB->update("Config", array("Value" => null), 
+            array("ConfigID" => 48));
+        
+        $this->DB->delete(
+             "files",
+             array('ID'         => '111111',));
+         $this->DB->insert(
+             "files_qcstatus",
+             array('FileQCID'         => '999111',));
         parent::tearDown();
     }
 
@@ -267,8 +294,8 @@ class DashboardTest extends LorisIntegrationTest
      /**
       * To test that, when loading the Dashboard, click the Views button of
       * Recruitment, the items "View overall recruitment" and "View site breakdown"
-      * appear
-      * author : Wang Shen
+      * appear. 
+      * for testPlan_4
       *
       * @return void
       */
@@ -309,7 +336,7 @@ class DashboardTest extends LorisIntegrationTest
      * Check that clicking on the task takes you to the Violated Scans page.
      *
      * @return void
-     */
+     *
     public function testMriViolations()
     {
         $this->setupPermissions(
@@ -317,7 +344,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->_testMytaskPanelAndLink(".mri_violations", "2", "[Test]PatientName");
         $this->resetPermissions();
-    }
+    }*/
     /**
      * Check that for a user with 'Data Entry' permission, the number of incomplete
      * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
@@ -327,7 +354,7 @@ class DashboardTest extends LorisIntegrationTest
      * are considered for the computation of the number of incomplete forms.
      *
      *  @return void
-     */
+     *
     public function testIncompleteForm()
     {
 
@@ -344,7 +371,7 @@ class DashboardTest extends LorisIntegrationTest
             "All Completion Statistics"
         );
         $this->resetPermissions();
-    }
+    }*/
     /**
      * Test the link with right value and permission
      *
@@ -353,7 +380,7 @@ class DashboardTest extends LorisIntegrationTest
      * @param string $dataSeed  test result
      *
      * @return void.
-     */
+     *
     private function _testMytaskPanelAndLink($className,$value,$dataSeed)
     {
         $this->safeGet($this->url . '/dashboard/');
@@ -366,6 +393,124 @@ class DashboardTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->getPageSource();
         $this->assertContains($dataSeed, $bodyText);
 
+    }
+*/
+    /**
+     *  If test on local machine, then run this function.
+     *  @return void
+     */
+    public function test_Local()
+    {
+        $config =& NDB_Config::singleton();
+        $dev  = $config->getSetting("dev");    
+        $sandbox = $dev['sandbox'];
+        if ($sandbox == '1'){
+        
+            $this->_test1(); 
+            
+
+        }
+        
+    } 
+    /**
+     *  If test on local machine, then run this function.
+     *  @return void
+     */
+    private function _test1()
+    {
+        echo("fffffffffffffffffffff");
+    }
+    /**
+     * Log in. Note the time. Log out and log back in after 2 minutes.
+     * Check that welcome panel info is correct. 
+     *
+     * @return void
+     
+    public function testPlan_1()
+    {
+        $this->safeGet($this->url . '/main.php?logout=true');
+        sleep(120);
+         $this->login("UnitTester", "4test4");
+        $welcomeText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
+        $this->assertContains("Unit Tester", $welcomeText);
+    }*/
+    /**
+     * Make sure there is no recruitment target set in the configuration
+     * module. Check that an incentive to define a recruitment target is
+     * displayed in recruitment panel.
+     *
+     * @return void
+     
+    public function testPlan_2()
+    {
+      $this->safeGet($this->url . '/dashboard/');
+      $testText = $this->webDriver
+            ->findElement(WebDriverBy::Id("overall-recruitment"))->getText();
+      $this->assertContains(
+          "Please add a recruitment target for Overall Recruitment.",
+                $testText);
+    }*/                
+    /**
+     * Put a recruitment target in the configuration module and check that
+     * the info in the recruitment panel is correct.
+     *
+     * @return void
+     
+    public function testPlan_3()
+    {
+      $this->safeGet($this->url . '/configuration/');
+      $this->webDriver->findElement(WebDriverBy::Xpath(
+                "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"))->click();
+      
+      $this->webDriver->findElement(WebDriverBy::Xpath(
+                "//*[@id='48']/input"))->clear();
+      $this->webDriver->findElement(WebDriverBy::Xpath(
+                "//*[@id='48']/input"))->sendKeys('888');
+      $this->webDriver->findElement(WebDriverBy::Xpath(
+                "//*[@id='dashboard']/div/form/div[3]/div/button[1]"))->click();
+      $this->safeGet($this->url . '/dashboard/');
+      $testText = $this->webDriver
+            ->findElement(WebDriverBy::Id("overall-recruitment"))->getText();
+      $this->assertContains(
+          "888", $testText);
+    }*/
+    /**
+     * 5. Create a candidate and assign it to any site. Inactivate it.
+     * Make sure it is NOT taken into account in the gender
+     * breakdown view (recruitment panel).
+     * 6. Check that site breakdown view (recruitment panel) is correct.
+     *
+     * @return void
+     */
+    public function testPlan_5_6()
+    {
+      $this->safeGet($this->url . '/dashboard/');
+      $testText = $this->webDriver
+            ->findElement(WebDriverBy::Xpath(
+             "//*[@id='lorisworkspace']/div/div[1]/div[2]"))->getText();
+      $this->assertNotContains(
+          "There have been no candidates registered yet.", $testText);
+    }
+    /**
+     * 7. Check that scans per site (study progression panel) view is correct
+     * (scan dates and scan numbers).
+     * 8. Check that recruitment per site view is correct 
+     * (study progression panel).
+     *
+     * @return void
+     */
+    public function testPlan_7_8()
+    {
+      $this->safeGet($this->url . '/dashboard/');
+      $testText = $this->webDriver
+            ->findElement(WebDriverBy::Xpath(
+             "//*[@id='lorisworkspace']/div/div[1]/div[3]"))->getText();
+      $this->assertContains(
+          "There have been no scans yet.", $testText);
+
+      $this->assertNotContains(
+          "There have been no candidates registered yet.", $testText);
     }
 
 }
