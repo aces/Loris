@@ -1,111 +1,206 @@
-class GenomicRange {
-  constructor(props) {
-    var genomicRange = {
-      chromosome: null,
-      startLoc: null,
-      endLoc: null
-    };
-
-    if (props instanceof GenomicRange) {
-       genomicRange.chromosome = props.getChromosome();
-       genomicRange.startLoc = props.getStartLoc();
-       genomicRange.chromosome = props.getEndLoc();
-    } else if (typeof props == 'string') {
-      var matches = props.match(/(^chr|^)([0-9]|[1][0-9]|[2][0-2]|[XYM]):([0-9, ]+)-([0-9, ]+)/i);
-      if (Array.isArray(matches)) {
-        genomicRange.chromosome = 'chr' + matches[2].toUpperCase();
-        genomicRange.startLoc = Number(matches[3].replace(/[, ]/g,''));
-        genomicRange.endLoc = Number(matches[4].replace(/[, ]/g,''));
-      } else {
-        console.error('Invalid input');
-        this.state = {isValid: false};
-        return 'Invalid genomic range';
-      }
-    }
-
-    this.state = {
-      isValid: true,
-      genomicRange: genomicRange
-    }
-    
-    this.getChromosome = this.getChromosome.bind(this);
-    this.getStartLoc = this.getStartLoc.bind(this);
-    this.getEndLoc = this.getEndLoc.bind(this);
-  }
-
-  getChromosome() {
-    return this.state.genomicRange.chromosome;
-  }
-
-  getStartLoc() {
-    return this.state.genomicRange.startLoc;
-  }
-
-  getEndLoc() {
-    return this.state.genomicRange.endLoc;
-  }
-
-  toString() {
-    var value = null;
-    if (this.state.isValid) {
-      value = ''.concat(
-        this.state.genomicRange.chromosome,
-        ':',
-        this.state.genomicRange.startLoc,
-        '-',
-        this.state.genomicRange.endLoc
-      );
-    } else {
-      value = 'Invalid';
-    }
-    return value;
-  }
-}
-
+/*
+ * The control panel is used to input the genomic location to view.
+ * It also provide ways to navigate namely zomming and scrolling.
+ */
 class ControlPanel extends React.Component {
+
   constructor(props) {
     super(props);
-    this.state = {genomicRange: props.genomicRange.toString()};
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.state = {
+      genomicRange: props.genomicRange
+    };
+
+    this.handleChange     = this.handleChange.bind(this);
+    this.handleSubmit     = this.handleSubmit.bind(this);
+    this.handleNavigation = this.handleNavigation.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.hasOwnProperty('genomicRange')) { 
+      this.setState({genomicRange: nextProps.genomicRange});
+    }
   }
 
   handleChange(event) {
     this.setState({genomicRange: event.target.value});
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.hasOwnProperty('genomicRange')) { 
-      this.setState({genomicRange: nextProps.genomicRange.toString()});
-    }
-  }
-
   handleSubmit(event) {
     event.preventDefault();
-    this.props.setGenomicRange(event.target.value);
+    this.props.setGenomicRange(this.state.genomicRange);
+  }
+
+  handleNavigation(event) {
+    event.preventDefault();
+
+    var newGenomicRange, newFrom, newTo, rangeSpan;
+
+    var [oldRange, prefix, chr, from, to] = this.state.genomicRange.match(/(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/i);
+
+    from = parseInt(from);
+    to = parseInt(to);
+    rangeSpan = to - from;
+
+    switch (event.target.id) {
+      case 'control-chevron-left':
+        // Move 90% of the viewer's span toward 5' (left)
+        newFrom = from - Math.round(rangeSpan * 0.9);
+        newTo = to - Math.round(rangeSpan * 0.9);
+      break;
+      case 'control-chevron-zoom-out':
+        // Increase the viewer' span 2 times keeping center
+        newFrom = from - Math.round(rangeSpan * 0.5);
+        newTo = to + Math.round(rangeSpan * 0.5);
+      break;
+      case 'control-chevron-zoom-in':
+        // Reduce the viewer' span by 50% keeping center
+        newFrom = from + Math.round(rangeSpan * 0.25);
+        newTo = to - Math.round(rangeSpan * 0.25);
+      break;
+      case 'control-chevron-right':
+        // Move 90% of the viewer's span toward 3' (right)
+        newFrom = from + Math.round(rangeSpan * 0.9);
+        newTo = to + Math.round(rangeSpan * 0.9);
+      break;
+    }
+
+    newGenomicRange = 'chr'.concat(
+      chr,
+      ':',
+      newFrom,
+      '-',
+      newTo
+    );
+    this.props.setGenomicRange(newGenomicRange);
   }
 
   render() {
     return (
       <div>
+      <center>
       <form onSubmit={this.handleSubmit}>
-        <span className="glyphicon glyphicon-search" onClick={this.handleSubmit}></span>
-        <input type="text" value={this.state.genomicRange} onChange={this.handleChange} />
+        <div className="searche-input">
+          <input 
+            type="text"
+            size="30"
+            value={this.state.genomicRange}
+            onChange={this.handleChange}
+            placeholder="Ex: chrY:15012776-15036313" 
+            pattern="(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)"
+          />
+          <span 
+            id="control-glyphicon-search"
+            className="glyphicon glyphicon-search" 
+            onClick={this.handleSubmit}>
+          </span>
+        </div>
+        <div className="navigation-buttons">
+          <span
+            id="control-chevron-left"
+            className="glyphicon glyphicon-chevron-left"
+            onClick={this.handleNavigation}
+          />
+          <span
+            id="control-chevron-zoom-out"
+            className="glyphicon glyphicon-zoom-out"
+            onClick={this.handleNavigation}
+          />
+          <span
+            id="control-chevron-zoom-in"
+            className="glyphicon glyphicon-zoom-in"
+            onClick={this.handleNavigation}
+          />
+          <span
+            id="control-chevron-right"
+            className="glyphicon glyphicon-chevron-right"
+            onClick={this.handleNavigation}
+          />
+        </div>
       </form>
+      </center>
       </div>
     );
   }
 }
+
 ControlPanel.propTypes = {
-  genomicRange: React.PropTypes.instanceOf(GenomicRange),
+  genomicRange: React.PropTypes.string,
   setGenomicRange: React.PropTypes.func.isRequired
 };
 
-class GeneTrack extends React.Component {render() {return null;}}
-class CPGTrack extends React.Component {render() {return null;}}
-class SNPTrack extends React.Component {render() {return null;}}
-class ChipSeqPeakTrack extends React.Component {render() {return null;}}
+ControlPanel.defaultProps = {
+  genomicRange: ""
+};
+
+class Track extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    return (
+      <tr>
+        <td>{this.props.title}</td>
+        <td>{this.props.children}</td>
+      </tr>
+    );
+  }
+}
+
+class Gene extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+
+    this.showGeneDetails = this.showGeneDetails.bind(this);
+  }
+
+  componentDidMount() {
+    var ctx = this.refs.thisCanvas.getDOMNode().getContext('2d');
+    ctx.rect(0,0,120,17);
+    ctx.stroke();
+  }
+
+  showGeneDetails() {
+    alert('Bob');
+  }
+
+  render() {
+    return (
+      <canvas
+        ref="thisCanvas"
+        width="800"
+        height="20"
+        onClick={this.showGeneDetails}
+        data-toggle="tooltip"
+        title="Gene1"
+      />
+    );
+  }
+}
+
+class GeneTrack extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  render() {
+    var genes = [<Gene />, <Gene />]
+    return (
+      <Track
+        title="refGenes">
+      {genes}
+      </Track>
+    );
+  }
+}
+
+class CPGTrack extends React.Component {render() {return (<div></div>);}}
+class SNPTrack extends React.Component {render() {return (<div></div>);}}
+class ChIPPeakTrack extends React.Component {render() {return (<div></div>);}}
 
 
 /* exported GenomicViewerApp */
@@ -126,7 +221,7 @@ class GenomicViewerApp extends React.Component {
 
     this.state = {
       // Create a default genomic range to show 
-      genomicRange: new GenomicRange('chrY:15,012,776-15,036,313')
+      genomicRange: null
     };
 
     // Bind component instance to custom methods
@@ -148,11 +243,10 @@ class GenomicViewerApp extends React.Component {
    * @note This function will try to construct a genomicRange if a string is received.
    */
   setGenomicRange(genomicRange) {
-    var genomicRange = new GenomicRange(genomicRange);
+    var genomicRange = genomicRange;
 
-    if (!genomicRange instanceof GenomicRange) {
-      console.error('Invalid parameter provided');
-    }
+    //  Do some regexp validation
+    //  console.error('Invalid parameter provided');
 
     this.setState({genomicRange: genomicRange});
   }
@@ -169,16 +263,19 @@ class GenomicViewerApp extends React.Component {
     return (
       <table className='col-md-12'>
         <tbody>
-        <th>
-          <td className="col-md-1"></td>
-          <td className="col-md-2"></td>
-          <td className="col-md-9"></td>
-        </th>
-        <tr>
-          <td colSpan="3">
-            <ControlPanel genomicRange={genomicRange} setGenomicRange={this.setGenomicRange} />
-          </td>
-        </tr>
+          <tr>
+            <th className="col-md-2"></th>
+            <th className="col-md-10"></th>
+          </tr>
+          <tr>
+            <td colSpan="2">
+              <ControlPanel genomicRange={genomicRange} setGenomicRange={this.setGenomicRange} />
+            </td>
+          </tr>
+          <GeneTrack />
+          <CPGTrack />
+          <SNPTrack />
+          <ChIPPeakTrack />
         </tbody>
       </table>
     );
