@@ -784,6 +784,14 @@ var FileElement = React.createClass({
       );
     }
 
+    // Need to manually reset file value, because HTML API
+    // does not allow setting value to anything than empty string.
+    // Hence can't use value attribute in the input element.
+    var file = document.querySelector(".fileUpload");
+    if (file && !this.state.value) {
+      file.value = "";
+    }
+
     return React.createElement(
       'div',
       { className: elementClass },
