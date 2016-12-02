@@ -254,7 +254,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/dicom_archive/js/entrypoint.js",
+             $baseURL . "/dicom_archive/js/index.js",
             )
         );
     }

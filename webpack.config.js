@@ -1,6 +1,6 @@
 module.exports = {
   entry: {
-    './modules/dicom_archive/js/entrypoint.js': './modules/dicom_archive/jsx/entrypoint.js'
+    './modules/dicom_archive/js/index.js': './modules/dicom_archive/jsx/index.js'
   },
   output: {
       path: './',
