@@ -44,9 +44,13 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
-	var _dicom_archive = __webpack_require__(1);
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _dicom_archive = __webpack_require__(2);
 
 	var _dicom_archive2 = _interopRequireDefault(_dicom_archive);
 
@@ -57,8 +61,8 @@
 	 */
 	window.onload = function () {
 	  var dataURL = loris.BaseURL + "/dicom_archive/?format=json";
-	  var dicomArchive = React.createElement(_dicom_archive2.default, {
-	    Module: "dicom_archive",
+	  var dicomArchive = _react2.default.createElement(_dicom_archive2.default, {
+	    Module: 'dicom_archive',
 	    DataURL: dataURL
 	  });
 
@@ -70,11 +74,17 @@
 	  var rootDOM = document.getElementById("lorisworkspace");
 	  rootDOM.appendChild(dicomArchiveDOM);
 
-	  React.render(dicomArchive, document.getElementById("page-dicom-archive"));
+	  _react2.default.render(dicomArchive, document.getElementById("page-dicom-archive"));
 	};
 
 /***/ },
 /* 1 */
+/***/ function(module, exports) {
+
+	module.exports = React;
+
+/***/ },
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -85,7 +95,11 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _columnFormatter = __webpack_require__(2);
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _columnFormatter = __webpack_require__(3);
 
 	var _columnFormatter2 = _interopRequireDefault(_columnFormatter);
 
@@ -198,11 +212,11 @@
 	    value: function render() {
 	      // Waiting for async data to load
 	      if (!this.state.isLoaded) {
-	        return React.createElement(
+	        return _react2.default.createElement(
 	          'button',
 	          { className: 'btn-info has-spinner' },
 	          'Loading',
-	          React.createElement('span', {
+	          _react2.default.createElement('span', {
 	            className: 'glyphicon glyphicon-refresh glyphicon-refresh-animate' })
 	        );
 	      }
@@ -224,19 +238,19 @@
 	        O: 'N/A'
 	      };
 
-	      return React.createElement(
+	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        React.createElement(
+	        _react2.default.createElement(
 	          FilterTable,
 	          { Module: 'dicom_archive' },
-	          React.createElement(
+	          _react2.default.createElement(
 	            'div',
 	            { className: 'row' },
-	            React.createElement(
+	            _react2.default.createElement(
 	              'div',
 	              { className: 'col-md-6' },
-	              React.createElement(TextboxElement, {
+	              _react2.default.createElement(TextboxElement, {
 	                name: patientID,
 	                label: 'Patient ID',
 	                onUserInput: this.setFilter,
@@ -244,10 +258,10 @@
 	                ref: patientID
 	              })
 	            ),
-	            React.createElement(
+	            _react2.default.createElement(
 	              'div',
 	              { className: 'col-md-6' },
-	              React.createElement(TextboxElement, {
+	              _react2.default.createElement(TextboxElement, {
 	                name: patientName,
 	                label: 'Patient Name',
 	                onUserInput: this.setFilter,
@@ -256,13 +270,13 @@
 	              })
 	            )
 	          ),
-	          React.createElement(
+	          _react2.default.createElement(
 	            'div',
 	            { className: 'row' },
-	            React.createElement(
+	            _react2.default.createElement(
 	              'div',
 	              { className: 'col-md-6' },
-	              React.createElement(SelectElement, {
+	              _react2.default.createElement(SelectElement, {
 	                name: site,
 	                label: 'Sites',
 	                options: this.state.Data.Sites,
@@ -271,10 +285,10 @@
 	                ref: site
 	              })
 	            ),
-	            React.createElement(
+	            _react2.default.createElement(
 	              'div',
 	              { className: 'col-md-6' },
-	              React.createElement(SelectElement, {
+	              _react2.default.createElement(SelectElement, {
 	                name: gender,
 	                label: 'Gender',
 	                options: genderList,
@@ -284,13 +298,13 @@
 	              })
 	            )
 	          ),
-	          React.createElement(
+	          _react2.default.createElement(
 	            'div',
 	            { className: 'row' },
-	            React.createElement(
+	            _react2.default.createElement(
 	              'div',
 	              { className: 'col-md-6' },
-	              React.createElement(DateElement, {
+	              _react2.default.createElement(DateElement, {
 	                name: dateOfBirth,
 	                label: 'Date of Birth',
 	                onUserInput: this.setFilter,
@@ -298,10 +312,10 @@
 	                ref: dateOfBirth
 	              })
 	            ),
-	            React.createElement(
+	            _react2.default.createElement(
 	              'div',
 	              { className: 'col-md-6' },
-	              React.createElement(DateElement, {
+	              _react2.default.createElement(DateElement, {
 	                name: acquisition,
 	                label: 'Acquisition Date',
 	                onUserInput: this.setFilter,
@@ -310,13 +324,13 @@
 	              })
 	            )
 	          ),
-	          React.createElement(
+	          _react2.default.createElement(
 	            'div',
 	            { className: 'row' },
-	            React.createElement(
+	            _react2.default.createElement(
 	              'div',
 	              { className: 'col-md-6' },
-	              React.createElement(TextboxElement, {
+	              _react2.default.createElement(TextboxElement, {
 	                name: archiveLocation,
 	                label: 'Archive Location',
 	                onUserInput: this.setFilter,
@@ -324,10 +338,10 @@
 	                ref: archiveLocation
 	              })
 	            ),
-	            React.createElement(
+	            _react2.default.createElement(
 	              'div',
 	              { className: 'col-md-6' },
-	              React.createElement(TextboxElement, {
+	              _react2.default.createElement(TextboxElement, {
 	                name: seriesUID,
 	                label: 'Series UID',
 	                onUserInput: this.setFilter,
@@ -336,20 +350,20 @@
 	              })
 	            )
 	          ),
-	          React.createElement(
+	          _react2.default.createElement(
 	            'div',
 	            { className: 'row' },
-	            React.createElement(
+	            _react2.default.createElement(
 	              'div',
 	              { className: 'col-md-6' },
-	              React.createElement(ButtonElement, {
+	              _react2.default.createElement(ButtonElement, {
 	                label: 'Clear Filters',
 	                onUserInput: this.clearFilter
 	              })
 	            )
 	          )
 	        ),
-	        React.createElement(StaticDataTable, {
+	        _react2.default.createElement(StaticDataTable, {
 	          Data: this.state.Data.Data,
 	          Headers: this.state.Data.Headers,
 	          Filter: this.state.Filter,
@@ -360,17 +374,17 @@
 	  }]);
 
 	  return DicomArchive;
-	}(React.Component);
+	}(_react2.default.Component);
 
 	DicomArchive.propTypes = {
-	  Module: React.PropTypes.string.isRequired,
-	  DataURL: React.PropTypes.string.isRequired
+	  Module: _react2.default.PropTypes.string.isRequired,
+	  DataURL: _react2.default.PropTypes.string.isRequired
 	};
 
 	exports.default = DicomArchive;
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports) {
 
 	'use strict';
