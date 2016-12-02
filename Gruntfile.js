@@ -68,7 +68,7 @@ module.exports = function(grunt) {
 
     run: {
       webpack: {
-        cmd: 'webpack'
+        cmd: './node_modules/.bin/webpack'
       }
     }
   });
