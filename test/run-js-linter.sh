@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 set -e
+# NOTE: To use this script, run `npm run lint:javascript`
 
 # Run ESLint on Loris modules
-./node_modules/eslint/bin/eslint.js modules/
+eslint modules/
 
 # Run ESLint on generic React components
-./node_modules/eslint/bin/eslint.js eslint jsx/
+eslint jsx/
 
 # Run ESLint on specific scripts
-./node_modules/eslint/bin/eslint.js eslint htdocs/js/jquery.dynamictable.js
-./node_modules/eslint/bin/eslint.js eslint htdocs/js/util/
-./node_modules/eslint/bin/eslint.js eslint Gruntfile.js
+eslint htdocs/js/jquery.dynamictable.js
+eslint htdocs/js/util/
+eslint Gruntfile.js
