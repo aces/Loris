@@ -38,6 +38,9 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentListDoespageLoad()
     {
+        $this->markTestSkipped(
+          'Test is outdated/broken. This module requires candID and sessionID query parameters'
+        );
         $this->webDriver->get($this->url . "/instrument_list/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
@@ -52,6 +55,9 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentListDoespageLoadWithPermission()
     {
+        $this->markTestSkipped(
+          'Test is outdated/broken. This module requires candID and sessionID query parameters'
+        );
         $this->setupPermissions(array("access_all_profiles"));
         $this->webDriver->get($this->url . "/instrument_list/");
         $bodyText = $this->webDriver->findElement(
