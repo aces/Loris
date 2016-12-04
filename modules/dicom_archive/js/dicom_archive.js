@@ -1,10 +1,21 @@
-'use strict';
+"use strict";
 
-/* exported RDicomArchive */
-/* global QueryString  */
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/* exported DicomArchive */
+/* global formatColumn */
 
 /**
  * DICOM Archive Page.
+ *
+ * Serves as an entry-point to the module, rendering the whole react
+ * component page on load.
  *
  * Renders DICOM Archive main page consisting of FilterTable and
  * DataTable components.
@@ -13,234 +24,280 @@
  * @version 1.0.0
  *
  * */
-var DicomArchive = React.createClass({
-  displayName: 'DicomArchive',
+var DicomArchive = function (_React$Component) {
+  _inherits(DicomArchive, _React$Component);
 
-  propTypes: {
-    Module: React.PropTypes.string.isRequired
-  },
-  mixins: [React.addons.PureRenderMixin],
-  getInitialState: function getInitialState() {
-    return {
-      Filter: {}
+  function DicomArchive(props) {
+    _classCallCheck(this, DicomArchive);
+
+    var _this = _possibleConstructorReturn(this, (DicomArchive.__proto__ || Object.getPrototypeOf(DicomArchive)).call(this, props));
+
+    _this.state = {
+      isLoaded: false,
+      Filter: QueryString.get()
     };
-  },
-  getDefaultProps: function getDefaultProps() {
-    return {
-      Gender: {
+
+    // Bind component instance to custom methods
+    _this.fetchData = _this.fetchData.bind(_this);
+    _this.setFilter = _this.setFilter.bind(_this);
+    _this.clearFilter = _this.clearFilter.bind(_this);
+    return _this;
+  }
+
+  _createClass(DicomArchive, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.fetchData();
+    }
+
+    /**
+     * Retrive data from the provided URL and save it in state
+     * Additionaly add hiddenHeaders to global loris vairable
+     * for easy access by columnFormatter.
+     */
+
+  }, {
+    key: "fetchData",
+    value: function fetchData() {
+      $.ajax(this.props.DataURL, {
+        method: "GET",
+        dataType: 'json',
+        success: function (data) {
+          loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
+          this.setState({
+            Data: data,
+            isLoaded: true
+          });
+        }.bind(this),
+        error: function error(_error) {
+          console.error(_error);
+        }
+      });
+    }
+
+    /**
+     * Clear the Filter object, querystring and input fields
+     */
+
+  }, {
+    key: "clearFilter",
+    value: function clearFilter() {
+      var Filter = QueryString.clear(this.props.Module);
+      this.setState({ Filter: Filter });
+    }
+
+    /**
+     * Sets Filter object and querystring to reflect values of input fields
+     *
+     * @param {string} fieldName - the name of the form element
+     * @param {string} fieldValue - the value of the form element
+     */
+
+  }, {
+    key: "setFilter",
+    value: function setFilter(fieldName, fieldValue) {
+      // Special treatment for site, to explicitly set it as an integer value
+      if (fieldName === "site") {
+        var number = Number.parseInt(fieldValue, 10);
+        if (Number.isInteger(number)) {
+          fieldValue = number;
+        }
+      }
+
+      var Filter = QueryString.set(this.state.Filter, fieldName, fieldValue);
+      this.setState({ Filter: Filter });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      // Waiting for async data to load
+      if (!this.state.isLoaded) {
+        return React.createElement(
+          "button",
+          { className: "btn-info has-spinner" },
+          "Loading",
+          React.createElement("span", {
+            className: "glyphicon glyphicon-refresh glyphicon-refresh-animate" })
+        );
+      }
+
+      // Defining element names here ensures that `name` and `ref`
+      // properties of the element are always kept in sync
+      var patientID = "patientID";
+      var patientName = "patientName";
+      var site = "site";
+      var gender = "gender";
+      var dateOfBirth = "dateOfBirth";
+      var acquisition = "acquisition";
+      var archiveLocation = "archiveLocation";
+      var seriesUID = "seriesuid";
+
+      var genderList = {
         M: 'Male',
         F: 'Female',
         O: 'N/A'
-      }
-    };
-  },
-  componentDidMount: function componentDidMount() {
-    var formRefs = this.refs;
-    var queryString = new QueryString();
-    var queryStringObj = queryString.get();
+      };
 
-    // Populate input fields from query string
-    Object.keys(queryStringObj).map(function (key) {
-      if (formRefs[key].state && queryStringObj[key]) {
-        formRefs[key].state.value = queryStringObj[key];
-      }
-    });
-
-    this.setState({
-      Filter: queryStringObj,
-      QueryString: queryString
-    });
-  },
-  setFilter: function setFilter(fieldName, fieldValue) {
-    // Create deep copy of a current filter
-    var Filter = JSON.parse(JSON.stringify(this.state.Filter));
-    var queryString = this.state.QueryString;
-    var formRefs = this.refs;
-
-    // If fieldName is part of the form, add to querystring
-    if (formRefs.hasOwnProperty(fieldName)) {
-      queryString.set(Filter, fieldName, fieldValue);
-    } else {
-      queryString.clear(this.props.Module);
+      return React.createElement(
+        "div",
+        null,
+        React.createElement(
+          FilterTable,
+          { Module: "dicom_archive" },
+          React.createElement(
+            "div",
+            { className: "row" },
+            React.createElement(
+              "div",
+              { className: "col-md-6" },
+              React.createElement(TextboxElement, {
+                name: patientID,
+                label: "Patient ID",
+                onUserInput: this.setFilter,
+                value: this.state.Filter.patientID,
+                ref: patientID
+              })
+            ),
+            React.createElement(
+              "div",
+              { className: "col-md-6" },
+              React.createElement(TextboxElement, {
+                name: patientName,
+                label: "Patient Name",
+                onUserInput: this.setFilter,
+                value: this.state.Filter.patientName,
+                ref: patientName
+              })
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "row" },
+            React.createElement(
+              "div",
+              { className: "col-md-6" },
+              React.createElement(SelectElement, {
+                name: site,
+                label: "Sites",
+                options: this.state.Data.Sites,
+                onUserInput: this.setFilter,
+                value: this.state.Filter.site,
+                ref: site
+              })
+            ),
+            React.createElement(
+              "div",
+              { className: "col-md-6" },
+              React.createElement(SelectElement, {
+                name: gender,
+                label: "Gender",
+                options: genderList,
+                onUserInput: this.setFilter,
+                value: this.state.Filter.gender,
+                ref: gender
+              })
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "row" },
+            React.createElement(
+              "div",
+              { className: "col-md-6" },
+              React.createElement(DateElement, {
+                name: dateOfBirth,
+                label: "Date of Birth",
+                onUserInput: this.setFilter,
+                value: this.state.Filter.dateOfBirth,
+                ref: dateOfBirth
+              })
+            ),
+            React.createElement(
+              "div",
+              { className: "col-md-6" },
+              React.createElement(DateElement, {
+                name: acquisition,
+                label: "Acquisition Date",
+                onUserInput: this.setFilter,
+                value: this.state.Filter.acquisition,
+                ref: acquisition
+              })
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "row" },
+            React.createElement(
+              "div",
+              { className: "col-md-6" },
+              React.createElement(TextboxElement, {
+                name: archiveLocation,
+                label: "Archive Location",
+                onUserInput: this.setFilter,
+                value: this.state.Filter.archiveLocation,
+                ref: archiveLocation
+              })
+            ),
+            React.createElement(
+              "div",
+              { className: "col-md-6" },
+              React.createElement(TextboxElement, {
+                name: seriesUID,
+                label: "Series UID",
+                onUserInput: this.setFilter,
+                value: this.state.Filter.seriesuid,
+                ref: seriesUID
+              })
+            )
+          ),
+          React.createElement(
+            "div",
+            { className: "row" },
+            React.createElement(
+              "div",
+              { className: "col-md-6" },
+              React.createElement(ButtonElement, {
+                label: "Clear Filters",
+                onUserInput: this.clearFilter
+              })
+            )
+          )
+        ),
+        React.createElement(StaticDataTable, {
+          Data: this.state.Data.Data,
+          Headers: this.state.Data.Headers,
+          Filter: this.state.Filter,
+          getFormattedCell: formatColumn
+        })
+      );
     }
+  }]);
 
-    // Special treatment for site, to explicitly set it as an integer value
-    if (fieldName === "site") {
-      var number = Number.parseInt(fieldValue, 10);
-      if (Number.isInteger(number)) {
-        fieldValue = number;
-      }
-    }
+  return DicomArchive;
+}(React.Component);
 
-    if (fieldValue === "") {
-      delete Filter[fieldName];
-    } else {
-      Filter[fieldName] = fieldValue;
-    }
+DicomArchive.propTypes = {
+  Module: React.PropTypes.string.isRequired,
+  DataURL: React.PropTypes.string.isRequired
+};
 
-    this.setState({ Filter: Filter });
-  },
-  clearFilter: function clearFilter() {
-    var queryString = this.state.QueryString;
-    var formRefs = this.refs;
+/**
+ * Render dicom_page on page load
+ */
+window.onload = function () {
+  var dataURL = loris.BaseURL + "/dicom_archive/?format=json";
+  var dicomArchive = React.createElement(DicomArchive, {
+    Module: "dicom_archive",
+    DataURL: dataURL
+  });
 
-    // Clear query string
-    queryString.clear(this.props.Module);
+  // Create a wrapper div in which react component will be loaded
+  var dicomArchiveDOM = document.createElement('div');
+  dicomArchiveDOM.id = 'page-dicom-archive';
 
-    // Reset state of child components of FilterTable
-    Object.keys(formRefs).map(function (ref) {
-      if (formRefs[ref].state && formRefs[ref].state.value) {
-        formRefs[ref].state.value = "";
-      }
-    });
+  // Append wrapper div to page content
+  var rootDOM = document.getElementById("lorisworkspace");
+  rootDOM.appendChild(dicomArchiveDOM);
 
-    // Clear filter
-    this.setState({ Filter: {} });
-  },
-  render: function render() {
-    // Defining element names here ensures that `name` and `ref`
-    // properties of the element are always kept in sync
-    var patientID = "patientID";
-    var patientName = "patientName";
-    var site = "site";
-    var gender = "gender";
-    var dateOfBirth = "dateOfBirth";
-    var acquisition = "acquisition";
-    var archiveLocation = "archiveLocation";
-    var seriesUID = "seriesuid";
-
-    return React.createElement(
-      'div',
-      null,
-      React.createElement(
-        FilterTable,
-        { Module: 'dicom_archive' },
-        React.createElement(
-          'div',
-          { className: 'row' },
-          React.createElement(
-            'div',
-            { className: 'col-md-6' },
-            React.createElement(TextboxElement, {
-              name: patientID,
-              label: 'Patient ID',
-              onUserInput: this.setFilter,
-              value: this.state.Filter.patientID,
-              ref: patientID
-            })
-          ),
-          React.createElement(
-            'div',
-            { className: 'col-md-6' },
-            React.createElement(TextboxElement, {
-              name: patientName,
-              label: 'Patient Name',
-              onUserInput: this.setFilter,
-              value: this.state.Filter.patientName,
-              ref: patientName
-            })
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'row' },
-          React.createElement(
-            'div',
-            { className: 'col-md-6' },
-            React.createElement(SelectElement, {
-              name: site,
-              label: 'Sites',
-              options: this.props.Sites,
-              onUserInput: this.setFilter,
-              value: this.state.Filter.sites,
-              ref: site
-            })
-          ),
-          React.createElement(
-            'div',
-            { className: 'col-md-6' },
-            React.createElement(SelectElement, {
-              name: gender,
-              label: 'Gender',
-              options: this.props.Gender,
-              onUserInput: this.setFilter,
-              value: this.state.Filter.gender,
-              ref: gender
-            })
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'row' },
-          React.createElement(
-            'div',
-            { className: 'col-md-6' },
-            React.createElement(DateElement, {
-              name: dateOfBirth,
-              label: 'Date of Birth',
-              onUserInput: this.setFilter,
-              value: this.state.Filter.dateOfBirth,
-              ref: dateOfBirth
-            })
-          ),
-          React.createElement(
-            'div',
-            { className: 'col-md-6' },
-            React.createElement(DateElement, {
-              name: acquisition,
-              label: 'Acquisition Date',
-              onUserInput: this.setFilter,
-              value: this.state.Filter.acquisition,
-              ref: acquisition
-            })
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'row' },
-          React.createElement(
-            'div',
-            { className: 'col-md-6' },
-            React.createElement(TextboxElement, {
-              name: archiveLocation,
-              label: 'Archive Location',
-              onUserInput: this.setFilter,
-              value: this.state.Filter.archiveLocation,
-              ref: archiveLocation
-            })
-          ),
-          React.createElement(
-            'div',
-            { className: 'col-md-6' },
-            React.createElement(TextboxElement, {
-              name: seriesUID,
-              label: 'Series UID',
-              onUserInput: this.setFilter,
-              value: this.state.Filter.seriesUID,
-              ref: seriesUID
-            })
-          )
-        ),
-        React.createElement(
-          'div',
-          { className: 'row' },
-          React.createElement(
-            'div',
-            { className: 'col-md-6' },
-            React.createElement(ButtonElement, {
-              label: 'Clear Filters',
-              onUserInput: this.clearFilter
-            })
-          )
-        )
-      ),
-      React.createElement(DynamicDataTable, {
-        DataURL: this.props.DataURL,
-        Filter: this.state.Filter,
-        getFormattedCell: this.props.getFormattedCell
-      })
-    );
-  }
-});
-
-var RDicomArchive = React.createFactory(DicomArchive);
+  React.render(dicomArchive, document.getElementById("page-dicom-archive"));
+};
