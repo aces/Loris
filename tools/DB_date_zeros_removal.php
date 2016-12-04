@@ -26,11 +26,11 @@ $database = $config->getSetting('database');
 $base = $config->getSetting('base');
 $db->_trackChanges = false;
 
+// Set up variables
 $filename = __DIR__ . "/../project/tables_sql/update_zero_fields_statements.sql";
-$output = "";
-
-$output .="SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS; \n";
-$output .="SET FOREIGN_KEY_CHECKS=0; \n";
+$output= "";
+$alters="";
+$updates="";
 
 echo "\n#################################################################\n\n".
     "This Script will generate an UPDATE statement for every date field ".
@@ -49,26 +49,36 @@ $field_names = $db->pselect("
     array("dbn"=>$database['database'])
 );
 
+
+// BEGIN building script
+$output .="SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS; \n";
+$output .="SET FOREIGN_KEY_CHECKS=0; \n";
+
 foreach ($field_names as $key=>$field)
 {
     if ($field['COLUMN_DEFAULT']=='0000-00-00') {
         echo "The script will modify the date schema for TABLE: `".$field['TABLE_NAME']."` FIELD: `".$field['COLUMN_NAME']."` to default to NULL\n";
-        $output .= "ALTER TABLE `".$field['TABLE_NAME']."` MODIFY `".$field['COLUMN_NAME']."` DATE DEFAULT NULL;\n";
+        $alters .= "ALTER TABLE `".$field['TABLE_NAME']."` MODIFY `".$field['COLUMN_NAME']."` DATE DEFAULT NULL;\n";
     } else if ($field['COLUMN_DEFAULT']=='0000-00-00 00:00:00') {
         echo "The script will modify the date schema for TABLE: `".$field['TABLE_NAME']."` FIELD: `".$field['COLUMN_NAME']."` to default to NULL\n";
-        $output .= "ALTER TABLE `".$field['TABLE_NAME']."` MODIFY `".$field['COLUMN_NAME']."` DATETIME DEFAULT NULL;\n";
+        $alters .= "ALTER TABLE `".$field['TABLE_NAME']."` MODIFY `".$field['COLUMN_NAME']."` DATETIME DEFAULT NULL;\n";
     }
     if ($field['DATA_TYPE'] == 'date') {
-        $output .= "UPDATE ".$database['database'].".".$field['TABLE_NAME'].
+        $updates .= "UPDATE ".$database['database'].".".$field['TABLE_NAME'].
             " SET ".$field['COLUMN_NAME']."=NULL".
             " WHERE CAST(".$field['COLUMN_NAME']." AS CHAR(20))='0000-00-00';\n";
     } else if ($field['DATA_TYPE'] == 'datetime' || $field['DATA_TYPE'] == 'timestamp') {
-        $output .= "UPDATE ".$database['database'].".".$field['TABLE_NAME'].
+        $updates .= "UPDATE ".$database['database'].".".$field['TABLE_NAME'].
             " SET ".$field['COLUMN_NAME']."=NULL".
             " WHERE CAST(".$field['COLUMN_NAME']." AS CHAR(20))='0000-00-00 00:00:00';\n";
     }
 }
+
+$output .= $alters . $updates;
+
 $output .="SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS; \n";
+// END building script
+
 $fp=fopen($filename, "w");
 fwrite($fp, $output);
 fclose($fp);
