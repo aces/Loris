@@ -28,8 +28,6 @@
  */
 require_once __DIR__ . "/../vendor/autoload.php";
 require_once "generic_includes.php";
-require_once "Candidate.class.inc";
-require_once "Utility.class.inc";
 
 /**
  * This script deletes the specified candidate information.
@@ -113,7 +111,7 @@ if ($DB->pselectOne(
 }
 
 if ($commentID != null) {
-    if ($DB->pselectOne('SELECT COUNT(*) FROM flag f JOIN session s WHERE f.CommentID=:comid AND s.CandID=:cid',
+    if ($DB->pselectOne('SELECT COUNT(*) FROM flag f JOIN session s ON f.SessionID=s.ID WHERE f.CommentID=:comid AND s.CandID=:cid',
         array('comid' => $commentID, 'cid' => $DCCID)) == 0) {
         echo "CommentID $commentID for candidate $DCCID does not exist in the database\n";
         die();
@@ -133,13 +131,13 @@ if ($sessionID != null) {
  */
 switch ($action) {
     case 'delete_candidate':
-        deleteCandidate($DCCID, $PSCID, $confirm);
+        deleteCandidate($DCCID, $PSCID, $confirm, $DB);
         break;
     case 'delete_timepoint':
-        deleteTimepoint($sessionID, $confirm);
+        deleteTimepoint($sessionID, $confirm, $DB);
         break;
     case 'reset_instrument':
-        resetInstrument($commentID, $confirm);
+        resetInstrument($commentID, $confirm, $DB);
         break;
 }
 
@@ -164,7 +162,7 @@ function showHelp() {
     die();
 }
 
-function deleteCandidate($DCCID, $PSCID, $confirm) {
+function deleteCandidate($DCCID, $PSCID, $confirm, $DB) {
 
     //Find candidate...
     $candidate = new Candidate();
@@ -177,12 +175,10 @@ function deleteCandidate($DCCID, $PSCID, $confirm) {
         die();
     }
 
-    $DB =& Database::singleton();
-
     //find the test_names and commentIDs
     $query = "SELECT ID, Test_name, CommentID FROM flag WHERE SessionID in (" .
         implode(" , ", $sessions) . ")";
-    $instruments = $DB->pselect($query, array());
+    $instruments = $this->DB->pselect($query, array());
 
     // Print sessions to delete
     $result = $DB->pselect('SELECT * FROM session WHERE CandID=:cid', array('cid' => $DCCID));
@@ -241,7 +237,7 @@ function deleteCandidate($DCCID, $PSCID, $confirm) {
 
     // IF CONFIRMED, DELETE CANDIDATE
     if ($confirm) {
-        echo "Dropping all DB entries for candidate DCCID: " . $DCCID . "And PSCID:" .
+        echo "Dropping all DB entries for candidate DCCID: " . $DCCID . "And PSCID: " .
             $PSCID . "\n";
 
         //delete the sessions
@@ -301,8 +297,7 @@ function deleteCandidate($DCCID, $PSCID, $confirm) {
     }
 }
 
-function deleteTimepoint($sessionID, $confirm) {
-    $DB =& Database::singleton();
+function deleteTimepoint($sessionID, $confirm, $DB) {
 
     $instruments = $DB->pselect('SELECT Test_name, CommentID FROM flag WHERE SessionID=:sid', array('sid' => $sessionID));
 
@@ -388,9 +383,7 @@ function deleteTimepoint($sessionID, $confirm) {
     }
 }
 
-function resetInstrument($commentID, $confirm) {
-
-    $DB =& Database::singleton();
+function resetInstrument($commentID, $confirm, $DB) {
 
     $testName = $DB->pselectOne(
         'SELECT Test_name FROM flag WHERE CommentID=:cid',
@@ -403,7 +396,7 @@ function resetInstrument($commentID, $confirm) {
     );
 
     // Fields from the $testName table to NOT reset
-    $excluded = array('CommentID');
+    $excluded = array('CommentID', 'Data_entry_completion_status', 'Testdate');
 
     $set = array();
     $where = array('CommentID' => $commentID);
@@ -416,6 +409,9 @@ function resetInstrument($commentID, $confirm) {
             echo $column['COLUMN_NAME'] . "\n";
         }
     }
+
+    // Reset data entry completion status
+    $set = array_merge($set, array('Data_entry_completion_status' => 'Incomplete'));
 
     $setFlag = array(
         'Data_entry' => NULL,
