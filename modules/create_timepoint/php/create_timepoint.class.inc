@@ -50,19 +50,6 @@ class Create_Timepoint extends \NDB_Form
     }
 
     /**
-     * Returns the form-specific defaults
-     *
-     * @return array
-     */
-    function _getDefaults()
-    {
-        $candidate =& \Candidate::singleton($this->identifier);
-
-        $defaults['visitLabel'] = $candidate->getNextVisitLabel();
-        return $defaults;
-    }
-
-    /**
      * Processes the values and saves to database. Usually overridden
      * by form instance.
      *
@@ -155,9 +142,9 @@ class Create_Timepoint extends \NDB_Form
         foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
             if ($visitLabel['@']['subprojectID']==$this->subprojectID) {
                 if ($visitLabel['generation'] == 'user') {
-                    throw new \Exception(
+                    throw new \DeprecatedException(
                         "User generated Visit Labels are no ".
-                        "longer supported in loris."
+                        "longer supported in Loris."
                     );
                 } elseif ($visitLabel['generation'] == 'sequence') {
                     $labelOptions[''] = null;
@@ -209,13 +196,6 @@ class Create_Timepoint extends \NDB_Form
         if (empty($values['visitLabel'])) {
             $errors['visitLabel']
                 = 'A visit label is required for creating a timepoint.';
-        }
-        // make sure the user entered a valid visit label
-        if ($visitLabelSettings['generation'] == 'user') {
-            if (!preg_match($visitLabelSettings['regex'], $values['visitLabel'])) {
-                $errors['visitLabel'] = 'This visit label does not match the ' .
-                    'required structure. See your project manual for more details.';
-            }
         }
 
         $candidate =& \Candidate::singleton($this->identifier);
