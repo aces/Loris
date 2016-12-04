@@ -215,7 +215,7 @@ function getFamilyInfoFields()
     }
 
     $familyMembers = $db->pselect(
-        "SELECT CandID as FamilyCandID, Relationship_type 
+        "SELECT f1.CandID as FamilyCandID, Relationship_type 
         FROM family f1 JOIN family f2 ON f1.FamilyID=f2.FamilyID
         WHERE f2.CandID = :candid AND f1.CandID <> :candid2 
           ORDER BY CandID",
