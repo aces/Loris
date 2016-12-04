@@ -28,6 +28,8 @@ $db->_trackChanges = false;
 
 $filename = __DIR__ . "/../project/tables_sql/update_zero_fields_statements.sql";
 $output = "";
+
+$output .="SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS; \n";
 $output .="SET FOREIGN_KEY_CHECKS=0; \n";
 
 echo "\n#################################################################\n\n".
@@ -66,7 +68,7 @@ foreach ($field_names as $key=>$field)
             " WHERE CAST(".$field['COLUMN_NAME']." AS CHAR(20))='0000-00-00 00:00:00';\n";
     }
 }
-$output .="SET FOREIGN_KEY_CHECKS=1; \n";
+$output .="SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS; \n";
 $fp=fopen($filename, "w");
 fwrite($fp, $output);
 fclose($fp);
