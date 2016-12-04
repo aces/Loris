@@ -7,7 +7,7 @@
  *
  * @category Main
  * @package  Loris
- * @author   Various <example@example.com>
+ * @author   Rida Abou-Haidar <rida.loris@gmail.com>
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
