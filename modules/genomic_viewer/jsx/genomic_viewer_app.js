@@ -154,7 +154,7 @@ class Track extends React.Component {
 }
 
 Track.propTypes = {
-  title:  React.PropTypes.string.isRequired,
+  title:  React.PropTypes.node.isRequired,
   children: React.PropTypes.arrayOf(React.PropTypes.element)
 };
 
@@ -197,19 +197,65 @@ class Gene extends React.Component {
 class GeneTrack extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      genes: [<Gene />, <Gene />]
+    };
+
+    this.fetchData = this.fetchData.bind(this);
+  }
+
+  componentDidMount() {
+    this.fetchData(this.props.genomicRange);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.hasOwnProperty('genomicRange') && nextProps.genomicRange !== this.props.genomicRange) {
+      this.fetchData(nextProps.genomicRange);
+    }
+  }
+
+  fetchData(genomicRange) {
+    var pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
+    var table = 'refGene';
+
+    if (pattern.test(genomicRange)) {
+      $.ajax(this.props.dataURL + '?genomic_range=' + genomicRange + '&table=' + table, {
+        method: "GET",
+        dataType: 'json',
+        success: function(data) {
+          this.setState({
+            title: table,
+            genes: data,
+          });
+        }.bind(this),
+        error: function(error) {
+          console.error(error);
+        }
+      });
+    }
   }
 
   render() {
-    var genes = [<Gene />, <Gene />]
+    var genes = this.state.genes.map(function (g) {
+      return <Gene genomicRange={genomicRange} data={g}/>
+    });
+
     return (
-      <Track
-        title="refGenes">
-      {genes}
+      <Track title="Genes">
+        {genes}
       </Track>
     );
   }
 }
+
+GeneTrack.propTypes = {
+  dataURL: React.PropTypes.string,
+  genomicRange: React.PropTypes.string
+};
+
+GeneTrack.defaultProps = {
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
+};
 
 class CPGTrack extends React.Component {
   constructor(props) {
@@ -221,8 +267,8 @@ class CPGTrack extends React.Component {
     
     return (
       <Track
-        title="refGenes">
-      {genes}
+        title="Methylation 450k">
+      {''}
       </Track>
     );
   }
@@ -300,7 +346,7 @@ class GenomicViewerApp extends React.Component {
               <ControlPanel ref={controlPanel} genomicRange={genomicRange} setGenomicRange={this.setGenomicRange} />
             </td>
           </tr>
-          <GeneTrack />
+          <GeneTrack genomicRange={genomicRange}/>
           <CPGTrack />
           <SNPTrack />
           <ChIPPeakTrack />

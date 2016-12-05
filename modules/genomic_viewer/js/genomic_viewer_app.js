@@ -216,7 +216,7 @@ var Track = function (_React$Component2) {
 }(React.Component);
 
 Track.propTypes = {
-  title: React.PropTypes.string.isRequired,
+  title: React.PropTypes.node.isRequired,
   children: React.PropTypes.arrayOf(React.PropTypes.element)
 };
 
@@ -275,18 +275,57 @@ var GeneTrack = function (_React$Component4) {
 
     var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(GeneTrack).call(this, props));
 
-    _this4.state = {};
+    _this4.state = {
+      genes: [React.createElement(Gene, null), React.createElement(Gene, null)]
+    };
+
+    _this4.fetchData = _this4.fetchData.bind(_this4);
     return _this4;
   }
 
   _createClass(GeneTrack, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.fetchData(this.props.genomicRange);
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      if (nextProps.hasOwnProperty('genomicRange') && nextProps.genomicRange !== this.props.genomicRange) {
+        this.fetchData(nextProps.genomicRange);
+      }
+    }
+  }, {
+    key: 'fetchData',
+    value: function fetchData(genomicRange) {
+      var pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
+      var table = 'refGene';
+
+      if (pattern.test(genomicRange)) {
+        $.ajax(this.props.dataURL + '?genomic_range=' + genomicRange + '&table=' + table, {
+          method: "GET",
+          dataType: 'json',
+          success: function (data) {
+            this.setState({
+              title: table,
+              genes: data
+            });
+          }.bind(this),
+          error: function error(_error) {
+            console.error(_error);
+          }
+        });
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var genes = [React.createElement(Gene, null), React.createElement(Gene, null)];
+      var genes = this.state.genes.map(function (g) {
+        return React.createElement(Gene, null);
+      });
       return React.createElement(
         Track,
-        {
-          title: 'refGenes' },
+        { title: 'Genes' },
         genes
       );
     }
@@ -295,19 +334,37 @@ var GeneTrack = function (_React$Component4) {
   return GeneTrack;
 }(React.Component);
 
+GeneTrack.propTypes = {
+  dataURL: React.PropTypes.string,
+  genomicRange: React.PropTypes.string
+};
+
+GeneTrack.defaultProps = {
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
+};
+
 var CPGTrack = function (_React$Component5) {
   _inherits(CPGTrack, _React$Component5);
 
-  function CPGTrack() {
+  function CPGTrack(props) {
     _classCallCheck(this, CPGTrack);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(CPGTrack).apply(this, arguments));
+    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(CPGTrack).call(this, props));
+
+    _this5.state = {};
+    return _this5;
   }
 
   _createClass(CPGTrack, [{
     key: 'render',
     value: function render() {
-      return React.createElement('div', null);
+
+      return React.createElement(
+        Track,
+        {
+          title: 'Methylation 450k' },
+        ''
+      );
     }
   }]);
 
@@ -418,11 +475,10 @@ var GenomicViewerApp = function (_React$Component8) {
 
       // Defining element names here ensures that `name` and `ref`
       // properties of the element are always kept in sync
-      var patientID = "patientID";
-
+      var controlPanel = "controlPanel";
       var genomicRange = this.state.genomicRange;
 
-      // Create the tracks according to state
+      // Create control panel and the tracks according to state
       return React.createElement(
         'table',
         { className: 'col-md-12' },
@@ -441,10 +497,10 @@ var GenomicViewerApp = function (_React$Component8) {
             React.createElement(
               'td',
               { colSpan: '2' },
-              React.createElement(ControlPanel, { genomicRange: genomicRange, setGenomicRange: this.setGenomicRange })
+              React.createElement(ControlPanel, { ref: controlPanel, genomicRange: genomicRange, setGenomicRange: this.setGenomicRange })
             )
           ),
-          React.createElement(GeneTrack, null),
+          React.createElement(GeneTrack, { genomicRange: genomicRange }),
           React.createElement(CPGTrack, null),
           React.createElement(SNPTrack, null),
           React.createElement(ChIPPeakTrack, null)
