@@ -32,6 +32,7 @@ $output= "";
 $alters="";
 $updates="";
 
+// Begin Script
 echo "\n#################################################################\n\n".
     "This Script will generate an UPDATE statement for every date field ".
     "currently in the database. \nThe output file is ".
@@ -42,7 +43,7 @@ echo "\n#################################################################\n\n".
 $database_name= $database['database'];
 
 $field_names = $db->pselect("
-                      SELECT TABLE_NAME,COLUMN_NAME,COLUMN_DEFAULT,DATA_TYPE 
+                      SELECT TABLE_NAME,COLUMN_NAME,COLUMN_DEFAULT,DATA_TYPE,IS_NULLABLE 
                       FROM INFORMATION_SCHEMA.COLUMNS 
                       WHERE DATA_TYPE IN ('date','timestamp','datetime') 
                           AND TABLE_SCHEMA=:dbn",
