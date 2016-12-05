@@ -13,11 +13,6 @@
  * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482";
  * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482 confirm";
  *
- * Nullify instrument fields for a given instrument
- * echo "Usage 3: php delete_candidate_info.php reset_instrument DCCID PSCID CommentID [confirm]";
- * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121";
- * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121 confirm";
- *
  * PHP Version 5
  *
  * @category Main
@@ -41,11 +36,6 @@ require_once "generic_includes.php";
  * echo "Usage 2: php delete_candidate_info.php delete_timepoint DCCID PSCID SessionID [confirm]";
  * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482";
  * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482 confirm";
- *
- * Nullify instrument fields for a given instrument
- * echo "Usage 3: php delete_candidate_info.php reset_instrument DCCID PSCID CommentID [confirm]";
- * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121";
- * echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121 confirm";
  *
  * @category Main
  * @package  Loris
@@ -80,15 +70,6 @@ switch ($action) {
             $sessionID = $argv[4];
         } else {
             echo "Missing SessionID parameter\n\n";
-            showHelp();
-        }
-        if (!empty($argv[5]) && $argv[5] == 'confirm') $confirm = true;
-        break;
-    case 'reset_instrument':
-        if (!empty($argv[4])) {
-            $commentID = $argv[4];
-        } else {
-            echo "Missing CommentID parameter\n\n";
             showHelp();
         }
         if (!empty($argv[5]) && $argv[5] == 'confirm') $confirm = true;
@@ -136,9 +117,6 @@ switch ($action) {
     case 'delete_timepoint':
         deleteTimepoint($sessionID, $confirm, $DB);
         break;
-    case 'reset_instrument':
-        resetInstrument($commentID, $confirm, $DB);
-        break;
 }
 
 /*
@@ -154,10 +132,6 @@ function showHelp() {
     echo "Usage 2: php delete_candidate_info.php delete_timepoint DCCID PSCID SessionID [confirm]\n";
     echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482\n";
     echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482 confirm\n\n";
-
-    echo "Usage 3: php delete_candidate_info.php reset_instrument DCCID PSCID CommentID [confirm]\n";
-    echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121\n";
-    echo "Example: php delete_candidate_info.php reset_instrument 965327 dcc0007 965327dcc0007482121239212121 confirm\n\n";
 
     die();
 }
@@ -380,58 +354,6 @@ function deleteTimepoint($sessionID, $confirm, $DB) {
         foreach ($feedbackIDs as $id) {
             $DB->delete('feedback_bvl_entry', array('FeedbackID' => $id));
         }
-    }
-}
-
-function resetInstrument($commentID, $confirm, $DB) {
-
-    $testName = $DB->pselectOne(
-        'SELECT Test_name FROM flag WHERE CommentID=:cid',
-        array('cid' => $commentID)
-    );
-
-    $columns = $DB->pselect(
-        'SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_NAME`=:test',
-        array('test' => $testName)
-    );
-
-    // Fields from the $testName table to NOT reset
-    $excluded = array('CommentID', 'Data_entry_completion_status', 'Testdate');
-
-    $set = array();
-    $where = array('CommentID' => $commentID);
-
-    echo "Fields in $testName to set to null: \n";
-    foreach ($columns as $column) {
-        if (!in_array($column['COLUMN_NAME'], $excluded)) {
-            $current = array($column['COLUMN_NAME'] => NULL);
-            $set = array_merge($set, $current);
-            echo $column['COLUMN_NAME'] . "\n";
-        }
-    }
-
-    // Reset data entry completion status
-    $set = array_merge($set, array('Data_entry_completion_status' => 'Incomplete'));
-
-    $setFlag = array(
-        'Data_entry' => NULL,
-        'Administration' => NULL,
-        'Validity' => NULL,
-        'Exclusion' => NULL,
-        'Flag_status' => NULL
-    );
-
-    echo "\nFields in flag to set to null: \n";
-    foreach ($setFlag as $key => $value) {
-        echo $key . "\n";
-    }
-
-    // IF CONFIRMED, SET SELECT TEST AND FLAG VALUES TO NULL
-    if ($confirm) {
-        // Reset table values to null
-        $DB->update($testName, $set, $where);
-        // Reset flag values to null
-        $DB->update('flag', $setFlag, $where);
     }
 }
 
