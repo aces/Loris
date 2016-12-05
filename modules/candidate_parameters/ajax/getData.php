@@ -191,7 +191,7 @@ function getFamilyInfoFields()
     $siblingsList = $db->pselect(
         "SELECT f1.CandID 
         FROM family f1 JOIN family f2
-        ON f1.FamilyID=f2.FamilyID WHERE f2.CandId=:candid GROUP BY f1.CandID;",
+        ON f1.FamilyID=f2.FamilyID WHERE f2.CandId=:candid GROUP BY f1.CandID",
         array('candid' => $candID)
     );
 
