@@ -1,8 +1,8 @@
 'use strict';
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+var _slicedToArray = (function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; })();
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -14,13 +14,14 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * The control panel is used to input the genomic location to view.
  * It also provide ways to navigate namely zomming and scrolling.
  */
-var ControlPanel = function (_React$Component) {
+
+var ControlPanel = (function (_React$Component) {
   _inherits(ControlPanel, _React$Component);
 
   function ControlPanel(props) {
     _classCallCheck(this, ControlPanel);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ControlPanel).call(this, props));
+    var _this = _possibleConstructorReturn(this, (ControlPanel.__proto__ || Object.getPrototypeOf(ControlPanel)).call(this, props));
 
     _this.state = {
       genomicRange: props.genomicRange
@@ -33,7 +34,6 @@ var ControlPanel = function (_React$Component) {
   }
 
   // Update the state only if a new genomicRange is received.
-
 
   _createClass(ControlPanel, [{
     key: 'componentWillReceiveProps',
@@ -78,7 +78,6 @@ var ControlPanel = function (_React$Component) {
       var chr = _state$genomicRange$m2[2];
       var from = _state$genomicRange$m2[3];
       var to = _state$genomicRange$m2[4];
-
 
       from = parseInt(from);
       to = parseInt(to);
@@ -169,7 +168,7 @@ var ControlPanel = function (_React$Component) {
   }]);
 
   return ControlPanel;
-}(React.Component);
+})(React.Component);
 
 ControlPanel.propTypes = {
   genomicRange: React.PropTypes.string,
@@ -180,13 +179,13 @@ ControlPanel.defaultProps = {
   genomicRange: ""
 };
 
-var Track = function (_React$Component2) {
+var Track = (function (_React$Component2) {
   _inherits(Track, _React$Component2);
 
   function Track(props) {
     _classCallCheck(this, Track);
 
-    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Track).call(this, props));
+    var _this2 = _possibleConstructorReturn(this, (Track.__proto__ || Object.getPrototypeOf(Track)).call(this, props));
 
     _this2.state = {};
     return _this2;
@@ -213,7 +212,7 @@ var Track = function (_React$Component2) {
   }]);
 
   return Track;
-}(React.Component);
+})(React.Component);
 
 Track.propTypes = {
   title: React.PropTypes.node.isRequired,
@@ -224,13 +223,13 @@ Track.defaultProps = {
   children: []
 };
 
-var Gene = function (_React$Component3) {
+var Gene = (function (_React$Component3) {
   _inherits(Gene, _React$Component3);
 
   function Gene(props) {
     _classCallCheck(this, Gene);
 
-    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Gene).call(this, props));
+    var _this3 = _possibleConstructorReturn(this, (Gene.__proto__ || Object.getPrototypeOf(Gene)).call(this, props));
 
     _this3.state = {};
 
@@ -241,9 +240,20 @@ var Gene = function (_React$Component3) {
   _createClass(Gene, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      var ctx = this.refs.thisCanvas.getDOMNode().getContext('2d');
-      ctx.rect(0, 0, 120, 17);
-      ctx.stroke();
+      this.draw(this.props.genomicRange);
+    }
+  }, {
+    key: 'draw',
+    value: function draw(genomicRange) {
+      var c = this.refs.thatCanvas;
+      if (c) {
+        var width = this.refs.thatDiv.getDOMNode().clientWidth;
+        console.log(width);
+        c.getDOMNode().width = width;
+        var ctx = c.getDOMNode().getContext('2d');
+        ctx.rect(0, 0, 120, 17);
+        ctx.stroke();
+      }
     }
   }, {
     key: 'showGeneDetails',
@@ -253,30 +263,47 @@ var Gene = function (_React$Component3) {
   }, {
     key: 'render',
     value: function render() {
-      return React.createElement('canvas', {
-        ref: 'thisCanvas',
-        width: '800',
-        height: '20',
-        onClick: this.showGeneDetails,
-        'data-toggle': 'tooltip',
-        title: 'Gene1'
-      });
+      return React.createElement(
+        'div',
+        { ref: 'thatDiv', style: { width: '100%' } },
+        React.createElement('canvas', {
+          ref: 'thatCanvas',
+          height: '20',
+          onClick: this.showGeneDetails,
+          'data-toggle': 'tooltip',
+          title: 'Gene1'
+        })
+      );
     }
   }]);
 
   return Gene;
-}(React.Component);
+})(React.Component);
 
-var GeneTrack = function (_React$Component4) {
+Gene.propTypes = {
+  genomicRange: React.PropTypes.string.isRequired,
+  accession_number: React.PropTypes.string.isRequired,
+  chrom: React.PropTypes.string.isRequired,
+  strand: React.PropTypes.string,
+  txStart: React.PropTypes.number.isRequired,
+  txEnd: React.PropTypes.number.isRequired,
+  cdsStart: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  cdsEnd: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  exonStarts: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  exonEnds: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  name: React.PropTypes.string
+};
+
+var GeneTrack = (function (_React$Component4) {
   _inherits(GeneTrack, _React$Component4);
 
   function GeneTrack(props) {
     _classCallCheck(this, GeneTrack);
 
-    var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(GeneTrack).call(this, props));
+    var _this4 = _possibleConstructorReturn(this, (GeneTrack.__proto__ || Object.getPrototypeOf(GeneTrack)).call(this, props));
 
     _this4.state = {
-      genes: [React.createElement(Gene, null), React.createElement(Gene, null)]
+      genes: []
     };
 
     _this4.fetchData = _this4.fetchData.bind(_this4);
@@ -305,12 +332,12 @@ var GeneTrack = function (_React$Component4) {
         $.ajax(this.props.dataURL + '?genomic_range=' + genomicRange + '&table=' + table, {
           method: "GET",
           dataType: 'json',
-          success: function (data) {
+          success: (function (data) {
             this.setState({
               title: table,
               genes: data
             });
-          }.bind(this),
+          }).bind(this),
           error: function error(_error) {
             console.error(_error);
           }
@@ -320,9 +347,36 @@ var GeneTrack = function (_React$Component4) {
   }, {
     key: 'render',
     value: function render() {
+      var genomicRange = this.props.genomicRange;
+
+      // Thightly coupled with the UCSC refGene table columns.
       var genes = this.state.genes.map(function (g) {
-        return React.createElement(Gene, null);
+        var accession_number = g.name;
+        var chrom = g.chrom;
+        var strand = g.strand;
+        var txStart = g.txStart;
+        var txEnd = g.txEnd;
+        var cdsStart = g.cdsStart;
+        var cdsEnd = g.cdsEnd;
+        var exonStarts = g.exonStarts;
+        var exonEnds = g.exonEnds;
+        var name = g.name2;
+
+        return React.createElement(Gene, {
+          genomicRange: genomicRange,
+          accession_number: accession_number,
+          chrom: chrom,
+          strand: strand,
+          txStart: txStart,
+          txEnd: txEnd,
+          cdsStart: cdsStart,
+          cdsEnd: cdsEnd,
+          exonStarts: exonStarts,
+          exonEnds: exonEnds,
+          name: name
+        });
       });
+
       return React.createElement(
         Track,
         { title: 'Genes' },
@@ -332,7 +386,7 @@ var GeneTrack = function (_React$Component4) {
   }]);
 
   return GeneTrack;
-}(React.Component);
+})(React.Component);
 
 GeneTrack.propTypes = {
   dataURL: React.PropTypes.string,
@@ -340,16 +394,16 @@ GeneTrack.propTypes = {
 };
 
 GeneTrack.defaultProps = {
-  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes_static.php"
 };
 
-var CPGTrack = function (_React$Component5) {
+var CPGTrack = (function (_React$Component5) {
   _inherits(CPGTrack, _React$Component5);
 
   function CPGTrack(props) {
     _classCallCheck(this, CPGTrack);
 
-    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(CPGTrack).call(this, props));
+    var _this5 = _possibleConstructorReturn(this, (CPGTrack.__proto__ || Object.getPrototypeOf(CPGTrack)).call(this, props));
 
     _this5.state = {};
     return _this5;
@@ -369,15 +423,15 @@ var CPGTrack = function (_React$Component5) {
   }]);
 
   return CPGTrack;
-}(React.Component);
+})(React.Component);
 
-var SNPTrack = function (_React$Component6) {
+var SNPTrack = (function (_React$Component6) {
   _inherits(SNPTrack, _React$Component6);
 
   function SNPTrack() {
     _classCallCheck(this, SNPTrack);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(SNPTrack).apply(this, arguments));
+    return _possibleConstructorReturn(this, (SNPTrack.__proto__ || Object.getPrototypeOf(SNPTrack)).apply(this, arguments));
   }
 
   _createClass(SNPTrack, [{
@@ -388,15 +442,15 @@ var SNPTrack = function (_React$Component6) {
   }]);
 
   return SNPTrack;
-}(React.Component);
+})(React.Component);
 
-var ChIPPeakTrack = function (_React$Component7) {
+var ChIPPeakTrack = (function (_React$Component7) {
   _inherits(ChIPPeakTrack, _React$Component7);
 
   function ChIPPeakTrack() {
     _classCallCheck(this, ChIPPeakTrack);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(ChIPPeakTrack).apply(this, arguments));
+    return _possibleConstructorReturn(this, (ChIPPeakTrack.__proto__ || Object.getPrototypeOf(ChIPPeakTrack)).apply(this, arguments));
   }
 
   _createClass(ChIPPeakTrack, [{
@@ -407,7 +461,7 @@ var ChIPPeakTrack = function (_React$Component7) {
   }]);
 
   return ChIPPeakTrack;
-}(React.Component);
+})(React.Component);
 
 /* exported GenomicViewerApp */
 
@@ -421,17 +475,16 @@ var ChIPPeakTrack = function (_React$Component7) {
  *
  * */
 
-
-var GenomicViewerApp = function (_React$Component8) {
+var GenomicViewerApp = (function (_React$Component8) {
   _inherits(GenomicViewerApp, _React$Component8);
 
   function GenomicViewerApp(props) {
     _classCallCheck(this, GenomicViewerApp);
 
-    var _this8 = _possibleConstructorReturn(this, Object.getPrototypeOf(GenomicViewerApp).call(this, props));
+    var _this8 = _possibleConstructorReturn(this, (GenomicViewerApp.__proto__ || Object.getPrototypeOf(GenomicViewerApp)).call(this, props));
 
     _this8.state = {
-      // Create a default genomic range to show 
+      // Create a default genomic range to show
       genomicRange: null
     };
 
@@ -443,7 +496,6 @@ var GenomicViewerApp = function (_React$Component8) {
   /**
    * Update the state with the browser info.
    */
-
 
   _createClass(GenomicViewerApp, [{
     key: 'componentDidMount',
@@ -510,12 +562,11 @@ var GenomicViewerApp = function (_React$Component8) {
   }]);
 
   return GenomicViewerApp;
-}(React.Component);
+})(React.Component);
 
 /**
  * Render dicom_page on page load
  */
-
 
 window.onload = function () {
   var viewer = React.createElement(GenomicViewerApp, null);

@@ -171,9 +171,22 @@ class Gene extends React.Component {
   }
 
   componentDidMount() {
-    var ctx = this.refs.thisCanvas.getDOMNode().getContext('2d');
-    ctx.rect(0,0,120,17);
-    ctx.stroke();
+    this.draw(this.props.genomicRange);
+  }
+
+  componentWillReceiveProps(nextProps) {
+
+  }
+
+  draw(genomicRange) {
+    const c = this.refs.thatCanvas;
+    if(c) {
+      var width = this.refs.thatDiv.getDOMNode().clientWidth;
+      c.getDOMNode().width = width;
+      var ctx = c.getDOMNode().getContext('2d');
+      ctx.rect(0,0,120,17);
+      ctx.stroke();
+    }
   }
 
   showGeneDetails() {
@@ -182,23 +195,38 @@ class Gene extends React.Component {
 
   render() {
     return (
-      <canvas
-        ref="thisCanvas"
-        width="800"
-        height="20"
-        onClick={this.showGeneDetails}
-        data-toggle="tooltip"
-        title="Gene1"
-      />
+      <div ref="thatDiv" style={{width: '100%'}}>
+        <canvas
+          ref="thatCanvas"
+          height="20"
+          onClick={this.showGeneDetails}
+          data-toggle="tooltip"
+          title="Gene1"
+        />
+      </div>
     );
   }
+}
+
+Gene.propTypes = {
+  genomicRange: React.PropTypes.string.isRequired,
+  accession_number: React.PropTypes.string.isRequired,
+  chrom: React.PropTypes.string.isRequired,
+  strand: React.PropTypes.string,
+  txStart: React.PropTypes.number.isRequired,
+  txEnd: React.PropTypes.number.isRequired,
+  cdsStart: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  cdsEnd: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  exonStarts: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  exonEnds: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  name: React.PropTypes.string
 }
 
 class GeneTrack extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      genes: [<Gene />, <Gene />]
+      genes: []
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -236,8 +264,36 @@ class GeneTrack extends React.Component {
   }
 
   render() {
+    var genomicRange = this.props.genomicRange;
+
+    // Thightly coupled with the UCSC refGene table columns.
     var genes = this.state.genes.map(function (g) {
-      return <Gene genomicRange={genomicRange} data={g}/>
+       const accession_number = g.name;
+       const chrom = g.chrom;
+       const strand = g.strand;
+       const txStart = g.txStart;
+       const txEnd = g.txEnd;
+       const cdsStart = g.cdsStart;
+       const cdsEnd = g.cdsEnd;
+       const exonStarts = g.exonStarts;
+       const exonEnds = g.exonEnds;
+       const name = g.name2;
+
+      return (
+        <Gene 
+          genomicRange={genomicRange}
+          accession_number={accession_number}
+          chrom={chrom}
+          strand={strand}
+          txStart={txStart}
+          txEnd={txEnd}
+          cdsStart={cdsStart}
+          cdsEnd={cdsEnd}
+          exonStarts={exonStarts}
+          exonEnds={exonEnds}
+          name={name}
+        />
+      );
     });
 
     return (
@@ -254,7 +310,7 @@ GeneTrack.propTypes = {
 };
 
 GeneTrack.defaultProps = {
-  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes_static.php"
 };
 
 class CPGTrack extends React.Component {
