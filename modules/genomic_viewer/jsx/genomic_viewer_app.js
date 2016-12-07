@@ -175,14 +175,21 @@ class Gene extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-
+    if (nextProps.hasOwnProperty('genomicRange')) {
+      this.draw(nextProps.genomicRange);
+    }
   }
 
+  /*
+   * Adjust the canvas width the draw the gene according to the displayed
+   * genomic range. 
+   */
   draw(genomicRange) {
     const c = this.refs.thatCanvas;
     if(c) {
       var width = this.refs.thatDiv.getDOMNode().clientWidth;
       c.getDOMNode().width = width;
+
       var ctx = c.getDOMNode().getContext('2d');
       ctx.rect(0,0,120,17);
       ctx.stroke();
