@@ -175,6 +175,9 @@ ViewDataTabPane = React.createClass({
         parentEl.appendChild(el2);
         return element;
     },
+    downloadCSV: function () {
+      $('.downloadCSV').click();
+    },
     downloadData: function() {
         // Download the downloadable fields into a ZIP folder
         // Makes use of a web worker to format and download the data
@@ -271,6 +274,7 @@ ViewDataTabPane = React.createClass({
             <div className="row">
                 <div className="commands col-xs-12 form-group">
                     <button className="btn btn-primary" onClick={this.runQuery}>Run Query</button>
+                    <button className="btn btn-primary" onClick={this.downloadCSV}>Download Data as CSV</button>
                     <button className="btn btn-primary" onClick={this.downloadData}>Download Data as ZIP</button>
                 </div>
                 <div id="progress" className="col-xs-12"></div>
@@ -303,7 +307,7 @@ ViewDataTabPane = React.createClass({
 
         }
         return <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
-                    <h2>Query Criteria</h2>{criteria} {buttons} If no imaging files were selected <i>or</i> to download as CSV, scroll down to click <i>Download as CSV</i> 
+                    <h2>Query Criteria</h2>{criteria} {buttons}
                     <div className='form-group form-horizontal row'>
                         <label for="selected-input" className="col-sm-1 control-label">Data</label>
                         <div className="col-sm-4">
