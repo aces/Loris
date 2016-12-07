@@ -303,7 +303,7 @@ ViewDataTabPane = React.createClass({
 
         }
         return <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
-                    <h2>Query Criteria</h2>{criteria} {buttons}
+                    <h2>Query Criteria</h2>{criteria} {buttons} If no imaging files were selected <i>or</i> to download as CSV, scroll down to click <i>Download as CSV</i> 
                     <div className='form-group form-horizontal row'>
                         <label for="selected-input" className="col-sm-1 control-label">Data</label>
                         <div className="col-sm-4">
