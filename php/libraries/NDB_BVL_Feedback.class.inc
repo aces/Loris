@@ -1084,9 +1084,13 @@ class NDB_BVL_Feedback
 
         $user =& User::singleton();
 
-        $site =& Site::singleton($user->getData('CenterID'));
-
-        if ($site->isStudySite()) {
+        $site_arr = $user->getData('SiteID');
+        foreach ($site_arr as $key=>$val) {
+                $site[$key] = & Site::singleton($val);
+                $isStudySite[$key] = $site[$key]->isStudySite();
+        }
+        $oneIsStudySite = in_array("1", $isStudySite);
+        if ($oneIsStudySite) {
             if ($user->hasPermission('bvl_feedback')) {
                 if (($test_name === "timepoint_list")
                     || ($test_name === "instrument_list")

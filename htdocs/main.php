@@ -81,12 +81,16 @@ $tpl_data['study_title'] = $config->getSetting('title');
 // draw the user information table
 try {
     $user =& User::singleton();
+    $site_arr = $user->getData('SiteID');
+    foreach ($site_arr as $key=>$val) {
+        $site[$key] = & Site::singleton($val);
+        $isStudySite[$key] = $site[$key]->isStudySite();
+    }
+    $oneIsStudySite = in_array("1", $isStudySite);
     $tpl_data['user'] = $user->getData();
     $tpl_data['user']['permissions']   = $user->getPermissions();
     $tpl_data['hasHelpEditPermission'] = $user->hasPermission('context_help');
-
-    $site =& Site::singleton($user->getData('CenterID'));
-    $tpl_data['user']['user_from_study_site'] = $site->isStudySite();
+    $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
 } catch(Exception $e) {
     $tpl_data['error_message'][] = "Error: " . $e->getMessage();
 }

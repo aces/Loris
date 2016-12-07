@@ -166,9 +166,17 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
         $user = User::singleton();
 
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
-            // restrict data to own site
             $this->query .= " AND candidate.CenterID=";
-            $this->query .= $DB->quote($user->getCenterID());
+            $site_arr = $user->getData('SiteID');
+            $last_key = end(array_keys($site_arr));
+            foreach ($site_arr as $key=>$val) {
+                if ($key == $last_key) {
+                    $this->query .= $DB->quote($val);
+                }
+                else {
+                    $this->query .= $DB->quote($val) . " OR candidate.CenterID=";
+                }
+            }
         }
 
         $this->order_by     = 'psc.Name, candidate.CandID DESC';
@@ -269,10 +277,12 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site = Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $list_of_sites
-                    = array($user->getData('CenterID') => $user->getData('Site'));
+            $site_arr = $user->getData('SiteID');
+            foreach ($site_arr as $key=>$val) {
+                $site[$key] = Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$key] = $site[$key]->getCenterName();
+                }
             }
         }
 

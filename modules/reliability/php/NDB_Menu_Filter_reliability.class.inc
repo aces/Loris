@@ -83,7 +83,17 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
-            $query .= " AND candidate.centerID = '" . $user->getData('CenterID') . "' ";
+            $query .= " AND candidate.CenterID=";
+            $site_arr = $user->getData('SiteID');
+            $last_key = end(array_keys($site_arr));
+            foreach ($site_arr as $key=>$val) {
+                if ($key == $last_key) {
+                    $query .= $DB->quote($val);
+                }
+                else {
+                    $query .= $DB->quote($val) . " OR candidate.CenterID=";
+                }
+            }
         }
         $config=&NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
@@ -145,12 +155,15 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                 }
                 $list_of_sites = $new_list;
             }
-        }else {
+        }else { // this else loop is never entered as _hasAccess would have returned false
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            //if ($site->isStudySite()) {
-                $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
-            //}
+            $site_arr = $user->getData('SiteID');
+            foreach ($site_arr as $key=>$val) {
+                $site[$key] = Site::singleton($val);
+            //    if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$key] = $site[$key]->getCenterName();
+            //    }
+            }
         }
 
         /// hack for Visit Labels... maybe get all the real visit labels from DB?

@@ -71,9 +71,13 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $siteList = [$user->getData('CenterID') => $user->getData('Site')];
+            $siteList ='';
+            $site_arr = $user->getData('SiteID');
+            foreach ($site_arr as $key=>$val) {
+                $site[$key] =& Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $siteList[$key] = $site[$key]->getCenterName();
+                }
             }
         }
 
