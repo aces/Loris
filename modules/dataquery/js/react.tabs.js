@@ -364,7 +364,7 @@ ViewDataTabPane = React.createClass({
                 ),
                 React.createElement(
                     "button",
-                    { className: "btn btn-primary", onClick: this.downloadData },
+                    { className: "btn btn-primary", onClick: this.downloadData, "data-toggle": "tooltip", title: "ZIP available only if imaging files selected" },
                     "Download Data as ZIP"
                 )
             ),
