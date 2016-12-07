@@ -351,9 +351,12 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         }
         else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $sites = array($user->getData('CenterID') => $user->getData('Site'));
+            $site_arr = $user->getData('SiteID');
+            foreach ($site_arr as $key=>$val) {
+                $site[$key] = Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$key] = $site[$key]->getCenterName();
+                }
             }
         } 
         $this->addSelect('Site', 'Site', $sites);

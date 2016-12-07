@@ -59,7 +59,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     return true;
                 }
 
-                return $editor->getData('CenterID') == $user->getData('CenterID');
+                return in_array($editor->getData('CenterID'), $user->getData('SiteID'));
             }
 
             return false;
