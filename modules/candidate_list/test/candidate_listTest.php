@@ -44,6 +44,15 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                                 'Not Started',
                                 'None',
                                );
+    private static $advancedFilter = array(
+                           'Scan Done',
+                           'Participant Status',
+                           'Gender',
+                           'Number of Visits',
+                           'Date of Birth',
+                           'Latest Visit Status',
+                           'Feedback',
+                               );
     /**
      * Backs up the useEDC config value and sets the value to a known
      * value (true) for testing.
@@ -70,7 +79,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
      * appears and the default filters are set to "Basic" mode.
      *
      * @return void
-     */
+     *
     function testCandidateListPageLoads()
     {
         $this->safeGet($this->url . "/candidate_list/");
@@ -81,13 +90,64 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         // Ensure that the default is basic mode (which means the button
         // says "Advanced")
         $this->assertEquals("Advanced", $basicButton->getAttribute("value"));
+    }*/
+    /**
+     * Verify that if data_entry and not access_all_profiles permissions,
+     * can only see subjects from own site.
+     * Verify that if data_entry and not access_all_profiles permissions,
+     * check that initial filter state is Subproject = All.
+     * @return void
+     *
+    function testCandidateListPageLoadsWithData_entry()
+    {
+        // load this page with access_all_profiles permisson
+        $this->setupPermissions(
+            array("data_entry")
+        );
+        $this->safeGet($this->url . "/candidate_list/?format=json");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("TST0001", $bodyText);
+        $this->safeGet($this->url . "/candidate_list/");
+        $Subproject = $this->webDriver->findElement(WebDriverBy::Name("SubprojectID"));
+        // Ensure that the default is basic mode (which means the button
+        // says "Advanced")
+        $this->assertContains("All", $Subproject->getText());
+        $this->resetPermissions();
+    }*/
+    /**
+     * Verify that if data_entry and not access_all_profiles permissions,
+     * can only see subjects from own site.
+     * Verify that if data_entry and not access_all_profiles permissions,
+     * check that initial filter state is Subproject = All.
+     * @return void
+     */
+    function testCandidateListAdvancedBasicButton()
+    {
+        $this->safeGet($this->url . "/candidate_list/");
+        $advancedButton = $this->webDriver->findElement(
+               WebDriverBy::Name("advanced"));
+        $advancedButton->click();
+        $basicButton = $this->webDriver->findElement(
+               WebDriverBy::Name("advanced"));
+
+        $this->assertContains("display: none;",
+               $basicButton->getAttribute("style"));
+
+        $test = $this->webDriver->findElement(
+               WebDriverBy::ID("advanced-options"))->getText();
+        foreach (self::$advancedFilter as $value){
+              $this->assertContains($value,$test);
+        }
+
     }
+
     /**
      * Tests that, after clicking the "Advanced" button, all of the
      * advanced filters appear on the page and are the correct element type.
      *
      * @return void
-     */
+     *
     function testCandidateListAdvancedOptionsAppear()
     {
         $this->safeGet($this->url . "/candidate_list/");
@@ -130,7 +190,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             WebDriverBy::Name("Feedback")
         );
         $this->assertEquals("select", $feedbackOptions->getTagName());
-    }
+    }*/
     /**
      * Performs various searches by PSCID (and PSCID only).
      *
