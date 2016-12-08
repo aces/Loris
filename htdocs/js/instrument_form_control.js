@@ -48,7 +48,7 @@ $(document).ready(function () {
     }
     var isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
     if (isMac) {
-        var msg = "Hold CMD to select multiple options";
+        var msg = "Hold CMD ⌘ to select multiple options";
     }
     else {
         var msg = "Hold CTRL to select multiple options";
