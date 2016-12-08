@@ -1,5 +1,5 @@
 /* exported DicomArchive */
-/* global formatColumn */
+/* global formatColumn, ReactDOM */
 
 /**
  * DICOM Archive Page.
