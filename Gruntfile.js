@@ -44,6 +44,7 @@ module.exports = function(grunt) {
         },
         files: {
           'modules/bvl_feedback/js/react.behavioural_feedback_panel.js': 'modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
+          'modules/candidate_list/js/index.js': 'modules/candidate_list/jsx/index.js',
           'modules/candidate_list/js/columnFormatter.js': 'modules/candidate_list/jsx/columnFormatter.js',
           'modules/data_team_helper/js/behavioural_qc_module.js': 'modules/data_team_helper/jsx/behavioural_qc_module.js',
           'modules/datadict/js/columnFormatter.js': 'modules/datadict/jsx/columnFormatter.js',

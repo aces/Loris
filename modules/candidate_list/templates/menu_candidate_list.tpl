@@ -1,11 +1,3 @@
-{literal}
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("#cand").DynamicTable({ "freezeColumn" : "pscid" });
-    });
-</script>
-{/literal}
-
 <div class="row">
 <div class="col-sm-9">
 <div class="panel panel-primary">
@@ -217,12 +209,3 @@
 {/if}
 </div>
 <div id="datatable" />
-<script>
-var table = RDynamicDataTable({
-    "DataURL" : "{$baseurl}/candidate_list/?format=json",
-    "getFormattedCell" : formatColumn,
-    "freezeColumn" : "PSCID"
-});
-
-React.render(table, document.getElementById("datatable"));
-</script>
