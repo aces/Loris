@@ -265,6 +265,43 @@ class NDB_Form_Dashboard extends NDB_Form
                     $user->getSiteName();
             }
         }
+
+        // Behavioural Feedback Items
+        if ($user->hasPermission('bvl_feedback')) {
+            $bvl_feedback = $DB->pselect(
+                "SELECT fbt.Name, fbe.Testdate, fbe.Comment, fbth.FieldName, 
+                fbth.CommentID, fbth.SessionID, fbth.CandID, fbth.Feedback_level
+                 FROM feedback_bvl_entry fbe 
+                 JOIN feedback_bvl_thread fbth USING (FeedbackID) 
+                 JOIN feedback_bvl_type fbt USING (Feedback_type)
+                 WHERE fbth.Status='opened' AND fbth.Active='Y'
+                 ORDER BY Testdate DESC LIMIT 4",
+                array()
+            );
+            for ($i=0; $i < sizeof($bvl_feedback); $i++) {
+                if ($bvl_feedback[$i]['Testdate'] > $last_login) {
+                    $bvl_feedback[$i]['new'] = 1;
+                } else {
+                    $bvl_feedback[$i]['new'] = 0;
+                }
+                if ($bvl_feedback[$i]['Feedback_level'] == 'profile') {
+                    $bvl_feedback[$i]['URL'] = '/' . $bvl_feedback[$i]['CandID'];
+                } else if ($bvl_feedback[$i]['Feedback_level'] == 'instrument') {
+                    $instrument = $DB->pselectOne(
+                        "SELECT Test_name from flag WHERE CommentID=:cid",
+                        array('cid' => $bvl_feedback[$i]['CommentID'])
+                    );
+                    if ($instrument !== null) {
+                        $bvl_feedback[$i]['URL'] = '/' . $instrument . '/?candID='
+                            . $bvl_feedback[$i]['CandID'] . '&sessionID='
+                            . $bvl_feedback[$i]['SessionID'] . '&commentID='
+                            . $bvl_feedback[$i]['CommentID'];
+                    }
+                }
+            }
+            $this->tpl_data['bvl_feedback_notifications']
+                = $bvl_feedback;
+        }
     }
 
     /**
