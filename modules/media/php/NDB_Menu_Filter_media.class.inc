@@ -200,9 +200,10 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         return array_merge(
             $deps,
             [
-             $baseURL . "/media/js/columnFormatter.js?hasWritePermission=" . $this->hasWritePermission,
+             $baseURL . "/media/js/columnFormatter.js?hasWritePermission="
+              . $this->hasWritePermission,
              $baseURL . "/media/js/uploadForm.js",
-             $baseURL . "/media/js/mediaIndex.js"
+             $baseURL . "/media/js/mediaIndex.js",
             ]
         );
     }
