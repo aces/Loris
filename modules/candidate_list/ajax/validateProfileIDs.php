@@ -13,8 +13,7 @@
  */
 
 $user =& User::singleton();
-//$site =& Site::singleton($user->getData('CenterID'));
-$site_arr = $user->getData('SiteID');
+$site_arr = $user->getData('CentersID');
 foreach ($site_arr as $key=>$val) {
     $site[$key] = & Site::singleton($val);
     $isStudySite[$key] = $site[$key]->isStudySite();

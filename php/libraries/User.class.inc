@@ -55,9 +55,6 @@ class User extends UserPermissions
         $DB =& Database::singleton();
 
         // get user data from database
-//        $query = "SELECT users.*, psc.Name AS Site FROM users
-//            LEFT JOIN psc ON (users.centerID=psc.CenterID)
-//            WHERE users.UserID = :UID";
         $query = "SELECT users.*,
             GROUP_CONCAT(psc.Name SEPARATOR '; ') AS Site,
             psc.Name 
@@ -102,8 +99,8 @@ class User extends UserPermissions
         }
         // store user data in object property
         $row['examiner'] =$examiner_info;
-        $row['SiteID']=$user_cid;
-        $obj->userInfo   = $row;
+        $row['CentersID']   =$user_cid;
+        $obj->userInfo   =$row;
         return $obj;
     }
 
@@ -225,8 +222,7 @@ class User extends UserPermissions
      */
     function getCenterID()
     {
-//        return $this->userInfo['CenterID'];
-        return $this->userInfo['SiteID'];
+        return $this->userInfo['CentersID'];
     }
 
 

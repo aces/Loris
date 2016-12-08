@@ -250,7 +250,6 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         if (!$user->hasPermission('access_all_profiles')) {
             // restrict data to own site
             $this->query .= " AND candidate.CenterID=";
-//            $this->query .= $user->getCenterID();
             $site_arr = $user->getCenterID();
             $last_key = end(array_keys($site_arr));
             foreach ($site_arr as $key=>$val) {
@@ -362,11 +361,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
             }
         } else {
             // allow only to view own site data
-/*            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $sites = array($user->getData('CenterID') => $user->getData('Site'));
-            }*/
-            $site_arr = $user->getData('SiteID');
+            $site_arr = $user->getData('CentersID');
             foreach ($site_arr as $key=>$val) {
                 $site[$key] =& Site::singleton($val);
                 if ($site[$key]->isStudySite()) {

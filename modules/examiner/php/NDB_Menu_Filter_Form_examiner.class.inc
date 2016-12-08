@@ -66,7 +66,6 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         $user = User::singleton();
         if (!$user->hasPermission('examiner_multisite')) {
-//            $query .= " AND e.CenterID=" . $DB->quote($user->getData('CenterID'));
             $query .= " AND e.CenterID=";
             $site_arr = $user->getCenterID();
             $last_key = end(array_keys($site_arr));
@@ -138,11 +137,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             }
         } else {
             // allow only to view own site data
-/*           $site = Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $sites = array($user->getData('CenterID') => $user->getData('Site'));
-            }*/
-            $site_arr = $user->getData('SiteID');
+            $site_arr = $user->getData('CentersID');
             foreach ($site_arr as $key=>$val) {
                 $site_arr[$key] = Site::singleton($val);
                 if ($site_arr[$key]->isStudySite()) {

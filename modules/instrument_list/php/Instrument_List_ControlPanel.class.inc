@@ -328,7 +328,7 @@ Class Instrument_List_ControlPanel extends TimePoint
             return ($user->hasPermission('bvl_feedback'));
         }
         
-        return ($user->hasPermission('data_entry') && in_array($this->getData('CenterID'), $user->getData('SiteID')));
+        return ($user->hasPermission('data_entry') && in_array($this->getData('CenterID'), $user->getData('CentersID')));
     }
 
     function _displayBVLQCType()
@@ -457,7 +457,7 @@ Class Instrument_List_ControlPanel extends TimePoint
     	if(!$user->hasPermission('send_to_dcc')){
         	return "User does not have permission to send to DCC";
         }
-        if(!in_array($this->getData('CenterID'), $user->getData('SiteID'))){
+        if(!in_array($this->getData('CenterID'), $user->getData('CentersID'))){
         	return "Users must belong to the same site as the candidate to submit to DCC.";
         }
         if($this->getData('Submitted')!='N'){
@@ -529,7 +529,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         if ($user->hasPermission('unsend_to_dcc') && $this->getData('Submitted')=='Y') {
             return true;
         } elseif ($user->hasPermission('send_to_dcc')
-                  && in_array($this->getData('CenterID'), $user->getData('SiteID'))
+                  && in_array($this->getData('CenterID'), $user->getData('CentersID'))
                   && $this->getData('Submitted')=='N' 
                   && in_array($this->getData('Current_stage'), array('Screening', 'Visit'))
                   && !in_array($this->getData($this->getData('Current_stage')), array(null, 'In Progress'))
@@ -548,7 +548,7 @@ Class Instrument_List_ControlPanel extends TimePoint
         $user =& User::singleton();
 
         // check user permissions
-    	if (!$user->hasPermission('data_entry') || !in_array($this->getData('CenterID'), $user->getData('SiteID'))) {
+    	if (!$user->hasPermission('data_entry') || !in_array($this->getData('CenterID'), $user->getData('CentersID'))) {
             return false;
         }
 		return $this->isStartable();

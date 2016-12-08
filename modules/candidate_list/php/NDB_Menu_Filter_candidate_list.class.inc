@@ -33,8 +33,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-//        $site=& Site::singleton($user->getData('SiteID'));
-        $site_arr = $user->getData('SiteID');
+        $site_arr = $user->getData('CentersID');
         foreach ($site_arr as $key=>$val) {
             $site[$key] = & Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
@@ -44,7 +43,6 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         $this->tpl_data['access_all_profiles'] = $aap;
         return (
             $user->hasPermission('access_all_profiles')
-//            || ($site->isStudySite() && $user->hasPermission('data_entry'))
             || ($oneIsStudySite && $user->hasPermission('data_entry'))
 
         );
@@ -140,7 +138,6 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
         if (!$user->hasPermission('access_all_profiles')) {
 
-//            $this->query .= " AND c.CenterID=" . $user->getCenterID();
             $this->query .= " AND c.CenterID=";
             $site_arr = $user->getCenterID();
             $last_key = end(array_keys($site_arr));
@@ -238,8 +235,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-//            $site =& Site::singleton($user->getData('CenterID'));
-            $site_arr = $user->getData('SiteID');
+            $site_arr = $user->getData('CentersID');
             foreach ($site_arr as $key=>$val) {
                 $site[$key] = & Site::singleton($val);
                 if ($site[$key]->isStudySite()) {

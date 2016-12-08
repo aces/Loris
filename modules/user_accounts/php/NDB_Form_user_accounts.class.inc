@@ -59,7 +59,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     return true;
                 }
 
-                return in_array($editor->getData('CenterID'), $user->getData('SiteID'));
+                return in_array($editor->getData('CenterID'), $user->getData('CentersID'));
             }
 
             return false;
@@ -224,10 +224,9 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         $us_curr_sites =array();
         $us_prev_sites =array();
-        //get sites where user is already at for compare
+        //get sites where user is already at to compare
         $prev_sites = $DB->pselect(
-            "
-                        SELECT CenterID
+            "           SELECT CenterID
                         FROM user_psc_rel
                         WHERE UserID=:uid",
             array(
@@ -239,15 +238,13 @@ class NDB_Form_User_Accounts extends NDB_Form
             $pr_cid = $center['CenterID'];
             array_push($us_prev_sites, $pr_cid);
         }
-        $curr_sites = $values['SiteID'];
-print_r($values);
+        $curr_sites = $values['CentersID'];
         foreach ($curr_sites as $key=>$val) {
             //get MultiSelected CenterID
             array_push($us_curr_sites, $val);
             //Check if CenterID already in user_psc_rel for that user
             $result = $DB->pselectRow(
-                "
-                          SELECT CenterID
+                "         SELECT CenterID
                           FROM user_psc_rel
                           WHERE UserID=:uid",
                 array(
@@ -256,8 +253,6 @@ print_r($values);
             );
             // Center was not previously added
             if (empty($result) || is_null($result) || (!(in_array($val, $us_prev_sites)))) {
-                print_r ("In empty or NOT in_array loop");
-                print_r ("\n");
                 $DB->insert(
                     'user_psc_rel',
                     array(
@@ -288,8 +283,8 @@ print_r($values);
             }
         }
         //END MULTI-SITE
-        unset($values['SiteID']);
-        print_r($values);
+        unset($values['CentersID']);
+
         // EXAMINER UPDATE
         $ex_curr_sites =array();
         $ex_prev_sites =array();
@@ -620,7 +615,7 @@ print_r($values);
                    $editor->getData('CenterID') => $editor->getData('Site'),
                   );
         }
-        $this->addSelect('SiteID', 'Sitesss', $siteOptions, array("multiple"=>"multiple"));
+        $this->addSelect('CentersID', 'Sites', $siteOptions, array("multiple"=>"multiple"));
 
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases
