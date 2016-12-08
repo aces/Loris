@@ -627,17 +627,19 @@ DataQueryApp = React.createClass({
 
                 // Build the session data to be queried for the given category
                 for (var j = 0; j < this.state.filter.session.length; j++) {
-                    for (var key in this.state.selectedFields[category].allVisits) {
-                        var temp = [];
-                        if (Array.isArray(this.state.filter.session[j])) {
-                            // Using allSessions, only use the PSCID
-                            temp.push(this.state.filter.session[j][0]);
-                        } else {
-                            temp.push(this.state.filter.session[j]);
+                    if (Array.isArray(this.state.filter.session[j])) {
+                        if (this.state.selectedFields[category].allVisits[this.state.filter.session[j][1]]) {
+                            sessionInfo.push(this.state.filter.session[j]);
                         }
-                        // Add the visit to the temp variable then add to the sessions to be queried
-                        temp.push(key);
-                        sessionInfo.push(temp);
+                    } else {
+                        for (var key in this.state.selectedFields[category].allVisits) {
+                            var temp = [];
+
+                            temp.push(this.state.filter.session[j]);
+                            // Add the visit to the temp variable then add to the sessions to be queried
+                            temp.push(key);
+                            sessionInfo.push(temp);
+                        }
                     }
                 }
 
