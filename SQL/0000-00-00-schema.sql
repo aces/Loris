@@ -1318,7 +1318,6 @@ CREATE TABLE `users` (
   `Country` varchar(255) default NULL,
   `Fax` varchar(255) default NULL,
   `Email` varchar(255) NOT NULL default '',
-  `CenterID` tinyint(2) unsigned default NULL,
   `Privilege` tinyint(1) NOT NULL default '0',
   `PSCPI` enum('Y','N') NOT NULL default 'N',
   `DBAccess` varchar(10) NOT NULL default '',
@@ -1331,8 +1330,6 @@ CREATE TABLE `users` (
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),
-  KEY `FK_users_1` (`CenterID`),
-  CONSTRAINT `FK_users_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
@@ -1341,8 +1338,8 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,CenterID,Privilege,PSCPI,DBAccess,Active,Password_md5,Pending_approval,Password_expiry)
-VALUES (1,'admin','Admin account','Admin','account','admin@localhost',1,0,'N','','Y','4817577f267cc8bb20c3e58b48a311b9f6','N','2016-03-30');
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Password_md5,Pending_approval,Password_expiry)
+VALUES (1,'admin','Admin account','Admin','account','admin@localhost',0,'N','','Y','4817577f267cc8bb20c3e58b48a311b9f6','N','2016-03-30');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -2355,3 +2352,17 @@ CREATE TABLE `issues_watching` (
   KEY `fk_issues_watching_2` (`issueID`),
   CONSTRAINT `fk_issues_watching_1` FOREIGN KEY (`userID`) REFERENCES `users` (`UserID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `user_psc_rel`;
+CREATE TABLE `user_psc_rel` (
+  `UserID` int(10) unsigned NOT NULL default '0',
+  `CenterID` tinyint(2) unsigned default NULL,
+  PRIMARY KEY  (`UserID`,`CenterID`),
+  KEY `FK_user_psc_rel_2` (`CenterID`),
+  CONSTRAINT `FK_user_psc_rel_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_user_psc_rel_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO user_psc_rel (UserID, CenterID) VALUES
+    (1, 1);
+
+

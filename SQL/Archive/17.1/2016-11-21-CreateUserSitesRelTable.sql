@@ -15,6 +15,12 @@ SET foreign_key_checks = 0;
 LOCK TABLES `user_psc_rel` WRITE, `psc` READ, `users` READ;
 /*!40000 ALTER TABLE `user_psc_rel` DISABLE KEYS */;
 INSERT INTO `user_psc_rel` (UserID, CenterID) SELECT ID, CenterID FROM users;
+-- Add admin to the user_psc_rel
+INSERT INTO `user_psc_rel` (1,1);
 /*!40000 ALTER TABLE `user_psc_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 SET foreign_key_checks = 1;
+
+-- DROP column CenterID from the users table
+-- ALTER TABLE users DROP foreign key FK_users_1;
+-- ALTER TABLE users DROP column `CenterID`;
