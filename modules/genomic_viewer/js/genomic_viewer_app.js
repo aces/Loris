@@ -67,13 +67,16 @@ var ControlPanel = function (_React$Component) {
     value: function handleNavigation(event) {
       event.preventDefault();
 
-      var newGenomicRange, newFrom, newTo, rangeSpan;
+      var newGenomicRange = void 0,
+          newFrom = void 0,
+          newTo = void 0,
+          rangeSpan = void 0;
 
       var _state$genomicRange$m = this.state.genomicRange.match(/(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/i);
 
       var _state$genomicRange$m2 = _slicedToArray(_state$genomicRange$m, 5);
 
-      var oldRange = _state$genomicRange$m2[0];
+      var genomicRange = _state$genomicRange$m2[0];
       var prefix = _state$genomicRange$m2[1];
       var chr = _state$genomicRange$m2[2];
       var from = _state$genomicRange$m2[3];
@@ -294,8 +297,8 @@ var Gene = function (_React$Component3) {
         canvas.getDOMNode().height = height;
 
         // Determine the scale between the canvas width and the displayed genomicRange
-        // Unit: base pair per pixel
-        var xScale = (parseInt(end) - parseInt(start)) / width;
+        // Unit: pixel per base pair
+        var xScale = width / (parseInt(end) - parseInt(start));
 
         var accession_number = this.props.accession_number;
         var chrom = this.props.chrom;
@@ -311,16 +314,19 @@ var Gene = function (_React$Component3) {
         var ctx = canvas.getDOMNode().getContext('2d');
 
         // Draw horizontal lines representing introns.
-        y = height / 2;
-        x1 = txStart <= start ? 0 : (txStart - start) * xScale;
-        x2 = txEnd >= end ? width : (txEnd - start) * xScale;
+        var y = height / 2;
+        var x1 = txStart <= start ? 0 : (txStart - start) * xScale;
+        var x2 = txEnd >= end ? width : (txEnd - start) * xScale;
+        console.log(x2);
+        console.log(width);
         ctx.beginPath();
-        ctx.moveTo(25, 25);
-        ctx.lineTo(105, 25);
+        ctx.moveTo(x1, y);
+        ctx.lineTo(x2, y);
         ctx.stroke();
 
         // Add UTR's
-        // only the visible ones
+        // left
+
 
         // Add exons
         // only the visible ones
@@ -403,7 +409,7 @@ var GeneTrack = function (_React$Component4) {
     key: 'fetchData',
     value: function fetchData(genomicRange) {
       var pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
-      var table = 'refGene';
+      var table = 'knownGene';
 
       if (pattern.test(genomicRange)) {
         $.ajax(this.props.dataURL + '?genomic_range=' + genomicRange + '&table=' + table, {
@@ -426,7 +432,7 @@ var GeneTrack = function (_React$Component4) {
     value: function render() {
       var genomicRange = this.props.genomicRange;
 
-      // Thightly coupled with the UCSC refGene table columns.
+      // Thightly coupled with the UCSC knownGene table columns.
       var genes = this.state.genes.map(function (g) {
         var accession_number = g.name;
         var chrom = g.chrom;
@@ -437,7 +443,7 @@ var GeneTrack = function (_React$Component4) {
         var cdsEnd = g.cdsEnd;
         var exonStarts = g.exonStarts;
         var exonEnds = g.exonEnds;
-        var name = g.name2;
+        var name = g.alignID;
 
         return React.createElement(Gene, {
           genomicRange: genomicRange,
@@ -471,7 +477,7 @@ GeneTrack.propTypes = {
 };
 
 GeneTrack.defaultProps = {
-  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes_static.php"
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
 };
 
 var CPGTrack = function (_React$Component5) {

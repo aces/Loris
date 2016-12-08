@@ -21,25 +21,15 @@ if (!$user->hasPermission('genomic_browser_view_site') &&
     exit(2);
 }
 // TODO :: Add some validation about the $_REQUEST
-if (empty($_REQUEST['genomic_range']) || empty($_REQUEST['table'])) {
+if (empty($_REQUEST['geneId']) || empty($_REQUEST['table'])) {
     error_log("ERROR: Missing parameter");
     header("HTTP/1.1 400 Bad Request");
     exit(3);
 }
 
 $table = $_REQUEST['table'];
-
-$bits = array();
-if (!preg_match('/^(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)$/',$_REQUEST['genomic_range'],$bits)) {
-    error_log("ERROR: Genomic range is invalid");
-    header("HTTP/1.1 400 Bad Request");
-    exit(4);
-}
-
-$params = array(
-    'v_chr' => 'chr' . $bits[2],
-    'v_start'   => $bits[3],
-    'v_end'     => $bits[4]
+$params = array (
+    'v_gene_id' => $_REQUEST['geneId']
 );
 
 $DB = new Database();
@@ -47,20 +37,11 @@ $DB->connect('hg19', 'genome', null, 'genome-mysql.cse.ucsc.edu', false);
 
 $query = "
   SELECT
-    name,
-    chrom,
-    strand,
-    txStart,
-    txEnd,
-    cdsStart,
-    cdsEnd,
-    exonCount,
-    exonStarts,
-    exonEnds
+    geneSymbol as geneSymbol,
+    refseq as refSeq,
+    description as description
   FROM $table
-  WHERE chrom = :v_chr 
-  AND txStart < :v_end
-  AND txEnd > :v_start
+  WHERE kgID = :v_gene_id
 ";
 // TODO :: Add tr...catch for the Database exception
 $results = $DB->pselect($query, $params );
