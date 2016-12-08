@@ -23,6 +23,7 @@ before_install:
     # Ensure node version is up to date
     - nvm install node
     - mkdir -p project project/libraries
+    - phpenv config-rm xdebug.ini
 
 install:
     # Install composer modules
@@ -40,7 +41,7 @@ install:
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
 
-    - PHP_INI_SCAN_DIR=":test/" php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
+    - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
     # Extracting firefox and setting PATH variable...
     - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
@@ -129,4 +130,4 @@ script:
     - eslint Gruntfile.js
 
     # Run unit tests to make sure functions still do what they should.
-    - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
+    - vendor/bin/phpunit --configuration test/phpunit.xml
