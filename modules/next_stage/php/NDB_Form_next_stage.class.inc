@@ -13,8 +13,7 @@ class NDB_Form_next_stage extends NDB_Form
         $timePoint =& TimePoint::singleton($this->identifier);
 
         // check user permissions
-//    	if (!$user->hasPermission('data_entry') || $user->getData('CenterID') != $timePoint->getData('CenterID')) {
-    	if (!$user->hasPermission('data_entry') || !in_array($timePoint->getData('CenterID'), $user->getData('SiteID'))) {
+    	if (!$user->hasPermission('data_entry') || !in_array($timePoint->getData('CenterID'), $user->getData('CentersID'))) {
             return false;
         }
         return $timePoint->isStartable();

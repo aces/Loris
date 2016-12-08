@@ -84,7 +84,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
             $query .= " AND candidate.CenterID=";
-            $site_arr = $user->getData('SiteID');
+            $site_arr = $user->getData('CentersID');
             $last_key = end(array_keys($site_arr));
             foreach ($site_arr as $key=>$val) {
                 if ($key == $last_key) {
@@ -157,7 +157,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             }
         }else { // this else loop is never entered as _hasAccess would have returned false
             // allow only to view own site data
-            $site_arr = $user->getData('SiteID');
+            $site_arr = $user->getData('CentersID');
             foreach ($site_arr as $key=>$val) {
                 $site[$key] = Site::singleton($val);
             //    if ($site[$key]->isStudySite()) {

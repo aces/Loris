@@ -57,8 +57,7 @@ Class TimePoint_List_ControlPanel extends Candidate
     {
         $user =& User::singleton();
 
-        //$user_CenterID = $user->getData('CenterID');
-        $user_CenterID = $user->getData('SiteID');
+        $user_CenterID = $user->getData('CentersID');
         $cand_CenterID = $this->getData('CenterID');
 
         $this->tpl_data['candID'] = $this->getData('CandID');

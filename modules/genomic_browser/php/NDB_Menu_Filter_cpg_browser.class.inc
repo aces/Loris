@@ -167,7 +167,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
 
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
             $this->query .= " AND candidate.CenterID=";
-            $site_arr = $user->getData('SiteID');
+            $site_arr = $user->getData('CentersID');
             $last_key = end(array_keys($site_arr));
             foreach ($site_arr as $key=>$val) {
                 if ($key == $last_key) {
@@ -277,7 +277,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site_arr = $user->getData('SiteID');
+            $site_arr = $user->getData('CentersID');
             foreach ($site_arr as $key=>$val) {
                 $site[$key] = Site::singleton($val);
                 if ($site[$key]->isStudySite()) {

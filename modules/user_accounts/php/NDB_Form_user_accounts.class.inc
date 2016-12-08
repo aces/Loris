@@ -208,8 +208,59 @@ class NDB_Form_User_Accounts extends NDB_Form
         // If editing a user and nothing was specified in the password text field
         // remove Password_md5 from the value set, otherwise Password_md5
         // will be set to '' by the system
+<<<<<<< HEAD
         if ($values['Password_hash'] == '' && !$this->isCreatingNewUser()) {
             unset($values['Password_hash']);
+=======
+        if ($values['Password_md5'] == '' && !$this->isCreatingNewUser()) {
+            unset($values['Password_md5']);
+        }
+
+        // multi-site UPDATE
+        $uid = $user->getData('ID');
+
+        $us_curr_sites =array();
+        $us_prev_sites =array();
+        //get sites where user is already at to compare
+        $prev_sites = $DB->pselect(
+            "           SELECT CenterID
+                        FROM user_psc_rel
+                        WHERE UserID=:uid",
+            array(
+                "uid" => $uid,
+            )
+        );
+
+        foreach ($prev_sites as $row=>$center) {
+            $pr_cid = $center['CenterID'];
+            array_push($us_prev_sites, $pr_cid);
+        }
+        $curr_sites = $values['CentersID'];
+        foreach ($curr_sites as $key=>$val) {
+            //get MultiSelected CenterID
+            array_push($us_curr_sites, $val);
+            //Check if CenterID already in user_psc_rel for that user
+            $result = $DB->pselectRow(
+                "         SELECT CenterID
+                          FROM user_psc_rel
+                          WHERE UserID=:uid",
+                array(
+                    "uid" => $uid,
+                )
+            );
+            // Center was not previously added
+            if (empty($result) || is_null($result) || (!(in_array($val, $us_prev_sites)))) {
+                $DB->insert(
+                    'user_psc_rel',
+                    array(
+                        'UserID'    => $uid,
+                        'CenterID'  => $val,
+                    )
+                );
+            } elseif (in_array($val, $us_prev_sites)) {
+                unset($values['CenterID'][$key]);
+            }
+>>>>>>> getSiteID becomes getCentersID and removal of printr statements and cleanup of comments
         }
         if ($this->page === 'edit_user') {
             // multi-site UPDATE
@@ -230,6 +281,12 @@ class NDB_Form_User_Accounts extends NDB_Form
             unset($values['CenterIDs']);
             // END multi-site UPDATE
         }
+<<<<<<< HEAD
+=======
+        //END MULTI-SITE
+        unset($values['CentersID']);
+
+>>>>>>> getSiteID becomes getCentersID and removal of printr statements and cleanup of comments
         // EXAMINER UPDATE
         $ex_curr_sites = array();
         $ex_prev_sites = array();
@@ -597,12 +654,17 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $siteOptions[$val] = $site[$key]->getCenterName();
             }
         }
+<<<<<<< HEAD
         $this->addSelect(
             'CenterIDs',
             'Sites',
             $siteOptions,
             array('multiple' => 'multiple')
         );
+=======
+        $this->addSelect('CentersID', 'Sites', $siteOptions, array("multiple"=>"multiple"));
+
+>>>>>>> getSiteID becomes getCentersID and removal of printr statements and cleanup of comments
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases
             $DB      =& Database::singleton();

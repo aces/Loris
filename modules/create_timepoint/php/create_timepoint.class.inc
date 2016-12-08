@@ -45,8 +45,7 @@ class Create_Timepoint extends \NDB_Form
         // check user permissions
         return (
             $user->hasPermission('data_entry') &&
-  //          $user->getData('CenterID') == $candidate->getData('CenterID')
-            (in_array($candidate->getData('CenterID'), $user->getData('SiteID')))
+            (in_array($candidate->getData('CenterID'), $user->getData('CentersID')))
         );
     }
 
@@ -73,9 +72,6 @@ class Create_Timepoint extends \NDB_Form
      */
     function _process($values)
     {
-print_r("\n");
-print_r($values);
-print_r("\n");
         $success = \TimePoint::createNew(
             $this->identifier,
             $values['subprojectID'],
@@ -195,10 +191,8 @@ print_r("\n");
              // List of sites for the user
              $user = \User::singleton();
              $DB = \Database::singleton();
-             $user_list_of_sites = $user->getData('SiteID');
-             print_r ($user_list_of_sites);
+             $user_list_of_sites = $user->getData('CentersID');
              $num_sites = count($user_list_of_sites);
-             print_r ($num_sites);
 
              if ($num_sites >1) {
                  $pscLabelAdded=true;

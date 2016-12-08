@@ -291,10 +291,10 @@ $(document).ready(function() {
     {/if}
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
-    		{$form.SiteID.label}
+    		{$form.CentersID.label}
     	</label>	
     	<div class="col-sm-10">
-    		{$form.SiteID.html}
+    		{$form.CentersID.html}
     	</div>
     </div>
         {if $form.errors.examiner_sites}

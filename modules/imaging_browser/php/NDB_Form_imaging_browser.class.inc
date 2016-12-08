@@ -51,8 +51,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         // allow only to view own site data
         $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
 
-//        return ($user->hasPermission('imaging_browser_view_allsites') || ($user->getData('CenterID') == $timePoint->getData('CenterID') && $user->hasPermission('imaging_browser_view_site')));
-        return ($user->hasPermission('imaging_browser_view_allsites') || ((in_array($timePoint->getData('CenterID'), $user->getData('SiteID'))) && $user->hasPermission('imaging_browser_view_site')));
+        return ($user->hasPermission('imaging_browser_view_allsites') || ((in_array($timePoint->getData('CenterID'), $user->getData('CentersID'))) && $user->hasPermission('imaging_browser_view_site')));
     }
 
     /**
