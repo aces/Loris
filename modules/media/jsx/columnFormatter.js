@@ -1,5 +1,6 @@
-/* global hasWritePermission */
 /* exported formatColumn */
+
+const args = QueryString.get(document.currentScript.src);
 
 /**
  * Modify behaviour of specified column cells in the Data Table component
@@ -22,7 +23,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
 
   // hasWritePermission is defined in menu_media.tpl
-  if (column === 'File Name' && hasWritePermission === true) {
+  if (column === 'File Name' && args.hasWritePermission === true) {
     var downloadURL = loris.BaseURL + "/media/ajax/FileDownload.php?File=" +
       row['File Name'];
     return (

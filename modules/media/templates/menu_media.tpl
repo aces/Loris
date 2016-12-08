@@ -27,31 +27,3 @@
   </div>
 
 </div>
-
-<script>
-  loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
-  var hasWritePermission = {json_encode($hasWritePermission)};
-  var table = RDynamicDataTable({
-    "DataURL" : "{$baseurl}/media/?format=json",
-    "getFormattedCell" : formatColumn,
-    "freezeColumn" : "File Name"
-  });
-  React.render(table, document.getElementById("datatable"));
-
-
-  // Adds tab href to url + opens tab based on hash on page load
-  // See: http://bit.ly/292MDI8
-  $(function(){
-    var hash = window.location.hash;
-    hash && $('ul.nav a[href="' + hash + '"]').tab('show');
-
-    $('.nav-tabs a').click(function (e) {
-      $(this).tab('show');
-      var scrollmem = $('body').scrollTop() || $('html').scrollTop();
-      window.location.hash = this.hash;
-      $('html,body').scrollTop(scrollmem);
-    });
-  });
-
-
-</script>

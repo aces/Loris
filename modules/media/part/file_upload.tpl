@@ -21,12 +21,3 @@
 
   </div>
 </div>
-
-<script>
-  var mediaUploadForm = RMediaUploadForm({
-    "DataURL": "{$baseurl}/media/ajax/FileUpload.php?action=getData",
-    "action": "{$baseurl}/media/ajax/FileUpload.php?action=upload"
-  });
-  React.render(mediaUploadForm, document.getElementById("media-upload-form"));
-</script>
-
