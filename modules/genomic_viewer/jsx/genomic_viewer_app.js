@@ -162,10 +162,22 @@ Track.defaultProps = {
   children: []
 };
 
+/*
+ * Using a reduce definition of gene prediction tracks convention @
+ * https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#GeneDisplay
+ * 
+ * Coding exons are represented by blocks connected by horizontal lines representing
+ * introns. The 5' and 3' untranslated regions (UTRs) are displayed as thinner
+ * blocks on the leading and trailing ends of the aligning regions. 
+ * Arrowheads on the connecting intron lines indicate the direction of
+ * transcription.
+ */
 class Gene extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      canvasHeight: 20
+    };
 
     this.showGeneDetails = this.showGeneDetails.bind(this);
   }
@@ -185,30 +197,72 @@ class Gene extends React.Component {
    * genomic range. 
    */
   draw(genomicRange) {
-    const c = this.refs.thatCanvas;
-    if(c) {
-      var width = this.refs.thatDiv.getDOMNode().clientWidth;
-      c.getDOMNode().width = width;
+    const canvas = this.refs.thatCanvas;
+    if (canvas) {
+      const width  = this.refs.thatDiv.getDOMNode().clientWidth;
+      const height = this.state.canvasHeight;
+      const pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
+      const [genomicRange, prefix, chromosome, start, end] = this.props.genomicRange.match(pattern);
 
-      var ctx = c.getDOMNode().getContext('2d');
+      // Adjust width and height according to screen size
+      canvas.getDOMNode().width = width;
+      canvas.getDOMNode().height = height;
+
+      // Determine the scale between the canvas width and the displayed genomicRange
+      // Unit: base pair per pixel
+      const xScale = (parseInt(end) - parseInt(start)) / width;
+
+      const accession_number = this.props.accession_number;
+      const chrom = this.props.chrom;
+      const strand = this.props.strand;
+      const txStart = this.props.txStart;
+      const txEnd = this.props.txEnd;
+      const cdsStart = this.props.cdsStart;
+      const cdsEnd = this.props.cdsEnd;
+      const exonStarts = this.props.exonStarts;
+      const exonEnds = this.props.exonEnds;
+      const name = this.props.name;
+    
+      const ctx = canvas.getDOMNode().getContext('2d');
+
+      // Draw horizontal lines representing introns.
+      y = height / 2;
+      x1 = (txStart <= start) ? 0 : (txStart - start) * xScale;
+      x2 = (txEnd >= end) ? width : (txEnd - start) * xScale;
+      ctx.beginPath();
+      ctx.moveTo(25,25);
+      ctx.lineTo(105,25);
+      ctx.stroke();
+
+      
+      // Add UTR's
+// only the visible ones
+
+      // Add exons
+// only the visible ones
+      if (exonStarts.length != exonEnds.length) {
+        console.error('Exon counts differs.')
+      }
+      
+
       ctx.rect(0,0,120,17);
       ctx.stroke();
     }
   }
 
-  showGeneDetails() {
-    alert('Bob');
+  showGeneDetails(event) {
+    alert(event.target.title);
   }
 
   render() {
+    const canvasHeight = 20;
     return (
       <div ref="thatDiv" style={{width: '100%'}}>
         <canvas
           ref="thatCanvas"
-          height="20"
           onClick={this.showGeneDetails}
           data-toggle="tooltip"
-          title="Gene1"
+          title={this.props.name}
         />
       </div>
     );
