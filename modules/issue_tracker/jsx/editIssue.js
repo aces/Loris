@@ -1,4 +1,4 @@
-/* exported RIssueEditForm */
+/* exported IssueEditForm */
 
 /**
  * Issue add/edit form

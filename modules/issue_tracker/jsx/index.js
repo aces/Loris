@@ -12,7 +12,7 @@ $(document).ready(function() {
 /**
  * Renders DynamicTable for all tabs on the main issue tracker page
  *
- * @param querystring
+ * @param {object} querystring - object representation of querystring
  */
 function issueTracker(querystring) {
   let url = loris.BaseURL + '/issue_tracker/?format=json';
@@ -32,7 +32,7 @@ function issueTracker(querystring) {
 /**
  * Renders the form when creating or editing an issue
  *
- * @param querystring
+ * @param {object} querystring - object representation of querystring
  */
 function createEditIssue(querystring) {
   const url = loris.BaseURL + '/issue_tracker/ajax/EditIssue.php';
