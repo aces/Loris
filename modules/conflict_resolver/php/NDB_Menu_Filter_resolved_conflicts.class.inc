@@ -138,14 +138,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
              'CenterID',
             )
         );
-        $this->tpl_data['hiddenHeaders'] = json_encode(
-            [
-             'New Value',
-             'OldValue2',
-             'CenterID',
-            ]
-        );
-        $con = "conflicts_resolved";
+        $con           = "conflicts_resolved";
 
         $this->formToFilter = array(
                                'Instrument'          => "$con.TableName",
@@ -252,10 +245,13 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
-        $urls    = "/conflict_resolver/js/resolved_conflicts_columnFormatter.js";
         return array_merge(
             $deps,
-            array($baseURL . $urls)
+            array(
+             $baseURL .
+              "/conflict_resolver/js/resolved_conflicts_columnFormatter.js",
+             $baseURL . "/conflict_resolver/js/resolved_conflicts_index.js",
+            )
         );
     }
 }
