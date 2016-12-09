@@ -52,8 +52,14 @@ $field_names = $db->pselect("
 
 
 // BEGIN building script
+
+//save old variables
 $output .="SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS; \n";
+$output .="SET @OLD_sql_mode=@@sql_mode; \n";
+
+//disable obstacles
 $output .="SET FOREIGN_KEY_CHECKS=0; \n";
+$output .="SET sql_mode = ''; \n"
 
 foreach ($field_names as $key=>$field)
 {
@@ -76,7 +82,7 @@ foreach ($field_names as $key=>$field)
 }
 
 $output .= $alters . $updates;
-
+$output .="SET sql_mode = @OLD_sql_mode; \n";
 $output .="SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS; \n";
 // END building script
 
