@@ -262,8 +262,8 @@ class Gene extends React.Component {
           // Draw an UTR
         }
 
-        ctx.rect(exonStart,0,exonWidth,exonHeight);
-        ctx.stroke();
+        ctx.fillStyle="green";
+        ctx.fillRect(exonStart,0,exonWidth,exonHeight);
         
       }
     }

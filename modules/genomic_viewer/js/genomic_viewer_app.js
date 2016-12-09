@@ -350,8 +350,8 @@ var Gene = (function (_React$Component3) {
             // Draw an UTR
           }
 
-          ctx.rect(exonStart, 0, exonWidth, exonHeight);
-          ctx.stroke();
+          ctx.fillStyle = "green";
+          ctx.fillRect(exonStart, 0, exonWidth, exonHeight);
         }
       }
     }
