@@ -131,7 +131,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $basicButton = $this->webDriver->findElement(
                WebDriverBy::Name("advanced"));
 
-        $this->assertNull(
+        $this->assertEquals("",
                $basicButton->getAttribute("style"));
 
         $test = $this->webDriver->findElement(
