@@ -15,7 +15,7 @@
             <th class="   spacer"> </th>
             {foreach from=$Centers item=center key=centername}
                 <th id='{$center.ID}' class="centers tip" colspan="2" onclick="hideStats(this)" data-toggle="tooltip" data-placement="bottom" data-container="body" title="Click to minimize">
-                    {$center.ID}
+                    {$center.LongName}
                 </th>
             {/foreach}
         </tr>
