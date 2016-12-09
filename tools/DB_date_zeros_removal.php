@@ -12,7 +12,7 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 set_include_path(get_include_path().":".__DIR__."/../project/libraries:".":".__DIR__."/../../php/libraries:");
-require_once __DIR__ . "/../../vendor/autoload.php";
+require_once __DIR__ . "/../vendor/autoload.php";
 //require_once "NDB_Config.class.inc";
 
 $client = new NDB_Client();
@@ -59,7 +59,7 @@ $output .="SET @OLD_sql_mode=@@sql_mode; \n";
 
 //disable obstacles
 $output .="SET FOREIGN_KEY_CHECKS=0; \n";
-$output .="SET sql_mode = ''; \n"
+$output .="SET sql_mode = ''; \n";
 
 foreach ($field_names as $key=>$field)
 {
