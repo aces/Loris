@@ -224,16 +224,23 @@ class Gene extends React.Component {
     
       const ctx = canvas.getDOMNode().getContext('2d');
 
-      // Draw horizontal lines representing introns.
       let y = height / 2;
       let x1 = (txStart <= start) ? 0 : (txStart - start) * xScale;
       let x2 = (txEnd >= end) ? width : (txEnd - start) * xScale;
 
+      // Add the strand background
+      let img = document.getElementById('reverseBackground');
+      let background = ctx.createPattern(img, 'repeat');
+      ctx.fillStyle = background;
+      ctx.fillRect(x1,5,x2-x1,10);
+      // Draw horizontal lines representing introns.
+      ctx.strokeStyle = "navy";
       ctx.beginPath();
       ctx.moveTo(x1,y);
       ctx.lineTo(x2,y);
       ctx.stroke();
       
+
       // Add UTR's
       // left
       
@@ -247,12 +254,13 @@ class Gene extends React.Component {
       for (let i = 0; i < count; i++) {
         let exonStart = parseInt(exonStarts[i]);
         let exonEnd = parseInt(exonEnds[i]);
-        let exonWidth, exonHeight;
+        let exonWidth, exonHeight, utrHeight;
  
         exonStart = (exonStart < start) ? 0 : (exonStart - start) * xScale;
         exonEnd = (exonEnd > end) ? width : (exonEnd - start) * xScale;
         exonWidth = exonEnd - exonStart;
         exonHeight = height;
+        utrHeight = height / 2;
 
         // UTR checks
         if (exonStart < cdsStart) {
@@ -270,7 +278,7 @@ class Gene extends React.Component {
           }
         }
 
-        ctx.fillStyle="green";
+        ctx.fillStyle="#000080";
         ctx.fillRect(exonStart,0,exonWidth,exonHeight);
         
       }
@@ -318,10 +326,12 @@ class GeneTrack extends React.Component {
     };
 
     this.fetchData = this.fetchData.bind(this);
+    this.addBackground = this.addBackground.bind(this);
   }
 
   componentDidMount() {
     this.fetchData(this.props.genomicRange);
+    this.addBackground();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -332,7 +342,7 @@ class GeneTrack extends React.Component {
 
   fetchData(genomicRange) {
     var pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
-    var table = 'knownGene';
+    var table = 'refFlat';
 
     if (pattern.test(genomicRange)) {
       $.ajax(this.props.dataURL + '?genomic_range=' + genomicRange + '&table=' + table, {
@@ -351,6 +361,38 @@ class GeneTrack extends React.Component {
     }
   }
 
+  // This create the images used as backgroung for Gene following strand direction.
+  addBackground() {
+    const forwardCanvas = this.refs.forwardBackgroundCanvas; 
+    const reverseCanvas = this.refs.reverseBackgroundCanvas;  
+
+    if (forwardCanvas) {
+      const ctx = forwardCanvas.getDOMNode().getContext('2d');   
+      ctx.strokeStyle = "navy";
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.lineTo(10,5);
+      ctx.lineTo(0,10);
+      ctx.stroke();
+    } else {
+      console.error('forwardCanvas is missing');
+    }
+
+    if (reverseCanvas) {
+      const ctx = reverseCanvas.getDOMNode().getContext('2d');
+      ctx.strokeStyle = "navy";
+      ctx.beginPath();
+      ctx.moveTo(10,0);
+      ctx.lineTo(0,5);
+      ctx.lineTo(10,10);
+      ctx.stroke();
+    } else {
+      console.error('reverseCanvas is missing');
+    }
+
+
+  }
+
   render() {
     var genomicRange = this.props.genomicRange;
 
@@ -365,7 +407,7 @@ class GeneTrack extends React.Component {
        const cdsEnd = g.cdsEnd;
        const exonStarts = g.exonStarts.split(',');
        const exonEnds = g.exonEnds.split(',');
-       const name = g.name;
+       const name = g.geneName;
 
       return (
         <Gene 
@@ -386,6 +428,8 @@ class GeneTrack extends React.Component {
 
     return (
       <Track title="Genes">
+        <canvas id="forwardBackground" ref="forwardBackgroundCanvas" width="10" height="10" style={{display: "none"}}/>
+        <canvas id="reverseBackground" ref="reverseBackgroundCanvas" width="10" height="10" style={{display: "none"}}/>
         {genes}
       </Track>
     );
@@ -398,7 +442,7 @@ GeneTrack.propTypes = {
 };
 
 GeneTrack.defaultProps = {
-  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes_static.php"
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
 };
 
 class CPGTrack extends React.Component {

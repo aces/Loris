@@ -47,6 +47,7 @@ $DB->connect('hg19', 'genome', null, 'genome-mysql.cse.ucsc.edu', false);
 
 $query = "
   SELECT
+    geneName,
     name,
     chrom,
     strand,
