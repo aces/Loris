@@ -14,7 +14,7 @@
 Loading = React.createClass({
     displayName: "Loading",
 
-    render: function () {
+    render: function render() {
         return React.createElement(
             "div",
             { className: "row" },
@@ -41,7 +41,7 @@ TabPane = React.createClass({
     displayName: "TabPane",
 
     mixins: [React.addons.PureRenderMixin],
-    render: function () {
+    render: function render() {
         var classList = "tab-pane";
         if (this.props.Active) {
             classList += " active";
@@ -73,7 +73,7 @@ InfoTabPane = React.createClass({
     displayName: "InfoTabPane",
 
     mixins: [React.addons.PureRenderMixin],
-    render: function () {
+    render: function render() {
         return React.createElement(
             TabPane,
             { Title: "Welcome to the Data Query Tool",
@@ -164,7 +164,7 @@ InfoTabPane = React.createClass({
 FieldSelectTabPane = React.createClass({
     displayName: "FieldSelectTabPane",
 
-    render: function () {
+    render: function render() {
         return React.createElement(
             TabPane,
             { TabId: this.props.TabId, Loading: this.props.Loading },
@@ -186,7 +186,7 @@ FieldSelectTabPane = React.createClass({
 FilterSelectTabPane = React.createClass({
     displayName: "FilterSelectTabPane",
 
-    render: function () {
+    render: function render() {
         return React.createElement(
             TabPane,
             { TabId: this.props.TabId, Loading: this.props.Loading },
@@ -205,20 +205,20 @@ FilterSelectTabPane = React.createClass({
 ViewDataTabPane = React.createClass({
     displayName: "ViewDataTabPane",
 
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         return { 'sessions': [] };
     },
-    runQuery: function () {
+    runQuery: function runQuery() {
         // Wrapper function to run the current query
         if (this.props.onRunQueryClicked) {
             this.props.onRunQueryClicked(this.props.Fields, this.props.Sessions);
         }
     },
-    changeDataDisplay: function (displayID) {
+    changeDataDisplay: function changeDataDisplay(displayID) {
         // Wrapper function to change the data display type
         this.props.changeDataDisplay(displayID);
     },
-    getOrCreateProgressElement: function (id) {
+    getOrCreateProgressElement: function getOrCreateProgressElement(id) {
         // Helper function to display the progress of downloading the downloadable
         // fields into a ZIP folder
         var element = document.getElementById(id),
@@ -235,7 +235,7 @@ ViewDataTabPane = React.createClass({
         progress.appendChild(element);
         return element;
     },
-    getOrCreateDownloadLink: function (fileName, type) {
+    getOrCreateDownloadLink: function getOrCreateDownloadLink(fileName, type) {
         // Helper function to create and click a downloadable link to download the
         // downloadable fields into a ZIP folder
         var element = document.getElementById("DownloadLink" + fileName),
@@ -258,7 +258,10 @@ ViewDataTabPane = React.createClass({
         parentEl.appendChild(el2);
         return element;
     },
-    downloadData: function () {
+    downloadCSV: function downloadCSV() {
+        $('.downloadCSV').click();
+    },
+    downloadData: function downloadData() {
         // Download the downloadable fields into a ZIP folder
         // Makes use of a web worker to format and download the data
         var zip = new JSZip(),
@@ -268,7 +271,7 @@ ViewDataTabPane = React.createClass({
             saveworker,
             dataURLs = [],
             that = this,
-            multiLinkHandler = function (buffer) {
+            multiLinkHandler = function multiLinkHandler(buffer) {
             return function (ce) {
                 var downloadLink = document.getElementById("DownloadLink"),
                     dv = new DataView(buffer),
@@ -341,7 +344,7 @@ ViewDataTabPane = React.createClass({
             saveworker.postMessage({ Files: FileList, BaseURL: loris.BaseURL });
         }
     },
-    render: function () {
+    render: function render() {
         var downloadData;
         var buttons = React.createElement(
             "div",
@@ -356,7 +359,12 @@ ViewDataTabPane = React.createClass({
                 ),
                 React.createElement(
                     "button",
-                    { className: "btn btn-primary", onClick: this.downloadData },
+                    { className: "btn btn-primary", onClick: this.downloadCSV },
+                    "Download Data as CSV"
+                ),
+                React.createElement(
+                    "button",
+                    { className: "btn btn-primary", onClick: this.downloadData, "data-toggle": "tooltip", title: "ZIP available only if imaging files selected" },
                     "Download Data as ZIP"
                 )
             ),
@@ -488,7 +496,7 @@ ViewDataTabPane = React.createClass({
 ScatterplotGraph = React.createClass({
     displayName: "ScatterplotGraph",
 
-    lsFit: function (data) {
+    lsFit: function lsFit(data) {
         var i = 0,
             means = jStat(data).mean(),
             xmean = means[0],
@@ -511,7 +519,7 @@ ScatterplotGraph = React.createClass({
 
         return [ymean - slope * xmean, slope];
     },
-    minmaxx: function (arr) {
+    minmaxx: function minmaxx(arr) {
         var i, min, max;
 
         for (i = 0; i < arr.length; i += 1) {
@@ -528,7 +536,7 @@ ScatterplotGraph = React.createClass({
         }
         return [min, max];
     },
-    updateScatterplot: function () {
+    updateScatterplot: function updateScatterplot() {
         var xaxis = document.getElementById("scatter-xaxis").value,
             yaxis = document.getElementById("scatter-yaxis").value,
             grouping = document.getElementById("scatter-group").value,
@@ -547,7 +555,7 @@ ScatterplotGraph = React.createClass({
             start,
             plots = [],
             label,
-            plotY = function (x) {
+            plotY = function plotY(x) {
             return [x, start + slope * x];
         },
             dataset;
@@ -618,7 +626,7 @@ ScatterplotGraph = React.createClass({
         $("#correlationtbl tbody").children().remove();
         $("#correlationtbl tbody").append("<tr><td>" + jStat.covariance(field1, field2) + "</td><td>" + jStat.corrcoeff(field1, field2) + "</td></tr>");
     },
-    render: function () {
+    render: function render() {
         var options = this.props.Fields.map(function (element, key) {
             console.log(element);
             return React.createElement(
@@ -740,21 +748,21 @@ ScatterplotGraph = React.createClass({
 StatsVisualizationTabPane = React.createClass({
     displayName: "StatsVisualizationTabPane",
 
-    getDefaultProps: function () {
+    getDefaultProps: function getDefaultProps() {
         return {
             'Data': []
         };
     },
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         return {
             'displayed': false
         };
     },
-    render: function () {
+    render: function render() {
         // if(this.state.displayed === false) {
         //     var content = <div>Statistics not yet calculated.</div>;
         //     // return <TabPane content={content} TabId={this.props.TabId} />;
-        // } else
+        // } else 
         if (this.props.Data.length === 0) {
             var content = React.createElement(
                 "div",
@@ -928,31 +936,31 @@ StatsVisualizationTabPane = React.createClass({
 SaveQueryDialog = React.createClass({
     displayName: "SaveQueryDialog",
 
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         return {
             'queryName': '',
             'shared': false
         };
     },
-    editName: function (e) {
+    editName: function editName(e) {
         this.setState({ queryName: e.target.value });
     },
-    editPublic: function (e) {
+    editPublic: function editPublic(e) {
         this.setState({ shared: e.target.checked });
     },
-    onSaveClicked: function () {
+    onSaveClicked: function onSaveClicked() {
         // Should do validation before doing anything here.. ie query name is entered, doesn't already
         // exist, there are fields selected..
         if (this.props.onSaveClicked) {
             this.props.onSaveClicked(this.state.queryName, this.state.shared);
         }
     },
-    onDismissClicked: function () {
+    onDismissClicked: function onDismissClicked() {
         if (this.props.onDismissClicked) {
             this.props.onDismissClicked();
         }
     },
-    render: function () {
+    render: function render() {
         return React.createElement(
             "div",
             { className: "modal show" },
@@ -1028,7 +1036,7 @@ SaveQueryDialog = React.createClass({
 ManageSavedQueryFilter = React.createClass({
     displayName: "ManageSavedQueryFilter",
 
-    render: function () {
+    render: function render() {
         var filterItem,
             filter = this.props.filterItem;
         if (filter.activeOperator) {
@@ -1114,7 +1122,7 @@ ManageSavedQueryFilter = React.createClass({
 ManageSavedQueryRow = React.createClass({
     displayName: "ManageSavedQueryRow",
 
-    getDefaultProps: function () {
+    getDefaultProps: function getDefaultProps() {
         return {
             'Name': 'Unknown',
             'Query': {
@@ -1122,7 +1130,7 @@ ManageSavedQueryRow = React.createClass({
             }
         };
     },
-    render: function () {
+    render: function render() {
         var fields = [];
         var filters;
         if (this.props.Query.Fields && Array.isArray(this.props.Query.Fields)) {
@@ -1266,26 +1274,26 @@ ManageSavedQueryRow = React.createClass({
 ManageSavedQueriesTabPane = React.createClass({
     displayName: "ManageSavedQueriesTabPane",
 
-    dismissDialog: function () {
+    dismissDialog: function dismissDialog() {
         this.setState({ 'savePrompt': false });
     },
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         return {
             'savePrompt': false,
             'queriesLoaded': false,
             'queries': {}
         };
     },
-    saveQuery: function () {
+    saveQuery: function saveQuery() {
         this.setState({ 'savePrompt': true });
     },
-    savedQuery: function (name, shared) {
+    savedQuery: function savedQuery(name, shared) {
         if (this.props.onSaveQuery) {
             this.props.onSaveQuery(name, shared);
         }
         this.setState({ 'savePrompt': false });
     },
-    getDefaultProps: function () {
+    getDefaultProps: function getDefaultProps() {
         return {
             userQueries: [],
             globalQueries: [],
@@ -1293,7 +1301,7 @@ ManageSavedQueriesTabPane = React.createClass({
             queryDetails: {}
         };
     },
-    render: function () {
+    render: function render() {
         var queryRows = [];
         if (this.props.queriesLoaded) {
             for (var i = 0; i < this.props.userQueries.length; i += 1) {

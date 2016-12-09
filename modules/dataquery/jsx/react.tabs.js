@@ -175,6 +175,9 @@ ViewDataTabPane = React.createClass({
         parentEl.appendChild(el2);
         return element;
     },
+    downloadCSV: function () {
+      $('.downloadCSV').click();
+    },
     downloadData: function() {
         // Download the downloadable fields into a ZIP folder
         // Makes use of a web worker to format and download the data
@@ -271,7 +274,8 @@ ViewDataTabPane = React.createClass({
             <div className="row">
                 <div className="commands col-xs-12 form-group">
                     <button className="btn btn-primary" onClick={this.runQuery}>Run Query</button>
-                    <button className="btn btn-primary" onClick={this.downloadData}>Download Data as ZIP</button>
+                    <button className="btn btn-primary" onClick={this.downloadCSV}>Download Data as CSV</button>
+                    <button className="btn btn-primary" onClick={this.downloadData} data-toggle="tooltip" title="ZIP available only if imaging files selected">Download Data as ZIP</button>
                 </div>
                 <div id="progress" className="col-xs-12"></div>
                 <div id="downloadlinks" className="col-xs-12">
