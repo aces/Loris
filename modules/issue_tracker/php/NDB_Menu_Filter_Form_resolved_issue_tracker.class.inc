@@ -367,10 +367,14 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
     function getJSDependencies()
     {
         $factory = NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
+        $baseURL = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array($baseurl . "/issue_tracker/js/columnFormatter.js")
+            [
+                $baseURL . "/issue_tracker/js/columnFormatter.js",
+                $baseURL . "/issue_tracker/js/index.js",
+                $baseURL . "/js/filterControl.js",
+            ]
         );
     }
 }
