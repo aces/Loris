@@ -39,11 +39,4 @@
         </div>
     </div>
 </div>
-<div id="datatable"/>
-<script>
-var table = RDynamicDataTable({
-     "DataURL" : "{$baseurl}/server_processes_manager/?format=json",
-     "getFormattedCell" : formatColumn
-     });
-ReactDOM.render(table, document.getElementById("datatable"));
-</script>
+<div id="datatable"></div>
