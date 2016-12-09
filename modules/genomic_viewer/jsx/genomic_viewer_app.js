@@ -254,12 +254,20 @@ class Gene extends React.Component {
         exonWidth = exonEnd - exonStart;
         exonHeight = height;
 
+        // UTR checks
         if (exonStart < cdsStart) {
-          // Draw an UTR
+          if (exonEnd < cdsStart) {
+            // The whole exon is UTR
+          } else {
+            // Draw the UTR part the the remainiing exon
+          }
         }
-
-        if (exonEnd < cdsEnd) {
-          // Draw an UTR
+        if (exonEnd > cdsEnd) {
+          if (exonStart > cdsEnd) {
+            // The whole exon is UTR
+          } else {
+            // Draw the UTR part the the remainiing exon
+          }
         }
 
         ctx.fillStyle="green";
