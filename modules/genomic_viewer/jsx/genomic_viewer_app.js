@@ -228,8 +228,7 @@ class Gene extends React.Component {
       let y = height / 2;
       let x1 = (txStart <= start) ? 0 : (txStart - start) * xScale;
       let x2 = (txEnd >= end) ? width : (txEnd - start) * xScale;
- console.log(x2);
-console.log(width);
+
       ctx.beginPath();
       ctx.moveTo(x1,y);
       ctx.lineTo(x2,y);
@@ -240,14 +239,33 @@ console.log(width);
       
 
       // Add exons
-// only the visible ones
       if (exonStarts.length != exonEnds.length) {
         console.error('Exon counts differs.')
       }
-      
 
-      ctx.rect(0,0,120,17);
-      ctx.stroke();
+      let count = exonStarts.length
+      for (let i = 0; i < count; i++) {
+        let exonStart = parseInt(exonStarts[i]);
+        let exonEnd = parseInt(exonEnds[i]);
+        let exonWidth, exonHeight;
+ 
+        exonStart = (exonStart < start) ? 0 : (exonStart - start) * xScale;
+        exonEnd = (exonEnd > end) ? width : (exonEnd - start) * xScale;
+        exonWidth = exonEnd - exonStart;
+        exonHeight = height;
+
+        if (exonStart < cdsStart) {
+          // Draw an UTR
+        }
+
+        if (exonEnd < cdsEnd) {
+          // Draw an UTR
+        }
+
+        ctx.rect(exonStart,0,exonWidth,exonHeight);
+        ctx.stroke();
+        
+      }
     }
   }
 
@@ -337,8 +355,8 @@ class GeneTrack extends React.Component {
        const txEnd = g.txEnd;
        const cdsStart = g.cdsStart;
        const cdsEnd = g.cdsEnd;
-       const exonStarts = g.exonStarts;
-       const exonEnds = g.exonEnds;
+       const exonStarts = g.exonStarts.split(',');
+       const exonEnds = g.exonEnds.split(',');
        const name = g.name;
 
       return (
@@ -372,7 +390,7 @@ GeneTrack.propTypes = {
 };
 
 GeneTrack.defaultProps = {
-  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes_static.php"
 };
 
 class CPGTrack extends React.Component {
@@ -456,7 +474,7 @@ class GenomicViewerApp extends React.Component {
       <table className='col-md-12'>
         <tbody>
           <tr>
-            <th className="col-md-2"></th>
+            <th className="col-md-2">chrY:15010000-15040000</th>
             <th className="col-md-10"></th>
           </tr>
           <tr>
