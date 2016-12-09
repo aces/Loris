@@ -381,9 +381,9 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         return array_merge(
             parent::getJSDependencies(),
             [
-                $baseURL . "/issue_tracker/js/columnFormatter.js",
-                $baseURL . "/issue_tracker/js/index.js",
-                $baseURL . "/js/filterControl.js",
+             $baseURL . "/issue_tracker/js/columnFormatter.js",
+             $baseURL . "/issue_tracker/js/index.js",
+             $baseURL . "/js/filterControl.js",
             ]
         );
     }
