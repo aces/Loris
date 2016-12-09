@@ -65,11 +65,3 @@
 
 <!--  title table with pagination -->
 <div class="dynamictable" id="datatable"></div>
-<script>
-var table = RDynamicDataTable({
-     "DataURL" : "{$baseurl}/survey_accounts/?format=json",
-     "getFormattedCell" : formatColumn,
-     "freezeColumn" : "PSCID"
-  });
-ReactDOM.render(table, document.getElementById("datatable"));
-</script>
