@@ -287,7 +287,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
             );
         }
 
-        $this->headers =array_merge(
+        $this->headers      = array_merge(
             $this->headers,
             array(
              'Question',
@@ -297,7 +297,6 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
              'Hash',
             )
         );
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Value1', 'Value2', 'Hash']);
         $this->formToFilter = array(
                                'Instrument' => 'conflicts_unresolved.TableName',
                                'site'       => 'session.CenterID',
@@ -405,7 +404,11 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/conflict_resolver/js/unresolved_columnFormatter.js")
+            array(
+             $baseURL . "/conflict_resolver/js/unresolved_columnFormatter.js",
+             $baseURL . "/js/filterControl.js",
+             $baseURL . "/conflict_resolver/js/conflict_resolver_index.js",
+            )
         );
     }
 }
