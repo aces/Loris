@@ -14,6 +14,10 @@
 	{assign var="inTable" value="FALSE"}
 	{foreach from=$form.elements item=element}
 		{if $element.name neq mainError}
+			{if $inTable eq "TRUE" and $element.type neq "group"}
+				{assign var="inTable" value="FALSE"}
+				</table>
+			{/if}
 			{if $element.type eq header}
 				<div class="col-xs-12">
 					{$element.html}

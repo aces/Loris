@@ -33,7 +33,14 @@ var ProbandInfo = React.createClass({
         return xhr;
       },
       success: function success(data) {
+        var formData = {
+          ProbandGender: data.ProbandGender,
+          ProbandDoB: data.ProbandDoB,
+          ProbandDoB2: data.ProbandDoB
+        };
+
         that.setState({
+          formData: formData,
           Data: data,
           isLoaded: true
         });
@@ -244,7 +251,7 @@ var ProbandInfo = React.createClass({
       return;
     }
 
-    var alertMsg = this.refs["alert-message"].getDOMNode();
+    var alertMsg = this.refs["alert-message"];
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function () {
       self.setState({
         updateResult: null

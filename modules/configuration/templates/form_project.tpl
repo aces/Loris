@@ -1,6 +1,3 @@
-<script language="javascript" src="{$baseurl}/configuration/js/project.js">
-</script>
-<script language="javascript" src="{$baseurl}/configuration/js/SubprojectRelations.js"></script>
 <p>Use this page to manage the configuration of existing projects, or to add a new one.</p>
 <p>To configure study subprojects <a href="{$baseurl}/configuration/subproject/">click here</a>.</p>
 
@@ -42,16 +39,7 @@
                         <label class="saveStatus"></label>
                     </div>
                 </div>
-                <div id="subprojects{$ProjectID}"></div>
-
-                <script>
-                    var filterTable = RSubprojectRelations({
-                        ProjectID : {$ProjectID},
-                        Relations: {$project.subprojects|@json_encode}
-                    });
-                    React.render(filterTable, document.getElementById("subprojects{$ProjectID}"));
-                </script>
-
+                <div class="related-subprojects" data-project-id={$ProjectID} data-relations='{$project.subprojects|@json_encode}' id="subprojects{$ProjectID}"></div>
             </fieldset>
         </form>
     </div>

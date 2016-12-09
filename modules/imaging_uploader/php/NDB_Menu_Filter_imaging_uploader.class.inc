@@ -363,8 +363,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////////
             $pcv  = $pscid . "_" . $candid . "_" . $visit_label;
             $pcvu = $pcv . "_";
-            if ((!preg_match("/{$pcv}.(zip|tgz|tar.gz)/", $file_name))
-                && (!preg_match("/^{$pcvu}.*(zip|tgz|tar.gz)/", $file_name))
+            if ((!preg_match("/{$pcv}\.(zip|tgz|tar.gz)/", $file_name))
+                && (!preg_match("/^{$pcvu}.*(\.(zip|tgz|tar.gz))/", $file_name))
             ) {
                     $errors[] = "File name must match " . $pcv .
                     " or begin with " . "\"". $pcvu . "\"" .
@@ -390,7 +390,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                                     " PSCID: $pscid and the corresponding".
                                     " Visit-label: $visit_label which".
                                     " already exist. <br>Please refresh this page".
-                                    "to return to the Imaging Uploader module";
+                                    " to return to the Imaging Uploader module";
                 }
             }
         }

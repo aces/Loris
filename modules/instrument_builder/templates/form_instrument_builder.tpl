@@ -12,7 +12,7 @@ table th {
 </style>
 <script>
     var builderApp = RInstrumentBuilderApp();
-    React.render(
+    ReactDOM.render(
         builderApp,
         document.getElementById("builder")
     );

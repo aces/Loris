@@ -213,6 +213,9 @@ class NDB_Form_Configuration extends NDB_Form
         return array_merge(
             $deps,
             array(
+             $baseURL . "/configuration/js/project.js",
+             $baseURL . "/configuration/js/subproject.js",
+             $baseURL . "/configuration/js/SubprojectRelations.js",
              $baseURL . "/configuration/js/configuration_helper.js",
             )
         );

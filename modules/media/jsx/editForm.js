@@ -199,13 +199,6 @@ var MediaEditForm = React.createClass({
 
     var self = this;
     var myFormData = this.state.formData;
-    var formData = new FormData();
-
-    for (var key in myFormData) {
-      if (myFormData[key] !== "") {
-        formData.append(key, myFormData[key]);
-      }
-    }
 
     $('#mediaEditEl').hide();
     $("#file-progress").removeClass('hide');
@@ -213,7 +206,7 @@ var MediaEditForm = React.createClass({
     $.ajax({
       type: 'POST',
       url: self.props.action,
-      data: formData,
+      data: JSON.stringify(myFormData),
       cache: false,
       contentType: false,
       processData: false,
@@ -257,7 +250,12 @@ var MediaEditForm = React.createClass({
    */
   setFormData: function(formElement, value) {
     var formData = this.state.formData;
-    formData[formElement] = value;
+
+    if (value === "") {
+      formData[formElement] = null;
+    } else {
+      formData[formElement] = value;
+    }
 
     this.setState({
       formData: formData
@@ -274,7 +272,7 @@ var MediaEditForm = React.createClass({
       return;
     }
 
-    var alertMsg = this.refs["alert-message"].getDOMNode();
+    var alertMsg = this.refs["alert-message"];
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
       self.setState({
         uploadResult: null

@@ -11,5 +11,5 @@ $(document).ready(function () {
     freezeColumn: "PSCID"
   });
 
-  React.render(table, document.getElementById("datatable"));
+  ReactDOM.render(table, document.getElementById("datatable"));
 });

@@ -148,9 +148,11 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
+        $factory    = NDB_Factory::singleton();
+        $baseURL    = $factory->settings()->getBaseURL();
+        $deps       = parent::getJSDependencies();
+        $useConsent = $this->tpl_data['useConsent'];
+
         return array_merge(
             $deps,
             array(
@@ -159,6 +161,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
              $baseURL . "/candidate_parameters/js/familyInfo.js",
              $baseURL . "/candidate_parameters/js/participantStatus.js",
              $baseURL . "/candidate_parameters/js/consentStatus.js",
+             $baseURL . "/candidate_parameters/js/index.js?useConsent={$useConsent}",
             )
         );
     }

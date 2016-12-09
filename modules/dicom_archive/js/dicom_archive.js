@@ -9,7 +9,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /* exported DicomArchive */
-/* global formatColumn */
+/* global formatColumn, ReactDOM */
 
 /**
  * DICOM Archive Page.
@@ -299,5 +299,5 @@ window.onload = function () {
   var rootDOM = document.getElementById("lorisworkspace");
   rootDOM.appendChild(dicomArchiveDOM);
 
-  React.render(dicomArchive, document.getElementById("page-dicom-archive"));
+  ReactDOM.render(dicomArchive, document.getElementById("page-dicom-archive"));
 };
