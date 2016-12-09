@@ -27,8 +27,8 @@ $(document).ready(function(){
 		if (content.format == "markdown") {
 			wrap = document.createElement("div");
 	    wrap.setAttribute("id", "help-wrapper");
-		
-			React.render(RMarkdown({ 'content' : content.content}), wrap);
+
+			ReactDOM.render(RMarkdown({ 'content' : content.content}), wrap);
 		} else {
 		            wrap = document.createElement("pre");
 	    wrap.setAttribute("id", "help-wrapper");

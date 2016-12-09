@@ -19,7 +19,7 @@
       {section name=file loop=$files}
           <div id="image-{$files[file].FileID}"></div>
           <script>
-          React.render(
+          ReactDOM.render(
                   RImagePanel({
                       'BaseURL' : "{$baseurl}",
 
