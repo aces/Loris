@@ -2,7 +2,6 @@
 
 $(document).ready(function() {
   if (loris.TestName === "user_accounts") {
-
     if (loris.Subtest === "edit_user") {
       editPage();
       return;
@@ -27,7 +26,7 @@ function editPage() {
   $(".perm_header").each(function(idx, el) {
     let id = el.id;
     let section = id.substring(7);
-    let section_el = $("#perms_" + section + " br:nth-child(1)").hide();
+    $("#perms_" + section + " br:nth-child(1)").hide();
   });
 }
 
@@ -40,7 +39,7 @@ function toggleGroup(group) {
     let section = id.substring(7);
 
     // hide (or show) the appropriate div for that section
-    let section_el = $("#perms_" + section);
-    section_el.toggle();
+    let sectionEl = $("#perms_" + section);
+    sectionEl.toggle();
   }
 }
