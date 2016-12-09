@@ -141,19 +141,9 @@ FieldItem = React.createClass({
  *  the selected category
  */
 FieldList = React.createClass({
-    getInitialState: function() {
-        return {
-            PageNumber: 1
-        };
-    },
     onFieldClick: function(fieldName, downloadable) {
         // Wrapper function used to update field
         this.props.onFieldSelect(fieldName, this.props.category, downloadable);
-    },
-    changePage: function(i) {
-        this.setState({
-            PageNumber: i
-        });
     },
     render: function() {
         // Renders the html for the component
@@ -163,7 +153,7 @@ FieldList = React.createClass({
         var fieldName, desc, isFile;
         var rowsPerPage = this.props.FieldsPerPage || 20;
 
-        var start = (this.state.PageNumber - 1) * rowsPerPage;
+        var start = (this.props.PageNumber - 1) * rowsPerPage;
         var filter = this.props.Filter.toLowerCase();
         var selectedFields;
         if(filter > 0) {
@@ -218,7 +208,7 @@ FieldList = React.createClass({
         return (
             <div className="list-group col-md-9 col-sm-12">
                 {fields}
-                <PaginationLinks Total={items.length} Active={this.state.PageNumber} onChangePage={this.changePage} RowsPerPage={rowsPerPage}/>
+                <PaginationLinks Total={items.length} Active={this.props.PageNumber} onChangePage={this.props.changePage} RowsPerPage={rowsPerPage}/>
             </div>
         );
     }
@@ -241,6 +231,7 @@ FieldSelector = React.createClass({
             selectedCategory: "",
             categoryFields: {},
             instruments: instruments,
+            PageNumber: 1
         };
     },
     onFieldSelect: function(fieldName, category, downloadable) {
@@ -265,7 +256,8 @@ FieldSelector = React.createClass({
             }, 'json');
         }
         this.setState({
-            selectedCategory: category
+            selectedCategory: category,
+            PageNumber: 1
         });
     },
     filterChange: function(evt) {
@@ -320,6 +312,11 @@ FieldSelector = React.createClass({
                 }
             }
         }
+    },
+    changePage: function(i) {
+        this.setState({
+            PageNumber: i
+        });
     },
     render: function() {
         // Renders the html for the component
@@ -391,6 +388,8 @@ FieldSelector = React.createClass({
                         Filter={this.state.filter}
                         Visits={this.props.Visits}
                         fieldVisitSelect = {this.props.fieldVisitSelect}
+                        changePage={this.changePage}
+                        PageNumber={this.state.PageNumber}
                     />
                 </div>
             </div>
