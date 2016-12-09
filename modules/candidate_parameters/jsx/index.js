@@ -24,7 +24,7 @@ $(function() {
     tabName="candidateInfo"
   />;
 
-  React.render(candidateInfo, document.getElementById("cand-info"));
+  ReactDOM.render(candidateInfo, document.getElementById("cand-info"));
 
   if (loris.config('useProband') === "true") {
     var probandInfo = <ProbandInfo
@@ -32,7 +32,7 @@ $(function() {
       action={formHandlerUrl}
       tabName="probandInfo"
     />;
-    React.render(probandInfo, document.getElementById("proband-info"));
+    ReactDOM.render(probandInfo, document.getElementById("proband-info"));
   } else {
     $('#proband-info-tab').hide();
   }
@@ -43,7 +43,7 @@ $(function() {
       action={formHandlerUrl}
       tabName="familyInfo"
     />;
-    React.render(familyInfo, document.getElementById("family-info"));
+    ReactDOM.render(familyInfo, document.getElementById("family-info"));
   } else {
     $('#family-info-tab').hide();
   }
@@ -54,7 +54,7 @@ $(function() {
     tabName="participantStatus"
   />;
 
-  React.render(participantStatus, document.getElementById("participant-status"));
+  ReactDOM.render(participantStatus, document.getElementById("participant-status"));
 
   if (scriptArgs.useConsent) {
     var consentStatus = <ConsentStatus
@@ -62,6 +62,6 @@ $(function() {
       action={formHandlerUrl}
       tabName="consentStatus"
     />;
-    React.render(consentStatus, document.getElementById("consent-status"));
+    ReactDOM.render(consentStatus, document.getElementById("consent-status"));
   }
 });

@@ -43,6 +43,6 @@ $(document).ready(function() {
             ProjectID: this.dataset.projectId,
             Relations: JSON.parse(this.dataset.relations)
         });
-        React.render(filterTable, this);
+        ReactDOM.render(filterTable, this);
     });
 });

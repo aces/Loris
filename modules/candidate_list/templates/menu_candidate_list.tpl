@@ -2,7 +2,7 @@
 <div class="col-sm-9">
 <div class="panel panel-primary">
     <div class="panel-heading" onclick="hideFilter(this)">
-        Selection Filter 
+        Selection Filter
         <label class="advancedOptions" id="advanced-label" style="display:none">(Advanced Options)</label>
         <span class="glyphicon arrow glyphicon-chevron-up pull-right"></span>
     </div>

@@ -9,14 +9,14 @@ $(function() {
     freezeColumn="File Name"
   />;
 
-  React.render(table, document.getElementById("datatable"));
+  ReactDOM.render(table, document.getElementById("datatable"));
 
   var mediaUploadForm = <MediaUploadForm
     DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
     action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
   />;
 
-  React.render(mediaUploadForm, document.getElementById("media-upload-form"));
+  ReactDOM.render(mediaUploadForm, document.getElementById("media-upload-form"));
 
   // Adds tab href to url + opens tab based on hash on page load
   // See: http://bit.ly/292MDI8

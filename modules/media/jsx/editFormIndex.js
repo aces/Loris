@@ -7,5 +7,5 @@ $(function() {
     action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
   />;
 
-  React.render(mediaEditForm, document.getElementById("media-edit-form"));
+  ReactDOM.render(mediaEditForm, document.getElementById("media-edit-form"));
 });

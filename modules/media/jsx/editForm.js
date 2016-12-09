@@ -272,7 +272,7 @@ var MediaEditForm = React.createClass({
       return;
     }
 
-    var alertMsg = this.refs["alert-message"].getDOMNode();
+    var alertMsg = this.refs["alert-message"];
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
       self.setState({
         uploadResult: null
