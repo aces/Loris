@@ -1,33 +1,4 @@
 <br />
-<script type="text/javascript" src="{$baseurl}/js/invalid_form_scroll.js"></script>
-{literal}
-<script>
-
-$(document).ready(function() {
-    function toggleGroup(group) {
-        if(group) {
-            // id is the header that was clicked
-            id = group.target.id;
-
-            // chop off header_ to get section name
-            section = id.substring(7);
-            
-            // hide (or show) the appropriate div for that section
-            section_el = $("#perms_" + section);
-            section_el.toggle();
-        }
-    }
-    // define event handler for all the header sections
-    $(".perm_header").click(toggleGroup);
-    // Get rid of the extra <br /> tag that Quickform element adds at the top of each <div>
-    $(".perm_header").each(function(idx, el) {
-        id = el.id;
-        section = id.substring(7);
-        section_el = $("#perms_" + section + " br:nth-child(1)").hide();
-    });
-});
-</script>
-{/literal}
 <form method="post" name="edit_user">
     {if $form.errors}
         <div class="alert alert-danger" role="alert">
@@ -81,7 +52,7 @@ $(document).ready(function() {
 	    	<div class="col-sm-10">
 	    		{$form.UserID.html}
 	    	</div>
-        
+
         {/if}
 	     </div>
     <!-- </div> -->
@@ -292,7 +263,7 @@ $(document).ready(function() {
     <div class="row form-group form-inline">
     	<label class="col-sm-2">
     		{$form.CenterID.label}
-    	</label>	
+    	</label>
     	<div class="col-sm-10">
     		{$form.CenterID.html}
     	</div>

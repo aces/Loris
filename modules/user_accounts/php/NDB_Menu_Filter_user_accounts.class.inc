@@ -81,7 +81,9 @@ class NDB_Menu_Filter_user_accounts extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/user_accounts/js/columnFormatter.js"
+                $baseURL . "/user_accounts/js/columnFormatter.js",
+                $baseURL . "/user_accounts/js/index.js",
+                $baseURL . "/js/filterControl.js",
             )
         );
     }
