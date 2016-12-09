@@ -1,11 +1,15 @@
+'use strict';
+
 /* exported formatColumn */
+
+loris.hiddenHeaders = ['SiteID', 'CommentID', 'Current Stage', 'Invalid', 'Manual Swap'];
 
 /**
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
  * @param {string} cell - cell content
- * @param {arrray} rowData - array of cell contents for a specific row
- * @param {arrray} rowHeaders - array of table headers (column names)
+ * @param {array} rowData - array of cell contents for a specific row
+ * @param {array} rowHeaders - array of table headers (column names)
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
@@ -23,41 +27,41 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   if (column === "PSCID") {
     if (row["Current Stage"] === "Recycling Bin") {
       return React.createElement(
-        "td",
+        'td',
         null,
         cell,
         React.createElement(
-          "span",
-          { className: "text-danger" },
-          "(Recycling Bin)"
+          'span',
+          { className: 'text-danger' },
+          '(Recycling Bin)'
         )
       );
     }
 
     if (row.Invalid === "yes") {
       return React.createElement(
-        "td",
+        'td',
         null,
         cell,
-        " ",
+        ' ',
         React.createElement(
-          "span",
-          { className: "text-danger" },
-          "(Invalid)"
+          'span',
+          { className: 'text-danger' },
+          '(Invalid)'
         )
       );
     }
 
     if (row["Manual Swap"] === "yes") {
       return React.createElement(
-        "td",
+        'td',
         null,
         cell,
-        " ",
+        ' ',
         React.createElement(
-          "span",
-          { className: "text-danger" },
-          "(Manual)"
+          'span',
+          { className: 'text-danger' },
+          '(Manual)'
         )
       );
     }
@@ -68,10 +72,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     var url = loris.BaseURL + testName + '?identifier=' + commentID + '&reliability_center_id=' + siteID;
 
     return React.createElement(
-      "td",
+      'td',
       null,
       React.createElement(
-        "a",
+        'a',
         { href: url },
         cell
       )
@@ -83,21 +87,21 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
     if (reliable === "Yes") {
       return React.createElement(
-        "td",
-        { className: "bg-success" },
-        "Yes"
+        'td',
+        { className: 'bg-success' },
+        'Yes'
       );
     } else if (reliable === "No") {
       return React.createElement(
-        "td",
-        { className: "bg-danger" },
-        "No"
+        'td',
+        { className: 'bg-danger' },
+        'No'
       );
     }
   }
 
   return React.createElement(
-    "td",
+    'td',
     null,
     cell
   );

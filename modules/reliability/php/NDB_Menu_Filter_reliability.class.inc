@@ -103,10 +103,6 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         }
         $this->headers=array_merge($this->headers,array('CommentID', 'Instrument', 'reliability_score', 'Current Stage', 'Invalid', 'Manual Swap', 'Reliable'));
 
-        // Set header as hidden from the data table
-        $this->tpl_data['hiddenHeaders'] = json_encode(['SiteID', 'CommentID', 'Current Stage', 'Invalid', 'Manual Swap']);
-
-
         $this->validFilters = array('reliability.CommentID','reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'candidate.ProjectID','reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid','candidate.CandID');
 
         $this->formToFilter = array(
@@ -506,8 +502,9 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/reliability/js/reliability_helper.js",
+             $baseURL . "/js/filterControl.js",
              $baseURL . "/reliability/js/columnFormatter.js",
+             $baseURL . "/reliability/js/index.js",
             )
         );
     }
