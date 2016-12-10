@@ -232,7 +232,8 @@ class Gene extends React.Component {
       let img = document.getElementById('reverseBackground');
       let background = ctx.createPattern(img, 'repeat');
       ctx.fillStyle = background;
-      ctx.fillRect(x1,5,x2-x1,10);
+      ctx.fillRect(x1,7.5,x2-x1,5);
+
       // Draw horizontal lines representing introns.
       ctx.strokeStyle = "navy";
       ctx.beginPath();
@@ -371,8 +372,8 @@ class GeneTrack extends React.Component {
       ctx.strokeStyle = "navy";
       ctx.beginPath();
       ctx.moveTo(0,0);
-      ctx.lineTo(10,5);
-      ctx.lineTo(0,10);
+      ctx.lineTo(5,2.5);
+      ctx.lineTo(0,5);
       ctx.stroke();
     } else {
       console.error('forwardCanvas is missing');
@@ -382,9 +383,9 @@ class GeneTrack extends React.Component {
       const ctx = reverseCanvas.getDOMNode().getContext('2d');
       ctx.strokeStyle = "navy";
       ctx.beginPath();
-      ctx.moveTo(10,0);
-      ctx.lineTo(0,5);
-      ctx.lineTo(10,10);
+      ctx.moveTo(5,0);
+      ctx.lineTo(0,2.5);
+      ctx.lineTo(5,5);
       ctx.stroke();
     } else {
       console.error('reverseCanvas is missing');
@@ -428,8 +429,8 @@ class GeneTrack extends React.Component {
 
     return (
       <Track title="Genes">
-        <canvas id="forwardBackground" ref="forwardBackgroundCanvas" width="10" height="10" style={{display: "none"}}/>
-        <canvas id="reverseBackground" ref="reverseBackgroundCanvas" width="10" height="10" style={{display: "none"}}/>
+        <canvas id="forwardBackground" ref="forwardBackgroundCanvas" width="10" height="5" style={{display: "none"}}/>
+        <canvas id="reverseBackground" ref="reverseBackgroundCanvas" width="10" height="5" style={{display: "none"}}/>
         {genes}
       </Track>
     );
