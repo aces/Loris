@@ -1,4 +1,3 @@
-<script type="text/javascript" src="{$baseurl}/js/modules/mustache.js"></script>
 {literal}
 <script id="json_data" type="text/json">
     {/literal}{$File_categories|json_encode}{literal}
