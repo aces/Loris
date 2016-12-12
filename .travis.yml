@@ -124,6 +124,8 @@ script:
 
     # Run ESLint on generic React components
     - eslint jsx/
+    # Run unit tests to make sure functions still do what they should.
+    - vendor/bin/phpunit --configuration test/phpunit.xml
 
     # Run ESLint on specific scripts
     - eslint htdocs/js/util/
