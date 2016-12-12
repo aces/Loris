@@ -1,5 +1,3 @@
-<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
-
 <div class="row">
 <div class="col-sm-10 col-md-10">
     <div class="panel panel-primary">
@@ -42,13 +40,3 @@
 
 <!--  title table with pagination -->
 <div class="dynamictable" id="datatable"></div>
-<script>
-loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
-var table = RDynamicDataTable({
-     "DataURL" : "{$baseurl}/help_editor/?format=json",
-     "getFormattedCell" : formatColumn,
-     "freezeColumn" : "PSCID"
-
-  });
-ReactDOM.render(table, document.getElementById("datatable"));
-</script>

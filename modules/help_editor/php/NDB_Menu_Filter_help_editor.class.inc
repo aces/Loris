@@ -46,7 +46,6 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
         $this->query        = $query;
         $this->order_by     = 'helpChild.helpID';
         $this->headers      = array('HelpID','Topic','ParentID','ParentTopicID','Parent_Topic','Content');
-        $this->tpl_data['hiddenHeaders'] = json_encode(['HelpID','ParentID','ParentTopicID']);
         $this->validFilters = array('helpChild.topic');
 
         $this->formToFilter = array(
@@ -125,6 +124,8 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
             array(
              $baseURL . "/help_editor/js/help_editor_helper.js",
              $baseURL . "/help_editor/js/columnFormatter.js",
+             $baseURL . "/js/filterControl.js",
+             $baseURL . "/help_editor/js/index.js",
             )
         );
     }

@@ -29,6 +29,7 @@ module.exports = function(grunt) {
           'modules/media/js/uploadForm.js': 'modules/media/jsx/uploadForm.js',
           'modules/issue_tracker/js/columnFormatter.js': 'modules/issue_tracker/jsx/columnFormatter.js',
           'modules/issue_tracker/js/editIssue.js': 'modules/issue_tracker/jsx/editIssue.js',
+          'modules/help_editor/js/index.js': 'modules/help_editor/jsx/index.js',
           'modules/candidate_parameters/js/index.js': 'modules/candidate_parameters/jsx/index.js',
           'modules/candidate_parameters/js/candidateInfo.js': 'modules/candidate_parameters/jsx/candidateInfo.js',
           'modules/candidate_parameters/js/consentStatus.js': 'modules/candidate_parameters/jsx/consentStatus.js',
