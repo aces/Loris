@@ -146,8 +146,10 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
+                $baseURL . "/js/filterControl.js",
                 $baseURL . "/datadict/js/columnFormatter.js",
                 $baseURL . "/datadict/js/datadict_helper.js",
+                $baseURL . "/datadict/js/index.js",
             )   
         );  
     }   
