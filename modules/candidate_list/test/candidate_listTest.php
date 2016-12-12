@@ -136,6 +136,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
         $test = $this->webDriver->findElement(
                WebDriverBy::ID("advanced-options"))->getText();
+        printf($test);
         foreach (self::$advancedFilter as $value){
               $this->assertContains($value,$test);
         }
