@@ -10,10 +10,3 @@ table th {
     color: black;
 }
 </style>
-<script>
-    var builderApp = RInstrumentBuilderApp();
-    ReactDOM.render(
-        builderApp,
-        document.getElementById("builder")
-    );
-</script>
