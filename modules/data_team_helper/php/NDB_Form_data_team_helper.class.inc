@@ -592,7 +592,12 @@ class NDB_Form_data_team_helper extends NDB_Form
         return array_merge(
             $deps,
             array(
+             $baseURL . "/js/d3.min.js",
+             $baseURL . "/js/c3.min.js",
+             $baseURL . "/js/jquery/jquery.autocomplete.js",
              $baseURL . "/data_team_helper/js/data_team.js",
+             $baseURL . "/data_team_helper/js/behavioural_qc_module.js",
+             $baseURL . "/data_team_helper/js/index.js",
             )
         );
     }

@@ -1,9 +1,5 @@
-<script type ="text/javascript" src ="{$baseurl}/js/jquery/jquery.autocomplete.js"></script>
 <link rel="stylesheet" href="{$baseurl}/css/auto-complete.css">
 <link rel="stylesheet" href="{$baseurl}/css/c3.css">
-
-<script src="{$baseurl}/js/d3.min.js" charset="utf-8"></script>
-<script src="{$baseurl}/js/c3.min.js"></script>
 
 <div class="row">
 	<div class="col-sm-12 col-md-7">
@@ -77,7 +73,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="graphics">
+	<div id="graphics" data-percent-completed='{$percent_completed}' data-pscid='{$candidate}' data-visit='{$visit_label}' data-instrument='{$test_name}'>
 
 	</div>
 </div>
@@ -91,63 +87,7 @@
 
 
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="incomplete"></div>
-    <div role="tabpanel" class="tab-pane" id="conflicts"></div>
-    <div role="tabpanel" class="tab-pane" id="feedback"></div>
+    <div role="tabpanel" class="tab-pane active" id="incomplete" data-incomplete='{$Incomplete_candidates}'></div>
+    <div role="tabpanel" class="tab-pane" id="conflicts" data-conflicts='{$Conflicts}'></div>
+    <div role="tabpanel" class="tab-pane" id="feedback" data-feedback='{$Bvl_Feedback}'></div>
   </div>
-
-
-<script type="text/javascript" src="{$baseurl}/data_team_helper/js/behavioural_qc_module.js"></script>
-
-<script type="text/javascript">
-var incomplete = {$Incomplete_candidates|@json_encode};
-incomplete = JSON.parse(incomplete);
-
-var CandiPanel = IncompleteCandidatesPanel({
-	title: "Incomplete Forms",
-	header: ["Visit", "DCCID", "Instrument"],
-	incomplete_candidates: incomplete,
-    BaseURL : loris.BaseURL
-});
-
-var conflicts = {$Conflicts|@json_encode};
-conflicts = JSON.parse(conflicts);
-
-var ConflictsPanel = InstrumentConflictsPanel({
-	title: "Data Entry Conflicts",
-	header: ["Visit", "DCCID", "Instrument", "Field Name"],
-	conflicts: conflicts,
-    BaseURL : loris.BaseURL
-});
-
-var feedback = {$Bvl_Feedback|@json_encode};
-feedback = JSON.parse(feedback);
-
-var FeedbackTab = BehaviouralFeedbackTab({
-	title: "Behvarioural Feedback",
-	header:["DCCID", "Feedback Level", "Field Name"],
-	feedback: feedback,
-    BaseURL : loris.BaseURL
-});
-
-var percentCompleted = {$percent_completed|@json_encode};
-var pscid = {$candidate|@json_encode};
-var visit = {$visit_label|@json_encode};
-var instrument = {$test_name|@json_encode};
-
-var DataTeamGraphics = GraphicsPanel({
-	percentCompleted: percentCompleted,
-    pscid: pscid,
-    visit: visit,
-    instrument: instrument
-});
-
-ReactDOM.render(CandiPanel, document.getElementById("incomplete"));
-
-ReactDOM.render(ConflictsPanel, document.getElementById("conflicts"));
-
-ReactDOM.render(FeedbackTab, document.getElementById("feedback"));
-
-ReactDOM.render(DataTeamGraphics, document.getElementById("graphics"));
-
-</script>
