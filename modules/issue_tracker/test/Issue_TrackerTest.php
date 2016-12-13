@@ -28,6 +28,41 @@ require_once __DIR__ .
 
 class Issue_TrackerTest extends LorisIntegrationTest
 {
+
+   /**
+     * Insert testing data into the database
+     *
+     * @return none
+     */
+    function setUp()
+    {
+        parent::setUp();
+        $window = new WebDriverWindow($this->webDriver);
+        $size   = new WebDriverDimension(1024, 1768);
+        $window->setSize($size);
+        $this->DB->insert(
+            "issues",
+            array(
+             'issueID'         => '999999',
+             'title'           => 'Test Issue',
+             'reporter'        => 'UnitTester',
+             'assignee'        => 'UnitTester',
+             'status'          => 'new',
+             'priority'        => 'low',
+            );
+     }
+
+   /**
+     * Delete testing data from database
+     *
+     * @return none
+     */
+    function tearDown()
+    {
+        parent::tearDown();
+        $this->DB->delete("issues", array('issueID' => '999999'));
+    }
+
     /**
      * Tests that, when loading the Issue Tracker module, some
      * text appears in the body.
@@ -59,5 +94,17 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     
+    function testFilter()
+    {
+       $this->webDriver->get($this->url . "/issue_tracker/");
+       $this->webDriver->findElement(
+            WebDriverBy::Name("keyword"))->sendKeys("Test Issue");
+       $this->webDriver->findElement(
+            WebDriverBy::Name("filter"))->click();
+       $this->webDriver->get($this->url . "/issue_tracker/?format=json");
+       $bodyText = $this->webDriver->getPageSource();
+       $this->assertContains("Test Issue",$bodyText);
+
+    }    
 }
 ?>
