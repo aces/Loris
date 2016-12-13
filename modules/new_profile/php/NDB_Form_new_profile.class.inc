@@ -122,7 +122,6 @@ class NDB_Form_new_profile extends NDB_Form
         $DB = \Database::singleton();
         $user_list_of_sites = $user->getData('CentersID');
         $num_sites = count($user_list_of_sites);
-        print_r ($num_sites);
 
         if ($num_sites >1) {
             $psc_labelOptions = array(null => '');

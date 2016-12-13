@@ -199,17 +199,21 @@ class NDB_Form_Dashboard extends NDB_Form
             && $user->hasPermission('user_accounts')
         ) {
             $this->tpl_data['pending_users']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM users
-		WHERE Pending_approval='Y' AND (CenterID <> 1 OR CenterID IS NULL)",
+                "SELECT COUNT(*) FROM users 
+                LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
+		        WHERE users.Pending_approval='Y' AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
                 array()
             );
             $this->tpl_data['pending_users_site'] = 'Site: all';
         } elseif ($user->hasPermission('user_accounts')) {
+            $site_arr = $user->getCenterID();
             $this->tpl_data['pending_users']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM users 
-                 WHERE Pending_approval='Y' AND CenterID=:CID",
-                array('CID' => $siteID)
-            );
+            "SELECT COUNT(*) FROM users 
+                LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
+		        WHERE users.Pending_approval='Y' AND CenterID IN (:CID)",
+                array('CID' => implode(",", $site_arr))
+           );
+
             $this->tpl_data['pending_users_site'] = 'Site: ' . $site;
         }
 
