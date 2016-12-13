@@ -112,16 +112,33 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     
-    function testFilter()
+    /**
+     * Tests that Issue Tracker filter
+     *
+     * @return void
+     */
+    function testIssueTrackerFilter()
+    {
+       $this->-testFilter('keyword','Test Issue');
+       $this->-testFilter('issueID','999999');
+       $this->-testFilter('status','new');
+       
+    }
+    /**
+     * Tests that Issue Tracker filter
+     * 
+     * @return void
+     */ 
+    private function _testFilter($name,$value)
     {
        $this->webDriver->get($this->url . "/issue_tracker/");
        $this->webDriver->findElement(
-            WebDriverBy::Name("keyword"))->sendKeys("Test Issue");
+            WebDriverBy::Name($name))->sendKeys($value);
        $this->webDriver->findElement(
             WebDriverBy::Name("filter"))->click();
        $this->webDriver->get($this->url . "/issue_tracker/?format=json");
        $bodyText = $this->webDriver->getPageSource();
-       $this->assertContains("Test Issue",$bodyText);
+       $this->assertContains($value,$bodyText);
 
     }    
 }
