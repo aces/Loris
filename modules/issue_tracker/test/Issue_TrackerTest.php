@@ -26,7 +26,7 @@ require_once __DIR__ .
  * @link     https://github.com/aces/Loris
  */
 
-class issue_trackerTest extends LorisIntegrationTest
+class Issue_TrackerTest extends LorisIntegrationTest
 {
     /**
      * Tests that, when loading the Issue Tracker module, some
