@@ -37,7 +37,6 @@ class NDB_Form_Dashboard extends NDB_Form
         $user   = User::singleton();
         $config = NDB_Config::singleton();
         $site   = $user->getSiteName();
-                                                                                   /************************************************/
         $userID     = $user->getUsername();
         $last_login = $DB->pselectOne(
             "SELECT MAX(Login_timestamp)
