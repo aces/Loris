@@ -119,9 +119,9 @@ class Issue_TrackerTest extends LorisIntegrationTest
      */
     function testIssueTrackerFilter()
     {
-       $this->-testFilter('keyword','Test Issue');
-       $this->-testFilter('issueID','999999');
-       $this->-testFilter('status','new');
+       $this->_testFilter('keyword','Test Issue');
+       $this->_testFilter('issueID','999999');
+       $this->_testFilter('status','new');
        
     }
     /**
