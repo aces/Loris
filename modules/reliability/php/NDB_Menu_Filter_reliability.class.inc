@@ -404,11 +404,11 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         if($newCommentID['NewCenterID'] !== $CommentID['OldCenterID']) {
             return array('error' => "Candidates are not from the same site. Cannot swap candidates across sites.");
         }
-        elseif($user->getCenterID() != $newCommentID['NewCenterID']) {
+        elseif(!in_array($newCommentID['NewCenterID'], $user->getCenterID())) {
             $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." is from a different site than you. Can only swap candidates from the same site.";
             return array('error' =>$error_msg);
         }
-        elseif($user->getCenterID() != $CommentID['OldCenterID']) {
+        elseif(!in_array($CommentID['OldCenterID'], $user->getCenterID())) {
            $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." is from a different site than you. Can only swap candidates from the same site.";
            return array('error' => $error_msg);
 
