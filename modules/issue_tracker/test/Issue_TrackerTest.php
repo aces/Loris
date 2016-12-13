@@ -49,7 +49,8 @@ class Issue_TrackerTest extends LorisIntegrationTest
              'assignee'        => 'UnitTester',
              'status'          => 'new',
              'priority'        => 'low',
-            );
+             )
+         );
      }
 
    /**
