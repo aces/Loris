@@ -45,8 +45,6 @@ class Issue_TrackerTest extends LorisIntegrationTest
             array(
              'issueID'         => '999999',
              'title'           => 'Test Issue',
-             'reporter'        => 'UnitTester',
-             'assignee'        => 'UnitTester',
              'status'          => 'new',
              'priority'        => 'low',
              )
