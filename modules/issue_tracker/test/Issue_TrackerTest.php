@@ -29,7 +29,7 @@ require_once __DIR__ .
 class Issue_TrackerTest extends LorisIntegrationTest
 {
 
-   /**
+    /**
      * Insert testing data into the database
      *
      * @return none
@@ -43,32 +43,32 @@ class Issue_TrackerTest extends LorisIntegrationTest
          $this->DB->insert(
              "psc",
              array(
-              'CenterID' => '55',
-              'Name' => 'TESTinPSC',
-              'Alias' => 'tst',
-              'MRI_alias' => 'test'
+              'CenterID'  => '55',
+              'Name'      => 'TESTinPSC',
+              'Alias'     => 'tst',
+              'MRI_alias' => 'test',
              )
          );
-        $this->DB->insert(
-            "users",
-            array(
-             'ID'         => '999998',
-             'UserID'           => 'TestUser',
+         $this->DB->insert(
+             "users",
+             array(
+              'ID'     => '999998',
+              'UserID' => 'TestUser',
              )
          );
-        $this->DB->insert(
-            "issues",
-            array(
-             'issueID'         => '999999',
-             'title'           => 'Test Issue',
-             'status'          => 'new',
-             'priority'        => 'low',
-             'reporter'        => 'TestUser',
+         $this->DB->insert(
+             "issues",
+             array(
+              'issueID'  => '999999',
+              'title'    => 'Test Issue',
+              'status'   => 'new',
+              'priority' => 'low',
+              'reporter' => 'TestUser',
              )
          );
-     }
+    }
 
-   /**
+    /**
      * Delete testing data from database
      *
      * @return none
@@ -111,37 +111,72 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->assertContains("Issues", $bodyText);
         $this->resetPermissions();
     }
-    
+
     /**
-     * Tests that Issue Tracker filter
+     * Tests that Issue Tracker's filters
      *
      * @return void
      */
     function testIssueTrackerFilter()
     {
-       $this->_testFilter('keyword','Test Issue');
-       $this->_testFilter('issueID','999999');
-       $this->_testFilter('status','new');
-       $this->_testFilter('priority','low');
-       $this->_testFilter('reporter','TestUser');
-
+        $this->_testFilter('keyword', 'Test Issue');
+        $this->_testFilter('issueID', '999999');
+        $this->_testFilter('status', 'new');
+        $this->_testFilter('priority', 'low');
+        $this->_testFilter('reporter', 'TestUser');
     }
     /**
      * Tests that Issue Tracker filter
-     * 
+     *
+     * @param string $name  input the element name which we need test
+     * @param string $value input the value that we expect
+     *
      * @return void
-     */ 
+     */
     private function _testFilter($name,$value)
     {
-       $this->webDriver->get($this->url . "/issue_tracker/");
-       $this->webDriver->findElement(
-            WebDriverBy::Name($name))->sendKeys($value);
-       $this->webDriver->findElement(
-            WebDriverBy::Name("filter"))->click();
-       $this->webDriver->get($this->url . "/issue_tracker/?format=json");
-       $bodyText = $this->webDriver->getPageSource();
-       $this->assertContains($value,$bodyText);
+        $this->webDriver->get($this->url . "/issue_tracker/");
+        $this->webDriver->findElement(
+            WebDriverBy::Name($name)
+        )->sendKeys($value);
+        $this->webDriver->findElement(
+            WebDriverBy::Name("filter")
+        )->click();
+        $this->webDriver->get($this->url . "/issue_tracker/?format=json");
+        $bodyText = $this->webDriver->getPageSource();
+        $this->assertContains($value, $bodyText);
 
-    }    
+    }
+    /**
+     * Tests that adding a new issue
+     *
+     * @return void
+     */
+    function testIssueTrackerAddNewIssue()
+    {
+      $this->webDriver->get($this->url . 
+    "/issue_tracker/edit/?issueID=0&backURL=/issue_tracker/&subtest=newIssue");
+      $this->webDriver->findElement(
+            WebDriverBy::Name("title")
+        )->sendKeys("test issue");
+      $this->webDriver->findElement(
+            WebDriverBy::Name("assignee")
+        )->sendKeys("Unit Tester");
+      $this->webDriver->findElement(
+            WebDriverBy::Name("comment")
+        )->sendKeys("Unit Tester added a new test issue.");
+      $this->webDriver->findElement(
+            WebDriverBy::Xpath("//*[@id='issue-newIssue-form']/div/form/div/".
+                    "div[6]/div/div[1]/div[13]/div[1]/div/button")
+        )->click();
+      $this->webDriver->get($this->url . "/issue_tracker/?format=json");
+      $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains("test issue", $bodyText);      
+      $this->DB->delete("issues", array('title' => 'test issue'));
+
+       
+    }
 }
 ?>
