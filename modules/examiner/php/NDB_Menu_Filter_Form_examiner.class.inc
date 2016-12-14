@@ -66,17 +66,8 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         $user = User::singleton();
         if (!$user->hasPermission('examiner_multisite')) {
-            $query .= " AND e.CenterID=";
-            $site_arr = $user->getCenterID();
-            $last_key = end(array_keys($site_arr));
-            foreach ($site_arr as $key=>$val) {
-                if ($key == $last_key) {
-                    $query .= $val;
-                 }
-                else {
-                    $query .= $val . " OR e.CenterID=";
-                 }
-            }
+            $site_arr = implode(",", $user->getCenterID());
+            $this->query .= " AND e.CenterID IN (" . $site_arr . ")";
         }
 
         // set the class variables
@@ -138,12 +129,13 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         } else {
             // allow only to view own site data
             $site_arr = $user->getData('CentersID');
-            foreach ($site_arr as $key=>$val) {
-                $site_arr[$key] = Site::singleton($val);
-                if ($site_arr[$key]->isStudySite()) {
-                    $sites[$val] = $site_arr[$key]->getCenterName();
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $sites[$val] = $site[$key]->getCenterName();
                 }
             }
+            $sites = array('' => 'User All Sites') + $sites;
         }
 
         // Radiologist options

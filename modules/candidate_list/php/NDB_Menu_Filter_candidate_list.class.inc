@@ -138,17 +138,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
 
         if (!$user->hasPermission('access_all_profiles')) {
 
-            $this->query .= " AND c.CenterID=";
-            $site_arr = $user->getCenterID();
-            $last_key = end(array_keys($site_arr));
-            foreach ($site_arr as $key=>$val) {
-                if ($key == $last_key) {
-                    $this->query .= $val;
-                }
-                else {
-                    $this->query .= $val . " OR c.CenterID=";
-                }
-            }
+            $site_arr = implode(",", $user->getCenterID());
+            $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 
         //'COALESCE(pso.ID,1) AS Participant_Status',
@@ -236,12 +227,13 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         } else {
             // allow only to view own site data
             $site_arr = $user->getData('CentersID');
-            foreach ($site_arr as $key=>$val) {
-                $site[$key] = & Site::singleton($val);
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
                 if ($site[$key]->isStudySite()) {
                     $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
             }
+            $list_of_sites = array('' => 'User All Sites') + $list_of_sites;
         }
 
         // SubprojectID

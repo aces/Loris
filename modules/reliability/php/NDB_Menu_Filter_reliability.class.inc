@@ -83,18 +83,10 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
-            $query .= " AND candidate.CenterID=";
-            $site_arr = $user->getData('CentersID');
-            $last_key = end(array_keys($site_arr));
-            foreach ($site_arr as $key=>$val) {
-                if ($key == $last_key) {
-                    $query .= $DB->quote($val);
-                }
-                else {
-                    $query .= $DB->quote($val) . " OR candidate.CenterID=";
-                }
-            }
+            $site_arr = implode(",", $user->getCenterID());
+            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
+
         $config=&NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         // set the class variables
@@ -164,6 +156,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                     $list_of_sites[$key] = $site[$key]->getCenterName();
             //    }
             }
+            $list_of_sites = array('' => 'User All Sites') + $list_of_sites;
         }
 
         /// hack for Visit Labels... maybe get all the real visit labels from DB?
