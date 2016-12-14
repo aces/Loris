@@ -148,35 +148,38 @@ class Issue_TrackerTest extends LorisIntegrationTest
 
     }
     /**
-     * Tests that adding a new issue
+     * Tests that new issue page loads
      *
      * @return void
      */
-    function testIssueTrackerAddNewIssue()
+    function testIssueTrackerAddNewIssueLoad()
     {
       $this->webDriver->get($this->url . 
     "/issue_tracker/edit/?issueID=0&backURL=/issue_tracker/&subtest=newIssue");
-      $this->webDriver->findElement(
-            WebDriverBy::Name("title")
-        )->sendKeys("test issue");
-      $this->webDriver->findElement(
-            WebDriverBy::Name("assignee")
-        )->sendKeys("Unit Tester");
-      $this->webDriver->findElement(
-            WebDriverBy::Name("comment")
-        )->sendKeys("Unit Tester added a new test issue.");
-      $this->webDriver->findElement(
-            WebDriverBy::Xpath("//*[@id='issue-newIssue-form']/div/form/div/".
-                    "div[6]/div/div[1]/div[13]/div[1]/div/button")
-        )->click();
-      $this->webDriver->get($this->url . "/issue_tracker/?format=json");
       $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("test issue", $bodyText);      
-      $this->DB->delete("issues", array('title' => 'test issue'));
-
+        $this->assertContains("New Issue", $bodyText);      
        
+    }
+    /**
+     * Tests Clear Form function in Issue Tracker
+     *
+     * @return void
+     */
+    function testClearFormIssueTracker()
+    {
+         $this->safeGet($this->url . "/issue_tracker/");
+         $keywordElement = $this->webDriver->findElement(
+             WebDriverBy::Name("keyword")
+         );
+         $keywordElement->sendkeys('TestTestTest');
+         //click clear form button
+         $this->webDriver->findElement(WebDriverBy::Name("reset"))->click();
+         $bodyText =$this->webDriver->findElement(
+             WebDriverBy::Name("keyword")
+         )->getText();
+         $this->assertNotContains("TestTestTest", $bodyText);
     }
 }
 ?>
