@@ -148,23 +148,6 @@ class Issue_TrackerTest extends LorisIntegrationTest
 
     }
     /**
-     * Tests that new issue page loads
-     *
-     * @return void
-     */
-    function testIssueTrackerAddNewIssueLoad()
-    {
-        $this->webDriver->get(
-            $this->url .
-            "/issue_tracker/edit/?issueID=0&backURL=/issue_tracker/&subtest=newIssue"
-        );
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("New Issue", $bodyText);
-
-    }
-    /**
      * Tests Clear Form function in Issue Tracker
      *
      * @return void
