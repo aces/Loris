@@ -348,12 +348,13 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
         } else {
             // allow only to view own site data
             $site_arr = $user->getData('CentersID');
-            foreach ($site_arr as $key=>$val) {
-                $site[$key] = Site::singleton($val);
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
                 if ($site[$key]->isStudySite()) {
-                    $sites[$key] = $site[$key]->getCenterName();
+                    $sites[$val] = $site[$key]->getCenterName();
                 }
             }
+            $sites = array('' => 'User All Sites') + $sites;
         } 
         $this->addSelect('Site', 'Site', $sites);
                 

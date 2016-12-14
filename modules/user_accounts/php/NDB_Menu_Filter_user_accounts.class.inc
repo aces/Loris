@@ -52,17 +52,8 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
             LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
             WHERE 1=1";
         if (!$user->hasPermission('user_accounts_multisite')) {
-            $query .= " AND user_psc_rel.CenterID=";
-            $site_arr = $user->getCenterID();
-            $last_key = end(array_keys($site_arr));
-            foreach ($site_arr as $key=>$val) {
-                if ($key == $last_key) {
-                    $query .= $val;
-                }
-                else {
-                    $query .= $val . " OR user_psc_rel.CenterID=";
-                }
-            }
+            $site_arr = implode(",", $user->getCenterID());
+            $this->query .= " AND user_psc_rel.CenterID IN (" . $site_arr . ")";
         }
 
         // set the class variables
@@ -107,8 +98,8 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
                 $site[$key] = & Site::singleton($val);
                 $list_of_sites[$val] = $site[$key]->getCenterName();
             }
+            $list_of_sites = array('' => 'User All Sites') + $list_of_sites;
         }
-
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);
         $this->addSelect(

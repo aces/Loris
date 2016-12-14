@@ -88,17 +88,8 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $user = User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
             // restrict data to own site
-            $this->query .= " AND candidate.CenterID=";
-            $site_arr = $user->getCenterID();
-            $last_key = end(array_keys($site_arr));
-            foreach ($site_arr as $key=>$val) {
-                if ($key == $last_key) {
-                    $this->query .= $val;
-                }
-                else {
-                    $this->query .= $val . " OR candidate.CenterID=";
-                }
-            }
+            $site_arr = implode(",", $user->getCenterID());
+            $this->query .= " AND i.CenterID IN (" . $site_arr . ")";
         }
 
         $this->group_by     = '';
@@ -210,13 +201,15 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         } else {
             // allow only to view own site data
             $site_arr = $user->getData('CentersID');
-            foreach ($site_arr as $key=>$val) {
-                $site[$key] =& Site::singleton($val);
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
                 if ($site[$key]->isStudySite()) {
                     $sites[$val] = $site[$key]->getCenterName();
                 }
             }
+            $sites = array('' => 'User All Sites') + $sites;
         }
+
 
         // Add form elements
         $this->addSelect('site', 'Site:', $sites);
