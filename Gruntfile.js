@@ -29,6 +29,7 @@ module.exports = function(grunt) {
           'modules/media/js/uploadForm.js': 'modules/media/jsx/uploadForm.js',
           'modules/issue_tracker/js/columnFormatter.js': 'modules/issue_tracker/jsx/columnFormatter.js',
           'modules/issue_tracker/js/editIssue.js': 'modules/issue_tracker/jsx/editIssue.js',
+          'modules/issue_tracker/js/index.js': 'modules/issue_tracker/jsx/index.js',
           'modules/help_editor/js/index.js': 'modules/help_editor/jsx/index.js',
           'modules/candidate_parameters/js/index.js': 'modules/candidate_parameters/jsx/index.js',
           'modules/candidate_parameters/js/candidateInfo.js': 'modules/candidate_parameters/jsx/candidateInfo.js',
@@ -36,7 +37,15 @@ module.exports = function(grunt) {
           'modules/candidate_parameters/js/familyInfo.js': 'modules/candidate_parameters/jsx/familyInfo.js',
           'modules/candidate_parameters/js/participantStatus.js': 'modules/candidate_parameters/jsx/participantStatus.js',
           'modules/candidate_parameters/js/probandInfo.js': 'modules/candidate_parameters/jsx/probandInfo.js',
-          'modules/configuration/js/SubprojectRelations.js': 'modules/configuration/jsx/SubprojectRelations.js'
+          'modules/configuration/js/SubprojectRelations.js': 'modules/configuration/jsx/SubprojectRelations.js',
+          'modules/conflict_resolver/js/conflict_resolver_index.js': 'modules/conflict_resolver/jsx/conflict_resolver_index.js',
+          'modules/conflict_resolver/js/resolved_conflicts_index.js': 'modules/conflict_resolver/jsx/resolved_conflicts_index.js',
+          'modules/data_team_helper/js/index.js': 'modules/data_team_helper/jsx/index.js',
+          'modules/datadict/js/index.js': 'modules/datadict/jsx/index.js',
+          'modules/reliability/js/index.js': 'modules/reliability/jsx/index.js',
+          'modules/server_processes_manager/js/index.js': 'modules/server_processes_manager/jsx/index.js',
+          'modules/survey_accounts/js/index.js': 'modules/survey_accounts/jsx/index.js',
+          'modules/user_accounts/js/index.js': 'modules/user_accounts/jsx/index.js'
         }
       },
       transpileES5: {
