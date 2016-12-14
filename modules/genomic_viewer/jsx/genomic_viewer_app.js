@@ -25,7 +25,7 @@ class ControlPanel extends React.Component {
 
   // Update the state on each key sent.
   handleChange(event) {
-    this.setState({genomicRange: event.target.value});
+    this.setState({genomicRange: event.target.value.trim()});
   }
 
   // Submit the new value to the GenomicViewerApp
@@ -255,33 +255,40 @@ class Gene extends React.Component {
       for (let i = 0; i < count; i++) {
         let exonStart = parseInt(exonStarts[i]);
         let exonEnd = parseInt(exonEnds[i]);
-        let exonWidth, exonHeight, utrHeight;
  
-        exonStart = (exonStart < start) ? 0 : (exonStart - start) * xScale;
-        exonEnd = (exonEnd > end) ? width : (exonEnd - start) * xScale;
-        exonWidth = exonEnd - exonStart;
-        exonHeight = height;
-        utrHeight = height / 2;
+        if (exonStart < end && exonEnd > start) {
+          if (exonStart <= cdsStart) {
+            if (exonEnd <= cdsStart) {
+              // The whole exon is in UTR
+              let x = (exonStart < start) ? 0 : (exonStart - start) * xScale;
+              let exonWidth = (exonEnd > end) ? width - x : (exonEnd - start) * xScale - x;
 
-        // UTR checks
-        if (exonStart < cdsStart) {
-          if (exonEnd < cdsStart) {
-            // The whole exon is UTR
+              ctx.fillStyle="#000080";
+              ctx.fillRect( x, height / 4 , exonWidth, height / 2);
+
+            } else {
+              // This exon is both UTR and exon
+              let x = (exonStart < start) ? 0 : (exonStart - start) * xScale;
+              let utrWidth = (cdsStart - start) * xScale - x;
+              let exonWidth = (exonEnd > end) ? width - (x + utrWidth) : (exonEnd - cdsStart) * xScale;
+ 
+              ctx.fillStyle="#000080";
+              ctx.fillRect( x, height / 4 , utrWidth, height / 2);
+              ctx.fillRect( (x + utrWidth), 0, exonWidth, height);
+            }
+          } else if (exonEnd >= cdsEnd) {
+            // if (exonStart <= cdsStart) {
           } else {
-            // Draw the UTR part the the remainiing exon
+            // It is all exoninc
+
+            let x = (exonStart < start) ? 0 : (exonStart - start) * xScale;
+            let exonWidth = (exonEnd > end) ? width - x : (exonEnd - start) * xScale - x;
+
+            ctx.fillStyle="#000080";
+            ctx.fillRect( x, 0, exonWidth, height);
           }
         }
-        if (exonEnd > cdsEnd) {
-          if (exonStart > cdsEnd) {
-            // The whole exon is UTR
-          } else {
-            // Draw the UTR part the the remainiing exon
-          }
-        }
 
-        ctx.fillStyle="#000080";
-        ctx.fillRect(exonStart,0,exonWidth,exonHeight);
-        
       }
     }
   }
@@ -312,8 +319,8 @@ Gene.propTypes = {
   strand: React.PropTypes.string,
   txStart: React.PropTypes.number.isRequired,
   txEnd: React.PropTypes.number.isRequired,
-  cdsStart: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-  cdsEnd: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  cdsStart: React.PropTypes.number.isRequired,
+  cdsEnd: React.PropTypes.number.isRequired,
   exonStarts: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
   exonEnds: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
   name: React.PropTypes.string
@@ -402,14 +409,13 @@ class GeneTrack extends React.Component {
        const accession_number = g.name;
        const chrom = g.chrom;
        const strand = g.strand;
-       const txStart = g.txStart;
-       const txEnd = g.txEnd;
-       const cdsStart = g.cdsStart;
-       const cdsEnd = g.cdsEnd;
-       const exonStarts = g.exonStarts.split(',');
-       const exonEnds = g.exonEnds.split(',');
+       const txStart = parseInt(g.txStart);
+       const txEnd = parseInt(g.txEnd);
+       const cdsStart = parseInt(g.cdsStart);
+       const cdsEnd = parseInt(g.cdsEnd);
+       const exonStarts = g.exonStarts.split(',').map(function (e) {return parseInt(e);});
+       const exonEnds = g.exonEnds.split(',').map(function (e) {return parseInt(e);});
        const name = g.geneName;
-
       return (
         <Gene 
           genomicRange={genomicRange}
