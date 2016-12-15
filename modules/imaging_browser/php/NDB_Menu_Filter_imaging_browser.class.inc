@@ -205,11 +205,17 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             }
         }
 
+        $visits = Utility::getVisitList();
+        $visits = array_merge(array('' => 'All'), $visits);
+        $visits = array_merge($visits, array('%phantom%' => 'Phantom'));
+
         $DB = Database::singleton();
         $allAr = array('' => 'All');
         $this->addBasicText('pscid', 'PSCID', array("size"=>10,"maxlength"=>25));
-        $this->addBasicText(
-            'VL', 'Visit Label', array('size' => "10", "maxlength"=>"25")
+        $this->addSelect(
+            'VL',
+            'Visit Label',
+            $visits
         );
         $this->addBasicText(
             'DCCID', 'DCCID', array('size' => 10, "maxlength" => 25)
