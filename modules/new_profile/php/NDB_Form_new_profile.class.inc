@@ -10,7 +10,7 @@ class NDB_Form_new_profile extends NDB_Form
         // create user object
         $user =& User::singleton();
 
-        $site_arr = $user->getData('CentersID');
+        $site_arr = $user->getData('CenterIDs');
         foreach ($site_arr as $key=>$val) {
             $site[$key] = & Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
@@ -38,14 +38,14 @@ class NDB_Form_new_profile extends NDB_Form
 
         // create the candidate
         $DB = \Database::singleton();
-        $site_arr = $user->getData('CentersID');
+        $site_arr = $user->getData('CenterIDs');
         $num_sites = count($site_arr);
 
         if ($num_sites >1) {
             $candID = Candidate::createNew($values['psc'], $dob, $edc, $values['gender'], $values['PSCID']);
         }
         else {
-            $candID = Candidate::createNew($user->getData('CentersID'), $dob, $edc, $values['gender'], $values['PSCID']);
+            $candID = Candidate::createNew($user->getData('CenterIDs'), $dob, $edc, $values['gender'], $values['PSCID']);
         }
 
         // get the candidate
@@ -120,7 +120,7 @@ class NDB_Form_new_profile extends NDB_Form
         // add sites for users with more than one site affiliation
         $user =& User::singleton();
         $DB = \Database::singleton();
-        $user_list_of_sites = $user->getData('CentersID');
+        $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites = count($user_list_of_sites);
 
         if ($num_sites >1) {

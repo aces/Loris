@@ -347,7 +347,7 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
             }
         } else {
             // allow only to view own site data
-            $site_arr = $user->getData('CentersID');
+            $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);
                 if ($site[$key]->isStudySite()) {

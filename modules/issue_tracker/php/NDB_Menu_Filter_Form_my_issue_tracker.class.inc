@@ -54,7 +54,7 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
 
         if (!$user->hasPermission('access_all_profiles')) {
             $this->query .= " AND i.centerID=";
-            $site_arr = $user->getData('CentersID');
+            $site_arr = $user->getData('CenterIDs');
             $last_key = end(array_keys($site_arr));
             foreach ($site_arr as $key=>$val) {
                 if ($key == $last_key) {
@@ -172,7 +172,7 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
                 $list_of_sites = array('' => 'All') + $list_of_sites;
             }
         } else {// allow only to view own site data
-            $site_arr = $user->getData('CentersID');
+            $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key=>$val) {
                 $site[$key] = Site::singleton($val);
                 if ($site[$key]->isStudySite()) {

@@ -161,7 +161,7 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
                 $list_of_sites = array('' => 'All') + $list_of_sites;
             }
         } else {// allow only to view own site data
-            $site_arr = $user->getData('CentersID');
+            $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);
                 if ($site[$key]->isStudySite()) {

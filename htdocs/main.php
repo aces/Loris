@@ -81,7 +81,7 @@ $tpl_data['study_title'] = $config->getSetting('title');
 // draw the user information table
 try {
     $user =& User::singleton();
-    $site_arr = $user->getData('CentersID');
+    $site_arr = $user->getData('CenterIDs');
     foreach ($site_arr as $key=>$val) {
         $site[$key] = & Site::singleton($val);
         $isStudySite[$key] = $site[$key]->isStudySite();

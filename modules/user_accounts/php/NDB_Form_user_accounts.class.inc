@@ -208,12 +208,8 @@ class NDB_Form_User_Accounts extends NDB_Form
         // If editing a user and nothing was specified in the password text field
         // remove Password_md5 from the value set, otherwise Password_md5
         // will be set to '' by the system
-<<<<<<< HEAD
         if ($values['Password_hash'] == '' && !$this->isCreatingNewUser()) {
             unset($values['Password_hash']);
-=======
-        if ($values['Password_md5'] == '' && !$this->isCreatingNewUser()) {
-            unset($values['Password_md5']);
         }
 
         // multi-site UPDATE
@@ -235,7 +231,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             $pr_cid = $center['CenterID'];
             array_push($us_prev_sites, $pr_cid);
         }
-        $curr_sites = $values['CentersID'];
+        $curr_sites = $values['CenterIDs'];
         foreach ($curr_sites as $key=>$val) {
             //get MultiSelected CenterID
             array_push($us_curr_sites, $val);
@@ -260,7 +256,6 @@ class NDB_Form_User_Accounts extends NDB_Form
             } elseif (in_array($val, $us_prev_sites)) {
                 unset($values['CenterID'][$key]);
             }
->>>>>>> getSiteID becomes getCentersID and removal of printr statements and cleanup of comments
         }
         if ($this->page === 'edit_user') {
             // multi-site UPDATE
@@ -281,12 +276,9 @@ class NDB_Form_User_Accounts extends NDB_Form
             unset($values['CenterIDs']);
             // END multi-site UPDATE
         }
-<<<<<<< HEAD
-=======
         //END MULTI-SITE
-        unset($values['CentersID']);
+        unset($values['CenterIDs']);
 
->>>>>>> getSiteID becomes getCentersID and removal of printr statements and cleanup of comments
         // EXAMINER UPDATE
         $ex_curr_sites = array();
         $ex_prev_sites = array();
@@ -654,17 +646,12 @@ class NDB_Form_User_Accounts extends NDB_Form
                 $siteOptions[$val] = $site[$key]->getCenterName();
             }
         }
-<<<<<<< HEAD
         $this->addSelect(
             'CenterIDs',
             'Sites',
             $siteOptions,
             array('multiple' => 'multiple')
         );
-=======
-        $this->addSelect('CentersID', 'Sites', $siteOptions, array("multiple"=>"multiple"));
-
->>>>>>> getSiteID becomes getCentersID and removal of printr statements and cleanup of comments
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases
             $DB      =& Database::singleton();

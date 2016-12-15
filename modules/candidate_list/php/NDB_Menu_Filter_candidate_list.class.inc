@@ -33,7 +33,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
-        $site_arr = $user->getData('CentersID');
+        $site_arr = $user->getData('CenterIDs');
         foreach ($site_arr as $key=>$val) {
             $site[$key] = & Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
@@ -226,7 +226,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site_arr = $user->getData('CentersID');
+            $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);
                 if ($site[$key]->isStudySite()) {
