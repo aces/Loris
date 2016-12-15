@@ -98,7 +98,7 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
                 $site[$key] = & Site::singleton($val);
                 $list_of_sites[$val] = $site[$key]->getCenterName();
             }
-            $list_of_sites = array('' => 'User All Sites') + $list_of_sites;
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
         // add form elements
         $this->addSelect('centerID', 'Site:', $list_of_sites);

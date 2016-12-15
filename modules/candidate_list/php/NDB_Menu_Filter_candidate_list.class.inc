@@ -233,7 +233,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                     $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $list_of_sites = array('' => 'User All Sites') + $list_of_sites;
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         // SubprojectID

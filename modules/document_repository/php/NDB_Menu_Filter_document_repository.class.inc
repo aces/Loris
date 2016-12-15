@@ -101,7 +101,7 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
                 if ($site[$key]->isStudySite()) {
                     $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
-                $list_of_sites = array('' => 'User All Sites') + $list_of_sites;
+                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
             }
         }
 

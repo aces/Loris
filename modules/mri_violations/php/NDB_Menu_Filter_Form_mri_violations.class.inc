@@ -354,7 +354,7 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
                     $sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $sites = array('' => 'User All Sites') + $sites;
+            $sites = array('' => 'All User Sites') + $sites;
         } 
         $this->addSelect('Site', 'Site', $sites);
                 
