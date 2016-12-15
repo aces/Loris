@@ -59,11 +59,11 @@ GenomicFileUploadModal = React.createClass({
                         var result = JSON.parse( new_response );
                         console.log(result);
 
-                        //document.getElementById("uploadStatus").innerHTML = result.message + '';
-                        //document.getElementById('progressBar').style.width = result.progress + "%";
-                        //if (result.error != undefined) {
-                        //    document.getElementById('progressBar').style.backgroundColor = 'red';
-                        //}
+                        document.getElementById("progressBar").innerHTML = result.message + '';
+                        document.getElementById('progressBar').style.width = result.progress + "%";
+                        if (result.error != undefined) {
+                           document.getElementById('progressBar').className = 'progress-bar progress-bar-danger';
+                        }
 
                         xhr.previous_text = xhr.responseText;
                         break;
@@ -166,10 +166,12 @@ UploadForm = React.createClass({
                     inputs.push(<FileInput name='fileMapping' label='Mapping :'/>);
                 }
                 inputs.push(<CheckboxInput handleChange={this.handleCheckboxChange} checked={this.state.useColumnHeaders} name='pscidColumn' />);
+                inputs.push(<ProgressBar name='progressbar' label='Progress :' />);
                 break;
             case 'Other':
                 inputs.push(<FileInput name='fileData' label='File :'/>);
                 inputs.push(<TextAreaInput name='description' label='Description :' />);
+                inputs.push(<ProgressBar name='progressbar' label='Progress :' />);
                 break;
         }
 
@@ -327,3 +329,23 @@ CheckboxInput = React.createClass({
     }
 });
 
+ProgressBar = React.createClass({
+
+    propTypes: {
+        name: React.PropTypes.string,
+        label: React.PropTypes.string
+    },
+
+    render: function () {
+        return (
+            <div className="col-xs-12 form-group">
+                <label className="col-xs-3" for={this.props.name}>{this.props.label}</label>
+                <div className="col-xs-9">
+                    <div className="progress" style={{"height" : "20px"}}>
+                        <div className="progress-bar progress-bar-success" id="progressBar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"/>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+});

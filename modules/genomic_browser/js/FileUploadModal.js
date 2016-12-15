@@ -61,11 +61,11 @@ GenomicFileUploadModal = React.createClass({
                         var result = JSON.parse(new_response);
                         console.log(result);
 
-                        //document.getElementById("uploadStatus").innerHTML = result.message + '';
-                        //document.getElementById('progressBar').style.width = result.progress + "%";
-                        //if (result.error != undefined) {
-                        //    document.getElementById('progressBar').style.backgroundColor = 'red';
-                        //}
+                        document.getElementById("progressBar").innerHTML = result.message + '';
+                        document.getElementById('progressBar').style.width = result.progress + "%";
+                        if (result.error != undefined) {
+                            document.getElementById('progressBar').className = 'progress-bar progress-bar-danger';
+                        }
 
                         xhr.previous_text = xhr.responseText;
                         break;
@@ -172,7 +172,6 @@ UploadForm = React.createClass({
             useColumnHeaders: true };
     },
 
-    // Change this to false when we are ready to use Mapping files
     getDefaultProps: function () {
         return {
             validate: null
@@ -208,10 +207,12 @@ UploadForm = React.createClass({
                     inputs.push(React.createElement(FileInput, { name: 'fileMapping', label: 'Mapping :' }));
                 }
                 inputs.push(React.createElement(CheckboxInput, { handleChange: this.handleCheckboxChange, checked: this.state.useColumnHeaders, name: 'pscidColumn' }));
+                inputs.push(React.createElement(ProgressBar, { name: 'progressbar', label: 'Progress :' }));
                 break;
             case 'Other':
                 inputs.push(React.createElement(FileInput, { name: 'fileData', label: 'File :' }));
                 inputs.push(React.createElement(TextAreaInput, { name: 'description', label: 'Description :' }));
+                inputs.push(React.createElement(ProgressBar, { name: 'progressbar', label: 'Progress :' }));
                 break;
         }
 
@@ -408,6 +409,37 @@ CheckboxInput = React.createClass({
                     { className: 'user-success', name: this.props.name, id: this.props.name, type: 'checkbox', checked: 'true', style: { 'margin-right': '1em' } },
                     'Use PSCID in column headers',
                     this.props.label
+                )
+            )
+        );
+    }
+});
+
+ProgressBar = React.createClass({
+    displayName: 'ProgressBar',
+
+
+    propTypes: {
+        name: React.PropTypes.string,
+        label: React.PropTypes.string
+    },
+
+    render: function () {
+        return React.createElement(
+            'div',
+            { className: 'col-xs-12 form-group' },
+            React.createElement(
+                'label',
+                { className: 'col-xs-3', 'for': this.props.name },
+                this.props.label
+            ),
+            React.createElement(
+                'div',
+                { className: 'col-xs-9' },
+                React.createElement(
+                    'div',
+                    { className: 'progress', style: { "height": "20px" } },
+                    React.createElement('div', { className: 'progress-bar progress-bar-success', id: 'progressBar', role: 'progressbar', 'aria-valuenow': '0', 'aria-valuemin': '0', 'aria-valuemax': '100' })
                 )
             )
         );
