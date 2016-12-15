@@ -99,7 +99,7 @@ class User extends UserPermissions
         }
         // store user data in object property
         $row['examiner'] =$examiner_info;
-        $row['CentersID']   =$user_cid;
+        $row['CenterIDs']   =$user_cid;
         $obj->userInfo   =$row;
         return $obj;
     }
@@ -222,7 +222,7 @@ class User extends UserPermissions
      */
     function getCenterID()
     {
-        return $this->userInfo['CentersID'];
+        return $this->userInfo['CenterIDs'];
     }
 
 

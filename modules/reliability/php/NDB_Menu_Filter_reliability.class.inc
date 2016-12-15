@@ -156,7 +156,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                     $list_of_sites[$key] = $site[$key]->getCenterName();
             //    }
             }
-            $list_of_sites = array('' => 'User All Sites') + $list_of_sites;
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         /// hack for Visit Labels... maybe get all the real visit labels from DB?

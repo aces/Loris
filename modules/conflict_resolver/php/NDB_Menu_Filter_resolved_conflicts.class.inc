@@ -207,7 +207,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                     $sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $sites = array('' => 'User All Sites') + $sites;
+            $sites = array('' => 'All User Sites') + $sites;
         }
 
 

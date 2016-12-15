@@ -359,7 +359,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                     $sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $sites = array('' => 'User All Sites') + $sites;
+            $sites = array('' => 'All User Sites') + $sites;
         }
 
         // Add form elements

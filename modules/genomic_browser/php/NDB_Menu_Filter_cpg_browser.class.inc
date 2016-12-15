@@ -274,7 +274,7 @@ class NDB_Menu_Filter_CpG_Browser extends NDB_Menu_Filter
                 if ($site[$key]->isStudySite()) {
                     $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
-                $list_of_sites = array('' => 'User All Sites') + $list_of_sites;
+                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
             }
         }
 
