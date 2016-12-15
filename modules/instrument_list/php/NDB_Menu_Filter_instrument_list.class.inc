@@ -18,7 +18,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $candidate =& Candidate::singleton($candID);
 
         // check user permissions
-        return ($user->hasPermission('access_all_profiles') || (in_array($candidate->getData('CenterID'), $user->getData('CentersID'))) || (in_array($timepoint->getData('CenterID'), $user->getData('CentersID'))));
+        return ($user->hasPermission('access_all_profiles') || (in_array($candidate->getData('CenterID'), $user->getData('CenterIDs'))) || (in_array($timepoint->getData('CenterID'), $user->getData('CenterIDs'))));
 
     }
 

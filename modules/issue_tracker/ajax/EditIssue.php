@@ -492,7 +492,7 @@ function getIssueFields()
         $sites = Utility::getAssociativeSiteList();
     } else {
         // allow only to view own site data
-        $site_arr = $user->getData('CentersID');
+        $site_arr = $user->getData('CenterIDs');
         foreach ($site_arr as $key=>$val) {
             $site_arr[$key] = Site::singleton($val);
             if ($site_arr[$key]->isStudySite()) {

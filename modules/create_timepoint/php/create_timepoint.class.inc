@@ -45,7 +45,7 @@ class Create_Timepoint extends \NDB_Form
         // check user permissions
         return (
             $user->hasPermission('data_entry') &&
-            (in_array($candidate->getData('CenterID'), $user->getData('CentersID')))
+            (in_array($candidate->getData('CenterID'), $user->getData('CenterIDs')))
         );
     }
 
@@ -191,7 +191,7 @@ class Create_Timepoint extends \NDB_Form
              // List of sites for the user
              $user = \User::singleton();
              $DB = \Database::singleton();
-             $user_list_of_sites = $user->getData('CentersID');
+             $user_list_of_sites = $user->getData('CenterIDs');
              $num_sites = count($user_list_of_sites);
 
              if ($num_sites >1) {

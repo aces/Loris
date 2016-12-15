@@ -59,7 +59,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     return true;
                 }
 
-                return in_array($editor->getData('CenterID'), $user->getData('CentersID'));
+                return in_array($editor->getData('CenterID'), $user->getData('CenterIDs'));
             }
 
             return false;
@@ -238,7 +238,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             $pr_cid = $center['CenterID'];
             array_push($us_prev_sites, $pr_cid);
         }
-        $curr_sites = $values['CentersID'];
+        $curr_sites = $values['CenterIDs'];
         foreach ($curr_sites as $key=>$val) {
             //get MultiSelected CenterID
             array_push($us_curr_sites, $val);
@@ -283,7 +283,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
         }
         //END MULTI-SITE
-        unset($values['CentersID']);
+        unset($values['CenterIDs']);
 
         // EXAMINER UPDATE
         $ex_curr_sites =array();
@@ -615,7 +615,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                    $editor->getData('CenterID') => $editor->getData('Site'),
                   );
         }
-        $this->addSelect('CentersID', 'Sites', $siteOptions, array("multiple"=>"multiple"));
+        $this->addSelect('CenterIDs', 'Sites', $siteOptions, array("multiple"=>"multiple"));
 
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases
