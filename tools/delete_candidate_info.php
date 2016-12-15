@@ -152,24 +152,31 @@ function deleteCandidate($DCCID, $PSCID, $confirm, $DB) {
     //find the test_names and commentIDs
     $query = "SELECT ID, Test_name, CommentID FROM flag WHERE SessionID in (" .
         implode(" , ", $sessions) . ")";
-    $instruments = $this->DB->pselect($query, array());
+    $instruments = $DB->pselect($query, array());
 
     // Print sessions to delete
     $result = $DB->pselect('SELECT * FROM session WHERE CandID=:cid', array('cid' => $DCCID));
-    echo $result . "\n";
+    print_r($result);
+    echo "\n";
 
     // Print instruments to delete
     foreach ($instruments as $instrument) {
+        echo "{$instrument['Test_name']}\n";
         $result = $DB->pselect('SELECT * FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid', array('cid' => $instrument['CommentID']));
-        echo $result . "\n";
+        print_r($result); 
+        echo "\n";
         $result = $DB->pselect('SELECT * FROM flag WHERE ID=:id', array('id' => $instrument['ID']));
-        echo $result . "\n";
+        print_r($result);
+        echo "\n";
         $result = $DB->pselect('SELECT * FROM conflicts_resolved WHERE CommentId1=:cid OR CommentID2=:cid', array('cid' => $instrument['CommentID']));
-        echo $result . "\n";
+        print_r($result);
+        echo "\n";
         $result = $DB->pselect('SELECT * FROM conflicts_unresolved WHERE CommentId1=:cid OR CommentID2=:cid', array('cid' => $instrument['CommentID']));
-        echo $result . "\n";
+        print_r($result);
+        echo "\n";
         $result = $DB->pselect('SELECT * FROM final_radiological_review WHERE CommentID=:cid', array('cid' => $instrument['CommentID']));
-        echo $result . "\n";
+        print_r($result);
+        echo "\n";
     }
 
     // Print feedback related tables
@@ -281,7 +288,7 @@ function deleteTimepoint($sessionID, $confirm, $DB) {
             'SELECT * FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
             array('cid' => $instrument['CommentID'])
         );
-        echo "$instrument['Test_name']\n";
+        echo "{$instrument['Test_name']}\n";
         print_r($result);
 
         // Print from conflicts
@@ -331,7 +338,7 @@ function deleteTimepoint($sessionID, $confirm, $DB) {
     if ($confirm) {
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
-            echo "Deleting $instrument.\n";
+            echo "Deleting {$instrument['Test_name']}.\n";
             $DB->delete($instrument['Test_name'], array('CommentID' => $instrument['CommentID']));
 
             // Delete from conflicts
