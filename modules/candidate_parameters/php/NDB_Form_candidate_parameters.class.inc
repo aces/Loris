@@ -48,9 +48,14 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
         $candidate =& Candidate::singleton($this->identifier);
 
+        $this->tpl_data['candidate_parameter_edit'] = $user->hasPermission('candidate_parameter_edit');
+
         // check user permissions
-        return ($user->hasPermission('candidate_parameter_edit')  
-            && $user->getData('CenterID') == $candidate->getData('CenterID'));  
+        return ($user->getData('CenterID') == '1' ||
+            ($user->getData('CenterID') == $candidate->getData('CenterID')) &&
+            ($user->hasPermission('candidate_parameter_edit')||
+            $user->hasPermission('candidate_parameter_view'))
+        );
     }
      /**
       * Returns default values for all candidate parameters
@@ -125,9 +130,10 @@ class NDB_Form_candidate_parameters extends NDB_Form
             }
          
          }
- 
-        $DB->select("SELECT ParameterTypeID, Value FROM parameter_candidate 
-                     WHERE CandID='".$this->identifier."'", $value_results);
+
+        $value_results = $DB->pselect("SELECT ParameterTypeID, Value FROM parameter_candidate 
+                     WHERE CandID=:cid",
+            array("cid" => $this->identifier));
         foreach ($value_results AS $vresult) {
             if (!empty($vresult['Value'])) {
                 $cand_info["PTID_".$vresult['ParameterTypeID']] = $vresult['Value'];
@@ -402,11 +408,12 @@ class NDB_Form_candidate_parameters extends NDB_Form
     function _getInstrumentInfo($instrument, $param) {
         $DB  =& Database::singleton();
 
-        $ret = $DB->selectOne("SELECT t.$param FROM flag f JOIN $instrument t ON (t.CommentID=f.CommentID) 
+        $ret = $DB->pselectOne("SELECT t.$param FROM flag f JOIN $instrument t ON (t.CommentID=f.CommentID) 
                                JOIN session s ON (f.SessionID=s.ID) WHERE 
-                               s.CandID=" . $DB->quote($this->identifier) . ' 
-                               AND f.test_name=' . $DB->quote($instrument) . ' 
-                               AND t.CommentID NOT LIKE \'DDE_%\'');
+                               s.CandID=:cid 
+                               AND f.test_name=:instr 
+                               AND t.CommentID NOT LIKE \'DDE_%\'",
+            array('cid'=> $this->identifier, 'instr' => $instrument));
         if ($ret == array()) {
             return;
         }
@@ -431,10 +438,12 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->addScoreColumn('flagged_other', $this->indent.'Additional Comments for flag');
 
  		//Extract the fields from the parameter_type table
-        $DB->select("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description 
+        $field_results = $DB->pselect("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description 
                      FROM parameter_type as pt, parameter_type_category as ptc, parameter_type_category_rel as ptcr 
                      WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID 
-                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC", $field_results);
+                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC",
+            array()
+        );
         //If there are no defined fields print a message to that effect
         if (empty($field_results)) {
             $this->addScoreColumn("static", "No candidate parameters have been defined for this study");
@@ -583,7 +592,14 @@ class NDB_Form_candidate_parameters extends NDB_Form
     } 
 
     function update_candidate_info() {
-        
+
+        // create user object
+        $user =& User::singleton();
+
+        if (!$user->hasPermission('candidate_parameter_edit')) {
+            return;
+        }
+
         $DB =& Database::singleton();
         $pscid = $DB->pselectone(
                 'SELECT PSCID FROM candidate where CandID = :candid',
@@ -606,10 +622,12 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->addTextAreaGroup('flagged_other',$this->indent.'If Other, please specify',
                                           array(null=>'','not_answered'=>'Not Answered'));
         //Extract the fields from the parameter_type table
-        $DB->select("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, 
+        $field_results = $DB->pselect("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description FROM parameter_type as pt, 
                      parameter_type_category as ptc, parameter_type_category_rel as ptcr 
                      WHERE pt.ParameterTypeID=ptcr.ParameterTypeID AND ptcr.ParameterTypeCategoryID=ptc.ParameterTypeCategoryID 
-                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC", $field_results);
+                     AND ptc.Name='Candidate Parameters' ORDER BY pt.ParameterTypeID, pt.name ASC",
+            array()
+        );
         //If there are no defined fields pritn a message to that effect
         if (empty($field_results)) {
         	$this->addScoreColumn("static", "No candidate parameters have been defined for this study");
@@ -938,23 +956,5 @@ class NDB_Form_candidate_parameters extends NDB_Form
         return $option_array;
     }
 
-    /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
-     *
-     * @return array of javascript to be inserted
-     */
-    function getJSDependencies()
-    {
-        $factory = NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
-        return array_merge(
-            $deps,
-            array(
-             $baseURL . "/candidate_parameters/js/candidate_parameters_helper.js",
-            )
-        );
-    }
 }
 ?>
