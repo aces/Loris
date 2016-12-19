@@ -49,17 +49,18 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         foreach ($values['resolvable'] AS $key=>$val) {
             $hash = $key;
             $row = $DB->pselectRow(
-                    "SELECT * FROM violations_resolved
-                    WHERE hash = :hash", array('hash' => $hash));
+                "SELECT * FROM violations_resolved
+                    WHERE hash = :hash", array('hash' => $hash)
+            );
             
             //if row is found it means that resolve status was previously assigned,
             // check the value and update if needed, else break.
-            if(!empty($row)){
+            if(!empty($row)) {
                 foreach($row as $key2 => $val2){
                     //found matching
-                    if($key2 == 'Resolved'){
+                    if($key2 == 'Resolved') {
                         // user input matches DB content, so do nothing.
-                        if($val==$val2){
+                        if($val==$val2) {
                             break;
                         }
                         // user input doesn't match DB, so we update the DB
@@ -75,7 +76,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             // if selection<>0, then insert new row.
             else{
                 // no need to insert to DB for Unresolved value.
-                if($val=='unresolved'){
+                if($val=='unresolved') {
                     continue;
                 }
                 $newlyResolved = array();
@@ -90,8 +91,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     FROM mri_protocol_violated_scans 
                     WHERE (:hash = md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)))",
                     array('hash' => $key)
-                    );
-                if(!empty($ID_mri_protocol_violated_scans)){
+                );
+                if(!empty($ID_mri_protocol_violated_scans)) {
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
                     $newlyResolved['ExtID'] = $ID_mri_protocol_violated_scans;
                 }
@@ -101,9 +102,9 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     FROM mri_violations_log
                     WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
                     array('hash' => $key)
-                    );
+                );
                 //echo "ID[2] = ".$ID_mri_violations_log."\n";
-                if(!empty($ID_mri_violations_log)){
+                if(!empty($ID_mri_violations_log)) {
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
                     $newlyResolved['ExtID'] = $ID_mri_violations_log;
                 } 
@@ -114,9 +115,9 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     FROM MRICandidateErrors
                     WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
                     array('hash' => $key)
-                    );
+                );
                 //echo "ID[3] = ".$ID_MRICandidateErrors."\n";
-                if(!empty($ID_MRICandidateErrors)){
+                if(!empty($ID_MRICandidateErrors)) {
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                     $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
                 } 
@@ -135,7 +136,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        // set the class variables
         // create user object
         $user =& User::singleton();
 
@@ -146,6 +146,13 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         }
         else{
             $useProjects = true;
+        }
+        // Get sites
+        $sitesCond = '';
+        if (!$user->hasPermission('access_all_profiles') 
+            && !is_null($user->getData('CenterID'))
+        ) {
+            $sitesCond = " AND p.CenterID = ".$user->getData('CenterID')." ";
         }
 
         $this->columns = array(
@@ -189,6 +196,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved is NULL"
+            . $sitesCond
             . " UNION " .
             "SELECT PatientName,
                 TimeRun,
@@ -215,6 +223,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved is NULL"
+            . $sitesCond
             . " UNION " .
             "SELECT PatientName,
                 TimeRun,
@@ -238,8 +247,9 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             ON (c.CandID = s.CandID)
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
-            WHERE Resolved is NULL)
-            as v WHERE 1=1";
+            WHERE Resolved is NULL"
+            . $sitesCond
+            . ") as v WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
@@ -325,7 +335,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
-            if(is_array($sites)){
+            if(is_array($sites)) {
                 $sites = array('' => 'All') + $sites;
             }
         }
@@ -354,12 +364,12 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
     {
         $resolve_options = array(
 
-	        'unresolved'=>'Unresolved',
-	        'reran'=>'Reran',
-	        'emailed'=>'Emailed site/pending',
-	        'inserted'=>'Inserted',
-	        'rejected'=>'Rejected',
-	        'inserted_flag'=>'Inserted with flag',
+            'unresolved'=>'Unresolved',
+            'reran'=>'Reran',
+            'emailed'=>'Emailed site/pending',
+            'inserted'=>'Inserted',
+            'rejected'=>'Rejected',
+            'inserted_flag'=>'Inserted with flag',
             'other'=>'Other');
         // project
         $list_of_projects = Utility::getProjectList();
@@ -395,10 +405,10 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     $this->form->form[$hash]['name'] = "resolvable[$hash]";
                 }
                 if ($key === 'Problem') {
-                    if($val === "Could not identify scan type"){
+                    if($val === "Could not identify scan type") {
                         $this->tpl_data['join_tbl'] = "mri_protocol_violated_scans";
                     }
-                    elseif($val === "Protocol Violation"){
+                    elseif($val === "Protocol Violation") {
                         $this->tpl_data['join_tbl'] = "mri_violations_log";
                     }
                     else{

@@ -134,12 +134,21 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
     {
         // set the class variables
         $config =& NDB_Config::singleton();
+        // create user object
+        $user =& User::singleton();
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
         }
         else{
             $useProjects = true;
+        }
+        // Get sites
+        $sitesCond = '';
+        if (!$user->hasPermission('access_all_profiles')
+            && !is_null($user->getData('CenterID'))
+        ) {
+            $sitesCond = " AND p.CenterID = ".$user->getData('CenterID')." ";
         }
 
         $this->columns = array(
@@ -183,7 +192,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved <> '0'"
-            . " UNION " . 
+            . $sitesCond
+            . " UNION " .
             "SELECT PatientName,
                 TimeRun,
                 c.ProjectID as Project,
@@ -209,6 +219,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved <> '0'"
+            . $sitesCond
             . " UNION " .
             "SELECT PatientName,
                 TimeRun,
@@ -232,8 +243,9 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             ON (c.CandID = s.CandID)
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
-            WHERE Resolved <> '0')
-            as v WHERE 1=1";
+            WHERE Resolved <> '0'"
+            . $sitesCond
+            .") as v WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
