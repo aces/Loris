@@ -1,88 +1,161 @@
 <?php
 /**
- * @package main
-*/
-class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
+ * Datadict module
+ *
+ * PHP version 5
+ *
+ * @category Datadict
+ * @package  Main
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris-Trunk
+ */
+
+/**
+ * Datadict module
+ *
+ * PHP version 5
+ *
+ * @category Datadict
+ * @package  Main
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris-Trunk
+ */
+
+class NDB_Menu_Filter_Datadict extends NDB_Menu_Filter
 {
     var $AjaxModule = true;
-	/**
-    * overloading this method to allow access to site users (their own site only) and users w/ multisite privs
+    /**
+    * Overloading this method to allow access to site users (their own site
+    * only) and users w/ multisite privs
+    *
     * @note   overloaded function
     * @return bool
     * @access private
     */
+    function _hasAccess()
+    {
+        // create user object
+        $user =& User::singleton();
 
-	function _hasAccess()
-	{
-		// create user object
-		$user =& User::singleton();
+        return ($user->hasPermission('data_dict_view') ||
+                                   $user->hasPermission('data_dict_edit'));
+    }
+    /**
+    * Setup variables function
+    *
+    * @note   Setup variables function
+    * @return bool
+    * @access private
+    */
+    function _setupVariables()
+    {
 
-		return ($user->hasPermission('data_dict_view') || $user->hasPermission('data_dict_edit'));
-	}
+        // set the class variables
 
-	function _setupVariables()
-	{
+        $this->columns = array(
+                          'pt.sourceFrom',
+                          'pt.Name',
+                          'pt.sourceField',
+                          'coalesce(pto.description,pt.description)'.
+                                                   ' as description',
+                         );
+        $config        =&NDB_Config::singleton();
+        $this->validFilters = array(
+                               'pt.sourceFrom',
+                               'pt.Description',
+                              );
+        $this->query        = " FROM parameter_type pt LEFT JOIN 
+                                parameter_type_override pto USING (Name)
+                 		WHERE pt.Queryable=1";
 
-		// set the class variables
+        $this->formToFilter = array(
+                               'sourceFrom'  => 'pt.sourceFrom',
+                               'Description' => 'pt.Description',
+                              );
 
-		$this->columns = array('pt.sourceFrom','pt.Name', 'pt.sourceField','coalesce(pto.description,pt.description) as description');
-		$config=&NDB_Config::singleton();
-		$this->validFilters = array('pt.sourceFrom','pt.Description');
-		$this->query = " FROM parameter_type pt LEFT JOIN parameter_type_override pto USING (Name)
-		WHERE pt.Queryable=1";
-	
-		$this->formToFilter = array(
-		'sourceFrom' => 'pt.sourceFrom',
-		'Description' => 'pt.Description'
-		);
+        $this->searchKeyword = array(
+                                'pt.Name',
+                                'pt.sourceField',
+                                'pto.description',
+                               );
+        return true;
+    }
+    /**
+    * Set Filter Form
+    *
+    * @note   Set Filter Form
+    * @return bool
+    * @access private
+    */
+    function _setFilterForm()
+    {
 
-        $this->searchKeyword = array('pt.Name', 'pt.sourceField','pto.description');
-		return true;
-	}
+        // list of feedback statuses
+        $instruments = Utility::getAllInstruments();
+        $instruments = array_merge(
+            array('' => 'All Instruments'),
+            $instruments
+        );
+        $this->addSelect('sourceFrom', 'Instruments', $instruments);
+        $this->addSelect(
+            'Description',
+            'Description',
+            array(
+             ''           => 'All',
+             'empty'      => 'Empty',
+             'modified'   => 'Modified',
+             'unmodified' => 'Unmodified',
+            )
+        );
+                 $this->addBasicText('keyword', 'Search keyword');
+                 return true;
+    }
+    /**
+    * Set Data Table Rows
+    *
+    * @param string $count the count of table rows
+    *
+    * @note   Set Data Table Rows
+    * @return bool
+    * @access private
+    */
+    function _setDataTableRows($count)
+    {
 
+        $x = 0;
 
-	function _setFilterForm()
-	{
-		
-		// list of feedback statuses
-		$instruments = Utility::getAllInstruments();
-		$instruments = array_merge(array('' => 'All Instruments'), $instruments);
-		$this->addSelect('sourceFrom', 'Instruments', $instruments);
-		$this->addSelect('Description', 'Description', array('' => 'All', 'empty'=>'Empty','modified'=>'Modified','unmodified'=>'Unmodified'));
-        $this->addBasicText('keyword', 'Search keyword');		
-		return true;
-	}
+        foreach ($this->list as $item) {
+            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
+            $i = 1;
 
-
-	function _setDataTableRows($count)
-	{
-
-		$x = 0;
-		
-		foreach ($this->list as $item) {
-			$this->tpl_data['items'][$x][0]['value'] = $x + $count;
-			$i = 1;
-
-			foreach ($item as $key => $val) {
-                if ($key =='description'){
+            foreach ($item as $key => $val) {
+                if ($key =='description') {
                     $key = $item['Name'] . "___" . "description";
                 }
-                if($key == "sourceFrom" && $val== "parameter_session"){
+                if ($key == "sourceFrom" && $val== "parameter_session") {
                     $val = $item['Name'];
                 }
-				$this->tpl_data['items'][$x][$i]['name'] = $key;
-				$this->tpl_data['items'][$x][$i]['value'] = $val;
+                $this->tpl_data['items'][$x][$i]['name']  = $key;
+                $this->tpl_data['items'][$x][$i]['value'] = $val;
 
-				$i++;
-			}
+                $i++;
+            }
 
-			$x++;
-		}
-		return true;
-	}
-
-    
-    function _getBaseQuery() {
+            $x++;
+        }
+        return true;
+    }
+    /**
+    * Get base query
+    *
+    * @note   Get base query
+    * @return string
+    * @access private
+    */
+    function _getBaseQuery()
+    {
         // make the SELECT statement
         $query = "SELECT ";
         if (is_array($this->columns) && count($this->columns) > 0) {
@@ -90,67 +163,77 @@ class NDB_Menu_Filter_datadict extends NDB_Menu_Filter
         } else {
             $query .= "*";
         }
-    	// add the base query
-		if (isset($_REQUEST['Description']) && $_REQUEST['Description'] =='modified') {
-			$query .= " FROM parameter_type pt JOIN parameter_type_override pto USING (Name) WHERE pt.Queryable=1";
-		}
-		else{
-			$query .= $this->query;
-		}
-		
+        // add the base query
+        if (isset($_REQUEST['Description'])
+            && $_REQUEST['Description'] =='modified'
+        ) {
+            $query .= " FROM parameter_type pt JOIN parameter_type_override pto
+                        USING (Name) WHERE pt.Queryable=1";
+        } else {
+            $query .= $this->query;
+        }
+
         return $query;
     }
-  
-    function _addValidFilters($prepared_key, $key, $val){
+    /**
+    * Get base query
+    *
+    * @param string $prepared_key the query string
+    * @param string $key          the key of filter
+    * @param string $val          the value of filter
+    *
+    * @note   Get base query
+    * @return string
+    * @access private
+    */
+    function _addValidFilters($prepared_key, $key, $val)
+    {
         $query = '';
         if ((!empty($val) || $val === '0') && $key != 'order') {
             //print "key: $key val: $val <BR>"	;
 
             // special rule for dropdowns where value is numeric
-            if (strtolower(substr($key, -8)) == 'centerid' ||
-                    strtolower(substr($key, -10)) == 'categoryid' ||
-                    strtolower(substr($key, -6)) == 'gender') {
+            if (strtolower(substr($key, -8)) == 'centerid'
+                || strtolower(substr($key, -10)) == 'categoryid'
+                || strtolower(substr($key, -6)) == 'gender'
+            ) {
                 $query .= " AND $key = '$val' ";
-            }
-            else {
-                if ($val == 'empty')	{
+            } else {
+                if ($val == 'empty') {
                     $query .= " AND COALESCE(pto.description,pt.description) = ''";
-                }
-                elseif ($val=='modified') {
+                } elseif ($val=='modified') {
                     //NO where clause added
-                }
-                elseif ($val=='unmodified'){
+                } elseif ($val=='unmodified') {
                     $query .= " AND pto.description IS NULL";
-                }
-                else{
+                } else {
                     $query .= " AND $key LIKE '$val%' ";
                 }
             }
         }
 
-        return $query; 
+        return $query;
 
     }
 
-    /** 
+    /**
      * Include the column formatter required to make the content editable in
      * the datadict menu
-     * 
+     *
      * @return array of javascript to be inserted
      **/
     function getJSDependencies()
-    {   
+    {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
             array(
-                $baseURL . "/datadict/js/columnFormatter.js",
-                $baseURL . "/datadict/js/datadict_helper.js",
-            )   
-        );  
-    }   
+             $baseURL . "/datadict/js/columnFormatter.js",
+             $baseURL . "/datadict/js/datadict_helper.js",
+            )
+        );
+    }
 
 
 }
