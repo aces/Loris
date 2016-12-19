@@ -229,7 +229,9 @@ class Gene extends React.Component {
       let x2 = (txEnd >= end) ? width : (txEnd - start) * xScale;
 
       // Add the strand background
-      let img = document.getElementById('reverseBackground');
+      // XLB 20161219 :: For some reason, the image are reversed... I can't explain so I reversed the ternary results.
+      let imageName = (strand == "+" ) ? 'reverseBackground' : 'forwardBackground';
+      let img = document.getElementById(imageName);
       let background = ctx.createPattern(img, 'repeat');
       ctx.fillStyle = background;
       ctx.fillRect(x1,7.5,x2-x1,5);
@@ -277,10 +279,26 @@ class Gene extends React.Component {
               ctx.fillRect( (x + utrWidth), 0, exonWidth, height);
             }
           } else if (exonEnd >= cdsEnd) {
-            // if (exonStart <= cdsStart) {
+            if (exonStart >= cdsEnd) {
+              // The whole exon is in UTR
+              let x = (exonStart < start) ? 0 : (exonStart - start) * xScale;
+              let exonWidth = (exonEnd > end) ? width - x : (exonEnd - start) * xScale - x;
+
+              ctx.fillStyle="#000080";
+              ctx.fillRect( x, height / 4 , exonWidth, height / 2);
+
+            } else {
+              // This exon is both UTR and exon
+              let x = (exonStart < start) ? 0 : (exonStart - start) * xScale;
+              let exonWidth = (cdsEnd - exonStart) * xScale;
+              let utrWidth = (exonEnd - cdsEnd) * xScale;
+
+              ctx.fillStyle="#000080";
+              ctx.fillRect(x, 0, exonWidth, height);
+              ctx.fillRect(x + exonWidth, height/4 , utrWidth, height/2)
+            }
           } else {
             // It is all exoninc
-
             let x = (exonStart < start) ? 0 : (exonStart - start) * xScale;
             let exonWidth = (exonEnd > end) ? width - x : (exonEnd - start) * xScale - x;
 

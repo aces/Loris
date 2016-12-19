@@ -318,7 +318,8 @@ var Gene = function (_React$Component3) {
         var x2 = txEnd >= end ? width : (txEnd - start) * xScale;
 
         // Add the strand background
-        var img = document.getElementById('reverseBackground');
+        var imageName = strand == "+" ? 'reverseBackground' : 'forwardBackground';
+        var img = document.getElementById(imageName);
         var background = ctx.createPattern(img, 'repeat');
         ctx.fillStyle = background;
         ctx.fillRect(x1, 7.5, x2 - x1, 5);
@@ -364,16 +365,31 @@ var Gene = function (_React$Component3) {
                 ctx.fillRect(_x + utrWidth, 0, _exonWidth, height);
               }
             } else if (exonEnd >= cdsEnd) {
-              // if (exonStart <= cdsStart) {
-            } else {
-                // It is all exoninc
-
+              if (exonStart >= cdsEnd) {
+                // The whole exon is in UTR
                 var _x2 = exonStart < start ? 0 : (exonStart - start) * xScale;
                 var _exonWidth2 = exonEnd > end ? width - _x2 : (exonEnd - start) * xScale - _x2;
 
                 ctx.fillStyle = "#000080";
-                ctx.fillRect(_x2, 0, _exonWidth2, height);
+                ctx.fillRect(_x2, height / 4, _exonWidth2, height / 2);
+              } else {
+                // This exon is both UTR and exon
+                var _x3 = exonStart < start ? 0 : (exonStart - start) * xScale;
+                var _exonWidth3 = (cdsEnd - exonStart) * xScale;
+                var _utrWidth = (exonEnd - cdsEnd) * xScale;
+
+                ctx.fillStyle = "#000080";
+                ctx.fillRect(_x3, 0, _exonWidth3, height);
+                ctx.fillRect(_x3 + _exonWidth3, height / 4, _utrWidth, height / 2);
               }
+            } else {
+              // It is all exoninc
+              var _x4 = exonStart < start ? 0 : (exonStart - start) * xScale;
+              var _exonWidth4 = exonEnd > end ? width - _x4 : (exonEnd - start) * xScale - _x4;
+
+              ctx.fillStyle = "#000080";
+              ctx.fillRect(_x4, 0, _exonWidth4, height);
+            }
           }
         }
       }
