@@ -4,14 +4,9 @@
  * This script deletes the specified candidate information.
  *
  * Delete all table rows for a given candidate
- * "Usage 1: php delete_candidate_info.php delete_candidate DCCID PSCID [confirm]";
- * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007";
- * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007 confirm";
- *
- * Delete all timepoint rows for a given candidate
- * echo "Usage 2: php delete_candidate_info.php delete_timepoint DCCID PSCID SessionID [confirm]";
- * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482";
- * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482 confirm";
+ * "Usage: php delete_candidate.php delete_candidate DCCID PSCID [confirm]";
+ * echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007";
+ * echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm";
  *
  * PHP Version 5
  *
@@ -28,14 +23,9 @@ require_once "generic_includes.php";
  * This script deletes the specified candidate information.
  *
  * Delete all table rows for a given candidate
- * "Usage 1: php delete_candidate_info.php delete_candidate DCCID PSCID [confirm]";
- * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007";
- * echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007 confirm";
- *
- * Delete all timepoint rows for a given candidate
- * echo "Usage 2: php delete_candidate_info.php delete_timepoint DCCID PSCID SessionID [confirm]";
- * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482";
- * echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482 confirm";
+ * "Usage: php delete_candidate.php delete_candidate DCCID PSCID [confirm]";
+ * echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007";
+ * echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm";
  *
  * @category Main
  * @package  Loris
@@ -45,7 +35,7 @@ require_once "generic_includes.php";
  */
 
 // Possible script actions
-$actions = array('delete_candidate', 'delete_timepoint', 'reset_instrument');
+$actions = array('delete_candidate');
 
 //define the command line parameters
 if (count($argv) < 4 || $argv[1] == 'help' || !in_array($argv[1], $actions)) {
@@ -56,8 +46,6 @@ if (count($argv) < 4 || $argv[1] == 'help' || !in_array($argv[1], $actions)) {
 $action = $argv[1];
 $DCCID = $argv[2];
 $PSCID = $argv[3];
-$sessionID = null;
-$commentID = null;
 $confirm = false;
 
 // get the rest of the arguments
@@ -65,14 +53,8 @@ switch ($action) {
     case 'delete_candidate':
         if (!empty($argv[4]) && $argv[4] == 'confirm') $confirm = true;
         break;
-    case 'delete_timepoint':
-        if (!empty($argv[4])) {
-            $sessionID = $argv[4];
-        } else {
-            echo "Missing SessionID parameter\n\n";
-            showHelp();
-        }
-        if (!empty($argv[5]) && $argv[5] == 'confirm') $confirm = true;
+    default:
+        showHelp();
         break;
 }
 
@@ -91,31 +73,12 @@ if ($DB->pselectOne(
     die();
 }
 
-if ($commentID != null) {
-    if ($DB->pselectOne('SELECT COUNT(*) FROM flag f JOIN session s ON f.SessionID=s.ID WHERE f.CommentID=:comid AND s.CandID=:cid',
-        array('comid' => $commentID, 'cid' => $DCCID)) == 0) {
-        echo "CommentID $commentID for candidate $DCCID does not exist in the database\n";
-        die();
-    }
-}
-
-if ($sessionID != null) {
-    if ($DB->pselectOne('SELECT COUNT(*) FROM session WHERE ID=:sid and CandID=:cid',
-        array('sid' => $sessionID, 'cid' => $DCCID)) == 0) {
-        echo "Session ID $sessionID for candidate $DCCID does not exist in the database\n";
-        die();
-    }
-}
-
 /*
  * The switch to execute actions
  */
 switch ($action) {
     case 'delete_candidate':
         deleteCandidate($DCCID, $PSCID, $confirm, $DB);
-        break;
-    case 'delete_timepoint':
-        deleteTimepoint($sessionID, $confirm, $DB);
         break;
 }
 
@@ -125,13 +88,9 @@ switch ($action) {
 function showHelp() {
     echo "*** Delete Candidate Info ***\n\n";
 
-    echo "Usage 1: php delete_candidate_info.php delete_candidate DCCID PSCID [confirm]\n";
-    echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007\n";
-    echo "Example: php delete_candidate_info.php delete_candidate 965327 dcc0007 confirm\n\n";
-
-    echo "Usage 2: php delete_candidate_info.php delete_timepoint DCCID PSCID SessionID [confirm]\n";
-    echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482\n";
-    echo "Example: php delete_candidate_info.php delete_timepoint 965327 dcc0007 482 confirm\n\n";
+    echo "Usage: php delete_candidate.php delete_candidate DCCID PSCID [confirm]\n";
+    echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007\n";
+    echo "Example: php delete_candidate.php delete_candidate 965327 dcc0007 confirm\n\n";
 
     die();
 }
