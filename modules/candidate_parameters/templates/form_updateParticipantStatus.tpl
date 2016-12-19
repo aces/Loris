@@ -1,15 +1,13 @@
 {if $success}
 
-<p>Family added successful<br /></p>
+<p>Participant Status was updated successfully<br /></p>
 <br />
 {/if}
-
-
-<form method="post" name="add_family" id="add_family" enctype="multipart/form-data">
+<form method="post" name="updateParticipantStatus" id="updateParticipantStatus" enctype="multipart/form-data">
 {if not $success}
 <div class="panel panel-primary">
     <div class="panel-heading">
-        Add Family Member Information
+        Update Participant Status
     </div>
     <div class="panel-body">
         {foreach from=$form.errors item=error}
@@ -28,15 +26,21 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-4">{$form.FamilyMemberID.label}</label>
+            <label class="col-sm-4">Participant Status</label>
             <div class="col-sm-8">
-                {$form.FamilyMemberID.html}
+                {html_options id="participant_status" options=$pstatus_options name="participant_status" selected=$pstat}
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-4">{$form.relation_type.label}</label>
+            <label class="col-sm-4">Specify Reason</br>(Required only for status Inactive/Incomplete)</label>
             <div class="col-sm-8">
-                {$form.relation_type.html}
+                {html_options id="participant_suboptions" options=$pstatus_suboptions name="participant_suboptions" selected=$pstat_sub}
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-sm-4">{$form.reason_specify_group.label}</label>
+            <div class="col-sm-8">
+                {$form.reason_specify_group.html}
             </div>
         </div>
         <input class="btn btn-sm btn-primary col-sm-offset-2" name="fire_away" value="Save" type="submit" />

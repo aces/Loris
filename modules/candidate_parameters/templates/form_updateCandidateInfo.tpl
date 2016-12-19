@@ -3,7 +3,7 @@
 <p>Candidate Information was updated successful<br /></p>
 <br />
 {/if}
-<form method="post" name="update_candidate_info" id="update_candidate_info" enctype="multipart/form-data">
+<form method="post" name="updateCandidateInfo" id="updateCandidateInfo" enctype="multipart/form-data">
 {if not $success}
 <div class="panel panel-primary">
     <div class="panel-heading">

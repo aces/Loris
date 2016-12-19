@@ -1,13 +1,15 @@
 {if $success}
 
-<p>Proband Information was updated successful<br /></p>
+<p>Family added successful<br /></p>
 <br />
 {/if}
-<form method="post" name="update_proband_info" id="update_proband_info" enctype="multipart/form-data">
+
+
+<form method="post" name="addFamily" id="addFamily" enctype="multipart/form-data">
 {if not $success}
 <div class="panel panel-primary">
     <div class="panel-heading">
-        Update Proband Information
+        Add Family Member Information
     </div>
     <div class="panel-body">
         {foreach from=$form.errors item=error}
@@ -26,21 +28,15 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-4">{$form.ProbandGender.label}</label>
+            <label class="col-sm-4">{$form.FamilyMemberID.label}</label>
             <div class="col-sm-8">
-                {$form.ProbandGender.html}
+                {$form.FamilyMemberID.html}
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-4">{$form.ProbandDoB.label}</label>
+            <label class="col-sm-4">{$form.relation_type.label}</label>
             <div class="col-sm-8">
-                {$form.ProbandDoB.html}
-            </div>
-        </div>
-        <div class="row">
-            <label class="col-sm-4">{$form.ProbandDoB2.label}</label>
-            <div class="col-sm-8">
-                {$form.ProbandDoB2.html}
+                {$form.relation_type.html}
             </div>
         </div>
         <input class="btn btn-sm btn-primary col-sm-offset-2" name="fire_away" value="Save" type="submit" />
