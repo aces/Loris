@@ -155,8 +155,8 @@ class NDB_Form_Dashboard extends NDB_Form
                     "SELECT COUNT(*) FROM flag
 			LEFT JOIN session s ON (s.ID=flag.SessionID)
 			LEFT JOIN candidate c ON (s.CandID=c.CandID)
-		     WHERE flag.Data_entry='In Progress'
-			AND s.Active='Y' AND c.Active='Y' AND s.CenterID <> 1",
+		    WHERE flag.Data_entry='In Progress'
+			    AND s.Active='Y' AND c.Active='Y' AND s.CenterID <> 1",
                     array()
                 );
                 $this->tpl_data['incomplete_forms_site'] = 'Site: all';
