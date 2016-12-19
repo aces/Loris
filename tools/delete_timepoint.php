@@ -52,7 +52,7 @@ $confirm = false;
 // get the rest of the arguments
 switch ($action) {
     case 'delete_timepoint':
-        if (empty($argv[4])) {
+        if (empty($argv[4]) || ($argv[4]) == 'confirm') {
             echo "Missing SessionID parameter\n\n";
             showHelp();
         }
