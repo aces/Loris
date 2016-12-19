@@ -1,6 +1,6 @@
 <?php
 /**
- * data_integrity_flag automated integration tests
+ * Data_integrity_flag automated integration tests
  *
  * PHP Version 5
  *
@@ -12,8 +12,21 @@
  * @link     https://github.com/aces/Loris
  */
 
-require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
+require_once __DIR__ .
+      "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+/**
+ * Data_integrity_flag automated integration tests
+ *
+ * PHP Version 5
+ *
+ * @category Test
+ * @package  Loris
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Wang Shen <wangshen.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+class DataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
 {
     /**
      * Tests that, when loading the data_integrity_flag module, some
@@ -61,11 +74,10 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         );
     }
     /**
-     * testing load this page
+     * Testing load this page
      *
      * @return none
      */
-
     function testDataIntegrityFlagDoespageLoad()
     {
         $this->safeGet($this->url . "/data_integrity_flag/");
@@ -75,7 +87,7 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("Data Integrity Flag", $bodyText);
     }
     /**
-     * testing filter with Instrument
+     * Testing filter with Instrument
      *
      * @return none
      */
@@ -93,7 +105,7 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
 
 
     /**
-     * login this page without permissions "data_integrity_flag"
+     * Logining this page without permissions "data_integrity_flag"
      *
      * @return none
      */
@@ -111,7 +123,8 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
           );
           $this->resetPermissions();
     }
-   /** testing filter with user
+    /**
+     * Testing filter with user
      *
      * @return none
      */
@@ -128,7 +141,7 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * login this page with permissions "data_integrity_flag"
+     * Logining this page with permissions "data_integrity_flag"
      *
      * @return none
      */
@@ -146,12 +159,11 @@ class dataIntegrityFlagTestIntegrationTest extends LorisIntegrationTest
           );
           $this->resetPermissions();
     }
-   /**
-     * testing filter with visit label
+    /**
+     * Testing filter with visit label
      *
      * @return none
      */
-
     function testDataIntegrityFlagFilterVisitlabel()
     {
         $this->safeGet(
