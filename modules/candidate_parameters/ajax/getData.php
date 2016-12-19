@@ -218,7 +218,7 @@ function getFamilyInfoFields()
         "SELECT f1.CandID as FamilyCandID, f1.Relationship_type 
         FROM family f1 JOIN family f2 ON f1.FamilyID=f2.FamilyID
         WHERE f2.CandID = :candid AND f1.CandID <> :candid2 
-          ORDER BY CandID",
+          ORDER BY f1.CandID",
         array(
          'candid'  => $candID,
          'candid2' => $candID,
