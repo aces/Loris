@@ -91,5 +91,5 @@ var table = RDynamicDataTable({
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "PatientName"
   });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>
