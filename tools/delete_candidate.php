@@ -105,7 +105,6 @@ function deleteCandidate($DCCID, $PSCID, $confirm, $DB) {
     $sessions = $candidate->getListOfTimePoints();
     if (is_null($sessions) || empty($sessions)) {
         echo "There are no corresponding session for Candid : $DCCID \n";
-        die();
     }
 
     //find the test_names and commentIDs
