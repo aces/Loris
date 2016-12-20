@@ -118,7 +118,7 @@ function deleteTimepoint($sessionID, $confirm, $DB) {
             'SELECT * FROM ' . $DB->escape($instrument['Test_name']) . ' WHERE CommentID=:cid',
             array('cid' => $instrument['CommentID'])
         );
-        echo '$instrument["Test_name"]\n';
+        echo "{$instrument['Test_name']}\n";
         print_r($result);
 
         // Print from conflicts
@@ -168,7 +168,8 @@ function deleteTimepoint($sessionID, $confirm, $DB) {
     if ($confirm) {
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
-            echo "Deleting $instrument.\n";
+            $name = implode($instrument);
+            echo "Deleting $name.\n";
             $DB->delete($instrument['Test_name'], array('CommentID' => $instrument['CommentID']));
 
             // Delete from conflicts
