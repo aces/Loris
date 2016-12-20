@@ -20,8 +20,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var resolutionStatusStyle;
   var resolutionStatus;
   var fontColor = {color: "#FFFFFF"};
-  var patientname;
-  var uid;
+  let patientname = row.PatientName;
+  let uid = row.SeriesUID;
   var url;
 
   if (column === 'Resolution Status') {
@@ -72,8 +72,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
            );
   }
   if (column === "Problem" && row.Problem === "Protocol Violation") {
-    patientname = row.PatientName;
-    uid = row.SeriesUID;
     url = loris.BaseURL +
      "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" +
           patientname + "&SeriesUID=" + uid;
@@ -89,8 +87,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
            );
   }
   if (column === "Problem" && row.Problem === "Could not identify scan type") {
-    patientname = row.PatientName;
-    uid = row.SeriesUID;
     url = loris.BaseURL +
             "/mri_violations/?submenu=mri_protocol_violations&PatientName=" +
             patientname + "&SeriesUID=" + uid;

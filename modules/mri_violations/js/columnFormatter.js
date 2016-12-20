@@ -1,3 +1,5 @@
+"use strict";
+
 /* exported formatColumn */
 
 /**
@@ -20,8 +22,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var resolutionStatusStyle;
   var resolutionStatus;
   var fontColor = { color: "#FFFFFF" };
-  var patientname;
-  var uid;
+  var patientname = row.PatientName;
+  var uid = row.SeriesUID;
   var url;
 
   if (column === 'Resolution Status') {
@@ -72,8 +74,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     );
   }
   if (column === "Problem" && row.Problem === "Protocol Violation") {
-    patientname = row.PatientName;
-    uid = row.SeriesUID;
     url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" + patientname + "&SeriesUID=" + uid;
     return React.createElement(
       "td",
@@ -91,8 +91,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     );
   }
   if (column === "Problem" && row.Problem === "Could not identify scan type") {
-    patientname = row.PatientName;
-    uid = row.SeriesUID;
     url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_violations&PatientName=" + patientname + "&SeriesUID=" + uid;
     return React.createElement(
       "td",
