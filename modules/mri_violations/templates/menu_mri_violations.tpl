@@ -114,8 +114,6 @@
         </div>
     </div>
 </div>
-<!--  title table with pagination -->
-<div class="dynamictable" id="datatable"></div>
 <script>
 loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
 var hasWritePermission = {json_encode($hasWritePermission)};
