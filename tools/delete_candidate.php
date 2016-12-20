@@ -100,12 +100,15 @@ function deleteCandidate($DCCID, $PSCID, $confirm, $DB) {
     //Find candidate...
     $candidate = new Candidate();
     $candidate->select($DCCID); //find the candidate with the given DCCID
+    $sessionExists = true;
 
     //find sessions
     $sessions = $candidate->getListOfTimePoints();
     if (is_null($sessions) || empty($sessions)) {
         echo "There are no corresponding session for Candid : $DCCID \n";
+        $sessionExists = false;
     }
+    // if no sessions, don't delete from instrument tables, etc...
     else {
         //find the test_names and commentIDs
         $query = "SELECT ID, Test_name, CommentID FROM flag WHERE SessionID in (" .
@@ -136,24 +139,24 @@ function deleteCandidate($DCCID, $PSCID, $confirm, $DB) {
             print_r($result);
             echo "\n";
         }
-    }
 
-    // Print feedback related tables
-    $Feedbackids = $DB->pselect(
-        "SELECT fbt.FeedbackID from feedback_bvl_thread fbt WHERE CandID=:cid",
-        array('cid' => $DCCID)
-    );
-
-    echo "Behavioural Feedback\n";
-    foreach ($Feedbackids as $Feedbackid) {
-        $result = $DB->pselect(
-            'SELECT * FROM feedback_bvl_entry WHERE FeedbackID=:fid',
-            array('fid' => $Feedbackid['FeedbackID'])
+        // Print feedback related tables
+        $Feedbackids = $DB->pselect(
+            "SELECT fbt.FeedbackID from feedback_bvl_thread fbt WHERE CandID=:cid",
+            array('cid' => $DCCID)
         );
+
+        echo "Behavioural Feedback\n";
+        foreach ($Feedbackids as $Feedbackid) {
+            $result = $DB->pselect(
+                'SELECT * FROM feedback_bvl_entry WHERE FeedbackID=:fid',
+                array('fid' => $Feedbackid['FeedbackID'])
+            );
+            print_r($result);
+        }
+        $result = $DB->pselect('SELECT * FROM feedback_bvl_thread WHERE CandID=:cid', array('cid' => $DCCID));
         print_r($result);
     }
-    $result = $DB->pselect('SELECT * FROM feedback_bvl_thread WHERE CandID=:cid', array('cid' => $DCCID));
-    print_r($result);
 
     // Print participant_status
     echo "Participant Status\n";
@@ -180,48 +183,50 @@ function deleteCandidate($DCCID, $PSCID, $confirm, $DB) {
         echo "Dropping all DB entries for candidate DCCID: " . $DCCID . "And PSCID: " .
             $PSCID . "\n";
 
-        //delete the sessions
-        $DB->delete("session", array("CandID" => $DCCID));
+        if ($sessionExists) {
+            //delete the sessions
+            $DB->delete("session", array("CandID" => $DCCID));
 
-        //delete each instrument table entry
-        foreach ($instruments as $instrument) {
+            //delete each instrument table entry
+            foreach ($instruments as $instrument) {
 
-            //delete the entry from the instrument table
-            $DB->delete(
-                $instrument['Test_name'], array("CommentID" => $instrument['CommentID'])
-            );
+                //delete the entry from the instrument table
+                $DB->delete(
+                    $instrument['Test_name'], array("CommentID" => $instrument['CommentID'])
+                );
 
-            //delete from flag
-            $DB->delete("flag", array("ID" => $instrument['ID']));
+                //delete from flag
+                $DB->delete("flag", array("ID" => $instrument['ID']));
 
-            //delete from conflicts_resolved
-            $DB->delete(
-                "conflicts_resolved", array("CommentId1" => $instrument['CommentID'])
-            );
-            $DB->delete(
-                "conflicts_resolved", array("CommentId2" => $instrument['CommentID'])
-            );
-            //delete from conflicts_unresolved
-            $DB->delete(
-                "conflicts_unresolved", array("CommentId1" => $instrument['CommentID'])
-            );
-            $DB->delete(
-                "conflicts_unresolved", array("CommentId2" => $instrument['CommentID'])
-            );
+                //delete from conflicts_resolved
+                $DB->delete(
+                    "conflicts_resolved", array("CommentId1" => $instrument['CommentID'])
+                );
+                $DB->delete(
+                    "conflicts_resolved", array("CommentId2" => $instrument['CommentID'])
+                );
+                //delete from conflicts_unresolved
+                $DB->delete(
+                    "conflicts_unresolved", array("CommentId1" => $instrument['CommentID'])
+                );
+                $DB->delete(
+                    "conflicts_unresolved", array("CommentId2" => $instrument['CommentID'])
+                );
 
-            //delete from final_radiological_review
-            $DB->delete(
-                "final_radiological_review", array("CommentID" => $instrument['CommentID'])
-            );
+                //delete from final_radiological_review
+                $DB->delete(
+                    "final_radiological_review", array("CommentID" => $instrument['CommentID'])
+                );
+            }
+
+            //Delete from the feedback related tables
+            foreach ($Feedbackids as $Feedbackid) {
+                $DB->delete(
+                    "feedback_bvl_entry", array('FeedbackID' => $Feedbackid['FeedbackID'])
+                );
+            }
+            $DB->delete("feedback_bvl_thread", array('CandID' => $DCCID));
         }
-
-        //Delete from the feedback related tables
-        foreach ($Feedbackids as $Feedbackid) {
-            $DB->delete(
-                "feedback_bvl_entry", array('FeedbackID' => $Feedbackid['FeedbackID'])
-            );
-        }
-        $DB->delete("feedback_bvl_thread", array('CandID' => $DCCID));
 
         //delete from the participant_status table
         $DB->delete("participant_status", array("CandID" => $DCCID));
