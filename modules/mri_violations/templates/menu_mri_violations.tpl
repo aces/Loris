@@ -116,9 +116,8 @@
 </div>
 <script>
 loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
-var hasWritePermission = {json_encode($hasWritePermission)};
 var table = RDynamicDataTable({
-     "DataURL" : "{$baseurl}/mri_violations/?format=json",
+     "DataURL" : loris.BaseURL + "/mri_violations/?format=json",
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "PatientName"
      

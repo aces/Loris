@@ -54,28 +54,26 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             
             //if row is found it means that resolve status was previously assigned,
             // check the value and update if needed, else break.
-            if(!empty($row)){
+            if (!empty($row)) {
                 foreach($row as $key2 => $val2){
                     //found matching
-                    if($key2 == 'Resolved'){
+                    if ($key2 == 'Resolved') {
                         // user input matches DB content, so do nothing.
-                        if($val==$val2){
+                        if ($val==$val2) {
                             break;
-                        }
-                        // user input doesn't match DB, so we update the DB
-                        else{
+                        } else { 
+                        // user input doesn't match DB, so we update the DB 
                             $setArray = array('Resolved'=>(string)$val,'ChangeDate'=>date("Y-m-d H:i:s"));
                             $whereArray = array('hash'=>$hash);
                             $DB->update('violations_resolved', $setArray, $whereArray);
                         }
                     }
                 }
-            }
+            } else {
             //if row is not found no resolve status was assigned,
             // if selection<>0, then insert new row.
-            else{
                 // no need to insert to DB for Unresolved value.
-                if($val=='unresolved'){
+                if ($val=='unresolved') {
                     continue;
                 }
                 $newlyResolved = array();
@@ -91,7 +89,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     WHERE (:hash = md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)))",
                     array('hash' => $key)
                     );
-                if(!empty($ID_mri_protocol_violated_scans)){
+                if (!empty($ID_mri_protocol_violated_scans)) {
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
                     $newlyResolved['ExtID'] = $ID_mri_protocol_violated_scans;
                 }
@@ -103,7 +101,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     array('hash' => $key)
                     );
                 //echo "ID[2] = ".$ID_mri_violations_log."\n";
-                if(!empty($ID_mri_violations_log)){
+                if (!empty($ID_mri_violations_log)) {
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
                     $newlyResolved['ExtID'] = $ID_mri_violations_log;
                 } 
@@ -116,7 +114,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     array('hash' => $key)
                     );
                 //echo "ID[3] = ".$ID_MRICandidateErrors."\n";
-                if(!empty($ID_MRICandidateErrors)){
+                if (!empty($ID_MRICandidateErrors)) {
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                     $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
                 } 
@@ -143,8 +141,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
-        }
-        else{
+        } else {
             $useProjects = true;
         }
 
@@ -343,8 +340,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             if(is_array($sites)){
                 $sites = array('' => 'All') + $sites;
             }
-        }
-        else {
+        } else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
@@ -365,13 +361,12 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
     function getJSDependencies()
     {
         $factory = NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
+        $baseurl = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
             array(
                 $baseurl . "/mri_violations/js/Not_Resolved_columnFormatter.js",
-                $baseurl . "/mri_violations/js/mri_violations_helper.js",
             )
         );
     }
