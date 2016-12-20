@@ -65,9 +65,11 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
     }
 
-    return <td className= {resolutionStatusStyle} style={fontColor}>
+    return (
+            <td className= {resolutionStatusStyle} style={fontColor}>
                 {resolutionStatus}
-             </td>;
+            </td>
+           );
   }
   if (column === "Problem" && row.Problem === "Protocol Violation") {
     patientname = row.PatientName;
@@ -75,14 +77,16 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     url = loris.BaseURL +
      "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" +
           patientname + "&SeriesUID=" + uid;
-    return <td>
-            <a href= {url}
-            className="mri_violations"
-            id="mri_protocol_check_violations"
-            data-patientname= {patientname}
-            data-seriesuid={uid}
-            >Protocol Violation</a>
-           </td>;
+    return (
+            <td>
+             <a href= {url}
+             className="mri_violations"
+             id="mri_protocol_check_violations"
+             data-patientname= {patientname}
+             data-seriesuid={uid}
+             >Protocol Violation</a>
+            </td>
+           );
   }
   if (column === "Problem" && row.Problem === "Could not identify scan type") {
     patientname = row.PatientName;
@@ -90,14 +94,16 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     url = loris.BaseURL +
             "/mri_violations/?submenu=mri_protocol_violations&PatientName=" +
             patientname + "&SeriesUID=" + uid;
-    return <td>
+    return (
+           <td>
             <a href= {url}
             className="mri_violations"
             id="mri_protocol_violations"
             data-patientname= {patientname}
             data-seriesuid={uid}
             >Could not identify scan type</a>
-           </td>;
+           </td>
+           );
   }
-  return <td>{cell}</td>;
+  return (<td>{cell}</td>);
 }
