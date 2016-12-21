@@ -121,6 +121,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends \PHPUnit_Framework_TestCase
                 "Description" => "Test Question",
                 "Options" => [
                     "Values" => [
+                        "_empty_" => "",
                         "value" => "Option"
                     ],
                     "RequireResponse" => false,
@@ -136,6 +137,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends \PHPUnit_Framework_TestCase
                 "Description" => "Test Question",
                 "Options" => [
                     "Values" => [
+                        "_empty_" => "",
                         "value" => "Option"
                     ],
                     "RequireResponse" => true,
