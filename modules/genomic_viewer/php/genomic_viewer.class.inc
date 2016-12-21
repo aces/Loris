@@ -49,7 +49,7 @@ class Genomic_Viewer extends \NDB_Page
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/dashboard/css/dashboard.css")
+            array($baseURL . "/genomic_viewer/css/box.css")
         );
     }
 
@@ -66,6 +66,8 @@ class Genomic_Viewer extends \NDB_Page
         return array_merge(
             $deps,
             array(
+             $baseURL . "/js/d3.min.js",
+             $baseURL . "/genomic_viewer/js/box.js",
              $baseURL . "/genomic_viewer/js/genomic_viewer_app.js",
             )
         );

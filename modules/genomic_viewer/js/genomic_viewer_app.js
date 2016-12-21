@@ -318,6 +318,7 @@ var Gene = function (_React$Component3) {
         var x2 = txEnd >= end ? width : (txEnd - start) * xScale;
 
         // Add the strand background
+        // XLB 20161219 :: For some reason, the image are reversed... I can't explain so I reversed the ternary results.
         var imageName = strand == "+" ? 'reverseBackground' : 'forwardBackground';
         var img = document.getElementById(imageName);
         var background = ctx.createPattern(img, 'repeat');
@@ -584,25 +585,76 @@ var CPGTrack = function (_React$Component5) {
 
     var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(CPGTrack).call(this, props));
 
-    _this5.state = {};
+    _this5.state = {
+      data: "Expt,Run,Speed\n1,1,850\n1,2,740\n1,3,900\n1,4,1070"
+    };
     return _this5;
   }
 
   _createClass(CPGTrack, [{
     key: 'render',
     value: function render() {
+      var margin = { top: 10, right: 50, bottom: 20, left: 50 };
+      var width = 120 - margin.left - margin.right;
+      var height = 500 - margin.top - margin.bottom;
 
+      var min = Infinity;
+      var max = -Infinity;
+
+      var chart = d3.box().whiskers(iqr(1.5)).width(width).height(height);
+
+      d3.csv(this.props.dataURL, function (error, csv) {
+        if (error) throw error;
+
+        var data = [];
+
+        csv.forEach(function (x) {
+          var e = Math.floor(x.Expt - 1),
+              r = Math.floor(x.Run - 1),
+              s = Math.floor(x.Speed),
+              d = data[e];
+          if (!d) d = data[e] = [s];else d.push(s);
+          if (s > max) max = s;
+          if (s < min) min = s;
+        });
+
+        chart.domain([min, max]);
+
+        d3.select(".Methylation-450k-chart").selectAll("svg").data(data).enter().append("svg").attr("class", "box").attr("width", width + margin.left + margin.right).attr("height", height + margin.bottom + margin.top).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")").call(chart);
+      });
+
+      // Returns a function to compute the interquartile range.
+      function iqr(k) {
+        return function (d, i) {
+          var q1 = d.quartiles[0],
+              q3 = d.quartiles[2],
+              iqr = (q3 - q1) * k,
+              i = -1,
+              j = d.length;
+          while (d[++i] < q1 - iqr) {}
+          while (d[--j] > q3 + iqr) {}
+          return [i, j];
+        };
+      }
       return React.createElement(
         Track,
         {
           title: 'Methylation 450k' },
-        ''
+        React.createElement(
+          'div',
+          { className: 'Methylation-450k-chart' },
+          chart
+        )
       );
     }
   }]);
 
   return CPGTrack;
 }(React.Component);
+
+CPGTrack.defaultProps = {
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getMorley.php"
+};
 
 var SNPTrack = function (_React$Component6) {
   _inherits(SNPTrack, _React$Component6);

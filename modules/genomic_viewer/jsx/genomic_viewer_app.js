@@ -473,19 +473,78 @@ GeneTrack.defaultProps = {
 class CPGTrack extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      data: "Expt,Run,Speed\n1,1,850\n1,2,740\n1,3,900\n1,4,1070"
+    };
   }
 
   render() {
-    
+    let margin = {top: 10, right: 50, bottom: 20, left: 50};
+    let width = 120 - margin.left - margin.right;
+    let height = 500 - margin.top - margin.bottom;
+
+    let min = Infinity;
+    let max = -Infinity;
+
+    var chart = d3.box()
+      .whiskers(iqr(1.5))
+      .width(width)
+      .height(height);
+
+    d3.csv(this.props.dataURL, function(error, csv) {
+      if (error) throw error;
+  
+      var data = [];
+  
+      csv.forEach(function(x) {
+        var e = Math.floor(x.Expt - 1),
+          r = Math.floor(x.Run - 1),
+          s = Math.floor(x.Speed),
+          d = data[e];
+        if (!d) d = data[e] = [s];
+        else d.push(s);
+        if (s > max) max = s;
+        if (s < min) min = s;
+      });
+  
+      chart.domain([min, max]);
+  
+      d3.select(".Methylation-450k-chart").selectAll("svg")
+        .data(data)
+        .enter().append("svg")
+        .attr("class", "box")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.bottom + margin.top)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .call(chart);
+    });
+
+    // Returns a function to compute the interquartile range.
+    function iqr(k) {
+      return function(d, i) {
+        var q1 = d.quartiles[0],
+        q3 = d.quartiles[2],
+        iqr = (q3 - q1) * k,
+        i = -1,
+        j = d.length;
+        while (d[++i] < q1 - iqr);
+        while (d[--j] > q3 + iqr);
+        return [i, j];
+      };
+    }
     return (
       <Track
         title="Methylation 450k">
-      {''}
+        <div className="Methylation-450k-chart">{chart}</div>
       </Track>
     );
   }
 }
+
+CPGTrack.defaultProps = { 
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getMorley.php"
+};
 
 class SNPTrack extends React.Component {render() {return (<div></div>);}}
 class ChIPPeakTrack extends React.Component {render() {return (<div></div>);}}
