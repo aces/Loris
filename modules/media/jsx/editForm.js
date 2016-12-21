@@ -10,24 +10,24 @@
  * @version 1.0.0
  *
  * */
-var MediaEditForm = React.createClass({
+class MediaEditForm extends React.Component {
+  constructor(props) {
+    super(props);
 
-  propTypes: {
-    DataURL: React.PropTypes.string.isRequired,
-    action: React.PropTypes.string.isRequired
-  },
-
-  getInitialState: function() {
-    return {
+    this.state = {
       Data: {},
       formData: {},
       uploadResult: null,
       isLoaded: false,
       loadedData: 0
     };
-  },
 
-  componentDidMount: function() {
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.setFormData = this.setFormData.bind(this);
+    this.showAlertMessage = this.showAlertMessage.bind(this);
+  }
+
+  componentDidMount() {
     var self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
@@ -54,9 +54,9 @@ var MediaEditForm = React.createClass({
         });
       }
     });
-  },
+  }
 
-  render: function() {
+  render() {
     // Data loading error
     if (this.state.error !== undefined) {
       return (
@@ -188,13 +188,13 @@ var MediaEditForm = React.createClass({
         </FormElement>
       </div>
     );
-  },
+  }
 
   /**
    * Handles form submission
    * @param {event} e - Form submition event
    */
-  handleSubmit: function(e) {
+  handleSubmit(e) {
     e.preventDefault();
 
     var self = this;
@@ -240,7 +240,7 @@ var MediaEditForm = React.createClass({
       }
 
     });
-  },
+  }
 
   /**
    * Set the form data based on state values of child elements/componenets
@@ -248,7 +248,7 @@ var MediaEditForm = React.createClass({
    * @param {string} formElement - name of the selected element
    * @param {string} value - selected value for corresponding form element
    */
-  setFormData: function(formElement, value) {
+  setFormData(formElement, value) {
     var formData = this.state.formData;
 
     if (value === "") {
@@ -260,12 +260,12 @@ var MediaEditForm = React.createClass({
     this.setState({
       formData: formData
     });
-  },
+  }
 
   /**
    * Display a success/error alert message after form submission
    */
-  showAlertMessage: function() {
+  showAlertMessage() {
     var self = this;
 
     if (this.refs["alert-message"] === null) {
@@ -280,6 +280,11 @@ var MediaEditForm = React.createClass({
     });
   }
 
-});
+}
+
+MediaEditForm.propTypes = {
+  DataURL: React.PropTypes.string.isRequired,
+  action: React.PropTypes.string.isRequired
+};
 
 var RMediaEditForm = React.createFactory(MediaEditForm);
