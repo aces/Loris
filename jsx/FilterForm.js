@@ -2,14 +2,18 @@
  * This file contains React component for FilterForm
  *
  * @author Loris Team
- * @version 1.0.0
+ * @version 1.1.0
  *
  */
 
 /**
- * FilterForm component
- * A wrapper for form elements of a selection filter
- * Passes its children to FormElement class
+ * FilterForm component.
+ * A wrapper for form elements inside a selection filter.
+ *
+ * Adds necessary filter callbacks to all children and passes them to FormElement
+ * for proper rendering.
+ *
+ * Keeps track of filter object and sends it to parent on every update.
  */
 class FilterForm extends React.Component {
 
@@ -18,46 +22,50 @@ class FilterForm extends React.Component {
 
     this.state = {
       collapsed: false,
-      Filter: QueryString.get()
+      filter: QueryString.get()
     };
 
     // Bind component instance to custom methods
     this.clearFilter = this.clearFilter.bind(this);
     this.getFormElements = this.getFormElements.bind(this);
-    this.getTableFilter = this.getTableFilter.bind(this);
+    this.setTableFilter = this.setTableFilter.bind(this);
     this.setFilter = this.setFilter.bind(this);
     this.toggleCollapsed = this.toggleCollapsed.bind(this);
+
+    // Used to store filter format accepted by StaticDataTable
+    // Saved as class variable instead of keeping in state
+    this.tableFilter = {};
   }
 
   componentDidMount() {
-    let tableFilter = this.getTableFilter(null, null, this.state.Filter);
-    this.props.onUpdate(tableFilter);
+    // Pass initial filter values to parent component
+    this.props.onUpdate(this.tableFilter);
   }
 
   /**
-   * Clear the Filter object, querystring and input fields
+   * Clear the filter object, querystring and input fields
    */
   clearFilter() {
-    let Filter = QueryString.clear(this.props.Module);
-    this.props.onUpdate(Filter);
-    this.setState({Filter});
+    let filter = QueryString.clear(this.props.Module);
+    this.props.onUpdate(filter);
+    this.setState({filter});
   }
 
   /**
-   * Itterates through FilterForm children setting necessary callback functions
+   * Itterates through FilterForm children, sets necessary callback functions
+   * and initializes filterTable
    *
    * @return {Array} formElements - array of children with necessary props
    */
   getFormElements() {
     let formElements = [];
-
     React.Children.forEach(this.props.children, function(child, key) {
       // If child is a React component (i.e not a simple DOM element)
       if (React.isValidElement(child) && typeof child.type === "function") {
         let callbackFunc = child.props.onUserInput;
         let callbackName = callbackFunc.name;
         let elementName = child.type.displayName;
-        let filterValue = this.state.Filter[child.ref];
+        let filterValue = this.state.filter[child.ref];
         // If callback function was not set, set it to setFilter() for form elements
         // and to clearFilter() for <ButtonElement type='reset'/>.
         if (callbackName === "onUserInput") {
@@ -73,6 +81,8 @@ class FilterForm extends React.Component {
           value: filterValue ? filterValue : '',
           key: key
         }));
+        // Initialize filter for StaticDataTable
+        this.setTableFilter(elementName, child.ref, filterValue);
       } else {
         formElements.push(React.cloneElement(child));
       }
@@ -82,31 +92,38 @@ class FilterForm extends React.Component {
   }
 
   /**
-   * Itterates through Filter object and creates a new object containing filter data
-   * in format required by StaticDataTable.
-   * Needed to determine which filter elements need an exact match.
+   * Appends entry to tableFilter object or deletes it if value is
+   * empty.
+   *
+   * Sets exactMatch to true for all SelectElements (i.e dropdowns)
+   * in order to force StaticDataTable to do exact comparaison
    *
    * @param {string} type - form element type (i.e component name)
-   * @param {string} fieldName - the name of the form element
-   * @param {{}} Filter - filter object
+   * @param {string} key - the name of the form element
+   * @param {string} value - the value of the form element
    *
    * @return {{}} tableFilter - filterData
    */
-  getTableFilter(type, fieldName, Filter) {
-    let tableFilter = {};
-    for (let key in Filter) {
-      if (Filter.hasOwnProperty(key)) {
-        tableFilter[key] = {
-          value: Filter[key],
-          exactMatch: (type === "SelectElement" && key === fieldName)
-        };
-      }
+  setTableFilter(type, key, value) {
+    // Deep copy of tableFilter object
+    let tableFilter = JSON.parse(JSON.stringify(this.tableFilter));
+
+    if (key && value) {
+      tableFilter[key] = {};
+      tableFilter[key].value = value;
+      tableFilter[key].exactMatch = (type === "SelectElement");
+    } else if (key && value === '') {
+      delete tableFilter[key];
     }
+
+    // Update class variable
+    this.tableFilter = tableFilter;
+
     return tableFilter;
   }
 
   /**
-   * Sets Filter object and querystring to reflect values of input fields
+   * Sets filter object and querystring to reflect values of input fields
    *
    * @param {string} type - form element type (i.e component name)
    * @param {string} fieldName - the name of the form element
@@ -118,12 +135,14 @@ class FilterForm extends React.Component {
       return;
     }
 
-    // Update query string and get new Filter object
-    let Filter = QueryString.set(this.state.Filter, fieldName, fieldValue);
-    let tableFilter = this.getTableFilter(type, fieldName, Filter);
+    // Update query string and get new filter object
+    let filter = QueryString.set(this.state.filter, fieldName, fieldValue);
+
+    // Update tableFilter and get new tableFilter object
+    let tableFilter = this.setTableFilter(type, fieldName, fieldValue);
 
     this.props.onUpdate(tableFilter);
-    this.setState({Filter});
+    this.setState({filter});
   }
 
   toggleCollapsed() {
@@ -132,8 +151,8 @@ class FilterForm extends React.Component {
 
   render() {
     // Selection filter open by default
-    var glyphClass = "glyphicon pull-right glyphicon-chevron-up";
-    var panelClass = "panel-collapse collapse in";
+    let glyphClass = "glyphicon pull-right glyphicon-chevron-up";
+    let panelClass = "panel-collapse collapse in";
 
     // Change arrow direction when closed
     if (this.state.collapsed) {

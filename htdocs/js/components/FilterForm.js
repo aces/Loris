@@ -12,14 +12,18 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * This file contains React component for FilterForm
  *
  * @author Loris Team
- * @version 1.0.0
+ * @version 1.1.0
  *
  */
 
 /**
- * FilterForm component
- * A wrapper for form elements of a selection filter
- * Passes its children to FormElement class
+ * FilterForm component.
+ * A wrapper for form elements inside a selection filter.
+ *
+ * Adds necessary filter callbacks to all children and passes them to FormElement
+ * for proper rendering.
+ *
+ * Keeps track of filter object and sends it to parent on every update.
  */
 var FilterForm = function (_React$Component) {
   _inherits(FilterForm, _React$Component);
@@ -31,39 +35,44 @@ var FilterForm = function (_React$Component) {
 
     _this.state = {
       collapsed: false,
-      Filter: QueryString.get()
+      filter: QueryString.get()
     };
 
     // Bind component instance to custom methods
     _this.clearFilter = _this.clearFilter.bind(_this);
     _this.getFormElements = _this.getFormElements.bind(_this);
-    _this.getTableFilter = _this.getTableFilter.bind(_this);
+    _this.setTableFilter = _this.setTableFilter.bind(_this);
     _this.setFilter = _this.setFilter.bind(_this);
     _this.toggleCollapsed = _this.toggleCollapsed.bind(_this);
+
+    // Used to store filter format accepted by StaticDataTable
+    // Saved as class variable instead of keeping in state
+    _this.tableFilter = {};
     return _this;
   }
 
   _createClass(FilterForm, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var tableFilter = this.getTableFilter(null, null, this.state.Filter);
-      this.props.onUpdate(tableFilter);
+      // Pass initial filter values to parent component
+      this.props.onUpdate(this.tableFilter);
     }
 
     /**
-     * Clear the Filter object, querystring and input fields
+     * Clear the filter object, querystring and input fields
      */
 
   }, {
     key: "clearFilter",
     value: function clearFilter() {
-      var Filter = QueryString.clear(this.props.Module);
-      this.props.onUpdate(Filter);
-      this.setState({ Filter: Filter });
+      var filter = QueryString.clear(this.props.Module);
+      this.props.onUpdate(filter);
+      this.setState({ filter: filter });
     }
 
     /**
-     * Itterates through FilterForm children setting necessary callback functions
+     * Itterates through FilterForm children, sets necessary callback functions
+     * and initializes filterTable
      *
      * @return {Array} formElements - array of children with necessary props
      */
@@ -72,14 +81,13 @@ var FilterForm = function (_React$Component) {
     key: "getFormElements",
     value: function getFormElements() {
       var formElements = [];
-
       React.Children.forEach(this.props.children, function (child, key) {
         // If child is a React component (i.e not a simple DOM element)
         if (React.isValidElement(child) && typeof child.type === "function") {
           var callbackFunc = child.props.onUserInput;
           var callbackName = callbackFunc.name;
           var elementName = child.type.displayName;
-          var filterValue = this.state.Filter[child.ref];
+          var filterValue = this.state.filter[child.ref];
           // If callback function was not set, set it to setFilter() for form elements
           // and to clearFilter() for <ButtonElement type='reset'/>.
           if (callbackName === "onUserInput") {
@@ -95,6 +103,8 @@ var FilterForm = function (_React$Component) {
             value: filterValue ? filterValue : '',
             key: key
           }));
+          // Initialize filter for StaticDataTable
+          this.setTableFilter(elementName, child.ref, filterValue);
         } else {
           formElements.push(React.cloneElement(child));
         }
@@ -104,34 +114,41 @@ var FilterForm = function (_React$Component) {
     }
 
     /**
-     * Itterates through Filter object and creates a new object containing filter data
-     * in format required by StaticDataTable.
-     * Needed to determine which filter elements need an exact match.
+     * Appends entry to tableFilter object or deletes it if value is
+     * empty.
+     *
+     * Sets exactMatch to true for all SelectElements (i.e dropdowns)
+     * in order to force StaticDataTable to do exact comparaison
      *
      * @param {string} type - form element type (i.e component name)
-     * @param {string} fieldName - the name of the form element
-     * @param {{}} Filter - filter object
+     * @param {string} key - the name of the form element
+     * @param {string} value - the value of the form element
      *
      * @return {{}} tableFilter - filterData
      */
 
   }, {
-    key: "getTableFilter",
-    value: function getTableFilter(type, fieldName, Filter) {
-      var tableFilter = {};
-      for (var key in Filter) {
-        if (Filter.hasOwnProperty(key)) {
-          tableFilter[key] = {
-            value: Filter[key],
-            exactMatch: type === "SelectElement" && key === fieldName
-          };
-        }
+    key: "setTableFilter",
+    value: function setTableFilter(type, key, value) {
+      // Deep copy of tableFilter object
+      var tableFilter = JSON.parse(JSON.stringify(this.tableFilter));
+
+      if (key && value) {
+        tableFilter[key] = {};
+        tableFilter[key].value = value;
+        tableFilter[key].exactMatch = type === "SelectElement";
+      } else if (key && value === '') {
+        delete tableFilter[key];
       }
+
+      // Update class variable
+      this.tableFilter = tableFilter;
+
       return tableFilter;
     }
 
     /**
-     * Sets Filter object and querystring to reflect values of input fields
+     * Sets filter object and querystring to reflect values of input fields
      *
      * @param {string} type - form element type (i.e component name)
      * @param {string} fieldName - the name of the form element
@@ -146,12 +163,14 @@ var FilterForm = function (_React$Component) {
         return;
       }
 
-      // Update query string and get new Filter object
-      var Filter = QueryString.set(this.state.Filter, fieldName, fieldValue);
-      var tableFilter = this.getTableFilter(type, fieldName, Filter);
+      // Update query string and get new filter object
+      var filter = QueryString.set(this.state.filter, fieldName, fieldValue);
+
+      // Update tableFilter and get new tableFilter object
+      var tableFilter = this.setTableFilter(type, fieldName, fieldValue);
 
       this.props.onUpdate(tableFilter);
-      this.setState({ Filter: Filter });
+      this.setState({ filter: filter });
     }
   }, {
     key: "toggleCollapsed",
