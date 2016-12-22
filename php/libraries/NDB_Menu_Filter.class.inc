@@ -849,7 +849,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $depends,
             array(
              $baseURL . '/js/components/PaginationLinks.js',
-             $baseURL . '/js/components/FilterTable.js',
+             $baseURL . '/js/components/FilterForm.js',
              $baseURL . '/js/components/StaticDataTable.js',
              $baseURL . '/js/components/DynamicDataTable.js',
             )
