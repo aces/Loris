@@ -66,9 +66,14 @@ var Tabs = React.createClass({
       );
     }, this);
 
+    let tabStyle = {
+      'margin-left': 0,
+      'margin-bottom': '5px'
+    };
+
     return (
       <div>
-        <ul className="nav nav-tabs nav-tabs-loris" role="tablist">
+        <ul className="nav nav-tabs" role="tablist" style={tabStyle}>
           {tabs}
         </ul>
         <div className="tab-content">

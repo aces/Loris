@@ -72,12 +72,17 @@ var Tabs = React.createClass({
       );
     }, this);
 
+    var tabStyle = {
+      'margin-left': 0,
+      'margin-bottom': '5px'
+    };
+
     return React.createElement(
       "div",
       null,
       React.createElement(
         "ul",
-        { className: "nav nav-tabs nav-tabs-loris", role: "tablist" },
+        { className: "nav nav-tabs", role: "tablist", style: tabStyle },
         tabs
       ),
       React.createElement(
