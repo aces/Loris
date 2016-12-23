@@ -113,6 +113,8 @@ class Tabs extends React.Component {
 Tabs.propTypes = {
   tabs: React.PropTypes.array.isRequired,
   defaultTab: React.PropTypes.string,
+};
+Tabs.defaultProps = {
   onTabChange: function() {}
 };
 
