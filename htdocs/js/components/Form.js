@@ -164,7 +164,7 @@ var SelectElement = React.createClass({
       name: '',
       options: {},
       label: '',
-      value: null,
+      value: undefined,
       id: '',
       class: '',
       multiple: false,
@@ -178,6 +178,7 @@ var SelectElement = React.createClass({
       }
     };
   },
+
   handleChange: function handleChange(e) {
     var value = e.target.value;
     var options = e.target.options;
@@ -219,7 +220,7 @@ var SelectElement = React.createClass({
     }
 
     // Add error message
-    if (this.props.hasError || this.props.required && !this.props.value) {
+    if (this.props.hasError || this.props.required && this.props.value === "") {
       errorMessage = React.createElement(
         'span',
         null,
