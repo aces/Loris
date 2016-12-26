@@ -30,6 +30,11 @@ $config = NDB_Config::singleton();
 // create Database object
 $DB =& Database::singleton();
 
+$Notifier = new NDB_Notifier(
+    "document_repository",
+    "delete"
+);
+
 $rid = $_POST['id'];
 
 $fileName = $DB->pselectOne(
@@ -52,18 +57,8 @@ if ($user->hasPermission('document_repository_delete')) {
     $DB->delete("document_repository", array("record_id" => $rid));
     $msg_data['deleteDocument'] = $baseURL. "/document_repository/";
     $msg_data['document']       = $fileName;
-    $msg_data['study']          = $config->getSetting('title');
-    $query_Doc_Repo_Notification_Emails = "SELECT Email FROM users".
-                                          " WHERE Active='Y' and ".
-                                          "Doc_Repo_Notifications='Y'".
-                                          " and UserID<>:uid";
-    $Doc_Repo_Notification_Emails       = $DB->pselect(
-        $query_Doc_Repo_Notification_Emails,
-        array("uid" => $user->getUsername())
-    );
-    foreach ($Doc_Repo_Notification_Emails as $email) {
-        Email::send($email['Email'], 'document_repository.tpl', $msg_data);
-    }
+
+    $Notifier->notify($msg_data);
 }
 
 $path = __DIR__ . "/../user_uploads/$dataDir";

@@ -78,7 +78,7 @@ DROP TABLE IF EXISTS `family`;
 DROP TABLE IF EXISTS `participant_emails`;
 DROP TABLE IF EXISTS `participant_accounts`;
 DROP TABLE IF EXISTS `participant_status`;
-DROP TABLE IF EXISTS `participant_status_options`; 
+DROP TABLE IF EXISTS `participant_status_options`;
 
 DROP TABLE IF EXISTS `conflicts_resolved`;
 DROP TABLE IF EXISTS `conflicts_unresolved`;
@@ -86,6 +86,11 @@ DROP TABLE IF EXISTS `conflicts_unresolved`;
 
 DROP TABLE IF EXISTS `notification_spool`;
 DROP TABLE IF EXISTS `notification_types`;
+DROP TABLE IF EXISTS `notification_history`;
+DROP TABLE IF EXISTS `users_notifications_rel`;
+DROP TABLE IF EXISTS `notification_modules_services_rel`;
+DROP TABLE IF EXISTS `notification_services`;
+DROP TABLE IF EXISTS `notification_modules`;
 
 DROP TABLE IF EXISTS `document_repository`;
 DROP TABLE IF EXISTS `document_repository_categories`;
@@ -218,7 +223,7 @@ CREATE TABLE `users` (
 
 
 
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expiry) 
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expiry)
 VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N','2016-03-30');
 
 CREATE TABLE `user_psc_rel` (
@@ -874,6 +879,85 @@ CREATE TABLE `notification_spool` (
   CONSTRAINT `FK_notification_spool_1` FOREIGN KEY (`NotificationTypeID`) REFERENCES `notification_types` (`NotificationTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `notification_modules` (
+  `id` int(10) unsigned auto_increment NOT NULL,
+  `module_name` varchar(100) NOT NULL,
+  `operation_type` varchar(100) NOT NULL,
+  `as_admin` enum('Y','N') NOT NULL DEFAULT 'N',
+  `template_file` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY (`module_name`),
+  UNIQUE(module_name,operation_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `notification_services` (
+  `id` int(10) unsigned auto_increment NOT NULL,
+  `service` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE(service)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Associates modules with the service available for each
+CREATE TABLE `notification_modules_services_rel` (
+  `module_id` int(10) unsigned NOT NULL,
+  `service_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`module_id`,`service_id`),
+  KEY `FK_notification_modules_services_rel_1` (`module_id`),
+  KEY `FK_notification_modules_services_rel_2` (`service_id`),
+  CONSTRAINT `FK_notification_modules_services_rel_1` FOREIGN KEY (`module_id`) REFERENCES `notification_modules` (`id`),
+  CONSTRAINT `FK_notification_modules_services_rel_2` FOREIGN KEY (`service_id`) REFERENCES `notification_services` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- saves users preferences for notification type
+CREATE TABLE `users_notifications_rel` (
+  `user_id` int(10) unsigned NOT NULL,
+  `module_id` int(10) unsigned NOT NULL,
+  `service_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`user_id`,`module_id`,`service_id`),
+  KEY `FK_notifications_users_rel_1` (`user_id`),
+  KEY `FK_notifications_users_rel_2` (`module_id`),
+  KEY `FK_notifications_users_rel_3` (`service_id`),
+  CONSTRAINT `FK_notifications_users_rel_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`),
+  CONSTRAINT `FK_notifications_users_rel_2` FOREIGN KEY (`module_id`) REFERENCES `notification_modules` (`id`),
+  CONSTRAINT `FK_notifications_users_rel_3` FOREIGN KEY (`service_id`) REFERENCES `notification_services` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- history log
+CREATE TABLE `notification_history` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `module_id` int(10) unsigned NOT NULL,
+  `service_id` int(10) unsigned NOT NULL,
+  `date_sent` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `trigger_user` int(10) unsigned NOT NULL,
+  `target_user` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_notification_history_1` (`trigger_user`),
+  KEY `FK_notification_history_2` (`target_user`),
+  CONSTRAINT `FK_notification_history_1` FOREIGN KEY (`trigger_user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_notification_history_2` FOREIGN KEY (`target_user`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- basic notification service
+INSERT INTO notification_services (service) VALUES
+('email_text');
+
+-- Pre-implemented notifications
+INSERT INTO notification_modules (module_name, operation_type, as_admin, template_file, description) VALUES
+  ('media', 'upload', 'N', 'notifier_media_upload.tpl', 'Media: New File Uploaded'),
+  ('media', 'download', 'N', 'notifier_media_download.tpl', 'Media: File Downloaded'),
+  ('document_repository', 'new_category', 'N', 'notifier_document_repository_new_category.tpl', 'Document Repository: New Category'),
+  ('document_repository', 'upload', 'N', 'notifier_document_repository_upload.tpl', 'Document Repository: New Document Uploaded'),
+  ('document_repository', 'delete', 'N', 'notifier_document_repository_delete.tpl', 'Document Repository: Document Deleted'),
+  ('document_repository', 'edit', 'N', 'notifier_document_repository_edit.tpl', 'Document Repository: Document Edited');
+
+-- enable doc repo basic text emails
+INSERT INTO notification_modules_services_rel SELECT nm.id, ns.id FROM notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text';
+
+-- Transfer Document repository notifications to new system
+INSERT INTO users_notifications_rel SELECT u.ID, nm.id, ns.id FROM users u JOIN notification_modules nm JOIN notification_services ns WHERE nm.module_name='document_repository' AND ns.service='email_text' AND u.Doc_Repo_Notifications='Y';
+
+
 -- ********************************
 -- conflict_resolver tables
 -- ********************************
@@ -1396,7 +1480,7 @@ CREATE TABLE `parameter_type_category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `parameter_type_category` (Name, Type) VALUES 
+INSERT INTO `parameter_type_category` (Name, Type) VALUES
   ('MRI Variables','Metavars'),
   ('Identifiers', 'Metavars');
 
@@ -1835,7 +1919,6 @@ CREATE TABLE `feedback_mri_comment_types` (
   PRIMARY KEY  (`CommentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 INSERT INTO `feedback_mri_comment_types` (CommentName,CommentType,CommentStatusField) VALUES
   ('Geometric distortion','volume','a:2:{s:5:\"field\";s:20:\"Geometric_distortion\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
   ('Intensity artifact','volume','a:2:{s:5:\"field\";s:18:\"Intensity_artifact\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
@@ -1855,7 +1938,6 @@ CREATE TABLE `feedback_mri_predefined_comments` (
   KEY `CommentType` (`CommentTypeID`),
   CONSTRAINT `FK_feedback_mri_predefined_comments_1` FOREIGN KEY (`CommentTypeID`) REFERENCES `feedback_mri_comment_types` (`CommentTypeID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 INSERT INTO `feedback_mri_predefined_comments` (CommentTypeID, Comment) VALUES
   (2,'missing slices'),
@@ -1918,5 +2000,3 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_2` FOREIGN KEY (`PredefinedCommentID`) REFERENCES `feedback_mri_predefined_comments` (`PredefinedCommentID`),
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-

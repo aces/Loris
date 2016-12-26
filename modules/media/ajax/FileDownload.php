@@ -14,6 +14,8 @@
  * @link     https://github.com/aces/Loris-Trunk
  */
 
+require_once "NDB_Notifier.class.inc";
+
 $user =& User::singleton();
 if (!$user->hasPermission('media_write')) {
     header("HTTP/1.1 403 Forbidden");
@@ -28,6 +30,12 @@ if (strpos("..", $file) !== false) {
     header("HTTP/1.1 400 Bad Request");
     exit(4);
 }
+
+$downloadNotifier = new NDB_Notifier(
+    "media",
+    "download",
+    array("file" => $file)
+);
 
 $config   =& NDB_Config::singleton();
 $path     = $config->getSetting('mediaPath');
@@ -45,3 +53,4 @@ header('Content-Type: application/force-download');
 header("Content-Transfer-Encoding: Binary");
 header("Content-disposition: attachment; filename=\"" . basename($filePath) . "\"");
 readfile($filePath);
+$downloadNotifier->notify();
