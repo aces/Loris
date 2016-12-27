@@ -34,7 +34,7 @@ module.exports = function(grunt) {
           'modules/candidate_parameters/js/probandInfo.js': 'modules/candidate_parameters/jsx/probandInfo.js',
           'modules/configuration/js/SubprojectRelations.js': 'modules/configuration/jsx/SubprojectRelations.js',
           'modules/instrument_builder/js/react.instrument_builder.js': 'modules/instrument_builder/jsx/react.instrument_builder.js',
-          'modules/instrument_builder/js/react.questions.js': 'modules/instrument_builder/jsx/react.questions.js',
+          'modules/instrument_builder/js/react.questions.js': 'modules/instrument_builder/jsx/react.questions.js'
         }
       },
       transpileES5: {
