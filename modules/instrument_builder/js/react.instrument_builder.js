@@ -99,6 +99,30 @@ var LoadPane = React.createClass({
           ' Wrong file format'
         );
         break;
+      case 'duplicateEntry':
+        alert = React.createElement(
+          'div',
+          { className: 'alert alert-danger alert-dismissible', role: 'alert' },
+          React.createElement(
+            'button',
+            { type: 'button', className: 'close', onClick: this.resetAlert },
+            React.createElement(
+              'span',
+              { 'aria-hidden': 'true' },
+              '\xD7'
+            )
+          ),
+          React.createElement(
+            'strong',
+            null,
+            'Error!'
+          ),
+          React.createElement('br', null),
+          'Instrument file can\'t contain elements with identical name! ',
+          React.createElement('br', null),
+          'Please verify the format of your LINST file!'
+        );
+        break;
       default:
         break;
     }
@@ -109,11 +133,13 @@ var LoadPane = React.createClass({
         'div',
         { className: 'col-sm-6 col-xs-12' },
         alert,
-        React.createElement('input', { className: 'fileUpload',
+        React.createElement('input', {
+          className: 'fileUpload',
           type: 'file', id: 'instfile',
           onChange: this.chooseFile
         }),
-        React.createElement('input', { className: 'btn btn-primary spacingTop',
+        React.createElement('input', {
+          className: 'btn btn-primary spacingTop',
           type: 'button', id: 'load',
           value: 'Load Instrument',
           onClick: this.loadFile

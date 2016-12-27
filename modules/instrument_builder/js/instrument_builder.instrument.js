@@ -159,6 +159,7 @@ var Instrument = {
     load: function (file, callback) {
         var reader = new FileReader();
             ParseInstrument = function () {
+                var elementNames = [];
                 var Elements = [{
                         Type        : "ElementGroup",
                         GroupType   : "Page",
@@ -295,6 +296,14 @@ var Instrument = {
                         default:
                             break;
                     }
+
+                    if (elementNames.indexOf(tempElement.Name) < 0) {
+                      elementNames.push(tempElement.Name)
+                    } else {
+                      callback.error("duplicateEntry");
+                      return;
+                    }
+
                     Elements[currentPage].Elements.push(tempElement);
                     tempElement = {};
                     specialCase = false;

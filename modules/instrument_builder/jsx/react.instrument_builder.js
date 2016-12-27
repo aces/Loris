@@ -69,23 +69,37 @@ var LoadPane = React.createClass({
           </div>
         );
         break;
+      case 'duplicateEntry':
+        alert = (
+          <div className="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" className="close" onClick={this.resetAlert}>
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>Error!</strong><br/>
+            Instrument file can't contain elements with identical name! <br/>
+            Please verify the format of your LINST file!
+          </div>
+        );
+        break;
       default:
         break;
     }
     return (
       <TabPane Title="Load Instrument" TabId={this.props.TabId}>
-                  <div className="col-sm-6 col-xs-12">
-                    {alert}
-            <input className="fileUpload"
-                 type="file" id="instfile"
-                       onChange={this.chooseFile}
-            />
-                  <input className="btn btn-primary spacingTop"
-                       type="button" id="load"
-                       value="Load Instrument"
-                       onClick={this.loadFile}
-                  />
-              </div>
+        <div className="col-sm-6 col-xs-12">
+          {alert}
+          <input
+            className="fileUpload"
+            type="file" id="instfile"
+            onChange={this.chooseFile}
+          />
+          <input
+            className="btn btn-primary spacingTop"
+            type="button" id="load"
+            value="Load Instrument"
+            onClick={this.loadFile}
+          />
+        </div>
       </TabPane>
     );
   }
