@@ -174,42 +174,6 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         return true;
     }
 
-
-    /**
-     * Overrides the default setDataTableRows to assign the background colour
-     * to the progress column
-     *
-     * @param integer $count The number of rows in the table
-     *
-     * @return true on success
-     */
-    function _setDataTableRows($count)
-    {
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                $itemi          =& $this->tpl_data['items'][$x][$i];
-                $itemi['name']  = $key;
-                $itemi['value'] = $val;
-                if ($key == 'Progress' && $val == 'Failure') {
-                    $itemi['bgcolor'] =  '#E4A09E';
-                } elseif ($key == 'Progress' && $val == 'In Progress...') {
-                    $itemi['bgcolor'] =  '#F3F781';
-                }
-                $i++;
-            }
-
-            $x++;
-        }
-        $this->tpl_data['numUploads'] = $this->TotalItems;
-        return true;
-    }
-
     /**
      * Returns true if the _saveFile has successfully
      * completed
@@ -639,6 +603,9 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
+             $baseURL . "/imaging_uploader/js/index.js",
+             $baseURL . "/imaging_uploader/js/columnFormatter.js",
+             $baseURL . "/imaging_uploader/js/imaging_uploader.js",
              $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
             )
         );

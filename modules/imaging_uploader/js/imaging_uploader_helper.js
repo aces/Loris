@@ -91,7 +91,7 @@ function progressHandler(event) {
 
 /*
 Uploads file to the server, listening to the progress
-in order to get the percentage uploaded as value for the progress bar 
+in order to get the percentage uploaded as value for the progress bar
 */
 function uploadFile() {
     "use strict";
@@ -158,12 +158,12 @@ $(function () {
 
 
 /**
- * Represents the progress of the MRI pipeline run on a specific scan. 
+ * Represents the progress of the MRI pipeline run on a specific scan.
  */
 function UploadProgress() {
     /**
      * Row (i.e. <tr> element) in the MRI upload table associated to this progress element.
-     */ 
+     */
     this._uploadRow         = null;
     /**
      * Series of dots used in the text used to describe the progress object
@@ -178,21 +178,21 @@ function UploadProgress() {
     /**
      * Server response to a POST request for the status of an upload progress.
      */
-    this._progressFromServer = null; 
-        
+    this._progressFromServer = null;
+
     /**
      * Getter method for field _uploadRow.
-     */    
+     */
     this.getUploadRow = function() {
         return this._uploadRow;
     };
-    
+
     /**
      * Setter method for field _uploadRow.
      */
     this.setUploadRow = function(uploadRow) {
         this._uploadRow = uploadRow;
-        
+
         this._progressFromServer = null;
         this._dots              = '';
         this._animatedCharIndex = 0;
@@ -205,10 +205,10 @@ function UploadProgress() {
         if(this._uploadRow == null) {
             return null;
         }
-        
+
         return $.trim($(this._uploadRow).find('td').eq(1).text());
-    }    
-    
+    }
+
     /**
      * String representation of this object.
      */
@@ -222,16 +222,16 @@ function UploadProgress() {
         var progressType = $('select[name=LogType] option:selected').text() == 'Summary' ? 'Summary' : 'Details';
 
         // All the messages in the notification_spool table
-        var notificationText = '';        
+        var notificationText = '';
         if(this._progressFromServer != null && this._progressFromServer.notifications != null) {
             for(i=0; i<this._progressFromServer.notifications.length; i++) {
                 notificationText += this._progressFromServer.notifications[i].Message;
             }
         }
-                
+
         // Display pSCID, CandID and VisitLabel for the selected upload
         var progressHeader = progressType + ' of upload ' + uploadId + ' for ' + pscid + ' (CandID ' + candid + ') at ' + visitLabel + "\n";
-        
+
         // If pipeline is still running
         if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_RUNNING) {
             return progressHeader
@@ -239,9 +239,9 @@ function UploadProgress() {
                 + this._dots
                 + ['|', '/', '-', '\\', '|', '/', '-', '\\'][this._animatedCharIndex % 8] + "\n";
         }
-        
+
         // Pipeline is not currently running: it is either not started, stopped or communication with the server
-        // could not be established and so the status of the pipeline is unknown 
+        // could not be established and so the status of the pipeline is unknown
         var statusText;
         if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_FINISHED) {
             statusText = 'Upload is finished and ' + (this.isInsertionComplete() ? 'was successful' : 'failed');
@@ -250,7 +250,7 @@ function UploadProgress() {
         } else if(this.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_UNKNOWN) {
             statusText = 'Communication with the server failed: progress information is not available at this time.';
         }
-                
+
         return progressHeader + notificationText + statusText;
     };
 
@@ -260,7 +260,7 @@ function UploadProgress() {
     this.updateDots = function() {
         this._dots += '.';
     };
-    
+
     /**
      * Updates the animated char used to indicate that the pipeline is running.
      */
@@ -274,23 +274,23 @@ function UploadProgress() {
     this.getPipelineStatus = function() {
         if(this._progressFromServer == null) {
             return UploadProgress.PIPELINE_STATUS_UNKNOWN;
-        } 
-        
+        }
+
         if(this._progressFromServer.inserting == null) {
             return UploadProgress.PIPELINE_STATUS_NOT_STARTED;
         }
-         
+
         if(this._progressFromServer.inserting == 0) {
             return UploadProgress.PIPELINE_STATUS_FINISHED;
         }
-        
+
         if(this._progressFromServer.inserting == 1) {
             return UploadProgress.PIPELINE_STATUS_RUNNING;
-        }  
-        
+        }
+
         throw "Unknown value for Inserting field: " + this._progressFromServer.inserting;
     }
-    
+
     /**
      * Determines whether the pipeline terminated successfully (assumes pipeline has
      * finished running).
@@ -298,7 +298,7 @@ function UploadProgress() {
     this.isInsertionComplete = function() {
         return this._progressFromServer != null && this._progressFromServer.insertionComplete == 1;
     }
-    
+
     /**
      * Sets the _progressFromServer object based on the result of a POST request to the server for
      * this information.
@@ -306,11 +306,11 @@ function UploadProgress() {
     this.setProgressFromServer = function(progressFromServer) {
         if(progressFromServer != null) {
             var newProgressFromServer = $.parseJSON(progressFromServer);
-            
+
             // If the number of notifications changed since last POST request, reset the
             // dots and animated char
-            if(this._progressFromServer != null 
-              && this._progressFromServer.notifications != null 
+            if(this._progressFromServer != null
+              && this._progressFromServer.notifications != null
               && newProgressFromServer.notifications != null
               && this._progressFromServer.notifications.length != newProgressFromServer.notifications.length) {
                 this._dots = '';
@@ -322,173 +322,18 @@ function UploadProgress() {
                     this._animatedCharIndex = 0;
                 }
             }
-        
-            this._progressFromServer = newProgressFromServer;    
+
+            this._progressFromServer = newProgressFromServer;
         } else {
             this._progressFromServer = null;
             this._dots = '';
             this._animatedCharIndex = 0;
         }
     };
-    
+
 }
 UploadProgress.PIPELINE_STATUS_FINISHED    = 0;
 UploadProgress.PIPELINE_STATUS_RUNNING     = 1;
 UploadProgress.PIPELINE_STATUS_NOT_STARTED = 2;
-UploadProgress.PIPELINE_STATUS_UNKNOWN     = 3; 
+UploadProgress.PIPELINE_STATUS_UNKNOWN     = 3;
 
-var uploadProgress;
-var clickOnSameRowDeselects = true;
-
-/**
- * Invoked when the user changes the log type form Summary to Detailed and
- * vice-versa.
- */
-function onUploadTypeChange() {
-    var logTableClass = $('select[name=LogType] option:selected').text() == 'Summary' 
-        ? 'upload-logs-table-summary' : 'upload-logs-table-detailed';
-        
-    // This will enlarge/shrink the logs table
-    $('textarea[name=UploadLogs]').attr("class", logTableClass);
-                
-    // If an upload is currently selected, fetch the appropriate logs
-    if(uploadProgress.getUploadRow() != null) {
-        clickOnSameRowDeselects = false;
-        $(uploadProgress.getUploadRow()).trigger('click');
-        clickOnSameRowDeselects = true;
-    }
-}
-
-/**
- * Monitors the progress of an MRI pipeline run on the server by repeatedly
- * issuing POST requests for this information at regular intervals.
- * As soon as the server indicates that the pipeline has finished running, polling
- * will end.
- */
-function monitorProgress() {
-    var summary = $('select[name=LogType] option:selected').text() == 'Summary' ? true : false;
-    var uploadId = uploadProgress.getUploadId();
-    
-    $.post(
-        loris.BaseURL + "/imaging_uploader/ajax/getUploadSummary.php",
-        {uploadId: uploadId, summary: summary},
-        function (data) {
-            uploadProgress.setProgressFromServer(data);
-            // If the pipeline is still running, start polling
-            // If the pipeline is not running, end the polling (if any was started)
-            setServerPolling(uploadProgress.getPipelineStatus() == UploadProgress.PIPELINE_STATUS_RUNNING);
-            $('textarea[name=UploadLogs]').val(uploadProgress.getProgressText());
-        }    
-    );  // post call
-}
-
-/**
- * Starts/stops polling on the server.
- */
-function setServerPolling(poll) {
-    // If polling should be stopped
-    if(!poll) {
-        // Stop issuing POST requests (if any polling was taking place)
-        if(setServerPolling.getSummaryInterval) {
-            clearInterval(setServerPolling.getSummaryInterval);
-            setServerPolling.getSummaryInterval = null;
-        }
-        // Stop updating the series of dots string (if such an update was
-        // going on) 
-        if(setServerPolling.dotUpdateInterval) {
-            clearInterval(setServerPolling.dotUpdateInterval);
-            setServerPolling.dotUpdateInterval= null;
-        }
-        // Stop updating the animated char (if such an update was
-        // going on) 
-        if(setServerPolling.animatedCharInterval) {
-            clearInterval(setServerPolling.animatedCharInterval);
-            setServerPolling.animatedCharInterval = null;
-        }  
-    // If polling should begin  
-    } else {
-        // If there were no POST requests being issued, start issuing some.
-        if(!setServerPolling.getSummaryInterval) {
-            setServerPolling.getSummaryInterval = setInterval(
-                monitorProgress,
-                5000
-            )
-        }
-
-        // If there were no updates to the string of dots, start updating
-        if(!setServerPolling.dotUpdateInterval) {
-            setServerPolling.dotUpdateInterval = setInterval(
-                function() {
-                    uploadProgress.updateDots(); 
-                    $('textarea[name=UploadLogs]').val(uploadProgress.getProgressText());
-                },
-                3000
-            )
-        }
-        
-        // If there were no updates to the animated chars, start updating
-        if(!setServerPolling.animatedCharInterval) {
-            setServerPolling.animatedCharInterval = setInterval(
-                function() {
-                    uploadProgress.updateAnimatedCharIndex();
-                    $('textarea[name=UploadLogs]').val(uploadProgress.getProgressText());
-                },
-                250
-            )
-        }
-    }
-}
-
-/**
- * Invokes wen the DOM is ready. Will repond to clicks in the MRI upload table by
- * updating the upload logs for that MRI scan in the logs table.
- */
-$(document).ready(
-    function() {
-        uploadProgress = new UploadProgress();        
-        
-        $(".image-link").click(function(e){
-            loris.loadFilteredMenuClickHandler(
-                'imaging_browser',
-                {'DCCID': $(this).attr("data-dccid")}
-            )(e);
-        });
-        // update the logs table: make it read-only, as wide as the panel containing it
-        // and set the initial content
-        $('textarea[name=UploadLogs]').attr("readonly", "true");
-        var logTableClass = $('select[name=LogType] option:selected').text() == 'Summary' 
-            ? 'upload-logs-table-summary' : 'upload-logs-table-detailed';
-        $('textarea[name=UploadLogs]').attr("class", logTableClass);
-        $('textarea[name=UploadLogs]').val('<select a row in the table below to view the upload logs>');
-    
-        $('select[name=LogType]').on('click', onUploadTypeChange);
-    
-        // Define behavior when MRI upload row is clicked
-        $('#mri_upload_table tbody tr').click(
-            function(event) {
-                // Stop server polling if any was taking place
-                if(uploadProgress.getUploadRow() != null) {
-                    $(uploadProgress.getUploadRow()).css('background-color', 'white'); 
-                    setServerPolling(false);  
-                }
-                
-                // If user clicked on the same row, it is interpreted as a de-selection:
-                // deselect row and set log text to 'nothing selected'
-                if(event.delegateTarget == uploadProgress.getUploadRow() && clickOnSameRowDeselects) {
-                    $('textarea[name=UploadLogs]').val(
-                        '<select a row in the table below to view the upload logs>'
-                    );
-                    uploadProgress.setUploadRow(null);
-                    uploadProgress.setProgressFromServer(null);
-                    return;
-                }
-                
-                uploadProgress.setUploadRow(event.delegateTarget);
-
-                $(this).css('background-color', '#EFEFFB');  
-                
-                monitorProgress();
-            }  
-        ); 
-    } 
-);
