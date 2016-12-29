@@ -131,7 +131,6 @@ class DicomArchive extends React.Component {
           <TextboxElement
             name={archiveLocation}
             label="Archive Location"
-            onUserInput={this.clearFilter}
             ref={archiveLocation}
           />
           <TextboxElement

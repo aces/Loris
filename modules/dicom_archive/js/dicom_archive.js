@@ -154,7 +154,6 @@ var DicomArchive = function (_React$Component) {
           React.createElement(TextboxElement, {
             name: archiveLocation,
             label: "Archive Location",
-            onUserInput: this.clearFilter,
             ref: archiveLocation
           }),
           React.createElement(TextboxElement, {
