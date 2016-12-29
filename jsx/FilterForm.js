@@ -61,7 +61,10 @@ class FilterForm extends React.Component {
     let formElements = [];
     React.Children.forEach(this.props.children, function(child, key) {
       // If child is a React component (i.e not a simple DOM element)
-      if (React.isValidElement(child) && typeof child.type === "function") {
+      if (React.isValidElement(child) &&
+          typeof child.type === "function" &&
+          child.props.onUserInput
+      ) {
         let callbackFunc = child.props.onUserInput;
         let callbackName = callbackFunc.name;
         let elementName = child.type.displayName;
@@ -84,7 +87,7 @@ class FilterForm extends React.Component {
         // Initialize filter for StaticDataTable
         this.setTableFilter(elementName, child.ref, filterValue);
       } else {
-        formElements.push(React.cloneElement(child));
+        formElements.push(React.cloneElement(child, {key: key}));
       }
     }.bind(this));
 
