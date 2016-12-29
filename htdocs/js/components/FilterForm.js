@@ -234,6 +234,7 @@ var FilterForm = function (_React$Component) {
 }(React.Component);
 
 FilterForm.defaultProps = {
+  id: 'selection-filter',
   filterClass: "col-md-9",
   onUpdate: function onUpdate() {
     console.warn('onUpdate() callback is not set!');

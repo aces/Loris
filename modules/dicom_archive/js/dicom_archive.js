@@ -116,6 +116,7 @@ var DicomArchive = function (_React$Component) {
           {
             Module: "dicom_archive",
             name: "dicom_filter",
+            id: "dicom_filter",
             columns: 2,
             onUpdate: this.updateFilter
           },

@@ -192,6 +192,7 @@ class FilterForm extends React.Component {
 }
 
 FilterForm.defaultProps = {
+  id: 'selection-filter',
   filterClass: "col-md-9",
   onUpdate: function() {
     console.warn('onUpdate() callback is not set!');
