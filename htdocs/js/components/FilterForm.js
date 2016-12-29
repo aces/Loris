@@ -219,10 +219,7 @@ var FilterForm = function (_React$Component) {
                 { className: this.props.filterClass },
                 React.createElement(
                   FormElement,
-                  {
-                    name: this.props.name,
-                    columns: this.props.columns
-                  },
+                  this.props,
                   formElements
                 )
               )

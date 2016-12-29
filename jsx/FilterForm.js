@@ -176,10 +176,7 @@ class FilterForm extends React.Component {
           <div className="panel-body">
             <div className="row">
               <div className={this.props.filterClass}>
-                <FormElement
-                  name={this.props.name}
-                  columns={this.props.columns}
-                >
+                <FormElement {...this.props}>
                   {formElements}
                 </FormElement>
               </div>
