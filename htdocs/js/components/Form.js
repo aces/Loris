@@ -33,7 +33,7 @@ var FormElement = React.createClass({
     method: React.PropTypes.oneOf(['POST', 'GET']),
     class: React.PropTypes.string,
     columns: React.PropTypes.number,
-    formElements: React.PropTypes.array,
+    formElements: React.PropTypes.object,
     onSubmit: React.PropTypes.func,
     onUserInput: React.PropTypes.func
   },
@@ -46,7 +46,7 @@ var FormElement = React.createClass({
       class: 'form-horizontal',
       columns: 1,
       fileUpload: false,
-      formElements: [],
+      formElements: {},
       onSubmit: function onSubmit() {
         console.warn('onSubmit() callback is not set!');
       },
@@ -66,12 +66,12 @@ var FormElement = React.createClass({
     var filter = this.props.formElements;
     var userInput = this.props.onUserInput;
 
-    filter.forEach(function (element, key) {
+    Object.keys(filter).forEach(function (objKey, index) {
       formElementsHTML.push(React.createElement(
         'div',
-        { key: 'el_' + key, className: colClass },
+        { key: 'el_' + index, className: colClass },
         React.createElement(LorisElement, {
-          element: element,
+          element: filter[objKey],
           onUserInput: userInput
         })
       ));
@@ -89,7 +89,7 @@ var FormElement = React.createClass({
       }
       formElementsHTML.push(React.createElement(
         'div',
-        { key: 'el_' + key, className: elementClass },
+        { key: 'el_child_' + key, className: elementClass },
         child
       ));
     });
