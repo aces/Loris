@@ -63,7 +63,8 @@ var Panel = function (_React$Component) {
           { className: "panel-heading",
             onClick: this.toggleCollapsed,
             "data-toggle": "collapse",
-            "data-target": '#' + this.props.id
+            "data-target": '#' + this.props.id,
+            style: { cursor: 'pointer' }
           },
           this.props.title,
           React.createElement("span", { className: glyphClass })
@@ -73,7 +74,7 @@ var Panel = function (_React$Component) {
           { id: this.props.id, className: panelClass, role: "tabpanel" },
           React.createElement(
             "div",
-            { className: "panel-body" },
+            { className: "panel-body", style: { height: this.props.height } },
             this.props.children
           )
         )
@@ -87,5 +88,6 @@ var Panel = function (_React$Component) {
 Panel.propTypes = {};
 Panel.defaultProps = {
   id: 'default-panel',
+  height: '100%',
   title: 'Selection Filter'
 };

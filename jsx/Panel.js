@@ -44,12 +44,13 @@ class Panel extends React.Component {
              onClick={this.toggleCollapsed}
              data-toggle="collapse"
              data-target={'#' + this.props.id}
+             style={{cursor: 'pointer'}}
         >
           {this.props.title}
           <span className={glyphClass}></span>
         </div>
         <div id={this.props.id} className={panelClass} role="tabpanel">
-          <div className="panel-body">
+          <div className="panel-body" style={{height: this.props.height}}>
             {this.props.children}
           </div>
         </div>
@@ -61,5 +62,6 @@ class Panel extends React.Component {
 Panel.propTypes = {};
 Panel.defaultProps = {
   id: 'default-panel',
+  height: '100%',
   title: 'Selection Filter'
 };
