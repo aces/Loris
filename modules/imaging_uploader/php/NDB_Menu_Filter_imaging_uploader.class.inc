@@ -109,6 +109,21 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
+        $phantom_options = ['N' => 'No', 'Y' => 'Yes'];
+        $this->addSelect(
+            'IsPhantom',
+            'Are these Phantom Scans:',
+            $phantom_options
+        );
+
+        ///////////////////////////////////////////////////////////////////////
+        //////////////////CandID, PSCID and VisitLabel fields//////////////////
+        ///////////////////////////////////////////////////////////////////////
+        $this->addBasicText('CandID', 'CandID:');
+        $this->addBasicText('PSCID', 'PSCID:');
+
+        $visitlabels = ['' => null] + Utility::getExistingVisitLabels();
+        $this->addSelect('Visit_label', 'VisitLabel:', $visitlabels);
 
         ///////////////////////////////////////////////////////////////////////
         ////////////////////////Upload related fields//////////////////////////
@@ -117,48 +132,23 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $this->addScoreColumn('File_name', 'File name');
         $this->addScoreColumn('status', 'Status');
 
-        ///////////////////////////////////////////////////////////////////////
-        //////////////////CandID, PSCID and VisitLabel fields//////////////////
-        ///////////////////////////////////////////////////////////////////////
-        $this->addBasicText('CandID', 'CandID:');
-        $this->addBasicText('PSCID', 'PSCID:');
-        $visitlabels = array_merge(
-            array(null => ''),
-            Utility::getExistingVisitLabels()
-        );
-        $this->addSelect(
-            'Visit_label',
-            'VisitLabel:',
-            $visitlabels
-        );
-        $phantom_options = array(
-                            null => '',
-                            'N'  => 'No',
-                            'Y'  => 'Yes',
-                           );
-        $this->addSelect(
-            'IsPhantom',
-            'Are these Phantom Scans:',
-            $phantom_options
-        );
-
-        $this->addSelect(
-            'LogType',
-            '',
-            array(
-             'summary'  => 'Summary',
-             'detailed' => 'Detailed',
-            )
-        );
-
-        $this->form->addTextArea(
-            'UploadLogs',
-            '',
-            array(
-             'class' => 'upload-logs-table',
-             'id'    => 'mri_upload_logs',
-            )
-        );
+//        $this->addSelect(
+//            'LogType',
+//            '',
+//            array(
+//             'summary'  => 'Summary',
+//             'detailed' => 'Detailed',
+//            )
+//        );
+//
+//        $this->form->addTextArea(
+//            'UploadLogs',
+//            '',
+//            array(
+//             'class' => 'upload-logs-table',
+//             'id'    => 'mri_upload_logs',
+//            )
+//        );
 
         ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
@@ -379,6 +369,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $temp_dir      = $this->tempdir();
         $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
+
+        var_dump("SUPP");
 
         if (!copy($temp_file, $new_temp_file)) {
             throw new LorisException(
@@ -607,6 +599,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             array(
              $baseURL . "/imaging_uploader/js/index.js",
              $baseURL . "/imaging_uploader/js/columnFormatter.js",
+             $baseURL . "/imaging_uploader/js/upload_panel.js",
+             $baseURL . "/imaging_uploader/js/log_panel.js",
              $baseURL . "/imaging_uploader/js/imaging_uploader.js",
              $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
             )
@@ -628,6 +622,20 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             $deps,
             [$baseURL . "/imaging_uploader/css/imaging_uploader.css"]
         );
+    }
+
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
+
+        return json_encode($result);
     }
 }
 ?>
