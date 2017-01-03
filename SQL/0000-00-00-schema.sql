@@ -1329,7 +1329,7 @@ CREATE TABLE `users` (
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
-  UNIQUE KEY `UserID` (`UserID`),
+  UNIQUE KEY `UserID` (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
