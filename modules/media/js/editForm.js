@@ -184,14 +184,14 @@ var MediaEditForm = function (_React$Component) {
             maxYear: '2017',
             onUserInput: this.setFormData,
             ref: 'dateTaken',
-            value: this.state.mediaData.dateTaken
+            value: this.state.formData.dateTaken
           }),
           React.createElement(TextareaElement, {
             name: 'comments',
             label: 'Comments',
             onUserInput: this.setFormData,
             ref: 'comments',
-            value: this.state.mediaData.comments
+            value: this.state.formData.comments
           }),
           React.createElement(FileElement, {
             name: 'file',
@@ -201,7 +201,7 @@ var MediaEditForm = function (_React$Component) {
             disabled: true,
             ref: 'file',
             label: 'Uploaded file',
-            value: this.state.mediaData.fileName
+            value: this.state.formData.fileName
           }),
           React.createElement(SelectElement, {
             name: 'hideFile',
@@ -210,7 +210,7 @@ var MediaEditForm = function (_React$Component) {
             options: ["No", "Yes"],
             onUserInput: this.setFormData,
             ref: 'hideFile',
-            value: this.state.mediaData.hideFile
+            value: this.state.formData.hideFile
           }),
           React.createElement(ButtonElement, { label: 'Update File' })
         )
