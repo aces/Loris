@@ -15,16 +15,14 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
   var hashName;
-  var patientname;
-  var uid;
+  var patientname = row.PatientName;
+  var uid = row.SeriesUID;
   var url;
   rowHeaders.forEach(function (header, index) {
     row[header] = rowData[index];
   }, this);
 
   if (column === "Problem" && row.Problem === "Protocol Violation") {
-    patientname = row.PatientName;
-    uid = row.SeriesUID;
     url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" + patientname + "&SeriesUID=" + uid;
     return React.createElement(
       "td",
@@ -42,8 +40,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     );
   }
   if (column === "Problem" && row.Problem === "Could not identify scan type") {
-    patientname = row.PatientName;
-    uid = row.SeriesUID;
     url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_violations&PatientName=" + patientname + "&SeriesUID=" + uid;
     return React.createElement(
       "td",

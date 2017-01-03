@@ -15,46 +15,47 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
   var hashName;
-  var patientname;
-  var uid;
+  var patientname = row.PatientName;
+  var uid = row.SeriesUID;
   var url;
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
   if (column === "Problem" && row.Problem === "Protocol Violation") {
-    patientname = row.PatientName;
-    uid = row.SeriesUID;
     url = loris.BaseURL +
         "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" +
              patientname + "&SeriesUID=" + uid;
-    return <td>
+    return (
+           <td>
             <a href= {url}
             className="mri_violations"
             id="mri_protocol_check_violations"
             data-patientname= {patientname}
             data-seriesuid={uid}
             >Protocol Violation</a>
-           </td>;
+           </td>
+           );
   }
   if (column === "Problem" && row.Problem === "Could not identify scan type") {
-    patientname = row.PatientName;
-    uid = row.SeriesUID;
     url = loris.BaseURL +
             "/mri_violations/?submenu=mri_protocol_violations&PatientName=" +
             patientname + "&SeriesUID=" + uid;
-    return <td>
+    return (
+           <td>
             <a href= {url}
             className="mri_violations"
             id="mri_protocol_violations"
             data-patientname= {patientname}
             data-seriesuid={uid}
             >Could not identify scan type</a>
-           </td>;
+           </td>
+           );
   }
   if (column === 'Resolution Status') {
     hashName = "resolvable[" + row.Hash + "]";
-    return <td>
+    return (
+             <td>
                 <select name= {hashName} className="form-control input-sm" >
                      <option value="unresolved" >Unresolved</option>
                      <option value="reran" >Reran</option>
@@ -64,8 +65,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
                      <option value="inserted_flag" >Inserted with flag</option>
                      <option value="other" >Other</option>
                 </select>
-             </td>;
+             </td>
+           );
   }
 
-  return <td>{cell}</td>;
+  return (<td>{cell}</td>);
 }

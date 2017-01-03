@@ -136,7 +136,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         // set the class variables
         // create user object
         $user =& User::singleton();
-
+        $DB   =& Database::singleton();
         $config =& NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
@@ -144,12 +144,13 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         } else {
             $useProjects = true;
         }
-
+        $dir_path = $config->getSetting("imagePath");
         $this->columns = array(
             'v.PatientName',
             'site.Name as Site',
             'v.TimeRun',
             'v.MincFile',
+            'v.MincFileViolated',
             'v.Series_Description as Series_Description_Or_Scan_Type',
             'v.Problem',
             'v.SeriesUID',
@@ -159,7 +160,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         );
 
         $this->headers  = array('PatientName','Site','TimeRun',
-          'MincFile','Series_Description_Or_Scan_Type','Problem','SeriesUID','Hash',
+          'MincFile','MincFileViolated','Series_Description_Or_Scan_Type','Problem','SeriesUID','Hash',
           'JoinID','Resolution_status');
 
         if ($useProjects) {
@@ -180,6 +181,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
+CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_location, '/', -2)) as MincFileViolated,
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem,
                 SeriesUID,
@@ -204,6 +206,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
+                IF(INSTR('MincFile', 'assembly'), IF(LEFT('MincFile', 8) = 'assembly',CONCAT_WS(''," . $DB->quote($dir_path) . ",'MincFile'),'MincFile'), CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(MincFile, '/', -2))) as MincFileViolated,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
                 SeriesUID,
@@ -230,6 +233,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
+                CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(MincFile, '/', -2)) as MincFileViolated,
                 null,
                 Reason,
                 SeriesUID,
@@ -366,7 +370,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-                $baseurl . "/mri_violations/js/Not_Resolved_columnFormatter.js",
+                $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
             )
         );
     }
