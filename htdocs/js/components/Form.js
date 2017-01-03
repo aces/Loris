@@ -33,7 +33,12 @@ var FormElement = React.createClass({
     method: React.PropTypes.oneOf(['POST', 'GET']),
     class: React.PropTypes.string,
     columns: React.PropTypes.number,
-    formElements: React.PropTypes.object,
+    formElements: React.PropTypes.shape({
+      elementName: React.PropTypes.shape({
+        name: React.PropTypes.string,
+        type: React.PropTypes.string
+      })
+    }),
     onSubmit: React.PropTypes.func,
     onUserInput: React.PropTypes.func
   },
