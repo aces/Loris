@@ -156,7 +156,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 SELECT fi.FileID
                 FROM files fi
                 WHERE fi.SessionID=s.ID AND fi.AcquisitionProtocolID=44
-                GROUP BY fi.SessionID),'')
+                GROUP BY fi.SessionID, fi.FileID),'')
             WHEN '' THEN 'No'
             ELSE 'Yes'
             END
