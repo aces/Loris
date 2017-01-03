@@ -146,7 +146,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         $bvlFeedback = $this
             ->getFeedbacks($instrument, $candID, $_REQUEST['visit_label']);
-        
+
 
         $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
 
