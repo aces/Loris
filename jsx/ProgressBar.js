@@ -10,25 +10,37 @@
  */
 class ProgressBar extends React.Component {
   render() {
-    let style = {
-      display: (this.props.value < 0 ? 'none' : 'block')
+    let progressStyle = {
+      display: (this.props.value < 0 ? 'none' : 'block'),
+      backgroundColor: '#d3d3d3',
+      height: '30px',
+      position: 'relative'
+    };
+
+    let labelStyle = {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 1000,
+      width: '100%',
+      color: '#fff',
+      textAlign: 'center',
+      lineHeight: '30px',
+      fontWeight: '600'
     };
 
     return (
-      <div id="file-progress" style={style}>
-        <div className="progress">
-          <div
-            id="progressbar"
-            className="progress-bar progress-bar-striped active"
-            role="progressbar"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            aria-valuenow={this.props.value}
-            style={{width: (this.props.value + '%')}}
-          >
-          </div>
-          <div id="progresslabel">{this.props.value}%</div>
+      <div className="progress" style={progressStyle}>
+        <div
+          className="progress-bar progress-bar-striped active"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow={this.props.value}
+          style={{width: (this.props.value + '%')}}
+        >
         </div>
+        <span style={labelStyle}>{this.props.value}%</span>
       </div>
     );
   }

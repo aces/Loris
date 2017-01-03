@@ -30,31 +30,41 @@ var ProgressBar = function (_React$Component) {
   _createClass(ProgressBar, [{
     key: 'render',
     value: function render() {
-      var style = {
-        display: this.props.value < 0 ? 'none' : 'block'
+      var progressStyle = {
+        display: this.props.value < 0 ? 'none' : 'block',
+        backgroundColor: '#d3d3d3',
+        height: '30px',
+        position: 'relative'
+      };
+
+      var labelStyle = {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        zIndex: 1000,
+        width: '100%',
+        color: '#fff',
+        textAlign: 'center',
+        lineHeight: '30px',
+        fontWeight: '600'
       };
 
       return React.createElement(
         'div',
-        { id: 'file-progress', style: style },
+        { className: 'progress', style: progressStyle },
+        React.createElement('div', {
+          className: 'progress-bar progress-bar-striped active',
+          role: 'progressbar',
+          'aria-valuemin': '0',
+          'aria-valuemax': '100',
+          'aria-valuenow': this.props.value,
+          style: { width: this.props.value + '%' }
+        }),
         React.createElement(
-          'div',
-          { className: 'progress' },
-          React.createElement('div', {
-            id: 'progressbar',
-            className: 'progress-bar progress-bar-striped active',
-            role: 'progressbar',
-            'aria-valuemin': '0',
-            'aria-valuemax': '100',
-            'aria-valuenow': this.props.value,
-            style: { width: this.props.value + '%' }
-          }),
-          React.createElement(
-            'div',
-            { id: 'progresslabel' },
-            this.props.value,
-            '%'
-          )
+          'span',
+          { style: labelStyle },
+          this.props.value,
+          '%'
         )
       );
     }
