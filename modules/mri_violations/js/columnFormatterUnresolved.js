@@ -17,6 +17,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var hashName;
   var patientname = row.PatientName;
   var uid = row.SeriesUID;
+  var MincFileViolated = row.MincFileViolated;
   var url;
   rowHeaders.forEach(function (header, index) {
     row[header] = rowData[index];
@@ -102,7 +103,20 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       )
     );
   }
+  if (column === "MincFileViolated") {
+    url = loris.BaseURL + "/brainbrowser/?minc_location=" + MincFileViolated;
 
+    var link = "windows.open(" + url + " ,'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto, scrollbars=yes')";
+    return React.createElement(
+      "td",
+      null,
+      React.createElement(
+        "a",
+        { href: "#noID", onclick: link },
+        cell
+      )
+    );
+  }
   return React.createElement(
     "td",
     null,
