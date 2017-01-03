@@ -156,14 +156,14 @@ class MediaEditForm extends React.Component {
             maxYear="2017"
             onUserInput={this.setFormData}
             ref="dateTaken"
-            value={this.state.mediaData.dateTaken}
+            value={this.state.formData.dateTaken}
           />
           <TextareaElement
             name="comments"
             label="Comments"
             onUserInput={this.setFormData}
             ref="comments"
-            value={this.state.mediaData.comments}
+            value={this.state.formData.comments}
           />
           <FileElement
             name="file"
@@ -173,7 +173,7 @@ class MediaEditForm extends React.Component {
             disabled={true}
             ref="file"
             label="Uploaded file"
-            value={this.state.mediaData.fileName}
+            value={this.state.formData.fileName}
           />
           <SelectElement
             name="hideFile"
@@ -182,7 +182,7 @@ class MediaEditForm extends React.Component {
             options={["No", "Yes"]}
             onUserInput={this.setFormData}
             ref="hideFile"
-            value={this.state.mediaData.hideFile}
+            value={this.state.formData.hideFile}
           />
           <ButtonElement label="Update File"/>
         </FormElement>

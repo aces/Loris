@@ -148,7 +148,7 @@ var FamilyInfo = React.createClass({
 
     return React.createElement(
       'div',
-      { 'class': 'row' },
+      { className: 'row' },
       React.createElement(
         'div',
         { className: alertClass, role: 'alert', ref: 'alert-message' },
@@ -179,7 +179,8 @@ var FamilyInfo = React.createClass({
           onUserInput: this.setFormData,
           ref: 'FamilyCandID',
           disabled: disabled,
-          required: false
+          required: false,
+          value: this.state.formData.FamilyCandID
         }),
         React.createElement(SelectElement, {
           label: 'Relation Type',
@@ -188,7 +189,8 @@ var FamilyInfo = React.createClass({
           onUserInput: this.setFormData,
           ref: 'Relationship_type',
           disabled: disabled,
-          required: relationshipRequired
+          required: relationshipRequired,
+          value: this.state.formData.Relationship_type
         }),
         addButton
       )

@@ -146,7 +146,7 @@ var FamilyInfo = React.createClass({
     }
 
     return (
-        <div class="row">
+        <div className="row">
           <div className={alertClass} role="alert" ref="alert-message">
             {alertMessage}
           </div>
@@ -175,6 +175,7 @@ var FamilyInfo = React.createClass({
               ref="FamilyCandID"
               disabled={disabled}
               required={false}
+              value={this.state.formData.FamilyCandID}
             />
             <SelectElement
               label="Relation Type"
@@ -184,6 +185,7 @@ var FamilyInfo = React.createClass({
               ref="Relationship_type"
               disabled={disabled}
               required={relationshipRequired}
+              value={this.state.formData.Relationship_type}
             />
             {addButton}
           </FormElement>
