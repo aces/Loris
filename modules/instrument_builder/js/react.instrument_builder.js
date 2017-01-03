@@ -97,7 +97,7 @@ var LoadPane = React.createClass({
 		}
 		return React.createElement(
 			TabPane,
-			{ Title: 'Load Instrument', TabId: this.props.TabId },
+			this.props,
 			React.createElement(
 				'div',
 				{ className: 'col-sm-6 col-xs-12' },
@@ -155,8 +155,7 @@ var SavePane = React.createClass({
 		var value = this.state.fileName;
 		return React.createElement(
 			TabPane,
-			{ Title: 'Save Instrument',
-				TabId: this.props.TabId },
+			this.props,
 			React.createElement(
 				'div',
 				{ className: 'form-group' },
@@ -563,7 +562,7 @@ var BuildPane = React.createClass({
 		});
 		return React.createElement(
 			TabPane,
-			{ Title: 'Build your Instrument', TabId: this.props.TabId },
+			this.props,
 			React.createElement(
 				'div',
 				{ className: 'form-group col-xs-12' },
