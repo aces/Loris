@@ -8,7 +8,7 @@
 <div class="row">
 	<div class="col-sm-12 col-md-7">
 		<div class="panel panel-primary">
-			<div class="panel-heading" onclick="hideFilter();">
+			<div class="panel-heading">
 				Selection Filter
 			</div>
 			<div class="panel-body" id="panel-body">
