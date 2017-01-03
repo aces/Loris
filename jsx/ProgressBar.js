@@ -4,9 +4,10 @@
  * React ProgressBar.
  *
  * Updates UI automatically when passed a progress value between 0 and 100.
+ * To hide progress bar before/after upload, set value to -1.
  *
- * Note: To hide progress bar before/after upload, set value to -1.
- *
+ * Note: This component relies on Bootstrap 3 progress-bar classes
+ * (http://getbootstrap.com/components/#progress)
  */
 class ProgressBar extends React.Component {
   render() {
