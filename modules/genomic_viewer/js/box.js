@@ -13,8 +13,9 @@ d3.box = function() {
 
   // For each small multiple…
   function box(g) {
-    g.each(function(d, i) {
-      d = d.map(value).sort(d3.ascending);
+    g.each(function(data, i) {
+
+      d = data.beta_values.map(value).sort(d3.ascending);
       var g = d3.select(this),
           n = d.length,
           min = d[0],
@@ -58,7 +59,7 @@ d3.box = function() {
       center.enter().insert("line", "rect")
           .attr("class", "center")
           .attr("x1", width / 2)
-          .attr("y1", function(d) { return x0(d[0]); })
+          .attr("y1", function(d) { console.log(d); return x0(d[0]); })
           .attr("x2", width / 2)
           .attr("y2", function(d) { return x0(d[1]); })
           .style("opacity", 1e-6)

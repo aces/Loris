@@ -577,64 +577,129 @@ GeneTrack.defaultProps = {
   dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
 };
 
-var CPGTrack = function (_React$Component5) {
-  _inherits(CPGTrack, _React$Component5);
+var BetaValueDistribution = function (_React$Component5) {
+  _inherits(BetaValueDistribution, _React$Component5);
 
-  function CPGTrack(props) {
-    _classCallCheck(this, CPGTrack);
+  function BetaValueDistribution(props) {
+    _classCallCheck(this, BetaValueDistribution);
 
-    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(CPGTrack).call(this, props));
+    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(BetaValueDistribution).call(this, props));
 
     _this5.state = {
-      data: "Expt,Run,Speed\n1,1,850\n1,2,740\n1,3,900\n1,4,1070"
+      data: []
     };
     return _this5;
   }
 
-  _createClass(CPGTrack, [{
+  _createClass(BetaValueDistribution, [{
     key: 'render',
     value: function render() {
-      var margin = { top: 10, right: 50, bottom: 20, left: 50 };
-      var width = 120 - margin.left - margin.right;
-      var height = 500 - margin.top - margin.bottom;
+      return null;
+    }
+  }]);
 
-      var min = Infinity;
-      var max = -Infinity;
+  return BetaValueDistribution;
+}(React.Component);
 
-      var chart = d3.box().whiskers(iqr(1.5)).width(width).height(height);
+var CPGTrack = function (_React$Component6) {
+  _inherits(CPGTrack, _React$Component6);
 
-      d3.csv(this.props.dataURL, function (error, csv) {
-        if (error) throw error;
+  function CPGTrack(props) {
+    _classCallCheck(this, CPGTrack);
 
-        var data = [];
+    var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(CPGTrack).call(this, props));
 
-        csv.forEach(function (x) {
-          var e = Math.floor(x.Expt - 1),
-              r = Math.floor(x.Run - 1),
-              s = Math.floor(x.Speed),
-              d = data[e];
-          if (!d) d = data[e] = [s];else d.push(s);
-          if (s > max) max = s;
-          if (s < min) min = s;
+    _this6.state = {
+      data: []
+    };
+
+    _this6.fetchData = _this6.fetchData.bind(_this6);
+    _this6.iqr = _this6.iqr.bind(_this6);
+    return _this6;
+  }
+
+  _createClass(CPGTrack, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.fetchData(this.props.genomicRange);
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      if (nextProps.hasOwnProperty('genomicRange') && nextProps.genomicRange !== this.props.genomicRange) {
+        this.fetchData(nextProps.genomicRange);
+      }
+    }
+  }, {
+    key: 'fetchData',
+    value: function fetchData(genomicRange) {
+      var pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
+
+      if (pattern.test(genomicRange)) {
+        $.ajax(this.props.dataURL + '?genomic_range=' + genomicRange, {
+          method: "GET",
+          dataType: 'json',
+          success: function (data) {
+            this.setState({
+              isLoaded: true,
+              data: data
+            });
+          }.bind(this),
+          error: function error(_error2) {
+            console.error(_error2);
+          }
         });
+      }
+    }
 
-        chart.domain([min, max]);
+    // Returns a function to compute the interquartile range.
 
-        d3.select(".Methylation-450k-chart").selectAll("svg").data(data).enter().append("svg").attr("class", "box").attr("width", width + margin.left + margin.right).attr("height", height + margin.bottom + margin.top).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")").call(chart);
-      });
+  }, {
+    key: 'iqr',
+    value: function iqr(k) {
+      return function (d, i) {
+        var q1 = d.quartiles[0],
+            q3 = d.quartiles[2],
+            iqr = (q3 - q1) * k,
+            i = -1,
+            j = d.length;
+        while (d[++i] < q1 - iqr) {}
+        while (d[--j] > q3 + iqr) {}
+        return [i, j];
+      };
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this7 = this;
 
-      // Returns a function to compute the interquartile range.
-      function iqr(k) {
-        return function (d, i) {
-          var q1 = d.quartiles[0],
-              q3 = d.quartiles[2],
-              iqr = (q3 - q1) * k,
-              i = -1,
-              j = d.length;
-          while (d[++i] < q1 - iqr) {}
-          while (d[--j] > q3 + iqr) {}
-          return [i, j];
-        };
+      var chart = [];
+
+      if (this.state.isLoaded) {
+        (function () {
+          var width = _this7.refs.thatDiv.getDOMNode().clientWidth;
+          var pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
+
+          var _props$genomicRange$m3 = _this7.props.genomicRange.match(pattern);
+
+          var _props$genomicRange$m4 = _slicedToArray(_props$genomicRange$m3, 5);
+
+          var genomicRange = _props$genomicRange$m4[0];
+          var prefix = _props$genomicRange$m4[1];
+          var chromosome = _props$genomicRange$m4[2];
+          var start = _props$genomicRange$m4[3];
+          var end = _props$genomicRange$m4[4];
+
+          // Determine the scale between the canvas width and the displayed genomicRange
+          // Unit: pixel per base pair
+
+          var xScale = width / (parseInt(end) - parseInt(start));
+
+          chart = _this7.state.data.map(function (d) {
+            var x = xScale * d.genomic_location;
+            return React.createElement(BetaValueDistribution, { xCenter: x, data: d });
+          }, _this7);
+        })();
       }
       return React.createElement(
         Track,
@@ -642,7 +707,7 @@ var CPGTrack = function (_React$Component5) {
           title: 'Methylation 450k' },
         React.createElement(
           'div',
-          { className: 'Methylation-450k-chart' },
+          { className: 'Methylation-450k-chart', ref: 'thatDiv' },
           chart
         )
       );
@@ -653,11 +718,11 @@ var CPGTrack = function (_React$Component5) {
 }(React.Component);
 
 CPGTrack.defaultProps = {
-  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getMorley.php"
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getCPG.php"
 };
 
-var SNPTrack = function (_React$Component6) {
-  _inherits(SNPTrack, _React$Component6);
+var SNPTrack = function (_React$Component7) {
+  _inherits(SNPTrack, _React$Component7);
 
   function SNPTrack() {
     _classCallCheck(this, SNPTrack);
@@ -675,8 +740,8 @@ var SNPTrack = function (_React$Component6) {
   return SNPTrack;
 }(React.Component);
 
-var ChIPPeakTrack = function (_React$Component7) {
-  _inherits(ChIPPeakTrack, _React$Component7);
+var ChIPPeakTrack = function (_React$Component8) {
+  _inherits(ChIPPeakTrack, _React$Component8);
 
   function ChIPPeakTrack() {
     _classCallCheck(this, ChIPPeakTrack);
@@ -707,22 +772,22 @@ var ChIPPeakTrack = function (_React$Component7) {
  * */
 
 
-var GenomicViewerApp = function (_React$Component8) {
-  _inherits(GenomicViewerApp, _React$Component8);
+var GenomicViewerApp = function (_React$Component9) {
+  _inherits(GenomicViewerApp, _React$Component9);
 
   function GenomicViewerApp(props) {
     _classCallCheck(this, GenomicViewerApp);
 
-    var _this8 = _possibleConstructorReturn(this, Object.getPrototypeOf(GenomicViewerApp).call(this, props));
+    var _this10 = _possibleConstructorReturn(this, Object.getPrototypeOf(GenomicViewerApp).call(this, props));
 
-    _this8.state = {
+    _this10.state = {
       // Create a default genomic range to show 
       genomicRange: null
     };
 
     // Bind component instance to custom methods
-    _this8.setGenomicRange = _this8.setGenomicRange.bind(_this8);
-    return _this8;
+    _this10.setGenomicRange = _this10.setGenomicRange.bind(_this10);
+    return _this10;
   }
 
   /**
@@ -790,7 +855,7 @@ var GenomicViewerApp = function (_React$Component8) {
             )
           ),
           React.createElement(GeneTrack, { genomicRange: genomicRange }),
-          React.createElement(CPGTrack, null),
+          React.createElement(CPGTrack, { genomicRange: genomicRange }),
           React.createElement(SNPTrack, null),
           React.createElement(ChIPPeakTrack, null)
         )

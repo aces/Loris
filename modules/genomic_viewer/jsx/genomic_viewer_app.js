@@ -470,80 +470,103 @@ GeneTrack.defaultProps = {
   dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
 };
 
+class BetaValueDistribution extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: []
+    };
+  }
+  render() {
+    return null;
+  }
+}
+
 class CPGTrack extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: "Expt,Run,Speed\n1,1,850\n1,2,740\n1,3,900\n1,4,1070"
+      data: []
+    };
+
+    this.fetchData = this.fetchData.bind(this);
+    this.iqr = this.iqr.bind(this);
+  }
+
+  componentDidMount() {
+    this.fetchData(this.props.genomicRange);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.hasOwnProperty('genomicRange') && nextProps.genomicRange !== this.props.genomicRange) {
+      this.fetchData(nextProps.genomicRange);
+    }
+  }
+
+  fetchData(genomicRange) {
+    var pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
+
+    if (pattern.test(genomicRange)) {
+      $.ajax(this.props.dataURL + '?genomic_range=' + genomicRange, {
+        method: "GET",
+        dataType: 'json',
+        success: function(data) {
+          this.setState({
+            isLoaded: true,
+            data: data,
+          });
+        }.bind(this),
+        error: function(error) {
+          console.error(error);
+        }
+      });
+    }
+  }
+  
+  // Returns a function to compute the interquartile range.
+  iqr(k) {
+    return function(d, i) {
+      var q1 = d.quartiles[0],
+      q3 = d.quartiles[2],
+      iqr = (q3 - q1) * k,
+      i = -1,
+      j = d.length;
+      while (d[++i] < q1 - iqr);
+      while (d[--j] > q3 + iqr);
+      return [i, j];
     };
   }
 
   render() {
-    let margin = {top: 10, right: 50, bottom: 20, left: 50};
-    let width = 120 - margin.left - margin.right;
-    let height = 500 - margin.top - margin.bottom;
+    let chart = [];
 
-    let min = Infinity;
-    let max = -Infinity;
+    if (this.state.isLoaded) {
+      const width = this.refs.thatDiv.getDOMNode().clientWidth;
+      const pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
+      const [genomicRange, prefix, chromosome, start, end] = this.props.genomicRange.match(pattern);
 
-    var chart = d3.box()
-      .whiskers(iqr(1.5))
-      .width(width)
-      .height(height);
+      // Determine the scale between the canvas width and the displayed genomicRange
+      // Unit: pixel per base pair
+      const xScale = width / (parseInt(end) - parseInt(start));
 
-    d3.csv(this.props.dataURL, function(error, csv) {
-      if (error) throw error;
-  
-      var data = [];
-  
-      csv.forEach(function(x) {
-        var e = Math.floor(x.Expt - 1),
-          r = Math.floor(x.Run - 1),
-          s = Math.floor(x.Speed),
-          d = data[e];
-        if (!d) d = data[e] = [s];
-        else d.push(s);
-        if (s > max) max = s;
-        if (s < min) min = s;
-      });
-  
-      chart.domain([min, max]);
-  
-      d3.select(".Methylation-450k-chart").selectAll("svg")
-        .data(data)
-        .enter().append("svg")
-        .attr("class", "box")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.bottom + margin.top)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        .call(chart);
-    });
-
-    // Returns a function to compute the interquartile range.
-    function iqr(k) {
-      return function(d, i) {
-        var q1 = d.quartiles[0],
-        q3 = d.quartiles[2],
-        iqr = (q3 - q1) * k,
-        i = -1,
-        j = d.length;
-        while (d[++i] < q1 - iqr);
-        while (d[--j] > q3 + iqr);
-        return [i, j];
-      };
+      chart = this.state.data.map(function(d) {
+        let x = xScale * d.genomic_location;
+        return (
+          <BetaValueDistribution xCenter={x} data={d}/>
+        );
+      }, this);
     }
     return (
       <Track
         title="Methylation 450k">
-        <div className="Methylation-450k-chart">{chart}</div>
+        <div className="Methylation-450k-chart" ref="thatDiv">{chart}</div>
       </Track>
     );
   }
 }
 
 CPGTrack.defaultProps = { 
-  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getMorley.php"
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getCPG.php"
 };
 
 class SNPTrack extends React.Component {render() {return (<div></div>);}}
@@ -619,7 +642,7 @@ class GenomicViewerApp extends React.Component {
             </td>
           </tr>
           <GeneTrack genomicRange={genomicRange}/>
-          <CPGTrack />
+          <CPGTrack genomicRange={genomicRange}/>
           <SNPTrack />
           <ChIPPeakTrack />
         </tbody>
