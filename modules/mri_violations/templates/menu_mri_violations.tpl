@@ -122,6 +122,6 @@ var table = RDynamicDataTable({
      "freezeColumn" : "PatientName"
      
   });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>
 
