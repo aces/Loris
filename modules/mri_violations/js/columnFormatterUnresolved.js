@@ -102,7 +102,18 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       )
     );
   }
-
+  if (column === "MincFileViolated") {
+    url = loris.BaseURL + "/brainbrowser/?minc_location=" + row.MincFileViolated;
+    return React.createElement(
+      "td",
+      null,
+      React.createElement(
+        "a",
+        { href: url, target: "_blank" },
+        cell
+      )
+    );
+  }
   return React.createElement(
     "td",
     null,

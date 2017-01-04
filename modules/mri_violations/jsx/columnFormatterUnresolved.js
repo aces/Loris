@@ -68,6 +68,16 @@ function formatColumn(column, cell, rowData, rowHeaders) {
              </td>
            );
   }
-
+  if (column === "MincFileViolated") {
+    url = loris.BaseURL +
+            "/brainbrowser/?minc_location=" + row.MincFileViolated;
+    return (
+           <td>
+            <a href= {url} target="_blank" >
+            {cell}
+            </a>
+           </td>
+           );
+  }
   return (<td>{cell}</td>);
 }
