@@ -22,6 +22,8 @@ before_install:
     #- "sh -e /etc/init.d/xvfb start"
     # Ensure node version is up to date
     - nvm install node
+    - mkdir -p project project/libraries
+    - phpenv config-rm xdebug.ini
 
 install:
     # Install composer modules
@@ -32,14 +34,14 @@ install:
     - npm install -g jslint
 
     # Install ESLint and plugins
-    - npm -g install eslint
-    - npm -g install eslint-config-google
+    - npm -g install eslint@3.8.1
+    - npm -g install eslint-config-google@0.6.0
     - npm -g install eslint-plugin-react
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
 
-    - PHP_INI_SCAN_DIR=":test/" php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
+    - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
     # Extracting firefox and setting PATH variable...
     - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
@@ -86,7 +88,7 @@ script:
       done
 
     # Run PHPCS on the entire libraries directory.
-    - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions php/installer
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs
 
     # Run PHPCS on some scripts
@@ -112,15 +114,20 @@ script:
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_parameters/ajax
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/dicom_archive
     - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/create_timepoint
+    - vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/issue_tracker
 
     # Run JSLINT on specific scripts
     - jslint htdocs/js/jquery.dynamictable.js
 
-    # Run ESLint on specific modules
-    - eslint modules/media/
+    # Run ESLint on Loris modules
+    - eslint modules/
+
+    # Run ESLint on generic React components
+    - eslint jsx/
 
     # Run ESLint on specific scripts
     - eslint htdocs/js/util/
+    - eslint Gruntfile.js
 
     # Run unit tests to make sure functions still do what they should.
-    - vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
+    - vendor/bin/phpunit --configuration test/phpunit.xml

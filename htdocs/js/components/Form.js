@@ -1,3 +1,5 @@
+'use strict';
+
 /* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
 NumericElement, FileElement, HelpTextElement, StaticElement, ButtonElement
 */
@@ -26,26 +28,26 @@ var FormElement = React.createClass({
     onSubmit: React.PropTypes.func
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       name: null,
       id: null,
       method: 'POST',
       class: 'form-horizontal',
       fileUpload: false,
-      onSubmit: function () {
+      onSubmit: function onSubmit() {
         console.warn('onSubmit() callback is not set!');
       }
     };
   },
-  handleSubmit: function (e) {
+  handleSubmit: function handleSubmit(e) {
     // Override default submit if property is set
     if (this.props.onSubmit) {
       e.preventDefault();
       this.props.onSubmit(e);
     }
   },
-  render: function () {
+  render: function render() {
     var encType = this.props.fileUpload ? 'multipart/form-data' : null;
 
     return React.createElement(
@@ -87,7 +89,7 @@ var SelectElement = React.createClass({
     onUserInput: React.PropTypes.func
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       name: '',
       options: {},
@@ -101,33 +103,33 @@ var SelectElement = React.createClass({
       emptyOption: true,
       hasError: false,
       errorMessage: 'The field is required!',
-      onUserInput: function () {
+      onUserInput: function onUserInput() {
         console.warn('onUserInput() callback is not set');
       }
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     if (this.props.value) {
       this.setState({
         value: this.props.value
       });
     }
   },
-  componentWillReceiveProps: function () {
+  componentWillReceiveProps: function componentWillReceiveProps() {
     if (this.props.hasError) {
       this.setState({
         hasError: this.props.hasError
       });
     }
   },
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     var value = this.props.multiple ? [] : '';
     return {
       value: value,
       hasError: false
     };
   },
-  handleChange: function (e) {
+  handleChange: function handleChange(e) {
     var value = e.target.value;
     var options = e.target.options;
     var hasError = false;
@@ -156,7 +158,7 @@ var SelectElement = React.createClass({
 
     this.props.onUserInput(this.props.name, value);
   },
-  render: function () {
+  render: function render() {
     var multiple = this.props.multiple ? 'multiple' : null;
     var required = this.props.required ? 'required' : null;
     var disabled = this.props.disabled ? 'disabled' : null;
@@ -247,7 +249,7 @@ var TextareaElement = React.createClass({
     onUserInput: React.PropTypes.func
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       name: '',
       label: '',
@@ -255,28 +257,28 @@ var TextareaElement = React.createClass({
       id: null,
       disabled: false,
       required: false,
-      onUserInput: function () {
+      onUserInput: function onUserInput() {
         console.warn('onUserInput() callback is not set');
       }
     };
   },
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       value: ''
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     if (this.props.value) {
       this.setState({ value: this.props.value });
     }
   },
-  handleChange: function (e) {
+  handleChange: function handleChange(e) {
     this.setState({
       value: e.target.value
     });
     this.props.onUserInput(this.props.name, e.target.value);
   },
-  render: function () {
+  render: function render() {
     var disabled = this.props.disabled ? 'disabled' : null;
     var required = this.props.required ? 'required' : null;
     var requiredHTML = null;
@@ -334,12 +336,12 @@ var TextboxElement = React.createClass({
     required: React.PropTypes.bool,
     onUserInput: React.PropTypes.func
   },
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       value: ''
     };
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       name: '',
       label: '',
@@ -347,25 +349,25 @@ var TextboxElement = React.createClass({
       id: null,
       disabled: false,
       required: false,
-      onUserInput: function () {
+      onUserInput: function onUserInput() {
         console.warn('onUserInput() callback is not set');
       }
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     if (this.props.value) {
       this.setState({
         value: this.props.value
       });
     }
   },
-  handleChange: function (e) {
+  handleChange: function handleChange(e) {
     this.setState({
       value: e.target.value
     });
     this.props.onUserInput(this.props.name, e.target.value);
   },
-  render: function () {
+  render: function render() {
     var disabled = this.props.disabled ? 'disabled' : null;
     var required = this.props.required ? 'required' : null;
     var requiredHTML = null;
@@ -424,7 +426,7 @@ var DateElement = React.createClass({
     onUserInput: React.PropTypes.func
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       name: '',
       label: '',
@@ -432,28 +434,28 @@ var DateElement = React.createClass({
       id: null,
       disabled: false,
       required: false,
-      onUserInput: function () {
+      onUserInput: function onUserInput() {
         console.warn('onUserInput() callback is not set');
       }
     };
   },
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       value: ''
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     if (this.props.value) {
       this.setState({ value: this.props.value });
     }
   },
-  handleChange: function (e) {
+  handleChange: function handleChange(e) {
     this.setState({
       value: e.target.value
     });
     this.props.onUserInput(this.props.name, e.target.value);
   },
-  render: function () {
+  render: function render() {
     var disabled = this.props.disabled ? 'disabled' : null;
     var required = this.props.required ? 'required' : null;
     var requiredHTML = null;
@@ -514,12 +516,12 @@ var NumericElement = React.createClass({
     required: React.PropTypes.bool,
     onUserInput: React.PropTypes.func
   },
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       value: ''
     };
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       name: '',
       min: null,
@@ -529,25 +531,25 @@ var NumericElement = React.createClass({
       id: null,
       required: false,
       disabled: false,
-      onUserInput: function () {
+      onUserInput: function onUserInput() {
         console.warn('onUserInput() callback is not set');
       }
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     if (this.props.value) {
       this.setState({
         value: this.props.value
       });
     }
   },
-  handleChange: function (e) {
+  handleChange: function handleChange(e) {
     this.setState({
       value: e.target.value
     });
     this.props.onUserInput(this.props.name, e.target.value);
   },
-  render: function () {
+  render: function render() {
     var disabled = this.props.disabled ? 'disabled' : null;
     var required = this.props.required ? 'required' : null;
     var requiredHTML = null;
@@ -599,13 +601,13 @@ var FileElement = React.createClass({
     errorMessage: React.PropTypes.string,
     onUserInput: React.PropTypes.func
   },
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       value: '',
       hasError: false
     };
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       name: '',
       label: 'File to Upload',
@@ -615,26 +617,26 @@ var FileElement = React.createClass({
       required: false,
       hasError: false,
       errorMessage: 'The field is required!',
-      onUserInput: function () {
+      onUserInput: function onUserInput() {
         console.warn('onUserInput() callback is not set');
       }
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     if (this.props.value) {
       this.setState({
         value: this.props.value
       });
     }
   },
-  componentWillReceiveProps: function () {
+  componentWillReceiveProps: function componentWillReceiveProps() {
     if (this.props.hasError) {
       this.setState({
         hasError: this.props.hasError
       });
     }
   },
-  handleChange: function (e) {
+  handleChange: function handleChange(e) {
     var hasError = false;
     if (this.props.required && e.target.value === "") {
       hasError = true;
@@ -648,7 +650,7 @@ var FileElement = React.createClass({
     this.props.onUserInput(this.props.name, file);
   },
 
-  render: function () {
+  render: function render() {
     var required = this.props.required ? 'required' : null;
     var requiredHTML = null;
     var errorMessage = '';
@@ -776,17 +778,17 @@ var FileElement = React.createClass({
 var HelpTextElement = React.createClass({
   displayName: 'HelpTextElement',
 
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     console.warn("<HelpTextElement> component is deprecated!" + "Please use <StaticElement> instead!");
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       html: false,
       label: '',
       text: ''
     };
   },
-  render: function () {
+  render: function render() {
     if (this.props.html) {
       return React.createElement(
         'div',
@@ -838,14 +840,14 @@ var StaticElement = React.createClass({
     text: React.PropTypes.string.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       label: '',
       text: null
     };
   },
 
-  render: function () {
+  render: function render() {
     return React.createElement(
       'div',
       { className: 'row form-group' },
@@ -879,22 +881,22 @@ var ButtonElement = React.createClass({
     type: React.PropTypes.string,
     onUserInput: React.PropTypes.func
   },
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {};
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       label: 'Submit',
       type: 'submit',
-      onUserInput: function () {
+      onUserInput: function onUserInput() {
         console.warn('onUserInput() callback is not set');
       }
     };
   },
-  handleClick: function (e) {
+  handleClick: function handleClick(e) {
     this.props.onUserInput(e);
   },
-  render: function () {
+  render: function render() {
     return React.createElement(
       'div',
       { className: 'row form-group' },

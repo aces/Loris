@@ -1,3 +1,5 @@
+"use strict";
+
 /* exported RTabs, TabPane */
 
 /**
@@ -20,7 +22,7 @@ var Tabs = React.createClass({
     tabs: React.PropTypes.array.isRequired,
     defaultTab: React.PropTypes.string
   },
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     var activeTab = "";
     if (this.props.defaultTab) {
       activeTab = this.props.defaultTab;
@@ -32,10 +34,10 @@ var Tabs = React.createClass({
       activeTab: activeTab
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     this.setActiveTab(this.state.activeTab);
   },
-  setActiveTab: function (tabId) {
+  setActiveTab: function setActiveTab(tabId) {
     var e = new CustomEvent("tab-changed", {
       detail: {
         activeTab: tabId
@@ -43,11 +45,11 @@ var Tabs = React.createClass({
     });
     window.dispatchEvent(e);
   },
-  handleClick: function (tabId) {
+  handleClick: function handleClick(tabId) {
     this.setActiveTab(tabId);
     this.setState({ activeTab: tabId });
   },
-  render: function () {
+  render: function render() {
     // Build a list of tabs
     var tabs = this.props.tabs.map(function (tab) {
       var tabClass;
@@ -94,12 +96,12 @@ var TabPane = React.createClass({
     TabId: React.PropTypes.string.isRequired,
     Title: React.PropTypes.string
   },
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       isActive: this.props.TabId
     };
   },
-  componentWillMount: function () {
+  componentWillMount: function componentWillMount() {
     window.addEventListener("tab-changed", function (e) {
       if (e.detail.activeTab === this.props.TabId) {
         this.setState({ isActive: true });
@@ -108,7 +110,7 @@ var TabPane = React.createClass({
       }
     }.bind(this), false);
   },
-  render: function () {
+  render: function render() {
     var classList = "tab-pane";
     var title;
 

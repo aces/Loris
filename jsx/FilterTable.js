@@ -1,18 +1,32 @@
-FilterTable = React.createClass({
+/* exported RFilterTable */
+
+/**
+ * This file contains React component for Filter Table
+ *
+ * @author Loris Team
+ * @version 1.0.0
+ *
+ */
+
+/**
+ * Filter Table component
+ * A wrapper for form elements of a selection filter
+ */
+var FilterTable = React.createClass({
   mixins: [React.addons.PureRenderMixin],
   propTypes: {
-    'Module' : React.PropTypes.string.isRequired,
+    Module: React.PropTypes.string.isRequired
   },
   getDefaultProps: function() {
     return {
-      "filterClass": "col-md-9"
-    }
+      filterClass: "col-md-9"
+    };
   },
   getInitialState: function() {
-    return { 'collapsed' : false }
+    return {collapsed: false};
   },
   toggleCollapsed: function() {
-    this.setState({ 'collapsed' : !this.state.collapsed });
+    this.setState({collapsed: !this.state.collapsed});
   },
   render: function() {
     // Selection filter open by default
@@ -21,7 +35,7 @@ FilterTable = React.createClass({
 
     // Change arrow direction when closed
     if (this.state.collapsed) {
-      glyphClass= "glyphicon pull-right glyphicon-chevron-down";
+      glyphClass = "glyphicon pull-right glyphicon-chevron-down";
     }
 
     return (
@@ -48,4 +62,4 @@ FilterTable = React.createClass({
   }
 });
 
-RFilterTable = React.createFactory(FilterTable);
+var RFilterTable = React.createFactory(FilterTable);

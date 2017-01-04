@@ -49,7 +49,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $this->commentID = $commentID;
         $this->page      = $page;
 
-        $this->form = new \HTML_Quickform('test_form');
+        $this->form = new \LorisForm('test_form');
     }
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
@@ -91,17 +91,10 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
         $examiners = $this->_getExaminerNames();
         $this->addSelect('Examiner', 'Examiner', $examiners);
 
-        $this->addGroupRule(
+        $this->addRule(
             'Date_taken',
             'Date of Administration is required',
             'required'
-        );
-
-        $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
-        $this->addRule(
-            'Date_taken',
-            'Date of Administration is invalid',
-            'checkdate'
         );
 
         $this->addRule('Examiner', 'Examiner is required', 'required');
@@ -696,7 +689,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                                     $pieces[1],
                                     $pieces[2],
                                     $opt,
-                                    "multiple"
+                                    array("multiple" => "multiple")
                                 );
                             } else {
                                 $this->form->addElement(

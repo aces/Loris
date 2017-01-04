@@ -62,7 +62,7 @@ var LoadPane = React.createClass({
 						React.createElement(
 							'span',
 							{ 'aria-hidden': 'true' },
-							'×'
+							'\xD7'
 						)
 					),
 					React.createElement(
@@ -83,7 +83,7 @@ var LoadPane = React.createClass({
 						React.createElement(
 							'span',
 							{ 'aria-hidden': 'true' },
-							'×'
+							'\xD7'
 						)
 					),
 					React.createElement(
@@ -415,8 +415,17 @@ var BuildPane = React.createClass({
 	// Load in a group of elements, replacing any that
 	// were already present
 	loadElements: function (elements) {
+
+		// Populate existing DB names
+		var elContent = elements[this.state.currentPage].Elements;
+		var elNames = {};
+		elContent.forEach(function (el) {
+			elNames[el.Name] = "";
+		});
+
 		this.setState({
-			Elements: elements
+			Elements: elements,
+			elementDBNames: elNames
 		});
 	},
 	// Set the element editing flag to true to render the element
@@ -446,6 +455,8 @@ var BuildPane = React.createClass({
 		// setting any values
 		this.setState(function (state) {
 			var temp = state.Elements;
+			var dbNames = state.elementDBNames;
+			delete dbNames[temp[state.currentPage].Elements[elementIndex].Name];
 			temp[state.currentPage].Elements.splice(elementIndex, 1);
 			return {
 				Elements: temp
@@ -482,6 +493,7 @@ var BuildPane = React.createClass({
 	},
 	// Add a new question to the page's elements
 	addQuestion: function (element) {
+
 		if (element.Name && element.Name in this.state.elementDBNames) {
 			// If the DB name already exists return false.
 			return false;

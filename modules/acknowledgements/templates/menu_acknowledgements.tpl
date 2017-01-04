@@ -77,7 +77,7 @@
 <div id="tabs" style="background: white">
     <div class="tab-content">
         <div class="tab-pane active">
-            <table class="table table-hover table-primary table-bordered table-unresolved-conflicts dynamictable" border="0">
+            <table class="table table-hover table-primary table-bordered table-acknowledgements dynamictable" border="0">
                 <thead>
                     <tr class="info">
                         <th>Citation Policy</th>

@@ -8,6 +8,27 @@
  */
 
 /*
+ *  The following componet is used to indicate to users that their data is currently
+ *  loading
+ */
+Loading = React.createClass({
+    render: function() {
+        return (
+            <div className="row">
+                <h3 className="text-center loading-header">
+                    We are currently working hard to load your data. Please be patient.
+                </h3>
+                <div className="spinner">
+                    <div className="bounce1"></div>
+                    <div className="bounce2"></div>
+                    <div className="bounce3"></div>
+                </div>
+            </div>
+        );
+    }
+})
+
+/*
  *  The following component is the base component for displaying the tab's contnet
  */
 TabPane = React.createClass({
@@ -17,12 +38,19 @@ TabPane = React.createClass({
         if(this.props.Active) {
             classList += " active"
         }
+        if(this.props.Loading) {
+            return (
+                <div className={classList} id={this.props.TabId}>
+                    <Loading />
+                </div>
+            )
+        }
         return (
             <div className={classList} id={this.props.TabId}>
                 <h1>{this.props.Title}</h1>
                 {this.props.children}
             </div>
-            );
+        );
     }
 });
 
@@ -33,7 +61,7 @@ InfoTabPane = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     render: function() {
         return <TabPane Title="Welcome to the Data Query Tool"
-                    TabId={this.props.TabId} Active={true}>
+                    TabId={this.props.TabId} Active={true} Loading={this.props.Loading}>
                         <p>Data was last updated on {this.props.UpdatedTime}.</p>
                         <p>Please define or use your query by using the following tabs.</p>
                             <dl>
@@ -59,7 +87,7 @@ InfoTabPane = React.createClass({
  */
 FieldSelectTabPane = React.createClass({
     render: function() {
-        return <TabPane TabId={this.props.TabId}>
+        return <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
                     <FieldSelector title="Fields"
                         items={this.props.categories}
                         onFieldChange={this.props.onFieldChange}
@@ -78,7 +106,7 @@ FieldSelectTabPane = React.createClass({
 FilterSelectTabPane = React.createClass({
     render: function() {
         return (
-            <TabPane TabId={this.props.TabId}>
+            <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
                 <FilterBuilder items={this.props.categories}
                                updateFilter={this.props.updateFilter}
                                filter={this.props.filter}
@@ -101,33 +129,6 @@ ViewDataTabPane = React.createClass({
         if(this.props.onRunQueryClicked) {
             this.props.onRunQueryClicked(this.props.Fields, this.props.Sessions);
         }
-    },
-    downloadCSV: function() {
-        // Downloads the current loaded data into a CSV formatted file.
-        // Makes use of a web worker to format and download the data
-        var headers = this.props.Fields,
-            csvworker = new Worker(loris.BaseURL + '/GetJS.php?Module=dataquery&file=workers/savecsv.js');
-
-
-        csvworker.addEventListener('message', function (e) {
-            var dataURL, dataDate, link;
-            if (e.data.cmd === 'SaveCSV') {
-                dataDate = new Date().toISOString();
-                dataURL = window.URL.createObjectURL(e.data.message);
-                link = document.createElement("a");
-                link.download = "data-" + dataDate + ".csv";
-                link.type = "text/csv";
-                link.href = dataURL;
-                $(link)[0].click();
-
-            }
-        });
-        csvworker.postMessage({
-            cmd: 'SaveFile',
-            data: this.props.Data,
-            headers: headers,
-            identifiers: this.props.Sessions
-        });
     },
     changeDataDisplay: function(displayID) {
         // Wrapper function to change the data display type
@@ -261,7 +262,7 @@ ViewDataTabPane = React.createClass({
 
             });
 
-            saveworker.postMessage({ Files: FileList });
+            saveworker.postMessage({ Files: FileList, BaseURL: loris.BaseURL });
         }
     },
     render: function() {
@@ -270,7 +271,6 @@ ViewDataTabPane = React.createClass({
             <div className="row">
                 <div className="commands col-xs-12 form-group">
                     <button className="btn btn-primary" onClick={this.runQuery}>Run Query</button>
-                    <button className="btn btn-primary" onClick={this.downloadCSV}>Download Table as CSV</button>
                     <button className="btn btn-primary" onClick={this.downloadData}>Download Data as ZIP</button>
                 </div>
                 <div id="progress" className="col-xs-12"></div>
@@ -302,7 +302,7 @@ ViewDataTabPane = React.createClass({
             }
 
         }
-        return <TabPane TabId={this.props.TabId}>
+        return <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
                     <h2>Query Criteria</h2>{criteria} {buttons}
                     <div className='form-group form-horizontal row'>
                         <label for="selected-input" className="col-sm-1 control-label">Data</label>
@@ -621,7 +621,7 @@ StatsVisualizationTabPane = React.createClass({
             );
         }
         return (
-            <TabPane TabId={this.props.TabId}>
+            <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
                 {content}
             </TabPane>
         );
@@ -918,7 +918,7 @@ ManageSavedQueriesTabPane = React.createClass({
             </div>
         );
         return (
-            <TabPane TabId={this.props.TabId}>
+            <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
                 {content}
             </TabPane>
         );

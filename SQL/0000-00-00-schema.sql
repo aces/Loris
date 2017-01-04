@@ -194,6 +194,8 @@ CREATE TABLE `examiners` (
   `full_name` varchar(255) default NULL,
   `centerID` tinyint(2) unsigned default NULL,
   `radiologist` tinyint(1) default NULL,
+  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `pending_approval` enum('Y','N') NOT NULL DEFAULT 'N',
   PRIMARY KEY  (`examinerID`),
   UNIQUE KEY `full_name` (`full_name`,`centerID`),
   KEY `FK_examiners_1` (`centerID`),
@@ -494,7 +496,8 @@ CREATE TABLE `files` (
   `ProcessProtocolID` int(11) unsigned,
   `Caveat` tinyint(1) default NULL,
   `TarchiveSource` int(11) default NULL,
-  `ScannerID` int(10) unsigned NOT NULL default '0',
+  `ScannerID` int(10) unsigned default NULL,
+  `AcqOrderPerModality` int(11) default NULL,
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
@@ -1552,7 +1555,7 @@ CREATE TABLE participant_status (
         UserID varchar(255) default NULL,
         Examiner varchar(255) default NULL,
         entry_staff varchar(255) default NULL,
-        data_entry_date timestamp NOT NULL,
+        data_entry_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
         participant_status integer DEFAULT NULL REFERENCES participant_status_options(ID),
         participant_suboptions integer DEFAULT NULL REFERENCES participant_status_options(ID),
         reason_specify text default NULL,
@@ -2229,6 +2232,16 @@ CREATE TABLE `issues_categories` (
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `categoryName` (`categoryName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+
+INSERT INTO issues_categories (categoryName) VALUES
+    ('Behavioural Battery'), 
+    ('Behavioural Instruments'), 
+    ('Data Entry'), 
+    ('Examiners'),
+    ('Imaging'),
+    ('Technical Issue'),
+    ('User Accounts'),
+    ('Other');
 
 DROP TABLE IF EXISTS `issues`;
 CREATE TABLE `issues` (

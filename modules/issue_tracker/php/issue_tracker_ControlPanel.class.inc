@@ -33,7 +33,7 @@ class Issue_Tracker_ControlPanel
     var $issueID;
 
     /**
-     * Sets up the isssueID
+     * Sets up the issueID
      *
      * @param int $issueID current issueID
      *
@@ -52,7 +52,12 @@ class Issue_Tracker_ControlPanel
     function _hasAccess()
     {
         $user =& User::singleton();
-        return $user->hasPermission('issue_tracker_can_assign');
+        if ($user->hasPermission('issue_tracker_reporter')
+            || $user->hasPermission('issue_tracker_developer')
+        ) {
+                return true;
+        }
+        return false;
     }
 
     /**

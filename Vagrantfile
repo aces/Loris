@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/xenial64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -26,7 +26,7 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.network "private_network", ip: "192.168.49.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -37,7 +37,7 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  # config.vm.synced_folder ".", "/var/www/loris"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -65,25 +65,61 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    apt-get update
+    PASSWORD=`date | md5sum | cut -c1-12` 
+    sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $PASSWORD"
+    sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $PASSWORD"
 
-    sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password loris'
-    sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password loris'
+    sudo add-apt-repository ppa:ondrej/php
+    sudo apt-get -q update
 
-    apt-get install -y libapache2-mod-php5 libmysqlclient15-dev mysql-client mysql-server php5 php5-mysql php5-gd php5-sqlite php5-json
+    apt-get install -yq libapache2-mod-php libmysqlclient-dev mysql-client mysql-server php php-mysql php-gd php-json php-xml
 
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    php -r "if (hash_file('SHA384', 'composer-setup.php') === 'e115a8dc7871f15d853148a7fbac7da27d6c0030b848d9b3dc09e2a0388afed865e6a3d6b3c0fad45c48e2b5fc1196ae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');
+    \\\$hash = trim(file_get_contents('https://composer.github.io/installer.sig'));
+    \\\$hashed = trim(hash_file('SHA384', 'composer-setup.php'));
+    if (\\\$hashed === \\\$hash) {
+        echo 'Installer verified';
+    } else {
+        echo 'Installer corrupt (Got ' . \\\$hashed . ' want ' . \\\$hash . ')';
+        unlink('composer-setup.php');
+    }
+    echo PHP_EOL;"
     php composer-setup.php
-    php -r "unlink('composer-setup.php');"
-
+    rm composer-setup.php;
     echo "Moving composer.phar to /usr/local/bin/composer such that composer can now be used globally."
 
     mv composer.phar /usr/local/bin/composer
 
-    echo "MySQL was installed with root password 'loris'. You must change this for security reasons."
+    # For testing pull request before it gets merged
+    # git clone -b VagrantUp https://github.com/driusan/Loris /var/www/loris
+    # Use the latest LORIS release.
+    git clone -b master https://github.com/aces/Loris /var/www/loris
+    cd /var/www/loris
+    mkdir -p project/libraries smarty/templates_c
+    /usr/local/bin/composer install --no-dev
+
+    chmod 777 smarty/templates_c
+    chmod 777 project
+
+    sed -e "s#%PROJECTNAME%#loris#g" -e "s#%LORISROOT%#/var/www/loris#g" -e "s#%LOGDIRECTORY%#/var/log/apache2/#g" < docs/config/apache2-site | sudo tee /etc/apache2/sites-available/loris.conf
+    sudo a2dissite 000-default
+    sudo a2ensite loris.conf    
+    sudo a2enmod rewrite
+    sudo a2enmod headers
+
+    sudo service apache2 restart
+
+    echo "MySQL was installed with root password '$PASSWORD'"
+
+    echo "Even though the password was randomly generated, it was not generated in a cryptographically secure way and you should"
+
+    echo "change it soon. For now, it can be used to complete the installation of LORIS on this VM."
 
     echo "Please follow the README on GitHub to complete your installation."
+
+    echo "Please visit http://192.168.49.10/installdb.php to complete the LORIS install."
+
+    echo "When prompted for the MySQL host use \"127.0.0.1\" with admin username \"root\" and the password above."
   SHELL
 end
 
