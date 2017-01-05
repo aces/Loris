@@ -229,6 +229,9 @@ var SelectElement = React.createClass({
       elementClass = 'row form-group has-error';
     }
 
+    // After checking for errors, set value to empty string to reset dropdown
+    var value = this.props.value === undefined ? "" : this.props.value;
+
     return React.createElement(
       'div',
       { className: elementClass },
@@ -248,7 +251,7 @@ var SelectElement = React.createClass({
             multiple: multiple,
             className: 'form-control',
             id: this.props.label,
-            value: this.props.value,
+            value: value,
             onChange: this.handleChange,
             required: required,
             disabled: disabled
