@@ -81,4 +81,5 @@ $(document).ready(function() {
 
   $(".dynamictable").DynamicTable();
   $(".fileUpload").FileUpload();
+  swal.setDefaults({ confirmButtonColor: '#064785' });
 });

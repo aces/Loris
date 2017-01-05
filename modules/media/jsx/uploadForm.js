@@ -29,7 +29,6 @@ class MediaUploadForm extends React.Component {
     this.isValidFileName = this.isValidFileName.bind(this);
     this.isValidForm = this.isValidForm.bind(this);
     this.setFormData = this.setFormData.bind(this);
-    this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
   componentDidMount() {
@@ -83,25 +82,9 @@ class MediaUploadForm extends React.Component {
         <b>ABC123_V1_Body_Mass_Index</b>
       </span>
     );
-    var alertMessage = "";
-    var alertClass = "alert text-center hide";
-
-    if (this.state.uploadResult) {
-      if (this.state.uploadResult === "success") {
-        alertClass = "alert alert-success text-center";
-        alertMessage = "Upload Successful!";
-      } else if (this.state.uploadResult === "error") {
-        var errorMessage = this.state.errorMessage;
-        alertClass = "alert alert-danger text-center";
-        alertMessage = errorMessage ? errorMessage : "Failed to upload!";
-      }
-    }
 
     return (
       <div>
-        <div className={alertClass} role="alert" ref="alert-message">
-          {alertMessage}
-        </div>
         <FormElement
           name="mediaUpload"
           fileUpload={true}
@@ -228,12 +211,16 @@ class MediaUploadForm extends React.Component {
       myFormData.pscid, myFormData.visitLabel, instrument
     );
     if (!this.isValidFileName(requiredFileName, fileName)) {
-      alert("File name should begin with: " + requiredFileName);
+      swal(
+        "Invalid file name!",
+        "File name should begin with: " + requiredFileName,
+        "error"
+      );
       return;
     }
 
     // Check for duplicate file names
-    var isDuplicate = mediaFiles.indexOf(myFormData.file.name);
+    let isDuplicate = mediaFiles.indexOf(myFormData.file.name);
     if (isDuplicate >= 0) {
       var confirmed = confirm(
         "A file with this name already exists!\n" +
@@ -277,23 +264,18 @@ class MediaUploadForm extends React.Component {
         let event = new CustomEvent('update-datatable');
         window.dispatchEvent(event);
 
-        this.showAlertMessage();
-
         this.setState({
           mediaFiles: mediaFiles,
-          uploadResult: "success",
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1
         });
+        swal("Upload Successful!", "", "success");
       }.bind(this),
       error: function(err) {
         console.error(err);
         let msg = err.responseJSON ? err.responseJSON.message : "Upload error!";
-        this.showAlertMessage();
-        this.setState({
-          uploadResult: "error",
-          errorMessage: msg
-        });
+        this.setState({errorMessage: msg});
+        swal(msg, "", "success");
       }.bind(this)
     });
   }
@@ -377,25 +359,6 @@ class MediaUploadForm extends React.Component {
       formData: formData
     });
   }
-
-  /**
-   * Display a success/error alert message after form submission
-   */
-  showAlertMessage() {
-    var self = this;
-
-    if (this.refs["alert-message"] === null) {
-      return;
-    }
-
-    var alertMsg = this.refs["alert-message"];
-    $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
-      self.setState({
-        uploadResult: null
-      });
-    });
-  }
-
 }
 
 MediaUploadForm.propTypes = {
