@@ -470,59 +470,48 @@ GeneTrack.defaultProps = {
   dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
 };
 
-class BetaValueDistribution extends React.Component {
+class BoxPlot extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      data: []
-    };
   }
+
   render() {
-    return null;
+    return this.props.children;
   }
 }
 
-class CPGTrack extends React.Component {
+class BetaValueDistribution extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      data: []
-    };
 
-    this.fetchData = this.fetchData.bind(this);
+    this.drawBox = this.drawBox.bind(this);
     this.iqr = this.iqr.bind(this);
   }
 
   componentDidMount() {
-    this.fetchData(this.props.genomicRange);
+    this.drawBox();
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.hasOwnProperty('genomicRange') && nextProps.genomicRange !== this.props.genomicRange) {
-      this.fetchData(nextProps.genomicRange);
-    }
+    this.drawBox();
   }
 
-  fetchData(genomicRange) {
-    var pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
+  drawBox() {
+    const width = 10;
+    const height = 100;
+    const cpgName = this.props.cpgName;
 
-    if (pattern.test(genomicRange)) {
-      $.ajax(this.props.dataURL + '?genomic_range=' + genomicRange, {
-        method: "GET",
-        dataType: 'json',
-        success: function(data) {
-          this.setState({
-            isLoaded: true,
-            data: data,
-          });
-        }.bind(this),
-        error: function(error) {
-          console.error(error);
-        }
-      });
-    }
+    let boxPlot = d3.box().whiskers(this.iqr(1.5)).width(width).height(height);
+
+    boxPlot.domain([0,1]);
+
+    const g = d3.select('#' + this.props.cpgName)
+      .data([this.props.betaValues])
+    
+    g.call(boxPlot);
+    g.attr("transform", "translate(" + this.props.x + ", 0)");
   }
-  
+
   // Returns a function to compute the interquartile range.
   iqr(k) {
     return function(d, i) {
@@ -538,28 +527,79 @@ class CPGTrack extends React.Component {
   }
 
   render() {
-    let chart = [];
+    return (
+      <g id={this.props.cpgName} ref={this.props.cpgName}></g>
+    );
+  }
+}
 
-    if (this.state.isLoaded) {
-      const width = this.refs.thatDiv.getDOMNode().clientWidth;
-      const pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
-      const [genomicRange, prefix, chromosome, start, end] = this.props.genomicRange.match(pattern);
+BetaValueDistribution.propTypes = {
+  cpgName: React.PropTypes.string.isRequired,
+  x: React.PropTypes.number,
+  betaValues: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+};
 
-      // Determine the scale between the canvas width and the displayed genomicRange
-      // Unit: pixel per base pair
-      const xScale = width / (parseInt(end) - parseInt(start));
+BetaValueDistribution.defaultProps = {};
 
-      chart = this.state.data.map(function(d) {
-        let x = xScale * d.genomic_location;
-        return (
-          <BetaValueDistribution xCenter={x} data={d}/>
-        );
-      }, this);
+class CPGTrack extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: []
+    };
+
+    this.fetchData = this.fetchData.bind(this);
+  }
+
+  componentDidMount() {
+    this.fetchData(this.props.genomicRange);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.hasOwnProperty('genomicRange') && nextProps.genomicRange !== this.props.genomicRange) {
+      this.fetchData(nextProps.genomicRange);
     }
+  }
+
+  fetchData(genomicRange) {
+    const pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
+
+    if (pattern.test(genomicRange)) {
+      // calculate the scale for the X axis
+      const [wholeString,  prefix, chromosome, start, end] = genomicRange.match(pattern);
+      const width = this.refs.thatDiv.getDOMNode().clientWidth;
+      const xScale = width / (parseInt(end) - parseInt(start));
+      $.ajax(this.props.dataURL + '?genomic_range=' + genomicRange, {
+        method: "GET",
+        dataType: 'json',
+        success: function(data) {
+          data.forEach(function(d){
+            // calculate the coresponding X for each location
+            d.x = xScale * (parseInt(d.genomic_location) - parseInt(start));
+          }, this);
+          this.setState({
+            isLoaded: true,
+            data: data,
+          });
+        }.bind(this),
+        error: function(error) {
+          console.error(error);
+        }
+      });
+    }
+  }
+
+  render() {
+    let boxPlots = this.state.data.map(function(d) {
+      let ref = 'cpg-' + d.cpg_name;
+      return (
+        <BetaValueDistribution ref={ref} cpgName={d.cpg_name} x={d.x} betaValues={d.beta_values}/>
+      );
+    }, this);
     return (
       <Track
         title="Methylation 450k">
-        <div className="Methylation-450k-chart" ref="thatDiv">{chart}</div>
+        <div className="Methylation-450k-chart" ref="thatDiv"><svg width='100%' className="box">{boxPlots}</svg></div>
       </Track>
     );
   }
@@ -596,13 +636,6 @@ class GenomicViewerApp extends React.Component {
 
     // Bind component instance to custom methods
     this.setGenomicRange = this.setGenomicRange.bind(this);
-  }
-
-  /**
-   * Update the state with the browser info.
-   */
-  componentDidMount() {
-    console.log(React.findDOMNode(this));
   }
 
   /**
