@@ -1527,6 +1527,25 @@ class LorisForm
 
         return $retVal;
     }
+
+    /**
+     * Renders the current form to a complete HTML
+     * based string.
+     *
+     * @return String the HTML string of the form
+     */
+    function toHTML()
+    {
+
+        $smarty    = new Smarty_neurodb;
+        $formArray = $this->toElementArray();
+
+        $smarty->assign('form', $formArray);
+        $html = $smarty->fetch("toHTML_form.tpl");
+
+        return $html;
+    }
+
     /**
      * Reimplement Smarty's addRule API.
      *
