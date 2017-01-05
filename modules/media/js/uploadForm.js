@@ -94,27 +94,41 @@ var MediaUploadForm = function (_React$Component) {
         );
       }
 
-      var helpText = ["File name should begin with ", React.createElement(
-        'b',
+      var helpText = React.createElement(
+        'span',
         null,
-        '[PSCID]_[Visit Label]_[Instrument]'
-      ), React.createElement('br', null), " For example, for candidate ", React.createElement(
-        'i',
-        null,
-        'ABC123'
-      ), ", visit ", React.createElement(
-        'i',
-        null,
-        'V1'
-      ), " for ", React.createElement(
-        'i',
-        null,
-        'Body Mass Index'
-      ), " the file name should be prefixed by: ", React.createElement(
-        'b',
-        null,
-        'ABC123_V1_Body_Mass_Index'
-      )];
+        'File name should begin with ',
+        React.createElement(
+          'b',
+          null,
+          '[PSCID]_[Visit Label]_[Instrument]'
+        ),
+        React.createElement('br', null),
+        'For example, for candidate ',
+        React.createElement(
+          'i',
+          null,
+          'ABC123'
+        ),
+        ', visit ',
+        React.createElement(
+          'i',
+          null,
+          'V1'
+        ),
+        ' for',
+        React.createElement(
+          'i',
+          null,
+          'Body Mass Index'
+        ),
+        ' the file name should be prefixed by:',
+        React.createElement(
+          'b',
+          null,
+          'ABC123_V1_Body_Mass_Index'
+        )
+      );
       var alertMessage = "";
       var alertClass = "alert text-center hide";
 
