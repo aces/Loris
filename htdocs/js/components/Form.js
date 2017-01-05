@@ -1,7 +1,7 @@
 'use strict';
 
 /* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
-NumericElement, FileElement, HelpTextElement, StaticElement, ButtonElement, LorisElement
+NumericElement, FileElement, StaticElement, ButtonElement, LorisElement
 */
 
 /**
@@ -728,62 +728,6 @@ var FileElement = React.createClass({
           'span',
           null,
           errorMessage
-        )
-      )
-    );
-  }
-});
-
-/**
- * HelpText Component
- * Used to display a block of help text in a form
- * @deprecated 08/09/2016
- */
-var HelpTextElement = React.createClass({
-  displayName: 'HelpTextElement',
-
-  componentDidMount: function componentDidMount() {
-    console.warn("<HelpTextElement> component is deprecated!" + "Please use <StaticElement> instead!");
-  },
-  getDefaultProps: function getDefaultProps() {
-    return {
-      html: false,
-      label: '',
-      text: ''
-    };
-  },
-  render: function render() {
-    if (this.props.html) {
-      return React.createElement(
-        'div',
-        { className: 'row form-group' },
-        React.createElement(
-          'label',
-          { className: 'col-sm-3 control-label' },
-          this.props.label
-        ),
-        React.createElement(
-          'div',
-          { className: 'col-sm-9' },
-          React.createElement('div', { dangerouslySetInnerHTML: { __html: this.props.text } })
-        )
-      );
-    }
-    return React.createElement(
-      'div',
-      { className: 'row form-group' },
-      React.createElement(
-        'label',
-        { className: 'col-sm-3 control-label' },
-        this.props.label
-      ),
-      React.createElement(
-        'div',
-        { className: 'col-sm-9' },
-        React.createElement(
-          'div',
-          null,
-          this.props.text
         )
       )
     );

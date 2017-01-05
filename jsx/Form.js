@@ -1,5 +1,5 @@
 /* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
-NumericElement, FileElement, HelpTextElement, StaticElement, ButtonElement, LorisElement
+NumericElement, FileElement, StaticElement, ButtonElement, LorisElement
 */
 
 /**
@@ -634,51 +634,6 @@ var FileElement = React.createClass({
             </div>
           </div>
           <span>{errorMessage}</span>
-        </div>
-      </div>
-    );
-  }
-});
-
-/**
- * HelpText Component
- * Used to display a block of help text in a form
- * @deprecated 08/09/2016
- */
-var HelpTextElement = React.createClass({
-  componentDidMount: function() {
-    console.warn(
-      "<HelpTextElement> component is deprecated!" +
-      "Please use <StaticElement> instead!"
-    );
-  },
-  getDefaultProps: function() {
-    return {
-      html: false,
-      label: '',
-      text: ''
-    };
-  },
-  render: function() {
-    if (this.props.html) {
-      return (
-        <div className="row form-group">
-          <label className="col-sm-3 control-label">
-            {this.props.label}
-          </label>
-          <div className="col-sm-9">
-            <div dangerouslySetInnerHTML={{__html: this.props.text}}/>
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3 control-label">
-          {this.props.label}
-        </label>
-        <div className="col-sm-9">
-          <div>{this.props.text}</div>
         </div>
       </div>
     );
