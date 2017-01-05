@@ -84,7 +84,7 @@ var FormElement = React.createClass({
       var elementClass = "col-xs-12 col-sm-12 col-md-12";
 
       // If child is form element use appropriate size
-      if (React.isValidElement(child)) {
+      if (React.isValidElement(child) && typeof child.type === "function") {
         elementClass = colClass;
       }
       formElementsHTML.push(React.createElement(
