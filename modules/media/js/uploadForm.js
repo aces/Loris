@@ -34,7 +34,8 @@ var MediaUploadForm = function (_React$Component) {
       uploadResult: null,
       errorMessage: null,
       isLoaded: false,
-      loadedData: 0
+      loadedData: 0,
+      uploadProgress: -1
     };
 
     _this.getValidFileName = _this.getValidFileName.bind(_this);
@@ -215,7 +216,16 @@ var MediaUploadForm = function (_React$Component) {
             required: true,
             value: this.state.formData.file
           }),
-          React.createElement(ButtonElement, { label: 'Upload File' })
+          React.createElement(ButtonElement, { label: 'Upload File' }),
+          React.createElement(
+            'div',
+            { className: 'row' },
+            React.createElement(
+              'div',
+              { className: 'col-sm-9 col-sm-offset-3' },
+              React.createElement(ProgressBar, { value: this.state.uploadProgress })
+            )
+          )
         )
       );
     }
@@ -286,9 +296,6 @@ var MediaUploadForm = function (_React$Component) {
         }
       }
 
-      $('#mediaUploadEl').hide();
-      $("#file-progress").removeClass('hide');
-
       $.ajax({
         type: 'POST',
         url: self.props.action,
@@ -296,59 +303,43 @@ var MediaUploadForm = function (_React$Component) {
         cache: false,
         contentType: false,
         processData: false,
-        xhr: function xhr() {
+        xhr: function () {
           var xhr = new window.XMLHttpRequest();
           xhr.upload.addEventListener("progress", function (evt) {
             if (evt.lengthComputable) {
-              var progressbar = $("#progressbar");
-              var progresslabel = $("#progresslabel");
-              var percent = Math.round(evt.loaded / evt.total * 100);
-              $(progressbar).width(percent + "%");
-              $(progresslabel).html(percent + "%");
-              progressbar.attr('aria-valuenow', percent);
+              var percentage = Math.round(evt.loaded / evt.total * 100);
+              this.setState({ uploadProgress: percentage });
             }
-          }, false);
+          }.bind(this), false);
           return xhr;
-        },
-        success: function success(data) {
-          $("#file-progress").addClass('hide');
-
-          // Add file to the list of exiting files
-          var mediaFiles = self.state.Data.mediaFiles;
+        }.bind(this),
+        success: function () {
+          // Add git pfile to the list of exiting files
+          var mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
           mediaFiles.push(myFormData.file.name);
-
-          self.setState({
-            mediaFiles: mediaFiles,
-            uploadResult: "success",
-            formData: {} // reset form data after successful file upload
-          });
 
           // Trigger an update event to update all observers (i.e DataTable)
           var event = new CustomEvent('update-datatable');
           window.dispatchEvent(event);
 
-          self.showAlertMessage();
+          this.showAlertMessage();
 
-          // Iterates through child components and resets state
-          // to initial state in order to clear the form
-          Object.keys(formRefs).map(function (ref) {
-            if (formRefs[ref].state && formRefs[ref].state.value) {
-              formRefs[ref].state.value = "";
-            }
+          this.setState({
+            mediaFiles: mediaFiles,
+            uploadResult: "success",
+            formData: {}, // reset form data after successful file upload
+            uploadProgress: -1
           });
-          // rerender components
-          self.forceUpdate();
-        },
-        error: function error(err) {
+        }.bind(this),
+        error: function (err) {
           console.error(err);
           var msg = err.responseJSON ? err.responseJSON.message : "Upload error!";
-          self.setState({
+          this.showAlertMessage();
+          this.setState({
             uploadResult: "error",
             errorMessage: msg
           });
-          self.showAlertMessage();
-        }
-
+        }.bind(this)
       });
     }
 

@@ -20,7 +20,8 @@ class MediaUploadForm extends React.Component {
       uploadResult: null,
       errorMessage: null,
       isLoaded: false,
-      loadedData: 0
+      loadedData: 0,
+      uploadProgress: -1
     };
 
     this.getValidFileName = this.getValidFileName.bind(this);
@@ -180,6 +181,11 @@ class MediaUploadForm extends React.Component {
             value={this.state.formData.file}
           />
           <ButtonElement label="Upload File" />
+          <div className="row">
+            <div className="col-sm-9 col-sm-offset-3">
+              <ProgressBar value={this.state.uploadProgress} />
+            </div>
+          </div>
         </FormElement>
       </div>
     );
@@ -250,9 +256,6 @@ class MediaUploadForm extends React.Component {
       }
     }
 
-    $('#mediaUploadEl').hide();
-    $("#file-progress").removeClass('hide');
-
     $.ajax({
       type: 'POST',
       url: self.props.action,
@@ -261,58 +264,42 @@ class MediaUploadForm extends React.Component {
       contentType: false,
       processData: false,
       xhr: function() {
-        var xhr = new window.XMLHttpRequest();
+        let xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function(evt) {
           if (evt.lengthComputable) {
-            var progressbar = $("#progressbar");
-            var progresslabel = $("#progresslabel");
-            var percent = Math.round((evt.loaded / evt.total) * 100);
-            $(progressbar).width(percent + "%");
-            $(progresslabel).html(percent + "%");
-            progressbar.attr('aria-valuenow', percent);
+            let percentage = Math.round((evt.loaded / evt.total) * 100);
+            this.setState({uploadProgress: percentage});
           }
-        }, false);
+        }.bind(this), false);
         return xhr;
-      },
-      success: function(data) {
-        $("#file-progress").addClass('hide');
-
-        // Add file to the list of exiting files
-        var mediaFiles = self.state.Data.mediaFiles;
+      }.bind(this),
+      success: function() {
+        // Add git pfile to the list of exiting files
+        let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
         mediaFiles.push(myFormData.file.name);
 
-        self.setState({
-          mediaFiles: mediaFiles,
-          uploadResult: "success",
-          formData: {} // reset form data after successful file upload
-        });
-
         // Trigger an update event to update all observers (i.e DataTable)
-        var event = new CustomEvent('update-datatable');
+        let event = new CustomEvent('update-datatable');
         window.dispatchEvent(event);
 
-        self.showAlertMessage();
+        this.showAlertMessage();
 
-        // Iterates through child components and resets state
-        // to initial state in order to clear the form
-        Object.keys(formRefs).map(function(ref) {
-          if (formRefs[ref].state && formRefs[ref].state.value) {
-            formRefs[ref].state.value = "";
-          }
+        this.setState({
+          mediaFiles: mediaFiles,
+          uploadResult: "success",
+          formData: {}, // reset form data after successful file upload
+          uploadProgress: -1
         });
-        // rerender components
-        self.forceUpdate();
-      },
+      }.bind(this),
       error: function(err) {
         console.error(err);
         let msg = err.responseJSON ? err.responseJSON.message : "Upload error!";
-        self.setState({
+        this.showAlertMessage();
+        this.setState({
           uploadResult: "error",
           errorMessage: msg
         });
-        self.showAlertMessage();
-      }
-
+      }.bind(this)
     });
   }
 
