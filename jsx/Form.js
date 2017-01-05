@@ -514,19 +514,16 @@ var FileElement = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
     label: React.PropTypes.string,
-    value: React.PropTypes.string,
+    value: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.object
+    ]),
     id: React.PropTypes.string,
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
     hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
     onUserInput: React.PropTypes.func
-  },
-  getInitialState: function() {
-    return {
-      value: '',
-      hasError: false
-    };
   },
   getDefaultProps: function() {
     return {
@@ -543,68 +540,54 @@ var FileElement = React.createClass({
       }
     };
   },
-  componentDidMount: function() {
-    if (this.props.value) {
-      this.setState({
-        value: this.props.value
-      });
-    }
-  },
-  componentWillReceiveProps: function() {
-    if (this.props.hasError) {
-      this.setState({
-        hasError: this.props.hasError
-      });
-    }
-  },
   handleChange: function(e) {
-    var hasError = false;
-    if (this.props.required && e.target.value === "") {
-      hasError = true;
-    }
-    this.setState({
-      value: e.target.value.split(/(\\|\/)/g).pop(),
-      hasError: hasError
-    });
-    // pass current file to parent form
-    var file = e.target.files[0];
+    // Send current file to parent component
+    let file = e.target.files[0];
     this.props.onUserInput(this.props.name, file);
   },
 
   render: function() {
-    var required = this.props.required ? 'required' : null;
-    var requiredHTML = null;
-    var errorMessage = '';
-    var elementClass = 'row form-group';
-
-    // Add error message
-    if (this.state.hasError) {
-      errorMessage = this.props.errorMessage;
-      elementClass = 'row form-group has-error';
-    }
+    let required = this.props.required ? 'required' : null;
+    let requiredHTML = null;
+    let errorMessage = '';
+    let elementClass = 'row form-group';
+    let value = this.props.value.name; // undefined by default
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
-    var truncateEllipsis = {
+    let truncateEllipsis = {
       display: 'table',
       tableLayout: 'fixed',
       width: '100%',
       whiteSpace: 'nowrap'
     };
 
-    var truncateEllipsisChild = {
+    let truncateEllipsisChild = {
       display: 'table-cell',
       overflow: 'hidden',
       textOverflow: 'ellipsis'
     };
 
+    // Add error message
+    if (this.props.hasError) {
+      errorMessage = this.props.errorMessage;
+      elementClass = 'row form-group has-error';
+    }
+
+    // Need to manually reset file value, because HTML API
+    // does not allow setting value to anything than empty string.
+    // Hence can't use value attribute in the input element.
+    var file = document.querySelector(".fileUpload");
+    if (file && !value) {
+      file.value = "";
+    }
+
     if (this.props.disabled) {
       // add padding to align video title on disabled field
       truncateEllipsis.paddingTop = "7px";
-
       return (
         <div className={elementClass}>
           <label className="col-sm-3 control-label">
@@ -612,19 +595,11 @@ var FileElement = React.createClass({
           </label>
           <div className="col-sm-9">
             <div style={truncateEllipsis}>
-              <span style={truncateEllipsisChild}>{this.state.value}</span>
+              <span style={truncateEllipsisChild}>{value}</span>
             </div>
           </div>
         </div>
       );
-    }
-
-    // Need to manually reset file value, because HTML API
-    // does not allow setting value to anything than empty string.
-    // Hence can't use value attribute in the input element.
-    var file = document.querySelector(".fileUpload");
-    if (file && !this.state.value) {
-      file.value = "";
     }
 
     return (
@@ -638,7 +613,7 @@ var FileElement = React.createClass({
             <div tabIndex="-1"
                  className="form-control file-caption kv-fileinput-caption">
               <div style={truncateEllipsis}>
-                <span style={truncateEllipsisChild}>{this.state.value}</span>
+                <span style={truncateEllipsisChild}>{value}</span>
               </div>
               <div className="file-caption-name" id="video_file"></div>
             </div>

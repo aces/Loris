@@ -574,19 +574,13 @@ var FileElement = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
     label: React.PropTypes.string,
-    value: React.PropTypes.string,
+    value: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.object]),
     id: React.PropTypes.string,
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
     hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
     onUserInput: React.PropTypes.func
-  },
-  getInitialState: function getInitialState() {
-    return {
-      value: '',
-      hasError: false
-    };
   },
   getDefaultProps: function getDefaultProps() {
     return {
@@ -603,30 +597,8 @@ var FileElement = React.createClass({
       }
     };
   },
-  componentDidMount: function componentDidMount() {
-    if (this.props.value) {
-      this.setState({
-        value: this.props.value
-      });
-    }
-  },
-  componentWillReceiveProps: function componentWillReceiveProps() {
-    if (this.props.hasError) {
-      this.setState({
-        hasError: this.props.hasError
-      });
-    }
-  },
   handleChange: function handleChange(e) {
-    var hasError = false;
-    if (this.props.required && e.target.value === "") {
-      hasError = true;
-    }
-    this.setState({
-      value: e.target.value.split(/(\\|\/)/g).pop(),
-      hasError: hasError
-    });
-    // pass current file to parent form
+    // Send current file to parent component
     var file = e.target.files[0];
     this.props.onUserInput(this.props.name, file);
   },
@@ -636,12 +608,7 @@ var FileElement = React.createClass({
     var requiredHTML = null;
     var errorMessage = '';
     var elementClass = 'row form-group';
-
-    // Add error message
-    if (this.state.hasError) {
-      errorMessage = this.props.errorMessage;
-      elementClass = 'row form-group has-error';
-    }
+    var value = this.props.value.name; // undefined by default
 
     // Add required asterix
     if (required) {
@@ -665,10 +632,23 @@ var FileElement = React.createClass({
       textOverflow: 'ellipsis'
     };
 
+    // Add error message
+    if (this.props.hasError) {
+      errorMessage = this.props.errorMessage;
+      elementClass = 'row form-group has-error';
+    }
+
+    // Need to manually reset file value, because HTML API
+    // does not allow setting value to anything than empty string.
+    // Hence can't use value attribute in the input element.
+    var file = document.querySelector(".fileUpload");
+    if (file && !value) {
+      file.value = "";
+    }
+
     if (this.props.disabled) {
       // add padding to align video title on disabled field
       truncateEllipsis.paddingTop = "7px";
-
       return React.createElement(
         'div',
         { className: elementClass },
@@ -686,19 +666,11 @@ var FileElement = React.createClass({
             React.createElement(
               'span',
               { style: truncateEllipsisChild },
-              this.state.value
+              value
             )
           )
         )
       );
-    }
-
-    // Need to manually reset file value, because HTML API
-    // does not allow setting value to anything than empty string.
-    // Hence can't use value attribute in the input element.
-    var file = document.querySelector(".fileUpload");
-    if (file && !this.state.value) {
-      file.value = "";
     }
 
     return React.createElement(
@@ -726,7 +698,7 @@ var FileElement = React.createClass({
               React.createElement(
                 'span',
                 { style: truncateEllipsisChild },
-                this.state.value
+                value
               )
             ),
             React.createElement('div', { className: 'file-caption-name', id: 'video_file' })
