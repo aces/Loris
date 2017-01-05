@@ -334,10 +334,10 @@ class LorisForm
      */
     public function addLink($name, $label, $url, $link)
     {
-        $el            =& $this->addBase($name, $label);
-        $el['type']    = 'link';
-        $el['url']     = $url;
-        $el['link']    = $link;
+        $el         =& $this->addBase($name, $label);
+        $el['type'] = 'link';
+        $el['url']  = $url;
+        $el['link'] = $link;
         return $el;
     }
 
