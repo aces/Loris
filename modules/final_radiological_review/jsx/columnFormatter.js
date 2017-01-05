@@ -42,7 +42,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     if (row.ReviewDone === '0') {
       reviewDone = 'No';
     }
-    return  (<td>{reviewDone}</td>);
+    return (<td>{reviewDone}</td>);
   }
 
   if (column === 'SAS') {
@@ -103,17 +103,17 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     }
     return (<td>{finalizedvar}</td>);
   }
-  // rowData[7] : data in the "t1 inserted" column 
-  if (column === 'T1 Inserted' && rowData[7] === "Yes" ) {
+  // rowData[7] means data in the t1 inserted column.
+  if (column === 'T1 Inserted' && rowData[7] === "Yes") {
     url = loris.BaseURL +
       "/imaging_browser/viewSession/?sessionID=" +
       row.SessionID;
-    return  (
+    return (
              <td>
                 <a href ={url}>{cell}</a>
              </td>
-            );
+           );
   }
-  return  (<td>{cell}</td>);
+  return (<td>{cell}</td>);
 }
 
