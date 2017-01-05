@@ -43,7 +43,6 @@ var MediaUploadForm = function (_React$Component) {
     _this.isValidFileName = _this.isValidFileName.bind(_this);
     _this.isValidForm = _this.isValidForm.bind(_this);
     _this.setFormData = _this.setFormData.bind(_this);
-    _this.showAlertMessage = _this.showAlertMessage.bind(_this);
     return _this;
   }
 
@@ -129,28 +128,10 @@ var MediaUploadForm = function (_React$Component) {
           'ABC123_V1_Body_Mass_Index'
         )
       );
-      var alertMessage = "";
-      var alertClass = "alert text-center hide";
-
-      if (this.state.uploadResult) {
-        if (this.state.uploadResult === "success") {
-          alertClass = "alert alert-success text-center";
-          alertMessage = "Upload Successful!";
-        } else if (this.state.uploadResult === "error") {
-          var errorMessage = this.state.errorMessage;
-          alertClass = "alert alert-danger text-center";
-          alertMessage = errorMessage ? errorMessage : "Failed to upload!";
-        }
-      }
 
       return React.createElement(
         'div',
         null,
-        React.createElement(
-          'div',
-          { className: alertClass, role: 'alert', ref: 'alert-message' },
-          alertMessage
-        ),
         React.createElement(
           FormElement,
           {
@@ -290,7 +271,7 @@ var MediaUploadForm = function (_React$Component) {
       var fileName = myFormData.file ? myFormData.file.name : null;
       var requiredFileName = this.getValidFileName(myFormData.pscid, myFormData.visitLabel, instrument);
       if (!this.isValidFileName(requiredFileName, fileName)) {
-        alert("File name should begin with: " + requiredFileName);
+        swal("Invalid file name!", "File name should begin with: " + requiredFileName, "error");
         return;
       }
 
@@ -336,23 +317,18 @@ var MediaUploadForm = function (_React$Component) {
           var event = new CustomEvent('update-datatable');
           window.dispatchEvent(event);
 
-          this.showAlertMessage();
-
           this.setState({
             mediaFiles: mediaFiles,
-            uploadResult: "success",
             formData: {}, // reset form data after successful file upload
             uploadProgress: -1
           });
+          swal("Upload Successful!", "", "success");
         }.bind(this),
         error: function (err) {
           console.error(err);
           var msg = err.responseJSON ? err.responseJSON.message : "Upload error!";
-          this.showAlertMessage();
-          this.setState({
-            uploadResult: "error",
-            errorMessage: msg
-          });
+          this.setState({ errorMessage: msg });
+          swal(msg, "", "success");
         }.bind(this)
       });
     }
@@ -443,27 +419,6 @@ var MediaUploadForm = function (_React$Component) {
 
       this.setState({
         formData: formData
-      });
-    }
-
-    /**
-     * Display a success/error alert message after form submission
-     */
-
-  }, {
-    key: 'showAlertMessage',
-    value: function showAlertMessage() {
-      var self = this;
-
-      if (this.refs["alert-message"] === null) {
-        return;
-      }
-
-      var alertMsg = this.refs["alert-message"];
-      $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function () {
-        self.setState({
-          uploadResult: null
-        });
       });
     }
   }]);

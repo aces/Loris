@@ -5,7 +5,7 @@ project-*
 *.un~
 *.linst~
 *.php~
-vendor
+/vendor
 .idea
 tools/*.txt
 htdocs/phpunit_codecoverage/
