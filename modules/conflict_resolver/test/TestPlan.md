@@ -1,3 +1,5 @@
+# Conflict Resolver Test Plan
+
 1. Menu item and permissions
  a) Menu item 'Clinical > Conflict Resolver' appears for users with permission 'Resolving conflicts'
  b) Menu item loads the module page
@@ -14,13 +16,13 @@
  a) Table displays list of unresolved conflicts
  b) The 'Correct answer' field has dropdown menu containing a list of options for each row
  c) Save & Reset buttons at bottom of table
- d) Pagination [1 | 2 | 3 ...] appears at top and bottom when n > 25, and it works
+ d) Pagination [1 | 2 | 3 ...] appears at top and bottom when n > 20 and works, and maximum rows per page dropdown appears and works
  e) Clicking on a column name sorts data properly
 4. Correct display of Resolved conflicts:
  a) Use 'resolved conflicts' tab to switch views
  b) Table displays resolved conflicts
  c) Field 'Corrected answer' has a value
- d) Pagination [1 | 2 | 3 ...] appears at top and bottom when n > 25, and it works
+ d) Pagination [1 | 2 | 3 ...] appears at top and bottom when n > 20 and works, and maximum rows per page dropdown appears and works
  e) Clicking on a column name sorts data properly
 5. Filter for the specific parameter (Choose the one that applies):
   - Select the right instrument from the 'All Instruments' drop-down
@@ -29,7 +31,7 @@
   - Select the right Site
     - Select the right Project
   - Select the right Visit-label
-  - Check that buttons work: 'show data', 'clear form'
+  - Check that buttons work: 'Show Data', 'Clear Form'
   - Verify that filters work as expected - inspect the results table
 6. Operation of resolving conflict and saving data should work as follows:
  - On Unresolved conflicts tab, set value of dropdown lists to accepted value
