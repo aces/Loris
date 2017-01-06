@@ -12,7 +12,7 @@
 7. Sidebar:  all links work 
 8. 3d panel overlay etc - they work.  add panel checkbox works. 3D only or 3D+Overlay loads files if at least one image exists and is selected
 9. "Visit Level Feedback" - pops up QC window (see section E below)
-10. Visit level QC controls (Pass/Fail, Pending) viewable to all, editable IFF permission imaging_browser_qc
+10. Visit level QC controls (Pass/Fail, Pending, Visit Level Caveat) viewable to all, editable IFF permission imaging_browser_qc
 11. Save button appears IFF permission imaging_browser_qc
 12. Test Save button works 
 13. Verify Visit-level QC controls and comments can be deleted/unchecked/emptied and saved
@@ -22,18 +22,18 @@
 14. Files can be downloaded (links clickable) only IFF has permission (future feature not implemented yet)
 15. Scan-level QC flags (Selected, pass/fail, Caveat emptor) viewable to all, modifiable iff permission imaging_browser_qc. Caveat List link is viewable with the Violated Scans: View all-sites Violated Scans permission
 16. Selected:  can be set back to Null (blank)
-17. Selected:  cannot be set to t2 if the scan is a t1 (future feature)
-18. BrainBrowser link works (launches window)
-19. Link to Comments link works (launches window)
+17. BrainBrowser link works (launches window)
+18. Link to Comments link works (launches window)
+19. Longitudinal View button launches BrainBrowser with images of the chosen modality for that specific candidate across visits/timepoints
 
 #D. MRI-QC : Scan-level (Link to Comments) dialog window
 20. Viewable by all, editable IFF permission imaging_browser_qc
 21. Comments save, checkboxes save, dropdown values save
-22. Both save buttons work
+22. Save button works
 23. Comments can be deleted (field cleared). checkboxes, dropdown values too. 
 
 #E. Visit-level QC feedback dialog window
 24. editable IFF permission imaging_browser_qc
 25. Comments save
-26. Both save buttons work (top and bottom)
+26. Save button works
 27. Comments can be deleted (field cleared). 

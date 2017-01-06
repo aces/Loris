@@ -1,3 +1,5 @@
+"use strict";
+
 /* exported RPaginationLinks */
 
 var PaginationLinks = React.createClass({
@@ -8,13 +10,13 @@ var PaginationLinks = React.createClass({
     onChangePage: React.PropTypes.func,
     Total: React.PropTypes.number.isRequired
   },
-  getDefaultProps: function () {
+  getDefaultProps: function getDefaultProps() {
     return {
       RowsPerPage: 10,
       Active: 1
     };
   },
-  changePage: function (i) {
+  changePage: function changePage(i) {
     var that = this;
     return function (evt) {
       // Don't jump to the top of the page
@@ -25,7 +27,7 @@ var PaginationLinks = React.createClass({
       }
     };
   },
-  render: function () {
+  render: function render() {
     var rowsPerPage = this.props.RowsPerPage;
     var pageLinks = [];
     var classList;
@@ -55,7 +57,7 @@ var PaginationLinks = React.createClass({
         React.createElement(
           "a",
           { href: "#" },
-          "«"
+          "\xAB"
         )
       ));
     }
@@ -78,7 +80,7 @@ var PaginationLinks = React.createClass({
       }
       pageLinks.push(React.createElement(
         "li",
-        { onClick: this.changePage(i), className: classList },
+        { key: "table_page_" + i, onClick: this.changePage(i), className: classList },
         React.createElement(
           "a",
           { href: "#" },
@@ -89,11 +91,11 @@ var PaginationLinks = React.createClass({
     if (lastShownPage !== lastPage) {
       pageLinks.push(React.createElement(
         "li",
-        { onClick: this.changePage(lastPage) },
+        { key: "table_page_more", onClick: this.changePage(lastPage) },
         React.createElement(
           "a",
           { href: "#" },
-          "»"
+          "\xBB"
         )
       ));
     }

@@ -68,7 +68,7 @@ var LoadPane = React.createClass({
 				break;
 		}
 		return (
-			<TabPane Title="Load Instrument" TabId={this.props.TabId}>
+			<TabPane {...this.props}>
                 	<div className="col-sm-6 col-xs-12">
                 		{alert}
 						<input className="fileUpload"
@@ -122,8 +122,7 @@ var SavePane = React.createClass({
 	render: function () {
 		var value = this.state.fileName;
 		return (
-			<TabPane Title="Save Instrument"
-                TabId={this.props.TabId}>
+			<TabPane {...this.props}>
                 	<div className="form-group">
                 		<div className="col-xs-12">
 			                <label className="col-sm-2 control-label">Filename: </label>
@@ -327,13 +326,22 @@ var BuildPane = React.createClass({
 	 		elementDBNames : {}
 	 	};
 	},
-	// Load in a group of elements, replacing any that
-	// were already present
-	loadElements: function(elements) {
-		this.setState({
-			Elements: elements
-		});
-	},
+  // Load in a group of elements, replacing any that
+  // were already present
+  loadElements: function(elements) {
+
+    // Populate existing DB names
+    var elContent = elements[this.state.currentPage].Elements;
+    var elNames = {};
+    elContent.forEach(function(el) {
+       elNames[el.Name] = "";
+    });
+
+    this.setState({
+      Elements: elements,
+      elementDBNames: elNames
+    });
+  },
 	// Set the element editing flag to true to render the element
 	// as an AddQuestion object. Increase the number of editing to
 	// disable drag and drop
@@ -355,18 +363,20 @@ var BuildPane = React.createClass({
 		});
 	},
 	// Remove an element from the current page's elements.
-	deleteElement: function(elementIndex){
-		// Use a function to update the state to enqueue an atomic
-		// update that consults the previous value of state before
-		// setting any values
-		this.setState(function(state){
-			var temp = state.Elements;
-			temp[state.currentPage].Elements.splice(elementIndex, 1);
-			return {
-				Elements: temp
-			};
-		});
-	},
+  deleteElement: function(elementIndex) {
+    // Use a function to update the state to enqueue an atomic
+    // update that consults the previous value of state before
+    // setting any values
+    this.setState(function(state) {
+      var temp = state.Elements;
+      var dbNames = state.elementDBNames;
+      delete dbNames[temp[state.currentPage].Elements[elementIndex].Name];
+      temp[state.currentPage].Elements.splice(elementIndex, 1);
+      return {
+        Elements: temp
+      };
+    });
+  },
 	// Update an element. Returns true on success, false otherwise
 	updateElement: function(element, index){
 		if (element.Name && element.Name in this.state.elementDBNames){
@@ -396,6 +406,7 @@ var BuildPane = React.createClass({
 	},
 	// Add a new question to the page's elements
 	addQuestion: function(element){
+
 		if (element.Name && element.Name in this.state.elementDBNames){
 			// If the DB name already exists return false.
 			return false;
@@ -458,7 +469,7 @@ var BuildPane = React.createClass({
 			                );
 			        	}));
 		return (
-			<TabPane Title="Build your Instrument" TabId={this.props.TabId}>
+			<TabPane {...this.props}>
                 	<div className="form-group col-xs-12">
 					    <label for="selected-input" className="col-xs-2 col-sm-1 control-label">Page:</label>
 			            <div className="col-sm-4">

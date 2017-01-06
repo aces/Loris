@@ -371,7 +371,9 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
         return array_merge(
             $deps,
             array(
-                $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
+
+              $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
+
             )
         );
     }

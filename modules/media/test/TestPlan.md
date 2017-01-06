@@ -16,7 +16,7 @@ In order to use the media module the user might need one or both of the followin
 ### 💯 Features
 
 1. **Browse** a list of uploaded files and related information
-2. **Edit** meta information about media files (except timepoint related data such as PSCID, Visit Label and Instrument)
+2. **Edit** meta information about media files (except timepoint related data such as PSCID, Visit Label, Instrument and Site)
 3. **Upload** new files associated to a specific timepoint
   - PSCID, Visit Label and Instrument are required fields for all uploaded files
   - File name should always start with [PSCID]\_[Visit Label]\_[Instrument]
@@ -73,8 +73,8 @@ In order to use the media module the user might need one or both of the followin
     - This will bring you to a new page ```$LORISURL/media/edit/?id=$fileID```
 
 **Test file edit**
-  1. Make sure that PSCID, Visit Label and Instrument display proper information and are greyed-out (unchangeable by the user)
-  2. Verify that information (if any) is displayed accordingly in _For Site_, _Date of Administration_, _Comments_ and 'Uploaded File'
+  1. Make sure that PSCID, Visit Label, Instrument and Site display proper information and are greyed-out (unchangeable by the user)
+  2. Verify that information (if any) is displayed accordingly in _Date of Administration_, _Comments_ and 'Uploaded File'
   3. Select a site from the dropdown and click 👉 **Update File**.
     - After the success message is shown, **refresh the page** and make sure the site is still selected.
     - Verify that the database field updated accordingly

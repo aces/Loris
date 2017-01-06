@@ -37,8 +37,15 @@ var ProbandInfo = React.createClass(
             return xhr;
           },
           success: function(data) {
+            const formData = {
+              ProbandGender: data.ProbandGender,
+              ProbandDoB: data.ProbandDoB,
+              ProbandDoB2: data.ProbandDoB
+            };
+
             that.setState(
               {
+                formData,
                 Data: data,
                 isLoaded: true
               }
@@ -234,6 +241,7 @@ var ProbandInfo = React.createClass(
                 updateResult: "success"
               }
                   );
+            self.showAlertMessage();
           },
           error: function(err) {
             if (err.responseText !== "") {
@@ -244,6 +252,7 @@ var ProbandInfo = React.createClass(
                   errorMessage: errorMessage
                 }
                       );
+              self.showAlertMessage();
             }
           }
         }
@@ -258,7 +267,7 @@ var ProbandInfo = React.createClass(
         return;
       }
 
-      var alertMsg = this.refs["alert-message"].getDOMNode();
+      var alertMsg = this.refs["alert-message"];
       $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
                 500,
                 function() {

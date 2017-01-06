@@ -252,6 +252,7 @@ var ParticipantStatus = React.createClass(
                 updateResult: "success"
               }
                   );
+            self.showAlertMessage();
           },
           error: function(err) {
             if (err.responseText !== "") {
@@ -262,6 +263,7 @@ var ParticipantStatus = React.createClass(
                   errorMessage: errorMessage
                 }
                       );
+              self.showAlertMessage();
             }
           }
         }
@@ -276,7 +278,7 @@ var ParticipantStatus = React.createClass(
         return;
       }
 
-      var alertMsg = this.refs["alert-message"].getDOMNode();
+      var alertMsg = this.refs["alert-message"];
       $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
                 500,
                 function() {

@@ -147,6 +147,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         $bvlFeedback = $this
             ->getFeedbacks($instrument, $candID, $_REQUEST['visit_label']);
 
+
         $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
 
         $this->tpl_data['Bvl_Feedback_length'] = count($bvlFeedback);
@@ -222,6 +223,14 @@ class NDB_Form_data_team_helper extends NDB_Form
             $flattened_result = $DB->pselect($query, $qparams);
         }
 
+        // Search for null instruments and remove them
+        foreach ($flattened_result as $k => $v) {
+            if ($v['Feedback_level'] == 'instrument'
+                && !isset($v['Test_name'])) {
+                unset($flattened_result[$k]);
+            }
+        }
+        $flattened_result = array_values($flattened_result);
         return $flattened_result;
     }
 
@@ -568,7 +577,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         return $test_names;
     }
-    
+
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
@@ -587,4 +596,21 @@ class NDB_Form_data_team_helper extends NDB_Form
             )
         );
     }
+
+     /**
+        * Include additional CSS files:
+        *  1. data_team_helper
+        *
+        * @return array of CSS to be inserted
+        */
+       function getCSSDependencies()
+       {
+           $factory = NDB_Factory::singleton();
+           $baseURL = $factory->settings()->getBaseURL();
+           $deps    = parent::getCSSDependencies();
+           return array_merge(
+               $deps,
+               [$baseURL . "/data_team_helper/css/data_team_helper.css"]
+           );
+       }
 }

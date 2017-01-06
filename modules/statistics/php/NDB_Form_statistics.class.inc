@@ -149,7 +149,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    PSCArea as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
@@ -182,6 +182,7 @@ class NDB_Form_statistics extends NDB_Form
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
+                          AND c.Active = 'Y'
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
@@ -414,7 +415,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    PSCArea as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
@@ -602,7 +603,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    PSCArea as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
@@ -921,7 +922,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    PSCArea as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
@@ -1065,5 +1066,23 @@ class NDB_Form_statistics extends NDB_Form
             )
         );
     }
+    /**
+     * Include additional CSS files:
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/statistics/css/statistics.css"
+            )
+        );
+    }
+
 } // End class
 ?>

@@ -19,7 +19,7 @@
                 Upload a New File
             </div>
             <div class="panel-body" id="panel-body">
-                <form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data"> 
+                <form method="post" name="mri_upload" id="mri_upload" enctype="multipart/form-data">
                     <div class="row">
                         {section name=error loop=$error_message}
                             <div class="col-xs-12">
@@ -131,7 +131,7 @@
     <tr>
         <td id='hide' style="font-weight: bold; display: block;" >
             -Hide log file
-        </td> 
+        </td>
         <td id='show' style="font-weight: bold; display: none;" >
             +Show log file
         </td>
@@ -139,7 +139,7 @@
     <tr>
         <td>
             <div id="log_box"></div>
-        </td> 
+        </td>
     </tr>
 </table>
 *}
@@ -157,7 +157,7 @@
                             <label class="col-sm-4 col-md-4">
                                 Logs to display:
                             </label>
-                            <div class="col-sm-4 col-md-4">
+                            <div class="col-sm-5 col-md-5">
                                 {$form.LogType.html}
                             </div>
                         </div>
@@ -169,7 +169,7 @@
         </div>
    </div>
 </div>
-        
+
 <!--  title table with pagination -->
 <table border="0" valign="bottom" width="100%">
 <tr>
@@ -201,7 +201,7 @@
                     {section name=piece loop=$items[item]}
                         {if $items[item][piece].name eq 'Progress'}
                             {if $items[item][piece].value}
-                                <td nowrap="nowrap">
+                                <td nowrap="nowrap" style="background-color:{$items[item][piece].bgcolor}">
                                         {if {$items[item][piece].value} eq 'Success'}
                                             {$items[item][piece].value} ({$items[item][11].value} out of {$items[item][10].value})
                                         {else}
@@ -233,7 +233,7 @@
                                 <td nowrap="nowrap"> </td>
                             {/if}
                         {else}
-                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
+                            <td nowrap="nowrap">
                                 {$items[item][piece].value}
                             </td>
                         {/if}
@@ -257,5 +257,5 @@ var pageLinks = RPaginationLinks(
     },
     Active: {$pageID}
 });
-React.render(pageLinks, document.getElementById("pageLinks"));
+ReactDOM.render(pageLinks, document.getElementById("pageLinks"));
 </script>

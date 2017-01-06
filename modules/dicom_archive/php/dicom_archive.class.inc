@@ -71,6 +71,8 @@ class Dicom_Archive extends \NDB_Menu_Filter
                      "'View Details' as Metadata",
                      "'View Images' as MRI_Browser",
                      // For constructing links, not in headers array
+                     "(SELECT GROUP_CONCAT(SeriesUID) FROM tarchive_series e WHERE ".
+                     "e.TarchiveID=t.TarchiveID GROUP BY e.TarchiveID) as SeriesUID",
                      's.CenterID as site',
                      't.TarchiveID as TarchiveID',
                      's.ID as SessionID',
@@ -97,12 +99,22 @@ class Dicom_Archive extends \NDB_Menu_Filter
              'Archive_Location',
              'Metadata',
              'MRI_Browser',
+             'Seriesuid',
              'Site',
+             'TarchiveID',
+             'SessionID',
             ]
         );
 
         // Set header as hidden from the data table
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Site']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            [
+             'Seriesuid',
+             'Site',
+             'TarchiveID',
+             'SessionID',
+            ]
+        );
 
         $this->validFilters = array(
                                'c.CenterID',
@@ -163,13 +175,23 @@ class Dicom_Archive extends \NDB_Menu_Filter
     }
 
     /**
-     * Setup $this->tpl_data for use by Smarty
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
      *
-     * @return null
+     * @return a json encoded string of the headers and data from this table
      */
-    function _setFilterForm()
+    function toJSON()
     {
-        $this->tpl_data['Sites'] = \Utility::getSiteList();
+        $result          = $this->toArray();
+        $result['Sites'] = \Utility::getSiteList();
+        $result['hiddenHeaders'] = [
+                                    'Seriesuid',
+                                    'Site',
+                                    'TarchiveID',
+                                    'SessionID',
+                                   ];
+
+        return json_encode($result);
     }
 
     /**
@@ -234,7 +256,6 @@ class Dicom_Archive extends \NDB_Menu_Filter
             array(
              $baseURL . "/dicom_archive/js/columnFormatter.js",
              $baseURL . "/dicom_archive/js/dicom_archive.js",
-             $baseURL . "/js/util/queryString.js",
             )
         );
     }

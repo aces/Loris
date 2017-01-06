@@ -1,4 +1,4 @@
-<script src="js/filterControl.js" type="text/javascript"></script>
+<script src="{$baseurl}/js/filterControl.js" type="text/javascript"></script>
 
 <div class="row">
 <div class="col-sm-12">
@@ -45,7 +45,7 @@
                         </div>
                     </div>
                     <div class="row visible-sm">
-                        <div cladd="col-sm-4">
+                        <div class="col-sm-4">
                             <input type="button" name="button" value="Add Survey" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/survey_accounts/add_survey/'"/>
                         </div>
                         <div class="col-sm-4">
@@ -71,5 +71,5 @@ var table = RDynamicDataTable({
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "PSCID"
   });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>

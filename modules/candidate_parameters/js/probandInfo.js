@@ -1,9 +1,11 @@
+"use strict";
+
 /* exported RProbandInfo */
 
 var ProbandInfo = React.createClass({
   displayName: "ProbandInfo",
 
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       genderOptions: {
         Male: "Male",
@@ -17,11 +19,11 @@ var ProbandInfo = React.createClass({
       loadedData: 0
     };
   },
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     var that = this;
     $.ajax(this.props.dataURL, {
       dataType: 'json',
-      xhr: function () {
+      xhr: function xhr() {
         var xhr = new window.XMLHttpRequest();
         xhr.addEventListener("progress", function (evt) {
           that.setState({
@@ -30,30 +32,37 @@ var ProbandInfo = React.createClass({
         });
         return xhr;
       },
-      success: function (data) {
+      success: function success(data) {
+        var formData = {
+          ProbandGender: data.ProbandGender,
+          ProbandDoB: data.ProbandDoB,
+          ProbandDoB2: data.ProbandDoB
+        };
+
         that.setState({
+          formData: formData,
           Data: data,
           isLoaded: true
         });
       },
-      error: function (data, errorCode, errorMsg) {
+      error: function error(data, errorCode, errorMsg) {
         that.setState({
           error: 'An error occurred when loading the form!'
         });
       }
     });
   },
-  setFormData: function (formElement, value) {
+  setFormData: function setFormData(formElement, value) {
     var formData = this.state.formData;
     formData[formElement] = value;
     this.setState({
       formData: formData
     });
   },
-  onSubmit: function (e) {
+  onSubmit: function onSubmit(e) {
     e.preventDefault();
   },
-  render: function () {
+  render: function render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
         return React.createElement(
@@ -171,7 +180,7 @@ var ProbandInfo = React.createClass({
   *
   * @param {event} e - Form submission event
   */
-  handleSubmit: function (e) {
+  handleSubmit: function handleSubmit(e) {
     e.preventDefault();
     var myFormData = this.state.formData;
     var today = new Date();
@@ -215,18 +224,20 @@ var ProbandInfo = React.createClass({
       cache: false,
       contentType: false,
       processData: false,
-      success: function (data) {
+      success: function success(data) {
         self.setState({
           updateResult: "success"
         });
+        self.showAlertMessage();
       },
-      error: function (err) {
+      error: function error(err) {
         if (err.responseText !== "") {
           var errorMessage = JSON.parse(err.responseText).message;
           self.setState({
             updateResult: "error",
             errorMessage: errorMessage
           });
+          self.showAlertMessage();
         }
       }
     });
@@ -234,13 +245,13 @@ var ProbandInfo = React.createClass({
   /**
   * Display a success/error alert message after form submission
   */
-  showAlertMessage: function () {
+  showAlertMessage: function showAlertMessage() {
     var self = this;
     if (this.refs["alert-message"] === null) {
       return;
     }
 
-    var alertMsg = this.refs["alert-message"].getDOMNode();
+    var alertMsg = this.refs["alert-message"];
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function () {
       self.setState({
         updateResult: null
