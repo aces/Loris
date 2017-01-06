@@ -1,30 +1,29 @@
-/*global document: false, $: false, window: false, unescape: false, Option: false,isElementsSet*/
+/* global document: false, $: false, window: false, unescape: false, Option: false,isElementsSet*/
 
 function notAnswered() {
-    "use strict";
-    var name = $(this).attr('name'), index = this.selectedIndex;
-    name = name.replace('_status', '');
-    if (name.indexOf('_date') > -1) {
-        if (index === 0) {
-            $('.' + name).prop('disabled', false);
-            $(this).parent().removeClass('has-warning');
-            $("#" + name).remove();
-        } else {
-            $('.' + name).prop('disabled', true);
-            $(this).parent().addClass('has-warning');
-            $(this).after("<div class=\"col-xs-12 warning\" id=\"" + name + "\">Any entered data will not be saved</div>");
-        }
+  "use strict";
+  var name = $(this).attr('name'),
+    index = this.selectedIndex;
+  name = name.replace('_status', '');
+  if (name.indexOf('_date') > -1) {
+    if (index === 0) {
+      $('.' + name).prop('disabled', false);
+      $(this).parent().removeClass('has-warning');
+      $("#" + name).remove();
     } else {
-        if (index === 0) {
-            $('[name=' + name + ']').prop('disabled', false);
-            $(this).parent().removeClass('has-warning');
-            $("#" + name).remove();
-        } else {
-            $('[name=' + name + ']').prop('disabled', true);
-            $(this).parent().addClass('has-warning');
-            $(this).after("<div class=\"col-xs-12 warning\" id=\"" + name + "\">Any entered data will not be saved</div>");
-        }
+      $('.' + name).prop('disabled', true);
+      $(this).parent().addClass('has-warning');
+      $(this).after("<div class=\"col-xs-12 warning\" id=\"" + name + "\">Any entered data will not be saved</div>");
     }
+  } else if (index === 0) {
+    $('[name=' + name + ']').prop('disabled', false);
+    $(this).parent().removeClass('has-warning');
+    $("#" + name).remove();
+  } else {
+    $('[name=' + name + ']').prop('disabled', true);
+    $(this).parent().addClass('has-warning');
+    $(this).after("<div class=\"col-xs-12 warning\" id=\"" + name + "\">Any entered data will not be saved</div>");
+  }
 }
 
 /**
@@ -65,6 +64,16 @@ $(document).ready(function() {
     }
     naList[i].onchange = notAnswered;
   }
+
+  var msg = '';
+  var isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  if (isMac) {
+    msg = "Hold CMD ⌘ to select multiple options";
+  } else {
+    msg = "Hold CTRL to select multiple options";
+  }
+  $("select[multiple]").attr("title", msg);
+  $("select[multiple]").tooltip();
 
   var form = $('form');
   var multiselect = $('form select[multiple]');
