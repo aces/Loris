@@ -110,8 +110,17 @@ var ProbandInfo = React.createClass(
       if (this.state.formData.ProbandGender !== null) {
         dobRequired = true;
       }
-      if (this.state.formData.ProbandDoB !== null) {
+      var dob = this.state.formData.ProbandDoB;
+      var ageDifference = this.state.Data.ageDifference;
+      if (dob) {
         dob2Required = true;
+
+        var candidateDOB = this.state.Data.candidateDOB;
+
+        var temp = this.calculateAgeDifference(dob, candidateDOB);
+        if (temp) {
+          ageDifference = temp;
+        }
       }
 
       var alertMessage = "";
@@ -176,7 +185,7 @@ var ProbandInfo = React.createClass(
                 />
                 <StaticElement
                     label ="Age Difference (months)"
-                    text ={this.state.Data.ageDifference}
+                    text ={ageDifference}
                 />
                 {updateButton}
             </FormElement>
@@ -220,8 +229,10 @@ var ProbandInfo = React.createClass(
       var self = this;
       var formData = new FormData();
       for (var key in myFormData) {
-        if (myFormData[key] !== "") {
-          formData.append(key, myFormData[key]);
+        if (myFormData.hasOwnProperty(key)) {
+          if (myFormData[key] !== "") {
+            formData.append(key, myFormData[key]);
+          }
         }
       }
 
@@ -278,6 +289,42 @@ var ProbandInfo = React.createClass(
                     );
                 }
             );
+    },
+
+      /**
+       * Calculates the age difference between the candidate and proband
+       *
+       * @param {string} dob - date of birth of proband
+       * @param {string} candidateDOB - date of birth of candidate
+       *
+       * @return {float} ageDifference - age difference between candidate and proband
+       */
+    calculateAgeDifference: function(dob, candidateDOB) {
+      if (dob && candidateDOB) {
+        var splitDOB = dob.split("-");
+        var splitCandidateDOB = candidateDOB.split("-");
+
+        if (splitCandidateDOB[2] < splitDOB[2]) {
+          splitCandidateDOB[2] = Number(splitCandidateDOB[2]) + 30;
+          splitCandidateDOB[1]--;
+        }
+        if (splitCandidateDOB[1] < splitDOB[1]) {
+          splitCandidateDOB[1] = Number(splitCandidateDOB[1]) + 12;
+          splitCandidateDOB[0]--;
+        }
+
+        var age = [
+          splitCandidateDOB[0] - splitDOB[0],
+          splitCandidateDOB[1] - splitDOB[1],
+          splitCandidateDOB[2] - splitDOB[2]
+        ];
+        if (age !== null) {
+          return age[0] * 12 +
+                      age[1] +
+                      (Math.round(age[2] / 30) / 100);
+        }
+      }
+      return null;
     }
 
   }
