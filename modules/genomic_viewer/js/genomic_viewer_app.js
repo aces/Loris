@@ -575,36 +575,17 @@ GeneTrack.defaultProps = {
   dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
 };
 
-var BoxPlot = (function (_React$Component5) {
-  _inherits(BoxPlot, _React$Component5);
-
-  function BoxPlot(props) {
-    _classCallCheck(this, BoxPlot);
-
-    return _possibleConstructorReturn(this, (BoxPlot.__proto__ || Object.getPrototypeOf(BoxPlot)).call(this, props));
-  }
-
-  _createClass(BoxPlot, [{
-    key: 'render',
-    value: function render() {
-      return this.props.children;
-    }
-  }]);
-
-  return BoxPlot;
-})(React.Component);
-
-var BetaValueDistribution = (function (_React$Component6) {
-  _inherits(BetaValueDistribution, _React$Component6);
+var BetaValueDistribution = (function (_React$Component5) {
+  _inherits(BetaValueDistribution, _React$Component5);
 
   function BetaValueDistribution(props) {
     _classCallCheck(this, BetaValueDistribution);
 
-    var _this6 = _possibleConstructorReturn(this, (BetaValueDistribution.__proto__ || Object.getPrototypeOf(BetaValueDistribution)).call(this, props));
+    var _this5 = _possibleConstructorReturn(this, (BetaValueDistribution.__proto__ || Object.getPrototypeOf(BetaValueDistribution)).call(this, props));
 
-    _this6.drawBox = _this6.drawBox.bind(_this6);
-    _this6.iqr = _this6.iqr.bind(_this6);
-    return _this6;
+    _this5.drawBox = _this5.drawBox.bind(_this5);
+    _this5.iqr = _this5.iqr.bind(_this5);
+    return _this5;
   }
 
   _createClass(BetaValueDistribution, [{
@@ -668,20 +649,20 @@ BetaValueDistribution.propTypes = {
 
 BetaValueDistribution.defaultProps = {};
 
-var CPGTrack = (function (_React$Component7) {
-  _inherits(CPGTrack, _React$Component7);
+var CPGTrack = (function (_React$Component6) {
+  _inherits(CPGTrack, _React$Component6);
 
   function CPGTrack(props) {
     _classCallCheck(this, CPGTrack);
 
-    var _this7 = _possibleConstructorReturn(this, (CPGTrack.__proto__ || Object.getPrototypeOf(CPGTrack)).call(this, props));
+    var _this6 = _possibleConstructorReturn(this, (CPGTrack.__proto__ || Object.getPrototypeOf(CPGTrack)).call(this, props));
 
-    _this7.state = {
+    _this6.state = {
       data: []
     };
 
-    _this7.fetchData = _this7.fetchData.bind(_this7);
-    return _this7;
+    _this6.fetchData = _this6.fetchData.bind(_this6);
+    return _this6;
   }
 
   _createClass(CPGTrack, [{
@@ -699,7 +680,7 @@ var CPGTrack = (function (_React$Component7) {
   }, {
     key: 'fetchData',
     value: function fetchData(genomicRange) {
-      var _this8 = this;
+      var _this7 = this;
 
       var pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
 
@@ -717,9 +698,9 @@ var CPGTrack = (function (_React$Component7) {
           var start = _genomicRange$match2[3];
           var end = _genomicRange$match2[4];
 
-          var width = _this8.refs.thatDiv.getDOMNode().clientWidth;
+          var width = _this7.refs.thatDiv.getDOMNode().clientWidth;
           var xScale = width / (parseInt(end) - parseInt(start));
-          $.ajax(_this8.props.dataURL + '?genomic_range=' + genomicRange, {
+          $.ajax(_this7.props.dataURL + '?genomic_range=' + genomicRange, {
             method: "GET",
             dataType: 'json',
             success: (function (data) {
@@ -731,7 +712,7 @@ var CPGTrack = (function (_React$Component7) {
                 isLoaded: true,
                 data: data
               });
-            }).bind(_this8),
+            }).bind(_this7),
             error: function error(_error2) {
               console.error(_error2);
             }
@@ -770,8 +751,8 @@ CPGTrack.defaultProps = {
   dataURL: loris.BaseURL + "/genomic_viewer/ajax/getCPG.php"
 };
 
-var SNPTrack = (function (_React$Component8) {
-  _inherits(SNPTrack, _React$Component8);
+var SNPTrack = (function (_React$Component7) {
+  _inherits(SNPTrack, _React$Component7);
 
   function SNPTrack() {
     _classCallCheck(this, SNPTrack);
@@ -789,8 +770,8 @@ var SNPTrack = (function (_React$Component8) {
   return SNPTrack;
 })(React.Component);
 
-var ChIPPeakTrack = (function (_React$Component9) {
-  _inherits(ChIPPeakTrack, _React$Component9);
+var ChIPPeakTrack = (function (_React$Component8) {
+  _inherits(ChIPPeakTrack, _React$Component8);
 
   function ChIPPeakTrack() {
     _classCallCheck(this, ChIPPeakTrack);
@@ -820,22 +801,22 @@ var ChIPPeakTrack = (function (_React$Component9) {
  *
  * */
 
-var GenomicViewerApp = (function (_React$Component10) {
-  _inherits(GenomicViewerApp, _React$Component10);
+var GenomicViewerApp = (function (_React$Component9) {
+  _inherits(GenomicViewerApp, _React$Component9);
 
   function GenomicViewerApp(props) {
     _classCallCheck(this, GenomicViewerApp);
 
-    var _this11 = _possibleConstructorReturn(this, (GenomicViewerApp.__proto__ || Object.getPrototypeOf(GenomicViewerApp)).call(this, props));
+    var _this10 = _possibleConstructorReturn(this, (GenomicViewerApp.__proto__ || Object.getPrototypeOf(GenomicViewerApp)).call(this, props));
 
-    _this11.state = {
+    _this10.state = {
       // Create a default genomic range to show
       genomicRange: null
     };
 
     // Bind component instance to custom methods
-    _this11.setGenomicRange = _this11.setGenomicRange.bind(_this11);
-    return _this11;
+    _this10.setGenomicRange = _this10.setGenomicRange.bind(_this10);
+    return _this10;
   }
 
   /**

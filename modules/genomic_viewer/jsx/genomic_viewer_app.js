@@ -470,16 +470,6 @@ GeneTrack.defaultProps = {
   dataURL: loris.BaseURL + "/genomic_viewer/ajax/getUCSCGenes.php"
 };
 
-class BoxPlot extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return this.props.children;
-  }
-}
-
 class BetaValueDistribution extends React.Component {
   constructor(props) {
     super(props);
@@ -497,18 +487,22 @@ class BetaValueDistribution extends React.Component {
   }
 
   drawBox() {
-    const width = 10;
-    const height = 100;
-    const cpgName = this.props.cpgName;
-
-    let boxPlot = d3.box().whiskers(this.iqr(1.5)).width(width).height(height);
+    // Drawing the boxplot using d3 library
+    let boxPlot = d3.box()
+      .whiskers(this.iqr(1.5))
+      .width(5)
+      .height(100);
 
     boxPlot.domain([0,1]);
 
+    // Binding data the the svg element group
     const g = d3.select('#' + this.props.cpgName)
       .data([this.props.betaValues])
     
+    // Generating the boxplot
     g.call(boxPlot);
+    
+    // Moving the boxplot according to display scale
     g.attr("transform", "translate(" + this.props.x + ", 0)");
   }
 
@@ -539,7 +533,9 @@ BetaValueDistribution.propTypes = {
   betaValues: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
 };
 
-BetaValueDistribution.defaultProps = {};
+BetaValueDistribution.defaultProps = {
+  x: 0;
+};
 
 class CPGTrack extends React.Component {
   constructor(props) {
@@ -599,7 +595,13 @@ class CPGTrack extends React.Component {
     return (
       <Track
         title="Methylation 450k">
-        <div className="Methylation-450k-chart" ref="thatDiv"><svg width='100%' className="box">{boxPlots}</svg></div>
+        <div className="Methylation-450k-chart" ref="thatDiv">
+          <svg width='100%' className="box">
+            {boxPlots}
+            {yAxis}
+            {lines}
+          </svg>
+        </div>
       </Track>
     );
   }
@@ -685,7 +687,7 @@ class GenomicViewerApp extends React.Component {
 }
 
 /**
- * Render dicom_page on page load
+ * Render genomic_viewer_app on page load
  */
 window.onload = function() {
   var viewer = (

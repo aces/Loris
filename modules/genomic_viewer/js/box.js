@@ -58,7 +58,7 @@ d3.box = function() {
       center.enter().insert("line", "rect")
           .attr("class", "center")
           .attr("x1", width / 2)
-          .attr("y1", function(d) { console.log(d); return x0(d[0]); })
+          .attr("y1", function(d) {return x0(d[0]); })
           .attr("x2", width / 2)
           .attr("y2", function(d) { return x0(d[1]); })
           .style("opacity", 1e-6)
