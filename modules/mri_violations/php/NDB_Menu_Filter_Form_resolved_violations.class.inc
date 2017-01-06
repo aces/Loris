@@ -25,6 +25,7 @@
 
 class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
 {
+    var $AjaxModule = true;
     /**
      * Check if user should be allowed to see this page.
      *
