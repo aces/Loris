@@ -117,7 +117,7 @@ var StaticDataTable = React.createClass({
       PageNumber: 1
     });
   },
-  downloadCSV: function() {
+  downloadCSV: function(csvData) {
     var csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
     csvworker.addEventListener('message', function(e) {
@@ -138,7 +138,7 @@ var StaticDataTable = React.createClass({
     });
     csvworker.postMessage({
       cmd: 'SaveFile',
-      data: this.props.Data,
+      data: csvData,
       headers: this.props.Headers,
       identifiers: this.props.RowNameMap
     });
@@ -315,6 +315,7 @@ var StaticDataTable = React.createClass({
     var matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
     var filteredRows = this.countFilteredRows();
     var currentPageRow = (rowsPerPage * (this.state.PageNumber - 1));
+    var filteredData = [];
 
     // Push rows to data table
     for (let i = 0;
@@ -338,6 +339,7 @@ var StaticDataTable = React.createClass({
 
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
           filterMatchCount++;
+          filteredData.push(this.props.Data[index[i].RowIdx]);
         }
 
         var key = 'td_col_' + j;
@@ -390,6 +392,12 @@ var StaticDataTable = React.createClass({
       </select>
     );
 
+    // Include only filtered data if filters were applied
+    let csvData = this.props.Data;
+    if (this.props.Filter && filteredData.length > 0) {
+      csvData = filteredData;
+    }
+
     return (
       <div className="panel panel-default">
         <div className="table-header panel-heading">
@@ -430,7 +438,7 @@ var StaticDataTable = React.createClass({
               <div className="col-xs-6">
                   <button
                     className="btn btn-primary downloadCSV"
-                    onClick={this.downloadCSV}
+                    onClick={this.downloadCSV.bind(null, csvData)}
                   >
                     Download Table as CSV
                   </button>
