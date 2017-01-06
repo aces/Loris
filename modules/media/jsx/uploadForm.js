@@ -367,9 +367,24 @@ class MediaUploadForm extends React.Component {
    */
   setFormData(formElement, value) {
     // Only display visits and sites available for the current pscid
+    let visitLabel = this.state.formData.visitLabel;
+    let pscid = this.state.formData.pscid;
+
     if (formElement === "pscid" && value !== "") {
       this.state.Data.visits = this.state.Data.sessionData[value].visits;
       this.state.Data.sites = this.state.Data.sessionData[value].sites;
+      if (visitLabel) {
+        this.state.Data.instruments =
+          this.state.Data.sessionData[value].instruments[visitLabel];
+      } else {
+        this.state.Data.instruments =
+          this.state.Data.sessionData[value].instruments.all;
+      }
+    }
+
+    if (formElement === "visitLabel" && value !== "" && pscid) {
+      this.state.Data.instruments =
+        this.state.Data.sessionData[pscid].instruments[value];
     }
 
     var formData = this.state.formData;
