@@ -46,6 +46,7 @@ module.exports = function(grunt) {
           'modules/server_processes_manager/js/index.js': 'modules/server_processes_manager/jsx/index.js',
           'modules/survey_accounts/js/index.js': 'modules/survey_accounts/jsx/index.js',
           'modules/user_accounts/js/index.js': 'modules/user_accounts/jsx/index.js'
+          'modules/data_team_helper/js/behavioural_qc_module.js': 'modules/data_team_helper/jsx/behavioural_qc_module.js'
         }
       },
       transpileES5: {
@@ -57,7 +58,6 @@ module.exports = function(grunt) {
           'modules/bvl_feedback/js/react.behavioural_feedback_panel.js': 'modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
           'modules/candidate_list/js/index.js': 'modules/candidate_list/jsx/index.js',
           'modules/candidate_list/js/columnFormatter.js': 'modules/candidate_list/jsx/columnFormatter.js',
-          'modules/data_team_helper/js/behavioural_qc_module.js': 'modules/data_team_helper/jsx/behavioural_qc_module.js',
           'modules/datadict/js/columnFormatter.js': 'modules/datadict/jsx/columnFormatter.js',
           'modules/dataquery/js/react.app.js': 'modules/dataquery/jsx/react.app.js',
           'modules/dataquery/js/react.fieldselector.js': 'modules/dataquery/jsx/react.fieldselector.js',
