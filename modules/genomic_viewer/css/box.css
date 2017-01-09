@@ -11,10 +11,13 @@
 .box line,
 .box rect,
 .box circle {
-  fill: #0F0;
   stroke: #999;
   stroke-width: 1px;
   stroke-dasharray: 0;
+}
+
+.box rect {
+  fill: orange
 }
 
 .box text {

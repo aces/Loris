@@ -649,7 +649,7 @@ class CPGTrack extends React.Component {
       stroke: "black"
     };
     const yAxis = [
-      <svg width="30px" height="120">
+      <svg width="40px" height="120">
         <g ref="yAxis">
         <line x1="25" y1="0" x2="25" y2="100" style={yAxisStyle} />
         <text x="1" y="40" dy="0.3em">0.6</text>
@@ -818,11 +818,6 @@ class GenomicViewerApp extends React.Component {
    * @note This function will try to construct a genomicRange if a string is received.
    */
   setGenomicRange(genomicRange) {
-    var genomicRange = genomicRange;
-
-    //  Do some regexp validation
-    //  console.error('Invalid parameter provided');
-
     this.setState({genomicRange: genomicRange});
   }
 

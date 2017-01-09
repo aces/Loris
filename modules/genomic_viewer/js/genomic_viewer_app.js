@@ -809,7 +809,7 @@ var CPGTrack = function (_React$Component6) {
       };
       var yAxis = [React.createElement(
         'svg',
-        { width: '30px', height: '120' },
+        { width: '40px', height: '120' },
         React.createElement(
           'g',
           { ref: 'yAxis' },
@@ -1049,11 +1049,6 @@ var GenomicViewerApp = function (_React$Component9) {
   _createClass(GenomicViewerApp, [{
     key: 'setGenomicRange',
     value: function setGenomicRange(genomicRange) {
-      var genomicRange = genomicRange;
-
-      //  Do some regexp validation
-      //  console.error('Invalid parameter provided');
-
       this.setState({ genomicRange: genomicRange });
     }
   }, {
