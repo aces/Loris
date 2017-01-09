@@ -145,10 +145,10 @@ var GenomicViewer = React.createClass({
             var iqr = quartiles[2] - quartiles[0];
             var whiskerUp = jStat.max(beta_values.filter(function (x) {
                 return x < quartiles[2] + 1.5 * iqr;
-            }));
+            })) || quartiles[1];
             var whiskerDown = jStat.min(beta_values.filter(function (x) {
                 return x > quartiles[0] - 1.5 * iqr;
-            }));
+            })) || quartiles[1];
             var outliers = beta_values.filter(function (x) {
                 return x < quartiles[0] - 1.5 * iqr || x > quartiles[2] + 1.5 * iqr;
             });

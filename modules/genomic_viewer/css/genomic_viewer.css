@@ -1,0 +1,16 @@
+
+th, td {
+    border-bottom: 1px solid #ddd;
+}
+
+.track-handle .track-content {
+  padding: 5px;
+}
+
+.yAxis-geneName {
+  margin: 5px;
+}
+
+.snps rect {
+  fill: red;
+}

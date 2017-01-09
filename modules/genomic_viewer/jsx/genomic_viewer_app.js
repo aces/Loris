@@ -143,10 +143,29 @@ class Track extends React.Component {
   }
 
   render() {
+    let containerStyle = {
+      display: "flex",
+      flexWrap: "nowrap",
+      justifyContent: "space-between",
+      alignItems: "center"
+    };
     return (
-      <tr>
-        <td>{this.props.title}</td>
-        <td>{this.props.children}</td>
+      <tr className="track">
+        <td>
+          <div className="track-handle" style={containerStyle}>
+            <div className="track-title">
+              {this.props.title}
+            </div>
+            <div className="track-yAxis">
+              {this.props.yAxis}
+            </div>
+          </div>
+        </td>
+        <td>
+          <div className="track-content">
+            {this.props.children}
+          </div>
+        </td>
       </tr>
     );
   }
@@ -420,10 +439,10 @@ class GeneTrack extends React.Component {
   }
 
   render() {
-    var genomicRange = this.props.genomicRange;
+    const genomicRange = this.props.genomicRange;
 
     // Thightly coupled with the UCSC knownGene table columns.
-    var genes = this.state.genes.map(function (g) {
+    let genes = this.state.genes.map(function (g) {
        const accession_number = g.name;
        const chrom = g.chrom;
        const strand = g.strand;
@@ -451,8 +470,22 @@ class GeneTrack extends React.Component {
       );
     });
 
+    let yAxisItems = this.state.genes.map(function (g) {
+      return (
+        <div className="yAxis-geneName" >
+          <span>{g.geneName}</span>
+        </div>
+      );
+    });
+
+    let yAxis = [
+      <div className="geneNames">
+        {yAxisItems}
+      </div>
+    ];
+
     return (
-      <Track title="Genes">
+      <Track title="Genes" yAxis={yAxis}>
         <canvas id="forwardBackground" ref="forwardBackgroundCanvas" width="10" height="5" style={{display: "none"}}/>
         <canvas id="reverseBackground" ref="reverseBackgroundCanvas" width="10" height="5" style={{display: "none"}}/>
         {genes}
@@ -488,9 +521,12 @@ class BetaValueDistribution extends React.Component {
 
   drawBox() {
     // Drawing the boxplot using d3 library
+    const margin = {top: 10, right: 0, bottom: 10, left: 0};
+    const boxWidth = 5;
+
     let boxPlot = d3.box()
       .whiskers(this.iqr(1.5))
-      .width(5)
+      .width(boxWidth)
       .height(100);
 
     boxPlot.domain([0,1]);
@@ -503,7 +539,7 @@ class BetaValueDistribution extends React.Component {
     g.call(boxPlot);
     
     // Moving the boxplot according to display scale
-    g.attr("transform", "translate(" + this.props.x + ", 0)");
+    g.attr("transform", "translate(" + ( this.props.x - boxWidth / 2 ) + ", " + margin.top + ")");
   }
 
   // Returns a function to compute the interquartile range.
@@ -522,7 +558,7 @@ class BetaValueDistribution extends React.Component {
 
   render() {
     return (
-      <g id={this.props.cpgName} ref={this.props.cpgName}></g>
+      <g id={this.props.cpgName} ref={this.props.cpgName} className="box"></g>
     );
   }
 }
@@ -534,7 +570,7 @@ BetaValueDistribution.propTypes = {
 };
 
 BetaValueDistribution.defaultProps = {
-  x: 0;
+  x: 0
 };
 
 class CPGTrack extends React.Component {
@@ -545,9 +581,11 @@ class CPGTrack extends React.Component {
     };
 
     this.fetchData = this.fetchData.bind(this);
+    this.adjustLines = this.adjustLines.bind(this);
   }
 
   componentDidMount() {
+    this.adjustLines();
     this.fetchData(this.props.genomicRange);
   }
 
@@ -565,6 +603,7 @@ class CPGTrack extends React.Component {
       const [wholeString,  prefix, chromosome, start, end] = genomicRange.match(pattern);
       const width = this.refs.thatDiv.getDOMNode().clientWidth;
       const xScale = width / (parseInt(end) - parseInt(start));
+
       $.ajax(this.props.dataURL + '?genomic_range=' + genomicRange, {
         method: "GET",
         dataType: 'json',
@@ -585,7 +624,39 @@ class CPGTrack extends React.Component {
     }
   }
 
+  adjustLines() {
+    const width = this.refs.thatDiv.getDOMNode().clientWidth;
+    const hypo = this.refs.hypo.getDOMNode();
+    const hyper = this.refs.hyper.getDOMNode();
+    const yAxis = this.refs.yAxis.getDOMNode();
+
+    hypo.setAttribute("x2", width);
+    hypo.setAttribute("transform", "translate(0,10)");
+
+    hyper.setAttribute("x2", width);
+    hyper.setAttribute("transform", "translate(0,10)");
+    
+    yAxis.setAttribute("transform", "translate(0,10)");
+  }
+
   render() {
+    let yAxisStyle = {
+      stroke: "black"
+    };
+    const yAxis = [
+      <svg width="30px" height="120">
+        <g ref="yAxis">
+        <line x1="25" y1="0" x2="25" y2="100" style={yAxisStyle} />
+        <text x="1" y="40" dy="0.5em">0.6</text>
+        <text x="1" y="80" dy="0.5em">0.2</text>
+        </g>
+      </svg>
+    ];
+    const lines = [
+      <line ref="hypo" x1="0" y1="80" x2="0" y2="80" />, 
+      <line ref="hyper" x1="0" y1="40" x2="0" y2="40" />
+    ];
+
     let boxPlots = this.state.data.map(function(d) {
       let ref = 'cpg-' + d.cpg_name;
       return (
@@ -594,11 +665,11 @@ class CPGTrack extends React.Component {
     }, this);
     return (
       <Track
-        title="Methylation 450k">
+        title="Methylation 450k"
+        yAxis={yAxis}>
         <div className="Methylation-450k-chart" ref="thatDiv">
-          <svg width='100%' className="box">
+          <svg width='100%' height="120" className="boxes">
             {boxPlots}
-            {yAxis}
             {lines}
           </svg>
         </div>
@@ -611,7 +682,99 @@ CPGTrack.defaultProps = {
   dataURL: loris.BaseURL + "/genomic_viewer/ajax/getCPG.php"
 };
 
-class SNPTrack extends React.Component {render() {return (<div></div>);}}
+class SNPTrack extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: []
+    };
+
+    this.fetchData = this.fetchData.bind(this);
+    this.onClick = this.onClick.bind(this);
+  }
+
+  componentDidMount() {
+    this.fetchData(this.props.genomicRange);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.hasOwnProperty('genomicRange') && nextProps.genomicRange !== this.props.genomicRange) {
+      this.fetchData(nextProps.genomicRange);
+    }
+  }
+
+  fetchData(genomicRange) {
+    const pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
+
+    if (pattern.test(genomicRange)) {
+      // calculate the scale for the X axis
+      const [wholeString,  prefix, chromosome, start, end] = genomicRange.match(pattern);
+      const width = this.refs.thatDiv.getDOMNode().clientWidth;
+      const xScale = width / (parseInt(end) - parseInt(start));
+
+      $.ajax(this.props.dataURL + '?genomic_range=' + genomicRange, {
+        method: "GET",
+        dataType: 'json',
+        success: function(data) {
+          data.forEach(function(d){
+            // calculate the coresponding X for each location
+            d.x = xScale * (parseInt(d.genomic_location) - parseInt(start));
+          }, this);
+          this.setState({
+            isLoaded: true,
+            data: data,
+          });
+        }.bind(this),
+        error: function(error) {
+          console.error(error);
+        }
+      });
+    }
+  }
+
+  onClick(event) {
+    alert(event.target.textContent);
+  }
+
+  render() {
+    let snps = this.state.data.map(function(s) {
+
+      let className;
+
+      console.log(s);
+      return (
+        <rect 
+          className={className}
+          x={s.x}
+          y="5"
+          width="5"
+          height="10"
+          rx="2"
+          ry="2"
+          onClick={this.onClick}
+        >
+          <title>
+            {s.rsID}
+          </title>
+        </rect>
+      );
+    }, this);
+    return (
+      <Track title="SNP">
+        <div className="snp-chart" ref="thatDiv">
+          <svg width='100%' height="15" className="snps">
+            {snps}
+          </svg>
+        </div>
+      </Track>
+    );
+  }
+}
+ 
+SNPTrack.defaultProps = {
+  dataURL: loris.BaseURL + "/genomic_viewer/ajax/getSNP.php"
+};
+
 class ChIPPeakTrack extends React.Component {render() {return (<div></div>);}}
 
 
@@ -664,6 +827,8 @@ class GenomicViewerApp extends React.Component {
     const genomicRange = this.state.genomicRange;
 
     // Create control panel and the tracks according to state
+
+    // TODO:: Alex tells me that table are evil. (suggestion: flex-box)
     return (
       <table className='col-md-12'>
         <tbody>
@@ -678,7 +843,7 @@ class GenomicViewerApp extends React.Component {
           </tr>
           <GeneTrack genomicRange={genomicRange}/>
           <CPGTrack genomicRange={genomicRange}/>
-          <SNPTrack />
+          <SNPTrack genomicRange={genomicRange}/>
           <ChIPPeakTrack />
         </tbody>
       </table>
