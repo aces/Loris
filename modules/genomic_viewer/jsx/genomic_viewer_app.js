@@ -509,6 +509,7 @@ class BetaValueDistribution extends React.Component {
 
     this.drawBox = this.drawBox.bind(this);
     this.iqr = this.iqr.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   componentDidMount() {
@@ -522,7 +523,7 @@ class BetaValueDistribution extends React.Component {
   drawBox() {
     // Drawing the boxplot using d3 library
     const margin = {top: 10, right: 0, bottom: 10, left: 0};
-    const boxWidth = 5;
+    const boxWidth = 15;
 
     let boxPlot = d3.box()
       .whiskers(this.iqr(1.5))
@@ -556,9 +557,13 @@ class BetaValueDistribution extends React.Component {
     };
   }
 
+  onClick(event) {
+    alert(event.target.parentElement.children[0].textContent);
+  }
+
   render() {
     return (
-      <g id={this.props.cpgName} ref={this.props.cpgName} className="box"></g>
+      <g id={this.props.cpgName} ref={this.props.cpgName} className="box" data-toggle="tooltip" onClick={this.onClick}><title>{this.props.cpgName}</title></g>
     );
   }
 }
@@ -647,8 +652,10 @@ class CPGTrack extends React.Component {
       <svg width="30px" height="120">
         <g ref="yAxis">
         <line x1="25" y1="0" x2="25" y2="100" style={yAxisStyle} />
-        <text x="1" y="40" dy="0.5em">0.6</text>
-        <text x="1" y="80" dy="0.5em">0.2</text>
+        <text x="1" y="40" dy="0.3em">0.6</text>
+        <text x="1" y="80" dy="0.3em">0.2</text>
+        <line x1="25" y1="40" x2="30" y2="40" style={yAxisStyle} />
+        <line x1="25" y1="80" x2="30" y2="80" style={yAxisStyle} />
         </g>
       </svg>
     ];

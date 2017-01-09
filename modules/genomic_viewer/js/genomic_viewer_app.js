@@ -628,6 +628,7 @@ var BetaValueDistribution = function (_React$Component5) {
 
     _this5.drawBox = _this5.drawBox.bind(_this5);
     _this5.iqr = _this5.iqr.bind(_this5);
+    _this5.onClick = _this5.onClick.bind(_this5);
     return _this5;
   }
 
@@ -646,7 +647,7 @@ var BetaValueDistribution = function (_React$Component5) {
     value: function drawBox() {
       // Drawing the boxplot using d3 library
       var margin = { top: 10, right: 0, bottom: 10, left: 0 };
-      var boxWidth = 5;
+      var boxWidth = 15;
 
       var boxPlot = d3.box().whiskers(this.iqr(1.5)).width(boxWidth).height(100);
 
@@ -679,9 +680,22 @@ var BetaValueDistribution = function (_React$Component5) {
       };
     }
   }, {
+    key: 'onClick',
+    value: function onClick(event) {
+      alert(event.target.parentElement.children[0].textContent);
+    }
+  }, {
     key: 'render',
     value: function render() {
-      return React.createElement('g', { id: this.props.cpgName, ref: this.props.cpgName, className: 'box' });
+      return React.createElement(
+        'g',
+        { id: this.props.cpgName, ref: this.props.cpgName, className: 'box', 'data-toggle': 'tooltip', onClick: this.onClick },
+        React.createElement(
+          'title',
+          null,
+          this.props.cpgName
+        )
+      );
     }
   }]);
 
@@ -802,14 +816,16 @@ var CPGTrack = function (_React$Component6) {
           React.createElement('line', { x1: '25', y1: '0', x2: '25', y2: '100', style: yAxisStyle }),
           React.createElement(
             'text',
-            { x: '1', y: '40', dy: '0.5em' },
+            { x: '1', y: '40', dy: '0.3em' },
             '0.6'
           ),
           React.createElement(
             'text',
-            { x: '1', y: '80', dy: '0.5em' },
+            { x: '1', y: '80', dy: '0.3em' },
             '0.2'
-          )
+          ),
+          React.createElement('line', { x1: '25', y1: '40', x2: '30', y2: '40', style: yAxisStyle }),
+          React.createElement('line', { x1: '25', y1: '80', x2: '30', y2: '80', style: yAxisStyle })
         )
       )];
       var lines = [React.createElement('line', { ref: 'hypo', x1: '0', y1: '80', x2: '0', y2: '80' }), React.createElement('line', { ref: 'hyper', x1: '0', y1: '40', x2: '0', y2: '40' })];
