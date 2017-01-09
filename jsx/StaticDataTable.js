@@ -117,7 +117,7 @@ var StaticDataTable = React.createClass({
       PageNumber: 1
     });
   },
-  downloadCSV: function() {
+  downloadCSV: function(csvData) {
     var csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
     csvworker.addEventListener('message', function(e) {
@@ -138,7 +138,7 @@ var StaticDataTable = React.createClass({
     });
     csvworker.postMessage({
       cmd: 'SaveFile',
-      data: this.props.Data,
+      data: csvData,
       headers: this.props.Headers,
       identifiers: this.props.RowNameMap
     });
@@ -227,23 +227,24 @@ var StaticDataTable = React.createClass({
     }
     var rowsPerPage = this.state.RowsPerPage;
     var headers = [
-      <th onClick={this.setSortColumn(-1)}>
+      <th key="th_col_0" onClick={this.setSortColumn(-1)}>
         {this.props.RowNumLabel}
       </th>
     ];
     for (let i = 0; i < this.props.Headers.length; i += 1) {
       if (typeof loris.hiddenHeaders === "undefined" ||
         loris.hiddenHeaders.indexOf(this.props.Headers[i]) === -1) {
+        var colIndex = i + 1;
         if (this.props.Headers[i] === this.props.freezeColumn) {
           headers.push(
-            <th id={this.props.freezeColumn}
+            <th key={"th_col_" + colIndex} id={this.props.freezeColumn}
                 onClick={this.setSortColumn(i)}>
               {this.props.Headers[i]}
             </th>
           );
         } else {
           headers.push(
-            <th onClick={this.setSortColumn(i)}>
+            <th key={"th_col_" + colIndex} onClick={this.setSortColumn(i)}>
               {this.props.Headers[i]}
             </th>
           );
@@ -314,6 +315,7 @@ var StaticDataTable = React.createClass({
     var matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
     var filteredRows = this.countFilteredRows();
     var currentPageRow = (rowsPerPage * (this.state.PageNumber - 1));
+    var filteredData = [];
 
     // Push rows to data table
     for (let i = 0;
@@ -337,7 +339,10 @@ var StaticDataTable = React.createClass({
 
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
           filterMatchCount++;
+          filteredData.push(this.props.Data[index[i].RowIdx]);
         }
+
+        var key = 'td_col_' + j;
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
@@ -347,9 +352,13 @@ var StaticDataTable = React.createClass({
             this.props.Data[index[i].RowIdx],
             this.props.Headers
           );
-          curRow.push({data});
+          if (data !== null) {
+            // Note: Can't currently pass a key, need to update columnFormatter
+            // to not return a <td> node
+            curRow.push(data);
+          }
         } else {
-          curRow.push(<td>{data}</td>);
+          curRow.push(<td key={key}>{data}</td>);
         }
       }
 
@@ -357,9 +366,10 @@ var StaticDataTable = React.createClass({
       if (Object.keys(this.props.Filter).length === filterMatchCount) {
         matchesFound++;
         if (matchesFound > currentPageRow) {
+          const rowIndex = index[i].Content;
           rows.push(
-            <tr colSpan={headers.length}>
-              <td>{index[i].Content}</td>
+            <tr key={'tr_' + rowIndex} colSpan={headers.length}>
+              <td>{rowIndex}</td>
               {curRow}
             </tr>
           );
@@ -381,6 +391,12 @@ var StaticDataTable = React.createClass({
         <option>10000</option>
       </select>
     );
+
+    // Include only filtered data if filters were applied
+    let csvData = this.props.Data;
+    if (this.props.Filter && filteredData.length > 0) {
+      csvData = filteredData;
+    }
 
     return (
       <div className="panel panel-default">
@@ -422,7 +438,7 @@ var StaticDataTable = React.createClass({
               <div className="col-xs-6">
                   <button
                     className="btn btn-primary downloadCSV"
-                    onClick={this.downloadCSV}
+                    onClick={this.downloadCSV.bind(null, csvData)}
                   >
                     Download Table as CSV
                   </button>

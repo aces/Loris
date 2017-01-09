@@ -182,6 +182,7 @@ class NDB_Form_statistics extends NDB_Form
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
+                          AND c.Active = 'Y'
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
