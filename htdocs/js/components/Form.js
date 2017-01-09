@@ -66,10 +66,10 @@ var FormElement = React.createClass({
     var filter = this.props.formElements;
     var userInput = this.props.onUserInput;
 
-    filter.forEach(function (element) {
+    filter.forEach(function (element, key) {
       formElementsHTML.push(React.createElement(
         'div',
-        { className: colClass },
+        { key: 'el_' + key, className: colClass },
         React.createElement(LorisElement, {
           element: element,
           onUserInput: userInput
@@ -78,22 +78,20 @@ var FormElement = React.createClass({
     });
 
     // Render elements from React
-    React.Children.forEach(this.props.children, function (child) {
-      if (typeof child.type === 'function') {
-        formElementsHTML.push(React.createElement(
-          'div',
-          { className: colClass },
-          child
-        ));
-      } else {
-        // If child is plain HTML, insert it as full size.
-        // Useful for inserting <hr> to split form sections
-        formElementsHTML.push(React.createElement(
-          'div',
-          { className: 'col-xs-12 col-sm-12 col-md-12' },
-          child
-        ));
+    React.Children.forEach(this.props.children, function (child, key) {
+      // If child is plain HTML, insert it as full size.
+      // Useful for inserting <hr> to split form sections
+      var elementClass = "col-xs-12 col-sm-12 col-md-12";
+
+      // If child is form element use appropriate size
+      if (React.isValidElement(child)) {
+        elementClass = colClass;
       }
+      formElementsHTML.push(React.createElement(
+        'div',
+        { key: 'el_' + key, className: elementClass },
+        child
+      ));
     });
 
     return formElementsHTML;
@@ -166,7 +164,7 @@ var SelectElement = React.createClass({
       name: '',
       options: {},
       label: '',
-      value: null,
+      value: undefined,
       id: '',
       class: '',
       multiple: false,
@@ -180,32 +178,10 @@ var SelectElement = React.createClass({
       }
     };
   },
-  componentDidMount: function componentDidMount() {
-    if (this.props.value) {
-      this.setState({
-        value: this.props.value
-      });
-    }
-  },
-  componentWillReceiveProps: function componentWillReceiveProps() {
-    if (this.props.hasError) {
-      this.setState({
-        hasError: this.props.hasError
-      });
-    }
-  },
-  getInitialState: function getInitialState() {
-    var value = this.props.multiple ? [] : '';
-    return {
-      value: value,
-      hasError: false
-    };
-  },
+
   handleChange: function handleChange(e) {
     var value = e.target.value;
     var options = e.target.options;
-    var hasError = false;
-    var isEmpty = value === "";
 
     // Multiple values
     if (this.props.multiple && options.length > 1) {
@@ -215,18 +191,7 @@ var SelectElement = React.createClass({
           value.push(options[i].value);
         }
       }
-      isEmpty = value.length > 1;
     }
-
-    // Check for errors
-    if (this.props.required && isEmpty) {
-      hasError = true;
-    }
-
-    this.setState({
-      value: value,
-      hasError: hasError
-    });
 
     this.props.onUserInput(this.props.name, value);
   },
@@ -255,7 +220,7 @@ var SelectElement = React.createClass({
     }
 
     // Add error message
-    if (this.state.hasError) {
+    if (this.props.hasError || this.props.required && this.props.value === "") {
       errorMessage = React.createElement(
         'span',
         null,
@@ -283,7 +248,7 @@ var SelectElement = React.createClass({
             multiple: multiple,
             className: 'form-control',
             id: this.props.label,
-            value: this.state.value,
+            value: this.props.value,
             onChange: this.handleChange,
             required: required,
             disabled: disabled
@@ -334,20 +299,7 @@ var TextareaElement = React.createClass({
       }
     };
   },
-  getInitialState: function getInitialState() {
-    return {
-      value: ''
-    };
-  },
-  componentDidMount: function componentDidMount() {
-    if (this.props.value) {
-      this.setState({ value: this.props.value });
-    }
-  },
   handleChange: function handleChange(e) {
-    this.setState({
-      value: e.target.value
-    });
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function render() {
@@ -382,7 +334,7 @@ var TextareaElement = React.createClass({
           className: 'form-control',
           name: this.props.name,
           id: this.props.id,
-          value: this.state.value,
+          value: this.props.value,
           required: required,
           disabled: disabled,
           onChange: this.handleChange
@@ -408,11 +360,6 @@ var TextboxElement = React.createClass({
     required: React.PropTypes.bool,
     onUserInput: React.PropTypes.func
   },
-  getInitialState: function getInitialState() {
-    return {
-      value: ''
-    };
-  },
   getDefaultProps: function getDefaultProps() {
     return {
       name: '',
@@ -426,17 +373,7 @@ var TextboxElement = React.createClass({
       }
     };
   },
-  componentDidMount: function componentDidMount() {
-    if (this.props.value) {
-      this.setState({
-        value: this.props.value
-      });
-    }
-  },
   handleChange: function handleChange(e) {
-    this.setState({
-      value: e.target.value
-    });
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function render() {
@@ -470,7 +407,7 @@ var TextboxElement = React.createClass({
           className: 'form-control',
           name: this.props.name,
           id: this.props.id,
-          value: this.state.value,
+          value: this.props.value,
           required: required,
           disabled: disabled,
           onChange: this.handleChange
@@ -511,20 +448,7 @@ var DateElement = React.createClass({
       }
     };
   },
-  getInitialState: function getInitialState() {
-    return {
-      value: ''
-    };
-  },
-  componentDidMount: function componentDidMount() {
-    if (this.props.value) {
-      this.setState({ value: this.props.value });
-    }
-  },
   handleChange: function handleChange(e) {
-    this.setState({
-      value: e.target.value
-    });
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function render() {
@@ -561,7 +485,7 @@ var DateElement = React.createClass({
           min: this.props.minYear,
           max: this.props.maxYear,
           onChange: this.handleChange,
-          value: this.state.value,
+          value: this.props.value,
           required: required,
           disabled: disabled
         })
@@ -588,11 +512,6 @@ var NumericElement = React.createClass({
     required: React.PropTypes.bool,
     onUserInput: React.PropTypes.func
   },
-  getInitialState: function getInitialState() {
-    return {
-      value: ''
-    };
-  },
   getDefaultProps: function getDefaultProps() {
     return {
       name: '',
@@ -608,17 +527,7 @@ var NumericElement = React.createClass({
       }
     };
   },
-  componentDidMount: function componentDidMount() {
-    if (this.props.value) {
-      this.setState({
-        value: this.props.value
-      });
-    }
-  },
   handleChange: function handleChange(e) {
-    this.setState({
-      value: e.target.value
-    });
     this.props.onUserInput(this.props.name, e.target.value);
   },
   render: function render() {
@@ -909,6 +818,17 @@ var HelpTextElement = React.createClass({
 /**
  * Static element component.
  * Used to displays plain/formatted text as part of a form
+ *
+ * To pass a formatted text, you need to wrap it in a single parent element.
+ * Example usage:
+ *
+ * ```
+ * var myText = (<span>This is my <b>text</b></span>);
+ * <StaticElement
+ *    text={myText}
+ *    label={note}
+ * />
+ * ```
  */
 var StaticElement = React.createClass({
   displayName: 'StaticElement',
@@ -917,7 +837,7 @@ var StaticElement = React.createClass({
   mixins: [React.addons.PureRenderMixin],
   propTypes: {
     label: React.PropTypes.string,
-    text: React.PropTypes.string.isRequired
+    text: React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.element])
   },
 
   getDefaultProps: function getDefaultProps() {
@@ -960,9 +880,6 @@ var ButtonElement = React.createClass({
     label: React.PropTypes.string,
     type: React.PropTypes.string,
     onUserInput: React.PropTypes.func
-  },
-  getInitialState: function getInitialState() {
-    return {};
   },
   getDefaultProps: function getDefaultProps() {
     return {

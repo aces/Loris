@@ -75,7 +75,7 @@ var ImagePanelHeadersTable = React.createClass({
     displayName: 'ImagePanelHeadersTable',
 
     componentDidMount: function componentDidMount() {
-        $(this.getDOMNode()).DynamicTable();
+        $(this).DynamicTable();
     },
     render: function render() {
         return React.createElement(

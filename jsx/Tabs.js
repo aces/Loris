@@ -1,10 +1,10 @@
-/* exported RTabs, TabPane */
+/* exported Tabs, TabPane */
 
 /**
  * This file contains React components for Tabs component.
  *
  * @author Loris Team
- * @version 1.0.0
+ * @version 1.1.0
  *
  */
 
@@ -12,105 +12,128 @@
  * Tabs Component.
  * React wrapper for Bootstrap tabs. Allows to dynamically render tabs
  * and corresponding tab panes.
+ *
+ * ================================================
+ * Usage:
+ *
+ * 1. Define an array of tabs with IDs and labels
+ *
+ * `let tabList = [{id: "tab1", label: "This is tab title"}];`
+ *
+ * 2. Pass tabList as <Tab> property and <TabPane> as child
+ *  ```
+ * <Tabs tabs={tabList} defaultTab="tab1">
+ *   <TabPane TabId={tabList[0].id}>
+ *     // Tab content goes here
+ *   </TabPane>
+ * </Tabs>
+ * ```
+ * =================================================
+ *
  */
-var Tabs = React.createClass({
-  propTypes: {
-    tabs: React.PropTypes.array.isRequired,
-    defaultTab: React.PropTypes.string
-  },
-  getInitialState: function() {
-    var activeTab = "";
+class Tabs extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    let activeTab = "";
     if (this.props.defaultTab) {
       activeTab = this.props.defaultTab;
     } else if (this.props.tabs.length > 0) {
       activeTab = this.props.tabs[0].id;
     }
 
-    return {
+    this.state = {
       activeTab: activeTab
     };
-  },
-  componentDidMount: function() {
-    this.setActiveTab(this.state.activeTab);
-  },
-  setActiveTab: function(tabId) {
-    var e = new CustomEvent("tab-changed", {
-      detail: {
-        activeTab: tabId
-      }
-    });
-    window.dispatchEvent(e);
-  },
-  handleClick: function(tabId) {
-    this.setActiveTab(tabId);
+
+    this.handleClick = this.handleClick.bind(this);
+    this.getTabs = this.getTabs.bind(this);
+    this.getTabPanes = this.getTabPanes.bind(this);
+  }
+
+  handleClick(tabId) {
     this.setState({activeTab: tabId});
-  },
-  render: function() {
-    // Build a list of tabs
-    var tabs = this.props.tabs.map(function(tab) {
-      var tabClass;
-      if (this.state.activeTab === tab.id) {
-        tabClass = "active";
-      }
-      var href = "#" + tab.id;
-      var tabID = "tab-" + tab.id;
+    this.props.onTabChange(tabId);
+  }
+
+  getTabs() {
+    let tabs = (this.props.tabs).map(function(tab) {
+      let tabClass = this.state.activeTab === tab.id ? 'active' : null;
+      let href = "#" + tab.id;
+      let tabID = "tab-" + tab.id;
       return (
-        <li role="presentation"
-            className={tabClass}
-            onClick={this.handleClick.bind(tab.id)}
+        <li
+          role="presentation"
+          className={tabClass}
+          onClick={this.handleClick.bind(null, tab.id)}
+          key={tab.id}
         >
-            <a id={tabID} href={href} role="tab" data-toggle="tab">
-              {tab.label}
-            </a>
+          <a id={tabID} href={href} role="tab" data-toggle="tab">
+            {tab.label}
+          </a>
         </li>
       );
-    }, this);
+    }.bind(this));
+
+    return tabs;
+  }
+
+  getTabPanes() {
+    let tabPanes = React.Children.map(this.props.children, function(child, key) {
+      return React.cloneElement(child, {
+        activeTab: this.state.activeTab,
+        key: key
+      });
+    }.bind(this));
+
+    return tabPanes;
+  }
+
+  render() {
+    let tabs = this.getTabs();
+    let tabPanes = this.getTabPanes();
+    let tabStyle = {
+      marginLeft: 0,
+      marginBottom: '5px'
+    };
 
     return (
       <div>
-        <ul className="nav nav-tabs nav-tabs-loris" role="tablist">
+        <ul className="nav nav-tabs" role="tablist" style={tabStyle}>
           {tabs}
         </ul>
         <div className="tab-content">
-            {this.props.children}
+          {tabPanes}
         </div>
       </div>
     );
   }
-});
+}
+Tabs.propTypes = {
+  tabs: React.PropTypes.array.isRequired,
+  defaultTab: React.PropTypes.string
+};
+Tabs.defaultProps = {
+  onTabChange: function() {}
+};
 
-var TabPane = React.createClass({
-  propTypes: {
-    TabId: React.PropTypes.string.isRequired,
-    Title: React.PropTypes.string
-  },
-  getInitialState: function() {
-    return {
-      isActive: this.props.TabId
-    };
-  },
-  componentWillMount: function() {
-    window.addEventListener("tab-changed", function(e) {
-      if (e.detail.activeTab === this.props.TabId) {
-        this.setState({isActive: true});
-      } else {
-        this.setState({isActive: false});
-      }
-    }.bind(this), false);
-  },
-  render: function() {
-    var classList = "tab-pane";
-    var title;
+/*
+ * TabPane component.
+ * Used to wrap content for every tab.
+ */
+class TabPane extends React.Component {
+  render() {
+    let classList = "tab-pane";
+    let title;
 
-    if (this.state.isActive) {
+    if (this.props.TabId === this.props.activeTab) {
       classList += " active";
     }
-
     if (this.props.Title) {
       title = <h1>{this.props.Title}</h1>;
     }
 
-    // Render the HTML
     return (
       <div role="tabpanel" className={classList} id={this.props.TabId}>
         {title}
@@ -118,6 +141,9 @@ var TabPane = React.createClass({
       </div>
     );
   }
-});
-
-var RTabs = React.createFactory(Tabs);
+}
+TabPane.propTypes = {
+  TabId: React.PropTypes.string.isRequired,
+  Title: React.PropTypes.string,
+  activeTab: React.PropTypes.string
+};

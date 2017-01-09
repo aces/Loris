@@ -121,7 +121,7 @@ var StaticDataTable = React.createClass({
       PageNumber: 1
     });
   },
-  downloadCSV: function downloadCSV() {
+  downloadCSV: function downloadCSV(csvData) {
     var csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
 
     csvworker.addEventListener('message', function (e) {
@@ -142,7 +142,7 @@ var StaticDataTable = React.createClass({
     });
     csvworker.postMessage({
       cmd: 'SaveFile',
-      data: this.props.Data,
+      data: csvData,
       headers: this.props.Headers,
       identifiers: this.props.RowNameMap
     });
@@ -230,22 +230,23 @@ var StaticDataTable = React.createClass({
     var rowsPerPage = this.state.RowsPerPage;
     var headers = [React.createElement(
       "th",
-      { onClick: this.setSortColumn(-1) },
+      { key: "th_col_0", onClick: this.setSortColumn(-1) },
       this.props.RowNumLabel
     )];
     for (var _i = 0; _i < this.props.Headers.length; _i += 1) {
       if (typeof loris.hiddenHeaders === "undefined" || loris.hiddenHeaders.indexOf(this.props.Headers[_i]) === -1) {
+        var colIndex = _i + 1;
         if (this.props.Headers[_i] === this.props.freezeColumn) {
           headers.push(React.createElement(
             "th",
-            { id: this.props.freezeColumn,
+            { key: "th_col_" + colIndex, id: this.props.freezeColumn,
               onClick: this.setSortColumn(_i) },
             this.props.Headers[_i]
           ));
         } else {
           headers.push(React.createElement(
             "th",
-            { onClick: this.setSortColumn(_i) },
+            { key: "th_col_" + colIndex, onClick: this.setSortColumn(_i) },
             this.props.Headers[_i]
           ));
         }
@@ -315,6 +316,7 @@ var StaticDataTable = React.createClass({
     var matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
     var filteredRows = this.countFilteredRows();
     var currentPageRow = rowsPerPage * (this.state.PageNumber - 1);
+    var filteredData = [];
 
     // Push rows to data table
     for (var _i2 = 0; _i2 < this.props.Data.length && rows.length < rowsPerPage; _i2++) {
@@ -335,16 +337,23 @@ var StaticDataTable = React.createClass({
 
         if (this.hasFilterKeyword(this.props.Headers[j], data)) {
           filterMatchCount++;
+          filteredData.push(this.props.Data[index[_i2].RowIdx]);
         }
+
+        var key = 'td_col_' + j;
 
         // Get custom cell formatting if available
         if (this.props.getFormattedCell) {
           data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[_i2].RowIdx], this.props.Headers);
-          curRow.push({ data: data });
+          if (data !== null) {
+            // Note: Can't currently pass a key, need to update columnFormatter
+            // to not return a <td> node
+            curRow.push(data);
+          }
         } else {
           curRow.push(React.createElement(
             "td",
-            null,
+            { key: key },
             data
           ));
         }
@@ -354,13 +363,14 @@ var StaticDataTable = React.createClass({
       if (Object.keys(this.props.Filter).length === filterMatchCount) {
         matchesFound++;
         if (matchesFound > currentPageRow) {
+          var rowIndex = index[_i2].Content;
           rows.push(React.createElement(
             "tr",
-            { colSpan: headers.length },
+            { key: 'tr_' + rowIndex, colSpan: headers.length },
             React.createElement(
               "td",
               null,
-              index[_i2].Content
+              rowIndex
             ),
             curRow
           ));
@@ -406,6 +416,12 @@ var StaticDataTable = React.createClass({
         "10000"
       )
     );
+
+    // Include only filtered data if filters were applied
+    var csvData = this.props.Data;
+    if (this.props.Filter && filteredData.length > 0) {
+      csvData = filteredData;
+    }
 
     return React.createElement(
       "div",
@@ -484,7 +500,7 @@ var StaticDataTable = React.createClass({
                 "button",
                 {
                   className: "btn btn-primary downloadCSV",
-                  onClick: this.downloadCSV
+                  onClick: this.downloadCSV.bind(null, csvData)
                 },
                 "Download Table as CSV"
               )
