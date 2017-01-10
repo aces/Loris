@@ -15,10 +15,10 @@
 class Breadcrumbs extends React.Component {
 
   render() {
-    let baseURL = this.props.baseURL;
-    let breadcrumbs = this.props.breadcrumbs.map(function(element, i) {
-      let url = baseURL + element.query;
-      let crumb = (
+    const baseURL = this.props.baseURL;
+    const breadcrumbs = this.props.breadcrumbs.map(function(element, i) {
+      const url = baseURL + element.query;
+      const crumb = (
         <a key={'crumb_' + i} href={url} className="btn btn-primary">
           <div>
             {element.text}
