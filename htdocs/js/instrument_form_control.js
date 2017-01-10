@@ -1,9 +1,7 @@
-/* global document: false, $: false, window: false, unescape: false, Option: false,isElementsSet*/
-
 function notAnswered() {
   "use strict";
-  var name = $(this).attr('name'),
-    index = this.selectedIndex;
+  var name = $(this).attr('name');
+  var index = this.selectedIndex;
   name = name.replace('_status', '');
   if (name.indexOf('_date') > -1) {
     if (index === 0) {
@@ -25,12 +23,15 @@ function notAnswered() {
     $(this).after("<div class=\"col-xs-12 warning\" id=\"" + name + "\">Any entered data will not be saved</div>");
   }
 }
+
 $(document).ready(function() {
   "use strict";
   $(".element").children().addClass("form-control input-sm");
   $(".button").removeClass("form-control");
-  var naList = document.getElementsByClassName('not-answered'),
-    i, name, index;
+  var naList = document.getElementsByClassName('not-answered');
+  var i;
+  var name;
+  var index;
   for (i = 0; i < naList.length; i++) {
     name = $(naList[i]).attr('name');
     name = name.replace('_status', '');

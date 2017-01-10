@@ -8,7 +8,8 @@ eslint modules/
 # Run ESLint on generic React components
 eslint jsx/
 
-# Run ESLint on specific scripts
-eslint htdocs/js/jquery.dynamictable.js
-eslint htdocs/js/util/
+# Run ESLint on all JS files (see exceptions in .eslintignore)
+eslint htdocs/js/
+
+# Other files
 eslint Gruntfile.js
