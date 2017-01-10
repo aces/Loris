@@ -56,16 +56,16 @@ var LoadPane = React.createClass({
       case 'success':
         alert = (
           <div className="alert alert-success alert-dismissible" role="alert">
-              <button type="button" className="close" onClick={this.resetAlert}><span aria-hidden="true">&times;</span></button>
-              <strong>Success!</strong> Instrument Loaded
+            <button type="button" className="close" onClick={this.resetAlert}><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong> Instrument Loaded
           </div>
         );
         break;
       case 'typeError':
         alert = (
           <div className="alert alert-danger alert-dismissible" role="alert">
-              <button type="button" className="close" onClick={this.resetAlert}><span aria-hidden="true">&times;</span></button>
-              <strong>Error!</strong> Wrong file format
+            <button type="button" className="close" onClick={this.resetAlert}><span aria-hidden="true">&times;</span></button>
+            <strong>Error!</strong> Wrong file format
           </div>
         );
         break;
@@ -85,7 +85,7 @@ var LoadPane = React.createClass({
         break;
     }
     return (
-      <TabPane Title="Load Instrument" TabId={this.props.TabId}>
+      <TabPane {...this.props}>
         <div className="col-sm-6 col-xs-12">
           {alert}
           <input
@@ -141,38 +141,37 @@ var SavePane = React.createClass({
   render: function() {
     var value = this.state.fileName;
     return (
-      <TabPane Title="Save Instrument"
-                TabId={this.props.TabId}>
-                  <div className="form-group">
-                    <div className="col-xs-12">
-                      <label className="col-sm-2 control-label">Filename: </label>
-                      <div className="col-sm-4">
-                          <input className="form-control"
-                               type="text" id="filename"
-                               value={value}
-                               onChange={this.onChangeFile}
-                          />
-                      </div>
-                  </div>
-                  <div className="col-xs-12 spacingTop">
-                      <label className="col-sm-2 control-label">Instrument Name: </label>
-                      <div className="col-sm-4">
-                          <input className="form-control"
-                               type="text" id="longname"
-                               value={this.state.instrumentName}
-                               onChange={this.onChangeInst}
-                          />
-                      </div>
-                  </div>
-                  <div className="col-xs-12 spacingTop">
-                    <div className="col-xs-12 col-sm-4 col-sm-offset-2">
-                        <input className="btn btn-primary col-xs-12"
-                             type="submit" value="Save"
-                             onClick={this.props.save}
-                        />
-                      </div>
-                  </div>
-                </div>
+      <TabPane {...this.props}>
+        <div className="form-group">
+          <div className="col-xs-12">
+            <label className="col-sm-2 control-label">Filename: </label>
+            <div className="col-sm-4">
+              <input className="form-control"
+                     type="text" id="filename"
+                     value={value}
+                     onChange={this.onChangeFile}
+              />
+            </div>
+          </div>
+          <div className="col-xs-12 spacingTop">
+            <label className="col-sm-2 control-label">Instrument Name: </label>
+            <div className="col-sm-4">
+              <input className="form-control"
+                     type="text" id="longname"
+                     value={this.state.instrumentName}
+                     onChange={this.onChangeInst}
+              />
+            </div>
+          </div>
+          <div className="col-xs-12 spacingTop">
+            <div className="col-xs-12 col-sm-4 col-sm-offset-2">
+              <input className="btn btn-primary col-xs-12"
+                     type="submit" value="Save"
+                     onClick={this.props.save}
+              />
+            </div>
+          </div>
+        </div>
       </TabPane>
     );
   }
@@ -313,7 +312,7 @@ var DisplayElements = React.createClass({
         </tr>
         </thead>
         <tbody onDragOver={this.dragOver}>
-          {tableRows}
+        {tableRows}
         </tbody>
       </table>
     );
@@ -331,7 +330,7 @@ var BuildPane = React.createClass({
         Type: "ElementGroup",
         GroupType: "Page",
         Description: "Top",
-          // Keep track of the elements on the page
+        // Keep track of the elements on the page
         Elements: []
       }],
       // Keep track if elements are being edited to ensure
@@ -406,7 +405,7 @@ var BuildPane = React.createClass({
     // setting any values
     this.setState(function(state) {
       let temp = state.Elements;
-        // Decriment the editing count
+      // Decriment the editing count
       let edit = state.amountEditing - 1;
       let dbNa = state.elementDBNames;
       temp[state.currentPage].Elements[index] = element;
@@ -486,7 +485,7 @@ var BuildPane = React.createClass({
     }.bind(this));
 
     return (
-      <TabPane Title="Build your Instrument" TabId={this.props.TabId}>
+      <TabPane {...this.props}>
         <div className="form-group col-xs-12">
           <label htmlFor="selected-input" className="col-xs-2 col-sm-1 control-label">Page:</label>
           <div className="col-sm-4">
@@ -550,7 +549,7 @@ var InstrumentBuilderApp = React.createClass({
       <BuildPane
         TabId="Build"
         ref="buildPane"
-          key={2}
+        key={2}
       />
     );
     tabs.push(
@@ -580,7 +579,7 @@ var InstrumentBuilderApp = React.createClass({
     return (
       <div>
         <Tabs tabs={tabList} defaultTab="Build">
-            {tabs}
+          {tabs}
         </Tabs>
       </div>
     );

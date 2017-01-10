@@ -126,6 +126,7 @@ class MediaUploadForm extends React.Component {
             ref="pscid"
             hasError={false}
             required={true}
+            value={this.state.formData.pscid}
           />
           <SelectElement
             name="visitLabel"
@@ -134,6 +135,7 @@ class MediaUploadForm extends React.Component {
             onUserInput={this.setFormData}
             ref="visitLabel"
             required={true}
+            value={this.state.formData.visitLabel}
           />
           <SelectElement
             name="forSite"
@@ -142,6 +144,7 @@ class MediaUploadForm extends React.Component {
             onUserInput={this.setFormData}
             ref="forSite"
             required={true}
+            value={this.state.formData.forSite}
           />
           <SelectElement
             name="instrument"
@@ -149,6 +152,7 @@ class MediaUploadForm extends React.Component {
             options={this.state.Data.instruments}
             onUserInput={this.setFormData}
             ref="instrument"
+            value={this.state.formData.instrument}
           />
           <DateElement
             name="dateTaken"
@@ -157,12 +161,14 @@ class MediaUploadForm extends React.Component {
             maxYear="2017"
             onUserInput={this.setFormData}
             ref="dateTaken"
+            value={this.state.formData.dateTaken}
           />
           <TextareaElement
             name="comments"
             label="Comments"
             onUserInput={this.setFormData}
             ref="comments"
+            value={this.state.formData.comments}
           />
           <FileElement
             name="file"
@@ -361,9 +367,24 @@ class MediaUploadForm extends React.Component {
    */
   setFormData(formElement, value) {
     // Only display visits and sites available for the current pscid
+    let visitLabel = this.state.formData.visitLabel;
+    let pscid = this.state.formData.pscid;
+
     if (formElement === "pscid" && value !== "") {
       this.state.Data.visits = this.state.Data.sessionData[value].visits;
       this.state.Data.sites = this.state.Data.sessionData[value].sites;
+      if (visitLabel) {
+        this.state.Data.instruments =
+          this.state.Data.sessionData[value].instruments[visitLabel];
+      } else {
+        this.state.Data.instruments =
+          this.state.Data.sessionData[value].instruments.all;
+      }
+    }
+
+    if (formElement === "visitLabel" && value !== "" && pscid) {
+      this.state.Data.instruments =
+        this.state.Data.sessionData[pscid].instruments[value];
     }
 
     var formData = this.state.formData;

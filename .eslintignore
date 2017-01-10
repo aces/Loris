@@ -4,5 +4,3 @@ htdocs/js/components/*
 
 # Ignore until ESLint is run
 modules/dataquery/
-modules/data_team_helper/
-modules/bvl_feedback/

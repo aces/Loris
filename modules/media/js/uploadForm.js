@@ -161,7 +161,8 @@ var MediaUploadForm = function (_React$Component) {
             onUserInput: this.setFormData,
             ref: 'pscid',
             hasError: false,
-            required: true
+            required: true,
+            value: this.state.formData.pscid
           }),
           React.createElement(SelectElement, {
             name: 'visitLabel',
@@ -169,7 +170,8 @@ var MediaUploadForm = function (_React$Component) {
             options: this.state.Data.visits,
             onUserInput: this.setFormData,
             ref: 'visitLabel',
-            required: true
+            required: true,
+            value: this.state.formData.visitLabel
           }),
           React.createElement(SelectElement, {
             name: 'forSite',
@@ -177,14 +179,16 @@ var MediaUploadForm = function (_React$Component) {
             options: this.state.Data.sites,
             onUserInput: this.setFormData,
             ref: 'forSite',
-            required: true
+            required: true,
+            value: this.state.formData.forSite
           }),
           React.createElement(SelectElement, {
             name: 'instrument',
             label: 'Instrument',
             options: this.state.Data.instruments,
             onUserInput: this.setFormData,
-            ref: 'instrument'
+            ref: 'instrument',
+            value: this.state.formData.instrument
           }),
           React.createElement(DateElement, {
             name: 'dateTaken',
@@ -192,13 +196,15 @@ var MediaUploadForm = function (_React$Component) {
             minYear: '2000',
             maxYear: '2017',
             onUserInput: this.setFormData,
-            ref: 'dateTaken'
+            ref: 'dateTaken',
+            value: this.state.formData.dateTaken
           }),
           React.createElement(TextareaElement, {
             name: 'comments',
             label: 'Comments',
             onUserInput: this.setFormData,
-            ref: 'comments'
+            ref: 'comments',
+            value: this.state.formData.comments
           }),
           React.createElement(FileElement, {
             name: 'file',
@@ -406,9 +412,24 @@ var MediaUploadForm = function (_React$Component) {
     key: 'setFormData',
     value: function setFormData(formElement, value) {
       // Only display visits and sites available for the current pscid
+      let visitLabel = this.state.formData.visitLabel;
+      let pscid = this.state.formData.pscid;
+
       if (formElement === "pscid" && value !== "") {
         this.state.Data.visits = this.state.Data.sessionData[value].visits;
         this.state.Data.sites = this.state.Data.sessionData[value].sites;
+        if (visitLabel) {
+          this.state.Data.instruments =
+            this.state.Data.sessionData[value].instruments[visitLabel];
+        } else {
+          this.state.Data.instruments =
+            this.state.Data.sessionData[value].instruments.all;
+        }
+      }
+
+      if (formElement === "visitLabel" && value !== "" && pscid) {
+        this.state.Data.instruments =
+          this.state.Data.sessionData[pscid].instruments[value];
       }
 
       var formData = this.state.formData;
