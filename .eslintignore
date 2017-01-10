@@ -1,10 +1,11 @@
 node_modules/*
-
 modules/*/js/*.js
-modules/dataquery/ # Ignore until ESLint is run
-
-## Ignore external libs and generated files
 htdocs/js/components/*
+
+# Ignore until ESLint is run
+modules/dataquery/
+
+# Ignore external libs
 htdocs/js/flot/*
 htdocs/js/jquery/*
 htdocs/js/jszip/*
