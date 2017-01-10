@@ -1,3 +1,66 @@
+/* exported BootstrapModalWindow */
+
+/**
+ * Bootstrap modal window React component
+ *
+ * @author Xavier Lecours Boucher
+ * @version 1.0.0
+ *
+ */
+class BootstrapModalWindow extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hidden: true
+    };
+  }
+  
+  render() {
+    let modalWindow;
+
+    let doc = (
+      <div className="modal-dialog" role="document">
+        <div className="modal-content" >
+          <div className="modal-header">
+            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+            <h4 className="modal-title" id="myModalLabel">{this.props.title}</h4>
+          </div>
+          <div className="modal-body">
+            {this.props.body}
+          </div>
+          <div className="modal-footer">
+            {this.props.footer}
+          </div>
+        </div>
+      </div>
+    );
+
+    if (this.state.hidden) {
+      modalWindow = (
+        <div style={{display: "none"}} className="modal fade" id="lorisModal" tabIndex="-1" role="dialog" ariaLabelledby="myModalLabel" ariaHidden="true">
+          {doc}
+        </div>
+      );
+    } else {
+      modalWindow = (
+        <div style={{display: "block", paddingRight: "13px"}} className="modal fade in" id="myModal" tabIndex="-1" role="dialog" ariaLabelledby="myModalLabel" ariaHidden="false">
+          {doc}
+        </div>
+      );
+    }
+
+    return (
+      <div>
+      {modalWindow}
+      </div>
+    );
+  }
+}
+
 /*
  * The control panel is used to input the genomic location to view.
  * It also provide ways to navigate namely zomming and scrolling.
@@ -560,12 +623,13 @@ class BetaValueDistribution extends React.Component {
   }
 
   onClick(event) {
+    event.preventDefault();
     alert(event.target.parentElement.children[0].textContent);
   }
 
   render() {
     return (
-      <g id={this.props.cpgName} ref={this.props.cpgName} className="box" data-toggle="tooltip" onClick={this.onClick}><title>{this.props.cpgName}</title></g>
+      <g id={this.props.cpgName} ref={this.props.cpgName} className="box" data-toggle="tooltip" onContextMenu={this.onClick}><title>{this.props.cpgName}</title></g>
     );
   }
 }
@@ -742,18 +806,30 @@ class SNPTrack extends React.Component {
   }
 
   onClick(event) {
-    alert(event.target.textContent);
+
+    // Remove focus from othe snps then set focus
+    let elements = document.getElementsByClassName('snps')[0].getElementsByClassName('focus');
+    for (let e of elements) {
+      e.classList.remove('focus');
+    }
+    this.refs[event.target.textContent].getDOMNode().classList.add('focus');
+
+    GenomicViewerApp.prototype.see(event.target.textContent, this.props.name);
   }
 
   render() {
     let snps = this.state.data.map(function(s) {
 
+      // TODO :: Style according to snp function prediction
       let className;
 
-      console.log(s);
+      // The <a xlink:href="#"> is use for the focus property highlighting. 
       return (
         <rect 
           className={className}
+          key={s.rsID}
+          ref={s.rsID}
+          name={s.rsID}
           x={s.x}
           y="5"
           width="5"
@@ -771,7 +847,7 @@ class SNPTrack extends React.Component {
     return (
       <Track title="SNP">
         <div className="snp-chart" ref="thatDiv">
-          <svg width='100%' height="15" className="snps">
+          <svg width='100%' height="20" id="snpTrack" className="snps">
             {snps}
           </svg>
         </div>
@@ -797,19 +873,38 @@ class ChIPPeakTrack extends React.Component {render() {return (<div></div>);}}
  * @author Xavier Lecours Boucher
  * @version 1.0.0
  *
- * */
+ */
 class GenomicViewerApp extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      // Create a default genomic range to show 
-      genomicRange: null
+      genomicRange: null,
+      tracks: {
+        geneTrack: {
+          active: true
+        },
+        cpgTrack: { 
+          active: true
+        },
+        snpTrack: {
+          active: true
+        },
+        chIPPeakTrack: {
+          active: true
+        },
+      }
     };
 
     // Bind component instance to custom methods
     this.setGenomicRange = this.setGenomicRange.bind(this);
+    this.see = this.see.bind(this);
+  }
+
+  see(itemId, trackName) {
+    console.log(itemId);
+    console.log(trackName);
   }
 
   /**
@@ -825,12 +920,30 @@ class GenomicViewerApp extends React.Component {
 
   render() {
 
-    // Defining element names here ensures that `name` and `ref`
-    // properties of the element are always kept in sync
-    const controlPanel = "controlPanel";
     const genomicRange = this.state.genomicRange;
+    const tracks = this.state.tracks;
 
-    // Create control panel and the tracks according to state
+    let trackList = Object.keys(this.state.tracks).filter(function(key) {
+      return tracks[key].active;
+    }).map(function(key) {
+      if (genomicRange !== null) {
+        let element = null;
+        switch (key) {
+          case 'cpgTrack':
+            element = <CPGTrack key={key} ref={key} name={key} genomicRange={genomicRange}/>;
+          break;
+          case 'geneTrack':
+            element = <GeneTrack key={key} ref={key} name={key} genomicRange={genomicRange}/>;
+          break;
+          case 'snpTrack':
+            element = <SNPTrack key={key} ref={key} name={key} genomicRange={genomicRange}/>;
+          break;
+          default:
+            console.warn('Unsupported case for ' + key);
+        }
+        return element;
+      }
+    }, this);
 
     // TODO:: Alex tells me that table are evil. (suggestion: flex-box)
     return (
@@ -842,13 +955,10 @@ class GenomicViewerApp extends React.Component {
           </tr>
           <tr>
             <td colSpan="2">
-              <ControlPanel ref={controlPanel} genomicRange={genomicRange} setGenomicRange={this.setGenomicRange} />
+              <ControlPanel ref="controlPanel" genomicRange={genomicRange} setGenomicRange={this.setGenomicRange} />
             </td>
           </tr>
-          <GeneTrack genomicRange={genomicRange}/>
-          <CPGTrack genomicRange={genomicRange}/>
-          <SNPTrack genomicRange={genomicRange}/>
-          <ChIPPeakTrack />
+         {trackList}
         </tbody>
       </table>
     );

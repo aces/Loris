@@ -11,6 +11,18 @@ td {
   margin: 5px;
 }
 
+.snps:not(:root) {
+  overflow: inherit;
+}
+
+.snps rect.focus {
+  fill: pink;
+  fill-opacity: 1;
+  outline: none;
+}
+
 .snps rect {
-  fill: red;
+  fill: #053665;
+  stroke: #053665;
+  stroke-width: 1px;
 }
