@@ -59,7 +59,11 @@ class Panel extends React.Component {
   }
 }
 
-Panel.propTypes = {};
+Panel.propTypes = {
+  id: React.PropTypes.string,
+  height: React.PropTypes.string,
+  title: React.PropTypes.string
+};
 Panel.defaultProps = {
   id: 'default-panel',
   height: '100%',
