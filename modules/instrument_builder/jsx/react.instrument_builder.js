@@ -76,7 +76,7 @@ var LoadPane = React.createClass({
               <span aria-hidden="true">&times;</span>
             </button>
             <strong>Error!</strong><br/>
-            Instrument file can't contain elements with identical name! <br/>
+            Instrument file can not contain elements with identical name! <br/>
             Please verify the format of your LINST file!
           </div>
         );
@@ -85,7 +85,7 @@ var LoadPane = React.createClass({
         break;
     }
     return (
-      <TabPane {...this.props}>
+      <TabPane Title="Load Instrument" {...this.props}>
         <div className="col-sm-6 col-xs-12">
           {alert}
           <input
@@ -141,7 +141,7 @@ var SavePane = React.createClass({
   render: function() {
     var value = this.state.fileName;
     return (
-      <TabPane {...this.props}>
+      <TabPane Title="Save Instrument" {...this.props}>
         <div className="form-group">
           <div className="col-xs-12">
             <label className="col-sm-2 control-label">Filename: </label>
@@ -485,7 +485,7 @@ var BuildPane = React.createClass({
     }.bind(this));
 
     return (
-      <TabPane {...this.props}>
+      <TabPane Title="Build Instrument" {...this.props}>
         <div className="form-group col-xs-12">
           <label htmlFor="selected-input" className="col-xs-2 col-sm-1 control-label">Page:</label>
           <div className="col-sm-4">

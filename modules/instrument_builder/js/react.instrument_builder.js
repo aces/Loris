@@ -1,5 +1,7 @@
 'use strict';
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 /* global Instrument */
 /* exported RInstrumentBuilderApp */
 
@@ -118,7 +120,7 @@ var LoadPane = React.createClass({
             'Error!'
           ),
           React.createElement('br', null),
-          'Instrument file can\'t contain elements with identical name! ',
+          'Instrument file can not contain elements with identical name! ',
           React.createElement('br', null),
           'Please verify the format of your LINST file!'
         );
@@ -128,7 +130,7 @@ var LoadPane = React.createClass({
     }
     return React.createElement(
       TabPane,
-      this.props,
+      _extends({ Title: 'Load Instrument' }, this.props),
       React.createElement(
         'div',
         { className: 'col-sm-6 col-xs-12' },
@@ -188,7 +190,7 @@ var SavePane = React.createClass({
     var value = this.state.fileName;
     return React.createElement(
       TabPane,
-      this.props,
+      _extends({ Title: 'Save Instrument' }, this.props),
       React.createElement(
         'div',
         { className: 'form-group' },
@@ -593,7 +595,7 @@ var BuildPane = React.createClass({
 
     return React.createElement(
       TabPane,
-      this.props,
+      _extends({ Title: 'Build Instrument' }, this.props),
       React.createElement(
         'div',
         { className: 'form-group col-xs-12' },
