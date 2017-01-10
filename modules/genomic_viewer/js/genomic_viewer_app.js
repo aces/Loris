@@ -243,6 +243,7 @@ var Track = function (_React$Component2) {
 
 Track.propTypes = {
   title: React.PropTypes.node.isRequired,
+  yAxis: React.PropTypes.node,
   children: React.PropTypes.arrayOf(React.PropTypes.element)
 };
 
@@ -590,12 +591,13 @@ var GeneTrack = function (_React$Component4) {
         );
       });
 
-      var yAxis = [React.createElement(
+      var yAxis = React.createElement(
         'div',
         { className: 'geneNames' },
         yAxisItems
-      )];
+      );
 
+      // TODO :: Put the yAxis as children (change prototype and render method)
       return React.createElement(
         Track,
         { title: 'Genes', yAxis: yAxis },
@@ -807,7 +809,7 @@ var CPGTrack = function (_React$Component6) {
       var yAxisStyle = {
         stroke: "black"
       };
-      var yAxis = [React.createElement(
+      var yAxis = React.createElement(
         'svg',
         { width: '40px', height: '120' },
         React.createElement(
@@ -827,7 +829,7 @@ var CPGTrack = function (_React$Component6) {
           React.createElement('line', { x1: '25', y1: '40', x2: '30', y2: '40', style: yAxisStyle }),
           React.createElement('line', { x1: '25', y1: '80', x2: '30', y2: '80', style: yAxisStyle })
         )
-      )];
+      );
       var lines = [React.createElement('line', { ref: 'hypo', x1: '0', y1: '80', x2: '0', y2: '80' }), React.createElement('line', { ref: 'hyper', x1: '0', y1: '40', x2: '0', y2: '40' })];
 
       var boxPlots = this.state.data.map(function (d) {

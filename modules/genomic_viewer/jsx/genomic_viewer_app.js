@@ -173,6 +173,7 @@ class Track extends React.Component {
 
 Track.propTypes = {
   title:  React.PropTypes.node.isRequired,
+  yAxis:  React.PropTypes.node,
   children: React.PropTypes.arrayOf(React.PropTypes.element)
 };
 
@@ -478,12 +479,13 @@ class GeneTrack extends React.Component {
       );
     });
 
-    let yAxis = [
+    let yAxis = (
       <div className="geneNames">
         {yAxisItems}
       </div>
-    ];
+    );
 
+    // TODO :: Put the yAxis as children (change prototype and render method)
     return (
       <Track title="Genes" yAxis={yAxis}>
         <canvas id="forwardBackground" ref="forwardBackgroundCanvas" width="10" height="5" style={{display: "none"}}/>
@@ -648,7 +650,7 @@ class CPGTrack extends React.Component {
     let yAxisStyle = {
       stroke: "black"
     };
-    const yAxis = [
+    const yAxis = (
       <svg width="40px" height="120">
         <g ref="yAxis">
         <line x1="25" y1="0" x2="25" y2="100" style={yAxisStyle} />
@@ -658,7 +660,7 @@ class CPGTrack extends React.Component {
         <line x1="25" y1="80" x2="30" y2="80" style={yAxisStyle} />
         </g>
       </svg>
-    ];
+    );
     const lines = [
       <line ref="hypo" x1="0" y1="80" x2="0" y2="80" />, 
       <line ref="hyper" x1="0" y1="40" x2="0" y2="40" />
