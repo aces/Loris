@@ -21,13 +21,13 @@
   var feedback_types = {$feedback_types|@json_encode}
 
   var bvl_panel = RBehaviouralFeedbackPanel({
-    feedback_level: feedback_level,
+    feedbackLevel: feedback_level,
     candID: candID,
     pscid: PSCID,
     sessionID: sessionID,
     commentID: commentID,
-    select_options: select_option,
-    feedback_types: feedback_types
+    selectOptions: select_option,
+    feedbackTypes: feedback_types
   });
   ReactDOM.render(bvl_panel, document.getElementById("panel_content"));
 </script>
