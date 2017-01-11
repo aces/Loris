@@ -777,14 +777,14 @@ var BetaValueDistribution = function (_React$Component6) {
     key: "onClick",
     value: function onClick(event) {
       event.preventDefault();
-      alert(event.target.parentElement.children[0].textContent);
+      this.props.onClick([this.props.cpgName]);
     }
   }, {
     key: "render",
     value: function render() {
       return React.createElement(
         "g",
-        { id: this.props.cpgName, ref: this.props.cpgName, className: "box", "data-toggle": "tooltip", onContextMenu: this.onClick },
+        { id: this.props.cpgName, ref: this.props.cpgName, className: "box", "data-toggle": "tooltip", onClick: this.onClick },
         React.createElement(
           "title",
           null,
@@ -800,11 +800,13 @@ var BetaValueDistribution = function (_React$Component6) {
 BetaValueDistribution.propTypes = {
   cpgName: React.PropTypes.string.isRequired,
   x: React.PropTypes.number,
-  betaValues: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+  betaValues: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  onClick: React.PropTypes.function
 };
 
 BetaValueDistribution.defaultProps = {
-  x: 0
+  x: 0,
+  onClick: function onClick() {}
 };
 
 var CPGTrack = function (_React$Component7) {
@@ -820,6 +822,7 @@ var CPGTrack = function (_React$Component7) {
     };
 
     _this7.fetchData = _this7.fetchData.bind(_this7);
+    _this7.select = _this7.select.bind(_this7);
     _this7.adjustLines = _this7.adjustLines.bind(_this7);
     return _this7;
   }
@@ -897,6 +900,41 @@ var CPGTrack = function (_React$Component7) {
       yAxis.setAttribute("transform", "translate(0,10)");
     }
   }, {
+    key: "select",
+    value: function select(cpgName) {
+      // Remove focus from othe snps then set focus
+      var elements = document.getElementsByClassName('boxes')[0].getElementsByClassName('focus');
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = elements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var e = _step.value;
+
+          e.classList.remove('focus');
+        }
+        // Add the focus class
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      document.getElementById(cpgName).classList.add('focus');
+
+      GenomicViewerApp.prototype.see(cpgName, this.props.name);
+    }
+  }, {
     key: "render",
     value: function render() {
       var yAxisStyle = {
@@ -926,8 +964,7 @@ var CPGTrack = function (_React$Component7) {
       var lines = [React.createElement("line", { ref: "hypo", x1: "0", y1: "80", x2: "0", y2: "80" }), React.createElement("line", { ref: "hyper", x1: "0", y1: "40", x2: "0", y2: "40" })];
 
       var boxPlots = this.state.data.map(function (d) {
-        var ref = 'cpg-' + d.cpg_name;
-        return React.createElement(BetaValueDistribution, { ref: ref, cpgName: d.cpg_name, x: d.x, betaValues: d.beta_values });
+        return React.createElement(BetaValueDistribution, { ref: d.cpg_name, cpgName: d.cpg_name, x: d.x, betaValues: d.beta_values, onClick: this.select });
       }, this);
       return React.createElement(
         Track,
@@ -1033,27 +1070,27 @@ var SNPTrack = function (_React$Component8) {
 
       // Remove focus from othe snps then set focus
       var elements = document.getElementsByClassName('snps')[0].getElementsByClassName('focus');
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
       try {
-        for (var _iterator = elements[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var e = _step.value;
+        for (var _iterator2 = elements[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var e = _step2.value;
 
           e.classList.remove('focus');
         }
       } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
           }
         } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
+          if (_didIteratorError2) {
+            throw _iteratorError2;
           }
         }
       }

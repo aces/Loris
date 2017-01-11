@@ -1,4 +1,6 @@
-
+/* 
+ * General
+ */
 td {
     border-bottom: 1px solid #eee;
 }
@@ -15,10 +17,11 @@ td {
   overflow: inherit;
 }
 
-.snps rect.focus {
+.track-content *.focus {
+  stroke: pink;
   fill: pink;
   fill-opacity: 1;
-  outline: none;
+  outline: ;
 }
 
 .snps rect {

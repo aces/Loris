@@ -624,12 +624,12 @@ class BetaValueDistribution extends React.Component {
 
   onClick(event) {
     event.preventDefault();
-    alert(event.target.parentElement.children[0].textContent);
+    this.props.onClick([this.props.cpgName]);
   }
 
   render() {
     return (
-      <g id={this.props.cpgName} ref={this.props.cpgName} className="box" data-toggle="tooltip" onContextMenu={this.onClick}><title>{this.props.cpgName}</title></g>
+      <g id={this.props.cpgName} ref={this.props.cpgName} className="box" data-toggle="tooltip" onClick={this.onClick}><title>{this.props.cpgName}</title></g>
     );
   }
 }
@@ -637,11 +637,13 @@ class BetaValueDistribution extends React.Component {
 BetaValueDistribution.propTypes = {
   cpgName: React.PropTypes.string.isRequired,
   x: React.PropTypes.number,
-  betaValues: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
+  betaValues: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  onClick: React.PropTypes.function
 };
 
 BetaValueDistribution.defaultProps = {
-  x: 0
+  x: 0,
+  onClick: function() {}
 };
 
 class CPGTrack extends React.Component {
@@ -652,6 +654,7 @@ class CPGTrack extends React.Component {
     };
 
     this.fetchData = this.fetchData.bind(this);
+    this.select = this.select.bind(this);
     this.adjustLines = this.adjustLines.bind(this);
   }
 
@@ -710,6 +713,18 @@ class CPGTrack extends React.Component {
     yAxis.setAttribute("transform", "translate(0,10)");
   }
 
+  select(cpgName) {
+    // Remove focus from othe snps then set focus
+    let elements = document.getElementsByClassName('boxes')[0].getElementsByClassName('focus');
+    for (let e of elements) {
+      e.classList.remove('focus');
+    }
+    // Add the focus class
+    document.getElementById(cpgName).classList.add('focus');
+
+    GenomicViewerApp.prototype.see(cpgName, this.props.name);
+  }
+
   render() {
     let yAxisStyle = {
       stroke: "black"
@@ -731,9 +746,8 @@ class CPGTrack extends React.Component {
     ];
 
     let boxPlots = this.state.data.map(function(d) {
-      let ref = 'cpg-' + d.cpg_name;
       return (
-        <BetaValueDistribution ref={ref} cpgName={d.cpg_name} x={d.x} betaValues={d.beta_values}/>
+        <BetaValueDistribution ref={d.cpg_name} cpgName={d.cpg_name} x={d.x} betaValues={d.beta_values} onClick={this.select} />
       );
     }, this);
     return (

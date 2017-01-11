@@ -16,7 +16,7 @@
   stroke-dasharray: 0;
 }
 
-.box rect {
+.box:not(.focus) rect {
   fill: orange
 }
 
