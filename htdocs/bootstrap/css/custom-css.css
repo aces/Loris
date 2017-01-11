@@ -111,6 +111,9 @@ table th{
     left: 3em;
     background: white;
 }
+.frozenHeader{
+  position     : absolute;
+}
 
 /*
  *	CSS for the footer

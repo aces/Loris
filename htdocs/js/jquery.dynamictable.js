@@ -122,6 +122,17 @@
     $(table).wrap("<div class=\"dynamicContentWrapper table-scroll\" " +
       "style=\"overflow-x: auto\"></div>");
 
+    var headers = document.createElement("div");
+    $(headers).addClass("frozenHeader");
+    $(headers).html("<table><thead>"
+        + $(table).find("thead").html()
+        + "</thead><table>"
+    );
+    $($(headers).children()[0]).addClass($(table).attr("class"));
+    $(table).after($(headers));
+    $(headers).hide();
+    headerAlign(table, headers);
+
     // Add links for carousel
     $(table).after(
       '<a class="left leftScrollBar carousel-control" href="#">' +
@@ -129,6 +140,15 @@
       '</a><a class="right carousel-control" href="#" data-slide="next">' +
       '<span class="glyphicon glyphicon-chevron-right"></span></a>'
     );
+  };
+  var headerAlign = function(table, headers) {
+    var tableHeaders = $(table).find("thead").children().children();
+    var fixedHeaders = $(headers).find("thead").children().children();
+
+    for (var i = 0; i < tableHeaders.length; i++) {
+      var temp = $(tableHeaders[i]).width();
+      $(fixedHeaders[i]).width(temp);
+    }
   };
   var unwrapTable = function(table) {
     // Delete links for carousel
@@ -196,7 +216,31 @@
       checkOverflow(this.parentElement, rightLink, leftLink);
 
       window.addEventListener("resize", function() {
+        var headers = $($(table).parent().find("table")[1]).parent();
         checkOverflow(table.parentElement, rightLink, leftLink);
+        headerAlign(table, headers);
+      });
+
+      window.addEventListener("scroll", function() {
+        var thead   = $(table).find("thead");
+        var eTop    = $(thead).offset().top - $(window).scrollTop();  // gets the position from the top
+        var headers = $($(table).parent().find("table")[1]).parent();
+        var height  = $(table).height() - $(headers).height();
+        console.log($(table).height());
+        if(eTop <= 50 && height + eTop >= 50) {
+          // near LORIS header
+          var top = 0;
+          if (eTop < 0) {
+            top = Math.abs(eTop) + 50;
+          } else {
+            top = 50 - eTop;
+          }
+          $(headers).css({'top' : top});
+          $(headers).show();
+          headerAlign(table, headers);
+        } else {
+          $(headers).hide();
+        }
       });
 
       if (options && options.freezeColumn) {
