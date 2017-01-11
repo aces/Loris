@@ -103,8 +103,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     }
     return (<td>{finalizedvar}</td>);
   }
-  // rowData[7] means data in the t1 inserted column.
-  if (column === 'T1 Inserted' && rowData[7] === "Yes") {
+  if (column === 'T1 Inserted' && row['T1 Inserted'] === "Yes") {
     url = loris.BaseURL +
       "/imaging_browser/viewSession/?sessionID=" +
       row.SessionID;
