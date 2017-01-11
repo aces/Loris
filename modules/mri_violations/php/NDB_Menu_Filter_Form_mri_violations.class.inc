@@ -436,7 +436,6 @@ class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
             $deps,
             array(
              $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
-
             )
         );
     }
