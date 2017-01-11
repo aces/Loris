@@ -315,7 +315,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->setupPermissions(
             array("violated_scans_view_allsites")
         );
-        $this->_testMytaskPanelAndLink(".mri_violations", "2", "[Test]PatientName");
+        $this->_testMytaskPanelAndLink(".mri_violations", "2", "Not Resolved");
         $this->resetPermissions();
     }
     /**
