@@ -67,7 +67,7 @@
             <td class="spacer"> </td>
             {foreach from=$Centers item=center key=centername}
                 <th id='{$center.ID}DD' class="centers tip" colspan="2" onclick="hideStats(this)">
-                    {$center.ID}
+                  {$center.LongName}
                 </th>
             {/foreach}
             <!--  <th colspan="3" id='total'>Total</th>
