@@ -25,6 +25,7 @@
  */      
 class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
 {
+    var $AjaxModule = true;
     /**
      * Check if user should be allowed to see this page.
      *
@@ -54,16 +55,15 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             
             //if row is found it means that resolve status was previously assigned,
             // check the value and update if needed, else break.
-            if(!empty($row)){
+            if (!empty($row)) {
                 foreach($row as $key2 => $val2){
                     //found matching
-                    if($key2 == 'Resolved'){
+                    if ($key2 == 'Resolved') {
                         // user input matches DB content, so do nothing.
-                        if($val==$val2){
+                        if ($val==$val2) {
                             break;
-                        }
-                        // user input doesn't match DB, so we update the DB
-                        else {
+                        } else { 
+                        // user input doesn't match DB, so we update the DB 
                             $setArray = array('Resolved'=>(string)$val,'ChangeDate'=>date("Y-m-d H:i:s"));
                             $whereArray = array('hash'=>$hash);
                             $DB->update('violations_resolved', $setArray, $whereArray);
@@ -71,10 +71,10 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     }
                 }
             } else {
-                //if row is not found no resolve status was assigned,
-                // if selection<>0, then insert new row.
+            //if row is not found no resolve status was assigned,
+            // if selection<>0, then insert new row.
                 // no need to insert to DB for Unresolved value.
-                if($val=='unresolved'){
+                if ($val=='unresolved') {
                     continue;
                 }
                 $newlyResolved = array();
@@ -90,7 +90,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     WHERE (:hash = md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)))",
                     array('hash' => $key)
                     );
-                if(!empty($ID_mri_protocol_violated_scans)){
+                if (!empty($ID_mri_protocol_violated_scans)) {
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
                     $newlyResolved['ExtID'] = $ID_mri_protocol_violated_scans;
                 }
@@ -102,7 +102,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     array('hash' => $key)
                     );
                 //echo "ID[2] = ".$ID_mri_violations_log."\n";
-                if(!empty($ID_mri_violations_log)){
+                if (!empty($ID_mri_violations_log)) {
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
                     $newlyResolved['ExtID'] = $ID_mri_violations_log;
                 } 
@@ -115,7 +115,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     array('hash' => $key)
                     );
                 //echo "ID[3] = ".$ID_MRICandidateErrors."\n";
-                if(!empty($ID_MRICandidateErrors)){
+                if (!empty($ID_MRICandidateErrors)) {
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                     $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
                 } 
@@ -138,7 +138,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         // create user object
         $user =& User::singleton();
         $DB   =& Database::singleton();
-
         $config =& NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
@@ -146,12 +145,10 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         } else {
             $useProjects = true;
         }
-
         $dir_path = $config->getSetting("imagePath");
-
         $this->columns = array(
             'v.PatientName',
-            'v.Site',
+            'site.Name as Site',
             'v.TimeRun',
             'v.MincFile',
             'v.MincFileViolated',
@@ -162,11 +159,18 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             'v.join_id',
             'v.Resolved'
         );
-        if ($useProjects) {
-            array_splice($this->columns, 1, 0, 'v.Project');
-            array_splice($this->columns, 2, 0, 'v.Subproject');
-        }
 
+        $this->headers  = array('PatientName','Site','TimeRun',
+          'MincFile','MincFileViolated','Series_Description_Or_Scan_Type','Problem','SeriesUID','Hash',
+          'JoinID','Resolution_status');
+
+        if ($useProjects) {
+            array_splice($this->columns, 1, 0, 'pjct.Name as Project');
+            array_splice($this->columns, 2, 0, 'subpjct.title as Subproject');
+            array_splice($this->headers, 1, 0, 'Project');
+            array_splice($this->headers, 2, 0, 'Subproject');
+        }
+        $this->tpl_data['hiddenHeaders'] = json_encode(['SeriesUID','Hash','JoinID']);
         // Recreating the path (MincFileViolated field) to the minc file for the table mri_violations_log is more complicated 
         // because of the 3 cases that can occur as we pull the data from the db.  
         //   1. if the Mincfile starts with "assembly" then we need to add the directory path in front of it.
@@ -178,7 +182,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
-                CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_location, '/', -2)) as MincFileViolated,
+CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_location, '/', -2)) as MincFileViolated,
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem,
                 SeriesUID,
@@ -203,7 +207,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
-                IF(INSTR(`MincFile`, 'assembly'), IF(LEFT(`MincFile`, 8) = 'assembly',CONCAT_WS(''," . $DB->quote($dir_path) . ",`MincFile`),`MincFile`), CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(MincFile, '/', -2))) as MincFileViolated,
+                IF(INSTR('MincFile', 'assembly'), IF(LEFT('MincFile', 8) = 'assembly',CONCAT_WS(''," . $DB->quote($dir_path) . ",'MincFile'),'MincFile'), CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(MincFile, '/', -2))) as MincFileViolated,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
                 SeriesUID,
@@ -249,7 +253,10 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved is NULL)
-            as v WHERE 1=1";
+            as v LEFT JOIN psc site ON (site.CenterID = v.Site) 
+            LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
+            LEFT JOIN subproject as subpjct ON (v.Subproject = subpjct.SubprojectID)
+            WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
@@ -350,80 +357,6 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
         return true;
     }
 
-    /**
-     * Overwrite the setDataTableRows function to exclude fields
-     * which were only selected for generating a link, and aren't
-     * used for display to the user
-     *
-     * @param integer $count Offset of page that filter starts on
-     *
-     * @return none but as a side-effect populates $this->tpl_data['items']
-     */
-    function _setDataTableRows($count)
-    {
-        $resolve_options = array(
-
-	        'unresolved'=>'Unresolved',
-	        'reran'=>'Reran',
-	        'emailed'=>'Emailed site/pending',
-	        'inserted'=>'Inserted',
-	        'rejected'=>'Rejected',
-	        'inserted_flag'=>'Inserted with flag',
-            'other'=>'Other');
-        // project
-        $list_of_projects = Utility::getProjectList();
-        $this->tpl_data['projects'] = $list_of_projects;
-        // Subproject
-        $list_of_subprojects = Utility::getSubprojectList();
-        $this->tpl_data['subprojects'] = $list_of_subprojects;
-
-        $list_of_sites = Utility::getSiteList();
-        $this->tpl_data['sites'] = $list_of_sites;
-
-        $x=0;
-        foreach ($this->list as $item) {
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            $i = 1;
-            foreach ($item as $key => $val) {
-                if ($key === 'PatientName') {
-                    $this->tpl_data['items'][$x]['PatientName'] = $val;
-                }
-                if ($key === 'join_id') {
-                    $this->tpl_data['join_id'] = $val;
-                }
-                if ($key === 'hash') {
-                    $hash = $val;
-                }
-                if ($key === 'Resolved') {
-                    $resolved_index = $val;
-                    $optional = array("selected" => (string)$resolved_index);
-                    $this->addSelect("$hash", "", $resolve_options, $optional);
-                    //setting the 'selected' attribute so the form will show current value.
-                    $this->form->form[$hash]['selected'] = $resolved_index;
-                    //modifying the SELECT name attr so it'll be treated as an array.
-                    $this->form->form[$hash]['name'] = "resolvable[$hash]";
-                }
-                if ($key === 'Problem') {
-                    if ($val === "Could not identify scan type") {
-                        $this->tpl_data['join_tbl'] = "mri_protocol_violated_scans";
-                    } elseif ($val === "Protocol Violation") {
-                        $this->tpl_data['join_tbl'] = "mri_violations_log";
-                    } else {
-                        $this->tpl_data['join_tbl'] = "MRICandidateErrors";
-                    }
-                }
-                if ($key === 'SeriesUID') {
-                    $this->tpl_data['items'][$x]['series'] = $val;
-                } else {
-                    $this->tpl_data['items'][$x][$i]['name'] = $key;
-                    $this->tpl_data['items'][$x][$i]['value'] = $val;
-                }            
-                $i++;
-            }
-            $x++;
-        }
-        return true;
-    }
 
     /**
      * Gathers JS dependecies and merge them with the parent
@@ -433,12 +366,14 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
     function getJSDependencies()
     {
         $factory = NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
+        $baseurl = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
             array(
-                $baseURL . "/mri_violations/js/mri_violations_helper.js",
+
+              $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
+
             )
         );
     }
