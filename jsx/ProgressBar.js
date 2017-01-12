@@ -11,14 +11,14 @@
  */
 class ProgressBar extends React.Component {
   render() {
-    let progressStyle = {
+    const progressStyle = {
       display: (this.props.value < 0 ? 'none' : 'block'),
       backgroundColor: '#d3d3d3',
       height: '30px',
       position: 'relative'
     };
 
-    let labelStyle = {
+    const labelStyle = {
       position: 'absolute',
       top: 0,
       left: 0,
