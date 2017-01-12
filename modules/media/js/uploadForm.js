@@ -212,7 +212,8 @@ var MediaUploadForm = function (_React$Component) {
             onUserInput: this.setFormData,
             ref: 'file',
             label: 'File to upload',
-            required: true
+            required: true,
+            value: this.state.formData.file
           }),
           React.createElement(ButtonElement, { label: 'Upload File' })
         )
