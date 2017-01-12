@@ -41,16 +41,17 @@ $table_names = $db->pselect("
 );
 //END INPUT
 
-// SETUP OUTPUT to file in project/tables_sql/change_MyISQM_to_INNODB_allTables.sql
-$filename = __DIR__ . "/../project/tables_sql/change_MyISQM_to_INNODB_allTables.sql";
+// SETUP OUTPUT to file in project/tables_sql/change_MyISAM_to_INNODB_allTables.sql
+$filename = __DIR__ . "/../project/tables_sql/change_MyISAM_to_INNODB_allTables.sql";
 $output = "";
+$output .="SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS; \n";
 $output .="SET FOREIGN_KEY_CHECKS=0; \n";
 
 foreach ($table_names as $key=>$table)
 {
     $output .= "ALTER TABLE `".$table["TABLE_NAME"]."` ENGINE=INNODB;\n";
 }
-$output .="SET FOREIGN_KEY_CHECKS=1; \n";
+$output .="SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS; \n";
 $fp=fopen($filename, "w");
 fwrite($fp, $output);
 fclose($fp);

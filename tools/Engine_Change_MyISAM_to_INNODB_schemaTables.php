@@ -49,16 +49,17 @@ $createdTables=array();
 preg_match_all('/CREATE TABLE \`([_a-zA-Z0-9]+)\`/', $completeSchema, $createdTables);
 //END INPUT
 
-// SETUP OUTPUT to file in project/tables_sql/change_MyISQM_to_INNODB_schemaTables.sql
-$filename = __DIR__ . "/../project/tables_sql/change_MyISQM_to_INNODB_schemaTables.sql";
+// SETUP OUTPUT to file in project/tables_sql/change_MyISAM_to_INNODB_schemaTables.sql
+$filename = __DIR__ . "/../project/tables_sql/change_MyISAM_to_INNODB_schemaTables.sql";
 $output = "";
+$output .="SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS; \n";
 $output .="SET FOREIGN_KEY_CHECKS=0; \n";
 
 foreach ($createdTables[1] as $key=>$table)
 {
     $output .= "ALTER TABLE `".$table."` ENGINE=INNODB;\n";
 }
-$output .="SET FOREIGN_KEY_CHECKS=1; \n";
+$output .="SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS; \n";
 $fp=fopen($filename, "w");
 fwrite($fp, $output);
 fclose($fp);
