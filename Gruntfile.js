@@ -46,6 +46,7 @@ module.exports = function(grunt) {
           'modules/server_processes_manager/js/index.js': 'modules/server_processes_manager/jsx/index.js',
           'modules/survey_accounts/js/index.js': 'modules/survey_accounts/jsx/index.js',
           'modules/user_accounts/js/index.js': 'modules/user_accounts/jsx/index.js',
+          'modules/bvl_feedback/js/react.behavioural_feedback_panel.js': 'modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
           'modules/data_team_helper/js/behavioural_qc_module.js': 'modules/data_team_helper/jsx/behavioural_qc_module.js'
         }
       },
@@ -78,6 +79,7 @@ module.exports = function(grunt) {
           'modules/survey_accounts/js/columnFormatter.js': 'modules/survey_accounts/jsx/columnFormatter.js',
           'modules/server_processes_manager/js/columnFormatter.js': 'modules/server_processes_manager/jsx/columnFormatter.js',
           'modules/mri_violations/js/mri_protocol_check_violations_columnFormatter.js': 'modules/mri_violations/jsx/mri_protocol_check_violations_columnFormatter.js',
+          'modules/mri_violations/js/columnFormatter.js': 'modules/mri_violations/jsx/columnFormatter.js',
           'modules/user_accounts/js/columnFormatter.js': 'modules/user_accounts/jsx/columnFormatter.js',
           'modules/reliability/js/columnFormatter.js': 'modules/reliability/jsx/columnFormatter.js'
         }
