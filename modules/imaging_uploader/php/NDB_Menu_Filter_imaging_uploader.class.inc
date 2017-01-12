@@ -29,6 +29,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
 
     var $show_queries = true;
     var $temp_path    = null;
+    var $AjaxModule   = true;
 
     /**
      * ID of the uploaded file in mri_upload table (if upload successful).
