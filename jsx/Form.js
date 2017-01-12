@@ -215,7 +215,7 @@ var SelectElement = React.createClass({
     }
 
     // After checking for errors, set value to empty string to reset dropdown
-    let value = (this.props.value === undefined) ? "" : this.props.value;
+    const value = (this.props.value === undefined) ? "" : this.props.value;
 
     return (
       <div className={elementClass}>
@@ -545,30 +545,30 @@ var FileElement = React.createClass({
   },
   handleChange: function(e) {
     // Send current file to parent component
-    let file = e.target.files[0];
-    this.props.onUserInput(this.props.name, file);
+    const fileName = e.target.files[0] ? e.target.files[0].name : '';
+    this.props.onUserInput(this.props.name, fileName);
   },
 
   render: function() {
-    let required = this.props.required ? 'required' : null;
+    const required = this.props.required ? 'required' : null;
+    const value = this.props.value; // undefined by default
     let requiredHTML = null;
     let errorMessage = '';
     let elementClass = 'row form-group';
-    let value = this.props.value.name; // undefined by default
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
-    let truncateEllipsis = {
+    const truncateEllipsis = {
       display: 'table',
       tableLayout: 'fixed',
       width: '100%',
       whiteSpace: 'nowrap'
     };
 
-    let truncateEllipsisChild = {
+    const truncateEllipsisChild = {
       display: 'table-cell',
       overflow: 'hidden',
       textOverflow: 'ellipsis'
@@ -583,7 +583,7 @@ var FileElement = React.createClass({
     // Need to manually reset file value, because HTML API
     // does not allow setting value to anything than empty string.
     // Hence can't use value attribute in the input element.
-    var file = document.querySelector(".fileUpload");
+    const file = document.querySelector(".fileUpload");
     if (file && !value) {
       file.value = "";
     }

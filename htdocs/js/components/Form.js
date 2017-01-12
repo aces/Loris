@@ -602,16 +602,16 @@ var FileElement = React.createClass({
   },
   handleChange: function handleChange(e) {
     // Send current file to parent component
-    var file = e.target.files[0];
-    this.props.onUserInput(this.props.name, file);
+    var fileName = e.target.files[0] ? e.target.files[0].name : '';
+    this.props.onUserInput(this.props.name, fileName);
   },
 
   render: function render() {
     var required = this.props.required ? 'required' : null;
+    var value = this.props.value; // undefined by default
     var requiredHTML = null;
     var errorMessage = '';
     var elementClass = 'row form-group';
-    var value = this.props.value.name; // undefined by default
 
     // Add required asterix
     if (required) {
