@@ -45,7 +45,7 @@ module.exports = function(grunt) {
           'modules/reliability/js/index.js': 'modules/reliability/jsx/index.js',
           'modules/server_processes_manager/js/index.js': 'modules/server_processes_manager/jsx/index.js',
           'modules/survey_accounts/js/index.js': 'modules/survey_accounts/jsx/index.js',
-          'modules/user_accounts/js/index.js': 'modules/user_accounts/jsx/index.js'
+          'modules/user_accounts/js/index.js': 'modules/user_accounts/jsx/index.js',
           'modules/data_team_helper/js/behavioural_qc_module.js': 'modules/data_team_helper/jsx/behavioural_qc_module.js'
         }
       },

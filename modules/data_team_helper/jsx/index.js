@@ -44,5 +44,4 @@ $(function() {
   ReactDOM.render(FeedbackTab, feedbackEl);
 
   ReactDOM.render(DataTeamGraphics, graphicsEl);
-
 });
