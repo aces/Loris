@@ -69,10 +69,17 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       let url = loris.BaseURL + '/imaging_browser/?DCCID=' + row.CandID;
       return (
         <td style={cellStyle}>
-          <a href={url}>{cell}</a>
+          <a onClick={handleClick.bind(null, row.CandID)}>{cell}</a>
         </td>
       );
     }
+  }
+
+  /* Handles clicks on 'Number Of MincInserted' cells */
+  function handleClick(dccid, e) {
+    loris.loadFilteredMenuClickHandler('imaging_browser', {
+      'DCCID': dccid
+    })(e);
   }
 
   return (<td style={cellStyle}>{cell}</td>);

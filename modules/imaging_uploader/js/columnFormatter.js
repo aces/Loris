@@ -83,11 +83,18 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         { style: cellStyle },
         React.createElement(
           'a',
-          { href: _url },
+          { onClick: handleClick.bind(null, row.CandID) },
           cell
         )
       );
     }
+  }
+
+  /* Handles clicks on 'Number Of MincInserted' cells */
+  function handleClick(dccid, e) {
+    loris.loadFilteredMenuClickHandler('imaging_browser', {
+      'DCCID': dccid
+    })(e);
   }
 
   return React.createElement(
