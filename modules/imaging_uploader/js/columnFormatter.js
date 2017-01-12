@@ -77,7 +77,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   if (column === 'Number Of MincInserted') {
     if (cell > 0) {
-      var _url = loris.BaseURL + '/imaging_browser/?DCCID=' + row.CandID;
       return React.createElement(
         'td',
         { style: cellStyle },
@@ -93,7 +92,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   /* Handles clicks on 'Number Of MincInserted' cells */
   function handleClick(dccid, e) {
     loris.loadFilteredMenuClickHandler('imaging_browser', {
-      'DCCID': dccid
+      DCCID: dccid
     })(e);
   }
 
