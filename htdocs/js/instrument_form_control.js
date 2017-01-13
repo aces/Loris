@@ -1,9 +1,7 @@
-/* global document: false, $: false, window: false, unescape: false, Option: false,isElementsSet*/
-
 function notAnswered() {
   "use strict";
-  var name = $(this).attr('name'),
-    index = this.selectedIndex;
+  var name = $(this).attr('name');
+  var index = this.selectedIndex;
   name = name.replace('_status', '');
   if (name.indexOf('_date') > -1) {
     if (index === 0) {
