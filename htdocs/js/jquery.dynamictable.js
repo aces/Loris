@@ -85,10 +85,17 @@
   var checkOverflow = function(wrapper, rightLink, leftLink, headCol) {
     var staticCol = (headCol !== undefined);
     var element = wrapper;
+    var table = wrapper.children[0];
+    var headers = wrapper.children[3];
 
     if ((element.offsetHeight < element.scrollHeight) ||
         (element.offsetWidth < element.scrollWidth)) {
       // Your element has overflow
+
+      $(wrapper).on("scroll", function() {
+        var leftScroll = $(wrapper).scrollLeft();
+        $(headers).scrollLeft(leftScroll);
+      });
       if (staticCol) {
         if (headCol) {
           $("." + headCol).addClass("colm-static");
@@ -101,6 +108,7 @@
       $(rightLink).show();
     } else {
       // Your element has no overflow
+      $(wrapper).off("scroll");
       if (staticCol) {
         if (headCol) {
           $("." + headCol).removeClass("colm-static");
@@ -146,9 +154,15 @@
     var fixedHeaders = $(headers).find("thead").children().children();
 
     for (var i = 0; i < tableHeaders.length; i++) {
-      var temp = $(tableHeaders[i]).width();
-      $(fixedHeaders[i]).width(temp);
+      if(!$(fixedHeaders[i]).hasClass("static-col")) {
+        var temp = $(tableHeaders[i]).width();
+        $(fixedHeaders[i]).width(temp);
+        temp = $(tableHeaders[i]).css("width");
+        $(fixedHeaders[i]).css({ 'min-width' : temp });
+      }
     }
+
+    $(headers).width($(table).parent().width());
   };
   var unwrapTable = function(table) {
     // Delete links for carousel
@@ -167,6 +181,7 @@
     var leftScrollWid = $(".leftScrollBar").outerWidth();
     var nextColPos = $("." + tableID + "Next").offset().left;
     var tablePos = $("#" + tableID).offset().left;
+    var header = $("#" + tableID).siblings(".frozenHeader")[0];
 
     if (colmStatic === true) {
       if (nextColPos >= statColPos + statColWid || statColPos <= tablePos) {
@@ -176,6 +191,8 @@
           }
         });
         $("." + tableID + "FrozenColumn").removeClass("static-col colm-static");
+        $(header).find(".dynamictableFrozenColumn").css({ 'padding' : '8px' });
+        $(".headerColm").remove();
         return false;
       }
     } else if (statColPos <= leftScrollWid + leftScrollPos) {
@@ -186,10 +203,28 @@
         }
       });
       $("." + tableID + "FrozenColumn").addClass("static-col colm-static");
+      if($(header).parent().find(".headerColm").length == 0
+        && $(header).parent().find(".frozenHeader").is(":visible")
+      ) {
+        addFrozenHeaderColm(header);
+      }
       return true;
     }
     return colmStatic;
   };
+  var addFrozenHeaderColm = function(frozenHeader) {
+    var frozenCell = document.createElement("div");
+    var headerCell = $(frozenHeader).find(".static-col");
+    $(frozenCell).addClass("static-col colm-static headerColm");
+    $(frozenCell).html($(headerCell).html());
+    // add 18px since height is beting set with padding included
+    $(frozenCell).height($(headerCell).next().height() + 18);
+    var temp = $(frozenCell).css("height");
+    $(headerCell).css({ 'padding' : '0px' });
+    var top = $(frozenHeader).css("top");
+    $(frozenCell).css({ 'min-height' : temp, "top" : top });
+    $(frozenHeader).after(frozenCell);
+  }
 
   $.fn.DynamicTable = function(options) {
     this.filter("table").each(function() {
@@ -226,7 +261,6 @@
         var eTop    = $(thead).offset().top - $(window).scrollTop();  // gets the position from the top
         var headers = $($(table).parent().find("table")[1]).parent();
         var height  = $(table).height() - $(headers).height();
-        console.log($(table).height());
         if(eTop <= 50 && height + eTop >= 50) {
           // near LORIS header
           var top = 0;
@@ -236,10 +270,18 @@
             top = 50 - eTop;
           }
           $(headers).css({'top' : top});
+          $(".headerColm").css({'top' : top});
           $(headers).show();
           headerAlign(table, headers);
+          if($(table).find(".static-col").length != 0
+            && $(table).parent().find(".headerColm").length == 0
+          ) {
+            addFrozenHeaderColm(headers);
+          }
         } else {
           $(headers).hide();
+          $(headers).find(".dynamictableFrozenColumn").css({ 'padding' : '8px' });
+          $(".headerColm").remove();
         }
       });
 

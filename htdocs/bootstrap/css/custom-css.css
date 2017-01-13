@@ -112,7 +112,17 @@ table th{
     background: white;
 }
 .frozenHeader{
-  position     : absolute;
+  position   : absolute;
+  overflow-x : auto;
+}
+.headerColm {
+  background: #1c70b6;
+  padding: 8px;
+  border-bottom-width: 2px;
+  border: 1px solid #ddd;
+  text-align: left;
+  color: white;
+  font-weight: bold;
 }
 
 /*
