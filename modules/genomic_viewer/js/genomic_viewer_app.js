@@ -393,7 +393,7 @@ var Gene = function (_React$Component4) {
     value: function draw(genomicRange) {
       var canvas = this.refs.thatCanvas;
       if (canvas) {
-        var width = this.refs.thatDiv.getDOMNode().clientWidth;
+        var width = this.refs.thatDiv.clientWidth;
         var height = this.state.canvasHeight;
         var pattern = /(^chr|^Chr|^CHR|^)([0-9]|[1][0-9]|[2][0-2]|[xXyYmM]):([0-9, ]+)-([0-9, ]+)/;
 
@@ -409,8 +409,8 @@ var Gene = function (_React$Component4) {
 
         // Adjust width and height according to screen size
 
-        canvas.getDOMNode().width = width;
-        canvas.getDOMNode().height = height;
+        canvas.width = width;
+        canvas.height = height;
 
         // Determine the scale between the canvas width and the displayed genomicRange
         // Unit: pixel per base pair
@@ -427,7 +427,7 @@ var Gene = function (_React$Component4) {
         var exonEnds = this.props.exonEnds;
         var name = this.props.name;
 
-        var ctx = canvas.getDOMNode().getContext('2d');
+        var ctx = canvas.getContext('2d');
 
         var y = height / 2;
         var x1 = txStart <= start ? 0 : (txStart - start) * xScale;
@@ -612,7 +612,7 @@ var GeneTrack = function (_React$Component5) {
       var reverseCanvas = this.refs.reverseBackgroundCanvas;
 
       if (forwardCanvas) {
-        var ctx = forwardCanvas.getDOMNode().getContext('2d');
+        var ctx = forwardCanvas.getContext('2d');
         ctx.strokeStyle = "navy";
         ctx.beginPath();
         ctx.moveTo(0, 0);
@@ -624,7 +624,7 @@ var GeneTrack = function (_React$Component5) {
       }
 
       if (reverseCanvas) {
-        var _ctx = reverseCanvas.getDOMNode().getContext('2d');
+        var _ctx = reverseCanvas.getContext('2d');
         _ctx.strokeStyle = "navy";
         _ctx.beginPath();
         _ctx.moveTo(5, 0);
@@ -860,7 +860,7 @@ var CPGTrack = function (_React$Component7) {
           var start = _genomicRange$match2[3];
           var end = _genomicRange$match2[4];
 
-          var width = _this8.refs.thatDiv.getDOMNode().clientWidth;
+          var width = _this8.refs.thatDiv.clientWidth;
           var xScale = width / (parseInt(end) - parseInt(start));
 
           $.ajax(_this8.props.dataURL + '?genomic_range=' + genomicRange, {
@@ -886,10 +886,10 @@ var CPGTrack = function (_React$Component7) {
   }, {
     key: "adjustLines",
     value: function adjustLines() {
-      var width = this.refs.thatDiv.getDOMNode().clientWidth;
-      var hypo = this.refs.hypo.getDOMNode();
-      var hyper = this.refs.hyper.getDOMNode();
-      var yAxis = this.refs.yAxis.getDOMNode();
+      var width = this.refs.thatDiv.clientWidth;
+      var hypo = this.refs.hypo;
+      var hyper = this.refs.hyper;
+      var yAxis = this.refs.yAxis;
 
       hypo.setAttribute("x2", width);
       hypo.setAttribute("transform", "translate(0,10)");
@@ -1041,7 +1041,7 @@ var SNPTrack = function (_React$Component8) {
           var start = _genomicRange$match4[3];
           var end = _genomicRange$match4[4];
 
-          var width = _this10.refs.thatDiv.getDOMNode().clientWidth;
+          var width = _this10.refs.thatDiv.clientWidth;
           var xScale = width / (parseInt(end) - parseInt(start));
 
           $.ajax(_this10.props.dataURL + '?genomic_range=' + genomicRange, {
@@ -1095,7 +1095,7 @@ var SNPTrack = function (_React$Component8) {
         }
       }
 
-      this.refs[event.target.textContent].getDOMNode().classList.add('focus');
+      this.refs[event.target.textContent].classList.add('focus');
 
       GenomicViewerApp.prototype.see(event.target.textContent, this.props.name);
     }
@@ -1317,5 +1317,5 @@ window.onload = function () {
   var rootDOM = document.getElementById("lorisworkspace");
   rootDOM.appendChild(genomicViewerDOM);
 
-  React.render(viewer, document.getElementById("page-genomic-viewer"));
+  ReactDOM.render(viewer, document.getElementById("page-genomic-viewer"));
 };
