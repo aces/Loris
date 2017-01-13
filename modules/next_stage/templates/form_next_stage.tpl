@@ -38,17 +38,6 @@
 
     {$form.hidden}
 </form>
-<div class="row">
-    {if $stage == "Screening"}
-    <p>The date of {$stage|lower} is the <em>administration date of the first behavioural instrument</em>.</p>
-    {elseif $stage == "Visit"}
-    <p>The date of {$stage|lower} is the <em>date of the first MR scan</em>.<br />
-    In case the scan was not done,<br />enter the date of the subject"s visit to the site.<br />
-    <em>Scan Done Field</em>: As per Scanning and Evaluation Report.</p>
-    {else}
-    <p>This is not a valid stage to start!</p>
-    {/if}
-</div>
 
 {/if}
 
