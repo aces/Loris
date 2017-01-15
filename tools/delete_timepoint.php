@@ -16,8 +16,9 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+
 require_once __DIR__ . "/../vendor/autoload.php";
-require_once "generic_includes.php";
+require_once __DIR__ . "/generic_includes.php";
 
 /**
  * This script deletes the specified candidate timepoint.
@@ -166,9 +167,11 @@ function deleteTimepoint($sessionID, $confirm, $DB) {
 
     // IF CONFIRMED, DELETE TIMEPOINT
     if ($confirm) {
+        $DB->run("SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS;");
+        $DB->run("SET FOREIGN_KEY_CHECKS=0;");
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
-            $name = implode($instrument);
+            $name = implode(" -> ", $instrument);
             echo "Deleting $name.\n";
             $DB->delete($instrument['Test_name'], array('CommentID' => $instrument['CommentID']));
 
@@ -185,13 +188,14 @@ function deleteTimepoint($sessionID, $confirm, $DB) {
         // Delete from session
         echo "Deleting from session.\n";
         $DB->delete('session', array('ID' => $sessionID));
-
         // Delete from feedback
         echo "Deleting from feedback.\n";
         $DB->delete('feedback_bvl_thread', array('SessionID' => $sessionID));
         foreach ($feedbackIDs as $id) {
             $DB->delete('feedback_bvl_entry', array('FeedbackID' => $id));
         }
+
+        $DB->run("SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;");
     }
 }
 
