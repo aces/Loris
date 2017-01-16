@@ -12,7 +12,11 @@
  * @link     https://github.com/aces/Loris
  */
 
-set_include_path(get_include_path().":".__DIR__."/../project/libraries:".__DIR__."/../php/libraries:");
+set_include_path(
+    get_include_path().":".
+    __DIR__."/../project/libraries:".
+    __DIR__."/../php/libraries:"
+);
 
 require_once __DIR__ . "/../vendor/autoload.php";
 $configFile = __DIR__."/../project/config.xml";
