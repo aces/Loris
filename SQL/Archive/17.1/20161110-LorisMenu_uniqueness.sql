@@ -1,42 +1,45 @@
+-- This script put all unique records from LorisMenuPermissions in a 
+-- temporary table before adding foreign keys and unique constraint 
+-- to the table.
+-- It also remove duplicates from LorisMenu table and add unique
+-- constraint on Parent and Label column
+
 CREATE TEMPORARY TABLE tmp_lmp AS 
   SELECT DISTINCT MenuId, PermID FROM LorisMenuPermissions;
 
 DELETE FROM LorisMenuPermissions;
 
-ALTER TABLE `LORIS`.`LorisMenuPermissions` 
-CHANGE COLUMN `MenuID` `MenuID` INT(10) UNSIGNED NOT NULL ,
-CHANGE COLUMN `PermID` `PermID` INT(10) UNSIGNED NOT NULL ,
+ALTER TABLE `LorisMenuPermissions` 
+CHANGE COLUMN `MenuID` `MenuID` INT(10) UNSIGNED NOT NULL,
+CHANGE COLUMN `PermID` `PermID` INT(10) UNSIGNED NOT NULL,
 ADD PRIMARY KEY (`MenuID`, `PermID`);
 
-ALTER TABLE `LORIS`.`LorisMenuPermissions` 
+ALTER TABLE `LorisMenuPermissions` 
 ADD CONSTRAINT `fk_LorisMenuPermissions_1`
   FOREIGN KEY (`MenuID`)
-  REFERENCES `LORIS`.`LorisMenu` (`ID`)
+  REFERENCES `LorisMenu` (`ID`)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
 ADD CONSTRAINT `fk_LorisMenuPermissions_2`
   FOREIGN KEY (`PermID`)
-  REFERENCES `LORIS`.`permissions` (`permID`)
+  REFERENCES `permissions` (`permID`)
   ON DELETE CASCADE
   ON UPDATE CASCADE;
 
 INSERT INTO LorisMenuPermissions SELECT MenuID, PermID FROM tmp_lmp;
 DROP TABLE tmp_lmp;
 
-SELECT GROUP_CONCAT(IDS) INTO @TDB_ID FROM (SELECT MAX(ID) as IDS
-  FROM LorisMenu
-  GROUP BY Parent, Label 
-  HAVING COUNT(*) > 1) as A;
+-- Remove duplicates in the LorisMenu
+DELETE FROM LorisMenu USING LorisMenu, LorisMenu lm1 
+  WHERE LorisMenu.ID < lm1.ID AND LorisMenu.Parent = lm1.Parent AND LorisMenu.Label = lm1.Label;
 
-DELETE FROM LorisMenu WHERE FIND_IN_SET(ID, @TDB_ID);
-
-ALTER TABLE `LORIS`.`LorisMenu` 
+ALTER TABLE `LorisMenu` 
 ADD INDEX `fk_LorisMenu_1_idx` (`Parent` ASC),
 ADD UNIQUE INDEX `index3` (`Parent` ASC, `Label` ASC);
-ALTER TABLE `LORIS`.`LorisMenu` 
+ALTER TABLE `LorisMenu` 
 ADD CONSTRAINT `fk_LorisMenu_1`
   FOREIGN KEY (`Parent`)
-  REFERENCES `LORIS`.`LorisMenu` (`ID`)
+  REFERENCES `LorisMenu` (`ID`)
   ON DELETE RESTRICT
   ON UPDATE CASCADE;
 
