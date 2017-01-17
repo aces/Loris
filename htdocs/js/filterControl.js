@@ -1,8 +1,8 @@
-/*global document: false, $: false, window: false, unescape: false, Option: false,isElementsSet*/
+/* exported hideFilter */
 
 function hideFilter() {
-    "use strict";
-    $("#panel-body").toggle();
-    $("#down").toggle();
-    $("#up").toggle();
+  "use strict";
+  $("#panel-body").toggle();
+  $("#down").toggle();
+  $("#up").toggle();
 }

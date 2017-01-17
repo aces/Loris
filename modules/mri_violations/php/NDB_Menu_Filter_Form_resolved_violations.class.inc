@@ -25,6 +25,7 @@
 
 class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
 {
+    var $AjaxModule = true;
     /**
      * Check if user should be allowed to see this page.
      *
@@ -143,21 +144,31 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         }
 
         $this->columns = array(
-            'v.PatientName',
-            'v.Site',
-            'v.TimeRun',
-            'v.MincFile',
+            'v.Resolved as Resolution_status',
+            'v.PatientName as PatientName',
+            'site.Name as Site',
+            'v.TimeRun as TimeRun',
+            'v.MincFile as MincFile',
             'v.Series_Description as Series_Description_Or_Scan_Type',
-            'v.Problem',
-            'v.SeriesUID',
-            'v.hash',
-            'v.join_id',
-            'v.Resolved'
+            'v.Problem as Problem',
+            'v.SeriesUID as SeriesUID',
+            'v.hash as Hash',
+            'v.join_id as JoinID',
+            'v.Site as SiteID'
         );
+        $this->headers  = array('Resolution_status','PatientName','Site',
+                        'TimeRun','MincFile','Series_Description_Or_Scan_Type',
+                        'Problem','SeriesUID','Hash','JoinID','SiteID');
         if ($useProjects) {
-            array_splice($this->columns, 1, 0, 'v.Project');
-            array_splice($this->columns, 2, 0, 'v.Subproject');
+            array_splice($this->columns, 1, 0, 'pjct.Name as Project');
+            array_splice(
+                    $this->columns, 2, 0, 'subpjct.title as Subproject');
+            array_splice($this->headers, 1, 0, 'Project');
+            array_splice($this->headers, 2, 0, 'Subproject');
         }
+
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+                                     ['SeriesUID','Hash','JoinID','SiteID']);
 
         $this->query = " FROM (
             SELECT PatientName as PatientName,
@@ -233,7 +244,10 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             LEFT JOIN psc p
             ON (p.CenterID = c.CenterID)
             WHERE Resolved <> '0')
-            as v WHERE 1=1";
+            as v LEFT JOIN psc site ON (site.CenterID = v.Site) 
+            LEFT JOIN Project as pjct ON (v.Project = pjct.ProjectID)
+            LEFT JOIN subproject as subpjct ON (v.Subproject = subpjct.SubprojectID)
+            WHERE 1=1";
         $this->order_by = 'v.TimeRun DESC';
 
         $this->formToFilter = array(
@@ -346,91 +360,22 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 
         return true;
     }
-
-    /**
-     * Overwrite the setDataTableRows function to exclude fields
-     * which were only selected for generating a link, and aren't
-     * used for display to the user
+   /**
+     * Gathers JS dependecies and merge them with the parent
      *
-     * @param integer $count Offset of page that filter starts on
-     *
-     * @return none but as a side-effect populates $this->tpl_data['items']
+     * @return array of javascript to be inserted
      */
-    function _setDataTableRows($count)
-    {
-        $resolved_options = array(
-            'unresolved'=>'Unresolved',
-            'reran'=>'Reran',
-            'emailed'=>'Emailed site/pending',
-            'inserted'=>'Inserted',
-            'rejected'=>'Rejected',
-            'inserted_flag'=>'Inserted with flag',
-            'other'=>'Other'
+   function getJSDependencies()
+   {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/mri_violations/js/columnFormatter.js"
+            )
         );
-        $this->tpl_data['resolved_options'] = $resolved_options;
-
-        $resolved_styles = array(
-            'unresolved'=>'label-danger',
-	        'reran'=>'label-success',
-	        'emailed'=>'label-info',
-	        'rejected'=>'label-danger',
-	        'inserted'=>'label-warning',
-	        'other'=>'label-primary',
-            'inserted_flag'=>'label-default'
-        );
-        $this->tpl_data['resolved_styles'] = $resolved_styles;
-
-        // project
-        $list_of_projects = Utility::getProjectList();
-        $this->tpl_data['projects'] = $list_of_projects;
-        // Subproject
-        $list_of_subprojects = Utility::getSubprojectList();
-        $this->tpl_data['subprojects'] = $list_of_subprojects;
-
-        $list_of_sites = Utility::getSiteList();
-        $this->tpl_data['sites'] = $list_of_sites;
-
-        $x=0;
-        foreach ($this->list as $item) {
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            $i = 1;
-            foreach ($item as $key => $val) {
-                if ($key === 'PatientName') {
-                    $this->tpl_data['items'][$x]['PatientName'] = $val;
-                }
-                if ($key === 'join_id') {
-                    $this->tpl_data['join_id'] = $val;
-                }
-                if ($key === 'hash') {
-                    // do nothing
-                }
-                if ($key === 'Resolved') {
-                    // do nothing
-                }
-                if ($key === 'Problem') {
-                    if($val === "Could not identify scan type"){
-                        $this->tpl_data['join_tbl'] = "mri_protocol_violated_scans";
-                    }
-                    elseif($val === "Protocol Violation"){
-                        $this->tpl_data['join_tbl'] = "mri_violations_log";
-                    }
-                    else{
-                        $this->tpl_data['join_tbl'] = "MRICandidateErrors";
-                    }
-                }
-                if ($key === 'SeriesUID') {
-                    $this->tpl_data['items'][$x]['series'] = $val;
-                } else {		 
-                    $this->tpl_data['items'][$x][$i]['name'] = $key;
-                    $this->tpl_data['items'][$x][$i]['value'] = $val;
-                }            
-                $i++;
-            }
-            
-            $x++;
-        }
-        return true;
     }
-
 }
 ?>
