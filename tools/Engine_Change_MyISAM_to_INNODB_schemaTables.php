@@ -1,7 +1,6 @@
 <?php
 /**
- * Script exporting Update statements to remove 0000-00-00 values
- * and replace them by NULL
+ * Script changing all table engines from the schema to InnoDB
  *
  * PHP Version 5
  *
