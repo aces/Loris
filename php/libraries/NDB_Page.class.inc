@@ -590,7 +590,6 @@ class NDB_Page
                   $baseurl . '/js/components/react.breadcrumb.js',
                   $baseurl . "/js/util/queryString.js",
                   $baseurl . '/js/components/Form.js',
-                  $baseurl . '/js/components/ProgressBar.js',
                   $baseurl . '/js/components/Markdown.js',
                  );
         return $files;
