@@ -10,6 +10,3 @@ eslint jsx/
 
 # Run ESLint on all JS files (see exceptions in .eslintignore)
 eslint htdocs/js/
-
-# Other files
-eslint Gruntfile.js
