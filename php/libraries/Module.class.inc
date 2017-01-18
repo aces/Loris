@@ -52,7 +52,7 @@ class Module
         } else if (is_dir($base . "modules/$name")) {
             $mpath = $base . "modules/$name";
         } else {
-                throw new LorisException("No such module: $name", 404);
+                throw new LorisNoSuchModuleException("No such module: $name");
         }
 
         if (!file_exists($mpath . "/php/module.class.inc")) {
@@ -60,7 +60,7 @@ class Module
             // updated. This can be removed once support for old Modules has
             // been removed. If it hasn't been updated, fall back on the old
             // style.
-            throw new LorisException("Module is missing Module class");
+            throw new LorisModuleMissingException("$name is missing Module class");
         }
         // Manually do dependency injection for the module's php/ directory,
         // since composer doesn't know anything about our modules and we only
@@ -82,7 +82,10 @@ class Module
         // namespacing
         //require_once $mpath . "/php/Module.class.inc";
         $className = "\LORIS\\$name\Module";
-        return new $className($name);
+        $cls       = new $className($name);
+        $cls->dir  = $mpath;
+
+        return $cls;
     }
 
     /**
@@ -134,6 +137,32 @@ class Module
         $formname   = $page;
         $cls->setup();
         $cls->_setupPage($this->name, $page, $identifier, $commentID, $formname);
+
+        if (!$cls->_hasAccess()) {
+            throw new \LorisException("You do not have access to this page.", 403);
+        }
+
+        // Handles form submission
+        if (method_exists($cls, 'save')) {
+            $cls->save();
+        }
+
         return $cls;
+    }
+
+    /**
+     * Returns help content for a page in the module.
+     *
+     * @param string $page The module subpage to get help for.
+     *
+     * @return string the content of the page help.
+     */
+    public function getHelp($page)
+    {
+        $helpFile = $this->dir . "/help/$page.md";
+        if (file_exists($helpFile)) {
+                return file_get_contents($helpFile);
+        }
+        return "No help available for $page ($helpFile)";
     }
 }

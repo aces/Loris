@@ -130,6 +130,7 @@
     </div>
 </div>
 <script>
+
 loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
 var table = RDynamicDataTable({
      "DataURL" : "{$baseurl}/mri_violations/?submenu=mri_protocol_violations&format=json",
@@ -137,5 +138,6 @@ var table = RDynamicDataTable({
      "freezeColumn" : "PatientName"
      
   });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
+
 </script>

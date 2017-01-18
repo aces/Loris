@@ -4,16 +4,16 @@
         verbose="true"
         colors="true">
     <testsuites>
-        <testsuite name='LorisUnitTests for php/libraries'>
+        <testsuite name='LorisUnitTests'>
             <directory>./unittests/</directory>
             <directory>./unittests/api</directory>
         </testsuite>
 
-        <testsuite name='Loris Core Integration Tests'>
+        <testsuite name='LorisCoreIntegrationTests'>
             <directory>./integrationtests/</directory>
         </testsuite>
 
-        <testsuite name='Loris Module Integration Tests'>
+        <testsuite name='LorisModuleIntegrationTests'>
             <directory>../modules/candidate_list/test/</directory>
             <directory>../modules/candidate_parameters/test/</directory>
             <directory>../modules/brainbrowser/test/</directory>
@@ -47,6 +47,7 @@
             <directory>../modules/timepoint_list/test/</directory>
             <directory>../modules/training/test/</directory>
             <directory>../modules/user_accounts/test/</directory>
+            <directory>../modules/media/test/</directory>
         </testsuite>
 
     </testsuites>
@@ -56,7 +57,11 @@
 
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".inc">../php</directory>
+            <directory suffix=".inc">../php/libraries</directory>
+            <!-- CodeCov crashes because installer/ has classes with the same
+                 name as libraries/, so for now we only cover libraries and
+                 exceptions under php/ -->
+            <directory suffix=".inc">../php/exceptions</directory>
             <!--directory suffix=".php">../htdocs</directory-->
             <directory suffix=".inc">../modules/*/php</directory>
             <!--directory>../modules/dashboard/ajax/</directory-->

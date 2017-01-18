@@ -14,7 +14,7 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
     */
     function setup($commentID, $page){
         $this->formType="XIN";
-        $this->form = new HTML_Quickform('test_form');
+        $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
                                         // string - used by
                                         // user-defined child classes)
@@ -104,10 +104,7 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
         $examiners = $this->_getExaminerNames();
         $this->form->addElement('select', 'Examiner', 'Radiologist', $examiners);
 
-     	$this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
-
-        $this->form->registerRule('checkdate', 'callback', '_checkDate');
-        $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+     	$this->form->addRule('Date_taken', 'Date of Administration is required', 'required');
 
         $this->form->addRule('Examiner', 'Examiner is required', 'required');
     }

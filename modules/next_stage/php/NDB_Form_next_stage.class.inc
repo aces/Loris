@@ -32,7 +32,7 @@ class NDB_Form_next_stage extends NDB_Form
         $timePoint->startStage($newStage);
 
         // set the date for the new stage
-        $timePoint->setData("Date_".$newStage, $values['date1']['Y'].'-'.$values['date1']['M'].'-'.$values['date1']['d']);
+        $timePoint->setData("Date_".$newStage, $values['date1']);
 
         // set SubprojectID if applicable
         if(isset($values['SubprojectID'])) {
@@ -126,18 +126,16 @@ class NDB_Form_next_stage extends NDB_Form
 
         $candidate =& Candidate::singleton($candID);
 
-
-
         $errors = array();
         // check date pairs
-        if (empty($values['date1']['M']) && empty($values['date1']['d']) && empty($values['date1']['Y'])) {
+        if (empty($values['date1'])) {
             $errors['date1'] .= "Date is required. \n";
         }
         elseif (!Utility::_checkDate($values['date1'])) {
             $errors['date1'] .= "Date is not a valid date. \n";
         }
 
-        if (($values['date1']['M']!= $values['date2']['M']) || ($values['date1']['d']!= $values['date2']['d']) || ($values['date1']['Y']!=$values['date2']['Y'])) {
+        if ($values['date1'] != $values['date2']) {
             $errors['date1'] .= "Both Date fields must match. \n";
         }
 
@@ -148,7 +146,7 @@ class NDB_Form_next_stage extends NDB_Form
         $stage = $timePoint->getNextStage();
         if ($stage == 'Visit') {
             // compare the dates date of MRI must be > DOB - ONLY WHEN starting Visit stage
-            $date = sprintf("%04d-%02d-%02d", $values['date1']['Y'], $values['date1']['M'], $values['date1']['d']);
+            $date = $values['date1']; 
 
             if (empty($values['scan_done']) && $config->getSetting('useScanDone')!='false') {
                 $errors['scan_done'] = 'Scan done is required';

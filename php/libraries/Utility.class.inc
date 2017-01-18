@@ -556,7 +556,7 @@ class Utility
      * @cleanup This should be removed and all uses converted to toArray
      *          (or vice versa, but toArray seems to be more common in the code)
      */
-    function asArray($var)
+    static function asArray($var)
     {
         if (!is_array($var)) {
             return array($var);
@@ -959,7 +959,8 @@ class Utility
      */
     static function getTestNameUsingFullName($fullname)
     {
-        $db =& Database::singleton();
+        $test_name = '';
+        $db        =& Database::singleton();
         //print_r($instument);
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",

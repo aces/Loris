@@ -70,7 +70,9 @@ class Dicom_Archive extends \NDB_Menu_Filter
                      't.ArchiveLocation as Archive_Location',
                      "'View Details' as Metadata",
                      "'View Images' as MRI_Browser",
-            // For constructing links, not in headers array
+                     // For constructing links, not in headers array
+                     "(SELECT GROUP_CONCAT(SeriesUID) FROM tarchive_series e WHERE ".
+                     "e.TarchiveID=t.TarchiveID GROUP BY e.TarchiveID) as SeriesUID",
                      's.CenterID as site',
                      't.TarchiveID as TarchiveID',
                      's.ID as SessionID',
@@ -97,12 +99,22 @@ class Dicom_Archive extends \NDB_Menu_Filter
              'Archive_Location',
              'Metadata',
              'MRI_Browser',
+             'Seriesuid',
              'Site',
+             'TarchiveID',
+             'SessionID',
             ]
         );
 
         // Set header as hidden from the data table
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Site']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            [
+             'Seriesuid',
+             'Site',
+             'TarchiveID',
+             'SessionID',
+            ]
+        );
 
         $this->validFilters = array(
                                'c.CenterID',
@@ -163,116 +175,23 @@ class Dicom_Archive extends \NDB_Menu_Filter
     }
 
     /**
-     * Setup $this->tpl_data for use by Smarty
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
      *
-     * @return null
+     * @return a json encoded string of the headers and data from this table
      */
-    function _setFilterForm()
+    function toJSON()
     {
-        $this->tpl_data['Sites'] = \Utility::getSiteList();
-    }
+        $result          = $this->toArray();
+        $result['Sites'] = \Utility::getSiteList();
+        $result['hiddenHeaders'] = [
+                                    'Seriesuid',
+                                    'Site',
+                                    'TarchiveID',
+                                    'SessionID',
+                                   ];
 
-    /**
-     * Setup table rows for the template
-     *
-     * @param int $count number
-     *
-     * @return null
-     */
-    function _setDataTableRows($count)
-    {
-        $x = 0;
-        foreach ($this->list as $item) {
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            $i = 1;
-
-            // remove Transfer_Status column if showTransferStatus is false
-            if ($this->dicomArchiveSettings['showTransferStatus'] == 'false') {
-                unset($item['Transfer_Status']);
-            }
-
-            // set sessionID and remove the column
-            $sessionID = $item['SessionID'];
-            unset($item['SessionID']);
-
-            // set tarchiveID and remove the column
-            $tarchiveID = $item['TarchiveID'];
-            unset($item['TarchiveID']);
-
-            foreach ($item as $key => $val) {
-                if ($key == 'Transfer_Status') {
-                    switch ($val) {
-                    case 'Queued':
-                        $this->tpl_data['items'][$x][$i]['class']
-                            = "tarchivePendingTransfer";
-                        break;
-                    case 'Not Transferred':
-                        $this->tpl_data['items'][$x][$i]['class']
-                            = "tarchiveNotTransferred";
-                        break;
-                    default:
-                        $this->tpl_data['items'][$x][$i]['class']
-                            = "tarchiveTransferred";
-                    }
-                }
-                if ($key == 'Metadata') {
-                    $this->tpl_data['items'][$x][$i]['tarchiveID'] = $tarchiveID;
-                }
-                if ($key == 'MRI_Browser') {
-                    $this->tpl_data['items'][$x][$i]['sessionID'] = $sessionID;
-                }
-
-                // check if names and ids are valid
-                if ($key == 'Patient_ID') {
-                    $regex = 'patientIDRegex';
-                }
-
-                if ($key == 'Patient_ID') {
-                    if (! preg_match($this->dicomArchiveSettings[$regex], $val)) {
-                        $this->tpl_data['items'][$x][$i]['class'] = "error";
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = "INVALID - HIDDEN";
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value'] = $val;
-                    }
-                } elseif ($key == 'Patient_Name') {
-                    if (!preg_match(
-                        $this->dicomArchiveSettings['patientNameRegex'],
-                        $val
-                    )
-                        && !preg_match(
-                            $this->dicomArchiveSettings['LegoPhantomRegex'],
-                            $val
-                        )
-                        && !preg_match(
-                            $this->dicomArchiveSettings['LivingPhantomRegex'],
-                            $val
-                        )
-                    ) {
-                        $this->tpl_data['items'][$x][$i]['class'] = "error";
-                        $this->tpl_data['items'][$x][$i]['value']
-                            = "INVALID - HIDDEN";
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value'] = $val;
-                    }
-
-                } elseif ($key == 'Gender') {
-                    if ($val != 'M' && $val != 'F') {
-                        $this->tpl_data['items'][$x][$i]['value'] = 'N/A';
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value'] = $val;
-                    }
-                } else {
-                    $this->tpl_data['items'][$x][$i]['value'] = $val;
-                }
-                $this->tpl_data['items'][$x][$i]['name'] = $key;
-                $i++;
-            }
-            $x++;
-        }
-        $this->tpl_data['numTimepoints'] = $this->TotalItems;
-
-        return true;
+        return json_encode($result);
     }
 
     /**
@@ -337,7 +256,6 @@ class Dicom_Archive extends \NDB_Menu_Filter
             array(
              $baseURL . "/dicom_archive/js/columnFormatter.js",
              $baseURL . "/dicom_archive/js/dicom_archive.js",
-             $baseURL . "/js/util/queryString.js",
             )
         );
     }

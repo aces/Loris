@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../vendor/autoload.php";
+require_once 'generic_includes.php';
 
 /**
  * Wrapper around CouchDB MRI functions
@@ -118,7 +120,7 @@ class CouchDBMRIImporter
         $inter_rej = 'IntergradientRejected_'.$type;
         $pipeline  = 'processing:pipeline';
 
-        $header['ScannerID_'.$type]           = $FileObj->getParameter('ScannerID');
+        $header['ScannerID_'.$type]           = $this->_getScannerID((int)$FileObj->getParameter('FileID'));
         $header['Pipeline_'.$type]            = $FileObj->getParameter('Pipeline');
         $header['OutputType_'.$type]          = $FileObj->getParameter('OutputType');
         $header['AcquisitionProtocol_'.$type] = $FileObj->getAcquisitionProtocol();
@@ -192,6 +194,24 @@ class CouchDBMRIImporter
         }
     }
 
+    /**
+     * Gets the scannerID
+     *
+     * @param MRIFile $file  file object
+     *
+     * @return scannerID
+     */
+     function _getScannerID($FileID){
+ 
+         $scannerID = $this->SQLDB->pselectOne("SELECT ScannerID FROM files ".
+             "WHERE FileID =:FileID",
+             array(
+                 'FileID' => $FileID
+             )
+         );
+         return $scannerID;
+     }
+ 
     /**
      * Gets a rejected parameter according to its type
      *
@@ -545,4 +565,10 @@ class CouchDBMRIImporter
             }
         }
     }
+}
+
+// Don't run if we're doing the unit tests; the unit test will call run.
+if(!class_exists('UnitTestCase')) {
+    $Runner = new CouchDBMRIImporter();
+    $Runner->run();
 }
