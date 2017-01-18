@@ -174,7 +174,7 @@ class NDB_Menu_Mri_Protocol_Violations extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseurl . "/mri_violations/js/mri_protocol_violations_columnFormatter.js",
+                $baseURL . "/mri_violations/js/mri_protocol_violations_columnFormatter.js",
             )
         );
     }
