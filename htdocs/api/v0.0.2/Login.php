@@ -154,6 +154,7 @@ if (isset($_REQUEST['PrintLogin'])) {
     } else {
         $obj = new Login($_SERVER['REQUEST_METHOD']);
     }
+    header('Content-type: application/json');
     print $obj->toJSONString();
 }
 ?>
