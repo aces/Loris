@@ -33,7 +33,8 @@ var DicomArchive = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (DicomArchive.__proto__ || Object.getPrototypeOf(DicomArchive)).call(this, props));
 
     _this.state = {
-      isLoaded: false
+      isLoaded: false,
+      filter: {}
     };
 
     // Bind component instance to custom methods
@@ -74,8 +75,8 @@ var DicomArchive = function (_React$Component) {
     }
   }, {
     key: "updateFilter",
-    value: function updateFilter(Filter) {
-      this.setState({ Filter: Filter });
+    value: function updateFilter(filter) {
+      this.setState({ filter: filter });
     }
   }, {
     key: "render",
@@ -118,7 +119,8 @@ var DicomArchive = function (_React$Component) {
             name: "dicom_filter",
             id: "dicom_filter",
             columns: 2,
-            onUpdate: this.updateFilter
+            onUpdate: this.updateFilter,
+            filter: this.state.filter
           },
           React.createElement(TextboxElement, {
             name: patientID,
@@ -170,7 +172,7 @@ var DicomArchive = function (_React$Component) {
         React.createElement(StaticDataTable, {
           Data: this.state.Data.Data,
           Headers: this.state.Data.Headers,
-          Filter: this.state.Filter,
+          Filter: this.state.filter,
           getFormattedCell: formatColumn
         })
       );

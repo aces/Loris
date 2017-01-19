@@ -31,30 +31,36 @@ var FilterForm = function (_React$Component) {
   function FilterForm(props) {
     _classCallCheck(this, FilterForm);
 
+    // Bind component instance to custom methods
     var _this = _possibleConstructorReturn(this, (FilterForm.__proto__ || Object.getPrototypeOf(FilterForm)).call(this, props));
 
-    _this.state = {
-      collapsed: false,
-      filter: QueryString.get()
-    };
-
-    // Bind component instance to custom methods
     _this.clearFilter = _this.clearFilter.bind(_this);
     _this.getFormElements = _this.getFormElements.bind(_this);
-    _this.setTableFilter = _this.setTableFilter.bind(_this);
     _this.setFilter = _this.setFilter.bind(_this);
+    _this.onElementUpdate = _this.onElementUpdate.bind(_this);
 
-    // Used to store filter format accepted by StaticDataTable
+    // Keeps track of querystring values
     // Saved as class variable instead of keeping in state
-    _this.tableFilter = {};
+    _this.queryString = QueryString.get();
     return _this;
   }
 
   _createClass(FilterForm, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      // Pass initial filter values to parent component
-      this.props.onUpdate(this.tableFilter);
+      var filter = {};
+      var queryString = this.queryString;
+
+      // Initiaze filter using querystring value
+      Object.keys(queryString).forEach(function (key) {
+        filter[key] = {
+          value: queryString[key],
+          exactMatch: false
+        };
+      });
+
+      // Update parent component
+      this.props.onUpdate(filter);
     }
 
     /**
@@ -64,9 +70,8 @@ var FilterForm = function (_React$Component) {
   }, {
     key: "clearFilter",
     value: function clearFilter() {
-      var filter = QueryString.clear(this.props.Module);
-      this.props.onUpdate(filter);
-      this.setState({ filter: filter });
+      this.queryString = QueryString.clear(this.props.Module);
+      this.props.onUpdate({});
     }
 
     /**
@@ -86,14 +91,14 @@ var FilterForm = function (_React$Component) {
           var callbackFunc = child.props.onUserInput;
           var callbackName = callbackFunc.name;
           var elementName = child.type.displayName;
-          var filterValue = this.state.filter[child.ref];
-          // If callback function was not set, set it to setFilter() for form elements
+          var filterValue = this.queryString[child.props.name];
+          // If callback function was not set, set it to onElementUpdate() for form elements
           // and to clearFilter() for <ButtonElement type='reset'/>.
           if (callbackName === "onUserInput") {
             if (elementName === "ButtonElement" && child.props.type === "reset") {
               callbackFunc = this.clearFilter;
             } else {
-              callbackFunc = this.setFilter.bind(null, elementName);
+              callbackFunc = this.onElementUpdate.bind(null, elementName);
             }
           }
           // Pass onUserInput and value props to all children
@@ -103,7 +108,7 @@ var FilterForm = function (_React$Component) {
             key: key
           }));
           // Initialize filter for StaticDataTable
-          this.setTableFilter(elementName, child.ref, filterValue);
+          this.setFilter(elementName, child.props.name, filterValue);
         } else {
           formElements.push(React.cloneElement(child, { key: key }));
         }
@@ -113,7 +118,7 @@ var FilterForm = function (_React$Component) {
     }
 
     /**
-     * Appends entry to tableFilter object or deletes it if value is
+     * Appends entry to filter object or deletes it if value is
      * empty.
      *
      * Sets exactMatch to true for all SelectElements (i.e dropdowns)
@@ -123,27 +128,26 @@ var FilterForm = function (_React$Component) {
      * @param {string} key - the name of the form element
      * @param {string} value - the value of the form element
      *
-     * @return {{}} tableFilter - filterData
+     * @return {{}} filter - filterData
      */
 
   }, {
-    key: "setTableFilter",
-    value: function setTableFilter(type, key, value) {
-      // Deep copy of tableFilter object
-      var tableFilter = JSON.parse(JSON.stringify(this.tableFilter));
-
-      if (key && value) {
-        tableFilter[key] = {};
-        tableFilter[key].value = value;
-        tableFilter[key].exactMatch = type === "SelectElement";
-      } else if (key && value === '') {
-        delete tableFilter[key];
+    key: "setFilter",
+    value: function setFilter(type, key, value) {
+      var filter = {};
+      if (this.props.filter) {
+        filter = JSON.parse(JSON.stringify(this.props.filter));
       }
 
-      // Update class variable
-      this.tableFilter = tableFilter;
+      if (key && value) {
+        filter[key] = {};
+        filter[key].value = value;
+        filter[key].exactMatch = type === "SelectElement";
+      } else if (filter && key && value === '') {
+        delete filter[key];
+      }
 
-      return tableFilter;
+      return filter;
     }
 
     /**
@@ -155,28 +159,25 @@ var FilterForm = function (_React$Component) {
      */
 
   }, {
-    key: "setFilter",
-    value: function setFilter(type, fieldName, fieldValue) {
+    key: "onElementUpdate",
+    value: function onElementUpdate(type, fieldName, fieldValue) {
       // Make sure both key/value are string before sending them to querystring
       if (typeof fieldName !== "string" || typeof fieldValue !== "string") {
         return;
       }
 
-      // Update query string and get new filter object
-      var filter = QueryString.set(this.state.filter, fieldName, fieldValue);
+      // Update query string
+      this.queryString = QueryString.set(this.queryString, fieldName, fieldValue);
 
-      // Update tableFilter and get new tableFilter object
-      var tableFilter = this.setTableFilter(type, fieldName, fieldValue);
-
-      this.props.onUpdate(tableFilter);
-      this.setState({ filter: filter });
+      // Update filter and get new filter object
+      var filter = this.setFilter(type, fieldName, fieldValue);
+      this.props.onUpdate(filter);
     }
   }, {
     key: "render",
     value: function render() {
       // Get formatted children
       var formElements = this.getFormElements();
-
       return React.createElement(
         Panel,
         { id: "selection-filter", title: "Selection Filter" },
@@ -200,5 +201,6 @@ FilterForm.defaultProps = {
   }
 };
 FilterForm.propTypes = {
-  Module: React.PropTypes.string.isRequired
+  Module: React.PropTypes.string.isRequired,
+  filter: React.PropTypes.object.isRequired
 };

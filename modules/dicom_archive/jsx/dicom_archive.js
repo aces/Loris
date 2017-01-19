@@ -20,7 +20,8 @@ class DicomArchive extends React.Component {
     super(props);
 
     this.state = {
-      isLoaded: false
+      isLoaded: false,
+      filter: {}
     };
 
     // Bind component instance to custom methods
@@ -54,8 +55,8 @@ class DicomArchive extends React.Component {
     });
   }
 
-  updateFilter(Filter) {
-    this.setState({Filter});
+  updateFilter(filter) {
+    this.setState({filter});
   }
 
   render() {
@@ -96,6 +97,7 @@ class DicomArchive extends React.Component {
           id="dicom_filter"
           columns={2}
           onUpdate={this.updateFilter}
+          filter={this.state.filter}
         >
           <TextboxElement
             name={patientID}
@@ -147,7 +149,7 @@ class DicomArchive extends React.Component {
         <StaticDataTable
           Data={this.state.Data.Data}
           Headers={this.state.Data.Headers}
-          Filter={this.state.Filter}
+          Filter={this.state.filter}
           getFormattedCell={formatColumn}
         />
       </div>
