@@ -1,17 +1,1 @@
-/* exported formatColumn */
-
-/**
- * Modify behaviour of specified column cells in the Data Table component
- * @param {string} column - column name
- * @param {string} cell - cell content
- * @param {arrray} rowData - array of cell contents for a specific row
- * @param {arrray} rowHeaders - array of table headers (column names)
- * @return {*} a formated table cell for a given column
- */
-function formatColumn(column, cell, rowData) {
-  return React.createElement(
-    "td",
-    null,
-    cell
-  );
-}
+!function(n){function e(a){if(r[a])return r[a].exports;var o=r[a]={exports:{},id:a,loaded:!1};return n[a].call(o.exports,o,o.exports,e),o.loaded=!0,o.exports}var r={};return e.m=n,e.c=r,e.p="",e(0)}({0:function(n,e,r){r(1)(r(41))},1:function(n,e){n.exports=function(n){"undefined"!=typeof execScript?execScript(n):eval.call(null,n)}},41:function(n,e){n.exports='/* exported formatColumn */\n\n/**\n * Modify behaviour of specified column cells in the Data Table component\n * @param {string} column - column name\n * @param {string} cell - cell content\n * @param {arrray} rowData - array of cell contents for a specific row\n * @param {arrray} rowHeaders - array of table headers (column names)\n * @return {*} a formated table cell for a given column\n */\nfunction formatColumn(column, cell, rowData) {\n  return React.createElement(\n    "td",\n    null,\n    cell\n  );\n}'}});
