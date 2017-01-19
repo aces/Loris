@@ -182,7 +182,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/user_accounts/");
         $this->safeClick(WebDriverBy::Name('button'));
-        $field = $this->safeFindElement(WebDriverBy::Name('userID'));
+        $field = $this->safeFindElement(WebDriverBy::Name('UserID'));
         $field->clear();
         $field->sendKeys('userid');
 
