@@ -43,7 +43,6 @@ var FilterForm = function (_React$Component) {
     _this.getFormElements = _this.getFormElements.bind(_this);
     _this.setTableFilter = _this.setTableFilter.bind(_this);
     _this.setFilter = _this.setFilter.bind(_this);
-    _this.toggleCollapsed = _this.toggleCollapsed.bind(_this);
 
     // Used to store filter format accepted by StaticDataTable
     // Saved as class variable instead of keeping in state
@@ -173,58 +172,18 @@ var FilterForm = function (_React$Component) {
       this.setState({ filter: filter });
     }
   }, {
-    key: "toggleCollapsed",
-    value: function toggleCollapsed() {
-      this.setState({ collapsed: !this.state.collapsed });
-    }
-  }, {
     key: "render",
     value: function render() {
-      // Selection filter open by default
-      var glyphClass = "glyphicon pull-right glyphicon-chevron-up";
-      var panelClass = "panel-collapse collapse in";
-
-      // Change arrow direction when closed
-      if (this.state.collapsed) {
-        glyphClass = "glyphicon pull-right glyphicon-chevron-down";
-      }
-
       // Get formatted children
       var formElements = this.getFormElements();
 
       return React.createElement(
-        "div",
-        { className: "panel panel-primary" },
+        Panel,
+        { id: "selection-filter", title: "Selection Filter" },
         React.createElement(
-          "div",
-          { className: "panel-heading",
-            onClick: this.toggleCollapsed,
-            "data-toggle": "collapse",
-            "data-target": "#selection-filter"
-          },
-          "Selection Filter",
-          React.createElement("span", { className: glyphClass })
-        ),
-        React.createElement(
-          "div",
-          { id: "selection-filter", className: panelClass, role: "tabpanel" },
-          React.createElement(
-            "div",
-            { className: "panel-body" },
-            React.createElement(
-              "div",
-              { className: "row" },
-              React.createElement(
-                "div",
-                { className: this.props.filterClass },
-                React.createElement(
-                  FormElement,
-                  this.props,
-                  formElements
-                )
-              )
-            )
-          )
+          FormElement,
+          this.props,
+          formElements
         )
       );
     }

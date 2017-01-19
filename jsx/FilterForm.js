@@ -30,7 +30,6 @@ class FilterForm extends React.Component {
     this.getFormElements = this.getFormElements.bind(this);
     this.setTableFilter = this.setTableFilter.bind(this);
     this.setFilter = this.setFilter.bind(this);
-    this.toggleCollapsed = this.toggleCollapsed.bind(this);
 
     // Used to store filter format accepted by StaticDataTable
     // Saved as class variable instead of keeping in state
@@ -148,45 +147,16 @@ class FilterForm extends React.Component {
     this.setState({filter});
   }
 
-  toggleCollapsed() {
-    this.setState({collapsed: !this.state.collapsed});
-  }
-
   render() {
-    // Selection filter open by default
-    let glyphClass = "glyphicon pull-right glyphicon-chevron-up";
-    let panelClass = "panel-collapse collapse in";
-
-    // Change arrow direction when closed
-    if (this.state.collapsed) {
-      glyphClass = "glyphicon pull-right glyphicon-chevron-down";
-    }
-
     // Get formatted children
     let formElements = this.getFormElements();
 
     return (
-      <div className="panel panel-primary">
-        <div className="panel-heading"
-             onClick={this.toggleCollapsed}
-             data-toggle="collapse"
-             data-target="#selection-filter"
-        >
-          Selection Filter
-          <span className={glyphClass}></span>
-        </div>
-        <div id="selection-filter" className={panelClass} role="tabpanel">
-          <div className="panel-body">
-            <div className="row">
-              <div className={this.props.filterClass}>
-                <FormElement {...this.props}>
-                  {formElements}
-                </FormElement>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Panel id="selection-filter" title="Selection Filter">
+        <FormElement {...this.props}>
+          {formElements}
+        </FormElement>
+      </Panel>
     );
   }
 }
