@@ -47,8 +47,8 @@ var config = {
     './modules/reliability/js/columnFormatter.js': './modules/reliability/jsx/columnFormatter.js'
   },
   output: {
-      path: './',
-      filename: '[name]'
+    path: './',
+    filename: '[name]'
   },
   module: {
     loaders: [
