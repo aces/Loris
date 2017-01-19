@@ -119,7 +119,8 @@ class NDB_Form_dataquery extends NDB_Form
              $baseURL . "/js/flot/jquery.flot.min.js",
              $baseURL . '/js/components/PaginationLinks.js',
              $baseURL . "/js/jszip/jszip.min.js",
-             $baseURL . "/js/components/MultiSelectDropdown.js"
+             $baseURL . "/js/components/MultiSelectDropdown.js",
+             $baseURL . "/dataquery/js/index.js",
             )
         );
     }

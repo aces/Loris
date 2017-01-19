@@ -1,5 +1,3 @@
-<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
-
 <div class="row">
 <div class="col-sm-10 col-md-10">
     <div class="panel panel-primary">
@@ -40,18 +38,4 @@
 </div>
 </div>
 
-
-
-
 <div id="datatable" />
-
-
-<script>
-var table = RDynamicDataTable({
-    "DataURL" : "{$baseurl}/datadict/?format=json",
-    "getFormattedCell" : formatDataDictColumn
-
-});
-ReactDOM.render(table, document.getElementById("datatable"));
-</script>
-

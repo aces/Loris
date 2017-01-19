@@ -1,5 +1,3 @@
-<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
-
 <div class="row">
     <div class="col-sm-12 col-md-7">
         <div class="panel panel-primary">
@@ -80,12 +78,3 @@
     </div>
 </div>
 <div class="dynamictable" id="datatable"></div>
-<script>
-loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
-var table = RDynamicDataTable({
-     "DataURL" : "{$baseurl}/examiner/?format=json",
-     "getFormattedCell" : formatColumn,
-     "freezeColumn" : "PSCID"
-  });
-ReactDOM.render(table, document.getElementById("datatable"));
-</script>

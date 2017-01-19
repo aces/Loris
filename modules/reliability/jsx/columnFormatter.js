@@ -1,5 +1,7 @@
 /* exported formatColumn */
 
+loris.hiddenHeaders = ['SiteID', 'CommentID', 'Current Stage', 'Invalid', 'Manual Swap'];
+
 /**
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name

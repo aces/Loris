@@ -1,5 +1,3 @@
-<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
-
 <!-- start the selection table -->
 <div class="row">
     <div class="col-sm-9 col-lg-8">
@@ -93,11 +91,3 @@
 </div>
 <!--  title table with pagination -->
 <div class="dynamictable" id="datatable"></div>
-<script>
-var table = RDynamicDataTable({
-     "DataURL" : "{$baseurl}/user_accounts/?format=json",
-     "getFormattedCell" : formatColumn,
-     "freezeColumn" : "PSCID"
-  });
-ReactDOM.render(table, document.getElementById("datatable"));
-</script>

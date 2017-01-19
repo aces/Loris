@@ -18,13 +18,21 @@ var QueryString = {
    * Build and return an object containig querystring key/value pairs
    * based on current values inside the browser's querystring.
    *
+   * @param {string} [url] - URL to parse (optional), defaults to window.location
    * @return {{}} - object with querystring key/value pairs
    */
-  get: function() {
-    var queryString = window.location.search.substring(1).split("&");
+  get: function(url) {
+    var queryString;
+    if (url) {
+      queryString = url.split('?')[1] || "";
+    } else {
+      queryString = window.location.search.substring(1);
+    }
+
+    var queryArgs = queryString.split("&");
     var queryStringObj = {};
 
-    queryString.forEach(function(param) {
+    queryArgs.forEach(function(param) {
       var key = param.split("=")[0];
       var value = param.split("=")[1];
       if (key !== "" && value !== "") {

@@ -104,7 +104,6 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         if ($this->useCertification == '1') {
             array_push($this->headers, 'Certification');
         }
-        $this->tpl_data['hiddenHeaders'] = json_encode(['ID']);
 
         return true;
     }
@@ -255,6 +254,8 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             $deps,
             array(
              $baseURL . "/examiner/js/columnFormatter.js",
+             $baseURL . "/js/filterControl.js",
+             $baseURL . "/examiner/js/index.js",
             )
         );
     }

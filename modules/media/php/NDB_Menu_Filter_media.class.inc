@@ -145,9 +145,6 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                            'Session ID',
                           ];
 
-        // Set header as hidden from the data table
-        $this->tpl_data['hiddenHeaders'] = json_encode(['Cand ID', 'Session ID']);
-
         // Add Edit field if user has permissions
         if ($this->hasWritePermission) {
             array_push($this->headers, 'Edit Metadata');
@@ -190,6 +187,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
      * Include additional JS files:
      *  1. columnFormatter.js required to set links to Edit and Download file
      *  2. uploadForm.js - reactified form to upload files
+     *  3. mediaIndex.js - renders React components
      *
      * @return array of javascript to be inserted
      */
@@ -198,11 +196,14 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
+
         return array_merge(
             $deps,
             [
-             $baseURL . "/media/js/columnFormatter.js",
+             $baseURL . "/media/js/columnFormatter.js?hasWritePermission="
+              . $this->hasWritePermission,
              $baseURL . "/media/js/uploadForm.js",
+             $baseURL . "/media/js/mediaIndex.js",
             ]
         );
     }

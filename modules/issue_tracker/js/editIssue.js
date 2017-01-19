@@ -687,7 +687,7 @@ var IssueEditForm = React.createClass({
       return;
     }
 
-    var alertMsg = React.findDOMNode(this.refs["alert-message"]);
+    var alertMsg = this.refs["alert-message"];
     $(alertMsg).fadeTo(2000, 500).delay(5000).slideUp(500, function () {
       self.setState({
         uploadResult: null
@@ -696,5 +696,3 @@ var IssueEditForm = React.createClass({
   }
 
 });
-
-var RIssueEditForm = React.createFactory(IssueEditForm);

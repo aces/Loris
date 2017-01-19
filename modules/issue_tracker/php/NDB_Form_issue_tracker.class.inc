@@ -107,7 +107,10 @@ class NDB_Form_Issue_Tracker extends NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/issue_tracker/js/editIssue.js"]
+            [
+             $baseURL . "/issue_tracker/js/editIssue.js",
+             $baseURL . "/issue_tracker/js/index.js",
+            ]
         );
     }
 

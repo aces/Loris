@@ -72,17 +72,23 @@ class NDB_Form_Media extends NDB_Form
     /**
      * Include additional JS files:
      *  1. editForm.js - reactified form to update media
+     *  2. editFormIndex.js - renders React components
      *
      * @return array of javascript to be inserted
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getJSDependencies();
+        $factory     = NDB_Factory::singleton();
+        $baseURL     = $factory->settings()->getBaseURL();
+        $deps        = parent::getJSDependencies();
+        $idMediaFile = $_GET['id'];
+
         return array_merge(
             $deps,
-            [$baseURL . "/media/js/editForm.js"]
+            [
+             $baseURL . "/media/js/editForm.js",
+             $baseURL . "/media/js/editFormIndex.js?idMediaFile=" . $idMediaFile,
+            ]
         );
     }
 

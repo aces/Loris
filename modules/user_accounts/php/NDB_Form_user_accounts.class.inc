@@ -1131,5 +1131,35 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
         return $permission;
     }
+
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+
+        // Only load for /edit_user/, not for /preferences/
+        if ($this->page == 'edit_user') {
+            return array_merge(
+                $deps,
+                array(
+                    $baseURL . "/js/invalid_form_scroll.js",
+                    $baseURL . "/user_accounts/js/index.js",
+                )
+            );
+        } else {
+           return $deps;
+        }
+
+
+    }
+
+
+
 }
 ?>

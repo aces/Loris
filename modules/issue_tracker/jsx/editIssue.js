@@ -1,4 +1,4 @@
-/* exported RIssueEditForm */
+/* exported IssueEditForm */
 
 /**
  * Issue add/edit form
@@ -637,7 +637,7 @@ var IssueEditForm = React.createClass({
       return;
     }
 
-    var alertMsg = React.findDOMNode(this.refs["alert-message"]);
+    var alertMsg = this.refs["alert-message"];
     $(alertMsg).fadeTo(2000, 500).delay(5000).slideUp(
         500,
         function() {
@@ -652,5 +652,3 @@ var IssueEditForm = React.createClass({
 
 }
 );
-
-var RIssueEditForm = React.createFactory(IssueEditForm);

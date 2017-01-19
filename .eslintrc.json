@@ -29,6 +29,7 @@
   },
   "globals": {
     "React": true,
+    "ReactDOM": true,
     "loris": true,
     "QueryString": true
   }

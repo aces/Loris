@@ -37,4 +37,12 @@ $(document).ready(function() {
 
           );
     });
+
+    $(".related-subprojects").each(function() {
+        var filterTable = RSubprojectRelations({
+            ProjectID: this.dataset.projectId,
+            Relations: JSON.parse(this.dataset.relations)
+        });
+        ReactDOM.render(filterTable, this);
+    });
 });

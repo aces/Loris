@@ -1,6 +1,13 @@
 <!-- <script src="GetJS.php?Module=dataquery&file=react.datatable.js"></script> -->
-<div id="reactTest">
-</div>
+<div id="reactTest"
+  data-categories='{$categories|json_encode}'
+  data-sessions='{$sessions|json_encode}'
+  data-updated-time='{$updatetime|escape:"js"}'
+  data-user-queries='{$savedqueries.user|json_encode}'
+  data-shared-queries='{$savedqueries.shared|json_encode}'
+  data-visits='{$visits|json_encode}'
+/>
+
 <style type="text/css">
 .list-group-item-text {
     margin-left: 2em;
@@ -15,25 +22,3 @@ h4 input, h4 select option, h4 select {
     color: black;
 }
 </style>
-
-<script>
-var categories = [
-        {foreach from=$categories item=value key=category}
-           { "category" : "{$category|escape:"js"}",
-             "numFields" : {$value} },
-        {/foreach}
-        ];
-var queryApp = RDataQueryApp(
-    {
-        title: "Fields",
-        categories: categories,
-        UpdatedTime: "{$updatetime|escape:"js"}",
-        SavedQueries : {
-            "User" : {$savedqueries.user|json_encode},
-            "Shared" : {$savedqueries.shared|json_encode}
-        },
-        AllSessions : {$sessions|json_encode},
-        Visits: {$visits|json_encode}
-    });
-ReactDOM.render(queryApp, document.getElementById("reactTest"));
-</script>

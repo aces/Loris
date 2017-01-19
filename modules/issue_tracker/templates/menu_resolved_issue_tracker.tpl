@@ -1,13 +1,3 @@
-{literal}
-    <script type="text/javascript">
-        function hideFilter() {
-            $("#panel-body").toggle();
-            $("#down").toggle();
-            $("#up").toggle();
-        }
-    </script>
-{/literal}
-
 <div class="row">
     <div class="col-sm-12">
         <div class="panel panel-primary">
@@ -195,15 +185,7 @@
                                 <td align="right" id="pageLinks"></td>
                             </tr>
                         </table>
-                        <div id="datatable">
-                            <script>
-                                var table = RDynamicDataTable({
-                                    "DataURL": "{$baseurl}/issue_tracker/?format=json&submenu=resolved_issue_tracker",
-                                    "getFormattedCell": formatColumn
-                                });
-                                ReactDOM.render(table, document.getElementById("datatable"));
-                            </script>
-                        </div>
+                        <div id="datatable"></div>
                     </div>
                 </div>
             </div>

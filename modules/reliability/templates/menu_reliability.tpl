@@ -173,13 +173,3 @@
 <p>List of candidates flagged for reliability</p>
 <div id="datatable"></div>
 
-<script>
-  loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
-  var table = RDynamicDataTable({
-    "DataURL" : "{$baseurl}/reliability/?format=json",
-    "getFormattedCell" : formatColumn,
-    "freezeColumn" : "PSCID"
-  });
-  ReactDOM.render(table, document.getElementById("datatable"));
-</script>
-

@@ -1,5 +1,3 @@
-<script src="{$baseurl}/js/filterControl.js" type="text/javascript"></script>
-
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
         <form method="post" action="{$baseurl}/conflict_resolver/">
@@ -88,12 +86,3 @@
     </div>
 </div>
 </div>
-<script>
-loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
-var table = RDynamicDataTable({
-     "DataURL" : "{$baseurl}/conflict_resolver/?format=json",
-     "getFormattedCell" : formatColumn,
-     "freezeColumn" : "Instrument"
-  });
-ReactDOM.render(table, document.getElementById("datatable"));
-</script>
