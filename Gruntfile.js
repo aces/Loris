@@ -33,6 +33,8 @@ module.exports = function(grunt) {
           'modules/candidate_parameters/js/participantStatus.js': 'modules/candidate_parameters/jsx/participantStatus.js',
           'modules/candidate_parameters/js/probandInfo.js': 'modules/candidate_parameters/jsx/probandInfo.js',
           'modules/configuration/js/SubprojectRelations.js': 'modules/configuration/jsx/SubprojectRelations.js',
+          'modules/instrument_builder/js/react.instrument_builder.js': 'modules/instrument_builder/jsx/react.instrument_builder.js',
+          'modules/instrument_builder/js/react.questions.js': 'modules/instrument_builder/jsx/react.questions.js',
           'modules/bvl_feedback/js/react.behavioural_feedback_panel.js': 'modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
           'modules/data_team_helper/js/behavioural_qc_module.js': 'modules/data_team_helper/jsx/behavioural_qc_module.js'
         }
@@ -56,8 +58,6 @@ module.exports = function(grunt) {
           'modules/genomic_browser/js/FileUploadModal.js': 'modules/genomic_browser/jsx/FileUploadModal.js',
           'modules/imaging_browser/js/ImagePanel.js': 'modules/imaging_browser/jsx/ImagePanel.js',
           'modules/imaging_browser/js/columnFormatter.js': 'modules/imaging_browser/jsx/columnFormatter.js',
-          'modules/instrument_builder/js/react.instrument_builder.js': 'modules/instrument_builder/jsx/react.instrument_builder.js',
-          'modules/instrument_builder/js/react.questions.js': 'modules/instrument_builder/jsx/react.questions.js',
           'modules/survey_accounts/js/columnFormatter.js': 'modules/survey_accounts/jsx/columnFormatter.js',
           'modules/server_processes_manager/js/columnFormatter.js': 'modules/server_processes_manager/jsx/columnFormatter.js',
           'modules/mri_violations/js/mri_protocol_check_violations_columnFormatter.js': 'modules/mri_violations/jsx/mri_protocol_check_violations_columnFormatter.js',
