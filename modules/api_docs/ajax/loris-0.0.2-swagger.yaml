@@ -1,0 +1,42 @@
+# this is the specification or LORIS REST API using swagger
+swagger: "2.0"
+info:
+  title: LORIS API
+  description: LORIS API
+  version: "0.0.2"
+# the domain of the service
+host: localhost
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: /api/v0.0.2
+produces:
+  - application/json
+paths:
+  /login:
+    post:
+      description: Users can be be authenticated using JSON Web Tokens by sending a POST request with their usernam and password
+      operationId: Authentication
+      parameters:
+        - name: data
+          description: Request payload
+          in: body
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+      responses:
+        "200":
+          description: An object with an authenticity token
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: JWT token
+        "401":
+          description: Unauthorized
