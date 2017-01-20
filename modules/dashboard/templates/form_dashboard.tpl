@@ -282,7 +282,7 @@
                         <h3 class="panel-title">Behavioural Feedback Notifications</h3>
                         <span class="pull-right clickable glyphicon glyphicon-chevron-up"></span>
                     </div>
-                   <!-- /.panel-heading -->
+                    <!-- /.panel-heading -->
                     <div class="panel-body">
                         <div class="list-group bvl-feedback-item">
                             {foreach from=$bvl_feedback_notifications item=link}
