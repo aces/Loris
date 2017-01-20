@@ -347,8 +347,8 @@ var StaticDataTable = React.createClass({
           data = this.props.getFormattedCell(this.props.Headers[j], data, this.props.Data[index[_i2].RowIdx], this.props.Headers);
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
-            // to not return a <td> node
-            curRow.push(data);
+            // to not return a <td> node. Using createFragment instead.
+            curRow.push(React.addons.createFragment({ data: data }));
           }
         } else {
           curRow.push(React.createElement(
