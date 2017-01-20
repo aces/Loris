@@ -1,13 +1,35 @@
+-- ----------------------------------------------
+-- Table Definition
+-- ----------------------------------------------
+
+DROP TABLE IF EXISTS `LorisMenuPermissions`;
 DROP TABLE IF EXISTS `LorisMenu`;
 
-CREATE TABLE LorisMenu (
-    ID integer unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    Parent integer unsigned REFERENCES LorisMenu(ID),
-    Label varchar(255),
-    Link varchar(255),
-    Visible enum('true', 'false'),
-    OrderNumber integer
+CREATE TABLE `LorisMenu` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Parent` int(10) unsigned DEFAULT NULL,
+  `Label` varchar(255) DEFAULT NULL,
+  `Link` varchar(255) DEFAULT NULL,
+  `Visible` enum('true','false') DEFAULT NULL,
+  `OrderNumber` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `index3` (`Parent`,`Label`),
+  KEY `fk_LorisMenu_1_idx` (`Parent`),
+  CONSTRAINT `fk_LorisMenu_1` FOREIGN KEY (`Parent`) REFERENCES `LorisMenu` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `LorisMenuPermissions` (
+  `MenuID` int(10) unsigned NOT NULL,
+  `PermID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`MenuID`,`PermID`),
+  KEY `fk_LorisMenuPermissions_2` (`PermID`),
+  CONSTRAINT `fk_LorisMenuPermissions_1` FOREIGN KEY (`MenuID`) REFERENCES `LorisMenu` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_LorisMenuPermissions_2` FOREIGN KEY (`PermID`) REFERENCES `permissions` (`permID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='If a user has ANY of the permissions for a module it will show up in their menu bar';
+
+-- ----------------------------------------------
+-- Data
+-- ----------------------------------------------
 
 INSERT INTO LorisMenu (Label, OrderNumber) VALUES
      ('Candidate', 1),
@@ -58,12 +80,6 @@ INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES
     ('Configuration', 'configuration/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 5),
     ('Server Processes Manager', 'server_processes_manager/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 6);
 
-DROP TABLE IF EXISTS `LorisMenuPermissions`;
-
-CREATE TABLE LorisMenuPermissions (
-    MenuID integer unsigned REFERENCES LorisMenu(ID),
-    PermID integer unsigned REFERENCES permissions(ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT="If a user has ANY of the permissions for a module it will show up in their menu bar";
 
 -- New Profile permission
 INSERT INTO LorisMenuPermissions (MenuID, PermID)

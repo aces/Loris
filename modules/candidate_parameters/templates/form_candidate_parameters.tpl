@@ -64,7 +64,7 @@
         "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
         "tabName": "candidateInfo"
     });
-    React.render(candidateInfo, document.getElementById("cand-info"));
+    ReactDOM.render(candidateInfo, document.getElementById("cand-info"));
 
     if (loris.config('useProband') === "true") {
         var probandInfo = RProbandInfo({
@@ -72,7 +72,7 @@
             "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
             "tabName": "probandInfo"
         });
-        React.render(probandInfo, document.getElementById("proband-info"));
+        ReactDOM.render(probandInfo, document.getElementById("proband-info"));
     }
     else {
         $('#proband-info-tab').hide();
@@ -84,7 +84,7 @@
             "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
             "tabName": "familyInfo"
         });
-        React.render(familyInfo, document.getElementById("family-info"));
+        ReactDOM.render(familyInfo, document.getElementById("family-info"));
     }
     else {
         $('#family-info-tab').hide();
@@ -96,7 +96,7 @@
         "tabName": "participantStatus"
     });
 
-    React.render(participantStatus, document.getElementById("participant-status"));
+    ReactDOM.render(participantStatus, document.getElementById("participant-status"));
 
 {if $useConsent === "true"}
     var consentStatus = RConsentStatus({
@@ -104,7 +104,7 @@
         "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
         "tabName": "consentStatus"
     });
-    React.render(consentStatus, document.getElementById("consent-status"));
+    ReactDOM.render(consentStatus, document.getElementById("consent-status"));
 {/if}
 
     // Adds tab href to url + opens tab based on hash on page load

@@ -23,7 +23,7 @@ $newThreadValues = array();
 if (isset($_POST['comment']) && isset($_POST['candID']) && (!isset($_POST['sessionID']) || empty($_POST['sessionID']) && !isset($_POST['commentID']))){
     $feedbackLevel  = $feedbackThread->_feedbackLevel;
 
-    $newEntryValues = $feedbackThread->createThread($feedbackLevel, $_POST['input_type'], $_POST['comment'], 'Y');
+    $newEntryValues = $feedbackThread->createThread($feedbackLevel, $_POST['inputType'], $_POST['comment'], 'Y');
     //Now setting the array to return as json
     print json_encode($newEntryValues);
 }
@@ -31,7 +31,7 @@ if (isset($_POST['comment']) && isset($_POST['candID']) && (!isset($_POST['sessi
 if (isset($_POST['comment']) && isset($_POST['candID']) && isset($_POST['sessionID']) && !isset($_POST['commentID'])) {
     $feedbackLevel  = $feedbackThread->_feedbackLevel;
 
-    $newEntryValues = $feedbackThread->createThread($feedbackLevel, $_POST['input_type'], $_POST['comment'], 'Y');
+    $newEntryValues = $feedbackThread->createThread($feedbackLevel, $_POST['inputType'], $_POST['comment'], 'Y');
     //Now setting the array to return as json
     print json_encode($newEntryValues);
 }
@@ -39,7 +39,7 @@ if (isset($_POST['comment']) && isset($_POST['candID']) && isset($_POST['session
 if (isset($_POST['comment']) && isset($_POST['candID']) && isset($_POST['sessionID']) && isset($_POST['commentID'])) {
     $feedbackLevel = $feedbackThread->_feedbackLevel;
 
-    $newEntryValues = $feedbackThread->createThread($feedbackLevel, $_POST['input_type'], $_POST['comment'], 'Y',$_POST['field_name']);
+    $newEntryValues = $feedbackThread->createThread($feedbackLevel, $_POST['inputType'], $_POST['comment'], 'Y',$_POST['fieldName']);
     print json_encode($newEntryValues);
 }
 

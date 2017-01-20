@@ -101,83 +101,9 @@
                         </tr>
                     </table>
                     <form method="post" action="{$baseurl}/mri_violations/"  name="mri_violations" id="mri_violations">
-                        <table id="violationsTable" class="table table-hover table-primary table-bordered" border="0">
-                            <thead>
-                            <tr class="info">
-                                <th>No.</th>
-                                {section name=header loop=$headers}
-                                    {if $headers[header].name eq 'PatientName'}
-                                        <th nowrap="nowrap" id="PatientName"><a href="{$baseurl}/mri_violations/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                                    {elseif $headers[header].name ne 'SeriesUID' && $headers[header].name ne 'join_id' && $headers[header].name ne 'Resolved' && $headers[header].name ne 'hash'}
-                                        <th nowrap="nowrap"><a href="{$baseurl}/mri_violations/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                                    {elseif $headers[header].name eq 'hash'}
-                                        <th nowrap="nowrap"><a href="{$baseurl}/mri_violations/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">Resolution status</a></th>
-                                    {/if}
-                                {/section}
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {section name=item loop=$items}
-                                <tr>
-                                    <!-- print out data rows -->
-                                    {section name=piece loop=$items[item]}
-                                        {if $items[item][piece]}
-                                            {if $items[item][piece].value eq 'Could not identify scan type'}
-                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                    <a href="#"
-                                                       class="mri_violations"
-                                                       id="mri_protocol_violations"
-                                                       data-PatientName="{$items[item].PatientName}"
-                                                       {if $items[item].series}
-                                                            data-SeriesUID="{$items[item].series}"
-                                                       {/if}
-                                                    >
-                                                        {$items[item][piece].value}
-                                                    </a>
-                                                </td>
-                                            {elseif $items[item][piece].name eq 'MincFileViolated'}
-                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-						                            <a href="#noID" onclick="window.open('{$baseurl}/brainbrowser/?minc_location={$items[item][piece].value}', 'BrainBrowser Volume Viewer', 'location = 0,width = auto, height = auto, scrollbars=yes')">{$items[item][piece].value}</a>
-                                                </td>
-                                            {elseif $items[item][piece].value eq 'Protocol Violation'}
-                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                    <a href="#" class="mri_violations" id="mri_protocol_check_violations" data-PatientName="{$items[item].PatientName}" "{if $items[item].series}" data-SeriesUID="{$items[item].series}{/if}">{{$items[item][piece].value}}</a>
-                                                </td>
-                                            {elseif $items[item][piece].name == "Project"}
-                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                    {$projects[$items[item][piece].value]}
-                                                </td>
-                                            {elseif $items[item][piece].name == "Subproject"}
-                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                    {$subprojects[$items[item][piece].value]}
-                                                </td>
-                                            {elseif $items[item][piece].name == "Site"}
-                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                    {$sites[$items[item][piece].value]}
-                                                </td>
-                                            {elseif $items[item][piece].name == "join_id"}
-                                                <!-- skip, do nothing -->
-                                            {elseif $items[item][piece].name == "Resolved"}
-                                                <!-- skip, do nothing -->
-                                            {elseif $items[item][piece].name == "hash"}
-                                                <td nowrap="nowrap" colspan="4" bgcolor="{$items[item][piece].bgcolor}">
-                                                    {*adds the select menu generated by a utility in the controller*}
-                                                    {$form[$items[item][piece].value].html}
-                                                </td>
-                                            {else}
-                                                <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                                    {$items[item][piece].value}
-                                                </td>
-                                            {/if}
-                                        {/if}
-                                    {/section}
-                                </tr>
-                                {sectionelse}
-                                <tr><td colspan="12">No data found</td></tr>
-                            {/section}
-                            </tbody>
+                        <!--  title table with pagination -->
+                        <div class="dynamictable" id="datatable"></div>                        
 
-                        </table>
                         <div class="pull-right">
                             <input class="btn btn-sm btn-primary" name="fire_away" value="Save" type="submit" />
                             <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
@@ -189,15 +115,15 @@
     </div>
 </div>
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/mri_violations/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
+
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+     "DataURL" : loris.BaseURL + "/mri_violations/?format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "PatientName"
+     
+  });
+ReactDOM.render(table, document.getElementById("datatable"));
+
 </script>
 

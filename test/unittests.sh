@@ -38,5 +38,5 @@ elif [ $# -eq 1 ]; then
   ../vendor/bin/phpunit --configuration phpunit.xml   $1 ./unittests/$1.php
 else
  # Run all unittest
-../vendor/bin/phpunit --debug --configuration phpunit.xml --testsuite 'LorisUnitTests for php/libraries'
+../vendor/bin/phpunit --debug --configuration phpunit.xml --testsuite 'LorisUnitTests'
 fi

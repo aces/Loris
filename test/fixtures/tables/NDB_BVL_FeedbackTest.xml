@@ -194,7 +194,7 @@
 		<field name="Testdate">2015-05-14 20:40:46</field>
 		<field name="Hardcopy_request">-</field>
 		<field name="BVLQCStatus" xsi:nil="true" />
-		<field name="BVLQCType"></field>
+		<field name="BVLQCType" xsi:nil="true"></field>
 		<field name="BVLQCExclusion" xsi:nil="true" />
 		<field name="QCd" xsi:nil="true" />
 		<field name="Scan_done">Y</field>

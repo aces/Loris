@@ -32,7 +32,9 @@ module.exports = function(grunt) {
           'modules/candidate_parameters/js/familyInfo.js': 'modules/candidate_parameters/jsx/familyInfo.js',
           'modules/candidate_parameters/js/participantStatus.js': 'modules/candidate_parameters/jsx/participantStatus.js',
           'modules/candidate_parameters/js/probandInfo.js': 'modules/candidate_parameters/jsx/probandInfo.js',
-          'modules/configuration/js/SubprojectRelations.js': 'modules/configuration/jsx/SubprojectRelations.js'
+          'modules/configuration/js/SubprojectRelations.js': 'modules/configuration/jsx/SubprojectRelations.js',
+          'modules/bvl_feedback/js/react.behavioural_feedback_panel.js': 'modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
+          'modules/data_team_helper/js/behavioural_qc_module.js': 'modules/data_team_helper/jsx/behavioural_qc_module.js'
         }
       },
       transpileES5: {
@@ -41,9 +43,7 @@ module.exports = function(grunt) {
           babelrc: false
         },
         files: {
-          'modules/bvl_feedback/js/react.behavioural_feedback_panel.js': 'modules/bvl_feedback/jsx/react.behavioural_feedback_panel.js',
           'modules/candidate_list/js/columnFormatter.js': 'modules/candidate_list/jsx/columnFormatter.js',
-          'modules/data_team_helper/js/behavioural_qc_module.js': 'modules/data_team_helper/jsx/behavioural_qc_module.js',
           'modules/datadict/js/columnFormatter.js': 'modules/datadict/jsx/columnFormatter.js',
           'modules/dataquery/js/react.app.js': 'modules/dataquery/jsx/react.app.js',
           'modules/dataquery/js/react.fieldselector.js': 'modules/dataquery/jsx/react.fieldselector.js',
@@ -61,6 +61,7 @@ module.exports = function(grunt) {
           'modules/survey_accounts/js/columnFormatter.js': 'modules/survey_accounts/jsx/columnFormatter.js',
           'modules/server_processes_manager/js/columnFormatter.js': 'modules/server_processes_manager/jsx/columnFormatter.js',
           'modules/mri_violations/js/mri_protocol_check_violations_columnFormatter.js': 'modules/mri_violations/jsx/mri_protocol_check_violations_columnFormatter.js',
+          'modules/mri_violations/js/columnFormatter.js': 'modules/mri_violations/jsx/columnFormatter.js',
           'modules/user_accounts/js/columnFormatter.js': 'modules/user_accounts/jsx/columnFormatter.js',
           'modules/reliability/js/columnFormatter.js': 'modules/reliability/jsx/columnFormatter.js'
         }
