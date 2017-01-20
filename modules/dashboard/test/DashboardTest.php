@@ -423,22 +423,6 @@ class DashboardTest extends LorisIntegrationTest
     }
 
     /**
-     * Verify that a user with 'Violated Scans: View all-sites Violated Scans'
-     * permission has a task with the number of violated scans displayed.
-     * This is the number of entries on the MRI Violated Scans page.
-     * Check that clicking on the task takes you to the Violated Scans page.
-     *
-     * @return void
-     */
-    public function testMriViolations()
-    {
-        $this->setupPermissions(
-            array("violated_scans_view_allsites")
-        );
-        $this->_testMytaskPanelAndLink(".mri_violations", "2", "[Test]PatientName");
-        $this->resetPermissions();
-    }
-    /**
      * Check that for a user with 'Data Entry' permission, the number of incomplete
      * forms(instruments with Data Entry set to 'In Progress')is displayed in the My
      * Tasks panel. If the user also has 'Across all sites access candidates
