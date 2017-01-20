@@ -77,7 +77,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      * @return array Options array suitable for use in QuickForm select
      *               element
      */
-    function getParticipantStatusOptions()
+    static function getParticipantStatusOptions()
     {
         $DB           =& Database::singleton();
         $options      = $DB->pselect(
