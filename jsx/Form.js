@@ -836,3 +836,29 @@ var LorisElement = React.createClass({
     return elementHtml;
   }
 });
+
+window.FormElement = FormElement;
+window.SelectElement = SelectElement;
+window.TextareaElement = TextareaElement;
+window.TextboxElement = TextboxElement;
+window.DateElement = DateElement;
+window.NumericElement = NumericElement;
+window.FileElement = FileElement;
+window.HelpTextElement = HelpTextElement;
+window.StaticElement = StaticElement;
+window.ButtonElement = ButtonElement;
+window.LorisElement = LorisElement;
+
+export default {
+  FormElement,
+  SelectElement,
+  TextareaElement,
+  TextboxElement,
+  DateElement,
+  NumericElement,
+  FileElement,
+  HelpTextElement,
+  StaticElement,
+  ButtonElement,
+  LorisElement
+};

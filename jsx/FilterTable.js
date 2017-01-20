@@ -63,3 +63,8 @@ var FilterTable = React.createClass({
 });
 
 var RFilterTable = React.createFactory(FilterTable);
+
+window.FilterTable = FilterTable;
+window.RFilterTable = RFilterTable;
+
+export default FilterTable;

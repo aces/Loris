@@ -81,3 +81,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
   return (<td>{cell}</td>);
 }
+
+window.formatColumn = formatColumn;
+
+export default formatColumn;

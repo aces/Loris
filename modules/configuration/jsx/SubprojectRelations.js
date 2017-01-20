@@ -25,3 +25,7 @@ var SubprojectRelations = React.createClass({
 });
 var RSubprojectRelations = React.createFactory(SubprojectRelations);
 
+window.SubprojectRelations = SubprojectRelations;
+window.RSubprojectRelations = RSubprojectRelations;
+
+export default SubprojectRelations;

@@ -55,11 +55,6 @@ var config = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'script-loader'
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
         loader: 'babel-loader'
       }
     ]

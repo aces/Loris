@@ -84,3 +84,6 @@ var DynamicDataTable = React.createClass({
 });
 
 var RDynamicDataTable = React.createFactory(DynamicDataTable);
+
+window.DynamicDataTable = DynamicDataTable;
+window.RDynamicDataTable = RDynamicDataTable;

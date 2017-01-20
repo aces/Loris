@@ -43,3 +43,8 @@ var Breadcrumbs = React.createClass({
 });
 
 var RBreadcrumbs = React.createFactory(Breadcrumbs);
+
+window.Breadcrumbs = Breadcrumbs;
+window.RBreadcrumbs = RBreadcrumbs;
+
+export default Breadcrumbs;

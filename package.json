@@ -15,7 +15,6 @@
     "eslint": "3.8.1",
     "eslint-config-google": "0.6.0",
     "eslint-plugin-react": "^5.2.2",
-    "script-loader": "0.7.0",
     "webpack": "1.14.0"
   },
   "scripts": {
