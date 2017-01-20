@@ -219,7 +219,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 'CandID'
             )
         );  
-        $this->tpl_data['hiddenHeaders'] = json_encode(['T1_Inserted','CommentID','Conflict2','SessionID','CandID']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(['CommentID','Conflict2','SessionID','CandID']);
         $this->validFilters = array('c.CandID',
             'r.DICOM_ID',
             's.visit_label',
