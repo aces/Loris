@@ -568,58 +568,6 @@ class Candidate
     }
 
     /**
-     * Return the suggested visit label for the time point you are
-     * trying to register
-     *
-     * @return string Next suggested visit label
-     * @throws DatabaseException
-     */
-    public function getNextVisitLabel()
-    {
-        $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        $nextVisitLabel     = null;
-
-        $candID = $this->getCandID();
-
-        // make a local reference to the Database object
-        $db = $factory->database();
-
-        if ($visitLabelSettings['generation'] == 'user'
-            && !empty($visitLabelSettings['suggest'])
-        ) {
-            $existingVisitLabels = $this->getListOfVisitLabels();
-            $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitLabel
-                FROM session
-                WHERE CandID=:CaID AND (Active='Y' OR Active is null)
-                GROUP BY CandID";
-            $result = $db->pselectRow($query, array('CaID' => $candID));
-
-            $nextVisitLabel = $result['nextVisitLabel'];
-            if (!empty($existingVisitLabels)) {
-                while (in_array($nextVisitLabel, $existingVisitLabels)) {
-                    $nextVisitLabel++;
-                }
-            } else {
-                // display V1 as a suggested visit label when starting
-                // the 1st timepoint
-                $nextVisitLabel = '1';
-            }
-
-            $nextVisitLabel = str_replace(
-                '%value%',
-                $nextVisitLabel,
-                $visitLabelSettings['suggest']
-            );
-        }
-
-        //return the next visit No
-        return $nextVisitLabel;
-    }
-
-    /**
      * Generates list of valid subprojects for a the selected Candidate's
      * project
      *
