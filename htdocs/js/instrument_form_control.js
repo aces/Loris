@@ -74,14 +74,4 @@ $(document).ready(function() {
       addEmptyOption(form, $(this));
     });
   });
-
-  var msg = '';
-  var isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-  if (isMac) {
-    msg = "Hold CMD ⌘ to select multiple options";
-  } else {
-    msg = "Hold CTRL to select multiple options";
-  }
-  multiselect.attr("title", msg);
-  multiselect.tooltip();
 });
