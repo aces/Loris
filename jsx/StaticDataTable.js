@@ -354,8 +354,8 @@ var StaticDataTable = React.createClass({
           );
           if (data !== null) {
             // Note: Can't currently pass a key, need to update columnFormatter
-            // to not return a <td> node
-            curRow.push(data);
+            // to not return a <td> node. Using createFragment instead.
+            curRow.push(React.addons.createFragment({data}));
           }
         } else {
           curRow.push(<td key={key}>{data}</td>);

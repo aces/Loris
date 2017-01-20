@@ -63,6 +63,7 @@ function tplFromRequest($param)
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['test_name']   = $TestName;
 $tpl_data['subtest']     = $subtest;
+$tpl_data['version']     = file_get_contents(__DIR__ . "/../VERSION");
 
 tplFromRequest('candID');
 tplFromRequest('sessionID');
