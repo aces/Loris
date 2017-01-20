@@ -653,7 +653,7 @@ var FeedbackPanel = React.createClass({
 
 var RBehaviouralFeedbackPanel = React.createFactory(FeedbackPanel);
 
-window.BehaviouralFeedbackPanel = BehaviouralFeedbackPanel;
+window.FeedbackPanel = FeedbackPanel;
 window.RBehaviouralFeedbackPanel = RBehaviouralFeedbackPanel;
 
-export default BehaviouralFeedbackPanel;
+export default FeedbackPanel;

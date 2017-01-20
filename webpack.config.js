@@ -44,7 +44,13 @@ var config = {
     './modules/mri_violations/js/mri_protocol_check_violations_columnFormatter.js': './modules/mri_violations/jsx/mri_protocol_check_violations_columnFormatter.js',
     './modules/mri_violations/js/columnFormatter.js': './modules/mri_violations/jsx/columnFormatter.js',
     './modules/user_accounts/js/columnFormatter.js': './modules/user_accounts/jsx/columnFormatter.js',
-    './modules/reliability/js/columnFormatter.js': './modules/reliability/jsx/columnFormatter.js'
+    './modules/reliability/js/columnFormatter.js': './modules/reliability/jsx/columnFormatter.js',
+    './modules/conflict_resolver/js/resolved_conflicts_columnFormatter.js': './modules/conflict_resolver/jsx/resolved_conflicts_columnFormatter.js',
+    './modules/conflict_resolver/js/unresolved_columnFormatter.js': './modules/conflict_resolver/jsx/unresolved_columnFormatter.js',
+    './modules/examiner/js/columnFormatter.js': './modules/examiner/jsx/columnFormatter.js',
+    './modules/final_radiological_review/js/columnFormatter.js': './modules/final_radiological_review/jsx/columnFormatter.js',
+    './modules/help_editor/js/columnFormatter.js': './modules/help_editor/jsx/columnFormatter.js',
+    './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js'
   },
   output: {
     path: './',
