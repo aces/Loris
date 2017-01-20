@@ -1,0 +1,1 @@
+ALTER TABLE flag ADD `Data` TEXT;
