@@ -16,7 +16,7 @@
     "paths": {
         "/login": {
             "post": {
-                "description": "Users can be be authenticated using JSON Web Tokens by sending a POST request with their usernam and password",
+                "description": "Users can be be authenticated using JSON Web Tokens by sending a POST request with their username and password",
                 "operationId": "Authentication",
                 "parameters": [
                     {
