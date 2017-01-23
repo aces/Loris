@@ -52,22 +52,7 @@ class API_Docs extends \NDB_Page
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
-             $baseURL . "/api_docs/js/object-assign-pollyfill.js",
-             $baseURL . "/api_docs/js/jquery-1.8.0.min.js",
-             $baseURL . "/api_docs/js/jquery.slideto.min.js",
-             $baseURL . "/api_docs/js/jquery.wiggle.min.js",
-             $baseURL . "/api_docs/js/jquery.ba-bbq.min.js",
-             $baseURL . "/api_docs/js/handlebars-4.0.5.js",
-             $baseURL . "/api_docs/js/lodash.min.js",
-             $baseURL . "/api_docs/js/backbone-min.js",
-             $baseURL . "/api_docs/js/swagger-ui.js",
-             $baseURL . "/api_docs/js/highlight.9.1.0.pack.js",
-             $baseURL . "/api_docs/js/highlight.9.1.0.pack_extended.js",
-             $baseURL . "/api_docs/js/jsoneditor.min.js",
-             $baseURL . "/api_docs/js/marked.js",
-             $baseURL . "/api_docs/js/swagger-oauth.js",
-            )
+            array()
         );
     }
 
@@ -84,13 +69,7 @@ class API_Docs extends \NDB_Page
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
-             $baseURL . "/api_docs/css/print.css",
-             $baseURL . "/api_docs/css/reset.css",
-             $baseURL . "/api_docs/css/screen.css",
-             $baseURL . "/api_docs/css/style.css",
-             $baseURL . "/api_docs/css/typography.css",
-            )
+            array()
         );
     }
 }
