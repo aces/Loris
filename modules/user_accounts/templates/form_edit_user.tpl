@@ -56,7 +56,7 @@ $(document).ready(function() {
 	        <li class="error">{$k}: k{$error}</li>
 	    </ul>
     {/foreach} -->
-    <!-- <div class="row""> -->
+    <!-- <div class="row"> -->
         {if $form.errors.UserID_Group}
     	<div class="row form-group form-inline form-inline has-error">
         {else}
