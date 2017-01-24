@@ -18,7 +18,7 @@ var Breadcrumbs = React.createClass({
     var breadcrumbs = this.props.breadcrumbs.map(function(element, i) {
       var url = baseurl + element.query;
       var crumb = (
-          <a href={url} className="btn btn-primary">
+          <a key={'crumb_' + i} href={url} className="btn btn-primary">
             <div>
               {element.text}
             </div>

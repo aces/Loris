@@ -1277,6 +1277,7 @@ INSERT INTO test_subgroups VALUES (1, 'Instruments', NULL);
 /*!40000 ALTER TABLE `test_subgroups` ENABLE KEYS */;
 UNLOCK TABLES;
 
+DROP TABLE IF EXISTS `Visit_Windows`;
 CREATE TABLE `Visit_Windows` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Visit_label` varchar(255) DEFAULT NULL,
@@ -1362,6 +1363,7 @@ CREATE TABLE `mri_protocol_violated_scans` (
   `SeriesUID` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `conflicts_unresolved`;
 CREATE TABLE `conflicts_unresolved` (
       `ConflictID` int(10) NOT NULL AUTO_INCREMENT,
       `TableName` varchar(255) NOT NULL,
@@ -1376,6 +1378,7 @@ CREATE TABLE `conflicts_unresolved` (
       PRIMARY KEY (`ConflictID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `conflicts_resolved`;
 CREATE TABLE `conflicts_resolved` (
       `ResolvedID` int(10) NOT NULL AUTO_INCREMENT,
       `UserID` varchar(255) NOT NULL,
@@ -1396,6 +1399,7 @@ CREATE TABLE `conflicts_resolved` (
       PRIMARY KEY (`ResolvedID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `tarchive_find_new_uploads`;
 CREATE TABLE `tarchive_find_new_uploads` (
       `CenterName` varchar(255) NOT NULL,
       `LastRan` datetime DEFAULT NULL,
@@ -1505,7 +1509,7 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
+DROP TABLE IF EXISTS `final_radiological_review`;
 CREATE TABLE `final_radiological_review` (
       `CommentID` varchar(255) NOT NULL,
       `Review_Done` enum('yes','no','not_answered') DEFAULT NULL,
@@ -1527,6 +1531,7 @@ CREATE TABLE `final_radiological_review` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- Dump completed on 2012-10-05 10:49:10
 
+DROP TABLE IF EXISTS `participant_status_options`; 
 CREATE TABLE participant_status_options (
         ID int(10) unsigned NOT NULL auto_increment,
         Description varchar(255) default NULL,
@@ -1549,7 +1554,8 @@ INSERT INTO `participant_status_options` VALUES
 	(11,'Death',NULL,6),
 	(12,'Lost to Followup',NULL,6);
 
-CREATE TABLE participant_status (
+DROP TABLE IF EXISTS `participant_status`;
+CREATE TABLE `participant_status` (
         ID int(10) unsigned NOT NULL auto_increment,
         CandID int(6) UNIQUE NOT NULL default '0',
         UserID varchar(255) default NULL,
@@ -1655,6 +1661,7 @@ CREATE TABLE `project_rel` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+DROP TABLE IF EXISTS `user_account_history`;
 CREATE TABLE `user_account_history` (
 ID int(10) unsigned NOT NULL AUTO_INCREMENT,
 UserID varchar(255) NOT NULL DEFAULT '',
@@ -1664,7 +1671,7 @@ ChangeDate timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMEST
  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+DROP TABLE IF EXISTS `mri_upload`;
 CREATE TABLE `mri_upload` (
   `UploadID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `UploadedBy` varchar(255) NOT NULL DEFAULT '',
@@ -1684,6 +1691,7 @@ CREATE TABLE `mri_upload` (
   PRIMARY KEY (`UploadID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `mri_protocol_checks`;
 CREATE TABLE `mri_protocol_checks` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Scan_type` int(11) unsigned DEFAULT NULL,
@@ -1694,6 +1702,7 @@ CREATE TABLE `mri_protocol_checks` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `MRICandidateErrors`;
 CREATE TABLE `MRICandidateErrors` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `TimeRun` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1705,6 +1714,7 @@ CREATE TABLE `MRICandidateErrors` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `mri_violations_log`;
 CREATE TABLE `mri_violations_log` (
   `LogID` int(11) NOT NULL AUTO_INCREMENT,
   `TimeRun` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1724,6 +1734,7 @@ CREATE TABLE `mri_violations_log` (
   PRIMARY KEY (`LogID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `violations_resolved`;
 CREATE TABLE IF NOT EXISTS `violations_resolved` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,
   `hash` varchar(255) NOT NULL,
@@ -1735,6 +1746,7 @@ CREATE TABLE IF NOT EXISTS `violations_resolved` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `participant_accounts`;
 CREATE TABLE `participant_accounts` (
     `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
     `SessionID` int(6) DEFAULT NULL,
@@ -1748,10 +1760,13 @@ CREATE TABLE `participant_accounts` (
     PRIMARY KEY (`ID`)
 );
 
-CREATE TABLE participant_emails(
+DROP TABLE IF EXISTS `participant_emails`; 
+CREATE TABLE `participant_emails`(
     Test_name varchar(255) NOT NULL PRIMARY KEY REFERENCES test_names(Test_name),
     DefaultEmail TEXT NULL
 );
+
+DROP TABLE IF EXISTS `family`;
 CREATE TABLE `family` (
         `ID` int(10) NOT NULL AUTO_INCREMENT,
         `FamilyID` int(6) NOT NULL,
@@ -1759,6 +1774,8 @@ CREATE TABLE `family` (
         `Relationship_type` enum('half_sibling','full_sibling','1st_cousin') DEFAULT NULL,
         PRIMARY KEY (`ID`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `participant_status_history`;
 CREATE TABLE `participant_status_history` (
         `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
         `CandID` int(6) NOT NULL DEFAULT 0,
@@ -1771,6 +1788,8 @@ CREATE TABLE `participant_status_history` (
         PRIMARY KEY (`ID`),
         UNIQUE KEY `ID` (`ID`)
         );
+
+DROP TABLE IF EXISTS `consent_info_history`;
 CREATE TABLE `consent_info_history` (
         `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
         `CandID` int(6) NOT NULL DEFAULT 0,
@@ -1783,6 +1802,7 @@ CREATE TABLE `consent_info_history` (
         UNIQUE KEY `ID` (`ID`)
         ) ;
 
+DROP TABLE IF EXISTS `user_login_history`;
 CREATE TABLE `user_login_history` (
   `loginhistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userID` varchar(255) NOT NULL DEFAULT '',
@@ -1795,7 +1815,7 @@ CREATE TABLE `user_login_history` (
   PRIMARY KEY (`loginhistoryID`)
 )  ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+DROP TABLE IF EXISTS `reliability`;
 CREATE TABLE `reliability` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `CommentID` varchar(255) DEFAULT NULL,
@@ -1831,6 +1851,8 @@ CREATE TABLE `Project` (
     PRIMARY KEY (`ProjectID`)
 )ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
+
+DROP TABLE IF EXISTS `StatisticsTabs`;
 CREATE TABLE StatisticsTabs(
     ID INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     ModuleName varchar(255) NOT NULL,
@@ -1847,6 +1869,7 @@ INSERT INTO StatisticsTabs (ModuleName, SubModuleName, Description, OrderNo) VAL
     ('statistics', 'stats_reliability', 'Reliability Statistics', 4),
     ('statistics', 'stats_MRI', 'Imaging Statistics', 5);
 
+DROP TABLE IF EXISTS `final_radiological_review_history`;
 CREATE TABLE `final_radiological_review_history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `col` varchar(255) NOT NULL DEFAULT '',
@@ -2107,6 +2130,7 @@ CREATE TABLE `genomic_cpg` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 COMMENT = '';
 
+DROP TABLE IF EXISTS `certification_training`;
 CREATE TABLE `certification_training` (
     `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `TestID` int(10) UNSIGNED NOT NULL,
@@ -2118,6 +2142,7 @@ CREATE TABLE `certification_training` (
     CONSTRAINT `FK_certification_training` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `certification_training_quiz_questions`;
 CREATE TABLE `certification_training_quiz_questions` (
     `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `TestID` int(10) unsigned NOT NULL,
@@ -2127,6 +2152,7 @@ CREATE TABLE `certification_training_quiz_questions` (
     CONSTRAINT `FK_certification_training_quiz_questions` FOREIGN KEY (`TestID`) REFERENCES `test_names` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `certification_training_quiz_answers`;
 CREATE TABLE `certification_training_quiz_answers` (
     `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `QuestionID` INTEGER UNSIGNED NOT NULL,
