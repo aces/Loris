@@ -1,0 +1,102 @@
+/* Stylesheet for login, reset password and request account pages */
+html, body {
+  margin:0;
+  padding:0;
+  height: 100vh;
+  font-family: 'PT Sans', sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 700;
+}
+
+.header {
+  height: 100px;
+  background-color: #064785;
+  padding: 5px 0;
+}
+
+.header .loris-logo {
+  height: 80px;
+}
+
+.header .gh-logo {
+  line-height: 90px;
+}
+
+.header .gh-logo img {
+  height: 40px;
+  padding-right: 10px;
+}
+
+
+.header .nav-link {
+  color: #fff;
+  font-size: 22px;
+  line-height: 130px;
+}
+
+.main-content {
+  background-color: #f8f8f8;
+  padding: 30px 0;
+  height: auto;
+  min-height: calc(100vh - 200px);
+}
+
+.main-content .study-panel,
+.main-content .login-panel {
+  min-height: 500px;
+}
+
+.main-content .login-panel form {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.main-content .login-panel .help-links {
+  text-align: center;
+}
+
+.main-content .login-panel .help-text {
+  font-size: 12px;
+  padding: 10px 0;
+  text-align: center;
+  color: #555;
+}
+
+.main-content .study-logo {
+  max-width: 200px;
+  margin: 0 auto 10px auto;
+  padding: 15px;
+}
+
+.main-content .study-logo img {
+  width: 100%;
+}
+
+.footer {
+  font-size: 12px;
+  text-align: center;
+  background-color: #064785;
+  color: #f8f8f8;
+  height: 60px;
+  padding: 15px;
+}
+
+.footer a {
+  color: #f8f8f8;
+  font-weight: 700;
+}
+
+/* Tablets and bigger */
+@media (min-width: 768px) {
+  .header { height: 140px; }
+
+  .header .loris-logo { height: 130px; }
+  .header .gh-logo { line-height: 130px; padding-right: 20px; }
+
+  .main-content {
+    display: flex;
+    align-items: center;
+  }
+}

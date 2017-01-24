@@ -63,6 +63,7 @@ class SinglePointLogin
         }
 
         $tpl_data['currentyear'] = date('Y');
+        $tpl_data['version']     = file_get_contents(__DIR__ . "/../../VERSION");
 
         // remove logout from request
         if (isset($_SERVER['QUERY_STRING'])) {
@@ -102,11 +103,12 @@ class SinglePointLogin
 
         $www = $config->getSetting('www');
         $tpl_data['baseurl'] = $www['url'];
+        $tpl_data['page'] = 'login';
 
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
-        $smarty->display('login.tpl');
+        $smarty->display('login_layout.tpl');
     }
 
 
