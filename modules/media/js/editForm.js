@@ -1,3 +1,5 @@
+'use strict';
+
 /* exported RMediaEditForm */
 
 /**
@@ -19,7 +21,7 @@ var MediaEditForm = React.createClass({
     action: React.PropTypes.string.isRequired
   },
 
-  getInitialState: function () {
+  getInitialState: function getInitialState() {
     return {
       Data: {},
       formData: {},
@@ -29,11 +31,11 @@ var MediaEditForm = React.createClass({
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function componentDidMount() {
     var self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
-      success: function (data) {
+      success: function success(data) {
         var formData = {
           idMediaFile: data.mediaData.id,
           forSite: data.mediaData.forSite,
@@ -49,8 +51,8 @@ var MediaEditForm = React.createClass({
           formData: formData
         });
       },
-      error: function (error, errorCode, errorMsg) {
-        console.error(error, errorCode, errorMsg);
+      error: function error(_error, errorCode, errorMsg) {
+        console.error(_error, errorCode, errorMsg);
         self.setState({
           error: 'An error occurred when loading the form!'
         });
@@ -58,7 +60,7 @@ var MediaEditForm = React.createClass({
     });
   },
 
-  render: function () {
+  render: function render() {
     // Data loading error
     if (this.state.error !== undefined) {
       return React.createElement(
@@ -205,18 +207,11 @@ var MediaEditForm = React.createClass({
    * Handles form submission
    * @param {event} e - Form submition event
    */
-  handleSubmit: function (e) {
+  handleSubmit: function handleSubmit(e) {
     e.preventDefault();
 
     var self = this;
     var myFormData = this.state.formData;
-    var formData = new FormData();
-
-    for (var key in myFormData) {
-      if (myFormData[key] !== "") {
-        formData.append(key, myFormData[key]);
-      }
-    }
 
     $('#mediaEditEl').hide();
     $("#file-progress").removeClass('hide');
@@ -224,11 +219,11 @@ var MediaEditForm = React.createClass({
     $.ajax({
       type: 'POST',
       url: self.props.action,
-      data: formData,
+      data: JSON.stringify(myFormData),
       cache: false,
       contentType: false,
       processData: false,
-      xhr: function () {
+      xhr: function xhr() {
         var xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function (evt) {
           if (evt.lengthComputable) {
@@ -242,14 +237,14 @@ var MediaEditForm = React.createClass({
         }, false);
         return xhr;
       },
-      success: function (data) {
+      success: function success(data) {
         $("#file-progress").addClass('hide');
         self.setState({
           uploadResult: "success"
         });
         self.showAlertMessage();
       },
-      error: function (err) {
+      error: function error(err) {
         console.error(err);
         self.setState({
           uploadResult: "error"
@@ -266,9 +261,14 @@ var MediaEditForm = React.createClass({
    * @param {string} formElement - name of the selected element
    * @param {string} value - selected value for corresponding form element
    */
-  setFormData: function (formElement, value) {
+  setFormData: function setFormData(formElement, value) {
     var formData = this.state.formData;
-    formData[formElement] = value;
+
+    if (value === "") {
+      formData[formElement] = null;
+    } else {
+      formData[formElement] = value;
+    }
 
     this.setState({
       formData: formData
@@ -278,7 +278,7 @@ var MediaEditForm = React.createClass({
   /**
    * Display a success/error alert message after form submission
    */
-  showAlertMessage: function () {
+  showAlertMessage: function showAlertMessage() {
     var self = this;
 
     if (this.refs["alert-message"] === null) {

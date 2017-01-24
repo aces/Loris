@@ -1,4 +1,4 @@
-#LORIS Neuroimaging Platform [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=16.1-dev)](https://travis-ci.org/aces/Loris)
+#LORIS Neuroimaging Platform [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=17.0-dev)](https://travis-ci.org/aces/Loris)
 
 LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
@@ -9,26 +9,22 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/17.0-dev)
 <hr>
 
-This Readme covers installation of the <b>17.0</b> LORIS development branch on <b>Ubuntu</b>.
-([CentOS Readme also available](https://github.com/aces/Loris/blob/16.1-dev/README.CentOS6.md)).
-
-If you are looking to install a stable release, please consult the [Releases page](https://github.com/aces/Loris/releases) and the Readme for the last stable release.
+This Readme covers installation of the <b>17.0</b> LORIS release on <b>Ubuntu</b>.
+([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
 
 # Prerequisites for Installation
 
- * LINUX (supported on Ubuntu 14.04 and [CentOS 6.5](https://github.com/aces/Loris/blob/16.1-dev/README.CentOS6.md))
- * Apache2 (libapache2-mod-php5)
- * MySQL 5.5 or lower (libmysqlclient15-dev mysql-client mysql-server)
- * PHP <b>5.6</b> (php5 php5-mysql php5-gd php5-sqlite)
- * php5-json (for Debian/Ubuntu distributions)
+ * LINUX (supported on Ubuntu 14+ and [CentOS 6.5](https://github.com/aces/Loris/blob/master/README.CentOS6.md))
+ * Apache2
+ * MySQL 5.7 
+ * PHP <b>7</b>  
  * Package manager (for LINUX distributions)
  * Composer : should be run with --no-dev option
 
 <b>Important:</b>
- * Only PHP <b>5.6</b> is supported for LORIS 16.1. We recommend installing/upgrading PHP using this (deprecated) PPA repository: <i>ppa:ondrej/php5-5.6 </i>
- * MySQL 5.7 is not supported for LORIS 16.1 and will cause errors when loading LORIS.  MySQL 5.5 or lower (5.*) is recommmended.  
+ * If you are upgrading your LORIS, you'll also want to upgrade to both PHP 7 and MySQL 5.7, since these dependency versions were not supported in the last release. 
  * Composer should be run with --no-dev option unless you are an active LORIS developer. 
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Install-Script) for more information.
