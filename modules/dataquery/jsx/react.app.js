@@ -162,7 +162,7 @@ DataQueryApp = React.createClass({
         }
         return savedFilter;
     },
-    saveCurrentQuery: function(name, shared) {
+    saveCurrentQuery: function(name, shared, override) {
         // Used to save the current query
 
         var that = this,
@@ -174,14 +174,17 @@ DataQueryApp = React.createClass({
                 Filters: filter,
                 QueryName: name,
                 SharedQuery: shared,
+                Override: override
             }, function(data) {
                 // Once saved, add the query to the list of saved queries
                 var id = JSON.parse(data).id,
                     queryIDs = that.state.queryIDs;
-                if (shared === true) {
-                    queryIDs.Shared.push(id);
-                } else {
-                    queryIDs.User.push(id);
+                if (!override) {
+                    if (shared === true) {
+                        queryIDs.Shared.push(id);
+                    } else {
+                        queryIDs.User.push(id);
+                    }
                 }
                 $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + id, function(value) {
                         var queries = that.state.savedQueries;
@@ -191,11 +194,31 @@ DataQueryApp = React.createClass({
                             'savedQueries' : queries,
                             'queryIDs' : queryIDs,
                             alertLoaded: false,
-                            alertSaved: true
+                            alertSaved: true,
+                            alertConflict: {
+                                show: false
+                            }
                         });
                     });
+            }).fail(function(data) {
+                if (data.status === 409) {
+                    that.setState({
+                        alertConflict: {
+                            show: true,
+                            QueryName: name,
+                            SharedQuery: shared
+                        }
+                    })
+                }
             });
 
+    },
+    overrideQuery: function () {
+        this.saveCurrentQuery(
+            this.state.alertConflict.QueryName,
+            this.state.alertConflict.SharedQuery,
+            true
+        )
     },
     getInitialState: function() {
         // Initialize the base state of the dataquery app
@@ -211,6 +234,9 @@ DataQueryApp = React.createClass({
             queriesLoaded: false,
             alertLoaded: false,
             alertSaved: false,
+            alertConflict: {
+                show: false
+            },
             ActiveTab :  'Info',
             rowData: {},
             filter: {
@@ -778,7 +804,10 @@ DataQueryApp = React.createClass({
         // Used to dismiss alerts
         this.setState({
             alertLoaded: false,
-            alertSaved: false
+            alertSaved: false,
+            alertConflict: {
+                show: false
+            }
         });
     },
     resetQuery: function(){
@@ -899,6 +928,23 @@ DataQueryApp = React.createClass({
                 </div>
             )
         }
+
+        // Display Conflict Query alert
+        if(this.state.alertConflict.show) {
+            alert = (
+                <div className="alert alert-warning" role="alert">
+                    <button type="button" className="close" aria-label="Close" onClick={this.dismissAlert}>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <button type="button" className="close" aria-label="Close" onClick={this.dismissAlert}>
+                        <span aria-hidden="true">Override</span>
+                    </button>
+                    <strong>Error</strong> Query with the same name already exists. 
+                    <a href="#" class="alert-link" onClick={this.overrideQuery}>Click here to override</a>
+                </div>
+            )
+        }
+
         var widthClass = "col-md-12";
         var sideBar = <div />
 
