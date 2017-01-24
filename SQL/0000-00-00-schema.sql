@@ -2200,11 +2200,11 @@ CREATE TABLE ExternalLinks (
     FOREIGN KEY (LinkTypeID) REFERENCES ExternalLinkTypes(LinkTypeID)
 );
 INSERT INTO ExternalLinks (LinkTypeID, LinkText, LinkURL) VALUES
-    (1,  'Loris Website', 'http://www.loris.ca'),
-    (1,  'GitHub', 'https://github.com/aces/Loris'),
-    (2,  'Loris Website', 'http://www.loris.ca'),
-    (2,  'GitHub', 'https://github.com/aces/Loris'),
-    (3,  'Loris Website', 'http://www.loris.ca');
+    ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='FooterLink'), 'Loris Website', 'http://www.loris.ca'),
+    ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='FooterLink'), 'GitHub', 'https://github.com/aces/Loris'),
+    ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='StudyLinks'), 'Loris Website', 'http://www.loris.ca'),
+    ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='StudyLinks'), 'GitHub', 'https://github.com/aces/Loris'),
+    ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='dashboard'), 'Loris Website', 'http://www.loris.ca');
 
 DROP TABLE IF EXISTS empty_queries;
 CREATE TABLE empty_queries (
