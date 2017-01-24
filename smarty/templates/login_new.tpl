@@ -11,7 +11,7 @@
               <img src="/{$study_logo}" alt="{$study_title}"/>
             </section>
           {/if}
-          <form action="{$action}" method="post">
+          <form method="POST">
             <div class="form-group">
               <input type="text" name="username" class="form-control" placeholder="User" value="{$username}"/>
             </div>
@@ -24,7 +24,7 @@
           </form>
           <div class="help-links">
             <a href="/password-reset">Forgot your password?</a><br/>
-            <a href="/request_account/process_new_account.php">Request Account</a>
+            <a href="/request-account">Request Account</a>
           </div>
           <div class="help-text">
             A WebGL-compatible browser is required for full functionality (Mozilla Firefox, Google Chrome)

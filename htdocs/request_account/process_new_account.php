@@ -55,6 +55,7 @@ $tpl_data['success']     = false;
 $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['site_list']   = $site_list;
+$tpl_data['page']        = 'request_account';
 
 try {
     $tpl_data['study_logo'] = "../".$config->getSetting('studylogo');
@@ -171,13 +172,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
         if ($result == 0) {
             // insert into db only if email address if it doesnt exist
-            $success = $DB->insert('users', $vals);
+            $DB->insert('users', $vals);
         }
+        // Show success message even if email already exists for security reasons
+        $tpl_data['success'] = true;
         unset($_SESSION['tntcon']);
-        //redirect to a new page
-        header("Location: thank-you.html", true, 301);
-        exit();
-
     }
 }
 
@@ -200,7 +199,7 @@ function checkLen($str, $len=2)
 //Output template using Smarty
 $smarty = new Smarty_neurodb;
 $smarty->assign($tpl_data);
-$smarty->display('process_new_account.tpl');
+$smarty->display('login_layout.tpl');
 
 ob_end_flush();
 

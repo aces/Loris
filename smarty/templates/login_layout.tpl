@@ -30,7 +30,7 @@
     {if $page == 'password-reset'}
       {include file='password_reset.tpl'}
     {elseif $page == 'request_account'}
-      {include file='process_new_account.tpl'}
+      {include file='request_account.tpl'}
     {else}
       {include file='login_new.tpl'}
     {/if}
