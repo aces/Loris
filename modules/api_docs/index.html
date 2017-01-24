@@ -11,7 +11,7 @@ function resizeIFrameToFitContent() {
 let contentDoc = document.getElementById( 'apiFrame' ).contentDocument;
 contentDoc.addEventListener('click', function(e) {
   let i = setInterval(resizeIFrameToFitContent, 10);
-  setTimeout(clearInterval, 1000, i);
+  setTimeout(clearInterval, 500, i);
 });
 contentDoc.addEventListener('DOMContentLoaded', function(e) {
   let i = setInterval(resizeIFrameToFitContent, 10);
