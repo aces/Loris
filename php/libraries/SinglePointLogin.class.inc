@@ -103,7 +103,7 @@ class SinglePointLogin
 
         $www = $config->getSetting('www');
         $tpl_data['baseurl'] = $www['url'];
-        $tpl_data['page'] = 'login';
+        $tpl_data['page']    = 'login';
 
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
