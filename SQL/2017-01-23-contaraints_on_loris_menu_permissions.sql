@@ -1,0 +1,9 @@
+ALTER TABLE LorisMenuPermissions
+ADD CONSTRAINT uc_PersonID CONSTRAINT `FK_LorisMenuPermissions_1` FOREIGN KEY (`PermID`) REFERENCES `permissions` (`permID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+ALTER TABLE LorisMenuPermissions
+ADD CONSTRAINT uc_PersonID CONSTRAINT `FK_LorisMenuPermissions_2` FOREIGN KEY (`MenuID`) REFERENCES `LorisMenu` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE LorisMenuPermissions
+ADD UNIQUE (MenuID,PermID);
