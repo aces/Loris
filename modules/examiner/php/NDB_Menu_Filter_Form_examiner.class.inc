@@ -54,33 +54,44 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         } else {
             $useCertification = false;
         }
+        
+        $user = User::singleton();
+        $centerID = $DB->quote($user->getData('CenterID'));
 
         // base query
-        $query = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
         if ($this->useCertification == '1') {
-            $query .= " LEFT JOIN certification c ON 
-                   (c.examinerID=e.examinerID and c.pass = 'certified')
-                   LEFT JOIN test_names tn ON (tn.ID = c.testID) ";
-        }
-         $query .= " WHERE 1=1 ";
+            
+                 if ($user->hasPermission('examiner_multisite')){
+             
+                        $query = " FROM (select e.examinerID, e.full_name as Examiner,psc.Name as Site,e.radiologist as Radiologist,tn.full_name as Certification FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID) LEFT JOIN certification c ON (c.examinerID=e.examinerID and c.pass = 'certified') LEFT JOIN test_names tn ON (tn.ID = c.testID)) as v GROUP BY v.Examiner,v.Site";
+                         
+                  } else {
+                 
+                        $query = " FROM (select e.examinerID, e.full_name as Examiner,psc.Name as Site,e.radiologist as Radiologist,tn.full_name as Certification FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID) LEFT JOIN certification c ON (c.examinerID=e.examinerID and c.pass = 'certified') LEFT JOIN test_names tn ON (tn.ID = c.testID) where e.centerID = ".$centerID.") as v GROUP BY v.Examiner,v.Site";
+                    }
+        } else {
 
-        $user = User::singleton();
-        if (!$user->hasPermission('examiner_multisite')) {
-            $query .= " AND e.CenterID=" . $DB->quote($user->getData('CenterID'));
-        }
+                  if ($user->hasPermission('examiner_multisite')){
+
+                        $query = "select e.examinerID, e.full_name as Examiner,psc.Name as Site,e.radiologist as Radiologist FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
+              
+                   } else { 
+                        $query = "select e.examinerID, e.full_name as Examiner,psc.Name as Site,e.radiologist FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID) where psc.CenterID = CenterID";
+                      }
+       }
 
         // set the class variables
         $this->columns = array(
-                          'e.full_name as Examiner',
-                          'e.examinerID as ID',
-                          'psc.Name as Site',
-                          'e.radiologist as Radiologist',
+                          'v.Examiner as Examiner',
+                          'v.examinerID as ID',
+                          'v.Site as Site',
+                          'v.Radiologist as Radiologist',
                          );
         if ($this->useCertification == '1') {
-            array_push($this->columns, 'tn.Full_name');
+            array_push($this->columns, 'GROUP_CONCAT(v.Certification) as Certification');
         }
         $this->query        = $query;
-        $this->order_by     = 'e.full_name';
+        $this->order_by     = 'v.Examiner';
         $this->headers      = array(
                                'Examiner',
                                'ID',
@@ -88,15 +99,15 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                                'Radiologist',
                               );
         $this->validFilters = array(
-                               'e.full_name',
-                               'e.centerID',
-                               'COALESCE(e.radiologist, 0)',
+                               'v.Examiner',
+                               'v.Site',
+                               'COALESCE(v.Radiologist, 0)',
                               );
 
         $this->formToFilter = array(
-                               'examiner'    => 'e.full_name',
-                               'site'        => 'e.centerID',
-                               'radiologist' => 'COALESCE(e.radiologist, 0)',
+                               'examiner'    => 'v.Examiner',
+                               'site'        => 'v.Site',
+                               'radiologist' => 'COALESCE(v.Radiologist, 0)',
                               );
 
         // If certification is turned on, update the class variables to include
