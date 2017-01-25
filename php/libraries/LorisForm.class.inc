@@ -689,18 +689,22 @@ class LorisForm
                 $optionKey = (string) $optionKey;
             }
 
+            $defaultValue = $this->getValue($el['name']);
+
             if (isset($el['multiple'])) {
-                if (!empty($this->getValue($el['name']))
-                    && in_array($optionKey, $this->getValue($el['name']))
-                ) {
-                    $selected = 'selected="selected"';
+                if (!empty($defaultValue)) {
+                    if (in_array($optionKey, $defaultValue)
+                        || $optionKey === $defaultValue
+                    ) {
+                        $selected = 'selected="selected"';
+                    }
                 }
             } else {
-                if ($optionKey === $this->getValue($el['name'])) {
+                if ($optionKey === $defaultValue) {
                     $selected = 'selected="selected"';
                 } elseif (isset($el['selected'])
                     && $optionKey === $el['selected']
-                    && $this->getValue($el['name']) === null
+                    && $defaultValue === null
                 ) {
                     $selected = 'selected="selected"';
                 }
