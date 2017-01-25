@@ -30,6 +30,16 @@ class API_Docs extends \NDB_Page
     var $tpl_data;
 
     /**
+     * Create a new API_Docs instance
+     */
+    public function __construct($name)
+    {
+        $factory  = \NDB_Factory::singleton();
+        $settings = $factory->settings();
+        $this->tpl_data['baseurl'] = $settings->getBaseURL();
+    }
+
+    /**
      * Determine whether the user has permission to view this page
      *
      * @return bool whether the user has access

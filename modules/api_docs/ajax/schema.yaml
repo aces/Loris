@@ -1,0 +1,77 @@
+swagger: '2.0'
+info:
+  title: LORIS API
+  description: This document specifies the Loris REST API.
+  version: 0.0.2
+host: localhost
+schemes:
+  - http
+basePath: /api/v0.0.2
+produces:
+  - application/json
+
+paths:
+  /login:
+    post:
+      description: >-
+        Users can be be authenticated using JSON Web Tokens by sending a POST request with their username and password
+      tags:
+        - Login
+      operationId: Authentication
+      parameters:
+        - name: data
+          description: Request payload
+          in: body
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+                format: password
+      responses:
+        '200':
+          description: An object with an authenticity token
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: JWT token
+        '401':
+          description: Unauthorized
+  /projects:
+    get:
+      description: Return a list of projects in this Loris instance
+      tags: 
+        - Project
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: an array of projects
+          schema:
+            type: object # this should probably be an array of Project
+            items:
+              $ref: '#/definitions/Projects'
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  Projects:
+    type: object
+    properties:
+      project1:
+        $ref: '#/definitions/Project'
+      project2:
+        $ref: '#/definitions/Project'
+  Project: #this should contain the nam as a property instead of being its key
+    type: object 
+    properties:
+      useEDC:
+        type: boolean
+      PSCID:
+        type: string

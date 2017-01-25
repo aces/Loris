@@ -1,4 +1,4 @@
-<iframe id="apiFrame" src="{$baseURL}/api_docs/static/index.html" class="col-md-12" scrolling="no" frameborder="0">
+<iframe id="apiFrame" src="{$baseurl}/api_docs/static/index.html" class="col-md-12" scrolling="no" frameborder="0">
 Not supported
 </iframe>
 <script type="application/javascript">
@@ -8,13 +8,15 @@ function resizeIFrameToFitContent() {
     iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
     iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
 }
-let contentDoc = document.getElementById( 'apiFrame' ).contentDocument;
-contentDoc.addEventListener('click', function(e) {
-  let i = setInterval(resizeIFrameToFitContent, 10);
-  setTimeout(clearInterval, 500, i);
-});
-contentDoc.addEventListener('DOMContentLoaded', function(e) {
-  let i = setInterval(resizeIFrameToFitContent, 10);
-  setTimeout(clearInterval, 1000, i);
-});
+(function(e){ 
+  let contentDoc = document.getElementById( 'apiFrame' ).contentDocument;
+  contentDoc.addEventListener('click', function(e) {
+    let i = setInterval(resizeIFrameToFitContent, 10);
+    setTimeout(clearInterval, 500, i);
+  });
+  contentDoc.addEventListener('DOMContentLoaded', function(e) {
+    let i = setInterval(resizeIFrameToFitContent, 10);
+    setTimeout(clearInterval, 3000, i);
+  });
+})();
 </script>

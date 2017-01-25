@@ -33,7 +33,8 @@
                                     "type": "string"
                                 },
                                 "password": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "format": "password"
                                 }
                             }
                         }
@@ -55,6 +56,61 @@
                     "401": {
                         "description": "Unauthorized"
                     }
+                }
+            }
+        },
+        "/projects": {
+            "get": {
+                "description": "Return a list of projects in this Loris instance",
+                "tags": [
+                    "Project"
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "an array of projects",
+                        "schema": {
+                            "type": "object",
+                            "items": {
+                                "$ref": "#/definitions/Projects"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "definitions": {
+        "Projects": {
+            "type": "object",
+            "properties": {
+                "project1": {
+                    "$ref": "#/definitions/Project"
+                },
+                "project2": {
+                    "$ref": "#/definitions/Project"
+                }
+            }
+        },
+        "Project": {
+            "type": "object",
+            "properties": {
+                "useEDC": {
+                    "type": "boolean"
+                },
+                "PSCID": {
+                    "type": "string"
                 }
             }
         }
