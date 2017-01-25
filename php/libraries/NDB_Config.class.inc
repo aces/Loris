@@ -87,7 +87,7 @@ class NDB_Config
                 }
             }
 
-            $config  = new NDB_Config();
+            $config = new NDB_Config();
             if (file_exists("/home/lorisadmin/.lorisDB.xml")) {
                 $success = $config->load("/home/lorisadmin/.lorisDB.xml");
             }
