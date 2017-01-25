@@ -32,7 +32,7 @@ $tpl_data = array();
 $config          =& NDB_Config::singleton();
 $tpl_data['css'] =$config->getSetting('css');
 $tpl_data['study_title'] = $config->getSetting('title');
-$tpl_data['page'] = 'password-reset';
+$tpl_data['page']        = 'password-reset';
 try {
     $tpl_data['study_logo'] = $config->getSetting('studylogo');
 } catch(ConfigurationException $e) {
@@ -72,7 +72,7 @@ if (isset($_POST['username'])) {
             $tpl_data['error_message'] = 'Please provide a valid email address!';
         }
     } else {
-        $tpl_data['error_message'] = 'Could not find a user with this email address!';
+        $tpl_data['error_message'] = "Couldn't find a user with this email address!";
     }
 }
 
