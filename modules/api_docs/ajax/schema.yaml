@@ -6,7 +6,7 @@ info:
 host: localhost
 schemes:
   - http
-basePath: /api/v0.0.2
+basePath: /api/v0.0.3
 produces:
   - application/json
 
