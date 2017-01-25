@@ -87,8 +87,12 @@ class NDB_Config
                 }
             }
 
-            // Load the file
             $config  = new NDB_Config();
+            if (file_exists("/home/lorisadmin/.lorisDB.xml")) {
+                $success = $config->load("/home/lorisadmin/.lorisDB.xml");
+            }
+
+            // Load the file
             $success = $config->load($configFile);
         }
 
@@ -112,8 +116,7 @@ class NDB_Config
                 "Could not load Loris config file $configFile"
             );
         }
-
-        $this->_settings = NDB_Config::convertToArray($newroot);
+        $this->_settings += NDB_Config::convertToArray($newroot);
     }
 
     /**
