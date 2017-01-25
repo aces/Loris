@@ -159,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $verif_box = htmlspecialchars($_REQUEST["verif_box"], ENT_QUOTES);
         $site      = htmlspecialchars($_REQUEST["site"], ENT_QUOTES);
 
-        // check to see if verificaton code was correct
+        // check to see if verification code was correct
         // if verification code was correct send the message and show this page
         $fullname = $name." ".$lastname;
         $vals     = array(
@@ -169,7 +169,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                      'Last_name'        => $lastname,
                      'Pending_approval' => 'Y',
                      'Email'            => $from,
-                     'CenterID'         => $site,
                     );
 
         if ($_REQUEST['examiner']=='on') {
@@ -177,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if ($_REQUEST['radiologist']=='on') {
                 $rad =1;
             }
-            //insert in DB as inactive untill account approved
+            //insert in DB as inactive until account approved
             $DB->insert(
                 'examiners',
                 array(
@@ -197,11 +196,26 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         );
 
         if ($result == 0) {
-            // insert into db only if email address if it doesnt exist
-            $DB->insert('users', $vals);
+            // insert into DB only if email address doesn't exist
+            $success = $DB->insert('users', $vals);
         }
         // Show success message even if email already exists for security reasons
         $tpl_data['success'] = true;
+
+        // Get the ID of the new user and insert into user_psc_rel
+        $user_id = $DB->pselectOne(
+            "SELECT ID FROM users WHERE Email = :VEmail",
+            array('VEmail' => $from)
+        );
+
+        $DB->insert(
+            'user_psc_rel',
+            array(
+                'UserID' => $user_id,
+                'CenterID' => $site,
+            )
+        );
+
         unset($_SESSION['tntcon']);
     }
 }
