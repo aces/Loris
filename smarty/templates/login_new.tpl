@@ -11,12 +11,17 @@
               <img src="/{$study_logo}" alt="{$study_title}"/>
             </section>
           {/if}
-          <form method="POST">
+          <form method="POST" action="{$action}">
             <div class="form-group">
               <input type="text" name="username" class="form-control" placeholder="User" value="{$username}"/>
             </div>
             <div class="form-group">
-              <input type="password" name="password" class="form-control" placeholder="Password" />
+              <input type="password" name="password" class="form-control" placeholder="Password" aria-describedby="helpBlock" />
+              {if $error_message}
+                <span id="helpBlock" class="help-block">
+                    <b class="text-danger">{$error_message}</b>
+                </span>
+              {/if}
             </div>
             <div class="form-group">
               <input type="submit" name="login" class="btn btn-primary btn-block" value="Login" />
