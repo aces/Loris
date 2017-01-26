@@ -201,7 +201,8 @@ class NDB_Form_Dashboard extends NDB_Form
             $this->tpl_data['pending_users']      = $DB->pselectOne(
                 "SELECT COUNT(*) FROM users 
                 LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
-		        WHERE users.Pending_approval='Y' AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
+		        WHERE users.Pending_approval='Y' 
+                AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
                 array()
             );
             $this->tpl_data['pending_users_site'] = 'Site: all';
