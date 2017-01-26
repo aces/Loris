@@ -57,8 +57,8 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "user_psc_rel",
             array(
-                'UserID'          => $user_id,
-                'CenterID'        => '1',
+             'UserID'   => $user_id,
+             'CenterID' => '1',
             )
         );
         //Insert two violation scan
