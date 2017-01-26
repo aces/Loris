@@ -32,7 +32,7 @@
     {elseif $page == 'request_account'}
       {include file='request_account.tpl'}
     {else}
-      {include file='login_new.tpl'}
+      {include file='login.tpl'}
     {/if}
   </section>
 
