@@ -740,6 +740,45 @@ class Utility
     }
 
     /**
+     * Get a list of instruments installed in Loris for a specific project.
+     *
+     * @param string $projectName The project name
+     *
+     * @return Associative array of the form Test_name => Full Description
+     * @note   Arguably, this should be a static function in NDB_BVL_Instrument
+     */
+    static function getAllProjectInstruments($projectName)
+    {
+        $Factory       = NDB_Factory::singleton();
+        $DB            = $Factory->Database();
+        $instruments_q = $DB->pselect(
+            "
+            SELECT
+              t.Test_name,
+              t.Full_name
+            FROM
+              test_names t
+            JOIN test_battery USING (Test_name)
+            JOIN subproject USING (SubprojectID)
+            JOIN project_rel USING (SubprojectID)
+            JOIN Project USING (ProjectID)
+            WHERE
+                Project.Name = :v_project_name AND
+                test_battery.Active = 'Y'
+            ",
+            array('v_project_name' => $projectName)
+        );
+        $instruments   = array();
+        foreach ($instruments_q as $row) {
+            if (isset($row['Test_name']) && isset($row['Full_name'])) {
+                $instruments[$row['Test_name']] =$row['Full_name'];
+            }
+        }
+
+        return $instruments;
+    }
+
+    /**
      * Get a list of DDE instruments installed in Loris.
      *
      * @return Associative array of the form Test_name => Full Description
@@ -767,6 +806,31 @@ class Utility
             }
         }
         return $instruments;
+    }
+
+    /**
+     * Get the subgroup name of an instrument
+     *
+     * @param string $test_name The instrument short name
+     *
+     * @return string The subgroup name;
+     */
+    static function getInstrumentSubgroupName($test_name=null)
+    {
+        $DB    = Database::singleton();
+        $value = $DB->pselectOne(
+            "
+            SELECT
+              Subgroup_name
+            FROM
+              test_subgroups s
+            JOIN test_names t
+              ON (s.ID = t.Sub_group)
+            WHERE t.test_name = :v_test_name
+            ",
+            array('v_test_name' => $test_name)
+        );
+        return $value;
     }
 
     /**

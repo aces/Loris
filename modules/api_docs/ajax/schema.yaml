@@ -2,14 +2,13 @@ swagger: '2.0'
 info:
   title: LORIS API
   description: This document specifies the Loris REST API.
-  version: 0.0.2
+  version: 0.0.3
 host: localhost
 schemes:
   - http
 basePath: /api/v0.0.3
 produces:
   - application/json
-
 paths:
   /login:
     post:
@@ -20,6 +19,7 @@ paths:
       operationId: Authentication
       parameters:
         - name: data
+          required: true
           description: Request payload
           in: body
           schema:
@@ -43,7 +43,7 @@ paths:
           description: Unauthorized
   /projects:
     get:
-      description: Return a list of projects in this Loris instance
+      description: Return a list of the project names in this Loris instance
       tags: 
         - Project
       security:
@@ -52,26 +52,94 @@ paths:
         '200':
           description: an array of projects
           schema:
-            type: object # this should probably be an array of Project
+            type: array
             items:
-              $ref: '#/definitions/Projects'
+              type: string
+          examples:
+            application/json:
+              - "Project 1"
+              - "Project 2"
+  /projects/{name}:
+    get:
+      description: Return the project definition
+      tags:
+        - Project
+      security:
+        - Bearer: []
+      parameters:
+        - name: name
+          in: path
+          description: The name of the project
+          required: true
+          type: string
+      responses:
+        '200':
+          description: An object whit the project informations
+          schema:
+            $ref: '#/definitions/Project'
+  /projects/{name}/instruments:
+    get:
+      description: Returns all the instruments used/installed in this project
+      tags:
+        - Project
+        - Instrument
+      security:
+        - Bearer: []
+      parameters:
+        - name: name
+          in: path
+          description: The name of the project
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            An object with that project's instruments informations
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Instrument'
 securityDefinitions:
   Bearer:
     type: apiKey
     name: Authorization
     in: header
 definitions:
-  Projects:
-    type: object
-    properties:
-      project1:
-        $ref: '#/definitions/Project'
-      project2:
-        $ref: '#/definitions/Project'
-  Project: #this should contain the nam as a property instead of being its key
+  Project:
     type: object 
     properties:
-      useEDC:
+      name:
+        type: string
+      useEDC: 
         type: boolean
       PSCID:
+        $ref: '#/definitions/PSCIDSettings'
+  PSCIDSettings:
+    type: object
+    properties:
+      Type:
         type: string
+        description: >-
+          If the type is "prompt", the user should be prompted to enter the PSCID for new candidates. If the type is "auto", the server will automatically generate the PSCID
+        enum:
+          - auto
+          - prompt
+      Regex:
+        type: string
+        description: >-
+          A regular expression that can be used to validate a PSCID for this project
+  Instrument:
+    type: object
+    properties:
+      ShortName:
+        type: string
+      FullName:
+        type: string
+      Subgroup:
+        type: string
+        description: >-
+          Subgroup name
+      DoubleDataEntryEnable:
+        type: boolean
+        description: >-
+          Is double data entry enable for that instrument
