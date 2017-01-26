@@ -54,33 +54,91 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         } else {
             $useCertification = false;
         }
-
-        // base query
-        $query = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
-        if ($this->useCertification == '1') {
-            $query .= " LEFT JOIN certification c ON 
-                   (c.examinerID=e.examinerID and c.pass = 'certified')
-                   LEFT JOIN test_names tn ON (tn.ID = c.testID) ";
-        }
-         $query .= " WHERE 1=1 ";
-
+        
         $user = User::singleton();
-        if (!$user->hasPermission('examiner_multisite')) {
-            $query .= " AND e.CenterID=" . $DB->quote($user->getData('CenterID'));
-        }
+        $centerID = $DB->quote($user->getData('CenterID'));
+
+if ($this->useCertification == '1') { 
+                  if ($user->hasPermission('examiner_multisite')){
+                       $query = " 
+                        FROM 
+                        ( SELECT v.Examiner as Examiner,
+                        v.examinerID as ID,v.Site as Site,
+                        v.centerID as centerID,v.Radiologist as Radiologist,
+                        GROUP_CONCAT(v.Certification) as Certification 
+                        FROM 
+                        (select e.examinerID as examinerID, 
+                        e.full_name as Examiner,e.centerID as centerID, 
+                        psc.Name as Site,e.radiologist as Radiologist,
+                        tn.full_name as Certification 
+                        FROM 
+                        examiners e LEFT JOIN psc ON 
+                        (e.centerID=psc.CenterID) 
+                        LEFT JOIN certification c ON 
+                        (c.examinerID=e.examinerID and c.pass = 'certified') 
+                        LEFT JOIN test_names tn ON (tn.ID = c.testID)) as v 
+                        GROUP BY v.Examiner,v.Site) ";
+
+                  } else {
+
+                        $query = " 
+                        FROM 
+                        ( SELECT v.Examiner as Examiner,
+                        v.examinerID as ID,v.Site as Site,v.centerID 
+                        as centerID,v.Radiologist as Radiologist,
+                        GROUP_CONCAT(v.Certification) as Certification 
+                        FROM 
+                        (select e.examinerID, e.full_name as Examiner,
+                        e.centerID as centerID, psc.Name as Site,
+                        e.radiologist as Radiologist,
+                        tn.full_name as Certification 
+                        FROM 
+                        examiners e LEFT JOIN psc ON 
+                        (e.centerID=psc.CenterID) LEFT JOIN certification c ON 
+                        (c.examinerID=e.examinerID and c.pass = 'certified') 
+                        LEFT JOIN test_names tn ON (tn.ID = c.testID) 
+                        WHERE e.centerID =".$centerID." ) as v 
+                        GROUP BY v.Examiner,v.Site) ";
+                    }
+        } else {
+
+                  if ($user->hasPermission('examiner_multisite')){
+
+                        $query = " 
+                        FROM 
+                        (SELECT e.full_name as Examiner,e.examinerID as ID,
+                        psc.Name as Site,e.centerID as centerID,
+                        e.Radiologist as Radiologist FROM examiners e 
+                        LEFT JOIN 
+                        psc ON (e.centerID=psc.CenterID)) ";
+
+                   } else {
+                        $query = " 
+                        FROM 
+                        (SELECT e.full_name as Examiner,e.examinerID as ID,
+                        psc.Name as Site,e.centerID as centerID,
+                        e.Radiologist as Radiologist 
+                        FROM 
+                        examiners e 
+                        LEFT JOIN 
+                        psc ON (e.centerID=psc.CenterID) 
+                        WHERE psc.CenterID = ".$centerID." ) "  ;
+                      }
+       }
 
         // set the class variables
         $this->columns = array(
-                          'e.full_name as Examiner',
-                          'e.examinerID as ID',
-                          'psc.Name as Site',
-                          'e.radiologist as Radiologist',
+                          'T.Examiner as Examiner',
+                          'T.ID as ID',
+                          'T.Site as Site',
+                          'T.Radiologist as Radiologist',
                          );
         if ($this->useCertification == '1') {
-            array_push($this->columns, 'tn.Full_name');
+            array_push($this->columns, 'T.Certification as Certification');
         }
+        $query             .= "T WHERE 1=1 ";
         $this->query        = $query;
-        $this->order_by     = 'e.full_name';
+        $this->order_by     = 'T.Examiner';
         $this->headers      = array(
                                'Examiner',
                                'ID',
@@ -88,15 +146,15 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                                'Radiologist',
                               );
         $this->validFilters = array(
-                               'e.full_name',
-                               'e.centerID',
-                               'COALESCE(e.radiologist, 0)',
+                               'T.Examiner',
+                               'T.centerID',
+                               'COALESCE(T.Radiologist, 0)',
                               );
 
         $this->formToFilter = array(
-                               'examiner'    => 'e.full_name',
-                               'site'        => 'e.centerID',
-                               'radiologist' => 'COALESCE(e.radiologist, 0)',
+                               'examiner'    => 'T.Examiner',
+                               'site'        => 'T.centerID',
+                               'radiologist' => 'COALESCE(T.Radiologist, 0)',
                               );
 
         // If certification is turned on, update the class variables to include
