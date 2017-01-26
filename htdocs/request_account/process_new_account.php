@@ -211,8 +211,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $DB->insert(
             'user_psc_rel',
             array(
-                'UserID' => $user_id,
-                'CenterID' => $site,
+             'UserID'   => $user_id,
+             'CenterID' => $site,
             )
         );
 
