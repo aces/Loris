@@ -87,18 +87,18 @@ $err = array();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     if (!checkLen('name')) {
-        $err[] = 'The minimum length for First Name field is 3 characters';
+        $err['name'] = 'The minimum length for First Name field is 3 characters!';
     }
     if (!checkLen('lastname')) {
-        $err[] = 'The minimum length for Last Name field is 3 characters';
+        $err['lastname'] = 'The minimum length for Last Name field is 3 characters!';
     }
     if (!checkLen('from')) {
-        $err[] = 'Your email is not valid!';
+        $err['from'] = 'Please provide a valid email!';
     } else if (!filter_var($_REQUEST['from'], FILTER_VALIDATE_EMAIL) ) {
-        $err[] = 'Your email is not valid!';
+        $err['from'] = 'Please provide a valid email!';
     }
     if (!checkLen('site', 0)) {
-        $err[] = 'The Site field is empty!';
+        $err['site'] = 'Please choose a site!';
     }
     if (isset($_SESSION['tntcon'])
         && md5($_REQUEST['verif_box']).'a4xn' != $_SESSION['tntcon']
@@ -117,10 +117,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     foreach ($fields as $key => $field) {
         $value = $_REQUEST[$key];
         if (preg_match('/["]/', html_entity_decode($value))) {
-            $err[] = "You can't use quotes in $field";
+            $err[$field] = "You can't use quotes in $field";
         }
         if (strlen($value) > strlen(strip_tags($value))) {
-            $err[] = "You can't use tags in $field";
+            $err[$field] = "You can't use tags in $field";
         }
     }
 
