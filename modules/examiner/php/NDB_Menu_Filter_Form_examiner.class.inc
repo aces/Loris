@@ -100,30 +100,20 @@ if ($this->useCertification == '1') {
                         WHERE e.centerID =".$centerID." ) as v 
                         GROUP BY v.Examiner,v.Site) ";
                     }
-        } else {
+} else {
 
-                  if ($user->hasPermission('examiner_multisite')){
-
-                        $query = " 
-                        FROM 
-                        (SELECT e.full_name as Examiner,e.examinerID as ID,
-                        psc.Name as Site,e.centerID as centerID,
-                        e.Radiologist as Radiologist FROM examiners e 
-                        LEFT JOIN 
-                        psc ON (e.centerID=psc.CenterID)) ";
-
-                   } else {
-                        $query = " 
+                 $query = " 
                         FROM 
                         (SELECT e.full_name as Examiner,e.examinerID as ID,
                         psc.Name as Site,e.centerID as centerID,
                         e.Radiologist as Radiologist 
-                        FROM 
-                        examiners e 
+                        FROM examiners e 
                         LEFT JOIN 
-                        psc ON (e.centerID=psc.CenterID) 
-                        WHERE psc.CenterID = ".$centerID." ) "  ;
-                      }
+                        psc ON (e.centerID=psc.CenterID)) ";      
+                  if (!$user->hasPermission('examiner_multisite')){
+
+                        $query .= " WHERE psc.CenterID = ".$centerID." ) "  ;
+                   }
        }
 
         // set the class variables
