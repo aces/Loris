@@ -32,14 +32,14 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user     =& User::singleton();
         $site_arr = $user->getData('CenterIDs');
         foreach ($site_arr as $key=>$val) {
-            $site[$key] = & Site::singleton($val);
+            $site[$key]        = & Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
         }
         $oneIsStudySite = in_array("1", $isStudySite);
-        $aap  = $user->hasPermission('access_all_profiles');
+        $aap            = $user->hasPermission('access_all_profiles');
         $this->tpl_data['access_all_profiles'] = $aap;
         return (
             $user->hasPermission('access_all_profiles')
@@ -135,10 +135,9 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
             WHERE c.Active = 'Y'";
 
-
         if (!$user->hasPermission('access_all_profiles')) {
 
-            $site_arr = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterID());
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 
