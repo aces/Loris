@@ -10,6 +10,11 @@ h1, h2, h3, h4 {
   font-weight: 700;
 }
 
+.btn {
+  -webkit-transition: background-color 0.2s ease-in;
+  transition: background-color 0.2s ease-in;
+}
+
 .header {
   height: 100px;
   background-color: #064785;
@@ -27,6 +32,13 @@ h1, h2, h3, h4 {
 .header .gh-logo img {
   height: 40px;
   padding-right: 10px;
+  opacity: 0.8;
+}
+
+.header .gh-logo img:hover {
+  opacity: 1;
+  -webkit-transition: opacity 0.2s ease-in;
+  transition: opacity 0.2s ease-in;
 }
 
 
