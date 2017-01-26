@@ -495,7 +495,10 @@ class NDB_Caller
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
             || !$user->hasPermission('data_entry')
-            || !in_array($timepoint->getData("CenterID"), $user->getData("CenterIDs"))
+            || !in_array(
+                $timepoint->getData("CenterID"),
+                $user->getData("CenterIDs")
+            )
         ) {
             if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
                 $instrument->freeze();

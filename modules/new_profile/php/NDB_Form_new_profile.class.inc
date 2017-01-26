@@ -129,11 +129,11 @@ class NDB_Form_new_profile extends NDB_Form
                 $center = $DB->pselectRow("SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid", array('cid' => $siteID));
                 $psc_labelOptions[$siteID] = $center['Name'];
             }
+            $this->addSelect('psc', 'Site', $psc_labelOptions);
+    
+            // site rules
+            $this->addRule('psc', 'Site is required', 'required');
         }
-        $this->addSelect('psc', 'Site', $psc_labelOptions);
-
-        // site rules
-        $this->addRule('psc', 'Site is required', 'required');
 
 
         $PSCIDsettings = $config->getSetting('PSCID');
