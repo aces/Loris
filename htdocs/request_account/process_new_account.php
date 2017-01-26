@@ -56,6 +56,8 @@ $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['site_list']   = $site_list;
 $tpl_data['page']        = 'request_account';
+$tpl_data['currentyear'] = date('Y');
+$tpl_data['version']     = file_get_contents(__DIR__ . "/../../VERSION");
 
 try {
     $tpl_data['study_logo'] = "../".$config->getSetting('studylogo');
