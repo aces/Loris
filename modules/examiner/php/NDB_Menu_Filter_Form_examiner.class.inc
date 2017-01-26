@@ -54,13 +54,13 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         } else {
             $useCertification = false;
         }
-        
-        $user = User::singleton();
+
+        $user     = User::singleton();
         $centerID = $DB->quote($user->getData('CenterID'));
 
-if ($this->useCertification == '1') { 
-                  if ($user->hasPermission('examiner_multisite')){
-                       $query = " 
+        if ($this->useCertification == '1') {
+            if ($user->hasPermission('examiner_multisite')) {
+                 $query = " 
                         FROM 
                         ( SELECT v.Examiner as Examiner,
                         v.examinerID as ID,v.Site as Site,
@@ -79,9 +79,9 @@ if ($this->useCertification == '1') {
                         LEFT JOIN test_names tn ON (tn.ID = c.testID)) as v 
                         GROUP BY v.Examiner,v.Site) ";
 
-                  } else {
+            } else {
 
-                        $query = " 
+                  $query = " 
                         FROM 
                         ( SELECT v.Examiner as Examiner,
                         v.examinerID as ID,v.Site as Site,v.centerID 
@@ -99,8 +99,8 @@ if ($this->useCertification == '1') {
                         LEFT JOIN test_names tn ON (tn.ID = c.testID) 
                         WHERE e.centerID =".$centerID." ) as v 
                         GROUP BY v.Examiner,v.Site) ";
-                    }
-} else {
+            }
+        } else {
 
                  $query = " 
                         FROM 
@@ -109,12 +109,12 @@ if ($this->useCertification == '1') {
                         e.Radiologist as Radiologist 
                         FROM examiners e 
                         LEFT JOIN 
-                        psc ON (e.centerID=psc.CenterID)) ";      
-                  if (!$user->hasPermission('examiner_multisite')){
+                        psc ON (e.centerID=psc.CenterID)) ";
+            if (!$user->hasPermission('examiner_multisite')) {
 
-                        $query .= " WHERE psc.CenterID = ".$centerID." ) "  ;
-                   }
-       }
+                  $query .= " WHERE psc.CenterID = ".$centerID." ) "  ;
+            }
+        }
 
         // set the class variables
         $this->columns = array(
@@ -126,15 +126,15 @@ if ($this->useCertification == '1') {
         if ($this->useCertification == '1') {
             array_push($this->columns, 'T.Certification as Certification');
         }
-        $query             .= "T WHERE 1=1 ";
-        $this->query        = $query;
-        $this->order_by     = 'T.Examiner';
-        $this->headers      = array(
-                               'Examiner',
-                               'ID',
-                               'Site',
-                               'Radiologist',
-                              );
+        $query         .= "T WHERE 1=1 ";
+        $this->query    = $query;
+        $this->order_by = 'T.Examiner';
+        $this->headers  = array(
+                           'Examiner',
+                           'ID',
+                           'Site',
+                           'Radiologist',
+                          );
         $this->validFilters = array(
                                'T.Examiner',
                                'T.centerID',
