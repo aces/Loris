@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/login_layout.css">
   <link href="https://fonts.googleapis.com/css?family=PT+Sans:400,700" rel="stylesheet">
+  <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 </head>
 <body>
   <header class="header">
