@@ -67,11 +67,14 @@ class User extends UserPermissions
         $row = $DB->pselectRow($query, array('UID' => $username));
 
         // get user sites
-        $user_centerID_query =  $DB->pselect("SELECT CenterID FROM user_psc_rel upr 
-                        WHERE upr.UserID= :UID", array('UID' => $row['ID']));
+        $user_centerID_query =  $DB->pselect(
+            "SELECT CenterID FROM user_psc_rel upr 
+                        WHERE upr.UserID= :UID",
+            array('UID' => $row['ID'])
+        );
 
-        foreach ($user_centerID_query as $key=>$val){
-            $user_cid[$key]=$val['CenterID'];
+        foreach ($user_centerID_query as $key=>$val) {
+            $user_cid[$key] =$val['CenterID'];
         }
 
         // Get examiner information
@@ -98,9 +101,9 @@ class User extends UserPermissions
             }
         }
         // store user data in object property
-        $row['examiner'] =$examiner_info;
-        $row['CenterIDs']   =$user_cid;
-        $obj->userInfo   =$row;
+        $row['examiner']  =$examiner_info;
+        $row['CenterIDs'] =$user_cid;
+        $obj->userInfo    =$row;
         return $obj;
     }
 

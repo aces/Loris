@@ -1086,7 +1086,7 @@ class NDB_BVL_Feedback
 
         $site_arr = $user->getData('CenterIDs');
         foreach ($site_arr as $key=>$val) {
-                $site[$key] = & Site::singleton($val);
+                $site[$key]        = & Site::singleton($val);
                 $isStudySite[$key] = $site[$key]->isStudySite();
         }
         $oneIsStudySite = in_array("1", $isStudySite);

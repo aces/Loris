@@ -55,7 +55,7 @@ class DashboardTest extends LorisIntegrationTest
             array("test_user_id" => 'testUser1')
         );
         $this->DB->insert(
-            "users",
+            "user_psc_rel",
             array(
                 'UserID'          => $user_id,
                 'CenterID'        => '1',
