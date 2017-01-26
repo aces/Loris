@@ -190,17 +190,17 @@ class Create_Timepoint extends \NDB_Form
             $this->addRule('visitLabel', 'Visit label is required', 'required');
              // List of sites for the user
              $user = \User::singleton();
-             $DB = \Database::singleton();
+             $DB   = \Database::singleton();
              $user_list_of_sites = $user->getData('CenterIDs');
-             $num_sites = count($user_list_of_sites);
+             $num_sites          = count($user_list_of_sites);
 
-             if ($num_sites >1) {
-                 $pscLabelAdded=true;
-                 $psc_labelOptions = array(null => '');
-                 foreach ($user_list_of_sites as $key => $siteID) {
-                         $center = $DB->pselectRow("SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid", array('cid' => $siteID));
-                         $psc_labelOptions[$siteID] = $center['Name'];
-                 }
+            if ($num_sites >1) {
+                $pscLabelAdded    =true;
+                $psc_labelOptions = array(null => '');
+                foreach ($user_list_of_sites as $key => $siteID) {
+                        $center = $DB->pselectRow("SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid", array('cid' => $siteID));
+                        $psc_labelOptions[$siteID] = $center['Name'];
+                }
             }
             $this->addSelect('psc', 'Site', $psc_labelOptions);
         }

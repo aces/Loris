@@ -54,8 +54,8 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
 
         if (!$user->hasPermission('access_all_profiles')) {
             $this->query .= " AND i.centerID=";
-            $site_arr = $user->getData('CenterIDs');
-            $last_key = end(array_keys($site_arr));
+            $site_arr     = $user->getData('CenterIDs');
+            $last_key     = end(array_keys($site_arr));
             foreach ($site_arr as $key=>$val) {
                 if ($key == $last_key) {
                     $this->query .= $db->quote($val);

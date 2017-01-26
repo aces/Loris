@@ -66,7 +66,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         $user = User::singleton();
         if (!$user->hasPermission('examiner_multisite')) {
-            $site_arr = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterID());
             $this->query .= " AND e.CenterID IN (" . $site_arr . ")";
         }
 

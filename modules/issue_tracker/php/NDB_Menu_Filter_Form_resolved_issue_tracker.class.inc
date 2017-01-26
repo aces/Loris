@@ -51,8 +51,9 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
             "WHERE i.status = 'closed'";
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr = implode(",", $user->getCenterID());
-            $this->query .= " AND i.CenterID IN (" . $site_arr . ")";        }
+            $site_arr     = implode(",", $user->getCenterID());
+            $this->query .= " AND i.CenterID IN (" . $site_arr . ")";
+        }
 
         //note that this needs to be in the same order as the headers array
         $this->columns = array(
