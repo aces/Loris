@@ -59,8 +59,7 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
             foreach ($site_arr as $key=>$val) {
                 if ($key == $last_key) {
                     $this->query .= $db->quote($val);
-                }
-                else {
+                } else {
                     $this->query .= $db->quote($val) . " OR i.centerID=";
                 }
             }
