@@ -68,13 +68,13 @@ if (isset($_POST['username'])) {
             $msg_data['password'] = $password;
             Email::send($email, 'lost_password.tpl', $msg_data);
 
-            $tpl_data['confirm'] = $user->getData('Real_name')
-                .', you should receive an email within a few minutes.';
+            $tpl_data['success'] = 'You should receive an email with instructions 
+                                    within a few minutes!';
         } else {
-            $tpl_data['error_message'] = 'Please provide a valid email address!';
+            $tpl_data['error_message'] = 'Please provide a valid username!';
         }
     } else {
-        $tpl_data['error_message'] = "Couldn't find a user with this email address!";
+        $tpl_data['error_message'] = "Couldn't find a user with this username!";
     }
 }
 

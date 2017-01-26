@@ -101,18 +101,18 @@ h1, h2, h3, h4 {
 }
 
 
-.reset-pass-panel {
+.panel-center {
   max-width: 450px;
   margin: 0 auto;
 }
 
-.reset-pass-panel form {
+.panel-center form {
   padding: 20px 25px;
 }
 
-.request-account-success {
+.success-message {
   text-align: center;
-  padding: 30px 20px;
+  padding: 0 20px 40px 20px;
 }
 
 /* Tablets and bigger */
