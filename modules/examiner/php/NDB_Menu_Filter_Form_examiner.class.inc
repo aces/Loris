@@ -60,20 +60,20 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
 if ($this->useCertification == '1') { 
                   if ($user->hasPermission('examiner_multisite')){
-                       $query = " FROM ( SELECT v.Examiner as Examiner,v.examinerID as ID,v.Site as Site,v.centerID as centerID,v.Radiologist as Radiologist,GROUP_CONCAT(v.Certification) as Certification FROM (select e.examinerID as examinerID, e.full_name as Examiner,e.centerID as centerID, psc.Name as Site,e.radiologist as Radiologist,tn.full_name as Certification FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID) LEFT JOIN certification c ON (c.examinerID=e.examinerID and c.pass = 'certified') LEFT JOIN test_names tn ON (tn.ID = c.testID)) as v GROUP BY v.Examiner,v.Site) T WHERE 1=1 ";
+                       $query = " FROM ( SELECT v.Examiner as Examiner,v.examinerID as ID,v.Site as Site,v.centerID as centerID,v.Radiologist as Radiologist,GROUP_CONCAT(v.Certification) as Certification FROM (select e.examinerID as examinerID, e.full_name as Examiner,e.centerID as centerID, psc.Name as Site,e.radiologist as Radiologist,tn.full_name as Certification FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID) LEFT JOIN certification c ON (c.examinerID=e.examinerID and c.pass = 'certified') LEFT JOIN test_names tn ON (tn.ID = c.testID)) as v GROUP BY v.Examiner,v.Site) ";
 
                   } else {
 
-                        $query = " FROM ( SELECT v.Examiner as Examiner,v.examinerID as ID,v.Site as Site,v.centerID as centerID,v.Radiologist as Radiologist,GROUP_CONCAT(v.Certification) as Certification FROM (select e.examinerID, e.full_name as Examiner,e.centerID as centerID, psc.Name as Site,e.radiologist as Radiologist,tn.full_name as Certification FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID) LEFT JOIN certification c ON (c.examinerID=e.examinerID and c.pass = 'certified') LEFT JOIN test_names tn ON (tn.ID = c.testID) where e.centerID =".$centerID." ) as v GROUP BY v.Examiner,v.Site) T WHERE 1=1 ";
+                        $query = " FROM ( SELECT v.Examiner as Examiner,v.examinerID as ID,v.Site as Site,v.centerID as centerID,v.Radiologist as Radiologist,GROUP_CONCAT(v.Certification) as Certification FROM (select e.examinerID, e.full_name as Examiner,e.centerID as centerID, psc.Name as Site,e.radiologist as Radiologist,tn.full_name as Certification FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID) LEFT JOIN certification c ON (c.examinerID=e.examinerID and c.pass = 'certified') LEFT JOIN test_names tn ON (tn.ID = c.testID) where e.centerID =".$centerID." ) as v GROUP BY v.Examiner,v.Site) ";
                     }
         } else {
 
                   if ($user->hasPermission('examiner_multisite')){
 
-                        $query = " FROM (SELECT e.Examiner as Examiner,e.examinerID as ID,psc.Name as Site,e.centerID as centerID,e.Radiologist as Radiologist FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)) T ";
+                        $query = " FROM (SELECT e.full_name as Examiner,e.examinerID as ID,psc.Name as Site,e.centerID as centerID,e.Radiologist as Radiologist FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)) ";
 
                    } else {
-                        $query = " FROM (SELECT e.Examiner as Examiner,e.examinerID as ID,psc.Name as Site,e.centerID as centerID,e.Radiologist as Radiologist FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID) where psc.CenterID = ".$centerID." ) T "  ;
+                        $query = " FROM (SELECT e.full_name as Examiner,e.examinerID as ID,psc.Name as Site,e.centerID as centerID,e.Radiologist as Radiologist FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID) where psc.CenterID = ".$centerID." )  "  ;
                       }
        }
 
@@ -87,6 +87,7 @@ if ($this->useCertification == '1') {
         if ($this->useCertification == '1') {
             array_push($this->columns, 'T.Certification as Certification');
         }
+        $query             .= "T WHERE 1=1 ";
         $this->query        = $query;
         $this->order_by     = 'T.Examiner';
         $this->headers      = array(
