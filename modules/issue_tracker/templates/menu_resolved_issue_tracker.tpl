@@ -197,6 +197,7 @@
                         </table>
                         <div id="datatable">
                             <script>
+                                loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
                                 var table = RDynamicDataTable({
                                     "DataURL": "{$baseurl}/issue_tracker/?format=json&submenu=resolved_issue_tracker",
                                     "getFormattedCell": formatColumn
