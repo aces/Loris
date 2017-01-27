@@ -173,3 +173,7 @@ FilterForm.propTypes = {
   Module: React.PropTypes.string.isRequired,
   filter: React.PropTypes.object.isRequired
 };
+
+window.FilterForm = FilterForm;
+
+export default FilterForm;

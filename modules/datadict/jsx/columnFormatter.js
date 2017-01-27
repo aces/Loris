@@ -31,3 +31,7 @@ function formatDataDictColumn(column, cell, rowData) {
   }
   return <td>{cell}</td>;
 }
+
+window.formatDataDictColumn = formatDataDictColumn;
+
+export default formatDataDictColumn;

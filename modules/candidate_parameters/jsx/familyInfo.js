@@ -340,3 +340,8 @@ var FamilyInfo = React.createClass({
 });
 
 var RFamilyInfo = React.createFactory(FamilyInfo);
+
+window.FamilyInfo = FamilyInfo;
+window.RFamilyInfo = RFamilyInfo;
+
+export default FamilyInfo;

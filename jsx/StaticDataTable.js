@@ -468,3 +468,8 @@ var StaticDataTable = React.createClass({
 });
 
 var RStaticDataTable = React.createFactory(StaticDataTable);
+
+window.StaticDataTable = StaticDataTable;
+window.RStaticDataTable = RStaticDataTable;
+
+export default StaticDataTable;

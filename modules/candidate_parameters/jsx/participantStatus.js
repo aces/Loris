@@ -302,3 +302,8 @@ var ParticipantStatus = React.createClass(
 );
 
 var RParticipantStatus = React.createFactory(ParticipantStatus);
+
+window.ParticipantStatus = ParticipantStatus;
+window.RParticipantStatus = RParticipantStatus;
+
+export default ParticipantStatus;

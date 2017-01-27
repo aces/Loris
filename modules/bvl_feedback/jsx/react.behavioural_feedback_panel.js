@@ -652,3 +652,8 @@ var FeedbackPanel = React.createClass({
 });
 
 var RBehaviouralFeedbackPanel = React.createFactory(FeedbackPanel);
+
+window.FeedbackPanel = FeedbackPanel;
+window.RBehaviouralFeedbackPanel = RBehaviouralFeedbackPanel;
+
+export default FeedbackPanel;

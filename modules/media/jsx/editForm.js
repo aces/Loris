@@ -288,3 +288,8 @@ MediaEditForm.propTypes = {
 };
 
 var RMediaEditForm = React.createFactory(MediaEditForm);
+
+window.MediaEditForm = MediaEditForm;
+window.RMediaEditForm = RMediaEditForm;
+
+export default MediaEditForm;
