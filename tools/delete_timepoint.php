@@ -50,6 +50,10 @@ $PSCID = $argv[3];
 $sessionID = $argv[4];
 $confirm = false;
 
+// SQL output
+$printToSQL = false;
+$output="";
+
 // get the rest of the arguments
 switch ($action) {
     case 'delete_timepoint':
@@ -58,6 +62,7 @@ switch ($action) {
             showHelp();
         }
         if (!empty($argv[5]) && $argv[5] == 'confirm') $confirm = true;
+        if (!empty($argv[5]) && $argv[5] == 'tosql') $printToSQL = true;
         break;
     default:
         showHelp();
@@ -92,7 +97,7 @@ if ($sessionID != null) {
  */
 switch ($action) {
     case 'delete_timepoint':
-        deleteTimepoint($sessionID, $confirm, $DB);
+        deleteTimepoint($sessionID, $confirm, $printToSQL, $DB, $output);
         break;
 }
 
@@ -102,14 +107,15 @@ switch ($action) {
 function showHelp() {
     echo "*** Delete Timepoint ***\n\n";
 
-    echo "Usage: php delete_timepoint.php delete_timepoint DCCID PSCID SessionID [confirm]\n";
+    echo "Usage: php delete_timepoint.php delete_timepoint DCCID PSCID SessionID [confirm] [tosql]\n";
     echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482\n";
     echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 confirm\n\n";
+    echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 tosql\n\n";
 
     die();
 }
 
-function deleteTimepoint($sessionID, $confirm, $DB) {
+function deleteTimepoint($sessionID, $confirm, $printToSQL, $DB, $output) {
 
     $instruments = $DB->pselect('SELECT Test_name, CommentID FROM flag WHERE SessionID=:sid', array('sid' => $sessionID));
 
@@ -141,6 +147,11 @@ function deleteTimepoint($sessionID, $confirm, $DB) {
     $result = $DB->pselect('SELECT * FROM flag WHERE SessionID=:sid', array('sid' => $sessionID));
     print_r($result);
 
+    // Print from media
+    echo "Media\n";
+    $result = $DB->pselect('SELECT * FROM media WHERE session_id=:sid', array('sid' => $sessionID));
+    print_r($result);
+
     // Print from session
     echo "Session\n";
     $result = $DB->pselect('SELECT * FROM session WHERE ID=:id', array('id' => $sessionID));
@@ -167,12 +178,10 @@ function deleteTimepoint($sessionID, $confirm, $DB) {
 
     // IF CONFIRMED, DELETE TIMEPOINT
     if ($confirm) {
-        $DB->run("SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS;");
-        $DB->run("SET FOREIGN_KEY_CHECKS=0;");
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
             $name = implode(" -> ", $instrument);
-            echo "Deleting $name.\n";
+            echo "\n-- Deleting Instrument $name.\n";
             $DB->delete($instrument['Test_name'], array('CommentID' => $instrument['CommentID']));
 
             // Delete from conflicts
@@ -182,24 +191,68 @@ function deleteTimepoint($sessionID, $confirm, $DB) {
             $DB->delete('conflicts_resolved', array('CommentId2' => $instrument['CommentID']));
         }
         // Delete from flag
-        echo "Deleting from flag.\n";
+        echo "\n-- Deleting from flag.\n";
         $DB->delete('flag', array('SessionID' => $sessionID));
 
+        echo "\n-- Deleting from media.\n";
+        $DB->delete('media', array('session_id' => $sessionID));
+
         // Delete from session
-        echo "Deleting from session.\n";
+        echo "\n-- Deleting from session.\n";
         $DB->delete('session', array('ID' => $sessionID));
         // Delete from feedback
-        echo "Deleting from feedback.\n";
+        echo "\n-- Deleting from feedback.\n";
         $DB->delete('feedback_bvl_thread', array('SessionID' => $sessionID));
         foreach ($feedbackIDs as $id) {
             $DB->delete('feedback_bvl_entry', array('FeedbackID' => $id));
         }
+    } elseif ($printToSQL) {
+        // Delete each instrument instance
+        foreach ($instruments as $instrument) {
+            $name = implode(" -> ", $instrument);
+            $output .= "\n-- Deleting Instrument $name.\n";
+            _printResultsSQL($instrument['Test_name'], array('CommentID' => $instrument['CommentID']), $output, $DB);
 
-        $DB->run("SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;");
+            // Delete from conflicts
+            _printResultsSQL('conflicts_unresolved', array('CommentId1' => $instrument['CommentID']), $output, $DB);
+            _printResultsSQL('conflicts_unresolved', array('CommentId2' => $instrument['CommentID']), $output, $DB);
+            _printResultsSQL('conflicts_resolved', array('CommentId1' => $instrument['CommentID']), $output, $DB);
+            _printResultsSQL('conflicts_resolved', array('CommentId2' => $instrument['CommentID']), $output, $DB);
+        }
+        // Delete from flag
+        $output .= "\n-- Deleting from flag.\n";
+        _printResultsSQL('flag', array('SessionID' => $sessionID), $output, $DB);
+
+        $output .= "\n-- Deleting from media.\n";
+        _printResultsSQL('media', array('session_id' => $sessionID), $output, $DB);
+
+        // Delete from session
+        $output .= "\n-- Deleting from session.\n";
+        _printResultsSQL('session', array('ID' => $sessionID), $output, $DB);
+        // Delete from feedback
+        $output .= "\n-- Deleting from feedback.\n";
+        _printResultsSQL('feedback_bvl_thread', array('SessionID' => $sessionID), $output, $DB);
+        foreach ($feedbackIDs as $id) {
+            _printResultsSQL('feedback_bvl_entry', array('FeedbackID' => $id), $output, $DB);
+        }
+
+        //export file
+        $filename = __DIR__ . "/../project/tables_sql/DELETE_session_$sessionID.sql";
+        $fp=fopen($filename, "w");
+        fwrite($fp, $output);
+        fclose($fp);
     }
 }
 
-if ($confirm === false) {
-    echo "\n\nRun this tool again with the argument 'confirm' to ".
-        "perform the changes\n\n";
+function _printResultsSQL($table, $where, &$output, $DB){
+    $query  = "DELETE FROM $table WHERE ";
+    $where  = $DB->_implodeWithKeys(' AND ', $where);
+    $query .= $where;
+
+    $output.=$query;
+}
+
+if ($confirm === false && $printToSQL === false) {
+    echo "\n\nRun this tool again with the argument 'confirm' of 'tosql' to ".
+        "perform the changes or export them as an SQL patch\n\n";
 }
