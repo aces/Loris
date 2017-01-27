@@ -1,22 +1,26 @@
 <iframe id="apiFrame" src="{$baseurl}/api_docs/static/index.html" class="col-md-12" scrolling="no" frameborder="0">
 Not supported
 </iframe>
+{literal}  
 <script type="application/javascript">
-// Some function to resize the iFrame height
-function resizeIFrameToFitContent() {
-    var iFrame = document.getElementById( 'apiFrame' );
-    iFrame.width  = iFrame.contentWindow.document.body.scrollWidth;
-    iFrame.height = iFrame.contentWindow.document.body.scrollHeight;
-}
-(function(e){ 
-  let contentDoc = document.getElementById( 'apiFrame' ).contentDocument;
-  contentDoc.addEventListener('click', function(e) {
-    let i = setInterval(resizeIFrameToFitContent, 10);
-    setTimeout(clearInterval, 500, i);
-  });
-  contentDoc.addEventListener('DOMContentLoaded', function(e) {
-    let i = setInterval(resizeIFrameToFitContent, 10);
-    setTimeout(clearInterval, 3000, i);
-  });
+  function resize() {
+    let iFrame = document.getElementById('apiFrame');
+
+    let i = setInterval( function() {
+      let height = iFrame.contentDocument.body.scrollHeight;
+      iFrame.height = height;
+    }, 5);
+
+    setTimeout(function() {
+      clearInterval(i);
+    }, 2000);
+    
+  }
+
+(function() {
+  let iFrame = document.getElementById('apiFrame');
+  iFrame.addEventListener('load', resize, false); 
+  iFrame.contentWindow.addEventListener('click', resize, false); 
 })();
 </script>
+{/literal}  
