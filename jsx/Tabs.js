@@ -147,3 +147,11 @@ TabPane.propTypes = {
   Title: React.PropTypes.string,
   activeTab: React.PropTypes.string
 };
+
+window.Tabs = Tabs;
+window.TabPane = TabPane;
+
+export default {
+  Tabs,
+  TabPane
+};

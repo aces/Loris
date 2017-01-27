@@ -90,3 +90,8 @@ var PaginationLinks = React.createClass({
 });
 
 var RPaginationLinks = React.createFactory(PaginationLinks);
+
+window.PaginationLinks = PaginationLinks;
+window.RPaginationLinks = RPaginationLinks;
+
+export default PaginationLinks;

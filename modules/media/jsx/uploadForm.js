@@ -422,3 +422,8 @@ MediaUploadForm.propTypes = {
 };
 
 var RMediaUploadForm = React.createFactory(MediaUploadForm);
+
+window.MediaUploadForm = MediaUploadForm;
+window.RMediaUploadForm = RMediaUploadForm;
+
+export default MediaUploadForm;

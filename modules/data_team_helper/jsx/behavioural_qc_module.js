@@ -414,3 +414,16 @@ var GraphicsPanel = React.createFactory(dataTeamGraphics);
 var BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
 var IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
 var InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
+
+window.GraphicsPanel = GraphicsPanel;
+window.BehaviouralFeedbackTab = BehaviouralFeedbackTab;
+window.IncompleteCandidatesPanel = IncompleteCandidatesPanel;
+window.InstrumentConflictsPanel = InstrumentConflictsPanel;
+
+export default {
+  GraphicsPanel,
+  BehaviouralFeedbackTab,
+  IncompleteCandidatesPanel,
+  InstrumentConflictsPanel
+};
+
