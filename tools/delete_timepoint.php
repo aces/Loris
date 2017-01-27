@@ -24,9 +24,10 @@ require_once __DIR__ . "/generic_includes.php";
  * This script deletes the specified candidate timepoint.
  *
  * Delete all timepoint rows for a given candidate
- * echo "Usage: php delete_timepoint.php delete_timepoint DCCID PSCID SessionID [confirm]";
+ * echo "Usage: php delete_timepoint.php delete_timepoint DCCID PSCID SessionID [confirm] [tosql]";
  * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482";
  * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 confirm";
+ * echo "Example: php delete_timepoint.php delete_timepoint 965327 dcc0007 482 tosql";
  *
  * @category Main
  * @package  Loris
@@ -248,6 +249,7 @@ function _printResultsSQL($table, $where, &$output, $DB){
     $query  = "DELETE FROM $table WHERE ";
     $where  = $DB->_implodeWithKeys(' AND ', $where);
     $query .= $where;
+    $query .= ";\n";
 
     $output.=$query;
 }
