@@ -777,7 +777,6 @@ window.TextboxElement = TextboxElement;
 window.DateElement = DateElement;
 window.NumericElement = NumericElement;
 window.FileElement = FileElement;
-window.HelpTextElement = HelpTextElement;
 window.StaticElement = StaticElement;
 window.ButtonElement = ButtonElement;
 window.LorisElement = LorisElement;
@@ -790,7 +789,6 @@ export default {
   DateElement,
   NumericElement,
   FileElement,
-  HelpTextElement,
   StaticElement,
   ButtonElement,
   LorisElement
