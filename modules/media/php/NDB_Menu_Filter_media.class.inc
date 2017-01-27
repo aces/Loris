@@ -201,6 +201,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         return array_merge(
             $deps,
             [
+             $baseURL . "/js/components/ProgressBar.js",
              $baseURL . "/media/js/columnFormatter.js",
              $baseURL . "/media/js/uploadForm.js",
             ]
