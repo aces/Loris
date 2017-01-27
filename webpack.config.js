@@ -4,7 +4,7 @@ var env = process.env.WEBPACK_ENV;
 var config = {
   entry: {
     './htdocs/js/components/DynamicDataTable.js': './jsx/DynamicDataTable.js',
-    './htdocs/js/components/FilterTable.js': './jsx/FilterTable.js',
+    './htdocs/js/components/FilterForm.js': './jsx/FilterForm.js',
     './htdocs/js/components/PaginationLinks.js': './jsx/PaginationLinks.js',
     './htdocs/js/components/StaticDataTable.js': './jsx/StaticDataTable.js',
     './htdocs/js/components/Breadcrumbs.js': './jsx/Breadcrumbs.js',
