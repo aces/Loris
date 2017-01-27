@@ -16,4 +16,5 @@ htdocs/js/shims/*
 htdocs/js/c3.min.js
 htdocs/js/d3.min.js
 htdocs/js/FileSaver.min.js
-modules/api_doc/lib/*
+modules/api_docs/lib/*
+modules/api_docs/lang/*

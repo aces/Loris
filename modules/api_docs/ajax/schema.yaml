@@ -79,10 +79,9 @@ paths:
             $ref: '#/definitions/Project'
   /projects/{name}/instruments:
     get:
-      description: Returns all the instruments used/installed in this project
+      description: Returns all the instruments used/installed in this project's test batteries 
       tags:
         - Project
-        - Instrument
       security:
         - Bearer: []
       parameters:
@@ -99,6 +98,74 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Instrument'
+  /projects/{name}/instruments/{instrument}:
+    get:
+      description: Returns JSON representation of that instrument
+      tags:
+        - Project
+      security:
+        - Bearer: []
+      parameters:
+        - name: name
+          in: path
+          description: The name of the project
+          required: true
+          type: string
+        - name: instrument
+          in: path
+          description: The name of the instrument
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            An JSON representation of that instrument 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/InstrumentForm'
+  /projects/{name}/candidates:
+    get:
+      description: Returns all the active candidates in this project
+      tags:
+        - Project
+      security:
+        - Bearer: []
+      parameters:
+        - name: name
+          in: path
+          description: The name of the project
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            A list of CandID 
+          schema:
+            type: array
+            items:
+              type: string
+  /project/{name}/visits:
+    get:
+      description: Returns all the visit labels defined for this project
+      tags:
+        - Project
+      security:
+        - Bearer: []
+      parameters:
+        - name: name
+          in: path
+          description: The name of the project
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            A list of visit labels
+          schema:
+            type: array
+            items:
+              type: string  
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -143,3 +210,8 @@ definitions:
         type: boolean
         description: >-
           Is double data entry enable for that instrument
+  InstrumentForm:
+    type: object
+    properties:
+      testName:
+        type: string

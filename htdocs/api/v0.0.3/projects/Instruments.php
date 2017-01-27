@@ -34,17 +34,16 @@ class Instruments extends \Loris\API\APIBase
     /**
      * Construct an Instruments API handler
      *
-     * @param string $method The HTTP request method
-     * @param string $projectName  The project short name
-     *
+     * @param string $method      The HTTP request method
+     * @param string $projectName The project short name
      */
     public function __construct($method, $projectName)
     {
         parent::__construct($method);
 
         $this->AllowedMethods = ['GET'];
-        $this->projectName = $projectName;
-        $this->HTTPMethod = $method;
+        $this->projectName    = $projectName;
+        $this->HTTPMethod     = $method;
 
         $this->handleRequest();
     }
@@ -56,22 +55,25 @@ class Instruments extends \Loris\API\APIBase
      */
     public function handleGET()
     {
-        $instruments = \Utility::getAllProjectInstruments($this->projectName);
+        $instruments    = \Utility::getAllProjectInstruments($this->projectName);
         $ddeInstruments = \Utility::getAllDDEInstruments();
-        $this ->JSON = [];
+        $this ->JSON    = [];
 
-        array_walk( 
+        array_walk(
             $instruments,
-            function( $fullName, $shortName, $ddeInstruments) {
+            function ( $fullName, $shortName, $ddeInstruments) {
                 $subGroup = \Utility::getInstrumentSubgroupName($shortName);
-                $dde = array_key_exists($shortName, $ddeInstruments);
+                $dde      = array_key_exists($shortName, $ddeInstruments);
 
-                array_push($this->JSON, array(
-                    "ShortName"             => $shortName,
-                    "FullName"              => $fullName,
-                    "Subgroup"              => $subGroup,
-                    "DoubleDataEntryEnable" => $dde
-                ));
+                array_push(
+                    $this->JSON,
+                    array(
+                     "ShortName"             => $shortName,
+                     "FullName"              => $fullName,
+                     "Subgroup"              => $subGroup,
+                     "DoubleDataEntryEnable" => $dde,
+                    )
+                );
             },
             $ddeInstruments
         );
@@ -85,7 +87,7 @@ class Instruments extends \Loris\API\APIBase
      */
     function calculateETag()
     {
-        return md5('Projecti:Instruments:' . json_encode($this->JSON, true));
+        return md5('Project:Instruments:' . json_encode($this->JSON, true));
     }
 }
 

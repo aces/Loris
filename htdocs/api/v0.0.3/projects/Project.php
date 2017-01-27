@@ -99,10 +99,10 @@ class Project extends \Loris\API\APIBase
 
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
-        
-        $this->useEDC         = $config->getSetting("useEDC");
+
+        $this->useEDC = $config->getSetting("useEDC");
         $this->PSCID  = $config->getSetting("PSCID");
- 
+
         $this->handleRequest();
 
     }
@@ -115,16 +115,16 @@ class Project extends \Loris\API\APIBase
     function handleGET()
     {
         $PSCIDFormat = \Utility::structureToPCRE($this->PSCID['structure'], "SITE");
-        $type = $this->PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
-        
+        $type        = $this->PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
+
         $this->JSON = array(
-            "Name" => $this->ProjectName,
-            "useEDC" => $this->useEDC,
-            "PSCID" => array(
-                "Type"  => $type,
-                "Regex" => $PSCIDFormat,
-            )
-        );
+                       "Name"   => $this->ProjectName,
+                       "useEDC" => $this->useEDC,
+                       "PSCID"  => array(
+                                    "Type"  => $type,
+                                    "Regex" => $PSCIDFormat,
+                                   ),
+                      );
     }
 
     /**

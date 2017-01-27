@@ -42,7 +42,7 @@ class Projects extends APIBase
      */
     public function handleGET()
     {
-        $config = $this->Factory->config();
+        $config      = $this->Factory->config();
         $useProjects = $config->getSetting("useProjects");
 
         if ($useProjects && $useProjects !== "false" && $useProjects !== "0") {
