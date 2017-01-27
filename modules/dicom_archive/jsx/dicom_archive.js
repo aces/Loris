@@ -21,13 +21,12 @@ class DicomArchive extends React.Component {
 
     this.state = {
       isLoaded: false,
-      Filter: QueryString.get()
+      filter: {}
     };
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
-    this.setFilter = this.setFilter.bind(this);
-    this.clearFilter = this.clearFilter.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
   }
 
   componentDidMount() {
@@ -56,31 +55,8 @@ class DicomArchive extends React.Component {
     });
   }
 
-  /**
-   * Clear the Filter object, querystring and input fields
-   */
-  clearFilter() {
-    var Filter = QueryString.clear(this.props.Module);
-    this.setState({Filter});
-  }
-
-  /**
-   * Sets Filter object and querystring to reflect values of input fields
-   *
-   * @param {string} fieldName - the name of the form element
-   * @param {string} fieldValue - the value of the form element
-   */
-  setFilter(fieldName, fieldValue) {
-    // Special treatment for site, to explicitly set it as an integer value
-    if (fieldName === "site") {
-      var number = Number.parseInt(fieldValue, 10);
-      if (Number.isInteger(number)) {
-        fieldValue = number;
-      }
-    }
-
-    var Filter = QueryString.set(this.state.Filter, fieldName, fieldValue);
-    this.setState({Filter});
+  updateFilter(filter) {
+    this.setState({filter});
   }
 
   render() {
@@ -115,102 +91,65 @@ class DicomArchive extends React.Component {
 
     return (
       <div>
-        <FilterTable Module="dicom_archive">
-          <div className="row">
-            <div className="col-md-6">
-              <TextboxElement
-                name={patientID}
-                label="Patient ID"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.patientID}
-                ref={patientID}
-              />
-            </div>
-            <div className="col-md-6">
-              <TextboxElement
-                name={patientName}
-                label="Patient Name"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.patientName}
-                ref={patientName}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <SelectElement
-                name={site}
-                label="Sites"
-                options={this.state.Data.Sites}
-                onUserInput={this.setFilter}
-                value={this.state.Filter.site}
-                ref={site}
-              />
-            </div>
-            <div className="col-md-6">
-              <SelectElement
-                name={gender}
-                label="Gender"
-                options={genderList}
-                onUserInput={this.setFilter}
-                value={this.state.Filter.gender}
-                ref={gender}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <DateElement
-                name={dateOfBirth}
-                label="Date of Birth"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.dateOfBirth}
-                ref={dateOfBirth}
-              />
-            </div>
-            <div className="col-md-6">
-              <DateElement
-                name={acquisition}
-                label="Acquisition Date"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.acquisition}
-                ref={acquisition}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <TextboxElement
-                name={archiveLocation}
-                label="Archive Location"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.archiveLocation}
-                ref={archiveLocation}
-              />
-            </div>
-            <div className="col-md-6">
-              <TextboxElement
-                name={seriesUID}
-                label="Series UID"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.seriesuid}
-                ref={seriesUID}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <ButtonElement
-                label="Clear Filters"
-                onUserInput={this.clearFilter}
-              />
-            </div>
-          </div>
-        </FilterTable>
+        <FilterForm
+          Module="dicom_archive"
+          name="dicom_filter"
+          id="dicom_filter"
+          columns={2}
+          onUpdate={this.updateFilter}
+          filter={this.state.filter}
+        >
+          <TextboxElement
+            name={patientID}
+            label="Patient ID"
+            ref={patientID}
+          />
+          <TextboxElement
+            name={patientName}
+            label="Patient Name"
+            ref={patientName}
+          />
+          <SelectElement
+            name={site}
+            label="Sites"
+            options={this.state.Data.Sites}
+            ref={site}
+          />
+          <SelectElement
+            name={gender}
+            label="Gender"
+            options={genderList}
+            ref={gender}
+          />
+          <DateElement
+            name={dateOfBirth}
+            label="Date of Birth"
+            ref={dateOfBirth}
+          />
+          <DateElement
+            name={acquisition}
+            label="Acquisition Date"
+            ref={acquisition}
+          />
+          <TextboxElement
+            name={archiveLocation}
+            label="Archive Location"
+            ref={archiveLocation}
+          />
+          <TextboxElement
+            name={seriesUID}
+            label="Series UID"
+            ref={seriesUID}
+          />
+          <ButtonElement
+            label="Clear Filters"
+            type="reset"
+          />
+        </FilterForm>
         <StaticDataTable
           Data={this.state.Data.Data}
           Headers={this.state.Data.Headers}
-          Filter={this.state.Filter}
+          Filter={this.state.filter}
           getFormattedCell={formatColumn}
         />
       </div>
