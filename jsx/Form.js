@@ -1,5 +1,5 @@
 /* exported FormElement, SelectElement, TextareaElement, TextboxElement, DateElement,
-NumericElement, FileElement, HelpTextElement, StaticElement, ButtonElement, LorisElement
+NumericElement, FileElement, StaticElement, ButtonElement, LorisElement
 */
 
 /**
@@ -80,7 +80,7 @@ var FormElement = React.createClass({
       var elementClass = "col-xs-12 col-sm-12 col-md-12";
 
       // If child is form element use appropriate size
-      if (React.isValidElement(child)) {
+      if (React.isValidElement(child) && typeof child.type === "function") {
         elementClass = colClass;
       }
       formElementsHTML.push(
@@ -214,6 +214,9 @@ var SelectElement = React.createClass({
       elementClass = 'row form-group has-error';
     }
 
+    // After checking for errors, set value to empty string to reset dropdown
+    const value = (this.props.value === undefined) ? "" : this.props.value;
+
     return (
       <div className={elementClass}>
         <label className="col-sm-3 control-label" htmlFor={this.props.label}>
@@ -226,7 +229,7 @@ var SelectElement = React.createClass({
             multiple={multiple}
             className="form-control"
             id={this.props.label}
-            value={this.props.value}
+            value={value}
             onChange={this.handleChange}
             required={required}
             disabled={disabled}
@@ -514,19 +517,16 @@ var FileElement = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
     label: React.PropTypes.string,
-    value: React.PropTypes.string,
+    value: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.object
+    ]),
     id: React.PropTypes.string,
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
     hasError: React.PropTypes.bool,
     errorMessage: React.PropTypes.string,
     onUserInput: React.PropTypes.func
-  },
-  getInitialState: function() {
-    return {
-      value: '',
-      hasError: false
-    };
   },
   getDefaultProps: function() {
     return {
@@ -543,68 +543,54 @@ var FileElement = React.createClass({
       }
     };
   },
-  componentDidMount: function() {
-    if (this.props.value) {
-      this.setState({
-        value: this.props.value
-      });
-    }
-  },
-  componentWillReceiveProps: function() {
-    if (this.props.hasError) {
-      this.setState({
-        hasError: this.props.hasError
-      });
-    }
-  },
   handleChange: function(e) {
-    var hasError = false;
-    if (this.props.required && e.target.value === "") {
-      hasError = true;
-    }
-    this.setState({
-      value: e.target.value.split(/(\\|\/)/g).pop(),
-      hasError: hasError
-    });
-    // pass current file to parent form
-    var file = e.target.files[0];
-    this.props.onUserInput(this.props.name, file);
+    // Send current file to parent component
+    const fileName = e.target.files[0] ? e.target.files[0].name : '';
+    this.props.onUserInput(this.props.name, fileName);
   },
 
   render: function() {
-    var required = this.props.required ? 'required' : null;
-    var requiredHTML = null;
-    var errorMessage = '';
-    var elementClass = 'row form-group';
-
-    // Add error message
-    if (this.state.hasError) {
-      errorMessage = this.props.errorMessage;
-      elementClass = 'row form-group has-error';
-    }
+    const required = this.props.required ? 'required' : null;
+    const value = this.props.value; // undefined by default
+    let requiredHTML = null;
+    let errorMessage = '';
+    let elementClass = 'row form-group';
 
     // Add required asterix
     if (required) {
       requiredHTML = <span className="text-danger">*</span>;
     }
 
-    var truncateEllipsis = {
+    const truncateEllipsis = {
       display: 'table',
       tableLayout: 'fixed',
       width: '100%',
       whiteSpace: 'nowrap'
     };
 
-    var truncateEllipsisChild = {
+    const truncateEllipsisChild = {
       display: 'table-cell',
       overflow: 'hidden',
       textOverflow: 'ellipsis'
     };
 
+    // Add error message
+    if (this.props.hasError) {
+      errorMessage = this.props.errorMessage;
+      elementClass = 'row form-group has-error';
+    }
+
+    // Need to manually reset file value, because HTML API
+    // does not allow setting value to anything than empty string.
+    // Hence can't use value attribute in the input element.
+    const file = document.querySelector(".fileUpload");
+    if (file && !value) {
+      file.value = "";
+    }
+
     if (this.props.disabled) {
       // add padding to align video title on disabled field
       truncateEllipsis.paddingTop = "7px";
-
       return (
         <div className={elementClass}>
           <label className="col-sm-3 control-label">
@@ -612,19 +598,11 @@ var FileElement = React.createClass({
           </label>
           <div className="col-sm-9">
             <div style={truncateEllipsis}>
-              <span style={truncateEllipsisChild}>{this.state.value}</span>
+              <span style={truncateEllipsisChild}>{value}</span>
             </div>
           </div>
         </div>
       );
-    }
-
-    // Need to manually reset file value, because HTML API
-    // does not allow setting value to anything than empty string.
-    // Hence can't use value attribute in the input element.
-    var file = document.querySelector(".fileUpload");
-    if (file && !this.state.value) {
-      file.value = "";
     }
 
     return (
@@ -638,7 +616,7 @@ var FileElement = React.createClass({
             <div tabIndex="-1"
                  className="form-control file-caption kv-fileinput-caption">
               <div style={truncateEllipsis}>
-                <span style={truncateEllipsisChild}>{this.state.value}</span>
+                <span style={truncateEllipsisChild}>{value}</span>
               </div>
               <div className="file-caption-name" id="video_file"></div>
             </div>
@@ -656,51 +634,6 @@ var FileElement = React.createClass({
             </div>
           </div>
           <span>{errorMessage}</span>
-        </div>
-      </div>
-    );
-  }
-});
-
-/**
- * HelpText Component
- * Used to display a block of help text in a form
- * @deprecated 08/09/2016
- */
-var HelpTextElement = React.createClass({
-  componentDidMount: function() {
-    console.warn(
-      "<HelpTextElement> component is deprecated!" +
-      "Please use <StaticElement> instead!"
-    );
-  },
-  getDefaultProps: function() {
-    return {
-      html: false,
-      label: '',
-      text: ''
-    };
-  },
-  render: function() {
-    if (this.props.html) {
-      return (
-        <div className="row form-group">
-          <label className="col-sm-3 control-label">
-            {this.props.label}
-          </label>
-          <div className="col-sm-9">
-            <div dangerouslySetInnerHTML={{__html: this.props.text}}/>
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div className="row form-group">
-        <label className="col-sm-3 control-label">
-          {this.props.label}
-        </label>
-        <div className="col-sm-9">
-          <div>{this.props.text}</div>
         </div>
       </div>
     );

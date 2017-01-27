@@ -177,6 +177,7 @@ class MediaUploadForm extends React.Component {
             ref="file"
             label="File to upload"
             required={true}
+            value={this.state.formData.file}
           />
           <ButtonElement label="Upload File" />
         </FormElement>

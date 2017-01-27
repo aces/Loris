@@ -173,7 +173,7 @@ class MediaEditForm extends React.Component {
             disabled={true}
             ref="file"
             label="Uploaded file"
-            value={this.state.formData.fileName}
+            value={this.state.mediaData.fileName}
           />
           <SelectElement
             name="hideFile"
