@@ -3,7 +3,11 @@
   height: 200px;
   border: 2px solid #064785;
   overflow: auto;
-  padding: 5px; 
+  padding: 5px;
+}
+
+#mri_upload_table tr {
+  cursor: pointer;
 }
 
 progress {

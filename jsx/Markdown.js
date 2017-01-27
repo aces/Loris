@@ -107,3 +107,8 @@ var Markdown = React.createClass({
 });
 
 var RMarkdown = React.createFactory(Markdown);
+
+window.Markdown = Markdown;
+window.RMarkdown = RMarkdown;
+
+export default Markdown;

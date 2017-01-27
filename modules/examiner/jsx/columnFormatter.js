@@ -64,3 +64,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 }
 
+window.formatColumn = formatColumn;
+
+export default formatColumn;

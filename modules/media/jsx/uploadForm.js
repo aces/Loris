@@ -177,6 +177,7 @@ class MediaUploadForm extends React.Component {
             ref="file"
             label="File to upload"
             required={true}
+            value={this.state.formData.file}
           />
           <ButtonElement label="Upload File" />
         </FormElement>
@@ -367,9 +368,24 @@ class MediaUploadForm extends React.Component {
    */
   setFormData(formElement, value) {
     // Only display visits and sites available for the current pscid
+    let visitLabel = this.state.formData.visitLabel;
+    let pscid = this.state.formData.pscid;
+
     if (formElement === "pscid" && value !== "") {
       this.state.Data.visits = this.state.Data.sessionData[value].visits;
       this.state.Data.sites = this.state.Data.sessionData[value].sites;
+      if (visitLabel) {
+        this.state.Data.instruments =
+          this.state.Data.sessionData[value].instruments[visitLabel];
+      } else {
+        this.state.Data.instruments =
+          this.state.Data.sessionData[value].instruments.all;
+      }
+    }
+
+    if (formElement === "visitLabel" && value !== "" && pscid) {
+      this.state.Data.instruments =
+        this.state.Data.sessionData[pscid].instruments[value];
     }
 
     var formData = this.state.formData;
@@ -406,3 +422,8 @@ MediaUploadForm.propTypes = {
 };
 
 var RMediaUploadForm = React.createFactory(MediaUploadForm);
+
+window.MediaUploadForm = MediaUploadForm;
+window.RMediaUploadForm = RMediaUploadForm;
+
+export default MediaUploadForm;

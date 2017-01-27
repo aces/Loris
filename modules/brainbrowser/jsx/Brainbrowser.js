@@ -99,3 +99,8 @@ var BrainBrowser = React.createClass({
 });
 
 var RBrainBrowser = React.createFactory(BrainBrowser);
+
+window.BrainBrowser = BrainBrowser;
+window.RBrainBrowser = RBrainBrowser;
+
+export default BrainBrowser;
