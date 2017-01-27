@@ -191,27 +191,35 @@ var StaticDataTable = React.createClass({
    * of one of the column values, false otherwise.
    */
   hasFilterKeyword: function(headerData, data) {
-    var header = this.toCamelCase(headerData);
-    var filterData = (this.props.Filter[header] ?
-      this.props.Filter[header] :
-      null
-    );
+    let header = this.toCamelCase(headerData);
+    let filterData = null;
+    let exactMatch = false;
 
-      // Handle nullinputs
+    if (this.props.Filter[header]) {
+      filterData = this.props.Filter[header].value;
+      exactMatch = this.props.Filter[header].exactMatch;
+    }
+
+    // Handle null inputs
     if (filterData === null || data === null) {
       return false;
     }
 
-      // Handle numeric inputs
+    // Handle numeric inputs
     if (typeof filterData === 'number') {
       var intData = Number.parseInt(data, 10);
       return filterData === intData;
     }
 
-      // Handle string inputs
+    // Handle string inputs
     if (typeof filterData === 'string') {
       var searchKey = filterData.toLowerCase();
       var searchString = data.toLowerCase();
+
+      if (exactMatch) {
+        return searchString === searchKey;
+      }
+
       return (searchString.indexOf(searchKey) > -1);
     }
 

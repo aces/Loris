@@ -193,9 +193,15 @@ var StaticDataTable = React.createClass({
    */
   hasFilterKeyword: function hasFilterKeyword(headerData, data) {
     var header = this.toCamelCase(headerData);
-    var filterData = this.props.Filter[header] ? this.props.Filter[header] : null;
+    var filterData = null;
+    var exactMatch = false;
 
-    // Handle nullinputs
+    if (this.props.Filter[header]) {
+      filterData = this.props.Filter[header].value;
+      exactMatch = this.props.Filter[header].exactMatch;
+    }
+
+    // Handle null inputs
     if (filterData === null || data === null) {
       return false;
     }
@@ -210,6 +216,11 @@ var StaticDataTable = React.createClass({
     if (typeof filterData === 'string') {
       var searchKey = filterData.toLowerCase();
       var searchString = data.toLowerCase();
+
+      if (exactMatch) {
+        return searchString === searchKey;
+      }
+
       return searchString.indexOf(searchKey) > -1;
     }
 
