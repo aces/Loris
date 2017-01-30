@@ -61,44 +61,34 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         if ($this->useCertification == '1') {
             if ($user->hasPermission('examiner_multisite')) {
                  $query = " 
-                        FROM 
-                        ( SELECT v.Examiner as Examiner,
-                        v.examinerID as ID,v.Site as Site,
-                        v.centerID as centerID,v.Radiologist as Radiologist,
-                        GROUP_CONCAT(v.Certification) as Certification 
-                        FROM 
-                        (select e.examinerID as examinerID, 
+                        FROM (
+                        select e.examinerID as ID, 
                         e.full_name as Examiner,e.centerID as centerID, 
                         psc.Name as Site,e.radiologist as Radiologist,
-                        tn.full_name as Certification 
+                        GROUP_CONCAT(tn.full_name) as Certification 
                         FROM 
                         examiners e LEFT JOIN psc ON 
                         (e.centerID=psc.CenterID) 
                         LEFT JOIN certification c ON 
                         (c.examinerID=e.examinerID and c.pass = 'certified') 
-                        LEFT JOIN test_names tn ON (tn.ID = c.testID)) as v 
-                        GROUP BY v.Examiner,v.Site) ";
+                        LEFT JOIN test_names tn ON (tn.ID = c.testID) GROUP BY e.full_name,psc.Name ) ";
 
             } else {
 
-                  $query = " 
-                        FROM 
-                        ( SELECT v.Examiner as Examiner,
-                        v.examinerID as ID,v.Site as Site,v.centerID 
-                        as centerID,v.Radiologist as Radiologist,
-                        GROUP_CONCAT(v.Certification) as Certification 
-                        FROM 
-                        (select e.examinerID, e.full_name as Examiner,
-                        e.centerID as centerID, psc.Name as Site,
-                        e.radiologist as Radiologist,
-                        tn.full_name as Certification 
+                  $query = "
+                        FROM (
+                        select e.examinerID as ID, 
+                        e.full_name as Examiner,e.centerID as centerID, 
+                        psc.Name as Site,e.radiologist as Radiologist,
+                        GROUP_CONCAT(tn.full_name) as Certification 
                         FROM 
                         examiners e LEFT JOIN psc ON 
-                        (e.centerID=psc.CenterID) LEFT JOIN certification c ON 
+                        (e.centerID=psc.CenterID) 
+                        LEFT JOIN certification c ON 
                         (c.examinerID=e.examinerID and c.pass = 'certified') 
                         LEFT JOIN test_names tn ON (tn.ID = c.testID) 
-                        WHERE e.centerID =".$centerID." ) as v 
-                        GROUP BY v.Examiner,v.Site) ";
+                        WHERE e.centerID =".$centerID." GROUP BY e.full_name,psc.Name ) ";
+ 
             }
         } else {
 
