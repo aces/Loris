@@ -467,7 +467,7 @@ class NDB_BVL_Feedback
             $query .= " LEFT JOIN flag as f ON (ft.CommentID = f.CommentID)";
         }
         $query .= " WHERE ft.Active ='Y'";
-        if (!$user->isMultiSiteEnabled() && !$hasReadPermission===true) {
+        if (!$hasReadPermission===true) {
             $query            .= " AND c.CenterID=:CentID";
             $qparams['CentID'] = $user->getCenterID();
         }
@@ -574,7 +574,7 @@ class NDB_BVL_Feedback
 
         // DCC users should be able to see THEIR OWN inactive threads,
         // other users should see only active threads
-        if ($user->isMultiSiteEnabled() || $hasReadPermission===true) {
+        if ($hasReadPermission===true) {
             $query .= " AND (ft.Active='Y' OR
                 (ft.Active='N' AND ft.UserID=:Username)
             )";

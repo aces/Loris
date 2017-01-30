@@ -212,25 +212,6 @@ class User extends UserPermissions
     }
 
     /**
-     * Unknown what this does. Maybe it should be removed?
-     * - Dave
-     *
-     * @return boolean
-     */
-    function isMultiSiteEnabled()
-    {
-        // if $userID is not passed,then look-up current user
-        // if CenterID = 0 then admin staff
-        // like dcc ccc nih or similar
-        // change 2002-10-23 Dario
-        $config =& NDB_Config::singleton();
-        return in_array(
-            $this->userInfo['CenterID'],
-            $config->getSetting('multiSiteEnabledCenters')
-        );
-    }
-
-    /**
      * Returns all sites where Examiner is active
      *
      * @return array
