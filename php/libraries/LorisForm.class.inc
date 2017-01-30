@@ -813,9 +813,9 @@ class LorisForm
         }
         $elmnt = "<input name=\"$el[name]\" type=\"$format\" $cls "
             . "$minYear $maxYear "
-            . "onChange=\"this.setCustomValidity($required)\""
-            . (isset($el['required']) ? "required" : '')
-            . (!empty($disabled) ? "disabled" : '')
+            . "onChange=\"this.setCustomValidity($required)\" "
+            . (isset($el['required']) ? "required " : '')
+            . (!empty($disabled) ? "disabled " : '')
             . (
             !empty($value)
                 ? ' value="' . $value . '" '
