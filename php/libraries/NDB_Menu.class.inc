@@ -96,30 +96,6 @@ class NDB_Menu extends NDB_Page
         return $obj;
     }
 
-
-    /**
-     * Returns false if user does not have access to page
-     *
-     * Usage: the hasAccess() function in a child class should contain
-     *    something like:
-     *
-     *     // create user object
-     *     $user =& User::singleton();
-     *
-     *     return $user->hasPermission('superuser');
-     *
-     * You do not need to overload hasAccess() if there are no access restrictions
-     *
-     * @note   overloaded function
-     * @return bool
-     * @access private
-     */
-    function _hasAccess()
-    {
-        return true;
-    }
-
-
     /**
      * Calls other member functions to do all the work necessary to create the menu
      *

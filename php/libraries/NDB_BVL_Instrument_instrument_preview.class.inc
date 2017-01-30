@@ -25,17 +25,6 @@
 class NDB_BVL_Instrument_Instrument_Preview
     extends \Loris\Behavioural\NDB_BVL_Instrument_LINST
 {
-
-    /**
-     * Everyone has access to preview since it does nothing
-     *
-     * @return true
-     */
-    function _hasAccess()
-    {
-        return true;
-    }
-
     /**
      * Loads a LINST file and rules from the data posted to it in order
      * to preview how Loris would render that file.
