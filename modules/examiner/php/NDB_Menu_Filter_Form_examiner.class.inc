@@ -71,7 +71,8 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                         (e.centerID=psc.CenterID) 
                         LEFT JOIN certification c ON 
                         (c.examinerID=e.examinerID and c.pass = 'certified') 
-                        LEFT JOIN test_names tn ON (tn.ID = c.testID) GROUP BY e.full_name,psc.Name ) ";
+                        LEFT JOIN test_names tn ON (tn.ID = c.testID) 
+                        GROUP BY e.full_name,psc.Name ) ";
 
             } else {
 
@@ -87,8 +88,9 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                         LEFT JOIN certification c ON 
                         (c.examinerID=e.examinerID and c.pass = 'certified') 
                         LEFT JOIN test_names tn ON (tn.ID = c.testID) 
-                        WHERE e.centerID =".$centerID." GROUP BY e.full_name,psc.Name ) ";
- 
+                        WHERE e.centerID =".$centerID.
+                        " GROUP BY e.full_name,psc.Name ) ";
+
             }
         } else {
 
