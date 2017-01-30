@@ -43,6 +43,7 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php module
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/instrument_list
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/instrument_manager
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/issue_tracker
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/login 
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/media
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/mri_violations
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/new_profile

@@ -55,6 +55,11 @@ class NDB_Page
     var $defaults = array();
 
     /**
+     * Additional template parameters to send to smarty.
+     */
+    var $tpl_data = array();
+
+    /**
      * Does the setup required for this page. By default, sets up elements
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
@@ -69,7 +74,11 @@ class NDB_Page
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $this->form       = new LorisForm($formname);
+        $this->form = new LorisForm($formname);
+        if (method_exists($this, "_validate")) {
+            $this->form->addFormRule(array(&$this, '_validate'));
+        }
+
         $this->name       = $name;
         $this->page       = $page;
         $this->identifier = $identifier;
@@ -526,9 +535,8 @@ class NDB_Page
 
         $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("form_$this->template.tpl");
+        $html = $smarty->fetch("$this->template.tpl");
         return $html;
-        //return $this->form->toHTML();
     }
 
 
@@ -631,6 +639,15 @@ class NDB_Page
     {
     }
 
+    /**
+     * Provides setup for a page that is done after _setup, when $this->form
+     * et al has been initialized.
+     *
+     * @return none
+     */
+    function commonPageSetup()
+    {
+    }
     /**
      * Returns false if user does not have access to page.
      *

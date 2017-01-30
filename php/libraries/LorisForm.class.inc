@@ -99,6 +99,9 @@ class LorisForm
         if (isset($attribs['align'])) {
             $el['align'] = $attribs['align'];
         }
+        if (isset($attribs['placeholder'])) {
+            $el['placeholder'] = $attribs['placeholder'];
+        }
 
         return $el;
     }
@@ -901,6 +904,11 @@ class LorisForm
                 isset($el['required']) && $el['required']
                 ? ' required' : ''
               )
+            . (
+                isset($el['placeholder']) && $el['placeholder']
+                ? " placeholder=\"{$el['placeholder']}\"" : ''
+              )
+
             . (
                 (!empty($value) || $value === '0')
                 ? ' value="' . $this->getValue($el['name']) . '"'

@@ -119,8 +119,11 @@ class Module
      */
     public function loadPage($page)
     {
+        // Some URLs are things like "/login/request-account", but `-` isn't valid
+        // in a class name, so remove it while loading the module.
+        $page = str_replace("-", "", $page);
+
         $className = "\LORIS\\" . $this->name . "\\$page";
-        error_log("Class name: $className");
 
         $cls = new $className();
         // Smarty needs the Module name as a parameter to autoload the right
@@ -135,8 +138,37 @@ class Module
         $identifier = isset($_REQUEST['identifier']) ? $_REQUEST['identifier'] : '';
         $commentID  = isset($_REQUEST['commentID']) ? $_REQUEST['commentID'] : '';
         $formname   = $page;
+
+        // FIXME: This is stupid.
         $cls->setup();
         $cls->_setupPage($this->name, $page, $identifier, $commentID, $formname);
+        $cls->commonPageSetup();
+
+        // If there is a method to handle a specific HTTP request method, call
+        // it.
+        if ($_SERVER['REQUEST_METHOD'] === "GET"
+            && method_exists($cls, 'get')
+        ) {
+            // TODO: Add a flag to disable database update/insert methods
+            // for GET requests?
+            $cls->get($_GET);
+        } else if ($_SERVER['REQUEST_METHOD']  === "POST"
+            && method_exists($cls, 'post')
+        ) {
+                $cls->post($_REQUEST);
+        } else if ($_SERVER['REQUEST_METHOD']  === "DELETE"
+            && method_exists($cls, 'delete')
+        ) {
+                $cls->delete($_REQUEST);
+        } else if ($_SERVER['REQUEST_METHOD']  === "PUT"
+            && method_exists($cls, 'put')
+        ) {
+                $cls->put($_REQUEST);
+        } else if ($_SERVER['REQUEST_METHOD']  === "PATCH"
+            && method_exists($cls, 'patch')
+        ) {
+                $cls->patch($_REQUEST);
+        }
 
         if (!$cls->_hasAccess()) {
             throw new \LorisException("You do not have access to this page.", 403);
