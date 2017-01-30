@@ -61,6 +61,11 @@ class NDB_Page
      */
     var $skipTemplate = false;
 
+    /*
+     * Additional template parameters to send to smarty.
+     */
+    var $tpl_data = array();
+
     /**
      * Template data to be passed to Smarty.
      *
@@ -124,7 +129,6 @@ class NDB_Page
     {
         return $this->tpl_data;
     }
-
 
     /**
      * Wrapper to create a file element and add it to the current page
@@ -630,9 +634,8 @@ class NDB_Page
 
         $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("form_$this->template.tpl");
+        $html = $smarty->fetch("$this->template.tpl");
         return $html;
-        //return $this->form->toHTML();
     }
 
 
@@ -736,6 +739,15 @@ class NDB_Page
     {
     }
 
+    /**
+     * Provides setup for a page that is done after _setup, when $this->form
+     * et al has been initialized.
+     *
+     * @return none
+     */
+    function commonPageSetup()
+    {
+    }
     /**
      * Returns false if user does not have access to page.
      *

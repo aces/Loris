@@ -19,5 +19,5 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs || exit
 
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/ || exit $?;
 
-# Run PHPMD
 vendor/bin/phpmd php/libraries text docs/LorisPHPMD.xml || exit $?;
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/

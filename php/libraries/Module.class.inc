@@ -129,6 +129,10 @@ class Module
      */
     public function loadPage($page)
     {
+        // Some URLs are things like "/login/request-account", but `-` isn't valid
+        // in a class name, so remove it while loading the module.
+        $page = str_replace("-", "", $page);
+
         $className = "\LORIS\\" . $this->name . "\\$page";
 
         $identifier = $_REQUEST['identifier'] ?? '';
