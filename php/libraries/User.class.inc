@@ -276,7 +276,8 @@ class User extends UserPermissions
         $password = '';
 
         $numbers      = '0123456789';
-        $specialChars = '!@#$%^&*()';
+        $specialChars = '!@#$%^*()';
+        // & not part of $specialChars since it causes URL to break
 
         $possible = $numbers . $specialChars . 'abcdefghijklmnopqrstuvwxyz';
 
