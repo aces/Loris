@@ -1,28 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta charset="utf-8"/>
-<link rel="stylesheet" href="{$baseurl}/bootstrap/css/bootstrap.min.css">
-<!-- shortcut icon that displays on the browser window -->
-<link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
-<!-- page title -->
-<title>Lost Password</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<!--  end page header -->
-</head>
-
-<body>
-
-<div class="navbar navbar-default" role="navigation" style="height:90px">
-    <div class="container">
-        <div class="navbar-brand" style="align:center;">
-            {if $study_logo}<img src="{$study_logo}" border="0" width="64" height="57" />{/if}
-            {$study_title}
-        </div>
-    </div>
-</div>
-
-<form action="lost_password.php" target="_self" method="post">
+<form action="{$baseurl}/login/lostpassword/" target="_self" method="post">
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="col-sm-2 col-xs-3 col-sm-offset-2">
@@ -70,6 +46,3 @@
 		</div>
 	</div>
 </form>
-
-</body>
-</html>

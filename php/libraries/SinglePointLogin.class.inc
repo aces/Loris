@@ -48,69 +48,6 @@ class SinglePointLogin
     var $_passwordExpired = false;
 
     /**
-     * Dumps the login form
-     *
-     * @return void
-     * @access public
-     */
-    function showLoginScreen()
-    {
-        $tpl_data = array();
-        if (isset($_POST['username'])) {
-            $tpl_data['username'] = $_POST['username'];
-        } else {
-            $tpl_data['username'] = '';
-        }
-
-        $tpl_data['currentyear'] = date('Y');
-
-        // remove logout from request
-        if (isset($_SERVER['QUERY_STRING'])) {
-            parse_str($_SERVER['QUERY_STRING'], $params);
-            unset($params['logout']);
-        } else {
-            $params = array();
-        }
-
-        $config =& NDB_Config::singleton();
-
-        $tpl_data['title']         = $config->getSetting('title');
-        $tpl_data['css']           = $config->getSetting('css');
-        $tpl_data['action']        = $_SERVER['PHP_SELF']
-            . '?' . http_build_query($params);
-        $tpl_data['error_message'] = $this->_lastError;
-
-        $study_links = $config->getExternalLinks('Studylinks');
-        foreach ($study_links as $label => $url) {
-            $WindowName = md5($url);
-            $tpl_data['studylinks'][] = array(
-                                         'url'        => $url,
-                                         'label'      => $label,
-                                         'windowName' => $WindowName,
-                                        );
-        }
-
-        $study_title       = $config->getSetting('title');
-        $study_description = $config->getSetting('StudyDescription');
-        $tpl_data['study_title']       = $study_title;
-        $tpl_data['study_description'] = html_entity_decode($study_description);
-        try {
-            $tpl_data['study_logo'] = $config->getSetting('studylogo');
-        } catch(ConfigurationException $e) {
-            $tpl_data['study_logo'] = '';
-        }
-
-        $www = $config->getSetting('www');
-        $tpl_data['baseurl'] = $www['url'];
-
-        //Output template using Smarty
-        $smarty = new Smarty_neurodb;
-        $smarty->assign($tpl_data);
-        $smarty->display('login.tpl');
-    }
-
-
-    /**
      * Dumps the password expiry form
      *
      * @return void

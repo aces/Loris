@@ -159,12 +159,13 @@ class NDB_Client
             }
         }
         if (!$login->isLoggedIn()) {
+            return false;
             // display login window
             //ob_end_clean();
             // Check to see if passwordExpired flag is set
             if (!$login->passwordExpired()) {
                 // If not show login page
-                $login->showLoginScreen();
+                // $login->showLoginScreen();
             }
             //terminate script
             return false;

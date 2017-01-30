@@ -68,13 +68,10 @@ class NDB_Caller
     * @param string $test_name The object type to load.  The test_name of the
     *                          menu, form or instrument
     * @param string $subtest   The subtest.  The page of the form or instrument.
-    * @param string $CommentID The commentid being loaded.
-    * @param string $nextpage  A page to forward to on completion of save.
-    *                          Used in direct data entry.
     *
     * @return string rendered object, as html
     */
-    function load($test_name, $subtest, $CommentID = '', $nextpage=null)
+    function load($test_name, $subtest, $anonymous=true)
     {
         $factory  = NDB_Factory::singleton();
         $config   = $factory->config();
@@ -113,10 +110,12 @@ class NDB_Caller
              $mname = $test_name;
         }
         try {
-
             // This will throw an exception if the module name doesn't exist, so
             // below this we can assume a valid module.
             $m = Module::factory($mname);
+		if (!$m->isPublicModule() && $anonymous) {
+			throw new Exception(403);
+		}
             if (!empty($subtest)) {
                 // We shouldn't care what type of page something is, we should
                 // just load it and let the module do whatever it wants.

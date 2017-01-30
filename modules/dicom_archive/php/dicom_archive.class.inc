@@ -36,6 +36,7 @@ class Dicom_Archive extends \NDB_Menu_Filter
      */
     function _hasAccess()
     {
+	return true;
         $user = \User::singleton();
         return $user->hasPermission('dicom_archive_view_allsites');
     }

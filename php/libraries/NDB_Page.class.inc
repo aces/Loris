@@ -55,6 +55,11 @@ class NDB_Page
     var $defaults = array();
 
     /**
+     * Additional template parameters to send to smarty.
+     */
+    var $tpl_data = array();
+
+    /**
      * Does the setup required for this page. By default, sets up elements
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
@@ -526,9 +531,8 @@ class NDB_Page
 
         $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("form_$this->template.tpl");
+        $html = $smarty->fetch("$this->template.tpl");
         return $html;
-        //return $this->form->toHTML();
     }
 
 
