@@ -523,5 +523,21 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
             );
         }
     }
+    /**
+     * Add a method for testing the link. After click the link,the page
+     * shows particular content.
+     * @param1 webDriver: find the link and click.
+     * @param2 webDriver: find the text showing on the page.
+     * @param3 text: put the text that should be shown in the assert.
+     */
+     function linkTest(WebDriverBy $by, WebDriverBy $byForContent, $testContent)
+    {
+        $webElement = $this->safeFindElement($by)->click();
+       
+        $bodyText = $this->safeFindElement(
+             $byForContent
+         )->getText();
+        $this->assertContains($testContent, $bodyText);
+    }
 }
 ?>
