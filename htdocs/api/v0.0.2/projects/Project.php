@@ -32,9 +32,7 @@ require_once 'APIBase.php';
  */
 class Project extends \Loris\API\APIBase
 {
-    var $ProjectID;
-    var $ProjectName;
-    var $ProjectInstruments;
+    private $_project;
 
     /**
      * Gets the ProjectID for the project name that was requested with the
@@ -92,23 +90,16 @@ class Project extends \Loris\API\APIBase
         $this->bInstrumentDetails = $bInstrumentDetails;
         $this->bVisits            = $bVisits;
 
-        $this->ProjectName = $projectName;
-        include_once 'Utility.class.inc';
-
-        if ($projectName === 'loris') {
-            $this->ProjectID = 0;
-        } else {
-            $this->ProjectID = $this->getProjectID($projectName);
-        }
-
-        if (!is_numeric($this->ProjectID)) {
+        try {
+            $this->project = $this->Factory->project($projectName);
+        } catch (\LorisExceptioni $e) {
+            // This projectName does not exists
             $this->header("HTTP/1.1 404 Not Found");
             $this->error(['error' => 'Invalid project']);
             $this->safeExit(0);
         }
 
         $this->handleRequest();
-
     }
 
     /**
@@ -121,32 +112,19 @@ class Project extends \Loris\API\APIBase
         if (!empty($this->JSON)) {
             return $this->JSON;
         }
-
         $JSONArray = [
                       "Meta" => [
-                                 "Project" => $this->ProjectName,
+                                 "Project" => $this->project->getName(),
                                 ],
                      ];
 
-        if ($this->bCandidates) {
-            if ($this->ProjectID === 0) {
-                $rows = $this->DB->pselect(
-                    "SELECT CandID FROM candidate",
-                    array()
-                );
-            } else {
-                $rows = $this->DB->pselect(
-                    "SELECT CandID FROM candidate WHERE ProjectID=:projID",
-                    array("projID" => $this->ProjectID)
-                );
-            }
-            $CandIDs = [];
-
-            foreach ($rows as $row) {
-                $CandIDs[] = $row['CandID'];
-            }
-
-            $JSONArray['Candidates'] = $CandIDs;
+        if ($this->bCandidates || true) {
+            $JSONArray['Candidates'] = array_map(
+                function ($candidate) {
+                    return $candidate->CandID;
+                },
+                $this->project->getCandidates()
+            );
         }
 
         if ($this->bInstruments) {

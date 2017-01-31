@@ -33,6 +33,7 @@ class NDB_Factory
 
     private static $_couchdb    = null;
     private static $_user       = null;
+    private static $_projects   = array();
     private static $_candidates = array();
     private static $_timepoints = array();
 
@@ -281,6 +282,25 @@ class NDB_Factory
         return self::$_settings;
     }
 
+    /**
+     * Retrieve a Project object representing this project
+     *
+     * @param string $projectName The name of the project
+     *
+     * @return Project object
+     */
+    public function project($projectName)
+    {
+        if (!isset(self::$_projects[$projectName])) {
+            if ($this->Testing) {
+                self::$_project[$projectName] = new MockProject($projectName);
+            } else {
+                self::$_projects[$projectName] = \Project::singleton($projectName);
+            }
+        }
+        return self::$_projects[$projectName];
+
+    }
 
     /**
      * Retrieve a candidate object representing this candidate
