@@ -35,26 +35,6 @@ class Project extends \Loris\API\APIBase
     private $_project;
 
     /**
-     * Gets the ProjectID for the project name that was requested with the
-     * API.
-     *
-     * @param string $ProjectName The project name whose ID we would like
-     *
-     * @return integer The id of $ProjectName
-     */
-    protected function getProjectID($ProjectName)
-    {
-        $config = $this->Factory->config();
-
-        $Projects = $config->getSetting("Projects")["project"];
-        foreach ($Projects as $project) {
-            if ($project['title'] === $ProjectName) {
-                return $project['id'];
-            }
-        }
-    }
-
-    /**
      * Constructs an object to handle JSON serialization
      *
      * @param string  $method             The HTTP method of the request
@@ -161,7 +141,7 @@ class Project extends \Loris\API\APIBase
         }
 
         if ($this->bVisits) {
-            $Visits     = \Utility::getExistingVisitLabels($this->ProjectID);
+            $Visits     = \Utility::getExistingVisitLabels($this->project->getId());
             $VisitNames = array_keys($Visits);
 
             $JSONArray['Visits'] = $VisitNames;
