@@ -222,7 +222,7 @@
                                 {/if}
                                 {if $issues_assigned neq "" and $issues_assigned neq 0}
                                     {*submit a post request here so its already filtered?*}
-                                    <a href="{$baseURL}/issue_tracker/?submenu=my_issue_tracker" class="list-group-item mri_violations">
+                                    <a href="{$baseURL}/issue_tracker/?submenu=my_issue_tracker" class="list-group-item issue_tracker">
                                         <div class="row">
                                             <div class="col-xs-8 text-left">
                                                 <div class="huge">{$issues_assigned}</div>
@@ -274,7 +274,7 @@
             </div>
         {/if}
 
-        <!-- Behavioural Feedback -->
+       <!-- Behavioural Feedback -->
         {if $bvl_feedback_notifications neq ""}
             <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12">
                 <div class="panel panel-default">
@@ -301,6 +301,6 @@
                 </div>
             </div>
         {/if}
-
+ 
     </div>
 </div>
