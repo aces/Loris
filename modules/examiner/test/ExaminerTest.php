@@ -95,12 +95,6 @@ class ExaminerTest extends LorisIntegrationTest
         $this->setupPermissions(array("examiner_view"));
         $this->safeGet($this->url . "/examiner/");
 
-        // Test that the selection filter appears
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::id("lorisworkspace")
-        )->getText();
-        $this->assertContains("Selection Filter", $bodyText);
-
         // Check the examiner input
         $examinerInput = $this->webDriver->findElement(
             WebDriverBy::Name("examiner")
@@ -143,12 +137,6 @@ class ExaminerTest extends LorisIntegrationTest
         $this->setupPermissions(array("examiner_view"));
         $this->safeGet($this->url . "/examiner/");
 
-        // Test that the selection filter appears
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::id("lorisworkspace")
-        )->getText();
-        $this->assertContains("Add Examiner", $bodyText);
-
         // Check the name input
         $nameInput = $this->webDriver->findElement(
             WebDriverBy::Name("addName")
@@ -178,15 +166,13 @@ class ExaminerTest extends LorisIntegrationTest
     function testResultTableLoadsWithPermission()
     {
         $this->setupPermissions(array("examiner_view"));
-        $this->safeGet($this->url . "/examiner/?format=json");
+        $this->safeGet($this->url . "/examiner/");
 
         // Check the table column headers
         $tableText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Examiner", $tableText);
-        $this->assertContains("Site", $tableText);
-        $this->assertContains("Radiologist", $tableText);
+        $this->assertContains("Add Examiner", $tableText);
 
         $this->resetPermissions();
     }
