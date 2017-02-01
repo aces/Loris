@@ -46,9 +46,9 @@ class NDB_Form_statistics extends NDB_Form
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
 
-            if(in_array($vl, $visits) !== false
-                && in_array($subcat, $subcats) !== false
-                && $this->_inCenter($center, $centres) !== false
+            if(in_array($vl, $visits)
+                && in_array($subcat, $subcats)
+                && $this->_inCenter($center, $centres)
             ) {
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
