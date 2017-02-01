@@ -218,24 +218,25 @@ class Project
      *
      * @return array A list of object representation of a basic candidates
      */
-    public function getCandidates()
+    public function getCandidateIds()
     {
         $factory = \NDB_Factory::singleton();
 
-        $where = "WHERE projectId = :v_project_id";
-        if ($factory->settings('useProjects') === 'true') {
-            $where .= " OR projectId IS NULL";
+        $p = array($this->projectId);
+        if ($factory->config()->getSetting('useProjects') !== 'true') {
+            array_push($p, '-1');
         }
-
         $candidatesData = $factory->database()->pselect(
             "
             SELECT
               candid
             FROM
               candidate
-            $where
+            WHERE
+              active = 'Y' AND
+              FIND_IN_SET(IFNULL(projectId, '-1'), :v_project_id)
             ",
-            array('v_project_id' => $this->projectId)
+            array('v_project_id' => implode(',', $p))
         );
         return array_map(
             function ($candidate) {

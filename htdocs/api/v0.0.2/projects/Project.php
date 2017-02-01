@@ -103,7 +103,7 @@ class Project extends \Loris\API\APIBase
                 function ($candidate) {
                     return $candidate->CandID;
                 },
-                $this->project->getCandidates()
+                $this->project->getCandidateIds()
             );
         }
 
