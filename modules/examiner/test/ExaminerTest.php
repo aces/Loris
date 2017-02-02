@@ -95,6 +95,12 @@ class ExaminerTest extends LorisIntegrationTest
         $this->setupPermissions(array("examiner_view"));
         $this->safeGet($this->url . "/examiner/");
 
+       // Test that the selection filter appears
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::id("lorisworkspace")
+        )->getText();
+        $this->assertContains("Selection Filter", $bodyText);
+
         // Check the examiner input
         $examinerInput = $this->webDriver->findElement(
             WebDriverBy::Name("examiner")
@@ -136,6 +142,12 @@ class ExaminerTest extends LorisIntegrationTest
     {
         $this->setupPermissions(array("examiner_view"));
         $this->safeGet($this->url . "/examiner/");
+
+       // Test that the selection filter appears
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::id("lorisworkspace")
+        )->getText();
+        $this->assertContains("Add Examiner", $bodyText);
 
         // Check the name input
         $nameInput = $this->webDriver->findElement(
