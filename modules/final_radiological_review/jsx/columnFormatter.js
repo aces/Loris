@@ -31,7 +31,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
              </td>;
   }
   if (column === 'Review Done') {
-      reviewDone = 'No';
+    reviewDone = 'No';
 
     if (row['Review Done'] === 'yes' || row['Review Done'] === 'Yes') {
       reviewDone = 'Yes';
