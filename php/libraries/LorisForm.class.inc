@@ -658,6 +658,7 @@ class LorisForm
         $id            = '';
         $disabled      = '';
         $name          = $el['name'];
+        $hasSelection  = false;
 
         foreach ($options as $optionKey => $optionVal) {
             $selected = '';
@@ -670,7 +671,8 @@ class LorisForm
                 if (!empty($this->getValue($el['name']))
                     && in_array($optionKey, $this->getValue($el['name']))
                 ) {
-                    $selected = 'selected="selected"';
+                    $selected     = 'selected="selected"';
+                    $hasSelection = true;
                 }
             } else {
                 if ($optionKey === $this->getValue($el['name'])) {
@@ -683,8 +685,13 @@ class LorisForm
                 }
             }
 
+            // Don't add empty option to multiselect, it is done outside the loop
+            if (isset($el['multiple']) && !$optionKey) {
+                continue;
+            }
+
             $strOptions .= "<option value='$optionKey' $selected>"
-                .$optionVal
+                . $optionVal
                 . "</option>";
         }
 
@@ -703,6 +710,10 @@ class LorisForm
         if (isset($el['multiple'])) {
             $name     = $name . '[]';
             $multiple = "multiple=\"multiple\"";
+
+            // Add empty option and select it if nothing else was selected
+            $selected   = $hasSelection ? '' : 'selected';
+            $strOptions = "<option value='' $selected></option>" . $strOptions;
         }
 
         $retVal = "<select name=\"$name\" $cls $id $changehandler $multiple "
