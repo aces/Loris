@@ -101,7 +101,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                         e.Radiologist as Radiologist 
                         FROM examiners e 
                         LEFT JOIN 
-                        psc ON (e.centerID=psc.CenterID)) ";
+                        psc ON (e.centerID=psc.CenterID) ";
             if (!$user->hasPermission('examiner_multisite')) {
 
                   $query .= " WHERE psc.CenterID = ".$centerID." ) "  ;
