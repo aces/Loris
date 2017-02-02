@@ -50,7 +50,7 @@ class NDB_Reliability extends NDB_Form
      */
     function _setupPage($name, $page, $identifier, $commentID, $formname)
     {
-        $this->form       = new HTML_QuickForm($formname);
+        $this->form       = new LorisForm($formname);
         $this->name       = $name;
         $this->page       = $page;
         $this->identifier = $identifier;
@@ -141,14 +141,8 @@ class NDB_Reliability extends NDB_Form
         // trim all values
         $this->form->applyFilter('__ALL__', 'trim');
 
-        // display the HTML_Quickform object
-        $smarty   = new Smarty_neurodb;
-        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
-        $this->form->accept($renderer);
-        $smarty->assign('form', $renderer->toArray());
-        $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("form_$this->template.tpl");
-        return $html;
+        // removed the HTML_Quickform object and replacing with the below code
+        return $this->form->toHTML();
     }
 
     /**
@@ -391,11 +385,6 @@ class NDB_Reliability extends NDB_Form
           );
           $this->addRule('invalid', 'Invalid flag is required.', 'required');
 
-          $this->addRule(
-              'Date_taken',
-              'Date of Administration is invalid',
-              'checkdate'
-          );
     }
 
     /**
