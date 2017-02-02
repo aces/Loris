@@ -141,14 +141,8 @@ class NDB_Reliability extends NDB_Form
         // trim all values
         $this->form->applyFilter('__ALL__', 'trim');
 
-        // display the HTML_Quickform object
-        $smarty   = new Smarty_neurodb;
-        $renderer = new LorisForm_Renderer_ArraySmarty($smarty);
-        $this->form->accept($renderer);
-        $smarty->assign('form', $renderer->toArray());
-        $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("form_$this->template.tpl");
-        return $html;
+        // removed the HTML_Quickform object and replacing with the below code
+        return $this->form->toHTML();
     }
 
     /**
