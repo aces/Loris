@@ -12,10 +12,14 @@
  * @link     https://github.com/aces/Loris
  */
 
-set_include_path(get_include_path().":../project/libraries:../php/libraries:");
+set_include_path(
+    get_include_path().":".
+    __DIR__."/../project/libraries:".
+    __DIR__."/../php/libraries:"
+);
 
 require_once __DIR__ . "/../vendor/autoload.php";
-$configFile = "../project/config.xml";
+$configFile = __DIR__."/../project/config.xml";
 $client     = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize($configFile);
