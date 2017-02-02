@@ -1956,31 +1956,35 @@ class LorisForm
                 continue;
             }
 
-            if ($el['type'] === 'date'
-                && array_key_exists('options', $el)
-                && ((strtolower($el['options']['format']) == 'y'))
-            ) {
-                    $value = $this->getValue($name);
-                if ($value) {
-                    $arr[$name] = sprintf("%s-00-00", $value);
-                } else {
-                    $arr[$name] = '';
-                }
-                    continue;
-            }
+            if ($el['type'] === 'date' && array_key_exists('options', $el)) {
+                $value = $this->getValue($name);
+                $date = $value;
 
-            if ($el['type'] === 'date'
-                && array_key_exists('options', $el)
-                && ((strtolower($el['options']['format']) == 'my')
-                || (strtolower($el['options']['format']) == 'ym'))
-            ) {
-                    $value = $this->getValue($name);
-                if ($value) {
-                    $arr[$name] = sprintf("%s-00", $value);
-                } else {
+                if (!$value) {
                     $arr[$name] = '';
-                }
                     continue;
+                }
+
+                // Convert year to a valid SQL format (i.e yyyy-mm-dd)
+                if (strtolower($el['options']['format']) === 'y') {
+                    $date = sprintf("%s-01-01", $value);
+                }
+                // Convert month-year to a valid SQL format (i.e yyyy-mm-dd)
+                if ((strtolower($el['options']['format']) === 'my') ||
+                    (strtolower($el['options']['format']) === 'ym')) {
+                    $date = sprintf("%s-01", $value);
+                }
+                // Make sure the date is valid
+                $dt = DateTime::createFromFormat('Y-m-d', $date);
+                $isValidDate = $dt && $dt->format('Y-m-d') == $date;
+
+                if (!$isValidDate) {
+                    throw new Exception("Please input a valid date!");
+                }
+
+                $arr[$name] = $date;
+
+                continue;
             }
 
             // Check to see it the element type is a header or is a static
