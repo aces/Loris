@@ -58,96 +58,71 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $user     = User::singleton();
         $centerID = $DB->quote($user->getData('CenterID'));
 
-        if ($this->useCertification == '1') {
-            if ($user->hasPermission('examiner_multisite')) {
+
+         if ($user->hasPermission('examiner_multisite')) {
                  $query = " 
-                        FROM (
-                        select e.examinerID as ID, 
-                        e.full_name as Examiner,e.centerID as centerID, 
-                        psc.Name as Site,e.radiologist as Radiologist,
-                        GROUP_CONCAT(tn.full_name) as Certification 
                         FROM 
-                        examiners e LEFT JOIN psc ON 
+                         examiners e LEFT JOIN psc ON 
                         (e.centerID=psc.CenterID) 
                         LEFT JOIN certification c ON 
                         (c.examinerID=e.examinerID and c.pass = 'certified') 
-                        LEFT JOIN test_names tn ON (tn.ID = c.testID) 
-                        GROUP BY e.full_name,psc.Name ) ";
-
+                        LEFT JOIN test_names tn ON (tn.ID = c.testID)";
             } else {
 
                   $query = "
-                        FROM (
-                        select e.examinerID as ID, 
-                        e.full_name as Examiner,e.centerID as centerID, 
-                        psc.Name as Site,e.radiologist as Radiologist,
-                        GROUP_CONCAT(tn.full_name) as Certification 
                         FROM 
-                        examiners e LEFT JOIN psc ON 
+                         examiners e LEFT JOIN psc ON 
                         (e.centerID=psc.CenterID) 
                         LEFT JOIN certification c ON 
                         (c.examinerID=e.examinerID and c.pass = 'certified') 
-                        LEFT JOIN test_names tn ON (tn.ID = c.testID) 
-                        WHERE e.centerID =".$centerID.
-                        " GROUP BY e.full_name,psc.Name ) ";
+                        LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                        WHERE e.centerID =".$centerID;
 
             }
-        } else {
 
-                 $query = " 
-                        FROM 
-                        (SELECT e.full_name as Examiner,e.examinerID as ID,
-                        psc.Name as Site,e.centerID as centerID,
-                        e.Radiologist as Radiologist 
-                        FROM examiners e 
-                        LEFT JOIN 
-                        psc ON (e.centerID=psc.CenterID) ";
-            if (!$user->hasPermission('examiner_multisite')) {
-
-                     $query .= " WHERE psc.CenterID = ".$centerID." ) "  ;
-            } else {
-                     $query .= ")";
-            }
-        }
 
         // set the class variables
         $this->columns = array(
-                          'T.Examiner as Examiner',
-                          'T.ID as ID',
-                          'T.Site as Site',
-                          'T.Radiologist as Radiologist',
-                         );
-        if ($this->useCertification == '1') {
-            array_push($this->columns, 'T.Certification as Certification');
-        }
-        $query         .= "T WHERE 1=1 ";
+                          'e.full_name as Examiner',
+                          'e.examinerID as ID',
+                          'psc.Name as Site',
+                          'e.radiologist as Radiologist',
+                          'GROUP_CONCAT(tn.full_name) as Certification'
+                          );
+        $this->group_by = "e.full_name,psc.Name";
+        $query         .= " WHERE 1=1 ";
         $this->query    = $query;
-        $this->order_by = 'T.Examiner';
+        $this->order_by = 'e.full_name';
         $this->headers  = array(
                            'Examiner',
                            'ID',
                            'Site',
                            'Radiologist',
+                           'Certification',
                           );
         $this->validFilters = array(
-                               'T.Examiner',
-                               'T.centerID',
-                               'COALESCE(T.Radiologist, 0)',
+                               'e.full_name',
+                               'e.centerID',
+                               'COALESCE(e.radiologist, 0)',
                               );
 
         $this->formToFilter = array(
-                               'examiner'    => 'T.Examiner',
-                               'site'        => 'T.centerID',
-                               'radiologist' => 'COALESCE(T.Radiologist, 0)',
+                               'examiner'    => 'e.full_name',
+                               'site'        => 'e.centerID',
+                               'radiologist' => 'COALESCE(e.radiologist, 0)',
                               );
 
         // If certification is turned on, update the class variables to include
         // certification information
         if ($this->useCertification == '1') {
-            array_push($this->headers, 'Certification');
-        }
-        $this->tpl_data['hiddenHeaders'] = json_encode(['ID']);
+          
+           $this->tpl_data['hiddenHeaders'] = json_encode(['ID']);
 
+        } else  {
+        
+            $this->tpl_data['hiddenHeaders'] = json_encode(['ID','Certification']);
+        
+        }
         return true;
     }
 
