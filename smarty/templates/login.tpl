@@ -179,17 +179,32 @@ $(document).ready(function() {
  	</div>
   <div class="container"> <!--maindiv start -->
     <div class="row">
-      <div class="col-xs-12 col-sm-6 col-sm-push-6 col-md-5 col-md-push-7">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                  <div class="col-xs-12">
+    <div class="col-md-10 centered">
+      </div>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-9">
+        <div>
+          <div class="panel-body">
+                  <div class="col-xs-6">
                       <center>
                           <img src="{$baseurl}/images/LORIS_logo.svg" class="img-responsive" alt="Responsive image" onerror="this.src='{$baseurl}/images/LORIS_logo.png'" align="middle" width="85%">
                       </center>
                       <br>
                   </div>
-                  <div class="hidden-xs hidden-sm">
-                      <br><br><br><br>
+                  <div class="col-xs-12">
+            {$study_description}
+                  </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-6 col-md-3">
+        <div class="panel panel-default">
+            <div class='panel-body'>
+                  <div class="col-xs-3">
+                      <h4>Sign&nbsp;in</h4>
+                  </div>
+                  <div class="col-xs-9">
+                      <hr>
                   </div>
                   <div class="col-xs-12">
                       <font color="red" align="middle" id="error">
@@ -212,10 +227,12 @@ $(document).ready(function() {
                           </div>
                       </form>
                   </div>
+                  </div>
+            </div>
+    </div>
                   <div class="row">
                   <table class="LorisFooter" align="center">
                       <tr>
-                      <hr width = 70%>
                       <td width="100%">
                       {if $studylinks}
                       <center>
@@ -246,18 +263,6 @@ $(document).ready(function() {
 
                       </tr>
                   </table>
-                  </div>
-            </div>
-      </div>
-      </div>
-      <div class="col-xs-12 col-sm-6 col-sm-pull-6 col-md-7 col-md-pull-5">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            {$study_description}
-          </div>
-        </div>
-      </div>
-    </div>
   </div><!--closing maindiv -->
 
 
