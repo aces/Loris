@@ -65,7 +65,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                         (e.centerID=psc.CenterID) 
                         LEFT JOIN certification c ON 
                         (c.examinerID=e.examinerID and c.pass = 'certified') 
-                        LEFT JOIN test_names tn ON (tn.ID = c.testID)";
+                        LEFT JOIN test_names tn ON (tn.ID = c.testID) WHERE 1=1 ";
         } else {
 
               $query = "
@@ -75,7 +75,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                         LEFT JOIN certification c ON 
                         (c.examinerID=e.examinerID and c.pass = 'certified') 
                         LEFT JOIN test_names tn ON (tn.ID = c.testID)
-                        WHERE e.centerID =".$centerID;
+                        WHERE e.centerID =".$centerID." ";
 
         }
 
@@ -88,7 +88,6 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                            'GROUP_CONCAT(tn.full_name) as Certification',
                           );
         $this->group_by = "e.full_name,psc.Name";
-        $query         .= " WHERE 1=1 ";
         $this->query    = $query;
         $this->order_by = 'e.full_name';
         $this->headers  = array(
