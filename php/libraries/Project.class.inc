@@ -23,6 +23,8 @@
  */
 class Project
 {
+    private static $instances = array();
+
     private $_projectId;
     private $_projectName;
     private $_recruitmentTarget;
@@ -49,31 +51,35 @@ class Project
      */
     static function &singleton($projectName)
     {
-        $factory     = \NDB_Factory::singleton();
-        $projectData = $factory->database()->pSelectRow(
-            "
-            SELECT
-              projectId,
-              name,
-              recruitmentTarget
-            FROM
-              Project
-            WHERE name = :v_project_name
-            ",
-            array('v_project_name' => $projectName)
-        );
-
-        if (empty($projectData)) {
-            throw new \LorisException("There is no project called: $projectName");
+            if (!isset(self::$instances[$projectName])) {
+            $factory     = \NDB_Factory::singleton();
+            $projectData = $factory->database()->pSelectRow(
+                "
+                SELECT
+                  projectId,
+                  name,
+                  recruitmentTarget
+                FROM
+                  Project
+                WHERE name = :v_project_name
+                ",
+                array('v_project_name' => $projectName)
+            );
+    
+            if (empty($projectData)) {
+                throw new \LorisException("There is no project called: $projectName");
+            }
+    
+            $project = new Project();
+    
+            $project->projectId         = $projectData['projectId'];
+            $project->projectName       = $projectData['name'];
+            $project->recruitmentTarget = (integer) $projectData['recruitmentTarget'];
+    
+            self::$instances[$projectName] = $project;
         }
-
-        $project = new Project();
-
-        $project->projectId         = $projectData['projectId'];
-        $project->projectName       = $projectData['name'];
-        $project->recruitmentTarget = (integer) $projectData['recruitmentTarget'];
-
-        return $project;
+        
+        return self::$instances[$projectName];
     }
 
 
