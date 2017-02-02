@@ -24,6 +24,23 @@ function notAnswered() {
   }
 }
 
+/**
+ * Appends a hidden empty value, if a multiselect dropdown has nothing selected
+ * Required to trigger validation on the backend
+ * @param {JQuery} form <form> element
+ * @param {JQuery} element <select> element
+ */
+function addEmptyOption(form, element) {
+  var selectedOptions = element.find(':selected');
+  var name = element[0].name;
+
+  if (selectedOptions.length === 0) {
+    form.append("<input type='hidden' name=" + name + " value='' />");
+  } else {
+    $("[type='hidden' name='" + name + "']").remove();
+  }
+}
+
 $(document).ready(function() {
   "use strict";
   $(".element").children().addClass("form-control input-sm");
@@ -54,4 +71,13 @@ $(document).ready(function() {
   }
   $("select[multiple]").attr("title", msg);
   $("select[multiple]").tooltip();
+
+  var form = $('form');
+  var multiselect = $('form select[multiple]');
+
+  form.on('submit', function() {
+    multiselect.each(function() {
+      addEmptyOption(form, $(this));
+    });
+  });
 });
