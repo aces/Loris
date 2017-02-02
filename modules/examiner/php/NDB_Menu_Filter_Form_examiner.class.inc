@@ -80,23 +80,23 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         }
 
         // set the class variables
-        $this->columns  = array(
-                           'e.full_name as Examiner',
-                           'e.examinerID as ID',
-                           'psc.Name as Site',
-                           'e.radiologist as Radiologist',
-                           'GROUP_CONCAT(tn.full_name) as Certification',
-                          );
-        $this->group_by = "e.full_name,psc.Name";
-        $this->query    = $query;
-        $this->order_by = 'e.full_name';
-        $this->headers  = array(
-                           'Examiner',
-                           'ID',
-                           'Site',
-                           'Radiologist',
-                           'Certification',
-                          );
+        $this->columns      = array(
+                               'e.full_name as Examiner',
+                               'e.examinerID as ID',
+                               'psc.Name as Site',
+                               'e.radiologist as Radiologist',
+                               'GROUP_CONCAT(tn.full_name) as Certification',
+                              );
+        $this->group_by     = "e.full_name,psc.Name";
+        $this->query        = $query;
+        $this->order_by     = 'e.full_name';
+        $this->headers      = array(
+                               'Examiner',
+                               'ID',
+                               'Site',
+                               'Radiologist',
+                               'Certification',
+                              );
         $this->validFilters = array(
                                'e.full_name',
                                'e.centerID',
