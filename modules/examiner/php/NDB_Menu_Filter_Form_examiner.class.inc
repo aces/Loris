@@ -107,7 +107,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                      $query .= " WHERE psc.CenterID = ".$centerID." ) "  ;
             } else {
                      $query .= ")";
-                   }
+            }
         }
 
         // set the class variables
