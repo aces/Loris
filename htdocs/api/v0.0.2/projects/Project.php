@@ -99,12 +99,7 @@ class Project extends \Loris\API\APIBase
                      ];
 
         if ($this->bCandidates) {
-            $JSONArray['Candidates'] = array_map(
-                function ($candidate) {
-                    return $candidate->CandID;
-                },
-                $this->project->getCandidateIds()
-            );
+            $JSONArray['Candidates'] = $this->project->getCandidateIds();
         }
 
         if ($this->bInstruments) {

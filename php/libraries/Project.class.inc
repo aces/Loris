@@ -245,8 +245,8 @@ class Project
             array('v_project_id' => implode(',', $p))
         );
         return array_map(
-            function ($candidate) {
-                return (object) array('CandID' => $candidate['candid']);
+            function ($row) {
+                return $row['candid'];
             },
             $candidatesData
         );
