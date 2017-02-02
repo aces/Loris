@@ -104,8 +104,10 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                         psc ON (e.centerID=psc.CenterID) ";
             if (!$user->hasPermission('examiner_multisite')) {
 
-                  $query .= " WHERE psc.CenterID = ".$centerID." ) "  ;
-            }
+                     $query .= " WHERE psc.CenterID = ".$centerID." ) "  ;
+            } else {
+                     $query .= ")";
+                   }
         }
 
         // set the class variables
