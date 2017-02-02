@@ -31,15 +31,15 @@ function formatColumn(column, cell, rowData, rowHeaders) {
              </td>;
   }
   if (column === 'Review Done') {
-    reviewDone = " ";
+      reviewDone = 'No';
+    if (row['Review Done'] === 'no'|| row['Review Done'] === null ) {
+      reviewDone = 'No';
+    }
 
-    if (row.ReviewDone === '1') {
+    if (row['Review Done'] === 'yes') {
       reviewDone = 'Yes';
     }
 
-    if (row.ReviewDone === '0') {
-      reviewDone = 'No';
-    }
     return <td>{reviewDone}</td>;
   }
 

@@ -41,8 +41,8 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-sm-4">
-                        <label class="col-sm-12 col-md-8">{$form.Review_done.label}</label>
-                        <div class="col-sm-12 col-md-4">{$form.Review_done.html}</div>
+                        <label class="col-sm-12 col-md-8">{$form.Review_Done.label}</label>
+                        <div class="col-sm-12 col-md-4">{$form.Review_Done.html}</div>
                     </div>
                     <div class="form-group col-sm-4">
                         <label class="col-sm-12 col-md-8">{$form.Exclusionary_Status.label}</label>
