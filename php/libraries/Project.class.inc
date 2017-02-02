@@ -23,7 +23,7 @@
  */
 class Project
 {
-    private static $instances = array();
+    private static $_instances = array();
 
     private $_projectId;
     private $_projectName;
@@ -51,40 +51,41 @@ class Project
      */
     static function &singleton($projectName)
     {
-            if (!isset(self::$instances[$projectName])) {
+        if (!isset(self::$_instances[$projectName])) {
             $factory     = \NDB_Factory::singleton();
             $projectData = $factory->database()->pSelectRow(
                 "
                 SELECT
                   projectId,
                   name,
-                  recruitmentTarget
+                  recruitmentTarget as recTarget
                 FROM
                   Project
                 WHERE name = :v_project_name
                 ",
                 array('v_project_name' => $projectName)
             );
-    
+
             if (empty($projectData)) {
-                throw new \LorisException("There is no project called: $projectName");
+                throw new \LorisException("There is no project named: $projectName");
             }
-    
+
             $project = new Project();
-    
+
             $project->projectId         = $projectData['projectId'];
             $project->projectName       = $projectData['name'];
-            $project->recruitmentTarget = (integer) $projectData['recruitmentTarget'];
-    
-            self::$instances[$projectName] = $project;
+            $project->recruitmentTarget = (integer) $projectData['recTarget'];
+
+            self::$_instances[$projectName] = $project;
         }
-        
-        return self::$instances[$projectName];
+
+        return self::$_instances[$projectName];
     }
 
 
     /**
-     * This does the work of creating a new Project
+     * This does the work of creating a new Project by inserting a new entry in the
+     * Project table and return the object instance of the newly created project.
      *
      * @param string  $projectName       The project name
      * @param integer $recruitmentTarget The number of expected participants
@@ -99,9 +100,9 @@ class Project
     static public function createNew($projectName, $recruitmentTarget = null)
     {
 
-        // TODO :: Add not null constraint to the iname column of the Project table
+        // TODO :: Add not null constraint to the name column of the Project table
         if (empty($projectName)) {
-            throw new \LorisException('ProjectName can\'t be null');
+            throw new \LorisException("ProjectName can't be null");
         }
 
         $factory = \NDB_Factory::singleton();
@@ -118,7 +119,7 @@ class Project
             array('v_project_name' => $projectName)
         );
         if (!empty($projectId)) {
-            throw new \LorisException('The project $projectName already exists');
+            throw new \LorisException("The project $projectName already exists");
         }
 
         $factory->database()->insert(

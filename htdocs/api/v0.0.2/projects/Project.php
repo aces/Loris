@@ -72,7 +72,7 @@ class Project extends \Loris\API\APIBase
 
         try {
             $this->project = $this->Factory->project($projectName);
-        } catch (\LorisExceptioni $e) {
+        } catch (\LorisException $e) {
             // This projectName does not exists
             $this->header("HTTP/1.1 404 Not Found");
             $this->error(['error' => 'Invalid project']);
