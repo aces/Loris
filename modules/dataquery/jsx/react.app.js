@@ -12,7 +12,7 @@
  *  The following component is for saved queries dropdown which appears in the
  *  tab bar of the base component.
  */
-SavedQueriesList = React.createClass({
+var SavedQueriesList = React.createClass({
     getDefaultProps: function() {
         queriesLoaded: false
     },
@@ -79,7 +79,7 @@ SavedQueriesList = React.createClass({
  *  The following component is the data queries base element. It controls which tab is currently
  *  shown, along with keeping the state of the current query being built and running the query.
  */
-DataQueryApp = React.createClass({
+var DataQueryApp = React.createClass({
     componentDidMount: function() {
         // Before the dataquery is loaded into the window, this function is called to gather
         // any data that was not passed in the initial load.
@@ -593,72 +593,70 @@ DataQueryApp = React.createClass({
                 var sessionInfo = [];
 
                 // Build the session data to be queried for the given category
-                for(var j = 0; j < this.state.filter.session.length; j++){
-                    for(var key in this.state.selectedFields[category].allVisits){
-                        var temp = [];
-                        if(Array.isArray(this.state.filter.session[j])){
-                            // Using allSessions, only use the PSCID
-                            temp.push(this.state.filter.session[j][0]);
-                        } else {
-                            temp.push(this.state.filter.session[j]);
+                for (var j = 0; j < this.state.filter.session.length; j++) {
+                    if (Array.isArray(this.state.filter.session[j])) {
+                        if(this.state.selectedFields[category].allVisits[this.state.filter.session[j][1]]) {
+                            sessionInfo.push(this.state.filter.session[j]);
                         }
-                        // Add the visit to the temp variable then add to the sessions to be queried
-                        temp.push(key);
-                        sessionInfo.push(temp);
+                    } else {
+                        for (var key in this.state.selectedFields[category].allVisits) {
+                            var temp = [];
+
+                            temp.push(this.state.filter.session[j]);
+                            // Add the visit to the temp variable then add to the sessions to be queried
+                            temp.push(key);
+                            sessionInfo.push(temp);
+                        }
                     }
                 }
 
                 DocTypes.push(category);
-                // Split the sessions to be queried into subqueries so that they don't exceed the defualt
-                // php defualt setting for maximum variables allowed in a single request
-                for(var j = 0; j < sessionInfo.length; j += 400){
-                    // keep track of the number of requests waiting for a response
-                    semaphore++;
-                    sectionedSessions = sessionInfo.slice(j, j+400);
-                    $.ajax({
-                        type: "POST",
-                        url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
-                        data: {
-                            DocType: category,
-                            Sessions: sectionedSessions
-                        },
-                        dataType: 'text',
-                        success: function(data) {
-                            if(data) {
-                                var i, row, rows, identifier,
-                                    sessiondata = that.state.sessiondata;
-                                data = JSON.parse(data);
-                                rows = data.rows;
-                                for(i = 0; i < rows.length; i += 1) {
-                                    /*
-                                     * each row is a JSON object of the
-                                     * form:
-                                     * {
-                                     *  "key" : [category, pscid, vl],
-                                     *  "value" : [pscid, vl],
-                                     *  "doc": {
-                                     *      Meta: { stuff }
-                                     *      data: { "FieldName" : "Value", .. }
-                                     * }
-                                     */
-                                    row = rows[i];
-                                    identifier = row.value;
-                                    if(!sessiondata.hasOwnProperty(identifier)) {
-                                        sessiondata[identifier] = {
-                                        }
+                // keep track of the number of requests waiting for a response
+                semaphore++;
+                sectionedSessions = JSON.stringify(sessionInfo);
+                $.ajax({
+                    type: "POST",
+                    url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
+                    data: {
+                        DocType: category,
+                        Sessions: sectionedSessions
+                    },
+                    dataType: 'text',
+                    success: function(data) {
+                        if(data) {
+                            var i, row, rows, identifier,
+                                sessiondata = that.state.sessiondata;
+                            data = JSON.parse(data);
+                            rows = data.rows;
+                            for(i = 0; i < rows.length; i += 1) {
+                                /*
+                                 * each row is a JSON object of the
+                                 * form:
+                                 * {
+                                 *  "key" : [category, pscid, vl],
+                                 *  "value" : [pscid, vl],
+                                 *  "doc": {
+                                 *      Meta: { stuff }
+                                 *      data: { "FieldName" : "Value", .. }
+                                 * }
+                                 */
+                                row = rows[i];
+                                identifier = row.value;
+                                if(!sessiondata.hasOwnProperty(identifier)) {
+                                    sessiondata[identifier] = {
                                     }
-
-                                    sessiondata[identifier][row.key[0]] = row.doc;
-
                                 }
-                                that.setState({ 'sessiondata' : sessiondata});
+
+                                sessiondata[identifier][row.key[0]] = row.doc;
+
                             }
-                            console.log("Received data");
-                            semaphore--;
-                            ajaxComplete();
+                            that.setState({ 'sessiondata' : sessiondata});
                         }
-                    });
-                }
+                        console.log("Received data");
+                        semaphore--;
+                        ajaxComplete();
+                    }
+                });
             }
         }
     },
@@ -949,4 +947,8 @@ DataQueryApp = React.createClass({
     }
 });
 
-RDataQueryApp = React.createFactory(DataQueryApp);
+window.SavedQueriesList = SavedQueriesList;
+window.DataQueryApp = DataQueryApp;
+window.RDataQueryApp = React.createFactory(DataQueryApp);
+
+export default DataQueryApp;

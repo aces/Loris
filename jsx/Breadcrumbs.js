@@ -42,3 +42,7 @@ class Breadcrumbs extends React.Component {
 
 var RBreadcrumbs = React.createFactory(Breadcrumbs);
 
+window.Breadcrumbs = Breadcrumbs;
+window.RBreadcrumbs = RBreadcrumbs;
+
+export default Breadcrumbs;

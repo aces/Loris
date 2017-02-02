@@ -853,3 +853,23 @@ var AddElement = React.createClass({
     );
   }
 });
+
+window.LorisElement = LorisElement;
+window.QuestionText = QuestionText;
+window.BasicOptions = BasicOptions;
+window.DropdownOptions = DropdownOptions;
+window.DateOptions = DateOptions;
+window.NumericOptions = NumericOptions;
+window.ListElements = ListElements;
+window.AddElement = AddElement;
+
+export default {
+  LorisElement,
+  QuestionText,
+  BasicOptions,
+  DropdownOptions,
+  DateOptions,
+  NumericOptions,
+  ListElements,
+  AddElement
+};

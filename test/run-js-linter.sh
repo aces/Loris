@@ -12,4 +12,5 @@ eslint jsx/
 eslint htdocs/js/
 
 # Other files
-eslint Gruntfile.js
+eslint webpack.config.js
+

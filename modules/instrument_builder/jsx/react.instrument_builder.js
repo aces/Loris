@@ -587,3 +587,7 @@ var InstrumentBuilderApp = React.createClass({
 });
 
 var RInstrumentBuilderApp = React.createFactory(InstrumentBuilderApp);
+
+window.RInstrumentBuilderApp = RInstrumentBuilderApp;
+
+export default InstrumentBuilderApp;
