@@ -32,11 +32,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
   if (column === 'Review Done') {
       reviewDone = 'No';
-    if (row['Review Done'] === 'no'|| row['Review Done'] === null ) {
-      reviewDone = 'No';
-    }
 
-    if (row['Review Done'] === 'yes') {
+    if (row['Review Done'] === 'yes' || row['Review Done'] === 'Yes') {
       reviewDone = 'Yes';
     }
 
