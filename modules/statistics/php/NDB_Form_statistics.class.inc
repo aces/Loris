@@ -46,9 +46,9 @@ class NDB_Form_statistics extends NDB_Form
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
 
-            if(array_search($vl, $visits) !== false
-                && array_search($subcat, $subcats) !== false
-                && $this->_inCenter($center, $centres) !== false
+            if(in_array($vl, $visits)
+                && in_array($subcat, $subcats)
+                && $this->_inCenter($center, $centres)
             ) {
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
@@ -696,7 +696,7 @@ class NDB_Form_statistics extends NDB_Form
                           CASE($MRI_Type_Field)
                           WHEN 'Partial' THEN 'Partial Run'
                           WHEN 'No' THEN 'No Scan'
-                          ELSE $MRI_Type_Field
+                          ELSE 'Complete'
                           END";
 
         $result = $DB->pselect(
