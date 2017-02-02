@@ -1,3 +1,5 @@
+'use strict';
+
 /* exported formatColumn */
 
 /**
@@ -121,7 +123,18 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       finalizedvar
     );
   }
-
+  if (column === 'T1 Inserted' && row['T1 Inserted'] === "Yes") {
+    url = loris.BaseURL + "/imaging_browser/viewSession/?sessionID=" + row.SessionID;
+    return React.createElement(
+      'td',
+      null,
+      React.createElement(
+        'a',
+        { href: url },
+        cell
+      )
+    );
+  }
   return React.createElement(
     'td',
     null,

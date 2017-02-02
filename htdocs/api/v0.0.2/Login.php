@@ -148,10 +148,9 @@ class Login extends APIBase
 
 if (isset($_REQUEST['PrintLogin'])) {
     // Without this line, mod_rewrite eats the $_POST variable.
-    parse_str(file_get_contents("php://input"), $_POST);
-
+    $body = file_get_contents("php://input");
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $obj = new Login($_SERVER['REQUEST_METHOD'], $_POST);
+        $obj = new Login($_SERVER['REQUEST_METHOD'], json_decode($body, true));
     } else {
         $obj = new Login($_SERVER['REQUEST_METHOD']);
     }

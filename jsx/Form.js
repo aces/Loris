@@ -29,7 +29,12 @@ var FormElement = React.createClass({
     method: React.PropTypes.oneOf(['POST', 'GET']),
     class: React.PropTypes.string,
     columns: React.PropTypes.number,
-    formElements: React.PropTypes.array,
+    formElements: React.PropTypes.shape({
+      elementName: React.PropTypes.shape({
+        name: React.PropTypes.string,
+        type: React.PropTypes.string
+      })
+    }),
     onSubmit: React.PropTypes.func,
     onUserInput: React.PropTypes.func
   },
@@ -42,7 +47,7 @@ var FormElement = React.createClass({
       class: 'form-horizontal',
       columns: 1,
       fileUpload: false,
-      formElements: [],
+      formElements: {},
       onSubmit: function() {
         console.warn('onSubmit() callback is not set!');
       },
@@ -62,11 +67,11 @@ var FormElement = React.createClass({
     const filter = this.props.formElements;
     const userInput = this.props.onUserInput;
 
-    filter.forEach(function(element, key) {
+    Object.keys(filter).forEach(function(objKey, index) {
       formElementsHTML.push(
-        <div key={'el_' + key} className={colClass}>
+        <div key={'el_' + index} className={colClass}>
           <LorisElement
-            element={element}
+            element={filter[objKey]}
             onUserInput={userInput}
           />
         </div>
@@ -84,7 +89,7 @@ var FormElement = React.createClass({
         elementClass = colClass;
       }
       formElementsHTML.push(
-        <div key={'el_' + key} className={elementClass}>{child}</div>
+        <div key={'el_child_' + key} className={elementClass}>{child}</div>
       );
     });
 
@@ -769,3 +774,27 @@ var LorisElement = React.createClass({
     return elementHtml;
   }
 });
+
+window.FormElement = FormElement;
+window.SelectElement = SelectElement;
+window.TextareaElement = TextareaElement;
+window.TextboxElement = TextboxElement;
+window.DateElement = DateElement;
+window.NumericElement = NumericElement;
+window.FileElement = FileElement;
+window.StaticElement = StaticElement;
+window.ButtonElement = ButtonElement;
+window.LorisElement = LorisElement;
+
+export default {
+  FormElement,
+  SelectElement,
+  TextareaElement,
+  TextboxElement,
+  DateElement,
+  NumericElement,
+  FileElement,
+  StaticElement,
+  ButtonElement,
+  LorisElement
+};

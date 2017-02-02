@@ -368,3 +368,8 @@ var CandidateInfo = React.createClass(
 );
 
 var RCandidateInfo = React.createFactory(CandidateInfo);
+
+window.CandidateInfo = CandidateInfo;
+window.RCandidateInfo = RCandidateInfo;
+
+export default CandidateInfo;

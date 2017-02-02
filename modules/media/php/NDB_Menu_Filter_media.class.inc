@@ -105,6 +105,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $user =& User::singleton();
         // the base query
         $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
         " LEFT JOIN candidate c ON c.CandID=s.CandID";
@@ -128,6 +129,10 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
               ];
 
         $this->query = $query;
+
+        if (!$user->hasPermission('access_all_profiles')) {
+            $this->query .= " AND c.CenterID=" . $user->getCenterID();
+        }
 
         $this->group_by = '';
         $this->order_by = 'm.instrument';

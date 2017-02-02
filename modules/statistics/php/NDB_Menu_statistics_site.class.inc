@@ -77,6 +77,7 @@ class NDB_Menu_statistics_site extends NDB_Menu
                 WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID 
                 AND s.CandID=c.CandID  
                 AND s.Active='Y' 
+                AND s.CenterID <> '1' 
                 AND s.Current_stage <> 'Recycling Bin'
                 $this->query_criteria
                 AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') 

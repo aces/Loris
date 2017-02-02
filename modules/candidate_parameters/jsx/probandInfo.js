@@ -284,3 +284,8 @@ var ProbandInfo = React.createClass(
 );
 
 var RProbandInfo = React.createFactory(ProbandInfo);
+
+window.ProbandInfo = ProbandInfo;
+window.RProbandInfo = RProbandInfo;
+
+export default ProbandInfo;
