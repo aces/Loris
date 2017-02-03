@@ -1,5 +1,4 @@
 var webpack = require('webpack');
-var env = process.env.WEBPACK_ENV;
 
 var config = {
   entry: {
@@ -68,13 +67,8 @@ var config = {
   externals: {
     react: 'React'
   },
-  plugins: []
+  devtool: 'source-map',
+  plugins: [new webpack.optimize.UglifyJsPlugin()]
 };
-
-if (env === 'development') {
-  config.devtool = 'eval-source-map';
-} else {
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin());
-}
 
 module.exports = config;
