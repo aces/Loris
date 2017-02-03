@@ -157,17 +157,44 @@ class CouchDBDemographicsImporter {
                                 LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
                                 LEFT JOIN feedback_bvl_thread fbt ON (fbt.CandID=c.CandID) 
                                 LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)";
+
+        $groupBy=" GROUP BY s.ID, 
+                            c.DoB,
+							c.CandID, 
+                            c.PSCID, 
+                            s.Visit_label, 
+                            s.SubprojectID, 
+                            Site, 
+                            c.Gender, 
+                            s.Current_stage,
+                            Failure,
+                            c.ProjectID, 
+                            CEF, 
+                            CEF_reason, 
+                            CEF_comment, 
+                            pc_comment.Value, 
+                            pso.Description, 
+                            ps.participant_suboptions, 
+                            ps.reason_specify, 
+                            ps.study_consent, 
+                            Study_consent_withdrawal
+                            ";
+
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
             $probandFields = ", c.ProbandGender as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
             $fieldsInQuery .= $probandFields;
+            $groupBy .= ", c.ProbandGender, Age_difference";
         }
         // If expected date of confinement is being used, add EDC information into the query
         if ($config->getSetting("useEDC") === "true") {
             $EDCFields = ", c.EDC as EDC";
             $fieldsInQuery .= $EDCFields;
+            $groupBy .= ", c.EDC";
         }
-        $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'"." GROUP BY s.ID";
+        $whereClause=" WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
+
+        $concatQuery = $fieldsInQuery . $tablesToJoin . $whereClause . $groupBy;
         return $concatQuery;
     }
 
@@ -211,6 +238,7 @@ class CouchDBDemographicsImporter {
         print "Updating Config:BaseConfig: $config";
 
         // Run query
+        $max_len = $this->SQLDB->run("SET SESSION group_concat_max_len = 100000;", array());
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
 
         $this->CouchDB->beginBulkTransaction();
