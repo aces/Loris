@@ -32,29 +32,7 @@ require_once 'APIBase.php';
  */
 class Project extends \Loris\API\APIBase
 {
-    var $ProjectID;
-    var $ProjectName;
-    var $ProjectInstruments;
-
-    /**
-     * Gets the ProjectID for the project name that was requested with the
-     * API.
-     *
-     * @param string $ProjectName The project name whose ID we would like
-     *
-     * @return integer The id of $ProjectName
-     */
-    protected function getProjectID($ProjectName)
-    {
-        $config = $this->Factory->config();
-
-        $Projects = $config->getSetting("Projects")["project"];
-        foreach ($Projects as $project) {
-            if ($project['title'] === $ProjectName) {
-                return $project['id'];
-            }
-        }
-    }
+    private $_project;
 
     /**
      * Constructs an object to handle JSON serialization
@@ -92,23 +70,16 @@ class Project extends \Loris\API\APIBase
         $this->bInstrumentDetails = $bInstrumentDetails;
         $this->bVisits            = $bVisits;
 
-        $this->ProjectName = $projectName;
-        include_once 'Utility.class.inc';
-
-        if ($projectName === 'loris') {
-            $this->ProjectID = 0;
-        } else {
-            $this->ProjectID = $this->getProjectID($projectName);
-        }
-
-        if (!is_numeric($this->ProjectID)) {
+        try {
+            $this->project = $this->Factory->project($projectName);
+        } catch (\LorisException $e) {
+            // This projectName does not exists
             $this->header("HTTP/1.1 404 Not Found");
             $this->error(['error' => 'Invalid project']);
             $this->safeExit(0);
         }
 
         $this->handleRequest();
-
     }
 
     /**
@@ -121,32 +92,14 @@ class Project extends \Loris\API\APIBase
         if (!empty($this->JSON)) {
             return $this->JSON;
         }
-
         $JSONArray = [
                       "Meta" => [
-                                 "Project" => $this->ProjectName,
+                                 "Project" => $this->project->getName(),
                                 ],
                      ];
 
         if ($this->bCandidates) {
-            if ($this->ProjectID === 0) {
-                $rows = $this->DB->pselect(
-                    "SELECT CandID FROM candidate",
-                    array()
-                );
-            } else {
-                $rows = $this->DB->pselect(
-                    "SELECT CandID FROM candidate WHERE ProjectID=:projID",
-                    array("projID" => $this->ProjectID)
-                );
-            }
-            $CandIDs = [];
-
-            foreach ($rows as $row) {
-                $CandIDs[] = $row['CandID'];
-            }
-
-            $JSONArray['Candidates'] = $CandIDs;
+            $JSONArray['Candidates'] = $this->project->getCandidateIds();
         }
 
         if ($this->bInstruments) {
@@ -183,7 +136,7 @@ class Project extends \Loris\API\APIBase
         }
 
         if ($this->bVisits) {
-            $Visits     = \Utility::getExistingVisitLabels($this->ProjectID);
+            $Visits     = \Utility::getExistingVisitLabels($this->project->getId());
             $VisitNames = array_keys($Visits);
 
             $JSONArray['Visits'] = $VisitNames;
