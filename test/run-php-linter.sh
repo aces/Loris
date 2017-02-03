@@ -13,7 +13,7 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml php/libraries php/exceptions php/in
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs
 
 # Run PHPCS on some scripts
-vendor/bin/phpcs --standard=docs/LorisCS.xml tools/CouchDB_Import_MRI.php
+vendor/bin/phpcs --standard=docs/LorisCS.xml modules/dataquery/tools/CouchDB_Import_MRI.php
 vendor/bin/phpcs --standard=docs/LorisCS.xml tools/assign_missing_instruments.php
 vendor/bin/phpcs --standard=docs/LorisCS.xml tools/data_dictionary_builder.php
 vendor/bin/phpcs --standard=docs/LorisCS.xml tools/generic_includes.php
