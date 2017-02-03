@@ -62,7 +62,10 @@ DROP TABLE IF EXISTS `LorisMenuPermissions`;
 
 CREATE TABLE LorisMenuPermissions (
     MenuID integer unsigned REFERENCES LorisMenu(ID),
-    PermID integer unsigned REFERENCES permissions(ID)
+    PermID integer unsigned REFERENCES permissions(ID),
+    UNIQUE (MenuID,PermID),
+    CONSTRAINT `FK_LorisMenuPermissions_1` FOREIGN KEY (`PermID`) REFERENCES `permissions` (`permID`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `FK_LorisMenuPermissions_2` FOREIGN KEY (`MenuID`) REFERENCES `LorisMenu` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT="If a user has ANY of the permissions for a module it will show up in their menu bar";
 
 -- New Profile permission
