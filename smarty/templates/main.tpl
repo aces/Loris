@@ -171,7 +171,7 @@
                         </li>
                         <li>
                             <p class="navbar-text">
-                                &nbsp;&nbsp;  Site: {$user.Site} &nbsp;
+                                &nbsp;&nbsp;  Sites: {$user.Sites} &nbsp;
                             </p>
                         </li>
                         <li class="dropdown">
