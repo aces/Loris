@@ -33,6 +33,7 @@ class NDB_Factory
 
     private static $_couchdb    = null;
     private static $_user       = null;
+    private static $_projects = array();
     private static $_candidates = array();
     private static $_timepoints = array();
 

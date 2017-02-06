@@ -145,7 +145,7 @@ paths:
             type: array
             items:
               type: string
-  /project/{name}/visits:
+  /projects/{name}/visits:
     get:
       description: Returns all the visit labels defined for this project
       tags:

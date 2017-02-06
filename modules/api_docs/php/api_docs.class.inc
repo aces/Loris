@@ -32,10 +32,11 @@ class API_Docs extends \NDB_Page
     /**
      * Create a new API_Docs instance
      */
-    public function __construct($name)
+    public function __construct()
     {
         $factory  = \NDB_Factory::singleton();
         $settings = $factory->settings();
+
         $this->tpl_data['baseurl'] = $settings->getBaseURL();
     }
 
