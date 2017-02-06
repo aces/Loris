@@ -328,10 +328,6 @@ a.btn.btn-primary {
     text-overflow: ellipsis;
 }
 
-/*.btn-breadcrumb > *:nth-child(n+2) {
-  display:none;
-}*/
-
 /* For phones */
 @media (max-width: 767px) {
     .btn-breadcrumb > * div {
