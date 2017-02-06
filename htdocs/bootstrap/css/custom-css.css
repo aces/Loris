@@ -273,6 +273,16 @@ div.navbar div.container div.navbar-brand {
   z-index: 3;
 }
 
+/** Ellipsis styling **/
+.ellipsis > .dropdown-toggle {
+  border: none;
+  padding: 0px;
+  background: inherit;
+}
+.ellipsis:hover .dropdown-menu {
+display: block;
+}
+
 /** The Spacing **/
 .btn-breadcrumb .btn {
   padding:6px 12px 6px 24px;
@@ -318,15 +328,12 @@ a.btn.btn-primary {
     text-overflow: ellipsis;
 }
 
-.btn-breadcrumb > *:nth-child(n+2) {
+/*.btn-breadcrumb > *:nth-child(n+2) {
   display:none;
-}
+}*/
 
 /* For phones */
 @media (max-width: 767px) {
-    .btn-breadcrumb > *:nth-last-child(-n+3) {
-        display:block;
-    }
     .btn-breadcrumb > * div {
         max-width: 60px;
     }
@@ -340,9 +347,6 @@ a.btn.btn-primary {
 
 /* For tablets */
 @media (min-width: 768px) and (max-width:991px) {
-    .btn-breadcrumb > *:nth-last-child(-n+4) {
-        display:block;
-    }
     .btn-breadcrumb > * div {
         max-width: 100px;
     }
@@ -356,9 +360,6 @@ a.btn.btn-primary {
 
 /* For desktops  */
 @media (min-width: 992px) and (max-width: 1199px) {
-    .btn-breadcrumb > *:nth-last-child(-n+4) {
-        display:block;
-    }
     .btn-breadcrumb > * div {
         max-width: 170px;
     }
@@ -372,9 +373,6 @@ a.btn.btn-primary {
 
 /* For desktops */
 @media (min-width: 1200px) {
-    .btn-breadcrumb > *:nth-last-child(-n+4) {
-        display:block;
-    }
     .btn-breadcrumb > * div:not(:last-child) {
         max-width: 170px;
     }
