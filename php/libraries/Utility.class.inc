@@ -316,6 +316,7 @@ class Utility
      */
     static function getSubprojectsForProject($projectID = null)
     {
+        error_log('DEPRECATED: Please use getSubprojects from the Project class');
         return self::getSubprojectList($projectID);
     }
 

@@ -125,8 +125,6 @@ if (isset($_REQUEST['PrintCandidate'])) {
         $_SERVER['REQUEST_METHOD'],
         $_REQUEST['CandID']
     );
-
-    header('content-type: application/json');
     print $obj->toJSONString();
 }
 ?>

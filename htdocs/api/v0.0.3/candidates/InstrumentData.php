@@ -234,8 +234,6 @@ if (isset($_REQUEST['PrintInstrumentData'])) {
         isset($_REQUEST['DDE'])   ? true : false,
         isset($_REQUEST['flags']) ? true : false
     );
-
-    header('content-type: application/json');
     print $obj->toJSONString();
 }
 ?>

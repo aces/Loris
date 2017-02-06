@@ -210,8 +210,6 @@ if (isset($_REQUEST['PrintVisit'])) {
             $_REQUEST['VisitLabel']
         );
     }
-
-    header('content-type: application/json');
     print $obj->toJSONString();
 }
 ?>

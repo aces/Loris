@@ -87,7 +87,6 @@ class InstrumentForm extends \Loris\API\APIBase
 
 if (isset($_REQUEST['PrintInstrumentForm'])) {
     $obj = new InstrumentForm($_SERVER['REQUEST_METHOD'], $_REQUEST['Instrument']);
-    header('content-type: application/json');
     print $obj->toJSONString();
 }
 ?>

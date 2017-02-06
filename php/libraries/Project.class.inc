@@ -65,7 +65,6 @@ class Project
                 ",
                 array('v_project_name' => $projectName)
             );
-
             if (empty($projectData)) {
                 throw new \LorisException("There is no project named: $projectName");
             }
@@ -252,4 +251,18 @@ class Project
             $candidatesData
         );
     }
+
+    /**
+     * Tells if any of this project's subproject is using Estimated Date of 
+     * Confinement (EDC)
+     *
+     * @return boolean True if any subproject is using EDC.
+     */
+    public function isUsingEDC()
+    {
+        return array_reduce($this->getSubprojects(), function ($carry, $item) {
+            return $carry && $item->useEDC;
+        }, true);
+    }
+
 }

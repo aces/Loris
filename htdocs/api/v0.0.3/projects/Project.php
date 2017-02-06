@@ -32,29 +32,7 @@ require_once 'APIBase.php';
  */
 class Project extends \Loris\API\APIBase
 {
-    var $ProjectID;
-    var $ProjectName;
-    var $useEDC;
-    var $PSCID;
-
-    /**
-     * Gets the ProjectID for the project name that was requested with the
-     * API.
-     *
-     * @param string $ProjectName The project name whose ID we would like
-     *
-     * @return integer The id of $ProjectName
-     */
-    protected function getProjectID($ProjectName)
-    {
-
-        $Projects = \Utility::getProjectList();
-        foreach ($Projects as $id => $project) {
-            if ($project === $ProjectName) {
-                return $id;
-            }
-        }
-    }
+    private $_project;
 
     /**
      * Constructs an object to handle JSON serialization
@@ -76,35 +54,21 @@ class Project extends \Loris\API\APIBase
      * @param boolean $bInstrumentDetails If true, InstrumentDetails are populated
      *                                    instead of instrument names
      */
-    public function __construct(
-        $method,
-        $projectName
-    ) {
+    public function __construct($method, $projectName)
+    {
         $this->AutoHandleRequestDelegation = false;
         parent::__construct($method);
 
-        $this->ProjectName = $projectName;
-
-        if ($projectName === 'loris') {
-            $this->ProjectID = 0;
-        } else {
-            $this->ProjectID = $this->getProjectID($projectName);
-        }
-
-        if (!is_numeric($this->ProjectID)) {
+        try {
+            $this->_project = $this->Factory->project($projectName);
+        } catch (\LorisException $e) {
+            // This projectName does not exists
             $this->header("HTTP/1.1 404 Not Found");
             $this->error(['error' => 'Invalid project']);
             $this->safeExit(0);
         }
 
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $this->useEDC = $config->getSetting("useEDC");
-        $this->PSCID  = $config->getSetting("PSCID");
-
         $this->handleRequest();
-
     }
 
     /**
@@ -114,17 +78,20 @@ class Project extends \Loris\API\APIBase
      */
     function handleGET()
     {
-        $PSCIDFormat = \Utility::structureToPCRE($this->PSCID['structure'], "SITE");
-        $type        = $this->PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
+        $config = $this->Factory->config();
+        $PSCID  = $config->getSetting("PSCID");
+
+        $type  = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
+        $regex = \Utility::structureToPCRE($PSCID['structure'], "SITE");
 
         $this->JSON = array(
-                       "Name"   => $this->ProjectName,
-                       "useEDC" => $this->useEDC,
-                       "PSCID"  => array(
-                                    "Type"  => $type,
-                                    "Regex" => $PSCIDFormat,
-                                   ),
-                      );
+            'name'   => $this->_project->getName(),
+            'useEDC' => $this->_project->isUsingEDC(),
+            'PSCID'  => array(
+                'Type'  => null,
+                'Regex' => null
+            )
+        );
     }
 
     /**
@@ -143,10 +110,13 @@ class Project extends \Loris\API\APIBase
 if (isset($_REQUEST['PrintProjectJSON'])) {
     $Proj = new Project(
         $_SERVER['REQUEST_METHOD'],
-        $_REQUEST['Project']
+        $_REQUEST['Project'],
+        isset($_REQUEST['Candidates'])  ? true : false,
+        isset($_REQUEST['Instruments']) ? true : false,
+        isset($_REQUEST['Visits'])      ? true : false,
+        isset($_REQUEST['InstrumentDetails'])      ? true : false
     );
 
-    header('content-type: application/json');
     print $Proj->toJSONString();
 }
 ?>

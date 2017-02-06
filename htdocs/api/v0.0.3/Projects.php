@@ -46,7 +46,7 @@ class Projects extends APIBase
         $useProjects = $config->getSetting("useProjects");
 
         if ($useProjects && $useProjects !== "false" && $useProjects !== "0") {
-            $this->JSON = \Utility::getProjectList();
+            $this->JSON = array_values(\Utility::getProjectList());
         } else {
             $this->JSON = array("loris");
         }
@@ -67,8 +67,6 @@ class Projects extends APIBase
 
 if (isset($_REQUEST['PrintProjects'])) {
     $obj = new Projects($_SERVER['REQUEST_METHOD']);
-
-    header('content-type: application/json');
     print $obj->toJSONString();
 }
 ?>

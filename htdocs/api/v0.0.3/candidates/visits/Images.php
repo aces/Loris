@@ -107,8 +107,6 @@ if (isset($_REQUEST['PrintImages'])) {
         $_REQUEST['CandID'],
         $_REQUEST['VisitLabel']
     );
-
-    header('content-type: application/json');
     print $obj->toJSONString();
 }
 ?>

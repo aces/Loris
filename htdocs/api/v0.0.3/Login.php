@@ -61,16 +61,16 @@ class Login extends APIBase
      */
     function handlePOST()
     {
-        if (empty($this->RequestData->username)
-            || empty($this->RequestData->password)
+        if (empty($this->RequestData['username'])
+            || empty($this->RequestData['password'])
         ) {
             $this->header("HTTP/1.1 400 Bad Request");
             $this->JSON = array("error" => "Missing username or password");
             return;
 
         }
-        $user     = $this->RequestData->username;
-        $password = $this->RequestData->password;
+        $user     = $this->RequestData['username'];
+        $password = $this->RequestData['password'];
 
         $login = $this->getLoginAuthenticator();
 
@@ -149,14 +149,12 @@ class Login extends APIBase
 if (isset($_REQUEST['PrintLogin'])) {
     // Without this line, mod_rewrite eats the $_POST variable.
     $body = file_get_contents("php://input");
-
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $obj = new Login($_SERVER['REQUEST_METHOD'], json_decode($body));
+        $obj = new Login($_SERVER['REQUEST_METHOD'], json_decode($body, true));
     } else {
         $obj = new Login($_SERVER['REQUEST_METHOD']);
     }
-
-    header('content-type: application/json');
+    header('Content-type: application/json');
     print $obj->toJSONString();
 }
 ?>

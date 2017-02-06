@@ -61,7 +61,6 @@ abstract class APIBase
             get_include_path() . ":" .
             __DIR__ . "/../../../php/libraries"
         );
-        include_once 'NDB_Client.class.inc';
 
         $this->Factory = \NDB_Factory::singleton();
         $this->client  = new \NDB_Client();
