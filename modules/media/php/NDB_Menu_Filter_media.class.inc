@@ -136,7 +136,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->query = $query;
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $site_arr = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterID());
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 
