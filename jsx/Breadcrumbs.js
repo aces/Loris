@@ -27,20 +27,20 @@ class Breadcrumbs extends React.Component {
   }
 
   componentWillMount() {
-    this.checkScreenSize()
-    if( typeof window !== 'undefined' )
+    this.checkScreenSize();
+    if (typeof window !== 'undefined')
       window.addEventListener('resize', this.checkScreenSize);
   }
 
-  componentWillUnmount () {
-    if( typeof window !== 'undefined' )
+  componentWillUnmount() {
+    if (typeof window !== 'undefined')
       window.removeEventListener('resize', this.checkScreenSize);
   }
 
   checkScreenSize() {
     // Used to check to current window size and
     // sets the number of breadcrumbs to show
-    var windowWidth  = window.innerWidth;
+    var windowWidth = window.innerWidth;
     var displayCount = 4;
 
     if (windowWidth <= 500) {
@@ -90,7 +90,7 @@ class Breadcrumbs extends React.Component {
       }
     }
 
-    if (dropdown.length != 0) {
+    if (dropdown.length !== 0) {
       breadcrumbDropdown = (
         <div className="btn-group ellipsis btn btn-primary">
           <button type="button"
@@ -105,7 +105,7 @@ class Breadcrumbs extends React.Component {
             {dropdown}
           </ul>
         </div>
-      )
+      );
     }
 
     return (
