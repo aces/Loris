@@ -156,7 +156,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 SELECT fi.FileID
                 FROM files fi
                 WHERE fi.SessionID=s.ID AND fi.AcquisitionProtocolID=44
-                GROUP BY fi.SessionID),'')
+                GROUP BY fi.SessionID, fi.FileID LIMIT 1),'')
             WHEN '' THEN 'No'
             ELSE 'Yes'
             END
@@ -219,7 +219,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 'CandID'
             )
         );  
-        $this->tpl_data['hiddenHeaders'] = json_encode(['T1_Inserted','CommentID','Conflict2','SessionID','CandID']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(['CommentID','Conflict2','SessionID','CandID']);
         $this->validFilters = array('c.CandID',
             'r.DICOM_ID',
             's.visit_label',

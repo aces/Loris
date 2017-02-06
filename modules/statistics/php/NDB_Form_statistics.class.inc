@@ -482,6 +482,7 @@ class NDB_Form_statistics extends NDB_Form
                     s.Active='Y' AND c.Active='Y'
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
+                    AND s.CenterID <> '1'
                     $suproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
@@ -524,6 +525,7 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.CommentID LIKE 'DDE%' 
                 AND c.Active='Y'
+                AND s.CenterID <> '1'
                 $suproject_query
                 $Param_Project
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
@@ -712,6 +714,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND f.CommentID NOT LIKE 'DDE%'
+                    AND s.CenterID <> '1'
                     $suproject_query
                     $Param_Project
               GROUP BY Subcat,
@@ -752,6 +755,7 @@ class NDB_Form_statistics extends NDB_Form
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -769,6 +773,7 @@ class NDB_Form_statistics extends NDB_Form
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -795,6 +800,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -814,6 +820,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -841,6 +848,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -860,6 +868,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
