@@ -29,6 +29,34 @@ require_once __DIR__
 class ConfigurationTest extends LorisIntegrationTest
 {
     /**
+     * Insert test data
+     *
+     * @return void
+     */
+    function setUp()
+    {
+        parent::setUp();
+        $window = new WebDriverWindow($this->webDriver);
+        $size   = new WebDriverDimension(1280, 1024);
+        $window->setSize($size);
+        $this->setUpConfigSetting("useProjects", "false");
+    }
+
+    /**
+     * Delete test data
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        $this->DB->delete(
+            "subproject",
+            array('title' => 'Test Test Test')
+        );
+        parent::tearDown();
+    }
+
+    /**
      * Tests that, when loading the Configuration module, the word
      * "Configuration" appears somewhere on the page
      *
@@ -73,6 +101,40 @@ class ConfigurationTest extends LorisIntegrationTest
          $this->resetPermissions();
     }
     /**
+     * Tests that subproject panel in configuration
+     *
+     * @return void
+     */
+    public function testSubproject()
+    {
+         $this->safeGet($this->url . "/configuration/subproject/");
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertContains("SubprojectID", $bodyText);
+    }
+    /**
+     * Tests that subproject navigate back to config page
+     *
+     * @return void
+     */
+    private function _testSubprojectBreadcrumbs()
+    {
+         $this->safeGet($this->url . "/configuration/subproject/");
+         $webElement = $this->safeFindElement(
+             WebDriverBy::Xpath("//*[@id='bc2']/a[2]/div")
+         )->click();
+         sleep(2);
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+
+         $this->assertContains(
+             "To configure study subprojects click here.",
+             $bodyText
+         );
+    }
+    /**
      * Tests links, click each link, the particular content shows on the page.
      *
      * @return void
@@ -111,5 +173,52 @@ class ConfigurationTest extends LorisIntegrationTest
         $this->assertContains($text, $bodyText);
 
     }
+
+    /**
+      *  If test on local machine, then run this function.
+      *
+      *  @return void
+      */
+    public function testLocal()
+    {
+        $config  =& NDB_Config::singleton();
+        $dev     = $config->getSetting("dev");
+        $sandbox = $dev['sandbox'];
+        if ($sandbox == '1') {
+
+            $this->_testSubprojectBreadcrumbs();
+            $this->_testUseProjects();
+
+        }
+    }
+    /**
+      * Test setting useProjects , if useProjects =
+      *
+      *  @return void
+      */
+    private function _testUseProjects()
+    {
+        $this->safeGet($this->url . "/configuration/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertNotContains(
+            "To configure study projects click here.",
+            $bodyText
+        );
+
+        $this->setUpConfigSetting("useProjects", "true");
+        sleep(5);
+        $this->safeGet($this->url . "/configuration/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertContains(
+            "To configure study projects click here.",
+            $bodyText
+        );
+        $this->setUpConfigSetting("useProjects", "false");
+    }
+
 }
 ?>

@@ -9,7 +9,7 @@
 /*
  *  The following component is used for displaying operator for the group component
  */
-LogicOperator = React.createClass({
+var LogicOperator = React.createClass({
 	changeOperator: function(op) {
 		// Wrapper function updating operator
 		this.props.updateGroupOperator(op);
@@ -40,7 +40,7 @@ LogicOperator = React.createClass({
 /*
  *  The following component is used for displaying a filter rule
  */
-FilterRule = React.createClass({
+var FilterRule = React.createClass({
 	getInitialState: function() {
 		return {
 			operators: {
@@ -317,7 +317,7 @@ FilterRule = React.createClass({
 /*
  *  The following component is used for displaying a filter group
  */
-FilterGroup = React.createClass({
+var FilterGroup = React.createClass({
 	updateChild: function(index, child) {
 		// Update a specified child in the groups children
 
@@ -501,7 +501,7 @@ FilterGroup = React.createClass({
 /*
  *  The following component is the base componenet for the filter builder
  */
-FilterBuilder = React.createClass({
+var FilterBuilder = React.createClass({
     render: function() {
         return (
         	<div>
@@ -519,3 +519,15 @@ FilterBuilder = React.createClass({
         );
     }
 });
+
+window.LogicOperator = LogicOperator;
+window.FilterRule = FilterRule;
+window.FilterGroup = FilterGroup;
+window.FilterBuilder = FilterBuilder;
+
+export default {
+  LogicOperator,
+  FilterRule,
+  FilterGroup,
+  FilterBuilder
+};

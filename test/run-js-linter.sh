@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 set -e
-
-# Run JSLINT on specific scripts
-./node_modules/jslint/bin/jslint.js htdocs/js/jquery.dynamictable.js
+# NOTE: To use this script, run `npm run lint:javascript`
 
 # Run ESLint on Loris modules
-./node_modules/eslint/bin/eslint.js modules/
+eslint modules/
 
 # Run ESLint on generic React components
-./node_modules/eslint/bin/eslint.js eslint jsx/
+eslint jsx/
 
-# Run ESLint on specific scripts
-./node_modules/eslint/bin/eslint.js eslint htdocs/js/util/
-./node_modules/eslint/bin/eslint.js eslint Gruntfile.js
+# Run ESLint on all JS files (see exceptions in .eslintignore)
+eslint htdocs/js/
+
+# Other files
+eslint webpack.config.js
+

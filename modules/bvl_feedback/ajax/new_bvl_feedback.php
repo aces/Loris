@@ -26,12 +26,14 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
 ) {
     $feedbackLevel = $feedbackThread->_feedbackLevel;
 
+
     $newEntryValues = $feedbackThread->createThread(
         $feedbackLevel,
         $_POST['input_type'],
         $_POST['comment'],
         'Y'
     );
+
     //Now setting the array to return as json
     print json_encode($newEntryValues);
 }
@@ -47,6 +49,7 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
         $_POST['comment'],
         'Y'
     );
+
     //Now setting the array to return as json
     print json_encode($newEntryValues);
 }
@@ -63,6 +66,7 @@ if (isset($_POST['comment']) && isset($_POST['candID'])
         'Y',
         $_POST['field_name']
     );
+
     print json_encode($newEntryValues);
 }
 

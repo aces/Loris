@@ -4,6 +4,15 @@ htdocs/js/components/*
 
 # Ignore until ESLint is run
 modules/dataquery/
-modules/instrument_builder/
-modules/data_team_helper/
-modules/bvl_feedback/
+
+# Ignore external libs
+htdocs/js/flot/*
+htdocs/js/jquery/*
+htdocs/js/jszip/*
+htdocs/js/modernizr/*
+htdocs/js/modules/*
+htdocs/js/react/*
+htdocs/js/shims/*
+htdocs/js/c3.min.js
+htdocs/js/d3.min.js
+htdocs/js/FileSaver.min.js

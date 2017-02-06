@@ -148,7 +148,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             's.Visit_label',
             'c.CandID',
             'c.ProjectID',
-            'c.CenterID',
+            's.CenterID',
             's.MRIQCStatus',
             'pending',
             'f.AcquisitionProtocolID'
@@ -159,7 +159,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'VL'    => 's.Visit_label',
             'DCCID'=> 'c.CandID',
             'ProjectID' => 'c.ProjectID',
-            'SiteID' => 'c.CenterID',
+            'SiteID' => 's.CenterID',
             'VisitQCStatus' => 's.MRIQCStatus',
             'Pending' => 'pending',
             'Scan_type'=>'f.AcquisitionProtocolID'

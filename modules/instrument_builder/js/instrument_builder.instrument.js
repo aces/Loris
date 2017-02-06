@@ -119,7 +119,7 @@ var Instrument = {
                         // Add dropdown and special naming when no date format is set
                         // (i.e when addDateElement() is used)
                         if (element.Options.dateFormat === "") {
-                            elName = elName + "_date";                            
+                            elName = elName + "_date";
                             dropdown = "select{@}" + elName + "_status" +
                             "{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'\n";
                         }
@@ -156,9 +156,10 @@ var Instrument = {
         }
         return content;
    },
-   load: function (file, callback) {
+    load: function (file, callback) {
         var reader = new FileReader();
             ParseInstrument = function () {
+                var elementNames = [];
                 var Elements = [{
                         Type        : "ElementGroup",
                         GroupType   : "Page",
@@ -295,6 +296,14 @@ var Instrument = {
                         default:
                             break;
                     }
+
+                    if (elementNames.indexOf(tempElement.Name) < 0) {
+                      elementNames.push(tempElement.Name)
+                    } else {
+                      callback.error("duplicateEntry");
+                      return;
+                    }
+
                     Elements[currentPage].Elements.push(tempElement);
                     tempElement = {};
                     specialCase = false;
@@ -308,7 +317,7 @@ var Instrument = {
             callback.error("typeError");
         }
     },
-    Enumize: function (option) {
+    enumize: function (option) {
         var enum_option = option.replace(/ /g, "_");
         enum_option = enum_option.replace(/\./, "");
         enum_option = enum_option.toLowerCase();

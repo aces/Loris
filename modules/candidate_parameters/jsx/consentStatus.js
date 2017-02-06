@@ -427,3 +427,8 @@ var ConsentStatus = React.createClass(
 );
 
 var RConsentStatus = React.createFactory(ConsentStatus);
+
+window.ConsentStatus = ConsentStatus;
+window.RConsentStatus = RConsentStatus;
+
+export default ConsentStatus;
