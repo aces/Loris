@@ -729,13 +729,12 @@ class Candidate
                 $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
             }
 
-            if($pscid == '') {
+            if ($pscid == '') {
                 throw new LorisException(
                     "Well this is embarissing, our automated PSCID generator "
                     . "is about to enter an infinite loop."
                 );
             }
-
 
             // check if the pscid is used
         } while (
