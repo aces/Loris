@@ -60,7 +60,7 @@ class Database
     var $lastInsertID;
 
     var $_showQueries = false;
-    var $_usePHPErrorLog = false;
+    var $_usePHPELog  = false;
 
     var $_trackChanges = true;
 
@@ -159,8 +159,8 @@ class Database
         $historytable = "history";
 
         if (class_exists('NDB_Config')) {
-            $config =& NDB_Config::singleton();
-            $this->_usePHPErrorLog = $config->getSetting('usePHPErrorLogForSQLQueries');
+            $config            =& NDB_Config::singleton();
+            $this->_usePHPELog = $config->getSetting('usePHPErrorLogForSQLQueries');
             $this->_showQueries = $config->getSetting('showDatabaseQueries');
 
             // get history database from config
@@ -976,10 +976,10 @@ class Database
         if ($params) {
             $query = str_replace(array_keys($params), array_values($params), $query);
         }
-        if ($this->_usePHPErrorLog) {
-          error_log("$this->_databaseName:" . $query);
+        if ($this->_usePHPELog) {
+            error_log("$this->_databaseName:" . $query);
         } else {
-          print "$this->_databaseName:"
+            print "$this->_databaseName:"
             . date("j-M-Y G:i:s", time())
             .": $query<br>\n";
         }
