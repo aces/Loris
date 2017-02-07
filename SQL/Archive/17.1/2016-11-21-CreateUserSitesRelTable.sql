@@ -14,8 +14,6 @@ CREATE TABLE `user_psc_rel` (
 LOCK TABLES `user_psc_rel` WRITE, `psc` READ, `users` READ;
 /*!40000 ALTER TABLE `user_psc_rel` DISABLE KEYS */;
 INSERT INTO `user_psc_rel` (UserID, CenterID) SELECT ID, CenterID FROM users;
--- Add admin to the user_psc_rel
-INSERT INTO `user_psc_rel` (1,1);
 /*!40000 ALTER TABLE `user_psc_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 

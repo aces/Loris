@@ -249,7 +249,6 @@ class DashboardTest extends LorisIntegrationTest
               array(
                'ID'       => '9999991',
                'UserID'   => 'Tester1',
-               'CenterID' => null,
               )
           );
           $this->DB->insert(
