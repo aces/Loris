@@ -49,7 +49,7 @@ class NDB_Form_Dashboard extends NDB_Form
             array('UserID' => $userID)
         );
 
-        $siteID = $user->getCenterID();
+        $siteID = implode(',', $user->getCenterID());
         $this->tpl_data['user_site'] = $siteID;
 
         // Welcome panel
@@ -121,7 +121,7 @@ class NDB_Form_Dashboard extends NDB_Form
 			AND s.CenterID <> 1",
                 array()
             );
-            $this->tpl_data['new_scans_site'] = 'Site: all';
+            $this->tpl_data['new_scans_site'] = 'Sites: all';
         }
 
         // Data entry conflicts
@@ -136,7 +136,7 @@ class NDB_Form_Dashboard extends NDB_Form
 			AND s.Active='Y' AND c.Active='Y'",
                     array()
                 );
-                $this->tpl_data['conflicts_site'] = 'Site: all';
+                $this->tpl_data['conflicts_site'] = 'Sites: all';
             } else {
                 $this->tpl_data['conflicts']      = $DB->pselectOne(
                     "SELECT COUNT(*) FROM conflicts_unresolved cu 
@@ -144,11 +144,11 @@ class NDB_Form_Dashboard extends NDB_Form
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
 		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
                      LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-                     WHERE psc.Name=:Site
+                     WHERE FIND_IN_SET(psc.CenterID, :siteID) 
 			            AND s.Active='Y' AND c.Active='Y'",
-                    array('Site' => $site)
+                    array('siteID' => $siteID)
                 );
-                $this->tpl_data['conflicts_site'] = 'Site: ' . $site;
+                $this->tpl_data['conflicts_site'] = 'Sites: ' . $site;
             }
         }
 
@@ -163,18 +163,19 @@ class NDB_Form_Dashboard extends NDB_Form
 			AND s.Active='Y' AND c.Active='Y' AND s.CenterID <> 1",
                     array()
                 );
-                $this->tpl_data['incomplete_forms_site'] = 'Site: all';
+                $this->tpl_data['incomplete_forms_site'] = 'Sites: all';
             } else {
                 $this->tpl_data['incomplete_forms']      = $DB->pselectOne(
-                    "SELECT COUNT(*) FROM flag 
+                    "SELECT COUNT(*) FROM flag
                     LEFT JOIN session s ON (flag.SessionID=s.ID)
 			LEFT JOIN candidate c ON (s.CandID=c.CandID)
                     LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-                    WHERE Data_entry='In Progress' AND psc.Name=:Site
+                    WHERE Data_entry='In Progress' 
+                    AND FIND_IN_SET(psc.CenterID, :siteID)
 			          AND s.Active='Y' AND c.Active='Y'",
-                    array('Site' => $site)
+                    array('siteID' => $siteID)
                 );
-                $this->tpl_data['incomplete_forms_site'] = 'Site: ' . $site;
+                $this->tpl_data['incomplete_forms_site'] = 'Sites: ' . $site;
             }
         }
 
@@ -191,7 +192,7 @@ class NDB_Form_Dashboard extends NDB_Form
 			AND c.Active='Y' AND s.Active='Y'",
                 array()
             );
-            $this->tpl_data['radiology_review_site'] = 'Site: all';
+            $this->tpl_data['radiology_review_site'] = 'Sites: all';
         }
 
         // Accounts pending approval
@@ -205,7 +206,7 @@ class NDB_Form_Dashboard extends NDB_Form
                 AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
                 array()
             );
-            $this->tpl_data['pending_users_site'] = 'Site: all';
+            $this->tpl_data['pending_users_site'] = 'Sites: all';
         } elseif ($user->hasPermission('user_accounts')) {
             $site_arr = $user->getCenterID();
             $this->tpl_data['pending_users'] = $DB->pselectOne(
@@ -215,7 +216,7 @@ class NDB_Form_Dashboard extends NDB_Form
                 array('CID' => implode(",", $site_arr))
             );
 
-            $this->tpl_data['pending_users_site'] = 'Site: ' . $site;
+            $this->tpl_data['pending_users_site'] = 'Sites: ' . $site;
         }
 
         // Violated scans
@@ -228,7 +229,7 @@ class NDB_Form_Dashboard extends NDB_Form
                 filter things out */
                 array()
             );
-            $this->tpl_data['violated_scans_site'] = 'Site: all';
+            $this->tpl_data['violated_scans_site'] = 'Sites: all';
         }
 
         // Document Repository Items
@@ -264,9 +265,9 @@ class NDB_Form_Dashboard extends NDB_Form
 
             // I suppose you could also base it on your query
             if ($user->hasPermission('access_all_profiles')) {
-                $this->tpl_data['issues_assigned_site'] = 'Site: all';
+                $this->tpl_data['issues_assigned_site'] = 'Sites: all';
             } else {
-                $this->tpl_data['issues_assigned_site'] = 'Site: '.
+                $this->tpl_data['issues_assigned_site'] = 'Sites: '.
                     $user->getSiteName();
             }
         }
