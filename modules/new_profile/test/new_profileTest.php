@@ -174,18 +174,18 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . "/new_profile/");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
+        $days = $this->webDriver->findElements(WebDriverBy::cssSelector(".ui-datepicker-calendar td[data-handler='selectDay']"));
+
         $dates[0]->click();
-        $this->webDriver->findElements(
-            WebDriverBy::cssSelector(".ui-datepicker-calendar td[data-handler='selectDay']")
-        )[0]->click();
+        sleep(2);
+        $days[0]->click();
+
         $dates[1]->click();
-        $this->webDriver->findElements(
-            WebDriverBy::cssSelector(".ui-datepicker-calendar td[data-handler='selectDay']")
-        )[1]->click();
+        sleep(2);
+        $days[1]->click();
         //$dates[0]->sendKeys("2015-01-01");
         //$dates[1]->sendKeys("2015-02-01");
-        $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-                 ->click();
+        $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))->click();
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
         sleep(2);
