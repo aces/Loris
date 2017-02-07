@@ -7,7 +7,7 @@
 <link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
 <title>{$study_title}</title>
 
-<link type="text/css" href="{$baseurl}/css/jquery-ui-1.10.4.custom.css" rel="Stylesheet" />
+<link type="text/css" href="{$baseurl}/bootstrap/css/bootstrap.min.css" rel="Stylesheet" />
 <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="{$baseurl}/js/modules/direct_entry.js"></script>
@@ -29,10 +29,15 @@
     <tr>
     <!-- user info table -->
          <td width="50%" colspan="2" valign="bottom" align="left" nowrap="nowrap" class="controlPanelSection">
-            Date: {$smarty.now|date_format:"%B %e %Y"}
+            <small>
+                Date: {$smarty.now|date_format:"%B %e %Y"}
+            </small>
+             </br>
             {if $finalpage || $complete}
             {elseif $pageNum && $totalPages}
-            Page {$pageNum} of {$totalPages}
+            <small>
+                Page {$pageNum} of {$totalPages}
+            </small>
             {/if}
         </td>
     </tr>
@@ -97,7 +102,7 @@
 </table>
 <input type="hidden" name="FinalPageSubmission" value="Yes">
 <input type="button" onclick="location.href='survey.php?key={$key}&pageNum={$prevpage}'" value="Go Back">
-<button id="complete" style="font-weight: bold;">
+<button class="btn btn-default" id="complete" style="font-weight: bold;">
 <span style="display: none" id="key">{$key}</span>
 Submit data
 </button>
@@ -117,15 +122,15 @@ Submit data
     <td colspan="2">
     {if $prevpage}
         {if $prevpage eq 'top'}
-            <button id="goback">Save and Go Back</button>
+            <button class="btn btn-default" id="goback">Save and Go Back</button>
         {else}
-            <button id="goback">Save and Go Back</button>
+            <button class="btn btn-default" id="goback">Save and Go Back</button>
         {/if}
         <span style="display: none" id="prevpage">{$prevpage}</span>
     {/if}
 
     {if $nextpage} 
-    <button id="savecontinue">
+    <button class="btn btn-default" id="savecontinue">
         <span style="display: none" id="nextpage">{$nextpage}</span>
         <span style="display: none" id="key">{$key}</span>
         Save and Continue

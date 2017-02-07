@@ -318,14 +318,17 @@ border-bottom: 1px solid #CCCCCC;
 tr.directentry {
     background: #BDDDBD;
 }
+table.instrument {
+    border: solid 1px #888;
+}
 
 table.instrument tbody tr:nth-child(even) {
-    background: #BCC6CC;
+    background: #fff;
    /* background: #E5E4E2; */
 }
 
 table.instrument tbody tr:nth-child(odd) {
-    background: #98AFC7;
+    background: #f2f2f2;
     /* background: #CCDDFF;
     background: #D6FFFF; */
 }
@@ -353,11 +356,13 @@ table.instrument_review tbody tr:nth-child(odd) {
 #goback {
     padding-top: 5px;
     font-size: 1.1em;
+    margin: 5px;
 }
 #savecontinue {
     padding-top: 5px;
     float: right;
     font-size: 1.1em;
+    margin: 5px;
 }
 
 #finalize {
