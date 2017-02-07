@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS `user_psc_rel`;
+WARNINGS;
 CREATE TABLE `user_psc_rel` (
-  `UserID` int(10) unsigned NOT NULL default '0',
-  `CenterID` tinyint(2) unsigned default NULL,
+  `UserID` int(10) unsigned NOT NULL,
+  `CenterID` tinyint(2) unsigned NOT NULL,
   PRIMARY KEY  (`UserID`,`CenterID`),
   KEY `FK_user_psc_rel_2` (`CenterID`),
   CONSTRAINT `FK_user_psc_rel_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -11,11 +11,10 @@ CREATE TABLE `user_psc_rel` (
 --
 -- Dumping data for table `user_psc_site`
 --
-LOCK TABLES `user_psc_rel` WRITE, `psc` READ, `users` READ;
-/*!40000 ALTER TABLE `user_psc_rel` DISABLE KEYS */;
-INSERT INTO `user_psc_rel` (UserID, CenterID) SELECT ID, CenterID FROM users;
-/*!40000 ALTER TABLE `user_psc_rel` ENABLE KEYS */;
-UNLOCK TABLES;
+
+INSERT IGNORE INTO `user_psc_rel` (UserID, CenterID) SELECT ID, CenterID FROM users;
+-- Add admin to the user_psc_rel
+INSERT IGNORE INTO `user_psc_rel` (UserID, CenterID) SELECT 1, CenterID FROM psc;
 
 -- DROP column CenterID from the users table
 -- ALTER TABLE users DROP foreign key FK_users_1;

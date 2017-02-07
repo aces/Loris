@@ -214,34 +214,13 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // multi-site UPDATE
         $uid = $user->getData('ID');
-
-        $us_curr_sites =array();
-        $us_prev_sites =array();
-        //get sites where user is already at to compare
-        $prev_sites = $DB->pselect(
-            "           SELECT CenterID
-                        FROM user_psc_rel
-                        WHERE UserID=:uid",
-            array(
-                "uid" => $uid,
-            )
-        );
-
-        foreach ($prev_sites as $row=>$center) {
-            $pr_cid = $center['CenterID'];
-            array_push($us_prev_sites, $pr_cid);
-        }
-        $curr_sites = $values['CenterIDs'];
-        foreach ($curr_sites as $key=>$val) {
-            //get MultiSelected CenterID
-            array_push($us_curr_sites, $val);
-            //Check if CenterID already in user_psc_rel for that user
-            $result = $DB->pselectRow(
-                "         SELECT CenterID
-                          FROM user_psc_rel
-                          WHERE UserID=:uid",
+        $DB->delete('user_psc_rel', array("UserID" => $uid));
+        foreach ($curr_sites as $site) {
+            $DB->insert(
+                'user_psc_rel',
                 array(
-                    "uid" => $uid,
+                 "UserID"   => $uid,
+                 "CenterID" => $site,
                 )
             );
             // Center was not previously added
@@ -276,7 +255,6 @@ class NDB_Form_User_Accounts extends NDB_Form
             unset($values['CenterIDs']);
             // END multi-site UPDATE
         }
-        //END MULTI-SITE
         unset($values['CenterIDs']);
 
         // EXAMINER UPDATE
