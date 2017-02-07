@@ -115,10 +115,10 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . "/new_profile/");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/01/2015");
-        $dates[2]->sendKeys("01/01/2015");
-        $dates[3]->sendKeys("01/02/2015");
+        $dates[0]->sendKeys("2015-01-01");
+        $dates[1]->sendKeys("2015-01-01");
+        $dates[2]->sendKeys("2015-01-01");
+        $dates[3]->sendKeys("2015-02-01");
         $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
         sleep(1);
@@ -174,8 +174,16 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . "/new_profile/");
 
         $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("2015-01-01");
-        $dates[1]->sendKeys("2015-02-01");
+        $dates[0]->click();
+        $this->webDriver->findElements(
+            WebDriverBy::cssSelector(".ui-datepicker-calendar td[data-handler='selectDay']")
+        )[0]->click();
+        $dates[1]->click();
+        $this->webDriver->findElements(
+            WebDriverBy::cssSelector(".ui-datepicker-calendar td[data-handler='selectDay']")
+        )[1]->click();
+        //$dates[0]->sendKeys("2015-01-01");
+        //$dates[1]->sendKeys("2015-02-01");
         $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
