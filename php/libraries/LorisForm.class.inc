@@ -1958,7 +1958,7 @@ class LorisForm
 
             if ($el['type'] === 'date' && array_key_exists('options', $el)) {
                 $value = $this->getValue($name);
-                $date = $value;
+                $date  = $value;
 
                 if (!$value) {
                     $arr[$name] = '';
@@ -1970,12 +1970,13 @@ class LorisForm
                     $date = sprintf("%s-01-01", $value);
                 }
                 // Convert month-year to a valid SQL format (i.e yyyy-mm-dd)
-                if ((strtolower($el['options']['format']) === 'my') ||
-                    (strtolower($el['options']['format']) === 'ym')) {
+                if ((strtolower($el['options']['format']) === 'my')
+                    || (strtolower($el['options']['format']) === 'ym')
+                ) {
                     $date = sprintf("%s-01", $value);
                 }
                 // Make sure the date is valid
-                $dt = DateTime::createFromFormat('Y-m-d', $date);
+                $dt          = DateTime::createFromFormat('Y-m-d', $date);
                 $isValidDate = $dt && $dt->format('Y-m-d') == $date;
 
                 if (!$isValidDate) {
