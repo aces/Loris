@@ -2355,8 +2355,8 @@ CREATE TABLE `issues_watching` (
 
 DROP TABLE IF EXISTS `user_psc_rel`;
 CREATE TABLE `user_psc_rel` (
-  `UserID` int(10) unsigned NOT NULL default '0',
-  `CenterID` tinyint(2) unsigned default NULL,
+  `UserID` int(10) unsigned NOT NULL,
+  `CenterID` tinyint(2) unsigned NOT NULL,
   PRIMARY KEY  (`UserID`,`CenterID`),
   KEY `FK_user_psc_rel_2` (`CenterID`),
   CONSTRAINT `FK_user_psc_rel_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE,
