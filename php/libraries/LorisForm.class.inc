@@ -1980,7 +1980,7 @@ class LorisForm
                 $isValidDate = $dt && $dt->format('Y-m-d') == $date;
 
                 if (!$isValidDate) {
-                    throw new Exception("Please input a valid date!");
+                    throw new LorisException("Please input a valid date!");
                 }
 
                 $arr[$name] = $date;
