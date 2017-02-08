@@ -211,18 +211,16 @@ $this->markTestSkipped("Config not properly set up to test that PSCID is require
     function testNewProfileCreateCandidate() {
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
+        );
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
+        );
 
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("2015-01-01");
-        $dates[1]->sendKeys("2015-01-01");
-        $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-                 ->click();
-        sleep(1);
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
-        $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-                 ->click();
-        sleep(1);
+        
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
         sleep(3);
@@ -242,17 +240,15 @@ $this->markTestSkipped("Config not properly set up to test that PSCID is require
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
 
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("2015-01-01");
-        $dates[1]->sendKeys("2015-01-01");
-        $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-                 ->click();
-        sleep(1);
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
+        );
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[1].value='2000-05-05'"
+        );
+
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
-        $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-                 ->click();
-        sleep(1);
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
         sleep(3);
