@@ -114,17 +114,17 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
 
         $this->webDriver->get($this->url . "/new_profile/");
 
-        $dates1 = $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='new_profile']/div[1]/div/input"));
+        $dates1 = $this->safeFindElement(WebDriverBy::Xpath("//*[@id='new_profile']/div[1]/div/input"));
         
         $dates1->sendKeys("2015-01-01");
 
-        $dates2 = $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='new_profile']/div[2]/div/input"));
+        $dates2 = $this->safeFindElement(WebDriverBy::Xpath("//*[@id='new_profile']/div[2]/div/input"));
 
         $dates2->sendKeys("2015-01-01");
-        $dates3 = $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='new_profile']/div[3]/div/input"));
+        $dates3 = $this->safeFindElement(WebDriverBy::Xpath("//*[@id='new_profile']/div[3]/div/input"));
 
         $dates3->sendKeys("2015-01-01");
-        $dates4 = $this->webDriver->findElement:(WebDriverBy::Xpath("//*[@id='new_profile']/div[4]/div/input"));
+        $dates4 = $this->safeFindElement(WebDriverBy::Xpath("//*[@id='new_profile']/div[4]/div/input"));
 
         $dates4->sendKeys("2015-01-01");
 
