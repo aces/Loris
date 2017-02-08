@@ -2362,7 +2362,6 @@ CREATE TABLE `user_psc_rel` (
   CONSTRAINT `FK_user_psc_rel_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_user_psc_rel_1` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-INSERT INTO user_psc_rel (UserID, CenterID) VALUES
-    (1, 1);
+INSERT INTO user_psc_rel (UserID, CenterID) SELECT 1, CenterID FROM psc;
 
 
