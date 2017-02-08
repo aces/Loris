@@ -129,7 +129,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
         );
         $this->webDriver->executescript(
-        "document.getElementsByClassName('input-date')[1].value='2015-01-02'"
+        "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
         );
         $scanDone->sendKeys("No");
 
