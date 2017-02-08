@@ -209,7 +209,6 @@ $this->markTestSkipped("Config not properly set up to test that PSCID is require
      * @return none
      */
     function testNewProfileCreateCandidate() {
-$this->markTestSkipped("Config not properly set up to test that PSCID is required");
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
 
@@ -240,7 +239,6 @@ $this->markTestSkipped("Config not properly set up to test that PSCID is require
      * @return none
      */
     function testNewProfilePSCIDSequential() {
-$this->markTestSkipped("Config not properly set up to test that PSCID is required");
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
 
