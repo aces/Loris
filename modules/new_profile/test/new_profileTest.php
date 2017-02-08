@@ -114,22 +114,18 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
 
         $this->webDriver->get($this->url . "/new_profile/");
 
-        $dates1 = $this->safeFindElement(WebDriverBy::Xpath("//*[@id='new_profile']/div[1]/div/input"));
-        
-        $dates1->sendKeys("2015-01-01");
-
-        $dates2 = $this->safeFindElement(WebDriverBy::Xpath("//*[@id='new_profile']/div[2]/div/input"));
-
-        $dates2->sendKeys("2015-01-01");
-        $dates3 = $this->safeFindElement(WebDriverBy::Xpath("//*[@id='new_profile']/div[3]/div/input"));
-
-        $dates3->sendKeys("2015-01-01");
-        $dates4 = $this->safeFindElement(WebDriverBy::Xpath("//*[@id='new_profile']/div[4]/div/input"));
-
-        $dates4->sendKeys("2015-01-01");
-
-
-
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
+        );
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[1].value='2000-05-05'"
+        );
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[2].value='2000-05-05'"
+        );
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[3].value='2000-05-05'"
+        );
         $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
         sleep(1);
@@ -182,22 +178,16 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      * @return none
      */
     function testNewProfileDoBDateError() {
-$this->markTestSkipped("Config not properly set up to test that PSCID is required");
         $this->webDriver->get($this->url . "/new_profile/");
 
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $days = $this->webDriver->findElements(WebDriverBy::cssSelector(".ui-datepicker-calendar td[data-handler='selectDay']"));
-
-        $dates[0]->click();
-        sleep(2);
-        $days[0]->click();
-
-        $dates[1]->click();
-        sleep(2);
-        $days[1]->click();
-        //$dates[0]->sendKeys("2015-01-01");
-        //$dates[1]->sendKeys("2015-02-01");
-        $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))->click();
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
+        );
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[1].value='2000-05-05'"
+        );
+        $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
+                 ->click();
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
         sleep(2);
@@ -219,13 +209,15 @@ $this->markTestSkipped("Config not properly set up to test that PSCID is require
      * @return none
      */
     function testNewProfileCreateCandidate() {
-$this->markTestSkipped("Config not properly set up to test that PSCID is required");
+
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
-
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("2015-01-01");
-        $dates[1]->sendKeys("2015-01-01");
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[0].value='2015-05-05'"
+        );
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[1].value='2015-05-05'"
+        );
         $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
         sleep(1);
@@ -250,13 +242,15 @@ $this->markTestSkipped("Config not properly set up to test that PSCID is require
      * @return none
      */
     function testNewProfilePSCIDSequential() {
-$this->markTestSkipped("Config not properly set up to test that PSCID is required");
+
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
-
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("2015-01-01");
-        $dates[1]->sendKeys("2015-01-01");
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
+        );
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[1].value='2000-05-05'"
+        );
         $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
         sleep(1);
@@ -273,9 +267,13 @@ $this->markTestSkipped("Config not properly set up to test that PSCID is require
 
         $this->webDriver->get($this->url . "/new_profile/");
 
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("2015-01-01");
-        $dates[1]->sendKeys("2015-01-01");
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
+        );       
+        $this->webDriver->executescript(
+        "document.getElementsByClassName('input-date')[1].value='2000-05-05'"
+        );
+       
         $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
                  ->click();
         sleep(1);
