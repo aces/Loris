@@ -23,7 +23,9 @@
  */
 class Project
 {
-    private static $_instances = array();
+
+    private static $_instances       = array();
+    private static $_id_name_mapping = array();
 
     private $_projectId;
     private $_projectName;
@@ -75,12 +77,45 @@ class Project
             $project->projectName       = $projectData['name'];
             $project->recruitmentTarget = (integer) $projectData['recTarget'];
 
-            self::$_instances[$projectName] = $project;
+            self::$_instances[$projectName]            = $project;
+            self::$_id_name_mapping[$project->getId()] = $projectName;
         }
 
         return self::$_instances[$projectName];
     }
 
+    static function getInstanceById($id)
+    {
+        if (!isset(self::$_id_name_mapping[$id])) {
+            $factory     = \NDB_Factory::singleton();
+            $projectData = $factory->database()->pSelectRow(
+                "
+                SELECT
+                  projectId,
+                  name,
+                  recruitmentTarget as recTarget
+                FROM
+                  Project
+                WHERE projectId = :v_project_id
+                ",
+                array('v_project_id' => $id)
+            );
+            if (empty($projectData)) {
+                throw new \LorisException("This PorjetcId does not exists : $id");
+            }
+
+            $project = new Project();
+
+            $project->projectId         = $projectData['projectId'];
+            $project->projectName       = $projectData['name'];
+            $project->recruitmentTarget = (integer) $projectData['recTarget'];
+
+            self::$_instances[$projectName]            = $project;
+            self::$_id_name_mapping[$project->getId()] = $projectName;
+        }
+        $projectName = self::$_id_name_mapping[$id];
+        return self::$_instances[$projectName];
+    }
 
     /**
      * This does the work of creating a new Project by inserting a new entry in the
@@ -253,16 +288,65 @@ class Project
     }
 
     /**
-     * Tells if any of this project's subproject is using Estimated Date of 
+     * Tells if any of this project's subproject is using Estimated Date of
      * Confinement (EDC)
      *
      * @return boolean True if any subproject is using EDC.
      */
     public function isUsingEDC()
     {
-        return array_reduce($this->getSubprojects(), function ($carry, $item) {
-            return $carry && $item->useEDC;
-        }, true);
+        return array_reduce(
+            $this->getSubprojects(),
+            function ($carry, $item) {
+                return $carry || $item->useEDC;
+            },
+            false
+        );
     }
 
+    /**
+     * Get a list of instruments installed for this project
+     *
+     * @param string $projectName The project name
+     *
+     * @return array of object representation of basic instrument informations 
+     */
+    public function getInstrumentList()
+    {
+        $instruments = array();
+        $factory     = \NDB_Factory::singleton();
+        $config      = $factory->config();
+
+        $ddeInstruments = $config->getSetting("DoubleDataEntryInstruments");
+
+        $results = $factory->database()->pselect(
+            "
+            SELECT DISTINCT
+              t.Test_name as short_name,
+              t.Full_name as full_name,
+              t.Sub_group as subgroup
+            FROM
+              test_names t
+            JOIN test_battery USING (Test_name)
+            JOIN subproject USING (SubprojectID)
+            JOIN project_rel USING (SubprojectID)
+            JOIN Project USING (ProjectID)
+            WHERE
+                Project.ProjectID = :v_project_id AND
+                test_battery.Active = 'Y'
+            ",
+            array('v_project_id' => $this->projectId)
+        );
+        foreach ($results as $row) {
+            $isDDE         = in_array($row['short_name'], $ddeInstruments);
+            $instrument    = (object) array(
+                              'ShortName'             => $row['short_name'],
+                              'FullName'              => $row['full_name'],
+                              'Subgroup'              => $row['subgroup'],
+                              'DoubleDataEntryEnable' => $isDDE,
+                             );
+            $instruments[] = $instrument;
+        }
+        return $instruments;
+    }
 }

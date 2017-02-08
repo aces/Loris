@@ -1,14 +1,12 @@
 <?php
 /**
- * This class handles project related API requests. Depending on how it
- * is called it can include either the candidates, visits, instruments,
- * or all of the above that should be serialized.
+ * This class handles project's instruments related API requests
  *
  * PHP Version 5
  *
  * @category Main
  * @package  API
- * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
@@ -18,29 +16,25 @@ set_include_path(get_include_path() . ":" . __DIR__ . "/..");
 require_once 'APIBase.php';
 
 /**
- * This class handles project related API requests. Depending on how it
- * is called it can include either the candidates, visits, instruments,
- * or all of the above that should be serialized.
+ * This class handles project's instruments related API requests
  *
  * PHP Version 5
  *
  * @category Main
  * @package  API
- * @author   Dave MacFarlane <david.macfarlane2@mcgill.ca>
+ * @author   Xavier Lecours Boucher <xavier.lecoursboucher@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Project extends \Loris\API\APIBase
+class Instruments extends \Loris\API\APIBase
 {
     private $_project;
 
     /**
      * Constructs an object to handle JSON serialization
      *
-     * @param string $method      The HTTP method of the request
-     * @param string $projectName The project to be serialized
-     *
-     * @return none
+     * @param string $method      The HTTP request method of the request
+     * @param string $projectName The project name
      */
     public function __construct($method, $projectName)
     {
@@ -64,20 +58,7 @@ class Project extends \Loris\API\APIBase
      */
     function handleGET()
     {
-        $config = $this->Factory->config();
-        $PSCID  = $config->getSetting("PSCID");
-
-        $type  = $PSCID['generation'] == 'sequential' ? 'auto' : 'prompt';
-        $regex = \Utility::structureToPCRE($PSCID['structure'], "SITE");
-
-        $this->JSON = array(
-                       'name'   => $this->_project->getName(),
-                       'useEDC' => $this->_project->isUsingEDC(),
-                       'PSCID'  => array(
-                                    'Type'  => $type,
-                                    'Regex' => $regex,
-                                   ),
-                      );
+        $this->JSON = $this->_project->getInstrumentList();
     }
 
     /**
@@ -92,18 +73,19 @@ class Project extends \Loris\API\APIBase
     }
 
 }
+
 if (isset($_REQUEST['format'])) {
     switch ($_REQUEST['format'])
     {
     case 'json':
-        $Proj = new Project(
+        $Instruments = new Instruments(
             $_SERVER['REQUEST_METHOD'],
             $_REQUEST['Project']
         );
 
-        $Proj->handleRequest();
+        $Instruments->handleRequest();
 
-        print $Proj->toJSONString();
+        print $Instruments->toJSONString();
         break;
     default:
         error_log('Loris\API\Projects\Project - Unsupported format');

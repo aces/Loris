@@ -225,39 +225,6 @@
                     }
                 }
             }
-        },
-        "/projects/{name}/visits": {
-            "get": {
-                "description": "Returns all the visit labels defined for this project",
-                "tags": [
-                    "Project"
-                ],
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "path",
-                        "description": "The name of the project",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "A list of visit labels",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
         }
     },
     "securityDefinitions": {

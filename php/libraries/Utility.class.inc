@@ -314,10 +314,18 @@ class Utility
      *
      * @return array an associative array("SubprojectID" => "Subproject title")
      */
-    static function getSubprojectsForProject($projectID = null)
+    static function getSubprojectsForProject($projectID)
     {
-        error_log('DEPRECATED: Please use getSubprojects from the Project class');
-        return self::getSubprojectList($projectID);
+        error_log('DEPRECATED: Utility::getSubprojectsForProject');
+        return array_reduce(
+            \Project::getInstanceById($projectID)->getSubprojects(),
+            function ($carry, $item) {
+                $carry[$item->subprojectId] = $item->title;
+                return $carry;
+            },
+            array()
+        );
+        //return self::getSubprojectList($projectID);
     }
 
     /**
@@ -750,33 +758,9 @@ class Utility
      */
     static function getAllProjectInstruments($projectName)
     {
-        $Factory       = NDB_Factory::singleton();
-        $DB            = $Factory->Database();
-        $instruments_q = $DB->pselect(
-            "
-            SELECT
-              t.Test_name,
-              t.Full_name
-            FROM
-              test_names t
-            JOIN test_battery USING (Test_name)
-            JOIN subproject USING (SubprojectID)
-            JOIN project_rel USING (SubprojectID)
-            JOIN Project USING (ProjectID)
-            WHERE
-                Project.Name = :v_project_name AND
-                test_battery.Active = 'Y'
-            ",
-            array('v_project_name' => $projectName)
-        );
-        $instruments   = array();
-        foreach ($instruments_q as $row) {
-            if (isset($row['Test_name']) && isset($row['Full_name'])) {
-                $instruments[$row['Test_name']] =$row['Full_name'];
-            }
-        }
-
-        return $instruments;
+        error_log('DEPRECATED : Utility::getAllProjectInstruments');
+        error_log('Please use getInstrumentList from the Project class instead');
+        return \Project::singleton($projectName)->getInstrumentList();
     }
 
     /**
