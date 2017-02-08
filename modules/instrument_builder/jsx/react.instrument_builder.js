@@ -28,15 +28,17 @@ var LoadPane = React.createClass({
     });
   },
   // Sets the alert to the specified type.
-  setAlert: function(type) {
+  setAlert: function(type, message) {
     this.setState({
-      alert: type
+      alert: type,
+      alertMessage: message
     });
   },
   // Reset the alert to empty.
   resetAlert: function() {
     this.setState({
-      alert: ''
+      alert: '',
+      alertMessage: ''
     });
   },
   // Loads the specified file into builder tab.
@@ -76,7 +78,8 @@ var LoadPane = React.createClass({
               <span aria-hidden="true">&times;</span>
             </button>
             <strong>Error!</strong><br/>
-            Instrument file can not contain elements with identical name! <br/>
+            {this.state.alertMessage} <br/>
+            Instrument file can not contain elements with identical names! <br/>
             Please verify the format of your LINST file!
           </div>
         );

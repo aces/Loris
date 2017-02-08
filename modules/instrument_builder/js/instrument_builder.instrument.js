@@ -297,10 +297,14 @@ var Instrument = {
                             break;
                     }
 
+                    /* "Header" elements always have 'undefined' as their Name. These should not trigger an error message. */
                     if (elementNames.indexOf(tempElement.Name) < 0) {
-                      elementNames.push(tempElement.Name)
+                      if (tempElement.Name != "undefined" && tempElement.Type != "header") {
+                          elementNames.push(tempElement.Name)
+                      }
                     } else {
-                      callback.error("duplicateEntry");
+                      var alertMessage = "Duplicate entry on element '" + tempElement.Name + "'.";
+                      callback.error("duplicateEntry", alertMessage);
                       return;
                     }
 
