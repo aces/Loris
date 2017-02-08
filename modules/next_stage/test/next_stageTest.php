@@ -125,12 +125,13 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->get($this->url . "/next_stage/?candID=900000&sessionID=999999&identifier=999999");
 
 
-        $scanDone = $this->webDriver->findElement(WebDriverBy::Name("scan_done"))s->webDriver->executescript(
+        $this->webDriver->executescript(
         "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
         );
         $this->webDriver->executescript(
         "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
-        );
+        i);
+        $scanDone = $this->webDriver->findElement(WebDriverBy::Name("scan_done"));
         $scanDone->sendKeys("No");
 
         $Subproject = $this->webDriver->findElement(WebDriverBy::Name("SubprojectID"));
