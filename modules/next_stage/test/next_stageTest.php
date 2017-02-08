@@ -130,7 +130,7 @@ class nextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
         $this->webDriver->executescript(
         "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
-        i);
+        );
         $scanDone = $this->webDriver->findElement(WebDriverBy::Name("scan_done"));
         $scanDone->sendKeys("No");
 
