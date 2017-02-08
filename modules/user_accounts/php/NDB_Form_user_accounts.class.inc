@@ -58,9 +58,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                 if ($this->isCreatingNewUser()) {
                     return true;
                 }
-
                 return in_array(
-                    $editor->getData('CenterID'),
+                    $editor->getData('CenterIDs'),
                     $user->getData('CenterIDs')
                 );
             }
@@ -223,9 +222,11 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // multi-site UPDATE
-        $uid = $user->getData('ID');
+        $uid        = $user->getData('ID');
         $curr_sites = $values['CenterIDs'];
-        $DB->delete('user_psc_rel', array("UserID" => $uid));
+        if (!$this->isCreatingNewUser()) {
+            $DB->delete('user_psc_rel', array("UserID" => $uid));
+        }
         foreach ($curr_sites as $site) {
             $DB->insert(
                 'user_psc_rel',
@@ -236,6 +237,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             );
         }
         unset($values['CenterIDs']);
+        // END multi-site UPDATE
 
         // EXAMINER UPDATE
         $ex_curr_sites =array();
