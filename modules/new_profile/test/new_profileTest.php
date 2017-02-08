@@ -121,7 +121,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         "document.getElementsByClassName('input-date')[1].value='2000-05-05'"
         );
         $this->webDriver->executescript(
-        "document.getElementsByClassName('input-date')[2].value='2000-05-05'"
+        "document.getElementsByClassName('input-date')[2].value='2000-05-01'"
         );
         $this->webDriver->executescript(
         "document.getElementsByClassName('input-date')[3].value='2000-05-05'"
