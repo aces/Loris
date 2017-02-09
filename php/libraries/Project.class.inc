@@ -332,9 +332,10 @@ class Project
             SELECT DISTINCT
               t.Test_name as short_name,
               t.Full_name as full_name,
-              t.Sub_group as subgroup
+              ts.subgroup_name as subgroup
             FROM
               test_names t
+            JOIN test_subgroups ts ON (t.Sub_group = ts.ID)
             JOIN test_battery USING (Test_name)
             JOIN subproject USING (SubprojectID)
             JOIN project_rel USING (SubprojectID)

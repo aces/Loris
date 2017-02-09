@@ -1,11 +1,12 @@
 swagger: '2.0'
 info:
   title: LORIS API
-  description: This document specifies the Loris REST API.
+  description: This document specifies the LORIS REST API.
   version: 0.0.3
 host: localhost
 schemes:
   - http
+  - https
 basePath: /api/v0.0.3
 produces:
   - application/json
@@ -60,7 +61,7 @@ paths:
             application/json:
               - Project 1
               - Project 2
-  '/projects/{name}':
+  /projects/{name}:
     get:
       description: Return the project definition
       tags:
@@ -78,7 +79,7 @@ paths:
           description: An object whit the project informations
           schema:
             $ref: '#/definitions/Project'
-  '/projects/{name}/instruments':
+  /projects/{name}/instruments:
     get:
       description: >-
         Returns all the instruments used/installed in this project's test
@@ -100,7 +101,7 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Instrument'
-  '/projects/{name}/instruments/{instrument}':
+  /projects/{name}/instruments/{instrument}:
     get:
       description: Returns JSON representation of that instrument
       tags:
@@ -122,10 +123,8 @@ paths:
         '200':
           description: 'An JSON representation of that instrument '
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/InstrumentForm'
-  '/projects/{name}/candidates':
+            $ref: '#/definitions/InstrumentForm'
+  /projects/{name}/candidates:
     get:
       description: Returns all the active candidates in this project
       tags:
@@ -145,6 +144,24 @@ paths:
             type: array
             items:
               type: string
+  /candidates:
+    get:
+      description: Return a list of all active candidates of the study
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: an array of projects
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Candidate'
+          examples:
+            application/json:
+              - {"CandID":"300001","PSCID":"MTL001","Site":"MTL","EDC":"2003-11-30","DoB":"2003-10-31","Gender":"Male","Project":"Pumpernickel"}
+              - {"CandID":"300002","PSCID":"MTL002","Site":"MTL","EDC":"2002-11-02","DoB":"2002-10-02","Gender":"Male","Project":"Pumpernickel"}
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -193,5 +210,59 @@ definitions:
   InstrumentForm:
     type: object
     properties:
-      testName:
+      Meta:
+        type: object
+        properties:
+          InstrumentVersion:
+            type: string
+          InstrumentFormatVersion:
+            type: string
+          ShortName:
+            type: string
+          LongName:
+            type: string
+          IncludeMetaDataFields:
+            type: boolean
+      Elements:
+        type: array
+        items:
+          $ref: '#/definitions/FormElement'
+  FormElement:
+    type: object
+    properties:
+      Type:
         type: string
+      Name:
+        type: string
+      Description:
+        type: string
+      Options:
+        type: object
+        description: >-
+          A set key:value pairs that can be translated as HTML attributes for that element. 
+  Candidate:
+    type: object
+    properties:
+      CandID:
+        type: string
+      Project:
+        type: string
+        description: >-
+          The name of the project that this candidate is from
+      PSCID:
+        type: string
+      EDC:
+        type: string
+        format: date
+        description: >-
+          Estimated date of confinement
+      DoB:
+        type: string
+        format: date
+        description: >-
+          date of Birth
+      Gender:
+        type: string
+        enum:
+          - Male
+          - Female

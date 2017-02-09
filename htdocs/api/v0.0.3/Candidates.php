@@ -92,7 +92,7 @@ class Candidates extends APIBase
             $candidates
         );
 
-        $this->JSON = ["Candidates" => $candValues];
+        $this->JSON = $candValues;
     }
 
     /**
