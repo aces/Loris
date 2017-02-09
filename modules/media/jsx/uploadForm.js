@@ -177,6 +177,7 @@ class MediaUploadForm extends React.Component {
             ref="file"
             label="File to upload"
             required={true}
+            value={this.state.formData.file}
           />
           <ButtonElement label="Upload File" />
         </FormElement>
@@ -421,3 +422,8 @@ MediaUploadForm.propTypes = {
 };
 
 var RMediaUploadForm = React.createFactory(MediaUploadForm);
+
+window.MediaUploadForm = MediaUploadForm;
+window.RMediaUploadForm = RMediaUploadForm;
+
+export default MediaUploadForm;

@@ -165,7 +165,7 @@ class NDB_BVL_Battery
      * @param string $testName The test to be added to the currently
      *                         selected battery.
      *
-     * @return void
+     * @return string The generated CommentID
      */
     function addInstrument($testName)
     {

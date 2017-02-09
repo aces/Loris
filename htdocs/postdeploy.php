@@ -42,10 +42,6 @@ $path_to_file = '../SQL/0000-00-04-Help.sql';
 $sqls         = file_get_contents($path_to_file);
 $conn->exec($sqls);
 
-$path_to_file = '../SQL/0000-00-99-indexes.sql';
-$sqls         = file_get_contents($path_to_file);
-$conn->exec($sqls);
-
 $conn->query(
     "UPDATE users SET Password_MD5=CONCAT('aa', MD5('aa$password')), 
     Password_expiry='2020-01-01', Pending_approval='N' WHERE ID=1"

@@ -11,7 +11,7 @@
  *  The following componet is used to indicate to users that their data is currently
  *  loading
  */
-Loading = React.createClass({
+var Loading = React.createClass({
     render: function() {
         return (
             <div className="row">
@@ -31,7 +31,7 @@ Loading = React.createClass({
 /*
  *  The following component is the base component for displaying the tab's contnet
  */
-TabPane = React.createClass({
+var TabPane = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     render: function() {
         var classList = "tab-pane";
@@ -57,7 +57,7 @@ TabPane = React.createClass({
 /*
  *  The following component is used for displaying the info tab content
  */
-InfoTabPane = React.createClass({
+var InfoTabPane = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     render: function() {
         return <TabPane Title="Welcome to the Data Query Tool"
@@ -85,7 +85,7 @@ InfoTabPane = React.createClass({
 /*
  *  The following component is used for displaying the field select tab content
  */
-FieldSelectTabPane = React.createClass({
+var FieldSelectTabPane = React.createClass({
     render: function() {
         return <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
                     <FieldSelector title="Fields"
@@ -103,7 +103,7 @@ FieldSelectTabPane = React.createClass({
 /*
  *  The following component is used for displaying the filter builder tab content
  */
-FilterSelectTabPane = React.createClass({
+var FilterSelectTabPane = React.createClass({
     render: function() {
         return (
             <TabPane TabId={this.props.TabId} Loading={this.props.Loading}>
@@ -120,7 +120,7 @@ FilterSelectTabPane = React.createClass({
 /*
  *  The following component is used for displaying the view data tab content
  */
-ViewDataTabPane = React.createClass({
+var ViewDataTabPane = React.createClass({
     getInitialState: function() {
         return { 'sessions' : [] }
     },
@@ -342,7 +342,7 @@ ViewDataTabPane = React.createClass({
  *  in the stats tab using flot. The following code is a modification of
  *  code used in the couchApp implementation of the DQT
  */
-ScatterplotGraph = React.createClass({
+var ScatterplotGraph = React.createClass({
     lsFit: function (data) {
         var i = 0,
             means = jStat(data).mean(),
@@ -540,7 +540,7 @@ ScatterplotGraph = React.createClass({
 /*
  *  The following component is used for displaying the stats tab content
  */
-StatsVisualizationTabPane = React.createClass({
+var StatsVisualizationTabPane = React.createClass({
     getDefaultProps: function() {
         return {
             'Data' : []
@@ -632,7 +632,7 @@ StatsVisualizationTabPane = React.createClass({
  *  The following component is used for displaying a popout dialog for saving the current
  *  query
  */
-SaveQueryDialog = React.createClass({
+var SaveQueryDialog = React.createClass({
     getInitialState: function() {
         return {
             'queryName' : '',
@@ -689,7 +689,7 @@ SaveQueryDialog = React.createClass({
  *  The following component is used for displaying the filter of a individual query in a tree
  *  like structure
  */
-ManageSavedQueryFilter = React.createClass({
+var ManageSavedQueryFilter = React.createClass({
     render: function() {
         var filterItem,
             filter = this.props.filterItem;
@@ -751,7 +751,7 @@ ManageSavedQueryFilter = React.createClass({
  *  The following component is used for displaying the individual saved queries in the
  *  manage saved queries tab
  */
-ManageSavedQueryRow = React.createClass({
+var ManageSavedQueryRow = React.createClass({
     getDefaultProps: function() {
         return {
             'Name': 'Unknown',
@@ -842,7 +842,7 @@ ManageSavedQueryRow = React.createClass({
 /*
  *  The following component is used for displaying the manage saved queries tab content
  */
-ManageSavedQueriesTabPane = React.createClass({
+var ManageSavedQueriesTabPane = React.createClass({
     dismissDialog: function() {
         this.setState({ 'savePrompt' : false });
     },
@@ -924,3 +924,31 @@ ManageSavedQueriesTabPane = React.createClass({
         );
     }
 });
+
+window.Loading = Loading;
+window.TabPane = TabPane;
+window.InfoTabPane = InfoTabPane;
+window.FieldSelectTabPane = FieldSelectTabPane;
+window.FilterSelectTabPane = FilterSelectTabPane;
+window.ViewDataTabPane = ViewDataTabPane;
+window.ScatterplotGraph = ScatterplotGraph;
+window.StatsVisualizationTabPane = StatsVisualizationTabPane;
+window.SaveQueryDialog = SaveQueryDialog;
+window.ManageSavedQueryFilter = ManageSavedQueryFilter;
+window.ManageSavedQueryRow = ManageSavedQueryRow;
+window.ManageSavedQueriesTabPane = ManageSavedQueriesTabPane;
+
+export default {
+  Loading,
+  TabPane,
+  InfoTabPane,
+  FieldSelectTabPane,
+  FilterSelectTabPane,
+  ViewDataTabPane,
+  ScatterplotGraph,
+  StatsVisualizationTabPane,
+  SaveQueryDialog,
+  ManageSavedQueryFilter,
+  ManageSavedQueryRow,
+  ManageSavedQueriesTabPane
+};

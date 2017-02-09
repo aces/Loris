@@ -1,3 +1,5 @@
+"use strict";
+
 /* exported formatColumn */
 
 /**
@@ -14,13 +16,14 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
+  rowHeaders.forEach(function (header, index) {
+    row[header] = rowData[index];
+  }, this);
+
   var hashName;
   var patientname = row.PatientName;
   var uid = row.SeriesUID;
   var url;
-  rowHeaders.forEach(function (header, index) {
-    row[header] = rowData[index];
-  }, this);
 
   if (column === "Problem" && row.Problem === "Protocol Violation") {
     url = loris.BaseURL + "/mri_violations/?submenu=mri_protocol_check_violations&PatientName=" + patientname + "&SeriesUID=" + uid;
