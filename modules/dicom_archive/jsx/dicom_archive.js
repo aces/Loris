@@ -1,6 +1,8 @@
 /* exported DicomArchive */
 /* global formatColumn, ReactDOM */
 
+import formatColumn from './columnFormatter';
+
 /**
  * DICOM Archive Page.
  *
