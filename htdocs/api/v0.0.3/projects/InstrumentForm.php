@@ -58,7 +58,6 @@ class InstrumentForm extends \Loris\API\APIBase
         // JSON is used by both calculateETag and handleGET, so do it
         // before either is called.
         $this->JSONString = $this->Instrument->toJSON();
-        $this->handleRequest();
     }
 
 
@@ -85,8 +84,18 @@ class InstrumentForm extends \Loris\API\APIBase
 
 }
 
-if (isset($_REQUEST['PrintInstrumentForm'])) {
-    $obj = new InstrumentForm($_SERVER['REQUEST_METHOD'], $_REQUEST['Instrument']);
-    print $obj->toJSONString();
+if (isset($_REQUEST['format'])) {
+    switch ($_REQUEST['format']) {
+        case 'json':
+            $obj = new InstrumentForm($_SERVER['REQUEST_METHOD'], $_REQUEST['Instrument']);
+            $obj->handleRequest();
+            print $obj->toJSONString();
+            break;
+        default:
+            error_log('Loris\API\Projects\Project - Unsupported format');
+            header('"Bad Request", true, 400');
+    }
+} else {
+    header('"Bad Request", true, 400');
 }
 ?>
