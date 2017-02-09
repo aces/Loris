@@ -84,6 +84,16 @@ class Project
         return self::$_instances[$projectName];
     }
 
+    /**
+     * This returns a single Project object for the given
+     * project id, and will only ever instantiate one object in
+     * the event that it's called multiple times.
+     *
+     * @param string $id The project id
+     *
+     * @return Project the Project object
+     * @throws LorisException
+     */
     static function getInstanceById($id)
     {
         if (!isset(self::$_id_name_mapping[$id])) {
@@ -307,9 +317,7 @@ class Project
     /**
      * Get a list of instruments installed for this project
      *
-     * @param string $projectName The project name
-     *
-     * @return array of object representation of basic instrument informations 
+     * @return array of object representation of basic instrument informations
      */
     public function getInstrumentList()
     {
@@ -340,11 +348,11 @@ class Project
         foreach ($results as $row) {
             $isDDE         = in_array($row['short_name'], $ddeInstruments);
             $instrument    = (object) array(
-                              'ShortName'             => $row['short_name'],
-                              'FullName'              => $row['full_name'],
-                              'Subgroup'              => $row['subgroup'],
-                              'DoubleDataEntryEnable' => $isDDE,
-                             );
+                                       'ShortName'             => $row['short_name'],
+                                       'FullName'              => $row['full_name'],
+                                       'Subgroup'              => $row['subgroup'],
+                                       'DoubleDataEntryEnable' => $isDDE,
+                                      );
             $instruments[] = $instrument;
         }
         return $instruments;
