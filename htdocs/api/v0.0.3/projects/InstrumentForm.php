@@ -86,14 +86,17 @@ class InstrumentForm extends \Loris\API\APIBase
 
 if (isset($_REQUEST['format'])) {
     switch ($_REQUEST['format']) {
-        case 'json':
-            $obj = new InstrumentForm($_SERVER['REQUEST_METHOD'], $_REQUEST['Instrument']);
-            $obj->handleRequest();
-            print $obj->toJSONString();
-            break;
-        default:
-            error_log('Loris\API\Projects\Project - Unsupported format');
-            header('"Bad Request", true, 400');
+    case 'json':
+        $obj = new InstrumentForm(
+            $_SERVER['REQUEST_METHOD'],
+            $_REQUEST['Instrument']
+        );
+        $obj->handleRequest();
+        print $obj->toJSONString();
+        break;
+    default:
+        error_log('Loris\API\Projects\Project - Unsupported format');
+        header('"Bad Request", true, 400');
     }
 } else {
     header('"Bad Request", true, 400');
