@@ -1,4 +1,3 @@
-/* global hasWritePermission */
 /* exported formatColumn */
 
 /**
@@ -21,7 +20,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this);
 
-  // hasWritePermission is defined in menu_media.tpl
+  const hasWritePermission = loris.userHasPermission('media_write');
   if (column === 'File Name' && hasWritePermission === true) {
     var downloadURL = loris.BaseURL + "/media/ajax/FileDownload.php?File=" +
       row['File Name'];
