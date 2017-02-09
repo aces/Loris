@@ -42,5 +42,11 @@
     Developed at <a href="http://www.mni.mcgill.ca" target="_blank">Montreal Neurological Institute and Hospital</a>
     by <a href="http://mcin-cnim.ca" target="_blank">MCIN</a>
   </footer>
+  <script src="/js/modernizr/modernizr.min.js" />
+  <script>
+    if (!Modernizr.webgl) {
+      alert("Please download the latest version of Google Chrome of Mozilla Firefox in order to use Loris!");
+    };
+  </script>
 </body>
 </html>
