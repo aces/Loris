@@ -311,8 +311,9 @@ class User extends UserPermissions
         $password = '';
 
         $numbers      = '0123456789';
-        $specialChars = '!@#$%^*()';
-        // & not part of $specialChars since it causes URL to break
+        $specialChars = '-._~';
+        // URL safe (no encoding necessary) special characters as defined by
+        // Section 2.3 of http://www.ietf.org/rfc/rfc3986.txt
 
         $possible = $numbers . $specialChars . 'abcdefghijklmnopqrstuvwxyz';
 
