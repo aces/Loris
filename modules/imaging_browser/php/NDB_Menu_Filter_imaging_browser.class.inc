@@ -56,12 +56,42 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $DB = Database::singleton();
+        $allAr = array();
+        //query to get scan types that exist for the project
+        $types_q = $DB->pselect(
+            "SELECT DISTINCT ID, Scan_type FROM mri_scan_type mri
+                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+            array()
+        );
+        $scan_types = $allAr;
+        foreach ($types_q as $row) {
+            $type                   = $row['Scan_type'];
+            $scan_types[$row['ID']] = $type;
+        }
+
         $NewDataSubquery = "CASE 
             COALESCE(nd.QCLastChangeTime, 'new')
             WHEN 'new' THEN 'new' 
             WHEN '' THEN 'new'
             ELSE ''
             END";
+
+        foreach ($scan_types as $key => $value) {
+            $name[$key] = $value . 'PassSubquery';
+            $coalesce_name[$key] = $value . 'pass' . '.' . $value . 'QC';
+            $split = explode('.',$coalesce_name[$key]);
+            $pass[$key] = current($split);
+            $qc[$key] = end($split);
+            $name[$key] = "CASE
+                COALESCE($coalesce_name[$key], '')
+                WHEN '' THEN ''
+                WHEN 1 THEN 'Passed'
+                WHEN 2 THEN 'Failed'
+                END";
+        }
+
+/*
         $T1PassSubquery = "CASE 
             COALESCE(t1pass.T1QC, '') 
             WHEN '' THEN ''
@@ -74,7 +104,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             WHEN 1 THEN 'Passed'
             WHEN 2 THEN 'Failed'
             END";
-
+*/
         $PendingFailSubquery = "
             CASE s.MRIQCStatus
                 WHEN 'Fail' THEN
@@ -91,14 +121,29 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             JOIN files f ON (f.SessionID=s.ID) 
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
             JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)
-            LEFT JOIN (SELECT files.SessionID, MIN(QCLastChangeTime) as QCLastChangeTime FROM files LEFT JOIN files_qcstatus USING (FileID) WHERE OutputType='native' AND AcquisitionProtocolID NOT IN (1, 2, 3, 52) GROUP BY files.SessionID) nd ON (nd.SessionID=f.SessionID)
+            LEFT JOIN (SELECT files.SessionID, MIN(QCLastChangeTime) as QCLastChangeTime FROM files LEFT JOIN files_qcstatus USING (FileID) WHERE OutputType='native' AND AcquisitionProtocolID NOT IN (1, 2, 3, 52) GROUP BY files.SessionID) nd ON (nd.SessionID=f.SessionID) ";
+
+        $left_join = "";
+        foreach ($name as $key => $value) {
+            $left_join .= "
+            LEFT JOIN (SELECT files.SessionID, MIN(files_qcstatus.QCStatus+0) as $qc[$key] FROM files JOIN files_qcstatus USING (FileID) WHERE files.AcquisitionProtocolID=$key AND files_qcstatus.QCStatus IN (1, 2) GROUP BY files.SessionID) $pass[$key] ON ($pass[$key].SessionID=f.SessionID) ";
+        }
+
+/*
+$left_join2 = "
             LEFT JOIN (SELECT files.SessionID, MIN(files_qcstatus.QCStatus+0) as T1QC FROM files JOIN files_qcstatus USING (FileID) WHERE files.AcquisitionProtocolID=44 AND files_qcstatus.QCStatus IN (1, 2) GROUP BY files.SessionID) t1pass ON (t1pass.SessionID=f.SessionID)
-            LEFT JOIN (SELECT files.SessionID, MIN(files_qcstatus.QCStatus+0) as T2QC FROM files JOIN files_qcstatus USING (FileID) WHERE files.AcquisitionProtocolID=45 AND files_qcstatus.QCStatus IN (1, 2) GROUP BY files.SessionID) t2pass ON (t2pass.SessionID=f.SessionID)
-            WHERE 
+            LEFT JOIN (SELECT files.SessionID, MIN(files_qcstatus.QCStatus+0) as T2QC FROM files JOIN files_qcstatus USING (FileID) WHERE files.AcquisitionProtocolID=45 AND files_qcstatus.QCStatus IN (1, 2) GROUP BY files.SessionID) t2pass ON (t2pass.SessionID=f.SessionID) ";
+*/
+
+        $where = "WHERE 
             s.Active = 'Y' AND
             f.PendingStaging=0 AND 
             f.FileType='mnc' AND 
             f.AcquisitionProtocolID not in (1, 2, 3, 52)";
+
+        $this->query .= $left_join . $where;
+
+//print_r ($this->query);
 
         $config =& NDB_Config::singleton();
         $user =& User::singleton();
@@ -108,6 +153,12 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 
+        foreach ($name as $key => $value) {
+            $modalities_subquery[$key] = $value;
+            $as[$key] = $scan_types[$key] . '_Passed';
+            $modalities_subquery_as[$key] = $modalities_subquery[$key] . ' as ' . $as[$key];
+            $modalities_subquery_as_concat .="\n{$modalities_subquery[$key]} as {$as[$key]} ,";
+        }
         $this->columns = array(
             'p.MRI_alias as Site',
             'c.PSCID as PSCID',
@@ -117,12 +168,23 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'MIN(md.AcquisitionDate) as First_Acq_Date',
             'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion_Date',
             'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
-            "$NewDataSubquery as New_Data",
+            "$NewDataSubquery as New_Data"
+        );
+        $this->columns = array_merge($this->columns, $modalities_subquery_as, 
+                        array("GROUP_CONCAT(DISTINCT OutputType) as Links",
+            's.ID as sessionID')
+        );
+
+/*
+            "$modalities_subquery_as_concat",
             "$T1PassSubquery as T1_Passed",
             "$T2PassSubquery as T2_Passed",
             "GROUP_CONCAT(DISTINCT OutputType) as Links",
             's.ID as sessionID'
         );
+*/
+
+//print_r($this->columns);
 
         $this->order_by = 'c.PSCID, s.Visit_label';
         $this->group_by = 's.ID';
@@ -135,12 +197,22 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'First_Acq_Date',
             'First_Insertion_Date',
             'Last_QC',
-            'New_Data',
+            'New_Data');
+        $this->headers = array_merge(
+                $this->headers, 
+                $as, 
+                array('Links','sessionID')
+            );
+
+/*
             'T1_Passed',
             'T2_Passed',
             'Links',
             'sessionID'
         );
+*/
+
+//print_r($this->headers);
 
         // Insert project column after DCCID, if useProject config is enabled
         if ($config->getSetting('useProjects') === "true") {
