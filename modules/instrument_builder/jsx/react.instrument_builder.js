@@ -78,9 +78,7 @@ var LoadPane = React.createClass({
               <span aria-hidden="true">&times;</span>
             </button>
             <strong>Error!</strong><br/>
-            {this.state.alertMessage} <br/>
-            Instrument file can not contain elements with identical names! <br/>
-            Please verify the format of your LINST file!
+              {this.state.alertMessage}
           </div>
         );
         break;
