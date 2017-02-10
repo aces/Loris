@@ -1,7 +1,7 @@
 <div class="container">
   <div class="panel panel-default panel-center">
     <div class="panel-heading">
-      <h3 class="panel-title">Reset Password</h3>
+      <h3 class="panel-title">{$page_title}</h3>
     </div>
     <div class="panel-body">
       {if $success}

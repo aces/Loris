@@ -35,6 +35,7 @@ $tpl_data['study_title'] = $config->getSetting('title');
 $tpl_data['page']        = 'password-reset';
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['version']     = file_get_contents(__DIR__ . "/../VERSION");
+$tpl_data['page_title']  = 'Reset Password';
 try {
     $tpl_data['study_logo'] = $config->getSetting('studylogo');
 } catch(ConfigurationException $e) {

@@ -75,7 +75,7 @@ class SinglePointLogin
 
         $config =& NDB_Config::singleton();
 
-        $tpl_data['title']         = $config->getSetting('title');
+        $tpl_data['page_title']    = $config->getSetting('title');
         $tpl_data['css']           = $config->getSetting('css');
         $tpl_data['action']        = $_SERVER['PHP_SELF']
             . '?' . http_build_query($params);
@@ -131,7 +131,7 @@ class SinglePointLogin
 
         $config =& NDB_Config::singleton();
 
-        $tpl_data['title'] = $config->getSetting('title');
+        $tpl_data['page_title'] = $config->getSetting('title');
         $tpl_data['css']   = $config->getSetting('css');
         $study_title       = $config->getSetting('title');
         $study_description = $config->getSetting('StudyDescription');

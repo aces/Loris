@@ -59,6 +59,7 @@ $tpl_data['page']        = 'request_account';
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['version']     = file_get_contents(__DIR__ . "/../../VERSION");
 $tpl_data['form']        = $_REQUEST;
+$tpl_data['page_title']  = 'Request LORIS Account';
 
 try {
     $tpl_data['study_logo'] = "../".$config->getSetting('studylogo');
