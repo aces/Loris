@@ -297,11 +297,25 @@ var Instrument = {
                             break;
                     }
 
-                    if (elementNames.indexOf(tempElement.Name) < 0) {
-                      elementNames.push(tempElement.Name)
-                    } else {
-                      callback.error("duplicateEntry");
-                      return;
+                    /* "Header" elements always have 'undefined' as their Name. These should not trigger an error message. */
+                    if (tempElement.Name) {
+                        if (elementNames.indexOf(tempElement.Name) < 0) {
+                            if (tempElement.Type != "header") {
+                                elementNames.push(tempElement.Name)
+                            }
+                        } else {
+                            var alertMessage = [
+                                "Duplicate entry on element named: ",
+                                tempElement.Name,
+                                ".",
+                                React.createElement('br'),
+                                "Instrument file can not contain elements with identical names.",
+                                React.createElement('br'),
+                                "Please verify the format of your LINST file!",
+                            ];
+                            callback.error("duplicateEntry", alertMessage);
+                            return;
+                        }
                     }
 
                     Elements[currentPage].Elements.push(tempElement);
