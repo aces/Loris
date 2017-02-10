@@ -1,3 +1,7 @@
+{*
+  This layout is used for all the 'public' modules
+  (i.e Loris modules or pages that don't require user to be logged in)
+*}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +10,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>{$title}</title>
   <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/login_layout.css">
+  <link rel="stylesheet" href="/css/public_layout.css">
   <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 </head>
 <body>

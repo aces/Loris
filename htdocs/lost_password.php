@@ -81,7 +81,7 @@ if (isset($_POST['username'])) {
 //Output template using Smarty
 $smarty = new Smarty_neurodb;
 $smarty->assign($tpl_data);
-$smarty->display('login_layout.tpl');
+$smarty->display('public_layout.tpl');
 
 ob_end_flush();
 

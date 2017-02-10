@@ -108,7 +108,7 @@ class SinglePointLogin
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
-        $smarty->display('login_layout.tpl');
+        $smarty->display('public_layout.tpl');
     }
 
 
@@ -155,7 +155,7 @@ class SinglePointLogin
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
-        $smarty->display('login_layout.tpl');
+        $smarty->display('public_layout.tpl');
         return false;
     }
 
