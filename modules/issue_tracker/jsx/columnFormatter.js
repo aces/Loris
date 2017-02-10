@@ -9,6 +9,11 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
+  // If a column if set as hidden, don't display it
+  if (loris.hiddenHeaders.indexOf(column) > -1) {
+    return null;
+  }
+
   // Create the mapping between rowHeaders and rowData in a row object.
   var row = {};
   rowHeaders.forEach(
@@ -60,6 +65,37 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         return <td>None</td>;
     }
   }
+
+  if (column === 'PSCID' && row.PSCID !== null) {
+    let cellLinks = [];
+    cellLinks.push(
+      <a href={loris.BaseURL + "/" +
+      row.CandID + "/"}>
+        {cell}
+      </a>
+    );
+    return (
+      <td>
+        {cellLinks}
+      </td>
+    );
+  }
+
+  if (column === 'Visit Label' && row['Visit Label'] !== null) {
+    let cellLinks = [];
+    cellLinks.push(
+      <a href={loris.BaseURL + "/instrument_list/?candID=" +
+              row.CandID + "&sessionID=" + row.SessionID }>
+        {cell}
+      </a>
+    );
+    return (
+      <td>
+        {cellLinks}
+      </td>
+    );
+  }
+
   return <td>{cell}</td>;
 }
 

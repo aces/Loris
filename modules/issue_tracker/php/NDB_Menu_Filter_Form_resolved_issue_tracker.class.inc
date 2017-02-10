@@ -68,6 +68,8 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
                           'c.PSCID as PSCID',
                           's.Visit_label as Visit_Label',
                           'i.lastUpdate as Last_Update',
+                          's.ID as SessionID',
+                          'c.CandID as CandID',
                          );
 
         $this->order_by = 'i.issueID DESC';
@@ -87,7 +89,15 @@ class NDB_Menu_Filter_Form_Resolved_Issue_Tracker extends NDB_Menu_Filter_Form
                           'PSCID',
                           'Visit_Label',
                           'Last_Update',
+                          'SessionID',
+                          'CandID',
                          );
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            [
+             'SessionID',
+             'CandID',
+            ]
+        );
 
         $this->validFilters = array(
                                'i.issueID',
