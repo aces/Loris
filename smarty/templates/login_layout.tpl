@@ -29,6 +29,8 @@
     {* Load appropriate page content, default to login page *}
     {if $page == 'password-reset'}
       {include file='password_reset.tpl'}
+    {elseif $page == 'password-expiry'}
+      {include file='password_expiry.tpl'}
     {elseif $page == 'request_account'}
       {include file='request_account.tpl'}
     {else}
