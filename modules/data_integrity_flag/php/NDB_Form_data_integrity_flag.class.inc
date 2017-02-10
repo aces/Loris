@@ -209,7 +209,9 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         $errors=array();
         $inst = empty($_REQUEST['instrument']) ? '' : $_REQUEST['instrument'];
         $vl   = empty($_REQUEST['visit_label']) ? '' : $_REQUEST['visit_label'];
-        if ((preg_match('/All/',$inst,$matches)) || (preg_match('/All/',$vl,$matches))){
+        $instFilter = $this->getTestNameusingMappedName($_REQUEST['instrument']);
+        
+        if ((preg_match('/All/',$inst,$matches)) || (preg_match('/All/',$vl,$matches)) || ($instFilter == null)){
             $errors['comment']= 'An Instrument/Vist must be selected';
         }
 
