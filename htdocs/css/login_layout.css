@@ -49,31 +49,50 @@ h1, h2, h3, h4 {
   padding: 5px 0;
 }
 
+.flex-wrapper {
+  display: flex;
+  align-items: center;
+}
+
 .header .loris-logo {
+  margin-right: auto;
+}
+
+.header .loris-logo img {
   height: 80px;
 }
 
-.header .gh-logo {
-  line-height: 90px;                    .
+.header .github-logo {
+  margin-left: auto;.
 }
 
-.header .gh-logo img {
+.header .github-logo img {
   height: 40px;
   padding-right: 10px;
   opacity: 0.8;
 }
 
-.header .gh-logo img:hover {
+.header .github-logo img:hover {
   opacity: 1;
   -webkit-transition: opacity 0.2s ease-in;
   transition: opacity 0.2s ease-in;
 }
 
-
 .header .nav-link {
   color: #fff;
   font-size: 22px;
   line-height: 130px;
+}
+
+.header .study-title {
+  width: 500px;
+  padding: 0 20px;
+  color: #eee;
+  font-size: 25px;
+  line-height: 1.15;
+  font-weight: 600;
+  font-variant: small-caps;
+  text-align: center;
 }
 
 .main-content {
@@ -146,12 +165,15 @@ h1, h2, h3, h4 {
 /* Tablets and bigger */
 @media (min-width: 768px) {
   .header { height: 140px; }
-
-  .header .loris-logo { height: 130px; }
-  .header .gh-logo { line-height: 130px; padding-right: 20px; }
+  .header .loris-logo img { height: 130px; }
+  .header .github-logo { padding-right: 20px; }
 
   .main-content {
     display: flex;
     align-items: center;
   }
+}
+
+@media (min-width: 991px) {
+  .header .loris-logo { margin-right: 40px; }
 }

@@ -12,15 +12,20 @@
 <body>
   <header class="header">
     <div class="container">
-      <div class="pull-left">
-        <a href="/">
-          <img src="/images/LORIS_logo_white.svg" class="loris-logo" alt="Logo"/>
-        </a>
-      </div>
-      <div class="pull-right">
-        <a href="https://github.com/aces/Loris" target="_blank" class="gh-logo">
-          <img src="/images/GitHub-Mark-Light-64px.png" alt="Github"/>
-        </a>
+      <div class="flex-wrapper">
+        <div class="loris-logo">
+          <a href="/">
+            <img src="/images/LORIS_logo_white.svg" class="loris-logo" alt="Loris Logo"/>
+          </a>
+        </div>
+        <div class="study-title hidden-xs">
+          {$title}
+        </div>
+        <div class="github-logo">
+          <a href="https://github.com/aces/Loris" target="_blank">
+            <img src="/images/GitHub-Mark-Light-64px.png" alt="Github"/>
+          </a>
+        </div>
       </div>
     </div>
   </header>
@@ -39,15 +44,19 @@
   </section>
 
   <footer class="footer">
-    Powered by <a href="http://www.loris.ca/" target="_blank">LORIS</a> {$version} | GPL-3.0 &copy; {$currentyear}<br/>
-    Developed at <a href="http://www.mni.mcgill.ca" target="_blank">Montreal Neurological Institute and Hospital</a>
+    Powered by <a href="http://www.loris.ca/" target="_blank">LORIS</a>
+    {$version} | GPL-3.0 &copy; {$currentyear} <br/>
+    Developed at
+    <a href="http://www.mni.mcgill.ca" target="_blank">
+      Montreal Neurological Institute and Hospital
+    </a>
     by <a href="http://mcin-cnim.ca" target="_blank">MCIN</a>
   </footer>
-  <script src="/js/modernizr/modernizr.min.js" />
+  <script src="/js/modernizr/modernizr.min.js"/>
   <script>
     if (!Modernizr.webgl) {
       alert("Please download the latest version of Google Chrome of Mozilla Firefox in order to use Loris!");
-    };
+    }
   </script>
 </body>
 </html>
