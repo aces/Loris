@@ -26,21 +26,21 @@
           name="form1" id="form1">
       <div class="form-group">
         <input type="text" name="name" class="form-control" id="name" size="20"
-               placeholder="First Name"/>
+               placeholder="First Name" value="{$form.name}" />
         <span id="helpBlock" class="help-block">
           <b class="text-danger">{$error_message['name']}</b>
         </span>
       </div>
       <div class="form-group">
         <input type="text" name="lastname" class="form-control" id="lastname"
-               placeholder="Last Name"/>
+               placeholder="Last Name" value="{$form.lastname}" />
         <span id="helpBlock" class="help-block">
           <b class="text-danger">{$error_message['lastname']}</b>
         </span>
       </div>
       <div class="form-group">
         <input type="text" name="from" class="form-control" id="from"
-               placeholder="Email"/>
+               placeholder="Email" value="{$form.from}" />
         <span id="helpBlock" class="help-block">
           <b class="text-danger">{$error_message['from']}</b>
         </span>
@@ -49,7 +49,9 @@
         <select class="form-control" name="site" id="site">
           <option value="">Choose Site</option>
           {foreach from=$site_list item=site key=idx}
-            <option value="{$idx}">{$site}</option>
+            <option value="{$idx}" {if $idx == $form.site}selected{/if}>
+              {$site}
+            </option>
           {/foreach}
         </select>
         <span id="helpBlock" class="help-block">
@@ -58,10 +60,20 @@
       </div>
       <div class="form-group">
         <label class="checkbox-inline">
-          <input type="checkbox" name="examiner" id="examiner"/> Examiner Role
+          <input
+            type="checkbox"
+            name="examiner"
+            id="examiner"
+            {if $form.examiner === "on"}checked{/if}
+          /> Examiner Role
         </label>
         <label class="checkbox-inline">
-          <input type="checkbox" name="radiologist" id="radiologist"/> Radiologist
+          <input
+            type="checkbox"
+            name="radiologist"
+            id="radiologist"
+            {if $form.radiologist === "on"}checked{/if}
+          /> Radiologist
         </label>
       </div>
       <div class="form-group">
