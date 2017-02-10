@@ -160,8 +160,20 @@ paths:
               $ref: '#/definitions/Candidate'
           examples:
             application/json:
-              - {"CandID":"300001","PSCID":"MTL001","Site":"MTL","EDC":"2003-11-30","DoB":"2003-10-31","Gender":"Male","Project":"Pumpernickel"}
-              - {"CandID":"300002","PSCID":"MTL002","Site":"MTL","EDC":"2002-11-02","DoB":"2002-10-02","Gender":"Male","Project":"Pumpernickel"}
+              - CandID: '300001'
+                PSCID: MTL001
+                Site: MTL
+                EDC: '2003-11-30'
+                DoB: '2003-10-31'
+                Gender: Male
+                Project: Pumpernickel
+              - CandID: '300002'
+                PSCID: MTL002
+                Site: MTL
+                EDC: '2002-11-02'
+                DoB: '2002-10-02'
+                Gender: Male
+                Project: Pumpernickel
   /candidates/{candid}:
     get:
       description: Get a specific candidate object along with a list of its visit labels
@@ -177,7 +189,9 @@ paths:
           type: string
       responses:
         '200':
-          description: An object representation of that candidate and an array of visit labels
+          description: >-
+            An object representation of that candidate and an array of visit
+            labels
           schema:
             type: object
             properties:
@@ -185,11 +199,11 @@ paths:
                 $ref: '#/definitions/Candidate'
               Visits:
                 type: array
-                items: 
+                items:
                   type: string
   /candidates/{candid}/{visit}:
     get:
-      description: Get a specific candidate object along with a list of its visit labels
+      description: Get an object representation of the metadata for that candidate's visit.
       tags:
         - Candidate
       security:
@@ -208,9 +222,174 @@ paths:
       responses:
         '200':
           description: >-
-            An object representation of that candidate and an array of visit labels
+            An object representation of that candidate's visits
           schema:
             $ref: '#/definitions/VisitsData'
+  /candidates/{candid}/{visit}/instruments:
+    get:
+      description: Get a list of the instruments that were administered for that candidate at that visit
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            An array of instruments short_names
+          schema:
+            type: array
+            items:
+              type: string
+  /candidates/{candid}/{visit}/instruments/{instrument}:
+    get:
+      description: Get a list of the instruments that were administered for that candidate at that visit
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+        - name: instrument
+          in: path
+          description: The instrument short_name
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            And object representation of that candidate instrument's data
+          schema:
+            $ref: '#/definitions/InstrumentData'
+  /candidates/{candid}/{visit}/instruments/{instrument}/dde:
+    get:
+      description: Get a list of the instruments that were administered for that candidate at that visit
+      tags:
+        - Candidate
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+        - name: instrument
+          in: path
+          description: The instrument short_name
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            And object representation of that candidate instrument's data (Double Data Entry)
+          schema:
+            $ref: '#/definitions/InstrumentData'
+  /candidates/{candid}/{visit}/images:
+    get:
+      description: Get a list of all the images which have been acquired for that visit
+      tags:
+        - Imaging
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            An array of instruments short_names
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ImageFileDescription'
+  /candidates/{candid}/{visit}/qc/imaging:
+    get:
+      description: Retrieve the session level imaging QC data for a visit
+      tags:
+        - Imaging
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            The QC status
+          schema:
+            $ref: '#/definitions/qcStatus'
+  /candidates/{candid}/{visit}/images/{filename}:
+    get:
+      description: Get the raw file content with the appropriate MimeType
+      tags:
+        - Imaging
+      security:
+        - Bearer: []
+      parameters:
+        - name: candid
+          in: path
+          description: The id of the candidate
+          required: true
+          type: string
+        - name: visit
+          in: path
+          description: The visit_label of that candidate's visit
+          required: true
+          type: string
+        - name: filename
+          in: path
+          description: The file name of the image
+          required: true
+          type: string
+      responses:
+        '200':
+          description: >-
+            An array of instruments short_names
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ImageFileContent'
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -288,7 +467,8 @@ definitions:
       Options:
         type: object
         description: >-
-          A set key:value pairs that can be translated as HTML attributes for that element. 
+          A set key:value pairs that can be translated as HTML attributes for
+          that element. 
   Candidate:
     type: object
     properties:
@@ -296,20 +476,17 @@ definitions:
         type: string
       Project:
         type: string
-        description: >-
-          The name of the project that this candidate is from
+        description: The name of the project that this candidate is from
       PSCID:
         type: string
       EDC:
         type: string
         format: date
-        description: >-
-          Estimated date of confinement
+        description: Estimated date of confinement
       DoB:
         type: string
         format: date
-        description: >-
-          date of Birth
+        description: date of Birth
       Gender:
         type: string
         enum:
@@ -326,8 +503,7 @@ definitions:
             type: string
           Battery:
             type: string
-            description: >-
-              Name of the cohort
+            description: Name of the cohort
       Stages:
         properties:
           Screening:
@@ -348,3 +524,52 @@ definitions:
           - Failure
           - Withdrawal
           - In Progress
+  InstrumentData:
+    type: object
+    description: >-
+      That instrument data entry progress and values
+    properties:
+      flags:
+        type: object
+        description: >-
+          progress status of that instrument
+        properties:
+          Data_entry:
+            enum:
+              - In Progress
+              - complete
+          Administration:
+            enum:
+              - None
+              - Partial
+              - All
+          Validity:
+            enum:
+              - Questionnable
+              - Invalid
+              - valid
+      data:
+        type: object
+        description: >-
+          A set key:value pairs where the keys are the quetions and values are the answers.
+  qcStatus:
+    type: object
+    properties:
+      SessionQC:
+        enum:
+          - Pass
+          - Fail
+      Pending:
+        type: boolean
+  ImageFileDescription:
+    type: object
+    properties:
+      OutputType:
+        type: string
+      Filename:
+        type: string
+      AcquisitionType:
+        type: string
+  ImageFileContent:
+    type: string
+    format: byte

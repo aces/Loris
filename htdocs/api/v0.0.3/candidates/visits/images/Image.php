@@ -101,7 +101,7 @@ class Image extends \Loris\API\Candidates\Candidate\Visit
         while (!feof($fp)) {
             print fread($fp, 1024);
         }
-        $this->safeExit();
+        $this->safeExit(0);
     }
 
     /**
