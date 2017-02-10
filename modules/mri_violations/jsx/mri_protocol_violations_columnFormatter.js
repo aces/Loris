@@ -1,5 +1,3 @@
-/* exported formatColumn */
-
 /**
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
@@ -29,3 +27,8 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   return <td>{cell}</td>;
 }
+
+window.formatColumn = formatColumn;
+
+export default formatColumn;
+
