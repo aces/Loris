@@ -1,6 +1,6 @@
 //var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
-PaginationLinks = React.createClass({
+var PaginationLinks = React.createClass({
     mixins: [React.addons.PureRenderMixin],
     propTypes: {
         onChangePage: React.PropTypes.func
@@ -65,5 +65,7 @@ PaginationLinks = React.createClass({
     }
 });
 
-RPaginationLinks = React.createFactory(PaginationLinks);
+window.PaginationLinks = PaginationLinks;
+window.RPaginationLinks = React.createFactory(PaginationLinks);
 
+export default PaginationLinks;

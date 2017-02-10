@@ -628,5 +628,27 @@ class NDB_Page
     function setup()
     {
     }
+
+    /**
+     * Returns false if user does not have access to page.
+     *
+     * Usage: the hasAccess() function in a child class should contain
+     * something like:
+     *
+     *     // create user object
+     *     $user =& User::singleton();
+     *
+     *     return $user->hasPermission('superuser');
+     *
+     * You do not need to overload hasAccess() if there are no access restrictions
+     *
+     * @note   overloaded function
+     * @return bool
+     * @access private
+     */
+    function _hasAccess()
+    {
+        return true;
+    }
 }
 ?>

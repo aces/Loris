@@ -11,7 +11,7 @@
  *  The following component is used for displaying individual categories in the
  *  categories list
  */
-CategoryItem = React.createClass({
+var CategoryItem = React.createClass({
     render: function() {
         var classList = "list-group-item",
             badge = '';
@@ -33,7 +33,7 @@ CategoryItem = React.createClass({
 /*
  *  The following component is used for displaying the list of availible categories
  */
-CategoryList = React.createClass({
+var CategoryList = React.createClass({
     getInitialState: function () {
         return {
             selectedCategory: ""
@@ -76,7 +76,7 @@ CategoryList = React.createClass({
 /*
  *  The following component is used for displaying individual fields
  */
-FieldItem = React.createClass({
+var FieldItem = React.createClass({
     visitSelect: function(evt){
         // Selects and deselects visits
 
@@ -140,7 +140,7 @@ FieldItem = React.createClass({
  *  The following component is used for displaying the list of availible fields for
  *  the selected category
  */
-FieldList = React.createClass({
+var FieldList = React.createClass({
     getInitialState: function() {
         return {
             PageNumber: 1
@@ -227,7 +227,7 @@ FieldList = React.createClass({
 /*
  *  The following component is the base component for the field select tan
  */
-FieldSelector = React.createClass({
+var FieldSelector = React.createClass({
     propTypes: {
         selectedFields: React.PropTypes.array
     },
@@ -397,3 +397,17 @@ FieldSelector = React.createClass({
         );
     }
 });
+
+window.CategoryItem = CategoryItem;
+window.CategoryList = CategoryList;
+window.FieldItem = FieldItem;
+window.FieldList = FieldList;
+window.FieldSelector = FieldSelector;
+
+export default {
+  CategoryItem,
+  CategoryList,
+  FieldItem,
+  FieldList,
+  FieldSelector
+};

@@ -51,36 +51,54 @@ curl -L https://www.npmjs.com/install.sh | sudo sh
 
 ###1.2 Installing Grunt
 
-Once NodeJS and NPM are installed, you are ready to install Grunt. First, ```cd``` into the LORIS home directory in your terminal. 
+Once NodeJS and NPM are installed, you are ready to install Webpack. First, ```cd``` into the LORIS home directory in your terminal.
 Then run the following command:
 
 ```
 npm install --only=dev
 ```
 
-Grunt should now be installed.
+Webpack should now be installed.
 
-##2. Compiling JSX
+##2. Compiling ES6/JSX
 
-###2.1 Using Grunt to compile all JSX
+###2.1 Using Webpack to compile all ES6/JSX
 
-To compile all JSX files in LORIS, use the following command:
-
-```
-node_modules/.bin/grunt jsx
-```
-
-**NOTE:** If you create a new React file, ensure you add it to the ```Grunt.js``` file under the ```babel.compile.files``` object
-with the following format:
+To compile all ES6/JSX files in LORIS, use the following command:
 
 ```
-'desc/file.js' : 'src/file.js'
+npm run compile
 ```
 
-###2.2 Using Babel to compile JSX
+which is a short-cut for:
 
-There are four major ways you can compile JSX with Babel. You can compile once or continuously a single or a directory. Using 
-continuous compilation becomes useful when you are constantly making changes to the JSX file.
+```
+./node_modules/.bin/webpack
+```
+
+You can have webpack watch for changes to all revelant files and compile them on the fly:
+
+```
+npm run watch
+```
+
+which is a short-cut for:
+
+```
+./node_modules/.bin/webpack --watch
+```
+
+**NOTE:** If you create a new ES6/JSX file, ensure you add it to the ```webpack.config.js``` file under the ```config.entry``` object with the following format:
+
+```
+'./desc/file.js' : './src/file.js'
+```
+
+###2.2 Using Babel to compile ES6/JSX
+
+Typically you won't need to run Babel manually (webpack does it for you) but it may be useful in some cases.
+
+There are four major ways you can compile JSX with Babel. You can compile once or continuously a single or a directory. Using continuous compilation becomes useful when you are constantly making changes to the JSX file.
 
 ####2.2.1 Compile single file
 
