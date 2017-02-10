@@ -550,13 +550,13 @@ var FileElement = React.createClass({
   },
   handleChange: function(e) {
     // Send current file to parent component
-    const fileName = e.target.files[0] ? e.target.files[0].name : '';
-    this.props.onUserInput(this.props.name, fileName);
+    const file = e.target.files[0] ? e.target.files[0] : '';
+    this.props.onUserInput(this.props.name, file);
   },
 
   render: function() {
     const required = this.props.required ? 'required' : null;
-    const value = this.props.value; // undefined by default
+    const fileName = this.props.value ? this.props.value.name : undefined;
     let requiredHTML = null;
     let errorMessage = '';
     let elementClass = 'row form-group';
@@ -588,9 +588,9 @@ var FileElement = React.createClass({
     // Need to manually reset file value, because HTML API
     // does not allow setting value to anything than empty string.
     // Hence can't use value attribute in the input element.
-    const file = document.querySelector(".fileUpload");
-    if (file && !value) {
-      file.value = "";
+    const fileHTML = document.querySelector(".fileUpload");
+    if (fileHTML && !fileName) {
+      fileHTML.value = "";
     }
 
     if (this.props.disabled) {
@@ -603,7 +603,7 @@ var FileElement = React.createClass({
           </label>
           <div className="col-sm-9">
             <div style={truncateEllipsis}>
-              <span style={truncateEllipsisChild}>{value}</span>
+              <span style={truncateEllipsisChild}>{fileName}</span>
             </div>
           </div>
         </div>
@@ -621,7 +621,7 @@ var FileElement = React.createClass({
             <div tabIndex="-1"
                  className="form-control file-caption kv-fileinput-caption">
               <div style={truncateEllipsis}>
-                <span style={truncateEllipsisChild}>{value}</span>
+                <span style={truncateEllipsisChild}>{fileName}</span>
               </div>
               <div className="file-caption-name" id="video_file"></div>
             </div>
