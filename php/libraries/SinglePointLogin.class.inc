@@ -144,6 +144,7 @@ class SinglePointLogin
         $tpl_data['study_title']       = $study_title;
         $tpl_data['study_description'] = $study_description;
         $tpl_data['study_logo']        = $study_logo;
+        $tpl_data['page']              = 'password-expiry';
 
         $tpl_data['action'] = $_SERVER['PHP_SELF']
             .'?'
@@ -154,7 +155,7 @@ class SinglePointLogin
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
-        $smarty->display('password_expiry.tpl');
+        $smarty->display('login_layout.tpl');
         return false;
     }
 
@@ -374,7 +375,6 @@ class SinglePointLogin
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
                     );
-
         // save the new password if the last password expired
         if (isset($_POST['expiry'])) {
             $success = $this->save();
@@ -491,7 +491,7 @@ class SinglePointLogin
         }
 
         // bad usename or password
-        $this->_lastError = "Incorrect username or password";
+        $this->_lastError = "Incorrect email or password";
         return false;
     }
 
