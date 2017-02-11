@@ -95,11 +95,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     // Verify reCAPTCHA
     if (isset($_POST['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
         $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
-        $resp = $recaptcha->verify(
-            $_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']
+        $resp      = $recaptcha->verify(
+            $_POST['g-recaptcha-response'],
+            $_SERVER['REMOTE_ADDR']
         );
         if (!$resp->isSuccess()) {
-            $errors = $resp->getErrorCodes();
+            $errors         = $resp->getErrorCodes();
             $err['captcha'] = 'Please complete the reCaptcha!';
         }
     }
