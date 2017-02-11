@@ -132,9 +132,9 @@ class SinglePointLogin
         $config =& NDB_Config::singleton();
 
         $tpl_data['page_title'] = $config->getSetting('title');
-        $tpl_data['css']   = $config->getSetting('css');
-        $study_title       = $config->getSetting('title');
-        $study_description = $config->getSetting('StudyDescription');
+        $tpl_data['css']        = $config->getSetting('css');
+        $study_title            = $config->getSetting('title');
+        $study_description      = $config->getSetting('StudyDescription');
         try {
             $study_logo = $config->getSetting('studylogo');
         } catch(ConfigurationException $e) {
