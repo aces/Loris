@@ -19,21 +19,26 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
 set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 require_once __DIR__ . "/../vendor/autoload.php";
 ini_set('default_charset', 'utf-8');
+
 ob_start('ob_gzhandler');
 // Create an output buffer to capture console output, separately from the
 // gzip handler.
 ob_start();
 
 // load the client
-$client = new NDB_Client;
-if ($client->initialize() == false) {
-    return false;
+$client    = new NDB_Client;
+$anonymous = $client->initialize() === false;
+// The NDB_Client->initialize() prints a bunch of garbage, so flush the
+// output buffer to throw it away.
+ob_flush();
+
+if ($anonymous === false) {
+    $TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : 'dashboard';
+    $subtest  = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';
+} else {
+    $TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : 'login';
+    $subtest  = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';
 }
-
-// require additional libraries
-
-$TestName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : 'dashboard';
-$subtest  = isset($_REQUEST['subtest']) ? $_REQUEST['subtest'] : '';
 // make local instances of objects
 $config =& NDB_Config::singleton();
 
@@ -65,10 +70,6 @@ $tpl_data['test_name']   = $TestName;
 $tpl_data['subtest']     = $subtest;
 $tpl_data['version']     = file_get_contents(__DIR__ . "/../VERSION");
 
-tplFromRequest('candID');
-tplFromRequest('sessionID');
-tplFromRequest('commentID');
-tplFromRequest('dynamictabs');
 
 $factory  = NDB_Factory::singleton();
 $settings = $factory->settings();
@@ -78,99 +79,75 @@ $tpl_data['baseurl'] = $baseURL;
 
 // study title
 $tpl_data['study_title'] = $config->getSetting('title');
-// draw the user information table
-try {
-    $user =& User::singleton();
-    $tpl_data['user'] = $user->getData();
-    $tpl_data['user']['permissions']   = $user->getPermissions();
-    $tpl_data['hasHelpEditPermission'] = $user->hasPermission('context_help');
 
-    $site =& Site::singleton($user->getData('CenterID'));
-    $tpl_data['user']['user_from_study_site'] = $site->isStudySite();
-} catch(Exception $e) {
-    $tpl_data['error_message'][] = "Error: " . $e->getMessage();
-}
-
-// the the list of tabs, their links and perms
-$tpl_data['tabs'] = NDB_Config::GetMenuTabs();
-
-//--------------------------------------------------
-
-// configure browser args for the mri browser
-// !!! array URL args -- need to correct query in mri_browser to
-// accept candidate data
-$argstring = '';
-if (!empty($_REQUEST['candID'])) {
-    $argstring .= "filter%5BcandID%5D=".$_REQUEST['candID']."&";
-}
-
-if (!empty($_REQUEST['sessionID'])) {
+if (!$anonymous) {
+    tplFromRequest('candID');
+    tplFromRequest('sessionID');
+    tplFromRequest('commentID');
+    tplFromRequest('dynamictabs');
+    // draw the user information table
     try {
-        $timePoint  =& TimePoint::singleton($_REQUEST['sessionID']);
-        $argstring .= "filter%5Bm.VisitNo%5D=".$timePoint->getVisitNo()."&";
-    } catch (Exception $e) {
-        $tpl_data['error_message'][]
-            = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
-    }
-}
+        $user =& User::singleton();
+        $tpl_data['user'] = $user->getData();
+        $tpl_data['user']['permissions']   = $user->getPermissions();
+        $tpl_data['hasHelpEditPermission'] = $user->hasPermission('context_help');
 
-$link_args['MRIBrowser'] = $argstring;
-
-
-//--------------------------------------------------
-
-$paths = $config->getSetting('paths');
-
-if (!empty($TestName)) {
-    // Get CSS for a module
-    $base = $paths['base'];
-    if (file_exists($base . "modules/$TestName/css/$TestName.css")
-        || file_exists($base . "project/modules/$TestName/css/$TestName.css")
-    ) {
-        if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
-            && strcmp($_SERVER['REQUEST_URI'], '/') != 0
-        ) {
-              $tpl_data['test_name_css'] = "/$TestName/css/$TestName.css";
-        } else {
-              $tpl_data['test_name_css'] = "GetCSS.php?Module=$TestName";
-        }
-    }
-
-    // Used for CSS for a specific instrument.
-    if (file_exists($paths['base'] . "project/instruments/$TestName.css")) {
-        if (strpos($_SERVER['REQUEST_URI'], "main.php") === false) {
-            $tpl_data['test_name_css'] = "css/instruments/$TestName.css";
-        } else {
-            $tpl_data['test_name_css'] = "GetCSS.php?Instrument=$TestName";
-        }
-    }
-}
-
-//--------------------------------------------------
-
-// get candidate data
-if (!empty($_REQUEST['candID'])) {
-    try {
-        $candidate =& Candidate::singleton($_REQUEST['candID']);
-        $tpl_data['candidate'] = $candidate->getData();
+        $site =& Site::singleton($user->getData('CenterID'));
+        $tpl_data['user']['user_from_study_site'] = $site->isStudySite();
     } catch(Exception $e) {
-        $tpl_data['error_message'][] = $e->getMessage();
+        $tpl_data['error_message'][] = "Error: " . $e->getMessage();
     }
-}
 
-// get time point data
-if (!empty($_REQUEST['sessionID'])) {
-    try {
-        $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
-        if ($config->getSetting("SupplementalSessionStatus")) {
-            $tpl_data['SupplementalSessionStatuses'] = true;
+    // the the list of tabs, their links and perms
+    $tpl_data['tabs'] = NDB_Config::GetMenuTabs();
+
+    //--------------------------------------------------
+
+    // configure browser args for the mri browser
+    // !!! array URL args -- need to correct query in mri_browser to
+    // accept candidate data
+    $argstring = '';
+    if (!empty($_REQUEST['candID'])) {
+        $argstring .= "filter%5BcandID%5D=".$_REQUEST['candID']."&";
+    }
+
+    if (!empty($_REQUEST['sessionID'])) {
+        try {
+            $timePoint  =& TimePoint::singleton($_REQUEST['sessionID']);
+            $argstring .= "filter%5Bm.VisitNo%5D=".$timePoint->getVisitNo()."&";
+        } catch (Exception $e) {
+            $tpl_data['error_message'][]
+                = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
         }
-        $tpl_data['timePoint'] = $timePoint->getData();
-    } catch(Exception $e) {
-        $tpl_data['error_message'][]
-            = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
     }
 
+    $link_args['MRIBrowser'] = $argstring;
+
+    $paths = $config->getSetting('paths');
+
+    // get candidate data
+    if (!empty($_REQUEST['candID'])) {
+        try {
+            $candidate =& Candidate::singleton($_REQUEST['candID']);
+            $tpl_data['candidate'] = $candidate->getData();
+        } catch(Exception $e) {
+            $tpl_data['error_message'][] = $e->getMessage();
+        }
+    }
+
+    // get time point data
+    if (!empty($_REQUEST['sessionID'])) {
+        try {
+            $timePoint =& TimePoint::singleton($_REQUEST['sessionID']);
+            if ($config->getSetting("SupplementalSessionStatus")) {
+                $tpl_data['SupplementalSessionStatuses'] = true;
+            }
+            $tpl_data['timePoint'] = $timePoint->getData();
+        } catch(Exception $e) {
+            $tpl_data['error_message'][]
+                = "TimePoint Error (".$_REQUEST['sessionID']."): ".$e->getMessage();
+        }
+    }
 }
 
 //--------------------------------------------------
@@ -178,7 +155,7 @@ if (!empty($_REQUEST['sessionID'])) {
 // load the menu or instrument
 try {
     $caller    =& NDB_Caller::singleton();
-    $workspace = $caller->load($TestName, $subtest);
+    $workspace = $caller->load($TestName, $subtest, $anonymous);
     if (isset($caller->page->FormAction)) {
         $tpl_data['FormAction'] = $caller->page->FormAction;
     }
@@ -197,7 +174,6 @@ try {
         $tpl_data['jsfiles']  = $caller->page->getJSDependencies();
         $tpl_data['cssfiles'] = $caller->page->getCSSDependencies();
     }
-
     $tpl_data['workspace'] = $workspace;
 } catch(ConfigurationException $e) {
     header("HTTP/1.1 500 Internal Server Error");
@@ -212,9 +188,11 @@ try {
         . "</pre>";
 } catch(Exception $e) {
     switch($e->getCode()) {
-    case 404: header("HTTP/1.1 404 Not Found");
+    case 404:
+        header("HTTP/1.1 404 Not Found");
         break;
-    case 403: header("HTTP/1.1 403 Forbidden");
+    case 403:
+        header("HTTP/1.1 403 Forbidden");
         break;
     }
     $tpl_data['error_message'][] = $e->getMessage();
@@ -229,13 +207,15 @@ try {
 
 //--------------------------------------------------
 
-try {
-    $breadcrumb = new NDB_Breadcrumb;
-    $crumbs     = $breadcrumb->getBreadcrumb();
+if (!$anonymous) {
+    try {
+        $breadcrumb = new NDB_Breadcrumb;
+        $crumbs     = $breadcrumb->getBreadcrumb();
 
-    $tpl_data['crumbs'] = $crumbs;
-} catch(Exception $e) {
-    $tpl_data['error_message'][] = $e->getMessage();
+        $tpl_data['crumbs'] = $crumbs;
+    } catch(Exception $e) {
+        $tpl_data['error_message'][] = $e->getMessage();
+    }
 }
 
 //--------------------------------------------------
@@ -269,30 +249,32 @@ if ($config->getSetting("sandbox") === '1') {
 // This should be array_filter, but to have access to both key and value
 // in array_filter we need to require PHP >= 5.6
 $realPerms = array();
-foreach ($user->getPermissions() as $permName => $hasPerm) {
-    if ($hasPerm === true) {
-        $realPerms[] = $permName;
+if (!$anonymous) {
+    foreach ($user->getPermissions() as $permName => $hasPerm) {
+        if ($hasPerm === true) {
+            $realPerms[] = $permName;
+        }
     }
-}
-$tpl_data['userPerms']   = $realPerms;
-$tpl_data['studyParams'] = array(
-                            'useEDC'      => $config->getSetting('useEDC') ?
+    $tpl_data['userPerms']   = $realPerms;
+    $tpl_data['studyParams'] = array(
+                                'useEDC'      => $config->getSetting('useEDC') ?
         $config->getSetting('useEDC') : false,
-                            'useProband'  => $config->getSetting('useProband') ?
+                                'useProband'  => $config->getSetting('useProband') ?
         $config->getSetting('useProband') : false,
-                            'useFamilyID' => $config->getSetting('useFamilyID') ?
+                                'useFamilyID' => $config->getSetting('useFamilyID') ?
         $config->getSetting('useFamilyID') : false,
-                           );
-$tpl_data['jsonParams']  = json_encode(
-    array(
-     'BaseURL'   => $tpl_data['baseurl'],
-     'TestName'  => $tpl_data['test_name'],
-     'Subtest'   => $tpl_data['subtest'],
-     'CandID'    => $tpl_data['candID'],
-     'SessionID' => $tpl_data['sessionID'],
-     'CommentID' => $tpl_data['commentID'],
-    )
-);
+                               );
+    $tpl_data['jsonParams']  = json_encode(
+        array(
+         'BaseURL'   => $tpl_data['baseurl'],
+         'TestName'  => $tpl_data['test_name'],
+         'Subtest'   => $tpl_data['subtest'],
+         'CandID'    => $tpl_data['candID'],
+         'SessionID' => $tpl_data['sessionID'],
+         'CommentID' => $tpl_data['commentID'],
+        )
+    );
+}
 
 $tpl_data['css'] = $config->getSetting('css');
 
@@ -311,10 +293,11 @@ case 'json':
 default:
     $smarty = new Smarty_neurodb;
     $smarty->assign($tpl_data);
-    $smarty->display('main.tpl');
+    if (!$anonymous) {
+        $smarty->display('main.tpl');
+    } else {
+        $smarty->display('anonymous.tpl');
+    }
 }
-
-
-
 ob_end_flush();
 ?>

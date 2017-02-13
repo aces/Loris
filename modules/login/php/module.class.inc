@@ -5,14 +5,14 @@
  *
  * PHP Version 5
  *
- * @category   Behavioural
+ * @category   Core
  * @package    Main
- * @subpackage Imaging
+ * @subpackage Login
  * @author     Dave MacFarlane <david.macfarlane2@mcgill.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link       https://www.github.com/aces/Loris-Trunk/
+ * @link       https://www.github.com/aces/Loris/
  */
-namespace LORIS\dicom_archive;
+namespace LORIS\login;
 
 /**
  * Class module implements the basic LORIS module functionality
@@ -26,7 +26,8 @@ namespace LORIS\dicom_archive;
  */
 class Module extends \Module
 {
-	public function isPublicModule() {
-		return true;
-	}
+    public function isPublicModule()
+    {
+        return true;
+    }
 }
