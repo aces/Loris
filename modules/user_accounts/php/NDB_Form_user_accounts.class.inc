@@ -213,50 +213,19 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // multi-site UPDATE
-        $uid        = $user->getData('ID');
-        $curr_sites = $values['CenterIDs'];
+        $uid           = $user->getData('ID');
+        $us_curr_sites = $values['CenterIDs'];
         if (!$this->isCreatingNewUser()) {
             $DB->delete('user_psc_rel', array("UserID" => $uid));
-        }
-        foreach ($curr_sites as $site) {
-            $DB->insert(
-                'user_psc_rel',
-                array(
-                 "UserID"   => $uid,
-                 "CenterID" => $site,
-                )
-            );
-            // Center was not previously added
-            if (empty($result) || is_null($result) || (!(in_array($val, $us_prev_sites)))) {
+            foreach ($us_curr_sites as $site) {
                 $DB->insert(
                     'user_psc_rel',
                     array(
-                        'UserID'    => $uid,
-                        'CenterID'  => $val,
+                     "UserID"   => $uid,
+                     "CenterID" => $site,
                     )
                 );
-            } elseif (in_array($val, $us_prev_sites)) {
-                unset($values['CenterID'][$key]);
             }
-        }
-        if ($this->page === 'edit_user') {
-            // multi-site UPDATE
-            $uid           = $user->getData('ID');
-            $us_curr_sites = $values['CenterIDs'];
-            if (!$this->isCreatingNewUser()) {
-                $DB->delete('user_psc_rel', array("UserID" => $uid));
-                foreach ($us_curr_sites as $site) {
-                    $DB->insert(
-                        'user_psc_rel',
-                        array(
-                         "UserID"   => $uid,
-                         "CenterID" => $site,
-                        )
-                    );
-                }
-            }
-            unset($values['CenterIDs']);
-            // END multi-site UPDATE
         }
         unset($values['CenterIDs']);
         // END multi-site UPDATE
