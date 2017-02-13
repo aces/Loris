@@ -208,7 +208,7 @@ var FilterRule = React.createClass({
 					);
 				}),
 				operators = [],
-				inputOptions, input, operatorKey, operatorSelect, options, value;
+				inputOptions, input, operatorKey, operatorSelect, options, value, inputType;
 
 			if(this.props.rule.fieldType) {
 				// Only display operators if field is selected
