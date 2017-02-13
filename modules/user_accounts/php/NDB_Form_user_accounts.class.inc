@@ -222,19 +222,19 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // multi-site UPDATE
-        $uid        = $user->getData('ID');
-        $curr_sites = $values['CenterIDs'];
+        $uid           = $user->getData('ID');
+        $us_curr_sites = $values['CenterIDs'];
         if (!$this->isCreatingNewUser()) {
             $DB->delete('user_psc_rel', array("UserID" => $uid));
-        }
-        foreach ($curr_sites as $site) {
-            $DB->insert(
-                'user_psc_rel',
-                array(
-                 "UserID"   => $uid,
-                 "CenterID" => $site,
-                )
-            );
+            foreach ($us_curr_sites as $site) {
+                $DB->insert(
+                    'user_psc_rel',
+                    array(
+                     "UserID"   => $uid,
+                     "CenterID" => $site,
+                    )
+                );
+            }
         }
         unset($values['CenterIDs']);
         // END multi-site UPDATE
@@ -333,6 +333,16 @@ class NDB_Form_User_Accounts extends NDB_Form
             // insert a new user
             $success = User::insert($set);
             $user    = User::factory($set['UserID']);
+            $uid     = $user->getData('ID');
+            foreach ($us_curr_sites as $site) {
+                $DB->insert(
+                    'user_psc_rel',
+                    array(
+                     "UserID"   => $uid,
+                     "CenterID" => $site,
+                    )
+                );
+            }
         } else {
             // update the user
             $user    = User::factory($this->identifier);
