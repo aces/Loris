@@ -224,7 +224,7 @@
                 }
             }
         },
-        "/candidates": {
+        "/candidates/": {
             "get": {
                 "description": "Return a list of all active candidates of the study",
                 "tags": [
@@ -265,6 +265,66 @@
                                     "Project": "Pumpernickel"
                                 }
                             ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new candidate",
+                "tags": [
+                    "Candidate"
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "candidate",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "project": {
+                                    "type": "string",
+                                    "default": "LORIS",
+                                    "description": "The name of the project to add this candidate to."
+                                },
+                                "pscid": {
+                                    "type": "string",
+                                    "description": "Required if the pscid setting of the project is set to `prompt`"
+                                },
+                                "dob": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "edc": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "description": "Expected date of confinement, required only if the project use EDC."
+                                },
+                                "sex": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Male",
+                                        "Female"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "dob",
+                                "sex"
+                            ]
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Candidate create",
+                        "schema": {
+                            "$ref": "#/definitions/Candidate"
                         }
                     }
                 }
@@ -589,12 +649,191 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "An array of instruments short_names",
+                        "description": "The raw content of the file",
+                        "schema": {
+                            "type": "string",
+                            "format": "byte"
+                        }
+                    }
+                }
+            }
+        },
+        "/candidates/{candid}/{visit}/images/{filename}/qc": {
+            "get": {
+                "description": "Get the raw file content with the appropriate MimeType",
+                "tags": [
+                    "Imaging"
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "candid",
+                        "in": "path",
+                        "description": "The id of the candidate",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "visit",
+                        "in": "path",
+                        "description": "The visit_label of that candidate's visit",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filename",
+                        "in": "path",
+                        "description": "The file name of the image",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The QC status",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ImageFileContent"
+                                "$ref": "#/definitions/qcStatus"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/candidates/{candid}/{visit}/images/{filename}/format/raw": {
+            "get": {
+                "description": "Get the binary file content with the appropriate MimeType",
+                "tags": [
+                    "Imaging"
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "candid",
+                        "in": "path",
+                        "description": "The id of the candidate",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "visit",
+                        "in": "path",
+                        "description": "The visit_label of that candidate's visit",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filename",
+                        "in": "path",
+                        "description": "The file name of the image",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The file content",
+                        "schema": {
+                            "type": "string",
+                            "format": "binary"
+                        }
+                    }
+                }
+            }
+        },
+        "/candidates/{candid}/{visit}/images/{filename}/format/brainbrowser": {
+            "get": {
+                "description": "Get the binary file content with the appropriate MimeType",
+                "tags": [
+                    "Imaging"
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "candid",
+                        "in": "path",
+                        "description": "The id of the candidate",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "visit",
+                        "in": "path",
+                        "description": "The visit_label of that candidate's visit",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filename",
+                        "in": "path",
+                        "description": "The file name of the image",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The file content",
+                        "schema": {
+                            "$ref": "#/definitions/BrainbrowserInfo"
+                        }
+                    }
+                }
+            }
+        },
+        "/candidates/{candid}/{visit}/images/{filename}/format/thumbnail": {
+            "get": {
+                "description": "Get the thumbnail file from an image file as jpeg",
+                "tags": [
+                    "Imaging"
+                ],
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "candid",
+                        "in": "path",
+                        "description": "The id of the candidate",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "visit",
+                        "in": "path",
+                        "description": "The visit_label of that candidate's visit",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filename",
+                        "in": "path",
+                        "description": "The file name of the image",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The file content",
+                        "schema": {
+                            "type": "string",
+                            "format": "binary"
                         }
                     }
                 }
@@ -828,7 +1067,7 @@
         "qcStatus": {
             "type": "object",
             "properties": {
-                "SessionQC": {
+                "qc": {
                     "enum": [
                         "Pass",
                         "Fail"
@@ -853,9 +1092,77 @@
                 }
             }
         },
-        "ImageFileContent": {
-            "type": "string",
-            "format": "byte"
+        "BrainbrowserInfo": {
+            "type": "object",
+            "properties": {
+                "xspace": {
+                    "$ref": "#/definitions/BrainbrowserSpace"
+                },
+                "yspace": {
+                    "$ref": "#/definitions/BrainbrowserSpace"
+                },
+                "zspace": {
+                    "$ref": "#/definitions/BrainbrowserSpace"
+                },
+                "orderBy": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "example": {
+                "xspace": {
+                    "start": "-82.356488289294389915",
+                    "space_length": "160",
+                    "step": "1",
+                    "dir_cosines": [
+                        "0.99623603310735231453",
+                        "0.043496618061780484288",
+                        "0.074978734023149529175"
+                    ]
+                },
+                "yspace": {
+                    "start": "135.7093865656449907",
+                    "space_length": "256",
+                    "step": "-1",
+                    "dir_cosines": [
+                        "-0.043619400720800241555",
+                        "0.99904822099874557306",
+                        "-2.0468960000000111676e-09"
+                    ]
+                },
+                "zspace": {
+                    "start": "123.30227028958421442",
+                    "space_length": "256",
+                    "step": "-1",
+                    "dir_cosines": [
+                        "-0.074907370927598804222",
+                        "-0.003270525405699947416",
+                        "0.99718513298398403499"
+                    ]
+                },
+                "datatype": "float64",
+                "order": [
+                    "xspace",
+                    "zspace",
+                    "yspace"
+                ]
+            }
+        },
+        "BrainbrowserSpace": {
+            "type": "object",
+            "properties": {
+                "start": {
+                    "type": "string"
+                },
+                "spaceLength": {
+                    "type": "string"
+                },
+                "step": {
+                    "type": "string"
+                }
+            }
         }
     }
 }
