@@ -78,8 +78,8 @@
         </label>
       </div>
       {if $captcha_key}
+        {* Google reCaptcha *}
         <div class="form-group">
-          {* Google reCaptcha *}
           <div class="g-recaptcha" data-sitekey="{$captcha_key}"></div>
           <span id="helpBlock" class="help-block">
               <b class="text-danger">{$error_message['captcha']}</b>
