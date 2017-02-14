@@ -351,11 +351,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                      ':pid'    => $pscid,
                     )
                 )==0) {
-                        $errors[] = "Make sure you enter the CandID: $candid ,".
+                        $errors[] = "Make sure you enter the CandID: $candid,".
                                     " PSCID: $pscid and the corresponding".
-                                    " Visit-label: $visit_label which".
-                                    " already exist. <br>Please refresh this page".
-                                    " to return to the Imaging Uploader module";
+                                    " Visit-label: $visit_label. Candidate and".
+                                    " corresponding visit label must already be" .
+                                    " created in the database. <br>Please refresh this".
+                                    " page to return to the Imaging Uploader module";
                 }
             }
         }
