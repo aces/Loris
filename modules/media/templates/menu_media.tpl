@@ -1,3 +1,6 @@
+<div id="page-wrapper"></div>
+
+{*
 <!-- Nav tabs -->
 <ul class="nav nav-tabs nav-tabs-loris" role="tablist">
   <li role="presentation" class="active">
@@ -27,3 +30,4 @@
   </div>
 
 </div>
+*}

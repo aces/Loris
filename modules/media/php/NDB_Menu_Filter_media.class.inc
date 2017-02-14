@@ -87,10 +87,10 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         }
 
         // Form Elements
-        $this->addBasicText('pscid', 'PSCID:', ["size" => 9, "maxlength" => 7]);
+        $this->addBasicText('pSCID', 'PSCID:', ["size" => 9, "maxlength" => 7]);
         $this->addSelect('instrument', 'Instrument:', $instrumentList);
-        $this->addSelect('visit_label', 'Visit Label:', $visitList);
-        $this->addSelect('for_site', 'For Site:', $siteList);
+        $this->addSelect('visitLabel', 'Visit Label:', $visitList);
+        $this->addSelect('site', 'For Site:', $siteList);
 
         $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
 
@@ -175,6 +175,20 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     }
 
     /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $result          = $this->toArray();
+        $result['form']  = $this->form->form;
+
+        return json_encode($result);
+    }
+
+    /**
      * Include additional CSS files:
      *  1. media.css
      *
@@ -206,6 +220,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         return array_merge(
             $deps,
             [
+             $baseURL . "/js/components/Tabs.js",
              $baseURL . "/media/js/mediaIndex.js",
             ]
         );
