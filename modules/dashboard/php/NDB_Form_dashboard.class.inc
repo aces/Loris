@@ -212,7 +212,7 @@ class NDB_Form_Dashboard extends NDB_Form
             $this->tpl_data['pending_users'] = $DB->pselectOne(
                 "SELECT COUNT(*) FROM users 
                 LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
-		        WHERE users.Pending_approval='Y' AND CenterID IN (:CID)",
+		        WHERE users.Pending_approval='Y' AND upr.CenterID IN (:CID)",
                 array('CID' => implode(",", $site_arr))
             );
 
