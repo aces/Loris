@@ -50,9 +50,6 @@ var FormElement = React.createClass({
       formElements: {},
       onSubmit: function() {
         console.warn('onSubmit() callback is not set!');
-      },
-      onUserInput: function() {
-        console.warn("onUserInput() callback is not set!");
       }
     };
   },
@@ -65,18 +62,20 @@ var FormElement = React.createClass({
 
     // Render elements from JSON
     const filter = this.props.formElements;
-    const userInput = this.props.onUserInput;
 
     Object.keys(filter).forEach(function(objKey, index) {
+      const userInput = this.props.onUserInput ? this.props.onUserInput : filter[objKey].onUserInput;
+      const value = filter[objKey].value ? filter[objKey].value : '';
       formElementsHTML.push(
         <div key={'el_' + index} className={colClass}>
           <LorisElement
             element={filter[objKey]}
             onUserInput={userInput}
+            value={value}
           />
         </div>
       );
-    });
+    }.bind(this));
 
     // Render elements from React
     React.Children.forEach(this.props.children, function(child, key) {
