@@ -1,5 +1,4 @@
 var webpack = require('webpack');
-var env = process.env.WEBPACK_ENV;
 
 var config = {
   entry: {
@@ -11,9 +10,8 @@ var config = {
     './htdocs/js/components/Form.js': './jsx/Form.js',
     './htdocs/js/components/Tabs.js': './jsx/Tabs.js',
     './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
-    './modules/media/js/columnFormatter.js': './modules/media/jsx/columnFormatter.js',
-    './modules/media/js/editForm.js': './modules/media/jsx/editForm.js',
-    './modules/media/js/uploadForm.js': './modules/media/jsx/uploadForm.js',
+    './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
+    './modules/media/js/editFormIndex.js': './modules/media/jsx/editFormIndex.js',
     './modules/issue_tracker/js/columnFormatter.js': './modules/issue_tracker/jsx/columnFormatter.js',
     './modules/issue_tracker/js/editIssue.js': './modules/issue_tracker/jsx/editIssue.js',
     './modules/candidate_parameters/js/candidateInfo.js': './modules/candidate_parameters/jsx/candidateInfo.js',
@@ -32,7 +30,6 @@ var config = {
     './modules/dataquery/js/react.paginator.js': './modules/dataquery/jsx/react.paginator.js',
     './modules/dataquery/js/react.sidebar.js': './modules/dataquery/jsx/react.sidebar.js',
     './modules/dataquery/js/react.tabs.js': './modules/dataquery/jsx/react.tabs.js',
-    './modules/dicom_archive/js/columnFormatter.js': './modules/dicom_archive/jsx/columnFormatter.js',
     './modules/dicom_archive/js/dicom_archive.js': './modules/dicom_archive/jsx/dicom_archive.js',
     './modules/genomic_browser/js/FileUploadModal.js': './modules/genomic_browser/jsx/FileUploadModal.js',
     './modules/imaging_browser/js/ImagePanel.js': './modules/imaging_browser/jsx/ImagePanel.js',
@@ -68,13 +65,8 @@ var config = {
   externals: {
     react: 'React'
   },
-  plugins: []
+  devtool: 'source-map',
+  plugins: [new webpack.optimize.UglifyJsPlugin()]
 };
-
-if (env === 'development') {
-  config.devtool = 'eval-source-map';
-} else {
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin());
-}
 
 module.exports = config;

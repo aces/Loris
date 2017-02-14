@@ -555,6 +555,7 @@ CREATE TABLE `flag` (
   `Flag_status` enum('P','Y','N','F') default NULL,
   `UserID` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `Data` TEXT default NULL,
   PRIMARY KEY  (`CommentID`),
   KEY `Status` (`Flag_status`),
   KEY `flag_ID` (`ID`),
@@ -2206,11 +2207,11 @@ CREATE TABLE ExternalLinks (
     FOREIGN KEY (LinkTypeID) REFERENCES ExternalLinkTypes(LinkTypeID)
 );
 INSERT INTO ExternalLinks (LinkTypeID, LinkText, LinkURL) VALUES
-    (1,  'Loris Website', 'http://www.loris.ca'),
-    (1,  'GitHub', 'https://github.com/aces/Loris'),
-    (2,  'Loris Website', 'http://www.loris.ca'),
-    (2,  'GitHub', 'https://github.com/aces/Loris'),
-    (3,  'Loris Website', 'http://www.loris.ca');
+    ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='FooterLink'), 'Loris Website', 'http://www.loris.ca'),
+    ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='FooterLink'), 'GitHub', 'https://github.com/aces/Loris'),
+    ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='StudyLinks'), 'Loris Website', 'http://www.loris.ca'),
+    ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='StudyLinks'), 'GitHub', 'https://github.com/aces/Loris'),
+    ((SELECT LinkTypeID from ExternalLinkTypes WHERE LinkType='dashboard'), 'Loris Website', 'http://www.loris.ca');
 
 DROP TABLE IF EXISTS empty_queries;
 CREATE TABLE empty_queries (
@@ -2253,6 +2254,7 @@ CREATE TABLE `media` (
   `hide_file` tinyint(1) DEFAULT '0',
   `date_uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `file_name` (`file_name`),
   FOREIGN KEY (`session_id`) REFERENCES `session` (`ID`),
   FOREIGN KEY (`instrument`) REFERENCES `test_names` (`Test_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2266,9 +2268,9 @@ CREATE TABLE `issues_categories` (
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 INSERT INTO issues_categories (categoryName) VALUES
-    ('Behavioural Battery'), 
-    ('Behavioural Instruments'), 
-    ('Data Entry'), 
+    ('Behavioural Battery'),
+    ('Behavioural Instruments'),
+    ('Data Entry'),
     ('Examiners'),
     ('Imaging'),
     ('Technical Issue'),

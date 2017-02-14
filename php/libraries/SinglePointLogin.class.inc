@@ -63,6 +63,7 @@ class SinglePointLogin
         }
 
         $tpl_data['currentyear'] = date('Y');
+        $tpl_data['version']     = file_get_contents(__DIR__ . "/../../VERSION");
 
         // remove logout from request
         if (isset($_SERVER['QUERY_STRING'])) {
@@ -74,7 +75,7 @@ class SinglePointLogin
 
         $config =& NDB_Config::singleton();
 
-        $tpl_data['title']         = $config->getSetting('title');
+        $tpl_data['page_title']    = $config->getSetting('title');
         $tpl_data['css']           = $config->getSetting('css');
         $tpl_data['action']        = $_SERVER['PHP_SELF']
             . '?' . http_build_query($params);
@@ -102,11 +103,12 @@ class SinglePointLogin
 
         $www = $config->getSetting('www');
         $tpl_data['baseurl'] = $www['url'];
+        $tpl_data['page']    = 'login';
 
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
-        $smarty->display('login.tpl');
+        $smarty->display('public_layout.tpl');
     }
 
 
@@ -129,10 +131,10 @@ class SinglePointLogin
 
         $config =& NDB_Config::singleton();
 
-        $tpl_data['title'] = $config->getSetting('title');
-        $tpl_data['css']   = $config->getSetting('css');
-        $study_title       = $config->getSetting('title');
-        $study_description = $config->getSetting('StudyDescription');
+        $tpl_data['page_title'] = $config->getSetting('title');
+        $tpl_data['css']        = $config->getSetting('css');
+        $study_title            = $config->getSetting('title');
+        $study_description      = $config->getSetting('StudyDescription');
         try {
             $study_logo = $config->getSetting('studylogo');
         } catch(ConfigurationException $e) {
@@ -142,6 +144,7 @@ class SinglePointLogin
         $tpl_data['study_title']       = $study_title;
         $tpl_data['study_description'] = $study_description;
         $tpl_data['study_logo']        = $study_logo;
+        $tpl_data['page'] = 'password-expiry';
 
         $tpl_data['action'] = $_SERVER['PHP_SELF']
             .'?'
@@ -152,7 +155,7 @@ class SinglePointLogin
         //Output template using Smarty
         $smarty = new Smarty_neurodb;
         $smarty->assign($tpl_data);
-        $smarty->display('password_expiry.tpl');
+        $smarty->display('public_layout.tpl');
         return false;
     }
 
@@ -372,7 +375,6 @@ class SinglePointLogin
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
                     );
-
         // save the new password if the last password expired
         if (isset($_POST['expiry'])) {
             $success = $this->save();
@@ -489,7 +491,7 @@ class SinglePointLogin
         }
 
         // bad usename or password
-        $this->_lastError = "Incorrect username or password";
+        $this->_lastError = "Incorrect email or password";
         return false;
     }
 
