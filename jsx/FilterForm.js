@@ -22,7 +22,7 @@ class FilterForm extends React.Component {
 
     // Bind component instance to custom methods
     this.clearFilter = this.clearFilter.bind(this);
-    this.getFormElements = this.getFormElements.bind(this);
+    this.getFormChildren = this.getFormChildren.bind(this);
     this.setFilter = this.setFilter.bind(this);
     this.onElementUpdate = this.onElementUpdate.bind(this);
 
@@ -59,10 +59,10 @@ class FilterForm extends React.Component {
    * Itterates through FilterForm children, sets necessary callback functions
    * and initializes filterTable
    *
-   * @return {Array} formElements - array of children with necessary props
+   * @return {Array} formChildren - array of children with necessary props
    */
-  getFormElements() {
-    let formElements = [];
+  getFormChildren() {
+    let formChildren = [];
     React.Children.forEach(this.props.children, function(child, key) {
       // If child is a React component (i.e not a simple DOM element)
       if (React.isValidElement(child) &&
@@ -83,7 +83,7 @@ class FilterForm extends React.Component {
           }
         }
         // Pass onUserInput and value props to all children
-        formElements.push(React.cloneElement(child, {
+        formChildren.push(React.cloneElement(child, {
           onUserInput: callbackFunc,
           value: filterValue ? filterValue : '',
           key: key
@@ -91,11 +91,11 @@ class FilterForm extends React.Component {
         // Initialize filter for StaticDataTable
         this.setFilter(elementName, child.props.name, filterValue);
       } else {
-        formElements.push(React.cloneElement(child, {key: key}));
+        formChildren.push(React.cloneElement(child, {key: key}));
       }
     }.bind(this));
 
-    return formElements;
+    return formChildren;
   }
 
   /**
@@ -151,11 +151,20 @@ class FilterForm extends React.Component {
 
   render() {
     // Get formatted children
-    let formElements = this.getFormElements();
+    let formChildren = this.getFormChildren();
+    let formElements = this.props.formElements;
+
+    if (formElements) {
+      Object.keys(formElements).forEach(function(fieldName) {
+        formElements[fieldName].onUserInput = this.onElementUpdate.bind(null, fieldName);
+        formElements[fieldName].value = this.queryString[fieldName];
+      }.bind(this));
+    }
+
     return (
       <Panel id="selection-filter" title="Selection Filter">
         <FormElement {...this.props}>
-          {formElements}
+          {formChildren}
         </FormElement>
       </Panel>
     );
