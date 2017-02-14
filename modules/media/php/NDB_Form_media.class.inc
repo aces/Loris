@@ -82,7 +82,7 @@ class NDB_Form_Media extends NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/media/js/editForm.js"]
+            [$baseURL . "/media/js/editFormIndex.js"]
         );
     }
 
