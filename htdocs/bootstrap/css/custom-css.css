@@ -442,3 +442,6 @@ a.btn.btn-primary {
   margin-bottom: 10px;
 }
 
+.navbar-bvl-fdbk-btn {
+    cursor: pointer;
+}
