@@ -138,7 +138,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 
         foreach ($name as $key => $value) {
             $modalities_subquery[$key] = $value;
-            $as[$key] = $scan_types[$key] . '_Passed';
+            $as[$key] = $scan_types[$key] . '_QC_Status';
             $modalities_subquery_as[$key] = $modalities_subquery[$key] . ' as ' . $as[$key];
         }
         $this->columns = array(
@@ -146,15 +146,17 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'c.PSCID as PSCID',
             'c.CandID as DCCID',
             's.visit_label as Visit_Label',
-            "$PendingFailSubquery as QC_Status",
+            "$PendingFailSubquery as Visit_Level_QC_Status",
             'MIN(md.AcquisitionDate) as First_Acq_Date',
             'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion_Date',
             'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
-            "$NewDataSubquery as New_Data"
+            "$NewDataSubquery as New_Data",
         );
-        $this->columns = array_merge($this->columns, $modalities_subquery_as, 
-                        array("GROUP_CONCAT(DISTINCT OutputType) as Links",
-            's.ID as sessionID')
+        $this->columns = array_merge(
+                            $this->columns,
+                            array("GROUP_CONCAT(DISTINCT OutputType) as Links", 
+                            's.ID as sessionID'),
+                            $modalities_subquery_as
         );
 
         $this->order_by = 'c.PSCID, s.Visit_label';
@@ -164,15 +166,16 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'PSCID',
             'DCCID',
             'Visit_Label',
-            'QC_Status',
+            'Visit_Level_QC_Status',
             'First_Acq_Date',
             'First_Insertion_Date',
             'Last_QC',
-            'New_Data');
+            'New_Data',
+            'Links');
         $this->headers = array_merge(
                 $this->headers, 
                 $as, 
-                array('Links','sessionID')
+                'sessionID'
             );
 
         // Insert project column after DCCID, if useProject config is enabled
@@ -297,12 +300,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->addSelect('SiteID', 'Site', $list_of_sites);
         $this->addSelect(
             'VisitQCStatus',
-            'QC Status',
-            array(
-             ''     => 'All',
-             'Pass' => 'Pass',
-             'Fail' => 'Fail',
-            )
+            'Visit Level QC Status',
+            array(''=>'All', 'Pass'=>'Pass', 'Fail'=>'Fail')
         );
 
         $this->addSelect(
