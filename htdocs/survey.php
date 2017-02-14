@@ -88,6 +88,12 @@ class DirectDataEntryMainPage
         if (empty($this->TestName) && empty($this->CommentID)) {
             throw new Exception("Data has already been submitted.", 403);
         }
+
+        $this->FullTestName = $DB->pselectOne(
+            "SELECT Full_name FROM test_names WHERE Test_name=:TN",
+            array('TN' => $this->TestName)
+        );
+
         $pageNum = null;
 
         if (!empty($_REQUEST['pageNum'])) {
@@ -117,11 +123,12 @@ class DirectDataEntryMainPage
 
         $this->CommentID = $this->getCommentID();
         $this->tpl_data  = array(
-                            'nextpage'   => $this->NextPageNum,
-                            'prevpage'   => $this->PrevPageNum,
-                            'pageNum'    => $pageNum ? $pageNum + 1: 1,
-                            'totalPages' => $totalPages,
-                            'key'        => $this->key,
+                            'nextpage'    => $this->NextPageNum,
+                            'prevpage'    => $this->PrevPageNum,
+                            'pageNum'     => $pageNum ? $pageNum + 1: 1,
+                            'totalPages'  => $totalPages,
+                            'key'         => $this->key,
+                            'study_title' => $this->FullTestName,
                            );
     }
 
