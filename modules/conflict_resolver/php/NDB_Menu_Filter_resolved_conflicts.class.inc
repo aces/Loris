@@ -57,30 +57,33 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         }
 
         $this->columns = array(
-                          'conflicts_resolved.TableName',
-                          'session.CandID',
-                          'candidate.PSCID',
-                          'session.Visit_label',
+                          'conflicts_resolved.TableName as Instrument',
+                          'session.CandID as CandID',
+                          'candidate.PSCID as PSCID',
+                          'session.Visit_label as Visit_Label',
+                          'conflicts_resolved.ResolutionTimestamp as Timestamp',
                          );
 
         if ($useProjects) {
-            $this->columns[] = 'candidate.ProjectID as Project';
+            $this->columns[] = 'Project.Name as Project';
         }
 
         $this->columns = array_merge(
             $this->columns,
             array(
-             'conflicts_resolved.FieldName',
-             'conflicts_resolved.NewValue',
-             'conflicts_resolved.OldValue1',
-             'conflicts_resolved.OldValue2',
-             'session.CenterID',
+             'conflicts_resolved.FieldName as Question',
+             'conflicts_resolved.OldValue1 as CorrectAnswer',
+             'conflicts_resolved.NewValue  as New_Value',
+             'conflicts_resolved.OldValue2 as OldValue2',
+             'session.CenterID as CenterID',
             )
         );
         $this->query   = " FROM conflicts_resolved
             LEFT JOIN flag ON (conflicts_resolved.CommentId1=flag.CommentID)
             LEFT JOIN session ON (flag.SessionID=session.ID)
-            LEFT JOIN candidate ON (candidate.CandID=session.CandID) WHERE 1=1";
+            LEFT JOIN candidate ON (candidate.CandID=session.CandID)
+            LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
+            WHERE 1=1";
 
         $user = User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
@@ -95,6 +98,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                                'conflicts_resolved.TableName',
                                'session.CenterID',
                                'session.Visit_label',
+                               'conflicts_resolved.ResolutionTimestamp',
                               );
 
         if ($useProjects) {
@@ -111,25 +115,43 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         );
 
         $this->headers = array(
-                          'TableName',
+                          'Instrument',
                           'CandID',
                           'PSCID',
                           'Visit_label',
+                          'Resolution_Timestamp',
                          );
 
         if ($useProjects) {
             $this->headers = array_merge(
                 $this->headers,
-                array('candidate.ProjectID' => 'Project')
+                array('Project')
             );
         }
-
-        $this->headers[] = 'FieldName';
+        $this->headers =array_merge(
+            $this->headers,
+            array(
+             'Question',
+             'Correct_Answer',
+             'New_Value',
+             'OldValue2',
+             'CenterID',
+            )
+        );
+        $this->tpl_data['hiddenHeaders'] = json_encode(
+            [
+             'New Value',
+             'OldValue2',
+             'CenterID',
+            ]
+        );
+        $con = "conflicts_resolved";
 
         $this->formToFilter = array(
-                               'Instrument' => 'conflicts_resolved.TableName',
-                               'site'       => 'session.CenterID',
-                               'visit'      => 'session.Visit_label',
+                               'Instrument'          => "$con.TableName",
+                               'site'                => 'session.CenterID',
+                               'visit'               => 'session.Visit_label',
+                               'ResolutionTimestamp' => "$con.ResolutionTimestamp",
                               );
 
         if ($useProjects) {
@@ -205,6 +227,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             )
         );
         $this->addBasicText('Question', 'Search keyword:');
+        $this->addBasicText('ResolutionTimestamp', 'Resolution Timestamp:');
 
         // Project list, if applicable
         if ($config->getSetting("useProjects")==="true") {
@@ -220,62 +243,20 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
     }
 
     /**
-     * Overrides the default setDataTableRows in order to not
-     * show the elements that are only selected to add them to
-     * a form, but aren't part of the table itself.
+     * Gathers JS dependecies and merge them with the parent
      *
-     * @param integer $count The number of rows
-     *
-     * @return none
+     * @return array of javascript to be inserted
      */
-    function _setDataTableRows($count)
+    function getJSDependencies()
     {
-        $DB =& Database::singleton();
-
-        $config =& NDB_Config::singleton();
-
-        if ($config->getSetting("useProjects")==="true") {
-            $projectList = Utility::getProjectList();
-        }
-
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                if ($key=='TableName'
-                    || $key=='CandID'
-                    || $key=='PSCID'
-                    || $key=='Visit_label'
-                    || $key=='FieldName'
-                ) {
-                    $this->tpl_data['items'][$x][$i]['name']  = $key;
-                    $this->tpl_data['items'][$x][$i]['value'] = $val;
-                } else if ($key=='Project') {
-                    $this->tpl_data['items'][$x][$i]['name']  = $key;
-                    $this->tpl_data['items'][$x][$i]['value'] = (isset(
-                        $projectList[$val]
-                    )
-                        ? $projectList[$val] : ""
-                    );
-                } else if ($key=='NewValue') {
-                    if ($item['NewValue'] == 1) {
-                        $NewValue = $item['OldValue1'];
-                    } elseif ($item['NewValue'] == 2) {
-                        $NewValue = $item['OldValue2'];
-                    }
-                    $this->tpl_data['items'][$x][$i]['name']  = $key;
-                    $this->tpl_data['items'][$x][$i]['value'] = $NewValue;
-                }
-                $i++;
-            }
-            $x++;
-        }
-
-        return true;
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        $urls    = "/conflict_resolver/js/resolved_conflicts_columnFormatter.js";
+        return array_merge(
+            $deps,
+            array($baseURL . $urls)
+        );
     }
 }
 

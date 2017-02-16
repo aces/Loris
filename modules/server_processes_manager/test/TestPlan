@@ -18,5 +18,5 @@ This test plan should be executed by someone with decent knowledge of the MRI up
    files listed in the table (stdout,stderr and exit code). Monitor the contents and make sure that they represent what 
    would have appeared on the screen if the upload had been done running the MRI pipeline on the command line.
    When the process finishes (when the exit code file contains something), verify that all the process files
-   have been deleted from /tmp.
+   have been deleted from /tmp if and only if the exit code is zero.
 

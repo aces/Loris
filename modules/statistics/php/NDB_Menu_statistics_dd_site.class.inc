@@ -61,6 +61,7 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
                 s.ID=f.SessionID AND f.CommentID=i.CommentID 
                 AND s.CandID=c.CandID  
                 AND s.Active='Y' 
+                AND s.CenterID <> '1'
                 AND s.Current_stage <> 'Recycling Bin'
                 $this->query_criteria
                 AND f.Data_entry='Complete' AND f.Administration='All' 
@@ -78,6 +79,7 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
             "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, lower(s.Visit_label) as Visit_label  FROM session s, candidate c, flag f, $safe_instrument i
                 WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND 
                 s.CandID=c.CandID  AND s.Active='Y' 
+                AND s.CenterID <> '1'
                 $this->query_criteria
                 AND s.Current_stage <> 'Recycling Bin'
                 AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID",
@@ -86,5 +88,22 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
             return $result;
     }
 
+    /**
+     * Include additional CSS files:
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/statistics/css/statistics.css"
+            )
+        );
+    }
 } // End class
 ?>

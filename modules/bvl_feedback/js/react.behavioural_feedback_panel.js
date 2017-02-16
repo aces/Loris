@@ -53,43 +53,24 @@ var FeedbackPanelContent = React.createClass({
     });
   },
   render: function () {
-    var table_headers = '';
-    if (this.props.feedback_level == "instrument") {
-      table_headers = React.createElement(
-        "tr",
-        { className: "info" },
-        React.createElement(
-          "td",
-          null,
-          "Fieldname"
-        ),
-        React.createElement(
-          "td",
-          null,
-          "Author"
-        )
-      );
-    } else {
-      var table_headers = React.createElement(
-        "tr",
-        { className: "info" },
-        React.createElement(
-          "td",
-          null,
-          "Type"
-        ),
-        React.createElement(
-          "td",
-          null,
-          "Author"
-        ),
-        React.createElement(
-          "td",
-          null,
-          "Action"
-        )
-      );
+
+    var headers = ["Type", "Author", "Status"];
+
+    if (this.props.feedback_level === "instrument") {
+      headers[0] = "Fieldname";
     }
+
+    var table_headers = React.createElement(
+      "tr",
+      { className: "info" },
+      headers.map(function (header) {
+        return React.createElement(
+          "td",
+          null,
+          header
+        );
+      })
+    );
 
     if (this.props.threads.length) {
       var currentEntryToggled = this.state.currentEntryToggled;

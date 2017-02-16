@@ -1,19 +1,12 @@
-<!-- selection filter -->
-<div id="dicomFilterTable"></div>
-
-<div id="datatable" />
+<div id="page-dicom-archive"></div>
 <script>
-var filterTable = RDICOMFilterTable(
-    {
-        Sites: {$Sites|@json_encode},
-        FilterValues: {$filterValuesJSON}
-    }
-);
-React.render(filterTable, document.getElementById("dicomFilterTable"));
+  loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+  var dicomArchivePage = RDicomArchive({
+    "Sites": {$Sites|@json_encode},
+    "DataURL": loris.BaseURL + "/dicom_archive/?format=json",
+    "getFormattedCell": formatColumn,
+    "Module": "dicom_archive"
+  });
 
-var table = RDynamicDataTable({
-        "DataURL" : "{$baseurl}/dicom_archive/?format=json",
-        "getFormattedCell" : formatColumn
-});
-React.render(table, document.getElementById("datatable"));
+  React.render(dicomArchivePage, document.getElementById("page-dicom-archive"));
 </script>

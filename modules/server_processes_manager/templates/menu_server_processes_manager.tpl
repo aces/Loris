@@ -39,36 +39,11 @@
         </div>
     </div>
 </div>
-
-
-<div class='row'>
-    <table class="table table-hover table-primary table-bordered dynamictable" border="0" width="100%">
-        <thead>
-            <tr class="info">
-                <th>No.</th>
-                <!-- print out column headings - quick & dirty hack -->
-                {section name=header loop=$headers}
-                    <th><a href="{$baseurl}/server_processes_manager/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                {/section}
-            </tr>
-        </thead>
-
-        <tbody>
-            {section name=item loop=$items}
-            <tr>
-            {section name=piece loop=$items[item]}
-                {if $items[item][piece].bgcolor != ''}
-                <td style="background-color:{$items[item][piece].bgcolor}">
-                {else}
-                <td>
-                {/if}
-                    {$items[item][piece].value}
-                </td>
-            {/section}
-            </tr>
-            {sectionelse}
-            <tr><td colspan="12">No server processes found</td></tr>
-            {/section}
-        </tbody>
-    </table>
-</div>
+<div id="datatable"/>
+<script>
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/server_processes_manager/?format=json",
+     "getFormattedCell" : formatColumn
+     });
+React.render(table, document.getElementById("datatable"));
+</script>

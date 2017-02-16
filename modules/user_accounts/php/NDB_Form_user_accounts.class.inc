@@ -43,11 +43,11 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _hasAccess()
     {
         // create user object
-        $editor =& User::singleton();
+        $editor = User::singleton();
 
         if ($this->page == 'edit_user') {
             if (!$this->isCreatingNewUser()) {
-                $user =& User::factory($this->identifier);
+                $user = User::factory($this->identifier);
             }
 
             if ($editor->hasPermission('user_accounts')) {
@@ -79,7 +79,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $defaults = array();
 
         if (!$this->isCreatingNewUser()) {
-            $user =& User::factory($this->identifier);
+            $user = User::factory($this->identifier);
             // get the user defaults
             $defaults = $user->getData();
             // remove the password hash
@@ -107,9 +107,25 @@ class NDB_Form_User_Accounts extends NDB_Form
             $defaults['Zip_code']    = htmlspecialchars($defaults['Zip_code']);
             $defaults['Country']     = htmlspecialchars($defaults['Country']);
             $defaults['Fax']         = htmlspecialchars($defaults['Fax']);
+            $defaults['examiner']    = $defaults['examiner'];
 
+            foreach ($defaults['examiner'] as $cid=>$vals) {
+                //sets pending approval info
+                if ($cid=='pending') {
+                    $defaults['examiner_pending'] = $vals;
+                    continue;
+                }
+                //gets radiologist Y/N from any of the acctive sites
+                if ($vals[0]=='Y') {
+                    $defaults['examiner_radiologist'] =$vals[1];
+                }
+                if ($vals[0]=='Y'
+                    || ($vals[0]=='N' && $defaults['examiner_pending']=='Y')
+                ) {
+                    $defaults['ex_'.$cid] ='on';
+                }
+            }
         }
-
         return $defaults;
     }
 
@@ -120,7 +136,7 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     function _isEditingOwnAccount()
     {
-        $editor = &User::singleton();
+        $editor = User::singleton();
         return !$this->isCreatingNewUser()
             && ($editor->getUsername() == $this->identifier);
     }
@@ -135,26 +151,27 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _process($values)
     {
         $config = NDB_Config::singleton();
+        $DB     = Database::singleton();
 
         //The arrays that contain the edited permissions
         $permissionsRemoved = array();
         $permissionsAdded   = array();
 
-        $editor =& User::singleton();
+        $editor = User::singleton();
 
         // build the "real name"
         $values['Real_name'] = $values['First_name'] . ' ' . $values['Last_name'];
 
         //create the user
         if (!is_null($this->identifier)) {
-            $user =& User::factory($this->identifier);
+            $user = User::factory($this->identifier);
         } else {
             // Since the form has been validated there are two possibilities:
             //    - UID is set
             //    - UID is not set but the "Match UID to email" checkbox is checked
             $effectiveUID = $values['NA_UserID'] == 'on'
                 ? $values['Email'] : $values['UserID'];
-            $user         =& User::factory($effectiveUID);
+            $user         = User::factory($effectiveUID);
         }
 
         ////Get the current permissions/////
@@ -191,7 +208,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         // generate new password
         if (!empty($values['NA_Password'])) {
             $values['Password_md5']    = User::newPassword();
-            $values['Password_expiry'] = '0000-00-00';
+            $values['Password_expiry'] = '1990-04-01';
         }
         unset($values['NA_Password']);
 
@@ -202,6 +219,90 @@ class NDB_Form_User_Accounts extends NDB_Form
             unset($values['Password_md5']);
         }
 
+        // EXAMINER UPDATE
+        $ex_curr_sites =array();
+        $ex_prev_sites =array();
+
+        //get sites where user is already an examiner at for compare
+        $prev_sites = $DB->pselect(
+            "
+                        SELECT centerID
+                        FROM examiners
+                        WHERE full_name=:fn",
+            array(
+             "fn" => $values['Real_name'],
+            )
+        );
+        foreach ($prev_sites as $row=>$center) {
+            array_push($ex_prev_sites, $center['centerID']);
+        }
+        foreach ($values as $k=>$v) {
+            //examiner fields
+            if (preg_match("/^ex_[0-9]+$/", $k)) {
+                //get centerID
+                $parse_key =explode('_', $k);
+                $cid       = $parse_key[1];
+                array_push($ex_curr_sites, $cid);
+
+                //Check if examiner already in db for site
+                $result = $DB->pselectRow(
+                    "
+                          SELECT full_name, centerID
+                          FROM examiners 
+                          WHERE full_name=:fn AND centerID=:cid",
+                    array(
+                     "fn"  => $values['Real_name'],
+                     "cid" => $cid,
+                    )
+                );
+
+                // examiner was not previously added, add and set to active
+                if (empty($result) || is_null($result)) {
+                    $DB->insert(
+                        'examiners',
+                        array(
+                         'full_name'        => $values['Real_name'],
+                         'centerID'         => $cid,
+                         'radiologist'      => $values['examiner_radiologist'],
+                         'active'           => 'Y',
+                         'pending_approval' => $values['examiner_pending'],
+                        )
+                    );
+                } else {
+                    $DB->update(
+                        'examiners',
+                        array(
+                         'radiologist'      => $values['examiner_radiologist'],
+                         'Active'           => 'Y',
+                         'pending_approval' => $values['examiner_pending'],
+                        ),
+                        array(
+                         "full_name" => $values['Real_name'],
+                         "centerID"  => $cid,
+                        )
+                    );
+                }
+                unset($values[$k]);
+            }
+        }
+
+        //de-activate examiner if sites where no longer checked
+        $ex_inactive =array_diff($ex_prev_sites, $ex_curr_sites);
+
+        foreach ($ex_inactive as $cid) {
+            $DB->update(
+                'examiners',
+                array("Active" => 'N'),
+                array(
+                 "full_name" => $values['Real_name'],
+                 "centerID"  => $cid,
+                )
+            );
+        }
+        unset($values['examiner_pending']);
+        unset($values['examiner_radiologist']);
+        //END EXAMINER UPDATE
+
         // make the set
         foreach ($values as $key => $value) {
             $set[$key] = $value;
@@ -211,10 +312,10 @@ class NDB_Form_User_Accounts extends NDB_Form
         if ($this->isCreatingNewUser()) {
             // insert a new user
             $success = User::insert($set);
-            $user    =& User::factory($set['UserID']);
+            $user    = User::factory($set['UserID']);
         } else {
             // update the user
-            $user    =& User::factory($this->identifier);
+            $user    = User::factory($this->identifier);
             $success = $user->update($set);
         }
 
@@ -291,7 +392,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         // send the user an email
         if (!empty($send)) {
             // create an instance of the config object
-            $config =& NDB_Config::singleton();
+            $config = NDB_Config::singleton();
 
             // send the user an email
             $msg_data['study']    = $config->getSetting('title');
@@ -306,7 +407,6 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         $this->tpl_data['success'] = true;
-        $this->form->freeze();
     }
 
     /**
@@ -322,7 +422,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $this->redirect = "test_name=$this->name";
 
         ///get the value for additional_user_info flag
-        $config =& NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $additional_user_info = $config->getSetting('additional_user_info');
 
         //------------------------------------------------------------
@@ -436,12 +536,12 @@ class NDB_Form_User_Accounts extends NDB_Form
         //------------------------------------------------------------
 
         // get user permissions
-        $editor =& User::singleton();
+        $editor = User::singleton();
 
         // center ID
         if ($editor->hasPermission('user_accounts_multisite')) {
             // get the list of study sites - to be replaced by the Site object
-            $siteOptions =& Utility::getSiteList(false);
+            $siteOptions = Utility::getSiteList(false);
         } else {
             // allow only to add to their own site
             $siteOptions
@@ -450,6 +550,60 @@ class NDB_Form_User_Accounts extends NDB_Form
                   );
         }
         $this->addSelect('CenterID', 'Site', $siteOptions);
+
+        if ($editor->hasPermission('examiner_multisite')) {
+            //get site aliases
+            $DB      =& Database::singleton();
+            $aliases = $DB->pselect("SELECT CenterID, Alias FROM psc ", array());
+
+            foreach ($aliases as $row) {
+                $groupA[] = $this->createCheckbox(
+                    'ex_'.$row['CenterID'],
+                    $row['Alias'],
+                    array()
+                );
+            }
+            $groupB[] = $this->createLabel(
+                "Radiologist: "
+            );
+            $groupB[] = $this->createSelect(
+                "examiner_radiologist",
+                "Radiologist: ",
+                array(
+                 null => "",
+                 '1'  => 'Yes',
+                 '0'  => 'No',
+                )
+            );
+            $groupB[] = $this->createLabel(
+                "Pending Approval:"
+            );
+            $groupB[] = $this->createSelect(
+                "examiner_pending",
+                "Pending Approval: ",
+                array(
+                 null => "",
+                 'Y'  => 'Yes',
+                 'N'  => 'No',
+                )
+            );
+            $this->addGroup(
+                $groupA,
+                'examiner_sites',
+                'Examiner At:',
+                $this->_GUIDelimiter,
+                false
+            );
+            $this->addGroup(
+                $groupB,
+                'examiner_group',
+                'Examiner Status',
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($groupA);
+            unset($groupB);
+        }
 
         // active
         $this->addSelect('Active', 'Active', array('Y' => 'Yes', 'N' => 'No'));
@@ -502,7 +656,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         //getting users name and emails to create checkboxes
         // to email supervisors on permissions changes
-        $DB_factory =& NDB_Factory::singleton();
+        $DB_factory = NDB_Factory::singleton();
         $DB         = $DB_factory->database();
 
         $query = "SELECT u.Real_Name, u.email FROM permissions p
@@ -536,7 +690,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         unset($group);
 
         if (!$this->isCreatingNewUser()) {
-            $user =& User::factory($this->identifier);
+            $user = User::factory($this->identifier);
 
             // add hidden permissions if editor has less permissions than user
             // being edited
@@ -568,7 +722,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $this->identifier = $_SESSION['State']->getUsername();
 
         ///get the value for additional_user_info flag
-        $config =& NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $additional_user_info = $config->getSetting('additional_user_info');
 
         //------------------------------------------------------------
@@ -581,7 +735,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //   - must have at least one non-whitespace characters (i.e. required)
         //   - once leading and trailing spaces are stripped, the field should
         //       not exceed 120 chars
-        $fistNameInvalidMsg = "First name is required and "
+        $firstNameInvalidMsg = "First name is required and "
             . "should not exceed 120 characters";
         $this->addBasicText(
             'First_name',
@@ -650,7 +804,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
 
         // document repository notifications
-        $editor =& User::singleton();
+        $editor = User::singleton();
         if ($editor->hasPermission('document_repository_view')
             || $editor->hasPermission('document_repository_delete')
         ) {
@@ -683,7 +837,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _validateEditUser($values)
     {
         // create DB object
-        $DB     =& Database::singleton();
+        $DB     = Database::singleton();
         $errors = array();
 
         //============================================
@@ -818,7 +972,18 @@ class NDB_Form_User_Accounts extends NDB_Form
             // No email entered: error
             $errors['Email_Group'] = 'You must enter an email address';
         }
+        //======================================
+        //        Validate Examiner Status
+        //======================================
 
+        foreach ($values as $k=>$v) {
+            if (preg_match("/^ex_[1-9]+$/", $k)
+                && $values['examiner_radiologist'] == ''
+            ) {
+                $errors['examiner_group'] = "Please specify if examiner is a ".
+                    "radiologist";
+            }
+        }
         return $errors;
     }
 
@@ -871,7 +1036,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     function _validateMyPreferences($values)
     {
         // create DB object
-        $DB     =& Database::singleton();
+        $DB     = Database::singleton();
         $errors = array();
 
         // if password is user-defined, and user wants to change password
@@ -896,7 +1061,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             } else {
                 // New password must be different than current one
                 if (!$this->_passwordChanged($DB, $values['Password_md5'])) {
-                    $errors['Password_Group'] = 'New and old passwords '
+                    $errors['Password_md5'] = 'New and old passwords '
                         . 'are identical: please choose another one';
                 }
             }
@@ -954,7 +1119,7 @@ class NDB_Form_User_Accounts extends NDB_Form
      */
     function getDescriptionUsingPermID($permID)
     {
-        $db_factory =& NDB_Factory::singleton();
+        $db_factory = NDB_Factory::singleton();
         $db         = $db_factory->database();
 
         $permission = $db->pselectOne(

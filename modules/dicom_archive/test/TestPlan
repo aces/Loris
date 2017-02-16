@@ -2,22 +2,22 @@
 2-  Click on 'Selection Filter' to show and hide the Filter options
 3-  Choose a parameter from the 'Selection Filter' that applies:
      - Select the right 'Site'
+     - Input the right 'Patient ID'
      - Input the right 'Patient Name'
      - Input the right 'Date of Birth'
      - Input the right 'Archive Location'
-     - Input the right 'PatientID'
      - Input the right 'Gender'
      - Input the right 'Acquisition Date'
-
-4-  Click on 'Clear Form' to make sure the previously entered data can be erased
-5-  Click on 'Show Data' so that relevant info, as well as the number of 'subject selected' should show up
-6-  Click on 'View Details' under Metadata to view the Details of MRI Scan
-7-  Under 'View Details' Check to make sure all the specific parameters are Populated
-8-  Under 'View Details' Click on 'Acquisition ID' to view the violated scans (if there are any) if permission 
+     - Input the right 'Series UID'
+    Check the results in the table.
+4-  Click on 'Clear Filters' to make sure the previously entered data can be erased
+5-  Click on 'View Details' under Metadata to view the Details of MRI Scan
+6-  Under 'View Details' Check to make sure all the specific parameters are Populated
+7-  Under 'View Details' Click on 'Acquisition ID' to view the violated scans (if there are any) if permission 
 'Violated Scans: View all-sites Violated Scans' is granted
-9-  Under 'View Details' Click on 'Show/Hide Files' to view a list of all Dicom Files for the given patient
-10- Under 'View Details' Click on 'Show/Hide metadata' to view the details of the metadata file
-11- Make sure that the value of 'Patient ID' column is 'INVALID-HIDDEN' if the patient-name does not match the 
+8-  Under 'View Details' Click on 'Show/Hide Files' to view a list of all Dicom Files for the given patient
+9- Under 'View Details' Click on 'Show/Hide metadata' to view the details of the metadata file
+10- Make sure that the value of 'Patient ID' column is 'INVALID-HIDDEN' if the patient-name does not match the 
 regex in the config.xml
-12- Click on 'View Images' to acess the Imaging-Browser for the given subject if 'View all-sites Imaging Browser 
+11- Click on 'View Images' to acess the Imaging-Browser for the given subject if 'View all-sites Imaging Browser 
 pages' or 'View own-site Imaging Browser pages' permission is set

@@ -99,7 +99,6 @@ if (!empty($instrumentParameterTypeCategoryIDs)) {
         $instrumentParameterTypeIDs,
         $prepIn['array']
     );
-
     $instrumentParameterTypeIDString = implode(', ', $instrumentParameterTypeIDs);
 }
 
@@ -231,22 +230,27 @@ foreach ($instruments AS $instrument) {
                 : $table )
                 . "_" . $bits[1];
 
-            $ParameterTypeID = array_key_exists($Name, $parameter_types)
-                ? $parameter_types[$Name]
-                : '';
-            $error           = $DB->insert(
+            $query_params = array(
+                             'Name'            => $Name,
+                             'Type'            => $bits[0],
+                             'Description'     => $bits[2],
+                             'SourceField'     => $bits[1],
+                             'SourceFrom'      => $table,
+                             'CurrentGUITable' => 'quat_table_'
+                                     . ceil(($parameterCount  - 0.5) / 200),
+                             'Queryable'       => '1',
+                            );
+
+            if (array_key_exists($Name, $parameter_types)) {
+                $ParameterTypeID = $parameter_types[$Name];
+                $query_params['ParameterTypeID'] = $ParameterTypeID;
+            } else {
+                $ParameterTypeID = '';
+            }
+
+            $error = $DB->insert(
                 "parameter_type",
-                array(
-                 'ParameterTypeID' => $ParameterTypeID,
-                 'Name'            => $Name,
-                 'Type'            => $bits[0],
-                 'Description'     => $bits[2],
-                 'SourceField'     => $bits[1],
-                 'SourceFrom'      => $table,
-                 'CurrentGUITable' => 'quat_table_'
-                                      . ceil(($parameterCount  - 0.5) / 200),
-                 'Queryable'       => '1',
-                )
+                $query_params
             );
             print_r($error);
             if ($ParameterTypeID === '') {
@@ -269,26 +273,34 @@ foreach ($instruments AS $instrument) {
     }
     print "Inserting validity for $table\n";
     // Insert validity
-    $Name            = (
+    $Name = (
                         array_key_exists($table, $abbreviations)
                         ? $abbreviations[$table]
                         : $table
                        ) . "_Validity";
-    $ParameterTypeID = array_key_exists($Name, $parameter_types)
-        ? $parameter_types[$Name]
-        : '';
-    $error           =$DB->insert(
+
+    $_type_enum = 'enum(\'Questionable\', \'Invalid\', \'Valid\')';
+    $_CurrentGUITable_value = 'quat_table_' . ceil(($parameterCount  - 0.5) / 150);
+
+    $query_params = array(
+                     'Name'            => $Name,
+                     'Type'            => $_type_enum,
+                     'Description'     => "Validity of $table",
+                     'SourceField'     => 'Validity',
+                     'SourceFrom'      => $table,
+                     'CurrentGUITable' => $_CurrentGUITable_value,
+                     'Queryable'       => '1',
+                    );
+
+    if (array_key_exists($Name, $parameter_types)) {
+        $ParameterTypeID = $parameter_types[$Name];
+        $query_params['ParameterTypeID'] = $ParameterTypeID;
+    } else {
+        $ParameterTypeID = '';
+    }
+    $error =$DB->insert(
         "parameter_type",
-        array(
-         'ParameterTypeID' => $ParameterTypeID,
-         'Name'            => $Name,
-         'Type'            => 'enum(\'Questionable\', \'Invalid\', \'Valid\')',
-         'Description'     => "Validity of $table",
-         'SourceField'     => 'Validity',
-         'SourceFrom'      => $table,
-         'CurrentGUITable' => 'quat_table_' . ceil(($parameterCount  - 0.5) / 150),
-         'Queryable'       => '1',
-        )
+        $query_params
     );
     if ($ParameterTypeID === '') {
         $paramId = $DB->lastInsertID;
@@ -310,22 +322,28 @@ foreach ($instruments AS $instrument) {
              : $table
             ) . "_Administration";
 
-    $ParameterTypeID = array_key_exists($Name, $parameter_types)
-        ? $parameter_types[$Name]
-        : '';
+    $_type_enum = 'enum(\'None\', \'Partial\', \'All\')';
+    $_CurrentGUITable_value = 'quat_table_' . ceil(($parameterCount  - 0.5) / 150);
+    $query_params           = array(
+                               'Name'            => $Name,
+                               'Type'            => $_type_enum,
+                               'Description'     => "Administration for $table",
+                               'SourceField'     => 'Administration',
+                               'SourceFrom'      => $table,
+                               'CurrentGUITable' => $_CurrentGUITable_value,
+                               'Queryable'       => '1',
+                              );
+
+    if (array_key_exists($Name, $parameter_types)) {
+        $ParameterTypeID = $parameter_types[$Name];
+        $query_params['ParameterTypeID'] = $ParameterTypeID;
+    } else {
+        $ParameterTypeID = '';
+    }
 
     $error = $DB->insert(
         "parameter_type",
-        array(
-         'ParameterTypeID' => $ParameterTypeID,
-         'Name'            => $Name,
-         'Type'            => 'enum(\'None\', \'Partial\', \'All\')',
-         'Description'     => "Administration for $table",
-         'SourceField'     => 'Administration',
-         'SourceFrom'      => $table,
-         'CurrentGUITable' => 'quat_table_' . ceil(($parameterCount  - 0.5) / 150),
-         'Queryable'       => '1',
-        )
+        $query_params
     );
     if ($ParameterTypeID === '') {
         $paramId = $DB->lastInsertID;

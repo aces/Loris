@@ -55,6 +55,6 @@ $(function () {
     "use strict";
     changeVisitLabels();
     $('#instrument,#visit_label,#users').bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the instrument dropdown is changed
-    $('#update_data').bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the dropdown is changed
+    $('#set_data').bind('change', function () { $("#filter").trigger('click'); }); //The form is automatically loaded when the dropdown is changed
 });
 

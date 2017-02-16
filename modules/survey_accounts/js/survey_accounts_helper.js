@@ -31,7 +31,6 @@ $(document).ready(function () {
             if (email.length > 0 && email2.length > 0 )
             {
                 $('#email_survey').removeAttr('disabled');
-                $('#create_survey').attr('disabled','disabled');
             }
             if (email2.length == 0 || email.length == 0 || email != email2)
             {
@@ -58,14 +57,35 @@ $(document).ready(function () {
     });
     $("input[type=submit]").click(function (e) {
         if(e.currentTarget.classList.contains('email')) {
-            $("#emailModal").modal();
+            $.get(loris.BaseURL + "/survey_accounts/ajax/ValidateEmailSubmitInput.php", {
+                dccid: $("input[name=CandID]").val(),
+                pscid: $("input[name=PSCID]").val(),
+                VL: $("select[name=VL]").val(),
+                TN: $("select[name=Test_name]").val(),
+                Email: $("input[name=Email").val(),
+                Email2: $("input[name=Email2]").val()
+            },
+            function(result) {
+                if (result) {
+                    // if an error was already thrown,
+                    // hide it to avoid stacking error messages
+                    $(".error").hide();
+                    result = JSON.parse(result);
+                    $("#email-error").show();
+                    $("#email-error").html(result.error_msg);
+                }
+                else {
+                    $("#emailModal").modal();
+                }
+            }
+            );
+
             // $("#email_dialog").dialog("open");
             return false;
         }
     });
     $("select[name=Test_name]").change(function (e) {
         var testname = $(this).val();
-
         $.get(loris.BaseURL + "/survey_accounts/ajax/GetEmailContent.php", {
             test_name: testname
         },

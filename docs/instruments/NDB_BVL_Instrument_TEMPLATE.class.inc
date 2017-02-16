@@ -18,7 +18,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
     */
     function setup($commentID, $page){
         $this->formType="XIN";
-        $this->form = new HTML_Quickform('test_form');
+        $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
@@ -55,7 +55,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
     */
     function _setupForm(){
        if(preg_match("/<TEST_NAME>(_page[0-9]+)/",$this->page,$matches)){
-            call_user_method($matches[1], $this);
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }

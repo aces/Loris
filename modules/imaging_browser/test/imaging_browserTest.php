@@ -243,7 +243,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'QCStatus'          => null,
              'QCFirstChangeTime' => 1455040145,
              'QCLastChangeTime'  => 1455040145,
-             'Selected'          => 't2'
+             'Selected'          => true
             )
         );
 
@@ -258,7 +258,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'QCStatus'          => null,
              'QCFirstChangeTime' => 1455040145,
              'QCLastChangeTime'  => 1455040145,
-             'Selected'          => 't1'
+             'Selected'          => true
             )
         );
 

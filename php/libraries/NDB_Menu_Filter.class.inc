@@ -616,10 +616,17 @@ class NDB_Menu_Filter extends NDB_Menu
 
         $pageID = isset($_GET['pageID']) ? $_GET['pageID'] : 1;
 
-        $this->tpl_data['rowsPerPage']      = $rowsPerPage;
-        $this->tpl_data['pageID']           = $pageID;
-        $this->tpl_data['filterfield']      = $_GET['filter'][order][field];
-        $this->tpl_data['filterfieldOrder'] = $_GET['filter'][order][fieldOrder];
+        $this->tpl_data['rowsPerPage'] = $rowsPerPage;
+        $this->tpl_data['pageID']      = $pageID;
+
+        $this->tpl_data['filterfield'] = isset($_GET['filter']['order']['field'])
+              ? $_GET['filter']['order']['field']
+              : '';
+
+        $this->tpl_data['filterfieldOrder']
+            = isset($_GET['filter']['order']['fieldOrder'])
+              ? $_GET['filter']['order']['fieldOrder']
+              : '';
 
         $this->tpl_data['TotalItems'] = $this->TotalItems;
         // print out column headings
@@ -685,6 +692,13 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function display()
     {
+        if (isset($_REQUEST['format'])) {
+            switch($_REQUEST['format']) {
+            case 'json':
+                       header('Content-Type: application/json');
+                return $this->toJSON();
+            }
+        }
         // Set the csvFile links
         $uri    = ltrim($_SERVER['REQUEST_URI'], "/");
         $suffix = strpos($uri, '?') ? '&format=csv' : '?&format=csv';

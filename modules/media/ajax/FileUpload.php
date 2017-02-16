@@ -40,16 +40,19 @@ function editFile()
         exit;
     }
 
-    // Process posted data
-    $idMediaFile = $_POST['idMediaFile'];
-    $dateTaken   = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
-    $comments    = isset($_POST['comments']) ? $_POST['comments'] : null;
-    $hideFile    = $_POST['hide_file'];
+    // Read JSON from STDIN
+    $stdin       = file_get_contents('php://input');
+    $req         = json_decode($stdin, true);
+    $idMediaFile = $req['idMediaFile'];
+
+    if (!$idMediaFile) {
+        showError("Error! Invalid media file ID!");
+    }
 
     $updateValues = [
-                     'date_taken' => $dateTaken,
-                     'comments'   => $comments,
-                     'hide_file'  => $hideFile,
+                     'date_taken' => $req['dateTaken'],
+                     'comments'   => $req['comments'],
+                     'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
                     ];
 
     $db->update('media', $updateValues, ['id' => $idMediaFile]);
@@ -86,15 +89,12 @@ function uploadFile()
         exit;
     }
 
-    // Make sure folder is writable
-    chmod($mediaPath, 0777);
-
     // Process posted data
     $pscid      = isset($_POST['pscid']) ? $_POST['pscid'] : null;
-    $visit      = isset($_POST['visit_label']) ? $_POST['visit_label'] : null;
+    $visit      = isset($_POST['visitLabel']) ? $_POST['visitLabel'] : null;
     $instrument = isset($_POST['instrument']) ? $_POST['instrument'] : null;
-    $site       = isset($_POST['for_site']) ? $_POST['for_site'] : null;
-    $dateTaken  = isset($_POST['date_taken']) ? $_POST['date_taken'] : null;
+    $site       = isset($_POST['forSite']) ? $_POST['forSite'] : null;
+    $dateTaken  = isset($_POST['dateTaken']) ? $_POST['dateTaken'] : null;
     $comments   = isset($_POST['comments']) ? $_POST['comments'] : null;
 
     // If required fields are not set, show an error
@@ -185,7 +185,12 @@ function getUploadFields()
     );
 
     foreach ($sessionRecords as $record) {
-        if (!in_array(
+
+        // Populate sites
+        if (!isset($sessionData[$record["PSCID"]]['sites'])) {
+            $sessionData[$record["PSCID"]]['sites'] = [];
+        }
+        if ($record["CenterID"] !== null && !in_array(
             $record["CenterID"],
             $sessionData[$record["PSCID"]]['sites'],
             true
@@ -195,7 +200,11 @@ function getUploadFields()
                 = $siteList[$record["CenterID"]];
         }
 
-        if (!in_array(
+        // Populate visits
+        if (!isset($sessionData[$record["PSCID"]]['visits'])) {
+            $sessionData[$record["PSCID"]]['visits'] = [];
+        }
+        if ($record["Visit_label"] !== null && !in_array(
             $record["Visit_label"],
             $sessionData[$record["PSCID"]]['visits'],
             true
@@ -212,15 +221,15 @@ function getUploadFields()
         $idMediaFile = $_GET['idMediaFile'];
         $mediaData   = $db->pselectRow(
             "SELECT " .
-            "m.session_id, " .
+            "m.session_id as sessionID, " .
             "(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid, " .
-            "Visit_label as visit_label, " .
+            "Visit_label as visitLabel, " .
             "instrument, " .
-            "CenterID as for_site, " .
-            "date_taken, " .
+            "CenterID as forSite, " .
+            "date_taken as dateTaken, " .
             "comments, " .
-            "file_name, " .
-            "hide_file, " .
+            "file_name as fileName, " .
+            "hide_file as hideFile, " .
             "m.id FROM media m LEFT JOIN session s ON m.session_id = s.ID " .
             "WHERE m.id = $idMediaFile",
             []
@@ -250,7 +259,7 @@ function getUploadFields()
 function showError($message)
 {
     if (!isset($message)) {
-        $message = 'An unknown error occured!';
+        $message = 'An unknown error occurred!';
     }
     header('HTTP/1.1 500 Internal Server Error');
     header('Content-Type: application/json; charset=UTF-8');

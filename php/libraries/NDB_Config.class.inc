@@ -539,7 +539,7 @@ class NDB_Config
                        Link,
                        ID
                   FROM LorisMenu
-                  WHERE Parent IS NULL",
+                  WHERE Parent IS NULL ORDER BY OrderNumber",
                 array()
             );
         } else {
@@ -549,7 +549,7 @@ class NDB_Config
                         Link,
                         ID
                   FROM LorisMenu
-                  WHERE Parent=:ParentID",
+                  WHERE Parent=:ParentID ORDER BY OrderNumber",
                 array('ParentID' => $parent)
             );
 

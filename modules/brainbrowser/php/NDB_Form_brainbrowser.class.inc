@@ -59,6 +59,7 @@ class NDB_Form_Brainbrowser extends NDB_Form
         return array_merge(
             $deps,
             array(
+             $baseURL . "/brainbrowser/js/Brainbrowser.js",
              $baseURL . "/brainbrowser/js/jquery.mousewheel.min.js",
              $baseURL . "/brainbrowser/js/three.min.js",
              $baseURL . "/brainbrowser/js/brainbrowser.volume-viewer.min.js",

@@ -15,7 +15,7 @@ CREATE TABLE `radiology_review` (
   `Review_date` date DEFAULT NULL,
   `Review_date_status` enum('not_answered') DEFAULT NULL,
   `Review_results` enum('normal','abnormal','atypical','not_answered') DEFAULT NULL,
-  `abnormal_atypical_exculsionary` enum('exclusionary','non_exclusionary','not_answered') DEFAULT NULL,
+  `abnormal_atypical_exclusionary` enum('exclusionary','non_exclusionary','not_answered') DEFAULT NULL,
   `Incidental_findings` text,
   `Incidental_findings_status` enum('not_answered') DEFAULT NULL,
   PRIMARY KEY (`CommentID`)

@@ -315,9 +315,9 @@ FieldSelector = React.createClass({
             if (this.props.selectedFields[category] && this.props.selectedFields[category][fieldName]) {
                 // Do nothing, already added
             } else {
-                    isFile = this.state.categoryFields[category][i].value.isFile ? true : false;
-                    this.props.onFieldChange(fieldName, category, isFile);
-                }
+                isFile = this.state.categoryFields[category][i].value.isFile ? true : false;
+                this.props.onFieldChange(fieldName, category, isFile);
+            }
         }
     },
     deleteAll: function () {
