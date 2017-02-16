@@ -9,11 +9,10 @@ class UploadPanel extends React.Component {
     this.state = {
       formData: {},
       form: this.props.form
-    }
+    };
 
     this.onFormChange = this.onFormChange.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
-
   }
 
   componentDidMount() {
@@ -24,7 +23,6 @@ class UploadPanel extends React.Component {
   }
 
   onFormChange(field, value) {
-
     let form = this.state.form;
     let formData = this.state.formData;
 
@@ -46,7 +44,6 @@ class UploadPanel extends React.Component {
       form: form,
       formData: formData
     });
-
   }
 
   /*
@@ -89,7 +86,7 @@ class UploadPanel extends React.Component {
         $("#file-progress").addClass('hide');
         let formData = {};
         this.setState({formData});
-        console.log(data);
+        // console.log(data);
         // if (data.indexOf("The following errors occured while attempting to
         // display this page:") > -1) { document.open(); document.write(data);
         // document.close(); } else { $("#filter").click(); }
@@ -133,3 +130,4 @@ class UploadPanel extends React.Component {
 UploadPanel.propTypes = {};
 UploadPanel.defaultProps = {};
 
+export default UploadPanel;

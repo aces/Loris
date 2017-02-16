@@ -1,9 +1,11 @@
-/* global UploadProgress, ReactDOM */
+/* global ReactDOM */
+
+import ImagingUploader from './imaging_uploader';
 
 /**
  * Render imaging_uploader on page load
  */
-window.onload = function() {
+$(function() {
   var dataURL = loris.BaseURL + "/imaging_uploader/?format=json";
   var imagingUploader = (
     <ImagingUploader
@@ -21,5 +23,4 @@ window.onload = function() {
   rootDOM.appendChild(imagingUploaderDOM);
 
   ReactDOM.render(imagingUploader, document.getElementById("page-imaging-uploader"));
-
-};
+});

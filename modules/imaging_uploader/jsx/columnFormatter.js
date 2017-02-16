@@ -83,3 +83,5 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   return (<td style={cellStyle}>{cell}</td>);
 }
+
+export default formatColumn;

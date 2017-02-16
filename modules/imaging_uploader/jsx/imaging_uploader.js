@@ -1,6 +1,10 @@
 /* exported ImagingUploader */
 /* global formatColumn */
 
+import LogPanel from './log_panel';
+import UploadPanel from './upload_panel';
+import formatColumn from './columnFormatter';
+
 class ImagingUploader extends React.Component {
 
   constructor(props) {
@@ -12,7 +16,6 @@ class ImagingUploader extends React.Component {
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
-
   }
 
   componentDidMount() {
@@ -76,3 +79,5 @@ class ImagingUploader extends React.Component {
 
 ImagingUploader.propTypes = {};
 ImagingUploader.defaultProps = {};
+
+export default ImagingUploader;

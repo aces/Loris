@@ -15,7 +15,6 @@ class LogPanel extends React.Component {
     this.onLogTypeChange = this.onLogTypeChange.bind(this);
     this.setServerPolling = this.setServerPolling.bind(this);
     this.monitorProgress = this.monitorProgress.bind(this);
-
   }
 
   componentDidMount() {
@@ -170,3 +169,4 @@ class LogPanel extends React.Component {
 LogPanel.propTypes = {};
 LogPanel.defaultProps = {};
 
+export default LogPanel;

@@ -598,10 +598,6 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             $deps,
             array(
              $baseURL . "/imaging_uploader/js/index.js",
-             $baseURL . "/imaging_uploader/js/columnFormatter.js",
-             $baseURL . "/imaging_uploader/js/upload_panel.js",
-             $baseURL . "/imaging_uploader/js/log_panel.js",
-             $baseURL . "/imaging_uploader/js/imaging_uploader.js",
              $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
             )
         );
