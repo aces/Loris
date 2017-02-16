@@ -108,7 +108,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         $this->_assertSearchBy("userID", "my_nonexistent_user_ID", null);
         $this->_assertSearchBy("userID", "UnitTester", "UnitTester");
-        $this->_assertSearchBy("userID", "unittester", "UnitTester");
     }
     /**
      * Tests various user account edit operations.
@@ -345,9 +344,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     /**
      * Compares the content of the candidate table with an expected content.
      *
-     * @param string $expectedRows array of candidates that the table 
-                                   should contain.
      * @param string $testData     the test data
+     * @param string $expectedRows array of candidates that the table
+     *                                                       should contain.
      *
      * @return void
      */
