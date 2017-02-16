@@ -345,7 +345,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     /**
      * Compares the content of the candidate table with an expected content.
      *
-     * @param string $expectedRows array of candidates that the table should contain.
+     * @param string $expectedRows array of candidates that the table 
+                                   should contain.
+     * @param string $testData     the test data
      *
      * @return void
      */
@@ -353,11 +355,11 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         $dataTable =  $this->safeGet($this->url . "/user_accounts/?format=json")
             ->getPageSource();
-        if (is_null($testDate)) {
+        if (is_null($expectedRows)) {
             $this->assertContains('"Data":[]', $dataTable);
         } else {
 
-             $this->assertContains($expectedRows, $dataTable);
+             $this->assertContains($testData, $dataTable);
 
         }
     }
