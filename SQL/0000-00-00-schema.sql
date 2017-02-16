@@ -555,6 +555,7 @@ CREATE TABLE `flag` (
   `Flag_status` enum('P','Y','N','F') default NULL,
   `UserID` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `Data` TEXT default NULL,
   PRIMARY KEY  (`CommentID`),
   KEY `Status` (`Flag_status`),
   KEY `flag_ID` (`ID`),
