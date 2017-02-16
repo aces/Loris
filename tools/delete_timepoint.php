@@ -274,6 +274,6 @@ function _printResultsSQL($table, $where, &$output, $DB)
 }
 
 if ($confirm === false && $printToSQL === false) {
-    echo "\n\nRun this tool again with the argument 'confirm' of 'tosql' to ".
+    echo "\n\nRun this tool again with the argument 'confirm' or 'tosql' to ".
         "perform the changes or export them as an SQL patch\n\n";
 }
