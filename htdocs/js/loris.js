@@ -48,5 +48,15 @@ var LorisHelper = function(configParams, userPerms) {
         }
         return false;
     }
+    lorisObj.debounce = function (fn, delay) {
+        var timer = null;
+        return function () {
+            var context = this, args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+              fn.apply(context, args);
+            }, delay);
+        };
+    };
     return lorisObj;
 };

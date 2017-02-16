@@ -52,9 +52,13 @@ FilterRule = React.createClass({
 		    	"startsWith" : "startsWith",
 		    	"contains" : "contains"
 				// }
-			}
+			},
+			value: "",
 		}
 	},
+	componentWillMount: function() {
+       this.valueSet = loris.debounce(this.valueSet,1000);
+    },
 	selectInstrument: function(event){
 		// Update the rules instrument, getting the instruments avalible fields
 		var rule = this.props.rule,
@@ -94,14 +98,24 @@ FilterRule = React.createClass({
 		}
 		this.props.updateRule(this.props.index, rule);
 	},
-	valueSet: function(event) {
+	valueChange: function(event) {
+		var rule = this.props.rule;
+		delete rule.visit;
+		delete rule.candidates;
+
+		rule.value = event.target.value;
+
+		this.setState({
+			value: event.target.value
+		});
+		this.valueSet();
+		this.props.updateRule(this.props.index, rule);
+	},
+	valueSet: function() {
 		// Update the value to filter for, and runs the query for the rules parameters
 		var rule = this.props.rule,
 			that = this;
-		delete rule.value;
-		delete rule.visit;
-		delete rule.candidates;
-		if(event.target.value) {
+		if(this.state.value) {
 			var responseHandler = function(data) {
 					var i,
 						allSessions = {},
@@ -131,7 +145,7 @@ FilterRule = React.createClass({
 		                  {
 		                    category: rule.instrument,
 		                    field: rule.field,
-		                    value: event.target.value
+		                    value: that.state.value
 		                  },
 		                  responseHandler,
 		                  'json'
@@ -159,10 +173,7 @@ FilterRule = React.createClass({
 		    	default:
 		    		break;
 		    }
-
-			rule.value = event.target.value;
 		}
-		this.props.updateRule(this.props.index, rule);
 	},
 	updateVisit: function(event) {
 		// Update rule to filter for specified visit
@@ -232,7 +243,7 @@ FilterRule = React.createClass({
 							});
 							value = (this.props.rule.value) ? this.props.rule.value : "";
 							input = (
-								<select className="input-sm col-xs-3" onChange={this.valueSet} value={value}>
+								<select className="input-sm col-xs-3" onChange={this.valueChange} value={value}>
 									<option value=""></option>
 									{options}
 								</select>
@@ -242,7 +253,7 @@ FilterRule = React.createClass({
 							input = (
 								<input type="text"
 									   className="input-sm col-xs-3"
-									   onChange={this.valueSet}
+									   onChange={this.valueChange}
 									   value={this.props.rule.value}
 								/>
 							);
