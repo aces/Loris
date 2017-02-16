@@ -349,11 +349,11 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _assertUserReactTableContents($expectedRows)
+    private function _assertUserReactTableContents($testData,$expectedRows)
     {
         $dataTable =  $this->safeGet($this->url . "/user_accounts/?format=json")
             ->getPageSource();
-        if (is_null($expectedRows)) {
+        if (is_null($testDate)) {
             $this->assertContains('"Data":[]', $dataTable);
         } else {
 
