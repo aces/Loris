@@ -29,6 +29,7 @@ class MediaUploadForm extends React.Component {
     this.isValidFileName = this.isValidFileName.bind(this);
     this.isValidForm = this.isValidForm.bind(this);
     this.setFormData = this.setFormData.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
   }
 
   componentDidMount() {
@@ -169,7 +170,7 @@ class MediaUploadForm extends React.Component {
     );
   }
 
- /** *******************************************************************************
+/** *******************************************************************************
  *                      ******     Helper methods     *******
  *********************************************************************************/
 
@@ -195,20 +196,20 @@ class MediaUploadForm extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    var myFormData = this.state.formData;
-    var formRefs = this.refs;
-    var mediaFiles = this.state.Data.mediaFiles ? this.state.Data.mediaFiles : [];
+    let formData = this.state.formData;
+    let formRefs = this.refs;
+    let mediaFiles = this.state.Data.mediaFiles ? this.state.Data.mediaFiles : [];
 
     // Validate the form
-    if (!this.isValidForm(formRefs, myFormData)) {
+    if (!this.isValidForm(formRefs, formData)) {
       return;
     }
 
     // Validate uploaded file name
-    var instrument = myFormData.instrument ? myFormData.instrument : null;
-    var fileName = myFormData.file ? myFormData.file.name : null;
-    var requiredFileName = this.getValidFileName(
-      myFormData.pscid, myFormData.visitLabel, instrument
+    let instrument = formData.instrument ? formData.instrument : null;
+    let fileName = formData.file ? formData.file.name : null;
+    let requiredFileName = this.getValidFileName(
+      formData.pscid, formData.visitLabel, instrument
     );
     if (!this.isValidFileName(requiredFileName, fileName)) {
       swal(
@@ -220,28 +221,44 @@ class MediaUploadForm extends React.Component {
     }
 
     // Check for duplicate file names
-    let isDuplicate = mediaFiles.indexOf(myFormData.file.name);
+    let isDuplicate = mediaFiles.indexOf(formData.file.name);
     if (isDuplicate >= 0) {
-      var confirmed = confirm(
-        "A file with this name already exists!\n" +
-        "Would you like to override existing file?"
-      );
-      if (!confirmed) return;
+      swal({
+        title: "Are you sure?",
+        text: "A file with this name already exists!\n Would you like to override existing file?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: 'Yes, I am sure!',
+        cancelButtonText: "No, cancel it!"
+      }, function(isConfirm) {
+        if (isConfirm) {
+          this.uploadFile();
+        } else {
+          swal("Cancelled", "Your imaginary file is safe :)", "error");
+        }
+      }.bind(this));
+    } else {
+      this.uploadFile();
     }
+  }
 
+  /*
+   * Uploads the file to the server
+   */
+  uploadFile() {
     // Set form data and upload the media file
-    var self = this;
-    var formData = new FormData();
-    for (var key in myFormData) {
-      if (myFormData[key] !== "") {
-        formData.append(key, myFormData[key]);
+    let formData = this.state.formData;
+    let formObj = new FormData();
+    for (let key in formData) {
+      if (formData[key] !== "") {
+        formObj.append(key, formData[key]);
       }
     }
 
     $.ajax({
       type: 'POST',
-      url: self.props.action,
-      data: formData,
+      url: this.props.action,
+      data: formObj,
       cache: false,
       contentType: false,
       processData: false,
@@ -258,7 +275,7 @@ class MediaUploadForm extends React.Component {
       success: function() {
         // Add git pfile to the list of exiting files
         let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
-        mediaFiles.push(myFormData.file.name);
+        mediaFiles.push(formData.file.name);
 
         // Trigger an update event to update all observers (i.e DataTable)
         let event = new CustomEvent('update-datatable');
@@ -285,7 +302,8 @@ class MediaUploadForm extends React.Component {
    *
    * @param {string} requiredFileName - Required file name
    * @param {string} fileName - Provided file name
-   * @return {boolean} - true if fileName starts with requiredFileName, false otherwise
+   * @return {boolean} - true if fileName starts with requiredFileName, false
+   *   otherwise
    */
   isValidFileName(requiredFileName, fileName) {
     if (fileName === null || requiredFileName === null) {
