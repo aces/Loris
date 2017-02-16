@@ -30,6 +30,13 @@
             </a>
         </li>
     {/if}
+    {if $useMonitoring === "true"}
+        <li role="presentation">
+            <a href="#monitoring-status" aria-controls="upload" role="tab" data-toggle="tab" id="monitoring-status-tab">
+                Monitoring
+            </a>
+        </li>
+    {/if}
 </ul>
 
 <!-- Tab panes -->
@@ -53,6 +60,10 @@
 
     <div role="tabpanel" class="tab-pane" id="consent-status">
         Consent Status info
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="monitoring-status">
+        Monitoring info
     </div>
 
 </div>
@@ -106,6 +117,15 @@
     });
     ReactDOM.render(consentStatus, document.getElementById("consent-status"));
 {/if}
+
+    {if $useMonitoring === "true"}
+    var monitoringStatus = RMonitoringStatus({
+        "dataURL": "{$baseurl}/candidate_parameters/ajax/getData.php?data=monitoringStatus&candID=" + {$smarty.get.candID},
+        "action": "{$baseurl}/candidate_parameters/ajax/formHandler.php",
+        "tabName": "monitoringStatus"
+    });
+    ReactDOM.render(monitoringStatus, document.getElementById("monitoring-status"));
+    {/if}
 
     // Adds tab href to url + opens tab based on hash on page load
     // See: http://bit.ly/292MDI8

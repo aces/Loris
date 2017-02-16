@@ -30,6 +30,8 @@ if (isset($_POST['tab'])) {
         editParticipantStatusFields($db, $user);
     } else if ($tab == "consentStatus") {
         editConsentStatusFields($db, $user);
+    } else if ($tab == "monitoringStatus") {
+        editMonitoringStatusFields($db, $user);
     } else {
         header("HTTP/1.1 404 Not Found");
         exit;
@@ -428,6 +430,118 @@ function editConsentStatusFields($db, $user)
             }
 
             $db->insert('consent_info_history', $updateValues);
+        }
+    }
+}
+
+/**
+ * Handles the updating of Monitoring Status
+ *
+ * @param Database $db   database object
+ * @param User     $user user object
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function editMonitoringStatusFields($db, $user)
+{
+
+    if (!$user->hasPermission('candidate_parameter_edit')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
+
+    $uid = null;
+    if (!(is_null($_SESSION['State']))) {
+        $currentUser =& User::singleton($_SESSION['State']->getUsername());
+        $uid         = $currentUser->getData("UserID");
+    }
+
+    $candIDParam = $_POST['candID'];
+    $candID      = (isset($candIDParam) && $candIDParam !== "null") ?
+        $candIDParam : null;
+
+    $candidate =& Candidate::singleton($candID);
+
+    $visit_labels = $candidate->getListOfVisitLabels();
+
+    //Get examiners
+    $examinerNames =$db->pselect(
+        "SELECT examinerID, full_name FROM examiners",
+        array()
+    );
+    foreach ($examinerNames as $k=>$row) {
+        $examiners[$row['examinerID']] =$row['full_name'];
+    }
+    foreach ($visit_labels as $id=>$vl) {
+
+        $flag = $db->pselectRow(
+            "SELECT * FROM monitoring WHERE CandID=:candid AND visit_label=:vl",
+            array(
+             'candid' => $candID,
+             'vl'     => $vl,
+            )
+        );
+        //error_log(implode("  -  ",$flag));
+
+        // MONITORING CHANGES
+        $flagged   = $_POST[$vl];
+        $monitored = $_POST[$vl . '_monitored'];
+        $date      = $_POST[$vl . '_date'];
+        $monitor   = $_POST[$vl . '_monitor'];
+
+        $values = [
+                   'CandID'         => $candID,
+                   'visit_label'    => $vl,
+                   'monitored'      => $monitored,
+                   'date_monitored' => $date,
+                   'monitor_id'     => $monitor,
+                  ];
+
+        $fieldDiff =false;
+        foreach ($values as $k=>$val) {
+            $values[$k] = ($val === 'null') ? null : $val;
+            //get fields changed
+            error_log("DIFFFFFF: $values[$k]  -->   $k : " . $flag[$k]);
+
+            if (!empty($flag)) {
+                if ($flagged === 'no' || $values[$k] !== $flag[$k]) {
+                    $fieldDiff = true;
+                }
+            } else {
+                if ($flagged ==='yes') {
+                    $fieldDiff = true;
+                }
+            }
+
+        }
+
+        if ($flagged === 'yes' && !empty($flag)) {
+            //was already in monitoring table
+            $db->update(
+                'monitoring',
+                $values,
+                [
+                 'CandID'      => $candID,
+                 'visit_label' => $vl,
+                ]
+            );
+        } elseif ($flagged === 'yes') {
+            //needs to be inserted
+            $db->insert('monitoring', $values);
+        } else {
+            //deletes from monitoring table
+            $db->delete('monitoring', ['CandID' => $candID, 'visit_label' => $vl]);
+        }
+
+        // HISTORY
+        $values['entry_staff'] =$uid;
+        $values['flag']        = ($flagged === 'yes') ? 'Y' : 'N';
+
+        if ($fieldDiff) {
+            $db->insert('monitoring_history', $values);
+
         }
     }
 }

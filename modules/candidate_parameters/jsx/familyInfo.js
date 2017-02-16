@@ -116,7 +116,12 @@ var FamilyInfo = React.createClass({
                           label="Delete"
                           type="button"
                           onUserInput={
-                              this.deleteFamilyMember.bind(null, candID, key, candidateList)
+                              this.deleteFamilyMember.bind(
+                                null,
+                                candID,
+                                key,
+                                candidateList
+                              )
                           }
                       />
                       <hr />

@@ -24,6 +24,8 @@ if (isset($_GET['data'])) {
         echo json_encode(getParticipantStatusFields());
     } else if ($data == "consentStatus") {
         echo json_encode(getConsentStatusFields());
+    } else if ($data == "monitoringStatus") {
+        echo json_encode(getMonitoringFields());
     } else {
         header("HTTP/1.1 404 Not Found");
         exit;
@@ -404,7 +406,6 @@ function getConsentStatusFields()
             array('candid' => $candID)
         );
     }
-
     $history = getConsentStatusHistory($candID, $consents);
 
     $result = [
@@ -453,4 +454,101 @@ function getConsentStatusHistory($candID, $consents)
     }
 
     return $commentHistory;
+}
+
+/**
+ * Handles the fetching of Consent Status fields
+ *
+ * @throws DatabaseException
+ *
+ * @return array
+ */
+function getMonitoringFields()
+{
+    $candID = $_GET['candID'];
+
+    $db        =& Database::singleton();
+    $candidate =& Candidate::singleton($candID);
+
+    // get pscid
+    $pscid = $db->pselectOne(
+        'SELECT PSCID FROM candidate where CandID = :candid',
+        array('candid' => $candID)
+    );
+
+    //get vists for this candidate
+    $visit_labels = $candidate->getListOfVisitLabels();
+
+    $flagged       =[];
+    $monitored     =[];
+    $dateMonitored =[];
+    $monitorID     =[];
+    $examiners     =[];
+    $visits        =[];
+
+    //Get examiners
+    $examinerNames =$db->pselect(
+        "SELECT examinerID, full_name FROM examiners ORDER BY full_name ASC",
+        array()
+    );
+    foreach ($examinerNames as $k=>$row) {
+        $examiners[$row['examinerID']] =$row['full_name'];
+    }
+
+    //get flagged visits
+    foreach ($visit_labels as $id=>$vl) {
+        $flag = $db->pselectRow(
+            "SELECT * FROM monitoring WHERE CandID=:candid AND visit_label=:vl",
+            array(
+             'candid' => $candID,
+             'vl'     => $vl,
+            )
+        );
+
+        $flagged[$vl]       = (!empty($flag)) ? 'yes' : 'no';
+        $monitored[$vl]     = (!empty($flag)) ? $flag['monitored'] : null;
+        $dateMonitored[$vl] =(!empty($flag)) ? $flag['date_monitored'] : null;
+        $monitorID[$vl]     =(!empty($flag)) ? $flag['monitor_id'] : null;
+        $visits[$vl]        =$vl;
+
+    }
+    $history = getMonitoringStatusHistory($candID);
+
+    $result = [
+               'pscid'         => $pscid,
+               'candID'        => $candID,
+               'visits'        => $visits,
+               'flagged'       => $flagged,
+               'monitored'     => $monitored,
+               'dateMonitored' => $dateMonitored,
+               'monitorID'     => $monitorID,
+               'examiners'     => $examiners,
+               'history'       => $history,
+              ];
+
+    return $result;
+}
+
+/**
+ * Handles the fetching of Monitoring Status history
+ *
+ * @param int $candID current candidate's ID
+ *
+ * @throws DatabaseException
+ *
+ * @return array
+ */
+function getMonitoringStatusHistory($candID)
+{
+    $db =& Database::singleton();
+
+    $unformatted = $db->pselect(
+        "SELECT *
+         FROM monitoring_history mh 
+         WHERE CandID=:cid 
+              ORDER BY data_entry_date DESC",
+        array('cid' => $candID)
+    );
+
+    return $unformatted;
 }
