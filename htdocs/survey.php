@@ -59,6 +59,7 @@ class DirectDataEntryMainPage
         $client = new NDB_Client();
         $client->makeCommandLine();
         $client->initialize();
+        $config =& NDB_Config::singleton();
 
         $this->caller =& NDB_Caller::singleton();
 
@@ -88,12 +89,6 @@ class DirectDataEntryMainPage
         if (empty($this->TestName) && empty($this->CommentID)) {
             throw new Exception("Data has already been submitted.", 403);
         }
-
-        $this->FullTestName = $DB->pselectOne(
-            "SELECT Full_name FROM test_names WHERE Test_name=:TN",
-            array('TN' => $this->TestName)
-        );
-
         $pageNum = null;
 
         if (!empty($_REQUEST['pageNum'])) {
@@ -128,7 +123,7 @@ class DirectDataEntryMainPage
                             'pageNum'     => $pageNum ? $pageNum + 1: 1,
                             'totalPages'  => $totalPages,
                             'key'         => $this->key,
-                            'study_title' => $this->FullTestName,
+                            'study_title' => $config->getSetting('title'),
                            );
     }
 
