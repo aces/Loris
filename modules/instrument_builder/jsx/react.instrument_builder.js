@@ -68,7 +68,7 @@ var LoadPane = React.createClass({
 				break;
 		}
 		return (
-			<TabPane Title="Load Instrument" TabId={this.props.TabId}>
+			<TabPane {...this.props}>
                 	<div className="col-sm-6 col-xs-12">
                 		{alert}
 						<input className="fileUpload"
@@ -122,8 +122,7 @@ var SavePane = React.createClass({
 	render: function () {
 		var value = this.state.fileName;
 		return (
-			<TabPane Title="Save Instrument"
-                TabId={this.props.TabId}>
+			<TabPane {...this.props}>
                 	<div className="form-group">
                 		<div className="col-xs-12">
 			                <label className="col-sm-2 control-label">Filename: </label>
@@ -470,7 +469,7 @@ var BuildPane = React.createClass({
 			                );
 			        	}));
 		return (
-			<TabPane Title="Build your Instrument" TabId={this.props.TabId}>
+			<TabPane {...this.props}>
                 	<div className="form-group col-xs-12">
 					    <label for="selected-input" className="col-xs-2 col-sm-1 control-label">Page:</label>
 			            <div className="col-sm-4">

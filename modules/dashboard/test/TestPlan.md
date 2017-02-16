@@ -1,3 +1,5 @@
+# Dashboard Test Plan
+
 1. Log in. Note the time. Log out and log back in after 2 minutes. Check that welcome panel info is correct. 
 2. Make sure there is no recruitment target set in the configuration module. Check that an incentive to define a 
   recruitment target is displayed in recruitment panel
@@ -49,9 +51,13 @@
 18. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Document 
     Repository panel.
 19. Check that a 'New' notification is not labeled 'New' anymore after login in again.
-20. Check performance on a large dataset (like IBIS) to make sure the dashboard page displays within a reasonable 
+20. Verify that if a user has the 'bvl_feedback' permission, the latest Behavioural Feedback notifications are displayed
+    (4 at most) in the Behavioural Feedback panel. Clicking on a feedback thread will take you to the proper page.
+21. Check that if a document notification occurred since the last login, it is labeled as 'New' in the Behavioural Feedback panel.
+22. Check that a 'New' notification is not labeled 'New' anymore after login in again.
+23. Check performance on a large dataset (like IBIS) to make sure the dashboard page displays within a reasonable 
     amount of time.
-21. When there are no candidates registered (i.e. first time install), the system should display a message indicating
+24. When there are no candidates registered (i.e. first time install), the system should display a message indicating
     that there are no candidates in the DB yet instead of showing the candidates chart.
-22. When there are no scans done, the system shoudl display a message indicating that no scans were made instead of 
+25. When there are no scans done, the system shoudl display a message indicating that no scans were made instead of 
     showing the scans chart.

@@ -36,7 +36,7 @@
     "getFormattedCell" : formatColumn,
     "freezeColumn" : "File Name"
   });
-  React.render(table, document.getElementById("datatable"));
+  ReactDOM.render(table, document.getElementById("datatable"));
 
 
   // Adds tab href to url + opens tab based on hash on page load

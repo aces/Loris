@@ -45,5 +45,5 @@ var table = RDynamicDataTable({
      "DataURL" : "{$baseurl}/server_processes_manager/?format=json",
      "getFormattedCell" : formatColumn
      });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>

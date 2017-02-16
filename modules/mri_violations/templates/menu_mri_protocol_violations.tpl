@@ -162,6 +162,6 @@ var pageLinks = RPaginationLinks(
     },
     Active: {$pageID}
 });
-React.render(pageLinks, document.getElementById("pageLinks"));
+ReactDOM.render(pageLinks, document.getElementById("pageLinks"));
 </script>
 

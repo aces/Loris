@@ -98,7 +98,7 @@
 		            </div>
 		          </div>
                 </div> <!--end of SNP filters panel-->
-              </div> 
+              </div>
               <div class="form-group col-sm-4">
                 <div class="row"><!--fixed vertical space-->
                   <br><br><br><br><br><br>
@@ -151,6 +151,6 @@ var table = RDynamicDataTable({
     "getFormattedCell" : formatColumn,
 });
 
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>
 

@@ -18,7 +18,7 @@
                             <div class="col-sm-12 col-md-4">{$form.TimeRun.html}</div>
                         </div>
                     </div>
-                    <div class="row">    
+                    <div class="row">
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.Filename.label}</label>
                             <div class="col-sm-12 col-md-4">{$form.Filename.html}</div>
@@ -37,9 +37,9 @@
                     <div class="row">
                         <div class="form-group col-sm-12">
                             <label class="col-sm-12 col-md-2">{$form.Site.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.Site.html}</div> 
+                            <div class="col-sm-12 col-md-4">{$form.Site.html}</div>
                             <label class="col-sm-12 col-md-2">{$form.Resolved.label}</label>
-                            <div class="col-sm-12 col-md-4">{$form.Resolved.html}</div>                
+                            <div class="col-sm-12 col-md-4">{$form.Resolved.html}</div>
                         </div>
                     </div>
                     <div class="row">
@@ -170,6 +170,6 @@ var pageLinks = RPaginationLinks(
     },
     Active: {$pageID}
 });
-React.render(pageLinks, document.getElementById("pageLinks"));
+ReactDOM.render(pageLinks, document.getElementById("pageLinks"));
 </script>
 

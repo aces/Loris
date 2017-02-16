@@ -38,7 +38,7 @@
                         breadcrumbs: crumbs,
                         baseURL: baseurl
                       });
-              React.render(breadcrumbs, document.getElementById("breadcrumbs"));
+              ReactDOM.render(breadcrumbs, document.getElementById("breadcrumbs"));
             {/if}
 
             // If <input type="date/> is not supported (i.e. Firefox), load
