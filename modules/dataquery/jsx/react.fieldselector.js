@@ -160,7 +160,7 @@ var FieldList = React.createClass({
 
         var fields = [];
         var items = this.props.items || [];
-        var fieldName, desc, isFile;
+        var fieldName, desc, isFile, type, selected;
         var rowsPerPage = this.props.FieldsPerPage || 20;
 
         var start = (this.state.PageNumber - 1) * rowsPerPage;

@@ -1,10 +1,11 @@
+<script src='https://www.google.com/recaptcha/api.js'></script>
 <div class="panel panel-default panel-center">
   <div class="panel-heading">
     <h3 class="panel-title">
       {if $success}
         Account requested!
       {else}
-        Request LORIS Account
+        {$page_title}
       {/if}
     </h3>
   </div>
@@ -76,6 +77,15 @@
           /> Radiologist
         </label>
       </div>
+      {if $captcha_key}
+        {* Google reCaptcha *}
+        <div class="form-group">
+          <div class="g-recaptcha" data-sitekey="{$captcha_key}"></div>
+          <span id="helpBlock" class="help-block">
+              <b class="text-danger">{$error_message['captcha']}</b>
+            </span>
+        </div>
+      {/if}
       <div class="form-group">
         <input type="submit" name="Submit" class="btn btn-primary btn-block"
                value="Request Account"/>

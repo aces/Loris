@@ -221,6 +221,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             $deps,
             [
              $baseURL . "/js/components/Tabs.js",
+             $baseURL . "/js/components/ProgressBar.js",
              $baseURL . "/media/js/mediaIndex.js",
             ]
         );

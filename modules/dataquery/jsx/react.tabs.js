@@ -481,7 +481,7 @@ var ScatterplotGraph = React.createClass({
                         {element}
                     </option>
                 );
-            })
+            }),
             scatterStyle = {
                 width: "500px",
                 height: "500px"

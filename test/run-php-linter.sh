@@ -54,4 +54,4 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php module
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/timepoint_flag
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/timepoint_list
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/training 
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/user_accounts
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/user_accounts
