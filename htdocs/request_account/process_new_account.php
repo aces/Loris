@@ -48,6 +48,15 @@ foreach ($res as $elt) {
     $site_list[$elt["CenterID"]] = $elt["Name"];
 }
 
+// Get reCATPCHA keys
+$reCAPTCHAPrivate = $config->getSetting('reCAPTCHAPrivate');
+$reCAPTCHAPublic  = $config->getSetting('reCAPTCHAPublic');
+
+// Display reCAPTCHA if both private and public keys are set
+if ($reCAPTCHAPrivate && $reCAPTCHAPublic) {
+    $tpl_data['captcha_key'] = $reCAPTCHAPublic;
+}
+
 $tpl_data['baseurl']     = $config->getSetting('url');
 $tpl_data['css']         = $config->getSetting('css');
 $tpl_data['rand']        = rand(0, 9999);
@@ -87,6 +96,19 @@ try {
 
 $err = array();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+    // Verify reCAPTCHA
+    if (isset($_POST['g-recaptcha-response']) && isset($reCAPTCHAPrivate)) {
+        $recaptcha = new \ReCaptcha\ReCaptcha($reCAPTCHAPrivate);
+        $resp      = $recaptcha->verify(
+            $_POST['g-recaptcha-response'],
+            $_SERVER['REMOTE_ADDR']
+        );
+        if (!$resp->isSuccess()) {
+            $errors         = $resp->getErrorCodes();
+            $err['captcha'] = 'Please complete the reCaptcha!';
+        }
+    }
 
     if (!checkLen('name')) {
         $err['name'] = 'The minimum length for First Name field is 3 characters!';
