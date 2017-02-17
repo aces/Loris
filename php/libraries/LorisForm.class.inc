@@ -1223,6 +1223,13 @@ class LorisForm
 
                     $errors[$el['name']] = "maxlength fail";
                 }
+
+                // Check if date fields have errors and add them to error list
+                if ($el['type'] === 'date') {
+                    if (isset($el['error'])) {
+                        $errors[$el['name']] = "date fail";
+                    }
+                }
             }
         }
         foreach ($this->formRules as $rule) {
@@ -1247,7 +1254,6 @@ class LorisForm
                 }
             }
         }
-
         return empty($errors);
     }
 
