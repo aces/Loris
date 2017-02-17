@@ -442,3 +442,9 @@ a.btn.btn-primary {
   margin-bottom: 10px;
 }
 
+/* Sweetalert customizations */
+
+/* Break long strings to fit them in the popup */
+.sweet-alert p {
+  word-wrap: break-word;
+}
