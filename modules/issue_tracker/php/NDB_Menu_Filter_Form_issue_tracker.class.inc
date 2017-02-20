@@ -168,10 +168,10 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);
                 if ($site[$key]->isStudySite()) {
-                    $sites[$val] = $site[$key]->getCenterName();
+                    $list_of_sites[$val] = $site[$key]->getCenterName();
                 }
             }
-            $sites = array('' => 'All User Sites') + $sites;
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         //reporters

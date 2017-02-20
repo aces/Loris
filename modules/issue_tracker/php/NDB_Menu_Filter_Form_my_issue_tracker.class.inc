@@ -53,16 +53,8 @@ class NDB_Menu_Filter_Form_My_Issue_Tracker extends NDB_Menu_Filter_Form
             "AND i.assignee=" . $db->quote($user->getData('UserID')); //yup
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $this->query .= " AND i.centerID=";
-            $site_arr     = $user->getData('CenterIDs');
-            $last_key     = end(array_keys($site_arr));
-            foreach ($site_arr as $key=>$val) {
-                if ($key == $last_key) {
-                    $this->query .= $db->quote($val);
-                } else {
-                    $this->query .= $db->quote($val) . " OR i.centerID=";
-                }
-            }
+            $site_arr     = implode(",", $user->getData('CenterIDs'));
+            $this->query .= " AND i.centerID IN (" . $site_arr . ")";
         }
 
         //note that this needs to be in the same order as the headers array
