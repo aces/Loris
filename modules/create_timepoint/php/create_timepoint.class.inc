@@ -195,7 +195,7 @@ class Create_Timepoint extends \NDB_Form
              $num_sites          = count($user_list_of_sites);
 
             if ($num_sites >1) {
-                $pscLabelAdded    =true;
+                $pscLabelAdded =true;
                 $this->tpl_data['pscLabelAdded'] = true;
                 $psc_labelOptions = array(null => '');
                 foreach ($user_list_of_sites as $key => $siteID) {
