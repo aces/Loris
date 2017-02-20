@@ -1864,6 +1864,13 @@ CREATE TABLE `acknowledgements` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `issues_categories`;
+CREATE TABLE `issues_categories` (
+  `categoryID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `categoryName` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`categoryID`),
+  UNIQUE KEY `categoryName` (`categoryName`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 -- ********************************
 -- Feedback
