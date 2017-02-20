@@ -799,11 +799,11 @@ class LorisForm
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg':''" : "''";
         $value    = $this->getValue($el['name']);
-        $format = 'date';
+        $format   = 'date';
 
         if (array_key_exists('options', $el)) {
             $elOptions = $el['options'];
-            $elFormat = strtolower($elOptions['format']);
+            $elFormat  = strtolower($elOptions['format']);
 
             if ($elFormat == 'my' || $elFormat == 'ym') {
                 $format = 'month';
