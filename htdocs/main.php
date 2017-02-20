@@ -24,7 +24,6 @@ ob_start('ob_gzhandler');
 // gzip handler.
 ob_start();
 
-echo "HI";
 // load the client
 $client = new NDB_Client;
 if ($client->initialize() == false) {
