@@ -90,7 +90,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return (<td>{pvs}</td>);
   }
   if (column === 'Finalized') {
-      finalizedvar = "No";
+    finalizedvar = "No";
 
     if (row.Finalized === 'yes' || row.Finalized === 'Yes') {
       finalizedvar = 'Yes';
