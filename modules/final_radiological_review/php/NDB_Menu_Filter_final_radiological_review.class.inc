@@ -231,7 +231,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             'r.Final_Exclusionary',
             $conflict_condition1,
             $conflict_condition2,
-            'r.Finalized',
+            "COALESCE(r.Finalized,'no')",
             'c.CenterID',
             'c.ProjectID',
             'keyword'
@@ -257,7 +257,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'SAS'         => 'r.sas',
                                     'Conflict'    => $conflict_condition1,
                                     'Conflict2'   => $conflict_condition2,
-                                    'Finalized'   => 'r.Finalized',
+                                    'Finalized'   => "COALESCE(r.Finalized,'no')",
                                     'keyword'     => 'r.Final_Incidental_Findings'
         );
         $this->searchKeyword    = array('r.Final_Incidental_Findings');
@@ -295,7 +295,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             }
         }
         $options_boolean= array(null => 'All', 'yes' => 'Yes', 'no' => 'No');
-        $options_boolean_finalized = array(null => 'All', '1' => 'Yes', '0' => 'No');
+        $options_boolean_finalized = array(null => 'All', 'yes' => 'Yes', 'no' => 'No');
         $conflict_options1 = array(null => 'All', 'true' => 'Yes', 'false' => 'No' );
         $conflict_options2 = array(null => 'All', 
             'prim_second' => 'Yes', 
