@@ -48,28 +48,44 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
     {
         $user =& User::singleton();
         // the base query
-        $query = " FROM users LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
+        $query = " FROM users 
+            LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
             LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
             WHERE 1=1";
         if (!$user->hasPermission('user_accounts_multisite')) {
-            $site_arr = implode(",", $user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterID());
             $this->query .= " AND user_psc_rel.CenterID IN (" . $site_arr . ")";
         }
 
         // set the class variables
-        $this->columns = array("COALESCE(psc.Name,'Not Assigned') AS PSC", 'users.UserID AS Username', 'Real_name AS Full_name', 'Email', 'Active', 'Pending_approval');
-        $this->query = $query;
-        $this->order_by = 'Username';
-        $this->validFilters = array('user_psc_rel.CenterID', 'users.UserID', 'users.Real_name', 'users.Email', 'users.Active', 'users.Examiner', 'users.Pending_approval');
+        $this->columns      = array(
+                               "COALESCE(psc.Name,'Not Assigned') AS PSC",
+                               'users.UserID AS Username',
+                               'Real_name AS Full_name',
+                               'Email',
+                               'Active',
+                               'Pending_approval',
+                              );
+        $this->query        = $query;
+        $this->order_by     = 'Username';
+        $this->validFilters = array(
+                               'user_psc_rel.CenterID',
+                               'users.UserID',
+                               'users.Real_name',
+                               'users.Email',
+                               'users.Active',
+                               'users.Examiner',
+                               'users.Pending_approval',
+                              );
 
         $this->formToFilter = array(
-                                    'centerID' => 'user_psc_rel.CenterID',
-                                    'active' => 'users.Active',
-                                    'userID' => 'users.UserID',
-                                    'real_name' => 'users.Real_name',
-                                    'email' => 'users.Email',
-                                    'pending' => 'users.Pending_approval'
-                                    );
+                               'centerID'  => 'user_psc_rel.CenterID',
+                               'active'    => 'users.Active',
+                               'userID'    => 'users.UserID',
+                               'real_name' => 'users.Real_name',
+                               'email'     => 'users.Email',
+                               'pending'   => 'users.Pending_approval',
+                              );
         return true;
     }
     /**
@@ -95,7 +111,7 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
             // allow only to view own site data
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key=>$val) {
-                $site[$key] = & Site::singleton($val);
+                $site[$key]          = & Site::singleton($val);
                 $list_of_sites[$val] = $site[$key]->getCenterName();
             }
             $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
