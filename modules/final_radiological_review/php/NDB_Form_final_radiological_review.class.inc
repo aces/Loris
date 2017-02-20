@@ -206,7 +206,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
 
 
             $history = $DB->pselect(
-                'SELECT userID, changeDate, col, old, new FROM final_radiological_review_history
+                'SELECT userID, changeDate, col, old, new FROM final_radiological_review_history 
                 WHERE CommentID= :primKey ORDER BY changeDate DESC',
                 array('primKey' => $this->identifier)
             );
@@ -217,8 +217,8 @@ class NDB_Form_final_radiological_review extends NDB_Form
                     $history_item['changeDate'] . '</td><td>' . 
                     $history_item['userID'] . '</td><td>' . 
                     $history_item['col'] . '</td><td>' . 
-                    _makePretty($history_item['col'], $history_item['old']) . '</td><td>' 
-                    . _makePretty($history_item['col'], $history_item['new']) 
+                    _makePretty($history_item['col'], $history_item['old']) . '</td><td>'
+                    . _makePretty($history_item['col'], $history_item['new'])
                     . '</td></tr>';
             }
             $defaults = array_merge(
@@ -235,7 +235,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 $this->tpl_data['conflicts'][] = "Conflict between final and extra review";
             }
             if ($defaults['Final_Review_Results'] != $defaults['Original_Review_Results']
-                || $defaults['Original_Exclusionary'] != $defaults['Final_Exclusionary']
+                //|| $defaults['Final_Exclusionary'] != $defaults['Original_Exclusionary']
             ) {
                 $this->tpl_data['conflicts'][] = "Conflict between original and final review";
             }
