@@ -12,7 +12,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-echo "hi";
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
     header("Access-Control-Allow-Credentials: true");
@@ -25,6 +24,7 @@ ob_start('ob_gzhandler');
 // gzip handler.
 ob_start();
 
+echo "HI";
 // load the client
 $client = new NDB_Client;
 if ($client->initialize() == false) {
