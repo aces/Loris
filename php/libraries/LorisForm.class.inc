@@ -799,18 +799,27 @@ class LorisForm
         $msg      = isset($el['requireMsg']) ? $el['requireMsg'] : 'Required';
         $required = isset($el['required']) ? "this.value === '' ? '$msg':''" : "''";
         $value    = $this->getValue($el['name']);
-        if (array_key_exists('options', $el)
-            && ((strtolower($el['options']['format']) == 'my')
-            || (strtolower($el['options']['format']) == 'ym'))
-        ) {
-            $format = 'month';
-            if ($value) {
-                $value = explode("-", $value);
-                $value = sprintf("%s-%s", $value[0], $value[1]);
+        $format = 'date';
+
+        if (array_key_exists('options', $el)) {
+            $elOptions = $el['options'];
+            $elFormat = strtolower($elOptions['format']);
+
+            if ($elFormat == 'my' || $elFormat == 'ym') {
+                $format = 'month';
+                if ($value) {
+                    $value = explode("-", $value);
+                    $value = sprintf("%s-%s", $value[0], $value[1]);
+                }
+                if ($elOptions['maxYear']) {
+                    $minYear = "min=\"" . $elOptions['minYear'] . "-01\"";
+                }
+                if ($elOptions['maxYear']) {
+                    $maxYear = "max=\"" . $elOptions['maxYear'] . "-12\"";
+                }
             }
-        } else {
-            $format = 'date';
         }
+
         $elmnt = "<input name=\"$el[name]\" type=\"$format\" $cls "
             . "$minYear $maxYear "
             . "onChange=\"this.setCustomValidity($required)\""
