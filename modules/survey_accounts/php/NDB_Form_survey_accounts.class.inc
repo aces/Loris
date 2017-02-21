@@ -226,7 +226,7 @@ class NDB_Form_survey_accounts extends NDB_Form
      * @return string
      */
     function _generateSurveyKey() {
-        $bytes = random_bytes(12);
+        $bytes = openssl_random_pseudo_bytes(8);
         return bin2hex($bytes);
     }
 
