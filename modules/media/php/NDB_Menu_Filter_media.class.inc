@@ -92,7 +92,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
 
-        $fileTypeList = [null => 'Any'];
+        $fileTypeList  = [null => 'Any'];
         $fileTypeQuery = $db->pselect("SELECT file_type FROM media", []);
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
