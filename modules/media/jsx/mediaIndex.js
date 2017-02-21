@@ -62,10 +62,22 @@ class MediaIndex extends React.Component {
       );
     }
 
+    let uploadTab;
     let tabList = [
-      {id: "browse", label: "Browse"},
-      {id: "upload", label: "Upload"}
+      {id: "browse", label: "Browse"}
     ];
+
+    if (loris.userHasPermission('media_write')) {
+      tabList.push({id: "upload", label: "Upload"});
+      uploadTab = (
+        <TabPane TabId={tabList[1].id}>
+          <MediaUploadForm
+            DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
+            action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
+          />
+        </TabPane>
+      );
+    }
 
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
@@ -87,52 +99,24 @@ class MediaIndex extends React.Component {
             freezeColumn="File Name"
           />
         </TabPane>
-        <TabPane TabId={tabList[1].id}>
-          <MediaUploadForm
-            DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
-            action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
-          />
-        </TabPane>
+        {uploadTab}
       </Tabs>
     );
   }
 }
 
 $(function() {
+
+  // Create a wrapper div in which react component will be loaded
+  const mediaDOM = document.createElement('div');
+  mediaDOM.id = 'page-media';
+
+  // Append wrapper div to page content
+  const rootDOM = document.getElementById("lorisworkspace");
+  rootDOM.appendChild(mediaDOM);
+
   ReactDOM.render(
     <MediaIndex DataURL={`${loris.BaseURL}/media/?format=json`}/>,
-    document.getElementById("page-wrapper")
+    document.getElementById("page-media")
   );
 });
-
-//
-// $(function() {
-//   loris.hiddenHeaders = ['Cand ID', 'Session ID'];
-//
-//   var table = <DynamicDataTable
-//     DataURL={`${loris.BaseURL}/media/?format=json`}
-//     getFormattedCell={formatColumn}
-//     freezeColumn="File Name"
-//   />;
-//
-//   ReactDOM.render(table, document.getElementById("datatable"));
-//
-//   var mediaUploadForm = <MediaUploadForm
-//     DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
-//     action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
-//   />;
-//
-//   ReactDOM.render(mediaUploadForm, document.getElementById("media-upload-form"));
-//
-//   // Adds tab href to url + opens tab based on hash on page load
-//   // See: http://bit.ly/292MDI8
-//   var hash = window.location.hash;
-//   if (hash) $('ul.nav a[href="' + hash + '"]').tab('show');
-//
-//   $('.nav-tabs a').click(function(e) {
-//     $(this).tab('show');
-//     var scrollmem = $('body').scrollTop() || $('html').scrollTop();
-//     window.location.hash = this.hash;
-//     $('html,body').scrollTop(scrollmem);
-//   });
-// });
