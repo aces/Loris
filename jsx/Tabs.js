@@ -102,10 +102,12 @@ class Tabs extends React.Component {
 
   getTabPanes() {
     let tabPanes = React.Children.map(this.props.children, function(child, key) {
-      return React.cloneElement(child, {
-        activeTab: this.state.activeTab,
-        key: key
-      });
+      if (child) {
+        return React.cloneElement(child, {
+          activeTab: this.state.activeTab,
+          key: key
+        });
+      }
     }.bind(this));
 
     return tabPanes;
