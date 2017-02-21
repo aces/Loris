@@ -1,4 +1,4 @@
-/* global DynamicDataTable ReactDOM */
+/* global ReactDOM */
 
 import MediaUploadForm from './uploadForm';
 import formatColumn from './columnFormatter';
@@ -8,7 +8,7 @@ class MediaIndex extends React.Component {
   constructor(props) {
     super(props);
 
-    loris.hiddenHeaders = ['Cand ID', 'Session ID'];
+    loris.hiddenHeaders = ['Cand ID', 'Session ID', 'File Type'];
 
     this.state = {
       isLoaded: false,
@@ -34,7 +34,6 @@ class MediaIndex extends React.Component {
       method: "GET",
       dataType: 'json',
       success: function(data) {
-        loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
         this.setState({
           Data: data,
           isLoaded: true
@@ -69,13 +68,13 @@ class MediaIndex extends React.Component {
     ];
 
     return (
-      <Tabs tabs={tabList} defaultTab="browse">
+      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
           <FilterForm
             Module="media"
             name="media_filter"
             id="media_filter"
-            columns={2}
+            columns={3}
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}
             filter={this.state.filter}

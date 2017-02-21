@@ -80,20 +80,19 @@ class MediaUploadForm extends React.Component {
         File name should begin with <b>[PSCID]_[Visit Label]_[Instrument]</b><br/>
         For example, for candidate <i>ABC123</i>, visit <i>V1</i> for
         <i>Body Mass Index</i> the file name should be prefixed by:
-        <b>ABC123_V1_Body_Mass_Index</b>
+        <b> ABC123_V1_Body_Mass_Index</b>
       </span>
     );
 
     return (
-      <div>
+      <div className="col-md-8 col-lg-6 col-md-push-1 col-lg-push-2">
         <FormElement
           name="mediaUpload"
           fileUpload={true}
           onSubmit={this.handleSubmit}
           ref="form"
         >
-          <h3>Upload a media file</h3>
-          <br />
+          <h3 className="text-center">Upload a media file</h3><br/>
           <StaticElement
             label="Note"
             text={helpText}
@@ -383,10 +382,5 @@ MediaUploadForm.propTypes = {
   DataURL: React.PropTypes.string.isRequired,
   action: React.PropTypes.string.isRequired
 };
-
-var RMediaUploadForm = React.createFactory(MediaUploadForm);
-
-window.MediaUploadForm = MediaUploadForm;
-window.RMediaUploadForm = RMediaUploadForm;
 
 export default MediaUploadForm;

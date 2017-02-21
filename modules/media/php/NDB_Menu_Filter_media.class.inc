@@ -63,6 +63,12 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $siteList  = Utility::getSiteList(false);
         $visitList = [null => 'Any'] + Utility::getVisitList();
 
+        // Index sites using their names (used to filter react tables)
+        foreach ($siteList as $key => $site) {
+            unset($siteList[$key]);
+            $siteList[$site] = $site;
+        }
+
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
@@ -73,7 +79,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
             if ($site->isStudySite()) {
-                $siteList = [$user->getData('CenterID') => $user->getData('Site')];
+                $siteList = [$user->getData('Site') => $user->getData('Site')];
             }
         }
 
@@ -83,14 +89,23 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             []
         );
         foreach ($instrumentsQuery as $instrument) {
-            $instrumentList[$instrument['Test_name']] = $instrument['Full_name'];
+            $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
+        }
+
+        $fileTypeList = [null => 'Any'];
+        $fileTypeQuery = $db->pselect("SELECT file_type FROM media", []);
+        foreach ($fileTypeQuery as $filetype) {
+            $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
         }
 
         // Form Elements
-        $this->addBasicText('pSCID', 'PSCID:', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('instrument', 'Instrument:', $instrumentList);
-        $this->addSelect('visitLabel', 'Visit Label:', $visitList);
-        $this->addSelect('site', 'For Site:', $siteList);
+        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
+        $this->addBasicText('fileName', 'File Name');
+        $this->addSelect('fileType', 'File type', $fileTypeList);
+        $this->addSelect('visitLabel', 'Visit Label', $visitList);
+        $this->addSelect('site', 'For Site', $siteList);
+        $this->addBasicText('uploadedBy', 'Uploaded By');
+        $this->addSelect('instrument', 'Instrument', $instrumentList);
 
         $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
 
@@ -123,6 +138,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                'm.date_taken',
                'substring(m.comments, 1, 50) as comments',
                'm.date_uploaded',
+               'm.file_type',
                's.CandID as cand_id',
                's.ID as session_id',
                'm.id',
@@ -146,6 +162,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                            'Date Taken',
                            'Comments',
                            'Date Uploaded',
+                           'File Type',
                            'Cand ID',
                            'Session ID',
                           ];
@@ -182,8 +199,8 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
      */
     function toJSON()
     {
-        $result          = $this->toArray();
-        $result['form']  = $this->form->form;
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
 
         return json_encode($result);
     }

@@ -7,6 +7,7 @@
  * @return {*} a formated table cell for a given column
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
+
   // If a column if set as hidden, don't display it
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
@@ -46,7 +47,5 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   return <td>{cell}</td>;
 }
-
-window.formatColumn = formatColumn;
 
 export default formatColumn;
