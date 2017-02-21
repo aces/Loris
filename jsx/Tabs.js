@@ -36,11 +36,11 @@ class Tabs extends React.Component {
   constructor(props) {
     super(props);
 
-    let hash = window.location.hash;
+    const hash = window.location.hash;
     let activeTab = "";
 
     /**
-     * Determine the intiial active tab in this order
+     * Determine the initial active tab in this order
      * 1. Try to infer from the URL, otherwise
      * 2. Try to infer from the defaultTab prop, otherwise
      * 3. Set to be the first tab of the list
@@ -68,7 +68,7 @@ class Tabs extends React.Component {
 
     // Add tab href to URL querystring and scroll the page to top
     if (this.props.updateURL) {
-      let scrollDistance = $('body').scrollTop() || $('html').scrollTop();
+      const scrollDistance = $('body').scrollTop() || $('html').scrollTop();
       window.location.hash = e.target.hash;
       $('html,body').scrollTop(scrollDistance);
     }
