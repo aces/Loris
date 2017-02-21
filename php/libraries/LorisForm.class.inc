@@ -1235,7 +1235,18 @@ class LorisForm
 
                 // Check if date fields have errors and add them to error list
                 if ($el['type'] === 'date') {
-                    if (isset($el['error'])) {
+                    $date        = (
+                        $values[$elName] ?
+                            $values[$elName] :
+                        $this->getValue($el['name'])
+                    );
+                    $dt          = DateTime::createFromFormat('Y-m-d', $date);
+                    $isValidDate = $dt && $dt->format('Y-m-d') == $date;
+                    if (!$isValidDate) {
+                        $this->setElementError(
+                            $el['name'],
+                            "Please input a valid date in '" . $el['label'] . "'!"
+                        );
                         $errors[$el['name']] = "date fail";
                     }
                 }
@@ -1989,16 +2000,6 @@ class LorisForm
                     || (strtolower($el['options']['format']) === 'ym')
                 ) {
                     $date = sprintf("%s-01", $value);
-                }
-                // Make sure the date is valid
-                $dt          = DateTime::createFromFormat('Y-m-d', $date);
-                $isValidDate = $dt && $dt->format('Y-m-d') == $date;
-
-                if (!$isValidDate) {
-                    $this->setElementError(
-                        $name,
-                        "Please input a valid date in '" . $el['label'] . "'!"
-                    );
                 }
 
                 $arr[$name] = $date;
