@@ -106,7 +106,6 @@ class MediaIndex extends React.Component {
 }
 
 $(function() {
-
   // Create a wrapper div in which react component will be loaded
   const mediaDOM = document.createElement('div');
   mediaDOM.id = 'page-media';
