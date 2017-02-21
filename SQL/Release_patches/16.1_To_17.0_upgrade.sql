@@ -407,3 +407,7 @@ UPDATE ConfigSettings SET Description='Path to the Directory of Uploaded Scans' 
 -- 2017-02-20-SchemaFixIssuesTableCreation.sql
 ALTER TABLE issues DROP FOREIGN KEY `fk_issues_5`; 
 ALTER TABLE issues ADD CONSTRAINT `fk_issues_5` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`);
+
+-- 2017-02-20-SchemaFixSuperfluousCharacterSetIssuesCategories.sql
+ALTER TABLE issues_categories MODIFY COLUMN categoryName varchar(255);
+
