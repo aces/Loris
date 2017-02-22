@@ -155,6 +155,12 @@ class Create_Timepoint extends \NDB_Form
         foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
             if ($visitLabel['@']['subprojectID']==$this->subprojectID) {
                 if ($visitLabel['generation'] == 'user') {
+                    error_log(
+                        "DEPRECATION WARNING: User generated visit labels will ".
+                        "no longer be supported in the next release of Loris. ".
+                        "Please add the necessary entries to the config.xml file ".
+                        "and set the generation to 'sequence'"
+                    );
                     $this->addBasicText(
                         'visitLabel',
                         'Visit label',

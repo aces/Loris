@@ -654,3 +654,8 @@ var IssueEditForm = React.createClass({
 );
 
 var RIssueEditForm = React.createFactory(IssueEditForm);
+
+window.IssueEditForm = IssueEditForm;
+window.RIssueEditForm = RIssueEditForm;
+
+export default IssueEditForm;

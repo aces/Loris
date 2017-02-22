@@ -342,3 +342,23 @@ var ProgressBar = React.createClass({
         );
   }
 });
+
+window.GenomicFileUploadModal = GenomicFileUploadModal;
+window.RGenomicFileUploadModal = RGenomicFileUploadModal;
+window.UploadForm = UploadForm;
+window.FileTypeSelect = FileTypeSelect;
+window.FileInput = FileInput;
+window.TextAreaInput = TextAreaInput;
+window.CheckboxInput = CheckboxInput;
+window.ProgressBar = ProgressBar;
+
+export default {
+  GenomicFileUploadModal,
+  RGenomicFileUploadModal,
+  UploadForm,
+  FileTypeSelect,
+  FileInput,
+  TextAreaInput,
+  CheckboxInput,
+  ProgressBar
+};
