@@ -11,6 +11,38 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
+         $this->DB->insert(
+            "psc",
+            array(
+             'CenterID' => '55',
+             'Name' => 'TESTinPSC',
+             'Alias' => 'tst',
+             'MRI_alias' => 'test'
+            )
+        );
+          $this->DB->insert(
+            "candidate",
+            array(
+             'CandID'        => '999999',
+             'CenterID'      => '55',
+             'UserID'        => '1',
+             'PSCID'         => '8889',
+             'ProjectID'     => '7777'
+            )
+        );
+        $this->DB->insert(
+            "session",
+            array(
+             'ID'            => '111112',
+             'CandID'        => '999999',
+             'CenterID'      => '55',
+             'UserID'        => '1',
+             'MRIQCStatus'   => 'Pass',
+             'SubprojectID'  => '6666',
+             'Visit'         => 'In Progress',
+             'Visit_label'   => 'Test Visit Label'
+            )
+        );
         $this->DB->insert(
             "mri_upload",
             array(
@@ -25,7 +57,7 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
              'number_of_mincInserted'      => '1',
              'number_of_mincCreated'       => '1',
              'TarchiveID'                  => '999999',
-             'SessionID'                   => '999999',
+             'SessionID'                   => '111112',
              'IsCandidateInfoValidated'    => '1',
              'IsTarchiveValidated'         => '0',
              'IsPhantom'                   => 'N',
@@ -40,7 +72,23 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         parent::tearDown();
-        $this->DB->delete("mri_upload", array('PatientName' => 'TestTestTest'));
+        $this->DB->delete(
+            "mri_upload", 
+            array('PatientName' => 'TestTestTest')
+        );
+        $this->DB->delete(
+            "session",
+            array('CandID' => '999999')
+        );
+        $this->DB->delete(
+            "candidate",
+            array('CandID' => '999999')
+        );
+        $this->DB->delete(
+            "psc",
+            array('CenterID'=>'55')
+        );
+        
     }
 
     function testImagingUploaderDoespageLoad()
@@ -66,13 +114,87 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         $this->assertNotContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
-/*    function testImagingUploaderFilter()
+    function testImagingUploaderFilterClearForm()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
-        sleep(600);
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+
+        $this->webDriver->findElement(
+             WebDriverBy::name("CandID")
+         )->sendKeys("test");
+
+        $this->webDriver->findElement(
+             WebDriverBy::name("PSCID")
+         )->sendKeys("test");
+
+        $this->webDriver->findElement(
+             WebDriverBy::name("reset")
+         )->click();
+
+         $bodyText1 = $this->webDriver->findElement(
+             WebDriverBy::name("CandID")
+         )->getText();
+         $bodyText2 = $this->webDriver->findElement(
+             WebDriverBy::name("PSCID")
+         )->getText();
+
+        $this->assertEquals('',$bodyText1);
+        $this->assertEquals('',$bodyText2);
     }
-*/
+    function testImagingUploaderFilter()
+    {
+        $this->safeGet($this->url . '/imaging_uploader/');
+        
+        $this->webDriver->findElement(
+             WebDriverBy::name("CandID")
+         )->sendKeys("999999");
+        
+        $this->webDriver->findElement(
+             WebDriverBy::name("filter")
+         )->click();
+        $this->safeGet($this->url . '/imaging_uploader/?format=json');
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Test Visit Label", $bodyText);
+
+
+        $this->safeGet($this->url . '/imaging_uploader/');
+
+        $this->webDriver->findElement(
+             WebDriverBy::name("PSCID")
+         )->sendKeys("8889");
+
+        $this->webDriver->findElement(
+             WebDriverBy::name("filter")
+         )->click();
+        $this->safeGet($this->url . '/imaging_uploader/?format=json');
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("Test Visit Label", $bodyText);
+
+
+    }
+
+    function testImagingUploaderwithoutData()
+    {
+        $this->safeGet($this->url . '/imaging_uploader/');
+        $this->webDriver->findElement(
+             WebDriverBy::ID("upload")
+         )->click();
+        sleep(2);
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("mri_file: Make sure 'Are these Phantom Scans' is filled out.", $bodyText);
+    }
+    function testImagingUploaderwithData()
+    {
+        $this->safeGet($this->url . '/imaging_uploader/');
+                $this->webDriver->findElement(
+             WebDriverBy::Name("mri_file")
+         )->sendKeys("test.gz");
+//todo select option no
+        $this->webDriver->findElement(
+             WebDriverBy::ID("upload")
+         )->click();
+        sleep(2);
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("mri_file: Make sure 'Are these Phantom Scans' is filled out.", $bodyText);
+    }
 }
 ?>
