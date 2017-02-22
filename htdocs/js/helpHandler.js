@@ -83,7 +83,7 @@ $(document).ready(function(){
 
 });
 $( document ).ajaxError(function(event, jqxhr, settings, thrownError) {
-    if (jqxhr.status === 403) {
+    if (jqxhr.status === 401) {
         if ($('#login-modal').hasClass('in')) {
             $("#login-modal-error").show();
         } else {
