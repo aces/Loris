@@ -16,15 +16,15 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
             array(
              'UploadID'                    => '9999999',
              'UploadedBy'                  => 'test',
-             'UploadDate'                  => 'TestTestTest',
+             'UploadDate'                  => '2017-01-01',
              'UploadLocation'              => '/data/incoming/test',
              'DecompressedLocation'        => '/tmp/ImagingUpload-test',
              'InsertionComplete'           => '0',
              'Inserting'                   => '0',
              'PatientName'                 => 'TestTestTest',
-             'number_of_mincInserted'      => 'NULL',
-             'number_of_mincCreated'       => 'NULL',
-             'TarchiveID'                  => 'NULL',
+             'number_of_mincInserted'      => '1',
+             'number_of_mincCreated'       => '1',
+             'TarchiveID'                  => '999999',
              'SessionID'                   => '999999',
              'IsCandidateInfoValidated'    => '1',
              'IsTarchiveValidated'         => '0',
@@ -64,7 +64,15 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/imaging_uploader/');
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
     }
-
+/*    function testImagingUploaderFilter()
+    {
+        $this->safeGet($this->url . '/imaging_uploader/');
+        sleep(600);
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
+    }
+*/
 }
 ?>
