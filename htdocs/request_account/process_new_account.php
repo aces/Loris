@@ -146,10 +146,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     }
 
     if (!count($err)) {
-        $name      = htmlspecialchars($_REQUEST["name"], ENT_QUOTES);
-        $lastname  = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
-        $from      = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
-        $site      = htmlspecialchars($_REQUEST["site"], ENT_QUOTES);
+        $name     = htmlspecialchars($_REQUEST["name"], ENT_QUOTES);
+        $lastname = htmlspecialchars($_REQUEST["lastname"], ENT_QUOTES);
+        $from     = htmlspecialchars($_REQUEST["from"], ENT_QUOTES);
+        $site     = htmlspecialchars($_REQUEST["site"], ENT_QUOTES);
         $fullname = $name." ".$lastname;
         $vals     = array(
                      'UserID'           => $from,
