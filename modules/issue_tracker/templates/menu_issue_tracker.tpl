@@ -203,11 +203,12 @@
                         </table>
                         <div id="datatable">
                             <script>
+                                loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
                                 var table = RDynamicDataTable({
                                     "DataURL": "{$baseurl}/issue_tracker/?format=json",
                                     "getFormattedCell": formatColumn
                                 });
-                                React.render(table, document.getElementById("datatable"));
+                                ReactDOM.render(table, document.getElementById("datatable"));
                             </script>
                         </div>
                     </div>

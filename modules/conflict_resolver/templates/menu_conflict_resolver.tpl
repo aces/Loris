@@ -79,7 +79,7 @@
         <div class="tab-pane active">
             <!--  title table with pagination -->
             <form method="post" action="{$baseurl}/conflict_resolver/" name="conflict_resolver" id="conflict_resolver">
-               <div class="dynamictable" id="datatable"></div>               
+               <div class="dynamictable" id="datatable"></div>
                <div class="pull-right"> <input class="btn btn-sm btn-primary" name="fire_away" value="Save" type="submit" />
                      <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
                </div>
@@ -95,5 +95,5 @@ var table = RDynamicDataTable({
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "Instrument"
   });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>

@@ -74,8 +74,8 @@ if [ ! -z "$module" ]; then
   ../vendor/bin/phpunit --configuration phpunit.xml ../modules/$module/test
 else
  # Run all integration tests
- ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'Loris Core Integration Tests'
- ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'Loris Module Integration Tests'
+ ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'LorisCoreIntegrationTests'
+ ../vendor/bin/phpunit --configuration phpunit.xml --testsuite 'LorisModuleIntegrationTests'
 fi
 
 kill $php_pid

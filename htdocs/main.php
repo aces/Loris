@@ -65,6 +65,7 @@ function tplFromRequest($param)
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['test_name']   = $TestName;
 $tpl_data['subtest']     = $subtest;
+$tpl_data['version']     = file_get_contents(__DIR__ . "/../VERSION");
 
 tplFromRequest('candID');
 tplFromRequest('sessionID');
@@ -123,19 +124,7 @@ $link_args['MRIBrowser'] = $argstring;
 $paths = $config->getSetting('paths');
 
 if (!empty($TestName)) {
-    // Get CSS for a module
     $base = $paths['base'];
-    if (file_exists($base . "modules/$TestName/css/$TestName.css")
-        || file_exists($base . "project/modules/$TestName/css/$TestName.css")
-    ) {
-        if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
-            && strcmp($_SERVER['REQUEST_URI'], '/') != 0
-        ) {
-              $tpl_data['test_name_css'] = "/$TestName/css/$TestName.css";
-        } else {
-              $tpl_data['test_name_css'] = "GetCSS.php?Module=$TestName";
-        }
-    }
 
     // Used for CSS for a specific instrument.
     if (file_exists($paths['base'] . "project/instruments/$TestName.css")) {

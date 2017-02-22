@@ -15,7 +15,7 @@ $client->initialize(__DIR__ . "/../../../project/config.xml");
 
 $cdb = CouchDB::singleton();
 $category = $_REQUEST['DocType'];
-$sessions = $_REQUEST['Sessions'];
+$sessions = json_decode($_REQUEST['Sessions']);
 
 $keys = array_map(function($row) use ($category) {
     return array_merge(array($category), $row);

@@ -212,3 +212,13 @@ var SelectDropdown = React.createClass({
     );
   }
 });
+
+window.SelectField = SelectField;
+window.SearchField = SearchField;
+window.SelectDropdown = SelectDropdown;
+
+export default {
+  SelectField,
+  SearchField,
+  SelectDropdown
+};

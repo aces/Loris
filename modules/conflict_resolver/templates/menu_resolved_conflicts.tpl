@@ -82,7 +82,7 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane active">
-            <div class="dynamictable" id="datatable"></div> 
+            <div class="dynamictable" id="datatable"></div>
         </div>
     </div>
 </div>
@@ -93,5 +93,5 @@ var table = RDynamicDataTable({
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "Instrument"
   });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>

@@ -9,5 +9,5 @@
         "DataURL": "{$baseurl}/issue_tracker/ajax/EditIssue.php?action=getData&issueID=" + {$smarty.get.issueID},
         "action": "{$baseurl}/issue_tracker/ajax/EditIssue.php?action=edit"
     });
-    React.render(issue, document.getElementById("issue-newIssue-form"));
+    ReactDOM.render(issue, document.getElementById("issue-newIssue-form"));
 </script>

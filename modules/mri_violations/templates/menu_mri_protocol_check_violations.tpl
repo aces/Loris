@@ -57,7 +57,7 @@
         </div>
     </div>
 </div>
- <div class="dynamictable" id="datatable"></div> 
+ <div class="dynamictable" id="datatable"></div>
 <script>
 loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
 var hasWritePermission = {json_encode($hasWritePermission)};
@@ -65,7 +65,7 @@ var table = RDynamicDataTable({
      "DataURL" : "{$baseurl}/mri_violations/?submenu=mri_protocol_check_violations&format=json",
      "getFormattedCell" : formatColumn,
      "freezeColumn" : "PSCID"
-     
+
   });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>

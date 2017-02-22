@@ -59,7 +59,7 @@ var ImagePanelHeader = React.createClass({
 
 var ImagePanelHeadersTable = React.createClass({
   componentDidMount: function() {
-    $(this.getDOMNode()).DynamicTable();
+    $(this).DynamicTable();
   },
   render: function() {
     return (
@@ -571,3 +571,36 @@ var ImagePanel = React.createClass({
 });
 var RImagePanel = React.createFactory(ImagePanel);
 
+window.ImagePanelHeader = ImagePanelHeader;
+window.ImagePanelHeadersTable = ImagePanelHeadersTable;
+window.ImageQCDropdown = ImageQCDropdown;
+window.ImageQCStatic = ImageQCStatic;
+window.ImagePanelQCStatusSelector = ImagePanelQCStatusSelector;
+window.ImagePanelQCSelectedSelector = ImagePanelQCSelectedSelector;
+window.ImagePanelQCCaveatSelector = ImagePanelQCCaveatSelector;
+window.ImagePanelQCSNRValue = ImagePanelQCSNRValue;
+window.ImagePanelQCPanel = ImagePanelQCPanel;
+window.DownloadButton = DownloadButton;
+window.ImageQCCommentsButton = ImageQCCommentsButton;
+window.LongitudinalViewButton = LongitudinalViewButton;
+window.ImageDownloadButtons = ImageDownloadButtons;
+window.ImagePanelBody = ImagePanelBody;
+window.RImagePanel = RImagePanel;
+
+export default {
+  ImagePanelHeader,
+  ImagePanelHeadersTable,
+  ImageQCDropdown,
+  ImageQCStatic,
+  ImagePanelQCStatusSelector,
+  ImagePanelQCSelectedSelector,
+  ImagePanelQCCaveatSelector,
+  ImagePanelQCSNRValue,
+  ImagePanelQCPanel,
+  DownloadButton,
+  ImageQCCommentsButton,
+  LongitudinalViewButton,
+  ImageDownloadButtons,
+  ImagePanelBody,
+  RImagePanel
+};

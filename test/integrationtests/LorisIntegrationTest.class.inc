@@ -90,13 +90,16 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
 
+        $dev = $this->config->getSettingFromXML('dev');
+        $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
+
         $capabilities = array(
                          WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
                          WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
                         );
 
         $this->webDriver = RemoteWebDriver::create(
-            'http://localhost:4444/wd/hub',
+            $selenium_url,
             $capabilities
         );
 
@@ -185,11 +188,11 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function setupConfigSetting($configName, $value)
     {
-        if (isset($this->_oldConfig[$configName])) {
+      /*  if (isset($this->_oldConfig[$configName])) {
             throw new LorisException(
                 "Attempted to change already changed config setting"
             );
-        }
+        }*/
 
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",

@@ -1,8 +1,13 @@
-/* exported RDicomArchive */
-/* global QueryString  */
+/* exported DicomArchive */
+/* global formatColumn, ReactDOM */
+
+import formatColumn from './columnFormatter';
 
 /**
  * DICOM Archive Page.
+ *
+ * Serves as an entry-point to the module, rendering the whole react
+ * component page on load.
  *
  * Renders DICOM Archive main page consisting of FilterTable and
  * DataTable components.
@@ -11,202 +16,173 @@
  * @version 1.0.0
  *
  * */
-var DicomArchive = React.createClass({
-  propTypes: {
-    Module: React.PropTypes.string.isRequired
-  },
-  mixins: [React.addons.PureRenderMixin],
-  getInitialState: function() {
-    return {
-      Filter: {}
+class DicomArchive extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isLoaded: false,
+      filter: {}
     };
-  },
-  getDefaultProps: function() {
-    return {
-      Gender: {
-        M: 'Male',
-        F: 'Female',
-        O: 'N/A'
-      }
-    };
-  },
-  componentDidMount: function() {
-    var formRefs = this.refs;
-    var queryString = new QueryString();
-    var queryStringObj = queryString.get();
 
-    // Populate input fields from query string
-    Object.keys(queryStringObj).map(function(key) {
-      if (formRefs[key].state && queryStringObj[key]) {
-        formRefs[key].state.value = queryStringObj[key];
-      }
-    });
+    // Bind component instance to custom methods
+    this.fetchData = this.fetchData.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
+  }
 
-    this.setState({
-      Filter: queryStringObj,
-      QueryString: queryString
-    });
-  },
-  setFilter: function(fieldName, fieldValue) {
-    // Create deep copy of a current filter
-    var Filter = JSON.parse(JSON.stringify(this.state.Filter));
-    var queryString = this.state.QueryString;
-    var formRefs = this.refs;
+  componentDidMount() {
+    this.fetchData();
+  }
 
-    // If fieldName is part of the form, add to querystring
-    if (formRefs.hasOwnProperty(fieldName)) {
-      queryString.set(Filter, fieldName, fieldValue);
-    } else {
-      queryString.clear(this.props.Module);
-    }
-
-    // Special treatment for site, to explicitly set it as an integer value
-    if (fieldName === "site") {
-      var number = Number.parseInt(fieldValue, 10);
-      if (Number.isInteger(number)) {
-        fieldValue = number;
-      }
-    }
-
-    if (fieldValue === "") {
-      delete Filter[fieldName];
-    } else {
-      Filter[fieldName] = fieldValue;
-    }
-
-    this.setState({Filter: Filter});
-  },
-  clearFilter: function() {
-    var queryString = this.state.QueryString;
-    var formRefs = this.refs;
-
-    // Clear query string
-    queryString.clear(this.props.Module);
-
-    // Reset state of child components of FilterTable
-    Object.keys(formRefs).map(function(ref) {
-      if (formRefs[ref].state && formRefs[ref].state.value) {
-        formRefs[ref].state.value = "";
+  /**
+   * Retrive data from the provided URL and save it in state
+   * Additionaly add hiddenHeaders to global loris vairable
+   * for easy access by columnFormatter.
+   */
+  fetchData() {
+    $.ajax(this.props.DataURL, {
+      method: "GET",
+      dataType: 'json',
+      success: function(data) {
+        loris.hiddenHeaders = data.hiddenHeaders ? data.hiddenHeaders : [];
+        this.setState({
+          Data: data,
+          isLoaded: true
+        });
+      }.bind(this),
+      error: function(error) {
+        console.error(error);
       }
     });
+  }
 
-    // Clear filter
-    this.setState({Filter: {}});
-  },
-  render: function() {
+  updateFilter(filter) {
+    this.setState({filter});
+  }
+
+  render() {
+    // Waiting for async data to load
+    if (!this.state.isLoaded) {
+      return (
+        <button className="btn-info has-spinner">
+          Loading
+          <span
+            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+          </span>
+        </button>
+      );
+    }
+
     // Defining element names here ensures that `name` and `ref`
     // properties of the element are always kept in sync
-    var patientID = "patientID";
-    var patientName = "patientName";
-    var site = "site";
-    var gender = "gender";
-    var dateOfBirth = "dateOfBirth";
-    var acquisition = "acquisition";
-    var archiveLocation = "archiveLocation";
-    var seriesUID = "seriesuid";
+    const patientID = "patientID";
+    const patientName = "patientName";
+    const site = "site";
+    const gender = "gender";
+    const dateOfBirth = "dateOfBirth";
+    const acquisition = "acquisition";
+    const archiveLocation = "archiveLocation";
+    const seriesUID = "seriesuid";
+
+    const genderList = {
+      M: 'Male',
+      F: 'Female',
+      O: 'N/A'
+    };
 
     return (
       <div>
-        <FilterTable Module="dicom_archive">
-          <div className="row">
-            <div className="col-md-6">
-              <TextboxElement
-                name={patientID}
-                label="Patient ID"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.patientID}
-                ref={patientID}
-              />
-            </div>
-            <div className="col-md-6">
-              <TextboxElement
-                name={patientName}
-                label="Patient Name"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.patientName}
-                ref={patientName}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <SelectElement
-                name={site}
-                label="Sites"
-                options={this.props.Sites}
-                onUserInput={this.setFilter}
-                value={this.state.Filter.sites}
-                ref={site}
-              />
-            </div>
-            <div className="col-md-6">
-              <SelectElement
-                name={gender}
-                label="Gender"
-                options={this.props.Gender}
-                onUserInput={this.setFilter}
-                value={this.state.Filter.gender}
-                ref={gender}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <DateElement
-                name={dateOfBirth}
-                label="Date of Birth"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.dateOfBirth}
-                ref={dateOfBirth}
-              />
-            </div>
-            <div className="col-md-6">
-              <DateElement
-                name={acquisition}
-                label="Acquisition Date"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.acquisition}
-                ref={acquisition}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <TextboxElement
-                name={archiveLocation}
-                label="Archive Location"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.archiveLocation}
-                ref={archiveLocation}
-              />
-            </div>
-            <div className="col-md-6">
-              <TextboxElement
-                name={seriesUID}
-                label="Series UID"
-                onUserInput={this.setFilter}
-                value={this.state.Filter.seriesUID}
-                ref={seriesUID}
-              />
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <ButtonElement
-                label="Clear Filters"
-                onUserInput={this.clearFilter}
-              />
-            </div>
-          </div>
-        </FilterTable>
-        <DynamicDataTable
-          DataURL={this.props.DataURL}
-          Filter={this.state.Filter}
-          getFormattedCell={this.props.getFormattedCell}
+        <FilterForm
+          Module="dicom_archive"
+          name="dicom_filter"
+          id="dicom_filter"
+          columns={2}
+          onUpdate={this.updateFilter}
+          filter={this.state.filter}
+        >
+          <TextboxElement
+            name={patientID}
+            label="Patient ID"
+            ref={patientID}
+          />
+          <TextboxElement
+            name={patientName}
+            label="Patient Name"
+            ref={patientName}
+          />
+          <SelectElement
+            name={site}
+            label="Sites"
+            options={this.state.Data.Sites}
+            ref={site}
+          />
+          <SelectElement
+            name={gender}
+            label="Gender"
+            options={genderList}
+            ref={gender}
+          />
+          <DateElement
+            name={dateOfBirth}
+            label="Date of Birth"
+            ref={dateOfBirth}
+          />
+          <DateElement
+            name={acquisition}
+            label="Acquisition Date"
+            ref={acquisition}
+          />
+          <TextboxElement
+            name={archiveLocation}
+            label="Archive Location"
+            ref={archiveLocation}
+          />
+          <TextboxElement
+            name={seriesUID}
+            label="Series UID"
+            ref={seriesUID}
+          />
+          <ButtonElement
+            label="Clear Filters"
+            type="reset"
+          />
+        </FilterForm>
+        <StaticDataTable
+          Data={this.state.Data.Data}
+          Headers={this.state.Data.Headers}
+          Filter={this.state.filter}
+          getFormattedCell={formatColumn}
         />
       </div>
     );
   }
-});
+}
 
-var RDicomArchive = React.createFactory(DicomArchive);
+DicomArchive.propTypes = {
+  Module: React.PropTypes.string.isRequired,
+  DataURL: React.PropTypes.string.isRequired
+};
+
+/**
+ * Render dicom_page on page load
+ */
+window.onload = function() {
+  var dataURL = loris.BaseURL + "/dicom_archive/?format=json";
+  var dicomArchive = (
+    <DicomArchive
+      Module="dicom_archive"
+      DataURL={dataURL}
+    />
+  );
+
+  // Create a wrapper div in which react component will be loaded
+  const dicomArchiveDOM = document.createElement('div');
+  dicomArchiveDOM.id = 'page-dicom-archive';
+
+  // Append wrapper div to page content
+  const rootDOM = document.getElementById("lorisworkspace");
+  rootDOM.appendChild(dicomArchiveDOM);
+
+  ReactDOM.render(dicomArchive, document.getElementById("page-dicom-archive"));
+};

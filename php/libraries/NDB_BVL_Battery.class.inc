@@ -165,7 +165,7 @@ class NDB_BVL_Battery
      * @param string $testName The test to be added to the currently
      *                         selected battery.
      *
-     * @return void
+     * @return string The generated CommentID
      */
     function addInstrument($testName)
     {
@@ -320,7 +320,7 @@ class NDB_BVL_Battery
             	LEFT JOIN test_battery b ON (t.Test_name=b.Test_name) ";
         }
         $query .= " WHERE f.SessionID=:SID
-            AND LEFT(f.CommentID, 3) != 'DDE'";
+            AND f.CommentID NOT LIKE 'DDE%'";
         if (!is_null($stage) && !is_null($SubprojectID)) {
                 $query .= " AND (
                     b.SubprojectID IS NULL

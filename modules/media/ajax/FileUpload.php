@@ -40,19 +40,27 @@ function editFile()
         exit;
     }
 
-    // Process posted data
-    $idMediaFile = $_POST['idMediaFile'];
-    $dateTaken   = isset($_POST['dateTaken']) ? $_POST['dateTaken'] : null;
-    $comments    = isset($_POST['comments']) ? $_POST['comments'] : null;
-    $hideFile    = $_POST['hideFile'];
+    // Read JSON from STDIN
+    $stdin       = file_get_contents('php://input');
+    $req         = json_decode($stdin, true);
+    $idMediaFile = $req['idMediaFile'];
+
+    if (!$idMediaFile) {
+        showError("Error! Invalid media file ID!");
+    }
 
     $updateValues = [
-                     'date_taken' => $dateTaken,
-                     'comments'   => $comments,
-                     'hide_file'  => $hideFile,
+                     'date_taken' => $req['dateTaken'],
+                     'comments'   => $req['comments'],
+                     'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
                     ];
 
-    $db->update('media', $updateValues, ['id' => $idMediaFile]);
+    try {
+        $db->update('media', $updateValues, ['id' => $idMediaFile]);
+    } catch (DatabaseException $e) {
+        showError("Could not update the file. Please try again!");
+    }
+
 }
 
 
@@ -97,7 +105,6 @@ function uploadFile()
     // If required fields are not set, show an error
     if (!isset($_FILES) || !isset($pscid) || !isset($visit) || !isset($site)) {
         showError("Please fill in all required fields!");
-
         return;
     }
 
@@ -141,7 +148,18 @@ function uploadFile()
              ];
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
-        $db->insert('media', $query);
+        $existingFiles = getFilesList();
+        $idMediaFile   = array_search($fileName, $existingFiles);
+        try {
+            // Override db record if file_name already exists
+            if ($idMediaFile) {
+                $db->update('media', $query, ['id' => $idMediaFile]);
+            } else {
+                $db->insert('media', $query);
+            }
+        } catch (DatabaseException $e) {
+            showError("Could not upload the file. Please try again!");
+        }
     } else {
         showError("Could not upload the file. Please try again!");
     }
@@ -151,7 +169,7 @@ function uploadFile()
  * Returns a list of fields from database
  *
  * @return array
- * @throws DatabaseExceptionr
+ * @throws DatabaseException
  */
 function getUploadFields()
 {
@@ -176,8 +194,11 @@ function getUploadFields()
     // Build array of session data to be used in upload media dropdowns
     $sessionData    = [];
     $sessionRecords = $db->pselect(
-        "SELECT c.PSCID, s.Visit_label, s.CenterID " .
-        "FROM candidate c LEFT JOIN session s USING(CandID) ORDER BY c.PSCID ASC",
+        "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name " .
+        "FROM candidate c ".
+        "LEFT JOIN session s USING(CandID) ".
+        "LEFT JOIN flag f ON (s.ID=f.SessionID) ".
+        "ORDER BY c.PSCID ASC",
         []
     );
 
@@ -210,6 +231,38 @@ function getUploadFields()
             $sessionData[$record["PSCID"]]['visits'][$record["Visit_label"]]
                 = $record["Visit_label"];
         }
+
+        // Populate instruments
+        $visit = $record["Visit_label"];
+        $pscid =$record["PSCID"];
+
+        if (!isset($sessionData[$pscid]['instruments'][$visit])) {
+            $sessionData[$pscid]['instruments'][$visit] = [];
+        }
+        if (!isset($sessionData[$pscid]['instruments']['all'])) {
+            $sessionData[$pscid]['instruments']['all'] = [];
+        }
+
+        if ($record["Test_name"] !== null && !in_array(
+            $record["Test_name"],
+            $sessionData[$pscid]['instruments'][$visit],
+            true
+        )
+        ) {
+            $sessionData[$pscid]['instruments'][$visit][$record["Test_name"]]
+                = $record["Test_name"];
+            if (!in_array(
+                $record["Test_name"],
+                $sessionData[$pscid]['instruments']['all'],
+                true
+            )
+            ) {
+                $sessionData[$pscid]['instruments']['all'][$record["Test_name"]]
+                    = $record["Test_name"];
+            }
+
+        }
+
     }
 
     // Build media data to be displayed when editing a media file
@@ -240,6 +293,7 @@ function getUploadFields()
                'instruments' => $instrumentsList,
                'sites'       => $siteList,
                'mediaData'   => $mediaData,
+               'mediaFiles'  => array_values(getFilesList()),
                'sessionData' => $sessionData,
               ];
 
@@ -287,4 +341,23 @@ function toSelect($options, $item, $item2)
     }
 
     return $selectOptions;
+}
+
+/**
+ * Returns an array of (id, file_name) pairs from media table
+ *
+ * @return array
+ * @throws DatabaseException
+ */
+function getFilesList()
+{
+    $db       =& Database::singleton();
+    $fileList = $db->pselect("SELECT id, file_name FROM media", []);
+
+    $mediaFiles = [];
+    foreach ($fileList as $row) {
+        $mediaFiles[$row['id']] = $row['file_name'];
+    }
+
+    return $mediaFiles;
 }

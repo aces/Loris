@@ -520,10 +520,10 @@ class NDB_BVL_Feedback
         }
 
         $query .= ", ft.FeedbackID,
-                     ft.Feedback_level as QC_class,
+                     ft.Feedback_level as QCClass,
                      ftp.Description as Type,
                      ftp.Feedback_type as TypeID,
-                     ft.Status as QC_status,
+                     ft.Status as QCStatus,
                      ft.Active as Active,
                      ft.Public as Public,
                      ft.FieldName,

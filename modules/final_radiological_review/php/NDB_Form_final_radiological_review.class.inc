@@ -190,7 +190,8 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 LEFT JOIN tarchive t ON (upper(t.PatientName) 
                 LIKE CONCAT(upper(c.PSCID), '_', upper(s.CandID), '_', upper(s.visit_label), '%')) 
                 WHERE r.CommentID=:CID 
-                GROUP by CandID, PSCID, Visit_label, SessionID, CommentID", 
+                GROUP by CandID, PSCID, Visit_label, SessionID, CommentID,
+                r.Scan_done, r.review_results, r.abnormal_atypical_exclusionary, r.Incidental_findings, e.full_name", 
                 array('CID' => $this->identifier)
             );
             if(empty($original_review)) {

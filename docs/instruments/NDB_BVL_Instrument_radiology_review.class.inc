@@ -106,8 +106,6 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
 
      	$this->form->addRule('Date_taken', 'Date of Administration is required', 'required');
 
-        $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
-
         $this->form->addRule('Examiner', 'Examiner is required', 'required');
     }
 }

@@ -8,7 +8,7 @@
     "jquery": true
   },
   "parserOptions": {
-    "sourceType": "script",
+    "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true,
       "globalReturn": false
@@ -29,6 +29,8 @@
   },
   "globals": {
     "React": true,
-    "loris": true
+    "loris": true,
+    "QueryString": true,
+    "swal": true
   }
 }

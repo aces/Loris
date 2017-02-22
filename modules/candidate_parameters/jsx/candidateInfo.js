@@ -351,7 +351,7 @@ var CandidateInfo = React.createClass(
         return;
       }
 
-      var alertMsg = this.refs["alert-message"].getDOMNode();
+      var alertMsg = this.refs["alert-message"];
       $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(
         500,
         function() {
@@ -368,3 +368,8 @@ var CandidateInfo = React.createClass(
 );
 
 var RCandidateInfo = React.createFactory(CandidateInfo);
+
+window.CandidateInfo = CandidateInfo;
+window.RCandidateInfo = RCandidateInfo;
+
+export default CandidateInfo;

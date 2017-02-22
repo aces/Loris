@@ -10,24 +10,24 @@
  * @version 1.0.0
  *
  * */
-var MediaEditForm = React.createClass({
+class MediaEditForm extends React.Component {
+  constructor(props) {
+    super(props);
 
-  propTypes: {
-    DataURL: React.PropTypes.string.isRequired,
-    action: React.PropTypes.string.isRequired
-  },
-
-  getInitialState: function() {
-    return {
+    this.state = {
       Data: {},
       formData: {},
       uploadResult: null,
       isLoaded: false,
       loadedData: 0
     };
-  },
 
-  componentDidMount: function() {
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.setFormData = this.setFormData.bind(this);
+    this.showAlertMessage = this.showAlertMessage.bind(this);
+  }
+
+  componentDidMount() {
     var self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
@@ -54,9 +54,9 @@ var MediaEditForm = React.createClass({
         });
       }
     });
-  },
+  }
 
-  render: function() {
+  render() {
     // Data loading error
     if (this.state.error !== undefined) {
       return (
@@ -156,14 +156,14 @@ var MediaEditForm = React.createClass({
             maxYear="2017"
             onUserInput={this.setFormData}
             ref="dateTaken"
-            value={this.state.mediaData.dateTaken}
+            value={this.state.formData.dateTaken}
           />
           <TextareaElement
             name="comments"
             label="Comments"
             onUserInput={this.setFormData}
             ref="comments"
-            value={this.state.mediaData.comments}
+            value={this.state.formData.comments}
           />
           <FileElement
             name="file"
@@ -182,30 +182,23 @@ var MediaEditForm = React.createClass({
             options={["No", "Yes"]}
             onUserInput={this.setFormData}
             ref="hideFile"
-            value={this.state.mediaData.hideFile}
+            value={this.state.formData.hideFile}
           />
           <ButtonElement label="Update File"/>
         </FormElement>
       </div>
     );
-  },
+  }
 
   /**
    * Handles form submission
    * @param {event} e - Form submition event
    */
-  handleSubmit: function(e) {
+  handleSubmit(e) {
     e.preventDefault();
 
     var self = this;
     var myFormData = this.state.formData;
-    var formData = new FormData();
-
-    for (var key in myFormData) {
-      if (myFormData[key] !== "") {
-        formData.append(key, myFormData[key]);
-      }
-    }
 
     $('#mediaEditEl').hide();
     $("#file-progress").removeClass('hide');
@@ -213,7 +206,7 @@ var MediaEditForm = React.createClass({
     $.ajax({
       type: 'POST',
       url: self.props.action,
-      data: formData,
+      data: JSON.stringify(myFormData),
       cache: false,
       contentType: false,
       processData: false,
@@ -247,7 +240,7 @@ var MediaEditForm = React.createClass({
       }
 
     });
-  },
+  }
 
   /**
    * Set the form data based on state values of child elements/componenets
@@ -255,26 +248,31 @@ var MediaEditForm = React.createClass({
    * @param {string} formElement - name of the selected element
    * @param {string} value - selected value for corresponding form element
    */
-  setFormData: function(formElement, value) {
+  setFormData(formElement, value) {
     var formData = this.state.formData;
-    formData[formElement] = value;
+
+    if (value === "") {
+      formData[formElement] = null;
+    } else {
+      formData[formElement] = value;
+    }
 
     this.setState({
       formData: formData
     });
-  },
+  }
 
   /**
    * Display a success/error alert message after form submission
    */
-  showAlertMessage: function() {
+  showAlertMessage() {
     var self = this;
 
     if (this.refs["alert-message"] === null) {
       return;
     }
 
-    var alertMsg = this.refs["alert-message"].getDOMNode();
+    var alertMsg = this.refs["alert-message"];
     $(alertMsg).fadeTo(2000, 500).delay(3000).slideUp(500, function() {
       self.setState({
         uploadResult: null
@@ -282,6 +280,16 @@ var MediaEditForm = React.createClass({
     });
   }
 
-});
+}
+
+MediaEditForm.propTypes = {
+  DataURL: React.PropTypes.string.isRequired,
+  action: React.PropTypes.string.isRequired
+};
 
 var RMediaEditForm = React.createFactory(MediaEditForm);
+
+window.MediaEditForm = MediaEditForm;
+window.RMediaEditForm = RMediaEditForm;
+
+export default MediaEditForm;
