@@ -60,9 +60,9 @@ class Breadcrumbs extends React.Component {
 
   render() {
     const baseURL = this.props.baseURL;
-    var breadcrumbs = [];
-    var dropdown = [];
-    var breadcrumbDropdown = "";
+    const breadcrumbs = [];
+    const dropdown = [];
+    let breadcrumbDropdown;
     let url = "";
     let element = {};
 
