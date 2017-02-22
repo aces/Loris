@@ -731,7 +731,7 @@ class Candidate
 
             if ($pscid == '') {
                 throw new LorisException(
-                    "Well this is embarissing, our automated PSCID generator "
+                    "Well this is embarrassing, our automated PSCID generator "
                     . "is about to enter an infinite loop."
                 );
             }
