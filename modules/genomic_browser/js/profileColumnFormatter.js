@@ -1,66 +1,94 @@
+"use strict";
 
-function formatColumn(column, cell, rowData) {
-    reactElement = null;
-    if (-1 == loris.hiddenHeaders.indexOf(column)) {
-        var params = [];
-        switch (column) {
-            case 'PSCID':
-                var url = loris.BaseURL + "/" + rowData[1] + "/";
-                reactElement = React.createElement(
-                    "td",
-                    null,
-                    React.createElement(
-                        "a",
-                        { href: url },
-                        cell
-                    )
-                );
-                break;
-            case 'Subproject':
-                reactElement = React.createElement(
-                    "td",
-                    null,
-                    loris.subprojectList[cell]
-                );
-                break;
+/**
+ * Modify behaviour of specified column cells in the Data Table component
+ * @param {string} column - column name
+ * @param {string} cell - cell content
+ * @param {arrray} rowData - array of cell contents for a specific row
+ * @param {arrray} rowHeaders - array of table headers (column names)
+ * @return {*} a formated table cell for a given column
+ */
+function formatColumn(column, cell, rowData, rowHeaders) {
+  // If a column if set as hidden, don't display it
+  if (loris.hiddenHeaders.indexOf(column) > -1) {
+    return null;
+  }
 
-            // Links columns. They all use the loris.loadFilteredMenuClickHandler
-            // but with distinctive parameters.
-            case 'Files':
-		if (0 == params.length) {
-                    params = ['genomic_browser&submenu=viewGenomicFile', {'candID': rowData[1]}];
-                }
-            case 'SNPs':
-		if (0 == params.length) {
-                    params = ['genomic_browser&submenu=snp_browser', {'DCCID': rowData[1], 'filter': "Show Data"}];
-                }
-            case 'CNVs':
-		if (0 == params.length) {
-                    params = ['genomic_browser&submenu=cnv_browser', {'DCCID': rowData[1], 'filter': "Show Data"}];
-                }
-            case 'CPGs':
-		if (0 == params.length) {
-                    params = ['genomic_browser&submenu=cpg_browser', {'DCCID': rowData[1], 'filter': "Show Data"}];
-                }
-                reactElement = React.createElement(
-                    "td",
-                    null,
-                    React.createElement(
-                        "a",
-                        {onClick: loris.loadFilteredMenuClickHandler(params[0], params[1]) },
-                        cell
-                    )
-                );
-                break;
-            
-            default:
-                reactElement = React.createElement(
-                    "td",
-                    null,
-                    cell
-                );
-                break;
-        }
-    }
-    return reactElement;
+  // Create the mapping between rowHeaders and rowData in a row object.
+  var row = {};
+  rowHeaders.forEach(function (header, index) {
+    row[header] = rowData[index];
+  }, this);
+
+  var reactElement = null;
+  switch (column) {
+    case 'PSCID':
+      var url = loris.BaseURL + "/" + rowData[1] + "/";
+      reactElement = React.createElement(
+        "td",
+        null,
+        React.createElement(
+          "a",
+          { href: url },
+          cell
+        )
+      );
+      break;
+    case 'Subproject':
+      reactElement = React.createElement(
+        "td",
+        null,
+        loris.subprojectList[cell]
+      );
+      break;
+    case 'File':
+      if (cell === 'Y') {
+        reactElement = React.createElement(
+          "td",
+          null,
+          React.createElement(
+            "a",
+            { href: "#", onClick: loris.loadFilteredMenuClickHandler('genomic_browser&submenu=viewGenomicFile', { 'candID': rowData[1] }) },
+            cell
+          )
+        );
+      } else {
+        reactElement = React.createElement(
+          "td",
+          null,
+          cell
+        );
+      }
+      break;
+    case 'CNV':
+    case 'CPG':
+    case 'SNP':
+      if (cell === 'Y') {
+        reactElement = React.createElement(
+          "td",
+          null,
+          React.createElement(
+            "a",
+            { href: "#", onClick: loris.loadFilteredMenuClickHandler('genomic_browser&submenu=' + column.toLowerCase() + '_browser', { 'candID': rowData[1] }) },
+            cell
+          )
+        );
+      } else {
+        reactElement = React.createElement(
+          "td",
+          null,
+          cell
+        );
+      }
+      break;
+    default:
+      reactElement = React.createElement(
+        "td",
+        null,
+        cell
+      );
+  }
+  return reactElement;
 }
+
+window.formatColumn = formatColumn;
