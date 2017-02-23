@@ -288,8 +288,9 @@ class Utility
     /**
      * Gets visit ID from the old visit_label used before 17.0 LORIS
      *
-     * @return int visitID assiciated with the given legacy_label
+     * @param string $legacy_label Back-end name of visit
      *
+     * @return int visitID associated with the given legacy_label
      */
     Static function getVisitIDFromLegacyLabel($legacy_label)
     {
@@ -297,7 +298,7 @@ class Utility
 
         $query = "SELECT ID FROM visits WHERE legacy_label=:vl";
 
-        $result = $DB->pselectOne($query, array("vl"=>$legacy_label));
+        $result = $DB->pselectOne($query, array("vl" => $legacy_label));
 
         return $result;
     }
@@ -305,7 +306,9 @@ class Utility
     /**
      * Gets the UI label associated with a visitID
      *
-     * @return  string   Front-End visit label
+     * @param int $id ID of the visit in visits table
+     *
+     * @return string   Front-End visit label
      */
     Static function getVisitLabelFromID($id)
     {
@@ -313,7 +316,7 @@ class Utility
 
         $query = "SELECT label FROM visits WHERE ID=:id";
 
-        $result = $DB->pselectOne($query, array("id"=>$id));
+        $result = $DB->pselectOne($query, array("id" => $id));
 
         return $result;
     }
@@ -322,8 +325,8 @@ class Utility
      * Gets the visits associated with a project AND/OR subproject.
      * The "null" option for either of the parameters is considered as "all"
      *
-     * @param   int  $projectID        ProjectID from project table
-     * @param   int  $subprojectID     SubprojectID from subproject table
+     * @param int $subprojID SubprojectID from subproject table
+     * @param int $projectID ProjectID from project table
      *
      * @return array associative array in the form (VisitID=>label)
      *
@@ -331,22 +334,22 @@ class Utility
      *       in the $projectID parameter if useProject=false
      * @note writtten by author
      */
-    Static function getVisitsForSubprojectProject ($subprojectID=null, $projectID=null)
+    Static function getVisitsForSubprojectProject($subprojID=null, $projectID=null)
     {
-        $DB =& Database::singleton();
-        $config =& NDB_Config::singleton();
+        $DB          =& Database::singleton();
+        $config      =& NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
 
-        $params = array();
-        $query_where='';
+        $params      = array();
+        $query_where ='';
 
         if ($useProjects !== "false" && !empty($projectID)) {
-            $params['pid']=$projectID;
-            $query_where .= ' AND vsr.ProjectID=:pid';
+            $params['pid'] =$projectID;
+            $query_where  .= ' AND vsr.ProjectID=:pid';
         }
-        if (!empty($subprojectID)) {
-            $params['sid']=$subprojectID;
-            $query_where .= ' AND vsr.SubprojectID=:sid';
+        if (!empty($subprojID)) {
+            $params['sid'] =$subprojID;
+            $query_where  .= ' AND vsr.SubprojectID=:sid';
         }
 
         $query = "SELECT DISTINCT 
@@ -369,15 +372,15 @@ class Utility
     /**
      * Returns the visit ids that a given test_name exists in
      *
-     * @param   string   $test_name The instrument that we want to know
-     *                          which visit labels exist in.
+     * @param string $test_name The instrument that we want to know which
+     *                          visit labels exist in.
      *
-     * @return  array    of the form array(0 => array('VisitID' => VL))
+     * @return array    of the form array(0 => array('VisitID' => VL))
      *         where VL is the value returned from the database.
      *
-     * @note    This should be moved out of the Utility class into whatever
+     * @note This should be moved out of the Utility class into whatever
      *       module uses it. (Data team helper?)
-     * @note    Function comment written by Dave, not the author of this function.
+     * @note Function comment written by Dave, not the author of this function.
      *
      * @flag REMOVE UNUSED
      *
@@ -1174,22 +1177,21 @@ class Utility
     /**
      * Returns a list of study Visit Labels that are being used by this study.
      *
-     * @param   integer $projectID Limit visit labels to labels used by this project
+     * @param integer $projectID Limit visit labels to labels used by this project
      *
-     * @return  array   associative array of study visits in the format
+     * @return array   associative array of study visits in the format
      *                  array('VisitID' => 'visit label').
-     *
      */
     static function getExistingVisitLabels($projectID = null)
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $params=array();
+        $params =array();
         if ($projectID != null) {
-            $ExtraProject_Criteria =
-                ' AND (c.ProjectID IS NULL OR c.ProjectID = :pid)';
-            $params["pid"]=$projectID;
+            $ExtraProject_Criteria
+                = ' AND (c.ProjectID IS NULL OR c.ProjectID = :pid)';
+            $params["pid"]         =$projectID;
         } else {
             $ExtraProject_Criteria ='';
         }
@@ -1209,7 +1211,7 @@ class Utility
         $visitlabels = $db->pselect($query, $params);
         $visits      = array();
         foreach ($visitlabels as $k=>$row) {
-            $visits[$row['ID']]=$row['label'];
+            $visits[$row['ID']] =$row['label'];
         }
         return $visits;
     }
@@ -1218,15 +1220,14 @@ class Utility
      * Get all the instruments which currently exist for a given visit id
      * in the database.
      *
-     * @param   int    $visitid   The visit label for which you would like
-     *                            to know the existing visit labels
+     * @param int $visitid ID from the visits table
      *
-     * @return  array  Array of instruments which exist for the given visit label
+     * @return array  Array       instruments which exist for the given visit label
      *                 array is of the form
      *                 array(0 => array('Test_name_display' => $TestName))?
      *
-     * @note Function comment written by Dave, not the author of this function.
-     *       The return value format seems weird. Where is this used?
+     * @note    Function comment written by Dave, not the author of this function.
+     *          The return value format seems weird. Where is this used?
      * @cleanup
      */
     static function getVisitInstruments($visitid)

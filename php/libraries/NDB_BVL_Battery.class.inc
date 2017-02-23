@@ -100,13 +100,15 @@ class NDB_BVL_Battery
      * @param integer $SubprojectID The SubprojectID that we want the battery
      *                              for
      * @param string  $stage        Either 'visit' or 'screening'
-     * @param string  $visitid      The visit ID to create a battery for.
-     * @param integer $center_ID    The centre of the candidate having a battery
+     * @param string  $visitID      The visit ID to create a battery for.
+     * @param integer $centerID     The centre of the candidate having a battery
      *                              created
      * @param boolean $firstVisit   Whether this is a first visit battery.
      *                              true means ONLY first visit
      *                              false means NOT first visit
      *                              null can be any visit.
+     *
+     * @throws Exception
      *
      * @return void
      */
@@ -253,6 +255,7 @@ class NDB_BVL_Battery
      * @param integer $SubprojectID The SubprojectID of that we want the battery for.
      * @param string  $visitID      The visit ID of the battery that we want to
      *                              retrieve
+     *
      * @note the following note was not written by the author
      * @note This function does not use any of its parameters
      *
@@ -401,7 +404,7 @@ class NDB_BVL_Battery
      * @param string  $visitID      (optional) The visit ID to look up the
      *                              battery for. If this is specified the battery
      *                              will use this INSTEAD OF the age of candidate.
-     * @param integer $centerID    (optional) The center ID to look up the visit
+     * @param integer $centerID     (optional) The center ID to look up the visit
      *                              battery for. If this is specified the lookup
      *                              will use it as an ADDITIONAL condition to
      *                              $age/$visitID.

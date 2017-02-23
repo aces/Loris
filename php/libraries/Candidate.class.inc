@@ -608,7 +608,8 @@ class Candidate
      */
     public function getNextVisitLabel()
     {
-        //TODO VISITS --> No need to change this because its the behavior only when user is selected
+        // TODO VISITS --> No need to change this because its the
+        // behavior only when user is selected
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
 
