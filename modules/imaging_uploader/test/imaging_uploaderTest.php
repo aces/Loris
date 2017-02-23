@@ -40,7 +40,7 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
              'MRIQCStatus'   => 'Pass',
              'SubprojectID'  => '6666',
              'Visit'         => 'In Progress',
-             'Visit_label'   => 'Test Visit Label'
+             'Visit_label'   => 'TestVisitLabel'
             )
         );
         $this->DB->insert(
@@ -153,7 +153,7 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
          )->click();
         $this->safeGet($this->url . '/imaging_uploader/?format=json');
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Test Visit Label", $bodyText);
+        $this->assertContains("TestVisitLabel", $bodyText);
 
 
         $this->safeGet($this->url . '/imaging_uploader/');
@@ -167,7 +167,7 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
          )->click();
         $this->safeGet($this->url . '/imaging_uploader/?format=json');
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Test Visit Label", $bodyText);
+        $this->assertContains("TestVisitLabel", $bodyText);
 
 
     }
@@ -187,12 +187,26 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/imaging_uploader/');
                 $this->webDriver->findElement(
              WebDriverBy::Name("mri_file")
-         )->sendKeys("test.gz");
-//todo select option no
+         )->sendKeys("./8889_999999_TestVisitLabel_.zip");
+        $this->webDriver->findElement(
+             WebDriverBy::name("CandID")
+         )->sendKeys("999999"); 
+        $this->webDriver->findElement(
+             WebDriverBy::name("PSCID")
+         )->sendKeys("8889");
+
+        $Visit_labelElement =  $this->safeFindElement(WebDriverBy::Name("Visit_label"));
+        $Visit_label        = new WebDriverSelect($Visit_labelElement);
+        $Visit_label->selectByVisibleText("TestVisitLabel");
+
+        $PhantomElement =  $this->safeFindElement(WebDriverBy::Name("IsPhantom"));
+        $Phantom        = new WebDriverSelect($PhantomElement);
+        $Phantom->selectByVisibleText("No");
+
         $this->webDriver->findElement(
              WebDriverBy::ID("upload")
          )->click();
-        sleep(2);
+        sleep(30);
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("mri_file: Make sure 'Are these Phantom Scans' is filled out.", $bodyText);
     }
