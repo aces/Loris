@@ -28,7 +28,7 @@ var QueryString = {
       var key = param.split("=")[0];
       var value = param.split("=")[1];
       if (key !== "" && value !== "") {
-        queryStringObj[key] = value;
+        queryStringObj[key] = decodeURI(value);
       }
     });
 
