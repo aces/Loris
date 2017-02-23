@@ -170,6 +170,34 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("TestVisitLabel", $bodyText);
 
 
+        $this->safeGet($this->url . '/imaging_uploader/');
+
+        $Visit_labelElement =  $this->safeFindElement(WebDriverBy::Name("Visit_label"));
+        $Visit_label        = new WebDriverSelect($Visit_labelElement);
+        $Visit_label->selectByVisibleText("TestVisitLabel");
+
+        $this->webDriver->findElement(
+             WebDriverBy::name("filter")
+         )->click();
+        $this->safeGet($this->url . '/imaging_uploader/?format=json');
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("TestVisitLabel", $bodyText);
+
+
+        $this->safeGet($this->url . '/imaging_uploader/');
+
+        $PhantomElement =  $this->safeFindElement(WebDriverBy::Name("IsPhantom"));
+        $Phantom        = new WebDriverSelect($PhantomElement);
+        $Phantom->selectByVisibleText("No");
+
+        $this->webDriver->findElement(
+             WebDriverBy::name("filter")
+         )->click();
+        $this->safeGet($this->url . '/imaging_uploader/?format=json');
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $this->assertContains("TestVisitLabel", $bodyText);
+
+
     }
 
     function testImagingUploaderwithoutData()
