@@ -187,7 +187,7 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/imaging_uploader/');
                 $this->webDriver->findElement(
              WebDriverBy::Name("mri_file")
-         )->sendKeys("./8889_999999_TestVisitLabel_.zip");
+         )->sendKeys("/TestVisitLabel.zip");
         $this->webDriver->findElement(
              WebDriverBy::name("CandID")
          )->sendKeys("999999"); 
@@ -206,9 +206,8 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->findElement(
              WebDriverBy::ID("upload")
          )->click();
-        sleep(30);
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("mri_file: Make sure 'Are these Phantom Scans' is filled out.", $bodyText);
+        $this->assertContains("8889_999999_TestVisitLabel", $bodyText);
     }
 }
 ?>
