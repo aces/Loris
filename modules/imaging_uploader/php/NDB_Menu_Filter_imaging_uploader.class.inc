@@ -71,7 +71,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                           $progressSelectPart,
                           's.CandID',
                           'c.PSCID',
-                          's.Visit_label',
+                          'v.label as Visit_label',
                           'UploadLocation',
                           'UploadDate',
                           'UploadedBy',
@@ -83,17 +83,18 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $this->validFilters = array(
                                's.CandID',
                                'c.PSCID',
-                               's.Visit_label',
+                               's.VisitID',
                                'mu.IsPhantom',
                               );
         $this->query        = " FROM mri_upload mu LEFT JOIN session".
                               " s ON (s.ID = mu.SessionID)".
                               " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
+                              " LEFT JOIN visits v ON (v.ID=s.VisitID)".
                               " WHERE 1=1 ";
         $this->formToFilter = array(
                                'CandID'      => 's.CandID',
                                'PSCID'       => 'c.PSCID',
-                               'Visit_label' => 's.Visit_label',
+                               'Visit_label' => 's.VisitID',
                                'IsPhantom'   => 'mu.IsPhantom',
                               );
         return true;
@@ -122,15 +123,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $this->addBasicText('CandID', 'CandID:');
         $this->addBasicText('PSCID', 'PSCID:');
-        $visitlabels = array_merge(
-            array(null => ''),
-            //TODO VISITS
-            Utility::getExistingVisitLabels()
-        );
+        $vLabels = array(null => '') + Utility::getExistingVisitLabels();
+
         $this->addSelect(
-            'Visit_label',
+            'vlabel',
             'VisitLabel:',
-            $visitlabels
+            $vLabels
         );
         $phantom_options = array(
                             null => '',
@@ -282,6 +280,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      * @param FILE  $file The uploaded file
      * @param Array $args The list of arguments
      *
+     * @throws LorisException
+     *
      * @return Array  Returns an array of errors or
      * boolean if it's true
      */
@@ -314,20 +314,20 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////////
             $candid      = trim($args['values']['CandID']);
             $pscid       = trim($args['values']['PSCID']);
-            $visit_label = trim($args['values']['Visit_label']);
-            if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
-                $errors[] ="Make sure the CandID, PSCID and Visit_label are ".
+            $vLabel = trim($args['values']['vlabel']);
+            if ((empty($candid)) || (empty($pscid)) || (empty($vLabel))) {
+                $errors[] ="Make sure the CandID, PSCID and Visit label are ".
                 "filled out. <br>Please refresh this page to return to the Imaging
                 Uploader module.";
             }
 
             ///////////////////////////////////////////////////////////////////////
             ///////////    Make sure the file name matches the format   ///////////
-            ///////////         $pscid_$candid_$visit_label             ///////////
+            ///////////         $pscid_$candid_$vLabel                  ///////////
             ///////////              OR starts with                     ///////////
-            ///////////         $pscid_$candid_$visit_label_            ///////////
+            ///////////         $pscid_$candid_$vLabel_                 ///////////
             ///////////////////////////////////////////////////////////////////////
-            $pcv  = $pscid . "_" . $candid . "_" . $visit_label;
+            $pcv  = $pscid . "_" . $candid . "_" . $vLabel;
             $pcvu = $pcv . "_";
             if ((!preg_match("/{$pcv}\.(zip|tgz|tar.gz)/", $file_name))
                 && (!preg_match("/^{$pcvu}.*(\.(zip|tgz|tar.gz))/", $file_name))
@@ -340,21 +340,21 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////////
             //////check to see if candid/pscid and visit-label exist///////////////
             ///////////////////////////////////////////////////////////////////////
-            if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
+            if ((!empty($candid)) && (!empty($pscid)) && (!empty($vLabel))) {
                 if ($db->pselectOne(
                     "SELECT COUNT(*) FROM session s
                      JOIN candidate c ON (c.candid=s.candid)
-                     WHERE s.Visit_label = :vlabel
+                     WHERE s.VisitID = :vid
                      AND c.pscid = :pid AND c.candid = :cid",
                     array(
                      ':cid'    => $candid,
-                     ':vlabel' => $visit_label,
+                     ':vid'    => Utility::getVisitIDFromLegacyLabel($vLabel),
                      ':pid'    => $pscid,
                     )
                 )==0) {
                         $errors[] = "Make sure you enter the CandID: $candid,".
                                     " PSCID: $pscid and the corresponding".
-                                    " Visit-label: $visit_label. Candidate and".
+                                    " Visit-label: $vLabel. Candidate and".
                                     " corresponding visit label must already be" .
                                     " created in the database. <br>Please refresh this".
                                     " page to return to the Imaging Uploader module";
@@ -421,26 +421,26 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         ///////////////////////////////////////////////////////////////////////
         $date = date('Y-m-d H:i:s');
         ///////////////////////////////////////////////////////////////////////
-        /////Get the pscid, candid and visit_label/////////////////////////////
+        /////Get the pscid, candid and vlabel/////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         if ($args['values']['IsPhantom']=='N') {
             if ((!empty($args['values']['CandID']))
                 && (!empty($args['values']['PSCID']))
-                &&(!empty($args['values']['Visit_label']))
+                &&(!empty($args['values']['vlabel']))
             ) {
                 ///////////////////////////////////////////////////////////////////
                 ////////////////////Use the arguments//////////////////////////////
                 ///////////////////////////////////////////////////////////////////
-                $visit_label = $args['values']['Visit_label'];
+                $vLabel = $args['values']['vlabel'];
                 $candid      = $args['values']['CandID'];
                 $pscid       = $args['values']['PSCID'];
-                $pname       = $pscid. "_" . $candid . "_" . $visit_label;
+                $pname       = $pscid. "_" . $candid . "_" . $vLabel;
                 $sessionid   = $db->pselectOne(
                     "SELECT ID FROM  session WHERE CandID = :cid
-                     AND Visit_label =:vlabel",
+                     AND VisitID =:vid",
                     array(
                      'cid'    => $candid,
-                     'vlabel' => $visit_label,
+                     'vid'    => Utility::getVisitIDFromLegacyLabel($vLabel),
                     )
                 );
             }

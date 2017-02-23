@@ -239,7 +239,7 @@ class Utility
      * Gets a list of visits used by the database as specified from
      * the visits table
      *
-     * @return array associative array of the form VisitID=>label
+     * @return array associative array of the form array('VisitID' => 'visit label').
      */
     static function getVisitList()
     {
