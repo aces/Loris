@@ -119,7 +119,7 @@ class TimePoint
 
         // get user data from database
         $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID,
-                         s.VisitNo, v.label AS Visit_label, s.VisitID, s.SubprojectID, s.Submitted,
+                         s.VisitNo, v.label AS vLabel, s.VisitID, s.SubprojectID, s.Submitted,
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
@@ -345,7 +345,7 @@ class TimePoint
      */
     function getVisitLabel()
     {
-        return $this->_timePointInfo["Visit_label"];
+        return $this->_timePointInfo["vLabel"];
     }
 
     /**

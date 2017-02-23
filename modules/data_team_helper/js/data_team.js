@@ -19,8 +19,8 @@ function changeVisitLabels()
 {
     //get the value for the visit selected
     var instrument_dropdown = document.getElementById('instrument');
-    var visit_label_dropdown = document.getElementById('visit_label');
-    var visit_label_value = visit_label_dropdown.value;
+    var vlabel_dropdown = document.getElementById('vlabel');
+    var vlabel_value = vlabel_dropdown.value;
     var instrument_dropdown_value = instrument_dropdown.value;
     if (instrument_dropdown_value != undefined) {
         instrument_dropdown_value = instrument_dropdown_value.replace(/\+/g,' ');
@@ -28,7 +28,7 @@ function changeVisitLabels()
     request = $.ajax({
 	url: loris.BaseURL + "/data_team_helper/ajax/GetInstruments.php",
 	type: "get",
-	data: {"visit_label" : visit_label_value},
+	data: {"vlabel" : vlabel_value},
 	success: function(data){
 	    //Removing previous options from instrument dropdown. 
 	    $("#instrument > option").remove();

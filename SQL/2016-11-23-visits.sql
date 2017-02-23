@@ -35,12 +35,11 @@ CREATE TABLE `visits_subproject_project_rel` (
   `SubprojectID` int(10) unsigned NOT NULL,
   `ProjectID` int(2) DEFAULT NULL,
   PRIMARY KEY  (`visitID`,`subprojectID`),
-  CONSTRAINT `FK_visits_subproject_project_rel_1` UNIQUE (`VisitID`,`SubprojectID`,`ProjectID`),
+  CONSTRAINT `U_visits_subproject_project_rel_1` UNIQUE (`VisitID`,`SubprojectID`,`ProjectID`),
   CONSTRAINT `FK_visits_subproject_project_rel_2` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_visits_subproject_project_rel_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_visits_subproject_project_rel_4` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE
-
-  )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------------------------

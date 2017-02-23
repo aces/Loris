@@ -117,7 +117,7 @@ var IncompleteCandidatesRow = React.createClass({
           <a href={this.props.BaseURL + "/" + row.candid + "/" +
           row.SessionID + "/"}
           >
-            {row.visit_label}
+            {row.vlabel}
           </a>
         </td>
         <td>
@@ -147,11 +147,11 @@ var InstrumentConflictsRow = React.createClass({
     var baseURL = this.props.BaseURL;
     return (
       <tr
-        key={row.CandID + row.visit_label + row.test_name_display +
+        key={row.CandID + row.vlabel + row.test_name_display +
         row.FieldName}
         onClick={this.handleClick}
       >
-        <td>{row.visit_label}</td>
+        <td>{row.vlabel}</td>
         <td>
           <a href={baseURL + "/" + row.CandID + "/"}>{row.CandID}</a>
         </td>
@@ -160,7 +160,7 @@ var InstrumentConflictsRow = React.createClass({
             href={baseURL + "/conflict_resolver/?CandID=" + row.CandID}
             className="conflict_resolver_link" data-pscid={row.PSCID}
             data-question={row.FieldName} data-instrument={row.TableName}
-            data-visits={row.visit_label}
+            data-visits={row.vlabel}
           >
             {row.test_name_display}
           </a>
@@ -189,7 +189,7 @@ var BehaviouralFeedbackRow = React.createClass({
     if (row.Feedback_level === 'visit') {
       bvlLink = this.props.BaseURL + "/" + row.CandID + "/" +
         row.SessionID + "/";
-      bvlLevel = "Visit : " + row.Visit_label;
+      bvlLevel = "Visit : " + row.vlabel;
     }
 
     if (row.Feedback_level === 'instrument') {

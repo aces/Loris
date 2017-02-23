@@ -35,10 +35,10 @@ require_once "Utility.class.inc";
 
 //Array containing the JSON information to return.
 $flattened_result = array();
-//gets the given visit_label and returns the instrument
+//gets the given visit label and returns the instrument
 
 //If all visits are selected return all visits
-if ($_REQUEST['visit_label'] == 'All Visits') {
+if ($_REQUEST['vlabel'] == 'All Visits') {
     $instruments = Utility::getAllInstruments();
     array_unshift($instruments, "All Instruments");
 
@@ -52,7 +52,7 @@ if ($_REQUEST['visit_label'] == 'All Visits') {
     exit();
 } else {
     //TODO VISITS
-    $instruments = Utility::getVisitInstruments($_REQUEST['visit_label']);
+    $instruments = Utility::getVisitInstruments($_REQUEST['vlabel']);
     //flattening the array result for proper json encoding
     if ($instruments == null) {
         $flattened_result[0] = "No instruments for this visit";

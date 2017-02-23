@@ -17,10 +17,10 @@
 						<div class="form-group col-sm-6">
 							<label class="col-sm-12 col-md-4">Visit Labels:</label>
 							<div class="col-sm-12 col-md-8">
-								<select name="visit_label" onchange="changefieldOptions()" id="visit_label" class="form-control input-sm">
+								<select name="vlabel" onchange="changefieldOptions()" id="vlabel" class="form-control input-sm">
 									<option value="All Visits" selected="selected">All Visits</option>
-									{foreach from=$visitLabels item=name key=val}
-										{if $name eq $visit_label}
+									{foreach from=$vlabels item=name key=val}
+										{if $name eq $vlabel}
 											<option value="{$name}" selected="selected"> {$name}</option>
 										{else}
 											<option value="{$name}"> {$name}</option>
@@ -132,7 +132,7 @@ var FeedbackTab = BehaviouralFeedbackTab({
 
 var percentCompleted = {$percent_completed|@json_encode};
 var pscid = {$candidate|@json_encode};
-var visit = {$visit_label|@json_encode};
+var visit = {$vlabel|@json_encode};
 var instrument = {$test_name|@json_encode};
 
 var DataTeamGraphics = GraphicsPanel({
