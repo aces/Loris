@@ -235,7 +235,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 $this->tpl_data['conflicts'][] = "Conflict between final and extra review";
             }
             if ($defaults['Final_Review_Results'] != $defaults['Original_Review_Results']
-                //|| $defaults['Final_Exclusionary'] != $defaults['Original_Exclusionary']
+         
             ) {
                 $this->tpl_data['conflicts'][] = "Conflict between original and final review";
             }
