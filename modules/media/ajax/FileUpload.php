@@ -107,7 +107,6 @@ function uploadFile()
         showError("Please fill in all required fields!");
         return;
     }
-    //data/uploads/candid/visit_label/file
     $fileName  = str_replace(' ', '_', trim($_FILES["file"]["name"]));
     $fileType  = $_FILES["file"]["type"];
     $extension = pathinfo($fileName)['extension'];
