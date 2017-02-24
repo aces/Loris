@@ -107,9 +107,15 @@ function uploadFile()
         showError("Please fill in all required fields!");
         return;
     }
+    //data/uploads/candid/visit_label/file
+    $fileName  = str_replace(' ', '_', trim($_FILES["file"]["name"]));
+    $fileType  = $_FILES["file"]["type"];
+    $extension = pathinfo($fileName)['extension'];
 
-    $fileName = $_FILES["file"]["name"];
-    $fileType = $_FILES["file"]["type"];
+    if (!isset($extension)) {
+        showError("Please make sure your file has a valid extension!");
+        return;
+    }
 
     $userID = $user->getData('UserID');
 
@@ -146,6 +152,13 @@ function uploadFile()
               'hide_file'     => 0,
               'date_uploaded' => date("Y-m-d H:i:s"),
              ];
+
+    // Upload file to folder based on pscid and visit
+    $mediaPath .= $pscid . '/' . $visit . '/';
+
+    if (!is_dir($mediaPath)) {
+        mkdir($mediaPath, 0777, true);
+    }
 
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         $existingFiles = getFilesList();

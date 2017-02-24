@@ -291,7 +291,10 @@ class MediaUploadForm extends React.Component {
       error: function(err) {
         console.error(err);
         let msg = err.responseJSON ? err.responseJSON.message : "Upload error!";
-        this.setState({errorMessage: msg});
+        this.setState({
+          errorMessage: msg,
+          uploadProgress: -1
+        });
         swal(msg, "", "error");
       }.bind(this)
     });
