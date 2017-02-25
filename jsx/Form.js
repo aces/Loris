@@ -218,8 +218,8 @@ var SelectElement = React.createClass({
       elementClass = 'row form-group has-error';
     }
 
-    // After checking for errors, set value to empty string to reset dropdown
-    const value = (this.props.value === undefined) ? "" : this.props.value;
+    // Default to empty string for regular select and to empty array for 'multiple' select
+    const value = this.props.value || (multiple ? [] : "");
 
     return (
       <div className={elementClass}>
@@ -307,7 +307,7 @@ var TextareaElement = React.createClass({
             className="form-control"
             name={this.props.name}
             id={this.props.id}
-            value={this.props.value}
+            value={this.props.value || ""}
             required={required}
             disabled={disabled}
             onChange={this.handleChange}
@@ -371,7 +371,7 @@ var TextboxElement = React.createClass({
             className="form-control"
             name={this.props.name}
             id={this.props.id}
-            value={this.props.value}
+            value={this.props.value || ""}
             required={required}
             disabled={disabled}
             onChange={this.handleChange}
