@@ -19,31 +19,26 @@ var CollapsibleComment = React.createClass({
     );
   },
   render: function() {
-    var historyText = [];
-    var btnCommentsLabel = (this.state.collapsed ?
+    const historyText = [];
+    const btnCommentsLabel = (this.state.collapsed ?
       "Show Comment History" :
       "Hide Comment History");
 
-    var commentHistory = this.props.commentHistory;
-    for (var comment in commentHistory) {
-      if (commentHistory[comment].fieldChanged === 'comment') {
-        historyText.push("  [" +
-          commentHistory[comment].dateAdded +
-          "] ",
-          <b> {commentHistory[comment].addedBy} </b>,
-          " commented",
-          <i> {commentHistory[comment].newValue} </i>,
-          <br/>);
-      } else {
-        historyText.push("  [" +
-          commentHistory[comment].dateAdded +
-          "] ",
-          <b> {commentHistory[comment].addedBy} </b>,
-          " updated the " +
-          commentHistory[comment].fieldChanged +
-          " to",
-          <i> {commentHistory[comment].newValue} </i>,
-          <br/>);
+    const commentHistory = this.props.commentHistory;
+    for (let commentID in commentHistory) {
+      if (commentHistory.hasOwnProperty(commentID)) {
+        let action = " updated the " + commentHistory[commentID].fieldChanged + " to ";
+        if (commentHistory[commentID].fieldChanged === 'comment') {
+          action = " commented ";
+        }
+        historyText.push(
+          <div key={"comment_" + commentID}>
+            [{commentHistory[commentID].dateAdded}]
+            <b> {commentHistory[commentID].addedBy}</b>
+            {action}
+            <i> {commentHistory[commentID].newValue}</i>
+          </div>
+        );
       }
     }
 
@@ -120,37 +115,37 @@ var IssueEditForm = React.createClass({
         this.state.Data.hasEditPermission ||
         this.state.Data.isOwnIssue ||
         this.state.isNewIssue
-      );
+    );
 
     var headerText = " ";
     if (this.state.isNewIssue) {
       headerText = "Create New Issue";
     } else {
-      headerText = "Edit Issue #" + this.state.formData.issueID;
+      headerText = "Edit Issue #" + this.state.issueData.issueID;
     }
 
     var lastUpdateValue = " ";
     if (this.state.isNewIssue) {
       lastUpdateValue = "Never!";
     } else {
-      lastUpdateValue = this.state.formData.lastUpdate;
+      lastUpdateValue = this.state.issueData.lastUpdate;
     }
 
     var lastUpdatedByValue = " ";
     if (this.state.isNewIssue) {
       lastUpdatedByValue = "No-one!";
     } else {
-      lastUpdatedByValue = this.state.formData.lastUpdatedBy;
+      lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
     }
 
     var dateCreated = " ";
     if (this.state.isNewIssue) {
       dateCreated = "Sometime Soon!";
     } else {
-      dateCreated = this.state.formData.dateCreated;
+      dateCreated = this.state.issueData.dateCreated;
     }
 
-    var isWatching = this.state.formData.watching;
+    var isWatching = this.state.issueData.watching;
 
     var submitButtonValue = "";
     if (this.state.isNewIssue) {
@@ -165,14 +160,9 @@ var IssueEditForm = React.createClass({
       commentLabel = "New Comment";
     }
 
-    var commentHistory;
-    if (this.state.isNewIssue) {
-      commentHistory = <div class="form-group">&nbsp;</div>;
-    } else {
-      commentHistory = <CollapsibleComment
-          commentHistory={this.state.formData.commentHistory}
-        />;
-    }
+    var commentHistory = this.state.isNewIssue || (
+      <CollapsibleComment commentHistory={this.state.issueData.commentHistory} />
+    );
 
     if (this.state.submissionResult) {
       if (this.state.submissionResult === "success") {
@@ -229,7 +219,7 @@ var IssueEditForm = React.createClass({
                   name="reporter"
                   label={"Reporter: "}
                   ref="reporter"
-                  text={this.state.formData.reporter}
+                  text={this.state.issueData.reporter}
                 />
               </div>
             </div>
@@ -237,21 +227,13 @@ var IssueEditForm = React.createClass({
         );
 
       description = (
-          <div>
-            <div class="row">
-              <StaticElement
-                name="description"
-                label="Description"
-                ref="description"
-                text={
-                  (this.state.formData.desc === "null" ?
-                    "" :
-                    this.state.formData.desc)
-                }
-              />
-            </div>
-          </div>
-        );
+        <StaticElement
+          name="description"
+          label="Description"
+          ref="description"
+          text={this.state.issueData.desc}
+        />
+      );
     }
 
     return (
@@ -260,187 +242,133 @@ var IssueEditForm = React.createClass({
             name="issueEdit"
             onSubmit={this.handleSubmit}
             ref="form"
-            class=""
           >
             <h3>{headerText}</h3>
             <br />
-
             {header}
-
             <br></br>
             <br></br>
 
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="row">
-                  <TextboxElement
-                    name="title"
-                    label="Title"
-                    onUserInput={this.setFormData}
-                    ref="title"
-                    value={this.state.formData.title}
-                    disabled={!hasEditPermission}
-                    required={true}
-                  />
-                </div>
-
-                {description}
-
-                <div class="row">
-                  <SelectElement
-                    name="assignee"
-                    label="Assignee"
-                    emptyOption={true}
-                    options={this.state.Data.assignees}
-                    onUserInput={this.setFormData}
-                    ref="assignee"
-                    disabled={!hasEditPermission}
-                    value={this.state.formData.assignee}
-                    required={true}
-                  />
-                </div>
-                <div class="row">
-                  <SelectElement
-                    name="centerID"
-                    label="Site"
-                    emptyOption={true}
-                    options={this.state.Data.sites}
-                    onUserInput={this.setFormData}
-                    ref="centerID"
-                    disabled={!hasEditPermission}
-                    value={this.state.formData.centerID}
-                  />
-                </div>
-
-                <div class="row">
-                  <SelectElement
-                    name="status"
-                    label="Status"
-                    emptyOption={false}
-                    options={this.state.Data.statuses}
-                    onUserInput={this.setFormData}
-                    ref="status"
-                    disabled={!hasEditPermission}
-                    value={this.state.formData.status} // todo: edit this so the
-                                                        // options are different if
-                                                        // the user doesn't have
-                                                        // permission
-                  />
-                </div>
-                <div class="row">
-                  <SelectElement
-                    name="priority"
-                    label="Priority"
-                    emptyOption={false}
-                    options={this.state.Data.priorities}
-                    onUserInput={this.setFormData}
-                    ref="priority"
-                    required={false}
-                    disabled={!hasEditPermission}
-                    value={this.state.formData.priority}
-                  />
-                </div>
-
-                <div class="row">
-                  <SelectElement
-                    name="category"
-                    label="Category"
-                    emptyOption={true}
-                    options={this.state.Data.categories}
-                    onUserInput={this.setFormData}
-                    ref="category"
-                    disabled={!hasEditPermission}
-                    value={this.state.formData.category}
-                  />
-                </div>
-                <div class="row">
-                  <SelectElement
-                    name="module"
-                    label="Module"
-                    emptyOption={true}
-                    options={this.state.Data.modules}
-                    onUserInput={this.setFormData}
-                    ref="module"
-                    disabled={!hasEditPermission}
-                    value={this.state.formData.module}
-                  />
-                </div>
-
-                <div class="row">
-                  <TextboxElement
-                    name="PSCID"
-                    label="PSCID"
-                    onUserInput={this.setFormData}
-                    ref="PSCID"
-                    disabled={!hasEditPermission}
-                    value={this.state.formData.PSCID}
-                  />
-                </div>
-                <div class="row">
-                  <TextboxElement
-                    name="visitLabel"
-                    label="Visit Label"
-                    onUserInput={this.setFormData}
-                    ref="visitLabel"
-                    disabled={!hasEditPermission}
-                    value={this.state.formData.visitLabel}
-                  />
-                </div>
-
-                <div class="row">
-                  <SelectElement
-                    name="watching"
-                    label="Watching?"
-                    emptyOption={false}
-                    options={{No: 'No', Yes: 'Yes'}}
-                    onUserInput={this.setFormData}
-                    ref="watching"
-                    value={isWatching}
-                  />
-                </div>
-
-                <div class="row">
-                  <SelectElement
-                    name="othersWatching"
-                    label="Add others to watching?"
-                    emptyOption={true}
-                    options={this.state.Data.otherWatchers}
-                    onUserInput={this.setFormData}
-                    ref="watching"
-                    multiple={true}
-                    value={this.state.formData.whoIsWatching}
-                  />
-                </div>
-
-                <div class="row">
-                  <TextareaElement
-                    name="comment"
-                    label={commentLabel}
-                    onUserInput={this.setFormData}
-                    ref="comment"
-                    value={null}
-                  />
-                </div>
-
-                <div class="row submit-area">
-                  <ButtonElement label={submitButtonValue} />
-                  <div class="col-md-3">
-                    <div className={alertClass}
-                         role="alert"
-                         ref="alert-message"
-                    >
-                      {alertMessage}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-6">
-                <div class="row">
-                  {commentHistory}
-                </div>
-              </div>
+            <TextboxElement
+              name="title"
+              label="Title"
+              onUserInput={this.setFormData}
+              ref="title"
+              value={this.state.formData.title}
+              disabled={!hasEditPermission}
+              required={true}
+            />
+            {description}
+            <SelectElement
+              name="assignee"
+              label="Assignee"
+              emptyOption={true}
+              options={this.state.Data.assignees}
+              onUserInput={this.setFormData}
+              ref="assignee"
+              disabled={!hasEditPermission}
+              value={this.state.formData.assignee}
+              required={true}
+            />
+            <SelectElement
+              name="centerID"
+              label="Site"
+              emptyOption={true}
+              options={this.state.Data.sites}
+              onUserInput={this.setFormData}
+              ref="centerID"
+              disabled={!hasEditPermission}
+              value={this.state.formData.centerID}
+            />
+            <SelectElement
+              name="status"
+              label="Status"
+              emptyOption={false}
+              options={this.state.Data.statuses}
+              onUserInput={this.setFormData}
+              ref="status"
+              disabled={!hasEditPermission}
+              value={this.state.formData.status} // todo: edit this so the options are different if the user doesn't have permission
+            />
+            <SelectElement
+              name="priority"
+              label="Priority"
+              emptyOption={false}
+              options={this.state.Data.priorities}
+              onUserInput={this.setFormData}
+              ref="priority"
+              required={false}
+              disabled={!hasEditPermission}
+              value={this.state.formData.priority}
+            />
+            <SelectElement
+              name="category"
+              label="Category"
+              emptyOption={true}
+              options={this.state.Data.categories}
+              onUserInput={this.setFormData}
+              ref="category"
+              disabled={!hasEditPermission}
+              value={this.state.formData.category}
+            />
+            <SelectElement
+              name="module"
+              label="Module"
+              emptyOption={true}
+              options={this.state.Data.modules}
+              onUserInput={this.setFormData}
+              ref="module"
+              disabled={!hasEditPermission}
+              value={this.state.formData.module}
+            />
+            <TextboxElement
+              name="PSCID"
+              label="PSCID"
+              onUserInput={this.setFormData}
+              ref="PSCID"
+              disabled={!hasEditPermission}
+              value={this.state.formData.PSCID}
+            />
+            <TextboxElement
+              name="visitLabel"
+              label="Visit Label"
+              onUserInput={this.setFormData}
+              ref="visitLabel"
+              disabled={!hasEditPermission}
+              value={this.state.formData.visitLabel}
+            />
+            <SelectElement
+              name="watching"
+              label="Watching?"
+              emptyOption={false}
+              options={{No: 'No', Yes: 'Yes'}}
+              onUserInput={this.setFormData}
+              ref="watching"
+              value={isWatching}
+            />
+            <SelectElement
+              name="othersWatching"
+              label="Add others to watching?"
+              emptyOption={true}
+              options={this.state.Data.otherWatchers}
+              onUserInput={this.setFormData}
+              ref="watching"
+              multiple={true}
+              value={this.state.formData.whoIsWatching}
+            />
+            <TextareaElement
+              name="comment"
+              label={commentLabel}
+              onUserInput={this.setFormData}
+              ref="comment"
+              value={this.state.formData.comment}
+            />
+            <div className={alertClass} role="alert" ref="alert-message">
+              {alertMessage}
             </div>
+            <ButtonElement label={submitButtonValue} />
           </FormElement>
+          {commentHistory}
         </div>
       );
   },
@@ -449,47 +377,26 @@ var IssueEditForm = React.createClass({
      * Creates an ajax request and sets the state with the result
      */
   getDataAndChangeState: function() {
-    var that = this;
-
     var dataURL = this.props.DataURL;
 
     $.ajax(dataURL, {
       dataType: 'json',
-      xhr: function() {
-        var xhr = new window.XMLHttpRequest();
-        xhr.addEventListener(
-              "progress",
-              function(evt) {
-                that.setState({
-                  loadedData: evt.loaded
-                });
-              }
-            );
-        return xhr;
-      },
       success: function(data) {
-        if (!data.issueData.issueID) {
-          that.setState({isNewIssue: true});
-        }
-
-        that.setState({
+        this.setState({
           Data: data,
           isLoaded: true,
           issueData: data.issueData,
-          formData: data.issueData
+          formData: data.issueData,
+          error: "finished success",
+          isNewIssue: !data.issueData.issueID
         });
-
-        that.setState({
-          error: "finished success"
-        });
-      },
+      }.bind(this),
       error: function(data, errorCode, errorMsg) {
-        that.setState({
+        this.setState({
           error: errorMsg
         });
-      }
-    }
-      );
+      }.bind(this)
+    });
   },
 
     /**
@@ -588,15 +495,12 @@ var IssueEditForm = React.createClass({
      */
   setFormData: function(formElement, value) {
       // todo: only give valid inputs for fields given previous input to other fields
-
     var formDataUpdate = this.state.formData;
     formDataUpdate[formElement] = value;
 
-    this.setState(
-      {
-        formData: formDataUpdate
-      }
-      );
+    this.setState({
+      formData: formDataUpdate
+    });
   },
 
     /**
@@ -637,7 +541,7 @@ var IssueEditForm = React.createClass({
       return;
     }
 
-    var alertMsg = React.findDOMNode(this.refs["alert-message"]);
+    var alertMsg = this.refs["alert-message"];
     $(alertMsg).fadeTo(2000, 500).delay(5000).slideUp(
         500,
         function() {
