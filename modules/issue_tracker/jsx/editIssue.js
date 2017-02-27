@@ -258,7 +258,7 @@ var IssueEditForm = React.createClass({
               onUserInput={this.setFormData}
               ref="watching"
               multiple={true}
-              value={this.state.formData.whoIsWatching}
+              value={this.state.formData.othersWatching}
             />
             <TextareaElement
               name="comment"

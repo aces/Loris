@@ -596,7 +596,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         );
         $issueData['watching'] = is_array($isWatching) ? "No" : "Yes";
         $issueData['commentHistory'] = getComments($issueID);
-        $issueData['whoIsWatching']  = getWatching($issueID);
+        $issueData['othersWatching']  = getWatching($issueID);
         $issueData['desc']           = $db->pSelectOne(
             "SELECT issueComment 
 FROM issues_comments WHERE issueID=:issueID 
