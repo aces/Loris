@@ -58,8 +58,10 @@ class NDB_Form_User_Accounts extends NDB_Form
                 if ($this->isCreatingNewUser()) {
                     return true;
                 }
-
-                return $editor->getData('CenterID') == $user->getData('CenterID');
+                return in_array(
+                    $editor->getData('CenterIDs'),
+                    $user->getData('CenterIDs')
+                );
             }
 
             return false;
@@ -219,6 +221,24 @@ class NDB_Form_User_Accounts extends NDB_Form
             unset($values['Password_md5']);
         }
 
+        // multi-site UPDATE
+        $uid           = $user->getData('ID');
+        $us_curr_sites = $values['CenterIDs'];
+        if (!$this->isCreatingNewUser()) {
+            $DB->delete('user_psc_rel', array("UserID" => $uid));
+            foreach ($us_curr_sites as $site) {
+                $DB->insert(
+                    'user_psc_rel',
+                    array(
+                     "UserID"   => $uid,
+                     "CenterID" => $site,
+                    )
+                );
+            }
+        }
+        unset($values['CenterIDs']);
+        // END multi-site UPDATE
+
         // EXAMINER UPDATE
         $ex_curr_sites =array();
         $ex_prev_sites =array();
@@ -313,6 +333,16 @@ class NDB_Form_User_Accounts extends NDB_Form
             // insert a new user
             $success = User::insert($set);
             $user    = User::factory($set['UserID']);
+            $uid     = $user->getData('ID');
+            foreach ($us_curr_sites as $site) {
+                $DB->insert(
+                    'user_psc_rel',
+                    array(
+                     "UserID"   => $uid,
+                     "CenterID" => $site,
+                    )
+                );
+            }
         } else {
             // update the user
             $user    = User::factory($this->identifier);
@@ -549,7 +579,12 @@ class NDB_Form_User_Accounts extends NDB_Form
                    $editor->getData('CenterID') => $editor->getData('Site'),
                   );
         }
-        $this->addSelect('CenterID', 'Site', $siteOptions);
+        $this->addSelect(
+            'CenterIDs',
+            'Sites',
+            $siteOptions,
+            array('multiple' => 'multiple')
+        );
 
         if ($editor->hasPermission('examiner_multisite')) {
             //get site aliases

@@ -182,7 +182,7 @@ class NDB_Form_survey_accounts extends NDB_Form
 
         $commentID = $battery->addInstrument($values['Test_name']);
 
-        $key = User::newPassword();
+        $key = $this->_generateSurveyKey();
 
         $email = false;
         if (isset($_REQUEST['send_email'])) {
@@ -218,6 +218,16 @@ class NDB_Form_survey_accounts extends NDB_Form
             );
             Email::send($values['Email'], 'new_survey.tpl', $msg_data);
         }
+    }
+
+    /**
+     * Generates a URL safe key
+     *
+     * @return string
+     */
+    function _generateSurveyKey() {
+        $bytes = openssl_random_pseudo_bytes(8);
+        return bin2hex($bytes);
     }
 
     /**

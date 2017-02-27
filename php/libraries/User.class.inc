@@ -55,11 +55,26 @@ class User extends UserPermissions
         $DB =& Database::singleton();
 
         // get user data from database
-        $query = "SELECT users.*, psc.Name AS Site FROM users
-            LEFT JOIN psc ON (users.centerID=psc.CenterID)
-            WHERE users.UserID = :UID";
+        $query = "SELECT users.*,
+            GROUP_CONCAT(psc.Name SEPARATOR ';') AS Sites
+            FROM users
+            LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
+            LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
+            WHERE users.UserID = :UID
+            GROUP BY users.ID";
 
         $row = $DB->pselectRow($query, array('UID' => $username));
+
+        // get user sites
+        $user_centerID_query =  $DB->pselect(
+            "SELECT CenterID FROM user_psc_rel upr 
+                        WHERE upr.UserID= :UID",
+            array('UID' => $row['ID'])
+        );
+
+        foreach ($user_centerID_query as $key=>$val) {
+            $user_cid[$key] =$val['CenterID'];
+        }
 
         // Get examiner information
         $examiner_check = $DB->pselect(
@@ -85,8 +100,9 @@ class User extends UserPermissions
             }
         }
         // store user data in object property
-        $row['examiner'] =$examiner_info;
-        $obj->userInfo   = $row;
+        $row['examiner']  =$examiner_info;
+        $row['CenterIDs'] =$user_cid;
+        $obj->userInfo    =$row;
         return $obj;
     }
 
@@ -198,7 +214,7 @@ class User extends UserPermissions
      */
     function getSiteName()
     {
-        return $this->userInfo['Site'];
+        return $this->userInfo['Sites'];
     }
 
     /**
@@ -208,8 +224,9 @@ class User extends UserPermissions
      */
     function getCenterID()
     {
-        return $this->userInfo['CenterID'];
+        return $this->userInfo['CenterIDs'];
     }
+
 
     /**
      * Unknown what this does. Maybe it should be removed?

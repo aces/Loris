@@ -187,11 +187,14 @@ class TimePoint
      * @param integer $candID         6 digit CandID having a timepoint created.
      * @param integer $SubprojectID   The subprojectID of the new timepoint
      * @param string  $nextVisitLabel The visit label of the timepoint being created
+     * @param string  $psc            The centre of the timepoint
      *
      * @return A new TimePoint instance.
      */
-    static function createNew($candID, $SubprojectID, $nextVisitLabel = null)
-    {
+    static function createNew($candID, $SubprojectID,
+        $nextVisitLabel = null, $psc = null
+    ) {
+
         // insert into session set CandID=$candID,
         // SubprojectID=$SubprojectID, VisitNo=nextVisitNumber(),
         // UserID=$State->getUsername(), etc...  NO Date_* are
@@ -224,12 +227,15 @@ class TimePoint
         $VisitLabel = $nextVisitLabel == null
             ? 'V' . $row['nextVisitNo']
             : $nextVisitLabel;
+        $centerID   = $psc == null
+        ? $row['CenterID']
+        : $psc;
         $insertData = array(
                        'CandID'          => $candID,
                        'SubprojectID'    => $SubprojectID,
                        'VisitNo'         => $row['nextVisitNo'],
                        'Visit_label'     => $VisitLabel,
-                       'CenterID'        => $row['CenterID'],
+                       'CenterID'        => $centerID,
                        'Current_stage'   => 'Not Started',
                        'Submitted'       => 'N',
                        'registeredBy'    => $userID,
