@@ -338,7 +338,6 @@ var IssueEditForm = React.createClass({
         let message = this.state.isNewIssue ? 'You will be redirected to main page in 2 seconds!' : '';
         this.showAlertMessage(msgType, message);
         this.setState({
-          formData: {},
           submissionResult: "success",
           issueID: data.issueID
         });
@@ -418,7 +417,10 @@ var IssueEditForm = React.createClass({
       timer = 2000;
       confirmation = false;
       callback = function() {
-        this.setState({submissionResult: null});
+        this.setState({
+          formData: {},
+          submissionResult: null
+        });
         window.location.assign('/issue_tracker');
       };
     } else if (msgType === "error") {
