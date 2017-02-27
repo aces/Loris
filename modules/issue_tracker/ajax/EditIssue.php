@@ -94,17 +94,8 @@ function editIssue()
         $issueValues['candID'] = $validatedInput['candID'];
     }
 
-    updateHistory($issueValues, $issueID);
-
-    // Adding comment in now that I have an issueID for both new and old.
-    if (isset($_POST['comment']) && $_POST['comment'] != "null") {
-        $commentValues = array(
-                          'issueComment' => $_POST['comment'],
-                          'addedBy'      => $user->getData('UserID'),
-                          'issueID'      => $issueID,
-                         );
-        $db->insert('issues_comments', $commentValues);
-    }
+    // Get changed values to save in history
+    $historyValues = getChangedValues($issueValues, $issueID);
 
     if (!empty($issueID) || $issueID != 0) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
@@ -114,6 +105,9 @@ function editIssue()
         $db->insert('issues', $issueValues);
         $issueID = $db->getLastInsertId();
     }
+
+    updateHistory($historyValues, $issueID);
+    updateComments($_POST['comment'], $issueID);
 
     // Adding new assignee to watching
     if (isset($issueValues['assignee'])) {
@@ -246,24 +240,45 @@ function validateInput($values)
 }
 
 /**
+ * Itterates through submitted values and filters only values that have changed
+ *
+ * @param array  $issueValues new values
+ * @param string $issueID     issue ID
+ *
+ * @throws DatabaseException
+ *
+ * @return array array of changed values
+ */
+function getChangedValues($issueValues, $issueID)
+{
+    $issueData     = getIssueData($issueID);
+    $changedValues = [];
+    foreach ($issueValues as $key => $value) {
+        // Only include fields that have changed
+        if ($issueValues[$key] != $issueData[$key] && !empty($value)) {
+            $changedValues[$key] = $value;
+        }
+    }
+    return $changedValues;
+}
+
+/**
  * Puts updated fields into the issues_history table.
  *
- * @param array  $issueValues the new values
- * @param string $issueID     the issue ID
+ * @param array  $values  the new values
+ * @param string $issueID the issue ID
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function updateHistory($issueValues, $issueID)
+function updateHistory($values, $issueID)
 {
-    $user      =& User::singleton();
-    $db        =& Database::singleton();
-    $issueData = getIssueData($issueID);
+    $user =& User::singleton();
+    $db   =& Database::singleton();
 
-    foreach ($issueValues as $key => $value) {
-        // Only include fields that have changed
-        if ($issueValues[$key] != $issueData[$key] && !empty($value)) {
+    foreach ($values as $key => $value) {
+        if (!empty($value)) {
             $changedValues = [
                               'newValue'     => $value,
                               'fieldChanged' => $key,
@@ -272,6 +287,31 @@ function updateHistory($issueValues, $issueID)
                              ];
             $db->insert('issues_history', $changedValues);
         }
+    }
+}
+
+/**
+ * Puts updated fields into the issues_comments table.
+ *
+ * @param string $comment new issue comment
+ * @param string $issueID the issue ID
+ *
+ * @throws DatabaseException
+ *
+ * @return void
+ */
+function updateComments($comment, $issueID)
+{
+    $user =& User::singleton();
+    $db   =& Database::singleton();
+
+    if (isset($comment) && $comment != "null") {
+        $commentValues = array(
+                          'issueComment' => $comment,
+                          'addedBy'      => $user->getData('UserID'),
+                          'issueID'      => $issueID,
+                         );
+        $db->insert('issues_comments', $commentValues);
     }
 }
 
