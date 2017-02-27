@@ -90,7 +90,7 @@ class IssueForm extends React.Component {
       commentLabel = "New Comment";
     }
 
-    var commentHistory = this.state.isNewIssue || (
+    const commentHistory = this.state.isNewIssue || (
       <CollapsibleComment commentHistory={this.state.issueData.commentHistory} />
     );
 
@@ -314,16 +314,16 @@ class IssueForm extends React.Component {
     if (this.state.submissionResult && this.state.isNewIssue) return;
     this.setState({submissionResult: "pending"});
 
-    var myFormData = this.state.formData;
-    var formRefs = this.refs;
-    var formData = new FormData();
+    const myFormData = this.state.formData;
+    const formRefs = this.refs;
+    let formData = new FormData();
 
     // Validate the form
     if (!this.isValidForm(formRefs, myFormData)) {
       return;
     }
 
-    for (var key in myFormData) {
+    for (let key in myFormData) {
       if (myFormData[key] !== "") {
         formData.append(key, myFormData[key]);
       }
@@ -363,8 +363,8 @@ class IssueForm extends React.Component {
      * @param {string} value - selected value for corresponding form element
      */
   setFormData(formElement, value) {
-      // todo: only give valid inputs for fields given previous input to other fields
-    var formDataUpdate = this.state.formData;
+    // todo: only give valid inputs for fields given previous input to other fields
+    let formDataUpdate = this.state.formData;
     formDataUpdate[formElement] = value;
 
     this.setState({
@@ -381,8 +381,8 @@ class IssueForm extends React.Component {
      * @return {boolean} - true if all required fields are filled, false otherwise
      */
   isValidForm(formRefs, formDataToCheck) {
-    var isValidForm = true;
-    var requiredFields = {
+    let isValidForm = true;
+    let requiredFields = {
       title: null,
       assignee: null
     };
