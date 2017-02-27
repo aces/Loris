@@ -87,16 +87,12 @@ function editIssue()
     $issueValues['lastUpdatedBy'] = $user->getData('UserID');
 
     $validatedInput = validateInput($validateValues);
-    if ($validatedInput['isValidSubmission']) {
-        if (array_key_exists('sessionID', $validatedInput)) {
-            $issueValues['sessionID'] = $validatedInput['sessionID'];
-        }
-        if (array_key_exists('candID', $validatedInput)) {
-            $issueValues['candID'] = $validatedInput['candID'];
-        }
-    } else {
-        return $validatedInput;
-    } //aka when it's not valid
+    if (array_key_exists('sessionID', $validatedInput)) {
+        $issueValues['sessionID'] = $validatedInput['sessionID'];
+    }
+    if (array_key_exists('candID', $validatedInput)) {
+        $issueValues['candID'] = $validatedInput['candID'];
+    }
 
     if (!empty($issueID) || $issueID != 0) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
@@ -172,10 +168,7 @@ function editIssue()
     //sending email
     emailUser($issueID, $issueValues['assignee']);
 
-    return array(
-            'isValidSubmission' => true,
-            'issueID'           => $issueID,
-           );
+    return ['issueID' => $issueID];
 }
 
 /**
@@ -193,12 +186,10 @@ function validateInput($values)
     $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
     $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
     $result     = [
-                   'PSCID'             => $pscid,
-                   'visit'             => $visitLabel,
-                   'candID'            => null,
-                   'sessionID'         => null,
-                   'isValidSubmission' => true,
-                   'invalidMessage'    => null,
+                   'PSCID'     => $pscid,
+                   'visit'     => $visitLabel,
+                   'candID'    => null,
+                   'sessionID' => null,
                   ];
 
     // If both are set, return SessionID and CandID
@@ -217,9 +208,9 @@ function validateInput($values)
             $result['sessionID'] = $session[0]['sessionID'];
             $result['candID']    = $session[0]['candID'];
         } else {
-            $result['isValidSubmission'] = false;
-            $result['invalidMessage']    = "PSCID and Visit Label do not " .
-                "match a valid candidate session!";
+            showError(
+                "PSCID and Visit Label do not match a valid candidate session!"
+            );
         }
 
         return $result;
@@ -240,8 +231,7 @@ function validateInput($values)
         if ($candidate) {
             $result['candID'] = $candidate;
         } else {
-            $result['isValidSubmission'] = false;
-            $result['invalidMessage']    = "PSCID does not match a valid candidate!";
+            showError("PSCID does not match a valid candidate!");
         }
 
         return $result;
@@ -249,9 +239,7 @@ function validateInput($values)
 
     // If only visit label is set, return an error
     if (isset($result['visit'])) {
-        $result['isValidSubmission'] = false;
-        $result['invalidMessage']    = "Visit Label must be accompanied by a PSCID";
-        return $result;
+        showError("Visit Label must be accompanied by a PSCID");
     }
 
     return $result;
@@ -657,4 +645,21 @@ ORDER BY dateAdded",
               ];
 
     return $result;
+}
+
+/**
+ * Utility function to return errors from the server
+ *
+ * @param string $message error message to display
+ *
+ * @return void
+ */
+function showError($message)
+{
+    if (!isset($message)) {
+        $message = 'An unknown error occurred!';
+    }
+    header('HTTP/1.1 500 Internal Server Error');
+    header('Content-Type: application/json; charset=UTF-8');
+    die(json_encode(['message' => $message]));
 }
