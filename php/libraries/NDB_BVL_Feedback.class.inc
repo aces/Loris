@@ -922,14 +922,6 @@ class NDB_BVL_Feedback
             throw new Exception("Error: No threads selected to activate");
         }
 
-        // DCC users are able to activate THEIR OWN inactive threads
-        if (!$user->isMultiSiteEnabled()) {
-            $whereArray = array_merge(
-                $whereArray,
-                array('UserID' => $this->_username)
-            );
-        }
-
         $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
     }
 
