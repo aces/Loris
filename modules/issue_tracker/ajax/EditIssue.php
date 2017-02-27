@@ -94,6 +94,18 @@ function editIssue()
         $issueValues['candID'] = $validatedInput['candID'];
     }
 
+    updateHistory($issueValues, $issueID);
+
+    // Adding comment in now that I have an issueID for both new and old.
+    if (isset($_POST['comment']) && $_POST['comment'] != "null") {
+        $commentValues = array(
+                          'issueComment' => $_POST['comment'],
+                          'addedBy'      => $user->getData('UserID'),
+                          'issueID'      => $issueID,
+                         );
+        $db->insert('issues_comments', $commentValues);
+    }
+
     if (!empty($issueID) || $issueID != 0) {
         $db->update('issues', $issueValues, ['issueID' => $issueID]);
     } else {
@@ -103,19 +115,7 @@ function editIssue()
         $issueID = $db->getLastInsertId();
     }
 
-    updateHistory($issueValues, $issueID);
-
-    //adding comment in now that I have an issueID for both new and old.
-    if ($_POST['comment'] != null) {
-        $commentValues = array(
-                          'issueComment' => $_POST['comment'],
-                          'addedBy'      => $user->getData('UserID'),
-                          'issueID'      => $issueID,
-                         );
-        $db->insert('issues_comments', $commentValues);
-    }
-
-    //adding new assignee to watching
+    // Adding new assignee to watching
     if (isset($issueValues['assignee'])) {
         $nowWatching = array(
                         'userID'  => $issueValues['assignee'],
@@ -124,7 +124,7 @@ function editIssue()
         $db->replace('issues_watching', $nowWatching);
     }
 
-    //adding editor to the watching table unless they don't want to be added.
+    // Adding editor to the watching table unless they don't want to be added.
     if ($_POST['watching'] == 'Yes') {
         $nowWatching = array(
                         'userID'  => $user->getData('UserID'),
@@ -141,7 +141,7 @@ function editIssue()
         );
     }
 
-    //adding others from multiselect to watching table.
+    // Adding others from multiselect to watching table.
     if (isset($_POST['othersWatching'])) {
 
         // Clear the list of current watchers
@@ -257,19 +257,13 @@ function validateInput($values)
  */
 function updateHistory($issueValues, $issueID)
 {
-    $user =& User::singleton();
-    $db   =& Database::singleton();
-    $undesiredFields = array(
-                        'lastUpdatedBy',
-                        'reporter',
-                        'dateCreated',
-                       );
+    $user      =& User::singleton();
+    $db        =& Database::singleton();
+    $issueData = getIssueData($issueID);
 
     foreach ($issueValues as $key => $value) {
-        if (in_array($key, $undesiredFields)) {
-            continue;
-        }
-        if (!empty($value)) { //check that all kinds of nulls are being dealt with
+        // Only include fields that have changed
+        if ($issueValues[$key] != $issueData[$key] && !empty($value)) {
             $changedValues = [
                               'newValue'     => $value,
                               'fieldChanged' => $key,
@@ -575,52 +569,28 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
     }
 
     //Now get issue values
-    $issueData = null;
+    $issueData = getIssueData();
     if (!empty($_GET['issueID'])) { //if an existing issue
-        $issueID   = $_GET['issueID'];
-        $issueData = $db->pselectRow(
-            "SELECT i.*, c.PSCID, s.Visit_label as visitLabel FROM issues as i " .
-            "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
-            "LEFT JOIN session s ON (i.sessionID=s.ID) " .
-            "WHERE issueID=:issueID",
-            array('issueID' => $issueID)
-        );
-
-        $isWatching            = $db->pselectOne(
-            "SELECT * FROM issues_watching WHERE 
-                issueID=:issueID AND userID=:userID",
+        $issueID    = $_GET['issueID'];
+        $issueData  = getIssueData($issueID);
+        $isWatching = $db->pselectOne(
+            "SELECT * FROM issues_watching 
+            WHERE issueID=:issueID AND userID=:userID",
             array(
              'issueID' => $issueID,
              'userID'  => $user->getData('UserID'),
             )
         );
-        $issueData['watching'] = is_array($isWatching) ? "No" : "Yes";
+        $issueData['watching']       = is_array($isWatching) ? "No" : "Yes";
         $issueData['commentHistory'] = getComments($issueID);
-        $issueData['othersWatching']  = getWatching($issueID);
+        $issueData['othersWatching'] = getWatching($issueID);
         $issueData['desc']           = $db->pSelectOne(
             "SELECT issueComment 
 FROM issues_comments WHERE issueID=:issueID 
 ORDER BY dateAdded",
             array('issueID' => $issueID)
         );
-    } else { //just setting the default values
-        $issueData['reporter']      = $user->getData('UserID');
-        $issueData['dateCreated']   = date('Y-m-d H:i:s');
-        $issueData['centerID']      = $user->getData('CenterID');
-        $issueData['status']        = "new";
-        $issueData['priority']      = "normal";
-        $issueData['issueID']       = 0; //TODO: this is dumb
-        $issueData['title']         = null;
-        $issueData['lastUpdate']    = null;
-        $issueData['PSCID']         = null;
-        $issueData['assignee']      = null;
-        $issueData['history']       = null;
-        $issueData['watching']      = "Yes";
-        $issueData['visitLabel']    = null;
-        $issueData['category']      = null;
-        $issueData['lastUpdatedBy'] = null;
     }
-
     $issueData['comment'] = null;
 
     if ($issueData['reporter'] == $user->getData('UserID')) {
@@ -645,6 +615,49 @@ ORDER BY dateAdded",
               ];
 
     return $result;
+}
+
+/**
+ * If issueID is passed retrieves issue data from database,
+ * othewise return empty issue data object
+ *
+ * @param string $issueID the ID of the requested issue
+ *
+ * @return array
+ */
+function getIssueData($issueID)
+{
+
+    $user =& User::singleton();
+    $db   =& Database::singleton();
+
+    if ($issueID) {
+        return $db->pselectRow(
+            "SELECT i.*, c.PSCID, s.Visit_label as visitLabel FROM issues as i " .
+            "LEFT JOIN candidate c ON (i.candID=c.CandID)" .
+            "LEFT JOIN session s ON (i.sessionID=s.ID) " .
+            "WHERE issueID=:issueID",
+            ['issueID' => $issueID]
+        );
+    }
+
+    return [
+            'reporter'      => $user->getData('UserID'),
+            'dateCreated'   => date('Y-m-d H:i:s'),
+            'centerID'      => $user->getData('CenterID'),
+            'status'        => "new",
+            'priority'      => "normal",
+            'issueID'       => 0, //TODO: this is dumb
+            'title'         => null,
+            'lastUpdate'    => null,
+            'PSCID'         => null,
+            'assignee'      => null,
+            'history'       => null,
+            'watching'      => "Yes",
+            'visitLabel'    => null,
+            'category'      => null,
+            'lastUpdatedBy' => null,
+           ];
 }
 
 /**
