@@ -1,13 +1,24 @@
 <?php
+/**
+ * Imaging_uploader automated integration tests
+ *
+ * PHP Version 5
+ *
+ * @category Test
+ * @package  Loris
+ * @author   Wang Shen <wangshen.mcin@mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+
 require_once __DIR__ . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
 {
     /**
-     * Backs up the useEDC config value and sets the value to a known
-     * value (true) for testing.
-     *`
-     * @return none
-     */
+     * Insert testing data
+     *
+     * @return void
+     */   
     function setUp()
     {
         parent::setUp();
@@ -65,9 +76,9 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         );
     }
     /**
-     * Restore the values backed up in the setUp function
+     * Deleting the test data
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {
@@ -90,14 +101,24 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         );
         
     }
-
+    /**
+     * Tests that, when loading the Imaging_uploader module, some
+     * text appears in the body.
+     *
+     * @return void
+     */ 
     function testImagingUploaderDoespageLoad()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Imaging Upload", $bodyText);
     }
- 
+    /**
+     * Tests that, when loading the Imaging_uploader module without permission,
+     * "You do not have access to this page." appears in the body.
+     *
+     * @return void
+     */
     function testImagingUploaderLoadWithoutPermission()
     {
         $this->setupPermissions(array(""));
@@ -105,7 +126,12 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("You do not have access to this page.", $bodyText);
     }
-    
+    /**
+     * Tests that, when loading the Imaging_uploader module with permission,
+     * "You do not have access to this page." not appears in the body.
+     *
+     * @return void
+     */    
     function testImagingUploaderLoadWithPermission()
     {
         $this->setupPermissions(array("imaging_uploader"));
@@ -114,6 +140,13 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         $this->assertNotContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
+    /**
+     * Tests that, inputing some data into filter,then clicking the
+     * [clear form] button, make sure that all of filter form should be 
+     * empty.
+     *
+     * @return void
+     */
     function testImagingUploaderFilterClearForm()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
@@ -140,6 +173,12 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals('',$bodyText1);
         $this->assertEquals('',$bodyText2);
     }
+    /**
+     * Tests that, when loading the Imaging_uploader module,
+     * input a test data, check it out after click filter button.
+     *
+     * @return void
+     */
     function testImagingUploaderFilter()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
@@ -199,7 +238,12 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
 
 
     }
-
+    /**
+     * Tests that, when uploading a empty file,
+     * some error text appears in the body.
+     *
+     * @return void
+     */
     function testImagingUploaderwithoutData()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
