@@ -9,61 +9,6 @@
  *
  * @author Caitrin Armstrong
  * */
-
-var CollapsibleComment = React.createClass({
-  getInitialState: function() {
-    return {collapsed: true};
-  },
-  toggleCollapsed: function() {
-    this.setState({collapsed: !this.state.collapsed}
-    );
-  },
-  render: function() {
-    const historyText = [];
-    const btnCommentsLabel = (this.state.collapsed ?
-      "Show Comment History" :
-      "Hide Comment History");
-
-    const commentHistory = this.props.commentHistory;
-    for (let commentID in commentHistory) {
-      if (commentHistory.hasOwnProperty(commentID)) {
-        let action = " updated the " + commentHistory[commentID].fieldChanged + " to ";
-        if (commentHistory[commentID].fieldChanged === 'comment') {
-          action = " commented ";
-        }
-        historyText.push(
-          <div key={"comment_" + commentID}>
-            [{commentHistory[commentID].dateAdded}]
-            <b> {commentHistory[commentID].addedBy}</b>
-            {action}
-            <i> {commentHistory[commentID].newValue}</i>
-          </div>
-        );
-      }
-    }
-
-    return (
-      <div className="row form-group">
-        <div className="col-sm-9">
-          <div className="btn btn-primary"
-               onClick={this.toggleCollapsed}
-               data-toggle="collapse"
-               data-target="#comment-history"
-               style={{margin: '10px 0'}}
-          >
-            {btnCommentsLabel}
-          </div>
-        </div>
-        <div className="col-sm-9">
-          <div id="comment-history" className="collapse">
-            {historyText}
-          </div>
-        </div>
-      </div>
-    );
-  }
-});
-
 var IssueEditForm = React.createClass({
 
   propTypes: {
@@ -78,85 +23,66 @@ var IssueEditForm = React.createClass({
       submissionResult: null,
       errorMessage: null,
       isLoaded: false,
-      loadedData: 0,
       isNewIssue: false,
       issueID: 0
     };
   },
 
   componentDidMount: function() {
-    this.getDataAndChangeState();
+    this.getFormData();
   },
 
   render: function() {
-    if (!this.state.isLoaded) {
-      if (this.state.error !== undefined) {
-        return (
-            <div className="alert alert-danger text-center">
-              <strong>
-                {this.state.error}
-              </strong>
-            </div>
-          );
-      }
+    // Data loading error
+    if (this.state.error) {
       return (
-          <button className="btn-info has-spinner">
-            loading
-            <span
-              className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-            </span>
-          </button>
-        );
+        <div className="alert alert-danger text-center">
+          <strong>
+            {this.state.error}
+          </strong>
+        </div>
+      );
     }
 
-    var alertMessage = "";
-    var alertClass = "alert text-center hide";
-    var hasEditPermission = (
+    // Waiting for data to load
+    if (!this.state.isLoaded) {
+      return (
+        <button className="btn-info has-spinner">
+          Loading
+          <span
+            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
+          </span>
+        </button>
+      );
+    }
+
+    let hasEditPermission = (
         this.state.Data.hasEditPermission ||
         this.state.Data.isOwnIssue ||
         this.state.isNewIssue
     );
 
-    var headerText = " ";
+    let headerText;
+    let lastUpdateValue;
+    let lastUpdatedByValue;
+    let dateCreated;
+    let submitButtonValue;
+    let commentLabel;
+    let isWatching = this.state.issueData.watching;
+
     if (this.state.isNewIssue) {
       headerText = "Create New Issue";
-    } else {
-      headerText = "Edit Issue #" + this.state.issueData.issueID;
-    }
-
-    var lastUpdateValue = " ";
-    if (this.state.isNewIssue) {
       lastUpdateValue = "Never!";
-    } else {
-      lastUpdateValue = this.state.issueData.lastUpdate;
-    }
-
-    var lastUpdatedByValue = " ";
-    if (this.state.isNewIssue) {
       lastUpdatedByValue = "No-one!";
-    } else {
-      lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
-    }
-
-    var dateCreated = " ";
-    if (this.state.isNewIssue) {
       dateCreated = "Sometime Soon!";
-    } else {
-      dateCreated = this.state.issueData.dateCreated;
-    }
-
-    var isWatching = this.state.issueData.watching;
-
-    var submitButtonValue = "";
-    if (this.state.isNewIssue) {
       submitButtonValue = "Submit Issue";
-    } else {
-      submitButtonValue = "Update Issue";
-    }
-    var commentLabel = "";
-    if (this.state.isNewIssue) {
       commentLabel = "Description";
     } else {
+      headerText = "Edit Issue #" + this.state.issueData.issueID;
+      lastUpdateValue = this.state.issueData.lastUpdate;
+      lastUpdatedByValue = this.state.issueData.lastUpdatedBy;
+      dateCreated = this.state.issueData.dateCreated;
+      submitButtonValue = "Update Issue";
       commentLabel = "New Comment";
     }
 
@@ -164,67 +90,45 @@ var IssueEditForm = React.createClass({
       <CollapsibleComment commentHistory={this.state.issueData.commentHistory} />
     );
 
-    if (this.state.submissionResult) {
-      if (this.state.submissionResult === "success") {
-        alertClass = "alert alert-success text-center";
-        alertMessage = "Submission Successful!";
-      } else if (this.state.submissionResult === "error") {
-        let errorMessage = this.state.errorMessage;
-        alertClass = "alert alert-danger text-center";
-        alertMessage = (
-            errorMessage ?
-              errorMessage :
-              "Failed to submit issue :("
-          );
-      } else if (this.state.submissionResult === "invalid") {
-        let errorMessage = this.state.errorMessage;
-        alertClass = "alert alert-danger text-center";
-        alertMessage = errorMessage ? errorMessage : "Invalid input";
-      }
-    }
-    var header;
-    var description;
+    let header;
+    let description;
     if (!this.state.isNewIssue) {
       header = (
-          <div>
-            <div className="row">
-              <div className="col-md-6">
-                <StaticElement
-                  name="lastUpdate"
-                  label={"Last Update: "}
-                  ref="lastUpdate"
-                  text={lastUpdateValue}
-                />
-              </div>
-              <div className="col-md-6">
-                <StaticElement
-                  name="lastUpdatedBy"
-                  label={"Last Updated By: "}
-                  ref="lastUpdatedBy"
-                  text={lastUpdatedByValue}
-                />
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                <StaticElement
-                  name="dateCreated"
-                  label={"Date Created: "}
-                  ref="dateCreated"
-                  text={dateCreated}
-                />
-              </div>
-              <div className="col-md-6">
-                <StaticElement
-                  name="reporter"
-                  label={"Reporter: "}
-                  ref="reporter"
-                  text={this.state.issueData.reporter}
-                />
-              </div>
-            </div>
+        <div className="row">
+          <div className="col-md-6">
+            <StaticElement
+              name="lastUpdate"
+              label={"Last Update: "}
+              ref="lastUpdate"
+              text={lastUpdateValue}
+            />
           </div>
-        );
+          <div className="col-md-6">
+            <StaticElement
+              name="lastUpdatedBy"
+              label={"Last Updated By: "}
+              ref="lastUpdatedBy"
+              text={lastUpdatedByValue}
+            />
+          </div>
+          <div className="col-md-6">
+            <StaticElement
+              name="dateCreated"
+              label={"Date Created: "}
+              ref="dateCreated"
+              text={dateCreated}
+            />
+          </div>
+          <div className="col-md-6">
+            <StaticElement
+              name="reporter"
+              label={"Reporter: "}
+              ref="reporter"
+              text={this.state.issueData.reporter}
+            />
+          </div>
+        </div>
+      );
 
       description = (
         <StaticElement
@@ -363,9 +267,6 @@ var IssueEditForm = React.createClass({
               ref="comment"
               value={this.state.formData.comment}
             />
-            <div className={alertClass} role="alert" ref="alert-message">
-              {alertMessage}
-            </div>
             <ButtonElement label={submitButtonValue} />
           </FormElement>
           {commentHistory}
@@ -373,13 +274,11 @@ var IssueEditForm = React.createClass({
       );
   },
 
-    /**
-     * Creates an ajax request and sets the state with the result
-     */
-  getDataAndChangeState: function() {
-    var dataURL = this.props.DataURL;
-
-    $.ajax(dataURL, {
+  /**
+   * Creates an ajax request and sets the state with the result
+   */
+  getFormData: function() {
+    $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
         this.setState({
@@ -387,30 +286,28 @@ var IssueEditForm = React.createClass({
           isLoaded: true,
           issueData: data.issueData,
           formData: data.issueData,
-          error: "finished success",
           isNewIssue: !data.issueData.issueID
         });
       }.bind(this),
-      error: function(data, errorCode, errorMsg) {
+      error: function(err) {
         this.setState({
-          error: errorMsg
+          error: "An error occurred when loading the form!\n Error: " +
+          err.status + " (" + err.statusText + ")"
         });
       }.bind(this)
     });
   },
 
-    /**
-     * Handles form submission
-     *
-     * @param {event} e form submit event
-     */
+  /**
+   * Handles form submission
+   *
+   * @param {event} e form submit event
+   */
   handleSubmit: function(e) {
     e.preventDefault();
 
-    // Prevent submissions while pending
-    if (this.state.submissionResult === "pending") {
-      return;
-    }
+    // Prevent new issue submissions while one is already in progress
+    if (this.state.submissionResult && this.state.isNewIssue) return;
     this.setState({submissionResult: "pending"});
 
     var myFormData = this.state.formData;
@@ -436,53 +333,22 @@ var IssueEditForm = React.createClass({
       dataType: 'json',
       contentType: false,
       processData: false,
-      xhr: function() {
-        var xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener(
-              "progress",
-              function(evt) {
-                if (evt.lengthComputable) {
-                  var progressbar = $("#progressbar");
-                  var progresslabel = $("#progresslabel");
-                  var percent = Math.round((evt.loaded / evt.total) * 100);
-                  $(progressbar).width(percent + "%");
-                  $(progresslabel).html(percent + "%");
-                  progressbar.attr('aria-valuenow', percent);
-                }
-              },
-              false
-            );
-        return xhr;
-      },
-
       success: function(data) {
-        if (!data.isValidSubmission) {
-          this.setState({
-            errorMessage: data.invalidMessage,
-            submissionResult: "invalid"
-          });
-          this.showAlertMessage();
-          return;
-        }
-
+        let msgType = 'success';
+        let message = this.state.isNewIssue ? 'You will be redirected to main page in 2 seconds!' : '';
+        this.showAlertMessage(msgType, message);
         this.setState({
+          formData: {},
           submissionResult: "success",
           issueID: data.issueID
         });
-        this.showAlertMessage();
-
-        if (this.state.isNewIssue) {
-          setTimeout(function() {
-            window.location.assign('/issue_tracker');
-          }, 2000);
-        }
       }.bind(this),
       error: function(err) {
         console.error(err);
-        this.setState({
-          submissionResult: "error"
-        });
-        this.showAlertMessage();
+        this.setState({submissionResult: "error"});
+        let msgType = 'error';
+        let message = "Failed to submit issue :(";
+        this.showAlertMessage(msgType, message);
       }.bind(this)
     });
   },
@@ -531,31 +397,100 @@ var IssueEditForm = React.createClass({
     return isValidForm;
   },
 
-    /**
-     * Display a success/error alert message after form submission
-     */
-  showAlertMessage: function() {
-    var self = this;
+  /**
+   * Display a success/error alert message after form submission
+   * @param {string} msgType - error/success message
+   * @param {string} message - message content
+   */
+  showAlertMessage: function(msgType, message) {
 
-    if (this.refs["alert-message"] === null) {
-      return;
+    let type = 'success';
+    let title = 'Issue updated!';
+    let text = message || '';
+    let timer = null;
+    let confirmation = true;
+    let callback = function() {
+      this.setState({submissionResult: null});
+    };
+
+    if (msgType === "success" && this.state.isNewIssue) {
+      title = 'Issue created!';
+      timer = 2000;
+      confirmation = false;
+      callback = function() {
+        this.setState({submissionResult: null});
+        window.location.assign('/issue_tracker');
+      };
+    } else if (msgType === "error") {
+      type = 'error';
+      title = 'Error!';
     }
 
-    var alertMsg = this.refs["alert-message"];
-    $(alertMsg).fadeTo(2000, 500).delay(5000).slideUp(
-        500,
-        function() {
-          self.setState(
-            {
-              uploadResult: null
-            }
-          );
-        }
-      );
+    swal({
+      title: title,
+      type: type,
+      text: text,
+      timer: timer,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: confirmation
+    }, callback.bind(this));
   }
+});
 
-}
-);
+var CollapsibleComment = React.createClass({
+  getInitialState: function() {
+    return {collapsed: true};
+  },
+  toggleCollapsed: function() {
+    this.setState({collapsed: !this.state.collapsed}
+    );
+  },
+  render: function() {
+    const historyText = [];
+    const btnCommentsLabel = (this.state.collapsed ?
+      "Show Comment History" :
+      "Hide Comment History");
+
+    const commentHistory = this.props.commentHistory;
+    for (let commentID in commentHistory) {
+      if (commentHistory.hasOwnProperty(commentID)) {
+        let action = " updated the " + commentHistory[commentID].fieldChanged + " to ";
+        if (commentHistory[commentID].fieldChanged === 'comment') {
+          action = " commented ";
+        }
+        historyText.push(
+          <div key={"comment_" + commentID}>
+            [{commentHistory[commentID].dateAdded}]
+            <b> {commentHistory[commentID].addedBy}</b>
+            {action}
+            <i> {commentHistory[commentID].newValue}</i>
+          </div>
+        );
+      }
+    }
+
+    return (
+      <div className="row form-group">
+        <div className="col-sm-9">
+          <div className="btn btn-primary"
+               onClick={this.toggleCollapsed}
+               data-toggle="collapse"
+               data-target="#comment-history"
+               style={{margin: '10px 0'}}
+          >
+            {btnCommentsLabel}
+          </div>
+        </div>
+        <div className="col-sm-9">
+          <div id="comment-history" className="collapse">
+            {historyText}
+          </div>
+        </div>
+      </div>
+    );
+  }
+});
 
 var RIssueEditForm = React.createFactory(IssueEditForm);
 
