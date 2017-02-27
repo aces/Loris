@@ -47,8 +47,18 @@ class DashboardTest extends LorisIntegrationTest
              'UserID'          => 'testUser1',
              'Email'           => 'test@test.com',
              'Password'        => 'AA1234567!',
-             'CenterID'        => '1',
              'Password_expiry' => '2020-01-06',
+            )
+        );
+        $user_id = $this->DB->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:test_user_id",
+            array("test_user_id" => 'testUser1')
+        );
+        $this->DB->insert(
+            "user_psc_rel",
+            array(
+             'UserID'   => $user_id,
+             'CenterID' => '1',
             )
         );
         //Insert two violation scan
@@ -237,9 +247,8 @@ class DashboardTest extends LorisIntegrationTest
           $this->DB->insert(
               "users",
               array(
-               'ID'       => '9999991',
-               'UserID'   => 'Tester1',
-               'CenterID' => null,
+               'ID'     => '9999991',
+               'UserID' => 'Tester1',
               )
           );
           $this->DB->insert(

@@ -94,9 +94,14 @@ class NDB_Menu_Filter_Document_Repository extends NDB_Menu_Filter
             if (is_array($list_of_sites)) $list_of_sites = array(null => 'Any') + $list_of_sites;
         } else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
+            $list_of_sites = '';
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$val] = $site[$key]->getCenterName();
+                }
+                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
             }
         }
 
