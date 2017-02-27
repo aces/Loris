@@ -29,31 +29,12 @@ require_once __DIR__ . '/issue_tracker_ControlPanel.class.inc';
 
 class NDB_Form_Issue_Tracker extends NDB_Form
 {
-
     /**
- * Entry point for issue_tracker/edit.
- *
- * @return void
- */
-    function edit()
-    {
-        $user    =& User::singleton();
-        $issueID = $_GET['issueID'];
-
-        if ((empty($issueID)
-            || !isset($issueID))
-            && !$user->hasPermission('issue_tracker_reporter')
-        ) {
-            header("HTTP/1.1 403 Forbidden");
-        }
-    }
-
-    /**
-     * Entry point for issue_tracker/edit.
+     * Entry point for issue_tracker/issue/[issueID]
      *
      * @return void
      */
-    function newIssue()
+    function issue()
     {
         $user    =& User::singleton();
         $issueID = $_GET['issueID'];
@@ -96,7 +77,7 @@ class NDB_Form_Issue_Tracker extends NDB_Form
 
 
     /**
-     * Include editIssue.js
+     * Include issueIndex.js
      *
      * @return array of javascript to be inserted
      */
@@ -107,13 +88,13 @@ class NDB_Form_Issue_Tracker extends NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            [$baseURL . "/issue_tracker/js/editIssue.js"]
+            [$baseURL . "/issue_tracker/js/issueIndex.js"]
         );
     }
 
     /**
      * Checks if the user has the ability to *view* the issue page
-     * Does not govern editing abilities; those are controlled by editIssue.js
+     * Does not govern editing abilities; those are controlled by issueIndex.js
      *
      * @return bool
      * @throws ConfigurationException

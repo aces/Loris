@@ -1,4 +1,4 @@
-/* exported RIssueEditForm */
+/* global ReactDOM */
 
 /**
  * Issue add/edit form
@@ -9,15 +9,12 @@
  *
  * @author Caitrin Armstrong
  * */
-var IssueEditForm = React.createClass({
+class IssueForm extends React.Component {
 
-  propTypes: {
-    DataURL: React.PropTypes.string.isRequired,
-    action: React.PropTypes.string.isRequired
-  },
+  constructor(props) {
+    super(props);
 
-  getInitialState: function() {
-    return {
+    this.state = {
       Data: [],
       formData: {},
       submissionResult: null,
@@ -26,13 +23,20 @@ var IssueEditForm = React.createClass({
       isNewIssue: false,
       issueID: 0
     };
-  },
 
-  componentDidMount: function() {
+    // Bind component instance to custom methods
+    this.getFormData = this.getFormData.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.setFormData = this.setFormData.bind(this);
+    this.isValidForm = this.isValidForm.bind(this);
+    this.showAlertMessage = this.showAlertMessage.bind(this);
+  }
+
+  componentDidMount() {
     this.getFormData();
-  },
+  }
 
-  render: function() {
+  render() {
     // Data loading error
     if (this.state.error) {
       return (
@@ -272,12 +276,12 @@ var IssueEditForm = React.createClass({
           {commentHistory}
         </div>
       );
-  },
+  }
 
   /**
    * Creates an ajax request and sets the state with the result
    */
-  getFormData: function() {
+  getFormData() {
     $.ajax(this.props.DataURL, {
       dataType: 'json',
       success: function(data) {
@@ -296,14 +300,14 @@ var IssueEditForm = React.createClass({
         });
       }.bind(this)
     });
-  },
+  }
 
   /**
    * Handles form submission
    *
    * @param {event} e form submit event
    */
-  handleSubmit: function(e) {
+  handleSubmit(e) {
     e.preventDefault();
 
     // Prevent new issue submissions while one is already in progress
@@ -350,7 +354,7 @@ var IssueEditForm = React.createClass({
         this.showAlertMessage(msgType, message);
       }.bind(this)
     });
-  },
+  }
 
     /**
      * Set the form data based on state values of child elements/componenets
@@ -358,7 +362,7 @@ var IssueEditForm = React.createClass({
      * @param {string} formElement - name of the selected element
      * @param {string} value - selected value for corresponding form element
      */
-  setFormData: function(formElement, value) {
+  setFormData(formElement, value) {
       // todo: only give valid inputs for fields given previous input to other fields
     var formDataUpdate = this.state.formData;
     formDataUpdate[formElement] = value;
@@ -366,7 +370,7 @@ var IssueEditForm = React.createClass({
     this.setState({
       formData: formDataUpdate
     });
-  },
+  }
 
     /**
      * Validates the form.
@@ -376,7 +380,7 @@ var IssueEditForm = React.createClass({
      * @param {object} formDataToCheck - Object containing form data inputed by user
      * @return {boolean} - true if all required fields are filled, false otherwise
      */
-  isValidForm: function(formRefs, formDataToCheck) {
+  isValidForm(formRefs, formDataToCheck) {
     var isValidForm = true;
     var requiredFields = {
       title: null,
@@ -394,15 +398,14 @@ var IssueEditForm = React.createClass({
 
     this.forceUpdate();
     return isValidForm;
-  },
+  }
 
   /**
    * Display a success/error alert message after form submission
    * @param {string} msgType - error/success message
    * @param {string} message - message content
    */
-  showAlertMessage: function(msgType, message) {
-
+  showAlertMessage(msgType, message) {
     let type = 'success';
     let title = 'Issue updated!';
     let text = message || '';
@@ -438,17 +441,33 @@ var IssueEditForm = React.createClass({
       showConfirmButton: confirmation
     }, callback.bind(this));
   }
-});
+}
 
-var CollapsibleComment = React.createClass({
-  getInitialState: function() {
-    return {collapsed: true};
-  },
-  toggleCollapsed: function() {
-    this.setState({collapsed: !this.state.collapsed}
-    );
-  },
-  render: function() {
+IssueForm.propTypes = {
+  DataURL: React.PropTypes.string.isRequired,
+  action: React.PropTypes.string.isRequired
+};
+
+/**
+ * React component used to display a button and a collapsible list
+ * with comments.
+ */
+class CollapsibleComment extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {collapsed: true};
+
+    // Bind component instance to custom methods
+    this.toggleCollapsed = this.toggleCollapsed.bind(this);
+  }
+
+  toggleCollapsed() {
+    this.setState({collapsed: !this.state.collapsed});
+  }
+
+  render() {
     const historyText = [];
     const btnCommentsLabel = (this.state.collapsed ?
       "Show Comment History" :
@@ -473,30 +492,44 @@ var CollapsibleComment = React.createClass({
     }
 
     return (
-      <div className="row form-group">
-        <div className="col-sm-9">
-          <div className="btn btn-primary"
-               onClick={this.toggleCollapsed}
-               data-toggle="collapse"
-               data-target="#comment-history"
-               style={{margin: '10px 0'}}
-          >
-            {btnCommentsLabel}
-          </div>
+      <div>
+        <div className="btn btn-primary"
+             onClick={this.toggleCollapsed}
+             data-toggle="collapse"
+             data-target="#comment-history"
+             style={{margin: '10px 0'}}
+        >
+          {btnCommentsLabel}
         </div>
-        <div className="col-sm-9">
-          <div id="comment-history" className="collapse">
-            {historyText}
-          </div>
+        <div id="comment-history" className="collapse">
+          {historyText}
         </div>
       </div>
     );
   }
+}
+
+/**
+ * Render IsseForm on page load
+ */
+$(function() {
+  const args = QueryString.get();
+  const issueTracker = (
+    <IssueForm
+      Module="issue_tracker"
+      DataURL={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=getData&issueID=${args.issueID}`}
+      action={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=edit`}
+    />
+  );
+
+  // Create a wrapper div in which react component will be loaded
+  const issueTrackerDOM = document.createElement('div');
+  issueTrackerDOM.id = 'page-issue-tracker';
+
+  // Append wrapper div to page content
+  const rootDOM = document.getElementById("lorisworkspace");
+  rootDOM.appendChild(issueTrackerDOM);
+
+  ReactDOM.render(issueTracker, document.getElementById("page-issue-tracker"));
 });
 
-var RIssueEditForm = React.createFactory(IssueEditForm);
-
-window.IssueEditForm = IssueEditForm;
-window.RIssueEditForm = RIssueEditForm;
-
-export default IssueEditForm;
