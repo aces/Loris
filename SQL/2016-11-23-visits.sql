@@ -51,54 +51,54 @@ CREATE TABLE `visits_subproject_project_rel` (
 
 
 -- add column to session to use visits ID
-ALTER TABLE session ADD COLUMN VisitID int(10) unsigned;
+ALTER TABLE session ADD COLUMN VisitID int(10) unsigned DEFAULT NULL;
 UPDATE session s SET VisitID=(SELECT ID from visits v WHERE v.legacy_label=s.Visit_label);
-ALTER TABLE session ADD CONSTRAINT `FK_visits_session_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
+ALTER TABLE session ADD CONSTRAINT `FK_session_visits_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
 ALTER TABLE session DROP COLUMN Visit_label;
 -- removed visit_label, good riddance
 
 -- add column to Visit_Windows to use visit ID
 ALTER TABLE Visit_Windows ADD COLUMN VisitID int(10) unsigned NOT NULL;
 UPDATE Visit_Windows vw SET VisitID=(SELECT ID from visits v WHERE v.legacy_label=vw.Visit_label);
-ALTER TABLE Visit_Windows ADD CONSTRAINT `FK_visits_Visit_Windows_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
+ALTER TABLE Visit_Windows ADD CONSTRAINT `FK_Visit_Windows_visits_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
 ALTER TABLE Visit_Windows DROP COLUMN Visit_label;
 
 -- add column to test_battery to use visits ID
-ALTER TABLE test_battery ADD COLUMN VisitID int(10) unsigned;
+ALTER TABLE test_battery ADD COLUMN VisitID int(10) unsigned DEFAULT NULL;
 UPDATE test_battery tb SET VisitID=(SELECT ID from visits v WHERE v.legacy_label=tb.Visit_label);
 -- TODO VISITS WHAT HAPPENS IF Visit_label is NULL
-ALTER TABLE test_battery ADD CONSTRAINT `FK_visits_test_battery_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
+ALTER TABLE test_battery ADD CONSTRAINT `FK_test_battery_visits_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
 ALTER TABLE test_battery DROP COLUMN Visit_label;
 -- removed visit_label, good riddance
 
 -- add column to certification to use visits ID
-ALTER TABLE certification ADD COLUMN VisitID int(10) unsigned;
+ALTER TABLE certification ADD COLUMN VisitID int(10) unsigned DEFAULT NULL;
 UPDATE certification c SET VisitID=(SELECT ID from visits v WHERE v.legacy_label=c.visit_label);
 -- TODO VISITS WHAT HAPPENS IF Visit_label is NULL
-ALTER TABLE certification ADD CONSTRAINT `FK_visits_certification_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
+ALTER TABLE certification ADD CONSTRAINT `FK_certification_visits_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
 ALTER TABLE certification DROP COLUMN visit_label;
 -- removed visit_label, good riddance
 
 -- add column to certification to use visits ID
-ALTER TABLE certification_history ADD COLUMN VisitID int(10) unsigned;
+ALTER TABLE certification_history ADD COLUMN VisitID int(10) unsigned DEFAULT NULL;
 UPDATE certification_history ch SET VisitID=(SELECT ID from visits v WHERE v.legacy_label=ch.visit_label);
 -- TODO VISITS WHAT HAPPENS IF Visit_label is NULL
-ALTER TABLE certification_history ADD CONSTRAINT `FK_visits_certification_history_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
+ALTER TABLE certification_history ADD CONSTRAINT `FK_certification_history_visits_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
 ALTER TABLE certification_history DROP COLUMN visit_label;
 -- removed visit_label, good riddance
 
 -- add column to certification to use visits ID
-ALTER TABLE document_repository ADD COLUMN VisitID int(10) unsigned;
+ALTER TABLE document_repository ADD COLUMN visit_id int(10) unsigned DEFAULT NULL;
 UPDATE document_repository dr SET VisitID=(SELECT ID from visits v WHERE v.legacy_label=dr.visitLabel);
 -- TODO VISITS WHAT HAPPENS IF Visit_label is NULL
-ALTER TABLE document_repository ADD CONSTRAINT `FK_visits_document_repository_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
+ALTER TABLE document_repository ADD CONSTRAINT `FK_document_repository_visits_rel_1` FOREIGN KEY (`visit_id`) REFERENCES `visits` (`ID`);
 ALTER TABLE document_repository DROP COLUMN visitLabel;
 -- removed visit_label, good riddance
 
 -- add column to certification to use visits ID
-ALTER TABLE mri_violations_log ADD COLUMN VisitID int(10) unsigned;
+ALTER TABLE mri_violations_log ADD COLUMN VisitID int(10) unsigned DEFAULT NULL;
 UPDATE mri_violations_log mvl SET VisitID=(SELECT ID from visits v WHERE v.legacy_label=mvl.visitLabel);
 -- TODO VISITS WHAT HAPPENS IF Visit_label is NULL
-ALTER TABLE mri_violations_log ADD CONSTRAINT `FK_visits_mri_violations_log_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
+ALTER TABLE mri_violations_log ADD CONSTRAINT `FK_mri_violations_log_visits_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`);
 ALTER TABLE mri_violations_log DROP COLUMN Visit_label;
 -- removed visit_label, good riddance
