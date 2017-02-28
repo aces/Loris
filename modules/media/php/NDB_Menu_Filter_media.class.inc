@@ -29,6 +29,7 @@
 class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 {
     public $hasWritePermission = false;
+    public $AjaxModule = true;
 
     /**
      * Check user permissions
@@ -223,9 +224,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     }
 
     /**
-     * Include additional JS files:
-     *  1. columnFormatter.js required to set links to Edit and Download file
-     *  2. uploadForm.js - reactified form to upload files
+     * Include additional JS files
      *
      * @return array of javascript to be inserted
      */
