@@ -169,11 +169,38 @@
                                 <img width=17 src="{$baseurl}/images/help.gif">
                             </a>
                         </li>
-                        <li>
+<!--                        <li>
                             <p class="navbar-text">
                                 &nbsp;&nbsp;  Sites: {$user.Sites} &nbsp;
                             </p>
                         </li>
+-->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:155px;">
+                                User Sites <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                                {assign var="sites" value=$user.Sites}
+                                {assign var="asite" value=";"|explode:$sites}
+                                {section name=i loop=$asite}
+                                    <font color="white">
+                                    <li>
+                                        {$asite[i]|escape}<br/>
+                                    </li>
+                                    </font>
+                                {/section}
+<!--
+                                {foreach from={";"|explode:$user.Sites} item=status key=name}
+                                <li>
+                                    <a>
+                                        {";"|explode:$user.Sites}[$key]
+                                    </a>
+                                </li>
+                               {/foreach}
+-->
+                            </ul>
+                        </li>
+
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:25px;">
                                 {$user.Real_name|escape} <b class="caret"></b>
