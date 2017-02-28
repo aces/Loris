@@ -177,7 +177,8 @@
 -->
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:155px;">
-                                User Sites <b class="caret"></b>
+                                All 
+User Sites <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
                                 {assign var="sites" value=$user.Sites}
