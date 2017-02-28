@@ -2,7 +2,7 @@
 /**
  * This page implements a front end which is used to unify all
  * of the different MRI violation types (could not identify scan,
- * header violation in the scan after identifying scan type, mislabeled 
+ * header violation in the scan after identifying scan type, mislabeled
  * scan, etc) and link to the appropriate module to further investigate
  * why a scan was excluded by the imaging pipeline scripts.
  *
@@ -22,7 +22,7 @@
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
  * @license  GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
- */      
+ */
 class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
 {
     var $AjaxModule = true;
@@ -35,7 +35,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
-        $this->tpl_data['violated_scans_modifications'] 
+        $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
     }
@@ -52,7 +52,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             $row = $DB->pselectRow(
                     "SELECT * FROM violations_resolved
                     WHERE hash = :hash", array('hash' => $hash));
-            
+
             //if row is found it means that resolve status was previously assigned,
             // check the value and update if needed, else break.
             if (!empty($row)) {
@@ -62,8 +62,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                         // user input matches DB content, so do nothing.
                         if ($val==$val2) {
                             break;
-                        } else { 
-                        // user input doesn't match DB, so we update the DB 
+                        } else {
+                        // user input doesn't match DB, so we update the DB
                             $setArray = array('Resolved'=>(string)$val,'ChangeDate'=>date("Y-m-d H:i:s"));
                             $whereArray = array('hash'=>$hash);
                             $DB->update('violations_resolved', $setArray, $whereArray);
@@ -78,7 +78,7 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                     continue;
                 }
                 $newlyResolved = array();
-                $newlyResolved['hash'] = $key;                
+                $newlyResolved['hash'] = $key;
                 $newlyResolved['Resolved'] = (string)$val;
                 $newlyResolved['User'] = $user->getUsername();
                 $newlyResolved['ChangeDate'] = date("Y-m-d H:i:s");
@@ -105,8 +105,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 if (!empty($ID_mri_violations_log)) {
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
                     $newlyResolved['ExtID'] = $ID_mri_violations_log;
-                } 
-                
+                }
+
                 // Table 3: MRICandidateErrors
                 $ID_MRICandidateErrors = $DB->pselectOne(
                     "SELECT ID
@@ -118,18 +118,18 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
                 if (!empty($ID_MRICandidateErrors)) {
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                     $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
-                } 
+                }
                 $DB->insert('violations_resolved', $newlyResolved);
             }
         }
-        
+
         $this->tpl_data['success'] = true;
     }
 
     /**
-     * Set up the class and smarty variables to use for the menu filter to 
+     * Set up the class and smarty variables to use for the menu filter to
      * generate the proper query for the menu filter
-     * 
+     *
      * @return none
      */
     function _setupVariables()
@@ -171,8 +171,8 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
             array_splice($this->headers, 2, 0, 'Subproject');
         }
         $this->tpl_data['hiddenHeaders'] = json_encode(['SeriesUID','Hash','JoinID']);
-        // Recreating the path (MincFileViolated field) to the minc file for the table mri_violations_log is more complicated 
-        // because of the 3 cases that can occur as we pull the data from the db.  
+        // Recreating the path (MincFileViolated field) to the minc file for the table mri_violations_log is more complicated
+        // because of the 3 cases that can occur as we pull the data from the db.
         //   1. if the Mincfile starts with "assembly" then we need to add the directory path in front of it.
         //   2. if the word "assembly" is there but not at the beginning, then uses it as is, the path is correct.
         //   3. if it is not in the assembly dir, then it is in the trashbin, so we fix the path with that in mind.
@@ -294,6 +294,7 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
     {
         // create user object
         $user =& User::singleton();
+        $db   =& Database::singleton();
         $config =& NDB_Config::singleton();
         $study = $config->getSetting('study');
         $dateOptions = array(
@@ -303,17 +304,20 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
             'minYear'         => $study['startYear'] - $study['ageMax'],
             'maxYear'         => $study['endYear'] - $study['ageMin']
         );
-        $problemOptions = array(
-            '' => 'Any',
-            'CandID and PSCID do not match database'
-            => 'Candidate Mismatch',
-            'Could not identify scan type'
-            => 'Could not identify scan type',
-            'Protocol Violation'
-            => 'MRI Protocol Check violation',
-            'Visit label does not exist'
-            => 'Visit label does not exist'
+
+        $problemOptions = ['' => 'Any'];
+
+        // Build a list of existing problem types based on data in db
+        $problemTypes = $db->pselect(
+            "SELECT DISTINCT MRICandidateErrors.Reason FROM MRICandidateErrors
+            UNION 
+            SELECT DISTINCT 'Could not identify scan type' FROM mri_protocol_violated_scans
+            UNION
+            SELECT DISTINCT 'Protocol Violation' FROM mri_violations_log"
         );
+        foreach ($problemTypes as $problem) {
+            $problemOptions[$problem['Reason']] = $problem['Reason'];
+        }
 
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
@@ -355,9 +359,9 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
                 }
             }
             $sites = array('' => 'All User Sites') + $sites;
-        } 
+        }
         $this->addSelect('Site', 'Site', $sites);
-                
+
         return true;
     }
 
