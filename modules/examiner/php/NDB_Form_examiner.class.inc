@@ -63,7 +63,7 @@ class NDB_Form_Examiner extends NDB_Form
 
             return $user->hasPermission('examiner_view')
                 && (($user->hasPermission('examiner_multisite')
-                || $user->getData('CenterID') == $centerID));
+                || in_array($centerID, $user->getData('CenterIDs'))));
         }
         return false;
     }

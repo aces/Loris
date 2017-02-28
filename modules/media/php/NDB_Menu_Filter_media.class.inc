@@ -78,10 +78,15 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $siteList = [$user->getData('Site') => $user->getData('Site')];
+            $siteList ='';
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $siteList[$val] = $site[$key]->getCenterName();
+                }
             }
+            $siteList = array('' => 'All User Sites') + $siteList;
         }
 
         $instrumentList   = [null => 'Any'];
@@ -148,7 +153,8 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->query = $query;
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $this->query .= " AND c.CenterID=" . $user->getCenterID();
+            $site_arr     = implode(",", $user->getCenterID());
+            $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 
         $this->group_by = '';

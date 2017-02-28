@@ -36,8 +36,18 @@ class Tabs extends React.Component {
   constructor(props) {
     super(props);
 
+    const hash = window.location.hash;
     let activeTab = "";
-    if (this.props.defaultTab) {
+
+    /**
+     * Determine the initial active tab in this order
+     * 1. Try to infer from the URL, otherwise
+     * 2. Try to infer from the defaultTab prop, otherwise
+     * 3. Set to be the first tab of the list
+     */
+    if (this.props.updateURL && hash) {
+      activeTab = hash.substr(1);
+    } else if (this.props.defaultTab) {
       activeTab = this.props.defaultTab;
     } else if (this.props.tabs.length > 0) {
       activeTab = this.props.tabs[0].id;
@@ -52,9 +62,16 @@ class Tabs extends React.Component {
     this.getTabPanes = this.getTabPanes.bind(this);
   }
 
-  handleClick(tabId) {
+  handleClick(tabId, e) {
     this.setState({activeTab: tabId});
     this.props.onTabChange(tabId);
+
+    // Add tab href to URL querystring and scroll the page to top
+    if (this.props.updateURL) {
+      const scrollDistance = $('body').scrollTop() || $('html').scrollTop();
+      window.location.hash = e.target.hash;
+      $('html,body').scrollTop(scrollDistance);
+    }
   }
 
   getTabs() {
@@ -66,10 +83,14 @@ class Tabs extends React.Component {
         <li
           role="presentation"
           className={tabClass}
-          onClick={this.handleClick.bind(null, tab.id)}
           key={tab.id}
         >
-          <a id={tabID} href={href} role="tab" data-toggle="tab">
+          <a id={tabID}
+             href={href}
+             role="tab"
+             data-toggle="tab"
+             onClick={this.handleClick.bind(null, tab.id)}
+          >
             {tab.label}
           </a>
         </li>
@@ -81,10 +102,12 @@ class Tabs extends React.Component {
 
   getTabPanes() {
     let tabPanes = React.Children.map(this.props.children, function(child, key) {
-      return React.cloneElement(child, {
-        activeTab: this.state.activeTab,
-        key: key
-      });
+      if (child) {
+        return React.cloneElement(child, {
+          activeTab: this.state.activeTab,
+          key: key
+        });
+      }
     }.bind(this));
 
     return tabPanes;
@@ -112,10 +135,12 @@ class Tabs extends React.Component {
 }
 Tabs.propTypes = {
   tabs: React.PropTypes.array.isRequired,
-  defaultTab: React.PropTypes.string
+  defaultTab: React.PropTypes.string,
+  updateURL: React.PropTypes.bool
 };
 Tabs.defaultProps = {
-  onTabChange: function() {}
+  onTabChange: function() {},
+  updateURL: false
 };
 
 /*

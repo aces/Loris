@@ -51,7 +51,8 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             "WHERE i.status != 'closed'";
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $this->query .= " AND i.centerID=" . $db->quote($user->getCenterID());
+            $site_arr     = implode(",", $user->getCenterID());
+            $this->query .= " AND i.CenterID IN (" . $site_arr . ")";
         }
 
         //note that this needs to be in the same order as the headers array
@@ -163,14 +164,14 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                 $list_of_sites = array('' => 'All') + $list_of_sites;
             }
         } else {// allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $list_of_sites = array(
-                                  $user->getData('CenterID') => $user->getData(
-                                      'Site'
-                                  ),
-                                 );
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$val] = $site[$key]->getCenterName();
+                }
             }
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         //reporters
