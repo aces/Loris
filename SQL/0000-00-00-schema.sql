@@ -1339,7 +1339,7 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Password_md5,Pending_approval,Password_expiry)
-VALUES (1,'admin','Admin account','Admin','account','admin@localhost',0,'N','','Y','4817577f267cc8bb20c3e58b48a311b9f6','N','2016-03-30');
+VALUES (1,'admin','Admin account','Admin','account','admin@localhost',0,'N','','Y','4817577f267cc8bb20c3e58b48a311b9f6','N',DATE_ADD(NOW(), INTERVAL -1 DAY));
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
