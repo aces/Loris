@@ -308,7 +308,7 @@ class ViewDetails extends \NDB_Form
         return array_merge(
             $deps,
             array(
-                $baseURL . "/dicom_archive/js/view_details_link.js",
+             $baseURL . "/dicom_archive/js/view_details_link.js",
             )
         );
     }
