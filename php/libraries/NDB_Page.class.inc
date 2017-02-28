@@ -535,7 +535,7 @@ class NDB_Page
 
         $smarty->assign('form', $this->form->toArray());
         $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("$this->template.tpl");
+        $html = $smarty->fetch("form_$this->template.tpl");
         return $html;
     }
 
