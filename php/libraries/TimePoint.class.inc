@@ -185,14 +185,13 @@ class TimePoint
     /**
      * Registers a new timepoint into the session table
      *
-     * @param integer $candID         6 digit CandID having a timepoint created.
-     * @param integer $SubprojectID   The subprojectID of the new timepoint
-     * @param int     $VisitID        ID of the visit references visits table
-     * @param string  $psc            The centre of the timepoint
+     * @param integer $candID       6 digit CandID having a timepoint created.
+     * @param integer $SubprojectID The subprojectID of the new timepoint
+     * @param int     $VisitID      ID of the visit references visits table
+     * @param string  $psc          The centre of the timepoint
      *
      * @return A new TimePoint instance.
      */
-
     static function createNew($candID, $SubprojectID, $VisitID = null, $psc = null)
     {
         // insert into session set CandID=$candID,
