@@ -89,7 +89,7 @@ ALTER TABLE certification_history DROP COLUMN visit_label;
 
 -- add column to certification to use visits ID
 ALTER TABLE document_repository ADD COLUMN visit_id int(10) unsigned DEFAULT NULL;
-UPDATE document_repository dr SET VisitID=(SELECT ID from visits v WHERE v.legacy_label=dr.visitLabel);
+UPDATE document_repository dr SET visit_id=(SELECT ID from visits v WHERE v.legacy_label=dr.visitLabel);
 -- TODO VISITS WHAT HAPPENS IF Visit_label is NULL
 ALTER TABLE document_repository ADD CONSTRAINT `FK_document_repository_visits_rel_1` FOREIGN KEY (`visit_id`) REFERENCES `visits` (`ID`);
 ALTER TABLE document_repository DROP COLUMN visitLabel;
