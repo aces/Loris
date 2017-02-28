@@ -29,7 +29,7 @@
 class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 {
     public $hasWritePermission = false;
-    public $AjaxModule = true;
+    public $AjaxModule         = true;
 
     /**
      * Check user permissions
