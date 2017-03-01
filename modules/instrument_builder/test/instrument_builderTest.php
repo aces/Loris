@@ -83,13 +83,30 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
+    /**
+     * 
+     * Testing $content appears in the body.
+     *
+     * @return void
+     */
+    function _testContent($content)
+    {
+      $this->safeGet($this->url . "/testtest/?candID=900000&sessionID=999999");
+      $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+                   ->getText();
+      $this->assertContains($content, $bodyText);
+    }
+    /**
+     * Testing instrument element appears in the body.
+     *
+     * @return void
+     */
     function testInstrumentWithLorisForm()
     {
-        $this->safeGet($this->url . "/testtest/?candID=900000&sessionID=999999");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
-                   ->getText();
-        $this->assertContains("IBIS Environment Residential History", $bodyText);
-    }
+        $this->_testContent("IBIS Environment Residential History");
 
+        //add more test case 
+        // $this->_testContent("instrument element");
+    }
 }
 ?>
