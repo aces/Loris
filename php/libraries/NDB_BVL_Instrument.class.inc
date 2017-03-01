@@ -1080,7 +1080,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $flag = true;
             if (is_array($elvalue)) {
                 foreach ($elvalue AS $val) {
-                    if ($val == "") {
+                    if ($val === "") {
                         $flag = false;
                     }
                 }
