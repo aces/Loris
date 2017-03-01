@@ -20,6 +20,12 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
+    /**
+     * 
+     * Inserting testing data.
+     *
+     * @return void
+     */
     public function setUp()
     {
         parent::setUp();
@@ -38,7 +44,25 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'CenterID' => 1,
             'Current_stage'   => 'Not Started',
         ));
+        $this->DB->insert('flag', array(
+            'ID' => '999999',
+            'SessionID' => '999999',
+            'Test_name' => 'testtest',
+            'CommentID' => '11111111111111111',
+        ));
         // Set up database wrapper and config
+    }
+    /**
+     * 
+     * Deleting testing data.
+     *
+     * @return void
+     */
+    public function tearDown() {
+        $this->DB->delete("session", array('CandID' => '900000'));
+        $this->DB->delete("candidate", array('CandID' => '900000'));
+        $this->DB->delete("flag", array('ID' => '999999'));
+        parent::tearDown();
     }
     /**
      * 
