@@ -71,9 +71,10 @@ $saved_comments = $comments->getComments();
 
 // show identifier of subject/volume
 if ($comments->objectType == 'volume') {
-    $query = "SELECT c.CandID AS DCCID, c.PSCID, s.Visit_label, s.SubprojectID,
+    $query = "SELECT c.CandID AS DCCID, c.PSCID, v.label, s.SubprojectID,
                     f.File AS File_name, st.Scan_type
-                FROM files AS f, session AS s, candidate AS c, mri_scan_type AS st
+                FROM files AS f, session AS s, candidate AS c, mri_scan_type AS st 
+                    LEFT JOIN visits v ON (v.ID=s.VisitID)
                 WHERE f.FileID=:FID
                     AND f.SessionID=s.ID
                     AND s.CandID=c.CandID
@@ -82,8 +83,9 @@ if ($comments->objectType == 'volume') {
 
     $qparams = array('FID' => $comments->fileID);
 } elseif ($comments->objectType == 'visit') {
-    $query = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID
+    $query = "SELECT c.CandID, c.PSCID, v.label, s.SubprojectID
                 FROM session AS s, candidate AS c
+                    LEFT JOIN visits v ON (v.ID=s.VisitID)
               WHERE s.ID=:SID AND s.CandID=c.CandID AND s.Active='Y'";
 
     $qparams = array('SID' => $comments->sessionID);

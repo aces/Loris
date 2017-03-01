@@ -105,7 +105,7 @@ class Candidate extends \Loris\API\APIBase
         $row = $this->DB->pselectRow(
             "SELECT MAX(c.Testdate) as CandChange,
                 MAX(s.Testdate) as VisitChange,
-                COUNT(s.Visit_label) as VisitCount
+                COUNT(s.VisitID) as VisitCount
             FROM candidate c JOIN session s ON (c.CandID=s.CandID)
             WHERE c.CandID=:candidate",
             array("candidate" => $this->CandID)
