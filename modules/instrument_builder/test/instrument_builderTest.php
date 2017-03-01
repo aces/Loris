@@ -21,6 +21,31 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->DB->insert("candidate", array(
+            'CandID' => '900000',
+            'PSCID'  => 'TST0001',
+            'CenterID' => 1,
+            'Active' => 'Y',
+            'UserID' => 1,
+            'Entity_type' => 'Human'
+        ));
+        $this->DB->insert('session', array(
+            'ID' => '999999',
+            'CandID' => '900000',
+            'Visit_label' => 'V1',
+            'CenterID' => 1,
+            'Current_stage'   => 'Not Started',
+        ));
+        // Set up database wrapper and config
+    }
+    public function tearDown() {
+        $this->DB->delete("session", array('CandID' => '900000'));
+        $this->DB->delete("candidate", array('CandID' => '900000'));
+        parent::tearDown();
+    }
     function testInstrumentBuilderDoespageLoad()
     {
         $this->safeGet($this->url . "/instrument_builder/");
@@ -57,6 +82,11 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
                    ->getText();
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
+    }
+    function testInstrumentWithLorisForm()
+    {
+        $this$this->safeGet($this->url . "/testtest/?candID=900000&sessionID=999999");
+        $this->assertContains("IBIS Environment Residential History", $bodyText);
     }
 
 }
