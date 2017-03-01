@@ -86,7 +86,10 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      */
     function testInstrumentWithLorisForm()
     {
-        $this->_testContent("IBIS Environment Residential History");
+        $this->_testContent("Test Instrument Title");
+        $this->_testContent("Check this checkbox default value is 1");
+        $this->_testContent("text_input");
+        $this->_testContent("Test selecting 'Yes' from the dropdown menu.");
 
         //add more test case 
         // $this->_testContent("instrument element");

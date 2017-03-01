@@ -69,13 +69,15 @@ class NDB_BVL_Instrument_testtest extends NDB_BVL_Instrument
      * @access private
      */
     function _main(){
-      $this->form->addElement('header', 'instrument_title', "IBIS Environment Residential History");
 
+      $this->form->addElement('header', 'instrument_title', "Test Instrument Title");
+      $this->addCheckbox('testCheckbox', 'Check this checkbox default value is 1', array('value' => '1'));
+      $this->form->addElement("text", 'testText', "text_input", array("class" => "encrypt required"));
+      
       $yesNo = array(null=>"", 'yes'=>"Yes", 'no'=>"No");
-
       $group[] =& $this->form->createElement("select","consent", "", $yesNo);
       $this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
-      $this->form->addGroup($group, "consent_group", "By selecting 'Yes' from the dropdown menu, you consent to give us the information in this questionnaire.", null, false);
+      $this->form->addGroup($group, "consent_group", "Test selecting 'Yes' from the dropdown menu.", null, false);
       unset($group);
     }
 
