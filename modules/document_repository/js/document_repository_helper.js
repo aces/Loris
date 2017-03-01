@@ -221,19 +221,7 @@ function renderTree() {
           indent: function() {
             return (depth - 1) * 60;
           },
-          depth: function() {
-            var depthArray = [];
-            for (var i = 0; i < depth - 1; i++) {
-              if (i === 0) {
-                var firstSpacer = {first: "dfg "}
-                depthArray.push(firstSpacer);
-              } else {
-                depthArray.push(" ");
-              }
-            }
-            ;
-            return depthArray;
-          }
+          margin: "margin-left: " + 60*(depth-1) + "px;"
         }
         var renderDir = Mustache.render(directory, dirData);
 
@@ -254,19 +242,7 @@ function renderTree() {
         if (!filtered) {
           files[ii].indent = (depth) * 60;
           files[ii].parentID = dirID;
-          files[ii].depth = function() {
-            var depthArray = [];
-            for (var i = 0; i < depth; i++) {
-              if (i === 0) {
-                var firstSpacer = {first: "dfg "}
-                depthArray.push(firstSpacer);
-              } else {
-                depthArray.push(" ");
-              }
-            }
-            ;
-            return depthArray;
-          }
+          files[ii].margin = "margin-left: " + 60*(depth) + "px;"
           var renderedFile = Mustache.render(file, files[ii]);
           $("#" + dirID + "a").after(renderedFile);
         } else {
