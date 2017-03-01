@@ -85,7 +85,7 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
     }
     function testInstrumentWithLorisForm()
     {
-        $this$this->safeGet($this->url . "/testtest/?candID=900000&sessionID=999999");
+        $this->safeGet($this->url . "/testtest/?candID=900000&sessionID=999999");
         $this->assertContains("IBIS Environment Residential History", $bodyText);
     }
 
