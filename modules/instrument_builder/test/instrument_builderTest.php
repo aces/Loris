@@ -87,9 +87,11 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
      * 
      * Testing $content appears in the body.
      *
+     * @param string   testing content
+     *
      * @return void
      */
-    function _testContent($content)
+    private function _testContent($content)
     {
       $this->safeGet($this->url . "/testtest/?candID=900000&sessionID=999999");
       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
