@@ -71,7 +71,7 @@ before_script:
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
     - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
     # Set up the testing instrument environment
-    - cp modules/instrument_builder/test/NDB_BVL_Instrument_testtest.class.inc project/instruments/NDB_BVL_Instrument_testtest.class.inc
+    - cp modules/test_instrument/NDB_BVL_Instrument_testtest.class.inc project/instruments/NDB_BVL_Instrument_testtest.class.inc
     - mysql LorisTest -e "INSERT INTO test_names (Test_name, Full_name, Sub_group,IsDirectEntry) VALUES ('testtest', 'testtest', '1','1')"
     - mysql LorisTest -e "INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('testtest', '1', '99999', 'Y', 'V1', '1', '2', NULL)"
     - cd tools
