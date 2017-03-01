@@ -114,7 +114,7 @@ class NDB_Form_Issue_Tracker extends NDB_Form
             ['issueID' => $issueID]
         );
 
-        if (($issueData['centerID'] == $user->getData('CenterID'))
+        if (in_array($issueData['centerID'], $user->getData('CenterIDs'))
             || ($user->hasPermission('access_all_profiles'))
             || (!empty($issueData['centerID']))
         ) {

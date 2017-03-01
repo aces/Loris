@@ -57,13 +57,13 @@ Class TimePoint_List_ControlPanel extends Candidate
     {
         $user =& User::singleton();
 
-        $user_CenterID = $user->getData('CenterID');
+        $user_CenterID = $user->getData('CenterIDs');
         $cand_CenterID = $this->getData('CenterID');
 
         $this->tpl_data['candID'] = $this->getData('CandID');
 
         $this->tpl_data['isDataEntryPerson'] = $user->hasPermission('data_entry')
-              && ($user_CenterID == $cand_CenterID || $user->isUserDCC());
+              && (in_array($cand_CenterID, $user_CenterID) || $user->isUserDCC());
 
         $this->tpl_data['candidate_parameters_view']
             = $user->hasPermission('candidate_parameter_view');

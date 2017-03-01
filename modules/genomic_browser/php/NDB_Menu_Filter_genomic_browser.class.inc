@@ -124,8 +124,9 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
         $DB   = Database::singleton();
         $user = User::singleton();
         if (!$user->hasPermission('genomic_browser_view_allsites')) {
-            $this->query .= " AND candidate.CenterID=";
-            $this->query .= $DB->quote($user->getCenterID());
+            // allow only to view own site data
+            $site_arr     = implode(",", $user->getCenterID());
+            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
 
         $this->group_by     = '';
@@ -185,11 +186,13 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site = Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $centerIDdata  = $user->getData('CenterID');
-                $siteData      = $user->getData('Site');
-                $list_of_sites = array($centerIDdata => $siteData);
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$val] = $site[$key]->getCenterName();
+                }
+                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
             }
         }
 

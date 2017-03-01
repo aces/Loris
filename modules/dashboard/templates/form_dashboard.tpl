@@ -145,7 +145,7 @@
                                 </a>
                             {/if}
                             {if $incomplete_forms neq "" and $incomplete_forms neq 0}
-                            {if $incomplete_forms_site eq "Site: all"}
+                            {if $incomplete_forms_site eq "Sites: all"}
                             <a href="{$baseURL}/statistics/?submenu=statistics_site" class="list-group-item statistics">
                                 {else}
                                 <a href="{$baseURL}/statistics/?submenu=statistics_site&CenterID={$user_site}"

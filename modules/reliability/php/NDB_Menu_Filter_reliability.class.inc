@@ -83,8 +83,10 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
-            $query .= " AND candidate.centerID = '" . $user->getData('CenterID') . "' ";
+            $site_arr = implode(",", $user->getCenterID());
+            $this->query .= " AND candidate.CenterID IN (" . $site_arr . ")";
         }
+
         $config=&NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         // set the class variables
@@ -145,12 +147,16 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                 }
                 $list_of_sites = $new_list;
             }
-        }else {
+        }else { // this else loop is never entered as _hasAccess would have returned false
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            //if ($site->isStudySite()) {
-                $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
-            //}
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key=>$val) {
+                $site[$key] = Site::singleton($val);
+            //    if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$key] = $site[$key]->getCenterName();
+            //    }
+            }
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         /// hack for Visit Labels... maybe get all the real visit labels from DB?
@@ -391,11 +397,11 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         if($newCommentID['NewCenterID'] !== $CommentID['OldCenterID']) {
             return array('error' => "Candidates are not from the same site. Cannot swap candidates across sites.");
         }
-        elseif($user->getCenterID() != $newCommentID['NewCenterID']) {
+        elseif(!in_array($newCommentID['NewCenterID'], $user->getCenterID())) {
             $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." is from a different site than you. Can only swap candidates from the same site.";
             return array('error' =>$error_msg);
         }
-        elseif($user->getCenterID() != $CommentID['OldCenterID']) {
+        elseif(!in_array($CommentID['OldCenterID'], $user->getCenterID())) {
            $error_msg = $params_new['id_Replace']."/".$params_new['id_replaceV']." is from a different site than you. Can only swap candidates from the same site.";
            return array('error' => $error_msg);
 
