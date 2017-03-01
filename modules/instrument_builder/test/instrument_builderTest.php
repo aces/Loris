@@ -86,6 +86,8 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
     function testInstrumentWithLorisForm()
     {
         $this->safeGet($this->url . "/testtest/?candID=900000&sessionID=999999");
+        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+                   ->getText();
         $this->assertContains("IBIS Environment Residential History", $bodyText);
     }
 
