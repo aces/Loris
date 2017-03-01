@@ -87,7 +87,7 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
      * 
      * Testing $content appears in the body.
      *
-     * @param string   testing content
+     * @param string  $content      testing content
      *
      * @return void
      */
