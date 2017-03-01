@@ -74,7 +74,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      */
     private function _testContent($content)
     {
-      $this->safeGet($this->url . "/testtest/?candID=900000&sessionID=999999");
+      $this->safeGet($this->url . "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000");
       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
                    ->getText();
       $this->assertContains($content, $bodyText);
