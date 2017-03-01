@@ -43,7 +43,9 @@ class Breadcrumbs extends React.Component {
     var windowWidth = window.innerWidth;
     var displayCount = 4;
 
-    if (windowWidth <= 500) {
+    if (windowWidth <= 425) {
+      displayCount = 1;
+    } else if (windowWidth <= 500) {
       displayCount = 2;
     } else if (windowWidth <= 767) {
       displayCount = 3;
