@@ -102,7 +102,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->_testContent("Test selecting 'Yes' from the dropdown menu.");
 
         $flag =  $this->DB->pselectOne(
-        'SELECT ID FROM flag where SessionID = 999999',array()
+        'SELECT Data FROM flag where SessionID = 999999',array()
     );  
         printf("===============================================");
         printf($flag);
