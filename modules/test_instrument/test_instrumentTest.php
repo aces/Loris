@@ -101,13 +101,6 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
        //$this->form->createElement("select","consent", "", $yesNo);
         $this->_testContent("Test selecting 'Yes' from the dropdown menu.");
 
-        $flag =  $this->DB->pselectOne(
-        'SELECT ID FROM flag where SessionID = 999999',array()
-        );  
-        printf("===============================================");
-        printf($flag);
-        printf("===============================================");
-
         //add more test case 
         // $this->_testContent("instrument element");
     }
@@ -126,9 +119,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 //    }
    function testTextElement()
    {
-      $this->safeGet($this->url .
-        "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
-      );
+      $this->_landing();
       $textElement = $this->webDriver->findElement(
              WebDriverBy::Name("testText")
       )->sendKeys("Test Text successful"); 
@@ -144,9 +135,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 
    function testCheckBoxElement()
    {
-      $this->safeGet($this->url .
-        "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
-      );
+      $this->_landing();
       $textElement = $this->webDriver->findElement(
              WebDriverBy::Name("testCheckbox")
       )->click();
@@ -163,10 +152,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
    function testSelectOptionElement()
    {
       // select 'Yes' option and check it.
-      $this->safeGet($this->url .
-        "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
-      );
-
+      $this->_landing();
       $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
       $element = new WebDriverSelect($select);
       $element->selectByVisibleText("Yes");
@@ -181,10 +167,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
       $this->assertContains('"consent":"yes"',$data);
 
       // select 'No' option and check it.
-      $this->safeGet($this->url .
-        "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
-      );
-
+      $this->_landing();
       $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
       $element = new WebDriverSelect($select);
       $element->selectByVisibleText("No");
@@ -198,6 +181,11 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         );
       $this->assertContains('"consent":"no"',$data);
 
+    }
+    private function _landing(){
+      $this->safeGet($this->url .
+        "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
+      );
     } 
 }
 ?>
