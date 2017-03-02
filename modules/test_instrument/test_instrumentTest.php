@@ -182,6 +182,18 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
       $this->assertContains('"consent":"no"',$data);
 
     }
+
+   function testDateElement()
+   {
+      $this->_landing();
+                      $bodyText = $this->webDriver->findElement(
+                    WebDriverBy::cssSelector("body")
+                )->getText();
+        printf($bodyText);
+      $this->assertContains('Test Text successful',$data);
+    }
+
+
     private function _landing(){
       $this->safeGet($this->url .
         "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
