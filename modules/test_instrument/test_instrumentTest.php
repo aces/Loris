@@ -102,8 +102,8 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->_testContent("Test selecting 'Yes' from the dropdown menu.");
 
         $flag =  $this->DB->pselectOne(
-        'SELECT Data FROM flag where SessionID = 999999',array()
-    );  
+        'SELECT ID FROM flag where SessionID = 999999',array()
+        );  
         printf("===============================================");
         printf($flag);
         printf("===============================================");
@@ -124,6 +124,23 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 //         $this->_testContent("$instrument_element");
 
 //    }
-    
+   function testTextElement()
+   {
+      $this->safeGet($this->url .
+        "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
+      );
+      $textElement = $this->webDriver->findElement(
+             WebDriverBy::Name("testText")
+      )->sendKeys("Test Text successful"); 
+      $this->webDriver->findElement(
+             WebDriverBy::Name("fire_away")
+      )->click();
+      $flag =  $this->DB->pselectOne(
+        'SELECT Data FROM flag where SessionID = 999999',array()
+        ); 
+        printf("===============================================");
+        printf($flag);
+        printf("==============================================="); 
+    } 
 }
 ?>
