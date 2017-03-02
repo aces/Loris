@@ -63,6 +63,7 @@ function tplFromRequest($param)
 $tpl_data['currentyear'] = date('Y');
 $tpl_data['test_name']   = $TestName;
 $tpl_data['subtest']     = $subtest;
+$tpl_data['version']     = file_get_contents(__DIR__ . "/../VERSION");
 
 tplFromRequest('candID');
 tplFromRequest('sessionID');
@@ -79,13 +80,17 @@ $tpl_data['baseurl'] = $baseURL;
 $tpl_data['study_title'] = $config->getSetting('title');
 // draw the user information table
 try {
-    $user =& User::singleton();
+    $user     =& User::singleton();
+    $site_arr = $user->getData('CenterIDs');
+    foreach ($site_arr as $key=>$val) {
+        $site[$key]        = & Site::singleton($val);
+        $isStudySite[$key] = $site[$key]->isStudySite();
+    }
+    $oneIsStudySite   = in_array("1", $isStudySite);
     $tpl_data['user'] = $user->getData();
-    $tpl_data['user']['permissions']   = $user->getPermissions();
-    $tpl_data['hasHelpEditPermission'] = $user->hasPermission('context_help');
-
-    $site =& Site::singleton($user->getData('CenterID'));
-    $tpl_data['user']['user_from_study_site'] = $site->isStudySite();
+    $tpl_data['user']['permissions']          = $user->getPermissions();
+    $tpl_data['hasHelpEditPermission']        = $user->hasPermission('context_help');
+    $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
 } catch(Exception $e) {
     $tpl_data['error_message'][] = "Error: " . $e->getMessage();
 }
@@ -121,19 +126,7 @@ $link_args['MRIBrowser'] = $argstring;
 $paths = $config->getSetting('paths');
 
 if (!empty($TestName)) {
-    // Get CSS for a module
     $base = $paths['base'];
-    if (file_exists($base . "modules/$TestName/css/$TestName.css")
-        || file_exists($base . "project/modules/$TestName/css/$TestName.css")
-    ) {
-        if (strpos($_SERVER['REQUEST_URI'], "main.php") === false
-            && strcmp($_SERVER['REQUEST_URI'], '/') != 0
-        ) {
-              $tpl_data['test_name_css'] = "/$TestName/css/$TestName.css";
-        } else {
-              $tpl_data['test_name_css'] = "GetCSS.php?Module=$TestName";
-        }
-    }
 
     // Used for CSS for a specific instrument.
     if (file_exists($paths['base'] . "project/instruments/$TestName.css")) {

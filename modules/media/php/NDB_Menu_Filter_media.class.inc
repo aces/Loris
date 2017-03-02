@@ -71,10 +71,15 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $siteList = [$user->getData('CenterID') => $user->getData('Site')];
+            $siteList ='';
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $siteList[$val] = $site[$key]->getCenterName();
+                }
             }
+            $siteList = array('' => 'All User Sites') + $siteList;
         }
 
         $instrumentList   = [null => 'Any'];
@@ -105,6 +110,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $user =& User::singleton();
         // the base query
         $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
         " LEFT JOIN candidate c ON c.CandID=s.CandID";
@@ -128,6 +134,11 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
               ];
 
         $this->query = $query;
+
+        if (!$user->hasPermission('access_all_profiles')) {
+            $site_arr     = implode(",", $user->getCenterID());
+            $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
+        }
 
         $this->group_by = '';
         $this->order_by = 'm.instrument';
@@ -201,8 +212,8 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         return array_merge(
             $deps,
             [
-             $baseURL . "/media/js/columnFormatter.js",
-             $baseURL . "/media/js/uploadForm.js",
+             $baseURL . "/js/components/ProgressBar.js",
+             $baseURL . "/media/js/mediaIndex.js",
             ]
         );
     }

@@ -45,7 +45,7 @@ class Create_Timepoint extends \NDB_Form
         // check user permissions
         return (
             $user->hasPermission('data_entry') &&
-            $user->getData('CenterID') == $candidate->getData('CenterID')
+            (in_array($candidate->getData('CenterID'), $user->getData('CenterIDs')))
         );
     }
 
@@ -75,7 +75,8 @@ class Create_Timepoint extends \NDB_Form
         $success = \TimePoint::createNew(
             $this->identifier,
             $values['subprojectID'],
-            $values['visitLabel']
+            $values['visitLabel'],
+            $values['psc']
         );
 
         $this->tpl_data['success'] = true;
@@ -155,6 +156,12 @@ class Create_Timepoint extends \NDB_Form
         foreach (\Utility::toArray($visitLabelSettings) as $visitLabel) {
             if ($visitLabel['@']['subprojectID']==$this->subprojectID) {
                 if ($visitLabel['generation'] == 'user') {
+                    error_log(
+                        "DEPRECATION WARNING: User generated visit labels will ".
+                        "no longer be supported in the next release of Loris. ".
+                        "Please add the necessary entries to the config.xml file ".
+                        "and set the generation to 'sequence'"
+                    );
                     $this->addBasicText(
                         'visitLabel',
                         'Visit label',
@@ -181,6 +188,26 @@ class Create_Timepoint extends \NDB_Form
         // label rules
         if ($visitLabelAdded) {
             $this->addRule('visitLabel', 'Visit label is required', 'required');
+             // List of sites for the user
+             $user = \User::singleton();
+             $DB   = \Database::singleton();
+             $user_list_of_sites = $user->getData('CenterIDs');
+             $num_sites          = count($user_list_of_sites);
+
+            if ($num_sites >1) {
+                $pscLabelAdded =true;
+                $this->tpl_data['pscLabelAdded'] = true;
+                $psc_labelOptions = array(null => '');
+                foreach ($user_list_of_sites as $key => $siteID) {
+                        $center = $DB->pselectRow(
+                            "SELECT CenterID as ID, Name FROM psc 
+                        WHERE CenterID =:cid",
+                            array('cid' => $siteID)
+                        );
+                        $psc_labelOptions[$siteID] = $center['Name'];
+                }
+            }
+            $this->addSelect('psc', 'Site', $psc_labelOptions);
         }
 
         $this->form->addFormRule(array(&$this, '_validate'));

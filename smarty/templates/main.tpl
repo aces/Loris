@@ -3,7 +3,7 @@
     {if $dynamictabs neq "dynamictabs"}
     <head>
         <link rel="stylesheet" href="{$baseurl}/{$css}" type="text/css" />
-        <link rel="shortcut icon" href="{$baseurl}/images/mni_icon.ico" type="image/ico" />
+        <link type="image/x-icon" rel="icon" href="/images/favicon.ico">
 
         {*
         This can't be loaded from getJSDependencies(), because it's needs access to smarty
@@ -148,7 +148,7 @@
                     <ul class="nav navbar-nav navbar-right" id="nav-right">
                         {if $bvl_feedback}
                         <li class="hidden-xs hidden-sm">
-                            <a class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
+                            <a href="#" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu" data-canvas="body">
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
                         </li>
@@ -161,7 +161,7 @@
                         </li>
                         <li>
                             <p class="navbar-text">
-                                &nbsp;&nbsp;  Site: {$user.Site} &nbsp;
+                                &nbsp;&nbsp;  Sites: {$user.Sites} &nbsp;
                             </p>
                         </li>
                         <li class="dropdown">
@@ -496,7 +496,7 @@
                     </ul>
                 </center>
                 <div align="center" colspan="1">
-                    Powered by LORIS &copy; {$currentyear}. All rights reserved.
+                    Powered by LORIS version {$version} &copy; {$currentyear}. All rights reserved.
                 </div>
       		<div align="center" colspan="1">
                     Created by <a href="http://mcin-cnim.ca/" target="_blank">

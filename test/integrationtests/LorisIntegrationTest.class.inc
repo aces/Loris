@@ -74,13 +74,20 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
              'First_name'       => 'Unit',
              'Last_name'        => 'Tester',
              'Email'            => 'tester@example.com',
-             'CenterID'         => 1,
              'Privilege'        => 0,
              'PSCPI'            => 'N',
              'Active'           => 'Y',
              'Password_hash'    => password_hash("4test4", PASSWORD_DEFAULT),
              'Password_expiry'  => '2099-12-31',
              'Pending_approval' => 'N',
+            )
+        );
+
+        $this->DB->insert(
+            "user_psc_rel",
+            array(
+                'UserID'    => 999990,
+                'CenterID'  => 1,
             )
         );
 
@@ -294,7 +301,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
     function changeStudySite()
     {
         $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
-        $this->DB->update("users", array("CenterID" => 99), array("ID" => 999990));
+        $this->DB->update("user_psc_rel", array("CenterID" => 99), array("UserID" => 999990));
     }
 
     /**
@@ -304,7 +311,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
      */
     function resetStudySite()
     {
-        $this->DB->update("users", array("CenterID" => 1), array("ID" => 999990));
+        $this->DB->update("user_psc_rel", array("CenterID" => 1), array("UserID" => 999990));
         $this->DB->delete("psc", array("CenterID" => 99));
     }
 

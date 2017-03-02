@@ -44,6 +44,14 @@
 		<div class="col-sm-10">{$form.gender.html}</div>
 	</div>
 	<br><br>
+    {if $form.psc.html != ""}
+	<div class="form-group col-sm-12">
+		<label class="col-sm-2">{$form.psc.label}</label>
+		<div class="col-sm-10">{$form.psc.html}</div>
+	</div>
+	<br><br>
+    {/if}
+
     {if $form.PSCID.html != ""}
 	<div class="form-group col-sm-12">
 		<label class="col-sm-2">{$form.PSCID.label}</label>

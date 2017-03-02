@@ -5,7 +5,6 @@
  * @package behavioural
  */
 require_once __DIR__ ."/Instrument_List_ControlPanel.class.inc";
-require_once __DIR__ . "/../../../php/libraries/NDB_BVL_Battery.class.inc";
 class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 {
     function _hasAccess()
@@ -19,7 +18,8 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $candidate =& Candidate::singleton($candID);
 
         // check user permissions
-    	return ($user->hasPermission('access_all_profiles') || $user->getData('CenterID') == $candidate->getData('CenterID') || $user->getData('CenterID') == $timePoint->getData('CenterID'));
+        return ($user->hasPermission('access_all_profiles') || (in_array($candidate->getData('CenterID'), $user->getData('CenterIDs'))) || (in_array($timepoint->getData('CenterID'), $user->getData('CenterIDs'))));
+
     }
 
     function getControlPanel() {

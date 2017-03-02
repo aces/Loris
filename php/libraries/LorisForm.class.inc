@@ -321,6 +321,26 @@ class LorisForm
         $el['type'] = 'header';
         return $el;
     }
+
+    /**
+     * Reimplementation of HTML_QuickForm's "addLink" API
+     *
+     * @param string $name  The element name.
+     * @param string $label The label to attach to this element.
+     * @param array  $url   The url label to set as href attrib
+     * @param array  $link  The value to display as the link
+     *
+     * @return &array
+     */
+    public function addLink($name, $label, $url, $link)
+    {
+        $el         =& $this->addBase($name, $label);
+        $el['type'] = 'link';
+        $el['url']  = $url;
+        $el['link'] = $link;
+        return $el;
+    }
+
     /**
      * Generates a unique element name for anonymous elements to use
      * to differentiate things in the internal elements array.
@@ -415,6 +435,9 @@ class LorisForm
             break;
         case 'hidden':
             $el = $this->addHidden($name, $label, $options);
+            break;
+        case 'link':
+            $el = $this->addLink($name, $label, $options, $attribs);
             break;
         case 'text':
         default:
@@ -666,18 +689,22 @@ class LorisForm
                 $optionKey = (string) $optionKey;
             }
 
+            $defaultValue = $this->getValue($el['name']);
+
             if (isset($el['multiple'])) {
-                if (!empty($this->getValue($el['name']))
-                    && in_array($optionKey, $this->getValue($el['name']))
-                ) {
-                    $selected = 'selected="selected"';
+                if (!empty($defaultValue)) {
+                    if (in_array($optionKey, $defaultValue)
+                        || $optionKey === $defaultValue
+                    ) {
+                        $selected = 'selected="selected"';
+                    }
                 }
             } else {
-                if ($optionKey === $this->getValue($el['name'])) {
+                if ($optionKey === $defaultValue) {
                     $selected = 'selected="selected"';
                 } elseif (isset($el['selected'])
                     && $optionKey === $el['selected']
-                    && $this->getValue($el['name']) === null
+                    && $defaultValue === null
                 ) {
                     $selected = 'selected="selected"';
                 }
@@ -987,6 +1014,25 @@ class LorisForm
         $smarty->assign('value', $value);
 
         $html = $smarty->fetch("year_html.tpl");
+
+        return $html;
+    }
+
+    /**
+     * Generates the HTML to add to the page when rendered for a
+     * link element
+     *
+     * @param array $el The element to render from $this->form
+     *
+     * @return string A string of the HTML markup to render
+     */
+    function linkHTML($el)
+    {
+        $html = "<a href=\""
+            . $el['url']
+            . "\">"
+            . $el['link']
+            . "</a>";
 
         return $html;
     }
@@ -1368,6 +1414,8 @@ class LorisForm
             return $this->hiddenHTML($el);
         case 'time':
             return $this->timeHTML($el);
+        case 'link':
+            return $this->linkHTML($el);
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
@@ -1527,6 +1575,25 @@ class LorisForm
 
         return $retVal;
     }
+
+    /**
+     * Renders the current form to a complete HTML
+     * based string.
+     *
+     * @return String the HTML string of the form
+     */
+    function toHTML()
+    {
+
+        $smarty    = new Smarty_neurodb;
+        $formArray = $this->toElementArray();
+
+        $smarty->assign('form', $formArray);
+        $html = $smarty->fetch("toHTML_form.tpl");
+
+        return $html;
+    }
+
     /**
      * Reimplement Smarty's addRule API.
      *
