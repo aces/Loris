@@ -135,12 +135,27 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
       $this->webDriver->findElement(
              WebDriverBy::Name("fire_away")
       )->click();
-      $flag =  $this->DB->pselectOne(
+      $data =  $this->DB->pselectOne(
         'SELECT Data FROM flag where SessionID = 999999',array()
-        ); 
-        printf("===============================================");
-        printf($flag);
-        printf("==============================================="); 
+        );
+      $this->assertContains('Test Text successful',$data); 
+    } 
+   function testCheckBoxElement()
+   {
+      $this->safeGet($this->url .
+        "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
+      );
+      $textElement = $this->webDriver->findElement(
+             WebDriverBy::Name("testCheckbox")
+      )->click();
+
+      $this->webDriver->findElement(
+             WebDriverBy::Name("fire_away")
+      )->click();
+      $data =  $this->DB->pselectOne(
+        'SELECT Data FROM flag where SessionID = 999999',array()
+        );
+      $this->assertContains('"testCheckbox":"1"',$data);
     } 
 }
 ?>
