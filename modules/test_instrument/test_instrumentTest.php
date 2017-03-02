@@ -74,7 +74,9 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      */
     private function _testContent($content)
     {
-      $this->safeGet($this->url . "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000");
+      $this->safeGet($this->url .
+        "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
+      );
       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
                    ->getText();
       $this->assertContains($content, $bodyText);
@@ -84,11 +86,19 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testInstrumentWithLorisForm()
+    function testAddElementsWithLorisForm()
     {
+
+       // $this->form->addElement('header', 'instrument_title', "Test Instrument Title");
         $this->_testContent("Test Instrument Title");
+
+       // $this->addCheckbox('testCheckbox', 'Check this checkbox default value is 1', array('value' => '1'));
         $this->_testContent("Check this checkbox default value is 1");
+
+       // $this->form->addElement("text", 'testText', "text_input", array("class" => "encrypt required"));
         $this->_testContent("text_input");
+
+       //$this->form->createElement("select","consent", "", $yesNo);
         $this->_testContent("Test selecting 'Yes' from the dropdown menu.");
 
         //add more test case 
@@ -106,5 +116,6 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
 //         $this->_testContent("$instrument_element");
 
 //    }
+    
 }
 ?>
