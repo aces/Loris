@@ -158,20 +158,40 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         'SELECT Data FROM flag where SessionID = 999999',array()
         );
       $this->assertContains('"testCheckbox":"1"',$data);
+    }
+
+   function testSelectOptionElement()
+   {
+      // select 'Yes' option and check it.
       $this->safeGet($this->url .
         "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
       );
-      $textElement = $this->webDriver->findElement(
-             WebDriverBy::Name("testCheckbox")
-      )->click();
+
+      $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
+      $element = new WebDriverSelect($select);
+      $element->selectByVisibleText("Yes");
 
       $this->webDriver->findElement(
              WebDriverBy::Name("fire_away")
       )->click();
+
       $data =  $this->DB->pselectOne(
         'SELECT Data FROM flag where SessionID = 999999',array()
         );
-      $this->assertContains('"testCheckbox":"0"',$data);
+      $this->assertContains('"consent":"yes"',$data);
+
+      // select 'No' option and check it.
+      $element->selectByVisibleText("No");
+      
+      $this->webDriver->findElement(
+             WebDriverBy::Name("fire_away")
+      )->click();
+
+      $data =  $this->DB->pselectOne(
+        'SELECT Data FROM flag where SessionID = 999999',array()
+        );
+      $this->assertContains('"consent":"no"',$data);
+
     } 
 }
 ?>
