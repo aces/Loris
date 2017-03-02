@@ -181,6 +181,12 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
       $this->assertContains('"consent":"yes"',$data);
 
       // select 'No' option and check it.
+      $this->safeGet($this->url .
+        "/testtest/?commentID=11111111111111111&sessionID=999999&candID=900000"
+      );
+
+      $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
+      $element = new WebDriverSelect($select);
       $element->selectByVisibleText("No");
       
       $this->webDriver->findElement(
