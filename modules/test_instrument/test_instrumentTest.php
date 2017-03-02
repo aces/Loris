@@ -101,9 +101,8 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
        //$this->form->createElement("select","consent", "", $yesNo);
         $this->_testContent("Test selecting 'Yes' from the dropdown menu.");
 
-        $db =& Database::singleton();
-        $flag = $db->pselectOne(
-        'SELECT Data FROM flag where SessionID = 999999',array()
+        $flag =  $this->DB->pselectOne(
+        'SELECT ID FROM flag where SessionID = 999999',array()
     );  
         printf("===============================================");
         printf($flag);
