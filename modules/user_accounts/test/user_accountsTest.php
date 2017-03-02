@@ -69,7 +69,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->assertEquals(
             "password",
             $this->safeFindElement(
-                WebDriverBy::Name("Password_hash")
+                WebDriverBy::Name("Password_md5")
             )->getAttribute("type")
         );
         $this->assertEquals(
