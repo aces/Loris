@@ -101,9 +101,18 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
        //$this->form->createElement("select","consent", "", $yesNo);
         $this->_testContent("Test selecting 'Yes' from the dropdown menu.");
 
+        $db =& Database::singleton();
+        $flag = $db->pselectOne(
+        'SELECT Data FROM flag where SessionID = 999999',array()
+    );  
+        printf("===============================================");
+        printf($flag);
+        printf("===============================================");
+
         //add more test case 
         // $this->_testContent("instrument element");
     }
+
    /**
     * Testing instrument element appears in the body.
     * After editing NDB_instrument php file, modify $instrument_element
