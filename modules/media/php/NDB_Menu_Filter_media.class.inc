@@ -89,7 +89,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $siteList ='';
+            $siteList =array();
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);
