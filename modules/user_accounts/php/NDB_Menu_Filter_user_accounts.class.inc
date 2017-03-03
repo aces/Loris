@@ -62,7 +62,7 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
 
         // set the class variables
         $this->columns      = array(
-                               "COALESCE(GROUP_CONCAT(psc.Name SEPARATOR '; '),'Not Assigned') AS PSC",
+                               "COALESCE(GROUP_CONCAT(psc.Name SEPARATOR '; '),'Not Assigned') AS Sites",
                                'users.UserID AS Username',
                                'Real_name AS Full_name',
                                'Email',
