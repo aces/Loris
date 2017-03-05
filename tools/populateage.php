@@ -3,69 +3,98 @@
 /**
  * inititalize
  */
-set_include_path(get_include_path().":../php/libraries:");
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once "NDB_Client.class.inc";
-require_once "NDB_Config.class.inc";
-require_once "Utility.class.inc";
-require_once "NDB_BVL_Instrument.class.inc";
-$client = new NDB_Client();
-$client->makeCommandLine();
-$client->initialize("../project/config.xml");
-$config = NDB_Config::singleton();
+require_once 'generic_includes.php';
 
-$db =& Database::singleton();
-
+$config   = NDB_Config::singleton();
 $database = $config->getSetting('database');
 
-// This was required when there was incorrect html in the fields, but now we
-// can just populate empty ones without deleting old ones
-//$db->select("SELECT TABLE_NAME FROM information_schema.columns WHERE TABLE_SCHEMA='$database[database]' AND COLUMN_NAME='Candidate_Age'", $tables);
-//foreach($tables as $table) {
-    //print "Emptying $table[TABLE_NAME]\n";
-    //$db->run("UPDATE $table[TABLE_NAME] SET Candidate_Age=NULL");
-    /*
-    $t = $table['TABLE_NAME'];
-    $db->select("SELECT i.CommentID, i.Date_taken, c.DoB FROM $t i 
-            JOIN flag f USING(CommentID) 
-            JOIN session s ON (s.ID=f.SessionID) 
-            JOIN candidate c USING(CandID)
-        WHERE i.Date_taken IS NOT NULL and c.DoB IS NOT NULL 
-                    -- AND i.Candidate_Age IS NULL 
-                    -- For testing
-                    -- AND i.CommentID='DDE_974665PHI01099231151265297851'
-                    AND s.Active='Y' and s.Cancelled='N' 
-                    AND c.Active='Y' and c.Cancelled='N'", $Missings);
-    print $t . ":" . count($Missings) . "\n";
-    foreach($Missings as $row) {
-        $date = explode('-', $row['Date_taken']);
-        $dateArray = array ('Y' => $date[0], 'M' => $date[1], 'd' => $date[2]);
-        $instrument =& NDB_BVL_Instrument::factory('mullen', $row['CommentID'], null);
-        $instrument->_saveValues(array('Date_taken' => $dateArray));
-    }
-    */
-
-//}
 $instruments = Utility::getAllInstruments();
-foreach ($instruments as $inst) {
-    // Now works with vineland
-    //if($inst == 'vineland' || $inst=="vineland_proband" || $inst=="vineland_subject") continue;
-    $DB->select("SELECT i.CommentID, i.Date_taken FROM $inst i JOIN flag f USING(CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c USING(CandID) WHERE c.Active='Y' and s.Active='Y' AND i.Candidate_Age IS NULL AND i.Date_taken IS NOT NULL", $CommentIDs);
-    print "$inst (" . count($CommentIDs) . ")\n";
-    $db->select("SELECT TABLE_NAME FROM information_schema.columns WHERE TABLE_SCHEMA='$database[database]' AND COLUMN_NAME='Date_taken' AND TABLE_NAME='$inst'", $tables);
-    if(count($tables) > 0) {
-    foreach ($CommentIDs as $row) {
-        $date = explode('-', $row['Date_taken']);
-        $dateArray = array ('Y' => $date[0], 'M' => $date[1], 'd' => $date[2]);
-        $instrument =& NDB_BVL_Instrument::factory($inst, $row['CommentID'], null, false);
-        if($instrument && !empty($row['Date_taken'])) {
-            //print_r($dateArray);
-            $instrument->_saveValues(array('Date_taken' => $dateArray));
+
+$confirm=false;
+if (!empty($argv[1]) && $argv[1] == 'confirm') {
+    $confirm = true;
+}
+
+$incorrectAges = array();
+$nullAges      = array();
+
+foreach ($instruments as $inst=>$fullName) {
+
+    if (!$DB->tableExists($inst)) {
+        echo $inst." does not have a table in the Database\n";
+        continue;
+    }
+
+    //Get instrument SQL table
+    $DBInstTable = $DB->pselect(
+        "SELECT * FROM $inst",
+        array()
+    );
+
+    // Break if Date taken does not exist
+    if (!$DB->columnExists($inst, 'Date_taken')) {
+        continue;
+    }
+
+    foreach ($DBInstTable as $k => $row) {
+        // Get Instrument Instance
+        $instrument = NDB_BVL_Instrument::factory($inst, $row['CommentID'], null, false);
+        if (!$instrument) {
+            // instrument does not exist
+            continue;
+        }
+
+        $dateTaken = $row['Date_taken'];
+        $commentID = $row['CommentID'];
+
+        // Flag for problem with date
+        $trouble=false;
+        if (!empty($row['Date_taken'])) {
+            // Check if age is null OR if wrong age
+            if (empty($row['Candidate_Age'])) {
+                // Null age
+                $nullAges[$inst][$commentID] = $row;
+                $trouble=true;
+            } else {
+                // get Age from instrument class
+                $calculatedAge = $instrument->getCandidateAge();
+                $agemonths = $calculatedAge['year'] * 12 + $calculatedAge['mon'] + ($calculatedAge['day'] / 30);
+                $calculatedAgeMonths = (round($agemonths*10) / 10.0);
+                //Compare age to value saved in the instrument table
+                $DBAge = $instrument->getFieldValue('Candidate_Age');
+
+                if ($calculatedAgeMonths != $DBAge) {
+                    //$incorrectAges[] = $row;
+                    $incorrectAges[$inst][$commentID] = array('cal'=>$calculatedAgeMonths, 'db'=>$DBAge);
+                    $trouble=true;
+                }
+            }
+
+            //Fix the saved values if confirm and trouble flags enabled
+            if ($trouble && $confirm) {
+//                $date = explode('-', $row['Date_taken']);
+//                $dateArray = array ('Y' => $date[0], 'M' => $date[1], 'd' => $date[2]);
+                $instrument->_saveValues(array('Date_taken' => $dateTaken));
+            }
         }
     }
 }
 
-}
-print_r($instruments);
 
-?>
+if (!empty($nullAges)) {
+    echo "\n\n#######################################################\n" .
+        "########               NULL AGES               ########\n" .
+        "#######################################################\n";
+    print_r($nullAges);
+}
+
+if (!empty($incorrectAges)) {
+    echo "\n\n#######################################################\n" .
+        "########             INCORRECT AGES            ########\n" .
+        "#######################################################\n";
+    print_r($incorrectAges);
+}
+
+if (!$confirm) {
+    echo "\n\nRun this tool again with the argument 'confirm' to perform the changes\n\n";
+}
