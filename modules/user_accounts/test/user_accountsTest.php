@@ -119,12 +119,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->_verifyUserModification(
             'user_accounts',
             'UnitTester',
-            'First_name',
-            'NewFirst'
-        );
-        $this->_verifyUserModification(
-            'user_accounts',
-            'UnitTester',
             'Last_name',
             'NewLast'
         );
@@ -145,6 +139,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             'UnitTester',
             'Pending_approval',
             'No'
+        );
+        $this->_verifyUserModification(
+            'user_accounts',
+            'UnitTester',
+            'First_name',
+            'NewFirst'
         );
     }
     /**
