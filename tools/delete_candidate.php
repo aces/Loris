@@ -202,11 +202,7 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, $output)
         //delete from candidate
         _printResultsSQL("candidate", array("CandID" => $CandID), $output, $DB);
 
-        //export file
-        $filename = __DIR__ . "/../project/tables_sql/DELETE_candidate_$CandID.sql";
-        $fp       =fopen($filename, "w");
-        fwrite($fp, $output);
-        fclose($fp);
+        _exportSQL($output, $CandID);
     }
 }
 
@@ -218,6 +214,14 @@ function _printResultsSQL($table, $where, &$output, $DB)
     $query .= ";\n";
 
     $output .=$query;
+}
+
+function _exportSQL ($output, $CandID) {
+    //export file
+    $filename = __DIR__ . "/../project/tables_sql/DELETE_candidate_$CandID.sql";
+    $fp       = fopen($filename, "w");
+    fwrite($fp, $output);
+    fclose($fp);
 }
 
 if ($confirm === false && $printToSQL === false) {
