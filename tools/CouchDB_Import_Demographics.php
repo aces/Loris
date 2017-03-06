@@ -161,7 +161,7 @@ class CouchDBDemographicsImporter {
             $projectsEnum .= implode("', '", $projects);
             $projectsEnum .= "')";
             $this->Dictionary["Project"] = array(
-                'Description' => 'Expected Date of Confinement (Due Date)',
+                'Description' => 'Project for which the candidate belongs',
                 'Type' => $projects
             );
         }
