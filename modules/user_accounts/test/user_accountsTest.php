@@ -205,6 +205,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field->sendKeys('email@example.com');
         $this->safeClick(WebDriverBy::Name('SendEmail'));
         $this->safeClick(WebDriverBy::Name('fire_away'));
+        sleep(2);
         $this->_accessUser('user_accounts', 'userid');
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $this->assertEquals($field->getAttribute('value'), 'first');
