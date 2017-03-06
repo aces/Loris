@@ -143,10 +143,12 @@ function deleteCandidate($CandID, $PSCID, $confirm, $printToSQL, $DB, $output)
         $sessionExists = false;
     } else {
         foreach ($sessions as $sid) {
-            exec(
-                "php delete_timepoint.php delete_timepoint".
+            $out = shell_exec(
+                "php ".__DIR__."/delete_timepoint.php delete_timepoint".
                 " $CandID $PSCID $sid $outputType"
             );
+
+            echo $out;
         }
     }
 
