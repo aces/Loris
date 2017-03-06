@@ -87,7 +87,7 @@ ALTER TABLE `session_status`
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-SELECT 'Adding foreign key between document_repository_categories and document_repository tables' as 'Step #10';
+SELECT 'Adding foreign key between participant_status and participant_status_options tables' as 'Step #10';
 SELECT 'participant_status.participant_status not associated with a valid participant_status_options.id will be set to NULL' as 'ATTENTION';
 SELECT 'participant_status.participant_suboptions not associated with a valid participant_status_options.id will be set to NULL' as 'ATTENTION';
 UPDATE participant_status SET participant_status = NULL WHERE participant_status NOT IN (SELECT id FROM participant_status_options);
@@ -110,6 +110,24 @@ ALTER TABLE `participant_status`
     ON DELETE SET NULL
     ON UPDATE CASCADE;
 
+SELECT 'Adding foreign key between participant_status and candidate tables' as 'Step #11';
+SELECT 'participant_status records not associated with a valid candidate.candid will be deleted' as 'ATTENTION';
+DELETE FROM participant_status WHERE CandID NOT IN (SELECT candid FROM candidate);
+ALTER TABLE `participant_status` 
+  ADD CONSTRAINT `fk_participant_status_3`
+  FOREIGN KEY (`CandID`)
+    REFERENCES `candidate` (`CandID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+ALTER TABLE `project_rel`
+  CHANGE COLUMN `ProjectID` `ProjectID` INT(2) NOT NULL,
+  CHANGE COLUMN `SubprojectID` `SubprojectID` INT(10) UNSIGNED NOT NULL;
+DELETE FROM project_rel WHERE ProjectID NOT IN (SELECT ProjectID FROM Project);
+DELETE FROM project_rel WHERE SubprojectID NOT IN (SELECT SubprojectID FROM subproject);
+
+ALTER TABLE `LORIS_17_1`.`project_rel`
+  ADD PRIMARY KEY (`ProjectID`, `SubprojectID`);
 
 SELECT 'COMMIT' as 'Ending with';
 COMMIT;

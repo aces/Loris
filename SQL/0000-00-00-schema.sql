@@ -6,6 +6,13 @@ START TRANSACTION;
 -- ********************************
 -- DROP TABLE ORDER MATTERS (for some)
 -- ********************************
+DROP TABLE IF EXISTS `certification_history`;
+DROP TABLE IF EXISTS `certification`;
+DROP TABLE IF EXISTS `examiners`;
+
+DROP TABLE IF EXISTS `participant_status`;
+DROP TABLE IF EXISTS `participant_status_options`; 
+
 DROP TABLE IF EXISTS `conflicts_resolved`;
 DROP TABLE IF EXISTS `conflicts_unresolved`;
 
@@ -21,8 +28,9 @@ DROP TABLE IF EXISTS `document_repository`;
 
 DROP TABLE IF EXISTS `mri_protocol_violated_scans`;
 DROP TABLE IF EXISTS `mri_protocol`;
-DROP TABLE IF EXISTS `files_qcstatus`;
 DROP TABLE IF EXISTS `mri_acquisition_dates`;
+DROP TABLE IF EXISTS `files_qcstatus`;
+DROP TABLE IF EXISTS `files_intermediary`;
 DROP TABLE IF EXISTS `files`;
 DROP TABLE IF EXISTS `mri_scan_type`;
 DROP TABLE IF EXISTS `mri_scanner`;
@@ -39,16 +47,44 @@ DROP TABLE IF EXISTS `test_subgroups`;
 DROP TABLE IF EXISTS `session_status`;
 DROP TABLE IF EXISTS `session`;
 DROP TABLE IF EXISTS `user_psc_rel`;
-DROP TABLE IF EXISTS `examiners`;
 DROP TABLE IF EXISTS `candidate`;
 DROP TABLE IF EXISTS `caveat_options`;
 DROP TABLE IF EXISTS `users`;
 DROP TABLE IF EXISTS `psc`;
+DROP TABLE IF EXISTS `project_rel`;
+DROP TABLE IF EXISTS `subproject`;
+DROP TABLE IF EXISTS `Project`;
 
 -- ********************************
 -- Core tables
 -- ********************************
 SELECT 'Core tables' AS 'CREATE TABLES';
+
+CREATE TABLE `Project` (
+    `ProjectID` INT(2) NOT NULL AUTO_INCREMENT,
+    `Name` VARCHAR(255) NULL,
+    `recruitmentTarget` INT(6) Default NULL,
+    PRIMARY KEY (`ProjectID`)
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE `subproject` (
+    SubprojectID int(10) unsigned NOT NULL auto_increment,
+    title varchar(255) NOT NULL,
+    useEDC boolean,
+    WindowDifference enum('optimal', 'battery'),
+    RecruitmentTarget int(10) unsigned,
+    PRIMARY KEY (SubprojectID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
+
+SELECT 'Default value for subproject' as 'Important INSERT statement';
+INSERT INTO subproject (title, useEDC, WindowDifference) VALUES
+  ('Control', false, 'optimal'),
+  ('Experimental', false, 'optimal');
+
+CREATE TABLE `project_rel` (
+  `ProjectID` int(2) DEFAULT NULL,
+  `SubprojectID` int(2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `psc` (
   `CenterID` tinyint(2) unsigned NOT NULL AUTO_INCREMENT,
@@ -160,19 +196,6 @@ CREATE TABLE `candidate` (
   KEY `PSCID` (`PSCID`),
   CONSTRAINT `FK_candidate_1` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
   CONSTRAINT `FK_candidate_2` FOREIGN KEY (`flagged_reason`) REFERENCES `caveat_options` (`ID`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `examiners` (
-  `examinerID` int(10) unsigned NOT NULL auto_increment,
-  `full_name` varchar(255) default NULL,
-  `centerID` tinyint(2) unsigned default NULL,
-  `radiologist` tinyint(1) default NULL,
-  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `pending_approval` enum('Y','N') NOT NULL DEFAULT 'N',
-  PRIMARY KEY  (`examinerID`),
-  UNIQUE KEY `full_name` (`full_name`,`centerID`),
-  KEY `FK_examiners_1` (`centerID`),
-  CONSTRAINT `FK_examiners_1` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `session` (
@@ -454,11 +477,16 @@ CREATE TABLE `files` (
   CONSTRAINT `FK_files_scannerID` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `mri_acquisition_dates` (
-  `SessionID` int(10) unsigned NOT NULL default '0',
-  `AcquisitionDate` date default NULL,
-  PRIMARY KEY  (`SessionID`),
-  CONSTRAINT `FK_mri_acquisition_dates_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
+CREATE TABLE `files_intermediary` (
+  `IntermedID` int(11) NOT NULL AUTO_INCREMENT,
+  `Output_FileID` int(10) unsigned NOT NULL,
+  `Input_FileID` int(10) unsigned NOT NULL,
+  `Tool` varchar(255) NOT NULL,
+  PRIMARY KEY (`IntermedID`),
+  KEY `FK_files_intermediary_1` (`Output_FileID`),
+  KEY `FK_files_intermediary_2` (`Input_FileID`),
+  CONSTRAINT `FK_files_intermediary_1` FOREIGN KEY (`Output_FileID`) REFERENCES `files` (`FileID`),
+  CONSTRAINT `FK_files_intermediary_2` FOREIGN KEY (`Input_FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `files_qcstatus` (
@@ -470,6 +498,13 @@ CREATE TABLE `files_qcstatus` (
     QCFirstChangeTime int(10) unsigned,
     QCLastChangeTime int(10) unsigned,
     Selected enum('true', 'false') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `mri_acquisition_dates` (
+  `SessionID` int(10) unsigned NOT NULL default '0',
+  `AcquisitionDate` date default NULL,
+  PRIMARY KEY  (`SessionID`),
+  CONSTRAINT `FK_mri_acquisition_dates_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_protocol` (
@@ -739,12 +774,10 @@ CREATE TABLE `conflicts_resolved` (
   PRIMARY KEY (`ResolvedID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
-
-
-DROP TABLE IF EXISTS `participant_status`;
-DROP TABLE IF EXISTS `participant_status_options`; 
+-- ********************************
+-- candidate_parameter tables
+-- ********************************
+SELECT 'candidate_parameter tables' AS 'CREATE TABLES';
 
 CREATE TABLE `participant_status_options` (
   ID int(10) unsigned NOT NULL auto_increment,
@@ -755,6 +788,7 @@ CREATE TABLE `participant_status_options` (
   UNIQUE KEY ID (ID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+SELECT 'Default value for participant_status_options' as 'Important INSERT statement';
 INSERT INTO `participant_status_options` (Description, Required, parentID) VALUES
   ('Active',0,NULL),
   ('Refused/Not Enrolled',0,NULL),
@@ -789,7 +823,57 @@ CREATE TABLE `participant_status` (
   KEY `fk_participant_status_1_idx` (`participant_status`),
   KEY `fk_participant_status_2_idx` (`participant_suboptions`),
   CONSTRAINT `fk_participant_status_1` FOREIGN KEY (`participant_status`) REFERENCES `participant_status_options` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `fk_participant_status_2` FOREIGN KEY (`participant_suboptions`) REFERENCES `participant_status_options` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `fk_participant_status_2` FOREIGN KEY (`participant_suboptions`) REFERENCES `participant_status_options` (`ID`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_participant_status_3` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ********************************
+-- Training tables
+-- ********************************
+SELECT 'Training tables' AS 'CREATE TABLES';
+
+CREATE TABLE `examiners` (
+  `examinerID` int(10) unsigned NOT NULL auto_increment,
+  `full_name` varchar(255) default NULL,
+  `centerID` tinyint(2) unsigned default NULL,
+  `radiologist` tinyint(1) default NULL,
+  `active` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `pending_approval` enum('Y','N') NOT NULL DEFAULT 'N',
+  PRIMARY KEY  (`examinerID`),
+  UNIQUE KEY `full_name` (`full_name`,`centerID`),
+  KEY `FK_examiners_1` (`centerID`),
+  CONSTRAINT `FK_examiners_1` FOREIGN KEY (`centerID`) REFERENCES `psc` (`CenterID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `certification` (
+  `certID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `examinerID` int(10) unsigned NOT NULL DEFAULT '0',
+  `date_cert` date DEFAULT NULL,
+  `visit_label` varchar(255) DEFAULT NULL,
+  `testID` int(10) UNSIGNED NOT NULL,
+  `pass` enum('not_certified','in_training','certified') DEFAULT NULL,
+  `comment` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`certID`,`testID`),
+  CONSTRAINT `FK_certifcation` FOREIGN KEY (`testID`) REFERENCES `test_names` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `certification_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `col` varchar(255) NOT NULL DEFAULT '',
+  `old` text,
+  `old_date` date DEFAULT NULL,
+  `new` text,
+  `new_date` date DEFAULT NULL,
+  `primaryCols` varchar(255) DEFAULT 'certID',
+  `primaryVals` text,
+  `testID` int(3) DEFAULT NULL,
+  `visit_label` varchar(255) DEFAULT NULL,
+  `changeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `userID` varchar(255) NOT NULL DEFAULT '',
+  `type` char(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -797,7 +881,23 @@ CREATE TABLE `participant_status` (
 
 
 
+
+
 -- CHECKED ----------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -993,55 +1093,11 @@ CREATE TABLE `final_radiological_review` (
 
 
 
-DROP TABLE IF EXISTS `certification`;
-CREATE TABLE `certification` (
-  `certID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `examinerID` int(10) unsigned NOT NULL DEFAULT '0',
-  `date_cert` date DEFAULT NULL,
-  `visit_label` varchar(255) DEFAULT NULL,
-  `testID` int(10) UNSIGNED NOT NULL,
-  `pass` enum('not_certified','in_training','certified') DEFAULT NULL,
-  `comment` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`certID`,`testID`),
-  CONSTRAINT `FK_certifcation` FOREIGN KEY (`testID`) REFERENCES `test_names` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `certification_history`;
-CREATE TABLE `certification_history` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `col` varchar(255) NOT NULL DEFAULT '',
-  `old` text,
-  `old_date` date DEFAULT NULL,
-  `new` text,
-  `new_date` date DEFAULT NULL,
-  `primaryCols` varchar(255) DEFAULT 'certID',
-  `primaryVals` text,
-  `testID` int(3) DEFAULT NULL,
-  `visit_label` varchar(255) DEFAULT NULL,
-  `changeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `userID` varchar(255) NOT NULL DEFAULT '',
-  `type` char(1) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `files_intermediary`;
-CREATE TABLE `files_intermediary` (
-  `IntermedID` int(11) NOT NULL AUTO_INCREMENT,
-  `Output_FileID` int(10) unsigned NOT NULL,
-  `Input_FileID` int(10) unsigned NOT NULL,
-  `Tool` varchar(255) NOT NULL,
-  PRIMARY KEY (`IntermedID`),
-  KEY `FK_files_intermediary_1` (`Output_FileID`),
-  KEY `FK_files_intermediary_2` (`Input_FileID`),
-  CONSTRAINT `FK_files_intermediary_1` FOREIGN KEY (`Output_FileID`) REFERENCES `files` (`FileID`),
-  CONSTRAINT `FK_files_intermediary_2` FOREIGN KEY (`Input_FileID`) REFERENCES `files` (`FileID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `project_rel`;
-CREATE TABLE `project_rel` (
-  `ProjectID` int(2) DEFAULT NULL,
-  `SubprojectID` int(2) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 DROP TABLE IF EXISTS `user_account_history`;
 CREATE TABLE `user_account_history` (
@@ -1210,26 +1266,7 @@ CREATE TABLE `reliability` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `subproject`;
-CREATE TABLE `subproject` (
-    SubprojectID int(10) unsigned NOT NULL auto_increment,
-    title varchar(255) NOT NULL,
-    useEDC boolean,
-    WindowDifference enum('optimal', 'battery'),
-    RecruitmentTarget int(10) unsigned,
-    PRIMARY KEY (SubprojectID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores Subprojects used in Loris';
 
-INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (1, 'Control', false, 'optimal');
-INSERT INTO subproject (SubprojectID, title, useEDC, WindowDifference) VALUES (2, 'Experimental', false, 'optimal');
-
-DROP TABLE IF EXISTS `Project`;
-CREATE TABLE `Project` (
-    `ProjectID` INT(2) NOT NULL AUTO_INCREMENT,
-    `Name` VARCHAR(255) NULL,
-    `recruitmentTarget` INT(6) Default NULL,
-    PRIMARY KEY (`ProjectID`)
-) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `StatisticsTabs`;
