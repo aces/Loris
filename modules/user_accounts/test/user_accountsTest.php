@@ -210,7 +210,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-        printf($bodyText);
+        echo $bodyText;
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $this->assertEquals($field->getAttribute('value'), 'first');
         $field = $this->safeFindElement(WebDriverBy::Name('Last_name'));
