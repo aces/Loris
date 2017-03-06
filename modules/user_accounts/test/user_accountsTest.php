@@ -206,7 +206,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->safeClick(WebDriverBy::Name('SendEmail'));
         $this->safeClick(WebDriverBy::Name('fire_away'));
         sleep(2);
-        $this->_accessUser('user_accounts', 'userid');
+        $this->safeGet($this->url . "/user_accounts/edit_user/?identifier=userid");
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
