@@ -207,6 +207,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->safeClick(WebDriverBy::Name('fire_away'));
         sleep(2);
         $this->_accessUser('user_accounts', 'userid');
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+        printf($bodyText);
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $this->assertEquals($field->getAttribute('value'), 'first');
         $field = $this->safeFindElement(WebDriverBy::Name('Last_name'));
