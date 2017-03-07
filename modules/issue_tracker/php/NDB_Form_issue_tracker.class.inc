@@ -29,6 +29,18 @@ require_once __DIR__ . '/issue_tracker_ControlPanel.class.inc';
 
 class NDB_Form_Issue_Tracker extends NDB_Form
 {
+
+    /**
+    * Override default behaviour, since the page is loaded from issueIndex.js
+    *
+    * @return void
+    * @access public
+    */
+    function display()
+    {
+        return null;
+    }
+
     /**
      * Entry point for issue_tracker/issue/[issueID]
      *
