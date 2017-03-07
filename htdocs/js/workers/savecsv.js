@@ -8,7 +8,8 @@ self.addEventListener('message', function (e) {
         row = [],
         content = '', //new Blob(),
         escapeQuote = function (val) {
-            if (val) {
+            if (val && typeof val == "string") {
+                // Only need to escape string values
                 return val.replace(/"/g, '""');
             }
             return val;
