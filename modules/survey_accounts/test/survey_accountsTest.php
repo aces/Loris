@@ -11,10 +11,21 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
-require_once __DIR__ . 
+require_once __DIR__ .
               "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
-class survey_accountsTestIntegrationTest extends LorisIntegrationTest
+/**
+ * Survey accounts automated integration tests
+ *
+ * PHP Version 5
+ *
+ * @category Test
+ * @package  Loris
+ * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Wang Shen  <wangshen.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/Loris
+ */
+class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
 {
     /**
      * Insert testing data
@@ -91,7 +102,11 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
               )
           );
     }
-    //Delete the test data
+    /**
+     * Deleting test data
+     *
+     * @return void
+     */
     public function tearDown()
     {
         $this->DB->delete(
@@ -131,21 +146,25 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
     {
         $this->setupPermissions(array("user_accounts"));
         $this->safeGet($this->url . "/survey_accounts/");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText
+            = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+                ->getText();
         $this->assertContains("Survey Accounts", $bodyText);
          $this->resetPermissions();
     }
 
     /**
-     * Tests that, when loading the Survey accounts module > add_survey submodule, some
-     * text appears in the body.
+     * Tests that, when loading the Survey accounts module > add_survey
+     * submodule, some text appears in the body.
      *
      * @return void
      */
     function testSurveyAccountsAddSurveyDoespageLoad()
     {
         $this->safeGet($this->url . "/survey_accounts/add_survey/");
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        $bodyText
+            = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+                ->getText();
         $this->assertContains("Add Survey", $bodyText);
     }
     /**
@@ -190,7 +209,10 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
            $bodyText =  $this->safeFindElement(
                WebDriverBy::cssSelector(".error")
            )->getText();
-           $this->assertContains("Visit does not exist for given candidate", $bodyText);
+           $this->assertContains(
+               "Visit does not exist for given candidate",
+               $bodyText
+           );
            //PSCID and DCC ID do not match or candidate does not exist.
            $this->safeFindElement(
                WebDriverBy::Name("CandID")
@@ -204,12 +226,16 @@ class survey_accountsTestIntegrationTest extends LorisIntegrationTest
            $bodyText =  $this->safeFindElement(
                WebDriverBy::cssSelector(".error")
            )->getText();
-           $this->assertContains("PSCID and DCC ID do not match or candidate does not exist", $bodyText);
+           $this->assertContains(
+               "PSCID and DCC ID do not match or candidate does not exist",
+               $bodyText
+           );
     }
 
     /**
-     * Tests clear button in the filter section, input some data, then click the clear button,
-     * all of data in the filter section will be gone.
+     * Tests clear button in the filter section, input some data,
+     * then click the clear button, all of data in the filter
+     * section will be gone.
      *
      * @return void
      */
