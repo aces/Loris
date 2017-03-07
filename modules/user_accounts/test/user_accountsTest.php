@@ -210,8 +210,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         
-        printf($bodyText);
-
 
 //        $this->_accessUser('user_accounts', 'userid');
         $this->safeGet($this->url . "/user_accounts/edit_user/?identifier=userid");
