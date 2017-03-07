@@ -1,7 +1,5 @@
 WARNINGS;
-SET AUTOCOMMIT=0;
-SET SQL_NOTES=0;
-START TRANSACTION;
+SET SQL_NOTES=1;
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -124,5 +122,4 @@ INSERT INTO `user_perm_rel` (userID, permID)
   WHERE u.userid = 'admin' 
   ORDER BY p.permID;
 
-SELECT 'COMMIT' as 'Ending with';
-COMMIT;
+SELECT 'Menu import completed' as 'Status';

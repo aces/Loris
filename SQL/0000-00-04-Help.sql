@@ -1,7 +1,5 @@
 WARNINGS;
-SET AUTOCOMMIT=0;
-SET SQL_NOTES=0;
-START TRANSACTION;
+SET SQL_NOTES=1;
 
 --
 -- Table structure for table `help`
@@ -78,5 +76,4 @@ INSERT INTO `help` (helpID, parentID, hash, topic, content, created, updated) VA
 (51,-1,md5('issue_tracker'), 'Issue Tracker', 'The Issue Tracker module allows users to report bugs and flag data concerns within a given LORIS. <br>Click the "Add Issue" button to register a new issue. Use the All Issues, Closed Issues, and My Issues tabs, in combination with the Selection filters, to build a custom view of issues of interest. Optionally, a PSCID can be associated to an issue, to link it to a specific subject record.  If PSCID is provided, a Visit label can also be specified for cases where an issue relates to a subject-timepoint.<br>Clicking on any issue will load a page displaying the Issue Details, enabling the user to edit or update the issue given appropriate user permissions.  This form can be used to re-assign an issue, change its status, and add further comments.  Email notifications are sent when a given issue is updated, to any user who is added to the list of those "watching" the issue. The history of all comments and updates to the issue is also visible at the end of the Issue page.', '2016-10-25 00:00:00', NULL),
 (52,-1,md5('data_release'), 'Data Release', 'The Data Release Module can be used to easily distribute packaged data releases of your study. Use the "Upload File" button to upload your file and tag it with a version based on your own version convention. Grant access to any of your users using the "Add Permission" button. These buttons will be visible only if you have the "superuser" permission.', '2016-11-04 00:00:00', NULL);
 
-SELECT 'COMMIT' as 'Ending with';
-COMMIT;
+SELECT 'Help import completed' as 'Status';

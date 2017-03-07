@@ -1,7 +1,5 @@
 WARNINGS;
-SET AUTOCOMMIT=0;
-SET SQL_NOTES=0;
-START TRANSACTION;
+SET SQL_NOTES=1;
 
 --
 -- Table Definition
@@ -233,5 +231,4 @@ INSERT INTO LorisMenuPermissions (MenuID, PermID)
 INSERT INTO LorisMenuPermissions (MenuID, PermID)
    SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='media_write' AND m.Label='Media';
 
-SELECT 'COMMIT' as 'Ending with';
-COMMIT;
+SELECT 'Permission import completed' as 'Status';

@@ -1,7 +1,5 @@
 WARNINGS;
-SET AUTOCOMMIT=0;
-SET SQL_NOTES=0;
-START TRANSACTION;
+SET SQL_NOTES=1;
 
 --
 -- DROP tables
@@ -204,5 +202,4 @@ INSERT INTO Config (ConfigID, Value) SELECT ID, "Produced by LorisDB" FROM Confi
 SELECT 'Default API keys settings' as 'Filling Config table with default values';
 INSERT INTO Config (ConfigID, Value) SELECT ID, "S3cret" FROM ConfigSettings WHERE Name="JWTKey";
 
-SELECT 'COMMIT' as 'Ending with';
-COMMIT;
+SELECT 'Config import completed' as 'Status';
