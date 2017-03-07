@@ -91,8 +91,10 @@ class CouchDBMRIImporter
             $Query .= ", (SELECT f.File FROM files f LEFT JOIN mri_scan_type msc
               ON (msc.ID= f.AcquisitionProtocolID)
               WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
-                    as Selected_$scantype, (SELECT msc.Scan_type
-              FROM files f LEFT JOIN mri_scan_type msc ON (msc.ID= f.AcquisitionProtocolID)
+                    as Selected_$scantype, (SELECT fqc.QCStatus
+                    FROM files f 
+                    LEFT JOIN files_qcstatus fqc USING(FileID)
+                    LEFT JOIN mri_scan_type msc ON(msc.ID= f.AcquisitionProtocolID)
               WHERE f.SessionID=s.ID AND msc.Scan_type='$scantype' LIMIT 1)
                      as $scantype"."_QCStatus";
         }
