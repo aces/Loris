@@ -60,19 +60,17 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $config = NDB_Config::singleton();
         $DB = Database::singleton();
-
-        $allAr = array();
-        //query to get scan types that exist for the project
-        $types_q = $DB->pselect(
-            "SELECT DISTINCT ID, Scan_type FROM mri_scan_type mri
-                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
-            array()
-        );
-        $scan_types = $allAr;
-        foreach ($types_q as $row) {
-            $type                   = $row['Scan_type'];
-            $scan_types[$row['ID']] = $type;
+        $scan_types_to_table = $config->getSetting('tblScanTypes');
+        $scan_types_to_table = explode(',', $scan_types_to_table);
+        foreach ($scan_types_to_table as $types) {
+            $scan_IDs = $DB->pselectOne(
+                "SELECT ID FROM mri_scan_type mst
+                     WHERE mst.Scan_type='" . $types . "'",
+                array()
+            );
+            $scan_id_types[$scan_IDs]=$types;
         }
 
         $NewDataSubquery = "CASE 
@@ -82,13 +80,12 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             ELSE ''
             END";
 
-        foreach ($scan_types as $key => $value) {
-            $coalesce_name[$key] = $value . 'pass' . '.' . $value . 'QC';
-            $split = explode('.',$coalesce_name[$key]);
-            $pass[$key] = current($split);
-            $qc[$key] = end($split);
-            $name[$key] = "CASE
-                COALESCE($coalesce_name[$key], '')
+        foreach ($scan_id_types as $id => $type) {
+            $pass[$id] = $type . 'pass';
+            $qc[$id] = $type . 'QC';
+            $coalesce_desc[$id] = $pass[$id] . '.' . $qc[$id];
+            $case_desc[$id] = "CASE
+                COALESCE($coalesce_desc[$id], '')
                 WHEN '' THEN ''
                 WHEN 1 THEN 'Passed'
                 WHEN 2 THEN 'Failed'
@@ -114,7 +111,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             LEFT JOIN (SELECT files.SessionID, MIN(QCLastChangeTime) as QCLastChangeTime FROM files LEFT JOIN files_qcstatus USING (FileID) WHERE OutputType='native' AND AcquisitionProtocolID NOT IN (1, 2, 3, 52) GROUP BY files.SessionID) nd ON (nd.SessionID=f.SessionID) ";
 
         $left_join = "";
-        foreach ($name as $key => $value) {
+        foreach ($case_desc as $key => $value) {
             $left_join .= "
             LEFT JOIN (SELECT files.SessionID, MIN(files_qcstatus.QCStatus+0) as $qc[$key] FROM files JOIN files_qcstatus USING (FileID) WHERE files.AcquisitionProtocolID=$key AND files_qcstatus.QCStatus IN (1, 2) GROUP BY files.SessionID) $pass[$key] ON ($pass[$key].SessionID=f.SessionID) ";
         }
@@ -136,9 +133,9 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 
-        foreach ($name as $key => $value) {
+        foreach ($case_desc as $key => $value) {
             $modalities_subquery[$key] = $value;
-            $as[$key] = $scan_types[$key] . '_QC_Status';
+            $as[$key] = $scan_id_types[$key] . '_QC_Status';
             $modalities_subquery_as[$key] = $modalities_subquery[$key] . ' as ' . $as[$key];
         }
         $this->columns = array(
