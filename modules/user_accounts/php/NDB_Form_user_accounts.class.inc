@@ -921,7 +921,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         //==================================
         if (!is_null($this->identifier)) {
             $pass = $DB->pselectOne(
-                "SELECT COALESCE(Password_hash, Password_md5) "
+                "SELECT COALESCE(Password_hash) "
                 . "as Current_password FROM users WHERE UserID = :UID",
                 array('UID' => $this->identifier)
             );
