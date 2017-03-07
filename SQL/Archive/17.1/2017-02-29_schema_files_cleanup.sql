@@ -120,14 +120,47 @@ ALTER TABLE `participant_status`
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE `project_rel`
-  CHANGE COLUMN `ProjectID` `ProjectID` INT(2) NOT NULL,
-  CHANGE COLUMN `SubprojectID` `SubprojectID` INT(10) UNSIGNED NOT NULL;
-DELETE FROM project_rel WHERE ProjectID NOT IN (SELECT ProjectID FROM Project);
-DELETE FROM project_rel WHERE SubprojectID NOT IN (SELECT SubprojectID FROM subproject);
+SELECT 'Change the parameter_type_category primary key to conform all the other int(11) unsigned NOT NULL AUTO_INCREMENT columns' as 'Step #12'; 
+ALTER TABLE parameter_type_category CHANGE `ParameterTypeCategoryID` `ParameterTypeCategoryID` int(11) unsigned NOT NULL AUTO_INCREMENT;
 
-ALTER TABLE `LORIS_17_1`.`project_rel`
-  ADD PRIMARY KEY (`ProjectID`, `SubprojectID`);
+SELECT 'Changes storage engine to InnoDB for participant_* tables' as 'Step #13';
+ALTER TABLE `participant_status` ENGINE = InnoDB;
+ALTER TABLE `participant_status_options` ENGINE = InnoDB;
+ALTER TABLE `participant_emails` ENGINE = InnoDB;
+ALTER TABLE `participant_accounts` ENGINE = InnoDB;
+ALTER TABLE `participant_status_history` ENGINE = InnoDB;
+ALTER TABLE `consent_info_history` ENGINE = InnoDB;
+
+SELECT 'Changes default chatset to utf8 for participant_* tables' as 'Step #14';
+ALTER TABLE `participant_status` CONVERT TO CHARACTER SET utf8;
+ALTER TABLE `participant_status_options` CONVERT TO CHARACTER SET utf8;
+ALTER TABLE `participant_emails` CONVERT TO CHARACTER SET utf8;
+ALTER TABLE `participant_accounts` CONVERT TO CHARACTER SET utf8;
+ALTER TABLE `participant_status_history` CONVERT TO CHARACTER SET utf8;
+ALTER TABLE `consent_info_history` CONVERT TO CHARACTER SET utf8;
+
+SELECT 'Adding ignored foreign key between participant_emails and test_names tables' as 'Step #15';
+ALTER TABLE `participant_emails` CONVERT TO CHARACTER SET utf8;
+ALTER TABLE `participant_emails`
+  ADD CONSTRAINT `fk_participant_emails_1`
+  FOREIGN KEY (`Test_name`)
+    REFERENCES `test_names` (`Test_name`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+SELECT 'Changes storage engine to InnoDB for remaining tables' as 'Step #16';
+ALTER TABLE `ExternalLinkTypes` ENGINE = InnoDB;
+ALTER TABLE `ExternalLinks` ENGINE = InnoDB;
+ALTER TABLE `empty_queries` ENGINE = InnoDB;
+ALTER TABLE `data_release` ENGINE = InnoDB;
+ALTER TABLE `data_release_permissions` ENGINE = InnoDB;
+
+SELECT 'Changes default chatset to utf8 for remaining tables' as 'Step #17';
+ALTER TABLE `ExternalLinkTypes` CONVERT TO CHARACTER SET utf8;
+ALTER TABLE `ExternalLinks` CONVERT TO CHARACTER SET utf8;
+ALTER TABLE `empty_queries` CONVERT TO CHARACTER SET utf8;
+ALTER TABLE `data_release` CONVERT TO CHARACTER SET utf8;
+ALTER TABLE `data_release_permissions` CONVERT TO CHARACTER SET utf8;
 
 SELECT 'COMMIT' as 'Ending with';
 COMMIT;
