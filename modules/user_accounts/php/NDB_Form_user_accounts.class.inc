@@ -85,7 +85,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             // get the user defaults
             $defaults = $user->getData();
             // remove the password hash
-            unset($defaults['Password_md5']);
+            unset($defaults['Password_hash']);
 
             // get the user's permissions
             $perms = $user->getPermissionIDs();
@@ -209,7 +209,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // generate new password
         if (!empty($values['NA_Password'])) {
-            $values['Password_md5']    = User::newPassword();
+            $values['Password_hash']    = User::newPassword();
             $values['Password_expiry'] = '1990-04-01';
         }
         unset($values['NA_Password']);
@@ -217,8 +217,8 @@ class NDB_Form_User_Accounts extends NDB_Form
         // If editing a user and nothing was specified in the password text field
         // remove Password_md5 from the value set, otherwise Password_md5
         // will be set to '' by the system
-        if ($values['Password_md5'] == '' && !$this->isCreatingNewUser()) {
-            unset($values['Password_md5']);
+        if ($values['Password_hash'] == '' && !$this->isCreatingNewUser()) {
+            unset($values['Password_hash']);
         }
 
         // multi-site UPDATE
@@ -350,11 +350,11 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // prepend two random characters
-        if (isset($set['Password_md5'])) {
+        if (isset($set['Password_hash'])) {
             // Update CouchDB. Must do before password is salted/hashed.
             $expiry = isset($values['Password_expiry'])
                 ? $values['Password_expiry'] : null;
-            $user->updatePassword($set['Password_md5'], $expiry);
+            $user->updatePassword($set['Password_hash'], $expiry);
         }
 
         // update the user permissions if applicable
@@ -429,7 +429,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             $msg_data['url']      = $config->getSetting('url');
             $msg_data['realname'] = $values['Real_name'];
             $msg_data['username'] = $user->getUsername();
-            $msg_data['password'] = $values['Password_md5'];
+            $msg_data['password'] = $values['Password_hash'];
 
             $template = (is_null($this->identifier))
                 ? 'new_user.tpl' : 'edit_user.tpl';
@@ -481,7 +481,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         }
 
         // password
-        $group[] = $this->createPassword('Password_md5');
+        $group[] = $this->createPassword('Password_hash');
         $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
         $this->addGroup(
             $group,
@@ -835,7 +835,7 @@ class NDB_Form_User_Accounts extends NDB_Form
         );
 
         // password
-        $this->form->addElement('password', 'Password_md5', 'New Password');
+        $this->form->addElement('password', 'Password_hash', 'New Password');
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
 
         // document repository notifications
@@ -930,7 +930,7 @@ class NDB_Form_User_Accounts extends NDB_Form
             //so either password should be set or
             // password should be generated
             if (is_null($pass)
-                && empty($values['Password_md5'])
+                && empty($values['Password_hash'])
                 && $values['NA_Password'] != 'on'
             ) {
                 $errors['Password_Group']
@@ -940,10 +940,10 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         // if password is user-defined, and user wants to change password
         if (empty($values['NA_Password'])
-            && (!empty($values['Password_md5']) || !empty($values['__Confirm']))
+            && (!empty($values['Password_hash']) || !empty($values['__Confirm']))
         ) {
             $isPasswordStrong = User::isPasswordStrong(
-                $values['Password_md5'],
+                $values['Password_hash'],
                 array(
                  $values['__Confirm'],
                  isset($values['UserID']) ? $values['UserID'] : $this->identifier,
@@ -962,7 +962,7 @@ class NDB_Form_User_Accounts extends NDB_Form
                     = 'The password is weak, or the passwords do not match';
             } else {
                 // New password must be different than current one
-                if (!$this->_passwordChanged($DB, $values['Password_md5'])) {
+                if (!$this->_passwordChanged($DB, $values['Password_hash'])) {
                     $errors['Password_Group'] = 'New and old passwords '
                         . 'are identical: please choose another one';
                 }
@@ -976,14 +976,14 @@ class NDB_Form_User_Accounts extends NDB_Form
                    . 'please notify the user by checking Send email to user box';
         }
 
-        if ($values['NA_Password'] == 'on' && $values['Password_md5'] != '') {
+        if ($values['NA_Password'] == 'on' && $values['Password_hash'] != '') {
             $errors['Password_Group'] = 'You must leave the password field empty '
                 . 'if you want the system to generate one for you';
         }
 
         if (is_null($this->identifier)
             && ($values['NA_Password'] != 'on')
-            && empty($values['Password_md5'])
+            && empty($values['Password_hash'])
         ) {
                $errors['Password_Group'] = 'Password is required';
         }
@@ -1035,7 +1035,7 @@ class NDB_Form_User_Accounts extends NDB_Form
     {
         //--- Get current password stored in database
         $passwordQuery
-            = "SELECT Password_hash, Password_md5
+            = "SELECT Password_hash
                FROM users 
                WHERE UserID = :UID";
 
@@ -1051,11 +1051,11 @@ class NDB_Form_User_Accounts extends NDB_Form
         ) {
             return !password_verify($newPassword, $passwords['Password_hash']);
         } elseif (!function_exists('password_verify')
-            && !is_null($passwords['Password_md5'])
+            && !is_null($passwords['Password_hash'])
         ) {
             // If PHP version < 5.5, use old MD5Unsalt method to check for
             // password change
-            return !User::MD5Unsalt($newPassword, $passwords['Password_md5']);
+            return !User::MD5Unsalt($newPassword, $passwords['Password_hash']);
         }
 
         return true;
@@ -1075,10 +1075,10 @@ class NDB_Form_User_Accounts extends NDB_Form
         $errors = array();
 
         // if password is user-defined, and user wants to change password
-        if (!empty($values['Password_md5'])) {
+        if (!empty($values['Password_hash'])) {
             // check password strength
             $isPasswordStrong = User::isPasswordStrong(
-                $values['Password_md5'],
+                $values['Password_hash'],
                 array(
                  $values['__Confirm'],
                  $this->identifier,
@@ -1091,12 +1091,12 @@ class NDB_Form_User_Accounts extends NDB_Form
                 )
             );
             if (!$isPasswordStrong) {
-                $errors['Password_md5']
+                $errors['Password_hash']
                     = 'The password is weak, or the passwords do not match';
             } else {
                 // New password must be different than current one
-                if (!$this->_passwordChanged($DB, $values['Password_md5'])) {
-                    $errors['Password_md5'] = 'New and old passwords '
+                if (!$this->_passwordChanged($DB, $values['Password_hash'])) {
+                    $errors['Password_hash'] = 'New and old passwords '
                         . 'are identical: please choose another one';
                 }
             }
