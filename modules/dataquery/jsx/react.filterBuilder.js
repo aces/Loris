@@ -73,7 +73,7 @@ FilterRule = React.createClass({
 	},
 	fieldSelect: function(event) {
 		// Update the rules desired field, setting the rules field and field type
-		var rule = this.props.rule;
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
 		delete rule.field;
 		delete rule.fieldType;
 		delete rule.operator;
@@ -88,7 +88,7 @@ FilterRule = React.createClass({
 	},
 	operatorSelect: function(event) {
 		// Update the desired rule operation for the selected field
-		var rule = this.props.rule;
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
 		delete rule.operator;
 		delete rule.value;
 		delete rule.visit;
@@ -113,7 +113,7 @@ FilterRule = React.createClass({
 	},
 	valueSet: function() {
 		// Update the value to filter for, and runs the query for the rules parameters
-		var rule = this.props.rule,
+		var rule = JSON.parse(JSON.stringify(this.props.rule)),
 			that = this;
 		if(this.state.value) {
 			var responseHandler = function(data) {
@@ -177,7 +177,7 @@ FilterRule = React.createClass({
 	},
 	updateVisit: function(event) {
 		// Update rule to filter for specified visit
-		var rule = this.props.rule;
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
 		rule.visit = event.target.value;
 
 		if(event.target.value === "all"){
