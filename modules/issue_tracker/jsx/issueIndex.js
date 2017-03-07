@@ -60,10 +60,10 @@ class IssueForm extends React.Component {
       );
     }
 
-    let hasEditPermission = (
-        this.state.Data.hasEditPermission ||
-        this.state.Data.isOwnIssue ||
-        this.state.isNewIssue
+    const hasEditPermission = (
+      this.state.Data.hasEditPermission ||
+      this.state.Data.isOwnIssue ||
+      this.state.isNewIssue
     );
 
     let headerText;
@@ -145,137 +145,138 @@ class IssueForm extends React.Component {
     }
 
     return (
-        <div>
-          <FormElement
-            name="issueEdit"
-            onSubmit={this.handleSubmit}
-            ref="form"
-          >
-            <h3>{headerText}</h3>
-            <br />
-            {header}
-            <br></br>
-            <br></br>
-
-            <TextboxElement
-              name="title"
-              label="Title"
-              onUserInput={this.setFormData}
-              ref="title"
-              value={this.state.formData.title}
-              disabled={!hasEditPermission}
-              required={true}
-            />
-            {description}
-            <SelectElement
-              name="assignee"
-              label="Assignee"
-              emptyOption={true}
-              options={this.state.Data.assignees}
-              onUserInput={this.setFormData}
-              ref="assignee"
-              disabled={!hasEditPermission}
-              value={this.state.formData.assignee}
-              required={true}
-            />
-            <SelectElement
-              name="centerID"
-              label="Site"
-              emptyOption={true}
-              options={this.state.Data.sites}
-              onUserInput={this.setFormData}
-              ref="centerID"
-              disabled={!hasEditPermission}
-              value={this.state.formData.centerID}
-            />
-            <SelectElement
-              name="status"
-              label="Status"
-              emptyOption={false}
-              options={this.state.Data.statuses}
-              onUserInput={this.setFormData}
-              ref="status"
-              disabled={!hasEditPermission}
-              value={this.state.formData.status} // todo: edit this so the options are different if the user doesn't have permission
-            />
-            <SelectElement
-              name="priority"
-              label="Priority"
-              emptyOption={false}
-              options={this.state.Data.priorities}
-              onUserInput={this.setFormData}
-              ref="priority"
-              required={false}
-              disabled={!hasEditPermission}
-              value={this.state.formData.priority}
-            />
-            <SelectElement
-              name="category"
-              label="Category"
-              emptyOption={true}
-              options={this.state.Data.categories}
-              onUserInput={this.setFormData}
-              ref="category"
-              disabled={!hasEditPermission}
-              value={this.state.formData.category}
-            />
-            <SelectElement
-              name="module"
-              label="Module"
-              emptyOption={true}
-              options={this.state.Data.modules}
-              onUserInput={this.setFormData}
-              ref="module"
-              disabled={!hasEditPermission}
-              value={this.state.formData.module}
-            />
-            <TextboxElement
-              name="PSCID"
-              label="PSCID"
-              onUserInput={this.setFormData}
-              ref="PSCID"
-              disabled={!hasEditPermission}
-              value={this.state.formData.PSCID}
-            />
-            <TextboxElement
-              name="visitLabel"
-              label="Visit Label"
-              onUserInput={this.setFormData}
-              ref="visitLabel"
-              disabled={!hasEditPermission}
-              value={this.state.formData.visitLabel}
-            />
-            <SelectElement
-              name="watching"
-              label="Watching?"
-              emptyOption={false}
-              options={{No: 'No', Yes: 'Yes'}}
-              onUserInput={this.setFormData}
-              ref="watching"
-              value={isWatching}
-            />
-            <SelectElement
-              name="othersWatching"
-              label="Add others to watching?"
-              emptyOption={true}
-              options={this.state.Data.otherWatchers}
-              onUserInput={this.setFormData}
-              ref="watching"
-              multiple={true}
-              value={this.state.formData.othersWatching}
-            />
-            <TextareaElement
-              name="comment"
-              label={commentLabel}
-              onUserInput={this.setFormData}
-              ref="comment"
-              value={this.state.formData.comment}
-            />
-            <ButtonElement label={submitButtonValue} />
-          </FormElement>
-          {commentHistory}
-        </div>
-      );
+      <div>
+        <FormElement
+          name="issueEdit"
+          onSubmit={this.handleSubmit}
+          ref="form"
+        >
+          <h3>{headerText}</h3>
+          <br />
+          {header}
+          <br></br>
+          <br></br>
+          <TextboxElement
+            name="title"
+            label="Title"
+            onUserInput={this.setFormData}
+            ref="title"
+            value={this.state.formData.title}
+            disabled={!hasEditPermission}
+            required={true}
+          />
+          {description}
+          <SelectElement
+            name="assignee"
+            label="Assignee"
+            emptyOption={true}
+            options={this.state.Data.assignees}
+            onUserInput={this.setFormData}
+            ref="assignee"
+            disabled={!hasEditPermission}
+            value={this.state.formData.assignee}
+            required={true}
+          />
+          <SelectElement
+            name="centerID"
+            label="Site"
+            emptyOption={true}
+            options={this.state.Data.sites}
+            onUserInput={this.setFormData}
+            ref="centerID"
+            disabled={!hasEditPermission}
+            value={this.state.formData.centerID}
+          />
+          <SelectElement
+            name="status"
+            label="Status"
+            emptyOption={false}
+            options={this.state.Data.statuses}
+            onUserInput={this.setFormData}
+            ref="status"
+            disabled={!hasEditPermission}
+            value={this.state.formData.status} // todo: edit this so the options are
+                                               // different if the user doesn't have
+                                               // permission
+          />
+          <SelectElement
+            name="priority"
+            label="Priority"
+            emptyOption={false}
+            options={this.state.Data.priorities}
+            onUserInput={this.setFormData}
+            ref="priority"
+            required={false}
+            disabled={!hasEditPermission}
+            value={this.state.formData.priority}
+          />
+          <SelectElement
+            name="category"
+            label="Category"
+            emptyOption={true}
+            options={this.state.Data.categories}
+            onUserInput={this.setFormData}
+            ref="category"
+            disabled={!hasEditPermission}
+            value={this.state.formData.category}
+          />
+          <SelectElement
+            name="module"
+            label="Module"
+            emptyOption={true}
+            options={this.state.Data.modules}
+            onUserInput={this.setFormData}
+            ref="module"
+            disabled={!hasEditPermission}
+            value={this.state.formData.module}
+          />
+          <TextboxElement
+            name="PSCID"
+            label="PSCID"
+            onUserInput={this.setFormData}
+            ref="PSCID"
+            disabled={!hasEditPermission}
+            value={this.state.formData.PSCID}
+          />
+          <TextboxElement
+            name="visitLabel"
+            label="Visit Label"
+            onUserInput={this.setFormData}
+            ref="visitLabel"
+            disabled={!hasEditPermission}
+            value={this.state.formData.visitLabel}
+          />
+          <SelectElement
+            name="watching"
+            label="Watching?"
+            emptyOption={false}
+            options={{No: 'No', Yes: 'Yes'}}
+            onUserInput={this.setFormData}
+            ref="watching"
+            value={isWatching}
+          />
+          <SelectElement
+            name="othersWatching"
+            label="Add others to watching?"
+            emptyOption={true}
+            options={this.state.Data.otherWatchers}
+            onUserInput={this.setFormData}
+            ref="watching"
+            multiple={true}
+            value={this.state.formData.othersWatching}
+          />
+          <TextareaElement
+            name="comment"
+            label={commentLabel}
+            onUserInput={this.setFormData}
+            ref="comment"
+            value={this.state.formData.comment}
+          />
+          <ButtonElement label={submitButtonValue}/>
+        </FormElement>
+        {commentHistory}
+      </div>
+    );
   }
 
   /**
@@ -316,7 +317,7 @@ class IssueForm extends React.Component {
 
     const myFormData = this.state.formData;
     const formRefs = this.refs;
-    let formData = new FormData();
+    const formData = new FormData();
 
     // Validate the form
     if (!this.isValidForm(formRefs, myFormData)) {
@@ -356,15 +357,15 @@ class IssueForm extends React.Component {
     });
   }
 
-    /**
-     * Set the form data based on state values of child elements/componenets
-     *
-     * @param {string} formElement - name of the selected element
-     * @param {string} value - selected value for corresponding form element
-     */
+  /**
+   * Set the form data based on state values of child elements/componenets
+   *
+   * @param {string} formElement - name of the selected element
+   * @param {string} value - selected value for corresponding form element
+   */
   setFormData(formElement, value) {
     // todo: only give valid inputs for fields given previous input to other fields
-    let formDataUpdate = this.state.formData;
+    const formDataUpdate = this.state.formData;
     formDataUpdate[formElement] = value;
 
     this.setState({
@@ -372,17 +373,17 @@ class IssueForm extends React.Component {
     });
   }
 
-    /**
-     * Validates the form.
-     * Except not entirely because PSCID and visitLabel are not validated.
-     *
-     * @param {object} formRefs - Object containing references to React form elements
-     * @param {object} formDataToCheck - Object containing form data inputed by user
-     * @return {boolean} - true if all required fields are filled, false otherwise
-     */
+  /**
+   * Validates the form.
+   * Except not entirely because PSCID and visitLabel are not validated.
+   *
+   * @param {object} formRefs - Object containing references to React form elements
+   * @param {object} formDataToCheck - Object containing form data inputed by user
+   * @return {boolean} - true if all required fields are filled, false otherwise
+   */
   isValidForm(formRefs, formDataToCheck) {
     let isValidForm = true;
-    let requiredFields = {
+    const requiredFields = {
       title: null,
       assignee: null
     };
@@ -515,21 +516,15 @@ class CollapsibleComment extends React.Component {
 $(function() {
   const args = QueryString.get();
   const issueTracker = (
-    <IssueForm
-      Module="issue_tracker"
-      DataURL={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=getData&issueID=${args.issueID}`}
-      action={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=edit`}
-    />
+    <div className="page-issue-tracker">
+      <IssueForm
+        Module="issue_tracker"
+        DataURL={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=getData&issueID=${args.issueID}`}
+        action={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=edit`}
+      />
+    </div>
   );
 
-  // Create a wrapper div in which react component will be loaded
-  const issueTrackerDOM = document.createElement('div');
-  issueTrackerDOM.id = 'page-issue-tracker';
-
-  // Append wrapper div to page content
-  const rootDOM = document.getElementById("lorisworkspace");
-  rootDOM.appendChild(issueTrackerDOM);
-
-  ReactDOM.render(issueTracker, document.getElementById("page-issue-tracker"));
+  ReactDOM.render(issueTracker, document.getElementById("lorisworkspace"));
 });
 
