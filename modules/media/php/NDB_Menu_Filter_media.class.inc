@@ -49,6 +49,17 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     }
 
     /**
+     * Override default behaviour, since the page is loaded from mediaIndex.js
+     *
+     * @return void
+     * @access public
+     */
+    function display()
+    {
+        return null;
+    }
+
+    /**
      * Create a form to filter media by various criteria
      *
      * @return bool

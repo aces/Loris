@@ -106,16 +106,11 @@ class MediaIndex extends React.Component {
 }
 
 $(function() {
-  // Create a wrapper div in which react component will be loaded
-  const mediaDOM = document.createElement('div');
-  mediaDOM.id = 'page-media';
-
-  // Append wrapper div to page content
-  const rootDOM = document.getElementById("lorisworkspace");
-  rootDOM.appendChild(mediaDOM);
-
-  ReactDOM.render(
-    <MediaIndex DataURL={`${loris.BaseURL}/media/?format=json`}/>,
-    document.getElementById("page-media")
+  const mediaIndex = (
+    <div className="page-media">
+      <MediaIndex DataURL={`${loris.BaseURL}/media/?format=json`} />
+    </div>
   );
+
+  ReactDOM.render(mediaIndex, document.getElementById("lorisworkspace"));
 });
