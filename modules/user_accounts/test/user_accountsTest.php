@@ -69,7 +69,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->assertEquals(
             "password",
             $this->safeFindElement(
-                WebDriverBy::Name("Password_hash")
+                WebDriverBy::Name("Password_md5")
             )->getAttribute("type")
         );
         $this->assertEquals(
@@ -205,13 +205,14 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field->sendKeys('email@example.com');
         $this->safeClick(WebDriverBy::Name('SendEmail'));
         $this->safeClick(WebDriverBy::Name('fire_away'));
-        $this->_accessUser('user_accounts', 'userid');
+//        $this->_accessUser('user_accounts', 'userid');
+        $this->safeGet($this->url . "/user_accounts/edit_user/?identifier=userid");
+        $field = $this->safeFindElement(WebDriverBy::Name('Email'));
+        $this->assertEquals($field->getAttribute('value'), 'email@example.com');
         $field = $this->safeFindElement(WebDriverBy::Name('First_name'));
         $this->assertEquals($field->getAttribute('value'), 'first');
         $field = $this->safeFindElement(WebDriverBy::Name('Last_name'));
         $this->assertEquals($field->getAttribute('value'), 'last');
-        $field = $this->safeFindElement(WebDriverBy::Name('Email'));
-        $this->assertEquals($field->getAttribute('value'), 'email@example.com');
     }
 
     /**
