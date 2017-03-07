@@ -162,5 +162,9 @@ ALTER TABLE `empty_queries` CONVERT TO CHARACTER SET utf8;
 ALTER TABLE `data_release` CONVERT TO CHARACTER SET utf8;
 ALTER TABLE `data_release_permissions` CONVERT TO CHARACTER SET utf8;
 
+SELECT 'Dropping duplicate index SessionCenterID in the session table' as 'Step #18';
+ALTER TABLE `session`
+  DROP INDEX `SessionCenterID` ;
+
 SELECT 'COMMIT' as 'Ending with';
 COMMIT;

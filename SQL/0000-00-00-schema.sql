@@ -1,5 +1,5 @@
 WARNINGS;
-SET SQL_NOTES=0;
+SET SQL_NOTES=1;
 
 -- ********************************
 -- DROP TABLE (ORDER MATTERS)
@@ -86,11 +86,12 @@ DROP TABLE IF EXISTS `participant_status_options`;
 DROP TABLE IF EXISTS `conflicts_resolved`;
 DROP TABLE IF EXISTS `conflicts_unresolved`;
 
+
 DROP TABLE IF EXISTS `notification_spool`;
 DROP TABLE IF EXISTS `notification_types`;
 
-DROP TABLE IF EXISTS `document_repository_categories`;
 DROP TABLE IF EXISTS `document_repository`;
+DROP TABLE IF EXISTS `document_repository_categories`;
 
 DROP TABLE IF EXISTS `tarchive_files`;
 DROP TABLE IF EXISTS `tarchive_series`;
@@ -124,7 +125,9 @@ DROP TABLE IF EXISTS `session`;
 DROP TABLE IF EXISTS `user_psc_rel`;
 DROP TABLE IF EXISTS `candidate`;
 DROP TABLE IF EXISTS `caveat_options`;
+SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `users`;
+SET FOREIGN_KEY_CHECKS=1;
 DROP TABLE IF EXISTS `psc`;
 DROP TABLE IF EXISTS `project_rel`;
 DROP TABLE IF EXISTS `subproject`;
@@ -217,8 +220,8 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SELECT 'Admin user' as 'Important INSERT statement';
-INSERT INTO `users` (UserID,Real_name,First_name,Last_name,Email,Password_md5,Pending_approval,Password_expiry)
-VALUES ('admin','Admin account','Admin','account','admin@localhost','4817577f267cc8bb20c3e58b48a311b9f6','N',DATE_ADD(NOW(), INTERVAL -1 DAY));
+INSERT INTO `users` (UserID,Real_name,First_name,Last_name,Email,Password_md5,Pending_approval)
+VALUES ('admin','Admin account','Admin','account','admin@localhost','4817577f267cc8bb20c3e58b48a311b9f6','N');
 
 CREATE TABLE `user_psc_rel` (
   `UserID` int(10) unsigned NOT NULL,
@@ -311,7 +314,6 @@ CREATE TABLE `session` (
   KEY `FK_session_2` (`CenterID`),
   KEY `SessionSubproject` (`SubprojectID`),
   KEY `SessionActive` (`Active`),
-  KEY `SessionCenterID` (`CenterID`),
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
   CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
@@ -482,7 +484,7 @@ SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
 SELECT 'Default value for mri_scanner' as 'Important INSERT statement';
 INSERT INTO `mri_scanner` (ID) VALUES (0);
 
-SET SQL_MODE=@OLD_SQL;
+SET SQL_MODE=@OLD_SQL_MODE;
 
 CREATE TABLE `mri_scan_type` (
   `ID` int(11) unsigned NOT NULL auto_increment,
@@ -796,6 +798,14 @@ CREATE TABLE `tarchive_find_new_uploads` (
 -- ********************************
 SELECT 'document_repository tables' AS 'CREATE TABLES';
 
+CREATE TABLE `document_repository_categories` (
+  `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(255) DEFAULT NULL,
+  `parent_id` int(3) DEFAULT '0',
+  `comments` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `document_repository` (
   `record_id` int(11) NOT NULL AUTO_INCREMENT,
   `PSCID` varchar(255) DEFAULT NULL,
@@ -818,14 +828,6 @@ CREATE TABLE `document_repository` (
   PRIMARY KEY (`record_id`),
   KEY `fk_document_repository_1_idx` (`File_category`),
   CONSTRAINT `fk_document_repository_1` FOREIGN KEY (`File_category`) REFERENCES `document_repository_categories` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `document_repository_categories` (
-  `id` int(3) unsigned NOT NULL AUTO_INCREMENT,
-  `category_name` varchar(255) DEFAULT NULL,
-  `parent_id` int(3) DEFAULT '0',
-  `comments` text,
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ********************************
@@ -937,12 +939,17 @@ INSERT INTO `participant_status_options` (Description, Required) VALUES
   ('Inactive',1),
   ('Incomplete',1),
   ('Complete',0);
+SELECT ID INTO @tmp_val FROM participant_status_options WHERE Description = 'Inactive' AND parentID IS NULL;
 INSERT INTO `participant_status_options` (Description, Required, parentID) VALUES
-  ('Unsure',NULL,(SELECT ID FROM participant_status_options WHERE Description = 'Inactive' AND parentID IS NULL)),
-  ('Requiring Further Investigation',NULL,(SELECT ID FROM participant_status_options WHERE Description = 'Inactive' AND parentID IS NULL)),
-  ('Not Responding',NULL,(SELECT ID FROM participant_status_options WHERE Description = 'Inactive' AND parentID IS NULL)),
-  ('Death',NULL,(SELECT ID FROM participant_status_options WHERE Description = 'Incomplete' AND parentID IS NULL)),
-  ('Lost to Followup',NULL,(SELECT ID FROM participant_status_options WHERE Description = 'Incomplete' AND parentID IS NULL));
+  ('Unsure',NULL,@tmp_val),
+  ('Requiring Further Investigation',NULL,@tmp_val),
+  ('Not Responding',NULL,@tmp_val);
+SET @tmp_val = NULL;
+SELECT ID INTO @tmp_val FROM participant_status_options WHERE Description = 'Incomplete' AND parentID IS NULL;
+INSERT INTO `participant_status_options` (Description, Required, parentID) VALUES
+  ('Death',NULL,@tmp_val),
+  ('Lost to Followup',NULL,@tmp_val);
+SET @tmp_val = NULL;
 
 CREATE TABLE `participant_status` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1011,7 +1018,7 @@ CREATE TABLE `consent_info_history` (
   `study_consent_withdrawal` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `family` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
@@ -1837,7 +1844,8 @@ INSERT INTO `feedback_mri_comment_types` (CommentName,CommentType,CommentStatusF
   ('Intensity artifact','volume','a:2:{s:5:\"field\";s:18:\"Intensity_artifact\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:4:\"Poor\";i:4;s:12:\"Unacceptable\";}}'),
   ('Movement artifact','volume','a:2:{s:5:\"field\";s:30:\"Movement_artifacts_within_scan\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
   ('Packet movement artifact','volume','a:2:{s:5:\"field\";s:31:\"Movement_artifacts_between_packets\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"None\";i:2;s:15:\"Slight Movement\";i:3;s:12:\"Poor Quality\";i:4;s:12:\"Unacceptable\";}}'),
-  ('Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),      (6,'Overall','volume',''),
+  ('Coverage','volume','a:2:{s:5:\"field\";s:8:\"Coverage\";s:6:\"values\";a:5:{i:0;s:0:\"\";i:1;s:4:\"Good\";i:2;s:4:\"Fair\";i:3;s:5:\"Limit\";i:4;s:12:\"Unacceptable\";}}'),
+  ('Overall','volume',''),
   ('Subject','visit',''),
   ('Dominant Direction Artifact (DWI ONLY)','volume','a:2:{s:5:"field";s:14:"Color_Artifact";s:6:"values";a:5:{i:0;s:0:"";i:1;s:4:"Good";i:2;s:4:"Fair";i:3;s:4:"Poor";i:4;s:12:"Unacceptable";}}'),
   ('Entropy Rating (DWI ONLY)','volume','a:2:{s:5:"field";s:7:"Entropy";s:6:"values";a:5:{i:0;s:0:"";i:1;s:10:"Acceptable";i:2;s:10:"Suspicious";i:3;s:12:"Unacceptable";i:4;s:13:"Not Available";}}');
