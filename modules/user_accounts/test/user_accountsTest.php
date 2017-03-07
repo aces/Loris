@@ -211,7 +211,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         )->getText();
         
         printf($bodyText);
-        echo $bodyText;
 
 
 //        $this->_accessUser('user_accounts', 'userid');
