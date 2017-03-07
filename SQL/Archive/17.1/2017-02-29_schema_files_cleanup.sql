@@ -1,7 +1,5 @@
 WARNINGS;
-SET AUTOCOMMIT=0;
-SET SQL_NOTES=0;
-START TRANSACTION;
+SET SQL_NOTES=1;
 
 SELECT 'Removing unused indexes' as 'Step #1';
 ALTER TABLE `help` 
@@ -166,5 +164,4 @@ SELECT 'Dropping duplicate index SessionCenterID in the session table' as 'Step 
 ALTER TABLE `session`
   DROP INDEX `SessionCenterID` ;
 
-SELECT 'COMMIT' as 'Ending with';
-COMMIT;
+SELECT 'Patch completed' as 'Status';
