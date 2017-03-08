@@ -161,7 +161,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      */
     function testSurveyAccountsAddSurveyDoespageLoad()
     {
-        $this->safeGet($this->url . "/survey_accounts/add_survey/");
+        $this->safeGet($this->url . "/survey_accounts/addSurvey/");
         $bodyText
             = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
                 ->getText();

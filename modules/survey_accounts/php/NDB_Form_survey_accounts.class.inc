@@ -22,7 +22,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Form_survey_accounts extends NDB_Form
+class NDB_Form_Survey_Accounts extends NDB_Form
 {
     /**
      * Determine whether the logged in user has access to this page.
@@ -57,7 +57,7 @@ class NDB_Form_survey_accounts extends NDB_Form
      * @return array Empty if no error, associative array of element with
      *               error if there was a problem with data entered.
      */
-    function _validate_add_survey($values)
+    function _validateAddSurvey($values)
     {
         $db = Database::singleton();
 
@@ -70,8 +70,11 @@ class NDB_Form_survey_accounts extends NDB_Form
              'v_CandID' => $values['CandID'],
             )
         );
+        $error         = "PSCID and DCC ID do not match "
+                ."or candidate does not exist.";
         if ($numCandidates != 1) {
-            return array('CandID' => 'PSCID and DCC ID do not match or candidate does not exist.');
+            return
+              array('CandID' => $error);
         }
 
         $numSessions = $db->pselectOne(
@@ -87,7 +90,9 @@ class NDB_Form_survey_accounts extends NDB_Form
 
         if ($numSessions != 1) {
             return array(
-                    'VL' => "Visit ". $values['VL']." does not exist for given candidate",
+                    'VL' => "Visit ".
+                            $values['VL'].
+                            " does not exist for given candidate",
                    );
         }
 
@@ -102,11 +107,12 @@ class NDB_Form_survey_accounts extends NDB_Form
              'v_VL'     => $values['VL'],
             )
         );
-        foreach($instrument_list as $instrument) {
-            if($values['Test_name'] == $instrument['Test_name']) {
+        $reminder        = " already exists for given candidate for visit ";
+        foreach ($instrument_list as $instrument) {
+            if ($values['Test_name'] == $instrument['Test_name']) {
                 return array(
                         'Test_name' => "Instrument ". $values['Test_name'].
-                                       " already exists for given candidate for visit ". $values['VL'],
+                                       $reminder. $values['VL'],
                        );
             }
         }
@@ -126,10 +132,10 @@ class NDB_Form_survey_accounts extends NDB_Form
             return array('Email2' => 'Please confirm the email address.');
         }
 
-        if(empty($values['Test_name'])) {
+        if (empty($values['Test_name'])) {
             return array('Test_name' => 'Please choose an instrument.');
         }
-        if($_REQUEST['fire_away'] !== 'Create survey') {
+        if ($_REQUEST['fire_away'] !== 'Create survey') {
             if (!filter_var(
                 $values['Email'],
                 FILTER_VALIDATE_EMAIL
@@ -156,7 +162,8 @@ class NDB_Form_survey_accounts extends NDB_Form
     {
         $db        = Database::singleton();
         $SessionID = $db->pselectOne(
-            "SELECT ID FROM session WHERE CandID=:v_CandID AND Visit_label=:v_VL",
+            "SELECT ID FROM session".
+            " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
             array(
              'v_CandID' => $values['CandID'],
              'v_VL'     => $values['VL'],
@@ -212,7 +219,8 @@ class NDB_Form_survey_accounts extends NDB_Form
 
             $msg_data = array(
                          'study'     => $config->getSetting("title"),
-                         'url'       => $www['url'] . '/survey.php?key=' . urlencode($key),
+                         'url'       => $www['url'] . '/survey.php?key=' .
+                                         urlencode($key),
                          'EmailForm' => $values['email_dialog'],
                         );
             Email::send($values['Email'], 'new_survey.tpl', $msg_data);
@@ -236,17 +244,24 @@ class NDB_Form_survey_accounts extends NDB_Form
      *
      * @return none
      */
-    function add_survey()
+    function addSurvey()
     {
         $this->redirect = "test_name=$this->name";
         $this->addBasicText("CandID", "DCCID");
         $this->addBasicText("PSCID", "PSCID");
         $this->addSelect("VL", "Visit Label", Utility::getVisitList());
-        $this->addSelect("Test_name", "Instrument", array_merge(array('' => ''), Utility::getDirectInstruments()));
+        $this->addSelect(
+            "Test_name",
+            "Instrument",
+            array_merge(
+                array('' => ''),
+                Utility::getDirectInstruments()
+            )
+        );
         $this->addBasicText("Email", "Email address");
         $this->addBasicText("Email2", "Confirm Email address");
 
-        $this->form->addFormRule(array(&$this, '_validate_add_survey'));
+        $this->form->addFormRule(array(&$this, '_validateAddSurvey'));
     }
 
     /**
