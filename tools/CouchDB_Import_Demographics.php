@@ -162,7 +162,7 @@ class CouchDBDemographicsImporter {
             $projectsEnum .= "')";
             $this->Dictionary["Project"] = array(
                 'Description' => 'Project for which the candidate belongs',
-                'Type' => $projects
+                'Type' => $projectsEnum
             );
         }
         /*
