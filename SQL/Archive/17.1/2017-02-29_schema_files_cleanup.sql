@@ -1,16 +1,20 @@
 WARNINGS;
 SET SQL_NOTES=1;
 
-SELECT 'Removing unused indexes' as 'Step #1';
+SELECT 'Removing unused indexes to change the storage engine for help table' as 'Step #1';
 ALTER TABLE `help` 
 DROP INDEX `content`,
 DROP INDEX `topic`;
+ALTER TABLE `help` ENGINE = InnoDB;
 
 SELECT 'Droping unused table help_related_links' as 'Step #2';
 DROP TABLE help_related_links;
 
+
 SELECT 'Adding foreign key between Config and ConfigSettings' as 'Step #3';
 SELECT 'Config records not associated with a valid ConfigSettings.id will be deleted' as 'ATTENTION';
+DELETE FROM `Config` WHERE ConfigID IS NULL;
+ALTER TABLE `Config` CHANGE `ConfigID` `ConfigID` int(11) NOT NULL;
 ALTER TABLE `Config` 
   ADD INDEX `fk_Config_1_idx` (`ConfigID` ASC);
 ALTER TABLE `Config` 
@@ -159,9 +163,16 @@ ALTER TABLE `ExternalLinks` CONVERT TO CHARACTER SET utf8;
 ALTER TABLE `empty_queries` CONVERT TO CHARACTER SET utf8;
 ALTER TABLE `data_release` CONVERT TO CHARACTER SET utf8;
 ALTER TABLE `data_release_permissions` CONVERT TO CHARACTER SET utf8;
+ALTER TABLE `Visit_Windows` CONVERT TO CHARACTER SET utf8;
 
 SELECT 'Dropping duplicate index SessionCenterID in the session table' as 'Step #18';
 ALTER TABLE `session`
   DROP INDEX `SessionCenterID` ;
+
+SELECT 'Rectifying some discrepancies' as 'Step #19';
+UPDATE ConfigSettings SET OrderNumber = 1 WHERE Name = 'JWTKey';
+ALTER TABLE `certification_history` COMMENT='primaryVals should always contain a valid certID from the certification table';
+ALTER TABLE `session_status` COMMENT='Used if SupplementalSessionStatus configSettings is true';
+ALTER TABLE `tarchive_find_new_uploads` COMMENT='This table is used by Loris-MRI/find_uploads_tarchive to store the last time the script was ran for that location';
 
 SELECT 'Patch completed' as 'Status';

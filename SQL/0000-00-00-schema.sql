@@ -93,6 +93,7 @@ DROP TABLE IF EXISTS `notification_types`;
 DROP TABLE IF EXISTS `document_repository`;
 DROP TABLE IF EXISTS `document_repository_categories`;
 
+DROP TABLE IF EXISTS `tarchive_find_new_uploads`;
 DROP TABLE IF EXISTS `tarchive_files`;
 DROP TABLE IF EXISTS `tarchive_series`;
 DROP TABLE IF EXISTS `tarchive`;
@@ -170,7 +171,7 @@ CREATE TABLE `psc` (
   `PSCArea` varchar(150) DEFAULT NULL,
   `Address` varchar(150) DEFAULT NULL,
   `City` varchar(150) DEFAULT NULL,
-  `StateID` tinyint(2) unsigned DEFAULT '0',
+  `StateID` tinyint(2) unsigned DEFAULT NULL,
   `ZIP` varchar(12) DEFAULT NULL,
   `Phone1` varchar(12) DEFAULT NULL,
   `Phone2` varchar(12) DEFAULT NULL,
@@ -786,11 +787,10 @@ CREATE TABLE `tarchive_files` (
   CONSTRAINT `tarchive_files_TarchiveSeriesID_fk` FOREIGN KEY (`TarchiveSeriesID`) REFERENCES `tarchive_series` (`TarchiveSeriesID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `tarchive_find_new_uploads`;
 CREATE TABLE `tarchive_find_new_uploads` (
-      `CenterName` varchar(255) NOT NULL,
-      `LastRan` datetime DEFAULT NULL,
-      PRIMARY KEY (`CenterName`)
+  `CenterName` varchar(255) NOT NULL,
+  `LastRan` datetime DEFAULT NULL,
+  PRIMARY KEY (`CenterName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table is used by Loris-MRI/find_uploads_tarchive to store the last time the script was ran for that location';
 
 -- ********************************
@@ -1372,7 +1372,7 @@ CREATE TABLE `parameter_type` (
   `IsFile` tinyint(1) default '0',
   PRIMARY KEY  (`ParameterTypeID`),
   KEY `name` (`Name`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='dictionary of all the variables in the project';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='dictionary of all the variables in the project';
 
 SELECT 'Default value for parameter_type 1/2' as 'Important INSERT statement';
 INSERT INTO `parameter_type` VALUES
@@ -1392,7 +1392,7 @@ INSERT INTO parameter_type (Name, Type, Description, RangeMin, RangeMax, SourceF
   ('candidate_dob','date','Candidate_Dob',null,null,'DoB','candidate',null,1,null);
 
 CREATE TABLE `parameter_type_category` (
-  `ParameterTypeCategoryID` int(10) unsigned NOT NULL auto_increment,
+  `ParameterTypeCategoryID` int(11) unsigned NOT NULL auto_increment,
   `Name` varchar(255) default NULL,
   `Type` enum('Metavars','Instrument') default 'Metavars',
   PRIMARY KEY  (`ParameterTypeCategoryID`)
@@ -1519,7 +1519,7 @@ CREATE TABLE `SNP` (
   UNIQUE KEY `uniq_snp` (`rsID`,`SNPExternalSource`),
   KEY `SNP_ibfk_2` (`GenomeLocID`),
   CONSTRAINT `SNP_ibfk_2` FOREIGN KEY (`GenomeLocID`) REFERENCES `genome_loc` (`GenomeLocID`)
-) ENGINE=InnoDB AUTO_INCREMENT=401 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `SNP_candidate_rel` (
   `ID` bigint(20) NOT NULL AUTO_INCREMENT,

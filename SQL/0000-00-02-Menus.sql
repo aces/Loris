@@ -21,7 +21,7 @@ CREATE TABLE `LorisMenu` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `index3` (`Parent`,`Label`),
   KEY `fk_LorisMenu_1_idx` (`Parent`),
-  CONSTRAINT `fk_LorisMenu_1` FOREIGN KEY (`Parent`) REFERENCES `LorisMenu` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_LorisMenu_1` FOREIGN KEY (`Parent`) REFERENCES `LorisMenu` (`ID`) ON DELETE RESTRICT ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SELECT 'LorisMenuPermissions' as 'CREATE table';
