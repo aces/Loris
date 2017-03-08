@@ -11,6 +11,8 @@ self.addEventListener('message', function (e) {
             if (val && typeof val == "string") {
                 // Only need to escape string values
                 return val.replace(/"/g, '""');
+            } else if (val && typeof val === "object" && val.type === 'a') {
+                return val.props.children;
             }
             return val;
         },
