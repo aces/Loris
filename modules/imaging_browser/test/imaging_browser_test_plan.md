@@ -7,7 +7,7 @@
 4. Test Selection Filter buttons: Show Data and Clear Forms
 5. Test column table is sortable by headers
 6. Test that Links work, to correct dataset (selected/native)
-7. Add more modalities (from the Scan_type column of the mri_scan_type table) to the Configuration/Imaging Browser/Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column table shows up in the Imaging Browser table    
+7. Add more modalities (from the Scan_type column of the mri_scan_type table) to the Configuration/Imaging Browser/Tabulated Scan Types field, and ensure that for each added modality, a new corresponding column shows up in the Imaging Browser table    
 
 #B. ViewSession / Volume List 
 8. Sidebar:  all links work 
@@ -29,12 +29,12 @@
 
 #D. MRI-QC : Scan-level (Link to Comments) dialog window
 22. Viewable by all, editable IFF permission imaging_browser_qc
-21. Comments save, checkboxes save, dropdown values save
-23. Save button works
-24. Comments can be deleted (field cleared). checkboxes, dropdown values too. 
+23. Comments save, checkboxes save, dropdown values save
+24. Save button works
+25. Comments can be deleted (field cleared). checkboxes, dropdown values too. 
 
 #E. Visit-level QC feedback dialog window
-25. editable IFF permission imaging_browser_qc
-26. Comments save
-27. Save button works
-28. Comments can be deleted (field cleared). 
+26. editable IFF permission imaging_browser_qc
+27. Comments save
+28. Save button works
+29. Comments can be deleted (field cleared). 
