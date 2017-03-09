@@ -27,6 +27,7 @@ var FormElement = React.createClass({
     name: React.PropTypes.string.isRequired,
     id: React.PropTypes.string,
     method: React.PropTypes.oneOf(['POST', 'GET']),
+    action: React.PropTypes.string,
     class: React.PropTypes.string,
     columns: React.PropTypes.number,
     formElements: React.PropTypes.shape({
@@ -44,6 +45,7 @@ var FormElement = React.createClass({
       name: null,
       id: null,
       method: 'POST',
+      action: undefined,
       class: 'form-horizontal',
       columns: 1,
       fileUpload: false,
@@ -120,6 +122,7 @@ var FormElement = React.createClass({
         id={this.props.id}
         className={this.props.class}
         method={this.props.method}
+        action={this.props.action}
         encType={encType}
         onSubmit={this.handleSubmit}
       >
