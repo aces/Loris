@@ -99,7 +99,7 @@ FilterRule = React.createClass({
 		this.props.updateRule(this.props.index, rule);
 	},
 	valueChange: function(event) {
-		var rule = this.props.rule;
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
 		delete rule.visit;
 		delete rule.candidates;
 
