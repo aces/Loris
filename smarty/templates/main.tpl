@@ -169,50 +169,10 @@
                                 <img width=17 src="{$baseurl}/images/help.gif">
                             </a>
                         </li>
-<!--                        <li>
-                            <p class="navbar-text">
-                                &nbsp;&nbsp;  Sites: {$user.Sites} &nbsp;
-                            </p>
-                        </li>
--->
-                        <li class="dropdown">
-                            <a href="#" data-toggle="tooltip" style="padding-right:25px;">
-All User Sites Count: {$userNumSites} <b class="caret"></b>
+                        <li class="nav">
+                            <a href="#" data-toggle="tooltip" title="{$user.Sites}" style="padding-right:25px;">
+                                All User Sites Count: {$userNumSites} 
                             </a>
-                            <ul class="dropdown-menu">
-                                    <font color="white">
-                                    <li>
-                                        {$user.Sites}<br/>
-                                    </li>
-                                    </font>
-<!--
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding-right:155px;">
-                                All 
-User Sites <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                {assign var="sites" value=$user.Sites}
-                                {assign var="asite" value=";"|explode:$sites}
-                                {section name=i loop=$asite}
-                                    <font color="white">
-                                    <li>
-                                        {$asite[i]|escape}<br/>
-                                    </li>
-                                    </font>
-                                {/section}
--->
-
-<!--
-                                {foreach from={";"|explode:$user.Sites} item=status key=name}
-                                <li>
-                                    <a>
-                                        {";"|explode:$user.Sites}[$key]
-                                    </a>
-                                </li>
-                               {/foreach}
--->
-                            </ul>
                         </li>
 
                         <li class="dropdown">
