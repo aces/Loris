@@ -767,6 +767,9 @@ var LorisElement = React.createClass({
       case 'file':
         elementHtml = (<FileElement {...elementProps} />);
         break;
+      case 'static':
+        elementHtml = (<StaticElement {...elementProps} />);
+        break;
       default:
         console.warn(
           "Element of type " + elementProps.type + " is not currently implemented!"
