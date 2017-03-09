@@ -265,6 +265,8 @@ var TextareaElement = React.createClass({
     id: React.PropTypes.string,
     disabled: React.PropTypes.bool,
     required: React.PropTypes.bool,
+    rows: React.PropTypes.number,
+    cols: React.PropTypes.number,
     onUserInput: React.PropTypes.func
   },
 
@@ -276,6 +278,8 @@ var TextareaElement = React.createClass({
       id: null,
       disabled: false,
       required: false,
+      rows: 4,
+      cols: 25,
       onUserInput: function() {
         console.warn('onUserInput() callback is not set');
       }
@@ -302,8 +306,8 @@ var TextareaElement = React.createClass({
         </label>
         <div className="col-sm-9">
           <textarea
-            cols="25"
-            rows="4"
+            cols={this.props.cols}
+            rows={this.props.rows}
             className="form-control"
             name={this.props.name}
             id={this.props.id}
