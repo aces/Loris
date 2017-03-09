@@ -1,4 +1,3 @@
-/* exported LogPanel */
 /* global UploadProgress */
 
 class LogPanel extends React.Component {
@@ -144,7 +143,7 @@ class LogPanel extends React.Component {
     };
 
     return (
-      <Panel id="log_panel" title="Log Viewer">
+      <Panel id="log_panel" title="Log Viewer" height={this.props.height}>
         <FormElement name="log_form">
           <SelectElement
             name="LogType"
@@ -159,6 +158,7 @@ class LogPanel extends React.Component {
             disabled={true}
             id="mri_upload_logs"
             value={this.state.logText}
+            rows="5"
           />
         </FormElement>
       </Panel>

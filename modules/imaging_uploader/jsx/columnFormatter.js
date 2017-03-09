@@ -74,7 +74,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     }
   }
 
-  /* Handles clicks on 'Number Of MincInserted' cells */
+  /**
+   * Handles clicks on 'Number Of MincInserted' cells
+   *
+   * @param {string} dccid - dccid
+   * @param {object} e - event info
+   */
   function handleClick(dccid, e) {
     loris.loadFilteredMenuClickHandler('imaging_browser', {
       DCCID: dccid

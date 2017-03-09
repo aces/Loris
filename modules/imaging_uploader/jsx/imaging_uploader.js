@@ -1,8 +1,7 @@
-/* exported ImagingUploader */
 /* global formatColumn */
 
 import LogPanel from './log_panel';
-import UploadPanel from './upload_panel';
+import UploadForm from './upload_form';
 import formatColumn from './columnFormatter';
 
 class ImagingUploader extends React.Component {
@@ -11,11 +10,13 @@ class ImagingUploader extends React.Component {
     super(props);
 
     this.state = {
-      isLoaded: false
+      isLoaded: false,
+      filter: {}
     };
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
   }
 
   componentDidMount() {
@@ -43,6 +44,10 @@ class ImagingUploader extends React.Component {
     });
   }
 
+  updateFilter(filter) {
+    this.setState({filter});
+  }
+
   render() {
     if (!this.state.isLoaded) {
       return (
@@ -55,24 +60,51 @@ class ImagingUploader extends React.Component {
       );
     }
 
+    // Deep clone form data before passing it to upload form
+    const uploadForm = JSON.parse(JSON.stringify(this.state.Data.form));
+
+    const panelHeight = "200px";
+
+    let tabList = [
+      {id: "browse", label: "Browse"},
+      {id: "upload", label: "Upload"}
+    ];
+
     return (
-      <div>
-        <div className="row">
-          <div className="col-md-6">
-            <UploadPanel form={this.state.Data.form}/>
+      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
+        <TabPane TabId={tabList[0].id}>
+          <div className="row">
+            <div className="col-md-6">
+              <FilterForm
+                Module="imaging_uploader"
+                name="imaging_filter"
+                id="imaging_filter"
+                onUpdate={this.updateFilter}
+                filter={this.state.filter}
+                height={panelHeight}
+              >
+                <TextboxElement {... this.state.Data.form.candID} />
+                <TextboxElement {... this.state.Data.form.pSCID} />
+                <SelectElement {... this.state.Data.form.visitLabel} />
+              </FilterForm>
+            </div>
+            <div className="col-md-6">
+              <LogPanel height={panelHeight}/>
+            </div>
           </div>
-          <div className="col-md-6">
-            <LogPanel />
+          <div id="mri_upload_table">
+            <StaticDataTable
+              Data={this.state.Data.Data}
+              Headers={this.state.Data.Headers}
+              getFormattedCell={formatColumn}
+              Filter={this.state.filter}
+            />
           </div>
-        </div>
-        <div id="mri_upload_table">
-          <StaticDataTable
-            Data={this.state.Data.Data}
-            Headers={this.state.Data.Headers}
-            getFormattedCell={formatColumn}
-          />
-        </div>
-      </div>
+        </TabPane>
+        <TabPane TabId={tabList[1].id}>
+          <UploadForm form={uploadForm} />
+        </TabPane>
+      </Tabs>
     );
   }
 }
