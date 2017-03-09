@@ -1,10 +1,32 @@
 <?php
 /**
- * The welcome menu
+ * It will display statistics related to data acquisition, data processing and
+ * data entry as it relates to both the behavioural and imaging aspects of this
+ * study.
  *
- * @package main
+ * PHP Version 5
+ *
+ * @category Statistics
+ * @package  Loris
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Menu_statistics_site extends NDB_Menu
+
+/**
+ * It will display statistics related to data acquisition, data processing and
+ * data entry as it relates to both the behavioural and imaging aspects of this
+ * study.
+ *
+ * PHP Version 5
+ *
+ * @category Statistics
+ * @package  Loris
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+class NDB_Menu_Statistics_Site extends NDB_Menu
 {
 
     var $instruments    = array();
@@ -31,7 +53,8 @@ class NDB_Menu_statistics_site extends NDB_Menu
 
     // Helper function to get a friendlier version of the instrument name.
     // This is mostly used for the MRI site statistics, which uses
-    // names like "Tarchive_Missing" for "MRI Parameter Form Completed but Missing Tarchive Entry"
+    // names like "Tarchive_Missing" for "MRI Parameter Form Completed but
+    // Missing Tarchive Entry"
 
     function _getIssueName($issue)
     {
@@ -81,7 +104,8 @@ class NDB_Menu_statistics_site extends NDB_Menu
                 AND s.Current_stage <> 'Recycling Bin'
                 $this->query_criteria
                 AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') 
-                AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID",
+                AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label,
+                c.PSCID",
             $this->query_vars
         );
         return $result;
@@ -97,7 +121,10 @@ class NDB_Menu_statistics_site extends NDB_Menu
         }
         $DB =& Database::singleton();
         if (!empty($_REQUEST['CenterID'])) {
-            $center   = $DB->pselectRow("SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID =:cid", array('cid' => $_REQUEST['CenterID']));
+            $center   = $DB->pselectRow(
+                "SELECT CenterID as ID, PSCArea as Name FROM psc WHERE CenterID =:cid",
+                array('cid' => $_REQUEST['CenterID'])
+            );
             $centerID = $center['ID'];
             $name     = $center['Name'];
         }
@@ -122,9 +149,17 @@ class NDB_Menu_statistics_site extends NDB_Menu
         foreach($this->instruments as $instrument=>$label){
 
             if ($DB->tableExists($instrument)) {
-                $complete_count = $this->_CompleteCount($centerID, $projectID, $instrument);
+                $complete_count = $this->_CompleteCount(
+                    $centerID,
+                    $projectID,
+                    $instrument
+                );
 
-                $results = $this->_GetResults($centerID, $projectID, $instrument);
+                $results = $this->_GetResults(
+                    $centerID,
+                    $projectID,
+                    $instrument
+                );
 
                 $test_url = $instrument;
 
@@ -133,18 +168,18 @@ class NDB_Menu_statistics_site extends NDB_Menu
                         $visits[] = $row['Visit_label'];
                     }
                     $results[$row['Visit_label']][] = array(
-                        'test_url' => $test_url,
-                        'CandID' => $row['CandID'],
-                        'SessionID' => $row['SessionID'],
-                        'CommentID' => $row['CommentID'],
-                        'PSCID' => $row['PSCID'],
-                    );
+                                                       'test_url'  => $test_url,
+                                                       'CandID'    => $row['CandID'],
+                                                       'SessionID' => $row['SessionID'],
+                                                       'CommentID' => $row['CommentID'],
+                                                       'PSCID'     => $row['PSCID'],
+                                                      );
                 }
                 $data[] = array(
-                    'name' => $label,
-                    'count' => $complete_count,
-                    'incompletes' => $results,
-                );
+                           'name'        => $label,
+                           'count'       => $complete_count,
+                           'incompletes' => $results,
+                          );
             }
         }
 
@@ -167,9 +202,7 @@ class NDB_Menu_statistics_site extends NDB_Menu
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . "/statistics/css/statistics.css"
-            )
+            array($baseURL . "/statistics/css/statistics.css")
         );
     }
 
