@@ -167,7 +167,6 @@
                                             </div>
                                             <div class="col-xs-4 text-right alert-chevron">
                                                 {foreach from=$user_site key=ind item=centerID}
-                                                    <p style="color:#555" class="text-left"> {if $ind eq 0} Sites: {/if} </p>
                                                     <a href="{$baseURL}/statistics/?submenu=statistics_site&CenterID={$centerID}">
                                                         <p style="color:#555" class="small task-site">{$incomplete_forms_site.$ind}
                                                             <span class="glyphicon glyphicon-chevron-right small"></span>
