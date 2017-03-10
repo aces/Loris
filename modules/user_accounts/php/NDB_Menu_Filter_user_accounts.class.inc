@@ -47,9 +47,6 @@ class NDB_Menu_Filter_User_Accounts extends NDB_Menu_Filter
     function _setupVariables()
     {
         $user =& User::singleton();
-
-//set @@session.group_concat_max_len=4096;
-
         // the base query
         $query = " FROM users 
             LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
