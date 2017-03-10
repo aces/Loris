@@ -44,7 +44,7 @@ class LogPanel extends React.Component {
 
       uploadProgress.setUploadRow(event.currentTarget);
       $(event.currentTarget).css('background-color', '#EFEFFB');
-      this.monitorProgress();
+      this.monitorProgress(this.state.logType);
     }.bind(this));
   }
 
@@ -53,9 +53,11 @@ class LogPanel extends React.Component {
    * issuing POST requests for this information at regular intervals.
    * As soon as the server indicates that the pipeline has finished running, polling
    * will end.
+   *
+   * @param {string} logType - summary or details
    */
-  monitorProgress() {
-    let summary = (this.state.selectedLogType === 'Summary');
+  monitorProgress(logType) {
+    let summary = (logType === "summary");
     let uploadProgress = this.uploadProgress;
     let uploadId = uploadProgress.getUploadId();
 
@@ -131,9 +133,10 @@ class LogPanel extends React.Component {
     }
   }
 
-  onLogTypeChange(name, value) {
+  onLogTypeChange(value) {
+    // Update log box
+    this.monitorProgress(value);
     this.setState({logType: value});
-    this.monitorProgress();
   }
 
   render() {
