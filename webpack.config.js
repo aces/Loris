@@ -10,6 +10,7 @@ var config = {
     './htdocs/js/components/Form.js': './jsx/Form.js',
     './htdocs/js/components/Tabs.js': './jsx/Tabs.js',
     './htdocs/js/components/Markdown.js': './jsx/Markdown.js',
+    './htdocs/js/components/Panel.js': './jsx/Panel.js',
     './modules/media/js/mediaIndex.js': './modules/media/jsx/mediaIndex.js',
     './modules/media/js/editFormIndex.js': './modules/media/jsx/editFormIndex.js',
     './modules/issue_tracker/js/columnFormatter.js': './modules/issue_tracker/jsx/columnFormatter.js',

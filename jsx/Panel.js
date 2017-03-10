@@ -18,8 +18,15 @@ class Panel extends React.Component {
     super(props);
 
     this.state = {
-      collapsed: false
+      collapsed: this.props.collapsed
     };
+
+    // Initialize panel class based on collapsed status
+    this.panelClass = (
+      this.props.collapsed ?
+        "panel-collapse collapse" :
+        "panel-collapse collapse in"
+    );
 
     this.toggleCollapsed = this.toggleCollapsed.bind(this);
   }
@@ -29,27 +36,31 @@ class Panel extends React.Component {
   }
 
   render() {
-    // Selection filter open by default
-    let glyphClass = "glyphicon pull-right glyphicon-chevron-up";
-    let panelClass = "panel-collapse collapse in";
+    // Change arrow direction based on collapse status
+    let glyphClass = (
+      this.state.collapsed ?
+        "glyphicon pull-right glyphicon-chevron-down" :
+        "glyphicon pull-right glyphicon-chevron-up"
+    );
 
-    // Change arrow direction when closed
-    if (this.state.collapsed) {
-      glyphClass = "glyphicon pull-right glyphicon-chevron-down";
-    }
+    // Add panel header, if title is set
+    const panelHeading = this.props.title ? (
+      <div
+        className="panel-heading"
+        onClick={this.toggleCollapsed}
+        data-toggle="collapse"
+        data-target={'#' + this.props.id}
+        style={{cursor: 'pointer'}}
+      >
+        {this.props.title}
+        <span className={glyphClass}></span>
+      </div>
+    ) : '';
 
     return (
       <div className="panel panel-primary">
-        <div className="panel-heading"
-             onClick={this.toggleCollapsed}
-             data-toggle="collapse"
-             data-target={'#' + this.props.id}
-             style={{cursor: 'pointer'}}
-        >
-          {this.props.title}
-          <span className={glyphClass}></span>
-        </div>
-        <div id={this.props.id} className={panelClass} role="tabpanel">
+        {panelHeading}
+        <div id={this.props.id} className={this.panelClass} role="tabpanel">
           <div className="panel-body" style={{height: this.props.height}}>
             {this.props.children}
           </div>
@@ -65,7 +76,11 @@ Panel.propTypes = {
   title: React.PropTypes.string
 };
 Panel.defaultProps = {
+  collapsed: false,
   id: 'default-panel',
-  height: '100%',
-  title: 'Selection Filter'
+  height: '100%'
 };
+
+window.Panel = Panel;
+
+export default Panel;
