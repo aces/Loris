@@ -40,6 +40,19 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      * Path to the uploaded file (value of SourceLocation in mri_upload table).
      */
     var $uploaded_file_path;
+
+    /**
+     * Override default behaviour, since the page is loaded from index.js
+     *
+     * @return void
+     * @access public
+     */
+    function display()
+    {
+        return null;
+    }
+
+
     /**
      * The _has_access returns true
      * if the user has the specific permission
