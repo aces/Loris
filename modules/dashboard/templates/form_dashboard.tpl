@@ -159,23 +159,24 @@
                                         </div>
                                      </a>
                                 {else}
-                                    {$user_site_arr = ","|explode:$user_site}
-                                    {$incomplete_forms_site_arr = ";"|explode:$incomplete_forms_site}
-                                    {foreach from=$user_site_arr key=ind item=centerID}
-                                        <a href="{$baseURL}/statistics/?submenu=statistics_site&CenterID={$centerID}"
-                                            class="list-group-item">
-                                            <div class="row">
-                                                <div class="col-xs-8 text-left">
-                                                    <div class="huge">{$incomplete_forms}</div>
-                                                    Incomplete form{if $incomplete_forms neq 1}s{/if}
-                                                </div>
-                                                <div class="col-xs-4 text-right alert-chevron">
-                                                    <span class="glyphicon glyphicon-chevron-right medium"></span>
-                                                    <p class="small task-site">{$incomplete_forms_site_arr.$ind}</p>
-                                                </div>
+                                    <div class="list-group-item">
+                                        <div class="row">
+                                            <div class="col-xs-8 text-left">
+                                                <div class="huge">{$incomplete_forms}</div>
+                                                Incomplete form{if $incomplete_forms neq 1}s{/if}
                                             </div>
-                                        </a>
-                                    {/foreach}
+                                            <div class="col-xs-4 text-right alert-chevron">
+                                                {foreach from=$user_site key=ind item=centerID}
+                                                    <p style="color:#555" class="text-left"> {if $ind eq 0} Sites: {/if} </p>
+                                                    <a href="{$baseURL}/statistics/?submenu=statistics_site&CenterID={$centerID}">
+                                                        <p style="color:#555" class="small task-site">{$incomplete_forms_site.$ind}
+                                                            <span class="glyphicon glyphicon-chevron-right small"></span>
+                                                        </p>
+                                                    </a>
+                                                {/foreach}
+                                            </div>
+                                        </div>
+                                    </div>
                                 {/if}
                             {/if}
                                 {if $new_scans neq "" and $new_scans neq 0}
