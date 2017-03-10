@@ -1,19 +1,38 @@
 <?php
+/**
+ * Fetch data to populate the roles & permissions
+ *
+ * PHP Version 5
+ *
+ * @category Loris
+ * @package  User_Accounts
+ * @author   Tara Campbell <tara.campbell@mcgill.ca>
+ * @license  Loris license
+ * @link     https://github.com/aces/Loris
+ */
 
 $data = array(
-         'roles' => getRoles(),
+         'roles'       => getRoles(),
          'permissions' => getPermissions(),
         );
 
 echo json_encode($data);
 exit();
 
-function getRoles() {
+/**
+ * Fetches the roles from the database
+ * Each role is set to checked is the user being edited has the role,
+ * and enabled if the editing user has the permissions required to grant the role.
+ *
+ * @return array
+ */
+function getRoles()
+{
     $DB          = Database::singleton();
     $userEditing = User::singleton();
 
     $roles = $DB->pselect(
-        "SELECT ID as id, label as name
+        "SELECT id, label as name
          FROM permission_categories",
         array()
     );
@@ -26,7 +45,8 @@ function getRoles() {
             // Get permissions associated with role
             $role['permissions'] = getRolePermissions($role['id']);
 
-            // Determine if the role should be enabled based on editing user permissions
+            // Determine if the role should be enabled based on editing user
+            // permissions
             foreach ($role['permissions'] as &$permission) {
                 $enabled = $userEditing->hasPermission($permission['code']);
 
@@ -41,7 +61,15 @@ function getRoles() {
     return $roles;
 }
 
-function getPermissions() {
+/**
+ * Fetches the permissions from the database
+ * Each permission is set to checked if the user being edited has that permission,
+ * and set to enabled if the editing user has the permission
+ *
+ * @return array
+ */
+function getPermissions()
+{
     $DB = Database::singleton();
 
     $userToEdit  = User::factory($_REQUEST['identifier']);
@@ -54,14 +82,22 @@ function getPermissions() {
     );
 
     foreach ($permissions as &$permission) {
-        $permission['checked']  = $userToEdit->hasPermission($permission['code']);
+        $permission['checked'] = $userToEdit->hasPermission($permission['code'], true);
         $permission['disabled'] = !$userEditing->hasPermission($permission['code']);
     }
 
     return $permissions;
 }
 
-function userHasRole($roleID) {
+/**
+ * Checks if the user being edited has a given role
+ *
+ * @param int $roleID The role to be checked
+ *
+ * @return boolean
+ */
+function userHasRole($roleID)
+{
     $DB = Database::singleton();
 
     $role = $DB->pselectOne(
@@ -69,7 +105,10 @@ function userHasRole($roleID) {
          FROM users_permission_categories_rel upc
          LEFT JOIN users u ON u.ID=upc.user_id
          WHERE u.UserID=:UID AND upc.permission_category_id=:RID",
-        array('UID' => $_REQUEST['identifier'], 'RID' => $roleID)
+        array(
+         'UID' => $_REQUEST['identifier'],
+         'RID' => $roleID,
+        )
     );
 
     if ($role) {
@@ -78,7 +117,15 @@ function userHasRole($roleID) {
     return false;
 }
 
-function getRolePermissions($roleID) {
+/**
+ * Gets all the permissions associated with a role
+ *
+ * @param int $roleID The role to be checked
+ *
+ * @return array
+ */
+function getRolePermissions($roleID)
+{
     $DB = Database::singleton();
 
     $permissions = $DB->pselect(

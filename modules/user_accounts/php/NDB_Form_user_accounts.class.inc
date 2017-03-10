@@ -578,25 +578,21 @@ class NDB_Form_User_Accounts extends NDB_Form
             }
 
             // Update roles
-            if (!empty($roleIDs)) {
-                $userID = $user->getData('ID');
+            $userID = $user->getData('ID');
 
-                $DB->delete(
+            $DB->delete(
+                'users_permission_categories_rel',
+                array('user_id' => $userID)
+            );
+
+            foreach ($roleIDs as $roleID) {
+                $DB->insert(
                     'users_permission_categories_rel',
                     array(
-                     'user_id' => $userID,
+                     'user_id'                => $userID,
+                     'permission_category_id' => $roleID,
                     )
                 );
-
-                foreach ($roleIDs as $roleID) {
-                    $DB->insert(
-                        'users_permission_categories_rel',
-                        array(
-                         'user_id'                => $userID,
-                         'permission_category_id' => $roleID,
-                        )
-                    );
-                }
             }
         }
 
@@ -847,43 +843,6 @@ class NDB_Form_User_Accounts extends NDB_Form
         // checking if the account can be rejected (no password hash
         // pending approval)
         $this->tpl_data['can_reject'] =$this->_canRejectAccount($this->identifier);
-
-        // get the editor's permissions
-
-        $perms    = $editor->getPermissionsVerbose();
-        $lastRole = '';
-        foreach ($perms as $row) {
-            if ($row['type'] != $lastRole) {
-                $lastRole = $row['type'];
-                $group[]  = $this->form->createElement(
-                    'static',
-                    null,
-                    null,
-                    '</div>'
-                    . "<h3 id=\"header_$lastRole\" "
-                    . "class=\"perm_header button\" "
-                    . "style=\"text-align: center; margin-top: 5px;\">"
-                    .ucwords($row['type'])
-                    . '</h3>'
-                    . "<div id=\"perms_$lastRole\" style=\"margin-top: 5px;\">"
-                );
-            }
-
-            // If the user is editing his/her own account, disable all permission
-            // checkboxes. Note that they will not be submitted when the form is
-            // saved
-            $attribs = array("class" => "perm_$lastRole");
-            if ($this->_isEditingOwnAccount()) {
-                $attribs['disabled'] = true;
-            }
-            $group[] = $this->createCheckbox(
-                'permID['.$row['permID'].']',
-                htmlspecialchars($row['description']) . "<br>",
-                $attribs
-            );
-        }
-        $this->addGroup($group, 'PermID_Group', 'Permissions', "", false);
-        unset($group);
 
         //getting users name and emails to create checkboxes
         // to email supervisors on permissions changes
@@ -1471,22 +1430,6 @@ class NDB_Form_User_Accounts extends NDB_Form
     }
 
     /**
-     * Include additional CSS files:
-     *
-     * @return array of css to be included
-     */
-    function getCSSDependencies()
-    {
-        $factory = NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/user_accounts/css/user_accounts.css"]
-        );
-    }
-
-    /**
      * Get javascript dependencies
      *
      * @return array of javascript to be inserted
@@ -1495,12 +1438,10 @@ class NDB_Form_User_Accounts extends NDB_Form
     {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $deps = parent::getJSDependencies();
+        $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . "/user_accounts/js/permissions.js"
-            )
+            [$baseURL . "/user_accounts/js/permissions.js"]
         );
     }
 }

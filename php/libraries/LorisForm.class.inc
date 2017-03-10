@@ -636,8 +636,10 @@ class LorisForm
                 // Check all elements of the current group for the element
                 foreach ($element['elements'] as $groupElement) {
                     // Check if name is right
-                    if ($groupElement['name'] == $elementName) {
-                        return $groupElement['type'] == 'advcheckbox';
+                    if (isset($groupElement['name'])) {
+                        if ($groupElement['name'] == $elementName) {
+                            return $groupElement['type'] == 'advcheckbox';
+                        }
                     }
                 }
             }
@@ -1876,10 +1878,12 @@ class LorisForm
     {
         $name = $this->_generateName($name);
         foreach ($array as $key => $value) {
-            $this->groupMapping[$value['name']] = array(
+            if (isset($value['name'])) {
+                $this->groupMapping[$value['name']] = array(
                                                    'groupName' => $name,
                                                    'index'     => $key,
                                                   );
+            }
         }
         $this->form[$name] = array(
                               'type'      => 'group',
