@@ -775,6 +775,7 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function toJSON()
     {
+        ob_clean();
         return json_encode($this->toArray());
     }
     /**
