@@ -956,17 +956,21 @@ class Database
     }
 
     /**
-     * Print a query if showDatabaseQueries defined in config file
+     * Writes all database queries for HTTP request to a single temporary file,
+     * if showDatabaseQueries defined in config file.
+     *
+     * Note: Saves reference to the file to SESSION. SESSION is used in
+     * main.php which reads file contents and prints them to the Loris page.
+     * Then closes and deletes the file.
      *
      * @param string $query  The query to replace
      * @param array  $params The prepared statement parameters used for this query
      *                       They will be replaced in the print statement so that the
      *                       user knows what parameters were used.
      *
-     * @return null As a side-effect, prints to the screen if config option is
-     *              enabled
+     * @return null
      */
-    function _printQuery($query, $params=null)
+    function _printQuery($query, $params = null)
     {
         if (!$this->_showQueries) {
             return;
@@ -974,9 +978,24 @@ class Database
         if ($params) {
             $query = str_replace(array_keys($params), array_values($params), $query);
         }
-        print "$this->_databaseName:"
-            . date("j-M-Y G:i:s", time())
-            .": $query<br>\n";
+        // Remove multispaces, line breaks to show query inline
+        $query = str_replace(["\r", "\n", "\t"], " ", $query);
+        while (strpos($query, "  ") !== false) {
+            $query = str_replace("  ", " ", $query);
+        }
+        $dateTime = date("j-M-Y G:i:s", time());
+        $output   = "[$dateTime] [$this->_databaseName]: $query\n";
+
+        if (isset($_SESSION['file_sql_queries'])) {
+            $tempFile = $_SESSION['file_sql_queries'];
+        } else {
+            $tempFile = tempnam("/tmp", "SQL");
+            $_SESSION['file_sql_queries'] = $tempFile;
+        }
+
+        $handle = fopen($tempFile, "a");
+        fwrite($handle, $output);
+        fclose($handle);
     }
 
     /**
