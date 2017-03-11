@@ -122,49 +122,18 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
-        $phantom_options = [
-                            'N' => 'No',
-                            'Y' => 'Yes',
-                           ];
-        $this->addSelect(
-            'IsPhantom',
-            'Phantom Scans',
-            $phantom_options
-        );
+        $phantomOtions = [
+                          'N' => 'No',
+                          'Y' => 'Yes',
+                         ];
+        $visitlabels   = Utility::getExistingVisitLabels();
 
-        ///////////////////////////////////////////////////////////////////////
-        //////////////////CandID, PSCID and VisitLabel fields//////////////////
-        ///////////////////////////////////////////////////////////////////////
+        // Fields used for selection filter and upload form
+        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
         $this->addBasicText('candID', 'Cand ID');
         $this->addBasicText('pSCID', 'PSCID');
-
-        $visitlabels = Utility::getExistingVisitLabels();
         $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
-
-        ///////////////////////////////////////////////////////////////////////
-        ////////////////////////Upload related fields//////////////////////////
-        ///////////////////////////////////////////////////////////////////////
         $this->addFile('mri_file', 'File to Upload');
-        //        $this->addScoreColumn('File_name', 'File name');
-        //        $this->addScoreColumn('status', 'Status');
-
-        //        $this->addSelect(
-        //            'LogType',
-        //            '',
-        //            array(
-        //             'summary'  => 'Summary',
-        //             'detailed' => 'Detailed',
-        //            )
-        //        );
-        //
-        //        $this->form->addTextArea(
-        //            'UploadLogs',
-        //            '',
-        //            array(
-        //             'class' => 'upload-logs-table',
-        //             'id'    => 'mri_upload_logs',
-        //            )
-        //        );
 
         ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
