@@ -156,13 +156,17 @@ class NDB_Menu_Filter_Genomic_Browser extends NDB_Menu_Filter
                                'candidate.DoB',
                                'candidate.ExternalID',
                                'show_brief_results',
+                               'File',
+                               'CNV',
+                               'SNP',
+                               'CPG',
                               );
 
         $this->validHavingFilters = array(
-                                     'F.FileCount',
-                                     'C.CNVCount',
-                                     'S.SNPCount',
-                                     'M.CPGCount',
+                                     'File',
+                                     'CNV',
+                                     'SNP',
+                                     'CPG',
                                     );
 
         $ftf = array(
