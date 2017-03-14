@@ -1235,12 +1235,14 @@ class LorisForm
 
                 // Check if date fields have errors and add them to error list
                 if ($el['type'] === 'date') {
-                    $date        = (
+                    $date = (
                         $values[$elName] ?
                             $values[$elName] :
                         $this->getValue($el['name'])
                     );
-                    if (empty($date)) { break; }
+                    if (empty($date)) {
+                        break;
+                    }
                     $dt          = DateTime::createFromFormat('Y-m-d', $date);
                     $isValidDate = $dt && $dt->format('Y-m-d') == $date;
                     if (!$isValidDate) {
