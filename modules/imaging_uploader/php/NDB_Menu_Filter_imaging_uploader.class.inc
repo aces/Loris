@@ -205,7 +205,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $file   = new File_Upload;
         $config = NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
-        $file->overwriteMode = "reject";
+        $file->setOverwriteMode("overwrite");
         $file->fileMove      = false;
 
         //pass the existing form ($form) by reference to File_Upload,
