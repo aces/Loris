@@ -3,12 +3,12 @@
 # Usage :
 # python3 HumanMethylation450k_annotations_to_sql.py <annotation_file> | mysql -u <user> -p <database>
 #
+# This script is a workaround when LOAD DATA INFILE can't be used.
+# LOAD DATA INFILE is much faster and should be used if possible.
 
 import csv
 import re
 import sys
-
-# TODO Check why there is only 485512 on 485577 annotation inserted 
 
 def to_mysql_string(string):
     return "'" + string.replace("'","`") + "'" if 0 < len(string) else 'null'
