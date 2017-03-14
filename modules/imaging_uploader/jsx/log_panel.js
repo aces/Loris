@@ -133,7 +133,7 @@ class LogPanel extends React.Component {
     }
   }
 
-  onLogTypeChange(value) {
+  onLogTypeChange(name, value) {
     // Update log box
     this.monitorProgress(value);
     this.setState({logType: value});
