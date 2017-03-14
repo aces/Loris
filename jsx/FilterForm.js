@@ -185,7 +185,11 @@ FilterForm.defaultProps = {
 };
 FilterForm.propTypes = {
   Module: React.PropTypes.string.isRequired,
-  filter: React.PropTypes.object.isRequired
+  filter: React.PropTypes.object.isRequired,
+  id: React.PropTypes.string,
+  height: React.PropTypes.string,
+  title: React.PropTypes.string,
+  onUpdate: React.PropTypes.func
 };
 
 window.FilterForm = FilterForm;
