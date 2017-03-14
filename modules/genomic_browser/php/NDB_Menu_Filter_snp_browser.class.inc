@@ -135,7 +135,6 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             )
         );
 
-        // Chromosome from genome_loc table
         // INNER JOIN on SNP_candidate_rel table. //##
         // If a candidate has no SNP records, they will not appear.
         $this->query = " FROM candidate
@@ -220,7 +219,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                 'Damaging'            => 'SNP.Damaging',
                 'Genotype_Quality'    => 'SNP_candidate_rel.GenotypeQuality',
                 'Exonic_Function'     => 'SNP.ExonicFunction',
-                'Chromosome'          => 'genome_loc.Chromosome',
+                'Chromosome'          => 'SNP.Chromosome',
                 'Gene_Symbol'         => 'SNP.OfficalSymbol',
                 'genomic_range'       => 'genomic_range',
                 'Platform'            => 'genotyping_platform.Name',
@@ -426,14 +425,14 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             } elseif ($field == "genomic_range") {
                 $temp_array = explode(':', $val);
                 $chr        = str_replace('chr', '', $temp_array[0]);
-                $query     .= " AND genome_loc.Chromosome = '$chr'";
+                $query     .= " AND SNP.Chromosome = '$chr'";
 
                 if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
                     $temp_array = explode('-', $temp_array[1]);
                     $from       = $temp_array[0];
                     $to         = $temp_array[1];
-                    $query     .= " AND genome_loc.StartLoc <= $to";
-                    $query     .= " AND genome_loc.EndLoc >= $from";
+                    $query     .= " AND SNP.StartLoc <= $to";
+                    $query     .= " AND SNP.EndLoc >= $from";
                 }
                 $query .= " AND :v_$prepared_key IS NOT NULL";
 
