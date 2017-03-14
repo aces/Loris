@@ -76,13 +76,13 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
                           'candidate.ExternalID as externalID',
-                          'genome_loc.Chromosome as Chromosome',
-                          'genome_loc.Strand as Strand',
-                          'genome_loc.StartLoc as StartLoc',
-                          'genome_loc.EndLoc as EndLoc',
-                          'genome_loc.Size as Size',
-                          'gene.OfficialSymbol as Gene_Symbol',
-                          'gene.OfficialName as Gene_Name',
+                          'SNP.Chromosome as Chromosome',
+                          'SNP.Strand as Strand',
+                          'SNP.StartLoc as StartLoc',
+                          'SNP.EndLoc as EndLoc',
+                          'SNP.Size as Size',
+                          'SNP.OfficialSymbol as Gene_Symbol',
+                          'SNP.OfficialName as Gene_Name',
                           'genotyping_platform.Name as Platform',
                           'SNP.rsID as rsID',
                           'SNP.SNPExternalName as SNP_Name',
@@ -145,8 +145,6 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
             LEFT JOIN psc ON (psc.CenterID = candidate.CenterID)
             JOIN SNP_candidate_rel ON (candidate.CandID = SNP_candidate_rel.CandID)
             LEFT JOIN SNP ON (SNP.SNPID = SNP_candidate_rel.SNPID)
-            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)
-            LEFT JOIN gene ON (gene.GenomeLocID = SNP.GenomeLocID)
             LEFT JOIN genotyping_platform ON
               (SNP_candidate_rel.PlatformID = genotyping_platform.PlatformID)
             WHERE
@@ -186,13 +184,13 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                                'SNP.Damaging',
                                'SNP_candidate_rel.GenotypeQuality',
                                'SNP.ExonicFunction',
-                               'genome_loc.Chromosome',
-                               'genome_loc.Strand',
-                               'genome_loc.StartLoc',
-                               'genome_loc.EndLoc',
-                               'genome_loc.Strand',
-                               'gene.OfficialSymbol',
-                               'gene.OfficialName',
+                               'SNP.Chromosome',
+                               'SNP.Strand',
+                               'SNP.StartLoc',
+                               'SNP.EndLoc',
+                               'SNP.Strand',
+                               'SNP.OfficialSymbol',
+                               'SNP.OfficialName',
                                'genotyping_platform.Name',
                                'genomic_range',
                               );
@@ -223,7 +221,7 @@ class NDB_Menu_Filter_SNP_Browser extends NDB_Menu_Filter
                 'Genotype_Quality'    => 'SNP_candidate_rel.GenotypeQuality',
                 'Exonic_Function'     => 'SNP.ExonicFunction',
                 'Chromosome'          => 'genome_loc.Chromosome',
-                'Gene_Symbol'         => 'gene.OfficalSymbol',
+                'Gene_Symbol'         => 'SNP.OfficalSymbol',
                 'genomic_range'       => 'genomic_range',
                 'Platform'            => 'genotyping_platform.Name',
                );
