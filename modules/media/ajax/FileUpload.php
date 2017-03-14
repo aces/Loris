@@ -152,13 +152,6 @@ function uploadFile()
               'date_uploaded' => date("Y-m-d H:i:s"),
              ];
 
-    // Upload file to folder based on pscid and visit
-    $mediaPath .= $pscid . '/' . $visit . '/';
-
-    if (!is_dir($mediaPath)) {
-        mkdir($mediaPath, 0777, true);
-    }
-
     if (move_uploaded_file($_FILES["file"]["tmp_name"], $mediaPath . $fileName)) {
         $existingFiles = getFilesList();
         $idMediaFile   = array_search($fileName, $existingFiles);
