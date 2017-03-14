@@ -20,12 +20,13 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   let reactElement = null;
   switch (column) {
-    case 'PSCID':
+    case 'PSCID': {
       let url = loris.BaseURL + "/" + rowData[1] + "/";
       reactElement = (
         <td><a href={url}>{cell}</a></td>
       );
       break;
+    }
     case 'Subproject':
       reactElement = (
         <td>{loris.subprojectList[cell]}</td>
@@ -35,9 +36,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       if (cell === 'Y') {
         reactElement = (
           <td>
-            <a href='#' onClick={loris.loadFilteredMenuClickHandler(
+            <a href="#" onClick={loris.loadFilteredMenuClickHandler(
               'genomic_browser&submenu=viewGenomicFile',
-              {'candID': rowData[1]}
+              {candID: rowData[1]}
             )}>{cell}</a>
           </td>
         );
@@ -53,9 +54,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       if (cell === 'Y') {
         reactElement = (
           <td>
-            <a href='#' onClick={loris.loadFilteredMenuClickHandler(
+            <a href="#" onClick={loris.loadFilteredMenuClickHandler(
               'genomic_browser&submenu=' + column.toLowerCase() + '_browser',
-              {'candID': rowData[1]}
+              {candID: rowData[1]}
             )}>{cell}</a>
           </td>
         );
@@ -66,7 +67,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       }
       break;
     default:
-     reactElement = (
+      reactElement = (
        <td>{cell}</td>
      );
   }
