@@ -40,7 +40,7 @@ ALTER TABLE `SNP`
   ADD COLUMN `StartLoc` int(11) DEFAULT NULL;
 
 -- Add fields from gene table
-ALTER TABLE `CNV`
+ALTER TABLE `SNP`
   ADD COLUMN `Symbol` varchar(255) DEFAULT NULL,
   ADD COLUMN `Name` varchar(255) DEFAULT NULL,
   ADD COLUMN `NCBIID` varchar(255) DEFAULT NULL,
@@ -87,4 +87,7 @@ ALTER TABLE genomic_cpg_annotation
 
 RENAME TABLE genome_loc TO to_be_deleted_genome_loc;
 RENAME TABLE gene TO to_be_deleted_gene;
+
+-- DROP TABLE genome_loc;
+-- DROP TABLE gene;
 
