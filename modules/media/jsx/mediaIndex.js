@@ -90,7 +90,10 @@ class MediaIndex extends React.Component {
             formElements={this.state.Data.form}
             onUpdate={this.updateFilter}
             filter={this.state.filter}
-          />
+          >
+            <br/>
+            <ButtonElement type="reset" label="Clear Filters" />
+          </FilterForm>
           <StaticDataTable
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
