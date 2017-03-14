@@ -28,7 +28,7 @@ var QueryString = {
       var key = param.split("=")[0];
       var value = param.split("=")[1];
       if (key !== "" && value !== "") {
-        queryStringObj[key] = decodeURI(value);
+        queryStringObj[key] = decodeURIComponent(value);
       }
     });
 
@@ -68,7 +68,7 @@ var QueryString = {
 
     // Build query string
     Object.keys(queryStringObj).map(function(key, count) {
-      queryString += key + "=" + queryStringObj[key];
+      queryString += key + "=" + encodeURIComponent(queryStringObj[key]);
       if (count !== Object.keys(queryStringObj).length - 1) {
         queryString += "&";
       }
