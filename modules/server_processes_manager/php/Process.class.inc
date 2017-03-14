@@ -28,36 +28,42 @@ class Process
 {
     /**
      * Unix command used to start the process.
+     *
      * @var string.
      */
     private $_shellCommand;
 
     /**
      * Unix PID
+     *
      * @var int.
      */
     private $_pid;
 
     /**
      * Full path ot the file containing the command std output.
+     *
      * @var string.
      */
     private $_outfile;
 
     /**
      * Full path ot the file containing the command std error.
+     *
      * @var string.
      */
     private $_errfile;
 
     /**
      * Full path ot the file containing the command exit code.
+     *
      * @var string.
      */
     private $_exitCodeFile;
 
     /**
      * Will provide access to the database
+     *
      * @var IDatabaseProvider
      */
     private $_processMonitor;
