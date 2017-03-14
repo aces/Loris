@@ -240,7 +240,7 @@ function validateInput($values)
 }
 
 /**
- * Itterates through submitted values and filters only values that have changed
+ * Iterates through submitted values and filters only values that have changed
  *
  * @param array  $issueValues new values
  * @param string $issueID     issue ID
@@ -617,7 +617,7 @@ WHERE Parent IS NOT NULL ORDER BY Label ",
         $issueID    = $_GET['issueID'];
         $issueData  = getIssueData($issueID);
         $isWatching = $db->pselectOne(
-            "SELECT * FROM issues_watching 
+            "SELECT userID, issueID FROM issues_watching 
             WHERE issueID=:issueID AND userID=:userID",
             array(
              'issueID' => $issueID,
