@@ -40,7 +40,7 @@
     <tbody>
     {section name=timepoint loop=$timePoints}
         <tr>
-            <td><a href="{$baseurl}/instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">{$timePoints[timepoint].Visit_label}</a></td>
+            <td><a href="{$baseurl}/instrument_list/?candID={$candID}&sessionID={$timePoints[timepoint].SessionID}">{$timePoints[timepoint].vlabel}</a></td>
 
             <td>{$timePoints[timepoint].SubprojectTitle}</td>
 
@@ -66,7 +66,7 @@
                     {if $timePoints[timepoint].Scan_done == 'Y'}
                         {assign var="scan_done" value="Yes"}
                         <a href="#" class="timepoint_list"
-                           data-visitlabel="{$timePoints[timepoint].Visit_label}"
+                           data-visitlabel="{$timePoints[timepoint].vlabel}"
                            data-pscid="{$PSCID}">
                         {$scan_done}</a>
                     {else}

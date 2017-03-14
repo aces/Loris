@@ -71,7 +71,7 @@ class NDB_Menu_statistics_site extends NDB_Menu
         $DB     =& Database::singleton();
         $result = $DB->pselect(
             "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, 
-                s.Visit_label 
+                s.VisitID
                 FROM session s, candidate c, flag  f, 
                 {$instrument} i 
                 WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID 
@@ -81,7 +81,7 @@ class NDB_Menu_statistics_site extends NDB_Menu
                 AND s.Current_stage <> 'Recycling Bin'
                 $this->query_criteria
                 AND (f.Data_entry is NULL OR f.Data_entry<>'Complete') 
-                AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.Visit_label, c.PSCID",
+                AND i.CommentID NOT LIKE 'DDE%' ORDER BY s.VisitID, c.PSCID",
             $this->query_vars
         );
         return $result;

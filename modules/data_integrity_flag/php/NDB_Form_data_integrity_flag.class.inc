@@ -83,6 +83,7 @@ class NDB_Form_data_integrity_flag extends NDB_Form
         if (!empty($_REQUEST['instrument'])) {
             $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //converts the full_name into the test_name
         }
+        //TODO VISITS
         $visit_array=Utility::getExistingVisitLabels();
         $visit_array = array_combine($visit_array,$visit_array);
         $visit_array = array_merge(array('all_visits'=>"All Visits"),$visit_array);

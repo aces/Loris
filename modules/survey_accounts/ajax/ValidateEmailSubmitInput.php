@@ -49,14 +49,15 @@ if ($numCandidates != 1) {
 $numSessions = $db->pselectOne(
     "SELECT COUNT(*) FROM session 
             WHERE CandID=:v_CandID 
-            AND UPPER(Visit_label)=UPPER(:v_VL) 
+            AND VisitID=:vid 
             AND Active='Y'",
-    array('v_CandID' => $_REQUEST['dccid'], 'v_VL' => $_REQUEST['VL'])
+    array('v_CandID' => $_REQUEST['dccid'], 'vid' => $_REQUEST['VID'])
 );
 
 if ($numSessions != 1) {
+    $vLabel=Utility::getVisitLabelFromID($_REQUEST['VID']);
     echo json_encode(
-        array('error_msg' => "Visit ". $_REQUEST['VL']." does not exist for given candidate")
+        array('error_msg' => "Visit ". $vLabel ." does not exist for given candidate")
     );
     exit;
 }
@@ -72,16 +73,17 @@ $instrument_list = $db->pselect(
     "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
              WHERE s.CandID=:v_CandID  
-             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
+             AND s.VisitID=:vid 
              AND s.Active='Y'",
-    array('v_CandID' => $_REQUEST['dccid'], 'v_VL' => $_REQUEST['VL'])
+    array('v_CandID' => $_REQUEST['dccid'], 'vid' => $_REQUEST['VID'])
 );
 foreach($instrument_list as $instrument) {
     if($_REQUEST['TN'] == $instrument['Test_name']) {
+        $vLabel=Utility::getVisitLabelFromID($_REQUEST['VID']);
         echo json_encode(
             array(
             'error_msg' => "Instrument ". $_REQUEST['TN'].
-                " already exists for given candidate for visit ". $_REQUEST['VL']
+                " already exists for given candidate for visit ". $vLabel
             )
         );
         exit;

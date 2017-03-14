@@ -58,7 +58,7 @@ class NDB_Form_data_team_helper extends NDB_Form
             $DB->select($query,  $info);
             foreach ($info as $data) {
                 $percent_completed            = $data['Name']
-                    . ":" . $data['Visit_label']
+                    . ":" . $data['vlabel']
                     .":" . 'percent_completed';
                 $defaults[$percent_completed] = $data['percent_completed'];
             }
@@ -69,7 +69,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         $defaults["instrument"]         = $_REQUEST['instrument'];
         $defaults["FieldName"]          = $_REQUEST['FieldName'];
         $defaults["candidate"]          = $_REQUEST['candidate'];
-        $defaults["visit_label"]        = $_REQUEST['visit_label'];
+        $defaults["vlabel"]             = $_REQUEST['vlabel'];
         $this->tpl_data['instrumentvalue'] = $_REQUEST['instrument'];
         return $defaults;
     }
@@ -90,7 +90,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
         //construct the instrument drop down..
-        $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
+        $this->tpl_data['vlabel'] = $_REQUEST['vlabel'];
         $this->tpl_data['FieldName']   = $_REQUEST['FieldName'];
         if ($_REQUEST['PSCID'] && !empty($_REQUEST['PSCID'])) {
             $this->tpl_data['candidate'] = $_REQUEST['PSCID'];
@@ -117,19 +117,19 @@ class NDB_Form_data_team_helper extends NDB_Form
         //Percentage completed for the given instrument
             $percent_completed = $this->_getPercentCompleted(
                 $instrument,
-                $_REQUEST['visit_label'],
+                $_REQUEST['vlabel'],
                 $candID
             );
             $this->tpl_data['percent_completed'] = $percent_completed;
 
-         /* Visit_labels
+         /*
+         Visit Labels
          */
         $visit_array =Utility::getExistingVisitLabels();
-        $visit_array = array_combine($visit_array, $visit_array);
-        $this->tpl_data['visitLabels'] = $visit_array;
+        $this->tpl_data['vlabels'] = $visit_array;
 
         $incompleteCandidates = $this->
-            getIncompleteCandidates($instrument, $_REQUEST['visit_label'], $candID);
+            getIncompleteCandidates($instrument, $_REQUEST['vlabel'], $candID);
 
         $this->tpl_data['Incomplete_candidates']
             = json_encode($incompleteCandidates);
@@ -138,14 +138,14 @@ class NDB_Form_data_team_helper extends NDB_Form
             = count($incompleteCandidates);
 
         $conflicts = $this->
-            InstrumentInConflict($instrument, $_REQUEST['visit_label'], $candID);
+            InstrumentInConflict($instrument, $_REQUEST['vlabel'], $candID);
 
         $this->tpl_data['Conflicts'] =  json_encode($conflicts);
 
         $this->tpl_data['Conflicts_length'] = count($conflicts);
 
         $bvlFeedback = $this
-            ->getFeedbacks($instrument, $candID, $_REQUEST['visit_label']);
+            ->getFeedbacks($instrument, $candID, $_REQUEST['vlabel']);
 
 
         $this->tpl_data['Bvl_Feedback'] = json_encode($bvlFeedback);
@@ -153,7 +153,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         $this->tpl_data['Bvl_Feedback_length'] = count($bvlFeedback);
 
         $this->tpl_data['percent_complete'] = $this
-            ->_getPercentCompleted($instrument, $_REQUEST['visit_label'], $candID);
+            ->_getPercentCompleted($instrument, $_REQUEST['vlabel'], $candID);
 
     }
 
@@ -169,13 +169,13 @@ class NDB_Form_data_team_helper extends NDB_Form
      *
      * @param null $test_name
      * @param null $candID
-     * @param null $visit_label
+     * @param null $vLabel
      *
      * @return   Array containing a list of feedbacks for the appropriate feedback level.
      * @throws   DatabaseException
      * @internal param unknown_type $field_name
      */
-    function getFeedbacks($test_name = null, $candID=null, $visit_label=null)
+    function getFeedbacks($test_name = null, $candID=null, $vLabel=null)
     {
 
         $DB      =& Database::singleton();
@@ -183,10 +183,12 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         $select = "SELECT fb.FeedbackID, fb.CandID, fb.SessionID,
                       fb.CommentID, fb.Feedback_level, f.Test_name, fb.FieldName,
-                      tn.Full_name, s.Visit_label FROM feedback_bvl_thread AS fb
+                      tn.Full_name, v.legacy_label as vlabel                      
+                      FROM feedback_bvl_thread AS fb
                       JOIN session s ON (s.ID = fb.SessionID)
                       LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
-                      LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)";
+                      LEFT JOIN test_names tn ON (tn.Test_name = f.Test_name)
+                      LEFT JOIN visits v ON (v.ID=s.VisitID)";
 
         $where = " WHERE fb.Public = 'Y'
                     AND fb.Status = 'opened'
@@ -197,9 +199,9 @@ class NDB_Form_data_team_helper extends NDB_Form
             $qparams['CI'] = $candID;
         }
 
-        if (isset($visit_label) && $visit_label !="All Visits") {
-            $where        .= " AND s.Visit_label = :VL";
-            $qparams['VL'] = $visit_label;
+        if (isset($vLabel) && $vLabel !="All Visits") {
+            $where        .= " AND s.VisitID = :VL";
+            $qparams['VL'] = Utility::getVisitIDFromLegacyLabel($vLabel);
         }
 
         if (isset($test_name) && $test_name !='All Instruments' ) {
@@ -268,12 +270,12 @@ class NDB_Form_data_team_helper extends NDB_Form
      * Get the list of fieldnames in conflict for the given test_name from conflict_unresolved
      *
      * @param unknown_type $test_name
-     * @param $visit_label
+     * @param $vLabel
      * @param candidate
      *
      * @return unknown
      */
-    function InstrumentInConflict($test_name, $visit_label=null, $candidate=null)
+    function InstrumentInConflict($test_name, $vLabel=null, $candidate=null)
     {
         global $DB;
         $conflicts = array();
@@ -283,15 +285,16 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         if ($DB->ColumnExists($test_name, 'Test_name_display')) {
             $query = "SELECT DISTINCT s.CandID,ca.PSCID, c.FieldName,
-                c.TableName,t.test_name_display, s.visit_label
+                c.TableName,t.test_name_display, v.legacy_label as vlabel
                 FROM conflicts_unresolved c
                 LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
                 LEFT JOIN session s ON (f.SessionID=s.ID)
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN test_battery t ON (t.test_name = f.test_name)
-                JOIN psc ON (s.CenterID = psc.CenterID)";
+                JOIN psc ON (s.CenterID = psc.CenterID)
+                LEFT JOIN visits v ON (v.ID=s.VisitID)";
 
-            $where = " WHERE t.visit_label = s.Visit_label
+            $where = " WHERE t.VisitID = s.VisitID
                 AND ca.Active = 'Y'
                 AND s.Active = 'Y'
                 AND psc.Centerid!= '1'
@@ -299,13 +302,14 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         } else {
             $query = "SELECT distinct s.CandID,ca.PSCID, c.FieldName,
-                c.TableName,t.full_name AS test_name_display, s.visit_label
+                c.TableName,t.full_name AS test_name_display, v.legacy_label as vlabel 
                 FROM conflicts_unresolved c
                 LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
                 LEFT JOIN session s ON (f.SessionID=s.ID)
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN test_names t ON (t.test_name = f.test_name)
-                JOIN psc ON (s.CenterID = psc.CenterID)";
+                JOIN psc ON (s.CenterID = psc.CenterID)
+                LEFT JOIN visits v ON (v.ID=s.VisitID)";
             $where = " WHERE ca.Active = 'Y' AND s.Active = 'Y' AND psc.Centerid!= '1' AND ca.Entity_type != 'Scanner'";
         }
 
@@ -316,9 +320,9 @@ class NDB_Form_data_team_helper extends NDB_Form
         }
 
         //filter for visit
-        if (($visit_label !=null)&&($visit_label!='All Visits')) {
-            $where        .= " AND s.visit_label = :VL";
-            $qparams['VL'] = $visit_label;
+        if (($vLabel !=null)&&($vLabel!='All Visits')) {
+            $where        .= " AND s.VisitID = :VL";
+            $qparams['VL'] = Utility::getVisitIDFromLegacyLabel($vLabel);
         }
         //filter for candidate
         if ($candidate !=null) {
@@ -340,14 +344,15 @@ class NDB_Form_data_team_helper extends NDB_Form
         if ($DB->ColumnExists($test_name, 'Test_name_display')) {
 
             $query = "SELECT DISTINCT s.CandID, ca.PSCID, c.FieldName,
-                c.TableName,t.test_name_display, s.visit_label
+                c.TableName,t.test_name_display, v.legacy_label as vlabel
                 FROM conflicts_unresolved c
                 LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
                 LEFT JOIN session s ON (f.SessionID=s.ID)
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN test_battery t ON (t.test_name = f.test_name)
                 JOIN psc ON (s.CenterID = psc.CenterID)
-                WHERE t.visit_label = s.Visit_label
+                LEFT JOIN visits v ON (v.ID=s.VisitID)
+                WHERE t.VisitID = s.VisitID
                 AND TableName LIKE CONCAT(:TN, '%')
                 AND c.FieldName = :FN
                 AND ca.Active = 'Y'
@@ -356,13 +361,14 @@ class NDB_Form_data_team_helper extends NDB_Form
                 AND ca.Entity_type != 'Scanner'";
         } else {
             $query = "SELECT DISTINCT s.CandID, ca.PSCID, c.FieldName,
-                c.TableName,t.full_name AS test_name_display, s.visit_label
+                c.TableName,t.full_name AS test_name_display, v.legacy_label as vlabel
                 FROM conflicts_unresolved c
                 LEFT JOIN flag f ON (c.CommentId1=f.CommentID)
                 LEFT JOIN session s ON (f.SessionID=s.ID)
                 LEFT JOIN candidate ca ON (ca.CandID=s.CandID)
                 JOIN psc ON (s.CenterID = psc.CenterID)
                 JOIN test_names t ON (t.test_name = f.test_name)
+                LEFT JOIN visits v ON (v.ID=s.VisitID)
                 WHERE TableName LIKE CONCAT(:TN, '%')
                 AND c.FieldName = :FN
                 AND ca.Active = 'Y'
@@ -375,14 +381,15 @@ class NDB_Form_data_team_helper extends NDB_Form
     }
 
 
-    function getIncompleteCandidates($test_name,$visit_label=null, $candidate=null)
+    function getIncompleteCandidates($test_name,$vLabel=null, $candidate=null)
     {
         global $DB;
-        $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid, f.SessionID, f.test_name,f.data_entry,f.commentid, t.Full_name FROM session s
+        $query = "SELECT DISTINCT s.ID, v.legacy_label as vlabel, c.PSCID,s.candid, f.SessionID, f.test_name,f.data_entry,f.commentid, t.Full_name FROM session s
             JOIN flag f ON (f.sessionid = s.id)
             JOIN candidate c ON (c.candid = s.candid)
             JOIN test_names t ON (t.Test_name = f.Test_name)
-            JOIN psc ON (s.CenterID = psc.CenterID)	";
+            JOIN psc ON (s.CenterID = psc.CenterID)	
+            LEFT JOIN visits v ON (v.ID=s.VisitID)";
 
         $where   = " WHERE s.Active = 'Y' AND c.Active = 'Y' AND coalesce(f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'";
         $qparams = array();
@@ -394,9 +401,9 @@ class NDB_Form_data_team_helper extends NDB_Form
         }
 
         //filter for visit
-        if (($visit_label !=null)&&($visit_label!='All Visits')) {
-            $where        .= " AND s.visit_label = :VL";
-            $qparams['VL'] = $visit_label;
+        if (($vLabel !=null)&&($vLabel!='All Visits')) {
+            $where        .= " AND s.VisitID = :VL";
+            $qparams['VL'] = Utility::getVisitIDFromLegacyLabel($vLabel);
         }
         //filter for candidate
         if ($candidate !=null) {
@@ -413,7 +420,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
 
 
-    function getInstrumentCount($test_name, $visit_label=null, $candidate=null)
+    function getInstrumentCount($test_name, $vLabel=null, $candidate=null)
     {
         global $DB;
 
@@ -441,9 +448,9 @@ class NDB_Form_data_team_helper extends NDB_Form
             AND psc.Centerid!= '1'";
 
         //filter for visit
-        if (($visit_label !=null)&&($visit_label!='All Visits')) {
-            $where        .= " AND s.Visit_label = :VL";
-            $qparams['VL'] = $visit_label;
+        if (($vLabel !=null)&&($vLabel!='All Visits')) {
+            $where        .= " AND s.VisitID = :VL";
+            $qparams['VL'] = Utility::getVisitIDFromLegacyLabel($vLabel);
         }
         //filter for candidate
         if ($candidate !=null) {
@@ -457,7 +464,7 @@ class NDB_Form_data_team_helper extends NDB_Form
     }
 
 
-    function getCompleteInstrumentCount($test_name,$visit_label=null, $candidate=null)
+    function getCompleteInstrumentCount($test_name,$vLabel=null, $candidate=null)
     {
         global $DB;
         if($test_name != null) {
@@ -485,9 +492,9 @@ class NDB_Form_data_team_helper extends NDB_Form
             AND c.Entity_type != 'Scanner'";
         $qparams = array();
 
-        if (($visit_label !=null)&&($visit_label!='All Visits')) {
-            $where        .= " AND s.Visit_label = :VL";
-            $qparams['VL'] = $visit_label;
+        if (($vLabel !=null)&&($vLabel!='All Visits')) {
+            $where        .= " AND s.VisitID = :VL";
+            $qparams['VL'] = Utility::getVisitIDFromLegacyLabel($vLabel);
         }
         if ($candidate !=null) {
             $where        .= " AND s.candID = :CI";
@@ -506,19 +513,19 @@ class NDB_Form_data_team_helper extends NDB_Form
      * Returns the percent completed for the given instrument
      *
      * @param  unknown_type $instrument
-     * @param  null         $visit_label
+     * @param  null         $vLabel
      * @param  null         $candidate
      * @return unknown
      */
 
-    function _getPercentCompleted($instrument,$visit_label=null, $candidate=null)
+    function _getPercentCompleted($instrument,$vLabel=null, $candidate=null)
     {
         $percent_completed =0;
         $total_count       = $this
-            ->getInstrumentCount($instrument, $visit_label, $candidate);
+            ->getInstrumentCount($instrument, $vLabel, $candidate);
 
         $complete_count    = $this
-            ->getCompleteInstrumentCount($instrument, $visit_label, $candidate);
+            ->getCompleteInstrumentCount($instrument, $vLabel, $candidate);
 
         if ($complete_count !=0) {
             $percent_completed = round($complete_count / $total_count, 2) * 100 ;
@@ -528,7 +535,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
     /**
      * getTestNameusingMappedName
-     * returns the Test_name and its corresponding visit_label.. using the full_name  and/or subprojectID ..
+     * returns the Test_name and its corresponding visit label.. using the full_name  and/or subprojectID ..
      * @param $full_name
      * @param null      $subprojectID
      * @return mixed|Non
@@ -552,17 +559,17 @@ class NDB_Form_data_team_helper extends NDB_Form
     /**
      * *
      * get all the instruments for the given visit...
-     * @param $visit_label
+     * @param $vLabel
      * @return unknown
      * @throws DatabaseException
      * @internal param unknown_type $visit
      */
-    static function getVisitInstruments($visit_label)
+    static function getVisitInstruments($vLabel)
     {
         $DB =& Database::singleton();
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
-            $test_names = $DB->pselect("SELECT distinct Test_name_display from test_battery where Visit_label =:vl", array('vl' => $visit_label));
+            $test_names = $DB->pselect("SELECT distinct Test_name_display from test_battery where VisitID =:vl", array('vl' => Utility::getVisitIDFromLegacyLabel($vLabel)));
         } else {
             $test_names = $DB->pselect(
                 "SELECT DISTINCT t.Full_name as Test_name_display FROM session s
@@ -570,8 +577,8 @@ class NDB_Form_data_team_helper extends NDB_Form
 			JOIN psc ON (s.CenterID = psc.CenterID)
 			JOIN flag f ON (f.sessionid=s.id)
 			JOIN test_names t ON (f.test_name=t.Test_name)
-			WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl AND psc.CenterID != '1' AND c.Entity_type != 'Scanner' ORDER BY t.Full_name ",
-                array('vl' => $visit_label)
+			WHERE c.Active='Y' AND s.Active='Y' AND s.VisitID =:vl AND psc.CenterID != '1' AND c.Entity_type != 'Scanner' ORDER BY t.Full_name ",
+                array('vl' => Utility::getVisitIDFromLegacyLabel($vLabel))
             );
         }
 

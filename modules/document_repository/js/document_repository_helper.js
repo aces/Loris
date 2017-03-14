@@ -164,7 +164,7 @@ function editModal() {
       selectElement("siteEdit", data.For_site);
       selectElement("instrumentEdit", data.Instrument);
       selectElement("pscidEdit", data.PSCID);
-      selectElement("visitEdit", data.visitLabel);
+      selectElement("visitEdit", data.vlabel);
       selectElement("commentsEdit", data.comments);
       selectElement("versionEdit", data.version);
 

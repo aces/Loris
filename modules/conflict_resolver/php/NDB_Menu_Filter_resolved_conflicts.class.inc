@@ -60,7 +60,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
                           'conflicts_resolved.TableName as Instrument',
                           'session.CandID as CandID',
                           'candidate.PSCID as PSCID',
-                          'session.Visit_label as Visit_Label',
+                          'v.label as Visit_Label',
                           'conflicts_resolved.ResolutionTimestamp as Timestamp',
                          );
 
@@ -83,6 +83,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
+            LEFT JOIN visits v ON (v.ID=session.VisitID)
             WHERE 1=1";
 
         $user = User::singleton();
@@ -93,11 +94,11 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         }
 
         $this->group_by     = '';
-        $this->order_by     = 'conflicts_resolved.TableName, session.Visit_label';
+        $this->order_by     = 'conflicts_resolved.TableName, session.VisitID';
         $this->validFilters = array(
                                'conflicts_resolved.TableName',
                                'session.CenterID',
-                               'session.Visit_label',
+                               'session.VisitID',
                                'conflicts_resolved.ResolutionTimestamp',
                               );
 
@@ -150,7 +151,7 @@ class NDB_Menu_Filter_Resolved_Conflicts extends NDB_Menu_Filter
         $this->formToFilter = array(
                                'Instrument'          => "$con.TableName",
                                'site'                => 'session.CenterID',
-                               'visit'               => 'session.Visit_label',
+                               'visit'               => 'session.VisitID',
                                'ResolutionTimestamp' => "$con.ResolutionTimestamp",
                               );
 

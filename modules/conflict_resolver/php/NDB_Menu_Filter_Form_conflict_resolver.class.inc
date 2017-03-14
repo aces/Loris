@@ -209,7 +209,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
                           'conflicts_unresolved.TableName as Instrument',
                           'session.CandID as CandID',
                           'candidate.PSCID as PSCID',
-                          'session.Visit_label as Visit_Label',
+                          'v.label as Visit_Label',
                          );
 
         if ($useProjects) {
@@ -244,6 +244,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
             LEFT JOIN session ON (flag.SessionID=session.ID)
             LEFT JOIN candidate ON (candidate.CandID=session.CandID)
             LEFT JOIN Project ON (candidate.ProjectID=Project.ProjectID )
+            LEFT JOIN visits v ON (v.ID=session.VisitID)
             WHERE 1=1";
 
         $user = User::singleton();
@@ -254,11 +255,11 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         }
 
         $this->group_by     = '';
-        $this->order_by     = 'conflicts_unresolved.TableName, session.Visit_label';
+        $this->order_by     = 'conflicts_unresolved.TableName, session.VisitID';
         $this->validFilters = array(
                                'conflicts_unresolved.TableName',
                                'session.CenterID',
-                               'session.Visit_label',
+                               'session.VisitID',
                               );
 
         if ($useProjects) {
@@ -301,7 +302,7 @@ class NDB_Menu_Filter_Form_Conflict_Resolver extends NDB_Menu_Filter_Form
         $this->formToFilter = array(
                                'Instrument' => 'conflicts_unresolved.TableName',
                                'site'       => 'session.CenterID',
-                               'visit'      => 'session.Visit_label',
+                               'visit'      => 'session.VisitID',
                               );
 
         if ($useProjects) {

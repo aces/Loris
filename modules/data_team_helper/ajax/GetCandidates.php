@@ -29,7 +29,7 @@ $searchArray = array();
 
     $query = "SELECT DISTINCT ses.candID FROM session AS ses
                 JOIN test_battery AS tst
-                ON ses.Visit_label = tst.Visit_label
+                ON ses.VisitID = tst.VisitID
                 WHERE ses.candID
                 LIKE :searchTerm";
 

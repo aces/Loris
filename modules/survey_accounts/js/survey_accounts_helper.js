@@ -60,7 +60,7 @@ $(document).ready(function () {
             $.get(loris.BaseURL + "/survey_accounts/ajax/ValidateEmailSubmitInput.php", {
                 dccid: $("input[name=CandID]").val(),
                 pscid: $("input[name=PSCID]").val(),
-                VL: $("select[name=VL]").val(),
+                VID: $("select[name=VID]").val(),
                 TN: $("select[name=Test_name]").val(),
                 Email: $("input[name=Email").val(),
                 Email2: $("input[name=Email2]").val()

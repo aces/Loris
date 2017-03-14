@@ -49,12 +49,13 @@ class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
         // the base query
         $query = " FROM participant_accounts p 
             JOIN session s ON (p.SessionID=s.ID)
+            LEFT JOIN visits v ON (v.ID=s.VisitID)
             JOIN candidate c ON (c.CandID=s.CandID)";
 
         // set the class variables
         $this->columns = array(
             'c.PSCID AS PSCID',
-            's.Visit_label AS Visit',
+            'v.label AS Visit',
             'p.Email as Email',
             'p.Test_name as SurveyName',
             'p.OneTimePassword as URL',
@@ -64,7 +65,7 @@ class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
         $this->order_by = 'PSCID';
         $this->validFilters = array(
             'c.PSCID',
-            's.Visit_label',
+            's.VisitID',
             'p.Email',
             'p.Test_name',
             'p.OneTimePassword',
@@ -73,7 +74,7 @@ class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
         );
         $this->formToFilter = array(
             'PSCID' => 'c.PSCID',
-            'VisitLabel' => 's.Visit_label',
+            'VisitLabel' => 's.VisitID',
             'Email' => 'p.Email',
             'key' => 'p.OneTimePassword',
             'Instrument' => 'p.Test_name'
@@ -91,12 +92,17 @@ class NDB_Menu_Filter_survey_accounts extends NDB_Menu_Filter
     {
         // create user object
         $user =& User::singleton();
+
+        // Get visits
+        $visits = Utility::getVisitList();
+        $visits = array('' => 'All') + $visits;
+
         $this->addBasicText('PSCID', 'PSCID');
         // add form elements
         $this->addSelect(
             'VisitLabel',
             'Visit:',
-            array_merge(array('' => 'All'), Utility::getVisitList())
+            $visits
         );
         $this->addSelect(
             'Instrument',

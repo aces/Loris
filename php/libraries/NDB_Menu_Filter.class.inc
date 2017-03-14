@@ -442,6 +442,7 @@ class NDB_Menu_Filter extends NDB_Menu
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
                 || strtolower(substr($field, -6)) == 'gender'
+                || strtolower(substr($field, -7)) == 'visitid'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))
             ) {

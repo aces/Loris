@@ -113,7 +113,8 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $user =& User::singleton();
         // the base query
         $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
-        " LEFT JOIN candidate c ON c.CandID=s.CandID";
+        " LEFT JOIN candidate c ON c.CandID=s.CandID ".
+            " LEFT JOIN visits v ON (s.VisitID=v.ID)";
         $query .= " WHERE m.hide_file = FALSE";
 
         // set the class variables
@@ -121,7 +122,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             = [
                'm.file_name',
                '(SELECT PSCID from candidate WHERE CandID=s.CandID) as pscid',
-               's.Visit_label as visit_label',
+               'v.label as visit_label',
                '(SELECT Full_name FROM test_names WHERE Test_name=m.instrument)',
                '(SELECT name FROM psc WHERE CenterID=s.CenterID) as site',
                'm.uploaded_by',
@@ -167,13 +168,13 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $this->validFilters = [
                                'c.PSCID',
                                'm.instrument',
-                               's.Visit_label',
+                               's.VisitID',
                                's.CenterID',
                               ];
         $this->formToFilter = [
                                'pscid'       => 'c.PSCID',
                                'instrument'  => 'm.instrument',
-                               'visit_label' => 's.Visit_label',
+                               'visit_label' => 's.VisitID',
                                'for_site'    => 's.CenterID',
                               ];
 

@@ -39,8 +39,8 @@
             <td nowrap="nowrap">{$form.PSCID.html}</td>
         </tr>
         <tr>
-            <td nowrap="nowrap">{$form.VL.label}</td>
-            <td nowrap="nowrap">{$form.VL.html}</td>
+            <td nowrap="nowrap">{$form.VID.label}</td>
+            <td nowrap="nowrap">{$form.VID.html}</td>
         </tr>
         <tr>
             <td nowrap="nowrap">{$form.Test_name.label}</td>

@@ -116,10 +116,10 @@ function uploadFile()
     $sessionID = $db->pselectOne(
         "SELECT s.ID as session_id FROM candidate c " .
         "LEFT JOIN session s USING(CandID) WHERE c.PSCID = :v_pscid AND " .
-        "s.Visit_label = :v_visit_label AND s.CenterID = :v_center_id",
+        "s.VisitID = :v_visit_id AND s.CenterID = :v_center_id",
         [
          'v_pscid'       => $pscid,
-         'v_visit_label' => $visit,
+         'v_visit_id'    => $visit,
          'v_center_id'   => $site,
         ]
     );
@@ -194,14 +194,14 @@ function getUploadFields()
     // Build array of session data to be used in upload media dropdowns
     $sessionData    = [];
     $sessionRecords = $db->pselect(
-        "SELECT c.PSCID, s.Visit_label, s.CenterID, f.Test_name " .
+        "SELECT c.PSCID, CONCAT(s.VisitID,' - ', v.label) AS Visit_label, s.VisitID AS VisitID, s.CenterID, f.Test_name " .
         "FROM candidate c ".
-        "LEFT JOIN session s USING(CandID) ".
-        "LEFT JOIN flag f ON (s.ID=f.SessionID) ".
+          "LEFT JOIN session s USING(CandID) ".
+          "LEFT JOIN visits v ON (v.ID=s.VisitID) ".
+          "LEFT JOIN flag f ON (s.ID=f.SessionID) ".
         "ORDER BY c.PSCID ASC",
         []
     );
-
     foreach ($sessionRecords as $record) {
 
         // Populate sites
@@ -228,10 +228,11 @@ function getUploadFields()
             true
         )
         ) {
-            $sessionData[$record["PSCID"]]['visits'][$record["Visit_label"]]
+            $sessionData[$record["PSCID"]]['visits'][$record["VisitID"]]
                 = $record["Visit_label"];
         }
 
+<<<<<<< afe568853d63ee746f442baa67b1976e11617dc0
         // Populate instruments
         $visit = $record["Visit_label"];
         $pscid =$record["PSCID"];
@@ -263,6 +264,21 @@ function getUploadFields()
 
         }
 
+=======
+        //populate instruments
+        if (!isset($sessionData[$record["PSCID"]][$record["VisitID"]]['instruments'])) {
+            $sessionData[$record["PSCID"]][$record["VisitID"]]['instruments'] = [];
+        }
+        if ($record["Test_name"] !== null && !in_array(
+                $record["Test_name"],
+                $sessionData[$record["PSCID"]][$record["VisitID"]]['instruments'],
+                true
+            )
+        ) {
+            $sessionData[$record["PSCID"]][$record["VisitID"]]['instruments'][$record["Test_name"]]
+                = $record["Test_name"];
+        }
+>>>>>>> Media to use visits
     }
 
     // Build media data to be displayed when editing a media file

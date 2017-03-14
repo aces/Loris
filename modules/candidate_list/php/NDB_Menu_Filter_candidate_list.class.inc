@@ -111,7 +111,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
         }
 
         // Need distinct because of joining with feedback_bvl_thread
-        $VisitCountSQL = 'COUNT(DISTINCT s.Visit_label)';
+        $VisitCountSQL = 'COUNT(DISTINCT s.VisitID)';
         $FeedbackSQL   = 'IFNULL(MIN(feedback_bvl_thread.Status+0),0)';
 
         $this->columns = array_merge(
@@ -157,7 +157,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              'max(s.Current_stage)',
              $FeedbackSQL,
              's.Scan_done',
-             's.Visit_label',
+             's.VisitID',
              'c.Entity_type',
              'COALESCE(pso.ID, 1)',
             )
@@ -173,7 +173,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                      'c.CenterID',
                                      'c.ProjectID',
                                      's.Scan_done',
-                                     's.Visit_label',
+                                     's.VisitID',
                                      'c.Gender',
                                     );
 
@@ -192,7 +192,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              'Feedback'            => $FeedbackSQL,
              'Participant_Status'  => 'COALESCE(pso.ID, 1)',
              'scan_done'           => 's.Scan_done',
-             'Visit_label'         => 's.Visit_label',
+             'Visit_label'         => 's.VisitID',
              'Entity_type'         => 'c.Entity_type',
             )
         );
@@ -266,7 +266,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                         );
         // Get visits
         $visits = Utility::getVisitList();
-        $visits = array_merge(array('' => 'All'), $visits);
+        $visits = array('' => 'All') + $visits;
 
         // add form elements
         $this->addSelect('centerID', 'Site', $list_of_sites);

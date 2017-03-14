@@ -57,7 +57,7 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
                             array('File_category'=>$category, 'For_site'=>$site,
                                   'comments'=>$comments, 'version'=>$version, 'File_name'=>$fileName,
                                   'File_size'=>$fileSize, 'Data_dir'=>$fileBase, 'uploaded_by'=>$puser,
-                                  'Instrument'=>$instrument, 'PSCID'=>$pscid, 'visitLabel'=>$visit,
+                                  'Instrument'=>$instrument, 'PSCID'=>$pscid, 'visit_id'=>$visit,
                                   'File_type'=>$fileType));
             $msg_data['newDocument'] = $baseURL . "/document_repository/";
             $msg_data['document'] = $fileName;
@@ -87,7 +87,7 @@ if ($userSingleton->hasPermission('document_repository_view') || $userSingleton-
         }
 
         $values = array('File_category' => $category, 'Instrument' => $instrument, 'For_site' => $site,
-                        'PSCID' => $pscid, 'visitLabel' => $visit, 'comments' => $comments, 'version' => $version);
+                        'PSCID' => $pscid, 'visit_id' => $visit, 'comments' => $comments, 'version' => $version);
         $DB->update('document_repository', $values, array('record_id'=>$id));
 
         $fileName = $DB->pselectOne("select File_name from document_repository where record_id=:record_id",

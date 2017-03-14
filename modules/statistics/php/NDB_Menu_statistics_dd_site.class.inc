@@ -76,7 +76,9 @@ class NDB_Menu_statistics_dd_site extends NDB_Menu_statistics_site
         $DB     =& Database::singleton();
         $safe_instrument = $DB->escape($instrument);
         $result = $DB->pselect(
-            "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, lower(s.Visit_label) as Visit_label  FROM session s, candidate c, flag f, $safe_instrument i
+            "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID, v.label, s.VisitID 
+             FROM session s, candidate c, flag f, $safe_instrument i
+             LEFT JOIN visits v ON (v.ID=s.VisitID)
                 WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID AND 
                 s.CandID=c.CandID  AND s.Active='Y' 
                 AND s.CenterID <> '1'

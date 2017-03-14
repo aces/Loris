@@ -77,14 +77,15 @@ class NDB_Form_survey_accounts extends NDB_Form
         $numSessions = $db->pselectOne(
             "SELECT COUNT(*) FROM session 
             WHERE CandID=:v_CandID 
-            AND UPPER(Visit_label)=UPPER(:v_VL) 
+            AND VisitID=:vid
             AND Active='Y'", 
-            array('v_CandID' => $values['CandID'], 'v_VL' => $values['VL'])
+            array('v_CandID' => $values['CandID'], 'vid' => $values['VID'])
         );
 
         if ($numSessions != 1) {
+            $vLabel=Utility::getVisitLabelFromID($values['VID']);
             return array(
-                'VL' => "Visit ". $values['VL']." does not exist for given candidate"
+                'VID' => "Visit ". $vLabel." does not exist for given candidate"
             );
         }
 
@@ -92,15 +93,16 @@ class NDB_Form_survey_accounts extends NDB_Form
             "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
              WHERE s.CandID=:v_CandID  
-             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
+             AND s.VisitID=:vid
              AND s.Active='Y'",
-             array('v_CandID' => $values['CandID'], 'v_VL' => $values['VL'])
+             array('v_CandID' => $values['CandID'], 'vid' => $values['VID'])
         );
         foreach($instrument_list as $instrument) {
             if($values['Test_name'] == $instrument['Test_name']) {
+                $vLabel=Utility::getVisitLabelFromID($values['VID']);
                 return array(
                         'Test_name' => "Instrument ". $values['Test_name'].
-                                       " already exists for given candidate for visit ". $values['VL']
+                                       " already exists for given candidate for visit ". $vLabel
                         );
             }
         }
@@ -157,10 +159,10 @@ class NDB_Form_survey_accounts extends NDB_Form
     {
         $db = Database::singleton();
         $SessionID = $db->pselectOne(
-            "SELECT ID FROM session WHERE CandID=:v_CandID AND Visit_label=:v_VL",
+            "SELECT ID FROM session WHERE CandID=:v_CandID AND VisitID=:vid",
             array(
                 'v_CandID' => $values['CandID'], 
-                'v_VL'     => $values['VL']
+                'vid'     => $values['VID']
             )
         );
 
@@ -241,7 +243,7 @@ class NDB_Form_survey_accounts extends NDB_Form
         $this->redirect = "test_name=$this->name";
         $this->addBasicText("CandID", "DCCID");
         $this->addBasicText("PSCID", "PSCID");
-        $this->addSelect("VL", "Visit Label", Utility::getVisitList());
+        $this->addSelect("VID", "Visit Label", Utility::getVisitList());
         $this->addSelect("Test_name", "Instrument", array_merge(array('' => ''), Utility::getDirectInstruments()));
         $this->addBasicText("Email", "Email address");
         $this->addBasicText("Email2", "Confirm Email address");

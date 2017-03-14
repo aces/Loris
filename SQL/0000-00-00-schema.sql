@@ -141,7 +141,7 @@ CREATE TABLE `document_repository` (
   `record_id` int(11) NOT NULL AUTO_INCREMENT,
   `PSCID` varchar(255) DEFAULT NULL,
   `Instrument` varchar(255) DEFAULT NULL,
-  `visitLabel` varchar(255) DEFAULT NULL,
+  `visit_id` int(10) unsigned DEFAULT NULL,
   `Date_taken` date DEFAULT NULL,
   `Date_uploaded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `Data_dir` varchar(255) DEFAULT NULL,
@@ -156,7 +156,8 @@ CREATE TABLE `document_repository` (
   `EARLI` tinyint(1) DEFAULT '0',
   `hide_video` tinyint(1) DEFAULT '0',
   `File_category` int(3) DEFAULT NULL,
-  PRIMARY KEY (`record_id`)
+  PRIMARY KEY (`record_id`),
+  CONSTRAINT `FK_document_repository_visits_rel_1` FOREIGN KEY (`visit_id`) REFERENCES `visits` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1043,7 +1044,7 @@ CREATE TABLE `session` (
   `CandID` int(6) NOT NULL DEFAULT '0',
   `CenterID` tinyint(2) unsigned DEFAULT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
-  `Visit_label` varchar(255) DEFAULT NULL,
+  `VisitID` int(10) unsigned DEFAULT NULL,
   `SubprojectID` int(11) DEFAULT NULL,
   `Submitted` enum('Y','N') DEFAULT NULL,
   `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
@@ -1078,7 +1079,8 @@ CREATE TABLE `session` (
   KEY `SessionActive` (`Active`),
   KEY `SessionCenterID` (`CenterID`),
   CONSTRAINT `FK_session_1` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`),
-  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`)
+  CONSTRAINT `FK_session_2` FOREIGN KEY (`CenterID`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `FK_session_visits_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table holding session information';
 
 --
@@ -1217,14 +1219,15 @@ CREATE TABLE `test_battery` (
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Stage` varchar(255) default NULL,
   `SubprojectID` int(11) default NULL,
-  `Visit_label` varchar(255) default NULL,
+  `VisitID` int(10) unsigned DEFAULT NULL,
   `CenterID` int(11) default NULL,
   `firstVisit` enum('Y','N') default NULL,
   `instr_order` tinyint(4) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `age_test` (`AgeMinDays`,`AgeMaxDays`,`Test_name`),
   KEY `FK_test_battery_1` (`Test_name`),
-  CONSTRAINT `FK_test_battery_1` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`)
+  CONSTRAINT `FK_test_battery_1` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`),
+  CONSTRAINT `FK_test_battery_visits_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1287,13 +1290,14 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `Visit_Windows`;
 CREATE TABLE `Visit_Windows` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `Visit_label` varchar(255) DEFAULT NULL,
+  `VisitID` int(10) unsigned NOT NULL,
   `WindowMinDays` int(11) DEFAULT NULL,
   `WindowMaxDays` int(11) DEFAULT NULL,
   `OptimumMinDays` int(11) DEFAULT NULL,
   `OptimumMaxDays` int(11) DEFAULT NULL,
   `WindowMidpointDays` int(11) DEFAULT NULL,
-   PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ID`),
+  CONSTRAINT `FK_Visit_Windows_visits_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`)
 );
 --
 -- Table structure for table `users`
@@ -1589,12 +1593,13 @@ CREATE TABLE `certification` (
   `certID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `examinerID` int(10) unsigned NOT NULL DEFAULT '0',
   `date_cert` date DEFAULT NULL,
-  `visit_label` varchar(255) DEFAULT NULL,
+  `VisitID` int(10) unsigned DEFAULT NULL,
   `testID` int(10) UNSIGNED NOT NULL,
   `pass` enum('not_certified','in_training','certified') DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`certID`,`testID`),
-  CONSTRAINT `FK_certifcation` FOREIGN KEY (`testID`) REFERENCES `test_names` (`ID`)
+  CONSTRAINT `FK_certifcation` FOREIGN KEY (`testID`) REFERENCES `test_names` (`ID`),
+  CONSTRAINT `FK_certification_visits_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1625,11 +1630,12 @@ CREATE TABLE `certification_history` (
   `primaryCols` varchar(255) DEFAULT 'certID',
   `primaryVals` text,
   `testID` int(3) DEFAULT NULL,
-  `visit_label` varchar(255) DEFAULT NULL,
+  `VisitID` int(10) unsigned DEFAULT NULL,
   `changeDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `userID` varchar(255) NOT NULL DEFAULT '',
   `type` char(1) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_certification_history_visits_rel_1` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1727,7 +1733,7 @@ CREATE TABLE `mri_violations_log` (
   `MincFile` varchar(255) DEFAULT NULL,
   `PatientName` varchar(255) DEFAULT NULL,
   `CandID` int(6) DEFAULT NULL,
-  `Visit_label` varchar(255) DEFAULT NULL,
+  `VisitID` int(10) unsigned DEFAULT NULL,
   `CheckID` int(11) DEFAULT NULL,
   `Scan_type` int(11) unsigned DEFAULT NULL,
   `Severity` enum('warning','exclude') DEFAULT NULL,
@@ -2365,3 +2371,25 @@ CREATE TABLE `user_psc_rel` (
 INSERT INTO user_psc_rel (UserID, CenterID) SELECT 1, CenterID FROM psc;
 
 
+-- VISITS INFRASTRUCTURE
+DROP TABLE IF EXISTS `visits`;
+CREATE TABLE `visits` (
+  `ID` int(10) unsigned NOT NULL auto_increment,
+  `label` varchar(255) NOT NULL,
+  `legacy_label` varchar(255) DEFAULT NULL,
+  `imaging` enum('Y','N') DEFAULT 'N' NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY (`legacy_label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `visits_subproject_project_rel`;
+CREATE TABLE `visits_subproject_project_rel` (
+  `VisitID` int(10) unsigned NOT NULL,
+  `SubprojectID` int(10) unsigned NOT NULL,
+  `ProjectID` int(2) DEFAULT NULL,
+  PRIMARY KEY  (`visitID`,`subprojectID`),
+  CONSTRAINT `U_visits_subproject_project_rel_1` UNIQUE (`VisitID`,`SubprojectID`,`ProjectID`),
+  CONSTRAINT `FK_visits_subproject_project_rel_2` FOREIGN KEY (`VisitID`) REFERENCES `visits` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_visits_subproject_project_rel_3` FOREIGN KEY (`SubprojectID`) REFERENCES `subproject` (`SubprojectID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_visits_subproject_project_rel_4` FOREIGN KEY (`ProjectID`) REFERENCES `Project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -179,19 +179,20 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 e.full_name as Original_Examiner, 
                 c.PSCID as PSCID, 
                 c.CandID as CandID, 
-                s.Visit_Label as Visit_label, 
+                s.VisitID as Visit_label, 
                 GROUP_CONCAT(substring_index(t.sourcelocation, '/', -1)) as DICOM_Folder_Name, 
                 f.SessionID as SessionID, 
                 f.CommentID as CommentID 
                 FROM radiology_review r LEFT JOIN examiners e on (e.ExaminerID=r.Examiner) 
                 LEFT JOIN flag f ON (f.CommentID=r.CommentID) 
                 LEFT JOIN session s ON (s.ID=f.SessionID) 
+                LEFT JOIN visits v ON (v.ID=s.VisitID)
                 LEFT JOIN candidate c ON (c.CandID=s.CandID) 
                 LEFT JOIN tarchive t ON (upper(t.PatientName) 
-                LIKE CONCAT(upper(c.PSCID), '_', upper(s.CandID), '_', upper(s.visit_label), '%')) 
+                LIKE CONCAT(upper(c.PSCID), '_', upper(s.CandID), '_', upper(v.legacy_label), '%')) 
                 WHERE r.CommentID=:CID 
                 GROUP by CandID, PSCID, Visit_label, SessionID, CommentID,
-                r.Scan_done, r.review_results, r.abnormal_atypical_exclusionary, r.Incidental_findings, e.full_name", 
+                r.Scan_done, r.review_results, r.abnormal_atypical_exclusionary, r.Incidental_findings, e.full_name",
                 array('CID' => $this->identifier)
             );
             if(empty($original_review)) {
