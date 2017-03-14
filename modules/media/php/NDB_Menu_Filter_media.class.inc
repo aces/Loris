@@ -73,7 +73,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $db   = Database::singleton();
 
         $siteList  = Utility::getSiteList(false);
-        $visitList = [null => 'Any'] + Utility::getVisitList();
+        $visitList = Utility::getVisitList();
 
         // Index sites using their names (used to filter react tables)
         foreach ($siteList as $key => $site) {
@@ -85,7 +85,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             if (is_array($siteList)) {
-                $siteList = [null => 'Any'] + $siteList;
+                $siteList = $siteList;
             }
         } else {
             // allow only to view own site data
@@ -100,7 +100,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             $siteList = array('' => 'All User Sites') + $siteList;
         }
 
-        $instrumentList   = [null => 'Any'];
+        $instrumentList   = [];
         $instrumentsQuery = $db->pselect(
             "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
             []
@@ -109,7 +109,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
 
-        $fileTypeList  = [null => 'Any'];
+        $fileTypeList  = [];
         $fileTypeQuery = $db->pselect("SELECT file_type FROM media", []);
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
