@@ -1241,7 +1241,7 @@ class LorisForm
                         $this->getValue($el['name'])
                     );
                     if (empty($date)) {
-                        break;
+                        continue;
                     }
                     $dt          = DateTime::createFromFormat('Y-m-d', $date);
                     $isValidDate = $dt && $dt->format('Y-m-d') == $date;
