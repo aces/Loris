@@ -36,7 +36,7 @@ if ($quizCorrect == false) {
     $user = User::singleton();
 
     $userFullName = $user->getFullname();
-    $userCenter   = implode(',',$user->getCenterID());
+    $userCenter   = implode(',', $user->getCenterID());
     $examinerID   = $DB->pselectOne(
         "SELECT examinerID 
          FROM examiners

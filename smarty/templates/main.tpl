@@ -171,7 +171,7 @@
                         </li>
                         <li class="nav">
                             <a href="#" data-toggle="tooltip" title="{$user.Sites}" style="padding-right:25px;">
-                                All User Sites Count: {$userNumSites} 
+                                Site Associations: {$userNumSites} 
                             </a>
                         </li>
 
