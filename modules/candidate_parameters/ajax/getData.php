@@ -395,11 +395,15 @@ function getConsentStatusFields()
     $date          = [];
     $withdrawal    = [];
 
-    if (!is_null($consent['Consent']['name'])) {
-        $consent['Consent'] = array($consent['Consent']);
+    $consent_details =Utility::asArray($consent['Consent']);
+    if (!$consent_details[0]) {
+        // If only one consent, need to put in an array
+        $temp            = array();
+        $temp[]          = $consent_details;
+        $consent_details = $temp;
     }
 
-    foreach (Utility::asArray($consent['Consent']) as $consentType) {
+    foreach ($consent_details as $consentType) {
 
         $consents[$consentType['name']]      = $consentType['label'];
         $consentStatus[$consentType['name']] = $db->pselectOne(

@@ -376,11 +376,11 @@ function editConsentStatusFields($db, $user)
     $config  =& NDB_Config::singleton();
     $consent = $config->getSetting('ConsentModule');
 
-    $consent_details=Utility::asArray($consent['Consent']);
+    $consent_details =Utility::asArray($consent['Consent']);
     if (!$consent_details[0]) {
         // If only one consent, need to put in an array
-        $temp        = array();
-        $temp[]      = $consent_details;
+        $temp            = array();
+        $temp[]          = $consent_details;
         $consent_details = $temp;
     }
 
