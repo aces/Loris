@@ -217,8 +217,8 @@ function validateInput($values)
 
         $user =& User::singleton();
         if (!$user->hasPermission('access_all_profiles')) {
-            $params['CenterID'] = $user->getCenterID();
-            $query .= " AND CenterID=:CenterID";
+            $params['CenterID'] = implode(',',$user->getCenterID());
+            $query .= " AND FIND_IN_SET(CenterID,:CenterID)";
         }
 
         $candidate = $db->pSelectOne($query, $params);
@@ -531,14 +531,14 @@ function getIssueFields()
             array()
         );
     } else {
-        $CenterID = $user->getCenterID();
+        $CenterID = implode(',',$user->getCenterID());
         $DCCID    = $db->pselectOne(
             "SELECT CenterID from psc where Name='DCC'",
             array()
         );
         $assignee_expanded = $db->pselect(
             "SELECT u.Real_name, u.UserID FROM users u 
-WHERE (u.CenterID=:CenterID) OR (u.CenterID=:DCC)",
+WHERE FIND_IN_SET(u.CenterID,:CenterID) OR FIND_IN_SET(u.CenterID,:DCC)",
             array(
              'CenterID' => $CenterID,
              'DCC'      => $DCCID,
