@@ -1,7 +1,8 @@
 <?php
 /**
  * Get CSV files
- * 
+ *
+ * PHP Version 5
  *
  * @category Statistics
  * @package  Loris
