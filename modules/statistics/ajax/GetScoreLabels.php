@@ -1,6 +1,6 @@
 <?php
 /**
- * Get CSV files
+ * GetScoreColsForInstrument 
  *
  * PHP Version 5
  *
