@@ -77,8 +77,7 @@ abstract class LorisIntegrationTest extends PHPUnit_Framework_TestCase
              'Privilege'        => 0,
              'PSCPI'            => 'N',
              'Active'           => 'Y',
-             'Password_md5'     => 'a601e42ba82bb37a68ca3c8b7752f2e222',
-             'Password_hash'    => null,
+             'Password_hash'    => password_hash("4test4", PASSWORD_DEFAULT),
              'Password_expiry'  => '2099-12-31',
              'Pending_approval' => 'N',
             )
