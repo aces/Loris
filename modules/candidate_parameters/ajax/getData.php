@@ -326,16 +326,16 @@ function getParticipantStatusFields()
     $history = getParticipantStatusHistory($candID);
 
     $result = [
-               'pscid'                  => $pscid,
-               'candID'                 => $candID,
-               'statusOptions'          => $statusOptions,
-               'required'               => $required,
-               'reasonOptions'          => $reasonOptions,
-               'parentIDs'              => $parentIDMap,
-               'participant_status'     => $status,
-               'participant_suboptions' => $suboption,
-               'reason_specify'         => $reason,
-               'history'                => $history,
+               'pscid'                 => $pscid,
+               'candID'                => $candID,
+               'statusOptions'         => $statusOptions,
+               'required'              => \Utility::reduce($required),
+               'reasonOptions'         => $reasonOptions,
+               'parentIDs'             => $parentIDMap,
+               'participantStatus'     => $status,
+               'participantSuboptions' => $suboption,
+               'reasonSpecify'         => $reason,
+               'history'               => $history,
               ];
 
     return $result;
