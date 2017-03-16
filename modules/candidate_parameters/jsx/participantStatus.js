@@ -33,9 +33,15 @@ var ParticipantStatus = React.createClass(
             return xhr;
           },
           success: function(data) {
+            let formData = {};
+            formData["participant_status"]=data.participant_status;
+            formData["participant_suboptions"]=data.participant_suboptions;
+            formData["reason_specify"]=data.reason_specify;
+
             that.setState(
               {
                 Data: data,
+                formData: formData,
                 isLoaded: true
               }
                         );
@@ -189,7 +195,7 @@ var ParticipantStatus = React.createClass(
                     label ="Participant Status"
                     name ="participant_status"
                     options ={this.state.Data.statusOptions}
-                    value ={this.state.Data.participant_status}
+                    value ={this.state.formData.participant_status}
                     onUserInput ={this.setFormData}
                     ref ="participant_status"
                     disabled ={disabled}
@@ -199,7 +205,7 @@ var ParticipantStatus = React.createClass(
                     label ="Specify Reason"
                     name ="participant_suboptions"
                     options ={subOptions}
-                    value ={this.state.Data.participant_suboptions}
+                    value ={this.state.formData.participant_suboptions}
                     onUserInput ={this.setFormData}
                     ref ="participant_suboptions"
                     disabled ={!suboptionsRequired}
@@ -208,7 +214,7 @@ var ParticipantStatus = React.createClass(
                 <TextareaElement
                     label ="Comments"
                     name ="reason_specify"
-                    value ={this.state.Data.reason_specify}
+                    value ={this.state.formData.reason_specify}
                     onUserInput ={this.setFormData}
                     ref ="reason_specify"
                     disabled ={disabled}
