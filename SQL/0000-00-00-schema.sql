@@ -1867,11 +1867,11 @@ CREATE TABLE StatisticsTabs(
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores list of tabs for the statistics module';
 
 INSERT INTO StatisticsTabs (ModuleName, SubModuleName, Description, OrderNo) VALUES
-    ('statistics', 'stats_general', 'General Description', 1),
-    ('statistics', 'stats_demographic', 'Demographic Statistics', 2),
-    ('statistics', 'stats_behavioural', 'Behavioural Statistics', 3),
-    ('statistics', 'stats_reliability', 'Reliability Statistics', 4),
-    ('statistics', 'stats_MRI', 'Imaging Statistics', 5);
+    ('statistics', 'statsGeneral', 'General Description', 1),
+    ('statistics', 'statsDemographic', 'Demographic Statistics', 2),
+    ('statistics', 'statsBehavioural', 'Behavioural Statistics', 3),
+    ('statistics', 'statsReliability', 'Reliability Statistics', 4),
+    ('statistics', 'statsMRI', 'Imaging Statistics', 5);
 
 DROP TABLE IF EXISTS `final_radiological_review_history`;
 CREATE TABLE `final_radiological_review_history` (
