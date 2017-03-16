@@ -130,7 +130,7 @@ var ParticipantStatus = React.createClass({
                   line += current;
                   line += " ";
                   break;
-                case 'reasonSpecify':
+                case 'reason_specify':
                   line += "Comments: ";
                   line += current;
                   line += " ";
