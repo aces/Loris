@@ -1,5 +1,16 @@
 <?php
 /**
+ * NDB_Form_statistics
+ *
+ * PHP Version 5
+ *
+ * @category Statistics
+ * @package  Loris
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris/
+ */
+/**
  * The welcome menu
  *
  * @package main
@@ -24,7 +35,7 @@ class NDB_Form_statistics extends NDB_Form
         return false;
     }
 
-    function render_stats_table($sectionHeader, $tableHeader, $disclamer='', $subcats, $visits, $dropdown_name, $dropdown_opt, $dropdown_selected, $centres, $data, $Subsection="",$projectID=null)
+    function renderStatsTable($sectionHeader, $tableHeader, $disclamer='', $subcats, $visits, $dropdown_name, $dropdown_opt, $dropdown_selected, $centres, $data, $Subsection="",$projectID=null)
     {
         $tpl_data = array();
         $tpl_data['test_name']  = $_REQUEST['test_name'];
@@ -87,12 +98,12 @@ class NDB_Form_statistics extends NDB_Form
 
     }
 
-    function stats_general()
+    function statsGeneral()
     {
         //$DB =& Database::singleton();
     }
 
-    function stats_demographic()
+    function statsdemographic()
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -117,9 +128,9 @@ class NDB_Form_statistics extends NDB_Form
         if(isset($_REQUEST['DemographicProject']) && $_REQUEST['DemographicProject'] != '') {
             $currentProject = $_REQUEST['DemographicProject'];
             $this->tpl_data['CurrentProject'] = array(
-                'ID'   => $currentProject,
-                'Name' => $projects[$currentProject],
-            );
+                                                 'ID'   => $currentProject,
+                                                 'Name' => $projects[$currentProject],
+                                                );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] =$_REQUEST['DemographicProject'];
         } else {
@@ -161,9 +172,9 @@ class NDB_Form_statistics extends NDB_Form
             $sites[$row['NumericID']] = $row['ShortName'];
             if($_REQUEST['DemographicSite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                    'ID'   => $row['NumericID'],
-                    'Name' => $row['LongName'],
-                );
+                                                  'ID'   => $row['NumericID'],
+                                                  'Name' => $row['LongName'],
+                                                 );
             }
         }
 
@@ -318,9 +329,9 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['all_instruments'] = $instrument_list;
         if(isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
             $Subcategories = array(
-                'Complete',
-                'Incomplete',
-            );
+                              'Complete',
+                              'Incomplete',
+                             );
             $result        = $DB->pselect(
                 "SELECT count(*) as val,
                     f.Data_entry as Subcat,
@@ -353,7 +364,7 @@ class NDB_Form_statistics extends NDB_Form
                 ",
                 $this->params
             );
-            $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
+            $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 "Breakdown of Registered Candidates",
                 "Data Entry Completion Status for ". $instrument_list[$_REQUEST['DemographicInstrument']],
                 '',
@@ -369,9 +380,9 @@ class NDB_Form_statistics extends NDB_Form
             );
         } else {
             $Subcategories = array(
-                'Male',
-                'Female',
-            );
+                              'Male',
+                              'Female',
+                             );
             $result        = $DB->pselect(
                 "SELECT c.CenterID as CenterID,
                     s.SubprojectID as SubprojectID,
@@ -387,7 +398,7 @@ class NDB_Form_statistics extends NDB_Form
                 GROUP BY c.CenterID, SubprojectID, VLabel, Subcat",
                 array()
             );
-            $this->tpl_data['RecruitsTable'] = $this->render_stats_table(
+            $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(
                 "Breakdown of Registered Candidates",
                 "Breakdown by Sex",
                 '',
@@ -404,7 +415,7 @@ class NDB_Form_statistics extends NDB_Form
         }
     }
 
-    function stats_behavioural()
+    function statsBehavioural()
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -553,14 +564,13 @@ class NDB_Form_statistics extends NDB_Form
         }
     }
 
-    function stats_MRI()
+    function statsMRI()
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         $this->tpl_data['useProjects'] = $useProjects;
         $bigTable_params =array();
-
 
         $this->tpl_data['showTable'] = true;
 
@@ -725,7 +735,7 @@ class NDB_Form_statistics extends NDB_Form
         );
 
         $M_Visits = Utility::getExistingVisitLabels($currentProject);
-        $this->tpl_data['MRI_Done_Table'] = $this->render_stats_table(
+        $this->tpl_data['MRI_Done_Table'] = $this->renderStatsTable(
             "Breakdown By Scan Type",
             $MRIHeader,
             "",
@@ -897,7 +907,7 @@ class NDB_Form_statistics extends NDB_Form
 
 
     //RELIABILITY
-    function stats_reliability()
+    function statsReliability()
     {
         $DB          =& Database::singleton();
         $config      = NDB_Config::singleton();
@@ -1087,9 +1097,7 @@ class NDB_Form_statistics extends NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . "/statistics/css/statistics.css"
-            )
+            array($baseURL . "/statistics/css/statistics.css")
         );
     }
 
