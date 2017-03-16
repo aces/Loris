@@ -165,7 +165,10 @@ class ServerProcessLauncher
      */
     public function mriUpload($mriUploadId, $sourceLocation)
     {
-        $mriUploadProcess = new MriUploadServerProcess($mriUploadId, $sourceLocation);
+        $mriUploadProcess = new MriUploadServerProcess(
+            $mriUploadId,
+            $sourceLocation
+        );
         return $this->_launch($mriUploadProcess);
     }
 }

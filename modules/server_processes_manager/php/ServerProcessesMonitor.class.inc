@@ -34,6 +34,7 @@ class ServerProcessesMonitor
 {
     /**
      * Will provide access to the database
+     *
      * @var IDatabaseProvider
      */
     private $_databaseProvider;
