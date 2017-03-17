@@ -18,12 +18,12 @@ class Panel extends React.Component {
     super(props);
 
     this.state = {
-      collapsed: this.props.collapsed
+      collapsed: this.props.initCollapsed
     };
 
     // Initialize panel class based on collapsed status
     this.panelClass = (
-      this.props.collapsed ?
+      this.props.initCollapsed ?
         "panel-collapse collapse" :
         "panel-collapse collapse in"
     );
@@ -76,7 +76,7 @@ Panel.propTypes = {
   title: React.PropTypes.string
 };
 Panel.defaultProps = {
-  collapsed: false,
+  initCollapsed: false,
   id: 'default-panel',
   height: '100%'
 };
