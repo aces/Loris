@@ -83,3 +83,29 @@ $(document).ready(function() {
   $(".fileUpload").FileUpload();
   swal.setDefaults({confirmButtonColor: '#064785'});
 });
+$(document).ajaxError(function(event, jqxhr, settings, thrownError) {
+  if (jqxhr.status === 401) {
+    if ($('#login-modal').hasClass('in')) {
+      $("#login-modal-error").show();
+    } else {
+      $('#login-modal').modal('show');
+      $("#modal-login").click(function(e) {
+        e.preventDefault();
+        var data = {
+          username: $("#modal-username").val(),
+          password: $("#modal-password").val(),
+          login: "Login"
+        };
+        $.ajax({
+          type: "post",
+          url: loris.BaseURL + "/main.php",
+          data: data,
+          success: function() {
+            $("#login-modal-error").hide();
+            $('#login-modal').modal('hide');
+          }
+        });
+      });
+    }
+  }
+});
