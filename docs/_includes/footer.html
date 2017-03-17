@@ -11,9 +11,8 @@
   SimpleJekyllSearch({
     searchInput: document.getElementById('search-input'),
     resultsContainer: document.getElementById('search-results'),
-    // searchResultTemplate: '<li><a class="dropdown-item" href="{url}">{title}</a></li>',
     noResultsText: '<li><a>Sorry, there are no results for that search.</a></li>',
-    json: '/search.json',
+    json: '{{ site.baseurl }}/search.json',
   })
 
 </script>
