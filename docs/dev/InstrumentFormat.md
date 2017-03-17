@@ -1,3 +1,11 @@
+---
+layout: default
+title: Instrument Format
+description:
+group: dev
+permalink: /instruments/
+---
+
 # 0.0: Preamble
 
 This file describes the general format to be used by Loris to describe
@@ -374,7 +382,7 @@ input. It has the following form:
 
 ElementGroups represent some kind of grouping of elements and may represent,
 for instance, a table, rows in that table, pages, or groups of elements that aren't
-tabular but should be logically grouped together into a row. 
+tabular but should be logically grouped together into a row.
 
 Groups have the general form of:
 ```js
