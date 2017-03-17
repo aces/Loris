@@ -100,5 +100,37 @@ class Statistics_Test extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
         $this->assertContains("Reliability Statistics", $bodyText);
     }
-
+   /** Tests that, when loading the Demographic Statistics Tab in Statistics module, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testDemographicStatisticsTab()
+    {
+        $this->safeGet($this->url . "/statistics/stats_demographic/?dynamictabs=dynamictabs");
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
+        $this->assertContains("General Demographic Statistics", $bodyText);
+    }
+   /** Tests that, when loading the Imaging Statistics Tab in Statistics module, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testImagingStatisticsTab()
+    {
+        $this->safeGet($this->url . "/statistics/stats_MRI/?dynamictabs=dynamictabs");
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector(".statsH2"))->getText();
+        $this->assertContains("General Statistics with QC Status", $bodyText);
+    }
+   /** Tests that, when loading the General Statistics Tab in Statistics module, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testGeneralStatisticsTab()
+    {
+        $this->safeGet($this->url . "/statistics/stats_general/?dynamictabs=dynamictabs");
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("H1"))->getText();
+        $this->assertContains("Welcome to the statistics page", $bodyText);
+    }
 }
