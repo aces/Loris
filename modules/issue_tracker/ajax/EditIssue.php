@@ -715,7 +715,7 @@ function showError($message)
     if (!isset($message)) {
         $message = 'An unknown error occurred!';
     }
-    header('HTTP/1.1 500 Internal Server Error');
+    header('HTTP/1.1 400 Bad Request');
     header('Content-Type: application/json; charset=UTF-8');
     die(json_encode(['message' => $message]));
 }
