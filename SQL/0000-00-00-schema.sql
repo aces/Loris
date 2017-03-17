@@ -220,6 +220,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SELECT 'Admin user' as 'Important INSERT statement';
+
 INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expiry) 
 VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N','2016-03-30');
 
