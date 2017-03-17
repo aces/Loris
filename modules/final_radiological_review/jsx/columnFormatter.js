@@ -33,15 +33,12 @@ function formatColumn(column, cell, rowData, rowHeaders) {
            );
   }
   if (column === 'Review Done') {
-    reviewDone = " ";
+    reviewDone = 'No';
 
-    if (row.ReviewDone === '1') {
+    if (row['Review Done'] === 'yes' || row['Review Done'] === 'Yes') {
       reviewDone = 'Yes';
     }
 
-    if (row.ReviewDone === '0') {
-      reviewDone = 'No';
-    }
     return (<td>{reviewDone}</td>);
   }
 
@@ -94,12 +91,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return (<td>{pvs}</td>);
   }
   if (column === 'Finalized') {
-    if (row.Finalized === '1') {
+    finalizedvar = 'No';
+    if (row.Finalized === 'yes' || row.Finalized === 'Yes') {
       finalizedvar = "Yes";
-    }
-
-    if (row.Finalized === '0') {
-      finalizedvar = "No";
     }
     return (<td>{finalizedvar}</td>);
   }
