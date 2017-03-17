@@ -239,7 +239,7 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
 
     }
     /**
-     * Tests that, when uploading a empty file,
+     * Tests that, when uploading an empty file,
      * some error text appears in the body.
      *
      * @return void
@@ -254,6 +254,12 @@ class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("mri_file: Make sure 'Are these Phantom Scans' is filled out.", $bodyText);
     }
+    /**
+     * Tests that, when uploading a demo file,
+     * and the file name appears in the body.
+     *
+     * @return void
+     */
     function testImagingUploaderwithData()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
