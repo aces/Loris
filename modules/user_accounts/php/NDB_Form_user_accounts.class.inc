@@ -58,9 +58,11 @@ class NDB_Form_User_Accounts extends NDB_Form
                 if ($this->isCreatingNewUser()) {
                     return true;
                 }
-                return in_array(
-                    $editor->getData('CenterIDs'),
-                    $user->getData('CenterIDs')
+                return array_intersect(
+                    $user->getData('CenterIDs'),
+                    $editor->getData('CenterIDs')
+                ) == $user->getData(
+                    'CenterIDs'
                 );
             }
 
