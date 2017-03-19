@@ -576,10 +576,11 @@ class NDB_Form_User_Accounts extends NDB_Form
             $siteOptions = Utility::getSiteList(false);
         } else {
             // allow only to add to their own site
-            $siteOptions
-                = array(
-                   $editor->getData('CenterID') => $editor->getData('Site'),
-                  );
+            $site_arr = $editor->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                $siteOptions[$val] = $site[$key]->getCenterName();
+            }
         }
         $this->addSelect(
             'CenterIDs',
