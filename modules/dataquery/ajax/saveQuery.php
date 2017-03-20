@@ -20,7 +20,7 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
-$user = User::singleton();
+$user         = User::singleton();
 $baseDocument = array(
                  'Meta'       => array(
                                   'DocType' => 'SavedQuery',
@@ -38,7 +38,7 @@ if ($_REQUEST['SharedQuery'] === "true") {
     $baseDocument['Meta']['name'] = $user->getUserName() . ': ' . $_REQUEST['QueryName'];// @codingStandardsIgnoreLine
 }
 $fields = $_REQUEST['Fields'];
-$cond = $_REQUEST['Filters'];
+$cond   = $_REQUEST['Filters'];
 $baseDocument['Conditions'] = $cond;
 $baseDocument['Fields']     = $fields;
 $cdb = CouchDB::singleton();

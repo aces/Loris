@@ -23,7 +23,7 @@ $client->initialize(__DIR__ . "/../../../project/config.xml");
 $cdb      = CouchDB::singleton();
 $category = $_REQUEST['DocType'];
 $sessions = json_decode($_REQUEST['Sessions']);
-$keys = array_map(
+$keys     = array_map(
     function ($row) use ($category) {
         return array_merge(array($category), $row);
     },
@@ -39,9 +39,9 @@ $results = $cdb->queryView(
     ),
     true
 );
-$keys   = null;
-$cdb    = null;
-$client = null;
+$keys    = null;
+$cdb     = null;
+$client  = null;
 //print $results;
 /*
 $justTheDocs = array_map(function($row) {

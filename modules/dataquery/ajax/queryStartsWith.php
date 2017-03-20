@@ -23,7 +23,7 @@ $cdb       = CouchDB::singleton();
 $category  = $_REQUEST['category'];
 $fieldName = $_REQUEST['field'];
 $value     = $_REQUEST['value'];
-$results = $cdb->queryView(
+$results   = $cdb->queryView(
     "DQG-2.0",
     "search",
     array(
