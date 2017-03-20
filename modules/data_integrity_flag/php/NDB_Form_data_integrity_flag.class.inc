@@ -49,9 +49,9 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
         ///////////////Constructs the where clause...
         ////////////////////////////////////////////////////////
         $extra_where  = "";
-        $extra_where .= $this->AddWhere("dataflag_visitlabel", 'visit_label');
-        $extra_where .= $this->AddWhere("dataflag_instrument", 'instrument');
-        $extra_where .= $this->AddWhere("dataflag_userid", 'users');
+        $extra_where .= $this->addWhere("dataflag_visitlabel", 'visit_label');
+        $extra_where .= $this->addWhere("dataflag_instrument", 'instrument');
+        $extra_where .= $this->addWhere("dataflag_userid", 'users');
 
         //construct the query
         if (($extra_where) !=null) {
@@ -79,7 +79,8 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
         $user      =& User::singleton();
         $user_name = $user->getUsername();
 
-        $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //get actual test_name
+        $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']);
+        //get actual test_name
 
         $visit_label = $_REQUEST['visit_label'];
         //save the date, flag status and comment in the data_integrity_flag table
@@ -91,8 +92,26 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
         $flag = $values['flag_status'];
 
         //$instrument=
-        $sucess  =  $DB->update('data_integrity_flag', array('latest_entry' => 0), array('dataflag_instrument' => $instrument, 'dataflag_visitlabel' => $visit_label));
-        $success = $DB->insert("data_integrity_flag", array('dataflag_instrument' => $instrument, 'dataflag_visitlabel' => $visit_label, 'dataflag_comment' => $comment, 'dataflag_date' => $date, 'dataflag_status' => $flag, 'latest_entry' => 1, 'dataflag_userid' => $user_name));
+        $sucess  =  $DB->update(
+            'data_integrity_flag',
+            array('latest_entry' => 0),
+            array(
+             'dataflag_instrument' => $instrument,
+             'dataflag_visitlabel' => $visit_label,
+            )
+        );
+        $success = $DB->insert(
+            "data_integrity_flag",
+            array(
+             'dataflag_instrument' => $instrument,
+             'dataflag_visitlabel' => $visit_label,
+             'dataflag_comment'    => $comment,
+             'dataflag_date'       => $date,
+             'dataflag_status'     => $flag,
+             'latest_entry'        => 1,
+             'dataflag_userid'     => $user_name,
+            )
+        );
 
         $this->tpl_data['success'] = true;
     }
@@ -101,7 +120,7 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
      *
      * @return void
      */
-
+    // @codingStandardsIgnoreStart
     function data_integrity_flag()
     {
 
@@ -115,11 +134,17 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
         $endYear     = $config->getSetting('endYear');
         $instrument  = '';
         if (!empty($_REQUEST['instrument'])) {
-            $instrument = $this->getTestNameusingMappedName($_REQUEST['instrument']); //converts the full_name into the test_name
+            $instrument = $this->getTestNameusingMappedName(
+                $_REQUEST['instrument']
+            );
+            //converts the full_name into the test_name
         }
         $visit_array =Utility::getExistingVisitLabels();
         $visit_array = array_combine($visit_array, $visit_array);
-        $visit_array = array_merge(array('all_visits' => "All Visits"), $visit_array);
+        $visit_array = array_merge(
+            array('all_visits' => "All Visits"),
+            $visit_array
+        );
 
         //Menu Filters
         $this->tpl_data['visitLabels'] = $visit_array;
@@ -128,7 +153,15 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
             $this->tpl_data['visit_label'] = $_REQUEST['visit_label'];
         }
         $this->tpl_data['test_name'] = $instrument;
-        $this->addSelect('users', 'Users', array_merge(array('' => 'All Users'), $this->getDIUsers()), array('id' => 'users'));
+        $this->addSelect(
+            'users',
+            'Users',
+            array_merge(
+                array('' => 'All Users'),
+                $this->getDIUsers()
+            ),
+            array('id' => 'users')
+        );
 
         $this->form->addFormRule(array(&$this, '_validate'));
 
@@ -136,9 +169,9 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
         ///////////////Constructs the where clause...
         ////////////////////////////////////////////////////////
         $extra_where  = null;
-        $extra_where .= $this->AddWhere("dataflag_visitlabel", 'visit_label');
-        $extra_where .= $this->AddWhere("dataflag_instrument", 'instrument');
-        $extra_where .= $this->AddWhere("dataflag_userid", 'users');
+        $extra_where .= $this->addWhere("dataflag_visitlabel", 'visit_label');
+        $extra_where .= $this->addWhere("dataflag_instrument", 'instrument');
+        $extra_where .= $this->addWhere("dataflag_userid", 'users');
 
         //construct the query
         //if (($extra_where) !=null){
@@ -166,12 +199,23 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
                              "3" => '3- Feedbacks Closed',
                              "4" => '4- Finalization',
                             );
-        $this->addSelect('flag_status', 'Flag Status:', $flag_status_list); //flag status
-        $this->addBasicTextArea('comment', 'Comment:', array('rows' => 2, 'cols' => 20));//comment box
+        $this->addSelect('flag_status', 'Flag Status:', $flag_status_list);
+        //flag status
+        $this->addBasicTextArea(
+            'comment',
+            'Comment:',
+            array(
+             'rows' => 2,
+             'cols' => 20,
+            )
+        );
+        //comment box
 
         //static or hiddent elements
-        $this->form->addElement("static", "instrument", "Instrument: ");//comment box
-        $this->form->addElement("static", "visit_label", "Visit: ");//comment box
+        $this->form->addElement("static", "instrument", "Instrument: ");
+        //comment box
+        $this->form->addElement("static", "visit_label", "Visit: ");
+        //comment box
 
         ///////////////////////////////////////////////////////////////
         ///////////////////////RESULTS//////////////////////////////
@@ -179,16 +223,28 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
 
         //Show the number of generated results...
         //If there are no data print a message to that effect
-        if(empty($info)) {
-            $this->form->addElement('static', "status", "No matching criteria found.");
+        if (empty($info)) {
+            $this->form->addElement(
+                'static',
+                "status",
+                "No matching criteria found."
+            );
             return;
         } else {
-            $this->form->addElement('static', 'total', 'Total number of results:', sizeof($info));
+            $this->form->addElement(
+                'static',
+                'total',
+                'Total number of results:',
+                sizeof($info)
+            );
         }
         //Loop through the conflicts and add a row per
-        foreach($info AS $data) {
+        foreach ($info AS $data) {
             $this->tpl_data['elements_list_names'][] = $data['dataflag_id'];
-            $full_name = $DB->pselectOne("SELECT Full_name from test_names where Test_name = :tname", array('tname' => $data['dataflag_instrument']));
+            $full_name = $DB->pselectOne(
+                "SELECT Full_name from test_names where Test_name = :tname",
+                array('tname' => $data['dataflag_instrument'])
+            );
             $this->tpl_data['elements_array'][$data['dataflag_id']]['date']        = $data['dataflag_date'];
             $this->tpl_data['elements_array'][$data['dataflag_id']]['flag']        = $flag_status_list[$data['dataflag_status']];
             $this->tpl_data['elements_array'][$data['dataflag_id']]['comment']     = $data['dataflag_comment'];
@@ -201,25 +257,25 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
             $this->tpl_data['elements_array'][$data['dataflag_id']]['dc_open_feedback'] = $data['dataflag_fbcreated'] - $data['dataflag_fbclosed']-$data['dataflag_fbcomment'];
         }
     }
-
+// @codingStandardsIgnoreEnd
     /**
      * AddWhere
      * Constructs the query....
      *
-     * @param  unknown_type $Column
-     * @param  unknown_type $Filter
+     * @param string $Column the value of column
+     * @param string $Filter the value of filter
+     *
      * @return unknown
      */
-
-    function AddWhere($Column, $Filter)
+    function addWhere($Column, $Filter)
     {
         // create Database object
         $DB = Database::singleton();
 
-        if(!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments' && $_REQUEST[$Filter] !=='No instruments for this visit' &&  $_REQUEST[$Filter] !=='All Visits') {
+        if (!empty($_REQUEST[$Filter]) && $_REQUEST[$Filter] !=='All Instruments' && $_REQUEST[$Filter] !=='No instruments for this visit' &&  $_REQUEST[$Filter] !=='All Visits') { // @codingStandardsIgnoreLine
 
             if ($Filter =='instrument') {
-                $test_name = $this->getTestNameusingMappedName($_REQUEST[$Filter]); //get actual test_name
+                $test_name = $this->getTestNameusingMappedName($_REQUEST[$Filter]); //get actual test_name // @codingStandardsIgnoreLine
                 return " AND $Column LIKE " . $DB->quote($test_name);
             }
             return " AND $Column LIKE " . $DB->quote($_REQUEST[$Filter]);
@@ -231,17 +287,18 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
     /**
      * _validate
      *
-     * @param  unknown_type $fields
+     * @param unknown_type $fields the value of fields
+     *
      * @return unknown
      */
     function _validate($fields)
     {
         $errors     =array();
-        $inst       = empty($_REQUEST['instrument']) ? '' : $_REQUEST['instrument'];
-        $vl         = empty($_REQUEST['visit_label']) ? '' : $_REQUEST['visit_label'];
-        $instFilter = $this->getTestNameusingMappedName($_REQUEST['instrument']);
+        $inst       = empty($_REQUEST['instrument']) ? '' : $_REQUEST['instrument'];// @codingStandardsIgnoreLine
+        $vl         = empty($_REQUEST['visit_label']) ? '' : $_REQUEST['visit_label'];// @codingStandardsIgnoreLine
+        $instFilter = $this->getTestNameusingMappedName($_REQUEST['instrument']);// @codingStandardsIgnoreLine
 
-        if ((preg_match('/All/', $inst, $matches)) || (preg_match('/All/', $vl, $matches)) || ($instFilter == null)) {
+        if ((preg_match('/All/', $inst, $matches)) || (preg_match('/All/', $vl, $matches)) || ($instFilter == null)) {// @codingStandardsIgnoreLine
             $errors['comment'] = 'An Instrument/Vist must be selected';
         }
 
@@ -250,7 +307,7 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
 
         $is_error_set = false;
 
-        foreach ($fields as $field=>$value){
+        foreach ($fields as $field=>$value) {
 
             if (preg_match('/date/', $field, $matches)) {
                 $bits = explode('-', $value);
@@ -259,7 +316,7 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
                     $date_array = array_combine(array('Y', 'M', 'd'), $bits);
                 }
 
-                if(empty($date_array)
+                if (empty($date_array)
                     || empty($date_array['Y'])
                     || empty($date_array['M'])
                     || empty($date_array['d'])
@@ -288,15 +345,15 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
     /**
  * Convert a database date or timestamp into a QuickForm acceptable date or time
  *
- * @param  string $databaseValue the date or timestamp from the database
+ * @param string $databaseValue the date or timestamp from the database
+ *
  * @return array   $formDateValue       the quickform date/timestamp array
  * @access private
  */
-
     function _getQuickformDate($databaseValue/*,$date_reference*/)
     {
-        if(!empty($databaseValue)) {
-            if(strstr($databaseValue, ":")) {
+        if (!empty($databaseValue)) {
+            if (strstr($databaseValue, ":")) {
                 $formDateValue =explode(":", $databaseValue);
                 $formDateValue =array(
                                  "H" => $formDateValue[0],
@@ -316,8 +373,9 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
     }
 
     /**
-     * getTestNameusingMappedName
-     * returns the Test_name and its corresponding visit_label.. using the full_name  and/or subprojectID ..
+     * GetTestNameusingMappedName
+     * returns the Test_name and its corresponding visit_label..
+     * using the full_name  and/or subprojectID ..
      *
      * @param string $full_name    the value fo full name
      * @param string $subprojectID the default of $subprojectID is null
@@ -346,9 +404,12 @@ class NDB_Form_Data_Integrity_Flag extends NDB_Form
     function getDIUsers()
     {
         $DB       =& Database::singleton();
-        $users    = $DB->pselect("SELECT DISTINCT dataflag_userid FROM data_integrity_flag", array());
+        $users    = $DB->pselect(
+            "SELECT DISTINCT dataflag_userid FROM data_integrity_flag",
+            array()
+        );
         $user_ids = array();
-        foreach ($users as $user){
+        foreach ($users as $user) {
             $user_ids[$user['dataflag_userid']] = $user['dataflag_userid'];
         }
         return $user_ids;
