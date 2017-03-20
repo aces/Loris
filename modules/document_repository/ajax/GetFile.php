@@ -7,15 +7,14 @@
  * PHP Version 5
  *
  *  @category Loris
- *  @package  Document Repository
+ *  @package  Document_Repository
  *  @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  *  @license  Loris license
  *  @link     https://github.com/aces/Loris-Trunk
- *
  */
 
 $user =& User::singleton();
-if (!$user->hasPermission('document_repository_view') && !$user->hasPermission('document_repository_delete')) {
+if (!$user->hasPermission('document_repository_view') && !$user->hasPermission('document_repository_delete')) {// @codingStandardsIgnoreLine
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
