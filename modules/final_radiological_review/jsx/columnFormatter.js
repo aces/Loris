@@ -33,16 +33,14 @@ function formatColumn(column, cell, rowData, rowHeaders) {
            );
   }
   if (column === 'Review Done') {
-    reviewDone = " ";
+    reviewDone = 'No';
 
-    if (row.ReviewDone === '1') {
+    if (row['Review Done'] === 'yes' || row['Review Done'] === 'Yes') {
       reviewDone = 'Yes';
     }
 
-    if (row.ReviewDone === '0') {
-      reviewDone = 'No';
-    }
-    return (<td>{reviewDone}</td>);
+    return <td>{reviewDone}</td>;
+
   }
 
   if (column === 'SAS') {
