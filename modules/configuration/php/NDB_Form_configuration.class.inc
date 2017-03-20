@@ -47,12 +47,12 @@ class NDB_Form_Configuration extends NDB_Form
         $config =& NDB_Config::singleton();
         $DB =& Database::singleton();
 
-        $scan_types = $DB->pselect(
+        $scans = $DB->pselect(
             "SELECT Scan_type
              FROM mri_scan_type", 
             array()
         );
-        foreach ($scan_types as $type) {
+        foreach ($scans as $type) {
             $val = $type['Scan_type'];
             $scan_types[$val]=$val;
         }
