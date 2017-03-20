@@ -45,15 +45,29 @@ class NDB_Form_Configuration extends NDB_Form
     function configuration()
     {
         $config =& NDB_Config::singleton();
+        $DB =& Database::singleton();
+
+        $scan_types = $DB->pselect(
+            "SELECT Scan_type
+             FROM mri_scan_type", 
+            array()
+        );
+        foreach ($scan_types as $type) {
+            $val = $type['Scan_type'];
+            $scan_types[$val]=$val;
+        }
+        $scan_types = array_merge(array('' => ''), $scan_types);
 
         $instruments = Utility::getAllInstruments();
         $instruments = array_merge(array('' => ''), $instruments);
+
 
         $this->tpl_data['useProjects']     = $config->getSetting("useProjects");
         $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
         $this->tpl_data['config']          = $this->_getConfigSettingTree();
         $this->tpl_data['instruments']     = $instruments;
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
+        $this->tpl_data['scan_types']      = $scan_types;
 
     }
 
