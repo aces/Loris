@@ -113,10 +113,11 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $left_join = "";
         foreach ($case_desc as $key => $value) {
             $left_join .= "
-            LEFT JOIN (SELECT files.SessionID, MIN(files_qcstatus.QCStatus+0) as $qc[$key] FROM files JOIN files_qcstatus USING (FileID) WHERE files.AcquisitionProtocolID=$key AND files_qcstatus.QCStatus IN (1, 2) GROUP BY files.SessionID) $pass[$key] ON ($pass[$key].SessionID=f.SessionID) ";
+            LEFT JOIN (SELECT files.SessionID, MIN(files_qcstatus.QCStatus+0) as " . $DB->quote($qc[$key]) . " FROM files JOIN files_qcstatus USING (FileID) WHERE files.AcquisitionProtocolID=" . $DB->quote($key) . " AND files_qcstatus.QCStatus IN (1, 2) GROUP BY files.SessionID) `" . $pass[$key] . "` ON (`" . $pass[$key] . "`.SessionID=f.SessionID) ";
         }
 
-        $where = "WHERE 
+        $where = "
+            WHERE 
             s.Active = 'Y' AND
             f.PendingStaging=0 AND 
             f.FileType='mnc' AND 
@@ -318,7 +319,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $allAr = array('' => All);
         //query to get scan types that exist for the project
         $types_q = $DB->pselect(
-            "SELECT DISTINCT ID, Scan_type FROM mri_scan_type mri
+            "SELECT ID, Scan_type FROM mri_scan_type mri
                  JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
             array()
         );
