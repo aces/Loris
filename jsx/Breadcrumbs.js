@@ -40,8 +40,8 @@ class Breadcrumbs extends React.Component {
   checkScreenSize() {
     // Used to check to current window size and
     // sets the number of breadcrumbs to show
-    var windowWidth = window.innerWidth;
-    var displayCount = 4;
+    const windowWidth = window.innerWidth;
+    let displayCount = 4;
 
     if (windowWidth <= 425) {
       displayCount = 1;
@@ -65,14 +65,12 @@ class Breadcrumbs extends React.Component {
     const breadcrumbs = [];
     const dropdown = [];
     let breadcrumbDropdown;
-    let url = "";
-    let element = {};
 
     // Loop through breadcrumbs either adding them to drop down
     // or displaying them
-    for (var i = 0; i < this.props.breadcrumbs.length; i++) {
-      element = this.props.breadcrumbs[i];
-      url = baseURL + element.query;
+    for (let i = 0; i < this.props.breadcrumbs.length; i++) {
+      const element = this.props.breadcrumbs[i];
+      const url = baseURL + element.query;
       if (i < this.props.breadcrumbs.length - this.state.displayCount) {
         dropdown.push(
           <li>
