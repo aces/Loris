@@ -6,7 +6,7 @@
  *
  * @category Data_Querying_Module
  * @package  Loris
- * @author   Loris Team <loristeam@gmail.com>
+ * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
