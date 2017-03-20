@@ -58,15 +58,15 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
     {
         $config = NDB_Config::singleton();
         $DB = Database::singleton();
-        $scan_types_to_table = $config->getSetting('tblScanTypes');
-        $scan_types_to_table = explode(',', $scan_types_to_table);
-        foreach ($scan_types_to_table as $types) {
-            $scan_IDs = $DB->pselectOne(
+        $scan_types = $config->getSetting('tblScanTypes');
+
+        foreach ($scan_types as $type) {
+            $id = $DB->pselectOne(
                 "SELECT ID FROM mri_scan_type mst
-                     WHERE mst.Scan_type='" . $types . "'",
+                     WHERE mst.Scan_type='" . $type . "'",
                 array()
             );
-            $scan_id_types[$scan_IDs]=$types;
+            $scan_id_types[$id]=$type;
         }
 
         $NewDataSubquery = "CASE 
@@ -118,7 +118,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             f.FileType='mnc' AND 
             f.AcquisitionProtocolID not in (1, 2, 3, 52)";
 
-        $this->query .= $left_join . $where;
+        $this->query .= $left_join;
+        $this->query .= $where;
 
 
         $config =& NDB_Config::singleton();
@@ -134,6 +135,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $as[$key] = $scan_id_types[$key] . '_QC_Status';
             $modalities_subquery_as[$key] = $modalities_subquery[$key] . ' as ' . $as[$key];
         }
+
         $this->columns = array(
             'p.MRI_alias as Site',
             'c.PSCID as PSCID',
@@ -145,6 +147,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
             "$NewDataSubquery as New_Data",
         );
+
         $this->columns = array_merge(
                             $this->columns,
                             array("GROUP_CONCAT(DISTINCT OutputType) as Links", 

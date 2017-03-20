@@ -1,8 +1,14 @@
--- Imaging Browser
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, Label, OrderNumber) VALUES ('imaging_browser', 'Imaging Browser settings', 1, 0, 'Imaging Browser', 6);
-INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'tblScanTypes', 'List the imaging scan types, comma separated, to be displayed in Imaging Browser table', 1, 0, 'text', ID, 'Tabulated Scan Types', 1 FROM ConfigSettings WHERE Name="imaging_browser";
+-- Add scan_type to ENUM
+ALTER TABLE ConfigSettings MODIFY COLUMN DataType ENUM('text', 'boolean', 'email', 'instrument', 'textarea', 'scan_type');
+
+-- Change Dicom Archive name to Imaging Modules
+UPDATE ConfigSettings SET Name='imaging_modules', Description='DICOM Archive and Imaging Browser settings', Label='Imaging Modules' WHERE Name ='dicom_archive';
+
+-- Add Imaging Browser to Imaging Modules
+INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber) SELECT 'tblScanTypes', 'List the imaging scan types, comma separated, to be displayed in Imaging Browser table', 1, 1, 'scan_type', ID, 'Tabulated Scan Types', 6 FROM ConfigSettings WHERE Name="imaging";
 
 -- default imaging_browser settings
-INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.ID IN (44,45);
+INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.Scan_type='t1';
+INSERT INTO Config (ConfigID, Value) SELECT cs.ID, GROUP_CONCAT(mst.Scan_Type) FROM ConfigSettings cs JOIN mri_scan_type mst WHERE cs.Name="tblScanTypes" AND mst.Scan_type='t2';
 
 
