@@ -30,9 +30,9 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php module
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/data_release
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/data_team_helper
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/datadict 
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/dataquery
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/dataquery
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/dicom_archive
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/document_repository
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/document_repository
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/examiner
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/final_radiological_review
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/genomic_browser

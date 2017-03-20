@@ -1,5 +1,15 @@
 <?php
-
+/**
+ * This file handles the Document Repository for LORIS
+ *
+ * PHP Version 5
+ *
+ * @category Documentation
+ * @package  Main
+ * @author   Justin Kat <justinkat@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/Jkat/Loris-Trunk/
+ */
 $user =& User::singleton();
 if (!$user->hasPermission('document_repository_delete')) {
     header("HTTP/1.1 403 Forbidden");
@@ -22,12 +32,18 @@ $DB =& Database::singleton();
 
 $rid = $_POST['id'];
 
-$fileName = $DB->pselectOne("Select File_name from document_repository where record_id =:identifier",
-                            array(':identifier' => $rid));
-$userName = $DB->pselectOne("Select uploaded_by from document_repository where record_id =:identifier",
-                            array(':identifier'=> $rid));
-$dataDir  = $DB->pselectOne("Select Data_dir from document_repository where record_id =:identifier",
-                            array(':identifier'=> $rid));
+$fileName = $DB->pselectOne(
+    "Select File_name from document_repository where record_id =:identifier",
+    array(':identifier' => $rid)
+);
+$userName = $DB->pselectOne(
+    "Select uploaded_by from document_repository where record_id =:identifier",
+    array(':identifier' => $rid)
+);
+$dataDir  = $DB->pselectOne(
+    "Select Data_dir from document_repository where record_id =:identifier",
+    array(':identifier' => $rid)
+);
 
 $user =& User::singleton();
 
@@ -35,10 +51,13 @@ $user =& User::singleton();
 if ($user->hasPermission('document_repository_delete')) {
     $DB->delete("document_repository", array("record_id" => $rid));
     $msg_data['deleteDocument'] = $baseURL. "/document_repository/";
-    $msg_data['document'] = $fileName;
-    $msg_data['study'] = $config->getSetting('title');
-    $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid";
-    $Doc_Repo_Notification_Emails = $DB->pselect($query_Doc_Repo_Notification_Emails, array("uid"=>$user->getUsername()));
+    $msg_data['document']       = $fileName;
+    $msg_data['study']          = $config->getSetting('title');
+    $query_Doc_Repo_Notification_Emails = "SELECT Email from users".
+                                          " where Active='Y' and".
+                                          " Doc_Repo_Notifications='Y'".
+                                          " and UserID<>:uid";
+    $Doc_Repo_Notification_Emails       = $DB->pselect($query_Doc_Repo_Notification_Emails, array("uid" => $user->getUsername()));// @codingStandardsIgnoreLine
     foreach ($Doc_Repo_Notification_Emails as $email) {
         Email::send($email['Email'], 'document_repository.tpl', $msg_data);
     }
@@ -46,7 +65,8 @@ if ($user->hasPermission('document_repository_delete')) {
 
 $path = __DIR__ . "/../user_uploads/$dataDir";
 
-if (file_exists($path))
+if (file_exists($path)) {
     unlink($path);
+}
 
 ?>
