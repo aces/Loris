@@ -110,6 +110,7 @@ INSERT INTO `permissions` VALUES
     (46,'media_read','Media files: Browsing','2'),
     (47,'issue_tracker_reporter', 'Can add a new issue, edit own issue, comment on all', 2),
     (48,'issue_tracker_developer', 'Can re-assign issues, mark issues as closed, comment on all, edit issues.', 2);
+    (49,'imaging_browser_phantom_data', 'Can acess phantom data in Imaging Browser', 2);
 
 
 

@@ -49,6 +49,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
                || ($oneIsStudySite
                    && $user->hasPermission('imaging_browser_view_site')
                   )
+               || $user->hasPermission('imaging_browser_phantom_data')
         );
     }
 
@@ -125,6 +126,10 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
             $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
+        }
+
+        if ($user->hasPermission('imaging_browser_phantom_data') && (!$user->hasPermission('imaging_browser_view_site') && ! $user->hasPermission('imaging_browser_view_allsites'))) {
+            $this->query .= " AND s.Visit_label like '%phantom%' ";
         }
 
         $this->columns = array(
