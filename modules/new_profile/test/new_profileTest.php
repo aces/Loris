@@ -179,7 +179,6 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "/new_profile/");
 
-<<<<<<< HEAD
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
         );
@@ -188,13 +187,6 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
             "document.getElementsByClassName('input-date')[1].value='2000-05-01'"
         );
 
-=======
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("2015-01-01");
-        $dates[1]->sendKeys("2015-02-01");
-        $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-            ->click();
->>>>>>> more phpcs; I REALLY hope it is the last set of files that will pop up violating phpcs
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
 
@@ -212,10 +204,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfileCreateCandidate()
     {
-<<<<<<< HEAD
-=======
 
->>>>>>> more phpcs; I REALLY hope it is the last set of files that will pop up violating phpcs
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
         $this->webDriver->executescript(
@@ -224,24 +213,9 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
         );
-
-<<<<<<< HEAD
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
 
-=======
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("2015-01-01");
-        $dates[1]->sendKeys("2015-01-01");
-        $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-            ->click();
-        sleep(1);
-        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-        $gender->sendKeys("Male");
-        $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-            ->click();
-        sleep(1);
->>>>>>> more phpcs; I REALLY hope it is the last set of files that will pop up violating phpcs
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
         sleep(3);
@@ -259,7 +233,6 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      */
     function testNewProfilePSCIDSequential()
     {
-<<<<<<< HEAD
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
 
@@ -272,23 +245,7 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
 
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
-=======
 
-        $this->changeStudySite();
-        $this->webDriver->get($this->url . "/new_profile/");
-
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("2015-01-01");
-        $dates[1]->sendKeys("2015-01-01");
-        $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-            ->click();
-        sleep(1);
-        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
-        $gender->sendKeys("Male");
-        $this->safeFindElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-            ->click();
-        sleep(1);
->>>>>>> more phpcs; I REALLY hope it is the last set of files that will pop up violating phpcs
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
         sleep(3);
@@ -297,7 +254,6 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
 
         $this->webDriver->get($this->url . "/new_profile/");
 
-<<<<<<< HEAD
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
         );
@@ -306,19 +262,6 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
         );
         $gender = $this->safeFindElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
-=======
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("2015-01-01");
-        $dates[1]->sendKeys("2015-01-01");
-        $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-            ->click();
-        sleep(1);
-        $gender = $this->safeFindElement(WebDriverBy::Name("gender"));
-        $gender->sendKeys("Male");
-        $this->webDriver->findElement(WebDriverBy::Xpath("//*[@id='footer']/div[1]"))
-            ->click();
-        sleep(1);
->>>>>>> more phpcs; I REALLY hope it is the last set of files that will pop up violating phpcs
         $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
         sleep(3);
