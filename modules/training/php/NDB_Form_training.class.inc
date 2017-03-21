@@ -94,7 +94,7 @@ class NDB_Form_Training extends NDB_Form
              WHERE full_name=:FN AND FIND_IN_SET(centerID,:CID)",
             array(
              'FN'  => $fullName,
-             'CID' => $site,
+             'CID' => implode(',', $site),
             )
         );
 
@@ -159,7 +159,7 @@ class NDB_Form_Training extends NDB_Form
              AND FIND_IN_SET(e.centerID,:CID) AND c.testID=:TID",
             array(
              'name' => $userFullName,
-             'CID'  => $userCenter,
+             'CID'  => implode(',', $userCenter),
              'TID'  => $instrumentID,
             )
         );
