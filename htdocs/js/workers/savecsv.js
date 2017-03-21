@@ -7,10 +7,10 @@ self.addEventListener('message', function(e) {
   var identifiers = e.data.identifiers;
   var content = ''; // new Blob(),
   var escapeQuote = function(val) {
-    if (val && typeof val == "string") {
+    if (val && typeof val === "string") {
       return val.replace(/"/g, '""');
     } else if (val && typeof val === "object" && val.type === 'a') {
-        return val.props.children;
+      return val.props.children;
     }
     return val;
   };

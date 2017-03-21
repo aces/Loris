@@ -46,18 +46,21 @@ var LorisHelper = function(configParams, userPerms, studyParams) {
   };
   lorisObj.userHasPermission = function(permname) {
     "use strict";
-    if (userPerms.indexOf(permname) >= 0 || userPerms.indexOf("superuser") >= 0) {
+    if (userPerms.indexOf(permname) >= 0 ||
+      userPerms.indexOf("superuser") >= 0
+    ) {
       return true;
     }
     return false;
   };
 
-  lorisObj.debounce = function (fn, delay) {
+  lorisObj.debounce = function(fn, delay) {
     var timer = null;
-    return function () {
-      var context = this, args = arguments;
+    return function() {
+      var context = this;
+      var args = arguments;
       clearTimeout(timer);
-      timer = setTimeout(function () {
+      timer = setTimeout(function() {
         fn.apply(context, args);
       }, delay);
     };
