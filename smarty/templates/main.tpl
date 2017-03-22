@@ -170,7 +170,7 @@
                             </a>
                         </li>
                         <li class="nav">
-                            <a href="#" data-toggle="tooltip" title="{$user.Sites}" style="padding-right:25px;">
+                            <a href="#" data-toggle="tooltip" title="{$user.SitesTooltip}" style="padding-right:25px;">
                                 Site Associations: {$userNumSites} 
                             </a>
                         </li>
