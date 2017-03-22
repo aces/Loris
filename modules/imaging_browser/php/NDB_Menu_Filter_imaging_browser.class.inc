@@ -135,6 +135,12 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 
+        // Initialize the arrays that go into this->columns and
+        // $this->headers so that array_merge works even if no
+        // $scan_types are set in the configuration module
+        $modalities_subquery_as = array();
+        $as = array();
+
         foreach ($case_desc as $key => $value) {
             $modalities_subquery[$key] = $value;
             $as[$key] = $scan_id_types[$key] . '_QC_Status';
@@ -152,7 +158,6 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
             "$NewDataSubquery as New_Data",
         );
-
         $this->columns = array_merge(
                             $this->columns,
                             array("GROUP_CONCAT(DISTINCT OutputType) as Links", 
@@ -162,6 +167,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
 
         $this->order_by = 'c.PSCID, s.Visit_label';
         $this->group_by = 's.ID';
+
         $this->headers = array(
             'Site',
             'PSCID',
