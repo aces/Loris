@@ -2,21 +2,21 @@
 /**
  * This class features the code for the menu portion of the final radiological
  * review. The Final Radiological Review module is used for the head radiologist
- * of a study to do an radiological review on each subject in a study, in addition
- * to the on-site review that was done by the each site's (likely more junior) 
- * radiologist.
- *
+ * of a study to do an radiological review on each subject in a study,
+ * in addition to the on-site review that was done by the each site's
+ * (likely more junior) radiologist.
  * For sites where the head radiologist is also the site radiologist, a second,
- * trusted radiologist does the second review. Conflicts between any of the radiology
+ * trusted radiologist does the second review. Conflicts between any of the
+ * radiology
  * reviews are flagged for the radiologists to consult over before finalizing.
  *
  * PHP Version 5
  *
- *  @package    Main
- *  @subpackage RadiologicalReview
- *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    @GPLv3
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category Loris
+ * @package  Document_Repository
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://github.com/aces/Loris-Trunk
  */
 
 /**
@@ -25,7 +25,8 @@
  * This is used both below and in the history on the NDB_Form.
  *
  * This maybe should be moved into the base class so that other menus that need
- * to customize the display of how data is shown can do so in a consistent manner
+ * to customize the display of how data is shown can do so
+ * in a consistent manner
  *
  * @param string  $key The key that's being prettified
  * @param unknown $val The raw value for the key
@@ -35,26 +36,28 @@
  */
 function _makePretty($key, $val)
 {
-    if( $key=='Conflict'
+    if ( $key=='Conflict'
         || $key=="Conflict2"
         || $key=="Conflict"
     ) {
-        // The table was created with a boolean, which mysql turns into a tinyint.
+        // The table was created with a boolean, which mysql turns into
+        // a tinyint.
         // Print 'Yes' or 'No' instead of 1 or 0.
         if ($val == 1 || $val === '1' || $val === 'true') {
             return 'Yes';
-        } elseif ($val === "0" || $val === "false") { // PHP turns the tinyint back into a string ....
+        } elseif ($val === "0" || $val === "false") { 
+        // PHP turns the tinyint back into a string ....
             return 'No';
         } else { // Leave nulls empty so that we can distinguish
             return '';
         }
     }
-    if($key == "Finalized" || $key =="Review_Done"){
-        if($val == "yes"){
+    if ($key == "Finalized" || $key =="Review_Done") {
+        if ($val == "yes") {
             return 'Yes';
-        }elseif ($val == "no"){
+        } elseif ($val == "no") {
             return 'No';
-        }else{
+        } else {
             return '';
         }
 
@@ -65,10 +68,11 @@ function _makePretty($key, $val)
         || $key=="Final_Exclusionary" 
         || $key == "Results"
     ) {
-        // Make the enum columns prettier by changing _ into a space and capitalizing
+        // Make the enum columns prettier by changing _ into a space and
+        // capitalizing
         return ucwords(str_replace('_', ' ', $val));
     } elseif ($key == 'SAS' or $key == 'PVS') {
-        switch($val) {
+        switch ($val) {
         case '0': return 'None';
         case '1': return 'Minimal';
         case '2': return 'Mild';
@@ -87,13 +91,14 @@ function _makePretty($key, $val)
 /**
  * Provides the PHP code for the menu filter for the final radiological review.
  *
- *  @package    Main
- *  @subpackage RadiologicalReview
- *  @author     Dave MacFarlane <driusan@bic.mni.mcgill.ca>
- *  @license    @GPLv3
- *  @link       https://www.github.com/aces/Loris-Trunk/
+ * @category Loris
+ * @package  Document_Repository
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://github.com/aces/Loris-Trunk
+ *
  */
-class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
+class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
 {
     /**
      * Determine whether the user has permission to view this page
@@ -133,7 +138,8 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             WHEN r.PVS <> r.PVS2 THEN 'true'
             ELSE 'false' END)";
         $conflict_condition2 = "(CASE
-            WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN 'prim_second'
+            WHEN r.Final_Review_Results <> r.Final_Review_Results2
+                 THEN 'prim_second'
             WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'prim_second'
             WHEN r.SAS <> r.SAS2 THEN 'prim_second'
             WHEN r.PVS <> r.PVS2 THEN 'prim_second'
@@ -146,7 +152,8 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             JOIN candidate c ON (c.CandID=s.CandID)
             LEFT JOIN Project pjct ON (pjct.ProjectID=c.ProjectID)
             LEFT JOIN psc ON (c.CenterID=psc.CenterID)
-            WHERE orig.commentid NOT LIKE 'DDE_%' AND orig.commentid IS NOT NULL
+            WHERE orig.commentid NOT LIKE 'DDE_%' 
+            AND orig.commentid IS NOT NULL
             AND s.active='Y' AND NOT (f.Administration='None')
             AND f.Data_entry='Complete'
             AND (orig.Scan_done IS NULL OR orig.Scan_done <> 'no')";
@@ -167,7 +174,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             'c.CandID as DCCID',
             's.visit_label as Visit_Label',
         );
-        if($useProjects) {
+        if ($useProjects) {
             $this->columns[] = 'pjct.Name as Project';
         }
 
@@ -197,7 +204,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             'DCCID',
             'Visit_Label',
         );
-        if($useProjects) {
+        if ($useProjects) {
             $this->headers[] = 'Project';
         }
         $this->headers = array_merge($this->headers,
@@ -219,7 +226,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                 'CandID'
             )
         );  
-        $this->tpl_data['hiddenHeaders'] = json_encode(['CommentID','Conflict2','SessionID','CandID']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(['CommentID','Conflict2','SessionID','CandID']);// @codingStandardsIgnoreLine
         $this->validFilters = array('c.CandID',
             'r.DICOM_ID',
             's.visit_label',
@@ -247,7 +254,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'Visit_label' => 's.visit_label',
                                     'Project'   => 'c.ProjectID',
                                     'pscid'       => 'c.PSCID',
-                                    'Review_Done' => "COALESCE(r.Review_Done, 0)",
+                                    'Review_Done' => "COALESCE(r.Review_Done, 0)",// @codingStandardsIgnoreLine
                                     'Results'     => 'r.Final_Review_Results',
                                     'Final_Review_Results' 
                                                   => 'r.Final_Review_Results',
@@ -258,7 +265,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
                                     'Conflict'    => $conflict_condition1,
                                     'Conflict2'   => $conflict_condition2,
                                     'Finalized'   => 'r.Finalized',
-                                    'keyword'     => 'r.Final_Incidental_Findings'
+                                    'keyword'     => 'r.Final_Incidental_Findings'// @codingStandardsIgnoreLine
         );
         $this->searchKeyword    = array('r.Final_Incidental_Findings');
     }
@@ -287,7 +294,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             $list_of_sites[$key]= $value;
         } 
         ksort($list_of_sites);
-        if($useProjects) {
+        if ($useProjects) {
             $list_of_projects = array(null =>'All');
             $projectList = Utility::getProjectList();
             foreach ($projectList as $key => $value) {
@@ -295,35 +302,26 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             }
         }
         $options_boolean= array(null => 'All', 'yes' => 'Yes', 'no' => 'No');
-        $options_boolean_finalized = array(null => 'All', '1' => 'Yes', '0' => 'No');
-        $conflict_options1 = array(null => 'All', 'true' => 'Yes', 'false' => 'No' );
+        $options_boolean_finalized = array(null => 'All', '1' => 'Yes', '0' => 'No');// @codingStandardsIgnoreLine
+        $conflict_options1 = array(null => 'All', 'true' => 'Yes', 'false' => 'No' );// @codingStandardsIgnoreLine
         $conflict_options2 = array(null => 'All', 
             'prim_second' => 'Yes', 
             'false' => 'No'
-        );
-        $comment_options = array(null => 'All', 'True' => 'Yes', 'False' => 'No');
+                             );
+        $comment_options = array(null => 'All', 'True' => 'Yes', 'False' => 'No');// @codingStandardsIgnoreLine
         $bob_score = array(null => 'All', 
-            '0' => 'None', 
-            '1' => 'Minimal', 
-            '2' => 'Mild', 
-            '3' => 'Moderate', 
-            '4' => 'Marked'
-        );
-        $abnormal_atypical = array(null => 'All', 
-            'abnormal' => 'Abnormal', 
-            'atypical' => 'Atypical', 
-            'normal' => 'Normal'
-        );
-        $exclude = array(null => 'All', 
-            'exclusionary' => 'Exclusionary', 
-            'non_exclusionary' => 'Non Exclusionary'
-        );
+                      '0' => 'None', 
+                      '1' => 'Minimal', 
+                      '2' => 'Mild', 
+                      '3' => 'Moderate', 
+                      '4' => 'Marked'
+                     );
+        $abnormal_atypical = array(null => 'All', 'abnormal' => 'Abnormal', 'atypical' => 'Atypical', 'normal' => 'Normal');// @codingStandardsIgnoreLine
+        $exclude = array(null => 'All', 'exclusionary' => 'Exclusionary', 'non_exclusionary' => 'Non Exclusionary');// @codingStandardsIgnoreLine
 
-        $this->addBasicText(
-            'dicomid', 'DICOM ID:', array("size"=>9, "maxlength"=>20)
-        );
-        $this->addBasicText('pscid', 'PSCID:', array("size"=>9, "maxlength"=>11));
-        $this->addBasicText('dccid', 'DCCID:', array("size"=>9, "maxlength"=>6));
+        $this->addBasicText('dicomid', 'DICOM ID:', array("size"=>9, "maxlength"=>20));// @codingStandardsIgnoreLine
+        $this->addBasicText('pscid', 'PSCID:', array("size"=>9, "maxlength"=>11));// @codingStandardsIgnoreLine
+        $this->addBasicText('dccid', 'DCCID:', array("size"=>9, "maxlength"=>6));// @codingStandardsIgnoreLine
         $this->addSelect('Visit_label', 'Visit Label:', $list_of_visit_labels);
         $this->addSelect('site', 'Site', $list_of_sites);
         $this->addSelect('Review_Done', 'Review Done:', $options_boolean);
@@ -342,18 +340,18 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         $this->addSelect('PVS', 'PVS (Perivascular Spaces):', $bob_score);
 
         $this->addSelect('Final_Review_Results', 'Results', $abnormal_atypical);
-        $this->addSelect('Exclusionary_Status', 'Exclusionary Status', $exclude);
+        $this->addSelect('Exclusionary_Status', 'Exclusionary Status', $exclude);// @codingStandardsIgnoreLine
 
         $this->addSelect('Finalized', 'Finalized', $options_boolean_finalized);
-        if($useProjects) {
+        if ($useProjects) {
             $this->addSelect('Project', 'Project', $list_of_projects);
         }
-        $this->addBasicText('keyword','Search keyword in Comments', array("size"=>10,"maxlength"=>25));
+        $this->addBasicText('keyword','Search keyword in Comments', array("size"=>10,"maxlength"=>25));// @codingStandardsIgnoreLine
     }
 
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the candidate_list menu
+     * Include the column formatter required to display the feedback link
+     * colours in the candidate_list menu
      *
      * @return array of javascript to be inserted
      */
