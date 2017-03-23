@@ -55,30 +55,39 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             $useCertification = false;
         }
 
-        // base query
-        $query = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
-        if ($this->useCertification == '1') {
-            $query .= " LEFT JOIN certification c ON 
-                   (c.examinerID=e.examinerID and c.pass = 'certified')
-                   LEFT JOIN test_names tn ON (tn.ID = c.testID) ";
-        }
-         $query .= " WHERE 1=1 ";
+        $user     = User::singleton();
+        $centerID = $DB->quote($user->getData('CenterID'));
 
-        $user = User::singleton();
-        if (!$user->hasPermission('examiner_multisite')) {
-            $query .= " AND e.CenterID=" . $DB->quote($user->getData('CenterID'));
+        if ($user->hasPermission('examiner_multisite')) {
+                $query = " 
+                        FROM 
+                         examiners e LEFT JOIN psc ON 
+                        (e.centerID=psc.CenterID) 
+                        LEFT JOIN certification c ON 
+                        (c.examinerID=e.examinerID and c.pass = 'certified') 
+                        LEFT JOIN test_names tn ON (tn.ID = c.testID) WHERE 1=1 ";
+        } else {
+
+              $query = "
+                        FROM 
+                         examiners e LEFT JOIN psc ON 
+                        (e.centerID=psc.CenterID) 
+                        LEFT JOIN certification c ON 
+                        (c.examinerID=e.examinerID and c.pass = 'certified') 
+                        LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                        WHERE e.centerID =".$centerID." ";
+
         }
 
         // set the class variables
-        $this->columns = array(
-                          'e.full_name as Examiner',
-                          'e.examinerID as ID',
-                          'psc.Name as Site',
-                          'e.radiologist as Radiologist',
-                         );
-        if ($this->useCertification == '1') {
-            array_push($this->columns, 'tn.Full_name');
-        }
+        $this->columns      = array(
+                               'e.full_name as Examiner',
+                               'e.examinerID as ID',
+                               'psc.Name as Site',
+                               'e.radiologist as Radiologist',
+                               'GROUP_CONCAT(tn.full_name) as Certification',
+                              );
+        $this->group_by     = "e.full_name,psc.Name";
         $this->query        = $query;
         $this->order_by     = 'e.full_name';
         $this->headers      = array(
@@ -86,6 +95,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                                'ID',
                                'Site',
                                'Radiologist',
+                               'Certification',
                               );
         $this->validFilters = array(
                                'e.full_name',
@@ -102,10 +112,14 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         // If certification is turned on, update the class variables to include
         // certification information
         if ($this->useCertification == '1') {
-            array_push($this->headers, 'Certification');
-        }
-        $this->tpl_data['hiddenHeaders'] = json_encode(['ID']);
 
+            $this->tpl_data['hiddenHeaders'] = json_encode(['ID']);
+
+        } else {
+
+            $this->tpl_data['hiddenHeaders'] = json_encode(['ID', 'Certification']);
+
+        }
         return true;
     }
 
@@ -127,10 +141,14 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             }
         } else {
             // allow only to view own site data
-            $site = Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $sites = array($user->getData('CenterID') => $user->getData('Site'));
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $sites[$val] = $site[$key]->getCenterName();
+                }
             }
+            $sites = array('' => 'All User Sites') + $sites;
         }
 
         // Radiologist options

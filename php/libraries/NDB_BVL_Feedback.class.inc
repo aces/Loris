@@ -39,10 +39,10 @@
 class NDB_BVL_Feedback
 {
     // contains info necessary to structure the object
-    var $_feedbackObjectInfo ='';
+    var $_feedbackObjectInfo = [];
 
     // contains full candidate profile/timepoint/instrument info
-    var $_feedbackCandidateProfileInfo ='';
+    var $_feedbackCandidateProfileInfo = [];
 
     // set of status options
     var $_feedbackStatusOptions = array(
@@ -467,7 +467,7 @@ class NDB_BVL_Feedback
             $query .= " LEFT JOIN flag as f ON (ft.CommentID = f.CommentID)";
         }
         $query .= " WHERE ft.Active ='Y'";
-        if (!$user->isMultiSiteEnabled() && !$hasReadPermission===true) {
+        if (!$hasReadPermission===true) {
             $query            .= " AND c.CenterID=:CentID";
             $qparams['CentID'] = $user->getCenterID();
         }
@@ -574,7 +574,7 @@ class NDB_BVL_Feedback
 
         // DCC users should be able to see THEIR OWN inactive threads,
         // other users should see only active threads
-        if ($user->isMultiSiteEnabled() || $hasReadPermission===true) {
+        if ($hasReadPermission===true) {
             $query .= " AND (ft.Active='Y' OR
                 (ft.Active='N' AND ft.UserID=:Username)
             )";
@@ -922,14 +922,6 @@ class NDB_BVL_Feedback
             throw new Exception("Error: No threads selected to activate");
         }
 
-        // DCC users are able to activate THEIR OWN inactive threads
-        if (!$user->isMultiSiteEnabled()) {
-            $whereArray = array_merge(
-                $whereArray,
-                array('UserID' => $this->_username)
-            );
-        }
-
         $success = $db->update('feedback_bvl_thread', $setArray, $whereArray);
     }
 
@@ -1084,9 +1076,13 @@ class NDB_BVL_Feedback
 
         $user =& User::singleton();
 
-        $site =& Site::singleton($user->getData('CenterID'));
-
-        if ($site->isStudySite()) {
+        $site_arr = $user->getData('CenterIDs');
+        foreach ($site_arr as $key=>$val) {
+                $site[$key]        = & Site::singleton($val);
+                $isStudySite[$key] = $site[$key]->isStudySite();
+        }
+        $oneIsStudySite = in_array("1", $isStudySite);
+        if ($oneIsStudySite) {
             if ($user->hasPermission('bvl_feedback')) {
                 if (($test_name === "timepoint_list")
                     || ($test_name === "instrument_list")

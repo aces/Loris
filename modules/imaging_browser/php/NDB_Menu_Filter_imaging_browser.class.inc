@@ -38,9 +38,14 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $user =& User::singleton();
 
         // allow only to view own site data
-        $site =& Site::singleton($user->getData('CenterID'));
+        $site_arr = $user->getData('CenterIDs');
+        foreach ($site_arr as $key=>$val) {
+            $site[$key] = & Site::singleton($val);
+            $isStudySite[$key] = $site[$key]->isStudySite();
+        }
+        $oneIsStudySite = in_array("1", $isStudySite);
 
-        return ($user->hasPermission('imaging_browser_view_allsites') || ($site->isStudySite() && $user->hasPermission('imaging_browser_view_site')));
+        return ($user->hasPermission('imaging_browser_view_allsites') || ($oneIsStudySite && $user->hasPermission('imaging_browser_view_site')));
     }
 
     /**
@@ -99,7 +104,8 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $user =& User::singleton();
         $DB = Database::singleton();
         if (!$user->hasPermission('imaging_browser_view_allsites')) {
-            $this->query .= " AND c.CenterID=" . $DB->quote($user->getCenterID());
+            $site_arr = implode(",", $user->getCenterID());
+            $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 
         $this->columns = array(
@@ -199,9 +205,13 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         }
         else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$val] = $site[$key]->getCenterName();
+                }
+                $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
             }
         }
 

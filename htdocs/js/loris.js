@@ -46,10 +46,24 @@ var LorisHelper = function(configParams, userPerms, studyParams) {
   };
   lorisObj.userHasPermission = function(permname) {
     "use strict";
-    if (userPerms.indexOf(permname) >= 0 || userPerms.indexOf("superuser") >= 0) {
+    if (userPerms.indexOf(permname) >= 0 ||
+      userPerms.indexOf("superuser") >= 0
+    ) {
       return true;
     }
     return false;
+  };
+
+  lorisObj.debounce = function(fn, delay) {
+    var timer = null;
+    return function() {
+      var context = this;
+      var args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function() {
+        fn.apply(context, args);
+      }, delay);
+    };
   };
 
     // Returns config settings from whitelist passed in main.php (study options)
