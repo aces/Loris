@@ -1,7 +1,6 @@
 <?php
 /**
  * Imaging_uploader
- * 
  *
  * PHP Version 5
  *
@@ -13,7 +12,7 @@
  *  @link       https://www.github.com/aces/Loris-Trunk/
  */
 
-require_once __DIR__ . 
+require_once __DIR__ .
            "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
  * Imaging_uploader
@@ -28,14 +27,19 @@ require_once __DIR__ .
  *  @link       https://www.github.com/aces/Loris-Trunk/
  */
 
-class imaging_uploaderTestIntegrationTest extends LorisIntegrationTest
+class Imaging_UploaderTestIntegrationTest extends LorisIntegrationTest
 {
+    /**
+      * Testing the landing page
+      *
+      * @return bool
+      */
     function testImagingUploaderDoespageLoad()
     {
         $this->safeGet($this->url . '/imaging_uploader/');
         $bodyText = $this->webDriver->findElement(
-                        WebDriverBy::cssSelector("body")
-                    )->getText();
+            WebDriverBy::cssSelector("body")
+        )->getText();
         $this->assertContains("Imaging Upload", $bodyText);
     }
 }
