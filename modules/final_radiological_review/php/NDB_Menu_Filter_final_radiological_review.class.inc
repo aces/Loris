@@ -18,6 +18,67 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
+/**
+ * Utility function to make things more human readable.
+ *
+ * This is used both below and in the history on the NDB_Form.
+ *
+ * This maybe should be moved into the base class so that other menus that need
+ * to customize the display of how data is shown can do so in a consistent manner
+ *
+ * @param string  $key The key that's being prettified
+ * @param unknown $val The raw value for the key
+ *
+ * @return string Human readable version of raw data
+ */
+function _makePretty($key, $val)
+{
+    if ($key=='Conflict' || $key=="Conflict2" || $key=="Conflict" ) {
+        // The table was created with a boolean, which mysql turns into a tinyint.
+        // Print 'Yes' or 'No' instead of 1 or 0.
+        if ($val == 1 || $val === '1' || $val === 'true') {
+            return 'Yes';
+        } elseif ($val === "0" || $val === "false") {
+            // PHP turns the tinyint back into a string ....
+            return 'No';
+        } else { // Leave nulls empty so that we can distinguish
+            return '';
+        }
+    }
+    if ($key == "Finalized" || $key =="Review_Done") {
+        if ($val == "yes") {
+            return 'Yes';
+        } elseif ($val == "no") {
+            return 'No';
+        } else {
+            return '';
+        }
+    }
+    if ($key == 'Final_Review_Results' || $key == 'Exclusionary_Status' || $key=="Final_Exclusionary" || $key == "Results") { // @codingStandardsIgnoreLine
+        // Make the enum columns prettier by changing _ into a space and capitalizing
+        return ucwords(str_replace('_', ' ', $val));
+    } elseif ($key == 'SAS' or $key == 'PVS') {
+        switch($val) {
+        case '0':
+            return 'None';
+        case '1':
+            return 'Minimal';
+        case '2':
+            return 'Mild';
+        case '3':
+            return 'Moderate';
+        case '4':
+            return 'Marked';
+        default:
+            return 'Not Answered';
+        }
+    } elseif ($key == 'Project') {
+        $projectlist =Utility::getProjectList();
+        return $projectlist[$val];
+    } else {
+        return $val;
+    }
+}
 
 /**
  * Provides the PHP code for the menu filter for the final radiological review.
