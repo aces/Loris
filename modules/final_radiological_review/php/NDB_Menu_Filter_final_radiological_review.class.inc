@@ -20,75 +20,6 @@
  */
 
 /**
- * Utility function to make things more human readable.
- *
- * This is used both below and in the history on the NDB_Form.
- *
- * This maybe should be moved into the base class so that other menus that need
- * to customize the display of how data is shown can do so
- * in a consistent manner
- *
- * @param string  $key The key that's being prettified
- * @param unknown $val The raw value for the key
- *
- * @return string Human readable version of raw data
- *
- */
-function _makePretty($key, $val)
-{
-    if ( $key=='Conflict'
-        || $key=="Conflict2"
-        || $key=="Conflict"
-    ) {
-        // The table was created with a boolean, which mysql turns into
-        // a tinyint.
-        // Print 'Yes' or 'No' instead of 1 or 0.
-        if ($val == 1 || $val === '1' || $val === 'true') {
-            return 'Yes';
-        } elseif ($val === "0" || $val === "false") { 
-        // PHP turns the tinyint back into a string ....
-            return 'No';
-        } else { // Leave nulls empty so that we can distinguish
-            return '';
-        }
-    }
-    if ($key == "Finalized" || $key =="Review_Done") {
-        if ($val == "yes") {
-            return 'Yes';
-        } elseif ($val == "no") {
-            return 'No';
-        } else {
-            return '';
-        }
-
-    }
-
-    if ($key == 'Final_Review_Results' 
-        || $key == 'Exclusionary_Status'
-        || $key=="Final_Exclusionary" 
-        || $key == "Results"
-    ) {
-        // Make the enum columns prettier by changing _ into a space and
-        // capitalizing
-        return ucwords(str_replace('_', ' ', $val));
-    } elseif ($key == 'SAS' or $key == 'PVS') {
-        switch ($val) {
-        case '0': return 'None';
-        case '1': return 'Minimal';
-        case '2': return 'Mild';
-        case '3': return 'Moderate';
-        case '4': return 'Marked';
-        default:  return 'Not Answered';
-        }
-    } elseif ($key == 'Project') {
-        $projectlist=Utility::getProjectList();
-        return $projectlist[$val];
-    } else {
-        return $val;
-    }
-}
-
-/**
  * Provides the PHP code for the menu filter for the final radiological review.
  *
  * @category Loris
@@ -96,7 +27,6 @@ function _makePretty($key, $val)
  * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
- *
  */
 class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
 {
@@ -113,18 +43,18 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
             $user->hasPermission('edit_final_radiological_review')
         );
     }
-
     /**
      * Set up the variables required by NDB_Menu_Filter class for constructing
      * a query
      *
      * @return null
      */
+// @codingStandardsIgnoreStart
     function _setupVariables()
     {
         $config = NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
-        if($useProjects === "false") {
+        if ($useProjects === "false") {
             $useProjects = false;
         }
 
@@ -226,7 +156,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
                 'CandID'
             )
         );  
-        $this->tpl_data['hiddenHeaders'] = json_encode(['CommentID','Conflict2','SessionID','CandID']);// @codingStandardsIgnoreLine
+        $this->tpl_data['hiddenHeaders'] = json_encode(['CommentID','Conflict2','SessionID','CandID']);
         $this->validFilters = array('c.CandID',
             'r.DICOM_ID',
             's.visit_label',
@@ -254,7 +184,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
                                     'Visit_label' => 's.visit_label',
                                     'Project'   => 'c.ProjectID',
                                     'pscid'       => 'c.PSCID',
-                                    'Review_Done' => "COALESCE(r.Review_Done, 0)",// @codingStandardsIgnoreLine
+                                    'Review_Done' => "COALESCE(r.Review_Done, 0)",
                                     'Results'     => 'r.Final_Review_Results',
                                     'Final_Review_Results' 
                                                   => 'r.Final_Review_Results',
@@ -265,11 +195,11 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
                                     'Conflict'    => $conflict_condition1,
                                     'Conflict2'   => $conflict_condition2,
                                     'Finalized'   => 'r.Finalized',
-                                    'keyword'     => 'r.Final_Incidental_Findings'// @codingStandardsIgnoreLine
+                                    'keyword'     => 'r.Final_Incidental_Findings'
         );
         $this->searchKeyword    = array('r.Final_Incidental_Findings');
     }
-
+// @codingStandardsIgnoreEnd
     /**
      * Setup $this->tpl_data for use by Smarty
      *
@@ -277,44 +207,48 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
-        $config = NDB_Config::singleton();
+        $config      = NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
-        if($useProjects === "false") {
+        if ($useProjects === "false") {
             $useProjects = false;
         }
 
         $list_of_visit_labels = array(null => 'All' );
-        $visitList = Utility::getVisitList();
+        $visitList            = Utility::getVisitList();
         foreach ($visitList as $key=>$value) {
             $list_of_visit_labels[$key] = $value;
         }
-        $list_of_sites = array(null =>'All');
-        $sitesList = Utility::getSiteList(false);
+        $list_of_sites = array(null => 'All');
+        $sitesList     = Utility::getSiteList(false);
         foreach ($sitesList as $key=>$value) {
-            $list_of_sites[$key]= $value;
-        } 
+            $list_of_sites[$key] = $value;
+        }
         ksort($list_of_sites);
         if ($useProjects) {
-            $list_of_projects = array(null =>'All');
-            $projectList = Utility::getProjectList();
+            $list_of_projects = array(null => 'All');
+            $projectList      = Utility::getProjectList();
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] =$value;
             }
         }
-        $options_boolean= array(null => 'All', 'yes' => 'Yes', 'no' => 'No');
+        $options_boolean           = array(
+                                      null  => 'All',
+                                      'yes' => 'Yes',
+                                      'no'  => 'No',
+                                     );
         $options_boolean_finalized = array(null => 'All', '1' => 'Yes', '0' => 'No');// @codingStandardsIgnoreLine
         $conflict_options1 = array(null => 'All', 'true' => 'Yes', 'false' => 'No' );// @codingStandardsIgnoreLine
         $conflict_options2 = array(null => 'All', 
-            'prim_second' => 'Yes', 
-            'false' => 'No'
+                              'prim_second' => 'Yes',
+                              'false'       => 'No',
                              );
         $comment_options = array(null => 'All', 'True' => 'Yes', 'False' => 'No');// @codingStandardsIgnoreLine
         $bob_score = array(null => 'All', 
-                      '0' => 'None', 
-                      '1' => 'Minimal', 
-                      '2' => 'Mild', 
-                      '3' => 'Moderate', 
-                      '4' => 'Marked'
+                      '0'  => 'None',
+                      '1'  => 'Minimal',
+                      '2'  => 'Mild',
+                      '3'  => 'Moderate',
+                      '4'  => 'Marked',
                      );
         $abnormal_atypical = array(null => 'All', 'abnormal' => 'Abnormal', 'atypical' => 'Atypical', 'normal' => 'Normal');// @codingStandardsIgnoreLine
         $exclude = array(null => 'All', 'exclusionary' => 'Exclusionary', 'non_exclusionary' => 'Non Exclusionary');// @codingStandardsIgnoreLine
