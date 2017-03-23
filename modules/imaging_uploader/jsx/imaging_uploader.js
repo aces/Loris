@@ -60,11 +60,6 @@ class ImagingUploader extends React.Component {
       );
     }
 
-    // Deep clone form data before passing it to upload form
-    const uploadForm = JSON.parse(JSON.stringify(this.state.Data.form));
-
-    const panelHeight = "200px";
-
     let tabList = [
       {id: "browse", label: "Browse"},
       {id: "upload", label: "Upload"}
@@ -74,22 +69,21 @@ class ImagingUploader extends React.Component {
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-5">
               <FilterForm
                 Module="imaging_uploader"
                 name="imaging_filter"
                 id="imaging_filter"
                 onUpdate={this.updateFilter}
                 filter={this.state.filter}
-                height={panelHeight}
               >
                 <TextboxElement {... this.state.Data.form.candID} />
                 <TextboxElement {... this.state.Data.form.pSCID} />
                 <SelectElement {... this.state.Data.form.visitLabel} />
               </FilterForm>
             </div>
-            <div className="col-md-6">
-              <LogPanel height={panelHeight}/>
+            <div className="col-md-7">
+              <LogPanel />
             </div>
           </div>
           <div id="mri_upload_table">
@@ -102,7 +96,7 @@ class ImagingUploader extends React.Component {
           </div>
         </TabPane>
         <TabPane TabId={tabList[1].id}>
-          <UploadForm form={uploadForm} />
+          <UploadForm form={this.state.Data.form} />
         </TabPane>
       </Tabs>
     );

@@ -5,7 +5,7 @@ class UploadForm extends React.Component {
 
     this.state = {
       formData: {},
-      form: this.props.form,
+      form: JSON.parse(JSON.stringify(this.props.form)),
       uploadProgress: -1
     };
 
@@ -14,7 +14,7 @@ class UploadForm extends React.Component {
   }
 
   componentDidMount() {
-    let form = this.props.form;
+    let form = this.state.form;
     form.IsPhantom.required = true;
 
     // Disable fields on initial load
