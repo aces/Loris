@@ -1172,13 +1172,9 @@ class LorisForm
                     }
                 }
             } else if ($el['type'] === 'file') {
-                $value = $el['name'];
-                if (isset($el['required'])
-                    && $el['required'] === true
-                    && empty($value)
-                ) {
-                    $errors[$el['name']] = "required file fail";
-                }
+                $value = $_FILES[$el['name']]['name'];
+                // $el['required'] not present in the file $el array
+                // the file required will get cought by "custom fail"
             } else {
                 $value = $this->getValue($el['name']);
                 if (isset($el['required'])
