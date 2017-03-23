@@ -7,7 +7,7 @@
  * @category Main
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -19,12 +19,16 @@
  * @category Main
  * @package  Loris
  * @author   Rathi Sekaran <sekaranrathi@gmail.com>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-
-class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
+class NDB_Menu_Filter_Help_Editor extends NDB_Menu_Filter
 {
+     /**
+       *  Checking user permissions
+       *
+       * @return bool
+       */
     function _hasAccess()
     {
         // create user object
@@ -32,13 +36,20 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
 
         return $user->hasPermission('context_help');
     }
-
+     /**
+       * Setup Variables function
+       *
+       * @return bool
+       */
     function _setupVariables()
     {
         $user = User::singleton();
 
         // the base query
-        $query = " FROM help helpChild LEFT JOIN help helpParent ON (helpChild.parentID = helpParent.helpID )WHERE helpChild.hash IS NOT NULL AND helpChild.topic IS NOT NULL";
+        $query = " FROM help helpChild LEFT JOIN help helpParent".
+                 " ON (helpChild.parentID = helpParent.helpID )".
+                 " WHERE helpChild.hash IS NOT NULL".
+                 " AND helpChild.topic IS NOT NULL";
 
         // set the class variables
         $this->columns  = array(
@@ -47,7 +58,7 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
                            'helpChild.parentID as Parent_ID',
                            'helpParent.parentID as ParentTopic_ID',
                            'helpParent.topic as Parent_Topic',
-                           'COALESCE(helpChild.projectContent, helpChild.content) as Content',
+                           'COALESCE(helpChild.projectContent, helpChild.content) as Content',// @codingStandardsIgnoreLine
                           );
         $this->query    = $query;
         $this->order_by = 'helpChild.helpID';
@@ -59,7 +70,7 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
                            'Parent_Topic',
                            'Content',
                           );
-        $this->tpl_data['hiddenHeaders'] = json_encode(['HelpID', 'ParentID', 'ParentTopicID']);
+        $this->tpl_data['hiddenHeaders'] = json_encode(['HelpID', 'ParentID', 'ParentTopicID']);// @codingStandardsIgnoreLine
         $this->validFilters = array('helpChild.topic');
 
         $this->formToFilter  = array('topic' => 'helpChild.topic');
@@ -69,8 +80,11 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
                                );
         return true;
     }
-
-
+     /**
+       * Setup Filter Form function
+       *
+       * @return bool
+       */
     function _setFilterForm()
     {
 
@@ -80,7 +94,13 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
 
         return true;
     }
-
+     /**
+       * SetDataTableRows
+       *
+       * @param string $count the value of count
+       *
+       * @return bool
+       */
     function _setDataTableRows($count)
     {
         $DB = Database::singleton();
@@ -100,8 +120,10 @@ class NDB_Menu_Filter_help_editor extends NDB_Menu_Filter
                         $val,
                         $help_section
                     );
-                    $this->tpl_data['items'][$x][$i]['parentID'] = $item['Parent_Topic'];
-                    $item['Parent_Topic'] = $help_section[$item['Parent_Topic']];// this is to make sure sorting is done on the topic and not the ID
+                    $this->tpl_data['items'][$x][$i]['parentID'] = $item['Parent_Topic']; // @codingStandardsIgnoreLine
+                    $item['Parent_Topic'] = $help_section[$item['Parent_Topic']];
+                    // this is to make sure sorting is done
+                    // on the topic and not the ID
                 }
                 if ($key == "Parent_Topic") {
                     $this->tpl_data['items'][$x][$i]['parentID'] = "-1";

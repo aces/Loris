@@ -1,10 +1,29 @@
 <?php
-
 /**
- * HelpFile class
+ * Code for the form for the final radiological review module.
+ * See NDB_Menu_Filter_final_radiological_review for description
+ * of how module works.
  *
- * @package    main
- * @subpackage unused
+ * PHP Version 5
+ *
+ * @category Final_Radiological_Review
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
+/**
+ * Code for the form for the final radiological review module.
+ * See NDB_Menu_Filter_final_radiological_review for description
+ * of how module works.
+ *
+ * PHP Version 5
+ *
+ * @category Final_Radiological_Review
+ * @package  Main
+ * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @license  Loris license
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class HelpFile
 {
@@ -29,9 +48,9 @@ class HelpFile
      *
      * Selects and populates a help file
      *
-     * @param  int         Help file's ID
+     * @param int $helpID help file's ID
+     *
      * @return HelpFile
-     * @access public
      */
     static function &factory($helpID)
     {
@@ -43,8 +62,9 @@ class HelpFile
         // set the help ID
         $obj->helpID = $helpID;
         $result      = $DB->pselectRow(
-            "SELECT helpID, parentID, hash, topic, COALESCE(projectContent, content) AS content,
-                                   created, updated FROM help WHERE helpID = :HID",
+            "SELECT helpID, parentID, hash, topic,
+             COALESCE(projectContent, content) AS content,
+             created, updated FROM help WHERE helpID = :HID",
             array('HID' => $helpID)
         );
         // set the help file
@@ -57,10 +77,9 @@ class HelpFile
     /**
      * Inserts a help file
      *
-     * @param  array       Associative array of values
-     * @return int         New help file's ID
-     * @access public
-     * @static
+     * @param array $set Associative array of values
+     *
+     * @return int  New help file's ID
      */
     function insert($set)
     {
@@ -77,9 +96,9 @@ class HelpFile
     /**
      * Updates a help file
      *
-     * @param  array       Associative array of values
+     * @param array $set Associative array of values
+     *
      * @return void
-     * @access public
      */
     function update($set)
     {
@@ -96,9 +115,9 @@ class HelpFile
     /**
      * Adds to a help file's related links
      *
-     * @param  array       Array of related help file IDs
+     * @param array $relatedIDs Array of related help file IDs
+     *
      * @return void
-     * @access public
      */
     function addLinks($relatedIDs)
     {
@@ -108,10 +127,22 @@ class HelpFile
         // insert all related links
         if (is_array($relatedIDs)) {
             foreach ($relatedIDs as $relatedID) {
-                $success = $DB->insert('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedID));
+                $success = $DB->insert(
+                    'help_related_links',
+                    array(
+                     'helpID'    => $this->helpID,
+                     'relatedID' => $relatedID,
+                    )
+                );
             }
         } else {
-            $success = $DB->insert('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedIDs));
+            $success = $DB->insert(
+                'help_related_links',
+                array(
+                 'helpID'    => $this->helpID,
+                 'relatedID' => $relatedIDs,
+                )
+            );
         }
 
         return true;
@@ -120,9 +151,9 @@ class HelpFile
     /**
      * Removes links from a help file's related links
      *
-     * @param  array       Array of related help file IDs
+     * @param array $relatedIDs Array of related help file IDs
+     *
      * @return void
-     * @access public
      */
     function removeLinks($relatedIDs)
     {
@@ -131,13 +162,13 @@ class HelpFile
 
         // delete the links
         if (is_array($relatedIDs)) {
-            foreach($relatedIDs as $relatedID) {
-                $success = $DB->delete('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedID));
-                $success = $DB->delete('help_related_links', array('helpID' => $relatedID, 'relatedID' => $this->helpID));
+            foreach ($relatedIDs as $relatedID) {
+                $success = $DB->delete('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedID));// @codingStandardsIgnoreLine
+                $success = $DB->delete('help_related_links', array('helpID' => $relatedID, 'relatedID' => $this->helpID));// @codingStandardsIgnoreLine
             }
         } else {
-            $success = $DB->delete('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedIDs));
-            $success = $DB->delete('help_related_links', array('helpID' => $relatedIDs, 'relatedID' => $this->helpID));
+            $success = $DB->delete('help_related_links', array('helpID' => $this->helpID, 'relatedID' => $relatedIDs));// @codingStandardsIgnoreLine
+            $success = $DB->delete('help_related_links', array('helpID' => $relatedIDs, 'relatedID' => $this->helpID));// @codingStandardsIgnoreLine
         }
 
         return true;
@@ -147,9 +178,9 @@ class HelpFile
     /**
      * Updates a help file's related links
      *
-     * @param  array       Array of related help file IDs
+     * @param array $relatedIDs Array of related help file IDs
+     *
      * @return void
-     * @access public
      */
     function updateLinks($relatedIDs)
     {
@@ -157,8 +188,8 @@ class HelpFile
         $DB =& Database::singleton();
 
         // delete all related links
-        $success = $DB->delete('help_related_links', array('helpID' => $this->helpID));
-        $success = $DB->delete('help_related_links', array('relatedID' => $this->helpID));
+        $success = $DB->delete('help_related_links', array('helpID' => $this->helpID));// @codingStandardsIgnoreLine
+        $success = $DB->delete('help_related_links', array('relatedID' => $this->helpID));// @codingStandardsIgnoreLine
 
         // add all the new links
         $success = $this->addLinks($relatedIDs);
@@ -171,14 +202,13 @@ class HelpFile
      * Returns whether or not the topic has subtopics
      *
      * @return bool
-     * @access public
      */
     function hasChild()
     {
         // create DB object
         $DB =& Database::singleton();
 
-        $result = $DB->pselectOne("SELECT COUNT(*) FROM help WHERE parentID = :HID", array('HID' => $this->helpID));
+        $result = $DB->pselectOne("SELECT COUNT(*) FROM help WHERE parentID = :HID", array('HID' => $this->helpID));// @codingStandardsIgnoreLine
         return ($result > 0);
     }
 
@@ -186,10 +216,10 @@ class HelpFile
     /**
      * Returns an array of its subtopics' IDs
      *
-     * @param  int         Stop at this depth
-     * @param  int         Depth
+     * @param int $stopat Stop at this depth
+     * @param int $level  Depth
+     *
      * @return array
-     * @access public
      */
     function childIDs($stopat = 1, $level = 1)
     {
@@ -203,7 +233,7 @@ class HelpFile
 
         // get its children
         if ($hasChild) {
-            $result = $DB->pselect("SELECT helpID FROM help WHERE parentID = :HID", array('HID' => $this->helpID));
+            $result = $DB->pselect("SELECT helpID FROM help WHERE parentID = :HID", array('HID' => $this->helpID));// @codingStandardsIgnoreLine
             // add the children to the array
             $childIDs = Utility::reduce($result);
 
