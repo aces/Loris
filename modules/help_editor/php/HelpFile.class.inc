@@ -2,13 +2,15 @@
 
 /**
  * HelpFile class
- * @package main
+ *
+ * @package    main
  * @subpackage unused
  */
 class HelpFile
 {
     /**
      * Identifies the help file
+     *
      * @var    array
      * @access private
      */
@@ -16,6 +18,7 @@ class HelpFile
 
     /**
      * The help file's data
+     *
      * @var    array
      * @access private
      */
@@ -41,8 +44,9 @@ class HelpFile
         $obj->helpID = $helpID;
         $result      = $DB->pselectRow(
             "SELECT helpID, parentID, hash, topic, COALESCE(projectContent, content) AS content,
-                                   created, updated FROM help WHERE helpID = :HID", array('HID' => $helpID)
-                       );
+                                   created, updated FROM help WHERE helpID = :HID",
+            array('HID' => $helpID)
+        );
         // set the help file
         $obj->data = $result;
 
@@ -225,8 +229,8 @@ class HelpFile
     /**
      * Returns an array of its subtopics's IDs and topics
      *
-     * @param  int $stopat Stop at this depth
-     * @param  int $level  Depth
+     * @param int $stopat Stop at this depth
+     * @param int $level  Depth
      *
      * @return array
      */
