@@ -130,7 +130,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
 
         // Fields used for selection filter and upload form
         $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
-        $this->addBasicText('candID', 'Cand ID');
+        $this->addBasicText('candID', 'CandID');
         $this->addBasicText('pSCID', 'PSCID');
         $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
         $this->addFile('mri_file', 'File to Upload');
