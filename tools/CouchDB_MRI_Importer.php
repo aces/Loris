@@ -320,7 +320,7 @@ class CouchDBMRIImporter
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
 
-            foreach ($ScanTypes as $Scan) {
+     /*       foreach ($ScanTypes as $Scan) {
                 // This isn't very efficient to get the document a second time, but
                 // we need the rev for adding the attachments. This whole section
                 // should be optimized/cleaned up. For now it's just a hack to get
@@ -372,6 +372,7 @@ class CouchDBMRIImporter
                     print "****COULD NOT FIND $fullPath TO ADD TO $docid***\n";
                 }
             }
+            */
         }
         return;
     }
