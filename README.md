@@ -1,4 +1,4 @@
-#LORIS Neuroimaging Platform [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=17.1-dev)](https://travis-ci.org/aces/Loris)
+# LORIS Neuroimaging Platform [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=17.1-dev)](https://travis-ci.org/aces/Loris)
 
 LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
@@ -6,6 +6,7 @@ LORIS (Longitudinal Online Research and Imaging System) is a web-based data and 
 NEW <b>⇾  Try LORIS on Heroku</b> before installing it on your system<br>
 Test out the project management and clinical data management side of LORIS (complete Imaging features not yet available)<br>
 Deploy and log in with username <i>admin</i> and the password that's set up during deployment via ClearDB.
+
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/aces/Loris/tree/17.1-dev)
 <hr>
 
