@@ -184,6 +184,7 @@ do
             ;;
         "3")
             echo -e "Please enter the MySQL table name of the instrument you would like to remove: \t"
+            # TODO: Change this to output currently installed instruments and allow user to select a number instead of typing
             read TABLE
             echo -e "Generating deletion script..."
             FILEPATH="../project/tables_sql/uninstall_$TABLE.sql"
@@ -207,7 +208,6 @@ do
                 get_mysql_credentials
                 echo "Uninstalling instrument..."
                 mysql -h $HOST -u $USER -p $DATABASE < $FILEPATH
-                echo "$TABLE is now uninstalled. Patch will be deleted."
                 rm $FILEPATH
             fi
             ;;
