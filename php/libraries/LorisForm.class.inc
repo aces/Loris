@@ -1171,17 +1171,17 @@ class LorisForm
                         }
                     }
                 }
-            } else if ($el['type'] === 'file') {
-                $value = $_FILES[$el['name']]['name'];
-                // $el['required'] not present in the file $el array
-                // the file required will get cought by "custom fail"
             } else {
-                $value = $this->getValue($el['name']);
+                if ($el['type'] === 'file') {
+                  $value = $_FILES[$el['name']]['name'];
+                } else {
+                  $value = $this->getValue($el['name']);
+                }
+
                 if (isset($el['required'])
                     && $el['required'] === true
                     && empty($value)
                 ) {
-                    //$this->setElementError($el['name'], "$el[name] required.");
                     $errors[$el['name']] = "required fail";
                 }
 
