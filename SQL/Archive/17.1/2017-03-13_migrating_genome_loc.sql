@@ -88,6 +88,14 @@ ALTER TABLE genomic_cpg_annotation
 RENAME TABLE genome_loc TO to_be_deleted_genome_loc;
 RENAME TABLE gene TO to_be_deleted_gene;
 
--- DROP TABLE genome_loc;
--- DROP TABLE gene;
+-- DROP TABLE to_be_deleted_genome_loc;
+-- DROP TABLE to_be_deleted_gene;
 
+ALTER TABLE `genomic_cpg_annotation` 
+ADD INDEX `index3` (`Chromosome` ASC, `StartLoc` ASC, `EndLoc` ASC, `Strand` ASC);
+
+ALTER TABLE `CNV` 
+ADD INDEX `index4` (`Chromosome` ASC, `StartLoc` ASC, `EndLoc` ASC, `Strand` ASC);
+
+ALTER TABLE `SNP` 
+ADD INDEX `index3` (`Chromosome` ASC, `StartLoc` ASC, `EndLoc` ASC, `Strand` ASC);

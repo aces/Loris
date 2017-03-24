@@ -1514,11 +1514,19 @@ CREATE TABLE `SNP` (
   `FunctionPrediction` enum('exonic','ncRNAexonic','splicing','UTR3','UTR5') DEFAULT NULL,
   `Damaging` enum('D','NA') DEFAULT NULL,
   `ExonicFunction` enum('nonsynonymous','unknown') DEFAULT NULL,
-  `GenomeLocID` bigint(20) DEFAULT NULL,
+  `Chromosome` varchar(255) DEFAULT NULL,
+  `Strand` varchar(255) DEFAULT NULL,
+  `EndLoc` int(11) DEFAULT NULL,
+  `Size` int(11) DEFAULT NULL,
+  `StartLoc` int(11) DEFAULT NULL,
+  `Symbol` varchar(255) DEFAULT NULL,
+  `Name` varchar(255) DEFAULT NULL,
+  `NCBIID` varchar(255) DEFAULT NULL,
+  `OfficialSymbol` varchar(255) DEFAULT NULL,
+  `OfficialName` text,
   PRIMARY KEY (`SNPID`),
   UNIQUE KEY `uniq_snp` (`rsID`,`SNPExternalSource`),
-  KEY `SNP_ibfk_2` (`GenomeLocID`),
-  CONSTRAINT `SNP_ibfk_2` FOREIGN KEY (`GenomeLocID`) REFERENCES `genome_loc` (`GenomeLocID`)
+  KEY `index3` (`Chromosome`,`StartLoc`,`EndLoc`,`Strand`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `SNP_candidate_rel` (
@@ -1555,12 +1563,22 @@ CREATE TABLE `CNV` (
   `ArrayReportDetail` varchar(255) DEFAULT NULL,
   `ValidationMethod` varchar(50) DEFAULT NULL,
   `PlatformID` bigint(20) DEFAULT NULL,
-  `GenomeLocID` bigint(20) DEFAULT NULL,
+  `Chromosome` varchar(255) DEFAULT NULL,
+  `Strand` varchar(255) DEFAULT NULL,
+  `EndLoc` int(11) DEFAULT NULL,
+  `Size` int(11) DEFAULT NULL,
+  `StartLoc` int(11) DEFAULT NULL,
+  `Symbol` varchar(255) DEFAULT NULL,
+  `Name` varchar(255) DEFAULT NULL,
+  `NCBIID` varchar(255) DEFAULT NULL,
+  `OfficialSymbol` varchar(255) DEFAULT NULL,
+  `OfficialName` text,
   PRIMARY KEY (`CNVID`),
   KEY `PlatformID` (`PlatformID`),
-  KEY `GenomeLocID` (`GenomeLocID`),
+  KEY `CandID` (`CandID`),
+  KEY `index4` (`Chromosome`,`StartLoc`,`EndLoc`,`Strand`),
   CONSTRAINT `CNV_ibfk_1` FOREIGN KEY (`PlatformID`) REFERENCES `genotyping_platform` (`PlatformID`),
-  CONSTRAINT `CNV_ibfk_2` FOREIGN KEY (`GenomeLocID`) REFERENCES `genome_loc` (`GenomeLocID`)
+  CONSTRAINT `CNV_ibfk_3` FOREIGN KEY (`CandID`) REFERENCES `candidate` (`CandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `GWAS` (
@@ -1585,8 +1603,8 @@ CREATE TABLE `genomic_analysis_modality_enum` (
 
 SELECT 'Default value for genomic_analysis_modality_enum' as 'Important INSERT statement';
 INSERT IGNORE INTO `genomic_analysis_modality_enum` (analysis_modality) VALUES
-('Methylation beta-values'),
-('Other');
+  ('Methylation beta-values'),
+  ('Other');
 
 CREATE TABLE `genomic_files` (
   `GenomicFileID` int unsigned NOT NULL AUTO_INCREMENT,
@@ -1635,7 +1653,6 @@ CREATE TABLE `genomic_sample_candidate_rel` (
 
 CREATE TABLE `genomic_cpg_annotation` (
   `cpg_name` varchar(100) NOT NULL,
-  `location_id` bigint(20) NOT NULL,
   `address_id_a` int(10) unsigned DEFAULT NULL,
   `probe_seq_a` varchar(100) DEFAULT NULL,
   `address_id_b` int(10) unsigned DEFAULT NULL,
@@ -1657,10 +1674,14 @@ CREATE TABLE `genomic_cpg_annotation` (
   `reg_feature_group` varchar(100) DEFAULT NULL,
   `dhs` tinyint(1) DEFAULT NULL,
   `platform_id` bigint(20) DEFAULT NULL,
+  `Chromosome` varchar(255) DEFAULT NULL,
+  `Strand` varchar(255) DEFAULT NULL,
+  `EndLoc` int(11) DEFAULT NULL,
+  `Size` int(11) DEFAULT NULL,
+  `StartLoc` int(11) DEFAULT NULL,
   PRIMARY KEY (`cpg_name`),
-  KEY `location_id` (`location_id`),
   KEY `platform_id` (`platform_id`),
-  CONSTRAINT `genomic_cpg_annotation_ibfk_1` FOREIGN KEY (`location_id`) REFERENCES `genome_loc` (`GenomeLocID`),
+  KEY `index3` (`Chromosome`,`StartLoc`,`EndLoc`,`Strand`),
   CONSTRAINT `genomic_cpg_annotation_ibfk_2` FOREIGN KEY (`platform_id`) REFERENCES `genotyping_platform` (`PlatformID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
