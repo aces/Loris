@@ -760,7 +760,7 @@ DataQueryApp = React.createClass({
                 if (!Visits[visit]) {
                     Visits[visit] = true;
                 }
-                identifier = temp[0].toUpperCase();
+                identifier = temp[0];
                 if (Identifiers.indexOf(identifier) === -1) {
                     Identifiers.push(identifier);
                 }
