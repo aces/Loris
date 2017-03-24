@@ -1173,9 +1173,9 @@ class LorisForm
                 }
             } else {
                 if ($el['type'] === 'file') {
-                  $value = $_FILES[$el['name']]['name'];
+                    $value = $_FILES[$el['name']]['name'];
                 } else {
-                  $value = $this->getValue($el['name']);
+                    $value = $this->getValue($el['name']);
                 }
 
                 if (isset($el['required'])
