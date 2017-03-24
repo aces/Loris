@@ -148,9 +148,9 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'c.PSCID as PSCID',
             'c.CandID as DCCID',
             's.visit_label as Visit_Label',
-            "$PendingFailSubquery as Visit_Level_QC_Status",
-            'MIN(md.AcquisitionDate) as First_Acq_Date',
-            'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion_Date',
+            "$PendingFailSubquery as Visit_QC_Status",
+            'MIN(md.AcquisitionDate) as First_Acquisition',
+            'FROM_UNIXTIME(MIN(f.InsertTime)) as First_Insertion',
             'FROM_UNIXTIME(MAX(fqc.QCLastChangeTime)) as Last_QC',
             "$NewDataSubquery as New_Data",
         );
@@ -169,9 +169,9 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
             'PSCID',
             'DCCID',
             'Visit_Label',
-            'Visit_Level_QC_Status',
-            'First_Acq_Date',
-            'First_Insertion_Date',
+            'Visit_QC_Status',
+            'First_Acquisition',
+            'First_Insertion',
             'Last_QC',
             'New_Data',
             'Links');
@@ -279,7 +279,7 @@ class NDB_Menu_Filter_Imaging_Browser extends NDB_Menu_Filter
         $this->addSelect('SiteID', 'Site', $list_of_sites);
         $this->addSelect(
             'VisitQCStatus',
-            'Visit Level QC Status',
+            'Visit QC Status',
             array(''=>'All', 'Pass'=>'Pass', 'Fail'=>'Fail')
         );
 
