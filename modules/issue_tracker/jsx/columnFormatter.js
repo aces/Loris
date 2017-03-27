@@ -95,6 +95,26 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       </td>
     );
   }
+  if (column === 'Watching') {
+    var issue_id = row['Issue ID'];
+    var toggleMyWatching = function (e) {
+        $.ajax({
+            type:"PUT",
+            url:"/issue_tracker/ajax/ToggleMyWatching.php?issue_id=" + issue_id,
+            success: function (data) {
+                console.log(data);
+                ele.props.checked = data.watching;
+                
+                console.log(ele);
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    };
+    var checkbox = (<td><input type="checkbox" checked={(cell === "1")} onChange={toggleMyWatching}/></td>)
+    return checkbox;
+  }
 
   return <td>{cell}</td>;
 }

@@ -41,6 +41,13 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         $user =& User::singleton();
         $db   = Database::singleton();
 
+        //Why is this not a multi-line string?
+        //Why are we concatenating single-line strings?
+        //Also, I don't know *why* issues_watching.UserID points to user.UserID when it's more efficient and less wtf-y to point to user.ID
+        //Why is user.UserID a string?
+        //Why does user even have an "ID" and "UserID" column?
+        //Shouldn't "UserID" be called "username" or "Username" or "whatever-the-naming-convention-is-sername"?
+        //-anyhowstep
         $this->query = " FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID) " .
             "LEFT JOIN psc p ON (i.centerID=p.CenterID) " .
@@ -48,12 +55,24 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             "LEFT JOIN session s ON (i.sessionID = s.ID) " .
             "LEFT JOIN issues_watching w ON (i.issueID = w.issueID) " .
             "LEFT JOIN issues_comments ic ON(i.issueID = ic.issueID)" .
+            "LEFT JOIN (
+                SELECT
+                    mw.issueID
+                FROM
+                    issues_watching mw
+                WHERE
+                    mw.UserID = :my_username
+            ) AS my_watching ON (my_watching.issueID = i.issueID)" .
             "WHERE i.status != 'closed'";
 
         if (!$user->hasPermission('access_all_profiles')) {
             $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND i.CenterID IN (" . $site_arr . ")";
         }
+        
+        $this->extra_query_params = array(
+            "my_username"=>$user->getUsername()
+        );
 
         //note that this needs to be in the same order as the headers array
         $this->columns = array(
@@ -65,6 +84,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                           'i.assignee as Assignee',
                           'i.status as Status',
                           'i.priority as Priority',
+                          '(my_watching.issueID IS NOT NULL) as Watching',
                           'p.Name as Site',
                           'c.PSCID as PSCID',
                           's.Visit_label as Visit_Label',
@@ -86,6 +106,7 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
                           'Assignee',
                           'Status',
                           'Priority',
+                          'Watching',
                           'Site',
                           'PSCID',
                           'Visit_Label',

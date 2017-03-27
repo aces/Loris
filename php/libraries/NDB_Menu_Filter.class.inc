@@ -67,6 +67,15 @@ class NDB_Menu_Filter extends NDB_Menu
     var $filter;
 
     /**
+     * Extra query params for internal pselect() call
+     * Default null.
+     *
+     * @var    null | array
+     * @access public
+     */
+    public $extra_query_params;
+    
+    /**
      * An array of all valid filters to use
      *
      * @var    array
@@ -575,7 +584,8 @@ class NDB_Menu_Filter extends NDB_Menu
 
         return array(
                 'clause' => $WhereClause,
-                'params' => $qparams,
+                'params' => (is_null($this->extra_query_params)) ?
+                    $qparams : array_merge($qparams, $this->extra_query_params),
                );
     }
 
