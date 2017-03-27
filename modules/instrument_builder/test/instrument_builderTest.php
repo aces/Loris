@@ -58,6 +58,5 @@ class instrumentBuilderTestIntegrationTest extends LorisIntegrationTest
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
-
 }
 ?>
