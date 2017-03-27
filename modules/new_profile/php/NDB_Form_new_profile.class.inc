@@ -213,7 +213,7 @@ class NDB_Form_New_Profile extends NDB_Form
         if ($config->getSetting('useEDC') == "true") {
             if (strlen(implode($values['edc1'])) > 2 && !Utility::_checkDate($values['edc1'])) {// @codingStandardsIgnoreLine
                 $errors['edc1'] = 'EDC is not a valid date';
-            }i
+            }
             if ($values['edc1'] != $values['edc2']) {
                 $errors['edc1'] = 'Estimated Due date fields must match.';
             }
