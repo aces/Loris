@@ -210,7 +210,7 @@ class User extends UserPermissions
     /**
      * Get the user's site's name
      *
-     * @return array
+     * @return string
      */
     function getSiteName()
     {
