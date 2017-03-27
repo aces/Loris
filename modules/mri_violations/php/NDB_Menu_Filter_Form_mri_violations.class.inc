@@ -2,7 +2,7 @@
 /**
  * This page implements a front end which is used to unify all
  * of the different MRI violation types (could not identify scan,
- * header violation in the scan after identifying scan type, mislabeled 
+ * header violation in the scan after identifying scan type, mislabeled
  * scan, etc) and link to the appropriate module to further investigate
  * why a scan was excluded by the imaging pipeline scripts.
  *
@@ -11,7 +11,7 @@
  * @category MRI
  * @package  Main
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 /**
@@ -20,10 +20,10 @@
  * @category MRI
  * @package  Main
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
- */      
-class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
+ */
+class NDB_Menu_Filter_Form_Mri_Violations extends NDB_Menu_Filter_Form
 {
     var $AjaxModule = true;
     /**
@@ -35,97 +35,108 @@ class NDB_Menu_Filter_Form_mri_violations extends NDB_Menu_Filter_Form
     {
         // create user object
         $user =& User::singleton();
-        $this->tpl_data['violated_scans_modifications'] 
+        $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
     }
-
+    /**
+     * Process function
+     *
+     * @param string $values the value of values
+     *
+     * @return boolean true if the user is permitted to see violated scans
+     */
     function _process($values)
     {
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
-        $DB =& Database::singleton();
+        $DB   =& Database::singleton();
         $user =& User::singleton();
         foreach ($values['resolvable'] AS $key=>$val) {
             $hash = $key;
-            $row = $DB->pselectRow(
-                    "SELECT * FROM violations_resolved
-                    WHERE hash = :hash", array('hash' => $hash));
-            
+            $row  = $DB->pselectRow(
+                "SELECT * FROM violations_resolved
+                    WHERE hash = :hash",
+                array('hash' => $hash)
+            );
+
             //if row is found it means that resolve status was previously assigned,
             // check the value and update if needed, else break.
             if (!empty($row)) {
-                foreach($row as $key2 => $val2){
+                foreach ($row as $key2 => $val2) {
                     //found matching
                     if ($key2 == 'Resolved') {
                         // user input matches DB content, so do nothing.
                         if ($val==$val2) {
                             break;
-                        } else { 
-                        // user input doesn't match DB, so we update the DB 
-                            $setArray = array('Resolved'=>(string)$val,'ChangeDate'=>date("Y-m-d H:i:s"));
-                            $whereArray = array('hash'=>$hash);
-                            $DB->update('violations_resolved', $setArray, $whereArray);
+                        } else {
+                            // user input doesn't match DB, so we update the DB
+                            $setArray   = array(
+                                           'Resolved'   => (string)$val,
+                                           'ChangeDate' => date("Y-m-d H:i:s"),
+                                          );
+                            $whereArray = array('hash' => $hash);
+                            $DB->update('violations_resolved', $setArray, $whereArray);// @codingStandardsIgnoreLine
                         }
                     }
                 }
             } else {
-            //if row is not found no resolve status was assigned,
-            // if selection<>0, then insert new row.
+                //if row is not found no resolve status was assigned,
+                // if selection<>0, then insert new row.
                 // no need to insert to DB for Unresolved value.
                 if ($val=='unresolved') {
                     continue;
                 }
-                $newlyResolved = array();
-                $newlyResolved['hash'] = $key;                
-                $newlyResolved['Resolved'] = (string)$val;
-                $newlyResolved['User'] = $user->getUsername();
+                $newlyResolved         = array();
+                $newlyResolved['hash'] = $key;
+                $newlyResolved['Resolved']   = (string)$val;
+                $newlyResolved['User']       = $user->getUsername();
                 $newlyResolved['ChangeDate'] = date("Y-m-d H:i:s");
 
                 // Table 1: mri_protocol_violated_scans
                 $ID_mri_protocol_violated_scans = $DB->pselectOne(
                     "SELECT ID
                     FROM mri_protocol_violated_scans 
-                    WHERE (:hash = md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)))",
+                    WHERE (:hash = md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)))",// @codingStandardsIgnoreStart
                     array('hash' => $key)
-                    );
+                );
                 if (!empty($ID_mri_protocol_violated_scans)) {
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
-                    $newlyResolved['ExtID'] = $ID_mri_protocol_violated_scans;
+                    $newlyResolved['ExtID']     = $ID_mri_protocol_violated_scans;
                 }
                 // Table 2: mri_violations_log
                 $ID_mri_violations_log = $DB->pselectOne(
                     "SELECT LogID
                     FROM mri_violations_log
-                    WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
+                    WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",// @codingStandardsIgnoreStart
                     array('hash' => $key)
-                    );
+                );
                 //echo "ID[2] = ".$ID_mri_violations_log."\n";
                 if (!empty($ID_mri_violations_log)) {
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
-                    $newlyResolved['ExtID'] = $ID_mri_violations_log;
-                } 
-                
+                    $newlyResolved['ExtID']     = $ID_mri_violations_log;
+                }
+
                 // Table 3: MRICandidateErrors
                 $ID_MRICandidateErrors = $DB->pselectOne(
                     "SELECT ID
                     FROM MRICandidateErrors
-                    WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
+                    WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",// @codingStandardsIgnoreStart
                     array('hash' => $key)
-                    );
+                );
                 //echo "ID[3] = ".$ID_MRICandidateErrors."\n";
                 if (!empty($ID_MRICandidateErrors)) {
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
-                    $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
-                } 
+                    $newlyResolved['ExtID']     = $ID_MRICandidateErrors;
+                }
                 $DB->insert('violations_resolved', $newlyResolved);
             }
         }
-        
+
         $this->tpl_data['success'] = true;
     }
-
+// @codingStandardsIgnoreStart
     /**
      * Set up the class and smarty variables to use for the menu filter to 
      * generate the proper query for the menu filter
@@ -284,7 +295,7 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
         );
         return true;
     }
-
+// @codingStandardsIgnoreEnd
     /**
      * Generate the quickform elements necessary for filter form
      *
@@ -293,27 +304,23 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
     function _setFilterForm()
     {
         // create user object
-        $user =& User::singleton();
-        $config =& NDB_Config::singleton();
-        $study = $config->getSetting('study');
-        $dateOptions = array(
-            'language'        => 'en',
-            'format'          => 'YMd',
-            'addEmptyOption'  => true,
-            'minYear'         => $study['startYear'] - $study['ageMax'],
-            'maxYear'         => $study['endYear'] - $study['ageMin']
-        );
+        $user           =& User::singleton();
+        $config         =& NDB_Config::singleton();
+        $study          = $config->getSetting('study');
+        $dateOptions    = array(
+                           'language'       => 'en',
+                           'format'         => 'YMd',
+                           'addEmptyOption' => true,
+                           'minYear'        => $study['startYear'] - $study['ageMax'],// @codingStandardsIgnoreStart
+                           'maxYear'        => $study['endYear'] - $study['ageMin'],// @codingStandardsIgnoreStart
+                          );
         $problemOptions = array(
-            '' => 'Any',
-            'CandID and PSCID do not match database'
-            => 'Candidate Mismatch',
-            'Could not identify scan type'
-            => 'Could not identify scan type',
-            'Protocol Violation'
-            => 'MRI Protocol Check violation',
-            'Visit label does not exist'
-            => 'Visit label does not exist'
-        );
+                           ''                                       => 'Any',
+                           'CandID and PSCID do not match database' => 'Candidate Mismatch',// @codingStandardsIgnoreStart
+                           'Could not identify scan type'           => 'Could not identify scan type',// @codingStandardsIgnoreStart
+                           'Protocol Violation'                     => 'MRI Protocol Check violation',// @codingStandardsIgnoreStart
+                           'Visit label does not exist'             => 'Visit label does not exist'// @codingStandardsIgnoreStart
+                          );
 
         $this->addBasicText('PatientName', 'Patient Name');
         $this->addBasicText('Description', 'Series Description or Scan Type');
@@ -331,7 +338,7 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
         );
 
         // Subproject
-        $list_of_subprojects = array('' => 'Any') + Utility::getSubprojectList();
+        $list_of_subprojects = array('' => 'Any') + Utility::getSubprojectList();// @codingStandardsIgnoreStart
         $this->addSelect(
             'Subproject',
             'Subproject',
@@ -342,7 +349,7 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
-            if(is_array($sites)){
+            if(is_array($sites)) {
                 $sites = array('' => 'All') + $sites;
             }
         } else {
@@ -355,9 +362,9 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
                 }
             }
             $sites = array('' => 'All User Sites') + $sites;
-        } 
+        }
         $this->addSelect('Site', 'Site', $sites);
-                
+
         return true;
     }
 
@@ -375,8 +382,7 @@ CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(minc_loca
         return array_merge(
             $deps,
             array(
-
-              $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
+             $baseurl . "/mri_violations/js/columnFormatterUnresolved.js",
 
             )
         );
