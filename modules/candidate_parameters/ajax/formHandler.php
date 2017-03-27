@@ -307,12 +307,12 @@ function editParticipantStatusFields($db, $user)
     $candID = $_POST['candID'];
 
     // Process posted data
-    $status    = isset($_POST['participant_status']) ?
-        $_POST['participant_status'] : null;
-    $suboption = isset($_POST['participant_suboptions']) ?
-        $_POST['participant_suboptions'] : null;
-    $reason    = isset($_POST['reason_specify']) ?
-        $_POST['reason_specify'] : null;
+    $status    = isset($_POST['participantStatus']) ?
+        $_POST['participantStatus'] : null;
+    $suboption = isset($_POST['participantSuboptions']) ?
+        $_POST['participantSuboptions'] : null;
+    $reason    = isset($_POST['reasonSpecify']) ?
+        $_POST['reasonSpecify'] : null;
 
     $id = null;
     if (!(is_null($_SESSION['State']))) {
