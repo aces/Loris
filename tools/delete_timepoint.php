@@ -213,18 +213,20 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         echo "\n-- Deleting from flag.\n";
         $DB->delete('flag', array('SessionID' => $sessionID));
 
+        //Delete from media
         echo "\n-- Deleting from media.\n";
         $DB->delete('media', array('session_id' => $sessionID));
 
-        // Delete from session
-        echo "\n-- Deleting from session.\n";
-        $DB->delete('session', array('ID' => $sessionID));
         // Delete from feedback
         echo "\n-- Deleting from feedback.\n";
         $DB->delete('feedback_bvl_thread', array('SessionID' => $sessionID));
         foreach ($feedbackIDs as $id) {
             $DB->delete('feedback_bvl_entry', array('FeedbackID' => $id['FeedbackID']));
         }
+
+        // Delete from session
+        echo "\n-- Deleting from session.\n";
+        $DB->delete('session', array('ID' => $sessionID));
     } elseif ($printToSQL) {
         // Delete each instrument instance
         foreach ($instruments as $instrument) {
@@ -242,18 +244,19 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
         $output .= "\n-- Deleting from flag.\n";
         _printResultsSQL('flag', array('SessionID' => $sessionID), $output, $DB);
 
+        // Delete from media
         $output .= "\n-- Deleting from media.\n";
         _printResultsSQL('media', array('session_id' => $sessionID), $output, $DB);
 
-        // Delete from session
-        $output .= "\n-- Deleting from session.\n";
-        _printResultsSQL('session', array('ID' => $sessionID), $output, $DB);
         // Delete from feedback
         $output .= "\n-- Deleting from feedback.\n";
         _printResultsSQL('feedback_bvl_thread', array('SessionID' => $sessionID), $output, $DB);
         foreach ($feedbackIDs as $id) {
             _printResultsSQL('feedback_bvl_entry', array('FeedbackID' => $id['FeedbackID']), $output, $DB);
         }
+        // Delete from session
+        $output .= "\n-- Deleting from session.\n";
+        _printResultsSQL('session', array('ID' => $sessionID), $output, $DB);
         
         _exportSQL($output, $CandID, $sessionID);
     }
