@@ -12,7 +12,7 @@ var LorisHelper = function(configParams, userPerms, studyParams) {
     return function(e) {
       e.preventDefault();
       var form = $('<form />', {
-        action: configParams.BaseURL + "/main.php?test_name=" + module,
+        action: configParams.BaseURL + "/" + module,
         method: "post"
       });
       var values = filters;
