@@ -1,7 +1,8 @@
 <?php
 /**
  * This page displays the list of Resolved violations which have been
- * marked as resolved by one of the following methods: Reran, Emailed site/pending,
+ * marked as resolved by one of the following methods: Reran,
+ * Emailed site/pending,
  * Inserted, Rejected, Inserted with flag, Other.
  *
  * PHP Version 5
@@ -9,7 +10,7 @@
  * @category MRI
  * @package  Main
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
@@ -19,11 +20,10 @@
  * @category MRI
  * @package  Main
  * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @license  GPLv3
+ * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
- */      
-
-class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
+ */
+class NDB_Menu_Filter_Form_Resolved_Violations extends NDB_Menu_Filter_Form
 {
     var $AjaxModule = true;
     /**
@@ -39,43 +39,48 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
     }
-
+    /**
+     * Process function
+     *
+     * @param string $values the value of values
+     *
+     * @return boolean true if the user is permitted to see violated scans
+     */
+// @codingStandardsIgnoreStart
     function _process($values)
     {
         if (!is_array($values) || count($values) ==0) {
             return true;
         }
-        $DB =& Database::singleton();
+        $DB   =& Database::singleton();
         $user =& User::singleton();
 
         foreach ($values AS $key=>$val) {
             $hash = $key;
-            $row = $DB->pselectRow(
-                    "SELECT * FROM violations_resolved 
-                    WHERE hash = :hash", array('hash' => $hash));
-            
+            $row  = $DB->pselectRow( "SELECT * FROM violations_resolved WHERE hash = :hash",
+                                     array('hash' => $hash)
+                    );
             //if row is found, check value and update if needed
-            if(!empty($row)){
-                foreach($row as $key2 => $val2){
+            if (!empty($row)) {
+                foreach ($row as $key2 => $val2) {
                     //found matching
-                    if($key2 == 'Resolved'){
+                    if ($key2 == 'Resolved') {
                         // user input matches DB content, so do nothing.
-                        if($val==$val2){
+                        if ($val==$val2) {
                             break;
-                        }
-                        // user input doesn't match DB, so we update the DB
-                        else{
-                            $setArray = array('Resolved'=>(string)$val2);
-                            $whereArray = array('hash'=>$hash);
-                            $DB->update('violations_resolved', $setArray, $whereArray);
-                        }
+                        } else { // user input doesn't match DB, so we update the DB
+                            $setArray   = array('Resolved' => (string)$val2);
+                            $whereArray = array('hash'     => $hash);
+                            $DB->update('violations_resolved',
+                                        $setArray,
+                                        $whereArray
+                            );
+                        } 
                     }
                 }
-            }
-            //if row is not found, and selection<>0, then insert new row.
-            else{
+            } else {//if row is not found, and selection<>0, then insert new row.
                 // no need to insert to DB for Unresolved value.
-                if($val==0){
+                if ($val==0) {
                     continue;
                 }
                 $newlyResolved = array();
@@ -86,35 +91,29 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
 
                 // Table 1
                 $ID_mri_protocol_violated_scans = $DB->pselectOne(
-                    "SELECT ID
-                    FROM mri_protocol_violated_scans 
-                    WHERE (:hash = md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)))",
-                    array('hash' => $key)
-                    );
-                if(!empty($ID_mri_protocol_violated_scans)){
+           "SELECT ID FROM mri_protocol_violated_scans WHERE (:hash = md5(concat_WS(':',minc_location,PatientName,SeriesUID,time_run)))",
+                                                      array('hash' => $key)
+                                                  );
+                if (!empty($ID_mri_protocol_violated_scans)) {
                     $newlyResolved['TypeTable'] = 'mri_protocol_violated_scans';
                     $newlyResolved['ExtID'] = $ID_mri_protocol_violated_scans;
                 }
                 // Table 2
                 $ID_mri_violations_log = $DB->pselectOne(
-                    "SELECT LogID
-                    FROM mri_violations_log
-                    WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
+           "SELECT LogID FROM mri_violations_log WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
                     array('hash' => $key)
                     );
-                if(!empty($ID_mri_violations_log)){
+                if (!empty($ID_mri_violations_log)) {
                     $newlyResolved['TypeTable'] = 'mri_violations_log';
                     $newlyResolved['ExtID'] = $ID_mri_violations_log;
                 } 
                 
                 // Table 3
                 $ID_MRICandidateErrors = $DB->pselectOne(
-                    "SELECT ID
-                    FROM MRICandidateErrors
-                    WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
+           "SELECT ID FROM MRICandidateErrors WHERE (:hash = md5(concat_WS(':',MincFile,PatientName,SeriesUID,TimeRun)))",
                     array('hash' => $key)
                     );
-                if(!empty($ID_MRICandidateErrors)){
+                if (!empty($ID_MRICandidateErrors)) {
                     $newlyResolved['TypeTable'] = 'MRICandidateErrors';
                     $newlyResolved['ExtID'] = $ID_MRICandidateErrors;
                 } 
@@ -124,7 +123,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         
         $this->tpl_data['success'] = true;
     }
-
+// @codingStandardsIgnoreEnd
+// @codingStandardsIgnoreStart
     /**
      * Set up the class and smarty variables to use for the menu filter to 
      * generate the proper query for the menu filter
@@ -138,8 +138,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
-        }
-        else{
+        } else {
             $useProjects = true;
         }
 
@@ -276,12 +275,13 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         );
         return true;
     }
-
+// @codingStandardsIgnoreEnd
     /**
      * Generate the quickform elements necessary for filter form
      *
      * @return none, but as a side-effect sets up QuickForm variables
      */
+// @codingStandardsIgnoreStart
     function _setFilterForm()
     {
         // create user object
@@ -347,9 +347,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = Utility::getSiteList();
-            if(is_array($sites)) $sites = array('' => 'All') + $sites;
-        }
-        else {
+            if (is_array($sites)) $sites = array('' => 'All') + $sites;
+        } else {
             // allow only to view own site data
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
@@ -364,21 +363,20 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 
         return true;
     }
-   /**
+// @codingStandardsIgnoreEnd
+    /**
      * Gathers JS dependecies and merge them with the parent
      *
      * @return array of javascript to be inserted
      */
-   function getJSDependencies()
-   {
+    function getJSDependencies()
+    {
         $factory = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
-                $baseURL . "/mri_violations/js/columnFormatter.js"
-            )
+            array($baseURL . "/mri_violations/js/columnFormatter.js")
         );
     }
 }
