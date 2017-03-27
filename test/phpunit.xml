@@ -41,13 +41,13 @@
             <directory>../modules/reliability/test/</directory>
             <directory>../modules/statistics/test/</directory>
             <directory>../modules/survey_accounts/test/</directory>
-            <directory>../modules/test_instrument/</directory>
             <directory>../modules/timepoint_flag/test/</directory>
             <directory>../modules/timepoint_list/test/</directory>
             <directory>../modules/training/test/</directory>
             <directory>../modules/user_accounts/test/</directory>
             <directory>../modules/media/test/</directory>
             <directory>../modules/issue_tracker/test/</directory>
+            <directory>../test/test_instrument/</directory>
         </testsuite>
 
     </testsuites>
