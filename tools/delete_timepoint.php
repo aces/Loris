@@ -219,10 +219,10 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
 
         // Delete from feedback
         echo "\n-- Deleting from feedback.\n";
-        $DB->delete('feedback_bvl_thread', array('SessionID' => $sessionID));
         foreach ($feedbackIDs as $id) {
             $DB->delete('feedback_bvl_entry', array('FeedbackID' => $id['FeedbackID']));
         }
+        $DB->delete('feedback_bvl_thread', array('SessionID' => $sessionID));
 
         // Delete from session
         echo "\n-- Deleting from session.\n";
@@ -250,10 +250,11 @@ function deleteTimepoint($CandID, $sessionID, $confirm, $printToSQL, $DB, $outpu
 
         // Delete from feedback
         $output .= "\n-- Deleting from feedback.\n";
-        _printResultsSQL('feedback_bvl_thread', array('SessionID' => $sessionID), $output, $DB);
         foreach ($feedbackIDs as $id) {
             _printResultsSQL('feedback_bvl_entry', array('FeedbackID' => $id['FeedbackID']), $output, $DB);
         }
+        _printResultsSQL('feedback_bvl_thread', array('SessionID' => $sessionID), $output, $DB);
+
         // Delete from session
         $output .= "\n-- Deleting from session.\n";
         _printResultsSQL('session', array('ID' => $sessionID), $output, $DB);
