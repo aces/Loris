@@ -58,7 +58,6 @@ class NDB_Client
         // with no parameters
         $DBSettings = $config->getSetting("database");
         if (!defined("UNIT_TESTING")) {
-            try {
             $DB = Database::singleton(
                 $DBSettings['database'],
                 $DBSettings['username'],
@@ -66,9 +65,6 @@ class NDB_Client
                 $DBSettings['host'],
                 true
             );
-            } catch (Exception $ex) {
-                die($ex->getMessage());
-            }
         }
 
         // Now make sure the factory reference is the same as the

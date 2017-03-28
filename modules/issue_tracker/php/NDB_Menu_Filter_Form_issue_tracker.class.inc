@@ -41,13 +41,6 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
         $user =& User::singleton();
         $db   = Database::singleton();
 
-        //Why is this not a multi-line string?
-        //Why are we concatenating single-line strings?
-        //Also, I don't know *why* issues_watching.UserID points to user.UserID when it's more efficient and less wtf-y to point to user.ID
-        //Why is user.UserID a string?
-        //Why does user even have an "ID" and "UserID" column?
-        //Shouldn't "UserID" be called "username" or "Username" or "whatever-the-naming-convention-is-sername"?
-        //-anyhowstep
         $this->query = " FROM issues as i " .
             "LEFT JOIN candidate c ON (i.candID=c.CandID) " .
             "LEFT JOIN psc p ON (i.centerID=p.CenterID) " .
@@ -69,10 +62,10 @@ class NDB_Menu_Filter_Form_Issue_Tracker extends NDB_Menu_Filter_Form
             $site_arr     = implode(",", $user->getCenterIDs());
             $this->query .= " AND i.CenterID IN (" . $site_arr . ")";
         }
-        
+
         $this->extra_query_params = array(
-            "my_username"=>$user->getUsername()
-        );
+                                     "my_username" => $user->getUsername(),
+                                    );
 
         //note that this needs to be in the same order as the headers array
         $this->columns = array(
@@ -412,7 +405,9 @@ WHERE Parent IS NOT NULL ORDER BY Label",
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array($baseurl . "/issue_tracker/js/columnFormatter.js")
+            array(
+             $baseurl . "/issue_tracker/js/columnFormatter.js",
+            )
         );
     }
 }

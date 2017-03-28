@@ -74,7 +74,7 @@ class NDB_Menu_Filter extends NDB_Menu
      * @access public
      */
     public $extra_query_params;
-    
+
     /**
      * An array of all valid filters to use
      *

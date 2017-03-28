@@ -1,12 +1,12 @@
 SET FOREIGN_KEY_CHECKS=0;
 
-
+SELECT 'permissions' as 'DROP table';
 DROP TABLE IF EXISTS `permissions`;
 
-
+SELECT 'permissions_category' as 'DROP table';
 DROP TABLE IF EXISTS `permissions_category`;
 
-
+SELECT 'user_perm_rel' as 'DROP table';
 DROP TABLE IF EXISTS `user_perm_rel`;
 
 SET FOREIGN_KEY_CHECKS=1;
@@ -14,19 +14,19 @@ SET FOREIGN_KEY_CHECKS=1;
 -- Table structure for table `permissions_category`
 --
 
-
+SELECT 'permissions_category' as 'CREATE table';
 CREATE TABLE `permissions_category` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `Description` varchar(255) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+SELECT 'permissions_category' as 'Inserting data';
 INSERT INTO `permissions_category` VALUES 
   (1,'Roles'),
   (2,'Permission');
 
-
+SELECT 'permissions' as 'CREATE table';
 CREATE TABLE `permissions` (
   `permID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `code` varchar(255) NOT NULL DEFAULT '',
@@ -42,7 +42,7 @@ CREATE TABLE `permissions` (
     ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+SELECT 'user_perm_rel' as 'CREATE table';
 CREATE TABLE `user_perm_rel` (
   `userID` int(10) unsigned NOT NULL default '0',
   `permID` int(10) unsigned NOT NULL default '0',
@@ -60,7 +60,7 @@ CREATE TABLE `user_perm_rel` (
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+SELECT 'permissions' as 'Inserting data';
 INSERT INTO `permissions` VALUES
     (1,'superuser','There can be only one Highlander','1'),
     (2,'user_accounts','User management','2'),
@@ -112,11 +112,11 @@ INSERT INTO `permissions` VALUES
     (48,'issue_tracker_developer', 'Can re-assign issues, mark issues as closed, comment on all, edit issues.', 2);
 
 
-
+SELECT 'user_perm_rel' as 'Inserting data';
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID 
   FROM users u JOIN permissions p 
   WHERE u.userid = 'admin' 
   ORDER BY p.permID;
 
-
+SELECT 'Menu import completed' as 'Status';
