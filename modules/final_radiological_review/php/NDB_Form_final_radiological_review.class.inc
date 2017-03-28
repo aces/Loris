@@ -172,8 +172,7 @@ class NDB_Form_final_radiological_review extends NDB_Form
                 );
             }
 
-            $radiology_review_table_exists = $DB->pselect("SHOW TABLES LIKE 'radiology_review'", array());
-            if (count($radiology_review_table_exists) === 0) {
+            if ($DB->tableExists('radiology_review') === false) {
                 throw new LorisException(
                     "Table 'radiology_review' does not exist."
                     . " Please have this instrument set up in order to use this module properly."
