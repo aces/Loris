@@ -208,7 +208,7 @@ class MediaUploadForm extends React.Component {
 
     // Validate uploaded file name
     let instrument = formData.instrument ? formData.instrument : null;
-    let fileName = formData.file ? formData.file.name : null;
+    let fileName = formData.file ? formData.file.name.replace(/\s+/g, '_') : null;
     let requiredFileName = this.getValidFileName(
       formData.pscid, formData.visitLabel, instrument
     );
@@ -222,7 +222,7 @@ class MediaUploadForm extends React.Component {
     }
 
     // Check for duplicate file names
-    let isDuplicate = mediaFiles.indexOf(formData.file.name);
+    let isDuplicate = mediaFiles.indexOf(fileName);
     if (isDuplicate >= 0) {
       swal({
         title: "Are you sure?",
