@@ -68,7 +68,7 @@ before_script:
     - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" project/config.xml
     - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" test/config.xml
     # Set the admin account password to a known value for testing. This needs to be done
-    # after the config.xml is setup.
+    # after the config.xml is setup.@@@@@
     - cd tools
     - echo "testpass" | php ./resetpassword.php admin
     - mysql LorisTest -e "UPDATE users SET Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
