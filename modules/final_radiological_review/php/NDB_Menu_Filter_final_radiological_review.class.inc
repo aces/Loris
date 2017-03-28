@@ -113,6 +113,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
      * Set up the variables required by NDB_Menu_Filter class for constructing
      * a query
      *
+     * @throws LorisException
      * @return null
      */
     function _setupVariables()
@@ -138,6 +139,14 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             WHEN r.SAS <> r.SAS2 THEN 'prim_second'
             WHEN r.PVS <> r.PVS2 THEN 'prim_second'
             ELSE 'false' END)";
+
+        $radiology_review_table_exists = $DB->pselectOne("SHOW TABLES LIKE 'radiology_review'", array());
+        if (count($radiology_review_table_exists) === 0) {
+            throw new LorisException(
+                "Table 'radiology_review' does not exist."
+                . " Please have this instrument set up in order to use this module properly."
+            );
+        }
 
         $this->query = " FROM radiology_review orig
             LEFT JOIN final_radiological_review r ON (r.CommentID=orig.CommentID)
