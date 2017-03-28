@@ -21,7 +21,7 @@ if (!$userSingleton->hasPermission('genomic_browser_view_site')
 }
 $DB     =& Database::singleton();
 $result = $DB->pselect(
-    'SELECT analysis_modality as genomic_file_type
+    'SELECT analysis_modality as genomicFileType
        FROM genomic_analysis_modality_enum',
     array()
 );

@@ -59,6 +59,7 @@ class DirectDataEntryMainPage
         $client = new NDB_Client();
         $client->makeCommandLine();
         $client->initialize();
+        $config =& NDB_Config::singleton();
 
         $this->caller =& NDB_Caller::singleton();
 
@@ -117,11 +118,12 @@ class DirectDataEntryMainPage
 
         $this->CommentID = $this->getCommentID();
         $this->tpl_data  = array(
-                            'nextpage'   => $this->NextPageNum,
-                            'prevpage'   => $this->PrevPageNum,
-                            'pageNum'    => $pageNum ? $pageNum + 1: 1,
-                            'totalPages' => $totalPages,
-                            'key'        => $this->key,
+                            'nextpage'    => $this->NextPageNum,
+                            'prevpage'    => $this->PrevPageNum,
+                            'pageNum'     => $pageNum ? $pageNum + 1: 1,
+                            'totalPages'  => $totalPages,
+                            'key'         => $this->key,
+                            'study_title' => $config->getSetting('title'),
                            );
     }
 

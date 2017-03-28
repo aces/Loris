@@ -1,0 +1,18 @@
+node_modules/*
+modules/*/js/*.js
+htdocs/js/components/*
+
+# Ignore until ESLint is run
+modules/dataquery/
+
+# Ignore external libs
+htdocs/js/flot/*
+htdocs/js/jquery/*
+htdocs/js/jszip/*
+htdocs/js/modernizr/*
+htdocs/js/modules/*
+htdocs/js/react/*
+htdocs/js/shims/*
+htdocs/js/c3.min.js
+htdocs/js/d3.min.js
+htdocs/js/FileSaver.min.js

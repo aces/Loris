@@ -11,8 +11,6 @@
  * @link     https://www.github.com/aces/CCNA/
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-
 /**
  * Main class for media module corresponding to /media/ URL
  * Child or Clinical section of the LorisMenu.
@@ -31,6 +29,7 @@ require_once 'NDB_Menu_Filter.class.inc';
 class NDB_Menu_Filter_Media extends NDB_Menu_Filter
 {
     public $hasWritePermission = false;
+    public $AjaxModule         = true;
 
     /**
      * Check user permissions
@@ -50,6 +49,17 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     }
 
     /**
+     * Override default behaviour, since the page is loaded from mediaIndex.js
+     *
+     * @return void
+     * @access public
+     */
+    function display()
+    {
+        return null;
+    }
+
+    /**
      * Create a form to filter media by various criteria
      *
      * @return bool
@@ -63,37 +73,56 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         $db   = Database::singleton();
 
         $siteList  = Utility::getSiteList(false);
-        $visitList = [null => 'Any'] + Utility::getVisitList();
+        $visitList = Utility::getVisitList();
+
+        // Index sites using their names (used to filter react tables)
+        foreach ($siteList as $key => $site) {
+            unset($siteList[$key]);
+            $siteList[$site] = $site;
+        }
 
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             if (is_array($siteList)) {
-                $siteList = [null => 'Any'] + $siteList;
+                $siteList = $siteList;
             }
         } else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $siteList = [$user->getData('CenterID') => $user->getData('Site')];
+            $siteList ='';
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $siteList[$val] = $site[$key]->getCenterName();
+                }
             }
+            $siteList = array('' => 'All User Sites') + $siteList;
         }
 
-        $instrumentList   = [null => 'Any'];
+        $instrumentList   = [];
         $instrumentsQuery = $db->pselect(
-            "SELECT Test_name FROM test_names ORDER BY Test_name",
+            "SELECT Test_name, Full_name FROM test_names ORDER BY Test_name",
             []
         );
         foreach ($instrumentsQuery as $instrument) {
-            $instrumentList[$instrument['Test_name']] = $instrument['Test_name'];
+            $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
+        }
+
+        $fileTypeList  = [];
+        $fileTypeQuery = $db->pselect("SELECT file_type FROM media", []);
+        foreach ($fileTypeQuery as $filetype) {
+            $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
         }
 
         // Form Elements
-        $this->addBasicText('pscid', 'PSCID:', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('instrument', 'Instrument:', $instrumentList);
-        $this->addSelect('visit_label', 'Visit Label:', $visitList);
-        $this->addSelect('for_site', 'For Site:', $siteList);
-        $this->addBasicText('uploaded_by', 'Uploaded By');
+        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
+        $this->addBasicText('fileName', 'File Name');
+        $this->addSelect('fileType', 'File type', $fileTypeList);
+        $this->addSelect('visitLabel', 'Visit Label', $visitList);
+        $this->addSelect('site', 'For Site', $siteList);
+        $this->addBasicText('uploadedBy', 'Uploaded By');
+        $this->addSelect('instrument', 'Instrument', $instrumentList);
 
         $this->tpl_data["hasWritePermission"] = $this->hasWritePermission;
 
@@ -108,8 +137,10 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
      */
     function _setupVariables()
     {
+        $user =& User::singleton();
         // the base query
-        $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID";
+        $query  = " FROM media m LEFT JOIN session s ON m.session_id = s.ID".
+        " LEFT JOIN candidate c ON c.CandID=s.CandID";
         $query .= " WHERE m.hide_file = FALSE";
 
         // set the class variables
@@ -124,12 +155,18 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                'm.date_taken',
                'substring(m.comments, 1, 50) as comments',
                'm.date_uploaded',
+               'm.file_type',
                's.CandID as cand_id',
                's.ID as session_id',
                'm.id',
               ];
 
         $this->query = $query;
+
+        if (!$user->hasPermission('access_all_profiles')) {
+            $site_arr     = implode(",", $user->getCenterID());
+            $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
+        }
 
         $this->group_by = '';
         $this->order_by = 'm.instrument';
@@ -143,6 +180,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
                            'Date Taken',
                            'Comments',
                            'Date Uploaded',
+                           'File Type',
                            'Cand ID',
                            'Session ID',
                           ];
@@ -156,26 +194,33 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         }
 
         $this->validFilters = [
-                               'm.pscid',
+                               'c.PSCID',
                                'm.instrument',
-                               'm.data_dir',
-                               'm.for_site',
-                               'm.visit_label',
-                               'm.uploaded_by',
+                               's.Visit_label',
+                               's.CenterID',
                               ];
         $this->formToFilter = [
-                               'file_name'     => 'm.file_name',
-                               'data_dir'      => 'm.data_dir',
-                               'instrument'    => 'm.instrument',
-                               'pscid'         => 'm.pscid',
-                               'for_site'      => 'm.for_site',
-                               'uploaded_by'   => 'm.uploaded_by',
-                               'visit_label'   => 'm.visit_label',
-                               'date_uploaded' => 'm.date_uploaded',
-                               'comments'      => 'comments',
+                               'pscid'       => 'c.PSCID',
+                               'instrument'  => 'm.instrument',
+                               'visit_label' => 's.Visit_label',
+                               'for_site'    => 's.CenterID',
                               ];
 
         return true;
+    }
+
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
+
+        return json_encode($result);
     }
 
     /**
@@ -196,9 +241,7 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
     }
 
     /**
-     * Include additional JS files:
-     *  1. columnFormatter.js required to set links to Edit and Download file
-     *  2. uploadForm.js - reactified form to upload files
+     * Include additional JS files
      *
      * @return array of javascript to be inserted
      */
@@ -210,8 +253,9 @@ class NDB_Menu_Filter_Media extends NDB_Menu_Filter
         return array_merge(
             $deps,
             [
-             $baseURL . "/media/js/columnFormatter.js",
-             $baseURL . "/media/js/uploadForm.js",
+             $baseURL . "/js/components/Tabs.js",
+             $baseURL . "/js/components/ProgressBar.js",
+             $baseURL . "/media/js/mediaIndex.js",
             ]
         );
     }

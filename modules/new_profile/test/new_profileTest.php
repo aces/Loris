@@ -61,7 +61,8 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    function testNewProfileLoadsWithoutProjects() {
+    function testNewProfileLoadsWithoutProjects()
+    {
         $this->setUpConfigSetting("useProjects", "false");
 
         $this->safeGet($this->url . "/new_profile/");
@@ -82,7 +83,8 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    function testNewProfileLoadsWithoutEDC() {
+    function testNewProfileLoadsWithoutEDC()
+    {
         $this->setUpConfigSetting("useEDC", "false");
 
         $this->safeGet($this->url . "/new_profile/");
@@ -109,28 +111,34 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    function testNewProfileEDCDateError() {
+    function testNewProfileEDCDateError()
+    {
         $this->setUpConfigSetting("useEDC", "true");
 
         $this->webDriver->get($this->url . "/new_profile/");
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
+        );
 
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/01/2015");
-        $dates[2]->sendKeys("01/01/2015");
-        $dates[3]->sendKeys("01/02/2015");
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[1].value='2000-05-05'"
+        );
 
-        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[2].value='2000-05-30'"
+        );
+
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[3].value='2000-05-05'"
+        );
+
+        $gender = $this->safeFindElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
 
-        // Config set for PSCID to be auto created
-        // $pscid = $this->webDriver->findElement(WebDriverBy::Name("PSCID"));
-        // $pscid->sendKeys("Control");
-
-        $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+        $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        sleep(3);
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Estimated Due date fields must match.", $bodyText);
 
         $this->restoreConfigSetting("useEDC");
@@ -141,7 +149,8 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    function testNewProfilePSCIDError() {
+    function testNewProfilePSCIDError()
+    {
 
         $this->markTestSkipped("Config not properly set up to test that PSCID is required");
 
@@ -166,24 +175,25 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    function testNewProfileDoBDateError() {
+    function testNewProfileDoBDateError()
+    {
         $this->webDriver->get($this->url . "/new_profile/");
 
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/02/2015");
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[0].value='2000-05-05'"
+        );
+
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[1].value='2000-05-01'"
+        );
 
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
 
-        // Config set for PSCID to be auto created
-        // $pscid = $this->webDriver->findElement(WebDriverBy::Name("PSCID"));
-        // $pscid->sendKeys("Control");
-
-        $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+        $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        sleep(3);
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Date of Birth fields must match.", $bodyText);
     }
 
@@ -192,22 +202,24 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    function testNewProfileCreateCandidate() {
-
+    function testNewProfileCreateCandidate()
+    {
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
-
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/01/2015");
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
+        );
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
+        );
 
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
 
-        $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+        $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        sleep(3);
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("PSCID: BBQ0000", $bodyText);
 
         $this->deleteCandidate("BBQ0000");
@@ -219,37 +231,42 @@ class newProfileTestIntegrationTest extends LorisIntegrationTest
      *
      * @return none
      */
-    function testNewProfilePSCIDSequential() {
-
+    function testNewProfilePSCIDSequential()
+    {
         $this->changeStudySite();
         $this->webDriver->get($this->url . "/new_profile/");
 
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/01/2015");
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
+        );
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
+        );
 
         $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
 
-        $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+        $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        sleep(3);
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("PSCID: BBQ0000", $bodyText);
 
         $this->webDriver->get($this->url . "/new_profile/");
 
-        $dates = $this->webDriver->findElements(WebDriverBy::cssSelector(".input-date"));
-        $dates[0]->sendKeys("01/01/2015");
-        $dates[1]->sendKeys("01/01/2015");
-
-        $gender = $this->webDriver->findElement(WebDriverBy::Name("gender"));
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[0].value='2015-01-01'"
+        );
+        $this->webDriver->executescript(
+            "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
+        );
+        $gender = $this->safeFindElement(WebDriverBy::Name("gender"));
         $gender->sendKeys("Male");
 
-        $startVisit = $this->webDriver->findElement(WebDriverBy::Name("fire_away"));
+        $startVisit = $this->safeFindElement(WebDriverBy::Name("fire_away"));
         $startVisit->click();
-
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+        sleep(3);
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("PSCID: BBQ0001", $bodyText);
 
         $this->deleteCandidate("BBQ0000");

@@ -38,7 +38,6 @@ set_time_limit(0);
 ob_implicit_flush(true);
 ob_end_flush();
 header('Content-Type: application/json; charset=UTF-8');
-reportProgress(1, 'Validating...');
 
 $fileToUpload
     = (object) array(
@@ -86,6 +85,7 @@ exit;
  */
 function validateRequest()
 {
+    reportProgress(10, 'Validating...');
     if (( empty($_POST['pscidColumn'])
         && empty($_POST['fileMapping']) )
         || empty($_FILES['fileData'])
@@ -103,7 +103,7 @@ function validateRequest()
         // Should compare the header and existing data to inform
         // the user about predicted no-insertion.
     }
-    reportProgress(4, "Validation completed");
+    reportProgress(25, "Validation completed");
 }
 
 /**
@@ -121,13 +121,13 @@ function moveFileToFS(&$fileToUpload)
     $config           = NDB_Config::singleton();
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
     $DB =& Database::singleton();
-    reportProgress(5, "Copying file to $genomic_data_dir ");
+    reportProgress(40, "Copying file to $genomic_data_dir ");
     if (move_uploaded_file(
         $fileToUpload->tmp_name,
         $genomic_data_dir . 'genomic_uploader/'
         . $fileToUpload->file_name
     )) {
-        reportProgress(5, "File copied to $genomic_data_dir ");
+        reportProgress(60, "File copied to $genomic_data_dir ");
     } else {
         die(
             json_encode(
@@ -166,9 +166,7 @@ function registerFile(&$fileToUpload)
                'InsertedByUserID' => $fileToUpload->inserted_by,
               );
     try {
-
         $DB->replace('genomic_files', $values);
-
         //TODO :: This should select using date_insert and
         //        validate if a record is found.
         $last_id = $DB->pselectOne(
@@ -191,8 +189,7 @@ function registerFile(&$fileToUpload)
             )
         );
     }
-    reportProgress(15, "File copied");
-
+    reportProgress(80, "File registered");
 }
 
 /**
@@ -209,7 +206,7 @@ function registerFile(&$fileToUpload)
 function createSampleCandidateRelations(&$fileToUpload)
 {
 
-    reportProgress(20, "Creating sample-candidate relations");
+    reportProgress(85, "Creating sample-candidate relations");
 
     $config           = NDB_Config::singleton();
     $genomic_data_dir = $config->getSetting('GenomicDataPath');
@@ -260,7 +257,7 @@ function createSampleCandidateRelations(&$fileToUpload)
         $prep   = $DB->prepare($stmt);
         $result = $DB->execute($prep, array(), array('nofetch' => true));
         // Report number on relation created (candidate founded)
-        reportProgress(24, "Relation created");
+        reportProgress(90, "Relation created");
 
     } catch (Exception $e) {
         die(
@@ -289,7 +286,7 @@ function createSampleCandidateRelations(&$fileToUpload)
 function insertBetaValues(&$fileToUpload)
 {
 
-    reportProgress(25, "Inserting beta-values");
+    reportProgress(95, "Inserting beta-values");
     // Assuming genomic_cpg_annotation have ialready been created.
     // see: /module/genomic_browser/tool/human...
 
@@ -445,7 +442,7 @@ function createCandidateFileRelations(&$fileToUpload)
             )
         );
     }
-    reportProgress(50, "Creating file-candidate relations");
+    reportProgress(98, "Creating file-candidate relations");
 
 }
 

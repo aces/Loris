@@ -79,70 +79,13 @@
         </div>
     </div>
 </div>
-
-<!--  title table with pagination -->
-<table border="0" valign="bottom" width="100%">
-<tr>
-    <!-- display pagination links -->
-    <td align="right" id="pageLinks"></td>
-</tr>
-</table>
-
-<br>
-<!-- start data table -->
-<div class="table-responsive">
-    <table  class="table table-hover table-primary table-bordered" border="0" width="100%">
-        <thead>
-            <tr class="info">
-             <th>No.</th>
-                {section name=header loop=$headers}
-                    <th><a href="{$baseurl}/examiner/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                {/section}
-            </tr>
-        </thead>
-        <tbody>
-            {section name=item loop=$items}
-            <tr>
-                {section name=piece loop=$items[item]}
-                    {if $items[item][piece].name == "Examiner" and $certification == "1"}
-                        <td nowrap="nowrap">
-                            <a href="{$baseurl}/examiner/editExaminer/?identifier={$items[item][piece].ID}">{$items[item][piece].value}</a>
-                        </td>
-                    {elseif $items[item][piece].name == "Site"}
-                        <td nowrap="nowrap">
-                            {$items[item][piece].value}
-                        </td>
-                    {else}
-                        <td>
-                            {$items[item][piece].value}
-                        </td>
-                    {/if}
-                {/section}
-            </tr>
-            {sectionelse}
-                <tr>
-                    {if $certification == "1"}
-                        <tr><td colspan="5">No examiners found.</td></tr>
-                    {else}
-                        <tr><td colspan="4">No examiners found.</td></tr>
-                    {/if}
-                </tr>
-            {/section}
-        </tbody>
-                        
-    <!-- end data table -->
-    </table>
-</div>
+<div class="dynamictable" id="datatable"></div>
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/examiner/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/examiner/?format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "PSCID"
+  });
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>
-

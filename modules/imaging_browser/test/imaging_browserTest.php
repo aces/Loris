@@ -243,7 +243,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'QCStatus'          => null,
              'QCFirstChangeTime' => 1455040145,
              'QCLastChangeTime'  => 1455040145,
-             'Selected'          => 't2'
+             'Selected'          => true
             )
         );
 
@@ -258,7 +258,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              'QCStatus'          => null,
              'QCFirstChangeTime' => 1455040145,
              'QCLastChangeTime'  => 1455040145,
-             'Selected'          => 't1'
+             'Selected'          => true
             )
         );
 
@@ -496,7 +496,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $SiteFilterText = $this->webDriver->findElement(
             WebDriverBy::Name("SiteID")
         )->getText();
-        $this->assertEquals(trim($SiteTopMenuText[1]), $SiteFilterText);
+        $this->assertContains("All User Sites", $SiteFilterText);
 
         // With permission imaging_browser_view_allsites
         $this->setupPermissions(array('imaging_browser_view_allsites'));

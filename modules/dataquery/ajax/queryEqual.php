@@ -16,24 +16,15 @@ $cdb = CouchDB::singleton();
 $category = $_REQUEST['category'];
 $fieldName = $_REQUEST['field'];
 $value = $_REQUEST['value'];
+$value = is_numeric($value) ? $value : "\"$value\"";
 
-if (is_numeric($value)) {
-	$results = $cdb->queryView(
-	    "DQG-2.0",
-	    "search",
-	    array("reduce" => "false",
-	          "key" => "[\"$category\", \"$fieldName\", $value]",
-	      )
-	);
-} else {
-	$results = $cdb->queryView(
-	    "DQG-2.0",
-	    "search",
-	    array("reduce" => "false",
-	          "key" => "[\"$category\", \"$fieldName\", \"$value\"]",
-	      )
-	);
-}
+$results = $cdb->queryView(
+    "DQG-2.0",
+    "search",
+    array("reduce" => "false",
+          "key" => "[\"$category\", \"$fieldName\", $value]",
+    )
+);
 
 $sessionResults = array_map(function($element) { return $element['value']; }, $results);
 

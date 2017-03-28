@@ -3,6 +3,10 @@
 
  # Bootstrap is not a Loris module, don't rewrite it.
  RewriteRule ^bootstrap/(.*) bootstrap/$1 [L]
+
+ RewriteRule ^password-reset/$ lost_password.php [L]
+ RewriteRule ^request-account/$ request_account/process_new_account.php [L]
+
  # Redirect /CandID/ to visit label list
  RewriteRule ^([0-9]{6,6})/$ main.php?test_name=timepoint_list&candID=$1
  # Want to redirect /CandID/Visit_label/ to instrument list, but
@@ -27,5 +31,10 @@
  RewriteRule ^([a-zA-Z_-]+)/static/([a-zA-Z0-9_.-/]+)$ GetStatic.php?Module=$1&file=$2
  RewriteRule ^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-]+)$ AjaxHelper.php?Module=$1&script=$2 [QSA]
  RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_.-]+)/$ main.php?test_name=$1&subtest=$2 [QSA]
+
+ # Add trailing slash to all directories
+ RewriteCond %{REQUEST_FILENAME} !-f
+ RewriteRule ^(.*[^/])$ /$1/ [L,R=301]
+
 </IfModule>
 

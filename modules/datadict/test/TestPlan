@@ -7,7 +7,7 @@
 3. Perform various searches and validate the results. Use any combination of the available search criteria. Make sure
    that when performing a keyword search the algorithm takes column Name, SourceField and Description into account. 
    Make sure that when you choose "Empty" in the Description combo box, all the rows returned have an empty description.
-4. Check that the table can be sorted according to any column (ascending and descending), except column 'No'.
+4. Check that the table can be sorted according to any column (ascending and descending).
 5. Check that pushing the Clear button sets the Description search field to 'All', the Instruments search field to 
    'All instruments', clears the search keyword text field and performs a search with these criteria. Validate the
    results.

@@ -78,95 +78,22 @@
     <div class="tab-content">
         <div class="tab-pane active">
             <!--  title table with pagination -->
-            <table id="LogEntries" border="0" valign="bottom" width="100%">
-                <tr>
-                    <!-- display pagination links -->
-                    <td align="right" id="pageLinks"></td>
-                </tr>
-            </table>
             <form method="post" action="{$baseurl}/conflict_resolver/" name="conflict_resolver" id="conflict_resolver">
-                <table class="table table-hover table-primary table-bordered table-unresolved-conflicts dynamictable" border="0">
-                    <thead>
-
-                    {foreach from=$form.errors item=error}
-                        <tr>
-                            <td nowrap="nowrap" colspan="6" class="error">{$error}</td>
-                        </tr>
-                    {/foreach}
-
-                    <tr class="info">
-                        <th>No.</th>
-                        {section name=header loop=$headers}
-                            <th><a href="{$baseurl}/conflict_resolver/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
-                                    {if $headers[header].displayName == "TableName"}
-                                        Instrument
-                                    {else if $headers[header].displayName == "CandID"}
-                                        DCCID
-                                    {else if $headers[header].displayName == "ProjectID"}
-                                        Project
-                                    {else if $headers[header].displayName == "FieldName"}
-                                        Question
-                                    {else}
-                                        {$headers[header].displayName}
-                                    {/if}
-                                </a></th>
-                        {/section}
-                        <th>Correct Answer</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {section name=item loop=$items}
-                    <tr>
-                        {section name=piece loop=$items[item]}
-                            {if $items[item][piece].name != "hash"}
-                                <td>
-                                    {$items[item][piece].value}
-                                </td>
-                            {else}
-                                <td nowrap="nowrap" align="right">
-                                    {$form[$items[item][piece].value].html}
-                                </td>
-                            {/if}
-                        {/section}
-                    </tr>
-                    {sectionelse}
-                        <tr>
-                            {if $useProjects == 'true'}
-                                <tr><td colspan="8">No unresolved conflicts found.</td></tr>
-                            {else}
-                                <tr><td colspan="7">No unresolved conflicts found.</td></tr>
-                            {/if}
-                        </tr>
-                    {/section}
-                    <tr>
-                        {if $useProjects == 'true'}
-                            <td nowrap="nowrap" colspan="7" id="message-area"></td>
-                        {else}
-                            <td nowrap="nowrap" colspan="6" id="message-area"></td>
-                        {/if}
-
-                        <td nowrap="nowrap">
-                            <input class="btn btn-sm btn-primary col-md-offset-3" name="fire_away" value="Save" type="submit" />
-                            <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+               <div class="dynamictable" id="datatable"></div>
+               <div class="pull-right"> <input class="btn btn-sm btn-primary" name="fire_away" value="Save" type="submit" />
+                     <input class="btn btn-sm btn-primary" value="Reset" type="reset" />
+               </div>
             </form>
         </div>
     </div>
 </div>
 </div>
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/conflict_resolver/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/conflict_resolver/?format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "Instrument"
+  });
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>
-

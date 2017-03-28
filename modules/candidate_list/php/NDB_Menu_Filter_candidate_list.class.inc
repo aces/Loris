@@ -32,13 +32,19 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
-        $site =& Site::singleton($user->getData('CenterID'));
-        $aap  = $user->hasPermission('access_all_profiles');
+        $user     =& User::singleton();
+        $site_arr = $user->getData('CenterIDs');
+        foreach ($site_arr as $key=>$val) {
+            $site[$key]        = & Site::singleton($val);
+            $isStudySite[$key] = $site[$key]->isStudySite();
+        }
+        $oneIsStudySite = in_array("1", $isStudySite);
+        $aap            = $user->hasPermission('access_all_profiles');
         $this->tpl_data['access_all_profiles'] = $aap;
         return (
             $user->hasPermission('access_all_profiles')
-            || ($site->isStudySite() && $user->hasPermission('data_entry'))
+            || ($oneIsStudySite && $user->hasPermission('data_entry'))
+
         );
     }
 
@@ -67,6 +73,7 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                           'c.CandID AS DCCID',
                           'c.PSCID',
                           'c.Gender',
+                          'c.Entity_type',
                           "COALESCE(pso.Description,'Active') "
                           . " AS Participant_Status",
                          );
@@ -126,13 +133,15 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                 ON (ps.participant_status=pso.ID)
             LEFT JOIN Project p ON (c.ProjectID=p.ProjectID)
             LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
-            WHERE c.Entity_type = 'Human' AND c.Active = 'Y'";
+            WHERE c.Active = 'Y'";
 
         if (!$user->hasPermission('access_all_profiles')) {
-            $this->query .= " AND c.CenterID=" . $user->getCenterID();
+
+            $site_arr     = implode(",", $user->getCenterID());
+            $this->query .= " AND c.CenterID IN (" . $site_arr . ")";
         }
 
-                          //'COALESCE(pso.ID,1) AS Participant_Status',
+        //'COALESCE(pso.ID,1) AS Participant_Status',
         $this->group_by = 'c.CandID, psc.Name, c.PSCID, c.Gender';
         $this->order_by = 'c.PSCID ASC';
 
@@ -149,6 +158,8 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              $FeedbackSQL,
              's.Scan_done',
              's.Visit_label',
+             'c.Entity_type',
+             'COALESCE(pso.ID, 1)',
             )
         );
 
@@ -162,7 +173,6 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
                                      'c.CenterID',
                                      'c.ProjectID',
                                      's.Scan_done',
-                                     'pso.ID',
                                      's.Visit_label',
                                      'c.Gender',
                                     );
@@ -180,9 +190,10 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              'Visit_Count'         => $VisitCountSQL,
              'Latest_Visit_Status' => 'max(s.Current_stage)',
              'Feedback'            => $FeedbackSQL,
-             'Participant_Status'  => 'pso.ID',
+             'Participant_Status'  => 'COALESCE(pso.ID, 1)',
              'scan_done'           => 's.Scan_done',
              'Visit_label'         => 's.Visit_label',
+             'Entity_type'         => 'c.Entity_type',
             )
         );
 
@@ -214,11 +225,14 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $list_of_sites = array();
-                $list_of_sites[$user->getData('CenterID')] = $user->getData('Site');
+            $site_arr = $user->getData('CenterIDs');
+            foreach ($site_arr as $key => $val) {
+                $site[$key] = &Site::singleton($val);
+                if ($site[$key]->isStudySite()) {
+                    $list_of_sites[$val] = $site[$key]->getCenterName();
+                }
             }
+            $list_of_sites = array('' => 'All User Sites') + $list_of_sites;
         }
 
         // SubprojectID
@@ -272,6 +286,15 @@ class NDB_Menu_Filter_Candidate_List extends NDB_Menu_Filter
              ''       => 'All',
              'Male'   => 'Male',
              'Female' => 'Female',
+            )
+        );
+        $this->addSelect(
+            'Entity_type',
+            'Entity Type',
+            array(
+             ''        => '',
+             'Human'   => 'Human',
+             'Scanner' => 'Scanner',
             )
         );
         $this->addSelect(

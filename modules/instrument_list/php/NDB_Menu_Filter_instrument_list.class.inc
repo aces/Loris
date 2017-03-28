@@ -5,7 +5,6 @@
  * @package behavioural
  */
 require_once __DIR__ ."/Instrument_List_ControlPanel.class.inc";
-require_once __DIR__ . "/../../../php/libraries/NDB_BVL_Battery.class.inc";
 class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
 {
     function _hasAccess()
@@ -19,7 +18,8 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         $candidate =& Candidate::singleton($candID);
 
         // check user permissions
-    	return ($user->hasPermission('access_all_profiles') || $user->getData('CenterID') == $candidate->getData('CenterID') || $user->getData('CenterID') == $timePoint->getData('CenterID'));
+        return ($user->hasPermission('access_all_profiles') || (in_array($candidate->getData('CenterID'), $user->getData('CenterIDs'))) || (in_array($timepoint->getData('CenterID'), $user->getData('CenterIDs'))));
+
     }
 
     function getControlPanel() {
@@ -154,7 +154,7 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         }
 
         // craft the select query
-        $query = "SELECT f.Test_name,
+        $query = "SELECT DISTINCT f.Test_name,
                     t.Full_name,
                     f.CommentID,
                     CONCAT('DDE_', f.CommentID) AS DDECommentID,
@@ -166,17 +166,20 @@ class NDB_Menu_Filter_instrument_list extends NDB_Menu_Filter
         }
         $query  .= " FROM flag f
             	JOIN test_names t ON (f.Test_name=t.Test_name)
-            	JOIN test_subgroups ts ON (ts.ID = t.Sub_group) ";
+            	JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
+            	LEFT JOIN session s ON (s.ID=f.SessionID) ";
         $qparams = array('SID' => $_REQUEST['sessionID']);
 
         if (!is_null($stage)) {
             $query .= "
-            	LEFT JOIN test_battery b ON (t.Test_name=b.Test_name) ";
+            	LEFT JOIN test_battery b 
+            	        ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL) 
+            	        AND (s.SubprojectID=b.SubprojectID OR b.SubprojectID IS NULL) 
+            	        AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL) 
+            	        AND (s.CenterID=b.CenterID OR b.CenterID IS NULL)) ";
         }
         $query .= " WHERE f.SessionID=:SID
             AND LEFT(f.CommentID, 3) != 'DDE'";
-
-        $query .= " GROUP BY t.Full_name";
 
         if (Utility::columnsHasNull('test_subgroups', 'group_order')) {
             $query .= " ORDER BY Subgroup_name";

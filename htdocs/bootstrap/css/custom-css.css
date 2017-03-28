@@ -3,6 +3,19 @@
  *	to overwrite bootstraps css file
  */
 
+
+/*******************************
+Loris color palette v.0.1
+
+@accent-color: #064785 (blue)
+@accent-color-hover: #042d54 (dark blue)
+
+Note: other colors are currenly inherited from Bootstrap default color palette
+      See: http://getbootstrap.com/css/#less-variables-colors
+
+****************************************/
+
+
 /*
  *	Styling for the navbar dropdowns
  */
@@ -15,6 +28,39 @@
 .navbar-nav>li>.dropdown-menu>li>a {
     color: white;
 }
+
+
+.navbar-default a {
+  -webkit-transition: background-color 0.2s ease-in;
+  transition: background-color 0.2s ease-in;
+}
+
+/* Show submenu when hovering on menu item */
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Loris logo */
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+  background-color: #042d54;
+}
+
+/* Menu items */
+.navbar-default .navbar-nav>li:hover,
+.navbar-default .navbar-nav>li>a:hover,
+.navbar-default .navbar-nav>li>a:focus,
+.navbar-default .navbar-nav>li>a:active{
+  background-color: #042d54;
+}
+
+/* Submenu items*/
+.navbar-nav>li>.dropdown-menu>li>a:hover,
+.navbar-nav>li>.dropdown-menu>li>a:focus{
+  background-color: #042d54;
+}
+
+
 
 /*
  *	Making the table header font colour white
@@ -227,6 +273,16 @@ div.navbar div.container div.navbar-brand {
   z-index: 3;
 }
 
+/** Ellipsis styling **/
+.ellipsis > .dropdown-toggle {
+  border: none;
+  padding: 0px;
+  background: inherit;
+}
+.ellipsis:hover .dropdown-menu {
+display: block;
+}
+
 /** The Spacing **/
 .btn-breadcrumb .btn {
   padding:6px 12px 6px 24px;
@@ -272,63 +328,38 @@ a.btn.btn-primary {
     text-overflow: ellipsis;
 }
 
-.btn-breadcrumb > *:nth-child(n+2) {
-  display:none;
-}
-
 /* For phones */
 @media (max-width: 767px) {
-    .btn-breadcrumb > *:nth-last-child(-n+3) {
-        display:block;
-    }
     .btn-breadcrumb > * div {
         max-width: 60px;
     }
     #bc2 > a:last-child > div {
         max-width: 100%
     }
-    #bc2 > a > div:hover {
-        max-width: 100%
-    }
 }
 
 /* For tablets */
 @media (min-width: 768px) and (max-width:991px) {
-    .btn-breadcrumb > *:nth-last-child(-n+4) {
-        display:block;
-    }
     .btn-breadcrumb > * div {
         max-width: 100px;
     }
     #bc2 > a:last-child > div {
         max-width: 100%
     }
-    #bc2 > a > div:hover {
-        max-width: 100%
-    }
 }
 
 /* For desktops  */
 @media (min-width: 992px) and (max-width: 1199px) {
-    .btn-breadcrumb > *:nth-last-child(-n+4) {
-        display:block;
-    }
     .btn-breadcrumb > * div {
         max-width: 170px;
     }
     #bc2 > a:last-child > div {
         max-width: 100%
     }
-    #bc2 > a > div:hover {
-        max-width: 100%
-    }
 }
 
 /* For desktops */
 @media (min-width: 1200px) {
-    .btn-breadcrumb > *:nth-last-child(-n+4) {
-        display:block;
-    }
     .btn-breadcrumb > * div:not(:last-child) {
         max-width: 170px;
     }
@@ -394,4 +425,11 @@ a.btn.btn-primary {
   width: 64px;
   height: 57px;
   margin-bottom: 10px;
+}
+
+/* Sweetalert customizations */
+
+/* Break long strings to fit them in the popup */
+.sweet-alert p {
+  word-wrap: break-word;
 }

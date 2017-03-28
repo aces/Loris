@@ -55,7 +55,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
              'OldValue1'           => 'Mother',
              'OldValue2'           => 'Father',
              'NewValue'            => 'NULL',
-             'ConflictID'          => 'NULL',
             )
         );
          $this->DB->insert(
@@ -187,12 +186,11 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $keywordElement->sendkeys('TestTestTest');
          //click show data button
          $this->webDriver->findElement(WebDriverBy::ID("testShowData1"))->click();
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::XPath(
-                 "//*[@id='tabs']/div/div/div/div/div/".
-                 "table/tbody/tr[1]/td[6]"
-             )
-         )->getText();
+         $this->safeGet(
+             $this->url .
+             "/conflict_resolver/?submenu=resolved_conflicts&format=json"
+         );
+         $bodyText = $this->webDriver->getPageSource();
          $this->assertContains("TestTestTest", $bodyText);
     }
      /**
@@ -210,12 +208,8 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $keywordElement->sendkeys('TestTestTest');
          //click show data button
          $this->webDriver->findElement(WebDriverBy::ID("testShowData1"))->click();
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::XPath(
-                 "//*[@id='conflict_resolver']/div/div/div/".
-                 "table/tbody/tr[1]/td[6]"
-             )
-         )->getText();
+         $this->safeGet($this->url . "/conflict_resolver/?format=json");
+         $bodyText = $this->webDriver->getPageSource();
          $this->assertContains("TestTestTest", $bodyText);
     }
      /**

@@ -1,7 +1,12 @@
-#Final Radiological Review Test Plan
+# Final Radiological Review Test Plan
 
+*Note: Old LORIS projects (< 16.0) may have a typo in the Radiology Review table (see PR #1835). This can be fixed by sourcing the patch found in docs/instruments.*
+
+## Covered by automated test:
 1. Try to access the Final Radiological Review menu item. You should only be able to see the menu item if you have the edit_final_radiological_review or the view_final_radiological_review permission.
 2. Clicking on the menu item should bring you to the radiological review menu filter page. You should only be able to access this page if you have edit_final_radiological_review or view_final_radiological_review permission.
+
+## Must be tested manually:
 3. Test the filter. Try each filter separately (by clicking the 'Show Data' button) and ensure the table is filtered properly.
 	* Site
 	* Conflict between final and extra reviews

@@ -55,15 +55,54 @@ class User extends UserPermissions
         $DB =& Database::singleton();
 
         // get user data from database
-        $query = "SELECT users.*, psc.Name AS Site FROM users
-            LEFT JOIN psc ON (users.centerID=psc.CenterID)
-            WHERE users.UserID = :UID";
+        $query = "SELECT users.*,
+            GROUP_CONCAT(psc.Name SEPARATOR ';') AS Sites
+            FROM users
+            LEFT JOIN user_psc_rel ON (user_psc_rel.UserID=users.ID)
+            LEFT JOIN psc ON (user_psc_rel.CenterID=psc.CenterID)
+            WHERE users.UserID = :UID
+            GROUP BY users.ID";
 
         $row = $DB->pselectRow($query, array('UID' => $username));
 
-        // store user data in object property
-        $obj->userInfo = $row;
+        // get user sites
+        $user_centerID_query =  $DB->pselect(
+            "SELECT CenterID FROM user_psc_rel upr 
+                        WHERE upr.UserID= :UID",
+            array('UID' => $row['ID'])
+        );
 
+        foreach ($user_centerID_query as $key=>$val) {
+            $user_cid[$key] =$val['CenterID'];
+        }
+
+        // Get examiner information
+        $examiner_check = $DB->pselect(
+            "SELECT full_name, centerID, radiologist, active, pending_approval 
+                  FROM examiners 
+                  WHERE full_name=:fn 
+                    AND (active='Y' OR (active='N' AND pending_approval='Y'))",
+            array(
+             "fn" => $row['Real_name'],
+            )
+        );
+
+        $examiner_info =array();
+        if (!empty($examiner_check) && !is_null($examiner_check)) {
+            foreach ($examiner_check as $rw=>$val) {
+                if ($val['active'] == 'Y') {
+                    $examiner_info['pending'] = $val['pending_approval'];
+                }
+                $examiner_info[$val['centerID']] =array(
+                                                   $val['active'],
+                                                   $val['radiologist'],
+                                                  );
+            }
+        }
+        // store user data in object property
+        $row['examiner']  =$examiner_info;
+        $row['CenterIDs'] =$user_cid;
+        $obj->userInfo    =$row;
         return $obj;
     }
 
@@ -175,7 +214,7 @@ class User extends UserPermissions
      */
     function getSiteName()
     {
-        return $this->userInfo['Site'];
+        return $this->userInfo['Sites'];
     }
 
     /**
@@ -185,26 +224,20 @@ class User extends UserPermissions
      */
     function getCenterID()
     {
-        return $this->userInfo['CenterID'];
+        return $this->userInfo['CenterIDs'];
     }
 
+
     /**
-     * Unknown what this does. Maybe it should be removed?
-     * - Dave
+     * Returns all sites where Examiner is active
      *
-     * @return boolean
+     * @return array
      */
-    function isMultiSiteEnabled()
+    function getExaminerSites()
     {
-        // if $userID is not passed,then look-up current user
-        // if CenterID = 0 then admin staff
-        // like dcc ccc nih or similar
-        // change 2002-10-23 Dario
-        $config =& NDB_Config::singleton();
-        return in_array(
-            $this->userInfo['CenterID'],
-            $config->getSetting('multiSiteEnabledCenters')
-        );
+        $site_list = $this->userInfo['examiner'];
+        unset($site_list['pending']);
+        return $site_list;
     }
 
     /**
@@ -221,46 +254,6 @@ class User extends UserPermissions
         return true;
     }
 
-
-    /**
-     * Makes an md5 hash with a salt
-     *
-     * @param string $word The word to hash
-     *
-     * @return string
-     * @access public
-     * @static
-     */
-    static function MD5Salt($word)
-    {
-        // get a two-character hexadecimal salt from 10 to ff
-        $salt = dechex(rand(16, 255));
-
-        // return the salted md5 hash
-        return $salt . md5($salt . $word);
-    }
-
-
-    /**
-     * Checks an md5 salt
-     *
-     * @param string $word The word to compare to the hash
-     * @param string $hash The hash
-     *
-     * @return boolean
-     * @access public
-     * @static
-     */
-    static function MD5Unsalt($word, $hash)
-    {
-        // get the first two characters of the hash
-        $salt = substr($hash, 0, 2);
-
-        // return whether the hash matches the word
-        return ($salt . md5($salt . $word) == $hash);
-    }
-
-
     /**
      * Generates a random alphanumeric password
      *
@@ -276,7 +269,8 @@ class User extends UserPermissions
         $password = '';
 
         $numbers      = '0123456789';
-        $specialChars = '!@#$%^&*()';
+        $specialChars = '!@#$%^*()';
+        // & not part of $specialChars since it causes URL to break
 
         $possible = $numbers . $specialChars . 'abcdefghijklmnopqrstuvwxyz';
 
@@ -390,12 +384,6 @@ class User extends UserPermissions
      */
     function updatePassword($password, $expiry = null)
     {
-        // Check if the PHP 5.5 password hashing API is available.
-        $php55 = false;
-        if (function_exists("password_verify")) {
-            $php55 = true;
-        }
-
         if (is_null($expiry)) {
             $expiry = date(
                 'Y-m-d',
@@ -405,18 +393,10 @@ class User extends UserPermissions
 
         $updateArray = array('Password_expiry' => $expiry);
 
-        // Update the appropriate password field, null the other one
-        // for security.
-        if ($php55) {
-            $updateArray['Password_hash'] = password_hash(
-                $password,
-                PASSWORD_DEFAULT
-            );
-            $updateArray['Password_MD5']  = null;
-        } else {
-            $updateArray['Password_hash'] = null;
-            $updateArray['Password_MD5']  = User::MD5Salt($password);
-        }
+        $updateArray['Password_hash'] = password_hash(
+            $password,
+            PASSWORD_DEFAULT
+        );
 
         $this->update($updateArray);
 

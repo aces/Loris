@@ -30,6 +30,7 @@ class TimepointListIntegrationTest extends LorisIntegrationTestWithCandidate
     private static $_TST0001_SESSION = array(
                                         'Test',
                                         '',
+                                        'DCC',
                                         'Not Started',
                                         '-',
                                         '',

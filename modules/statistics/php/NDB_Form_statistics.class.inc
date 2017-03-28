@@ -46,9 +46,9 @@ class NDB_Form_statistics extends NDB_Form
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
 
-            if(array_search($vl, $visits) !== false
-                && array_search($subcat, $subcats) !== false
-                && $this->_inCenter($center, $centres) !== false
+            if(in_array($vl, $visits)
+                && in_array($subcat, $subcats)
+                && $this->_inCenter($center, $centres)
             ) {
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
@@ -117,9 +117,9 @@ class NDB_Form_statistics extends NDB_Form
         if(isset($_REQUEST['DemographicProject']) && $_REQUEST['DemographicProject'] != '') {
             $currentProject = $_REQUEST['DemographicProject'];
             $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $currentProject,
-                                                 'Name' => $projects[$currentProject],
-                                                );
+                'ID'   => $currentProject,
+                'Name' => $projects[$currentProject],
+            );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] =$_REQUEST['DemographicProject'];
         } else {
@@ -149,7 +149,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    PSCArea as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
@@ -161,9 +161,9 @@ class NDB_Form_statistics extends NDB_Form
             $sites[$row['NumericID']] = $row['ShortName'];
             if($_REQUEST['DemographicSite'] == $row['NumericID']) {
                 $this->tpl_data['CurrentSite'] = array(
-                                                  'ID'   => $row['NumericID'],
-                                                  'Name' => $row['LongName'],
-                                                 );
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                );
             }
         }
 
@@ -181,7 +181,8 @@ class NDB_Form_statistics extends NDB_Form
                       FROM candidate as c
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
+                          AND c.Entity_type != 'Scanner'
+                          AND c.Active = 'Y'
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
@@ -198,10 +199,12 @@ class NDB_Form_statistics extends NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
+                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
+                          AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
+                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
@@ -218,10 +221,12 @@ class NDB_Form_statistics extends NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
+                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
-                          AND c.Active<>'Y'
+                          AND c.Entity_type != 'Scanner'
+                          AND c.Active='Y'
+                          AND ps.participant_status=5
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
@@ -238,11 +243,13 @@ class NDB_Form_statistics extends NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
+                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
+                          AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
+                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           AND c.Gender='Male'
                           $Param_Project
                           $Param_Site
@@ -259,11 +266,13 @@ class NDB_Form_statistics extends NDB_Form
             "SELECT s.subprojectid as rowid,
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
+                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
+                          AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
+                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           AND c.Gender='Female'
                           $Param_Project
                           $Param_Site
@@ -278,18 +287,21 @@ class NDB_Form_statistics extends NDB_Form
 
         //AGE AVERAGE
         $result = $DB->pselect(
-            "SELECT DISTINCT
-                          s.subprojectid as rowid,
-                          AVG(DATEDIFF(c.Date_registered,c.DoB)) as age
+            "SELECT rowid, AVG(DATEDIFF(dr,dob)) as age
+              FROM
+              (SELECT DISTINCT c.CandID, s.subprojectid as rowid, c.Date_registered as dr,c.DoB as dob
                       FROM candidate as c
-                          JOIN session s ON (s.CandID=c.CandID)
+                      	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+                          LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.CenterID <> '1'
-                          AND c.PSCID <> 'scanner'
+                          AND c.Entity_type != 'Scanner'
+                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
                           AND c.Active='Y'
                           $Param_Project
-                          $Param_Site
-                      GROUP BY s.subprojectid",
+                          $Param_Site) 
+                                as res
+              GROUP BY rowid",
             $this->params
         );
 
@@ -306,9 +318,9 @@ class NDB_Form_statistics extends NDB_Form
         $this->tpl_data['all_instruments'] = $instrument_list;
         if(isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
             $Subcategories = array(
-                              'Complete',
-                              'Incomplete',
-                             );
+                'Complete',
+                'Incomplete',
+            );
             $result        = $DB->pselect(
                 "SELECT count(*) as val,
                     f.Data_entry as Subcat,
@@ -357,9 +369,9 @@ class NDB_Form_statistics extends NDB_Form
             );
         } else {
             $Subcategories = array(
-                              'Male',
-                              'Female',
-                             );
+                'Male',
+                'Female',
+            );
             $result        = $DB->pselect(
                 "SELECT c.CenterID as CenterID,
                     s.SubprojectID as SubprojectID,
@@ -403,7 +415,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    PSCArea as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
@@ -470,6 +482,7 @@ class NDB_Form_statistics extends NDB_Form
                     s.Active='Y' AND c.Active='Y'
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
+                    AND s.CenterID <> '1'
                     $suproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
@@ -512,9 +525,10 @@ class NDB_Form_statistics extends NDB_Form
                 AND s.Current_stage <> 'Recycling Bin'
                 AND f.CommentID LIKE 'DDE%' 
                 AND c.Active='Y'
+                AND s.CenterID <> '1'
                 $suproject_query
                 $Param_Project
-                GROUP BY s.CenterID, VLabel, f.Data_Entry ORDER BY c.PSCID;",
+                GROUP BY s.CenterID, VLabel, f.Data_Entry",
             $this->params
         );
         foreach($result as $row) {
@@ -591,7 +605,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    PSCArea as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
@@ -682,7 +696,7 @@ class NDB_Form_statistics extends NDB_Form
                           CASE($MRI_Type_Field)
                           WHEN 'Partial' THEN 'Partial Run'
                           WHEN 'No' THEN 'No Scan'
-                          ELSE $MRI_Type_Field
+                          ELSE 'Complete'
                           END";
 
         $result = $DB->pselect(
@@ -700,6 +714,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND s.Active='Y'
                     AND c.Active='Y'
                     AND f.CommentID NOT LIKE 'DDE%'
+                    AND s.CenterID <> '1'
                     $suproject_query
                     $Param_Project
               GROUP BY Subcat,
@@ -740,6 +755,7 @@ class NDB_Form_statistics extends NDB_Form
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -757,6 +773,7 @@ class NDB_Form_statistics extends NDB_Form
                 WHERE s.Current_stage <> 'Recycling Bin'
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fi.FileType='mnc'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -783,6 +800,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -802,6 +820,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fqc.QCStatus='Pass'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -829,6 +848,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -848,6 +868,7 @@ class NDB_Form_statistics extends NDB_Form
                     AND fqc.FileId IS NOT NULL
                     AND s.Active='Y'
                     AND c.Active='Y'
+                    AND s.CenterID <> '1'
                     AND fqc.QCStatus='Fail'
                     AND fi.File LIKE CONCAT('%_', :scan, '_%')
                     $suproject_query
@@ -910,7 +931,7 @@ class NDB_Form_statistics extends NDB_Form
         $centers     = $DB->pselect(
             "SELECT CONCAT('C', CenterID) as ID,
                     CenterID as NumericID,
-                    PSCArea as LongName,
+                    IFNULL(PSCArea,Name) as LongName,
                     Name as ShortName
               FROM psc
               WHERE CenterID <> '1'
@@ -1054,5 +1075,23 @@ class NDB_Form_statistics extends NDB_Form
             )
         );
     }
+    /**
+     * Include additional CSS files:
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/statistics/css/statistics.css"
+            )
+        );
+    }
+
 } // End class
 ?>

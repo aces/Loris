@@ -1,0 +1,6 @@
+ALTER TABLE `users` 
+CHANGE COLUMN `Password_expiry` `Password_expiry` DATE NOT NULL DEFAULT '1990-04-01' ;
+ALTER TABLE `tarchive` 
+CHANGE COLUMN `PatientDoB` `PatientDoB` DATE NULL DEFAULT NULL ,
+CHANGE COLUMN `LastUpdate` `LastUpdate` DATETIME NULL DEFAULT NULL ,
+CHANGE COLUMN `DateAcquired` `DateAcquired` DATE NULL DEFAULT NULL ;

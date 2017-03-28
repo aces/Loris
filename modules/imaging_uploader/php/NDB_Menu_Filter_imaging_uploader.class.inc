@@ -29,6 +29,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
 
     var $show_queries = true;
     var $temp_path    = null;
+    var $AjaxModule   = true;
 
     /**
      * ID of the uploaded file in mri_upload table (if upload successful).
@@ -171,42 +172,6 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                 "to the Imaging Uploader module";
             $tpl_data['error_message'][] =  $error_message;
         }
-        return true;
-    }
-
-
-    /**
-     * Overrides the default setDataTableRows to assign the background colour
-     * to the progress column
-     *
-     * @param integer $count The number of rows in the table
-     *
-     * @return true on success
-     */
-    function _setDataTableRows($count)
-    {
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                $itemi          =& $this->tpl_data['items'][$x][$i];
-                $itemi['name']  = $key;
-                $itemi['value'] = $val;
-                if ($key == 'Progress' && $val == 'Failure') {
-                    $itemi['bgcolor'] =  '#E4A09E';
-                } elseif ($key == 'Progress' && $val == 'In Progress...') {
-                    $itemi['bgcolor'] =  '#F3F781';
-                }
-                $i++;
-            }
-
-            $x++;
-        }
-        $this->tpl_data['numUploads'] = $this->TotalItems;
         return true;
     }
 
@@ -356,14 +321,19 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             }
 
             ///////////////////////////////////////////////////////////////////////
-            ////////////// Make sure the file name matches the format   ///////////
-            /////////// $candid and $visit_label can be of variable length ////////
+            ///////////    Make sure the file name matches the format   ///////////
+            ///////////         $pscid_$candid_$visit_label             ///////////
+            ///////////              OR starts with                     ///////////
+            ///////////         $pscid_$candid_$visit_label_            ///////////
             ///////////////////////////////////////////////////////////////////////
-            $pcv = "{$pscid}_{$candid}_{$visit_label}";
-            if (!preg_match("/^{$pcv}.*(zip|tgz|tar.gz)/", $file_name)) {
-                $errors[] = "File name must begin with " .
-                "\"". $pscid ."_". $candid ."_". $visit_label . "\"" .
-                " and have the extension of .tgz, tar.gz or .zip";
+            $pcv  = $pscid . "_" . $candid . "_" . $visit_label;
+            $pcvu = $pcv . "_";
+            if ((!preg_match("/{$pcv}\.(zip|tgz|tar.gz)/", $file_name))
+                && (!preg_match("/^{$pcvu}.*(\.(zip|tgz|tar.gz))/", $file_name))
+            ) {
+                    $errors[] = "File name must match " . $pcv .
+                    " or begin with " . "\"". $pcvu . "\"" .
+                    ", and have the extension of .tgz, tar.gz or .zip";
             }
 
             ///////////////////////////////////////////////////////////////////////
@@ -381,11 +351,12 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                      ':pid'    => $pscid,
                     )
                 )==0) {
-                        $errors[] = "Make sure you enter the CandID: $candid ,".
+                        $errors[] = "Make sure you enter the CandID: $candid,".
                                     " PSCID: $pscid and the corresponding".
-                                    " Visit-label: $visit_label which".
-                                    " already exist. <br>Please refresh this page".
-                                    "to return to the Imaging Uploader module";
+                                    " Visit-label: $visit_label. Candidate and".
+                                    " corresponding visit label must already be" .
+                                    " created in the database. <br>Please refresh this".
+                                    " page to return to the Imaging Uploader module";
                 }
             }
         }
@@ -634,10 +605,29 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
+             $baseURL . "/imaging_uploader/js/index.js",
+             $baseURL . "/imaging_uploader/js/columnFormatter.js",
+             $baseURL . "/imaging_uploader/js/imaging_uploader.js",
              $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
             )
         );
     }
 
+    /**
+     * Include additional CSS files:
+     *  imaging_uploader.css
+     *
+     * @return array of css to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . "/imaging_uploader/css/imaging_uploader.css"]
+        );
+    }
 }
 ?>

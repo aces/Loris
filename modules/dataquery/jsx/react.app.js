@@ -12,7 +12,7 @@
  *  The following component is for saved queries dropdown which appears in the
  *  tab bar of the base component.
  */
-SavedQueriesList = React.createClass({
+var SavedQueriesList = React.createClass({
     getDefaultProps: function() {
         queriesLoaded: false
     },
@@ -79,7 +79,7 @@ SavedQueriesList = React.createClass({
  *  The following component is the data queries base element. It controls which tab is currently
  *  shown, along with keeping the state of the current query being built and running the query.
  */
-DataQueryApp = React.createClass({
+var DataQueryApp = React.createClass({
     componentDidMount: function() {
         // Before the dataquery is loaded into the window, this function is called to gather
         // any data that was not passed in the initial load.
@@ -87,7 +87,7 @@ DataQueryApp = React.createClass({
         // The left and right menu items are part of the same menu, but bootstrap considers
         // them two separate ones, so we need to make sure that only one is selected by removing
         // "active" from all the tab classes and only adding it to the really active one
-        var domNode = this.getDOMNode();
+        var domNode = this;
         $(domNode).find('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
             $(domNode).find('li').removeClass("active");
             if(e.target) {
@@ -734,7 +734,7 @@ DataQueryApp = React.createClass({
                 Identifiers.push(session);
             }
         } else {
-            // Displaying the data in the longitudial way
+            // Displaying the data in the longitudinal way
 
             var Visits = {},
                 visit, identifier, temp, colHeader, index, instrument, fieldSplit;
@@ -871,7 +871,7 @@ DataQueryApp = React.createClass({
         );
 
         // Define the data displayed type and add the view data tab
-        var displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudial";
+        var displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudinal";
         tabs.push(<ViewDataTabPane
                 TabId="ViewData"
                 Fields={this.state.fields}
@@ -993,4 +993,8 @@ DataQueryApp = React.createClass({
     }
 });
 
-RDataQueryApp = React.createFactory(DataQueryApp);
+window.SavedQueriesList = SavedQueriesList;
+window.DataQueryApp = DataQueryApp;
+window.RDataQueryApp = React.createFactory(DataQueryApp);
+
+export default DataQueryApp;

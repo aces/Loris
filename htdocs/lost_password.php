@@ -32,6 +32,10 @@ $tpl_data = array();
 $config          =& NDB_Config::singleton();
 $tpl_data['css'] =$config->getSetting('css');
 $tpl_data['study_title'] = $config->getSetting('title');
+$tpl_data['page']        = 'password-reset';
+$tpl_data['currentyear'] = date('Y');
+$tpl_data['version']     = file_get_contents(__DIR__ . "/../VERSION");
+$tpl_data['page_title']  = 'Reset Password';
 try {
     $tpl_data['study_logo'] = $config->getSetting('studylogo');
 } catch(ConfigurationException $e) {
@@ -56,7 +60,7 @@ if (isset($_POST['username'])) {
 
             // reset the password in the database
             // expire password so user must change it upon login
-            $success = $user->updatePassword($password, '0000-00-00');
+            $success = $user->updatePassword($password, '1990-04-01');
 
             // send the user an email
             $msg_data['study']    = $config->getSetting('title');
@@ -65,20 +69,20 @@ if (isset($_POST['username'])) {
             $msg_data['password'] = $password;
             Email::send($email, 'lost_password.tpl', $msg_data);
 
-            $tpl_data['confirm'] = $user->getData('Real_name')
-                .', you should receive an email within a few minutes.';
+            $tpl_data['success'] = 'You should receive an email with instructions 
+                                    within a few minutes!';
         } else {
-            $tpl_data['error_message'] = 'That user has an invalid email address.';
+            $tpl_data['error_message'] = 'Please provide a valid username!';
         }
     } else {
-        $tpl_data['error_message'] = 'That user is not in the system.';
+        $tpl_data['error_message'] = "Couldn't find a user with this username!";
     }
 }
 
 //Output template using Smarty
 $smarty = new Smarty_neurodb;
 $smarty->assign($tpl_data);
-$smarty->display('lost_password.tpl');
+$smarty->display('public_layout.tpl');
 
 ob_end_flush();
 

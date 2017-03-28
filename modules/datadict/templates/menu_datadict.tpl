@@ -52,6 +52,6 @@ var table = RDynamicDataTable({
     "getFormattedCell" : formatDataDictColumn
 
 });
-React.render(table, document.getElementById("datatable"));
+ReactDOM.render(table, document.getElementById("datatable"));
 </script>
 

@@ -1102,13 +1102,12 @@ class Database
             WHERE table_name = :tn
             AND COLUMN_NAME = :cn
             AND TABLE_SCHEMA = :db";
-
         $effected = $this->pselectOne(
             $query,
             array(
              'tn' => $test_name,
              'cn' => $column,
-             'db' => $database,
+             'db' => $database['database'],
             )
         );
         if ($effected) {
