@@ -898,13 +898,15 @@ class NDB_BVL_Instrument extends NDB_Page
                 array('tst_name' => $this->testName)
             );
             $results = $db->pselect(
-                "SELECT certification.examinerID, full_name
-                 FROM certification
-                     JOIN examiners
-                         ON (certification.examinerID = examiners.examinerID)
-                 WHERE testID =:tid
-                    AND pass =:cert_id
-                    AND centerID =:cid
+                "SELECT c.examinerID, e.full_name
+                 FROM certification c
+                     JOIN examiners e
+                         ON (c.examinerID = e.examinerID)
+                     JOIN examiners_psc_rel epr
+                         ON (epr.examinerID=e.examinerID)
+                 WHERE c.testID =:tid
+                    AND c.pass =:cert_id
+                    AND epr.centerID =:cid
                  ORDER BY full_name",
                 array(
                  'tid'     => $test_id,
@@ -914,9 +916,11 @@ class NDB_BVL_Instrument extends NDB_Page
             );
         } else {
             $results = $db->pselect(
-                "SELECT examinerID, full_name
-                     FROM examiners
-                 WHERE centerID=:centID
+                "SELECT e.examinerID, e.full_name
+                     FROM examiners e
+                         JOIN examiners_psc_rel epr
+                             ON (epr.examinerID=e.examinerID)
+                 WHERE epr.centerID=:centID
                      ORDER BY full_name",
                 array('centID' => $centerID)
             );

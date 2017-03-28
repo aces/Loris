@@ -91,11 +91,8 @@ class NDB_Form_Training extends NDB_Form
         $examinerID = $DB->pselectOne(
             "SELECT examinerID 
              FROM examiners
-             WHERE full_name=:FN AND FIND_IN_SET(centerID,:CID)",
-            array(
-             'FN'  => $fullName,
-             'CID' => implode(',', $site),
-            )
+             WHERE full_name=:FN",
+            array('FN' => $fullName)
         );
 
         if (!empty($examinerID)) {
@@ -155,8 +152,9 @@ class NDB_Form_Training extends NDB_Form
             "SELECT c.pass
              FROM certification c
              LEFT JOIN examiners e ON (c.examinerID=e.examinerID) 
+             LEFT JOIN examiners_psc_rel epr ON (epr.examinerId=e.examinerID)
              WHERE e.full_name=:name 
-             AND FIND_IN_SET(e.centerID,:CID) AND c.testID=:TID",
+             AND FIND_IN_SET(epr.centerID,:CID) AND c.testID=:TID",
             array(
              'name' => $userFullName,
              'CID'  => implode(',', $userCenter),
