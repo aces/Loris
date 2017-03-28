@@ -56,8 +56,7 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
      *
      * @return void
      */
-//@codingStandardsIgnoreStart
-    function candidate_parameters()
+    function candidate_parameters()//@codingStandardsIgnoreLine
     {
         $config    =& NDB_Config::singleton();
         $candidate =& Candidate::singleton($this->identifier);
@@ -70,7 +69,6 @@ class NDB_Form_Candidate_Parameters extends NDB_Form
 
         $this->tpl_data['useConsent'] = $consent['useConsent'];
     }
-//@codingStandardsIgnoreEnd
     /**
      * Gets the participant_status options from participant_status_options
      * getParticipantStatusOptions()
