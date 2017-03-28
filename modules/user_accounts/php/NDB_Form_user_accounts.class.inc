@@ -223,7 +223,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         if ($this->page === 'edit_user') {
             // multi-site UPDATE
-            $uid = $user->getData('ID');
+            $uid           = $user->getData('ID');
             $us_curr_sites = $values['CenterIDs'];
             if (!$this->isCreatingNewUser()) {
                 $DB->delete('user_psc_rel', array("UserID" => $uid));
@@ -231,8 +231,8 @@ class NDB_Form_User_Accounts extends NDB_Form
                     $DB->insert(
                         'user_psc_rel',
                         array(
-                            "UserID" => $uid,
-                            "CenterID" => $site,
+                         "UserID"   => $uid,
+                         "CenterID" => $site,
                         )
                     );
                 }
