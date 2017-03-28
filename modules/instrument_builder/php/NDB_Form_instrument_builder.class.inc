@@ -56,7 +56,7 @@ class NDB_Form_Instrument_Builder extends NDB_Form
      *
      * @return void
      */
-    function _instrumentBuilder()
+    function _instrument_builder()// @codingStandardsIgnoreLine
     {
 
     }
