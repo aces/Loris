@@ -92,7 +92,7 @@ Follow these steps in your terminal:
 
 ---
 
-## Writing React code
+## Transpiling React code
 
 We need to use `webpack` in order to transpile `JSX` and `ES6` syntax used in our React code into `ES5` syntax understood by all browsers.
 
@@ -103,7 +103,7 @@ When you create a new `ES6/JSX file`, ensure you add it to the ```webpack.config
 './desc/file.js' : './src/file.js'
 ```
 
-**Step 2: Compile all files**
+**Step 2: Transpiling all files**
 
 To compile all `ES6/JSX` files in LORIS, use the following command:
 
