@@ -46,7 +46,7 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php module
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/media 
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/mri_violations
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/new_profile 
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/next_stage
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/next_stage
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/reliability
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/server_processes_manager
 # vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/statistics
