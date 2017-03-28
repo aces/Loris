@@ -140,7 +140,7 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             WHEN r.PVS <> r.PVS2 THEN 'prim_second'
             ELSE 'false' END)";
 
-        $radiology_review_table_exists = $DB->pselectOne("SHOW TABLES LIKE 'radiology_review'", array());
+        $radiology_review_table_exists = $DB->pselect("SHOW TABLES LIKE 'radiology_review'", array());
         if (count($radiology_review_table_exists) === 0) {
             throw new LorisException(
                 "Table 'radiology_review' does not exist."
