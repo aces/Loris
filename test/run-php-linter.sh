@@ -21,7 +21,7 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php module
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/brainbrowser 
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/bvl_feedback
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_list
-# vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_parameters
+vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/candidate_parameters
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/configuration
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/conflict_resolver
 vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/create_timepoint
