@@ -24,8 +24,11 @@ $client->initialize(__DIR__ . "/../../../project/config.xml");
 $cdb       = CouchDB::singleton();
 $category  = $_REQUEST['category'];
 $fieldName = $_REQUEST['field'];
-$value     = $_REQUEST['value'];
-$value     = is_numeric($value) ? $value : "\"$value\"";
+$value = $_REQUEST['value'];
+
+if(!is_numeric($value) && $value !== "null") {
+	$value = "\"$value\"";
+}
 
 $results = $cdb->queryView(
     "DQG-2.0",
