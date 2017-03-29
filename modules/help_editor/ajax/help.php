@@ -47,8 +47,7 @@ if (!empty($_REQUEST['testName'])) {
 
 $help_file = HelpFile::factory($helpID);
 $data = $help_file->toArray();
-$data['content'] = trim($data['content']);
-$data['content'] = html_entity_decode($data['content']);
+$data['content'] = html_entity_decode(trim($data['content']));
 
 if (empty($data['updated'])) {
     $data['updated'] = "-";
