@@ -19,16 +19,32 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize(__DIR__ . "/../../../project/config.xml");
-$cdb      = CouchDB::singleton();
-$category = $_REQUEST['category'];
-$results  = $cdb->queryView(
-    "DQG-2.0",
-    "datadictionary",
-    array(
-     "reduce"   => "false",
-     "startkey" => "[\"$category\"]",
-     "endkey"   => "[\"$category\", \"ZZZZZZZZ\"]",
-    )
-);
+
+$cdb = CouchDB::singleton();
+if($_REQUEST['category']) {
+	$category = $_REQUEST['category'];
+
+	$results = $cdb->queryView(
+	    "DQG-2.0",
+	    "datadictionary",
+	    array("reduce" => "false",
+	          "startkey" => "[\"$category\"]",
+	          "endkey" =>  "[\"$category\", \"ZZZZZZZZ\"]"
+	      )
+	);
+} else if ($_REQUEST['key']) {
+	$key = split(',', $_REQUEST['key']);
+	// error_log($key);
+
+	$results = $cdb->queryView(
+	    "DQG-2.0",
+	    "datadictionary",
+	    array("reduce" => "false",
+	          "key" => "[\"$key[0]\",\"$key[1]\"]"
+	      )
+	);
+}
+
+
 print json_encode($results);
 ?>
