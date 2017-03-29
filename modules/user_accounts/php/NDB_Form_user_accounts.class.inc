@@ -438,7 +438,7 @@ class NDB_Form_User_Accounts extends NDB_Form
 
         $this->tpl_data['success'] = true;
 
-        if($this->isCreatingNewUser()) {
+        if ($this->isCreatingNewUser()) {
             $baseURL  = $config->getSetting('url');
             $redirect = $baseURL
                 . "/"
