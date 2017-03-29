@@ -88,11 +88,12 @@ class NDB_Form_Statistics extends NDB_Form
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new Smarty_neurodb("statistics");
-        $tpl_data['SectionHeader']    = $sectionHeader;
-        $tpl_data['TableHeader']      = $tableHeader;
-        $tpl_data['Disclamer']        = $disclamer;
-        $tpl_data['Subcategories']    = $subcats;
-        $tpl_data['Subprojects']      = Utility::getSubprojectsForProject($projectID);
+        $tpl_data['SectionHeader'] = $sectionHeader;
+        $tpl_data['TableHeader']   = $tableHeader;
+        $tpl_data['Disclamer']     = $disclamer;
+        $tpl_data['Subcategories'] = $subcats;
+        $tpl_var = Utility::getSubprojectsForProject($projectID);
+        $tpl_data['Subprojects']      = $tpl_var;
         $tpl_data['DropdownName']     = $dropdown_name;
         $tpl_data['DropdownOptions']  = $dropdown_opt;
         $tpl_data['DropdownSelected'] = $dropdown_selected;
@@ -107,22 +108,23 @@ class NDB_Form_Statistics extends NDB_Form
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centres)
             ) {
+                $C = 'C' . $center;
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$subcat]      += $row['val'];
                 $tpl_data['data'][$subproj]['total']      += $row['val'];
                 $tpl_data['data'][$vl][$subcat]           += $row['val'];
                 $tpl_data['data'][$vl]['total']           += $row['val'];
-                $tpl_data['data'][$subproj]['C' . $center][$vl][$subcat]  = $row['val'];
-                $tpl_data['data'][$subproj]['C' . $center][$vl]['total'] += $row['val'];
-                $tpl_data['data'][$subproj]['C' . $center][$subcat]      += $row['val'];
-                $tpl_data['data'][$subproj]['C' . $center]['total']      += $row['val'];
-                $tpl_data['data']['C' . $center][$vl][$subcat]           += $row['val'];
-                $tpl_data['data']['C' . $center][$vl]['total']           += $row['val'];
-                $tpl_data['data']['C' . $center][$subcat] += $row['val'];
-                $tpl_data['data']['C' . $center]['total'] += $row['val'];
-                $tpl_data['data'][$subcat] += $row['val'];
-                $tpl_data['data']['total'] += $row['val'];
+                $tpl_data['data'][$subproj][$C][$vl][$subcat]  = $row['val'];
+                $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
+                $tpl_data['data'][$subproj][$C][$subcat]      += $row['val'];
+                $tpl_data['data'][$subproj][$C]['total']      += $row['val'];
+                $tpl_data['data'][$C][$vl][$subcat]           += $row['val'];
+                $tpl_data['data'][$C][$vl]['total']           += $row['val'];
+                $tpl_data['data'][$C][$subcat] += $row['val'];
+                $tpl_data['data'][$C]['total'] += $row['val'];
+                $tpl_data['data'][$subcat]     += $row['val'];
+                $tpl_data['data']['total']     += $row['val'];
             }
 
         }
@@ -183,12 +185,15 @@ class NDB_Form_Statistics extends NDB_Form
             $projects[$key] = $value;
         }
         $currentProject = null;
-        if (isset($_REQUEST['DemographicProject']) && $_REQUEST['DemographicProject'] != '') {
+        if (isset($_REQUEST['DemographicProject'])
+            && $_REQUEST['DemographicProject'] != ''
+        ) {
             $currentProject = $_REQUEST['DemographicProject'];
-            $this->tpl_data['CurrentProject'] = array(
-                                                 'ID'   => $currentProject,
-                                                 'Name' => $projects[$currentProject],
-                                                );
+            $this->tpl_data['CurrentProject']
+                = array(
+                   'ID'   => $currentProject,
+                   'Name' => $projects[$currentProject],
+                  );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] =$_REQUEST['DemographicProject'];
         } else {
@@ -209,7 +214,9 @@ class NDB_Form_Statistics extends NDB_Form
         }
 
         //SITES
-        if (isset($_REQUEST['DemographicSite']) && $_REQUEST['DemographicSite'] != '') {
+        if (isset($_REQUEST['DemographicSite'])
+            && $_REQUEST['DemographicSite'] != ''
+        ) {
             $Param_Site          ='AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
             $this->params['sid'] =$_REQUEST['DemographicSite'];
         } else {
@@ -273,7 +280,8 @@ class NDB_Form_Statistics extends NDB_Form
                       WHERE c.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
+                          AND (ps.participant_status=1
+                               OR ps.participant_status IS NULL)
                           $Param_Project
                           $Param_Site
                       GROUP BY s.subprojectid",
@@ -318,7 +326,8 @@ class NDB_Form_Statistics extends NDB_Form
                           AND c.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
+                          AND (ps.participant_status=1 OR
+                               ps.participant_status IS NULL)
                           AND c.Gender='Male'
                           $Param_Project
                           $Param_Site
@@ -341,7 +350,8 @@ class NDB_Form_Statistics extends NDB_Form
                           AND c.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
-                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
+                          AND (ps.participant_status=1
+                               OR ps.participant_status IS NULL)
                           AND c.Gender='Female'
                           $Param_Project
                           $Param_Site
@@ -358,14 +368,16 @@ class NDB_Form_Statistics extends NDB_Form
         $result = $DB->pselect(
             "SELECT rowid, AVG(DATEDIFF(dr,dob)) as age
               FROM
-              (SELECT DISTINCT c.CandID, s.subprojectid as rowid, c.Date_registered as dr,c.DoB as dob
+              (SELECT DISTINCT c.CandID, s.subprojectid as rowid,
+                          c.Date_registered as dr,c.DoB as dob
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
                           AND c.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
-                          AND (ps.participant_status=1 OR ps.participant_status IS NULL)
+                          AND (ps.participant_status=1
+                          OR ps.participant_status IS NULL)
                           AND c.Active='Y'
                           $Param_Project
                           $Param_Site) 
@@ -385,7 +397,9 @@ class NDB_Form_Statistics extends NDB_Form
         );
         $instrument_list = Utility::getAllInstruments();
         $this->tpl_data['all_instruments'] = $instrument_list;
-        if (isset($_REQUEST['DemographicInstrument']) && $_REQUEST['DemographicInstrument'] != '') {
+        if (isset($_REQUEST['DemographicInstrument'])
+            && $_REQUEST['DemographicInstrument'] != ''
+        ) {
             $Subcategories = array(
                               'Complete',
                               'Incomplete',
@@ -398,7 +412,8 @@ class NDB_Form_Statistics extends NDB_Form
                     s.visit_label as VLabel
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
-                    JOIN ".$DB->escape($_REQUEST[DemographicInstrument])." i USING(CommentID)
+                    JOIN ".$DB->escape($_REQUEST[DemographicInstrument]).
+                    " i USING(CommentID)
                 WHERE s.Active='Y'
                     AND c.CenterID <> '1'
                     AND f.Data_entry='Complete'
@@ -413,7 +428,8 @@ class NDB_Form_Statistics extends NDB_Form
                     s.visit_label as VLabel
                 FROM session s JOIN candidate c USING(CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
-                    JOIN ".$DB->escape($_REQUEST[DemographicInstrument])." i USING(CommentID)
+                    JOIN ".$DB->escape($_REQUEST[DemographicInstrument]).
+                    " i USING(CommentID)
                 WHERE s.Active='Y' AND s.CenterID <> 1
                     $Param_Project
                     AND f.CommentID NOT LIKE 'DDE%'
@@ -520,10 +536,10 @@ class NDB_Form_Statistics extends NDB_Form
         ) {
             $currentProject = $_REQUEST['BehaviouralProject'];
             $this->tpl_data['CurrentProject']
-                   = array(
-                           'ID'   => $currentProject,
-                           'Name' => $projects[$currentProject],
-                     );
+                = array(
+                   'ID'   => $currentProject,
+                   'Name' => $projects[$currentProject],
+                  );
             $Param_Project       ='AND (c.ProjectID IS NULL OR c.ProjectID=:pid) ';
             $this->params['pid'] =$_REQUEST['BehaviouralProject'];
         } else {
