@@ -187,13 +187,15 @@ class NDB_Menu_Filter_Mri_Protocol_Check_Violations extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
-        $baseurl = $factory->settings()->getBaseURL();
-        $depends = parent::getJSDependencies();
+        $factory         = NDB_Factory::singleton();
+        $baseurl         = $factory->settings()->getBaseURL();
+        $depends         = parent::getJSDependencies();
+        $columnFormatter = "/mri_violations/js/".
+                           "mri_protocol_check_violations_columnFormatter.js";
         return array_merge(
             $depends,
             array(
-             $baseurl . "/mri_violations/js/mri_protocol_check_violations_columnFormatter.js",// @codingStandardsIgnoreLine
+             $baseurl . $columnFormatter,
              $baseurl . "/mri_violations/js/mri_protocol_check_violations.js",
             )
         );
