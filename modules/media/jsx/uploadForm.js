@@ -80,92 +80,93 @@ class MediaUploadForm extends React.Component {
         File name should begin with <b>[PSCID]_[Visit Label]_[Instrument]</b><br/>
         For example, for candidate <i>ABC123</i>, visit <i>V1</i> for
         <i>Body Mass Index</i> the file name should be prefixed by:
-        <b>ABC123_V1_Body_Mass_Index</b>
+        <b> ABC123_V1_Body_Mass_Index</b>
       </span>
     );
 
     return (
-      <div>
-        <FormElement
-          name="mediaUpload"
-          fileUpload={true}
-          onSubmit={this.handleSubmit}
-          ref="form"
-        >
-          <h3>Upload a media file</h3>
-          <br />
-          <StaticElement
-            label="Note"
-            text={helpText}
-          />
-          <SelectElement
-            name="pscid"
-            label="PSCID"
-            options={this.state.Data.candidates}
-            onUserInput={this.setFormData}
-            ref="pscid"
-            hasError={false}
-            required={true}
-            value={this.state.formData.pscid}
-          />
-          <SelectElement
-            name="visitLabel"
-            label="Visit Label"
-            options={this.state.Data.visits}
-            onUserInput={this.setFormData}
-            ref="visitLabel"
-            required={true}
-            value={this.state.formData.visitLabel}
-          />
-          <SelectElement
-            name="forSite"
-            label="Site"
-            options={this.state.Data.sites}
-            onUserInput={this.setFormData}
-            ref="forSite"
-            required={true}
-            value={this.state.formData.forSite}
-          />
-          <SelectElement
-            name="instrument"
-            label="Instrument"
-            options={this.state.Data.instruments}
-            onUserInput={this.setFormData}
-            ref="instrument"
-            value={this.state.formData.instrument}
-          />
-          <DateElement
-            name="dateTaken"
-            label="Date of Administration"
-            minYear="2000"
-            maxYear="2017"
-            onUserInput={this.setFormData}
-            ref="dateTaken"
-            value={this.state.formData.dateTaken}
-          />
-          <TextareaElement
-            name="comments"
-            label="Comments"
-            onUserInput={this.setFormData}
-            ref="comments"
-            value={this.state.formData.comments}
-          />
-          <FileElement
-            name="file"
-            id="mediaUploadEl"
-            onUserInput={this.setFormData}
-            ref="file"
-            label="File to upload"
-            required={true}
-            value={this.state.formData.file}
-          />
-          <ButtonElement label="Upload File" />
-          <div className="row">
-            <div className="col-sm-9 col-sm-offset-3">
-              <ProgressBar value={this.state.uploadProgress} />
+      <div className="row">
+        <div className="col-md-8 col-lg-7">
+          <FormElement
+            name="mediaUpload"
+            fileUpload={true}
+            onSubmit={this.handleSubmit}
+            ref="form"
+          >
+            <h3>Upload a media file</h3><br/>
+            <StaticElement
+              label="Note"
+              text={helpText}
+            />
+            <SelectElement
+              name="pscid"
+              label="PSCID"
+              options={this.state.Data.candidates}
+              onUserInput={this.setFormData}
+              ref="pscid"
+              hasError={false}
+              required={true}
+              value={this.state.formData.pscid}
+            />
+            <SelectElement
+              name="visitLabel"
+              label="Visit Label"
+              options={this.state.Data.visits}
+              onUserInput={this.setFormData}
+              ref="visitLabel"
+              required={true}
+              value={this.state.formData.visitLabel}
+            />
+            <SelectElement
+              name="forSite"
+              label="Site"
+              options={this.state.Data.sites}
+              onUserInput={this.setFormData}
+              ref="forSite"
+              required={true}
+              value={this.state.formData.forSite}
+            />
+            <SelectElement
+              name="instrument"
+              label="Instrument"
+              options={this.state.Data.instruments}
+              onUserInput={this.setFormData}
+              ref="instrument"
+              value={this.state.formData.instrument}
+            />
+            <DateElement
+              name="dateTaken"
+              label="Date of Administration"
+              minYear="2000"
+              maxYear="2017"
+              onUserInput={this.setFormData}
+              ref="dateTaken"
+              value={this.state.formData.dateTaken}
+            />
+            <TextareaElement
+              name="comments"
+              label="Comments"
+              onUserInput={this.setFormData}
+              ref="comments"
+              value={this.state.formData.comments}
+            />
+            <FileElement
+              name="file"
+              id="mediaUploadEl"
+              onUserInput={this.setFormData}
+              ref="file"
+              label="File to upload"
+              required={true}
+              value={this.state.formData.file}
+            />
+            <ButtonElement label="Upload File"/>
+            <div className="row">
+              <div className="col-sm-9 col-sm-offset-3">
+                <ProgressBar value={this.state.uploadProgress}/>
+              </div>
             </div>
-          </div>
-        </FormElement>
+          </FormElement>
+        </div>
       </div>
     );
   }
@@ -383,10 +384,5 @@ MediaUploadForm.propTypes = {
   DataURL: React.PropTypes.string.isRequired,
   action: React.PropTypes.string.isRequired
 };
-
-var RMediaUploadForm = React.createFactory(MediaUploadForm);
-
-window.MediaUploadForm = MediaUploadForm;
-window.RMediaUploadForm = RMediaUploadForm;
 
 export default MediaUploadForm;

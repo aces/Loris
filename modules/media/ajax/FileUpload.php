@@ -82,7 +82,7 @@ function uploadFile()
     }
 
     // Validate media path and destination folder
-    $mediaPath = $config->getSetting('paths')['mediaPath'];
+    $mediaPath = $config->getSetting('mediaPath');
 
     if (!isset($mediaPath)) {
         showError("Error! Media path is not set in Loris Settings!");
