@@ -33,12 +33,10 @@ class SetFlagForm extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    let myFormData = this.state.formData;
-
     $.ajax({
       type: 'POST',
       url: '/data_integrity_flag/',
-      data: JSON.stringify(myFormData),
+      data: JSON.stringify(this.state.formData),
       cache: false,
       contentType: false,
       processData: false,

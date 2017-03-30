@@ -62,7 +62,7 @@ class DataIntegrity extends React.Component {
       );
     }
 
-    let tabList = [
+    const tabList = [
       {id: "browse", label: "Browse"},
       {id: "setflag", label: "Update"}
     ];
@@ -127,21 +127,14 @@ class DataIntegrity extends React.Component {
  * Render dicom_page on page load
  */
 $(function() {
-  var dataURL = loris.BaseURL + "/data_integrity_flag/?format=json";
-  var dataIntegrity = (
-    <DataIntegrity
-      Module="data_integrity_flag"
-      DataURL={dataURL}
-    />
+  const dataURL = loris.BaseURL + "/data_integrity_flag/?format=json";
+  const dataIntegrity = (
+    <div id="page-data-integrity">
+      <DataIntegrity
+        Module="data_integrity_flag"
+        DataURL={dataURL}
+      />
+    </div>
   );
-
-  // Create a wrapper div in which react component will be loaded
-  const dataIntegrityDOM = document.createElement('div');
-  dataIntegrityDOM.id = 'page-data-integrity';
-
-  // Append wrapper div to page content
-  const rootDOM = document.getElementById("lorisworkspace");
-  rootDOM.appendChild(dataIntegrityDOM);
-
-  ReactDOM.render(dataIntegrity, document.getElementById("page-data-integrity"));
+  ReactDOM.render(dataIntegrity, document.getElementById("lorisworkspace"));
 });
