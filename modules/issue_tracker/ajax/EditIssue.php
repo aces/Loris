@@ -66,6 +66,7 @@ function editIssue()
     $fieldsToValidateFirst = array(
                               'PSCID',
                               'visitLabel',
+                              'centerID',
                              );
 
     foreach ($fields as $field) {
@@ -179,13 +180,46 @@ function validateInput($values)
     $db         =& Database::singleton();
     $pscid      = (isset($values['PSCID']) ? $values['PSCID'] : null);
     $visitLabel = (isset($values['visitLabel']) ? $values['visitLabel'] : null);
+    $centerID   = (isset($values['centerID']) ? $values['centerID'] : null);
     $result     = [
-                   'PSCID'     => $pscid,
-                   'visit'     => $visitLabel,
-                   'candID'    => null,
-                   'sessionID' => null,
+                   'PSCID'             => $pscid,
+                   'visit'             => $visitLabel,
+                   'centerID'          => $centerID,
+                   'candID'            => null,
+                   'sessionID'         => null,
+                   'isValidSubmission' => true,
+                   'invalidMessage'    => null,
                   ];
 
+    if (isset($result['PSCID'], $result['centerID'])) {
+        $visited_center = $db->pselectOne(
+            "
+            SELECT
+                EXISTS (
+                    SELECT
+                        *
+                    FROM
+                        session s
+                    JOIN
+                        candidate c
+                    ON
+                        c.CandID = s.CandID
+                    WHERE
+                        s.CenterID = :center_id AND
+                        c.PSCID = :psc_id
+                )
+        ",
+            array(
+             "center_id" => $result['centerID'],
+             "psc_id"    => $result['PSCID'],
+            )
+        );
+        if (!$visited_center) {
+            $result['isValidSubmission'] = false;
+            $result['invalidMessage']    = "PSCID and Center ID do not match a valid candidate session!";
+            return $result;
+        }
+    }
     // If both are set, return SessionID and CandID
     if (isset($result['PSCID']) && isset($result['visit'])) {
         $session = $db->pSelect(
